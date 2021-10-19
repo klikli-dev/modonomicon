@@ -20,21 +20,30 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.klikli_dev.modonomicon.api;
+package com.klikli_dev.modonomicon.item;
 
-public class ModonimiconConstants {
+import com.klikli_dev.modonomicon.api.ModonimiconConstants;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
-    public static class Data {
-        public static final String MODONOMICON_DATA_PATH = ModonomiconAPI.ID + "_data";
+public class ModonomiconItem extends Item {
+    public ModonomiconItem(Properties pProperties) {
+        super(pProperties);
     }
 
-    public static class Nbt {
-        public static final String PREFIX = ModonomiconAPI.ID + ":";
-        public static final String BOOK_OPEN = PREFIX + "book_open";
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
+        var itemInHand = pPlayer.getItemInHand(pUsedHand);
+        itemInHand.getOrCreateTag().putBoolean(ModonimiconConstants.Nbt.BOOK_OPEN, true);
 
-    }
+        //TODO: open UI here
 
-    public static class I18n {
-        public static final String ITEM_GROUP = "itemGroup." + ModonomiconAPI.ID;
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemInHand);
+
     }
 }

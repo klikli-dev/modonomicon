@@ -23,6 +23,7 @@
 package com.klikli_dev.modonomicon.registry;
 
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.item.ModonomiconItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -32,7 +33,7 @@ public class ItemRegistry {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Modonomicon.MODID);
 
     public static final RegistryObject<Item> MODONOMICON =
-            ITEMS.register("modonomicon", () -> new Item(defaultProperties()));
+            ITEMS.register("modonomicon", () -> new ModonomiconItem(defaultProperties()));
 
     public static Item.Properties defaultProperties() {
         return new Item.Properties().tab(Modonomicon.CREATIVE_MODE_TAB);
