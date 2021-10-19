@@ -70,7 +70,7 @@ public abstract class LangGenerator extends LanguageProvider {
 
         private void addAdvancements() {
             this.advancementTitle("root", "Modonomicon");
-            this.advancementDescr("root", "The journey towards uncovering the mysteries of the universe lies ahead.");
+            this.advancementDescr("root", "The book of all books!");
         }
 
         protected void addTranslations() {

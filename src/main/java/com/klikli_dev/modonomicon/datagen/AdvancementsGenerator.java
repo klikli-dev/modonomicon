@@ -71,9 +71,9 @@ public class AdvancementsGenerator implements DataProvider {
 
     private void start() {
         Advancement root = this.add(Advancement.Builder.advancement()
-                .display(ItemRegistry.MODONOMICON.get(), title("root"), descr("root"),
-                        new ResourceLocation("textures/gui/advancements/backgrounds/stone.png"), FrameType.TASK, true,
-                        true, false)
+//                .display(ItemRegistry.MODONOMICON.get(), title("root"), descr("root"),
+//                        new ResourceLocation("textures/gui/advancements/backgrounds/stone.png"), FrameType.TASK, true,
+//                        true, false)
                 .addCriterion("modonomicon_present",
                         new TickTrigger.TriggerInstance(EntityPredicate.Composite.ANY))
                 .build(new ResourceLocation(Modonomicon.MODID, Modonomicon.MODID + "/root")));
