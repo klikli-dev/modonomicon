@@ -48,13 +48,16 @@ public class ModonomiconScreen extends Screen {
     protected int currentCategory = 0;
 
     //scrolling based on AdvancementScreen/AdvancementTab
-    //but we do not support repeating textures
+    //allow repeating textures -> in that case set a reasonable scroll max instead of calculating it for the texture
     //TODO: Document we need 512 px
     protected int backgroundTextureWidth = 512;
     protected int backgroundTextureHeight = 512;
     protected double scrollX = 0;
     protected double scrollY = 0;
     protected boolean isScrolling;
+    //TODO: make the frame thickness configurable in the book?
+    protected int frameThicknessW = 14;
+    protected int frameThicknessH = 14;
 
     public ModonomiconScreen(Book book, ItemStack bookStack) {
         super(new TextComponent(""));
@@ -70,53 +73,109 @@ public class ModonomiconScreen extends Screen {
         //TODO: save/load current category and page.
         //TODO: save/load pan, zoom, etc -> needs to be per category
         //TODO: handle books with no categories? probably fine to just crash
+
+        //todo: get background texture width based on current tab
+        //      Minecraft.getInstance().getTextureManager().getTexture(path), cast to simple texture, get native image, get height/width
+    }
+
+    /**
+     * gets the width of the inner area of the book frame
+     */
+    public int getInnerX() {
+        return (this.width - this.getFrameWidth()) / 2 + this.frameThicknessW / 2;
+    }
+
+    /**
+     * gets the height of the inner area of the book frame
+     */
+    public int getInnerY() {
+        return (this.height - this.getFrameHeight()) / 2 + this.frameThicknessH / 2;
+    }
+
+    /**
+     * gets the width of the inner area of the book frame
+     */
+    public int getInnerWidth() {
+        return this.getFrameWidth() - this.frameThicknessW;
+    }
+
+    /**
+     * gets the height of the inner area of the book frame
+     */
+    public int getInnerHeight() {
+        return this.getFrameHeight() - this.frameThicknessH;
+    }
+
+    /**
+     * Gets the render offset to draw the background texture centered within our frame
+     */
+    public float getCenterOffsetX() {
+        return this.backgroundTextureWidth / 2.0f - this.getInnerWidth() / 2.0f;
+    }
+
+    /**
+     * Gets the render offset to draw the background texture centered within our frame
+     */
+    public float getCenterOffsetY() {
+        return this.backgroundTextureHeight / 2.0f - this.getInnerHeight() / 2.0f;
     }
 
     public void scroll(double pDragX, double pDragY) {
         //we need to limit the scroll amount to fit within our max texture size
-        //for that we need to account how our frame moves over the background texture
-        //max coordinates for 512x512 texture are with our current frame size 159 306
+        //to that end we just need the center offset, because that also acts as our positive/negative min/max
+        //then we move our frame over the background texture and never hit a repeat
+        //TODO: if repeating texture, allow higher value here, maybe configurable
+        //TODO: move his into the book category screen
+        float centerOffsetX = this.getCenterOffsetX();
+        float centerOffsetY = this.getCenterOffsetY();
 
-        float centerOffsetX = this.backgroundTextureWidth / 2.0f - width / 2.0f;
-        float centerOffsetY = this.backgroundTextureHeight / 2.0f - height / 2.0f;
+        this.scrollX = Mth.clamp(this.scrollX - pDragX, -centerOffsetX, centerOffsetX);
+        this.scrollY = Mth.clamp(this.scrollY - pDragY, -centerOffsetY, centerOffsetY);
+    }
 
-        //then apply scrolling
-        float offsetX = centerOffsetX + (float)this.scrollX;
-        float offsetY = centerOffsetY + (float)this.scrollY;
+    /**
+     * Gets the outer width of the book frame
+     */
+    protected int getFrameWidth() {
+        //TODO: enable config frame width
+        return this.width - 60;
+    }
 
-
-        this.scrollX = Mth.clamp(this.scrollX - pDragX, -this.backgroundTextureWidth, 0.0D);
-        this.scrollY = Mth.clamp(this.scrollY - pDragY, -this.backgroundTextureHeight, 0.0D);
+    /**
+     * Gets the outer height of the book frame
+     */
+    protected int getFrameHeight() {
+        //TODO: enable config frame height
+        return this.height - 20;
     }
 
     protected void renderCategoryBackground(PoseStack poseStack) {
+        //TODO: move his into the book category screen
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, this.categories.get(this.currentCategory).getBackground());
 
-        int frameThicknessW = 14;
-        int frameThicknessH = 14;
-
         //based on the frame's total width and its thickness, calculate where the inner area starts
-        int x = (this.width - this.getFrameWidth()) / 2 + frameThicknessW / 2;
-        int y = (this.height - this.getFrameHeight()) / 2 + frameThicknessH / 2;
+        int innerX = this.getInnerX();
+        int innerY = this.getInnerY();
 
-        //then calculate the corresponding width/height so we don't draw out of the frame
-        int width = this.getFrameWidth() - frameThicknessW;
-        int height = this.getFrameHeight() - frameThicknessH;
+        //then calculate the corresponding inner area width/height so we don't draw out of the frame
+        int innerWidth = this.getInnerWidth();
+        int innerHeight = this.getInnerHeight();
 
         //now we need to calculate the offsets of our texture, based on how we scrolled in our book
         //starting point is the center
-        float centerOffsetX = this.backgroundTextureWidth / 2.0f - width / 2.0f;
-        float centerOffsetY = this.backgroundTextureHeight / 2.0f - height / 2.0f;
+        float centerOffsetX = this.getCenterOffsetX();
+        float centerOffsetY = this.getCenterOffsetY();
 
         //then apply scrolling
-        float offsetX = centerOffsetX + (float)this.scrollX;
-        float offsetY = centerOffsetY + (float)this.scrollY;
+        float offsetX = centerOffsetX + (float) this.scrollX;
+        float offsetY = centerOffsetY + (float) this.scrollY;
 
         //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
-        GuiComponent.blit(poseStack, x, y, this.getBlitOffset(), offsetX, offsetY, width, height, this.backgroundTextureHeight, this.backgroundTextureWidth);
+        GuiComponent.blit(poseStack, innerX, innerY, this.getBlitOffset(), offsetX, offsetY, innerWidth, innerHeight,
+                this.backgroundTextureHeight, this.backgroundTextureWidth);
 
     }
 
@@ -144,16 +203,6 @@ public class ModonomiconScreen extends Screen {
         GuiUtils.drawTexturedModalRect(poseStack, (x + (width / 2)) - 36, (y + height) - 18, 140, 17, 72, 18, blitOffset);
         GuiUtils.drawTexturedModalRect(poseStack, x, (y + (height / 2)) - 35, 140, 35, 17, 70, blitOffset);
         GuiUtils.drawTexturedModalRect(poseStack, x + width - 17, (y + (height / 2)) - 35, 157, 35, 17, 70, blitOffset);
-    }
-
-    protected int getFrameWidth() {
-        //TODO: enable config frame width
-        return this.width - 60;
-    }
-
-    protected int getFrameHeight() {
-        //TODO: enable config frame height
-        return this.height - 20;
     }
 
     @Override
