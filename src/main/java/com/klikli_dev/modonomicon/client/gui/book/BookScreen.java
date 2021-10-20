@@ -47,9 +47,7 @@ public class BookScreen extends Screen {
     protected List<BookCategory> categories;
     protected int currentCategory = 0;
 
-    //scrolling based on AdvancementScreen/AdvancementTab
     //allow repeating textures -> in that case set a reasonable scroll max instead of calculating it for the texture
-    //TODO: Document we need 512 px
     protected int backgroundTextureWidth = 512;
     protected int backgroundTextureHeight = 512;
     protected double scrollX = 0;
