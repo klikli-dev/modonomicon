@@ -24,18 +24,22 @@ package com.klikli_dev.modonomicon.data.book;
 
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.Map;
+
 public class BookCategory {
     protected ResourceLocation id;
     protected String name;
     protected int sortNumber;
     protected ResourceLocation background;
+    protected Map<ResourceLocation, BookEntry> entries;
     //TODO: additional backgrounds with custom rendertypes?
 
-    public BookCategory(ResourceLocation id, String name, int sortNumber, ResourceLocation background) {
+    public BookCategory(ResourceLocation id, String name, int sortNumber, Map<ResourceLocation, BookEntry> entries, ResourceLocation background) {
         this.id = id;
         this.name = name;
         this.sortNumber = sortNumber;
         this.background = background;
+        this.entries = entries;
     }
 
     public ResourceLocation getId() {
@@ -52,5 +56,13 @@ public class BookCategory {
 
     public ResourceLocation getBackground() {
         return this.background;
+    }
+
+    public Map<ResourceLocation, BookEntry> getEntries() {
+        return this.entries;
+    }
+
+    public void addEntry(BookEntry entry) {
+        this.entries.putIfAbsent(entry.id, entry);
     }
 }

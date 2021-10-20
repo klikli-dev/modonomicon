@@ -28,25 +28,46 @@ import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.client.gui.book.BookScreen;
 import com.klikli_dev.modonomicon.data.book.Book;
 import com.klikli_dev.modonomicon.data.book.BookCategory;
+import com.klikli_dev.modonomicon.data.book.BookEntry;
+import com.klikli_dev.modonomicon.data.book.BookIcon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
+import java.util.HashMap;
 
 public class GuiHelper {
     public static void openBook(ItemStack stack) {
-        var defaultCat = Modonomicon.loc("default");
+        var defaultCat = new BookCategory(
+                Modonomicon.loc("default"),
+                ModonimiconConstants.I18n.Test.DEFAULT_CATEGORY,
+                0,
+                new HashMap<>(),
+                Modonomicon.loc("textures/gui/default_background.png")
+        );
+
+        defaultCat.addEntry(new BookEntry(
+                Modonomicon.loc("default1"),
+                defaultCat,
+                ModonimiconConstants.I18n.Test.DEFAULT_ENTRY1,
+                new BookIcon(new ItemStack(Items.APPLE)),
+                15, 15
+        ));
+
+        defaultCat.addEntry(new BookEntry(
+                Modonomicon.loc("default2"),
+                defaultCat,
+                ModonimiconConstants.I18n.Test.DEFAULT_ENTRY2,
+                new BookIcon(new ItemStack(Items.DIAMOND)),
+                15, 30
+        ));
+
         Minecraft.getInstance().setScreen(new BookScreen(new Book(
                 Modonomicon.loc("test"),
                 ModonimiconConstants.I18n.Test.TESTBOOK_NAME,
                 Modonomicon.loc("textures/gui/book.png"),
-                new ImmutableMap.Builder<ResourceLocation, BookCategory>().put(defaultCat,
-                        new BookCategory(
-                                defaultCat,
-                                ModonimiconConstants.I18n.Test.DEFAULT_CATEGORY,
-                                0,
-                                Modonomicon.loc("textures/gui/default_background.png")
-                        )
-                ).build()
+                new ImmutableMap.Builder<ResourceLocation, BookCategory>().put(defaultCat.getId(), defaultCat).build()
         ), stack));
     }
 }

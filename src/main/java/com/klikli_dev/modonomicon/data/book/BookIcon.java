@@ -20,31 +20,21 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.klikli_dev.modonomicon.api;
+package com.klikli_dev.modonomicon.data.book;
 
-public class ModonimiconConstants {
+import com.klikli_dev.modonomicon.util.RenderUtil;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.world.item.ItemStack;
 
-    public static class Data {
-        public static final String MODONOMICON_DATA_PATH = ModonomiconAPI.ID + "_data";
+public class BookIcon {
+    private final ItemStack itemStack;
+    //TODO: allow to render texture directly too
+
+    public BookIcon(ItemStack stack) {
+        this.itemStack = stack;
     }
 
-    public static class Nbt {
-        public static final String PREFIX = ModonomiconAPI.ID + ":";
-        public static final String BOOK_OPEN = PREFIX + "book_open";
-
-    }
-
-    public static class I18n {
-        public static final String BOOK_PREFIX = "book." +ModonomiconAPI.ID + ".";
-        public static final String ITEM_GROUP = "itemGroup." + ModonomiconAPI.ID;
-
-        public static class Test {
-            public static final String TESTBOOK_NAME = BOOK_PREFIX + "test";
-            public static final String TESTBOOK_PREFIX = BOOK_PREFIX + "test.";
-            public static final String DEFAULT_CATEGORY = TESTBOOK_PREFIX + "default";
-            public static final String DEFAULT_CATEGORY_PREFIX = TESTBOOK_PREFIX + "default";
-            public static final String DEFAULT_ENTRY1 = DEFAULT_CATEGORY_PREFIX + "default1";
-            public static final String DEFAULT_ENTRY2 = DEFAULT_CATEGORY_PREFIX + "default2";
-        }
+    public void render(PoseStack ms, int x, int y) {
+        RenderUtil.renderAndDecorateItemWithPose(ms, this.itemStack, x, y);
     }
 }

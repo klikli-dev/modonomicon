@@ -22,6 +22,7 @@
 
 package com.klikli_dev.modonomicon.client.gui.book;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.data.book.Book;
 import com.klikli_dev.modonomicon.data.book.BookCategory;
@@ -40,6 +41,8 @@ import net.minecraftforge.fmlclient.gui.GuiUtils;
 import java.util.List;
 
 public class BookScreen extends Screen {
+
+    protected static final ResourceLocation ENTRY_TEXTURES = Modonomicon.loc("textures/gui/entry_textures.png");
 
     protected ItemStack bookStack;
     protected Book book;
@@ -175,6 +178,13 @@ public class BookScreen extends Screen {
         //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
         GuiComponent.blit(poseStack, innerX, innerY, this.getBlitOffset(), offsetX, offsetY, innerWidth, innerHeight,
                 this.backgroundTextureHeight, this.backgroundTextureWidth);
+
+    }
+
+    protected void renderEntries(PoseStack stack){
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, ENTRY_TEXTURES);
 
     }
 

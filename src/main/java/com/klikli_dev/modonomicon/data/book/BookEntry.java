@@ -20,31 +20,53 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.klikli_dev.modonomicon.api;
+package com.klikli_dev.modonomicon.data.book;
 
-public class ModonimiconConstants {
+import net.minecraft.resources.ResourceLocation;
 
-    public static class Data {
-        public static final String MODONOMICON_DATA_PATH = ModonomiconAPI.ID + "_data";
+public class BookEntry {
+    protected ResourceLocation id;
+    protected BookCategory category;
+    protected String name;
+    protected BookIcon icon;
+    protected int x;
+    protected int y;
+
+    //TODO: description and/or tooltip
+    //TODO: Pages
+    //TODO: parent entries for line rendering
+    //TODO: entry type for background texture
+
+    public BookEntry(ResourceLocation id, BookCategory category, String name, BookIcon icon, int x, int y) {
+        this.id = id;
+        this.category = category;
+        this.name = name;
+        this.icon = icon;
+        this.x = x;
+        this.y = y;
     }
 
-    public static class Nbt {
-        public static final String PREFIX = ModonomiconAPI.ID + ":";
-        public static final String BOOK_OPEN = PREFIX + "book_open";
-
+    public int getY() {
+        return this.y;
     }
 
-    public static class I18n {
-        public static final String BOOK_PREFIX = "book." +ModonomiconAPI.ID + ".";
-        public static final String ITEM_GROUP = "itemGroup." + ModonomiconAPI.ID;
+    public int getX() {
+        return this.x;
+    }
 
-        public static class Test {
-            public static final String TESTBOOK_NAME = BOOK_PREFIX + "test";
-            public static final String TESTBOOK_PREFIX = BOOK_PREFIX + "test.";
-            public static final String DEFAULT_CATEGORY = TESTBOOK_PREFIX + "default";
-            public static final String DEFAULT_CATEGORY_PREFIX = TESTBOOK_PREFIX + "default";
-            public static final String DEFAULT_ENTRY1 = DEFAULT_CATEGORY_PREFIX + "default1";
-            public static final String DEFAULT_ENTRY2 = DEFAULT_CATEGORY_PREFIX + "default2";
-        }
+    public ResourceLocation getId() {
+        return this.id;
+    }
+
+    public BookCategory getCategory() {
+        return this.category;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public BookIcon getIcon() {
+        return this.icon;
     }
 }
