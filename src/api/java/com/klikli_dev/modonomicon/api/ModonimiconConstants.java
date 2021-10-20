@@ -35,6 +35,13 @@ public class ModonimiconConstants {
     }
 
     public static class I18n {
+        public static final String BOOK_PREFIX = "book." +ModonomiconAPI.ID + ".";
         public static final String ITEM_GROUP = "itemGroup." + ModonomiconAPI.ID;
+
+        public static class Test {
+            public static final String TESTBOOK_NAME = BOOK_PREFIX + "test";
+            public static final String TESTBOOK_PREFIX = BOOK_PREFIX + "test.";
+            public static final String DEFAULT_CATEGORY = TESTBOOK_PREFIX + "default";
+        }
     }
 }

@@ -20,7 +20,21 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.klikli_dev.modonomicon.data;
+package com.klikli_dev.modonomicon.data.book;
 
-public class BookData {
+import net.minecraft.resources.ResourceLocation;
+
+public class BookCategory {
+    protected ResourceLocation id;
+    protected String name;
+    protected int sortNumber;
+    protected ResourceLocation background;
+    //TODO: additional backgrounds with custom rendertypes?
+
+    public BookCategory(ResourceLocation id, String name, int sortNumber, ResourceLocation background) {
+        this.id = id;
+        this.name = name;
+        this.sortNumber = sortNumber;
+        this.background = background;
+    }
 }

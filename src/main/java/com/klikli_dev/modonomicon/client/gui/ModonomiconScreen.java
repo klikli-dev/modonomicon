@@ -22,9 +22,9 @@
 
 package com.klikli_dev.modonomicon.client.gui;
 
-import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
-import com.klikli_dev.modonomicon.data.BookData;
+import com.klikli_dev.modonomicon.data.book.Book;
+import com.klikli_dev.modonomicon.data.book.BookCategory;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -35,23 +35,33 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fmlclient.gui.GuiUtils;
 
+import java.util.List;
+
 public class ModonomiconScreen extends Screen {
 
     protected ItemStack bookStack;
-    protected BookData bookData;
+    protected Book book;
     protected ResourceLocation frameTexture;
+    protected List<BookCategory> categories;
+    protected int currentCategory;
 
-
-    public ModonomiconScreen(BookData bookData, ItemStack bookStack) {
+    public ModonomiconScreen(Book book, ItemStack bookStack) {
         super(new TextComponent(""));
 
         //somehow there are render calls before init(), leaving minecraft null
         this.minecraft = Minecraft.getInstance();
 
         this.bookStack = bookStack;
-        this.bookData = bookData;
-        //TODO: frameTexture load from book data
-        this.frameTexture = new ResourceLocation(Modonomicon.MODID, "textures/gui/book.png");
+        this.book = book;
+
+        this.categories = book.getCategoriesSorted();
+        this.frameTexture = book.getFrameTexture();
+        this.currentCategory = 0;
+        //TODO: save current category and page.
+    }
+
+    protected void renderCategoryBackground(PoseStack poseStack){
+
     }
 
     protected void renderFrame(PoseStack poseStack) {
