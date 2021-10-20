@@ -181,11 +181,23 @@ public class BookScreen extends Screen {
 
     }
 
-    protected void renderEntries(PoseStack stack){
+    protected void renderEntries(PoseStack stack) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, ENTRY_TEXTURES);
 
+        for (var entry : this.categories.get(this.currentCategory).getEntries().values()) {
+            //TODO: include zoom - do we need to do an overall scale before doing the entries? probably!
+            //TODO: include scroll
+            float zoom = 1.0f;
+            float xOffset = ((this.width / 2f) * (1 / zoom)) + ((float) this.scrollX / 2f);
+            float yOffset = ((this.height / 2f) * (1 / zoom)) + ((float) this.scrollY / 2f);
+
+            int texX = 0; //select the entry background with this
+            int texY = 0;
+
+            this.blit(stack, entry.getX() + (int)xOffset, entry.getY() + (int)yOffset, texX, texY, 26, 26);
+        }
     }
 
     protected void renderFrame(PoseStack poseStack) {
@@ -236,6 +248,10 @@ public class BookScreen extends Screen {
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
 
         this.renderCategoryBackground(pPoseStack);
+
+        //TODO: might need to gl scissors that 
+        this.renderEntries(pPoseStack);
+
         this.renderFrame(pPoseStack);
     }
 
