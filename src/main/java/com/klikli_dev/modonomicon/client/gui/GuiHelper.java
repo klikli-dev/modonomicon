@@ -25,6 +25,7 @@ package com.klikli_dev.modonomicon.client.gui;
 import com.google.common.collect.ImmutableMap;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
+import com.klikli_dev.modonomicon.client.gui.book.BookScreen;
 import com.klikli_dev.modonomicon.data.book.Book;
 import com.klikli_dev.modonomicon.data.book.BookCategory;
 import net.minecraft.client.Minecraft;
@@ -34,7 +35,7 @@ import net.minecraft.world.item.ItemStack;
 public class GuiHelper {
     public static void openBook(ItemStack stack) {
         var defaultCat = Modonomicon.loc("default");
-        Minecraft.getInstance().setScreen(new ModonomiconScreen(new Book(
+        Minecraft.getInstance().setScreen(new BookScreen(new Book(
                 Modonomicon.loc("test"),
                 ModonimiconConstants.I18n.Test.TESTBOOK_NAME,
                 Modonomicon.loc("textures/gui/book.png"),

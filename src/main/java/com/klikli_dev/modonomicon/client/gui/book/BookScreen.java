@@ -20,7 +20,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.klikli_dev.modonomicon.client.gui;
+package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.data.book.Book;
@@ -39,7 +39,7 @@ import net.minecraftforge.fmlclient.gui.GuiUtils;
 
 import java.util.List;
 
-public class ModonomiconScreen extends Screen {
+public class BookScreen extends Screen {
 
     protected ItemStack bookStack;
     protected Book book;
@@ -59,7 +59,7 @@ public class ModonomiconScreen extends Screen {
     protected int frameThicknessW = 14;
     protected int frameThicknessH = 14;
 
-    public ModonomiconScreen(Book book, ItemStack bookStack) {
+    public BookScreen(Book book, ItemStack bookStack) {
         super(new TextComponent(""));
 
         //somehow there are render calls before init(), leaving minecraft null
@@ -152,6 +152,7 @@ public class ModonomiconScreen extends Screen {
     protected void renderCategoryBackground(PoseStack poseStack) {
         //TODO: move his into the book category screen
 
+        //TODO: zoom should not affect background, only entries
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, this.categories.get(this.currentCategory).getBackground());
