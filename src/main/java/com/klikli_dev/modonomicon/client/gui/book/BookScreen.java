@@ -176,9 +176,9 @@ public class BookScreen extends Screen {
         float offsetY = centerOffsetY + (float) this.scrollY;
 
         //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
-        GuiComponent.blit(poseStack, innerX, innerY, this.getBlitOffset(), offsetX, offsetY, innerWidth, innerHeight,
+        //force offset to int here to reduce difference to entry rendering which is pos based and thus int precision only
+        GuiComponent.blit(poseStack, innerX, innerY, this.getBlitOffset(), (int) offsetX, (int) offsetY, innerWidth, innerHeight,
                 this.backgroundTextureHeight, this.backgroundTextureWidth);
-
     }
 
     protected void renderEntries(PoseStack stack) {
@@ -190,12 +190,18 @@ public class BookScreen extends Screen {
             //TODO: include zoom - do we need to do an overall scale before doing the entries? probably!
             //TODO: include scroll
             float zoom = 1.0f;
-            float xOffset = ((this.width / 2f) * (1 / zoom)) + ((float) this.scrollX / 2f);
-            float yOffset = ((this.height / 2f) * (1 / zoom)) + ((float) this.scrollY / 2f);
+            float xOffset = ((this.getInnerWidth() / 2f) * (1 / zoom)) - ((float) this.scrollX);
+            float yOffset = ((this.getInnerHeight() / 2f) * (1 / zoom)) - ((float) this.scrollY);
 
             int texX = 0; //select the entry background with this
             int texY = 0;
 
+            //Slight parallax effect
+            xOffset *= 0.8;
+            yOffset *= 0.8;
+
+            //entries jitter when moving. this is due to background moving via uv = float based, but entries via pos = int
+            //effect reduced by forcing background offset to int
             this.blit(stack, entry.getX() + (int)xOffset, entry.getY() + (int)yOffset, texX, texY, 26, 26);
         }
     }
@@ -249,7 +255,7 @@ public class BookScreen extends Screen {
 
         this.renderCategoryBackground(pPoseStack);
 
-        //TODO: might need to gl scissors that 
+        //TODO: might need to gl scissors that
         this.renderEntries(pPoseStack);
 
         this.renderFrame(pPoseStack);
