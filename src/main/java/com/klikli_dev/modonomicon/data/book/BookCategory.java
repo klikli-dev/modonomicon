@@ -37,4 +37,20 @@ public class BookCategory {
         this.sortNumber = sortNumber;
         this.background = background;
     }
+
+    public ResourceLocation getId() {
+        return this.id;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public int getSortNumber() {
+        return this.sortNumber;
+    }
+
+    public ResourceLocation getBackground() {
+        return this.background;
+    }
 }

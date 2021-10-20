@@ -51,7 +51,7 @@ public class Book {
     }
 
     public List<BookCategory> getCategoriesSorted(){
-        return this.categories.values().stream().sorted(Comparator.comparingInt(a -> a.sortNumber)).toList();
+        return this.categories.values().stream().sorted(Comparator.comparingInt(BookCategory::getSortNumber)).toList();
     }
 
     public String getName() {

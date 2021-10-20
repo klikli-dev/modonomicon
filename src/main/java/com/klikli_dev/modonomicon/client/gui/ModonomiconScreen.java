@@ -28,10 +28,12 @@ import com.klikli_dev.modonomicon.data.book.BookCategory;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fmlclient.gui.GuiUtils;
 
@@ -43,7 +45,16 @@ public class ModonomiconScreen extends Screen {
     protected Book book;
     protected ResourceLocation frameTexture;
     protected List<BookCategory> categories;
-    protected int currentCategory;
+    protected int currentCategory = 0;
+
+    //scrolling based on AdvancementScreen/AdvancementTab
+    //but we do not support repeating textures
+    //TODO: Document we need 512 px
+    protected int backgroundTextureWidth = 512;
+    protected int backgroundTextureHeight = 512;
+    protected double scrollX = 0;
+    protected double scrollY = 0;
+    protected boolean isScrolling;
 
     public ModonomiconScreen(Book book, ItemStack bookStack) {
         super(new TextComponent(""));
@@ -56,11 +67,56 @@ public class ModonomiconScreen extends Screen {
 
         this.categories = book.getCategoriesSorted();
         this.frameTexture = book.getFrameTexture();
-        this.currentCategory = 0;
-        //TODO: save current category and page.
+        //TODO: save/load current category and page.
+        //TODO: save/load pan, zoom, etc -> needs to be per category
+        //TODO: handle books with no categories? probably fine to just crash
     }
 
-    protected void renderCategoryBackground(PoseStack poseStack){
+    public void scroll(double pDragX, double pDragY) {
+        //we need to limit the scroll amount to fit within our max texture size
+        //for that we need to account how our frame moves over the background texture
+        //max coordinates for 512x512 texture are with our current frame size 159 306
+
+        float centerOffsetX = this.backgroundTextureWidth / 2.0f - width / 2.0f;
+        float centerOffsetY = this.backgroundTextureHeight / 2.0f - height / 2.0f;
+
+        //then apply scrolling
+        float offsetX = centerOffsetX + (float)this.scrollX;
+        float offsetY = centerOffsetY + (float)this.scrollY;
+
+
+        this.scrollX = Mth.clamp(this.scrollX - pDragX, -this.backgroundTextureWidth, 0.0D);
+        this.scrollY = Mth.clamp(this.scrollY - pDragY, -this.backgroundTextureHeight, 0.0D);
+    }
+
+    protected void renderCategoryBackground(PoseStack poseStack) {
+
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, this.categories.get(this.currentCategory).getBackground());
+
+        int frameThicknessW = 14;
+        int frameThicknessH = 14;
+
+        //based on the frame's total width and its thickness, calculate where the inner area starts
+        int x = (this.width - this.getFrameWidth()) / 2 + frameThicknessW / 2;
+        int y = (this.height - this.getFrameHeight()) / 2 + frameThicknessH / 2;
+
+        //then calculate the corresponding width/height so we don't draw out of the frame
+        int width = this.getFrameWidth() - frameThicknessW;
+        int height = this.getFrameHeight() - frameThicknessH;
+
+        //now we need to calculate the offsets of our texture, based on how we scrolled in our book
+        //starting point is the center
+        float centerOffsetX = this.backgroundTextureWidth / 2.0f - width / 2.0f;
+        float centerOffsetY = this.backgroundTextureHeight / 2.0f - height / 2.0f;
+
+        //then apply scrolling
+        float offsetX = centerOffsetX + (float)this.scrollX;
+        float offsetY = centerOffsetY + (float)this.scrollY;
+
+        //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
+        GuiComponent.blit(poseStack, x, y, this.getBlitOffset(), offsetX, offsetY, width, height, this.backgroundTextureHeight, this.backgroundTextureWidth);
 
     }
 
@@ -101,10 +157,27 @@ public class ModonomiconScreen extends Screen {
     }
 
     @Override
+    public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
+        //Based on advancementsscreen
+        if (pButton != 0) {
+            this.isScrolling = false;
+            return false;
+        } else {
+            if (!this.isScrolling) {
+                this.isScrolling = true;
+            } else {
+                this.scroll(pDragX, pDragY);
+            }
+            return true;
+        }
+    }
+
+    @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         this.renderBackground(pPoseStack);
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
 
+        this.renderCategoryBackground(pPoseStack);
         this.renderFrame(pPoseStack);
     }
 
