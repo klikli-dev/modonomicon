@@ -1,23 +1,21 @@
 /*
- * MIT License
+ * LGPL-3-0
  *
- * Copyright 2021 klikli-dev
+ * Copyright (C) 2021 klikli-dev
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
- * associated documentation files (the "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- * of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following
- * conditions:
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
  *
- * The above copyright notice and this permission notice shall be included in all copies or substantial
- * portions of the Software.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
- * PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT
- * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
 package com.klikli_dev.modonomicon.client.gui.book;
@@ -32,12 +30,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fmlclient.gui.GuiUtils;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class BookScreen extends Screen {
@@ -181,14 +181,20 @@ public class BookScreen extends Screen {
                 this.backgroundTextureHeight, this.backgroundTextureWidth);
     }
 
+    @Override
+    public boolean handleComponentClicked(@Nullable Style pStyle) {
+        return super.handleComponentClicked(pStyle);
+    }
+
     protected void renderEntries(PoseStack stack) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, ENTRY_TEXTURES);
 
         for (var entry : this.categories.get(this.currentCategory).getEntries().values()) {
             //TODO: include zoom - do we need to do an overall scale before doing the entries? probably!
             //TODO: include scroll
+
+            //render entry background
             float zoom = 1.0f;
             float xOffset = ((this.getInnerWidth() / 2f) * (1 / zoom)) - ((float) this.scrollX);
             float yOffset = ((this.getInnerHeight() / 2f) * (1 / zoom)) - ((float) this.scrollY);
@@ -200,9 +206,14 @@ public class BookScreen extends Screen {
             xOffset *= 0.8;
             yOffset *= 0.8;
 
+            RenderSystem.setShaderTexture(0, ENTRY_TEXTURES);
+
             //entries jitter when moving. this is due to background moving via uv = float based, but entries via pos = int
             //effect reduced by forcing background offset to int
             this.blit(stack, entry.getX() + (int)xOffset, entry.getY() + (int)yOffset, texX, texY, 26, 26);
+
+            //render icon
+            entry.getIcon().render(stack, entry.getX() + (int)xOffset + 5, entry.getY() + (int)yOffset + 5);
         }
     }
 
