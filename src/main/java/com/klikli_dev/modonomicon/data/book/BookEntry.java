@@ -22,9 +22,12 @@ package com.klikli_dev.modonomicon.data.book;
 
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.List;
+
 public class BookEntry {
     protected ResourceLocation id;
     protected BookCategory category;
+    protected List<BookEntryParent> parents;
     protected String name;
     protected BookIcon icon;
     protected int x;
@@ -35,9 +38,10 @@ public class BookEntry {
     //TODO: parent entries for line rendering
     //TODO: entry type for background texture
 
-    public BookEntry(ResourceLocation id, BookCategory category, String name, BookIcon icon, int x, int y) {
+    public BookEntry(ResourceLocation id, BookCategory category, List<BookEntryParent> parents, String name, BookIcon icon, int x, int y) {
         this.id = id;
         this.category = category;
+        this.parents = parents;
         this.name = name;
         this.icon = icon;
         this.x = x;
@@ -58,6 +62,10 @@ public class BookEntry {
 
     public BookCategory getCategory() {
         return this.category;
+    }
+
+    public List<BookEntryParent> getParents() {
+        return this.parents;
     }
 
     public String getName() {

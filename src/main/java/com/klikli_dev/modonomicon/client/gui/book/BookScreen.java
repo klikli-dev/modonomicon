@@ -24,6 +24,7 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.data.book.Book;
 import com.klikli_dev.modonomicon.data.book.BookCategory;
+import com.klikli_dev.modonomicon.data.book.BookEntry;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -190,21 +191,20 @@ public class BookScreen extends Screen {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
+        //TODO: include zoom - do we need to do an overall scale before doing the entries? probably!
+        //TODO: include scroll
+        //calculate the render offset
+        float zoom = 1.0f;
+        float xOffset = ((this.getInnerWidth() / 2f) * (1 / zoom)) - ((float) this.scrollX);
+        float yOffset = ((this.getInnerHeight() / 2f) * (1 / zoom)) - ((float) this.scrollY);
+        //Slight parallax effect
+        xOffset *= 0.8;
+        yOffset *= 0.8;
+
         for (var entry : this.categories.get(this.currentCategory).getEntries().values()) {
-            //TODO: include zoom - do we need to do an overall scale before doing the entries? probably!
-            //TODO: include scroll
-
             //render entry background
-            float zoom = 1.0f;
-            float xOffset = ((this.getInnerWidth() / 2f) * (1 / zoom)) - ((float) this.scrollX);
-            float yOffset = ((this.getInnerHeight() / 2f) * (1 / zoom)) - ((float) this.scrollY);
-
             int texX = 0; //select the entry background with this
             int texY = 0;
-
-            //Slight parallax effect
-            xOffset *= 0.8;
-            yOffset *= 0.8;
 
             RenderSystem.setShaderTexture(0, ENTRY_TEXTURES);
 
@@ -215,6 +215,18 @@ public class BookScreen extends Screen {
             //render icon
             entry.getIcon().render(stack, entry.getX() + (int)xOffset + 5, entry.getY() + (int)yOffset + 5);
         }
+    }
+
+    protected void renderConnections(PoseStack stack, BookEntry entry, float xOffset, float yOffset){
+        //our arrows are aliased and need blending
+        RenderSystem.enableBlend();
+
+        for(var parent : entry.getParents()){
+            var parentEntry = parent.getEntry();
+
+        }
+
+        RenderSystem.disableBlend();
     }
 
     protected void renderFrame(PoseStack poseStack) {
