@@ -60,7 +60,7 @@ public class GuiHelper {
                 new ArrayList<>(),
                 ModonimiconConstants.I18n.Test.DEFAULT_ENTRY2,
                 new BookIcon(new ItemStack(Items.DIAMOND)),
-                -5, -7
+                0, 0
         );
         defaultCat.addEntry(defaultEntry2);
 

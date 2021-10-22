@@ -234,10 +234,7 @@ public class BookScreen extends Screen {
         RenderSystem.enableBlend();
 
         for (var parent : entry.getParents()) {
-            //TODO: possibly translate instead of offset
             this.connectionRenderer.setBlitOffset(this.getBlitOffset());
-            //this.connectionRenderer.setOffset(xOffset, yOffset);
-            this.connectionRenderer.setOffset(0, 0);
             stack.pushPose();
             stack.translate(xOffset, yOffset, 0);
             this.connectionRenderer.render(stack, entry, parent);
@@ -283,7 +280,7 @@ public class BookScreen extends Screen {
             if (!this.isScrolling) {
                 this.isScrolling = true;
             } else {
-                this.scroll(pDragX, pDragY);
+                this.scroll(pDragX * 1.5, pDragY * 1.5);
             }
             return true;
         }
