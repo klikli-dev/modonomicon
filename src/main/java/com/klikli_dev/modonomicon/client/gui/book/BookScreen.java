@@ -186,8 +186,8 @@ public class BookScreen extends Screen {
         float yOffset = ((this.getInnerHeight() / 2f) * (1 / zoom)) - this.scrollY;
         //Slight parallax effect
         //TODO: that will be obsolete once zoom is in
-        xOffset *= 0.8;
-        yOffset *= 0.8;
+//        xOffset *= 0.8;
+//        yOffset *= 0.8;
 
 
         for (var entry : this.categories.get(this.currentCategory).getEntries().values()) {
@@ -208,6 +208,8 @@ public class BookScreen extends Screen {
             //render icon
             entry.getIcon().render(stack, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 5, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP + 5);
             stack.popPose();
+
+            this.renderConnections(stack, entry, xOffset, yOffset);
         }
     }
 
@@ -216,8 +218,14 @@ public class BookScreen extends Screen {
         RenderSystem.enableBlend();
 
         for (var parent : entry.getParents()) {
-            var parentEntry = parent.getEntry();
-
+            //TODO: possibly translate instead of offset
+            this.connectionRenderer.setBlitOffset(this.getBlitOffset());
+            //this.connectionRenderer.setOffset(xOffset, yOffset);
+            this.connectionRenderer.setOffset(0, 0);
+            stack.pushPose();
+            stack.translate(xOffset, yOffset, 0);
+            this.connectionRenderer.render(stack, entry, parent);
+            stack.popPose();
         }
 
         RenderSystem.disableBlend();
