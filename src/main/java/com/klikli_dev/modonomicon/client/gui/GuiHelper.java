@@ -44,23 +44,25 @@ public class GuiHelper {
                 Modonomicon.loc("textures/gui/default_background.png")
         );
 
-        var defaultEntry1 = defaultCat.addEntry(new BookEntry(
+        var defaultEntry1 = new BookEntry(
                 Modonomicon.loc("default1"),
                 defaultCat,
                 new ArrayList<>(),
                 ModonimiconConstants.I18n.Test.DEFAULT_ENTRY1,
                 new BookIcon(new ItemStack(Items.APPLE)),
-                15, 15
-        ));
+                -5, -5
+        );
+        defaultCat.addEntry(defaultEntry1);
 
-        var defaultEntry2 =  defaultCat.addEntry(new BookEntry(
+        var defaultEntry2 = new BookEntry(
                 Modonomicon.loc("default2"),
                 defaultCat,
                 new ArrayList<>(),
                 ModonimiconConstants.I18n.Test.DEFAULT_ENTRY2,
                 new BookIcon(new ItemStack(Items.DIAMOND)),
-                60, 30
-        ));
+                -5, -4
+        );
+        defaultCat.addEntry(defaultEntry2);
 
         defaultEntry2.getParents().add(new BookEntryParent(defaultEntry1));
 

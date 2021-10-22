@@ -60,7 +60,7 @@ public class BookCategory {
         return this.entries;
     }
 
-    public BookEntry addEntry(BookEntry entry) {
-        return this.entries.putIfAbsent(entry.id, entry);
+    public void addEntry(BookEntry entry) {
+        this.entries.putIfAbsent(entry.id, entry);
     }
 }

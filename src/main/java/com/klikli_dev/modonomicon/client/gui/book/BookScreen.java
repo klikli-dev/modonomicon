@@ -37,14 +37,19 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fmlclient.gui.GuiUtils;
+import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
+import static org.lwjgl.opengl.GL11.GL_SCISSOR_TEST;
+
 public class BookScreen extends Screen {
 
+    public static final int ENTRY_GRID_SCALE = 30;
+    public static final int ENTRY_GAP = 2;
+    public static final int MAX_SCROLL = 512;
     protected static final ResourceLocation ENTRY_TEXTURES = Modonomicon.loc("textures/gui/entry_textures.png");
-
     protected ItemStack bookStack;
     protected Book book;
     protected ResourceLocation frameTexture;
@@ -54,12 +59,15 @@ public class BookScreen extends Screen {
     //allow repeating textures -> in that case set a reasonable scroll max instead of calculating it for the texture
     protected int backgroundTextureWidth = 512;
     protected int backgroundTextureHeight = 512;
-    protected double scrollX = 0;
-    protected double scrollY = 0;
+    protected float scrollX = 0;
+    protected float scrollY = 0;
     protected boolean isScrolling;
     //TODO: make the frame thickness configurable in the book?
     protected int frameThicknessW = 14;
     protected int frameThicknessH = 14;
+
+    protected EntryConnectionRenderer connectionRenderer = new EntryConnectionRenderer(); //TODO: instantiate this once per category screen
+
 
     public BookScreen(Book book, ItemStack bookStack) {
         super(new TextComponent(""));
@@ -108,31 +116,14 @@ public class BookScreen extends Screen {
         return this.getFrameHeight() - this.frameThicknessH;
     }
 
-    /**
-     * Gets the render offset to draw the background texture centered within our frame
-     */
-    public float getCenterOffsetX() {
-        return this.backgroundTextureWidth / 2.0f - this.getInnerWidth() / 2.0f;
-    }
-
-    /**
-     * Gets the render offset to draw the background texture centered within our frame
-     */
-    public float getCenterOffsetY() {
-        return this.backgroundTextureHeight / 2.0f - this.getInnerHeight() / 2.0f;
-    }
-
     public void scroll(double pDragX, double pDragY) {
         //we need to limit the scroll amount to fit within our max texture size
         //to that end we just need the center offset, because that also acts as our positive/negative min/max
         //then we move our frame over the background texture and never hit a repeat
-        //TODO: if repeating texture, allow higher value here, maybe configurable
         //TODO: move his into the book category screen
-        float centerOffsetX = this.getCenterOffsetX();
-        float centerOffsetY = this.getCenterOffsetY();
 
-        this.scrollX = Mth.clamp(this.scrollX - pDragX, -centerOffsetX, centerOffsetX);
-        this.scrollY = Mth.clamp(this.scrollY - pDragY, -centerOffsetY, centerOffsetY);
+        this.scrollX = (float) Mth.clamp(this.scrollX - pDragX, -MAX_SCROLL, MAX_SCROLL);
+        this.scrollY = (float) Mth.clamp(this.scrollY - pDragY, -MAX_SCROLL, MAX_SCROLL);
     }
 
     /**
@@ -167,24 +158,20 @@ public class BookScreen extends Screen {
         int innerWidth = this.getInnerWidth();
         int innerHeight = this.getInnerHeight();
 
-        //now we need to calculate the offsets of our texture, based on how we scrolled in our book
-        //starting point is the center
-        float centerOffsetX = this.getCenterOffsetX();
-        float centerOffsetY = this.getCenterOffsetY();
-
-        //then apply scrolling
-        float offsetX = centerOffsetX + (float) this.scrollX;
-        float offsetY = centerOffsetY + (float) this.scrollY;
+        //based on arcana's render research background
+        //does not correctly work for non-automatic gui scale, but that only leads to background repeat -> no problem
+        float xScale = MAX_SCROLL * 2.0f / ((float)MAX_SCROLL + this.frameThicknessW - this.getFrameWidth());
+        float yScale = MAX_SCROLL * 2.0f / ((float)MAX_SCROLL + this.frameThicknessH - this.getFrameHeight());
+        float scale = Math.max(xScale, yScale);
+        float xOffset = xScale == scale ? 0 : (MAX_SCROLL - (innerWidth + MAX_SCROLL * 2.0f / scale)) / 2;
+        float yOffset = yScale == scale ? 0 : (MAX_SCROLL - (innerHeight + MAX_SCROLL * 2.0f / scale)) / 2;
 
         //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
         //force offset to int here to reduce difference to entry rendering which is pos based and thus int precision only
-        GuiComponent.blit(poseStack, innerX, innerY, this.getBlitOffset(), (int) offsetX, (int) offsetY, innerWidth, innerHeight,
-                this.backgroundTextureHeight, this.backgroundTextureWidth);
-    }
-
-    @Override
-    public boolean handleComponentClicked(@Nullable Style pStyle) {
-        return super.handleComponentClicked(pStyle);
+        GuiComponent.blit(poseStack, innerX, innerY, this.getBlitOffset(),
+                (this.scrollX + MAX_SCROLL) / scale + xOffset,
+                (this.scrollY + MAX_SCROLL) / scale + yOffset,
+                innerWidth, innerHeight, this.backgroundTextureHeight, this.backgroundTextureWidth);
     }
 
     protected void renderEntries(PoseStack stack) {
@@ -195,11 +182,13 @@ public class BookScreen extends Screen {
         //TODO: include scroll
         //calculate the render offset
         float zoom = 1.0f;
-        float xOffset = ((this.getInnerWidth() / 2f) * (1 / zoom)) - ((float) this.scrollX);
-        float yOffset = ((this.getInnerHeight() / 2f) * (1 / zoom)) - ((float) this.scrollY);
+        float xOffset = ((this.getInnerWidth() / 2f) * (1 / zoom)) - this.scrollX;
+        float yOffset = ((this.getInnerHeight() / 2f) * (1 / zoom)) - this.scrollY;
         //Slight parallax effect
+        //TODO: that will be obsolete once zoom is in
         xOffset *= 0.8;
         yOffset *= 0.8;
+
 
         for (var entry : this.categories.get(this.currentCategory).getEntries().values()) {
             //render entry background
@@ -210,18 +199,23 @@ public class BookScreen extends Screen {
 
             //entries jitter when moving. this is due to background moving via uv = float based, but entries via pos = int
             //effect reduced by forcing background offset to int
-            this.blit(stack, entry.getX() + (int)xOffset, entry.getY() + (int)yOffset, texX, texY, 26, 26);
+
+            stack.pushPose();
+            //we translate instead of applying the offset to the entry x/y to avoid jittering when moving
+            stack.translate(xOffset, yOffset, 0);
+            this.blit(stack, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, 26, 26);
 
             //render icon
-            entry.getIcon().render(stack, entry.getX() + (int)xOffset + 5, entry.getY() + (int)yOffset + 5);
+            entry.getIcon().render(stack, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 5, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP + 5);
+            stack.popPose();
         }
     }
 
-    protected void renderConnections(PoseStack stack, BookEntry entry, float xOffset, float yOffset){
+    protected void renderConnections(PoseStack stack, BookEntry entry, float xOffset, float yOffset) {
         //our arrows are aliased and need blending
         RenderSystem.enableBlend();
 
-        for(var parent : entry.getParents()){
+        for (var parent : entry.getParents()) {
             var parentEntry = parent.getEntry();
 
         }
@@ -278,8 +272,19 @@ public class BookScreen extends Screen {
 
         this.renderCategoryBackground(pPoseStack);
 
-        //TODO: might need to gl scissors that
+        //GL Scissors to the inner frame area so entries do not stick out
+        int scale = (int) this.getMinecraft().getWindow().getGuiScale();
+        int innerX = this.getInnerX();
+        int innerY = this.getInnerY();
+        int innerWidth = this.getInnerWidth();
+        int innerHeight = this.getInnerHeight();
+
+        GL11.glScissor(innerX * scale, innerY * scale, innerWidth * scale, innerHeight * scale);
+        GL11.glEnable(GL_SCISSOR_TEST);
+
         this.renderEntries(pPoseStack);
+
+        GL11.glDisable(GL_SCISSOR_TEST);
 
         this.renderFrame(pPoseStack);
     }
@@ -294,6 +299,11 @@ public class BookScreen extends Screen {
         if (!this.bookStack.isEmpty())
             this.bookStack.getOrCreateTag().putBoolean(ModonimiconConstants.Nbt.BOOK_OPEN, false);
         super.onClose();
+    }
+
+    @Override
+    public boolean handleComponentClicked(@Nullable Style pStyle) {
+        return super.handleComponentClicked(pStyle);
     }
 
     @Override
