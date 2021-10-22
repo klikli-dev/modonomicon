@@ -22,6 +22,7 @@ package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
+import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.data.book.Book;
 import com.klikli_dev.modonomicon.data.book.BookCategory;
 import com.klikli_dev.modonomicon.data.book.BookEntry;
@@ -59,9 +60,15 @@ public class BookScreen extends Screen {
     //allow repeating textures -> in that case set a reasonable scroll max instead of calculating it for the texture
     protected int backgroundTextureWidth = 512;
     protected int backgroundTextureHeight = 512;
+
+
     protected float scrollX = 0;
     protected float scrollY = 0;
     protected boolean isScrolling;
+
+    protected float targetZoom;
+    protected float currentZoom;
+
     //TODO: make the frame thickness configurable in the book?
     protected int frameThicknessW = 14;
     protected int frameThicknessH = 14;
@@ -81,11 +88,14 @@ public class BookScreen extends Screen {
         this.categories = book.getCategoriesSorted();
         this.frameTexture = book.getFrameTexture();
         //TODO: save/load current category and page.
-        //TODO: save/load pan, zoom, etc -> needs to be per category
+        //TODO: save/load scroll, zoom, etc -> needs to be per category
         //TODO: handle books with no categories? probably fine to just crash
 
         //todo: get background texture width based on current tab
         //      Minecraft.getInstance().getTextureManager().getTexture(path), cast to simple texture, get native image, get height/width
+
+        this.targetZoom = 0.7f;
+        this.currentZoom = this.targetZoom;
     }
 
     /**
@@ -126,6 +136,15 @@ public class BookScreen extends Screen {
         this.scrollY = (float) Mth.clamp(this.scrollY - pDragY, -MAX_SCROLL, MAX_SCROLL);
     }
 
+    public void zoom(double delta) {
+        //todo: probably also needs to be in book category
+        float step = 1.2f;
+        if ((delta < 0 && this.targetZoom > 0.5) || (delta > 0 && this.targetZoom < 1))
+            this.targetZoom *= delta > 0 ? step : 1 / step;
+        if (this.targetZoom > 1f)
+            this.targetZoom = 1f;
+    }
+
     /**
      * Gets the outer width of the book frame
      */
@@ -160,8 +179,8 @@ public class BookScreen extends Screen {
 
         //based on arcana's render research background
         //does not correctly work for non-automatic gui scale, but that only leads to background repeat -> no problem
-        float xScale = MAX_SCROLL * 2.0f / ((float)MAX_SCROLL + this.frameThicknessW - this.getFrameWidth());
-        float yScale = MAX_SCROLL * 2.0f / ((float)MAX_SCROLL + this.frameThicknessH - this.getFrameHeight());
+        float xScale = MAX_SCROLL * 2.0f / ((float) MAX_SCROLL + this.frameThicknessW - this.getFrameWidth());
+        float yScale = MAX_SCROLL * 2.0f / ((float) MAX_SCROLL + this.frameThicknessH - this.getFrameHeight());
         float scale = Math.max(xScale, yScale);
         float xOffset = xScale == scale ? 0 : (MAX_SCROLL - (innerWidth + MAX_SCROLL * 2.0f / scale)) / 2;
         float yOffset = yScale == scale ? 0 : (MAX_SCROLL - (innerHeight + MAX_SCROLL * 2.0f / scale)) / 2;
@@ -181,15 +200,11 @@ public class BookScreen extends Screen {
         //TODO: include zoom - do we need to do an overall scale before doing the entries? probably!
         //TODO: include scroll
         //calculate the render offset
-        float zoom = 1.0f;
-        float xOffset = ((this.getInnerWidth() / 2f) * (1 / zoom)) - this.scrollX;
-        float yOffset = ((this.getInnerHeight() / 2f) * (1 / zoom)) - this.scrollY;
-        //Slight parallax effect
-        //TODO: that will be obsolete once zoom is in
-//        xOffset *= 0.8;
-//        yOffset *= 0.8;
+        float xOffset = ((this.getInnerWidth() / 2f) * (1 / this.currentZoom)) - this.scrollX / 2;
+        float yOffset = ((this.getInnerHeight() / 2f) * (1 / this.currentZoom)) - this.scrollY / 2;
 
-
+        stack.pushPose();
+        stack.scale(this.currentZoom, this.currentZoom, 1.0f);
         for (var entry : this.categories.get(this.currentCategory).getEntries().values()) {
             //render entry background
             int texX = 0; //select the entry background with this
@@ -211,6 +226,7 @@ public class BookScreen extends Screen {
 
             this.renderConnections(stack, entry, xOffset, yOffset);
         }
+        stack.popPose();
     }
 
     protected void renderConnections(PoseStack stack, BookEntry entry, float xOffset, float yOffset) {
@@ -274,7 +290,20 @@ public class BookScreen extends Screen {
     }
 
     @Override
+    public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
+        this.zoom(pDelta);
+        return super.mouseScrolled(pMouseX, pMouseY, pDelta);
+    }
+
+    @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        //TODO: if smooth zoom
+        if (ClientConfig.get().qolCategory.enableSmoothZoom.get()) {
+            float diff = this.targetZoom - this.currentZoom;
+            this.currentZoom = this.currentZoom + Math.min(pPartialTick * (2 / 3f), 1) * diff;
+        } else
+            this.currentZoom = this.targetZoom;
+
         this.renderBackground(pPoseStack);
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
 

@@ -108,11 +108,11 @@ public class EntryConnectionRenderer {
     }
 
     void drawVerticalLineAt(PoseStack stack, int x, int y) {
-        this.blit(stack, this.screenX(x), this.screenY(y), 180, 196, 30, 30);
+        this.blit(stack, this.screenX(x), this.screenY(y), 184, 164, 30, 30);
     }
 
     void drawHorizontalLineAt(PoseStack stack, int x, int y) {
-        this.blit(stack, this.screenX(x), this.screenY(y), 180, 227, 30, 30);
+        this.blit(stack, this.screenX(x), this.screenY(y), 184, 226, 30, 30);
     }
 
     void drawVerticalLine(PoseStack stack, int x, int startY, int endY) {
@@ -139,18 +139,18 @@ public class EntryConnectionRenderer {
     }
 
     void drawUpArrow(PoseStack stack, int x, int y){
-        this.blit(stack, this.screenX(x), this.screenY(y) - 1, 0, 136, 30, 30);
+        this.blit(stack, this.screenX(x), this.screenY(y) - 1, 0, 134, 30, 30);
     }
 
     void drawDownArrow(PoseStack stack, int x, int y){
-        this.blit(stack, this.screenX(x), this.screenY(y) + 1, 0, 166, 30, 30);
+        this.blit(stack, this.screenX(x), this.screenY(y) + 1, 0, 164, 30, 30);
     }
 
     void drawRightArrow(PoseStack stack, int x, int y){
-        this.blit(stack, this.screenX(x) + 1, this.screenY(y), 30, 136, 30, 30);
+        this.blit(stack, this.screenX(x) + 1, this.screenY(y), 30, 134, 30, 30);
     }
 
     void drawLeftArrow(PoseStack stack, int x, int y){
-        this.blit(stack, this.screenX(x) - 1, this.screenY(y), 30, 166, 30, 30);
+        this.blit(stack, this.screenX(x) - 1, this.screenY(y), 30, 164, 30, 30);
     }
 }
