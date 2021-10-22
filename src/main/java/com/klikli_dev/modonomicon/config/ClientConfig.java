@@ -20,19 +20,19 @@
 
 package com.klikli_dev.modonomicon.config;
 
-import com.klikli_dev.modonomicon.config.value.CachedBoolean;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
-public class ClientConfig extends ConfigBase {
+public class ClientConfig  {
 
     private static final ClientConfig instance = new ClientConfig();
 
-    public final SampleCategory sampleCategory;
+    public final QoLCategory qolCategory;
     public final ForgeConfigSpec spec;
 
     private ClientConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-        this.sampleCategory = new SampleCategory(this, builder);
+        this.qolCategory = new QoLCategory(builder);
         this.spec = builder.build();
     }
 
@@ -40,15 +40,13 @@ public class ClientConfig extends ConfigBase {
         return instance;
     }
 
-    public static class SampleCategory extends ConfigCategoryBase {
-        public final CachedBoolean sampleBoolean;
+    public static class QoLCategory {
+        public final BooleanValue enableSmoothZoom;
 
-        public SampleCategory(IConfigCache parent, ForgeConfigSpec.Builder builder) {
-            super(parent, builder);
-            builder.comment("Sample Settings").push("sample");
-            this.sampleBoolean = CachedBoolean.cache(this,
-                    builder.comment("Sample Boolean.")
-                            .define("sampleBoolean", true));
+        public QoLCategory(ForgeConfigSpec.Builder builder) {
+            builder.comment("Quality of Life Settings").push("qol");
+            this.enableSmoothZoom = builder.comment("Enable smooth zoom in book categories")
+                            .define("enableSmoothZoom", true);
             builder.pop();
         }
     }

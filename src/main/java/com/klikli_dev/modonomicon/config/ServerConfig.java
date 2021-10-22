@@ -20,36 +20,20 @@
 
 package com.klikli_dev.modonomicon.config;
 
-import com.klikli_dev.modonomicon.config.value.CachedBoolean;
 import net.minecraftforge.common.ForgeConfigSpec;
 
-public class ServerConfig extends ConfigBase {
+public class ServerConfig {
 
     private static final ServerConfig instance = new ServerConfig();
 
-    public final SampleCategory sampleCategory;
     public final ForgeConfigSpec spec;
 
     private ServerConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-        this.sampleCategory = new SampleCategory(this, builder);
         this.spec = builder.build();
     }
 
     public static ServerConfig get() {
         return instance;
-    }
-
-    public static class SampleCategory extends ConfigCategoryBase {
-        public final CachedBoolean sampleBoolean;
-
-        public SampleCategory(IConfigCache parent, ForgeConfigSpec.Builder builder) {
-            super(parent, builder);
-            builder.comment("Sample Settings").push("sample");
-            this.sampleBoolean = CachedBoolean.cache(this,
-                    builder.comment("Sample Boolean.")
-                            .define("sampleBoolean", true));
-            builder.pop();
-        }
     }
 }

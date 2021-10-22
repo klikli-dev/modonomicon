@@ -73,7 +73,6 @@ public class Modonomicon {
         modEventBus.addListener(this::onCommonSetup);
         modEventBus.addListener(this::onServerSetup);
         MinecraftForge.EVENT_BUS.addListener(this::onAddReloadListener);
-        MinecraftForge.EVENT_BUS.addListener(this::onModConfigEvent);
 
         //register event listener objects
 
@@ -88,21 +87,6 @@ public class Modonomicon {
 
     public static ResourceLocation loc(String path) {
         return new ResourceLocation(MODID, path);
-    }
-
-    public void onModConfigEvent(final ModConfigEvent event) {
-        if (event.getConfig().getSpec() == ClientConfig.get().spec) {
-            //Clear the config cache on reload.
-            ClientConfig.get().clear();
-        }
-        if (event.getConfig().getSpec() == CommonConfig.get().spec) {
-            //Clear the config cache on reload.
-            CommonConfig.get().clear();
-        }
-        if (event.getConfig().getSpec() == ServerConfig.get().spec) {
-            //Clear the config cache on reload.
-            ServerConfig.get().clear();
-        }
     }
 
     public void onAddReloadListener(AddReloadListenerEvent event) {
