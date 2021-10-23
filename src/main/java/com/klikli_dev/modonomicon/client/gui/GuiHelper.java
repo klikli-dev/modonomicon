@@ -23,6 +23,7 @@ package com.klikli_dev.modonomicon.client.gui;
 import com.google.common.collect.ImmutableMap;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n;
 import com.klikli_dev.modonomicon.client.gui.book.BookScreen;
 import com.klikli_dev.modonomicon.data.book.*;
 import net.minecraft.client.Minecraft;
@@ -36,42 +37,76 @@ import java.util.HashMap;
 
 public class GuiHelper {
     public static void openBook(ItemStack stack) {
-        var defaultCat = new BookCategory(
-                Modonomicon.loc("default"),
-                ModonimiconConstants.I18n.Test.DEFAULT_CATEGORY,
+        var cat1 = new BookCategory(
+                Modonomicon.loc("cat1"),
+                I18n.BOOK_PREFIX + "cat1",
                 0,
                 new HashMap<>(),
+                new BookIcon(new ItemStack(Items.EMERALD)),
                 Modonomicon.loc("textures/gui/default_background.png"),
                 Modonomicon.loc("textures/gui/entry_textures.png")
         );
 
-        var defaultEntry1 = new BookEntry(
-                Modonomicon.loc("default1"),
-                defaultCat,
+        var cat2 = new BookCategory(
+                Modonomicon.loc("cat2"),
+                I18n.BOOK_PREFIX + "cat2",
+                0,
+                new HashMap<>(),
+                new BookIcon(new ItemStack(Items.IRON_AXE)),
+                Modonomicon.loc("textures/gui/default_background.png"),
+                Modonomicon.loc("textures/gui/entry_textures.png")
+        );
+
+        var cat1Entry1 = new BookEntry(
+                Modonomicon.loc("cat1.entry1"),
+                cat1,
                 new ArrayList<>(),
-                ModonimiconConstants.I18n.Test.DEFAULT_ENTRY1,
+                I18n.BOOK_PREFIX + "cat1.entry1",
                 new BookIcon(new ItemStack(Items.APPLE)),
                 -5, -5
         );
-        defaultCat.addEntry(defaultEntry1);
+        cat1.addEntry(cat1Entry1);
 
-        var defaultEntry2 = new BookEntry(
-                Modonomicon.loc("default2"),
-                defaultCat,
+        var cat1Entry2 = new BookEntry(
+                Modonomicon.loc("cat1.entry2"),
+                cat1,
                 new ArrayList<>(),
-                ModonimiconConstants.I18n.Test.DEFAULT_ENTRY2,
+                I18n.BOOK_PREFIX + "cat1.entry2",
                 new BookIcon(new ItemStack(Items.DIAMOND)),
                 0, 0
         );
-        defaultCat.addEntry(defaultEntry2);
+        cat1.addEntry(cat1Entry2);
+        cat1Entry2.getParents().add(new BookEntryParent(cat1Entry1));
 
-        defaultEntry2.getParents().add(new BookEntryParent(defaultEntry1));
+        var cat2Entry1 = new BookEntry(
+                Modonomicon.loc("cat2.entry1"),
+                cat1,
+                new ArrayList<>(),
+                I18n.BOOK_PREFIX + "cat2.entry1",
+                new BookIcon(new ItemStack(Items.ACACIA_SAPLING)),
+                1, 2
+        );
+        cat2.addEntry(cat2Entry1);
+
+        var cat2Entry2 = new BookEntry(
+                Modonomicon.loc("cat2.entry2"),
+                cat1,
+                new ArrayList<>(),
+                I18n.BOOK_PREFIX + "cat2.entry2",
+                new BookIcon(new ItemStack(Items.ANVIL)),
+                0, 0
+        );
+        cat2.addEntry(cat2Entry2);
+        cat2Entry2.getParents().add(new BookEntryParent(cat2Entry1));
 
         Minecraft.getInstance().setScreen(new BookScreen(new Book(
                 Modonomicon.loc("test"),
-                ModonimiconConstants.I18n.Test.TESTBOOK_NAME,
+                I18n.BOOK_PREFIX + "test",
                 Modonomicon.loc("textures/gui/book.png"),
-                new ImmutableMap.Builder<ResourceLocation, BookCategory>().put(defaultCat.getId(), defaultCat).build()
+                new ImmutableMap.Builder<ResourceLocation, BookCategory>()
+                        .put(cat1.getId(), cat1)
+                        .put(cat2.getId(), cat2)
+                        .build()
         ), stack));
     }
 }

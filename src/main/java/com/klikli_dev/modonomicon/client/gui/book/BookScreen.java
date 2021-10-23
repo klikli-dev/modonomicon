@@ -30,6 +30,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fmlclient.gui.GuiUtils;
@@ -41,11 +42,11 @@ public class BookScreen extends Screen {
 
     private final ItemStack bookStack;
     private final Book book;
-    private final ResourceLocation frameTexture;
+    private final ResourceLocation bookTexture;
     private final EntryConnectionRenderer connectionRenderer = new EntryConnectionRenderer();
     private final List<BookCategory> categories;
     private final List<BookCategoryScreen> categoryScreens;
-    private final int currentCategory = 0;
+    private int currentCategory = 0;
     //TODO: make the frame thickness configurable in the book?
     private final int frameThicknessW = 14;
     private final int frameThicknessH = 14;
@@ -60,8 +61,9 @@ public class BookScreen extends Screen {
         this.bookStack = bookStack;
         this.book = book;
 
-        this.frameTexture = book.getFrameTexture();
+        this.bookTexture = book.getBookTexture();
 
+        //TODO: only get unlocked categories / or at least only render those
         this.categories = book.getCategoriesSorted();
         this.categoryScreens = this.categories.stream().map(c -> new BookCategoryScreen(this, c)).toList();
 
@@ -78,6 +80,10 @@ public class BookScreen extends Screen {
 
     public Book getBook() {
         return this.book;
+    }
+
+    public ResourceLocation getBookTexture() {
+        return this.bookTexture;
     }
 
     /**
@@ -135,7 +141,7 @@ public class BookScreen extends Screen {
     protected void renderFrame(PoseStack poseStack) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, this.frameTexture);
+        RenderSystem.setShaderTexture(0, this.bookTexture);
 
         int width = this.getFrameWidth();
         int height = this.getFrameHeight();
@@ -158,6 +164,41 @@ public class BookScreen extends Screen {
         GuiUtils.drawTexturedModalRect(poseStack, x + width - 17, (y + (height / 2)) - 35, 157, 35, 17, 70, blitOffset);
     }
 
+    protected void onBookCategoryButtonClick(BookCategoryButton button){
+        this.renderables.stream()
+                .filter(BookCategoryButton.class::isInstance)
+                .map(BookCategoryButton.class::cast)
+                .forEach(b -> b.setSelected(false));
+
+        button.setSelected(true);
+        this.currentCategory = button.getCategoryIndex();
+    }
+
+    protected void onBookCategoryButtonTooltip(BookCategoryButton button, PoseStack pPoseStack, int pMouseX, int pMouseY){
+        this.renderTooltip(pPoseStack, new TranslatableComponent(button.getCategory().getName()), pMouseX, pMouseY);
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
+        int buttonX = (this.width - this.getFrameWidth()) / 2 - this.getFrameThicknessW() - 8;
+        int buttonY = (this.height - this.getFrameHeight()) / 2 - this.getFrameThicknessH() + 30;
+        int buttonWidth = 22;
+        int buttonHeight = 20;
+        int buttonSpacing = 2;
+
+        for(int i = 0, size = this.categories.size(); i < size; i++){
+
+            var button = new BookCategoryButton(this, this.categories.get(i), i,
+                    buttonX, buttonY + (buttonHeight + buttonSpacing) * i, buttonWidth, buttonHeight,
+                    (b) -> this.onBookCategoryButtonClick((BookCategoryButton) b),
+                    (b, stack, x, y) -> this.onBookCategoryButtonTooltip((BookCategoryButton) b, stack, x, y));
+
+            this.addRenderableWidget(button);
+        }
+    }
+
     @Override
     public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
         return this.getCurrentCategoryScreen().mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
@@ -172,6 +213,9 @@ public class BookScreen extends Screen {
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         this.renderBackground(pPoseStack);
+
+        this.getCurrentCategoryScreen().renderBackground(pPoseStack);
+
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
 
         this.getCurrentCategoryScreen().render(pPoseStack, pMouseX, pMouseY, pPartialTick);

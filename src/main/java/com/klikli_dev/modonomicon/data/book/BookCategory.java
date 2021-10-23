@@ -20,7 +20,6 @@
 
 package com.klikli_dev.modonomicon.data.book;
 
-import com.klikli_dev.modonomicon.Modonomicon;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Map;
@@ -28,6 +27,7 @@ import java.util.Map;
 public class BookCategory {
     protected ResourceLocation id;
     protected String name;
+    protected BookIcon icon;
     protected int sortNumber;
     //TODO: provide a default texture for background and entry when loading the category
     protected ResourceLocation background;
@@ -35,10 +35,11 @@ public class BookCategory {
     protected Map<ResourceLocation, BookEntry> entries;
     //TODO: additional backgrounds with custom rendertypes?
 
-    public BookCategory(ResourceLocation id, String name, int sortNumber, Map<ResourceLocation, BookEntry> entries, ResourceLocation background, ResourceLocation entryTextures) {
+    public BookCategory(ResourceLocation id, String name, int sortNumber, Map<ResourceLocation, BookEntry> entries, BookIcon icon, ResourceLocation background, ResourceLocation entryTextures) {
         this.id = id;
         this.name = name;
         this.sortNumber = sortNumber;
+        this.icon = icon;
         this.background = background;
         this.entries = entries;
         this.entryTextures = entryTextures;
@@ -54,6 +55,10 @@ public class BookCategory {
 
     public int getSortNumber() {
         return this.sortNumber;
+    }
+
+    public BookIcon getIcon() {
+        return this.icon;
     }
 
     public ResourceLocation getBackground() {

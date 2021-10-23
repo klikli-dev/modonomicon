@@ -29,14 +29,14 @@ import java.util.Map;
 public class Book {
     protected ResourceLocation id;
     protected String name;
-    protected ResourceLocation frameTexture;
+    protected ResourceLocation bookTexture;
     protected Map<ResourceLocation, BookCategory> categories;
     //TODO: further properties for customization, such as book item, ...
 
-    public Book(ResourceLocation id, String name, ResourceLocation frameTexture, Map<ResourceLocation, BookCategory> categories) {
+    public Book(ResourceLocation id, String name, ResourceLocation bookTexture, Map<ResourceLocation, BookCategory> categories) {
         this.id = id;
         this.name = name;
-        this.frameTexture = frameTexture;
+        this.bookTexture = bookTexture;
         this.categories = categories;
     }
 
@@ -56,7 +56,7 @@ public class Book {
         return this.name;
     }
 
-    public ResourceLocation getFrameTexture() {
-        return this.frameTexture;
+    public ResourceLocation getBookTexture() {
+        return this.bookTexture;
     }
 }

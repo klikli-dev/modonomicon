@@ -70,8 +70,6 @@ public class BookCategoryScreen {
         } else
             this.currentZoom = this.targetZoom;
 
-        this.renderBackground(pPoseStack);
-
         //GL Scissors to the inner frame area so entries do not stick out
         int scale = (int) this.bookScreen.getMinecraft().getWindow().getGuiScale();
         int innerX = this.bookScreen.getInnerX();
@@ -158,7 +156,7 @@ public class BookCategoryScreen {
         RenderSystem.disableBlend();
     }
 
-    private void renderBackground(PoseStack poseStack) {
+    public void renderBackground(PoseStack poseStack) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, this.category.getBackground());
