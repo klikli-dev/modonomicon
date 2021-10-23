@@ -161,8 +161,6 @@ public class EntryConnectionRenderer {
 
         //only render if line is enabled and if we are in the same category (other category -> other page!)
         if (parent.isLineEnabled() && parentEntry.getCategory().equals(entry.getCategory())) {
-            RenderSystem.setShaderTexture(0, BookScreen.ENTRY_TEXTURES);
-
             int deltaX = abs(entry.getX() - parentEntry.getX());
             int deltaY = abs(entry.getY() - parentEntry.getY());
 
@@ -197,14 +195,14 @@ public class EntryConnectionRenderer {
      * Scales from grid coordinates (1, 2, 3, ... ) to screen coordinates (30, 60, 90)
      */
     protected int screenX(int x) {
-        return x * BookScreen.ENTRY_GRID_SCALE;
+        return x * BookCategoryScreen.ENTRY_GRID_SCALE;
     }
 
     /**
      * Scales from grid coordinates (1, 2, 3, ... ) to screen coordinates (30, 60, 90)
      */
     protected int screenY(int y) {
-        return y * BookScreen.ENTRY_GRID_SCALE;
+        return y * BookCategoryScreen.ENTRY_GRID_SCALE;
     }
 
     protected void blit(PoseStack stack, int pX, int pY, float pUOffset, float pVOffset, int pUWidth, int pVHeight) {

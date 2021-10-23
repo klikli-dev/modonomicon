@@ -41,7 +41,8 @@ public class GuiHelper {
                 ModonimiconConstants.I18n.Test.DEFAULT_CATEGORY,
                 0,
                 new HashMap<>(),
-                Modonomicon.loc("textures/gui/default_background.png")
+                Modonomicon.loc("textures/gui/default_background.png"),
+                Modonomicon.loc("textures/gui/entry_textures.png")
         );
 
         var defaultEntry1 = new BookEntry(

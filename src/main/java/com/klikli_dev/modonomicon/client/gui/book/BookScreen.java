@@ -20,60 +20,35 @@
 
 package com.klikli_dev.modonomicon.client.gui.book;
 
-import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
-import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.data.book.Book;
 import com.klikli_dev.modonomicon.data.book.BookCategory;
-import com.klikli_dev.modonomicon.data.book.BookEntry;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fmlclient.gui.GuiUtils;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-import static org.lwjgl.opengl.GL11.GL_SCISSOR_TEST;
-
 public class BookScreen extends Screen {
 
-    public static final int ENTRY_GRID_SCALE = 30;
-    public static final int ENTRY_GAP = 2;
-    public static final int MAX_SCROLL = 512;
-    protected static final ResourceLocation ENTRY_TEXTURES = Modonomicon.loc("textures/gui/entry_textures.png");
-    protected ItemStack bookStack;
-    protected Book book;
-    protected ResourceLocation frameTexture;
-    protected List<BookCategory> categories;
-    protected int currentCategory = 0;
-
-    //allow repeating textures -> in that case set a reasonable scroll max instead of calculating it for the texture
-    protected int backgroundTextureWidth = 512;
-    protected int backgroundTextureHeight = 512;
-
-
-    protected float scrollX = 0;
-    protected float scrollY = 0;
-    protected boolean isScrolling;
-
-    protected float targetZoom;
-    protected float currentZoom;
-
+    private final ItemStack bookStack;
+    private final Book book;
+    private final ResourceLocation frameTexture;
+    private final EntryConnectionRenderer connectionRenderer = new EntryConnectionRenderer();
+    private final List<BookCategory> categories;
+    private final List<BookCategoryScreen> categoryScreens;
+    private final int currentCategory = 0;
     //TODO: make the frame thickness configurable in the book?
-    protected int frameThicknessW = 14;
-    protected int frameThicknessH = 14;
-
-    protected EntryConnectionRenderer connectionRenderer = new EntryConnectionRenderer(); //TODO: instantiate this once per category screen
+    private final int frameThicknessW = 14;
+    private final int frameThicknessH = 14;
 
 
     public BookScreen(Book book, ItemStack bookStack) {
@@ -85,17 +60,24 @@ public class BookScreen extends Screen {
         this.bookStack = bookStack;
         this.book = book;
 
-        this.categories = book.getCategoriesSorted();
         this.frameTexture = book.getFrameTexture();
-        //TODO: save/load current category and page.
-        //TODO: save/load scroll, zoom, etc -> needs to be per category
-        //TODO: handle books with no categories? probably fine to just crash
 
-        //todo: get background texture width based on current tab
-        //      Minecraft.getInstance().getTextureManager().getTexture(path), cast to simple texture, get native image, get height/width
+        this.categories = book.getCategoriesSorted();
+        this.categoryScreens = this.categories.stream().map(c -> new BookCategoryScreen(this, c)).toList();
 
-        this.targetZoom = 0.7f;
-        this.currentZoom = this.targetZoom;
+        //TODO: save/load current category and page to capability
+    }
+
+    public EntryConnectionRenderer getConnectionRenderer() {
+        return this.connectionRenderer;
+    }
+
+    public BookCategoryScreen getCurrentCategoryScreen() {
+        return this.categoryScreens.get(this.currentCategory);
+    }
+
+    public Book getBook() {
+        return this.book;
     }
 
     /**
@@ -126,23 +108,12 @@ public class BookScreen extends Screen {
         return this.getFrameHeight() - this.frameThicknessH;
     }
 
-    public void scroll(double pDragX, double pDragY) {
-        //we need to limit the scroll amount to fit within our max texture size
-        //to that end we just need the center offset, because that also acts as our positive/negative min/max
-        //then we move our frame over the background texture and never hit a repeat
-        //TODO: move his into the book category screen
-
-        this.scrollX = (float) Mth.clamp(this.scrollX - pDragX, -MAX_SCROLL, MAX_SCROLL);
-        this.scrollY = (float) Mth.clamp(this.scrollY - pDragY, -MAX_SCROLL, MAX_SCROLL);
+    public int getFrameThicknessW() {
+        return this.frameThicknessW;
     }
 
-    public void zoom(double delta) {
-        //todo: probably also needs to be in book category
-        float step = 1.2f;
-        if ((delta < 0 && this.targetZoom > 0.5) || (delta > 0 && this.targetZoom < 1))
-            this.targetZoom *= delta > 0 ? step : 1 / step;
-        if (this.targetZoom > 1f)
-            this.targetZoom = 1f;
+    public int getFrameThicknessH() {
+        return this.frameThicknessH;
     }
 
     /**
@@ -159,89 +130,6 @@ public class BookScreen extends Screen {
     protected int getFrameHeight() {
         //TODO: enable config frame height
         return this.height - 20;
-    }
-
-    protected void renderCategoryBackground(PoseStack poseStack) {
-        //TODO: move his into the book category screen
-
-        //TODO: zoom should not affect background, only entries
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, this.categories.get(this.currentCategory).getBackground());
-
-        //based on the frame's total width and its thickness, calculate where the inner area starts
-        int innerX = this.getInnerX();
-        int innerY = this.getInnerY();
-
-        //then calculate the corresponding inner area width/height so we don't draw out of the frame
-        int innerWidth = this.getInnerWidth();
-        int innerHeight = this.getInnerHeight();
-
-        //based on arcana's render research background
-        //does not correctly work for non-automatic gui scale, but that only leads to background repeat -> no problem
-        float xScale = MAX_SCROLL * 2.0f / ((float) MAX_SCROLL + this.frameThicknessW - this.getFrameWidth());
-        float yScale = MAX_SCROLL * 2.0f / ((float) MAX_SCROLL + this.frameThicknessH - this.getFrameHeight());
-        float scale = Math.max(xScale, yScale);
-        float xOffset = xScale == scale ? 0 : (MAX_SCROLL - (innerWidth + MAX_SCROLL * 2.0f / scale)) / 2;
-        float yOffset = yScale == scale ? 0 : (MAX_SCROLL - (innerHeight + MAX_SCROLL * 2.0f / scale)) / 2;
-
-        //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
-        //force offset to int here to reduce difference to entry rendering which is pos based and thus int precision only
-        GuiComponent.blit(poseStack, innerX, innerY, this.getBlitOffset(),
-                (this.scrollX + MAX_SCROLL) / scale + xOffset,
-                (this.scrollY + MAX_SCROLL) / scale + yOffset,
-                innerWidth, innerHeight, this.backgroundTextureHeight, this.backgroundTextureWidth);
-    }
-
-    protected void renderEntries(PoseStack stack) {
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-
-        //TODO: include zoom - do we need to do an overall scale before doing the entries? probably!
-        //TODO: include scroll
-        //calculate the render offset
-        float xOffset = ((this.getInnerWidth() / 2f) * (1 / this.currentZoom)) - this.scrollX / 2;
-        float yOffset = ((this.getInnerHeight() / 2f) * (1 / this.currentZoom)) - this.scrollY / 2;
-
-        stack.pushPose();
-        stack.scale(this.currentZoom, this.currentZoom, 1.0f);
-        for (var entry : this.categories.get(this.currentCategory).getEntries().values()) {
-            //render entry background
-            int texX = 0; //select the entry background with this
-            int texY = 0;
-
-            RenderSystem.setShaderTexture(0, ENTRY_TEXTURES);
-
-            //entries jitter when moving. this is due to background moving via uv = float based, but entries via pos = int
-            //effect reduced by forcing background offset to int
-
-            stack.pushPose();
-            //we translate instead of applying the offset to the entry x/y to avoid jittering when moving
-            stack.translate(xOffset, yOffset, 0);
-            this.blit(stack, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, 26, 26);
-
-            //render icon
-            entry.getIcon().render(stack, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 5, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP + 5);
-            stack.popPose();
-
-            this.renderConnections(stack, entry, xOffset, yOffset);
-        }
-        stack.popPose();
-    }
-
-    protected void renderConnections(PoseStack stack, BookEntry entry, float xOffset, float yOffset) {
-        //our arrows are aliased and need blending
-        RenderSystem.enableBlend();
-
-        for (var parent : entry.getParents()) {
-            this.connectionRenderer.setBlitOffset(this.getBlitOffset());
-            stack.pushPose();
-            stack.translate(xOffset, yOffset, 0);
-            this.connectionRenderer.render(stack, entry, parent);
-            stack.popPose();
-        }
-
-        RenderSystem.disableBlend();
     }
 
     protected void renderFrame(PoseStack poseStack) {
@@ -272,53 +160,21 @@ public class BookScreen extends Screen {
 
     @Override
     public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
-        //Based on advancementsscreen
-        if (pButton != 0) {
-            this.isScrolling = false;
-            return false;
-        } else {
-            if (!this.isScrolling) {
-                this.isScrolling = true;
-            } else {
-                this.scroll(pDragX * 1.5, pDragY * 1.5);
-            }
-            return true;
-        }
+        return this.getCurrentCategoryScreen().mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
     }
 
     @Override
     public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
-        this.zoom(pDelta);
+        this.getCurrentCategoryScreen().zoom(pDelta);
         return super.mouseScrolled(pMouseX, pMouseY, pDelta);
     }
 
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        //TODO: if smooth zoom
-        if (ClientConfig.get().qolCategory.enableSmoothZoom.get()) {
-            float diff = this.targetZoom - this.currentZoom;
-            this.currentZoom = this.currentZoom + Math.min(pPartialTick * (2 / 3f), 1) * diff;
-        } else
-            this.currentZoom = this.targetZoom;
-
         this.renderBackground(pPoseStack);
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
 
-        this.renderCategoryBackground(pPoseStack);
-
-        //GL Scissors to the inner frame area so entries do not stick out
-        int scale = (int) this.getMinecraft().getWindow().getGuiScale();
-        int innerX = this.getInnerX();
-        int innerY = this.getInnerY();
-        int innerWidth = this.getInnerWidth();
-        int innerHeight = this.getInnerHeight();
-
-        GL11.glScissor(innerX * scale, innerY * scale, innerWidth * scale, innerHeight * scale);
-        GL11.glEnable(GL_SCISSOR_TEST);
-
-        this.renderEntries(pPoseStack);
-
-        GL11.glDisable(GL_SCISSOR_TEST);
+        this.getCurrentCategoryScreen().render(pPoseStack, pMouseX, pMouseY, pPartialTick);
 
         this.renderFrame(pPoseStack);
     }
@@ -330,8 +186,11 @@ public class BookScreen extends Screen {
 
     @Override
     public void onClose() {
+        //client side only
         if (!this.bookStack.isEmpty())
             this.bookStack.getOrCreateTag().putBoolean(ModonimiconConstants.Nbt.BOOK_OPEN, false);
+
+        //TODO: Send packet to save category variables (zoom, etc)
         super.onClose();
     }
 

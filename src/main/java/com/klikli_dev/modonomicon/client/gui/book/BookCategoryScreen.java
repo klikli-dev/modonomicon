@@ -1,0 +1,198 @@
+/*
+ * LGPL-3-0
+ *
+ * Copyright (C) 2021 klikli-dev
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+package com.klikli_dev.modonomicon.client.gui.book;
+
+import com.klikli_dev.modonomicon.config.ClientConfig;
+import com.klikli_dev.modonomicon.data.book.BookCategory;
+import com.klikli_dev.modonomicon.data.book.BookEntry;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.util.Mth;
+import org.lwjgl.opengl.GL11;
+
+import static org.lwjgl.opengl.GL11.GL_SCISSOR_TEST;
+
+
+public class BookCategoryScreen {
+
+    public static final int ENTRY_GRID_SCALE = 30;
+    public static final int ENTRY_GAP = 2;
+    public static final int MAX_SCROLL = 512;
+
+    private final BookScreen bookScreen;
+    private final BookCategory category;
+    protected int backgroundTextureWidth = 512;
+    protected int backgroundTextureHeight = 512;
+    private EntryConnectionRenderer connectionRenderer;
+    private float scrollX = 0;
+    private float scrollY = 0;
+    private boolean isScrolling;
+
+    private float targetZoom;
+    private float currentZoom;
+
+    public BookCategoryScreen(BookScreen bookScreen, BookCategory category) {
+        this.bookScreen = bookScreen;
+        this.category = category;
+
+        this.connectionRenderer = this.bookScreen.getConnectionRenderer();
+
+        this.targetZoom = 0.7f;
+        this.currentZoom = this.targetZoom;
+
+        this.loadCategorySettings();
+    }
+
+    public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        if (ClientConfig.get().qolCategory.enableSmoothZoom.get()) {
+            float diff = this.targetZoom - this.currentZoom;
+            this.currentZoom = this.currentZoom + Math.min(pPartialTick * (2 / 3f), 1) * diff;
+        } else
+            this.currentZoom = this.targetZoom;
+
+        this.renderBackground(pPoseStack);
+
+        //GL Scissors to the inner frame area so entries do not stick out
+        int scale = (int) this.bookScreen.getMinecraft().getWindow().getGuiScale();
+        int innerX = this.bookScreen.getInnerX();
+        int innerY = this.bookScreen.getInnerY();
+        int innerWidth = this.bookScreen.getInnerWidth();
+        int innerHeight = this.bookScreen.getInnerHeight();
+
+        GL11.glScissor(innerX * scale, innerY * scale, innerWidth * scale, innerHeight * scale);
+        GL11.glEnable(GL_SCISSOR_TEST);
+
+        this.renderEntries(pPoseStack);
+
+        GL11.glDisable(GL_SCISSOR_TEST);
+    }
+
+    public void zoom(double delta) {
+        float step = 1.2f;
+        if ((delta < 0 && this.targetZoom > 0.5) || (delta > 0 && this.targetZoom < 1))
+            this.targetZoom *= delta > 0 ? step : 1 / step;
+        if (this.targetZoom > 1f)
+            this.targetZoom = 1f;
+    }
+
+    public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
+        //Based on advancementsscreen
+        if (pButton != 0) {
+            this.isScrolling = false;
+            return false;
+        } else {
+            if (!this.isScrolling) {
+                this.isScrolling = true;
+            } else {
+                this.scroll(pDragX * 1.5, pDragY * 1.5);
+            }
+            return true;
+        }
+    }
+
+    private void renderEntries(PoseStack stack) {
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+
+        //calculate the render offset
+        float xOffset = ((this.bookScreen.getInnerWidth() / 2f) * (1 / this.currentZoom)) - this.scrollX / 2;
+        float yOffset = ((this.bookScreen.getInnerHeight() / 2f) * (1 / this.currentZoom)) - this.scrollY / 2;
+
+        stack.pushPose();
+        stack.scale(this.currentZoom, this.currentZoom, 1.0f);
+        for (var entry : this.category.getEntries().values()) {
+            //TODO: select type of entry background
+            int texX = 0; //select the entry background with this
+            int texY = 0;
+
+            RenderSystem.setShaderTexture(0, this.category.getEntryTextures());
+
+            stack.pushPose();
+            //we translate instead of applying the offset to the entry x/y to avoid jittering when moving
+            stack.translate(xOffset, yOffset, 0);
+            //render entry background
+            this.bookScreen.blit(stack, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, 26, 26);
+
+            //render icon
+            entry.getIcon().render(stack, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 5, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP + 5);
+            stack.popPose();
+
+            this.renderConnections(stack, entry, xOffset, yOffset);
+        }
+        stack.popPose();
+    }
+
+    private void renderConnections(PoseStack stack, BookEntry entry, float xOffset, float yOffset) {
+        //our arrows are aliased and need blending
+        RenderSystem.enableBlend();
+
+        for (var parent : entry.getParents()) {
+            this.bookScreen.getConnectionRenderer().setBlitOffset(this.bookScreen.getBlitOffset());
+            stack.pushPose();
+            stack.translate(xOffset, yOffset, 0);
+            RenderSystem.setShaderTexture(0, this.category.getEntryTextures());
+            this.connectionRenderer.render(stack, entry, parent);
+            stack.popPose();
+        }
+
+        RenderSystem.disableBlend();
+    }
+
+    private void renderBackground(PoseStack poseStack) {
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, this.category.getBackground());
+
+        //based on the frame's total width and its thickness, calculate where the inner area starts
+        int innerX = this.bookScreen.getInnerX();
+        int innerY = this.bookScreen.getInnerY();
+
+        //then calculate the corresponding inner area width/height so we don't draw out of the frame
+        int innerWidth = this.bookScreen.getInnerWidth();
+        int innerHeight = this.bookScreen.getInnerHeight();
+
+        //based on arcana's render research background
+        //does not correctly work for non-automatic gui scale, but that only leads to background repeat -> no problem
+        float xScale = MAX_SCROLL * 2.0f / ((float) MAX_SCROLL + this.bookScreen.getFrameThicknessW() - this.bookScreen.getFrameWidth());
+        float yScale = MAX_SCROLL * 2.0f / ((float) MAX_SCROLL + this.bookScreen.getFrameThicknessH() - this.bookScreen.getFrameHeight());
+        float scale = Math.max(xScale, yScale);
+        float xOffset = xScale == scale ? 0 : (MAX_SCROLL - (innerWidth + MAX_SCROLL * 2.0f / scale)) / 2;
+        float yOffset = yScale == scale ? 0 : (MAX_SCROLL - (innerHeight + MAX_SCROLL * 2.0f / scale)) / 2;
+
+        //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
+        //force offset to int here to reduce difference to entry rendering which is pos based and thus int precision only
+        GuiComponent.blit(poseStack, innerX, innerY, this.bookScreen.getBlitOffset(),
+                (this.scrollX + MAX_SCROLL) / scale + xOffset,
+                (this.scrollY + MAX_SCROLL) / scale + yOffset,
+                innerWidth, innerHeight, this.backgroundTextureHeight, this.backgroundTextureWidth);
+    }
+
+    private void scroll(double pDragX, double pDragY) {
+        this.scrollX = (float) Mth.clamp(this.scrollX - pDragX, -MAX_SCROLL, MAX_SCROLL);
+        this.scrollY = (float) Mth.clamp(this.scrollY - pDragY, -MAX_SCROLL, MAX_SCROLL);
+    }
+
+    private void loadCategorySettings() {
+        //TODO: load category settings from capability
+    }
+}
