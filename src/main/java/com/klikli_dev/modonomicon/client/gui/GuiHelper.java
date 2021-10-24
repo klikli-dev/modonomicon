@@ -43,7 +43,8 @@ public class GuiHelper {
                 0,
                 new HashMap<>(),
                 new BookIcon(new ItemStack(Items.EMERALD)),
-                Modonomicon.loc("textures/gui/default_background.png"),
+                //Modonomicon.loc("textures/gui/default_background.png"),
+                Modonomicon.loc("textures/gui/dark_slate_seamless.png"),
                 Modonomicon.loc("textures/gui/entry_textures.png")
         );
 
@@ -53,7 +54,8 @@ public class GuiHelper {
                 0,
                 new HashMap<>(),
                 new BookIcon(new ItemStack(Items.IRON_AXE)),
-                Modonomicon.loc("textures/gui/default_background.png"),
+                //Modonomicon.loc("textures/gui/default_background.png"),
+                Modonomicon.loc("textures/gui/dark_slate_seamless.png"),
                 Modonomicon.loc("textures/gui/entry_textures.png")
         );
 
