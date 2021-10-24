@@ -27,23 +27,16 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data;
 import com.klikli_dev.modonomicon.data.book.Book;
+import com.klikli_dev.modonomicon.data.book.BookCategory;
+import com.klikli_dev.modonomicon.data.book.BookEntry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.conditions.ICondition;
-import net.minecraftforge.event.OnDatapackSyncEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 public class BookDataManager extends SimpleJsonResourceReloadListener {
@@ -53,6 +46,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     private static final BookDataManager instance = new BookDataManager();
 
     private Map<ResourceLocation, Book> books = Collections.emptyMap();
+    private final Map<ResourceLocation, BookCategory> categories = Collections.emptyMap();
+    private final Map<ResourceLocation, BookEntry> entries = Collections.emptyMap();
     private boolean loaded;
 
     private BookDataManager() {
@@ -68,7 +63,11 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     }
 
     public Map<ResourceLocation, Book> getBooks() {
-        return books;
+        return this.books;
+    }
+
+    public BookEntry getEntry(ResourceLocation id) {
+        return this.entries.get(id);
     }
 
     protected void onLoaded() {
@@ -76,25 +75,82 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     }
 
     private Book loadBook(ResourceLocation key, JsonObject value) {
-        //Book book = Book.fromJson(key, value);
-        Modonomicon.LOGGER.debug(key);
-        //TODO: load categories and such
-        //      to that end, use the beginning of the path to differentiate
-        //      but then all deeper levels no longer matter for us
+        return Book.fromJson(key, value.getAsJsonObject());
+    }
 
-        return null;
+    private BookCategory loadCategory(ResourceLocation key, JsonObject value) {
+        return BookCategory.fromJson(key, value.getAsJsonObject());
+    }
+
+    private BookEntry loadEntry(ResourceLocation key, JsonObject value, Map<ResourceLocation, BookCategory> categories) {
+        return BookEntry.fromJson(key, value.getAsJsonObject(), categories);
+    }
+
+    private void categorizeContent(Map<ResourceLocation, JsonElement> content,
+                                   HashMap<ResourceLocation, JsonObject> bookJsons,
+                                   HashMap<ResourceLocation, JsonObject> categoryJsons,
+                                   HashMap<ResourceLocation, JsonObject> entryJsons) {
+        for (var entry : content.entrySet()) {
+            var pathParts = entry.getKey().getPath().split("/");
+
+            var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
+            switch (pathParts[1]) {
+                case "book" -> {
+                    bookJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
+                }
+                case "entries" -> {
+                    categoryJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
+                }
+                case "categories" -> {
+                    entryJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
+                }
+                default -> {
+                    Modonomicon.LOGGER.warn("Found unknown content for book '{}': '{}'. Should be one of: [File: book.json, Directory: entries/, Directory: categories/]", bookId, entry.getKey());
+                }
+            }
+        }
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> pObject, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
-        this.books = pObject.entrySet().stream()
-                .filter(entry -> entry.getValue().isJsonObject())
-                .map(entry -> this.loadBook(entry.getKey(), entry.getValue().getAsJsonObject()))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toMap(
-                        Book::getId,
-                        book -> book)
-                );
+    protected void apply(Map<ResourceLocation, JsonElement> content, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
+        this.loaded = false;
+        this.books = new HashMap<>();
+
+
+        //first, load all json entries
+        var bookJsons = new HashMap<ResourceLocation, JsonObject>();
+        var categoryJsons = new HashMap<ResourceLocation, JsonObject>();
+        var entryJsons = new HashMap<ResourceLocation, JsonObject>();
+        this.categorizeContent(content, bookJsons, categoryJsons, entryJsons);
+
+        //TODO:
+        //      first categorize all content into types
+        //      then create first books, then categories, then entries, always giving access to the parent content type
+        //      then resolve the book entry parents
+
+        //build books
+        for(var entry : bookJsons.entrySet()){
+            var pathParts = entry.getKey().getPath().split("/");
+            var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
+            var book = this.loadBook(bookId, entry.getValue());
+            this.books.put(book.getId(), book);
+        }
+
+        //build categories
+        for(var entry : categoryJsons.entrySet()) {
+
+            //todo:
+            //resolve book categories
+        }
+
+
+        //build entries
+
+        //resolve category entries
+
+        //resolve entry parents
+
+
 
         this.onLoaded();
     }

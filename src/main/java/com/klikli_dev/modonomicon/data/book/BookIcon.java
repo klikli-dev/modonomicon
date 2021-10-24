@@ -20,19 +20,53 @@
 
 package com.klikli_dev.modonomicon.data.book;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.util.RenderUtil;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class BookIcon {
     private final ItemStack itemStack;
-    //TODO: allow to render texture directly too
+    private final ResourceLocation texture;
 
     public BookIcon(ItemStack stack) {
         this.itemStack = stack;
+        this.texture = null;
+    }
+    public BookIcon(ResourceLocation texture) {
+        this.texture = texture;
+        this.itemStack = ItemStack.EMPTY;
     }
 
     public void render(PoseStack ms, int x, int y) {
-        RenderUtil.renderAndDecorateItemWithPose(ms, this.itemStack, x, y);
+        if(this.texture != null){
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderTexture(0, this.texture);
+            GuiComponent.blit(ms, x, y, 0, 0, 0, 16, 16, 16, 16);
+        }
+        else {
+            RenderUtil.renderAndDecorateItemWithPose(ms, this.itemStack, x, y);
+        }
+    }
+
+    public static BookIcon fromJson(JsonElement json){
+        String value = json.getAsString();
+        if(value.endsWith(".png")){
+            return new BookIcon(new ResourceLocation(value));
+        }
+        else {
+            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(value));
+            return new BookIcon(new ItemStack(item));
+        }
     }
 }

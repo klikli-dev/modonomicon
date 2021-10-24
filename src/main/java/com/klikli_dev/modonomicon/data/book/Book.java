@@ -24,9 +24,6 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.crafting.CraftingHelper;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -68,8 +65,8 @@ public class Book {
     }
 
     public static Book fromJson(ResourceLocation id, JsonObject json) {
-        String name = json.get("name").getAsString();
-        ResourceLocation bookTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_texture", Data.Book.DEFAULT_BOOK_TEXTURE));
+        var name = json.get("name").getAsString();
+        var bookTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_texture", Data.Book.DEFAULT_TEXTURE));
         return new Book(id, name, bookTexture);
     }
 }

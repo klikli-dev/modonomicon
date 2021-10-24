@@ -28,7 +28,12 @@ public class ModonimiconConstants {
         public static final String MODONOMICON_DATA_PATH = ModonomiconAPI.ID + "s";
 
         public static class Book {
-            public static final String DEFAULT_BOOK_TEXTURE = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/book.png").toString();
+            public static final String DEFAULT_TEXTURE = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/book.png").toString();
+        }
+
+        public static class Category {
+            public static final String DEFAULT_BACKGROUND = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/dark_slate_seamless.png").toString();
+            public static final String DEFAULT_ENTRY_TEXTURES = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/entry_textures.png").toString();
         }
     }
 

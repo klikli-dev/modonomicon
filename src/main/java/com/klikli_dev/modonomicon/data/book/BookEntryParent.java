@@ -20,19 +20,25 @@
 
 package com.klikli_dev.modonomicon.data.book;
 
+import com.google.gson.JsonObject;
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Category;
+import com.klikli_dev.modonomicon.data.BookDataManager;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+
 public class BookEntryParent {
-    protected BookEntry entry;
+    protected ResourceLocation entry;
     protected boolean drawArrow = true;
     protected boolean lineEnabled = true;
     protected boolean lineReversed = false;
     //TODO: allow loading the booleans from json
 
-    public BookEntryParent(BookEntry entry) {
+    public BookEntryParent(ResourceLocation entry) {
         this.entry = entry;
     }
 
     public BookEntry getEntry() {
-        return this.entry;
+        return BookDataManager.get().getEntry(this.entry);
     }
 
     public boolean drawArrow() {
@@ -45,5 +51,14 @@ public class BookEntryParent {
 
     public boolean isLineReversed() {
         return this.lineReversed;
+    }
+
+    public static BookEntryParent fromJson(JsonObject json) {
+        var entry = new ResourceLocation(json.get("entry").getAsString());
+        var parent = new BookEntryParent(entry);
+        parent.drawArrow = GsonHelper.getAsBoolean(json, "draw_arrow", parent.drawArrow);
+        parent.lineEnabled = GsonHelper.getAsBoolean(json, "line_enabled", parent.lineEnabled);
+        parent.lineReversed = GsonHelper.getAsBoolean(json, "line_reversed", parent.lineReversed);
+        return parent;
     }
 }

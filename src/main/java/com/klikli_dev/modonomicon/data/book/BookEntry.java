@@ -20,10 +20,17 @@
 
 package com.klikli_dev.modonomicon.data.book;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data;
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Category;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class BookEntry {
     protected ResourceLocation id;
@@ -35,19 +42,17 @@ public class BookEntry {
     protected int y;
 
     //TODO: description and/or tooltip
-    //TODO: Pages
-    //TODO: parent entries for line rendering
+    //TODO: Pages?
     //TODO: entry type for background texture
 
-    public BookEntry(ResourceLocation id, BookCategory category, String name, BookIcon icon, int x, int y) {
+    public BookEntry(ResourceLocation id, String name, BookIcon icon, int x, int y, BookCategory category, List<BookEntryParent> parents) {
         this.id = id;
-        this.category = category;
-        this.parents = parents;
         this.name = name;
         this.icon = icon;
         this.x = x;
         this.y = y;
-        this.parents = new ArrayList<>();
+        this.category = category;
+        this.parents = parents;
     }
 
     public int getY() {
@@ -70,11 +75,34 @@ public class BookEntry {
         return this.parents;
     }
 
+    public void setParents(List<BookEntryParent> parents) {
+        this.parents = parents;
+    }
+
     public String getName() {
         return this.name;
     }
 
     public BookIcon getIcon() {
         return this.icon;
+    }
+
+    public static BookEntry fromJson(ResourceLocation id, JsonObject json, Map<ResourceLocation, BookCategory> categories) {
+        var name = json.get("name").getAsString();
+        var icon = BookIcon.fromJson(json.get("icon"));
+        var x = GsonHelper.getAsInt(json, "x");
+        var y = GsonHelper.getAsInt(json, "y");
+        var category = categories.get(new ResourceLocation(GsonHelper.getAsString(json, "category")));
+
+        var parentEntries = new ArrayList<BookEntryParent>();
+
+        if(json.has("parents")){
+            JsonArray parents = GsonHelper.getAsJsonArray(json, "parents");
+            for(var parent : parents){
+                parentEntries.add(BookEntryParent.fromJson(parent.getAsJsonObject()));
+            }
+        }
+
+        return new BookEntry(id, name, icon, x, y, category, parentEntries);
     }
 }

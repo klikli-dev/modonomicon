@@ -20,7 +20,10 @@
 
 package com.klikli_dev.modonomicon.data.book;
 
+import com.google.gson.JsonObject;
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Category;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +33,6 @@ public class BookCategory {
     protected String name;
     protected BookIcon icon;
     protected int sortNumber;
-    //TODO: provide a default texture for background and entry when loading the category
     protected ResourceLocation background;
     protected ResourceLocation entryTextures;
     protected Map<ResourceLocation, BookEntry> entries;
@@ -76,5 +78,14 @@ public class BookCategory {
 
     public void addEntry(BookEntry entry) {
         this.entries.putIfAbsent(entry.id, entry);
+    }
+
+    public static BookCategory fromJson(ResourceLocation id, JsonObject json) {
+        var name = json.get("name").getAsString();
+        var sortNumber = GsonHelper.getAsInt(json, "sort_number", -1);
+        var icon = BookIcon.fromJson(json.get("icon"));
+        var background = new ResourceLocation(GsonHelper.getAsString(json, "background", Category.DEFAULT_BACKGROUND));
+        var entryTextures = new ResourceLocation(GsonHelper.getAsString(json, "entry_textures", Category.DEFAULT_ENTRY_TEXTURES));
+        return new BookCategory(id, name, sortNumber, icon, background, entryTextures);
     }
 }
