@@ -1,0 +1,13 @@
+{
+  "criteria": {
+    "modonomicon_present": {
+      "trigger": "minecraft:tick",
+      "conditions": {}
+    }
+  },
+  "requirements": [
+    [
+      "modonomicon_present"
+    ]
+  ]
+}

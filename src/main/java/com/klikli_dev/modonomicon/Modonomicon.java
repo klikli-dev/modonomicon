@@ -1,23 +1,21 @@
 /*
- * MIT License
+ * LGPL-3-0
  *
- * Copyright 2021 klikli-dev
+ * Copyright (C) 2021 klikli-dev
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
- * associated documentation files (the "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- * of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following
- * conditions:
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
  *
- * The above copyright notice and this permission notice shall be included in all copies or substantial
- * portions of the Software.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
- * PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT
- * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
 package com.klikli_dev.modonomicon;
@@ -26,6 +24,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.config.CommonConfig;
 import com.klikli_dev.modonomicon.config.ServerConfig;
+import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
 import com.klikli_dev.modonomicon.handlers.ClientSetupEventHandler;
 import com.klikli_dev.modonomicon.handlers.RegistryEventHandler;
@@ -36,6 +35,7 @@ import com.klikli_dev.modonomicon.registry.MenuRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -74,8 +74,8 @@ public class Modonomicon {
         //directly register event handlers, can't register the object and use annotations, because we have events from both buses
         modEventBus.addListener(this::onCommonSetup);
         modEventBus.addListener(this::onServerSetup);
+        modEventBus.addListener(this::onRegisterClientReloadListeners);
         MinecraftForge.EVENT_BUS.addListener(this::onAddReloadListener);
-        MinecraftForge.EVENT_BUS.addListener(this::onModConfigEvent);
 
         //register event listener objects
 
@@ -92,24 +92,15 @@ public class Modonomicon {
         return new ResourceLocation(MODID, path);
     }
 
-    public void onModConfigEvent(final ModConfigEvent event) {
-        if (event.getConfig().getSpec() == ClientConfig.get().spec) {
-            //Clear the config cache on reload.
-            ClientConfig.get().clear();
-        }
-        if (event.getConfig().getSpec() == CommonConfig.get().spec) {
-            //Clear the config cache on reload.
-            CommonConfig.get().clear();
-        }
-        if (event.getConfig().getSpec() == ServerConfig.get().spec) {
-            //Clear the config cache on reload.
-            ServerConfig.get().clear();
-        }
-    }
-
     public void onAddReloadListener(AddReloadListenerEvent event) {
+        event.addListener(BookDataManager.get());
+    }
+
+    public void onRegisterClientReloadListeners(RegisterClientReloadListenersEvent event) {
 
     }
+
+    //RegisterClientReloadListenersEvent
 
     public void onCommonSetup(FMLCommonSetupEvent event) {
         Networking.registerMessages();

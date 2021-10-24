@@ -7,6 +7,15 @@ This project uses third party software and assets that may be distributed under 
 
 ## Third Party Software
 
+### Arcana 
+
+Usage: Some of the rendering code is based on Arcana's Book rendering.
+
+Version: [6d185de5d548e4ba092e9c6599cb2bf94fd4af22](https://github.com/ArcanaMod/Arcana/commit/6d185de5d548e4ba092e9c6599cb2bf94fd4af22)
+
+Website: https://github.com/ArcanaMod/Arcana   
+License: LGPL-3.0 as per https://github.com/ArcanaMod/Arcana#license, 
+License Text: https://www.gnu.org/licenses/lgpl-3.0.txt
 
 ## Third Party Assets
 
