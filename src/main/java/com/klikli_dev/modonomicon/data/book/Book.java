@@ -20,9 +20,16 @@
 
 package com.klikli_dev.modonomicon.data.book;
 
+import com.google.gson.JsonObject;
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.crafting.CraftingHelper;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,11 +40,11 @@ public class Book {
     protected Map<ResourceLocation, BookCategory> categories;
     //TODO: further properties for customization, such as book item, ...
 
-    public Book(ResourceLocation id, String name, ResourceLocation bookTexture, Map<ResourceLocation, BookCategory> categories) {
+    public Book(ResourceLocation id, String name, ResourceLocation bookTexture) {
         this.id = id;
         this.name = name;
         this.bookTexture = bookTexture;
-        this.categories = categories;
+        this.categories = new HashMap<>();
     }
 
     public ResourceLocation getId() {
@@ -58,5 +65,11 @@ public class Book {
 
     public ResourceLocation getBookTexture() {
         return this.bookTexture;
+    }
+
+    public static Book fromJson(ResourceLocation id, JsonObject json) {
+        String name = json.get("name").getAsString();
+        ResourceLocation bookTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_texture", Data.Book.DEFAULT_BOOK_TEXTURE));
+        return new Book(id, name, bookTexture);
     }
 }

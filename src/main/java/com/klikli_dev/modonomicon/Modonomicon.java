@@ -24,6 +24,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.config.CommonConfig;
 import com.klikli_dev.modonomicon.config.ServerConfig;
+import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
 import com.klikli_dev.modonomicon.handlers.ClientSetupEventHandler;
 import com.klikli_dev.modonomicon.handlers.RegistryEventHandler;
@@ -34,6 +35,7 @@ import com.klikli_dev.modonomicon.registry.MenuRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -72,6 +74,7 @@ public class Modonomicon {
         //directly register event handlers, can't register the object and use annotations, because we have events from both buses
         modEventBus.addListener(this::onCommonSetup);
         modEventBus.addListener(this::onServerSetup);
+        modEventBus.addListener(this::onRegisterClientReloadListeners);
         MinecraftForge.EVENT_BUS.addListener(this::onAddReloadListener);
 
         //register event listener objects
@@ -90,8 +93,14 @@ public class Modonomicon {
     }
 
     public void onAddReloadListener(AddReloadListenerEvent event) {
+        event.addListener(BookDataManager.get());
+    }
+
+    public void onRegisterClientReloadListeners(RegisterClientReloadListenersEvent event) {
 
     }
+
+    //RegisterClientReloadListenersEvent
 
     public void onCommonSetup(FMLCommonSetupEvent event) {
         Networking.registerMessages();

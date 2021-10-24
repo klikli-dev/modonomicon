@@ -41,7 +41,6 @@ public class GuiHelper {
                 Modonomicon.loc("cat1"),
                 I18n.BOOK_PREFIX + "cat1",
                 0,
-                new HashMap<>(),
                 new BookIcon(new ItemStack(Items.EMERALD)),
                 //Modonomicon.loc("textures/gui/default_background.png"),
                 Modonomicon.loc("textures/gui/dark_slate_seamless.png"),
@@ -52,7 +51,6 @@ public class GuiHelper {
                 Modonomicon.loc("cat2"),
                 I18n.BOOK_PREFIX + "cat2",
                 0,
-                new HashMap<>(),
                 new BookIcon(new ItemStack(Items.IRON_AXE)),
                 //Modonomicon.loc("textures/gui/default_background.png"),
                 Modonomicon.loc("textures/gui/dark_slate_seamless.png"),
@@ -62,7 +60,6 @@ public class GuiHelper {
         var cat1Entry1 = new BookEntry(
                 Modonomicon.loc("cat1.entry1"),
                 cat1,
-                new ArrayList<>(),
                 I18n.BOOK_PREFIX + "cat1.entry1",
                 new BookIcon(new ItemStack(Items.APPLE)),
                 -5, -5
@@ -72,7 +69,6 @@ public class GuiHelper {
         var cat1Entry2 = new BookEntry(
                 Modonomicon.loc("cat1.entry2"),
                 cat1,
-                new ArrayList<>(),
                 I18n.BOOK_PREFIX + "cat1.entry2",
                 new BookIcon(new ItemStack(Items.DIAMOND)),
                 0, 0
@@ -83,7 +79,6 @@ public class GuiHelper {
         var cat2Entry1 = new BookEntry(
                 Modonomicon.loc("cat2.entry1"),
                 cat1,
-                new ArrayList<>(),
                 I18n.BOOK_PREFIX + "cat2.entry1",
                 new BookIcon(new ItemStack(Items.ACACIA_SAPLING)),
                 1, 2
@@ -93,7 +88,6 @@ public class GuiHelper {
         var cat2Entry2 = new BookEntry(
                 Modonomicon.loc("cat2.entry2"),
                 cat1,
-                new ArrayList<>(),
                 I18n.BOOK_PREFIX + "cat2.entry2",
                 new BookIcon(new ItemStack(Items.ANVIL)),
                 0, 0
@@ -101,14 +95,14 @@ public class GuiHelper {
         cat2.addEntry(cat2Entry2);
         cat2Entry2.getParents().add(new BookEntryParent(cat2Entry1));
 
-        Minecraft.getInstance().setScreen(new BookScreen(new Book(
+        var book = new Book(
                 Modonomicon.loc("test"),
                 I18n.BOOK_PREFIX + "test",
-                Modonomicon.loc("textures/gui/book.png"),
-                new ImmutableMap.Builder<ResourceLocation, BookCategory>()
-                        .put(cat1.getId(), cat1)
-                        .put(cat2.getId(), cat2)
-                        .build()
-        ), stack));
+                Modonomicon.loc("textures/gui/book.png")
+        );
+        book.getCategories().put(cat1.getId(), cat1);
+        book.getCategories().put(cat2.getId(), cat2);
+
+        Minecraft.getInstance().setScreen(new BookScreen(book, stack));
     }
 }

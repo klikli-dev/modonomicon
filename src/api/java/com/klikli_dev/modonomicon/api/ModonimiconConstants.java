@@ -20,10 +20,16 @@
 
 package com.klikli_dev.modonomicon.api;
 
+import net.minecraft.resources.ResourceLocation;
+
 public class ModonimiconConstants {
 
     public static class Data {
-        public static final String MODONOMICON_DATA_PATH = ModonomiconAPI.ID + "_data";
+        public static final String MODONOMICON_DATA_PATH = ModonomiconAPI.ID + "s";
+
+        public static class Book {
+            public static final String DEFAULT_BOOK_TEXTURE = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/book.png").toString();
+        }
     }
 
     public static class Nbt {
