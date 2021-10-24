@@ -33,25 +33,15 @@ public class BookCategoryButton extends Button {
     private final BookScreen parent;
     private final BookCategory category;
     private final int categoryIndex;
-    private boolean selected;
     public BookCategoryButton(BookScreen parent, BookCategory category, int categoryIndex, int pX, int pY, int width, int height, OnPress pOnPress, OnTooltip pOnTooltip) {
         super(pX, pY, width, height, new TextComponent(""), pOnPress, pOnTooltip);
         this.parent = parent;
         this.category = category;
         this.categoryIndex = categoryIndex;
-        this.selected = false;
     }
 
     public BookCategory getCategory() {
         return this.category;
-    }
-
-    public boolean isSelected() {
-        return this.selected;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
     }
 
     public int getCategoryIndex() {
@@ -70,7 +60,7 @@ public class BookCategoryButton extends Button {
             int renderX = this.x;
             int renderWidth = this.width;
 
-            if (this.selected) {
+            if (this.categoryIndex == this.parent.getCurrentCategory()) {
                 renderX -= 3;
                 renderWidth += 3;
             } else if (this.isHovered()) {

@@ -78,6 +78,10 @@ public class BookScreen extends Screen {
         return this.categoryScreens.get(this.currentCategory);
     }
 
+    public int getCurrentCategory() {
+        return this.currentCategory;
+    }
+
     public Book getBook() {
         return this.book;
     }
@@ -165,12 +169,6 @@ public class BookScreen extends Screen {
     }
 
     protected void onBookCategoryButtonClick(BookCategoryButton button){
-        this.renderables.stream()
-                .filter(BookCategoryButton.class::isInstance)
-                .map(BookCategoryButton.class::cast)
-                .forEach(b -> b.setSelected(false));
-
-        button.setSelected(true);
         this.currentCategory = button.getCategoryIndex();
     }
 
@@ -182,9 +180,12 @@ public class BookScreen extends Screen {
     protected void init() {
         super.init();
 
-        int buttonX = (this.width - this.getFrameWidth()) / 2 - this.getFrameThicknessW() - 8;
+        int buttonXOffset = -8;
+
+        int buttonX = (this.width - this.getFrameWidth()) / 2 - this.getFrameThicknessW() + buttonXOffset;
         int buttonY = (this.height - this.getFrameHeight()) / 2 - this.getFrameThicknessH() + 30;
-        int buttonWidth = 22;
+        //calculate button width so it aligns with the outer edge of the frame
+        int buttonWidth = (this.width - this.getFrameWidth()) / 2 + buttonXOffset;
         int buttonHeight = 20;
         int buttonSpacing = 2;
 
