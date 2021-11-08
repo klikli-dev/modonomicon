@@ -44,6 +44,12 @@ public class Book {
         this.categories = new HashMap<>();
     }
 
+    public static Book fromJson(ResourceLocation id, JsonObject json) {
+        var name = json.get("name").getAsString();
+        var bookTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_texture", Data.Book.DEFAULT_TEXTURE));
+        return new Book(id, name, bookTexture);
+    }
+
     public ResourceLocation getId() {
         return this.id;
     }
@@ -52,7 +58,7 @@ public class Book {
         return this.categories;
     }
 
-    public List<BookCategory> getCategoriesSorted(){
+    public List<BookCategory> getCategoriesSorted() {
         return this.categories.values().stream().sorted(Comparator.comparingInt(BookCategory::getSortNumber)).toList();
     }
 
@@ -62,11 +68,5 @@ public class Book {
 
     public ResourceLocation getBookTexture() {
         return this.bookTexture;
-    }
-
-    public static Book fromJson(ResourceLocation id, JsonObject json) {
-        var name = json.get("name").getAsString();
-        var bookTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_texture", Data.Book.DEFAULT_TEXTURE));
-        return new Book(id, name, bookTexture);
     }
 }

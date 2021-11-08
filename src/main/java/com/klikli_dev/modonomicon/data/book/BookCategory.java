@@ -48,6 +48,15 @@ public class BookCategory {
         this.entries = new HashMap<>();
     }
 
+    public static BookCategory fromJson(ResourceLocation id, JsonObject json) {
+        var name = json.get("name").getAsString();
+        var sortNumber = GsonHelper.getAsInt(json, "sort_number", -1);
+        var icon = BookIcon.fromJson(json.get("icon"));
+        var background = new ResourceLocation(GsonHelper.getAsString(json, "background", Category.DEFAULT_BACKGROUND));
+        var entryTextures = new ResourceLocation(GsonHelper.getAsString(json, "entry_textures", Category.DEFAULT_ENTRY_TEXTURES));
+        return new BookCategory(id, name, sortNumber, icon, background, entryTextures);
+    }
+
     public ResourceLocation getId() {
         return this.id;
     }
@@ -78,14 +87,5 @@ public class BookCategory {
 
     public void addEntry(BookEntry entry) {
         this.entries.putIfAbsent(entry.id, entry);
-    }
-
-    public static BookCategory fromJson(ResourceLocation id, JsonObject json) {
-        var name = json.get("name").getAsString();
-        var sortNumber = GsonHelper.getAsInt(json, "sort_number", -1);
-        var icon = BookIcon.fromJson(json.get("icon"));
-        var background = new ResourceLocation(GsonHelper.getAsString(json, "background", Category.DEFAULT_BACKGROUND));
-        var entryTextures = new ResourceLocation(GsonHelper.getAsString(json, "entry_textures", Category.DEFAULT_ENTRY_TEXTURES));
-        return new BookCategory(id, name, sortNumber, icon, background, entryTextures);
     }
 }

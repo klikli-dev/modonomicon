@@ -26,17 +26,17 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data;
-import com.klikli_dev.modonomicon.data.book.Book;
-import com.klikli_dev.modonomicon.data.book.BookCategory;
-import com.klikli_dev.modonomicon.data.book.BookEntry;
+import com.klikli_dev.modonomicon.data.book.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class BookDataManager extends SimpleJsonResourceReloadListener {
@@ -45,9 +45,9 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
     private static final BookDataManager instance = new BookDataManager();
 
-    private Map<ResourceLocation, Book> books = Collections.emptyMap();
-    private final Map<ResourceLocation, BookCategory> categories = Collections.emptyMap();
-    private final Map<ResourceLocation, BookEntry> entries = Collections.emptyMap();
+    private final Map<ResourceLocation, Book> books = new HashMap<>();
+    private final Map<ResourceLocation, BookCategory> categories = new HashMap<>();
+    private final Map<ResourceLocation, BookEntry> entries = new HashMap<>();
     private boolean loaded;
 
     private BookDataManager() {
@@ -64,6 +64,10 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
     public Map<ResourceLocation, Book> getBooks() {
         return this.books;
+    }
+
+    public Book getBook(ResourceLocation id) {
+        return this.books.get(id);
     }
 
     public BookEntry getEntry(ResourceLocation id) {
@@ -99,10 +103,10 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                     bookJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
                 }
                 case "entries" -> {
-                    categoryJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
+                    entryJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
                 }
                 case "categories" -> {
-                    entryJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
+                    categoryJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
                 }
                 default -> {
                     Modonomicon.LOGGER.warn("Found unknown content for book '{}': '{}'. Should be one of: [File: book.json, Directory: entries/, Directory: categories/]", bookId, entry.getKey());
@@ -114,8 +118,9 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> content, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
         this.loaded = false;
-        this.books = new HashMap<>();
-
+        this.books.clear();
+        this.categories.clear();
+        this.entries.clear();
 
         //first, load all json entries
         var bookJsons = new HashMap<ResourceLocation, JsonObject>();
@@ -123,13 +128,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         var entryJsons = new HashMap<ResourceLocation, JsonObject>();
         this.categorizeContent(content, bookJsons, categoryJsons, entryJsons);
 
-        //TODO:
-        //      first categorize all content into types
-        //      then create first books, then categories, then entries, always giving access to the parent content type
-        //      then resolve the book entry parents
-
         //build books
-        for(var entry : bookJsons.entrySet()){
+        for (var entry : bookJsons.entrySet()) {
             var pathParts = entry.getKey().getPath().split("/");
             var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
             var book = this.loadBook(bookId, entry.getValue());
@@ -137,20 +137,41 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         }
 
         //build categories
-        for(var entry : categoryJsons.entrySet()) {
+        for (var entry : categoryJsons.entrySet()) {
+            //load categories and link to book
+            var pathParts = entry.getKey().getPath().split("/");
+            var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
+            //category id skips the book id and the category directory
+            var categoryId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
+            var category = this.loadCategory(categoryId, entry.getValue());
+            this.categories.put(category.getId(), category);
 
-            //todo:
-            //resolve book categories
+            this.books.get(bookId).getCategories().put(category.getId(), category);
         }
 
-
         //build entries
+        for (var entry : entryJsons.entrySet()) {
+            //load entries and link to category
+            var pathParts = entry.getKey().getPath().split("/");
+            var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
+            //entry id skips the book id and the entries directory
+            var entryId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
+            var bookEntry = this.loadEntry(entryId, entry.getValue(), this.books.get(bookId).getCategories());
+            this.entries.put(bookEntry.getId(), bookEntry);
 
-        //resolve category entries
+            bookEntry.getCategory().addEntry(bookEntry);
+        }
 
         //resolve entry parents
+        for (var entry : this.entries.values()) {
+            var newParents = new ArrayList<BookEntryParent>();
 
+            for (var parent : entry.getParents()) {
+                newParents.add(new ResolvedBookEntryParent(this.entries.get(parent.getEntryId())));
+            }
 
+            entry.setParents(newParents);
+        }
 
         this.onLoaded();
     }

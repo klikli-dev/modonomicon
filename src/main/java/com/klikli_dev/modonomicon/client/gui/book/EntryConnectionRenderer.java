@@ -22,7 +22,6 @@ package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.data.book.BookEntry;
 import com.klikli_dev.modonomicon.data.book.BookEntryParent;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
 

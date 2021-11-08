@@ -1,0 +1,12 @@
+{
+  "name": "test entry child",
+  "icon": "minecraft:diamond",
+  "x": 1,
+  "y": 1,
+  "category": "modonomicon:test_category",
+  "parents": [
+    {
+      "entry": "modonomicon:test_entry"
+    }
+  ]
+}

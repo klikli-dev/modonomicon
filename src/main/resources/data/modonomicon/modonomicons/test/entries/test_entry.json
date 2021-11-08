@@ -1,0 +1,7 @@
+{
+  "name": "test",
+  "icon": "minecraft:emerald",
+  "x": 3,
+  "y": 2,
+  "category": "modonomicon:test_category"
+}
