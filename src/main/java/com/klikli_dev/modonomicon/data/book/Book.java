@@ -22,6 +22,7 @@ package com.klikli_dev.modonomicon.data.book;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 
@@ -68,5 +69,16 @@ public class Book {
 
     public ResourceLocation getBookTexture() {
         return this.bookTexture;
+    }
+
+    public static Book fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
+        var name = buffer.readUtf();
+        var bookTexture = buffer.readResourceLocation();
+        return new Book(id, name, bookTexture);
+    }
+
+    public void toNetwork(FriendlyByteBuf buffer) {
+        buffer.writeUtf(this.name);
+        buffer.writeResourceLocation(this.bookTexture);
     }
 }

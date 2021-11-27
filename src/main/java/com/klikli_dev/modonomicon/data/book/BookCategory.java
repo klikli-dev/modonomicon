@@ -22,6 +22,7 @@ package com.klikli_dev.modonomicon.data.book;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Category;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 
@@ -30,6 +31,7 @@ import java.util.Map;
 
 public class BookCategory {
     protected ResourceLocation id;
+    protected Book book;
     protected String name;
     protected BookIcon icon;
     protected int sortNumber;
@@ -38,8 +40,9 @@ public class BookCategory {
     protected Map<ResourceLocation, BookEntry> entries;
     //TODO: additional backgrounds with custom rendertypes?
 
-    public BookCategory(ResourceLocation id, String name, int sortNumber, BookIcon icon, ResourceLocation background, ResourceLocation entryTextures) {
+    public BookCategory(ResourceLocation id, String name, int sortNumber, BookIcon icon, ResourceLocation background, ResourceLocation entryTextures, Book book) {
         this.id = id;
+        this.book = book;
         this.name = name;
         this.sortNumber = sortNumber;
         this.icon = icon;
@@ -48,17 +51,31 @@ public class BookCategory {
         this.entries = new HashMap<>();
     }
 
-    public static BookCategory fromJson(ResourceLocation id, JsonObject json) {
+    public static BookCategory fromJson(ResourceLocation id, JsonObject json, Book book) {
         var name = json.get("name").getAsString();
         var sortNumber = GsonHelper.getAsInt(json, "sort_number", -1);
         var icon = BookIcon.fromJson(json.get("icon"));
         var background = new ResourceLocation(GsonHelper.getAsString(json, "background", Category.DEFAULT_BACKGROUND));
         var entryTextures = new ResourceLocation(GsonHelper.getAsString(json, "entry_textures", Category.DEFAULT_ENTRY_TEXTURES));
-        return new BookCategory(id, name, sortNumber, icon, background, entryTextures);
+        return new BookCategory(id, name, sortNumber, icon, background, entryTextures, book);
+    }
+
+    public static BookCategory fromNetwork(ResourceLocation id, FriendlyByteBuf buffer, Map<ResourceLocation, Book> books) {
+        var book = books.get(buffer.readResourceLocation());
+        var name = buffer.readUtf();
+        var sortNumber = buffer.readInt();
+        var icon = BookIcon.fromNetwork(buffer);
+        var background = buffer.readResourceLocation();
+        var entryTextures = buffer.readResourceLocation();
+        return new BookCategory(id, name, sortNumber, icon, background, entryTextures, book);
     }
 
     public ResourceLocation getId() {
         return this.id;
+    }
+
+    public Book getBook() {
+        return this.book;
     }
 
     public String getName() {
@@ -87,5 +104,14 @@ public class BookCategory {
 
     public void addEntry(BookEntry entry) {
         this.entries.putIfAbsent(entry.id, entry);
+    }
+
+    public void toNetwork(FriendlyByteBuf buffer) {
+        buffer.writeResourceLocation(this.book.getId());
+        buffer.writeUtf(this.name);
+        buffer.writeInt(this.sortNumber);
+        this.icon.toNetwork(buffer);
+        buffer.writeResourceLocation(this.background);
+        buffer.writeResourceLocation(this.entryTextures);
     }
 }

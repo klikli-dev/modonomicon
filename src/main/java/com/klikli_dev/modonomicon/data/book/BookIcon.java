@@ -26,6 +26,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -55,6 +56,16 @@ public class BookIcon {
         }
     }
 
+    public static BookIcon fromNetwork(FriendlyByteBuf buffer) {
+        ResourceLocation rl = buffer.readResourceLocation();
+        if (rl.getPath().endsWith(".png")) {
+            return new BookIcon(rl);
+        } else {
+            Item item = ForgeRegistries.ITEMS.getValue(rl);
+            return new BookIcon(new ItemStack(item));
+        }
+    }
+
     public void render(PoseStack ms, int x, int y) {
         if (this.texture != null) {
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -63,6 +74,14 @@ public class BookIcon {
             GuiComponent.blit(ms, x, y, 0, 0, 0, 16, 16, 16, 16);
         } else {
             RenderUtil.renderAndDecorateItemWithPose(ms, this.itemStack, x, y);
+        }
+    }
+
+    public void toNetwork(FriendlyByteBuf buffer) {
+        if (this.texture != null) {
+            buffer.writeResourceLocation(this.texture);
+        } else {
+            buffer.writeResourceLocation(this.itemStack.getItem().getRegistryName());
         }
     }
 }

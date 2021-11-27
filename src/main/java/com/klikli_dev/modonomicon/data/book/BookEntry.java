@@ -22,6 +22,7 @@ package com.klikli_dev.modonomicon.data.book;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 
@@ -69,6 +70,35 @@ public class BookEntry {
         }
 
         return new BookEntry(id, name, icon, x, y, category, parentEntries);
+    }
+
+    public static BookEntry fromNetwork(ResourceLocation id, FriendlyByteBuf buffer, Map<ResourceLocation, BookCategory> categories) {
+        var name = buffer.readUtf();
+        var icon = BookIcon.fromNetwork(buffer);
+        var x = buffer.readInt();
+        var y = buffer.readInt();
+        var category = categories.get(buffer.readResourceLocation());
+
+        var parentEntries = new ArrayList<BookEntryParent>();
+
+        var parentCount = buffer.readInt();
+        for (var i = 0; i < parentCount; i++) {
+            parentEntries.add(BookEntryParent.fromNetwork(buffer));
+        }
+
+        return new BookEntry(id, name, icon, x, y, category, parentEntries);
+    }
+
+    public void toNetwork(FriendlyByteBuf buffer) {
+        buffer.writeUtf(this.name);
+        this.icon.toNetwork(buffer);
+        buffer.writeInt(this.x);
+        buffer.writeInt(this.y);
+        buffer.writeResourceLocation(this.category.getId());
+        buffer.writeInt(this.parents.size());
+        for (var parent : this.parents) {
+            parent.toNetwork(buffer);
+        }
     }
 
     public int getY() {
