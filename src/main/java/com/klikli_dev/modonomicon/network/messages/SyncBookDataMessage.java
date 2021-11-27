@@ -21,7 +21,9 @@
 package com.klikli_dev.modonomicon.network.messages;
 
 import com.klikli_dev.modonomicon.data.BookDataManager;
-import com.klikli_dev.modonomicon.data.book.*;
+import com.klikli_dev.modonomicon.data.book.Book;
+import com.klikli_dev.modonomicon.data.book.BookCategory;
+import com.klikli_dev.modonomicon.data.book.BookEntry;
 import com.klikli_dev.modonomicon.network.IMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -29,15 +31,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fmllegacy.network.NetworkEvent.Context;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SyncBookDataMessage implements IMessage {
 
-    private Map<ResourceLocation, Book> books = new HashMap<>();
-    private Map<ResourceLocation, BookCategory> categories = new HashMap<>();
-    private Map<ResourceLocation, BookEntry> entries = new HashMap<>();
+    public Map<ResourceLocation, Book> books = new HashMap<>();
+    public Map<ResourceLocation, BookCategory> categories = new HashMap<>();
+    public Map<ResourceLocation, BookEntry> entries = new HashMap<>();
 
     public SyncBookDataMessage(Map<ResourceLocation, Book> books,
                                Map<ResourceLocation, BookCategory> categories,
@@ -105,9 +106,8 @@ public class SyncBookDataMessage implements IMessage {
     }
 
 
-
     @Override
     public void onClientReceived(Minecraft minecraft, Player player, Context context) {
-        IMessage.super.onClientReceived(minecraft, player, context);
+        BookDataManager.get().onDatapackSyncPacket(this);
     }
 }

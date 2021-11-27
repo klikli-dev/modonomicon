@@ -64,6 +64,18 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         return instance;
     }
 
+    public static void resolveBookEntryParents(Map<ResourceLocation, BookEntry> entries) {
+        for (var entry : entries.values()) {
+            var newParents = new ArrayList<BookEntryParent>();
+
+            for (var parent : entry.getParents()) {
+                newParents.add(new ResolvedBookEntryParent(entries.get(parent.getEntryId())));
+            }
+
+            entry.setParents(newParents);
+        }
+    }
+
     public boolean isLoaded() {
         return this.loaded;
     }
@@ -84,7 +96,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         return new SyncBookDataMessage(this.books, this.categories, this.entries);
     }
 
-    public void onDatapackSyncPacket(BookDataManager message) {
+    public void onDatapackSyncPacket(SyncBookDataMessage message) {
         this.books = message.books;
         this.categories = message.categories;
         this.entries = message.entries;
@@ -196,17 +208,5 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         resolveBookEntryParents(this.entries);
 
         this.onLoaded();
-    }
-
-    public static void resolveBookEntryParents(Map<ResourceLocation, BookEntry> entries) {
-        for (var entry : entries.values()) {
-            var newParents = new ArrayList<BookEntryParent>();
-
-            for (var parent : entry.getParents()) {
-                newParents.add(new ResolvedBookEntryParent(entries.get(parent.getEntryId())));
-            }
-
-            entry.setParents(newParents);
-        }
     }
 }
