@@ -25,10 +25,16 @@ import com.klikli_dev.modonomicon.data.book.BookCategory;
 import com.klikli_dev.modonomicon.data.book.BookEntry;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
+import java.util.Optional;
 
 import static org.lwjgl.opengl.GL11.GL_SCISSOR_TEST;
 
@@ -39,11 +45,15 @@ public class BookCategoryScreen {
     public static final int ENTRY_GAP = 2;
     public static final int MAX_SCROLL = 512;
 
+    public static final int ENTRY_HEIGHT = 26;
+    public static final int ENTRY_WIDTH = 26;
+
+
     private final BookScreen bookScreen;
     private final BookCategory category;
+    private final EntryConnectionRenderer connectionRenderer;
     protected int backgroundTextureWidth = 512;
     protected int backgroundTextureHeight = 512;
-    private EntryConnectionRenderer connectionRenderer;
     private float scrollX = 0;
     private float scrollY = 0;
     private boolean isScrolling;
@@ -80,7 +90,8 @@ public class BookCategoryScreen {
         GL11.glScissor(innerX * scale, innerY * scale, innerWidth * scale, innerHeight * scale);
         GL11.glEnable(GL_SCISSOR_TEST);
 
-        this.renderEntries(pPoseStack);
+        this.renderEntries(pPoseStack, pMouseX, pMouseY);
+        this.renderEntryTooltips(pPoseStack, pMouseX, pMouseY);
 
         GL11.glDisable(GL_SCISSOR_TEST);
     }
@@ -106,54 +117,6 @@ public class BookCategoryScreen {
             }
             return true;
         }
-    }
-
-    private void renderEntries(PoseStack stack) {
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-
-        //calculate the render offset
-        float xOffset = ((this.bookScreen.getInnerWidth() / 2f) * (1 / this.currentZoom)) - this.scrollX / 2;
-        float yOffset = ((this.bookScreen.getInnerHeight() / 2f) * (1 / this.currentZoom)) - this.scrollY / 2;
-
-        stack.pushPose();
-        stack.scale(this.currentZoom, this.currentZoom, 1.0f);
-        for (var entry : this.category.getEntries().values()) {
-            //TODO: select type of entry background
-            int texX = 0; //select the entry background with this
-            int texY = 0;
-
-            RenderSystem.setShaderTexture(0, this.category.getEntryTextures());
-
-            stack.pushPose();
-            //we translate instead of applying the offset to the entry x/y to avoid jittering when moving
-            stack.translate(xOffset, yOffset, 0);
-            //render entry background
-            this.bookScreen.blit(stack, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, 26, 26);
-
-            //render icon
-            entry.getIcon().render(stack, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 5, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP + 5);
-            stack.popPose();
-
-            this.renderConnections(stack, entry, xOffset, yOffset);
-        }
-        stack.popPose();
-    }
-
-    private void renderConnections(PoseStack stack, BookEntry entry, float xOffset, float yOffset) {
-        //our arrows are aliased and need blending
-        RenderSystem.enableBlend();
-
-        for (var parent : entry.getParents()) {
-            this.bookScreen.getConnectionRenderer().setBlitOffset(this.bookScreen.getBlitOffset());
-            stack.pushPose();
-            stack.translate(xOffset, yOffset, 0);
-            RenderSystem.setShaderTexture(0, this.category.getEntryTextures());
-            this.connectionRenderer.render(stack, entry, parent);
-            stack.popPose();
-        }
-
-        RenderSystem.disableBlend();
     }
 
     public void renderBackground(PoseStack poseStack) {
@@ -183,6 +146,97 @@ public class BookCategoryScreen {
                 (this.scrollX + MAX_SCROLL) / scale + xOffset,
                 (this.scrollY + MAX_SCROLL) / scale + yOffset,
                 innerWidth, innerHeight, this.backgroundTextureHeight, this.backgroundTextureWidth);
+    }
+
+    private void renderEntries(PoseStack stack, int mouseX, int mouseY) {
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+
+        //calculate the render offset
+        float xOffset = ((this.bookScreen.getInnerWidth() / 2f) * (1 / this.currentZoom)) - this.scrollX / 2;
+        float yOffset = ((this.bookScreen.getInnerHeight() / 2f) * (1 / this.currentZoom)) - this.scrollY / 2;
+
+        stack.pushPose();
+        stack.scale(this.currentZoom, this.currentZoom, 1.0f);
+        for (var entry : this.category.getEntries().values()) {
+            //TODO: handle hidden entries + don't draw their tooltip
+            //TODO: select type of entry background
+            int texX = 0; //select the entry background with this
+            int texY = 0;
+
+            RenderSystem.setShaderTexture(0, this.category.getEntryTextures());
+
+            stack.pushPose();
+            //we translate instead of applying the offset to the entry x/y to avoid jittering when moving
+            stack.translate(xOffset, yOffset, 0);
+            //render entry background
+            this.bookScreen.blit(stack, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT);
+
+            //render icon
+            entry.getIcon().render(stack, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 5, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP + 5);
+            stack.popPose();
+
+            this.renderConnections(stack, entry, xOffset, yOffset);
+        }
+        stack.popPose();
+    }
+
+    private void renderEntryTooltips(PoseStack stack, int mouseX, int mouseY) {
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+
+        //calculate the render offset
+        float xOffset = ((this.bookScreen.getInnerWidth() / 2f) * (1 / this.currentZoom)) - this.scrollX / 2;
+        float yOffset = ((this.bookScreen.getInnerHeight() / 2f) * (1 / this.currentZoom)) - this.scrollY / 2;
+
+        for (var entry : this.category.getEntries().values()) {
+            //TODO: handle hidden entries + don't draw their tooltip
+            this.renderTooltip(stack, entry, xOffset, yOffset, mouseX, mouseY);
+        }
+    }
+
+    private boolean isEntryHovered(BookEntry entry, float xOffset, float yOffset, int mouseX, int mouseY) {
+        int x = (int) ((entry.getX() * ENTRY_GRID_SCALE + xOffset + 2) * this.currentZoom);
+        int y = (int) ((entry.getY() * ENTRY_GRID_SCALE + yOffset + 2) * this.currentZoom);
+        int innerX = this.bookScreen.getInnerX();
+        int innerY = this.bookScreen.getInnerX();
+        int innerWidth = this.bookScreen.getInnerWidth();
+        int innerHeight = this.bookScreen.getInnerHeight();
+        return mouseX >= x && mouseX <= x + (ENTRY_WIDTH * this.currentZoom)
+                && mouseY >= y && mouseY <= y + (ENTRY_HEIGHT * this.currentZoom)
+                && mouseX >= innerX && mouseX <= innerX + innerWidth
+                && mouseY >= innerY && mouseY <= innerY + innerHeight;
+    }
+
+    private void renderTooltip(PoseStack stack, BookEntry entry, float xOffset, float yOffset, int mouseX, int mouseY) {
+        //hovered?
+        if (this.isEntryHovered(entry, xOffset, yOffset, mouseX, mouseY)) {
+            //TODO: Draw tooltip
+            //draw name
+            var tooltip = new ArrayList<Component>();
+            tooltip.add(new TranslatableComponent(entry.getName()).withStyle(ChatFormatting.BOLD));
+            if (!entry.getDescription().isEmpty()) {
+                tooltip.add(new TranslatableComponent(entry.getDescription()));
+            }
+            //draw description
+            this.bookScreen.renderTooltip(stack, tooltip, Optional.empty(), mouseX, mouseY);
+        }
+    }
+
+    private void renderConnections(PoseStack stack, BookEntry entry, float xOffset, float yOffset) {
+        //our arrows are aliased and need blending
+        RenderSystem.enableBlend();
+
+        for (var parent : entry.getParents()) {
+            this.bookScreen.getConnectionRenderer().setBlitOffset(this.bookScreen.getBlitOffset());
+            stack.pushPose();
+            stack.translate(xOffset, yOffset, 0);
+            RenderSystem.setShaderTexture(0, this.category.getEntryTextures());
+            this.connectionRenderer.render(stack, entry, parent);
+            stack.popPose();
+        }
+
+        RenderSystem.disableBlend();
     }
 
     private void scroll(double pDragX, double pDragY) {

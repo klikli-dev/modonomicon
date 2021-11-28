@@ -56,7 +56,7 @@ public class BookEntry {
 
     public static BookEntry fromJson(ResourceLocation id, JsonObject json, Map<ResourceLocation, BookCategory> categories) {
         var name = json.get("name").getAsString();
-        var description = GsonHelper.getAsString(json, "name", "");
+        var description = GsonHelper.getAsString(json, "description", "");
         var icon = BookIcon.fromJson(json.get("icon"));
         var x = GsonHelper.getAsInt(json, "x");
         var y = GsonHelper.getAsInt(json, "y");
