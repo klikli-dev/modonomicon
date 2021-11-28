@@ -6,7 +6,7 @@
   "category": "modonomicon:test_category",
   "parents": [
     {
-      "entry": "modonomicon:test_entry"
+      "entry": "modonomicon:test_category/test_entry"
     }
   ]
 }

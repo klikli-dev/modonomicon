@@ -78,6 +78,7 @@ public class Modonomicon {
         MinecraftForge.EVENT_BUS.addListener(this::onAddReloadListener);
 
         //register event listener objects
+        MinecraftForge.EVENT_BUS.register(BookDataManager.get());
 
         //register event listener classes
         modEventBus.register(RegistryEventHandler.class);

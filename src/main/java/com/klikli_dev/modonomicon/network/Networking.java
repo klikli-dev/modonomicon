@@ -21,6 +21,7 @@
 package com.klikli_dev.modonomicon.network;
 
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.network.messages.SyncBookDataMessage;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -45,7 +46,11 @@ public class Networking {
     }
 
     public static void registerMessages() {
-
+        INSTANCE.registerMessage(nextID(),
+                SyncBookDataMessage.class,
+                SyncBookDataMessage::encode,
+                SyncBookDataMessage::new,
+                MessageHandler::handle);
     }
 
     public static <T> void sendTo(ServerPlayer player, T message) {

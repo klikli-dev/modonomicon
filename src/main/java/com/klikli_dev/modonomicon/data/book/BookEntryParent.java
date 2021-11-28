@@ -22,6 +22,7 @@ package com.klikli_dev.modonomicon.data.book;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.data.BookDataManager;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 
@@ -43,6 +44,22 @@ public class BookEntryParent {
         parent.lineEnabled = GsonHelper.getAsBoolean(json, "line_enabled", parent.lineEnabled);
         parent.lineReversed = GsonHelper.getAsBoolean(json, "line_reversed", parent.lineReversed);
         return parent;
+    }
+
+    public static BookEntryParent fromNetwork(FriendlyByteBuf buffer) {
+        var entry = buffer.readResourceLocation();
+        var parent = new BookEntryParent(entry);
+        parent.drawArrow = buffer.readBoolean();
+        parent.lineEnabled = buffer.readBoolean();
+        parent.lineReversed = buffer.readBoolean();
+        return parent;
+    }
+
+    public void toNetwork(FriendlyByteBuf buffer) {
+        buffer.writeResourceLocation(this.entryId);
+        buffer.writeBoolean(this.drawArrow);
+        buffer.writeBoolean(this.lineEnabled);
+        buffer.writeBoolean(this.lineReversed);
     }
 
     public BookEntry getEntry() {
