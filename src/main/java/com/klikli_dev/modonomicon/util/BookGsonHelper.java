@@ -18,11 +18,24 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.api.data.book;
+package com.klikli_dev.modonomicon.util;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
-public interface BookPageLoader<T extends BookPage> {
-    T loadPage(JsonObject json);
+public class BookGsonHelper {
+
+    public static Component getAsComponent(JsonObject pJson, String pMemberName, Component pFallback) {
+        return pJson.has(pMemberName) ? convertToComponent(pJson.get(pMemberName), pMemberName) : pFallback;
+    }
+
+    public static Component convertToComponent(JsonElement pJson, String pMemberName) {
+        if (pJson.isJsonPrimitive()) {
+            return new TranslatableComponent(pJson.getAsString());
+        } else {
+            return Component.Serializer.fromJson(pJson);
+        }
+    }
 }

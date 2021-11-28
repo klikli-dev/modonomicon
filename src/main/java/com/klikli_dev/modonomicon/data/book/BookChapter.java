@@ -24,23 +24,24 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.data.book.BookPage;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BookChapter {
     protected ResourceLocation id;
     protected ResourceLocation entryId;
+    protected BookEntry entry;
     protected BookCategory category;
-    protected Map<ResourceLocation, BookPage> bookPages;
-
-    //TODO: Pages?
+    protected List<BookPage> bookPages;
 
     public BookChapter(ResourceLocation id, ResourceLocation entryId, BookCategory category) {
         this.id = id;
         this.entryId = entryId;
         this.category = category;
+        this.bookPages = new ArrayList<>();
     }
 
-    public static BookChapter fromJson(ResourceLocation id, JsonObject json, Map<ResourceLocation, BookCategory> categories) {
+    public static BookChapter fromJson(ResourceLocation id, JsonObject json) {
         return null;
     }
 
@@ -53,6 +54,14 @@ public class BookChapter {
     }
 
     public ResourceLocation getEntryId() {
-        return entryId;
+        return this.entryId;
+    }
+
+    public BookEntry getEntry() {
+        return this.entry;
+    }
+
+    public void setEntry(BookEntry entry) {
+        this.entry = entry;
     }
 }

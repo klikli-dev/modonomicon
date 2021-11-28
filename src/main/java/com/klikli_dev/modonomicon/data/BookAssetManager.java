@@ -24,7 +24,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data;
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Page;
+import com.klikli_dev.modonomicon.api.ModonomiconAPI;
+import com.klikli_dev.modonomicon.api.data.book.BookPage;
 import com.klikli_dev.modonomicon.api.data.book.BookPageLoader;
+import com.klikli_dev.modonomicon.data.book.pages.BookTextPage;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -40,7 +44,7 @@ public class BookAssetManager extends SimpleJsonResourceReloadListener {
 
     private static final BookAssetManager instance = new BookAssetManager();
 
-    private Map<ResourceLocation, BookPageLoader> pageLoaders = new HashMap<>();
+    private Map<ResourceLocation, BookPageLoader<? extends BookPage>> pageLoaders = new HashMap<>();
 
     private boolean loaded;
 
@@ -64,11 +68,23 @@ public class BookAssetManager extends SimpleJsonResourceReloadListener {
     protected void apply(Map<ResourceLocation, JsonElement> content, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
         this.loaded = false;
 
+        //TODO: link book chapter to entry
+        //TODO: link book chapter to category
+
         //TODO: when client side data loading is complete, link up content here to stuff in book data manager
+
         this.onLoaded();
     }
 
-    public void registerPageLoader(ResourceLocation id, BookPageLoader loader) {
+    public void registerDefaultPageLoaders(){
+        ModonomiconAPI.get().registerPageLoader(Page.TEXT, BookTextPage::fromJson);
+    }
+
+    public void registerPageLoader(ResourceLocation id, BookPageLoader<? extends BookPage> loader) {
         this.pageLoaders.put(id, loader);
+    }
+
+    public BookPageLoader<? extends BookPage> getPageLoader(ResourceLocation id) {
+        return this.pageLoaders.get(id);
     }
 }

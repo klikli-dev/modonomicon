@@ -129,8 +129,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         return BookCategory.fromJson(key, value.getAsJsonObject(), book);
     }
 
-    private BookEntry loadEntry(ResourceLocation key, JsonObject value, Map<ResourceLocation, BookCategory> categories) {
-        return BookEntry.fromJson(key, value.getAsJsonObject(), categories);
+    private BookEntry loadEntry(ResourceLocation key, JsonObject value) {
+        return BookEntry.fromJson(key, value.getAsJsonObject());
     }
 
     private void categorizeContent(Map<ResourceLocation, JsonElement> content,
@@ -187,8 +187,9 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             //category id skips the book id and the category directory
             var categoryId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
             var category = this.loadCategory(categoryId, entry.getValue(), this.books.get(bookId));
-            this.categories.put(category.getId(), category);
-
+            //global category map needs to contain the full id including book id
+            this.categories.put(entry.getKey(), category);
+            //book category map only needs the localized id
             category.getBook().getCategories().put(category.getId(), category);
         }
 
@@ -199,9 +200,11 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
             //entry id skips the book id and the entries directory
             var entryId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
-            var bookEntry = this.loadEntry(entryId, entry.getValue(), this.books.get(bookId).getCategories());
+            var bookEntry = this.loadEntry(entryId, entry.getValue());
             this.entries.put(bookEntry.getId(), bookEntry);
 
+            //link to category
+            bookEntry.setCategory(this.books.get(bookId).getCategories().get(bookEntry.getCategoryId()));
             bookEntry.getCategory().addEntry(bookEntry);
         }
 

@@ -36,6 +36,10 @@ public class ModonimiconConstants {
             public static final String DEFAULT_BACKGROUND = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/dark_slate_seamless.png").toString();
             public static final String DEFAULT_ENTRY_TEXTURES = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/entry_textures.png").toString();
         }
+
+        public static class Page {
+            public static final ResourceLocation TEXT = new ResourceLocation(ModonomiconAPI.ID, "text");
+        }
     }
 
     public static class Nbt {

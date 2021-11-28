@@ -20,10 +20,12 @@
 
 package com.klikli_dev.modonomicon.api;
 
+import com.klikli_dev.modonomicon.api.data.book.BookPage;
 import com.klikli_dev.modonomicon.api.data.book.BookPageLoader;
 import com.klikli_dev.modonomicon.api.stub.ModonomiconAPIStub;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.Lazy;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import org.apache.logging.log4j.LogManager;
 
 public interface ModonomiconAPI {
@@ -41,9 +43,10 @@ public interface ModonomiconAPI {
     boolean isStub();
 
     /**
-     * Registers a book page loader
+     * Registers a book page loader.
+     * Call in {@link FMLCommonSetupEvent}
      */
-    void registerPageLoader(ResourceLocation id, BookPageLoader loader);
+    void registerPageLoader(ResourceLocation id, BookPageLoader<? extends BookPage> loader);
 
     class Helper {
         private static final Lazy<ModonomiconAPI> lazyInstance = Lazy.concurrentOf(() -> {
