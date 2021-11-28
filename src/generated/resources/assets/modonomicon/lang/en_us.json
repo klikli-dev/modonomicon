@@ -2,5 +2,6 @@
   "advancements.modonomicon.root.description": "The book of all books!",
   "advancements.modonomicon.root.title": "Modonomicon",
   "item.modonomicon.modonomicon": "Modonomicon",
-  "itemGroup.modonomicon": "Modonomicon"
+  "itemGroup.modonomicon": "Modonomicon",
+  "modonomicon.test.entries.test_category.test_entry.description": "Test Description"
 }

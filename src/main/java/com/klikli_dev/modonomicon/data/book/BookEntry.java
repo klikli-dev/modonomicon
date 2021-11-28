@@ -35,17 +35,18 @@ public class BookEntry {
     protected BookCategory category;
     protected List<BookEntryParent> parents;
     protected String name;
+    protected String description;
     protected BookIcon icon;
     protected int x;
     protected int y;
 
-    //TODO: description and/or tooltip
     //TODO: Pages?
     //TODO: entry type for background texture
 
-    public BookEntry(ResourceLocation id, String name, BookIcon icon, int x, int y, BookCategory category, List<BookEntryParent> parents) {
+    public BookEntry(ResourceLocation id, String name, String description, BookIcon icon, int x, int y, BookCategory category, List<BookEntryParent> parents) {
         this.id = id;
         this.name = name;
+        this.description = description;
         this.icon = icon;
         this.x = x;
         this.y = y;
@@ -55,6 +56,7 @@ public class BookEntry {
 
     public static BookEntry fromJson(ResourceLocation id, JsonObject json, Map<ResourceLocation, BookCategory> categories) {
         var name = json.get("name").getAsString();
+        var description = GsonHelper.getAsString(json, "description", "");
         var icon = BookIcon.fromJson(json.get("icon"));
         var x = GsonHelper.getAsInt(json, "x");
         var y = GsonHelper.getAsInt(json, "y");
@@ -69,11 +71,12 @@ public class BookEntry {
             }
         }
 
-        return new BookEntry(id, name, icon, x, y, category, parentEntries);
+        return new BookEntry(id, name, description, icon, x, y, category, parentEntries);
     }
 
     public static BookEntry fromNetwork(ResourceLocation id, FriendlyByteBuf buffer, Map<ResourceLocation, BookCategory> categories) {
         var name = buffer.readUtf();
+        var description = buffer.readUtf();
         var icon = BookIcon.fromNetwork(buffer);
         var x = buffer.readInt();
         var y = buffer.readInt();
@@ -86,11 +89,12 @@ public class BookEntry {
             parentEntries.add(BookEntryParent.fromNetwork(buffer));
         }
 
-        return new BookEntry(id, name, icon, x, y, category, parentEntries);
+        return new BookEntry(id, name, description, icon, x, y, category, parentEntries);
     }
 
     public void toNetwork(FriendlyByteBuf buffer) {
         buffer.writeUtf(this.name);
+        buffer.writeUtf(this.description);
         this.icon.toNetwork(buffer);
         buffer.writeInt(this.x);
         buffer.writeInt(this.y);
@@ -131,5 +135,9 @@ public class BookEntry {
 
     public BookIcon getIcon() {
         return this.icon;
+    }
+
+    public String getDescription() {
+        return this.description;
     }
 }

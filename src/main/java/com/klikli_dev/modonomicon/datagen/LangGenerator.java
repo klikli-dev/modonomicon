@@ -66,16 +66,21 @@ public abstract class LangGenerator extends LanguageProvider {
             this.addItem(ItemRegistry.MODONOMICON, "Modonomicon");
         }
 
-
         private void addAdvancements() {
             this.advancementTitle("root", "Modonomicon");
             this.advancementDescr("root", "The book of all books!");
+        }
+
+        private void addBooks(){
+            //TODO: convert this into a real data gen for books
+            this.add("modonomicon.test.entries.test_category.test_entry.description", "Test Description");
         }
 
         protected void addTranslations() {
             this.addMisc();
             this.addItems();
             this.addAdvancements();
+            this.addBooks();
         }
     }
 }
