@@ -69,7 +69,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             var newParents = new ArrayList<BookEntryParent>();
 
             for (var parent : entry.getParents()) {
-                newParents.add(new ResolvedBookEntryParent(entries.get(parent.getEntryId())));
+                var parentEntry = entries.get(parent.getEntryId());
+                newParents.add(new ResolvedBookEntryParent(parentEntry));
             }
 
             entry.setParents(newParents);
