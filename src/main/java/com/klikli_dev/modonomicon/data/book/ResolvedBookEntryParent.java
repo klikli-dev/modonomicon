@@ -24,7 +24,7 @@ public class ResolvedBookEntryParent extends BookEntryParent {
     protected BookEntry entry;
 
     public ResolvedBookEntryParent(BookEntry entry) {
-        super(null);
+        super(entry.getId());
         this.entry = entry;
     }
 
