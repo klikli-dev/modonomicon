@@ -28,7 +28,7 @@ import java.util.function.Supplier;
 
 public class MessageHandler {
 
-    public static <T extends IMessage> void handle(T message, Supplier<NetworkEvent.Context> ctx) {
+    public static <T extends Message> void handle(T message, Supplier<NetworkEvent.Context> ctx) {
         if (ctx.get().getDirection().getReceptionSide() == LogicalSide.SERVER) {
             ctx.get().enqueueWork(() -> {
                 handleServer(message, ctx);
@@ -43,7 +43,7 @@ public class MessageHandler {
         ctx.get().setPacketHandled(true);
     }
 
-    public static <T extends IMessage> void handleServer(T message, Supplier<NetworkEvent.Context> ctx) {
+    public static <T extends Message> void handleServer(T message, Supplier<NetworkEvent.Context> ctx) {
         MinecraftServer server = ctx.get().getSender().level.getServer();
         message.onServerReceived(server, ctx.get().getSender(), ctx.get());
     }

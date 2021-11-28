@@ -27,7 +27,7 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data;
 import com.klikli_dev.modonomicon.data.book.*;
-import com.klikli_dev.modonomicon.network.IMessage;
+import com.klikli_dev.modonomicon.network.Message;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.SyncBookDataMessage;
 import net.minecraft.resources.ResourceLocation;
@@ -93,7 +93,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         return this.entries.get(id);
     }
 
-    public IMessage getSyncMessage() {
+    public Message getSyncMessage() {
         return new SyncBookDataMessage(this.books, this.categories, this.entries);
     }
 
@@ -106,7 +106,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
     @SubscribeEvent
     public void onDatapackSync(OnDatapackSyncEvent event) {
-        IMessage syncMessage = this.getSyncMessage();
+        Message syncMessage = this.getSyncMessage();
 
         if (event.getPlayer() != null) {
             Networking.sendTo(event.getPlayer(), syncMessage);

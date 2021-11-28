@@ -27,7 +27,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
-public interface IMessage {
+public interface Message {
     void encode(FriendlyByteBuf buf);
 
     void decode(FriendlyByteBuf buf);
