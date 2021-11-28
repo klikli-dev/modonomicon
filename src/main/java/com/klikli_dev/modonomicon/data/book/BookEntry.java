@@ -40,7 +40,6 @@ public class BookEntry {
     protected int x;
     protected int y;
 
-    //TODO: Pages?
     //TODO: entry type for background texture
 
     public BookEntry(ResourceLocation id, String name, String description, BookIcon icon, int x, int y, BookCategory category, List<BookEntryParent> parents) {

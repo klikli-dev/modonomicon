@@ -21,9 +21,17 @@
 package com.klikli_dev.modonomicon.apiimpl;
 
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
+import com.klikli_dev.modonomicon.api.data.book.BookPageLoader;
+import com.klikli_dev.modonomicon.data.BookAssetManager;
+import net.minecraft.resources.ResourceLocation;
 
 public class ModonomiconAPIImpl implements ModonomiconAPI {
     public boolean isStub() {
         return false;
+    }
+
+    @Override
+    public void registerPageLoader(ResourceLocation id, BookPageLoader loader) {
+        BookAssetManager.get().registerPageLoader(id, loader);
     }
 }

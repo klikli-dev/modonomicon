@@ -18,30 +18,11 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.api.stub;
+package com.klikli_dev.modonomicon.api.data.book;
 
-
-import com.klikli_dev.modonomicon.api.ModonomiconAPI;
-import com.klikli_dev.modonomicon.api.data.book.BookPageLoader;
+import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 
-public class ModonomiconAPIStub implements ModonomiconAPI {
-    private static final ModonomiconAPIStub instance = new ModonomiconAPIStub();
-
-    private ModonomiconAPIStub() {
-    }
-
-    public static ModonomiconAPIStub get() {
-        return instance;
-    }
-
-    @Override
-    public boolean isStub() {
-        return true;
-    }
-
-    @Override
-    public void registerPageLoader(ResourceLocation id, BookPageLoader loader) {
-
-    }
+public interface BookPageLoader {
+    BookPage loadPage(ResourceLocation id, JsonObject json);
 }
