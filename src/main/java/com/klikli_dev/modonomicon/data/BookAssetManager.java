@@ -44,8 +44,6 @@ public class BookAssetManager extends SimpleJsonResourceReloadListener {
 
     private static final BookAssetManager instance = new BookAssetManager();
 
-    private Map<ResourceLocation, BookPageLoader<? extends BookPage>> pageLoaders = new HashMap<>();
-
     private boolean loaded;
 
     private BookAssetManager() {
@@ -74,17 +72,5 @@ public class BookAssetManager extends SimpleJsonResourceReloadListener {
         //TODO: when client side data loading is complete, link up content here to stuff in book data manager
 
         this.onLoaded();
-    }
-
-    public void registerDefaultPageLoaders(){
-        ModonomiconAPI.get().registerPageLoader(Page.TEXT, BookTextPage::fromJson);
-    }
-
-    public void registerPageLoader(ResourceLocation id, BookPageLoader<? extends BookPage> loader) {
-        this.pageLoaders.put(id, loader);
-    }
-
-    public BookPageLoader<? extends BookPage> getPageLoader(ResourceLocation id) {
-        return this.pageLoaders.get(id);
     }
 }

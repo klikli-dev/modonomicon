@@ -18,31 +18,32 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.api.stub;
+package com.klikli_dev.modonomicon.registry;
 
-
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.api.data.book.BookPage;
 import com.klikli_dev.modonomicon.api.data.book.BookPageLoader;
+import com.klikli_dev.modonomicon.data.book.pages.BookTextPage;
 import net.minecraft.resources.ResourceLocation;
 
-public class ModonomiconAPIStub implements ModonomiconAPI {
-    private static final ModonomiconAPIStub instance = new ModonomiconAPIStub();
+import java.util.HashMap;
+import java.util.Map;
 
-    private ModonomiconAPIStub() {
+public class BookPageLoaderRegistry {
+
+    private static Map<ResourceLocation, BookPageLoader<? extends BookPage>> pageLoaders = new HashMap<>();
+
+    public static void registerDefaultPageLoaders(){
+        ModonomiconAPI.get().registerPageLoader(Page.TEXT, BookTextPage::fromJson);
     }
 
-    public static ModonomiconAPIStub get() {
-        return instance;
+    public static void registerPageLoader(ResourceLocation id, BookPageLoader<? extends BookPage> loader) {
+        pageLoaders.put(id, loader);
     }
 
-    @Override
-    public boolean isStub() {
-        return true;
+    public static BookPageLoader<? extends BookPage> getPageLoader(ResourceLocation id) {
+        return pageLoaders.get(id);
     }
 
-    @Override
-    public void registerPageLoader(ResourceLocation id, BookPageLoader<? extends BookPage> loader) {
-
-    }
 }

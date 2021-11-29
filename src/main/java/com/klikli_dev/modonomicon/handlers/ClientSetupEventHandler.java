@@ -21,6 +21,7 @@
 package com.klikli_dev.modonomicon.handlers;
 
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.registry.BookPageLoaderRegistry;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -28,6 +29,9 @@ public class ClientSetupEventHandler {
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
+
+        BookPageLoaderRegistry.registerDefaultPageLoaders();
+
         registerItemModelProperties(event);
 
         //Not safe to call during parallel load, so register to run threadsafe.

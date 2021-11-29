@@ -105,8 +105,6 @@ public class Modonomicon {
     public void onCommonSetup(FMLCommonSetupEvent event) {
         Networking.registerMessages();
 
-        BookAssetManager.get().registerDefaultPageLoaders();
-
         LOGGER.info("Common setup complete.");
     }
 

@@ -21,7 +21,6 @@
 package com.klikli_dev.modonomicon.api.data.book;
 
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
 
 public interface BookPageLoader<T extends BookPage> {
     T loadPage(JsonObject json);
