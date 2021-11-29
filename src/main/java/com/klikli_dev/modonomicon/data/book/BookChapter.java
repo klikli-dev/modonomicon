@@ -22,6 +22,7 @@ package com.klikli_dev.modonomicon.data.book;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.data.book.BookPage;
+import com.klikli_dev.modonomicon.registry.BookPageLoaderRegistry;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -31,18 +32,35 @@ public class BookChapter {
     protected ResourceLocation id;
     protected ResourceLocation entryId;
     protected BookEntry entry;
+    protected ResourceLocation categoryId;
     protected BookCategory category;
-    protected List<BookPage> bookPages;
+    protected List<BookPage> pages;
 
-    public BookChapter(ResourceLocation id, ResourceLocation entryId, BookCategory category) {
+    public BookChapter(ResourceLocation id, ResourceLocation entryId, ResourceLocation categoryId) {
         this.id = id;
         this.entryId = entryId;
-        this.category = category;
-        this.bookPages = new ArrayList<>();
+        this.categoryId = categoryId;
+        this.pages = new ArrayList<>();
     }
 
     public static BookChapter fromJson(ResourceLocation id, JsonObject json) {
-        return null;
+        var entryId = new ResourceLocation(json.get("entry_id").getAsString());
+        var categoryId = new ResourceLocation(json.get("category_id").getAsString());
+
+        var pages = new ArrayList<BookPage>();
+        if (json.has("pages")) {
+            var jsonPages = json.get("pages").getAsJsonArray();
+            for (var pageElem : jsonPages) {
+                var page = pageElem.getAsJsonObject();
+                var type = new ResourceLocation(page.get("type").getAsString());
+                var loader = BookPageLoaderRegistry.getPageLoader(type);
+                pages.add(loader.loadPage(page));
+            }
+        }
+
+        var chapter = new BookChapter(id, entryId, categoryId);
+        chapter.setPages(pages);
+        return chapter;
     }
 
     public ResourceLocation getId() {
@@ -51,6 +69,10 @@ public class BookChapter {
 
     public BookCategory getCategory() {
         return this.category;
+    }
+
+    public void setCategory(BookCategory category) {
+        this.category = category;
     }
 
     public ResourceLocation getEntryId() {
@@ -63,5 +85,17 @@ public class BookChapter {
 
     public void setEntry(BookEntry entry) {
         this.entry = entry;
+    }
+
+    public ResourceLocation getCategoryId() {
+        return this.categoryId;
+    }
+
+    public List<BookPage> getPages() {
+        return this.pages;
+    }
+
+    public void setPages(List<BookPage> pages) {
+        this.pages = pages;
     }
 }
