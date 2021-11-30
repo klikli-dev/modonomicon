@@ -33,8 +33,10 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class BookAssetManager extends SimpleJsonResourceReloadListener {
@@ -43,8 +45,8 @@ public class BookAssetManager extends SimpleJsonResourceReloadListener {
 
     private static final BookAssetManager instance = new BookAssetManager();
 
+    //Store chapters by global id
     private final Map<ResourceLocation, BookChapter> chapters = new HashMap<>();
-    private final Map<ResourceLocation, BookChapter> entriesToChapters = new HashMap<>();
 
     private boolean loaded;
 
@@ -60,33 +62,46 @@ public class BookAssetManager extends SimpleJsonResourceReloadListener {
         return this.loaded;
     }
 
-    public BookChapter getChapter(ResourceLocation id) {
-        return this.chapters.get(id);
-    }
-
-    public BookChapter getChapterForEntryId(ResourceLocation entryId) {
-        return this.entriesToChapters.get(entryId);
-    }
-
-    public BookChapter getChapterForEntry(BookEntry entry) {
-        return this.getChapterForEntryId(entry.getId());
-    }
-
     /**
      * Call when both assets and data are loaded to check if each BookEntry has a corresponding BookChapter
      */
-    public void verifyChapters() {
-        BookDataManager.get().getEntries().values().forEach(entry -> {
-            if (!this.entriesToChapters.containsKey(entry.getId())) {
-                Modonomicon.LOGGER.error("Book entry {} has no corresponding chapter.", entry.getId());
-            }
-        } );
+    public void linkChaptersToBook(){
+
+        for(var chapter : this.chapters.entrySet()){
+            var pathParts = chapter.getKey().getPath().split("/");
+            var bookId = new ResourceLocation(chapter.getKey().getNamespace(), pathParts[0]);
+            var book = BookDataManager.get().getBook(bookId);
+            var entry = book.getEntry(chapter.getValue().getEntryId());
+            book.addChapter(chapter.getValue());
+            entry.setChapter(chapter.getValue());
+            entry.getCategory().addChapter(chapter.getValue());
+        }
+
+        this.verifyChaptersAndEntries();
+    }
+
+    public void verifyChaptersAndEntries(){
+        for(var book : BookDataManager.get().getBooks().values()){
+            //are all entries linked to a chapter?
+            book.getEntries().values().forEach(entry -> {
+                if(entry.getChapter() == null){
+                    Modonomicon.LOGGER.error("Book entry {} in book {} has no corresponding chapter.", entry.getId(), book.getId());
+                }
+            });
+
+            //are all chapters linked to an entry?
+            book.getChapters().values().forEach(chapter -> {
+                if(book.getEntry(chapter.getEntryId()) == null){
+                    Modonomicon.LOGGER.error("Book chapter {} in book {} has no corresponding entry.", chapter.getId(), book.getId());
+                }
+            });
+        }
     }
 
     protected void onLoaded() {
         this.loaded = true;
         if (BookDataManager.get().isLoaded()) {
-            this.verifyChapters();
+            this.linkChaptersToBook();
         }
     }
 
@@ -102,10 +117,11 @@ public class BookAssetManager extends SimpleJsonResourceReloadListener {
             var pathParts = entry.getKey().getPath().split("/");
 
             if (pathParts[1].equals("chapters")) {
-                //chapters use their global ID, including namespace
-                var chapter = this.loadChapter(entry.getKey(), entry.getValue().getAsJsonObject());
+                //chapter id skips the book id and the chapters directory
+                var localChapterId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
+                var chapter = this.loadChapter(localChapterId, entry.getValue().getAsJsonObject());
+                //we use global chapter id within the asset manager, but the localized one for use within the book
                 this.chapters.put(entry.getKey(), chapter);
-                this.entriesToChapters.put(chapter.getEntryId(), chapter);
             }
         }
 

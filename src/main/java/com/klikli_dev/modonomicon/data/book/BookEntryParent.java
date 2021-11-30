@@ -63,7 +63,7 @@ public class BookEntryParent {
     }
 
     public BookEntry getEntry() {
-        return BookDataManager.get().getEntry(this.entryId);
+        return null;
     }
 
     public ResourceLocation getEntryId() {

@@ -40,10 +40,7 @@ import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -54,8 +51,6 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     private static final BookDataManager instance = new BookDataManager();
 
     private Map<ResourceLocation, Book> books = new HashMap<>();
-    private Map<ResourceLocation, BookCategory> categories = new HashMap<>();
-    private Map<ResourceLocation, BookEntry> entries = new HashMap<>();
     private boolean loaded;
 
     private BookDataManager() {
@@ -66,16 +61,18 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         return instance;
     }
 
-    public static void resolveBookEntryParents(Map<ResourceLocation, BookEntry> entries) {
-        for (var entry : entries.values()) {
-            var newParents = new ArrayList<BookEntryParent>();
+    public static void resolveBookEntryParents(Collection<Book> books) {
+        for (var book : books) {
+            for (var entry : book.getEntries().values()) {
+                var newParents = new ArrayList<BookEntryParent>();
 
-            for (var parent : entry.getParents()) {
-                var parentEntry = entries.get(parent.getEntryId());
-                newParents.add(new ResolvedBookEntryParent(parentEntry));
+                for (var parent : entry.getParents()) {
+                    var parentEntry = book.getEntry(parent.getEntryId());
+                    newParents.add(new ResolvedBookEntryParent(parentEntry));
+                }
+
+                entry.setParents(newParents);
             }
-
-            entry.setParents(newParents);
         }
     }
 
@@ -91,22 +88,13 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         return this.books.get(id);
     }
 
-    public BookEntry getEntry(ResourceLocation id) {
-        return this.entries.get(id);
-    }
-
-    public BookCategory getCategory(ResourceLocation id) {
-        return this.categories.get(id);
-    }
 
     public Message getSyncMessage() {
-        return new SyncBookDataMessage(this.books, this.categories, this.entries);
+        return new SyncBookDataMessage(this.books);
     }
 
     public void onDatapackSyncPacket(SyncBookDataMessage message) {
         this.books = message.books;
-        this.categories = message.categories;
-        this.entries = message.entries;
         this.onLoaded();
     }
 
@@ -123,19 +111,11 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         }
     }
 
-    public Map<ResourceLocation, BookCategory> getCategories() {
-        return this.categories;
-    }
-
-    public Map<ResourceLocation, BookEntry> getEntries() {
-        return this.entries;
-    }
-
     protected void onLoaded() {
         this.loaded = true;
         //link book assets, but not on dedicated server
         if (FMLEnvironment.dist == Dist.CLIENT) {
-            BookAssetManager.get().verifyChapters();
+            BookAssetManager.get().linkChaptersToBook();
         }
     }
 
@@ -143,8 +123,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         return Book.fromJson(key, value);
     }
 
-    private BookCategory loadCategory(ResourceLocation key, JsonObject value, Book book) {
-        return BookCategory.fromJson(key, value, book);
+    private BookCategory loadCategory(ResourceLocation key, JsonObject value, ResourceLocation bookId) {
+        return BookCategory.fromJson(key, value, bookId);
     }
 
     private BookEntry loadEntry(ResourceLocation key, JsonObject value) {
@@ -180,8 +160,6 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     protected void apply(Map<ResourceLocation, JsonElement> content, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
         this.loaded = false;
         this.books.clear();
-        this.categories.clear();
-        this.entries.clear();
 
         //first, load all json entries
         var bookJsons = new HashMap<ResourceLocation, JsonObject>();
@@ -204,11 +182,12 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
             //category id skips the book id and the category directory
             var categoryId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
-            var category = this.loadCategory(categoryId, entry.getValue(), this.books.get(bookId));
-            //global category map needs to contain the full id including book id
-            this.categories.put(entry.getKey(), category);
-            //book category map only needs the localized id
-            category.getBook().getCategories().put(category.getId(), category);
+            var category = this.loadCategory(categoryId, entry.getValue(), bookId);
+
+            //link category and book
+            var book = this.books.get(bookId);
+            book.addCategory(category);
+            category.setBook(book);
         }
 
         //build entries
@@ -219,15 +198,16 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             //entry id skips the book id and the entries directory
             var entryId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
             var bookEntry = this.loadEntry(entryId, entry.getValue());
-            this.entries.put(bookEntry.getId(), bookEntry);
 
-            //link to category
-            bookEntry.setCategory(this.books.get(bookId).getCategories().get(bookEntry.getCategoryId()));
-            bookEntry.getCategory().addEntry(bookEntry);
+            //link entry and category
+            var book = this.books.get(bookId);
+            var category = book.getCategory(bookEntry.getCategoryId());
+            bookEntry.setCategory(category);
+            category.addEntry(bookEntry);
         }
 
         //resolve entry parents
-        resolveBookEntryParents(this.entries);
+        resolveBookEntryParents(this.books.values());
 
         this.onLoaded();
     }

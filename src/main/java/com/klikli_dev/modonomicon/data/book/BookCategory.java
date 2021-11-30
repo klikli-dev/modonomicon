@@ -31,6 +31,7 @@ import java.util.Map;
 
 public class BookCategory {
     protected ResourceLocation id;
+    protected ResourceLocation bookId;
     protected Book book;
     protected String name;
     protected BookIcon icon;
@@ -38,36 +39,38 @@ public class BookCategory {
     protected ResourceLocation background;
     protected ResourceLocation entryTextures;
     protected Map<ResourceLocation, BookEntry> entries;
+    protected Map<ResourceLocation, BookChapter> chapters;
     //TODO: additional backgrounds with custom rendertypes?
 
-    public BookCategory(ResourceLocation id, String name, int sortNumber, BookIcon icon, ResourceLocation background, ResourceLocation entryTextures, Book book) {
+    public BookCategory(ResourceLocation id, ResourceLocation bookId, String name, int sortNumber, BookIcon icon, ResourceLocation background, ResourceLocation entryTextures) {
         this.id = id;
-        this.book = book;
+        this.bookId = bookId;
         this.name = name;
         this.sortNumber = sortNumber;
         this.icon = icon;
         this.background = background;
         this.entryTextures = entryTextures;
         this.entries = new HashMap<>();
+        this.chapters = new HashMap<>();
     }
 
-    public static BookCategory fromJson(ResourceLocation id, JsonObject json, Book book) {
+    public static BookCategory fromJson(ResourceLocation id, JsonObject json, ResourceLocation bookId) {
         var name = json.get("name").getAsString();
         var sortNumber = GsonHelper.getAsInt(json, "sort_number", -1);
         var icon = BookIcon.fromJson(json.get("icon"));
         var background = new ResourceLocation(GsonHelper.getAsString(json, "background", Category.DEFAULT_BACKGROUND));
         var entryTextures = new ResourceLocation(GsonHelper.getAsString(json, "entry_textures", Category.DEFAULT_ENTRY_TEXTURES));
-        return new BookCategory(id, name, sortNumber, icon, background, entryTextures, book);
+        return new BookCategory(id, bookId, name, sortNumber, icon, background, entryTextures);
     }
 
-    public static BookCategory fromNetwork(ResourceLocation id, FriendlyByteBuf buffer, Map<ResourceLocation, Book> books) {
-        var book = books.get(buffer.readResourceLocation());
+    public static BookCategory fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
+        var bookId = buffer.readResourceLocation();
         var name = buffer.readUtf();
         var sortNumber = buffer.readInt();
         var icon = BookIcon.fromNetwork(buffer);
         var background = buffer.readResourceLocation();
         var entryTextures = buffer.readResourceLocation();
-        return new BookCategory(id, name, sortNumber, icon, background, entryTextures, book);
+        return new BookCategory(id, bookId, name, sortNumber, icon, background, entryTextures);
     }
 
     public ResourceLocation getId() {
@@ -76,6 +79,10 @@ public class BookCategory {
 
     public Book getBook() {
         return this.book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
     }
 
     public String getName() {
@@ -104,6 +111,23 @@ public class BookCategory {
 
     public void addEntry(BookEntry entry) {
         this.entries.putIfAbsent(entry.id, entry);
+        this.book.addEntry(entry);
+    }
+
+    public BookEntry getEntry(ResourceLocation id) {
+        return this.entries.get(id);
+    }
+
+    public void addChapter(BookChapter chapter) {
+        this.chapters.putIfAbsent(chapter.id, chapter);
+    }
+
+    public BookChapter getChapter(ResourceLocation id) {
+        return this.chapters.get(id);
+    }
+
+    public Map<ResourceLocation, BookChapter> getChapters() {
+        return this.chapters;
     }
 
     public void toNetwork(FriendlyByteBuf buffer) {
@@ -113,5 +137,9 @@ public class BookCategory {
         this.icon.toNetwork(buffer);
         buffer.writeResourceLocation(this.background);
         buffer.writeResourceLocation(this.entryTextures);
+    }
+
+    public ResourceLocation getBookId() {
+        return this.bookId;
     }
 }

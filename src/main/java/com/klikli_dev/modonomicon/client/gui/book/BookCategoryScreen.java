@@ -135,7 +135,7 @@ public class BookCategoryScreen {
         float yOffset = this.getYOffset();
         for (var entry : this.category.getEntries().values()) {
             if(this.isEntryHovered(entry, xOffset, yOffset, (int)pMouseX, (int)pMouseY)){
-                var chapter = BookAssetManager.get().getChapterForEntry(entry);
+                var chapter = entry.getChapter();
                 return true;
             }
         }
