@@ -55,9 +55,9 @@ public class BookCategory {
     }
 
     public static BookCategory fromJson(ResourceLocation id, JsonObject json, ResourceLocation bookId) {
-        var name = json.get("name").getAsString();
+        var name = GsonHelper.getAsString(json,"name");
         var sortNumber = GsonHelper.getAsInt(json, "sort_number", -1);
-        var icon = BookIcon.fromJson(json.get("icon"));
+        var icon = BookIcon.fromString(GsonHelper.getAsString(json, "icon"));
         var background = new ResourceLocation(GsonHelper.getAsString(json, "background", Category.DEFAULT_BACKGROUND));
         var entryTextures = new ResourceLocation(GsonHelper.getAsString(json, "entry_textures", Category.DEFAULT_ENTRY_TEXTURES));
         return new BookCategory(id, bookId, name, sortNumber, icon, background, entryTextures);

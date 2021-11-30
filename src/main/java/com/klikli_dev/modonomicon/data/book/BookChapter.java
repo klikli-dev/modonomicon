@@ -20,6 +20,7 @@
 
 package com.klikli_dev.modonomicon.data.book;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.data.book.BookPage;
 import com.klikli_dev.modonomicon.registry.BookPageLoaderRegistry;
@@ -47,10 +48,10 @@ public class BookChapter {
 
         var pages = new ArrayList<BookPage>();
         if (json.has("pages")) {
-            var jsonPages = json.get("pages").getAsJsonArray();
+            var jsonPages = GsonHelper.getAsJsonArray(json, "pages");
             for (var pageElem : jsonPages) {
-                var page = pageElem.getAsJsonObject();
-                var type = new ResourceLocation(page.get("type").getAsString());
+                var page = GsonHelper.convertToJsonObject(pageElem, "page");
+                var type = new ResourceLocation(GsonHelper.getAsString(page, "type"));
                 var loader = BookPageLoaderRegistry.getPageLoader(type);
                 pages.add(loader.loadPage(page));
             }

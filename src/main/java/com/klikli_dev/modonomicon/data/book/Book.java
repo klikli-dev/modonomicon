@@ -50,7 +50,7 @@ public class Book {
     }
 
     public static Book fromJson(ResourceLocation id, JsonObject json) {
-        var name = json.get("name").getAsString();
+        var name = GsonHelper.getAsString(json,"name");
         var bookTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_texture", Data.Book.DEFAULT_TEXTURE));
         return new Book(id, name, bookTexture);
     }
