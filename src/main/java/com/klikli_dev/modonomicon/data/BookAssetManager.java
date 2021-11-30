@@ -71,10 +71,15 @@ public class BookAssetManager extends SimpleJsonResourceReloadListener {
             var pathParts = chapter.getKey().getPath().split("/");
             var bookId = new ResourceLocation(chapter.getKey().getNamespace(), pathParts[0]);
             var book = BookDataManager.get().getBook(bookId);
-            var entry = book.getEntry(chapter.getValue().getEntryId());
             book.addChapter(chapter.getValue());
-            entry.setChapter(chapter.getValue());
-            entry.getCategory().addChapter(chapter.getValue());
+
+            var entry = book.getEntry(chapter.getValue().getEntryId());
+
+            if(entry != null) {
+                chapter.getValue().setEntry(entry);
+                entry.setChapter(chapter.getValue());
+                entry.getCategory().addChapter(chapter.getValue());
+            }
         }
 
         this.verifyChaptersAndEntries();
