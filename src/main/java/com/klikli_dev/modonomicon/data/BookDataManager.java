@@ -35,8 +35,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -93,6 +95,10 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         return this.entries.get(id);
     }
 
+    public BookCategory getCategory(ResourceLocation id) {
+        return this.categories.get(id);
+    }
+
     public Message getSyncMessage() {
         return new SyncBookDataMessage(this.books, this.categories, this.entries);
     }
@@ -117,20 +123,32 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         }
     }
 
+    public Map<ResourceLocation, BookCategory> getCategories() {
+        return this.categories;
+    }
+
+    public Map<ResourceLocation, BookEntry> getEntries() {
+        return this.entries;
+    }
+
     protected void onLoaded() {
         this.loaded = true;
+        //link book assets, but not on dedicated server
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            BookAssetManager.get().verifyChapters();
+        }
     }
 
     private Book loadBook(ResourceLocation key, JsonObject value) {
-        return Book.fromJson(key, value.getAsJsonObject());
+        return Book.fromJson(key, value);
     }
 
     private BookCategory loadCategory(ResourceLocation key, JsonObject value, Book book) {
-        return BookCategory.fromJson(key, value.getAsJsonObject(), book);
+        return BookCategory.fromJson(key, value, book);
     }
 
     private BookEntry loadEntry(ResourceLocation key, JsonObject value) {
-        return BookEntry.fromJson(key, value.getAsJsonObject());
+        return BookEntry.fromJson(key, value);
     }
 
     private void categorizeContent(Map<ResourceLocation, JsonElement> content,

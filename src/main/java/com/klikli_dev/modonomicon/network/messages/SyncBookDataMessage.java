@@ -96,9 +96,11 @@ public class SyncBookDataMessage implements Message {
         int entryCount = buf.readInt();
         for (int i = 0; i < entryCount; i++) {
             ResourceLocation key = buf.readResourceLocation();
-            BookEntry entry = BookEntry.fromNetwork(key, buf, this.categories);
-            this.entries.put(key, entry);
-            entry.getCategory().getEntries().put(entry.getId(), entry);
+            BookEntry bookEntry = BookEntry.fromNetwork(key, buf, this.categories);
+            this.entries.put(key, bookEntry);
+
+            bookEntry.setCategory(this.categories.get(bookEntry.getCategoryId()));
+            bookEntry.getCategory().getEntries().put(bookEntry.getId(), bookEntry);
         }
 
         //resolve entry parents

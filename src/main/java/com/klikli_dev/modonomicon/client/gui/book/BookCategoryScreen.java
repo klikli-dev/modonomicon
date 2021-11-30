@@ -21,7 +21,9 @@
 package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.config.ClientConfig;
+import com.klikli_dev.modonomicon.data.BookAssetManager;
 import com.klikli_dev.modonomicon.data.book.BookCategory;
+import com.klikli_dev.modonomicon.data.book.BookChapter;
 import com.klikli_dev.modonomicon.data.book.BookEntry;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -73,6 +75,14 @@ public class BookCategoryScreen {
         this.loadCategorySettings();
     }
 
+    public float getXOffset(){
+        return ((this.bookScreen.getInnerWidth() / 2f) * (1 / this.currentZoom)) - this.scrollX / 2;
+    }
+
+    public float getYOffset(){
+        return ((this.bookScreen.getInnerHeight() / 2f) * (1 / this.currentZoom)) - this.scrollY / 2;
+    }
+
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         if (ClientConfig.get().qolCategory.enableSmoothZoom.get()) {
             float diff = this.targetZoom - this.currentZoom;
@@ -119,6 +129,21 @@ public class BookCategoryScreen {
         }
     }
 
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+
+        float xOffset = this.getXOffset();
+        float yOffset = this.getYOffset();
+        for (var entry : this.category.getEntries().values()) {
+            if(this.isEntryHovered(entry, xOffset, yOffset, (int)pMouseX, (int)pMouseY)){
+                var chapter = BookAssetManager.get().getChapterForEntry(entry);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
     public void renderBackground(PoseStack poseStack) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -153,8 +178,8 @@ public class BookCategoryScreen {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
         //calculate the render offset
-        float xOffset = ((this.bookScreen.getInnerWidth() / 2f) * (1 / this.currentZoom)) - this.scrollX / 2;
-        float yOffset = ((this.bookScreen.getInnerHeight() / 2f) * (1 / this.currentZoom)) - this.scrollY / 2;
+        float xOffset = this.getXOffset();
+        float yOffset = this.getYOffset();
 
         stack.pushPose();
         stack.scale(this.currentZoom, this.currentZoom, 1.0f);
@@ -186,8 +211,8 @@ public class BookCategoryScreen {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
         //calculate the render offset
-        float xOffset = ((this.bookScreen.getInnerWidth() / 2f) * (1 / this.currentZoom)) - this.scrollX / 2;
-        float yOffset = ((this.bookScreen.getInnerHeight() / 2f) * (1 / this.currentZoom)) - this.scrollY / 2;
+        float xOffset = this.getXOffset();
+        float yOffset = this.getYOffset();
 
         for (var entry : this.category.getEntries().values()) {
             //TODO: handle hidden entries + don't draw their tooltip
@@ -211,7 +236,7 @@ public class BookCategoryScreen {
     private void renderTooltip(PoseStack stack, BookEntry entry, float xOffset, float yOffset, int mouseX, int mouseY) {
         //hovered?
         if (this.isEntryHovered(entry, xOffset, yOffset, mouseX, mouseY)) {
-            //TODO: Draw tooltip
+
             //draw name
             var tooltip = new ArrayList<Component>();
             tooltip.add(new TranslatableComponent(entry.getName()).withStyle(ChatFormatting.BOLD));

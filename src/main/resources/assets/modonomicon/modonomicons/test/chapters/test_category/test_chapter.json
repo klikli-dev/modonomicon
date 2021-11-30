@@ -1,6 +1,5 @@
 {
   "entry": "modonomicon:entries/test_category/test_entry",
-  "category": "modonomicon:test_category",
   "pages": [
     {
       "type": "modonomicon:text",
