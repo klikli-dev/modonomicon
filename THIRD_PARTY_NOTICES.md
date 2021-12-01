@@ -19,4 +19,16 @@ License Text: https://www.gnu.org/licenses/lgpl-3.0.txt
 
 ## Third Party Assets
 
-All resources not explicitly listed below are available under the terms of the license of this project, see [LICENSE](./LICENSE).
+### Patchouli
+
+Usage: Some of the rending code is based on Patchouli's Book rendering. Some book assets are based on Patchouli's textures. 
+
+Version: [ca6146d57edfaa465a0c837555743c2c1068b1cd](https://github.com/VazkiiMods/Patchouli/commit/ca6146d57edfaa465a0c837555743c2c1068b1cd)
+
+Website: https://github.com/ArcanaMod/Arcana   
+License: [CC-BY-NC-SA-3.0](https://github.com/VazkiiMods/Patchouli/blob/1.18.x-fabric/LICENSE).  
+> Please note as per [#388](https://github.com/VazkiiMods/Patchouli/issues/388) the license will change to MIT for code and CC-BY-SA-4.0 for assets.  
+
+License Text: https://github.com/VazkiiMods/Patchouli/blob/1.18.x-fabric/LICENSE
+
+All resources not explicitly listed below are available under the terms of the licenses of this project, see [README.md](./README.md#licensing).
