@@ -27,7 +27,7 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data;
 import com.klikli_dev.modonomicon.data.book.*;
-import com.klikli_dev.modonomicon.network.IMessage;
+import com.klikli_dev.modonomicon.network.Message;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.SyncBookDataMessage;
 import net.minecraft.resources.ResourceLocation;
@@ -35,13 +35,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -52,8 +51,6 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     private static final BookDataManager instance = new BookDataManager();
 
     private Map<ResourceLocation, Book> books = new HashMap<>();
-    private Map<ResourceLocation, BookCategory> categories = new HashMap<>();
-    private Map<ResourceLocation, BookEntry> entries = new HashMap<>();
     private boolean loaded;
 
     private BookDataManager() {
@@ -64,16 +61,18 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         return instance;
     }
 
-    public static void resolveBookEntryParents(Map<ResourceLocation, BookEntry> entries) {
-        for (var entry : entries.values()) {
-            var newParents = new ArrayList<BookEntryParent>();
+    public static void resolveBookEntryParents(Collection<Book> books) {
+        for (var book : books) {
+            for (var entry : book.getEntries().values()) {
+                var newParents = new ArrayList<BookEntryParent>();
 
-            for (var parent : entry.getParents()) {
-                var parentEntry = entries.get(parent.getEntryId());
-                newParents.add(new ResolvedBookEntryParent(parentEntry));
+                for (var parent : entry.getParents()) {
+                    var parentEntry = book.getEntry(parent.getEntryId());
+                    newParents.add(new ResolvedBookEntryParent(parentEntry));
+                }
+
+                entry.setParents(newParents);
             }
-
-            entry.setParents(newParents);
         }
     }
 
@@ -89,24 +88,19 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         return this.books.get(id);
     }
 
-    public BookEntry getEntry(ResourceLocation id) {
-        return this.entries.get(id);
-    }
 
-    public IMessage getSyncMessage() {
-        return new SyncBookDataMessage(this.books, this.categories, this.entries);
+    public Message getSyncMessage() {
+        return new SyncBookDataMessage(this.books);
     }
 
     public void onDatapackSyncPacket(SyncBookDataMessage message) {
         this.books = message.books;
-        this.categories = message.categories;
-        this.entries = message.entries;
         this.onLoaded();
     }
 
     @SubscribeEvent
     public void onDatapackSync(OnDatapackSyncEvent event) {
-        IMessage syncMessage = this.getSyncMessage();
+        Message syncMessage = this.getSyncMessage();
 
         if (event.getPlayer() != null) {
             Networking.sendTo(event.getPlayer(), syncMessage);
@@ -119,18 +113,22 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
     protected void onLoaded() {
         this.loaded = true;
+        //link book assets, but not on dedicated server
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            BookAssetManager.get().linkChaptersToBook();
+        }
     }
 
     private Book loadBook(ResourceLocation key, JsonObject value) {
-        return Book.fromJson(key, value.getAsJsonObject());
+        return Book.fromJson(key, value);
     }
 
-    private BookCategory loadCategory(ResourceLocation key, JsonObject value, Book book) {
-        return BookCategory.fromJson(key, value.getAsJsonObject(), book);
+    private BookCategory loadCategory(ResourceLocation key, JsonObject value, ResourceLocation bookId) {
+        return BookCategory.fromJson(key, value, bookId);
     }
 
-    private BookEntry loadEntry(ResourceLocation key, JsonObject value, Map<ResourceLocation, BookCategory> categories) {
-        return BookEntry.fromJson(key, value.getAsJsonObject(), categories);
+    private BookEntry loadEntry(ResourceLocation key, JsonObject value) {
+        return BookEntry.fromJson(key, value);
     }
 
     private void categorizeContent(Map<ResourceLocation, JsonElement> content,
@@ -162,8 +160,6 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     protected void apply(Map<ResourceLocation, JsonElement> content, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
         this.loaded = false;
         this.books.clear();
-        this.categories.clear();
-        this.entries.clear();
 
         //first, load all json entries
         var bookJsons = new HashMap<ResourceLocation, JsonObject>();
@@ -186,10 +182,12 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
             //category id skips the book id and the category directory
             var categoryId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
-            var category = this.loadCategory(categoryId, entry.getValue(), this.books.get(bookId));
-            this.categories.put(category.getId(), category);
+            var category = this.loadCategory(categoryId, entry.getValue(), bookId);
 
-            category.getBook().getCategories().put(category.getId(), category);
+            //link category and book
+            var book = this.books.get(bookId);
+            book.addCategory(category);
+            category.setBook(book);
         }
 
         //build entries
@@ -199,14 +197,17 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
             //entry id skips the book id and the entries directory
             var entryId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
-            var bookEntry = this.loadEntry(entryId, entry.getValue(), this.books.get(bookId).getCategories());
-            this.entries.put(bookEntry.getId(), bookEntry);
+            var bookEntry = this.loadEntry(entryId, entry.getValue());
 
-            bookEntry.getCategory().addEntry(bookEntry);
+            //link entry and category
+            var book = this.books.get(bookId);
+            var category = book.getCategory(bookEntry.getCategoryId());
+            bookEntry.setCategory(category);
+            category.addEntry(bookEntry);
         }
 
         //resolve entry parents
-        resolveBookEntryParents(this.entries);
+        resolveBookEntryParents(this.books.values());
 
         this.onLoaded();
     }

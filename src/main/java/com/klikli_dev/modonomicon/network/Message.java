@@ -21,14 +21,23 @@
 package com.klikli_dev.modonomicon.network;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
-import java.util.function.Supplier;
+public interface Message {
+    void encode(FriendlyByteBuf buf);
 
-public class ClientMessageHandler {
+    void decode(FriendlyByteBuf buf);
 
-    public static <T extends Message> void handleClient(T message, Supplier<NetworkEvent.Context> ctx) {
-        Minecraft minecraft = Minecraft.getInstance();
-        message.onClientReceived(minecraft, minecraft.player, ctx.get());
+    default void onClientReceived(Minecraft minecraft, Player player, NetworkEvent.Context context) {
+
+    }
+
+    default void onServerReceived(MinecraftServer minecraftServer, ServerPlayer player,
+                                  NetworkEvent.Context context) {
+
     }
 }

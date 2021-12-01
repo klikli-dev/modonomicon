@@ -24,6 +24,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.config.CommonConfig;
 import com.klikli_dev.modonomicon.config.ServerConfig;
+import com.klikli_dev.modonomicon.data.BookAssetManager;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
 import com.klikli_dev.modonomicon.handlers.ClientSetupEventHandler;
@@ -98,13 +99,12 @@ public class Modonomicon {
     }
 
     public void onRegisterClientReloadListeners(RegisterClientReloadListenersEvent event) {
-
+        event.registerReloadListener(BookAssetManager.get());
     }
-
-    //RegisterClientReloadListenersEvent
 
     public void onCommonSetup(FMLCommonSetupEvent event) {
         Networking.registerMessages();
+
         LOGGER.info("Common setup complete.");
     }
 

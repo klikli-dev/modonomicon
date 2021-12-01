@@ -26,6 +26,7 @@ public class ModonimiconConstants {
 
     public static class Data {
         public static final String MODONOMICON_DATA_PATH = ModonomiconAPI.ID + "s";
+        public static final String MODONOMICON_ASSET_PATH = ModonomiconAPI.ID + "s";
 
         public static class Book {
             public static final String DEFAULT_TEXTURE = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/book.png").toString();
@@ -34,6 +35,10 @@ public class ModonimiconConstants {
         public static class Category {
             public static final String DEFAULT_BACKGROUND = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/dark_slate_seamless.png").toString();
             public static final String DEFAULT_ENTRY_TEXTURES = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/entry_textures.png").toString();
+        }
+
+        public static class Page {
+            public static final ResourceLocation TEXT = new ResourceLocation(ModonomiconAPI.ID, "text");
         }
     }
 

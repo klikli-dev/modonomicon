@@ -24,7 +24,7 @@ import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.data.book.Book;
 import com.klikli_dev.modonomicon.data.book.BookCategory;
 import com.klikli_dev.modonomicon.data.book.BookEntry;
-import com.klikli_dev.modonomicon.network.IMessage;
+import com.klikli_dev.modonomicon.network.Message;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -34,18 +34,12 @@ import net.minecraftforge.fmllegacy.network.NetworkEvent.Context;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SyncBookDataMessage implements IMessage {
+public class SyncBookDataMessage implements Message {
 
     public Map<ResourceLocation, Book> books = new HashMap<>();
-    public Map<ResourceLocation, BookCategory> categories = new HashMap<>();
-    public Map<ResourceLocation, BookEntry> entries = new HashMap<>();
 
-    public SyncBookDataMessage(Map<ResourceLocation, Book> books,
-                               Map<ResourceLocation, BookCategory> categories,
-                               Map<ResourceLocation, BookEntry> entries) {
+    public SyncBookDataMessage(Map<ResourceLocation, Book> books) {
         this.books = books;
-        this.categories = categories;
-        this.entries = entries;
     }
 
     public SyncBookDataMessage(FriendlyByteBuf buf) {
@@ -55,21 +49,21 @@ public class SyncBookDataMessage implements IMessage {
     @Override
     public void encode(FriendlyByteBuf buf) {
         buf.writeInt(this.books.size());
-        for (Map.Entry<ResourceLocation, Book> entry : this.books.entrySet()) {
-            buf.writeResourceLocation(entry.getKey());
-            entry.getValue().toNetwork(buf);
-        }
+        for (var book : this.books.values()) {
+            buf.writeResourceLocation(book.getId());
+            book.toNetwork(buf);
 
-        buf.writeInt(this.categories.size());
-        for (Map.Entry<ResourceLocation, BookCategory> entry : this.categories.entrySet()) {
-            buf.writeResourceLocation(entry.getKey());
-            entry.getValue().toNetwork(buf);
-        }
+            buf.writeInt(book.getCategories().size());
+            for(var category : book.getCategories().values()) {
+                buf.writeResourceLocation(category.getId());
+                category.toNetwork(buf);
 
-        buf.writeInt(this.entries.size());
-        for (Map.Entry<ResourceLocation, BookEntry> entry : this.entries.entrySet()) {
-            buf.writeResourceLocation(entry.getKey());
-            entry.getValue().toNetwork(buf);
+                buf.writeInt(book.getEntries().size());
+                for(var entry : category.getEntries().values()) {
+                    buf.writeResourceLocation(entry.getId());
+                    entry.toNetwork(buf);
+                }
+            }
         }
     }
 
@@ -78,31 +72,33 @@ public class SyncBookDataMessage implements IMessage {
         //build books
         int bookCount = buf.readInt();
         for (int i = 0; i < bookCount; i++) {
-            ResourceLocation key = buf.readResourceLocation();
-            Book book = Book.fromNetwork(key, buf);
-            this.books.put(key, book);
-        }
+            ResourceLocation bookId = buf.readResourceLocation();
+            Book book = Book.fromNetwork(bookId, buf);
+            this.books.put(bookId, book);
 
-        //build categories
-        int categoryCount = buf.readInt();
-        for (int i = 0; i < categoryCount; i++) {
-            ResourceLocation key = buf.readResourceLocation();
-            BookCategory category = BookCategory.fromNetwork(key, buf, this.books);
-            this.categories.put(key, category);
-            category.getBook().getCategories().put(category.getId(), category);
-        }
+            int categoryCount = buf.readInt();
+            for (int j = 0; j< categoryCount; j++) {
+                ResourceLocation categoryId = buf.readResourceLocation();
+                BookCategory category = BookCategory.fromNetwork(categoryId, buf);
 
-        //build entries
-        int entryCount = buf.readInt();
-        for (int i = 0; i < entryCount; i++) {
-            ResourceLocation key = buf.readResourceLocation();
-            BookEntry entry = BookEntry.fromNetwork(key, buf, this.categories);
-            this.entries.put(key, entry);
-            entry.getCategory().getEntries().put(entry.getId(), entry);
+                //link category and book
+                book.addCategory(category);
+                category.setBook(book);
+
+                int entryCount = buf.readInt();
+                for (int k = 0; k < entryCount; k++) {
+                    ResourceLocation entryId = buf.readResourceLocation();
+                    BookEntry bookEntry = BookEntry.fromNetwork(entryId, buf);
+
+                    //link entry and category
+                    bookEntry.setCategory(category);
+                    category.addEntry(bookEntry);
+                }
+            }
         }
 
         //resolve entry parents
-        BookDataManager.resolveBookEntryParents(this.entries);
+        BookDataManager.resolveBookEntryParents(this.books.values());
     }
 
 

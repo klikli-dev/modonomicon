@@ -20,7 +20,10 @@
 
 package com.klikli_dev.modonomicon.api;
 
+import com.klikli_dev.modonomicon.api.data.book.BookPage;
+import com.klikli_dev.modonomicon.api.data.book.BookPageLoader;
 import com.klikli_dev.modonomicon.api.stub.ModonomiconAPIStub;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.Lazy;
 import org.apache.logging.log4j.LogManager;
 
@@ -37,6 +40,12 @@ public interface ModonomiconAPI {
      * False if a real API instance is provided
      */
     boolean isStub();
+
+    /**
+     * Registers a book page loader.
+     * Call in {@link net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent}
+     */
+    void registerPageLoader(ResourceLocation id, BookPageLoader<? extends BookPage> loader);
 
     class Helper {
         private static final Lazy<ModonomiconAPI> lazyInstance = Lazy.concurrentOf(() -> {

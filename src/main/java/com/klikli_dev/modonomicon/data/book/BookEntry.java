@@ -28,11 +28,12 @@ import net.minecraft.util.GsonHelper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class BookEntry {
     protected ResourceLocation id;
+    protected ResourceLocation categoryId;
     protected BookCategory category;
+    protected BookChapter chapter;
     protected List<BookEntryParent> parents;
     protected String name;
     protected String description;
@@ -40,27 +41,26 @@ public class BookEntry {
     protected int x;
     protected int y;
 
-    //TODO: Pages?
     //TODO: entry type for background texture
 
-    public BookEntry(ResourceLocation id, String name, String description, BookIcon icon, int x, int y, BookCategory category, List<BookEntryParent> parents) {
+    public BookEntry(ResourceLocation id, ResourceLocation categoryId, String name, String description, BookIcon icon, int x, int y, List<BookEntryParent> parents) {
         this.id = id;
+        this.categoryId = categoryId;
         this.name = name;
         this.description = description;
         this.icon = icon;
         this.x = x;
         this.y = y;
-        this.category = category;
         this.parents = parents;
     }
 
-    public static BookEntry fromJson(ResourceLocation id, JsonObject json, Map<ResourceLocation, BookCategory> categories) {
-        var name = json.get("name").getAsString();
+    public static BookEntry fromJson(ResourceLocation id, JsonObject json) {
+        var categoryId = new ResourceLocation(GsonHelper.getAsString(json, "category"));
+        var name = GsonHelper.getAsString(json, "name");
         var description = GsonHelper.getAsString(json, "description", "");
-        var icon = BookIcon.fromJson(json.get("icon"));
+        var icon =BookIcon.fromString(GsonHelper.getAsString(json, "icon"));
         var x = GsonHelper.getAsInt(json, "x");
         var y = GsonHelper.getAsInt(json, "y");
-        var category = categories.get(new ResourceLocation(GsonHelper.getAsString(json, "category")));
 
         var parentEntries = new ArrayList<BookEntryParent>();
 
@@ -71,16 +71,16 @@ public class BookEntry {
             }
         }
 
-        return new BookEntry(id, name, description, icon, x, y, category, parentEntries);
+        return new BookEntry(id, categoryId, name, description, icon, x, y, parentEntries);
     }
 
-    public static BookEntry fromNetwork(ResourceLocation id, FriendlyByteBuf buffer, Map<ResourceLocation, BookCategory> categories) {
+    public static BookEntry fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
+        var categoryId = buffer.readResourceLocation();
         var name = buffer.readUtf();
         var description = buffer.readUtf();
         var icon = BookIcon.fromNetwork(buffer);
         var x = buffer.readInt();
         var y = buffer.readInt();
-        var category = categories.get(buffer.readResourceLocation());
 
         var parentEntries = new ArrayList<BookEntryParent>();
 
@@ -89,16 +89,16 @@ public class BookEntry {
             parentEntries.add(BookEntryParent.fromNetwork(buffer));
         }
 
-        return new BookEntry(id, name, description, icon, x, y, category, parentEntries);
+        return new BookEntry(id, categoryId, name, description, icon, x, y, parentEntries);
     }
 
     public void toNetwork(FriendlyByteBuf buffer) {
+        buffer.writeResourceLocation(this.categoryId);
         buffer.writeUtf(this.name);
         buffer.writeUtf(this.description);
         this.icon.toNetwork(buffer);
         buffer.writeInt(this.x);
         buffer.writeInt(this.y);
-        buffer.writeResourceLocation(this.category.getId());
         buffer.writeInt(this.parents.size());
         for (var parent : this.parents) {
             parent.toNetwork(buffer);
@@ -117,8 +117,16 @@ public class BookEntry {
         return this.id;
     }
 
+    public ResourceLocation getCategoryId() {
+        return this.categoryId;
+    }
+
     public BookCategory getCategory() {
         return this.category;
+    }
+
+    public void setCategory(BookCategory category) {
+        this.category = category;
     }
 
     public List<BookEntryParent> getParents() {
@@ -139,5 +147,13 @@ public class BookEntry {
 
     public String getDescription() {
         return this.description;
+    }
+
+    public BookChapter getChapter() {
+        return this.chapter;
+    }
+
+    public void setChapter(BookChapter chapter) {
+        this.chapter = chapter;
     }
 }

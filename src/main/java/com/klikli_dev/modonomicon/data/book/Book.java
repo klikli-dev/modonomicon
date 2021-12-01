@@ -36,6 +36,8 @@ public class Book {
     protected String name;
     protected ResourceLocation bookTexture;
     protected Map<ResourceLocation, BookCategory> categories;
+    protected Map<ResourceLocation, BookEntry> entries;
+    protected Map<ResourceLocation, BookChapter> chapters;
     //TODO: further properties for customization, such as book item, ...
 
     public Book(ResourceLocation id, String name, ResourceLocation bookTexture) {
@@ -43,16 +45,32 @@ public class Book {
         this.name = name;
         this.bookTexture = bookTexture;
         this.categories = new HashMap<>();
+        this.entries = new HashMap<>();
+        this.chapters = new HashMap<>();
     }
 
     public static Book fromJson(ResourceLocation id, JsonObject json) {
-        var name = json.get("name").getAsString();
+        var name = GsonHelper.getAsString(json,"name");
         var bookTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_texture", Data.Book.DEFAULT_TEXTURE));
+        return new Book(id, name, bookTexture);
+    }
+
+    public static Book fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
+        var name = buffer.readUtf();
+        var bookTexture = buffer.readResourceLocation();
         return new Book(id, name, bookTexture);
     }
 
     public ResourceLocation getId() {
         return this.id;
+    }
+
+    public void addCategory(BookCategory category) {
+        this.categories.putIfAbsent(category.id, category);
+    }
+
+    public BookCategory getCategory(ResourceLocation id) {
+        return this.categories.get(id);
     }
 
     public Map<ResourceLocation, BookCategory> getCategories() {
@@ -63,18 +81,36 @@ public class Book {
         return this.categories.values().stream().sorted(Comparator.comparingInt(BookCategory::getSortNumber)).toList();
     }
 
+    public void addEntry(BookEntry entry) {
+        this.entries.putIfAbsent(entry.id, entry);
+    }
+
+    public BookEntry getEntry(ResourceLocation id) {
+        return this.entries.get(id);
+    }
+
+    public Map<ResourceLocation, BookEntry> getEntries() {
+        return this.entries;
+    }
+
+    public void addChapter(BookChapter chapter) {
+        this.chapters.putIfAbsent(chapter.id, chapter);
+    }
+
+    public BookChapter getChapter(ResourceLocation id) {
+        return this.chapters.get(id);
+    }
+
+    public Map<ResourceLocation, BookChapter> getChapters() {
+        return this.chapters;
+    }
+
     public String getName() {
         return this.name;
     }
 
     public ResourceLocation getBookTexture() {
         return this.bookTexture;
-    }
-
-    public static Book fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
-        var name = buffer.readUtf();
-        var bookTexture = buffer.readResourceLocation();
-        return new Book(id, name, bookTexture);
     }
 
     public void toNetwork(FriendlyByteBuf buffer) {

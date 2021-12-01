@@ -28,6 +28,7 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -46,8 +47,7 @@ public class BookIcon {
         this.itemStack = ItemStack.EMPTY;
     }
 
-    public static BookIcon fromJson(JsonElement json) {
-        String value = json.getAsString();
+    public static BookIcon fromString(String value) {
         if (value.endsWith(".png")) {
             return new BookIcon(new ResourceLocation(value));
         } else {

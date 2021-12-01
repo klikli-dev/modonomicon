@@ -206,6 +206,13 @@ public class BookScreen extends Screen {
     }
 
     @Override
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        //ignore return value, because we need our base class to handle dragging and such
+        this.getCurrentCategoryScreen().mouseClicked(pMouseX, pMouseY, pButton);
+        return super.mouseClicked(pMouseX, pMouseY, pButton);
+    }
+
+    @Override
     public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
         this.getCurrentCategoryScreen().zoom(pDelta);
         return super.mouseScrolled(pMouseX, pMouseY, pDelta);

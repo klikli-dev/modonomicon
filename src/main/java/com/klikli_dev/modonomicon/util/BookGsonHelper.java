@@ -18,26 +18,24 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.network;
+package com.klikli_dev.modonomicon.util;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
-public interface IMessage {
-    void encode(FriendlyByteBuf buf);
+public class BookGsonHelper {
 
-    void decode(FriendlyByteBuf buf);
-
-    default void onClientReceived(Minecraft minecraft, Player player, NetworkEvent.Context context) {
-
+    public static Component getAsComponent(JsonObject pJson, String pMemberName, Component pFallback) {
+        return pJson.has(pMemberName) ? convertToComponent(pJson.get(pMemberName), pMemberName) : pFallback;
     }
 
-    default void onServerReceived(MinecraftServer minecraftServer, ServerPlayer player,
-                                  NetworkEvent.Context context) {
-
+    public static Component convertToComponent(JsonElement pJson, String pMemberName) {
+        if (pJson.isJsonPrimitive()) {
+            return new TranslatableComponent(pJson.getAsString());
+        } else {
+            return Component.Serializer.fromJson(pJson);
+        }
     }
 }

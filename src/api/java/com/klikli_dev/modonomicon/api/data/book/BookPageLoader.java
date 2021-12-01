@@ -18,17 +18,10 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.network;
+package com.klikli_dev.modonomicon.api.data.book;
 
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import com.google.gson.JsonObject;
 
-import java.util.function.Supplier;
-
-public class ClientMessageHandler {
-
-    public static <T extends Message> void handleClient(T message, Supplier<NetworkEvent.Context> ctx) {
-        Minecraft minecraft = Minecraft.getInstance();
-        message.onClientReceived(minecraft, minecraft.player, ctx.get());
-    }
+public interface BookPageLoader<T extends BookPage> {
+    T loadPage(JsonObject json);
 }

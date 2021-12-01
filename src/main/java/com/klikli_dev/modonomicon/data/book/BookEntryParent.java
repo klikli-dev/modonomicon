@@ -38,7 +38,7 @@ public class BookEntryParent {
     }
 
     public static BookEntryParent fromJson(JsonObject json) {
-        var entry = new ResourceLocation(json.get("entry").getAsString());
+        var entry = new ResourceLocation(GsonHelper.getAsString(json, "entry"));
         var parent = new BookEntryParent(entry);
         parent.drawArrow = GsonHelper.getAsBoolean(json, "draw_arrow", parent.drawArrow);
         parent.lineEnabled = GsonHelper.getAsBoolean(json, "line_enabled", parent.lineEnabled);
@@ -63,7 +63,7 @@ public class BookEntryParent {
     }
 
     public BookEntry getEntry() {
-        return BookDataManager.get().getEntry(this.entryId);
+        return null;
     }
 
     public ResourceLocation getEntryId() {
