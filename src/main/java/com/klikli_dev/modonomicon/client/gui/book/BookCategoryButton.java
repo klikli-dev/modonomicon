@@ -63,7 +63,7 @@ public class BookCategoryButton extends Button {
             if (this.categoryIndex == this.parent.getCurrentCategory()) {
                 renderX -= 3;
                 renderWidth += 3;
-            } else if (this.isHovered()) {
+            } else if (this.isHoveredOrFocused()) {
                 renderX -= 1;
                 renderWidth += 1;
             }
@@ -78,7 +78,7 @@ public class BookCategoryButton extends Button {
             this.category.getIcon().render(pMatrixStack, renderX + iconOffset, this.y + 2);
         }
 
-        if (this.isHovered()) {
+        if (this.isHoveredOrFocused()) {
             this.renderToolTip(pMatrixStack, pMouseX, pMouseY);
         }
     }
