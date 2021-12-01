@@ -38,7 +38,7 @@ import net.minecraftforge.client.gui.GuiUtils;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BookScreen extends Screen {
+public class BookOverviewScreen extends Screen {
 
     private final ItemStack bookStack;
     private final Book book;
@@ -52,7 +52,7 @@ public class BookScreen extends Screen {
     private final int frameThicknessH = 14;
 
 
-    public BookScreen(Book book, ItemStack bookStack) {
+    public BookOverviewScreen(Book book, ItemStack bookStack) {
         super(new TextComponent(""));
 
         //somehow there are render calls before init(), leaving minecraft null

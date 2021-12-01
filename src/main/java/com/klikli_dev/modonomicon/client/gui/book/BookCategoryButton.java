@@ -30,10 +30,10 @@ import net.minecraft.network.chat.TextComponent;
 
 public class BookCategoryButton extends Button {
 
-    private final BookScreen parent;
+    private final BookOverviewScreen parent;
     private final BookCategory category;
     private final int categoryIndex;
-    public BookCategoryButton(BookScreen parent, BookCategory category, int categoryIndex, int pX, int pY, int width, int height, OnPress pOnPress, OnTooltip pOnTooltip) {
+    public BookCategoryButton(BookOverviewScreen parent, BookCategory category, int categoryIndex, int pX, int pY, int width, int height, OnPress pOnPress, OnTooltip pOnTooltip) {
         super(pX, pY, width, height, new TextComponent(""), pOnPress, pOnTooltip);
         this.parent = parent;
         this.category = category;
