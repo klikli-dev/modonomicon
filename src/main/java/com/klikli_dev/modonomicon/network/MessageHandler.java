@@ -22,7 +22,7 @@ package com.klikli_dev.modonomicon.network;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 

@@ -21,7 +21,7 @@
 package com.klikli_dev.modonomicon.network;
 
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
