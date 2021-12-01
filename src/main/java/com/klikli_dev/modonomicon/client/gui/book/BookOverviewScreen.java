@@ -42,7 +42,7 @@ public class BookOverviewScreen extends Screen {
 
     private final ItemStack bookStack;
     private final Book book;
-    private final ResourceLocation bookTexture;
+    private final ResourceLocation bookOverviewTexture;
     private final EntryConnectionRenderer connectionRenderer = new EntryConnectionRenderer();
     private final List<BookCategory> categories;
     private final List<BookCategoryScreen> categoryScreens;
@@ -61,7 +61,7 @@ public class BookOverviewScreen extends Screen {
         this.bookStack = bookStack;
         this.book = book;
 
-        this.bookTexture = book.getBookOverviewTexture();
+        this.bookOverviewTexture = book.getBookOverviewTexture();
 
         //TODO: only get unlocked categories / or at least only render those
         this.categories = book.getCategoriesSorted();
@@ -86,8 +86,8 @@ public class BookOverviewScreen extends Screen {
         return this.book;
     }
 
-    public ResourceLocation getBookTexture() {
-        return this.bookTexture;
+    public ResourceLocation getBookOverviewTexture() {
+        return this.bookOverviewTexture;
     }
 
     /**
@@ -145,7 +145,7 @@ public class BookOverviewScreen extends Screen {
     protected void renderFrame(PoseStack poseStack) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, this.bookTexture);
+        RenderSystem.setShaderTexture(0, this.bookOverviewTexture);
 
         int width = this.getFrameWidth();
         int height = this.getFrameHeight();

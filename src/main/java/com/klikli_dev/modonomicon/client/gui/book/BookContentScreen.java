@@ -20,12 +20,64 @@
 
 package com.klikli_dev.modonomicon.client.gui.book;
 
+import com.klikli_dev.modonomicon.api.ModonimiconConstants;
+import com.klikli_dev.modonomicon.data.book.BookChapter;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 
 public class BookContentScreen extends Screen {
-    protected BookContentScreen() {
+
+    public static final int BOOK_BACKGROUND_WIDTH = 272;
+    public static final int BOOK_BACKGROUND_HEIGHT = 178;
+
+    private final BookOverviewScreen parentScreen;
+    private final BookChapter chapter;
+
+    private final ResourceLocation bookContentTexture;
+
+    public BookContentScreen(BookOverviewScreen parentScreen, BookChapter chapter) {
         super(new TextComponent(""));
+
+        this.minecraft = Minecraft.getInstance();
+
+        this.parentScreen = parentScreen;
+        this.chapter = chapter;
+
+        this.bookContentTexture = this.parentScreen.getBook().getBookContentTexture();
+    }
+
+    public BookChapter getChapter() {
+        return this.chapter;
+    }
+
+    public void renderBookBackground(PoseStack poseStack) {
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, this.bookContentTexture);
+
+        int x = (this.width - BOOK_BACKGROUND_WIDTH) / 2;
+        int y = (this.height - BOOK_BACKGROUND_HEIGHT) / 2;
+
+        GuiComponent.blit(poseStack, x, y, 0, 0, 272, 178, 512, 256);
+    }
+
+    @Override
+    public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        this.renderBackground(pPoseStack);
+
+        this.renderBookBackground(pPoseStack);
+
+        super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+    }
+
+    @Override
+    public boolean shouldCloseOnEsc() {
+        return true;
     }
 }

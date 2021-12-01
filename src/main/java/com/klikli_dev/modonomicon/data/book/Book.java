@@ -122,4 +122,8 @@ public class Book {
         buffer.writeResourceLocation(this.bookOverviewTexture);
         buffer.writeResourceLocation(this.bookContentTexture);
     }
+
+    public ResourceLocation getBookContentTexture() {
+        return bookContentTexture;
+    }
 }

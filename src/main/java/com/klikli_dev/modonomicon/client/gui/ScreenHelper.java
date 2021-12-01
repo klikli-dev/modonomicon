@@ -26,10 +26,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-public class GuiHelper {
+public class ScreenHelper {
     public static void openBook(ItemStack stack) {
         Minecraft.getInstance().setScreen(new BookOverviewScreen(
                 BookDataManager.get().getBook(new ResourceLocation("modonomicon", "test")),
                 stack));
     }
+
 }

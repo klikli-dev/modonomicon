@@ -21,16 +21,20 @@
 package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.config.ClientConfig;
+import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.data.book.BookCategory;
 import com.klikli_dev.modonomicon.data.book.BookEntry;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraftforge.client.ForgeHooksClient;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -134,6 +138,10 @@ public class BookCategoryScreen {
         for (var entry : this.category.getEntries().values()) {
             if(this.isEntryHovered(entry, xOffset, yOffset, (int)pMouseX, (int)pMouseY)){
                 var chapter = entry.getChapter();
+                if(chapter != null) {
+                    ForgeHooksClient.pushGuiLayer(Minecraft.getInstance(), new BookContentScreen(this.bookOverviewScreen, chapter));
+                }
+
                 return true;
             }
         }

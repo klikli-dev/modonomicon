@@ -69,7 +69,7 @@ public class BookCategoryButton extends Button {
             }
 
             //draw category button background
-            RenderSystem.setShaderTexture(0, this.parent.getBookTexture());
+            RenderSystem.setShaderTexture(0, this.parent.getBookOverviewTexture());
             GuiComponent.blit(pMatrixStack, renderX, this.y, this.parent.getBlitOffset()+ 50, texX, texY, renderWidth, this.height, 256, 256);
 
             //then draw icon
