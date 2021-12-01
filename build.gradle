@@ -148,8 +148,8 @@ dependencies {
     minecraft "net.minecraftforge:forge:${forge_version}"
 
     //Jei
-    compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}:${jei_version}:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-${jei_mc_version}:${jei_version}")
+    //TODO: enable jei for convenience once available on 1.18
+    //runtimeOnly fg.deobf("mezz.jei:jei-1.18.0:9.0.0.0")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
