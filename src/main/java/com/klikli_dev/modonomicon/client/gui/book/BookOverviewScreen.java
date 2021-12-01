@@ -61,7 +61,7 @@ public class BookOverviewScreen extends Screen {
         this.bookStack = bookStack;
         this.book = book;
 
-        this.bookTexture = book.getBookTexture();
+        this.bookTexture = book.getBookOverviewTexture();
 
         //TODO: only get unlocked categories / or at least only render those
         this.categories = book.getCategoriesSorted();

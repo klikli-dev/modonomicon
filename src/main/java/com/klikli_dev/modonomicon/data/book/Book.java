@@ -34,16 +34,18 @@ import java.util.Map;
 public class Book {
     protected ResourceLocation id;
     protected String name;
-    protected ResourceLocation bookTexture;
+    protected ResourceLocation bookOverviewTexture;
+    protected ResourceLocation bookContentTexture;
     protected Map<ResourceLocation, BookCategory> categories;
     protected Map<ResourceLocation, BookEntry> entries;
     protected Map<ResourceLocation, BookChapter> chapters;
     //TODO: further properties for customization, such as book item, ...
 
-    public Book(ResourceLocation id, String name, ResourceLocation bookTexture) {
+    public Book(ResourceLocation id, String name, ResourceLocation bookOverviewTexture, ResourceLocation bookContentTexture) {
         this.id = id;
         this.name = name;
-        this.bookTexture = bookTexture;
+        this.bookOverviewTexture = bookOverviewTexture;
+        this.bookContentTexture = bookContentTexture;
         this.categories = new HashMap<>();
         this.entries = new HashMap<>();
         this.chapters = new HashMap<>();
@@ -51,14 +53,16 @@ public class Book {
 
     public static Book fromJson(ResourceLocation id, JsonObject json) {
         var name = GsonHelper.getAsString(json,"name");
-        var bookTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_texture", Data.Book.DEFAULT_TEXTURE));
-        return new Book(id, name, bookTexture);
+        var bookOverviewTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_overview_texture", Data.Book.DEFAULT_OVERVIEW_TEXTURE));
+        var bookContentTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_content_texture", Data.Book.DEFAULT_CONTENT_TEXTURE));
+        return new Book(id, name, bookOverviewTexture, bookContentTexture);
     }
 
     public static Book fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
         var name = buffer.readUtf();
-        var bookTexture = buffer.readResourceLocation();
-        return new Book(id, name, bookTexture);
+        var bookOverviewTexture = buffer.readResourceLocation();
+        var bookContentTexture = buffer.readResourceLocation();
+        return new Book(id, name, bookOverviewTexture, bookContentTexture);
     }
 
     public ResourceLocation getId() {
@@ -109,12 +113,13 @@ public class Book {
         return this.name;
     }
 
-    public ResourceLocation getBookTexture() {
-        return this.bookTexture;
+    public ResourceLocation getBookOverviewTexture() {
+        return this.bookOverviewTexture;
     }
 
     public void toNetwork(FriendlyByteBuf buffer) {
         buffer.writeUtf(this.name);
-        buffer.writeResourceLocation(this.bookTexture);
+        buffer.writeResourceLocation(this.bookOverviewTexture);
+        buffer.writeResourceLocation(this.bookContentTexture);
     }
 }
