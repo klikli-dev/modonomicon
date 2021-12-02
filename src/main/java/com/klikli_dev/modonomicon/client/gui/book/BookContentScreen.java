@@ -77,6 +77,8 @@ public class BookContentScreen extends Screen {
 
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
 
+        //TODO: use page interface here
+        //TODO: properly place left/right page
         for(var page : this.chapter.getPages()){
             if(page instanceof AbstractBookPage bookPage){
                 bookPage.init(this.chapter, this, 0, 20, 20);
