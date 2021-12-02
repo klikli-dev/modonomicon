@@ -22,6 +22,8 @@ package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.data.book.BookChapter;
+import com.klikli_dev.modonomicon.data.book.page.AbstractBookPage;
+import com.klikli_dev.modonomicon.data.book.page.BookTextPage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -74,6 +76,13 @@ public class BookContentScreen extends Screen {
         this.renderBookBackground(pPoseStack);
 
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+
+        for(var page : this.chapter.getPages()){
+            if(page instanceof AbstractBookPage bookPage){
+                bookPage.init(this.chapter, this, 0, 20, 20);
+                bookPage.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+            }
+        }
     }
 
     @Override

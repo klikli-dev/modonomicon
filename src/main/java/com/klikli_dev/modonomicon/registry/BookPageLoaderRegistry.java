@@ -24,7 +24,7 @@ import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.api.data.book.BookPage;
 import com.klikli_dev.modonomicon.api.data.book.BookPageLoader;
-import com.klikli_dev.modonomicon.data.book.pages.BookTextPage;
+import com.klikli_dev.modonomicon.data.book.page.BookTextPage;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;

@@ -21,4 +21,5 @@
 package com.klikli_dev.modonomicon.api.data.book;
 
 public interface BookPage {
+    //TODO: add all methods that we need in book content screen
 }

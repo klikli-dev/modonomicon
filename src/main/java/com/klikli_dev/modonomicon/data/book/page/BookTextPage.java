@@ -18,17 +18,16 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.data.book.pages;
+package com.klikli_dev.modonomicon.data.book.page;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.data.book.BookPage;
+import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 
-public class BookTextPage implements BookPage {
+public class BookTextPage extends AbstractBookPage {
     protected Component title;
     protected Component text;
 
@@ -50,5 +49,15 @@ public class BookTextPage implements BookPage {
 
     public Component getText() {
         return this.text;
+    }
+
+    @Override
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float ticks) {
+        //TODO: render title
+        //TODO: render text
+        int j1 = this.font.width(this.text);
+        int i = (this.parentScreen.width - BookContentScreen.BOOK_BACKGROUND_WIDTH) / 2;
+        this.font.drawWordWrap(this.text, (i - j1 + BookContentScreen.BOOK_BACKGROUND_WIDTH - 44), 18, BookContentScreen.BOOK_BACKGROUND_WIDTH / 2, 0);
+        //this.font.draw(poseStack, this.text, (float)(i - j1 + BookContentScreen.BOOK_BACKGROUND_WIDTH - 44), 18.0F, 0);
     }
 }
