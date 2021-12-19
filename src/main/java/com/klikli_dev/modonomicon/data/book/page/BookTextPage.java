@@ -25,6 +25,7 @@ import com.klikli_dev.modonomicon.api.data.book.BookPage;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 
@@ -56,20 +57,17 @@ public class BookTextPage extends AbstractBookPage {
     public void render(PoseStack poseStack, int mouseX, int mouseY, float ticks) {
         //TODO: render title
         //TODO: render text
-        //TODO: use page left/top here
-        int j1 = this.font.width(this.text);
-        int i = (this.parentScreen.width - BookContentScreen.BOOK_BACKGROUND_WIDTH) / 2;
-        //TODO: fix wrapped drawing not working
-        //TODO: fix newlines not working -> should be handled correctly in wrapped drawing
-        //this.font.drawWordWrap(this.text, 40 , 90, 2000, 0xFFFFF);
 
-        int height = this.top;
-        for(FormattedCharSequence formattedcharsequence : this.font.split(this.text, 250)) {
-            this.font.draw(poseStack, formattedcharsequence, this.left, height, 0);
-            height += 9;
+        //TODO: use page left/top here -> move calculation to bookcontentscreen
+        //figure out a way to make these magic page boundary offsets configurable?
+        int i = (this.parentScreen.width - BookContentScreen.BOOK_BACKGROUND_WIDTH) / 2 + 15;
+        int j = (this.parentScreen.height - BookContentScreen.BOOK_BACKGROUND_HEIGHT) / 2 + 15;
+
+        //width should probably also be set via init
+        int width = BookContentScreen.BOOK_BACKGROUND_WIDTH / 2 - 17;
+        for(FormattedCharSequence formattedcharsequence : this.font.split(this.text, width)) {
+            this.font.draw(poseStack, formattedcharsequence, i, j, 0);
+            j += 9; //TODO: Line Height constant
         }
-        //this.font.drawWordWrap(this.text, (i - j1 + BookContentScreen.BOOK_BACKGROUND_WIDTH - 44), 18, BookContentScreen.BOOK_BACKGROUND_WIDTH / 2, 0);
-        //this.font.draw(poseStack, this.text, (float)(i - j1 + BookContentScreen.BOOK_BACKGROUND_WIDTH - 44), 18.0F, 0);
-        //this.font.draw(poseStack, this.text, this.left, this.top, 0);
     }
 }
