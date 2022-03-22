@@ -72,7 +72,7 @@ public class BookTextPage extends AbstractBookPage {
                  [#](32a852)colored?  \s
                  **colored bold?**  \s
                  [#]()  \s
-                 sty **<t>item.modonomicon.modonomicon</t>**
+                 translated: **<t>item.modonomicon.modonomicon</t>**
                   """;
         //TODO: Move parser to page creation
         var document = parser.parse(text);
