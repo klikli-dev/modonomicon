@@ -21,28 +21,71 @@
 package com.klikli_dev.modonomicon.data.book.page;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import net.minecraft.network.chat.TranslatableComponent;
-import org.commonmark.node.AbstractVisitor;
-import org.commonmark.node.StrongEmphasis;
-import org.commonmark.node.Text;
+import net.minecraft.network.chat.*;
+import org.commonmark.node.*;
+
+import java.util.List;
 
 public class ExperimentalMDVisitor extends AbstractVisitor {
 
-    TranslatableComponent component;
+    //keep stack of mc styles
+    //on visit add style
+    //on visit text, create component and apply styles, append component to root component
+    // after visiting children = before exiting visit remove style
+
+    //TODO: Colors, could be:
+    //  - modified links?
+    //      - [#](hex) starts color change, [#]() ends it
+    //TODO: also look at textcomponenttagvisitor
+
+
+    MutableComponent component;
+    Style currentStyle = Style.EMPTY;
 
     public ExperimentalMDVisitor(){
         this.component = new TranslatableComponent("");
     }
 
+    public MutableComponent getComponent(){
+        return this.component;
+    }
+
     @Override
     public void visit(StrongEmphasis strongEmphasis) {
-        Modonomicon.LOGGER.debug("strongEmphasis");
-        super.visit(strongEmphasis);
+        this.currentStyle = this.currentStyle.withBold(true);
+        super.visit(strongEmphasis); //visit children
+        this.currentStyle = this.currentStyle.withBold(null);
+    }
+
+    @Override
+    public void visit(Emphasis Emphasis) {
+        this.currentStyle = this.currentStyle.withItalic(true);
+        super.visit(Emphasis); //visit children
+        this.currentStyle = this.currentStyle.withItalic(null);
     }
 
     @Override
     public void visit(Text text) {
-        Modonomicon.LOGGER.debug("Text: " + text.getLiteral());
+        this.component.append(new TranslatableComponent(text.getLiteral()).withStyle(this.currentStyle));
         super.visit(text);
     }
+
+    @Override
+    public void visit(Link link) {
+        if(link.getTitle().equals("#")){
+            this.visitColor(link);
+        }
+        //TODO: handle normal links
+        super.visit(link);
+    }
+
+    public void visitColor(Link link){
+        if(link.getDestination().isEmpty()){
+            this.currentStyle = this.currentStyle.withColor((TextColor)null);
+        } else {
+            //we use TextColor.parseColor because it fails gracefully as a color reset.
+            this.currentStyle = this.currentStyle.withColor(TextColor.parseColor("#" + link.getDestination()));
+        }
+    }
+
 }

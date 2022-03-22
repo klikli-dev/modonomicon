@@ -70,10 +70,10 @@ public class BookTextPage extends AbstractBookPage {
         var document = parser.parse(this.text.getString());
         var visitor = new ExperimentalMDVisitor();
         document.accept(visitor);
-
+        var comp = visitor.getComponent();
         //width should probably also be set via init
         int width = BookContentScreen.BOOK_BACKGROUND_WIDTH / 2 - 17;
-        for(FormattedCharSequence formattedcharsequence : this.font.split(this.text, width)) {
+        for(FormattedCharSequence formattedcharsequence : this.font.split(comp, width)) {
             this.font.draw(poseStack, formattedcharsequence, i, j, 0);
             j += 9; //TODO: Line Height constant
         }
