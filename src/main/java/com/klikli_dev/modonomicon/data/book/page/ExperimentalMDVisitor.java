@@ -22,6 +22,8 @@ package com.klikli_dev.modonomicon.data.book.page;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import net.minecraft.network.chat.*;
+import org.commonmark.internal.renderer.text.ListHolder;
+import org.commonmark.internal.renderer.text.OrderedListHolder;
 import org.commonmark.node.*;
 
 import java.util.List;
@@ -41,6 +43,7 @@ public class ExperimentalMDVisitor extends AbstractVisitor {
 
     MutableComponent component;
     Style currentStyle = Style.EMPTY;
+    private ListHolder listHolder;
 
     public ExperimentalMDVisitor(){
         this.component = new TranslatableComponent("");
@@ -72,11 +75,14 @@ public class ExperimentalMDVisitor extends AbstractVisitor {
 
     @Override
     public void visit(Link link) {
-        if(link.getTitle().equals("#")){
+        var child = link.getFirstChild();
+        if(child instanceof Text t && t.getLiteral().equals("#")){
             this.visitColor(link);
+            //do not visit super for color - otherwise link text will be rendered
+        } else {
+            //TODO: handle normal links
+            super.visit(link);
         }
-        //TODO: handle normal links
-        super.visit(link);
     }
 
     public void visitColor(Link link){
@@ -88,4 +94,43 @@ public class ExperimentalMDVisitor extends AbstractVisitor {
         }
     }
 
+    @Override
+    public void visit(OrderedList orderedList) {
+
+        //TODO implement lists - see CoreTextContentNodeREnderer
+        //ListHolder is used to
+//        if (listHolder != null) {
+//            writeEndOfLine();
+//        }
+//        listHolder = new OrderedListHolder(listHolder, orderedList);
+//        visitChildren(orderedList);
+//        writeEndOfLineIfNeeded(orderedList, null);
+//        if (listHolder.getParent() != null) {
+//            listHolder = listHolder.getParent();
+//        } else {
+//            listHolder = null;
+//        }
+    }
+
+    @Override
+    public void visit(ListItem listItem) {
+        //use list holder to identify our current parent list
+    }
+
+    @Override
+    public void visit(HardLineBreak hardLineBreak) {
+        //note: space-space-newline hard line breaks will usually not happen
+        // due to java stripping trailing white spaces from text blocks
+        // and data gen will use text blocks 99% of the time
+        // one way to still get them is to use \s as the last space at the end of the line in the text block
+        this.component.append(new TextComponent("\n"));
+        super.visit(hardLineBreak);
+    }
+
+    @Override
+    public void visit(SoftLineBreak softLineBreak) {
+        //TODO: make using/ignoring soft line breaks a book-level option
+        this.component.append(new TextComponent("\n"));
+        super.visit(softLineBreak);
+    }
 }
