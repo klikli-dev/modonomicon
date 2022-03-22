@@ -76,7 +76,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add("modonomicon.test.entries.test_category.test_entry.description", "Test Description");
             this.add("modonomicon.test.sections.test_category.test_chapter.page0.text",
                     """
-                    This is a test text.
+                    This is a **test** text.
                     We have a newline here.
                     - List item 
                     - List item 2

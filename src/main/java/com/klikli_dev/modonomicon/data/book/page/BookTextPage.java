@@ -28,6 +28,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.Renderer;
 
 public class BookTextPage extends AbstractBookPage {
     protected Component title;
@@ -55,6 +57,7 @@ public class BookTextPage extends AbstractBookPage {
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float ticks) {
+        //TODO: move render code into rederer classes, with registerable renderers or something
         //TODO: render title
         //TODO: render text
 
@@ -62,6 +65,11 @@ public class BookTextPage extends AbstractBookPage {
         //figure out a way to make these magic page boundary offsets configurable?
         int i = (this.parentScreen.width - BookContentScreen.BOOK_BACKGROUND_WIDTH) / 2 + 15;
         int j = (this.parentScreen.height - BookContentScreen.BOOK_BACKGROUND_HEIGHT) / 2 + 15;
+
+        var parser = Parser.builder().build();
+        var document = parser.parse(this.text.getString());
+        var visitor = new ExperimentalMDVisitor();
+        document.accept(visitor);
 
         //width should probably also be set via init
         int width = BookContentScreen.BOOK_BACKGROUND_WIDTH / 2 - 17;
