@@ -21,13 +21,12 @@
 package com.klikli_dev.modonomicon.data.book.page;
 
 import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.data.book.BookPage;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
+import org.commonmark.parser.Parser;
 
 public class BookTextPage extends AbstractBookPage {
     protected Component title;
@@ -55,6 +54,7 @@ public class BookTextPage extends AbstractBookPage {
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float ticks) {
+        //TODO: move render code into rederer classes, with registerable renderers or something
         //TODO: render title
         //TODO: render text
 
@@ -63,9 +63,29 @@ public class BookTextPage extends AbstractBookPage {
         int i = (this.parentScreen.width - BookContentScreen.BOOK_BACKGROUND_WIDTH) / 2 + 15;
         int j = (this.parentScreen.height - BookContentScreen.BOOK_BACKGROUND_HEIGHT) / 2 + 15;
 
+        var parser = Parser.builder().build();
+        var text =
+                """
+                 *Italics*  \s
+                 **Bold text**  \s
+                 ***Bold italics text***  \s
+                 [#](32a852)colored?  \s
+                 **colored bold?**  \s
+                 [#]()  \s
+                 translated: **<t>item.modonomicon.modonomicon</t>**
+                  """;
+        //TODO: Move parser to page creation
+        var document = parser.parse(text);
+        var visitor = new ExperimentalMDVisitor();
+        document.accept(visitor);
+        var comp = visitor.getComponent();
         //width should probably also be set via init
         int width = BookContentScreen.BOOK_BACKGROUND_WIDTH / 2 - 17;
-        for(FormattedCharSequence formattedcharsequence : this.font.split(this.text, width)) {
+
+        //TODO for split with indent see ComponentRenderUtils
+        //  I *think* this will indent all wrapped lines. We could make this an option?
+
+        for (FormattedCharSequence formattedcharsequence : this.font.split(comp, width)) {
             this.font.draw(poseStack, formattedcharsequence, i, j, 0);
             j += 9; //TODO: Line Height constant
         }
