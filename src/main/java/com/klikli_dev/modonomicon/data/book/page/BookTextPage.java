@@ -22,6 +22,8 @@ package com.klikli_dev.modonomicon.data.book.page;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.ComponentMarkdownRenderer;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.ComponentRendererContext;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
@@ -76,18 +78,27 @@ public class BookTextPage extends AbstractBookPage {
                   """;
         //TODO: Move parser to page creation
         var document = parser.parse(text);
-        var visitor = new ExperimentalMDVisitor();
-        document.accept(visitor);
-        var comp = visitor.getComponent();
+        var renderer = new ComponentMarkdownRenderer(new ComponentRendererContext(false));
+        var comps =  renderer.render(document);
         //width should probably also be set via init
         int width = BookContentScreen.BOOK_BACKGROUND_WIDTH / 2 - 17;
 
         //TODO for split with indent see ComponentRenderUtils
         //  I *think* this will indent all wrapped lines. We could make this an option?
+//        - visitor should default to soft newline off
+//        - visitor has multiple output components in list
+//        - keep current component to add siblings, when conditions are met create new comp and add old to list
+//                - on hard newline new comp
+//                - per list item new comp
+//                - when rendering list item comps, wrap with indent as in ComponentRenderUtils
+//        - can comps keep Metadata to know which list?
+//                - or wrapper that has component + references (could be child of Translate component, or just implementing interface, more work)
 
-        for (FormattedCharSequence formattedcharsequence : this.font.split(comp, width)) {
-            this.font.draw(poseStack, formattedcharsequence, i, j, 0);
-            j += 9; //TODO: Line Height constant
+        for(var component : comps) {
+            for (FormattedCharSequence formattedcharsequence : this.font.split(component, width)) {
+                this.font.draw(poseStack, formattedcharsequence, i, j, 0);
+                j += this.font.lineHeight;
+            }
         }
     }
 }
