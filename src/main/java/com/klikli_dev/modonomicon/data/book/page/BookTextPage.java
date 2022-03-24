@@ -20,23 +20,16 @@
 
 package com.klikli_dev.modonomicon.data.book.page;
 
-import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ComponentMarkdownRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ComponentRendererContext;
-import com.klikli_dev.modonomicon.client.gui.book.markdown.ListItemComponent;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.MarkdownComponentRenderUtils;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.ComponentCollector;
-import net.minecraft.client.gui.Font;
-import net.minecraft.locale.Language;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import org.commonmark.parser.Parser;
-
-import java.util.List;
-import java.util.Optional;
 
 public class BookTextPage extends AbstractBookPage {
     protected Component title;
@@ -76,55 +69,35 @@ public class BookTextPage extends AbstractBookPage {
         var parser = Parser.builder().build();
         var textOld =
                 """
-                 *Italics*  \s
-                 **Bold text**  \s
-                 ***Bold italics text***  \s
-                 [#](32a852)colored?  \s
-                 **colored bold?**  \s
-                 [#]()  \s
-                 translated: **<t>item.modonomicon.modonomicon</t>**
-                  """;
+                        *Italics*  \s
+                        **Bold text**  \s
+                        ***Bold italics text***  \s
+                        [#](32a852)colored?  \s
+                        **colored bold?**  \s
+                        [#]()  \s
+                        translated: **<t>item.modonomicon.modonomicon</t>**
+                         """;
 
         var text =
                 """
-                 *Italics*  \s
-                 1. Ordered List item one
-                 2. **Bold Text** and a very long list item for test which is basically just tons of text to see how things work wow.
-                 1. [#](32a852)colored?[#]() 
-                 4. So whathappenswithasuperlongwordhalp?
-                  """;
+                        *Italics*  \s
+                        1. Ordered List item one
+                        2. **Bold Text** and a very long list item for test which is basically just tons of text to see how things work wow.
+                        1. [#](32a852)colored?[#]() 
+                        4. So whathappenswithasuperlongwordhalp?
+                         """;
         //TODO: Move parser to page creation
         var document = parser.parse(text);
         var renderer = new ComponentMarkdownRenderer(new ComponentRendererContext(false));
-        var comps =  renderer.render(document);
+        var comps = renderer.render(document);
         //width should probably also be set via init
         int width = BookContentScreen.BOOK_BACKGROUND_WIDTH / 2 - 17;
 
-        for(var component : comps) {
-            //for (FormattedCharSequence formattedcharsequence : this.font.split(component, width)) {
-            for (FormattedCharSequence formattedcharsequence : this.wrapComponents(component, width, this.font)) {
+        for (var component : comps) {
+            for (FormattedCharSequence formattedcharsequence : MarkdownComponentRenderUtils.wrapComponents(component, width, width - 10, this.font)) {
                 this.font.draw(poseStack, formattedcharsequence, i, j, 0);
                 j += this.font.lineHeight;
             }
         }
-    }
-
-    public List<FormattedCharSequence> wrapComponents(TranslatableComponent text, int width, Font font) {
-        //TODO: probably move that to the markdownrenderer
-
-        if(text instanceof ListItemComponent item){
-            width = width - 10;
-        }
-
-        List<FormattedCharSequence> list = Lists.newArrayList();
-        font.getSplitter().splitLines(text, width, Style.EMPTY, (lineText, isWrapped) -> {
-            FormattedCharSequence formattedcharsequence = Language.getInstance().getVisualOrder(lineText);
-            var indent = FormattedCharSequence.EMPTY;
-            if(text instanceof ListItemComponent item){
-                indent = FormattedCharSequence.forward(item.getListHolder().getIndent() + "   ", Style.EMPTY);
-            }
-            list.add(isWrapped ? FormattedCharSequence.composite(indent, formattedcharsequence) : formattedcharsequence);
-        });
-        return (list.isEmpty() ? Lists.newArrayList(FormattedCharSequence.EMPTY) : list);
     }
 }
