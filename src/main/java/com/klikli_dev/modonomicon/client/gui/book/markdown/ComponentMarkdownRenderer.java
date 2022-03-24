@@ -20,7 +20,10 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import org.commonmark.internal.renderer.text.ListHolder;
 import org.commonmark.internal.renderer.text.OrderedListHolder;
 import org.commonmark.node.*;
@@ -29,15 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ComponentMarkdownRenderer extends AbstractVisitor {
-    //        - visitor should default to soft newline off
-//        - visitor has multiple output components in list
-//        - keep current component to add siblings, when conditions are met create new comp and add old to list
-//                - on hard newline new comp
-//                - per list item new comp
-//                - when rendering list item comps, wrap with indent as in ComponentRenderUtils
-//        - can comps keep Metadata to know which list?
-//                - or wrapper that has component + references (could be child of Translate component, or just implementing interface, more work)
-
     /**
      * Context that contains render settings.
      */
@@ -46,12 +40,12 @@ public class ComponentMarkdownRenderer extends AbstractVisitor {
      * The list of components we already finished rendering. Each hard newline will cause a new component to start,
      * while list items should share a component.
      */
-    private final List<MutableComponent> components;
+    private final List<TranslatableComponent> components;
     /**
      * The component we are currently rendering to (by appending siblings). In certain well-defined cases it will be
      * replaced with a new component and the old one added to @components
      */
-    private MutableComponent currentComponent;
+    private TranslatableComponent currentComponent;
     /**
      * The style applied to the next sibling. Each markdown styling instruction will replace this with a new immutable
      * style option.
@@ -68,15 +62,15 @@ public class ComponentMarkdownRenderer extends AbstractVisitor {
         this.components = new ArrayList<>();
     }
 
-    public MutableComponent getCurrentComponent() {
+    public TranslatableComponent getCurrentComponent() {
         return this.currentComponent;
     }
 
-    public List<MutableComponent> getComponents() {
+    public List<TranslatableComponent> getComponents() {
         return this.components;
     }
 
-    public List<MutableComponent> render(Node node) {
+    public List<TranslatableComponent> render(Node node) {
         node.accept(this);
         if (!this.isEmptyComponent()) {
             this.finalizeCurrentComponent();
@@ -98,14 +92,15 @@ public class ComponentMarkdownRenderer extends AbstractVisitor {
      */
     private void finalizeCurrentComponent() {
         this.components.add(this.currentComponent);
-        this.currentComponent = new TranslatableComponent("");
+        this.currentComponent = this.listHolder == null ? new TranslatableComponent("") : new ListItemComponent(this.listHolder, "");
     }
 
     /**
      * Checks if the current component is empty and has no siblings.
      */
     private boolean isEmptyComponent() {
-        return this.currentComponent.getContents().isEmpty() && this.currentComponent.getSiblings().isEmpty();
+        //translation contents have no content, they have a key (which doubles as content).
+        return this.currentComponent.getKey().isEmpty() && this.currentComponent.getSiblings().isEmpty();
     }
 
     @Override
@@ -122,7 +117,11 @@ public class ComponentMarkdownRenderer extends AbstractVisitor {
         // and data gen will use text blocks 99% of the time
         // one way to still get them is to use \s as the last space at the end of the line in the text block
         this.currentComponent.append(new TextComponent("\n"));
-        this.finalizeCurrentComponent();
+
+        //lists do their own finalization
+        if(this.listHolder == null){
+            this.finalizeCurrentComponent();
+        }
         this.visitChildren(hardLineBreak);
     }
 
@@ -140,7 +139,30 @@ public class ComponentMarkdownRenderer extends AbstractVisitor {
 
     @Override
     public void visit(ListItem listItem) {
-        //use list holder to identify our current parent list
+        //while hard newlines don't force a new component in a list, a new list item does.
+        this.finalizeCurrentComponent();
+
+        if (this.listHolder != null && this.listHolder instanceof OrderedListHolder orderedListHolder) {
+            String indent = orderedListHolder.getIndent();
+
+            //List bullets/numbers will not be affected by current style
+            this.currentComponent.append(new TranslatableComponent(
+                    indent + orderedListHolder.getCounter() + orderedListHolder.getDelimiter() + " ")
+                    .withStyle(Style.EMPTY));
+
+            this.visitChildren(listItem);
+            //TODO: newline?
+            orderedListHolder.increaseCounter();
+        }
+        //TODO: bullet list
+//        } else if (listHolder != null && listHolder instanceof BulletListHolder) {
+//            BulletListHolder bulletListHolder = (BulletListHolder) listHolder;
+//            if (!context.stripNewlines()) {
+//                textContent.write(bulletListHolder.getIndent() + bulletListHolder.getMarker() + " ");
+//            }
+//            visitChildren(listItem);
+//            writeEndOfLineIfNeeded(listItem, null);
+//        }
     }
 
     @Override
@@ -149,6 +171,7 @@ public class ComponentMarkdownRenderer extends AbstractVisitor {
             //TODO: write newline?
         }
         //create a new list holder with our (potential) current holder as parent
+        //TODO: probably need a custom list holder for our indent
         this.listHolder = new OrderedListHolder(this.listHolder, orderedList);
         this.visitChildren(orderedList);
         //TODO: newline?
@@ -178,7 +201,15 @@ public class ComponentMarkdownRenderer extends AbstractVisitor {
 
     @Override
     public void visit(Text text) {
-        this.currentComponent.append(new TranslatableComponent(text.getLiteral()).withStyle(this.currentStyle));
-        super.visit(text);
+        //TODO: do we need listitemcomponent here?
+//        if(this.listHolder != null){
+//            //keep reference to the list holder, so we can access indent in component rendering
+//            this.currentComponent.append(new ListItemComponent(this.listHolder, text.getLiteral())
+//                    .withStyle(this.currentStyle));
+//        }
+//        else{
+            this.currentComponent.append(new TranslatableComponent(text.getLiteral()).withStyle(this.currentStyle));
+//        }
+        this.visitChildren(text);
     }
 }

@@ -20,15 +20,23 @@
 
 package com.klikli_dev.modonomicon.data.book.page;
 
+import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ComponentMarkdownRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ComponentRendererContext;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.ListItemComponent;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.network.chat.Component;
+import net.minecraft.client.ComponentCollector;
+import net.minecraft.client.gui.Font;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.*;
 import net.minecraft.util.FormattedCharSequence;
 import org.commonmark.parser.Parser;
+
+import java.util.List;
+import java.util.Optional;
 
 public class BookTextPage extends AbstractBookPage {
     protected Component title;
@@ -66,7 +74,7 @@ public class BookTextPage extends AbstractBookPage {
         int j = (this.parentScreen.height - BookContentScreen.BOOK_BACKGROUND_HEIGHT) / 2 + 15;
 
         var parser = Parser.builder().build();
-        var text =
+        var textOld =
                 """
                  *Italics*  \s
                  **Bold text**  \s
@@ -76,6 +84,15 @@ public class BookTextPage extends AbstractBookPage {
                  [#]()  \s
                  translated: **<t>item.modonomicon.modonomicon</t>**
                   """;
+
+        var text =
+                """
+                 *Italics*  \s
+                 1. Ordered List item one
+                 2. **Bold Text** and a very long list item for test which is basically just tons of text to see how things work wow.
+                 1. [#](32a852)colored?[#]() 
+                 4. So whathappenswithasuperlongwordhalp?
+                  """;
         //TODO: Move parser to page creation
         var document = parser.parse(text);
         var renderer = new ComponentMarkdownRenderer(new ComponentRendererContext(false));
@@ -83,22 +100,31 @@ public class BookTextPage extends AbstractBookPage {
         //width should probably also be set via init
         int width = BookContentScreen.BOOK_BACKGROUND_WIDTH / 2 - 17;
 
-        //TODO for split with indent see ComponentRenderUtils
-        //  I *think* this will indent all wrapped lines. We could make this an option?
-//        - visitor should default to soft newline off
-//        - visitor has multiple output components in list
-//        - keep current component to add siblings, when conditions are met create new comp and add old to list
-//                - on hard newline new comp
-//                - per list item new comp
-//                - when rendering list item comps, wrap with indent as in ComponentRenderUtils
-//        - can comps keep Metadata to know which list?
-//                - or wrapper that has component + references (could be child of Translate component, or just implementing interface, more work)
-
         for(var component : comps) {
-            for (FormattedCharSequence formattedcharsequence : this.font.split(component, width)) {
+            //for (FormattedCharSequence formattedcharsequence : this.font.split(component, width)) {
+            for (FormattedCharSequence formattedcharsequence : this.wrapComponents(component, width, this.font)) {
                 this.font.draw(poseStack, formattedcharsequence, i, j, 0);
                 j += this.font.lineHeight;
             }
         }
+    }
+
+    public List<FormattedCharSequence> wrapComponents(TranslatableComponent text, int width, Font font) {
+        //TODO: probably move that to the markdownrenderer
+
+        if(text instanceof ListItemComponent item){
+            width = width - 10;
+        }
+
+        List<FormattedCharSequence> list = Lists.newArrayList();
+        font.getSplitter().splitLines(text, width, Style.EMPTY, (lineText, isWrapped) -> {
+            FormattedCharSequence formattedcharsequence = Language.getInstance().getVisualOrder(lineText);
+            var indent = FormattedCharSequence.EMPTY;
+            if(text instanceof ListItemComponent item){
+                indent = FormattedCharSequence.forward(item.getListHolder().getIndent() + "   ", Style.EMPTY);
+            }
+            list.add(isWrapped ? FormattedCharSequence.composite(indent, formattedcharsequence) : formattedcharsequence);
+        });
+        return (list.isEmpty() ? Lists.newArrayList(FormattedCharSequence.EMPTY) : list);
     }
 }
