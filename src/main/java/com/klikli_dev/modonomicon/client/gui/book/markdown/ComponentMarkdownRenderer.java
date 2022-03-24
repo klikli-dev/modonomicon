@@ -20,10 +20,8 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.ClickEvent.Action;
 import org.commonmark.internal.renderer.text.BulletListHolder;
 import org.commonmark.internal.renderer.text.ListHolder;
 import org.commonmark.internal.renderer.text.OrderedListHolder;
@@ -51,13 +49,18 @@ public class ComponentMarkdownRenderer extends AbstractVisitor {
      * The style applied to the next sibling. Each markdown styling instruction will replace this with a new immutable
      * style option.
      */
-    private Style currentStyle = Style.EMPTY;
+    private Style currentStyle;
     /**
      * List holder is used to keep track of the current markdown (ordered or unordered) list we are rendering.
      */
     private ListHolder listHolder;
 
     public ComponentMarkdownRenderer(ComponentRendererContext context) {
+        this(context, Style.EMPTY);
+    }
+
+    public ComponentMarkdownRenderer(ComponentRendererContext context, Style defaultStyle) {
+        this.currentStyle = defaultStyle;
         this.context = context;
         this.currentComponent = new TranslatableComponent("");
         this.components = new ArrayList<>();
@@ -117,9 +120,10 @@ public class ComponentMarkdownRenderer extends AbstractVisitor {
 
     @Override
     public void visit(Emphasis emphasis) {
+        var italic = this.currentStyle.isItalic();
         this.currentStyle = this.currentStyle.withItalic(true);
         this.visitChildren(emphasis);
-        this.currentStyle = this.currentStyle.withItalic(null);
+        this.currentStyle = this.currentStyle.withItalic(italic);
     }
 
     @Override
@@ -142,11 +146,51 @@ public class ComponentMarkdownRenderer extends AbstractVisitor {
         var child = link.getFirstChild();
         if (child instanceof Text t && t.getLiteral().equals("#")) {
             this.visitColor(link);
-            //do not visit super for color - otherwise link text will be rendered
+            //do not visit children for color - otherwise link text will be rendered
         } else {
-            //TODO: handle normal links
-            super.visit(link);
+            //normal links
+            if(link.getDestination().startsWith("http://") || link.getDestination().startsWith("https://")) {
+               this.visitHttpLink(link);
+            }
+            //book links
+            if(link.getDestination().startsWith("book://")) {
+                this.visitBookLink(link);
+            }
         }
+
+        //TODO: other special links such as items
+    }
+
+    public void visitHttpLink(Link link){
+        var currentColor = this.currentStyle.getColor();
+
+        //if we have a color we use it, otherwise we use link default.
+        this.currentStyle = this.currentStyle
+                .withColor(currentColor == null ? this.context.linkColor() : currentColor)
+                .withClickEvent(new ClickEvent(Action.OPEN_URL, link.getDestination()));
+
+        this.visitChildren(link);
+
+        //at the end of the link we reset to our previous color.
+        this.currentStyle = this.currentStyle
+                .withColor(currentColor)
+                .withClickEvent(null);
+    }
+
+    public void visitBookLink(Link link){
+        var currentColor = this.currentStyle.getColor();
+
+        //if we have a color we use it, otherwise we use link default.
+        this.currentStyle = this.currentStyle
+                .withColor(currentColor == null ? this.context.linkColor() : currentColor)
+                .withClickEvent(new ClickEvent(Action.CHANGE_PAGE, link.getDestination()));
+
+        this.visitChildren(link);
+
+        //links are not style instructions, so we reset to our previous color.
+        this.currentStyle = this.currentStyle
+                .withColor(currentColor)
+                .withClickEvent(null);
     }
 
     @Override
@@ -190,14 +234,18 @@ public class ComponentMarkdownRenderer extends AbstractVisitor {
         if (this.context.renderSoftLineBreaks()) {
             this.currentComponent.append(new TextComponent("\n"));
         }
+        else if(this.context.replaceSoftLineBreaksWithSpace()){
+            this.currentComponent.append(new TextComponent(" "));
+        }
         this.visitChildren(softLineBreak);
     }
 
     @Override
     public void visit(StrongEmphasis strongEmphasis) {
+        var emphasis = this.currentStyle.isBold();
         this.currentStyle = this.currentStyle.withBold(true);
         this.visitChildren(strongEmphasis);
-        this.currentStyle = this.currentStyle.withBold(null);
+        this.currentStyle = this.currentStyle.withBold(emphasis);
     }
 
     @Override

@@ -28,6 +28,7 @@ import com.klikli_dev.modonomicon.client.gui.book.markdown.MarkdownComponentRend
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.FormattedCharSequence;
 import org.commonmark.parser.Parser;
 
@@ -85,10 +86,12 @@ public class BookTextPage extends AbstractBookPage {
                         2. **Bold Text** and a very long list item for test which is basically just tons of text to see how things work wow.
                         1. [#](32a852)colored?[#]() 
                         4. So whathappenswithasuperlongwordhalp?
+                        [test link](http://test.com)
+                        [#](32a852)[colored book link](book://test/)[#]()
                          """;
         //TODO: Move parser to page creation
         var document = parser.parse(text);
-        var renderer = new ComponentMarkdownRenderer(new ComponentRendererContext(false));
+        var renderer = new ComponentMarkdownRenderer(new ComponentRendererContext(false, true, TextColor.fromRgb(0x5555FF)));
         var comps = renderer.render(document);
         //width should probably also be set via init
         int width = BookContentScreen.BOOK_BACKGROUND_WIDTH / 2 - 17;
