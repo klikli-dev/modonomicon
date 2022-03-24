@@ -24,6 +24,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import org.commonmark.internal.renderer.text.BulletListHolder;
 import org.commonmark.internal.renderer.text.ListHolder;
 import org.commonmark.internal.renderer.text.OrderedListHolder;
 import org.commonmark.node.*;
@@ -104,6 +105,17 @@ public class ComponentMarkdownRenderer extends AbstractVisitor {
     }
 
     @Override
+    public void visit(BulletList bulletList) {
+        this.listHolder = new BulletListHolder(this.listHolder, bulletList);
+        this.visitChildren(bulletList);
+        if (this.listHolder.getParent() != null) {
+            this.listHolder = this.listHolder.getParent();
+        } else {
+            this.listHolder = null;
+        }
+    }
+
+    @Override
     public void visit(Emphasis emphasis) {
         this.currentStyle = this.currentStyle.withItalic(true);
         this.visitChildren(emphasis);
@@ -119,7 +131,7 @@ public class ComponentMarkdownRenderer extends AbstractVisitor {
         this.currentComponent.append(new TextComponent("\n"));
 
         //lists do their own finalization
-        if(this.listHolder == null){
+        if (this.listHolder == null) {
             this.finalizeCurrentComponent();
         }
         this.visitChildren(hardLineBreak);
@@ -143,38 +155,27 @@ public class ComponentMarkdownRenderer extends AbstractVisitor {
         this.finalizeCurrentComponent();
 
         if (this.listHolder != null && this.listHolder instanceof OrderedListHolder orderedListHolder) {
-            String indent = orderedListHolder.getIndent();
-
             //List bullets/numbers will not be affected by current style
             this.currentComponent.append(new TranslatableComponent(
-                    indent + orderedListHolder.getCounter() + orderedListHolder.getDelimiter() + " ")
+                    orderedListHolder.getIndent() + orderedListHolder.getCounter() + orderedListHolder.getDelimiter() + " ")
                     .withStyle(Style.EMPTY));
 
             this.visitChildren(listItem);
-            //TODO: newline?
             orderedListHolder.increaseCounter();
+        } else if (this.listHolder != null && this.listHolder instanceof BulletListHolder bulletListHolder) {
+            //List bullets/numbers will not be affected by current style
+            this.currentComponent.append(new TranslatableComponent(
+                    bulletListHolder.getIndent() + bulletListHolder.getMarker() + " ")
+                    .withStyle(Style.EMPTY));
+            this.visitChildren(listItem);
         }
-        //TODO: bullet list
-//        } else if (listHolder != null && listHolder instanceof BulletListHolder) {
-//            BulletListHolder bulletListHolder = (BulletListHolder) listHolder;
-//            if (!context.stripNewlines()) {
-//                textContent.write(bulletListHolder.getIndent() + bulletListHolder.getMarker() + " ");
-//            }
-//            visitChildren(listItem);
-//            writeEndOfLineIfNeeded(listItem, null);
-//        }
     }
 
     @Override
     public void visit(OrderedList orderedList) {
-        if (this.listHolder != null) {
-            //TODO: write newline?
-        }
         //create a new list holder with our (potential) current holder as parent
-        //TODO: probably need a custom list holder for our indent
         this.listHolder = new OrderedListHolder(this.listHolder, orderedList);
         this.visitChildren(orderedList);
-        //TODO: newline?
 
         //Now, if we have a parent, set it as current to handle nested lists
         if (this.listHolder.getParent() != null) {
@@ -201,15 +202,7 @@ public class ComponentMarkdownRenderer extends AbstractVisitor {
 
     @Override
     public void visit(Text text) {
-        //TODO: do we need listitemcomponent here?
-//        if(this.listHolder != null){
-//            //keep reference to the list holder, so we can access indent in component rendering
-//            this.currentComponent.append(new ListItemComponent(this.listHolder, text.getLiteral())
-//                    .withStyle(this.currentStyle));
-//        }
-//        else{
-            this.currentComponent.append(new TranslatableComponent(text.getLiteral()).withStyle(this.currentStyle));
-//        }
+        this.currentComponent.append(new TranslatableComponent(text.getLiteral()).withStyle(this.currentStyle));
         this.visitChildren(text);
     }
 }
