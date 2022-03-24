@@ -111,11 +111,15 @@ public class ComponentMarkdownRenderer extends AbstractVisitor {
     public void visit(BulletList bulletList) {
         this.listHolder = new BulletListHolder(this.listHolder, bulletList);
         this.visitChildren(bulletList);
+
+
         if (this.listHolder.getParent() != null) {
             this.listHolder = this.listHolder.getParent();
         } else {
             this.listHolder = null;
         }
+
+        this.finalizeCurrentComponent();
     }
 
     @Override
@@ -227,6 +231,8 @@ public class ComponentMarkdownRenderer extends AbstractVisitor {
         } else {
             this.listHolder = null;
         }
+
+        this.finalizeCurrentComponent();
     }
 
     @Override

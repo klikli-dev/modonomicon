@@ -79,22 +79,22 @@ public class BookTextPage extends AbstractBookPage {
                         translated: **<t>item.modonomicon.modonomicon</t>**
                          """;
 
-        var text =
-                """
-                        *Italics*  \s
-                        1. Ordered List item one
-                        2. **Bold Text** and a very long list item for test which is basically just tons of text to see how things work wow.
-                        1. [#](32a852)colored?[#]() 
-                        4. So whathappenswithasuperlongwordhalp?
-                        [test link](http://test.com)
-                        [#](32a852)[colored book link](book://test/)[#]()
-                         """;
+        var text = """
+                *Italics*  \s
+                1. Ordered List item one
+                2. **Bold Text** and a very long list item for test which is basically just tons of text to see how things work wow.
+                1. [#](32a852)colored?[#]() 
+                4. So whathappenswithasuperlongwordhalp?
+                                        
+                [test link](http://test.com)
+                [#](32a852)[colored book link](book://test/)[#]()
+                 """;
         //TODO: Move parser to page creation
         var document = parser.parse(text);
         var renderer = new ComponentMarkdownRenderer(new ComponentRendererContext(false, true, TextColor.fromRgb(0x5555FF)));
         var comps = renderer.render(document);
         //width should probably also be set via init
-        int width = BookContentScreen.BOOK_BACKGROUND_WIDTH / 2 - 17;
+        int width = BookContentScreen.BOOK_BACKGROUND_WIDTH / 2 - 18;
 
         for (var component : comps) {
             for (FormattedCharSequence formattedcharsequence : MarkdownComponentRenderUtils.wrapComponents(component, width, width - 10, this.font)) {
