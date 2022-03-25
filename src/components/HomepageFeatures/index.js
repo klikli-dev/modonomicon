@@ -4,32 +4,30 @@ import styles from './styles.module.css';
 
 const FeatureList = [
   {
-    title: 'Easy to Use',
+    title: 'Data Driven',
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Modonomicon books are defined via json files and can be added/extended in both mods and datapacks.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
+    title: '(Extended) Markdown',
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        No need to learn a new markup language - all text styling can be done in markdown.
+        Minecraft and Modonomicon-specific functionality is available with extensions to the markdown syntax. 
       </>
     ),
   },
   {
-    title: 'Powered by React',
+    title: 'Inspired by the best',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Modonomicon is built with two excellent documentation methods in mind: Thaumcraft's quest-view style Thaumonomicon and the extensible and data-driven system of Patchouli.
       </>
     ),
   },
