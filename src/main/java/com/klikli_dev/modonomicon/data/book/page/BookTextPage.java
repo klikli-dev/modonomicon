@@ -26,6 +26,7 @@ import com.klikli_dev.modonomicon.client.gui.book.markdown.ComponentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.CoreComponentNodeRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ComponentRendererContextRecord;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.MarkdownComponentRenderUtils;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.ext.ComponentStrikethroughExtension;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
@@ -71,26 +72,20 @@ public class BookTextPage extends AbstractBookPage {
         int i = (this.parentScreen.width - BookContentScreen.BOOK_BACKGROUND_WIDTH) / 2 + 15;
         int j = (this.parentScreen.height - BookContentScreen.BOOK_BACKGROUND_HEIGHT) / 2 + 15;
 
-        var extensions = List.of(StrikethroughExtension.create());
-        var parser = Parser.builder().extensions(extensions).build();
-        var textOld =
-                """
-                        *Italics*  \s
-                        **Bold text**  \s
-                        ***Bold italics text***  \s
-                        [#](32a852)colored?  \s
-                        **colored bold?**  \s
-                        [#]()  \s
-                        translated: **<t>item.modonomicon.modonomicon</t>**
-                         """;
-
+        var extensions = List.of(ComponentStrikethroughExtension.create());
+        var parser = Parser.builder()
+               .extensions(extensions)
+                .build();
         var text = """
-                *Italics*  \s
+                ++underline++ *Italics*
                 1. Ordered List item one
-                2. **Bold Text** and a very long list item for test which is basically just tons of text to see how things work wow.
-                1. [#](32a852)colored?[#]() 
+                
+                   2. **Bold Text** and a very long list item for test which is basically just tons of text to see how things work wow.
+                   1. [#](32a852)colored?[#]() 
+                   2. test
                 4. So whathappenswithasuperlongwordhalp?
-                                        
+                
+                ~~strikethrough~~                      
                 [test link](http://test.com)
                 [#](32a852)[colored book link](book://test/)[#]()
                  """;
@@ -100,13 +95,15 @@ public class BookTextPage extends AbstractBookPage {
                 .renderSoftLineBreaks(false)
                 .replaceSoftLineBreaksWithSpace(true)
                 .linkColor(TextColor.fromRgb(0x5555FF))
+                .extensions(extensions)
                 .build();
         var comps = renderer.render(document);
         //width should probably also be set via init
         int width = BookContentScreen.BOOK_BACKGROUND_WIDTH / 2 - 18;
 
         for (var component : comps) {
-            for (FormattedCharSequence formattedcharsequence : MarkdownComponentRenderUtils.wrapComponents(component, width, width - 10, this.font)) {
+            var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, width, width - 10, this.font);
+            for (FormattedCharSequence formattedcharsequence : wrapped) {
                 this.font.draw(poseStack, formattedcharsequence, i, j, 0);
                 j += this.font.lineHeight;
             }
