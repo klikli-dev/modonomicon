@@ -22,15 +22,19 @@ package com.klikli_dev.modonomicon.data.book.page;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
-import com.klikli_dev.modonomicon.client.gui.book.markdown.ComponentMarkdownRenderer;
-import com.klikli_dev.modonomicon.client.gui.book.markdown.ComponentRendererContext;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.ComponentRenderer;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.CoreComponentNodeRenderer;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.ComponentRendererContextRecord;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.MarkdownComponentRenderUtils;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.FormattedCharSequence;
+import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension;
 import org.commonmark.parser.Parser;
+
+import java.util.List;
 
 public class BookTextPage extends AbstractBookPage {
     protected Component title;
@@ -67,7 +71,8 @@ public class BookTextPage extends AbstractBookPage {
         int i = (this.parentScreen.width - BookContentScreen.BOOK_BACKGROUND_WIDTH) / 2 + 15;
         int j = (this.parentScreen.height - BookContentScreen.BOOK_BACKGROUND_HEIGHT) / 2 + 15;
 
-        var parser = Parser.builder().build();
+        var extensions = List.of(StrikethroughExtension.create());
+        var parser = Parser.builder().extensions(extensions).build();
         var textOld =
                 """
                         *Italics*  \s
@@ -91,7 +96,11 @@ public class BookTextPage extends AbstractBookPage {
                  """;
         //TODO: Move parser to page creation
         var document = parser.parse(text);
-        var renderer = new ComponentMarkdownRenderer(new ComponentRendererContext(false, true, TextColor.fromRgb(0x5555FF)));
+        var renderer = new ComponentRenderer.Builder()
+                .renderSoftLineBreaks(false)
+                .replaceSoftLineBreaksWithSpace(true)
+                .linkColor(TextColor.fromRgb(0x5555FF))
+                .build();
         var comps = renderer.render(document);
         //width should probably also be set via init
         int width = BookContentScreen.BOOK_BACKGROUND_WIDTH / 2 - 18;

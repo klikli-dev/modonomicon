@@ -30,6 +30,6 @@ import net.minecraft.network.chat.TextColor;
  *                                       to be rendered without spaces inbetween.
  * @param linkColor The color to use for http and book page links. Suggested: Blue: 0x5555FF
  */
-public record ComponentRendererContext(boolean renderSoftLineBreaks, boolean replaceSoftLineBreaksWithSpace, TextColor linkColor) {
+public record ComponentRendererContextRecord(boolean renderSoftLineBreaks, boolean replaceSoftLineBreaksWithSpace, TextColor linkColor) {
     //TODO: make renderSoftLineBreaks a book level option
 }
