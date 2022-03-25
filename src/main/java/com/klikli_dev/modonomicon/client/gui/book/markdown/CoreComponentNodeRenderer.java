@@ -36,12 +36,6 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
 
     private final ComponentNodeRendererContext context;
 
-    /**
-     * List holder is used to keep track of the current markdown (ordered or unordered) list we are rendering.
-     */
-    private ListHolder listHolder;
-
-
     public CoreComponentNodeRenderer(ComponentNodeRendererContext context) {
         this.context = context;
     }
@@ -93,27 +87,13 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
         );
     }
 
-    /**
-     * Archives our current component on the list of components
-     */
-    private void finalizeCurrentComponent() {
-        this.context.getComponents().add(this.context.getCurrentComponent());
-        this.context.setCurrentComponent(this.listHolder == null ?
-                new TranslatableComponent("") : new ListItemComponent(this.listHolder, ""));
-    }
-
-    /**
-     * Checks if the current component is empty and has no siblings.
-     */
-    private boolean isEmptyComponent() {
-        //translation contents have no content, they have a key (which doubles as content).
-        return this.context.getCurrentComponent().getKey().isEmpty() && this.context.getCurrentComponent().getSiblings().isEmpty();
-    }
-
     @Override
     public Set<Class<? extends Node>> getNodeTypes() {
+        //we need to return nodes here even if we don't do special handling, otherwise they will be skipped.
         return new HashSet<>(Arrays.asList(
+                Document.class,
                 Heading.class,
+                Paragraph.class,
                 BulletList.class,
                 Link.class,
                 ListItem.class,
@@ -128,24 +108,26 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
 
     public void render(Node node) {
         node.accept(this);
-        if (!this.isEmptyComponent()) {
-            this.finalizeCurrentComponent();
-        }
     }
 
     @Override
     public void visit(BulletList bulletList) {
-        this.listHolder = new BulletListHolder(this.listHolder, bulletList);
+        this.context.finalizeCurrentComponent();
+
+        //create a new list holder with our (potential) current holder as parent
+        this.context.setListHolder(new BulletListHolder(this.context.getListHolder(), bulletList));
+
+        //render the list
         this.visitChildren(bulletList);
 
-
-        if (this.listHolder.getParent() != null) {
-            this.listHolder = this.listHolder.getParent();
+        //Now, if we have a parent, set it as current to handle nested lists
+        if (this.context.getListHolder().getParent() != null) {
+            this.context.setListHolder(this.context.getListHolder().getParent());
         } else {
-            this.listHolder = null;
+            this.context.setListHolder(null);
         }
 
-        this.finalizeCurrentComponent();
+        this.context.finalizeCurrentComponent();
     }
 
     @Override
@@ -165,8 +147,8 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
         this.context.getCurrentComponent().append(new TextComponent("\n"));
 
         //lists do their own finalization
-        if (this.listHolder == null) {
-            this.finalizeCurrentComponent();
+        if (this.context.getListHolder() == null) {
+            this.context.finalizeCurrentComponent();
         }
         this.visitChildren(hardLineBreak);
     }
@@ -194,9 +176,10 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
     @Override
     public void visit(ListItem listItem) {
         //while hard newlines don't force a new component in a list, a new list item does.
-        this.finalizeCurrentComponent();
+        this.context.finalizeCurrentComponent();
 
-        if (this.listHolder != null && this.listHolder instanceof OrderedListHolder orderedListHolder) {
+        var listHolder = this.context.getListHolder();
+        if (listHolder != null && listHolder instanceof OrderedListHolder orderedListHolder) {
             //List bullets/numbers will not be affected by current style
             this.context.getCurrentComponent().append(new TranslatableComponent(
                     orderedListHolder.getIndent() + orderedListHolder.getCounter() + orderedListHolder.getDelimiter() + " ")
@@ -204,7 +187,7 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
 
             this.visitChildren(listItem);
             orderedListHolder.increaseCounter();
-        } else if (this.listHolder != null && this.listHolder instanceof BulletListHolder bulletListHolder) {
+        } else if (listHolder != null && listHolder instanceof BulletListHolder bulletListHolder) {
             //List bullets/numbers will not be affected by current style
             this.context.getCurrentComponent().append(new TranslatableComponent(
                     bulletListHolder.getIndent() + bulletListHolder.getMarker() + " ")
@@ -216,23 +199,25 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
     @Override
     public void visit(OrderedList orderedList) {
         //create a new list holder with our (potential) current holder as parent
-        this.listHolder = new OrderedListHolder(this.listHolder, orderedList);
+        this.context.setListHolder(new OrderedListHolder(this.context.getListHolder(), orderedList));
+
+        //render the list
         this.visitChildren(orderedList);
 
         //Now, if we have a parent, set it as current to handle nested lists
-        if (this.listHolder.getParent() != null) {
-            this.listHolder = this.listHolder.getParent();
+        if (this.context.getListHolder().getParent() != null) {
+            this.context.setListHolder(this.context.getListHolder().getParent());
         } else {
-            this.listHolder = null;
+            this.context.setListHolder(null);
         }
 
-        this.finalizeCurrentComponent();
+        this.context.finalizeCurrentComponent();
     }
 
     @Override
     public void visit(SoftLineBreak softLineBreak) {
         if (this.context.getRenderSoftLineBreaks()) {
-            this.context.getCurrentComponent().append(new TextComponent("\n"));
+            this.context.getCurrentComponent().append("\n");
         } else if (this.context.getReplaceSoftLineBreaksWithSpace()) {
             this.context.getCurrentComponent().append(new TextComponent(" "));
         }
@@ -253,5 +238,15 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
         this.context.getCurrentComponent().append(
                 new TranslatableComponent(text.getLiteral()).withStyle(this.context.getCurrentStyle()));
         this.visitChildren(text);
+    }
+
+    @Override
+    protected void visitChildren(Node parent) {
+        Node node = parent.getFirstChild();
+        while (node != null) {
+            Node next = node.getNext();
+            this.context.render(node); //very important -> otherwise extensions will not render
+            node = next;
+        }
     }
 }

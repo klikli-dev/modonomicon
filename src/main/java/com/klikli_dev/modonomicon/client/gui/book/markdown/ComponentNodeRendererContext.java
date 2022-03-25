@@ -23,6 +23,7 @@ package com.klikli_dev.modonomicon.client.gui.book.markdown;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.TranslatableComponent;
+import org.commonmark.internal.renderer.text.ListHolder;
 import org.commonmark.node.Node;
 
 import java.util.List;
@@ -48,6 +49,16 @@ public interface ComponentNodeRendererContext {
     List<TranslatableComponent> getComponents();
 
     /**
+     * List holder is used to keep track of the current markdown (ordered or unordered) list we are rendering.
+     */
+    ListHolder getListHolder();
+
+    /**
+     * List holder is used to keep track of the current markdown (ordered or unordered) list we are rendering.
+     */
+    void setListHolder(ListHolder listHolder);
+
+    /**
      * The style applied to the next sibling. Each markdown styling instruction will replace this with a new immutable
      * style option.
      */
@@ -63,9 +74,25 @@ public interface ComponentNodeRendererContext {
      * Render the specified node and its children using the configured renderers. This should be used to render child
      * nodes; be careful not to pass the node that is being rendered, that would result in an endless loop.
      *
+     * IMPORTANT: call cleanupPostRender after!
      * @param node the node to render
      */
     void render(Node node);
+
+    /**
+     * Needs to be called after rendering to handle the last component.
+     */
+    void cleanupPostRender();
+
+    /**
+     * Checks if the current component is empty and has no siblings.
+     */
+    boolean isEmptyComponent();
+
+    /**
+     * Archives our current component on the list of components
+     */
+    void finalizeCurrentComponent();
 
     /**
      * True to render soft line breaks (deviating from MD spec).

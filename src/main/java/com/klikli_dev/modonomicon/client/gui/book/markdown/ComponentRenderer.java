@@ -25,6 +25,7 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.TranslatableComponent;
 import org.commonmark.Extension;
 import org.commonmark.internal.renderer.NodeRendererMap;
+import org.commonmark.internal.renderer.text.ListHolder;
 import org.commonmark.node.Node;
 import org.commonmark.renderer.text.TextContentRenderer;
 
@@ -40,6 +41,7 @@ public class ComponentRenderer {
     private final TextColor linkColor;
     private TranslatableComponent currentComponent;
     private Style currentStyle;
+    private ListHolder listHolder;
 
     private ComponentRenderer(ComponentRenderer.Builder builder) {
         this.renderSoftLineBreaks = builder.renderSoftLineBreaks;
@@ -68,6 +70,7 @@ public class ComponentRenderer {
     public List<TranslatableComponent> render(Node node) {
         ComponentRenderer.RendererContext context = new ComponentRenderer.RendererContext();
         context.render(node);
+        context.cleanupPostRender();
         return context.getComponents();
     }
 
@@ -163,14 +166,33 @@ public class ComponentRenderer {
         private final NodeRendererMap nodeRendererMap = new NodeRendererMap();
 
         private RendererContext() {
-
-
             // The first node renderer for a node type "wins".
             for (int i = ComponentRenderer.this.nodeRendererFactories.size() - 1; i >= 0; i--) {
                 var nodeRendererFactory = ComponentRenderer.this.nodeRendererFactories.get(i);
                 var nodeRenderer = nodeRendererFactory.create(this);
                 this.nodeRendererMap.add(nodeRenderer);
             }
+        }
+
+        /**
+         * Needs to be called after rendering to handle the last component.
+         */
+        @Override
+        public void cleanupPostRender(){
+            if (!this.isEmptyComponent()) {
+                this.finalizeCurrentComponent();
+            }
+        }
+
+        public boolean isEmptyComponent() {
+            //translation contents have no content, they have a key (which doubles as content).
+            return this.getCurrentComponent().getKey().isEmpty() && this.getCurrentComponent().getSiblings().isEmpty();
+        }
+
+        public void finalizeCurrentComponent() {
+            this.getComponents().add(this.getCurrentComponent());
+            this.setCurrentComponent(this.getListHolder() == null ?
+                    new TranslatableComponent("") : new ListItemComponent(this.getListHolder(), ""));
         }
 
         @Override
@@ -186,6 +208,16 @@ public class ComponentRenderer {
         @Override
         public List<TranslatableComponent> getComponents() {
             return ComponentRenderer.this.components;
+        }
+
+        @Override
+        public ListHolder getListHolder() {
+            return ComponentRenderer.this.listHolder;
+        }
+
+        @Override
+        public void setListHolder(ListHolder listHolder) {
+            ComponentRenderer.this.listHolder = listHolder;
         }
 
         @Override
