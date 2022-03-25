@@ -9,7 +9,7 @@ const config = {
   title: 'Modonomicon',
   tagline: 'Thaumonomicon-Style In-Game Documentation',
   url: 'https://github.com/klikli-dev/modonomicon',
-  baseUrl: '/modonomicon',
+  baseUrl: '/modonomicon/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
