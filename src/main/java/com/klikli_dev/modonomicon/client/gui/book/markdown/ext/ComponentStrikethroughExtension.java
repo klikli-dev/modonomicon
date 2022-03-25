@@ -42,11 +42,6 @@ public class ComponentStrikethroughExtension implements Parser.ParserExtension, 
 
     @Override
     public void extend(Builder rendererBuilder) {
-        rendererBuilder.nodeRendererFactory(new ComponentNodeRendererFactory() {
-            @Override
-            public NodeRenderer create(ComponentNodeRendererContext context) {
-                return new StrikethroughComponentNodeRenderer(context);
-            }
-        });
+        rendererBuilder.nodeRendererFactory(StrikethroughComponentNodeRenderer::new);
     }
 }
