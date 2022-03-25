@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[990],{4958:function(o){o.exports=JSON.parse('{"allTagsPath":"/modonomicon/blog/tags","slug":"/modonomicon/blog/tags/hola","name":"hola","count":1,"permalink":"/modonomicon/blog/tags/hola"}')}}]);
