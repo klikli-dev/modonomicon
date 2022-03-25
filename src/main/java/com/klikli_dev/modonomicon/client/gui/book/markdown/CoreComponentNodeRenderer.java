@@ -112,8 +112,6 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
 
     @Override
     public void visit(BulletList bulletList) {
-        this.context.finalizeCurrentComponent();
-
         //create a new list holder with our (potential) current holder as parent
         this.context.setListHolder(new BulletListHolder(this.context.getListHolder(), bulletList));
 
@@ -127,7 +125,11 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
             this.context.setListHolder(null);
         }
 
-        this.context.finalizeCurrentComponent();
+        if(bulletList.getParent() instanceof ListItem item && item.getNext() instanceof ListItem) {
+            //do nothing - we are in a nested list so the next item will finalize before handling children.
+        } else {
+            this.context.finalizeCurrentComponent();
+        }
     }
 
     @Override
@@ -146,10 +148,10 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
         // one way to still get them is to use \s as the last space at the end of the line in the text block
         this.context.getCurrentComponent().append(new TextComponent("\n"));
 
-        //lists do their own finalization
-        if (this.context.getListHolder() == null) {
-            this.context.finalizeCurrentComponent();
-        }
+        //finalization is only required by lists currently, and they do it on their own
+//        if (this.context.getListHolder() == null) {
+//            this.context.finalizeCurrentComponent();
+//        }
         this.visitChildren(hardLineBreak);
     }
 
@@ -211,7 +213,11 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
             this.context.setListHolder(null);
         }
 
-        this.context.finalizeCurrentComponent();
+        if(orderedList.getParent() instanceof ListItem item && item.getNext() instanceof ListItem) {
+            //do nothing - we are in a nested list so the next item will finalize before handling children.
+        } else {
+            this.context.finalizeCurrentComponent();
+        }
     }
 
     @Override

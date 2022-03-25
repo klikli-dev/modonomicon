@@ -27,6 +27,7 @@ import com.klikli_dev.modonomicon.client.gui.book.markdown.CoreComponentNodeRend
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ComponentRendererContextRecord;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.MarkdownComponentRenderUtils;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ext.ComponentStrikethroughExtension;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.ext.ComponentUnderlineExtension;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
@@ -79,12 +80,22 @@ public class BookTextPage extends AbstractBookPage {
         var text = """
                 ++underline++ *Italics*
                 1. Ordered List item one
-                
-                   2. **Bold Text** and a very long list item for test which is basically just tons of text to see how things work wow.
-                   1. [#](32a852)colored?[#]() 
-                   2. test
+                   - **Bold Text** and a very long list item for test which is basically just tons of text to see how things work wow.
+                   - [#](32a852)colored?[#]() 
+                   - test
                 4. So whathappenswithasuperlongwordhalp?
                 
+                ~~strikethrough~~                      
+                [test link](http://test.com)
+                [#](32a852)[colored book link](book://test/)[#]()
+                 """;
+
+        var textOld = """
+                ++underline++ *Italics*
+                1. Ordered List item
+                4. two
+
+                \\
                 ~~strikethrough~~                      
                 [test link](http://test.com)
                 [#](32a852)[colored book link](book://test/)[#]()
