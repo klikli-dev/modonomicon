@@ -72,7 +72,7 @@ public class BookTextPage extends AbstractBookPage {
         int i = (this.parentScreen.width - BookContentScreen.BOOK_BACKGROUND_WIDTH) / 2 + 15;
         int j = (this.parentScreen.height - BookContentScreen.BOOK_BACKGROUND_HEIGHT) / 2 + 15;
 
-        var extensions = List.of(ComponentStrikethroughExtension.create());
+        var extensions = List.of(ComponentStrikethroughExtension.create(), ComponentUnderlineExtension.create());
         var parser = Parser.builder()
                .extensions(extensions)
                 .build();
@@ -105,7 +105,7 @@ public class BookTextPage extends AbstractBookPage {
             var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, width, width - 10, this.font);
             for (FormattedCharSequence formattedcharsequence : wrapped) {
                 this.font.draw(poseStack, formattedcharsequence, i, j, 0);
-                j += this.font.lineHeight;
+                j += this.font.lineHeight + 1;
             }
         }
     }
