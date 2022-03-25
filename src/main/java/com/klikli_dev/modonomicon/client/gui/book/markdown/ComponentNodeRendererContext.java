@@ -111,4 +111,10 @@ public interface ComponentNodeRendererContext {
      * The color to use for http and book page links. Suggested: Blue: 0x5555FF
      */
     TextColor getLinkColor();
+
+    /**
+     * Gets the link renderers for the component renderer.
+     * These are used to create additional markdown functionality by (ab)using the link syntax.
+     */
+    List<LinkRenderer> getLinkRenderers();
 }

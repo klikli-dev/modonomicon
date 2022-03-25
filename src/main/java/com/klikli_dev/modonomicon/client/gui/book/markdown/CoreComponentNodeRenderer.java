@@ -23,7 +23,6 @@ package com.klikli_dev.modonomicon.client.gui.book.markdown;
 import net.minecraft.network.chat.*;
 import net.minecraft.network.chat.ClickEvent.Action;
 import org.commonmark.internal.renderer.text.BulletListHolder;
-import org.commonmark.internal.renderer.text.ListHolder;
 import org.commonmark.internal.renderer.text.OrderedListHolder;
 import org.commonmark.node.*;
 import org.commonmark.renderer.NodeRenderer;
@@ -38,53 +37,6 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
 
     public CoreComponentNodeRenderer(ComponentNodeRendererContext context) {
         this.context = context;
-    }
-
-    public void visitColor(Link link) {
-        if (link.getDestination().isEmpty()) {
-            this.context.setCurrentStyle(this.context.getCurrentStyle().withColor((TextColor) null));
-        } else {
-            //we use TextColor.parseColor because it fails gracefully as a color reset.
-            this.context.setCurrentStyle(this.context.getCurrentStyle()
-                    .withColor(TextColor.parseColor("#" + link.getDestination())));
-        }
-    }
-
-    public void visitHttpLink(Link link) {
-
-        var currentColor = this.context.getCurrentStyle().getColor();
-
-        //if we have a color we use it, otherwise we use link default.
-        this.context.setCurrentStyle(this.context.getCurrentStyle()
-                .withColor(currentColor == null ? this.context.getLinkColor() : currentColor)
-                .withClickEvent(new ClickEvent(Action.OPEN_URL, link.getDestination()))
-        );
-
-        this.visitChildren(link);
-
-        //at the end of the link we reset to our previous color.
-        this.context.setCurrentStyle(this.context.getCurrentStyle()
-                .withColor(currentColor)
-                .withClickEvent(null)
-        );
-    }
-
-    public void visitBookLink(Link link) {
-        var currentColor = this.context.getCurrentStyle().getColor();
-
-        //if we have a color we use it, otherwise we use link default.
-        this.context.setCurrentStyle(this.context.getCurrentStyle()
-                .withColor(currentColor == null ? this.context.getLinkColor() : currentColor)
-                .withClickEvent(new ClickEvent(Action.CHANGE_PAGE, link.getDestination()))
-        );
-
-        this.visitChildren(link);
-
-        //links are not style instructions, so we reset to our previous color.
-        this.context.setCurrentStyle(this.context.getCurrentStyle()
-                .withColor(currentColor)
-                .withClickEvent(null)
-        );
     }
 
     @Override
@@ -125,7 +77,7 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
             this.context.setListHolder(null);
         }
 
-        if(bulletList.getParent() instanceof ListItem item && item.getNext() instanceof ListItem) {
+        if (bulletList.getParent() instanceof ListItem item && item.getNext() instanceof ListItem) {
             //do nothing - we are in a nested list so the next item will finalize before handling children.
         } else {
             this.context.finalizeCurrentComponent();
@@ -157,22 +109,28 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
 
     @Override
     public void visit(Link link) {
-        var child = link.getFirstChild();
-        if (child instanceof Text t && t.getLiteral().equals("#")) {
-            this.visitColor(link);
-            //do not visit children for color - otherwise link text will be rendered
-        } else {
-            //normal links
-            if (link.getDestination().startsWith("http://") || link.getDestination().startsWith("https://")) {
-                this.visitHttpLink(link);
-            }
-            //book links
-            if (link.getDestination().startsWith("book://")) {
-                this.visitBookLink(link);
+        for (var renderer : this.context.getLinkRenderers()) {
+            if (renderer.visit(link, this::visitChildren, this.context)) {
+                return;
             }
         }
 
-        //TODO: other special links such as items
+        //if no link renderer, we just do a http link
+        var currentColor = this.context.getCurrentStyle().getColor();
+
+        //if we have a color we use it, otherwise we use link default.
+        this.context.setCurrentStyle(this.context.getCurrentStyle()
+                .withColor(currentColor == null ? this.context.getLinkColor() : currentColor)
+                .withClickEvent(new ClickEvent(Action.OPEN_URL, link.getDestination()))
+        );
+
+        this.visitChildren(link);
+
+        //at the end of the link we reset to our previous color.
+        this.context.setCurrentStyle(this.context.getCurrentStyle()
+                .withColor(currentColor)
+                .withClickEvent(null)
+        );
     }
 
     @Override
@@ -213,7 +171,7 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
             this.context.setListHolder(null);
         }
 
-        if(orderedList.getParent() instanceof ListItem item && item.getNext() instanceof ListItem) {
+        if (orderedList.getParent() instanceof ListItem item && item.getNext() instanceof ListItem) {
             //do nothing - we are in a nested list so the next item will finalize before handling children.
         } else {
             this.context.finalizeCurrentComponent();

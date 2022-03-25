@@ -30,11 +30,13 @@ import org.commonmark.node.Node;
 import org.commonmark.renderer.text.TextContentRenderer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ComponentRenderer {
 
     private final List<ComponentNodeRendererFactory> nodeRendererFactories;
+    private final List<LinkRenderer> linkRenderers;
     private final List<TranslatableComponent> components;
     private final boolean renderSoftLineBreaks;
     private final boolean replaceSoftLineBreaksWithSpace;
@@ -48,6 +50,7 @@ public class ComponentRenderer {
         this.replaceSoftLineBreaksWithSpace = builder.replaceSoftLineBreaksWithSpace;
         this.linkColor = builder.linkColor;
         this.currentStyle = builder.style;
+        this.linkRenderers = builder.linkRenderers;
 
         this.components = new ArrayList<>();
         this.currentComponent = new TranslatableComponent("");
@@ -90,6 +93,7 @@ public class ComponentRenderer {
         private boolean replaceSoftLineBreaksWithSpace = true;
         private TextColor linkColor = TextColor.fromRgb(0x5555FF);
         private Style style = Style.EMPTY;
+        private final List<LinkRenderer> linkRenderers = new ArrayList<>();
         private final List<ComponentNodeRendererFactory> nodeRendererFactories = new ArrayList<>();
 
         /**
@@ -148,15 +152,24 @@ public class ComponentRenderer {
         }
 
         /**
-         * @param extensions extensions to use on this text content renderer
+         * @param extensions extensions to use on this component renderer
          * @return {@code this}
          */
         public ComponentRenderer.Builder extensions(Iterable<? extends Extension> extensions) {
-            for (Extension extension : extensions) {
+            for (var extension : extensions) {
                 if (extension instanceof ComponentRenderer.ComponentRendererExtension componentRendererExtension) {
                     componentRendererExtension.extend(this);
                 }
             }
+            return this;
+        }
+
+        /**
+         * @param linkRenderers link renderers to use on this component renderer
+         * @return {@code this}
+         */
+        public ComponentRenderer.Builder linkRenderers(Collection<? extends LinkRenderer> linkRenderers) {
+            this.linkRenderers.addAll(linkRenderers);
             return this;
         }
     }
@@ -248,6 +261,11 @@ public class ComponentRenderer {
         @Override
         public TextColor getLinkColor() {
             return ComponentRenderer.this.linkColor;
+        }
+
+        @Override
+        public List<LinkRenderer> getLinkRenderers() {
+            return ComponentRenderer.this.linkRenderers;
         }
     }
 }

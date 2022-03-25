@@ -22,10 +22,7 @@ package com.klikli_dev.modonomicon.data.book.page;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
-import com.klikli_dev.modonomicon.client.gui.book.markdown.ComponentRenderer;
-import com.klikli_dev.modonomicon.client.gui.book.markdown.CoreComponentNodeRenderer;
-import com.klikli_dev.modonomicon.client.gui.book.markdown.ComponentRendererContextRecord;
-import com.klikli_dev.modonomicon.client.gui.book.markdown.MarkdownComponentRenderUtils;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.*;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ext.ComponentStrikethroughExtension;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ext.ComponentUnderlineExtension;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
@@ -106,6 +103,7 @@ public class BookTextPage extends AbstractBookPage {
                 .renderSoftLineBreaks(false)
                 .replaceSoftLineBreaksWithSpace(true)
                 .linkColor(TextColor.fromRgb(0x5555FF))
+                .linkRenderers(List.of(new ColorLinkRenderer(), new BookLinkRenderer()))
                 .extensions(extensions)
                 .build();
         var comps = renderer.render(document);
