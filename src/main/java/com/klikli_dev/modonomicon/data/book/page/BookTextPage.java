@@ -22,11 +22,18 @@ package com.klikli_dev.modonomicon.data.book.page;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.*;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.ext.ComponentStrikethroughExtension;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.ext.ComponentUnderlineExtension;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.FormattedCharSequence;
+import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension;
 import org.commonmark.parser.Parser;
+
+import java.util.List;
 
 public class BookTextPage extends AbstractBookPage {
     protected Component title;
@@ -63,31 +70,52 @@ public class BookTextPage extends AbstractBookPage {
         int i = (this.parentScreen.width - BookContentScreen.BOOK_BACKGROUND_WIDTH) / 2 + 15;
         int j = (this.parentScreen.height - BookContentScreen.BOOK_BACKGROUND_HEIGHT) / 2 + 15;
 
-        var parser = Parser.builder().build();
-        var text =
-                """
-                 *Italics*  \s
-                 **Bold text**  \s
-                 ***Bold italics text***  \s
-                 [#](32a852)colored?  \s
-                 **colored bold?**  \s
-                 [#]()  \s
-                 translated: **<t>item.modonomicon.modonomicon</t>**
-                  """;
+        var extensions = List.of(ComponentStrikethroughExtension.create(), ComponentUnderlineExtension.create());
+        var parser = Parser.builder()
+               .extensions(extensions)
+                .build();
+        var text = """
+                ++underline++ *Italics*
+                1. Ordered List item one
+                   - **Bold Text** and a very long list item for test which is basically just tons of text to see how things work wow.
+                   - [#](32a852)colored?[#]() 
+                   - test
+                4. So whathappenswithasuperlongwordhalp?
+                
+                ~~strikethrough~~                      
+                [test link](http://test.com)
+                [#](32a852)[colored book link](book://test/)[#]()
+                 """;
+
+        var textOld = """
+                ++underline++ *Italics*
+                1. Ordered List item
+                4. two
+
+                \\
+                ~~strikethrough~~                      
+                [test link](http://test.com)
+                [#](32a852)[colored book link](book://test/)[#]()
+                 """;
         //TODO: Move parser to page creation
         var document = parser.parse(text);
-        var visitor = new ExperimentalMDVisitor();
-        document.accept(visitor);
-        var comp = visitor.getComponent();
+        var renderer = new ComponentRenderer.Builder()
+                .renderSoftLineBreaks(false)
+                .replaceSoftLineBreaksWithSpace(true)
+                .linkColor(TextColor.fromRgb(0x5555FF))
+                .linkRenderers(List.of(new ColorLinkRenderer(), new BookLinkRenderer()))
+                .extensions(extensions)
+                .build();
+        var comps = renderer.render(document);
         //width should probably also be set via init
-        int width = BookContentScreen.BOOK_BACKGROUND_WIDTH / 2 - 17;
+        int width = BookContentScreen.BOOK_BACKGROUND_WIDTH / 2 - 18;
 
-        //TODO for split with indent see ComponentRenderUtils
-        //  I *think* this will indent all wrapped lines. We could make this an option?
-
-        for (FormattedCharSequence formattedcharsequence : this.font.split(comp, width)) {
-            this.font.draw(poseStack, formattedcharsequence, i, j, 0);
-            j += 9; //TODO: Line Height constant
+        for (var component : comps) {
+            var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, width, width - 10, this.font);
+            for (FormattedCharSequence formattedcharsequence : wrapped) {
+                this.font.draw(poseStack, formattedcharsequence, i, j, 0);
+                j += this.font.lineHeight + 1;
+            }
         }
     }
 }

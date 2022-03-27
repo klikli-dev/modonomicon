@@ -163,6 +163,8 @@ dependencies {
 
     //commonmark
     library "org.commonmark:commonmark:${commonmark_version}"
+    library "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
+    library "org.commonmark:commonmark-ext-ins:${commonmark_version}"
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
