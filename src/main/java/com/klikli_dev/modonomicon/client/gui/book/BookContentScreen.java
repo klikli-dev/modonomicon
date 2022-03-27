@@ -20,10 +20,8 @@
 
 package com.klikli_dev.modonomicon.client.gui.book;
 
-import com.klikli_dev.modonomicon.api.ModonimiconConstants;
-import com.klikli_dev.modonomicon.data.book.BookChapter;
-import com.klikli_dev.modonomicon.data.book.page.AbstractBookPage;
-import com.klikli_dev.modonomicon.data.book.page.BookTextPage;
+import com.klikli_dev.modonomicon.book.BookChapter;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -79,11 +77,11 @@ public class BookContentScreen extends Screen {
 
         //TODO: use page interface here
         //TODO: properly place left/right page
-        for(var page : this.chapter.getPages()){
-            if(page instanceof AbstractBookPage bookPage){
-                bookPage.init(this.chapter, this, 0, 20, 20);
-                bookPage.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
-            }
+        var textRenderer = new BookTextRenderer();
+
+        for (var bookPage : this.chapter.getPages()) {
+            bookPage.init(this.chapter, this, textRenderer, 0, 20, 20);
+            bookPage.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
         }
     }
 

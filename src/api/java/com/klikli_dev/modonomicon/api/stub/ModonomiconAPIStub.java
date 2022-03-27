@@ -22,7 +22,6 @@ package com.klikli_dev.modonomicon.api.stub;
 
 
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
-import com.klikli_dev.modonomicon.api.data.book.BookPage;
 import com.klikli_dev.modonomicon.api.data.book.BookPageLoader;
 import net.minecraft.resources.ResourceLocation;
 

@@ -26,6 +26,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data;
+import com.klikli_dev.modonomicon.book.*;
 import com.klikli_dev.modonomicon.data.book.*;
 import com.klikli_dev.modonomicon.network.Message;
 import com.klikli_dev.modonomicon.network.Networking;
