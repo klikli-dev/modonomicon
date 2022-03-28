@@ -21,8 +21,9 @@
 package com.klikli_dev.modonomicon.registry;
 
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Page;
-import com.klikli_dev.modonomicon.book.page.BookPageLoader;
+import com.klikli_dev.modonomicon.book.page.BookPageJsonLoader;
 import com.klikli_dev.modonomicon.book.page.BookPage;
+import com.klikli_dev.modonomicon.book.page.BookPageNetworkLoader;
 import com.klikli_dev.modonomicon.book.page.BookTextPage;
 import net.minecraft.resources.ResourceLocation;
 
@@ -31,18 +32,32 @@ import java.util.Map;
 
 public class BookPageLoaderRegistry {
 
-    private static Map<ResourceLocation, BookPageLoader<? extends BookPage>> pageLoaders = new HashMap<>();
+    private static Map<ResourceLocation, BookPageJsonLoader<? extends BookPage>> pageJsonLoaders = new HashMap<>();
+    private static Map<ResourceLocation, BookPageNetworkLoader<? extends BookPage>> pageNetworkLoaders = new HashMap<>();
 
     public static void registerDefaultPageLoaders(){
-        registerPageLoader(Page.TEXT, BookTextPage::fromJson);
+        registerPageLoader(Page.TEXT, BookTextPage::fromJson, BookTextPage::fromNetwork);
     }
 
-    public static void registerPageLoader(ResourceLocation id, BookPageLoader<? extends BookPage> loader) {
-        pageLoaders.put(id, loader);
+    public static void registerPageLoader(ResourceLocation id, BookPageJsonLoader<? extends BookPage> jsonLoader,
+                                          BookPageNetworkLoader<? extends BookPage> networkLoader){
+        pageJsonLoaders.put(id, jsonLoader);
+        pageNetworkLoaders.put(id, networkLoader);
     }
 
-    public static BookPageLoader<? extends BookPage> getPageLoader(ResourceLocation id) {
-        return pageLoaders.get(id);
+    public static BookPageJsonLoader<? extends BookPage> getPageJsonLoader(ResourceLocation id) {
+        var loader = pageJsonLoaders.get(id);
+        if(loader == null){
+            throw new IllegalArgumentException("No json loader registered for page type " + id);
+        }
+        return loader;
     }
 
+    public static BookPageNetworkLoader<? extends BookPage> getPageNetworkLoader(ResourceLocation id) {
+        var loader =  pageNetworkLoaders.get(id);
+        if(loader == null){
+            throw new IllegalArgumentException("No network loader registered for page type " + id);
+        }
+        return loader;
+    }
 }

@@ -20,7 +20,7 @@
 
 package com.klikli_dev.modonomicon.client.gui.book;
 
-import com.klikli_dev.modonomicon.book.BookChapter;
+import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -40,35 +40,39 @@ public class BookContentScreen extends Screen {
     public static final int TOP_PADDING = 18;
     public static final int LEFT_PAGE_X = 15;
     public static final int RIGHT_PAGE_X = 141;
+    public static final int PAGE_WIDTH = 116;
 
     private final BookOverviewScreen parentScreen;
-    private final BookChapter chapter;
+    private final BookEntry entry;
 
     private final ResourceLocation bookContentTexture;
     private final BookTextRenderer textRenderer;
 
     private BookPage leftPage;
     private BookPage rightPage;
+
+    private int bookLeft;
+    private int bookTop;
     /**
      * The index of the two pages being displayed. 0 means Pages 0 and 1, 1 means Pages 2 and 3, etc.
      */
     private int openPagesIndex;
     private int maxOpenPagesIndex;
 
-    public BookContentScreen(BookOverviewScreen parentScreen, BookChapter chapter) {
+    public BookContentScreen(BookOverviewScreen parentScreen, BookEntry entry) {
         super(new TextComponent(""));
 
         this.minecraft = Minecraft.getInstance();
 
         this.parentScreen = parentScreen;
-        this.chapter = chapter;
+        this.entry = entry;
 
         this.bookContentTexture = this.parentScreen.getBook().getBookContentTexture();
         this.textRenderer = new BookTextRenderer();
     }
 
-    public BookChapter getChapter() {
-        return this.chapter;
+    public BookEntry getEntry() {
+        return this.entry;
     }
 
     public void renderBookBackground(PoseStack poseStack) {
@@ -76,8 +80,8 @@ public class BookContentScreen extends Screen {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, this.bookContentTexture);
 
-        int x = (this.width - BOOK_BACKGROUND_WIDTH) / 2;
-        int y = (this.height - BOOK_BACKGROUND_HEIGHT) / 2;
+        int x = 0; // (this.width - BOOK_BACKGROUND_WIDTH) / 2;
+        int y = 0; // (this.height - BOOK_BACKGROUND_HEIGHT) / 2;
 
         GuiComponent.blit(poseStack, x, y, 0, 0, 272, 178, 512, 256);
     }
@@ -86,12 +90,36 @@ public class BookContentScreen extends Screen {
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         this.renderBackground(pPoseStack);
 
+        pPoseStack.pushPose();
+        pPoseStack.translate(this.bookLeft, this.bookTop, 0);
         this.renderBookBackground(pPoseStack);
+        pPoseStack.popPose();
 
+        //TODO: should super (= widget rendering) also be translated?
+        //  probably makes sense so we can keep coordinates local to the book
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
 
+        pPoseStack.pushPose();
+        pPoseStack.translate(this.bookLeft, this.bookTop, 0);
         this.renderPage(pPoseStack, this.leftPage, pMouseX, pMouseY, pPartialTick);
         this.renderPage(pPoseStack, this.rightPage, pMouseX, pMouseY, pPartialTick);
+        pPoseStack.popPose();
+    }
+
+    @Override
+    public boolean shouldCloseOnEsc() {
+        return true;
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
+        this.bookLeft = (this.width - BOOK_BACKGROUND_WIDTH) / 2;
+        this.bookTop = (this.height - BOOK_BACKGROUND_HEIGHT) / 2;
+
+        this.maxOpenPagesIndex = (int) Math.ceil((float) this.entry.getPages().size() / 2);
+        this.beginDisplayPages();
     }
 
     void renderPage(PoseStack poseStack, BookPage page, int pMouseX, int pMouseY, float pPartialTick) {
@@ -105,19 +133,6 @@ public class BookContentScreen extends Screen {
         poseStack.popPose();
     }
 
-    @Override
-    protected void init() {
-        super.init();
-
-        this.maxOpenPagesIndex =  (int) Math.ceil((float) this.chapter.getPages().size() / 2);
-        this.beginDisplayPages();
-    }
-
-    @Override
-    public boolean shouldCloseOnEsc() {
-        return true;
-    }
-
     void beginDisplayPages() {
         //allow pages to clean up
         if (this.leftPage != null) {
@@ -128,7 +143,7 @@ public class BookContentScreen extends Screen {
         }
 
         //get new pages
-        var pages = this.chapter.getPages();
+        var pages = this.entry.getPages();
         int leftPageIndex = this.openPagesIndex * 2;
         int rightPageIndex = leftPageIndex + 1;
 

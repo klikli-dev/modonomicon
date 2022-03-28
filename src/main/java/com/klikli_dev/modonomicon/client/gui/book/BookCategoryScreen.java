@@ -20,9 +20,9 @@
 
 package com.klikli_dev.modonomicon.client.gui.book;
 
-import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookEntry;
+import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
@@ -75,11 +75,11 @@ public class BookCategoryScreen {
         this.loadCategorySettings();
     }
 
-    public float getXOffset(){
+    public float getXOffset() {
         return ((this.bookOverviewScreen.getInnerWidth() / 2f) * (1 / this.currentZoom)) - this.scrollX / 2;
     }
 
-    public float getYOffset(){
+    public float getYOffset() {
         return ((this.bookOverviewScreen.getInnerHeight() / 2f) * (1 / this.currentZoom)) - this.scrollY / 2;
     }
 
@@ -134,12 +134,8 @@ public class BookCategoryScreen {
         float xOffset = this.getXOffset();
         float yOffset = this.getYOffset();
         for (var entry : this.category.getEntries().values()) {
-            if(this.isEntryHovered(entry, xOffset, yOffset, (int)pMouseX, (int)pMouseY)){
-                var chapter = entry.getChapter();
-                if(chapter != null) {
-                    ForgeHooksClient.pushGuiLayer(Minecraft.getInstance(), new BookContentScreen(this.bookOverviewScreen, chapter));
-                }
-
+            if (this.isEntryHovered(entry, xOffset, yOffset, (int) pMouseX, (int) pMouseY)) {
+                ForgeHooksClient.pushGuiLayer(Minecraft.getInstance(), new BookContentScreen(this.bookOverviewScreen, entry));
                 return true;
             }
         }

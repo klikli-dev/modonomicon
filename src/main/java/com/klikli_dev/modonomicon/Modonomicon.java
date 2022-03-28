@@ -24,12 +24,12 @@ import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.config.CommonConfig;
 import com.klikli_dev.modonomicon.config.ServerConfig;
-import com.klikli_dev.modonomicon.data.BookAssetManager;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
 import com.klikli_dev.modonomicon.handlers.ClientSetupEventHandler;
 import com.klikli_dev.modonomicon.item.ModonomiconCreativeModeTab;
 import com.klikli_dev.modonomicon.network.Networking;
+import com.klikli_dev.modonomicon.registry.BookPageLoaderRegistry;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import com.klikli_dev.modonomicon.registry.MenuRegistry;
 import net.minecraft.resources.ResourceLocation;
@@ -96,11 +96,14 @@ public class Modonomicon {
     }
 
     public void onRegisterClientReloadListeners(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(BookAssetManager.get());
+        //TODO: can we load data directly on client?
+        // event.registerReloadListener(BookAssetManager.get());
     }
 
     public void onCommonSetup(FMLCommonSetupEvent event) {
         Networking.registerMessages();
+
+        BookPageLoaderRegistry.registerDefaultPageLoaders();
 
         LOGGER.info("Common setup complete.");
     }

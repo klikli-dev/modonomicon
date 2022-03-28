@@ -20,7 +20,10 @@
 
 package com.klikli_dev.modonomicon.book;
 
+import com.klikli_dev.modonomicon.book.page.BookTextPage;
+import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,6 +33,8 @@ public class BookTextHolder {
 
     private Component component;
     private String string;
+
+    protected BookTextHolder() {}
 
     public BookTextHolder(Component component) {
         this.component = component;
@@ -49,5 +54,22 @@ public class BookTextHolder {
 
     public boolean hasComponent() {
         return this.component != null;
+    }
+
+    public void toNetwork(FriendlyByteBuf buffer){
+        buffer.writeBoolean(this.hasComponent());
+        if(this.hasComponent()) {
+            buffer.writeComponent(this.component);
+        } else {
+            buffer.writeUtf(this.string);
+        }
+    }
+
+    public static BookTextHolder fromNetwork(FriendlyByteBuf buffer) {
+        if(buffer.readBoolean()) {
+            return new BookTextHolder(buffer.readComponent());
+        } else {
+            return new BookTextHolder(buffer.readUtf());
+        }
     }
 }

@@ -22,6 +22,8 @@ package com.klikli_dev.modonomicon.book;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.klikli_dev.modonomicon.book.page.BookPage;
+import com.klikli_dev.modonomicon.registry.BookPageLoaderRegistry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -33,13 +35,13 @@ public class BookEntry {
     protected ResourceLocation id;
     protected ResourceLocation categoryId;
     protected BookCategory category;
-    protected BookChapter chapter;
     protected List<BookEntryParent> parents;
     protected String name;
     protected String description;
     protected BookIcon icon;
     protected int x;
     protected int y;
+    protected List<BookPage> pages;
 
     //TODO: entry type for background texture
 
@@ -71,7 +73,21 @@ public class BookEntry {
             }
         }
 
-        return new BookEntry(id, categoryId, name, description, icon, x, y, parentEntries);
+        var pages = new ArrayList<BookPage>();
+        if (json.has("pages")) {
+            var jsonPages = GsonHelper.getAsJsonArray(json, "pages");
+            for (var pageElem : jsonPages) {
+                var pageJson = GsonHelper.convertToJsonObject(pageElem, "page");
+                var type = new ResourceLocation(GsonHelper.getAsString(pageJson, "type"));
+                var loader = BookPageLoaderRegistry.getPageJsonLoader(type);
+                var page = loader.fromJson(pageJson);
+                pages.add(page);
+            }
+        }
+
+        var entry =  new BookEntry(id, categoryId, name, description, icon, x, y, parentEntries);
+        entry.setPages(pages);
+        return entry;
     }
 
     public static BookEntry fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
@@ -79,29 +95,47 @@ public class BookEntry {
         var name = buffer.readUtf();
         var description = buffer.readUtf();
         var icon = BookIcon.fromNetwork(buffer);
-        var x = buffer.readInt();
-        var y = buffer.readInt();
+        var x = buffer.readVarInt();
+        var y = buffer.readVarInt();
 
         var parentEntries = new ArrayList<BookEntryParent>();
 
-        var parentCount = buffer.readInt();
+        var parentCount = buffer.readVarInt();
         for (var i = 0; i < parentCount; i++) {
             parentEntries.add(BookEntryParent.fromNetwork(buffer));
         }
 
-        return new BookEntry(id, categoryId, name, description, icon, x, y, parentEntries);
+        var pages = new ArrayList<BookPage>();
+        var pageCount = buffer.readVarInt();
+        for (var i = 0; i < pageCount; i++) {
+            var type = buffer.readResourceLocation();
+            var loader = BookPageLoaderRegistry.getPageNetworkLoader(type);
+            var page = loader.fromNetwork(buffer);
+            pages.add(page);
+        }
+
+        var entry =  new BookEntry(id, categoryId, name, description, icon, x, y, parentEntries);
+        entry.setPages(pages);
+        return entry;
     }
+
 
     public void toNetwork(FriendlyByteBuf buffer) {
         buffer.writeResourceLocation(this.categoryId);
         buffer.writeUtf(this.name);
         buffer.writeUtf(this.description);
         this.icon.toNetwork(buffer);
-        buffer.writeInt(this.x);
-        buffer.writeInt(this.y);
-        buffer.writeInt(this.parents.size());
+        buffer.writeVarInt(this.x);
+        buffer.writeVarInt(this.y);
+        buffer.writeVarInt(this.parents.size());
         for (var parent : this.parents) {
             parent.toNetwork(buffer);
+        }
+
+        buffer.writeVarInt(this.pages.size());
+        for(var page : this.pages){
+            buffer.writeResourceLocation(page.getType());
+            page.toNetwork(buffer);
         }
     }
 
@@ -149,11 +183,17 @@ public class BookEntry {
         return this.description;
     }
 
-    public BookChapter getChapter() {
-        return this.chapter;
+    public List<BookPage> getPages() {
+        return this.pages;
     }
 
-    public void setChapter(BookChapter chapter) {
-        this.chapter = chapter;
+    public void setPages(List<BookPage> pages) {
+        this.pages = pages;
+
+        int pageNum = 0;
+        for(var page : pages){
+            page.parentEntry = this;
+            page.pageNumber = pageNum++;
+        }
     }
 }

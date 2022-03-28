@@ -29,9 +29,6 @@ public class ClientSetupEventHandler {
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
-
-        BookPageLoaderRegistry.registerDefaultPageLoaders();
-
         registerItemModelProperties(event);
 
         //Not safe to call during parallel load, so register to run threadsafe.
