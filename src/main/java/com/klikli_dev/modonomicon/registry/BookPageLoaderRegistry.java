@@ -21,10 +21,9 @@
 package com.klikli_dev.modonomicon.registry;
 
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Page;
-import com.klikli_dev.modonomicon.api.ModonomiconAPI;
-import com.klikli_dev.modonomicon.api.data.book.BookPage;
-import com.klikli_dev.modonomicon.api.data.book.BookPageLoader;
-import com.klikli_dev.modonomicon.data.book.page.BookTextPage;
+import com.klikli_dev.modonomicon.book.page.BookPageLoader;
+import com.klikli_dev.modonomicon.book.page.BookPage;
+import com.klikli_dev.modonomicon.book.page.BookTextPage;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
@@ -35,7 +34,7 @@ public class BookPageLoaderRegistry {
     private static Map<ResourceLocation, BookPageLoader<? extends BookPage>> pageLoaders = new HashMap<>();
 
     public static void registerDefaultPageLoaders(){
-        ModonomiconAPI.get().registerPageLoader(Page.TEXT, BookTextPage::fromJson);
+        registerPageLoader(Page.TEXT, BookTextPage::fromJson);
     }
 
     public static void registerPageLoader(ResourceLocation id, BookPageLoader<? extends BookPage> loader) {

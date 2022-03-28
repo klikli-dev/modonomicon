@@ -1,7 +1,7 @@
 /*
  * LGPL-3-0
  *
- * Copyright (C) 2021 klikli-dev
+ * Copyright (C) 2022 klikli-dev
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,11 +18,10 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.data.book;
+package com.klikli_dev.modonomicon.book;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.data.book.BookPage;
+import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.registry.BookPageLoaderRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -50,15 +49,23 @@ public class BookChapter {
         if (json.has("pages")) {
             var jsonPages = GsonHelper.getAsJsonArray(json, "pages");
             for (var pageElem : jsonPages) {
-                var page = GsonHelper.convertToJsonObject(pageElem, "page");
-                var type = new ResourceLocation(GsonHelper.getAsString(page, "type"));
+                var pageJson = GsonHelper.convertToJsonObject(pageElem, "page");
+                var type = new ResourceLocation(GsonHelper.getAsString(pageJson, "type"));
                 var loader = BookPageLoaderRegistry.getPageLoader(type);
-                pages.add(loader.loadPage(page));
+                var page = loader.fromJson(pageJson);
+                pages.add(page);
             }
         }
 
         var chapter = new BookChapter(id, entryId);
         chapter.setPages(pages);
+
+        int pageNum = 0;
+        for(var page : pages){
+            page.setChapter(chapter);
+            page.setPageNumber(pageNum++);
+        }
+
         return chapter;
     }
 
