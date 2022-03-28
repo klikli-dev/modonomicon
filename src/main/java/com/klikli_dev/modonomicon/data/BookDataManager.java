@@ -27,7 +27,6 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data;
 import com.klikli_dev.modonomicon.book.*;
-import com.klikli_dev.modonomicon.data.book.*;
 import com.klikli_dev.modonomicon.network.Message;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.SyncBookDataMessage;
@@ -156,6 +155,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             }
         }
     }
+
+
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> content, ResourceManager pResourceManager, ProfilerFiller pProfiler) {

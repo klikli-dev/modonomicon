@@ -22,8 +22,6 @@ package com.klikli_dev.modonomicon.api.stub;
 
 
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
-import com.klikli_dev.modonomicon.api.data.book.BookPageLoader;
-import net.minecraft.resources.ResourceLocation;
 
 public class ModonomiconAPIStub implements ModonomiconAPI {
     private static final ModonomiconAPIStub instance = new ModonomiconAPIStub();
@@ -40,8 +38,4 @@ public class ModonomiconAPIStub implements ModonomiconAPI {
         return true;
     }
 
-    @Override
-    public void registerPageLoader(ResourceLocation id, BookPageLoader<? extends BookPage> loader) {
-
-    }
 }

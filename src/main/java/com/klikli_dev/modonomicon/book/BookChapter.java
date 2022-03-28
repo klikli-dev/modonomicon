@@ -60,7 +60,12 @@ public class BookChapter {
         var chapter = new BookChapter(id, entryId);
         chapter.setPages(pages);
 
-        //TODO: link pages to chapter
+        int pageNum = 0;
+        for(var page : pages){
+            page.setChapter(chapter);
+            page.setPageNumber(pageNum++);
+        }
+
         return chapter;
     }
 

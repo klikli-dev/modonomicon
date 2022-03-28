@@ -21,6 +21,7 @@
 package com.klikli_dev.modonomicon.book.page;
 
 import com.klikli_dev.modonomicon.book.BookChapter;
+import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.MarkdownComponentRenderUtils;
@@ -31,30 +32,45 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 
 public abstract class BookPage {
-    public BookChapter chapter;
+    public BookChapter parentChapter;
+    public int pageNumber;
+
     public BookContentScreen parentScreen;
     public BookTextRenderer textRenderer;
-
     public Minecraft mc;
     public Font font;
-    public int pageNumber;
     public int left;
     public int top;
 
     public abstract ResourceLocation getType();
 
-    public void init(BookChapter chapter, BookContentScreen parentScreen, BookTextRenderer textRenderer, int pageNumber, int left, int top) {
-        this.chapter = chapter;
+    public void setChapter(BookChapter parentChapter) {
+        this.parentChapter = parentChapter;
+    }
+
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
+    /**
+     * Call when the page is being set up to be displayed (when book content screen opens, or pages are changed)
+     */
+    public void onBeginDisplayPage(BookContentScreen parentScreen, BookTextRenderer textRenderer, int left, int top) {
         this.parentScreen = parentScreen;
         this.textRenderer = textRenderer;
 
         this.mc = parentScreen.getMinecraft();
         this.font = this.mc.font;
-        this.pageNumber = pageNumber;
         this.left = left;
         this.top = top;
     }
 
+    /**
+     * Call when the page is will no longer be displayed (when book content screen opens, or pages are changed)
+     */
+    public void onEndDisplayPage(BookContentScreen parentScreen) {
+
+    }
 
     public void renderBookTextHolder(BookTextHolder text, PoseStack poseStack, int x, int y, int width) {
         if (text.hasComponent()) {

@@ -18,7 +18,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.book.page;
+package com.klikli_dev.modonomicon.book;
 
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;

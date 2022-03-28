@@ -22,7 +22,7 @@ package com.klikli_dev.modonomicon.util;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.book.page.BookTextHolder;
+import com.klikli_dev.modonomicon.book.BookTextHolder;
 import net.minecraft.network.chat.Component;
 
 public class BookGsonHelper {
