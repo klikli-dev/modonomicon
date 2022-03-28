@@ -18,15 +18,19 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.handlers;
+package com.klikli_dev.modonomicon.client.gui;
 
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import com.klikli_dev.modonomicon.client.gui.book.BookOverviewScreen;
+import com.klikli_dev.modonomicon.data.BookDataManager;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
-public class RegistryEventHandler {
-
-    @SubscribeEvent
-    public static void registerRegistries(RegistryEvent.NewRegistry event) {
-        //Register custom registries here
+public class ScreenHelper {
+    public static void openBook(ItemStack stack) {
+        Minecraft.getInstance().setScreen(new BookOverviewScreen(
+                BookDataManager.get().getBook(new ResourceLocation("modonomicon", "test")),
+                stack));
     }
+
 }

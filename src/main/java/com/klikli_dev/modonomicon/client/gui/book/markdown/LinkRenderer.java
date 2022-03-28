@@ -1,7 +1,7 @@
 /*
  * LGPL-3-0
  *
- * Copyright (C) 2021 klikli-dev
+ * Copyright (C) 2022 klikli-dev
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,12 +18,21 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.apiimpl;
+package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
-import com.klikli_dev.modonomicon.api.ModonomiconAPI;
+import org.commonmark.node.Link;
+import org.commonmark.node.Node;
 
-public class ModonomiconAPIImpl implements ModonomiconAPI {
-    public boolean isStub() {
-        return false;
-    }
+import java.util.function.Consumer;
+
+public interface LinkRenderer {
+    /**
+     * Renders a link node - used for custom functionality
+     *
+     * @param Link          the link node
+     * @param visitChildren callback to visit children (if link text should be rendered)
+     * @param context       the renderer context
+     * @return true if handled, false if next link renderer (or default if none) should be called.
+     */
+    boolean visit(Link Link, Consumer<Node> visitChildren, ComponentNodeRendererContext context);
 }

@@ -1,7 +1,7 @@
 /*
  * LGPL-3-0
  *
- * Copyright (C) 2021 klikli-dev
+ * Copyright (C) 2022 klikli-dev
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.data.book;
+package com.klikli_dev.modonomicon.book;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

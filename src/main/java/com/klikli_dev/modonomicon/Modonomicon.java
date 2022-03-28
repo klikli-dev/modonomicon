@@ -28,7 +28,6 @@ import com.klikli_dev.modonomicon.data.BookAssetManager;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
 import com.klikli_dev.modonomicon.handlers.ClientSetupEventHandler;
-import com.klikli_dev.modonomicon.handlers.RegistryEventHandler;
 import com.klikli_dev.modonomicon.item.ModonomiconCreativeModeTab;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
@@ -43,7 +42,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -82,7 +80,6 @@ public class Modonomicon {
         MinecraftForge.EVENT_BUS.register(BookDataManager.get());
 
         //register event listener classes
-        modEventBus.register(RegistryEventHandler.class);
         modEventBus.register(DataGenerators.class);
 
         if (FMLEnvironment.dist == Dist.CLIENT) {

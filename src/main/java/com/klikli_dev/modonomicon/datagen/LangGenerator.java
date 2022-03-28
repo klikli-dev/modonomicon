@@ -74,6 +74,15 @@ public abstract class LangGenerator extends LanguageProvider {
         private void addBooks(){
             //TODO: convert this into a real data gen for books
             this.add("modonomicon.test.entries.test_category.test_entry.description", "Test Description");
+            this.add("modonomicon.test.sections.test_category.test_chapter.page0.text",
+                    """
+                    This is a **test** text.
+                    We have a newline here.
+                    - List item 
+                    - List item 2
+                    - List item 3
+                    And this is a super long line where we hope it will be automatically wrapped into a new line otherwise that is super-bad.      
+                    """);
         }
 
         protected void addTranslations() {

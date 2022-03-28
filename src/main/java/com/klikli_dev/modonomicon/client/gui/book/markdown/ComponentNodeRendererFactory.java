@@ -1,7 +1,7 @@
 /*
  * LGPL-3-0
  *
- * Copyright (C) 2021 klikli-dev
+ * Copyright (C) 2022 klikli-dev
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,18 +18,16 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.client.gui;
+package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
-import com.klikli_dev.modonomicon.client.gui.book.BookScreen;
-import com.klikli_dev.modonomicon.data.BookDataManager;
-import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
+import org.commonmark.renderer.NodeRenderer;
 
-public class GuiHelper {
-    public static void openBook(ItemStack stack) {
-        Minecraft.getInstance().setScreen(new BookScreen(
-                BookDataManager.get().getBook(new ResourceLocation("modonomicon", "test")),
-                stack));
-    }
+public interface ComponentNodeRendererFactory {
+    /**
+     * Create a new node renderer for the specified rendering context.
+     *
+     * @param context the context for rendering (normally passed on to the node renderer)
+     * @return a node renderer
+     */
+    NodeRenderer create(ComponentNodeRendererContext context);
 }

@@ -1,7 +1,7 @@
 /*
  * LGPL-3-0
  *
- * Copyright (C) 2021 klikli-dev
+ * Copyright (C) 2022 klikli-dev
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,18 +18,26 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.data.book;
+package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
-public class ResolvedBookEntryParent extends BookEntryParent {
-    protected BookEntry entry;
+import net.minecraft.network.chat.TranslatableComponent;
+import org.commonmark.internal.renderer.text.ListHolder;
 
-    public ResolvedBookEntryParent(BookEntry entry) {
-        super(entry.getId());
-        this.entry = entry;
+public class ListItemComponent extends TranslatableComponent {
+
+    private final ListHolder listHolder;
+
+    public ListItemComponent(ListHolder listHolder, String pKey) {
+        super(pKey);
+        this.listHolder = listHolder;
     }
 
-    @Override
-    public BookEntry getEntry() {
-        return this.entry;
+    public ListItemComponent(ListHolder listHolder, String pKey, Object... pArgs) {
+        super(pKey, pArgs);
+        this.listHolder = listHolder;
+    }
+
+    public ListHolder getListHolder() {
+        return this.listHolder;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * LGPL-3-0
  *
- * Copyright (C) 2021 klikli-dev
+ * Copyright (C) 2022 klikli-dev
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,24 +18,36 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.util;
+package com.klikli_dev.modonomicon.book;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.book.BookTextHolder;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
-public class BookGsonHelper {
+public class BookTextHolder {
 
-    public static BookTextHolder getAsBookTextHolder(JsonObject pJson, String pMemberName, BookTextHolder pFallback) {
-        return pJson.has(pMemberName) ? convertToBookTextHolder(pJson.get(pMemberName), pMemberName) : pFallback;
+    public static final BookTextHolder EMPTY = new BookTextHolder("");
+
+    private Component component;
+    private String string;
+
+    public BookTextHolder(Component component) {
+        this.component = component;
     }
 
-    public static BookTextHolder convertToBookTextHolder(JsonElement pJson, String pMemberName) {
-        if (pJson.isJsonPrimitive()) {
-            return new BookTextHolder(pJson.getAsString());
-        } else {
-            return new BookTextHolder(Component.Serializer.fromJson(pJson));
-        }
+    public BookTextHolder(@NotNull String string) {
+        this.string = string;
+    }
+
+    public String getString() {
+        return this.hasComponent() ? this.component.getString() : I18n.get(this.string);
+    }
+
+    public Component getComponent() {
+        return component;
+    }
+
+    public boolean hasComponent() {
+        return this.component != null;
     }
 }

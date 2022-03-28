@@ -20,7 +20,7 @@
 
 package com.klikli_dev.modonomicon.client.gui.book;
 
-import com.klikli_dev.modonomicon.data.book.BookCategory;
+import com.klikli_dev.modonomicon.book.BookCategory;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
@@ -30,10 +30,10 @@ import net.minecraft.network.chat.TextComponent;
 
 public class BookCategoryButton extends Button {
 
-    private final BookScreen parent;
+    private final BookOverviewScreen parent;
     private final BookCategory category;
     private final int categoryIndex;
-    public BookCategoryButton(BookScreen parent, BookCategory category, int categoryIndex, int pX, int pY, int width, int height, OnPress pOnPress, OnTooltip pOnTooltip) {
+    public BookCategoryButton(BookOverviewScreen parent, BookCategory category, int categoryIndex, int pX, int pY, int width, int height, OnPress pOnPress, OnTooltip pOnTooltip) {
         super(pX, pY, width, height, new TextComponent(""), pOnPress, pOnTooltip);
         this.parent = parent;
         this.category = category;
@@ -69,7 +69,7 @@ public class BookCategoryButton extends Button {
             }
 
             //draw category button background
-            RenderSystem.setShaderTexture(0, this.parent.getBookTexture());
+            RenderSystem.setShaderTexture(0, this.parent.getBookOverviewTexture());
             GuiComponent.blit(pMatrixStack, renderX, this.y, this.parent.getBlitOffset()+ 50, texX, texY, renderWidth, this.height, 256, 256);
 
             //then draw icon

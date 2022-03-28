@@ -21,18 +21,18 @@
 package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.config.ClientConfig;
-import com.klikli_dev.modonomicon.data.BookAssetManager;
-import com.klikli_dev.modonomicon.data.book.BookCategory;
-import com.klikli_dev.modonomicon.data.book.BookChapter;
-import com.klikli_dev.modonomicon.data.book.BookEntry;
+import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.book.BookEntry;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
+import net.minecraftforge.client.ForgeHooksClient;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -51,7 +51,7 @@ public class BookCategoryScreen {
     public static final int ENTRY_WIDTH = 26;
 
 
-    private final BookScreen bookScreen;
+    private final BookOverviewScreen bookOverviewScreen;
     private final BookCategory category;
     private final EntryConnectionRenderer connectionRenderer;
     protected int backgroundTextureWidth = 512;
@@ -63,11 +63,11 @@ public class BookCategoryScreen {
     private float targetZoom;
     private float currentZoom;
 
-    public BookCategoryScreen(BookScreen bookScreen, BookCategory category) {
-        this.bookScreen = bookScreen;
+    public BookCategoryScreen(BookOverviewScreen bookOverviewScreen, BookCategory category) {
+        this.bookOverviewScreen = bookOverviewScreen;
         this.category = category;
 
-        this.connectionRenderer = this.bookScreen.getConnectionRenderer();
+        this.connectionRenderer = this.bookOverviewScreen.getConnectionRenderer();
 
         this.targetZoom = 0.7f;
         this.currentZoom = this.targetZoom;
@@ -76,11 +76,11 @@ public class BookCategoryScreen {
     }
 
     public float getXOffset(){
-        return ((this.bookScreen.getInnerWidth() / 2f) * (1 / this.currentZoom)) - this.scrollX / 2;
+        return ((this.bookOverviewScreen.getInnerWidth() / 2f) * (1 / this.currentZoom)) - this.scrollX / 2;
     }
 
     public float getYOffset(){
-        return ((this.bookScreen.getInnerHeight() / 2f) * (1 / this.currentZoom)) - this.scrollY / 2;
+        return ((this.bookOverviewScreen.getInnerHeight() / 2f) * (1 / this.currentZoom)) - this.scrollY / 2;
     }
 
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
@@ -91,11 +91,11 @@ public class BookCategoryScreen {
             this.currentZoom = this.targetZoom;
 
         //GL Scissors to the inner frame area so entries do not stick out
-        int scale = (int) this.bookScreen.getMinecraft().getWindow().getGuiScale();
-        int innerX = this.bookScreen.getInnerX();
-        int innerY = this.bookScreen.getInnerY();
-        int innerWidth = this.bookScreen.getInnerWidth();
-        int innerHeight = this.bookScreen.getInnerHeight();
+        int scale = (int) this.bookOverviewScreen.getMinecraft().getWindow().getGuiScale();
+        int innerX = this.bookOverviewScreen.getInnerX();
+        int innerY = this.bookOverviewScreen.getInnerY();
+        int innerWidth = this.bookOverviewScreen.getInnerWidth();
+        int innerHeight = this.bookOverviewScreen.getInnerHeight();
 
         GL11.glScissor(innerX * scale, innerY * scale, innerWidth * scale, innerHeight * scale);
         GL11.glEnable(GL_SCISSOR_TEST);
@@ -136,6 +136,10 @@ public class BookCategoryScreen {
         for (var entry : this.category.getEntries().values()) {
             if(this.isEntryHovered(entry, xOffset, yOffset, (int)pMouseX, (int)pMouseY)){
                 var chapter = entry.getChapter();
+                if(chapter != null) {
+                    ForgeHooksClient.pushGuiLayer(Minecraft.getInstance(), new BookContentScreen(this.bookOverviewScreen, chapter));
+                }
+
                 return true;
             }
         }
@@ -150,24 +154,24 @@ public class BookCategoryScreen {
         RenderSystem.setShaderTexture(0, this.category.getBackground());
 
         //based on the frame's total width and its thickness, calculate where the inner area starts
-        int innerX = this.bookScreen.getInnerX();
-        int innerY = this.bookScreen.getInnerY();
+        int innerX = this.bookOverviewScreen.getInnerX();
+        int innerY = this.bookOverviewScreen.getInnerY();
 
         //then calculate the corresponding inner area width/height so we don't draw out of the frame
-        int innerWidth = this.bookScreen.getInnerWidth();
-        int innerHeight = this.bookScreen.getInnerHeight();
+        int innerWidth = this.bookOverviewScreen.getInnerWidth();
+        int innerHeight = this.bookOverviewScreen.getInnerHeight();
 
         //based on arcana's render research background
         //does not correctly work for non-automatic gui scale, but that only leads to background repeat -> no problem
-        float xScale = MAX_SCROLL * 2.0f / ((float) MAX_SCROLL + this.bookScreen.getFrameThicknessW() - this.bookScreen.getFrameWidth());
-        float yScale = MAX_SCROLL * 2.0f / ((float) MAX_SCROLL + this.bookScreen.getFrameThicknessH() - this.bookScreen.getFrameHeight());
+        float xScale = MAX_SCROLL * 2.0f / ((float) MAX_SCROLL + this.bookOverviewScreen.getFrameThicknessW() - this.bookOverviewScreen.getFrameWidth());
+        float yScale = MAX_SCROLL * 2.0f / ((float) MAX_SCROLL + this.bookOverviewScreen.getFrameThicknessH() - this.bookOverviewScreen.getFrameHeight());
         float scale = Math.max(xScale, yScale);
         float xOffset = xScale == scale ? 0 : (MAX_SCROLL - (innerWidth + MAX_SCROLL * 2.0f / scale)) / 2;
         float yOffset = yScale == scale ? 0 : (MAX_SCROLL - (innerHeight + MAX_SCROLL * 2.0f / scale)) / 2;
 
         //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
         //force offset to int here to reduce difference to entry rendering which is pos based and thus int precision only
-        GuiComponent.blit(poseStack, innerX, innerY, this.bookScreen.getBlitOffset(),
+        GuiComponent.blit(poseStack, innerX, innerY, this.bookOverviewScreen.getBlitOffset(),
                 (this.scrollX + MAX_SCROLL) / scale + xOffset,
                 (this.scrollY + MAX_SCROLL) / scale + yOffset,
                 innerWidth, innerHeight, this.backgroundTextureHeight, this.backgroundTextureWidth);
@@ -195,7 +199,7 @@ public class BookCategoryScreen {
             //we translate instead of applying the offset to the entry x/y to avoid jittering when moving
             stack.translate(xOffset, yOffset, 0);
             //render entry background
-            this.bookScreen.blit(stack, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT);
+            this.bookOverviewScreen.blit(stack, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT);
 
             //render icon
             entry.getIcon().render(stack, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 5, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP + 5);
@@ -223,10 +227,10 @@ public class BookCategoryScreen {
     private boolean isEntryHovered(BookEntry entry, float xOffset, float yOffset, int mouseX, int mouseY) {
         int x = (int) ((entry.getX() * ENTRY_GRID_SCALE + xOffset + 2) * this.currentZoom);
         int y = (int) ((entry.getY() * ENTRY_GRID_SCALE + yOffset + 2) * this.currentZoom);
-        int innerX = this.bookScreen.getInnerX();
-        int innerY = this.bookScreen.getInnerX();
-        int innerWidth = this.bookScreen.getInnerWidth();
-        int innerHeight = this.bookScreen.getInnerHeight();
+        int innerX = this.bookOverviewScreen.getInnerX();
+        int innerY = this.bookOverviewScreen.getInnerX();
+        int innerWidth = this.bookOverviewScreen.getInnerWidth();
+        int innerHeight = this.bookOverviewScreen.getInnerHeight();
         return mouseX >= x && mouseX <= x + (ENTRY_WIDTH * this.currentZoom)
                 && mouseY >= y && mouseY <= y + (ENTRY_HEIGHT * this.currentZoom)
                 && mouseX >= innerX && mouseX <= innerX + innerWidth
@@ -244,7 +248,7 @@ public class BookCategoryScreen {
                 tooltip.add(new TranslatableComponent(entry.getDescription()));
             }
             //draw description
-            this.bookScreen.renderTooltip(stack, tooltip, Optional.empty(), mouseX, mouseY);
+            this.bookOverviewScreen.renderTooltip(stack, tooltip, Optional.empty(), mouseX, mouseY);
         }
     }
 
@@ -253,7 +257,7 @@ public class BookCategoryScreen {
         RenderSystem.enableBlend();
 
         for (var parent : entry.getParents()) {
-            this.bookScreen.getConnectionRenderer().setBlitOffset(this.bookScreen.getBlitOffset());
+            this.bookOverviewScreen.getConnectionRenderer().setBlitOffset(this.bookOverviewScreen.getBlitOffset());
             stack.pushPose();
             stack.translate(xOffset, yOffset, 0);
             RenderSystem.setShaderTexture(0, this.category.getEntryTextures());
