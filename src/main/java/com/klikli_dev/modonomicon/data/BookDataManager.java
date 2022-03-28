@@ -113,10 +113,6 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
     protected void onLoaded() {
         this.loaded = true;
-        //link book assets, but not on dedicated server
-        if (FMLEnvironment.dist == Dist.CLIENT) {
-            BookAssetManager.get().linkChaptersToBook();
-        }
     }
 
     private Book loadBook(ResourceLocation key, JsonObject value) {
@@ -155,8 +151,6 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             }
         }
     }
-
-
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> content, ResourceManager pResourceManager, ProfilerFiller pProfiler) {

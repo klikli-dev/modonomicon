@@ -8,5 +8,17 @@
     {
       "entry": "modonomicon:test_category/test_entry"
     }
+  ],
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "title": "modonomicon.test.sections.test_category.test_entry.page0.title",
+      "text": "modonomicon.test.sections.test_category.test_entry.page0.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "title": "modonomicon.test.sections.test_category.test_entry.page1.title",
+      "text": "modonomicon.test.sections.test_category.test_entry.page1.text"
+    }
   ]
 }

@@ -20,8 +20,8 @@
 
 package com.klikli_dev.modonomicon.book.page;
 
-import com.google.gson.JsonObject;
+import net.minecraft.network.FriendlyByteBuf;
 
-public interface BookPageLoader<T extends BookPage> {
-    T fromJson(JsonObject json);
+public interface BookPageNetworkLoader<T extends BookPage> {
+    T fromNetwork(FriendlyByteBuf buff);
 }

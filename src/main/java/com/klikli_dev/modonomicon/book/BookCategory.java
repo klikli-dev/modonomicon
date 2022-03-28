@@ -39,7 +39,6 @@ public class BookCategory {
     protected ResourceLocation background;
     protected ResourceLocation entryTextures;
     protected Map<ResourceLocation, BookEntry> entries;
-    protected Map<ResourceLocation, BookChapter> chapters;
     //TODO: additional backgrounds with custom rendertypes?
 
     public BookCategory(ResourceLocation id, ResourceLocation bookId, String name, int sortNumber, BookIcon icon, ResourceLocation background, ResourceLocation entryTextures) {
@@ -51,7 +50,6 @@ public class BookCategory {
         this.background = background;
         this.entryTextures = entryTextures;
         this.entries = new HashMap<>();
-        this.chapters = new HashMap<>();
     }
 
     public static BookCategory fromJson(ResourceLocation id, JsonObject json, ResourceLocation bookId) {
@@ -116,18 +114,6 @@ public class BookCategory {
 
     public BookEntry getEntry(ResourceLocation id) {
         return this.entries.get(id);
-    }
-
-    public void addChapter(BookChapter chapter) {
-        this.chapters.putIfAbsent(chapter.id, chapter);
-    }
-
-    public BookChapter getChapter(ResourceLocation id) {
-        return this.chapters.get(id);
-    }
-
-    public Map<ResourceLocation, BookChapter> getChapters() {
-        return this.chapters;
     }
 
     public void toNetwork(FriendlyByteBuf buffer) {

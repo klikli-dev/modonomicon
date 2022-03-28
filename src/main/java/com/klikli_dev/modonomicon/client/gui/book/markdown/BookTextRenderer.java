@@ -24,6 +24,7 @@ import com.klikli_dev.modonomicon.client.gui.book.markdown.ext.ComponentStriketh
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ext.ComponentUnderlineExtension;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.TranslatableComponent;
+import org.commonmark.Extension;
 import org.commonmark.parser.Parser;
 
 import java.util.Collection;
@@ -33,25 +34,30 @@ public class BookTextRenderer {
 
     private final Parser markdownParser;
 
-    private final ComponentRenderer componentRenderer;
+    private List<Extension> extensions;
 
     public BookTextRenderer() {
-        //TODO: make parser and renderer configurable for modders
-        var extensions = List.of(ComponentStrikethroughExtension.create(), ComponentUnderlineExtension.create());
+        //TODO: make parser configurable for modders
+        this.extensions = List.of(ComponentStrikethroughExtension.create(), ComponentUnderlineExtension.create());
         this.markdownParser = Parser.builder()
-                .extensions(extensions)
+                .extensions(this.extensions)
                 .build();
-        this.componentRenderer = new ComponentRenderer.Builder()
+    }
+
+    public List<TranslatableComponent> render(String markdown) {
+        //TODO: make renderer configurable for modders
+
+        //renderer needs to be instantiated every time, because it caches the results
+        var renderer = new ComponentRenderer.Builder()
                 .renderSoftLineBreaks(false)
                 .replaceSoftLineBreaksWithSpace(true)
                 .linkColor(TextColor.fromRgb(0x5555FF))
                 .linkRenderers(List.of(new ColorLinkRenderer(), new BookLinkRenderer()))
-                .extensions(extensions)
+                .extensions(this.extensions)
                 .build();
-    }
 
-    public Collection<TranslatableComponent> render(String markdown) {
         var document = this.markdownParser.parse(markdown);
-        return this.componentRenderer.render(document);
+
+        return renderer.render(document);
     }
 }

@@ -38,7 +38,6 @@ public class Book {
     protected ResourceLocation bookContentTexture;
     protected Map<ResourceLocation, BookCategory> categories;
     protected Map<ResourceLocation, BookEntry> entries;
-    protected Map<ResourceLocation, BookChapter> chapters;
     //TODO: further properties for customization, such as book item, ...
 
     public Book(ResourceLocation id, String name, ResourceLocation bookOverviewTexture, ResourceLocation bookContentTexture) {
@@ -48,7 +47,6 @@ public class Book {
         this.bookContentTexture = bookContentTexture;
         this.categories = new HashMap<>();
         this.entries = new HashMap<>();
-        this.chapters = new HashMap<>();
     }
 
     public static Book fromJson(ResourceLocation id, JsonObject json) {
@@ -95,18 +93,6 @@ public class Book {
 
     public Map<ResourceLocation, BookEntry> getEntries() {
         return this.entries;
-    }
-
-    public void addChapter(BookChapter chapter) {
-        this.chapters.putIfAbsent(chapter.id, chapter);
-    }
-
-    public BookChapter getChapter(ResourceLocation id) {
-        return this.chapters.get(id);
-    }
-
-    public Map<ResourceLocation, BookChapter> getChapters() {
-        return this.chapters;
     }
 
     public String getName() {

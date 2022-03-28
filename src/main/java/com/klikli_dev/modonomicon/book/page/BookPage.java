@@ -20,23 +20,25 @@
 
 package com.klikli_dev.modonomicon.book.page;
 
-import com.klikli_dev.modonomicon.book.BookChapter;
+import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
+import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.MarkdownComponentRenderUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 
 public abstract class BookPage {
-    public BookChapter parentChapter;
+    public BookEntry parentEntry;
     public int pageNumber;
 
     public BookContentScreen parentScreen;
-    public BookTextRenderer textRenderer;
     public Minecraft mc;
     public Font font;
     public int left;
@@ -44,33 +46,27 @@ public abstract class BookPage {
 
     public abstract ResourceLocation getType();
 
-    public void setChapter(BookChapter parentChapter) {
-        this.parentChapter = parentChapter;
-    }
-
-    public void setPageNumber(int pageNumber) {
-        this.pageNumber = pageNumber;
-    }
-
     /**
      * Call when the page is being set up to be displayed (when book content screen opens, or pages are changed)
      */
     public void onBeginDisplayPage(BookContentScreen parentScreen, BookTextRenderer textRenderer, int left, int top) {
         this.parentScreen = parentScreen;
-        this.textRenderer = textRenderer;
 
         this.mc = parentScreen.getMinecraft();
         this.font = this.mc.font;
         this.left = left;
         this.top = top;
+
+        //TODO: text renderer needs to be refactored - we somehow need to be able to cache the results per component
+        //      it might be good to store the result in our text holder
     }
 
     /**
      * Call when the page is will no longer be displayed (when book content screen opens, or pages are changed)
      */
     public void onEndDisplayPage(BookContentScreen parentScreen) {
-
     }
+
 
     public void renderBookTextHolder(BookTextHolder text, PoseStack poseStack, int x, int y, int width) {
         if (text.hasComponent()) {
@@ -79,9 +75,9 @@ public abstract class BookPage {
                 this.font.draw(poseStack, formattedcharsequence, x, y, 0);
                 y += this.font.lineHeight;
             }
-        } else {
-            //if it is not a component we render it from markdown
-            var components = this.textRenderer.render(text.getString());
+        } else if (text instanceof RenderedBookTextHolder renderedText) {
+            //if it is not a component it was sent through the markdown renderer
+            var components = renderedText.getRenderedText();
 
             for (var component : components) {
                 var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, width, width - 10, this.font);
@@ -90,8 +86,12 @@ public abstract class BookPage {
                     y += this.font.lineHeight;
                 }
             }
+        } else {
+            Modonomicon.LOGGER.warn("BookTextHolder with String {} has no component, but is not rendered to markdown either.", text.getString());
         }
     }
 
     public abstract void render(PoseStack poseStack, int mouseX, int mouseY, float ticks);
+
+    public abstract void toNetwork(FriendlyByteBuf buffer);
 }
