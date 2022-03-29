@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[367],{4370:function(o){o.exports=JSON.parse('{"allTagsPath":"/modonomicon/blog/tags","slug":"/modonomicon/blog/tags/docusaurus","name":"docusaurus","count":4,"permalink":"/modonomicon/blog/tags/docusaurus"}')}}]);
