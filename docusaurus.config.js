@@ -26,12 +26,12 @@ const config = {
           // Please change this to your repo.
           editUrl: 'https://github.com/klikli-dev/modonomicon/tree/documentation',
         },
-        blog: {
-          showReadingTime: true,
-          // Please change this to your repo.
-          editUrl:
-            'https://github.com/klikli-dev/modonomicon/tree/documentation/blog',
-        },
+        // blog: {
+        //   showReadingTime: true,
+        //   // Please change this to your repo.
+        //   editUrl:
+        //     'https://github.com/klikli-dev/modonomicon/tree/documentation/blog',
+        // },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
@@ -55,7 +55,7 @@ const config = {
             position: 'left',
             label: 'Docs',
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
+          // {to: '/blog', label: 'Blog', position: 'left'},
           {
             href: 'https://github.com/klikli-dev/modonomicon',
             label: 'GitHub',
@@ -87,10 +87,10 @@ const config = {
           {
             title: 'More',
             items: [
-              {
-                label: 'Blog',
-                to: '/blog',
-              },
+              // {
+              //   label: 'Blog',
+              //   to: '/blog',
+              // },
               {
                 label: 'GitHub',
                 href: 'https://github.com/klikli-dev/modonomicon',
