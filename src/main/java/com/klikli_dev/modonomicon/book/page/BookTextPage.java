@@ -50,7 +50,7 @@ public class BookTextPage extends BookPage {
 
     public static BookTextPage fromJson(JsonObject json) {
         var title = BookGsonHelper.getAsBookTextHolder(json, "title", BookTextHolder.EMPTY);
-        var useMarkdownInTitle = GsonHelper.getAsBoolean(json, "useMarkdownInTitle", false);
+        var useMarkdownInTitle = GsonHelper.getAsBoolean(json, "use_markdown_title", false);
         var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY);
         return new BookTextPage(title, text, useMarkdownInTitle);
     }
@@ -90,7 +90,7 @@ public class BookTextPage extends BookPage {
                 this.title = new BookTextHolder(new TranslatableComponent(this.title.getKey())
                         .withStyle(Style.EMPTY
                                 .withBold(true)
-                                .withColor(this.parentEntry.getCategory().getBook().getDefaultTitleColor())));
+                                .withColor(this.getParentEntry().getCategory().getBook().getDefaultTitleColor())));
             }
         }
         if (!this.text.hasComponent()) {
@@ -112,7 +112,8 @@ public class BookTextPage extends BookPage {
                 this.drawCenteredStringNoShadow(poseStack, this.title.getComponent().getVisualOrderText(), BookContentScreen.PAGE_WIDTH / 2, 0, 0);
             }
 
-            //TODO: Draw separator
+            //TODO: title separator should be optional / set in page
+            BookContentScreen.drawTitleSeparator(poseStack, this.book, 0, 12);
         }
 
         //TODO: getTextHeight() as y instead of constant

@@ -192,8 +192,8 @@ public class BookEntry {
 
         int pageNum = 0;
         for(var page : pages){
-            page.parentEntry = this;
-            page.pageNumber = pageNum++;
+            page.setParentEntry(this);
+            page.setPageNumber(pageNum++);
         }
     }
 }

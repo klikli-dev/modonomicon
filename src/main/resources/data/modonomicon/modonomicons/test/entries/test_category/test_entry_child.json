@@ -13,11 +13,13 @@
     {
       "type": "modonomicon:text",
       "title": "modonomicon.test.sections.test_category.test_entry.page0.title",
+      "use_markdown_title": true,
       "text": "modonomicon.test.sections.test_category.test_entry.page0.text"
     },
     {
       "type": "modonomicon:text",
       "title": "modonomicon.test.sections.test_category.test_entry.page1.title",
+      "use_markdown_title": true,
       "text": "modonomicon.test.sections.test_category.test_entry.page1.text"
     }
   ]
