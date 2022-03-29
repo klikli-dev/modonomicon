@@ -94,4 +94,8 @@ public abstract class BookPage {
     public abstract void render(PoseStack poseStack, int mouseX, int mouseY, float ticks);
 
     public abstract void toNetwork(FriendlyByteBuf buffer);
+
+    public void drawCenteredStringNoShadow(PoseStack poseStack, FormattedCharSequence s, int x, int y, int color) {
+        this.font.draw(poseStack, s, x - this.font.width(s) / 2.0F, y, color);
+    }
 }

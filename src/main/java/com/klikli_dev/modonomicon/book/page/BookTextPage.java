@@ -26,15 +26,15 @@ import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
-import com.klikli_dev.modonomicon.client.gui.book.markdown.ext.ComponentStrikethroughExtension;
-import com.klikli_dev.modonomicon.client.gui.book.markdown.ext.ComponentUnderlineExtension;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
-import org.commonmark.parser.Parser;
-
-import java.util.List;
+import net.minecraft.util.FormattedCharSequence;
 
 public class BookTextPage extends BookPage {
     protected BookTextHolder title;
@@ -58,25 +58,6 @@ public class BookTextPage extends BookPage {
         return new BookTextPage(title, text);
     }
 
-    @Override
-    public void onBeginDisplayPage(BookContentScreen parentScreen, BookTextRenderer textRenderer, int left, int top) {
-        super.onBeginDisplayPage(parentScreen, textRenderer, left, top);
-
-        if(!this.title.hasComponent()){
-            this.title = new RenderedBookTextHolder(this.title, textRenderer.render(this.title.getString()));
-        }
-        if(!this.text.hasComponent()){
-            this.text = new RenderedBookTextHolder(this.text, textRenderer.render(this.text.getString()));
-        }
-    }
-
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buffer) {
-        this.title.toNetwork(buffer);
-        this.text.toNetwork(buffer);
-    }
-
     public BookTextHolder getTitle() {
         return this.title;
     }
@@ -91,15 +72,39 @@ public class BookTextPage extends BookPage {
     }
 
     @Override
+    public void onBeginDisplayPage(BookContentScreen parentScreen, BookTextRenderer textRenderer, int left, int top) {
+        super.onBeginDisplayPage(parentScreen, textRenderer, left, top);
+
+        if (!this.title.hasComponent()) {
+            this.title = new RenderedBookTextHolder(this.title, textRenderer.render(this.title.getString()));
+        }
+        if (!this.text.hasComponent()) {
+            this.text = new RenderedBookTextHolder(this.text, textRenderer.render(this.text.getString()));
+        }
+    }
+
+    @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float ticks) {
-        //int i = (this.parentScreen.width - BookContentScreen.BOOK_BACKGROUND_WIDTH) / 2 + 15;
-       //int j = (this.parentScreen.height - BookContentScreen.BOOK_BACKGROUND_HEIGHT) / 2 + 15;
 
-        //TODO: Render title
+        if(this.title instanceof RenderedBookTextHolder renderedTitle) {
+            var formattedCharSequence = FormattedCharSequence.fromList(
+                    renderedTitle.getRenderedText().stream().map(BaseComponent::getVisualOrderText).toList());
+            this.drawCenteredStringNoShadow(poseStack, formattedCharSequence, BookContentScreen.PAGE_WIDTH / 2,0, 0);
+            //TODO: Draw separator
+        }
+        //TODO: Draw non markdown title
+        //TODO: we need to provide a default style for the title.
+        //      should be ignored for the markdown title
+        //TODO: how do we determine if the title is markdown? Forcing people to put a component is not elegant
 
-        //TODO: set width from init?
-        //int width = BookContentScreen.BOOK_BACKGROUND_WIDTH / 2 - 18;
+        //TODO: getTextHeight() as y instead of constant
+        //  depending on whether or not we have a title we have different y values
+        this.renderBookTextHolder(this.getText(), poseStack, 0, 22, BookContentScreen.PAGE_WIDTH);
+    }
 
-        this.renderBookTextHolder(this.getText(), poseStack, 0, 0, BookContentScreen.PAGE_WIDTH);
+    @Override
+    public void toNetwork(FriendlyByteBuf buffer) {
+        this.title.toNetwork(buffer);
+        this.text.toNetwork(buffer);
     }
 }
