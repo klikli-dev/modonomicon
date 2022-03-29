@@ -8,7 +8,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'Modonomicon',
   tagline: 'Thaumonomicon-Style In-Game Documentation',
-  url: 'https://github.com/klikli-dev/modonomicon',
+  url: 'https://klikli-dev.github.io',
   baseUrl: '/modonomicon/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
