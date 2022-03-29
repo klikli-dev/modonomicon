@@ -28,34 +28,38 @@ import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.GsonHelper;
 
 public class BookTextPage extends BookPage {
     protected BookTextHolder title;
+    protected boolean useMarkdownInTitle;
     protected BookTextHolder text;
 
 
-    public BookTextPage(BookTextHolder title, BookTextHolder text) {
+    public BookTextPage(BookTextHolder title, BookTextHolder text, boolean useMarkdownInTitle) {
         this.title = title;
         this.text = text;
+        this.useMarkdownInTitle = useMarkdownInTitle;
     }
 
     public static BookTextPage fromJson(JsonObject json) {
         var title = BookGsonHelper.getAsBookTextHolder(json, "title", BookTextHolder.EMPTY);
+        var useMarkdownInTitle = GsonHelper.getAsBoolean(json, "useMarkdownInTitle", false);
         var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY);
-        return new BookTextPage(title, text);
+        return new BookTextPage(title, text, useMarkdownInTitle);
     }
 
     public static BookTextPage fromNetwork(FriendlyByteBuf buffer) {
         var title = BookTextHolder.fromNetwork(buffer);
+        var useMarkdownInTitle = buffer.readBoolean();
         var text = BookTextHolder.fromNetwork(buffer);
-        return new BookTextPage(title, text);
+        return new BookTextPage(title, text, useMarkdownInTitle);
     }
 
     public BookTextHolder getTitle() {
@@ -64,6 +68,10 @@ public class BookTextPage extends BookPage {
 
     public BookTextHolder getText() {
         return this.text;
+    }
+
+    public boolean hasTitle() {
+        return !this.title.getString().isEmpty();
     }
 
     @Override
@@ -76,7 +84,14 @@ public class BookTextPage extends BookPage {
         super.onBeginDisplayPage(parentScreen, textRenderer, left, top);
 
         if (!this.title.hasComponent()) {
-            this.title = new RenderedBookTextHolder(this.title, textRenderer.render(this.title.getString()));
+            if (this.useMarkdownInTitle) {
+                this.title = new RenderedBookTextHolder(this.title, textRenderer.render(this.title.getString()));
+            } else {
+                this.title = new BookTextHolder(new TranslatableComponent(this.title.getKey())
+                        .withStyle(Style.EMPTY
+                                .withBold(true)
+                                .withColor(this.parentEntry.getCategory().getBook().getDefaultTitleColor())));
+            }
         }
         if (!this.text.hasComponent()) {
             this.text = new RenderedBookTextHolder(this.text, textRenderer.render(this.text.getString()));
@@ -86,16 +101,19 @@ public class BookTextPage extends BookPage {
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float ticks) {
 
-        if(this.title instanceof RenderedBookTextHolder renderedTitle) {
-            var formattedCharSequence = FormattedCharSequence.fromList(
-                    renderedTitle.getRenderedText().stream().map(BaseComponent::getVisualOrderText).toList());
-            this.drawCenteredStringNoShadow(poseStack, formattedCharSequence, BookContentScreen.PAGE_WIDTH / 2,0, 0);
+        if (this.hasTitle()) {
+            if (this.useMarkdownInTitle && this.title instanceof RenderedBookTextHolder renderedTitle) {
+                //if user decided to use markdown title, we need to use the  rendered version
+                var formattedCharSequence = FormattedCharSequence.fromList(
+                        renderedTitle.getRenderedText().stream().map(BaseComponent::getVisualOrderText).toList());
+                this.drawCenteredStringNoShadow(poseStack, formattedCharSequence, BookContentScreen.PAGE_WIDTH / 2, 0, 0);
+            } else {
+                //otherwise we use the component - that is either provided by the user, or created from the default title style.
+                this.drawCenteredStringNoShadow(poseStack, this.title.getComponent().getVisualOrderText(), BookContentScreen.PAGE_WIDTH / 2, 0, 0);
+            }
+
             //TODO: Draw separator
         }
-        //TODO: Draw non markdown title
-        //TODO: we need to provide a default style for the title.
-        //      should be ignored for the markdown title
-        //TODO: how do we determine if the title is markdown? Forcing people to put a component is not elegant
 
         //TODO: getTextHeight() as y instead of constant
         //  depending on whether or not we have a title we have different y values
@@ -105,6 +123,7 @@ public class BookTextPage extends BookPage {
     @Override
     public void toNetwork(FriendlyByteBuf buffer) {
         this.title.toNetwork(buffer);
+        buffer.writeBoolean(this.useMarkdownInTitle);
         this.text.toNetwork(buffer);
     }
 }

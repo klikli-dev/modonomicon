@@ -24,7 +24,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.config.CommonConfig;
 import com.klikli_dev.modonomicon.config.ServerConfig;
-import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.klikli_dev.modonomicon.book.BookDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
 import com.klikli_dev.modonomicon.handlers.ClientSetupEventHandler;
 import com.klikli_dev.modonomicon.item.ModonomiconCreativeModeTab;

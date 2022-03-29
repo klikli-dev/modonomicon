@@ -98,4 +98,8 @@ public abstract class BookPage {
     public void drawCenteredStringNoShadow(PoseStack poseStack, FormattedCharSequence s, int x, int y, int color) {
         this.font.draw(poseStack, s, x - this.font.width(s) / 2.0F, y, color);
     }
+
+    public void drawCenteredStringNoShadow(PoseStack poseStack, String s, int x, int y, int color) {
+        this.font.draw(poseStack, s, x - this.font.width(s) / 2.0F, y, color);
+    }
 }

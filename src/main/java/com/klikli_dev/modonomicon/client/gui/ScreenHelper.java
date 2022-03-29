@@ -21,7 +21,7 @@
 package com.klikli_dev.modonomicon.client.gui;
 
 import com.klikli_dev.modonomicon.client.gui.book.BookOverviewScreen;
-import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.klikli_dev.modonomicon.book.BookDataManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
