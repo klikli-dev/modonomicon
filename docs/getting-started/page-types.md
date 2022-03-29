@@ -4,6 +4,7 @@ sidebar_position: 10
 
 # Default Page Types
 
+## Common Attributes
 <!-- TODO: Attributes shared by all pages -->
 
 The following attributes are available for all page types
@@ -13,7 +14,7 @@ The following attributes are available for all page types
 The type of page, it determines which loader is used to load the json data and how the page will be displayed.
 Needs to be fully qualified `domain:name`, e.g. `modonomicon:text`. 
 
-**A note on texts**:
+### A note on texts
 
 Whenever a page supports texts there are two options: 
 
@@ -49,17 +50,22 @@ Defaults to `true`. If true a separator will be rendered below the title.
 
 The page text. Can be styled using markdown.
 
-## Example Usage
+### Example Usage
 
 `<entry>.json`:
 
 ```json
 {
-    "type": "modonomicon:text",
-    "title": "modonomicon.testbook.test_category.test_entry.page0.title",
-    "use_markdown_title": true,
-    "show_title_separator": true,
-    "text": "modonomicon.testbook.test_category.test_entry.page0.title"
+  ...
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "title": "modonomicon.testbook.test_category.test_entry.page0.title",
+      "use_markdown_title": true,
+      "show_title_separator": true,
+      "text": "modonomicon.testbook.test_category.test_entry.page0.title"
+    }
+  ]
 }
 ```  
 
@@ -68,7 +74,7 @@ The page text. Can be styled using markdown.
 ```json
 {
   "modonomicon.test.sections.test_category.test_entry.page0.text": "This is a **test** text.\nWe have a newline here.\n- List item\n- List item 2\n- List item 3\n\nAnd this is a super long line where we hope it will be automatically wrapped into a new line otherwise that is super-bad.\n",
-  "modonomicon.test.sections.test_category.test_entry.page0.title": "**Bold**",
+  "modonomicon.test.sections.test_category.test_entry.page0.title": "**Bold**"
 }
 ```
 
