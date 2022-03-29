@@ -36,30 +36,34 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.GsonHelper;
 
-public class BookTextPage extends BookPage {
+public class BookTextPage extends BookPage implements PageWithText{
     protected BookTextHolder title;
     protected boolean useMarkdownInTitle;
+    protected boolean showTitleSeparator;
     protected BookTextHolder text;
 
 
-    public BookTextPage(BookTextHolder title, BookTextHolder text, boolean useMarkdownInTitle) {
+    public BookTextPage(BookTextHolder title, BookTextHolder text, boolean useMarkdownInTitle, boolean showTitleSeparator) {
         this.title = title;
         this.text = text;
         this.useMarkdownInTitle = useMarkdownInTitle;
+        this.showTitleSeparator = showTitleSeparator;
     }
 
     public static BookTextPage fromJson(JsonObject json) {
         var title = BookGsonHelper.getAsBookTextHolder(json, "title", BookTextHolder.EMPTY);
         var useMarkdownInTitle = GsonHelper.getAsBoolean(json, "use_markdown_title", false);
+        var showTitleSeparator = GsonHelper.getAsBoolean(json, "show_title_separator", true);
         var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY);
-        return new BookTextPage(title, text, useMarkdownInTitle);
+        return new BookTextPage(title, text, useMarkdownInTitle, showTitleSeparator);
     }
 
     public static BookTextPage fromNetwork(FriendlyByteBuf buffer) {
         var title = BookTextHolder.fromNetwork(buffer);
         var useMarkdownInTitle = buffer.readBoolean();
+        var showTitleSeparator = buffer.readBoolean();
         var text = BookTextHolder.fromNetwork(buffer);
-        return new BookTextPage(title, text, useMarkdownInTitle);
+        return new BookTextPage(title, text, useMarkdownInTitle, showTitleSeparator);
     }
 
     public BookTextHolder getTitle() {
@@ -72,6 +76,15 @@ public class BookTextPage extends BookPage {
 
     public boolean hasTitle() {
         return !this.title.getString().isEmpty();
+    }
+
+    @Override
+    public int getTextX() {
+        if(this.hasTitle()) {
+            return this.showTitleSeparator ? 22 : 12;
+        }
+
+        return -4;
     }
 
     @Override
@@ -112,19 +125,18 @@ public class BookTextPage extends BookPage {
                 this.drawCenteredStringNoShadow(poseStack, this.title.getComponent().getVisualOrderText(), BookContentScreen.PAGE_WIDTH / 2, 0, 0);
             }
 
-            //TODO: title separator should be optional / set in page
-            BookContentScreen.drawTitleSeparator(poseStack, this.book, 0, 12);
+            if(this.showTitleSeparator)
+                BookContentScreen.drawTitleSeparator(poseStack, this.book, 0, 12);
         }
 
-        //TODO: getTextHeight() as y instead of constant
-        //  depending on whether or not we have a title we have different y values
-        this.renderBookTextHolder(this.getText(), poseStack, 0, 22, BookContentScreen.PAGE_WIDTH);
+        this.renderBookTextHolder(this.getText(), poseStack, 0, this.getTextX(), BookContentScreen.PAGE_WIDTH);
     }
 
     @Override
     public void toNetwork(FriendlyByteBuf buffer) {
         this.title.toNetwork(buffer);
         buffer.writeBoolean(this.useMarkdownInTitle);
+        buffer.writeBoolean(this.showTitleSeparator);
         this.text.toNetwork(buffer);
     }
 }
