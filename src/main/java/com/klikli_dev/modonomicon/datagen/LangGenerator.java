@@ -73,6 +73,8 @@ public abstract class LangGenerator extends LanguageProvider {
 
         private void addBooks(){
             //TODO: convert this into a real data gen for books
+            this.add("modonomicon.test_book.title", "Test Book");
+
             this.add("modonomicon.test.entries.test_category.test_entry.description", "Test Description");
             this.add("modonomicon.test.sections.test_category.test_entry.page0.text",
                     """
