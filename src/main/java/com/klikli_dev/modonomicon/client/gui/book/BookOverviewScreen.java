@@ -23,6 +23,7 @@ package com.klikli_dev.modonomicon.client.gui.book;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.client.gui.book.button.CategoryButton;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -168,11 +169,11 @@ public class BookOverviewScreen extends Screen {
         GuiUtils.drawTexturedModalRect(poseStack, x + width - 17, (y + (height / 2)) - 35, 157, 35, 17, 70, blitOffset);
     }
 
-    protected void onBookCategoryButtonClick(BookCategoryButton button){
+    protected void onBookCategoryButtonClick(CategoryButton button){
         this.currentCategory = button.getCategoryIndex();
     }
 
-    protected void onBookCategoryButtonTooltip(BookCategoryButton button, PoseStack pPoseStack, int pMouseX, int pMouseY){
+    protected void onBookCategoryButtonTooltip(CategoryButton button, PoseStack pPoseStack, int pMouseX, int pMouseY){
         this.renderTooltip(pPoseStack, new TranslatableComponent(button.getCategory().getName()), pMouseX, pMouseY);
     }
 
@@ -191,10 +192,10 @@ public class BookOverviewScreen extends Screen {
 
         for(int i = 0, size = this.categories.size(); i < size; i++){
 
-            var button = new BookCategoryButton(this, this.categories.get(i), i,
+            var button = new CategoryButton(this, this.categories.get(i), i,
                     buttonX, buttonY + (buttonHeight + buttonSpacing) * i, buttonWidth, buttonHeight,
-                    (b) -> this.onBookCategoryButtonClick((BookCategoryButton) b),
-                    (b, stack, x, y) -> this.onBookCategoryButtonTooltip((BookCategoryButton) b, stack, x, y));
+                    (b) -> this.onBookCategoryButtonClick((CategoryButton) b),
+                    (b, stack, x, y) -> this.onBookCategoryButtonTooltip((CategoryButton) b, stack, x, y));
 
             this.addRenderableWidget(button);
         }
