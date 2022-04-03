@@ -52,6 +52,14 @@ public class BookCategory {
         this.entries = new HashMap<>();
     }
 
+    public void build(Book book) {
+        this.book = book;
+
+        for(var entry : this.entries.values()) {
+            entry.build(this);
+        }
+    }
+
     public static BookCategory fromJson(ResourceLocation id, JsonObject json, ResourceLocation bookId) {
         var name = GsonHelper.getAsString(json,"name");
         var sortNumber = GsonHelper.getAsInt(json, "sort_number", -1);
@@ -77,10 +85,6 @@ public class BookCategory {
 
     public Book getBook() {
         return this.book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
     }
 
     public String getName() {
@@ -109,7 +113,6 @@ public class BookCategory {
 
     public void addEntry(BookEntry entry) {
         this.entries.putIfAbsent(entry.id, entry);
-        this.book.addEntry(entry);
     }
 
     public BookEntry getEntry(ResourceLocation id) {

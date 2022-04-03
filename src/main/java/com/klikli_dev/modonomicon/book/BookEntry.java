@@ -35,6 +35,7 @@ public class BookEntry {
     protected ResourceLocation id;
     protected ResourceLocation categoryId;
     protected BookCategory category;
+    protected Book book;
     protected List<BookEntryParent> parents;
     protected String name;
     protected String description;
@@ -43,9 +44,9 @@ public class BookEntry {
     protected int y;
     protected List<BookPage> pages;
 
-    //TODO: entry type for background texture
+    //TODO: entry type for background/border texture
 
-    public BookEntry(ResourceLocation id, ResourceLocation categoryId, String name, String description, BookIcon icon, int x, int y, List<BookEntryParent> parents) {
+    public BookEntry(ResourceLocation id, ResourceLocation categoryId, String name, String description, BookIcon icon, int x, int y, List<BookEntryParent> parents, List<BookPage> pages) {
         this.id = id;
         this.categoryId = categoryId;
         this.name = name;
@@ -54,13 +55,14 @@ public class BookEntry {
         this.x = x;
         this.y = y;
         this.parents = parents;
+        this.pages = pages;
     }
 
     public static BookEntry fromJson(ResourceLocation id, JsonObject json) {
         var categoryId = new ResourceLocation(GsonHelper.getAsString(json, "category"));
         var name = GsonHelper.getAsString(json, "name");
         var description = GsonHelper.getAsString(json, "description", "");
-        var icon =BookIcon.fromString(GsonHelper.getAsString(json, "icon"));
+        var icon = BookIcon.fromString(GsonHelper.getAsString(json, "icon"));
         var x = GsonHelper.getAsInt(json, "x");
         var y = GsonHelper.getAsInt(json, "y");
 
@@ -85,9 +87,7 @@ public class BookEntry {
             }
         }
 
-        var entry =  new BookEntry(id, categoryId, name, description, icon, x, y, parentEntries);
-        entry.setPages(pages);
-        return entry;
+        return new BookEntry(id, categoryId, name, description, icon, x, y, parentEntries, pages);
     }
 
     public static BookEntry fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
@@ -114,11 +114,27 @@ public class BookEntry {
             pages.add(page);
         }
 
-        var entry =  new BookEntry(id, categoryId, name, description, icon, x, y, parentEntries);
-        entry.setPages(pages);
-        return entry;
+        return new BookEntry(id, categoryId, name, description, icon, x, y, parentEntries, pages);
     }
 
+    public void build(BookCategory category) {
+        this.category = category;
+        this.book = category.getBook();
+
+        //resolve parents
+        var newParents = new ArrayList<BookEntryParent>();
+        for (var parent : this.getParents()) {
+            var parentEntry = this.book.getEntry(parent.getEntryId());
+            newParents.add(new ResolvedBookEntryParent(parentEntry));
+        }
+        this.parents = newParents;
+
+        //build pages
+        int pageNum = 0;
+        for (var page : this.pages) {
+            page.build(this, pageNum++);
+        }
+    }
 
     public void toNetwork(FriendlyByteBuf buffer) {
         buffer.writeResourceLocation(this.categoryId);
@@ -133,7 +149,7 @@ public class BookEntry {
         }
 
         buffer.writeVarInt(this.pages.size());
-        for(var page : this.pages){
+        for (var page : this.pages) {
             buffer.writeResourceLocation(page.getType());
             page.toNetwork(buffer);
         }
@@ -159,16 +175,8 @@ public class BookEntry {
         return this.category;
     }
 
-    public void setCategory(BookCategory category) {
-        this.category = category;
-    }
-
     public List<BookEntryParent> getParents() {
         return this.parents;
-    }
-
-    public void setParents(List<BookEntryParent> parents) {
-        this.parents = parents;
     }
 
     public String getName() {
@@ -187,13 +195,7 @@ public class BookEntry {
         return this.pages;
     }
 
-    public void setPages(List<BookPage> pages) {
-        this.pages = pages;
-
-        int pageNum = 0;
-        for(var page : pages){
-            page.setParentEntry(this);
-            page.setPageNumber(pageNum++);
-        }
+    public Book getBook() {
+        return this.book;
     }
 }

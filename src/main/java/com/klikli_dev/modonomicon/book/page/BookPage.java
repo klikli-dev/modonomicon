@@ -38,14 +38,21 @@ import net.minecraft.util.FormattedCharSequence;
 public abstract class BookPage {
     public int left;
     public int top;
-    protected Book book;
     protected BookContentScreen parentScreen;
     protected Minecraft mc;
     protected Font font;
-    private BookEntry parentEntry;
-    private int pageNumber;
+
+    protected Book book;
+    protected BookEntry parentEntry;
+    protected int pageNumber;
 
     public abstract ResourceLocation getType();
+
+    public void build(BookEntry parentEntry, int pageNum) {
+        this.parentEntry = parentEntry;
+        this.pageNumber = pageNum;
+        this.book = this.parentEntry.getBook();
+    }
 
     /**
      * Call when the page is being set up to be displayed (when book content screen opens, or pages are changed)
@@ -57,12 +64,6 @@ public abstract class BookPage {
         this.font = this.mc.font;
         this.left = left;
         this.top = top;
-
-        //TODO: this should be handled via the post-load action
-        this.book = this.parentEntry.getCategory().getBook();
-
-        //TODO: text renderer needs to be refactored - we somehow need to be able to cache the results per component
-        //      it might be good to store the result in our text holder
     }
 
     /**
