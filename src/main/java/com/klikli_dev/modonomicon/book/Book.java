@@ -71,7 +71,13 @@ public class Book {
     public void build() {
         for(var category : this.categories.values()) {
             category.build(this);
+
+            //now also store the entries in the book directly
+            for(var entry : category.getEntries().values()){
+                this.addEntry(entry);
+            }
         }
+
     }
 
     public int getDefaultTitleColor() {

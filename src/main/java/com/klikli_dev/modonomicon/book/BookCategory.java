@@ -113,7 +113,6 @@ public class BookCategory {
 
     public void addEntry(BookEntry entry) {
         this.entries.putIfAbsent(entry.id, entry);
-        this.book.addEntry(entry);
     }
 
     public BookEntry getEntry(ResourceLocation id) {

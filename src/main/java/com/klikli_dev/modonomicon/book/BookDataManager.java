@@ -172,7 +172,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             //load entries and link to category
             var pathParts = entry.getKey().getPath().split("/");
             var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
-            //entry id skips the book id and the entries directory
+            //entry id skips the book id and the entries directory, but keeps category so it is unique
             var entryId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
             var bookEntry = this.loadEntry(entryId, entry.getValue());
 
