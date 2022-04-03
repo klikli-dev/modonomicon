@@ -20,11 +20,10 @@
 
 package com.klikli_dev.modonomicon.book;
 
-import com.klikli_dev.modonomicon.book.page.BookTextPage;
-import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import org.jetbrains.annotations.NotNull;
 
 public class BookTextHolder {
@@ -34,7 +33,8 @@ public class BookTextHolder {
     private Component component;
     private String string;
 
-    protected BookTextHolder() {}
+    protected BookTextHolder() {
+    }
 
     public BookTextHolder(Component component) {
         this.component = component;
@@ -44,32 +44,42 @@ public class BookTextHolder {
         this.string = string;
     }
 
+    public static BookTextHolder fromNetwork(FriendlyByteBuf buffer) {
+        if (buffer.readBoolean()) {
+            return new BookTextHolder(buffer.readComponent());
+        } else {
+            return new BookTextHolder(buffer.readUtf());
+        }
+    }
+
     public String getString() {
         return this.hasComponent() ? this.component.getString() : I18n.get(this.string);
     }
 
+    /**
+     * Gets the translation key, or null if none
+     */
+    public String getKey() {
+        if (this.hasComponent() && this.component instanceof TranslatableComponent translatableComponent) {
+            return translatableComponent.getKey();
+        }
+        return this.string;
+    }
+
     public Component getComponent() {
-        return component;
+        return this.component;
     }
 
     public boolean hasComponent() {
         return this.component != null;
     }
 
-    public void toNetwork(FriendlyByteBuf buffer){
+    public void toNetwork(FriendlyByteBuf buffer) {
         buffer.writeBoolean(this.hasComponent());
-        if(this.hasComponent()) {
+        if (this.hasComponent()) {
             buffer.writeComponent(this.component);
         } else {
             buffer.writeUtf(this.string);
-        }
-    }
-
-    public static BookTextHolder fromNetwork(FriendlyByteBuf buffer) {
-        if(buffer.readBoolean()) {
-            return new BookTextHolder(buffer.readComponent());
-        } else {
-            return new BookTextHolder(buffer.readUtf());
         }
     }
 }

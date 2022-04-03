@@ -20,6 +20,7 @@
 
 package com.klikli_dev.modonomicon.client.gui.book;
 
+import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
@@ -157,5 +158,22 @@ public class BookContentScreen extends Screen {
         if (this.rightPage != null) {
             this.rightPage.onBeginDisplayPage(this, this.textRenderer, RIGHT_PAGE_X, TOP_PADDING);
         }
+    }
+
+    public static void drawFromTexture(PoseStack poseStack, Book book, int x, int y, int u, int v, int w, int h) {
+        RenderSystem.setShaderTexture(0, book.getBookContentTexture());
+        blit(poseStack, x, y, u, v, w, h, 512, 256);
+    }
+
+    public static void drawTitleSeparator(PoseStack poseStack, Book book, int x, int y) {
+        int w = 110;
+        int h = 3;
+        int rx = x + PAGE_WIDTH / 2 - w / 2;
+
+        RenderSystem.enableBlend();
+        RenderSystem.setShaderColor(1F, 1F, 1F, 0.8F);
+        //u and v are the pixel coordinates in our book_content_texture
+        drawFromTexture(poseStack, book, rx, y, 0, 253, w, h);
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
     }
 }

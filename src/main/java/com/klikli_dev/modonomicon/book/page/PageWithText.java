@@ -1,7 +1,7 @@
 /*
  * LGPL-3-0
  *
- * Copyright (C) 2021 klikli-dev
+ * Copyright (C) 2022 klikli-dev
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,19 +18,12 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.client.gui;
+package com.klikli_dev.modonomicon.book.page;
 
-import com.klikli_dev.modonomicon.client.gui.book.BookOverviewScreen;
-import com.klikli_dev.modonomicon.book.BookDataManager;
-import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-
-public class ScreenHelper {
-    public static void openBook(ItemStack stack) {
-        Minecraft.getInstance().setScreen(new BookOverviewScreen(
-                BookDataManager.get().getBook(new ResourceLocation("modonomicon", "test")),
-                stack));
-    }
-
+public interface PageWithText {
+    /**
+     * Gets the x-coordinate where text starts on this page.
+     * Use this to handle shifting down text below other content such as title.
+     */
+    int getTextX();
 }

@@ -26,55 +26,44 @@ import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
-import com.klikli_dev.modonomicon.client.gui.book.markdown.ext.ComponentStrikethroughExtension;
-import com.klikli_dev.modonomicon.client.gui.book.markdown.ext.ComponentUnderlineExtension;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
-import org.commonmark.parser.Parser;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.GsonHelper;
 
-import java.util.List;
-
-public class BookTextPage extends BookPage {
+public class BookTextPage extends BookPage implements PageWithText{
     protected BookTextHolder title;
+    protected boolean useMarkdownInTitle;
+    protected boolean showTitleSeparator;
     protected BookTextHolder text;
 
 
-    public BookTextPage(BookTextHolder title, BookTextHolder text) {
+    public BookTextPage(BookTextHolder title, BookTextHolder text, boolean useMarkdownInTitle, boolean showTitleSeparator) {
         this.title = title;
         this.text = text;
+        this.useMarkdownInTitle = useMarkdownInTitle;
+        this.showTitleSeparator = showTitleSeparator;
     }
 
     public static BookTextPage fromJson(JsonObject json) {
         var title = BookGsonHelper.getAsBookTextHolder(json, "title", BookTextHolder.EMPTY);
+        var useMarkdownInTitle = GsonHelper.getAsBoolean(json, "use_markdown_title", false);
+        var showTitleSeparator = GsonHelper.getAsBoolean(json, "show_title_separator", true);
         var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY);
-        return new BookTextPage(title, text);
+        return new BookTextPage(title, text, useMarkdownInTitle, showTitleSeparator);
     }
 
     public static BookTextPage fromNetwork(FriendlyByteBuf buffer) {
         var title = BookTextHolder.fromNetwork(buffer);
+        var useMarkdownInTitle = buffer.readBoolean();
+        var showTitleSeparator = buffer.readBoolean();
         var text = BookTextHolder.fromNetwork(buffer);
-        return new BookTextPage(title, text);
-    }
-
-    @Override
-    public void onBeginDisplayPage(BookContentScreen parentScreen, BookTextRenderer textRenderer, int left, int top) {
-        super.onBeginDisplayPage(parentScreen, textRenderer, left, top);
-
-        if(!this.title.hasComponent()){
-            this.title = new RenderedBookTextHolder(this.title, textRenderer.render(this.title.getString()));
-        }
-        if(!this.text.hasComponent()){
-            this.text = new RenderedBookTextHolder(this.text, textRenderer.render(this.text.getString()));
-        }
-    }
-
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buffer) {
-        this.title.toNetwork(buffer);
-        this.text.toNetwork(buffer);
+        return new BookTextPage(title, text, useMarkdownInTitle, showTitleSeparator);
     }
 
     public BookTextHolder getTitle() {
@@ -85,21 +74,69 @@ public class BookTextPage extends BookPage {
         return this.text;
     }
 
+    public boolean hasTitle() {
+        return !this.title.getString().isEmpty();
+    }
+
+    @Override
+    public int getTextX() {
+        if(this.hasTitle()) {
+            return this.showTitleSeparator ? 22 : 12;
+        }
+
+        return -4;
+    }
+
     @Override
     public ResourceLocation getType() {
         return Page.TEXT;
     }
 
     @Override
+    public void onBeginDisplayPage(BookContentScreen parentScreen, BookTextRenderer textRenderer, int left, int top) {
+        super.onBeginDisplayPage(parentScreen, textRenderer, left, top);
+
+        if (!this.title.hasComponent()) {
+            if (this.useMarkdownInTitle) {
+                this.title = new RenderedBookTextHolder(this.title, textRenderer.render(this.title.getString()));
+            } else {
+                this.title = new BookTextHolder(new TranslatableComponent(this.title.getKey())
+                        .withStyle(Style.EMPTY
+                                .withBold(true)
+                                .withColor(this.getParentEntry().getCategory().getBook().getDefaultTitleColor())));
+            }
+        }
+        if (!this.text.hasComponent()) {
+            this.text = new RenderedBookTextHolder(this.text, textRenderer.render(this.text.getString()));
+        }
+    }
+
+    @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float ticks) {
-        //int i = (this.parentScreen.width - BookContentScreen.BOOK_BACKGROUND_WIDTH) / 2 + 15;
-       //int j = (this.parentScreen.height - BookContentScreen.BOOK_BACKGROUND_HEIGHT) / 2 + 15;
 
-        //TODO: Render title
+        if (this.hasTitle()) {
+            if (this.useMarkdownInTitle && this.title instanceof RenderedBookTextHolder renderedTitle) {
+                //if user decided to use markdown title, we need to use the  rendered version
+                var formattedCharSequence = FormattedCharSequence.fromList(
+                        renderedTitle.getRenderedText().stream().map(BaseComponent::getVisualOrderText).toList());
+                this.drawCenteredStringNoShadow(poseStack, formattedCharSequence, BookContentScreen.PAGE_WIDTH / 2, 0, 0);
+            } else {
+                //otherwise we use the component - that is either provided by the user, or created from the default title style.
+                this.drawCenteredStringNoShadow(poseStack, this.title.getComponent().getVisualOrderText(), BookContentScreen.PAGE_WIDTH / 2, 0, 0);
+            }
 
-        //TODO: set width from init?
-        //int width = BookContentScreen.BOOK_BACKGROUND_WIDTH / 2 - 18;
+            if(this.showTitleSeparator)
+                BookContentScreen.drawTitleSeparator(poseStack, this.book, 0, 12);
+        }
 
-        this.renderBookTextHolder(this.getText(), poseStack, 0, 0, BookContentScreen.PAGE_WIDTH);
+        this.renderBookTextHolder(this.getText(), poseStack, 0, this.getTextX(), BookContentScreen.PAGE_WIDTH);
+    }
+
+    @Override
+    public void toNetwork(FriendlyByteBuf buffer) {
+        this.title.toNetwork(buffer);
+        buffer.writeBoolean(this.useMarkdownInTitle);
+        buffer.writeBoolean(this.showTitleSeparator);
+        this.text.toNetwork(buffer);
     }
 }

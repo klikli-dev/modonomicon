@@ -90,6 +90,12 @@ public abstract class LangGenerator extends LanguageProvider {
                     """
                    And this is our page two.    
                     """);
+            this.add("modonomicon.test.sections.test_category.test_entry.page0.title", "**Bold**");
+            this.add("modonomicon.test.sections.test_category.test_entry.page1.title", "*[#](55FF55)Colorful Italics*[#]()");
+            this.add("modonomicon.test.sections.test_category.test_entry.page2.text",
+                    """
+                   And this is our page three.    
+                    """);
         }
 
         protected void addTranslations() {

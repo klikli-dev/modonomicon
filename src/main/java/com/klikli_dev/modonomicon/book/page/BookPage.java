@@ -21,6 +21,7 @@
 package com.klikli_dev.modonomicon.book.page;
 
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
@@ -35,14 +36,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 
 public abstract class BookPage {
-    public BookEntry parentEntry;
-    public int pageNumber;
-
-    public BookContentScreen parentScreen;
-    public Minecraft mc;
-    public Font font;
     public int left;
     public int top;
+    protected Book book;
+    protected BookContentScreen parentScreen;
+    protected Minecraft mc;
+    protected Font font;
+    private BookEntry parentEntry;
+    private int pageNumber;
 
     public abstract ResourceLocation getType();
 
@@ -56,6 +57,9 @@ public abstract class BookPage {
         this.font = this.mc.font;
         this.left = left;
         this.top = top;
+
+        //TODO: this should be handled via the post-load action
+        this.book = this.parentEntry.getCategory().getBook();
 
         //TODO: text renderer needs to be refactored - we somehow need to be able to cache the results per component
         //      it might be good to store the result in our text holder
@@ -94,4 +98,28 @@ public abstract class BookPage {
     public abstract void render(PoseStack poseStack, int mouseX, int mouseY, float ticks);
 
     public abstract void toNetwork(FriendlyByteBuf buffer);
+
+    public void drawCenteredStringNoShadow(PoseStack poseStack, FormattedCharSequence s, int x, int y, int color) {
+        this.font.draw(poseStack, s, x - this.font.width(s) / 2.0F, y, color);
+    }
+
+    public void drawCenteredStringNoShadow(PoseStack poseStack, String s, int x, int y, int color) {
+        this.font.draw(poseStack, s, x - this.font.width(s) / 2.0F, y, color);
+    }
+
+    public BookEntry getParentEntry() {
+        return this.parentEntry;
+    }
+
+    public void setParentEntry(BookEntry parentEntry) {
+        this.parentEntry = parentEntry;
+    }
+
+    public int getPageNumber() {
+        return this.pageNumber;
+    }
+
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
+    }
 }

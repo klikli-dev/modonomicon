@@ -38,29 +38,38 @@ public class Book {
     protected ResourceLocation bookContentTexture;
     protected Map<ResourceLocation, BookCategory> categories;
     protected Map<ResourceLocation, BookEntry> entries;
-    //TODO: further properties for customization, such as book item, ...
+    protected int defaultTitleColor;
 
-    public Book(ResourceLocation id, String name, ResourceLocation bookOverviewTexture, ResourceLocation bookContentTexture) {
+    public Book(ResourceLocation id, String name, ResourceLocation bookOverviewTexture, ResourceLocation bookContentTexture, int defaultTitleColor) {
         this.id = id;
         this.name = name;
         this.bookOverviewTexture = bookOverviewTexture;
         this.bookContentTexture = bookContentTexture;
+        this.defaultTitleColor = defaultTitleColor;
         this.categories = new HashMap<>();
         this.entries = new HashMap<>();
     }
 
+    //TODO: further properties for customization, such as book item, title color...
+
     public static Book fromJson(ResourceLocation id, JsonObject json) {
-        var name = GsonHelper.getAsString(json,"name");
+        var name = GsonHelper.getAsString(json, "name");
         var bookOverviewTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_overview_texture", Data.Book.DEFAULT_OVERVIEW_TEXTURE));
         var bookContentTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_content_texture", Data.Book.DEFAULT_CONTENT_TEXTURE));
-        return new Book(id, name, bookOverviewTexture, bookContentTexture);
+        var defaultTitleColor = GsonHelper.getAsInt(json, "defaultTitleColor", 0x00000);
+        return new Book(id, name, bookOverviewTexture, bookContentTexture, defaultTitleColor);
     }
 
     public static Book fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
         var name = buffer.readUtf();
         var bookOverviewTexture = buffer.readResourceLocation();
         var bookContentTexture = buffer.readResourceLocation();
-        return new Book(id, name, bookOverviewTexture, bookContentTexture);
+        var defaultTitleColor = buffer.readInt();
+        return new Book(id, name, bookOverviewTexture, bookContentTexture, defaultTitleColor);
+    }
+
+    public int getDefaultTitleColor() {
+        return this.defaultTitleColor;
     }
 
     public ResourceLocation getId() {
@@ -107,9 +116,10 @@ public class Book {
         buffer.writeUtf(this.name);
         buffer.writeResourceLocation(this.bookOverviewTexture);
         buffer.writeResourceLocation(this.bookContentTexture);
+        buffer.writeInt(this.defaultTitleColor);
     }
 
     public ResourceLocation getBookContentTexture() {
-        return bookContentTexture;
+        return this.bookContentTexture;
     }
 }
