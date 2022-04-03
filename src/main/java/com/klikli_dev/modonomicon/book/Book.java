@@ -68,6 +68,12 @@ public class Book {
         return new Book(id, name, bookOverviewTexture, bookContentTexture, defaultTitleColor);
     }
 
+    public void build() {
+        for(var category : this.categories.values()) {
+            category.build(this);
+        }
+    }
+
     public int getDefaultTitleColor() {
         return this.defaultTitleColor;
     }

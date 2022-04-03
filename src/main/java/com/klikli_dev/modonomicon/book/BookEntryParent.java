@@ -30,7 +30,6 @@ public class BookEntryParent {
     protected boolean drawArrow = true;
     protected boolean lineEnabled = true;
     protected boolean lineReversed = false;
-    //TODO: allow loading the booleans from json
 
     public BookEntryParent(ResourceLocation entry) {
         this.entryId = entry;
@@ -62,7 +61,7 @@ public class BookEntryParent {
     }
 
     public BookEntry getEntry() {
-        return null;
+        throw new UnsupportedOperationException("BookEntryParent is not resolved yet.");
     }
 
     public ResourceLocation getEntryId() {

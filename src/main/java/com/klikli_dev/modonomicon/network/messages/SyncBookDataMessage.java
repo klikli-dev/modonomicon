@@ -83,7 +83,6 @@ public class SyncBookDataMessage implements Message {
 
                 //link category and book
                 book.addCategory(category);
-                category.setBook(book);
 
                 int entryCount = buf.readInt();
                 for (int k = 0; k < entryCount; k++) {
@@ -91,14 +90,15 @@ public class SyncBookDataMessage implements Message {
                     BookEntry bookEntry = BookEntry.fromNetwork(entryId, buf);
 
                     //link entry and category
-                    bookEntry.setCategory(category);
                     category.addEntry(bookEntry);
                 }
             }
         }
 
-        //resolve entry parents
-        BookDataManager.resolveBookEntryParents(this.books.values());
+        //Build books
+        for (var book : this.books.values()) {
+            book.build();
+        }
     }
 
 
