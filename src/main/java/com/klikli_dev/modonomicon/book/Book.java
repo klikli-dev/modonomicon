@@ -69,15 +69,17 @@ public class Book {
     }
 
     public void build() {
+        //first "backlink" all our entries directly into the book
         for(var category : this.categories.values()) {
-            category.build(this);
-
-            //now also store the entries in the book directly
             for(var entry : category.getEntries().values()){
                 this.addEntry(entry);
             }
         }
 
+        //then build categories, which will in turn build entries (which need the above backlinks to resolve parents)
+        for(var category : this.categories.values()) {
+            category.build(this);
+        }
     }
 
     public int getDefaultTitleColor() {
