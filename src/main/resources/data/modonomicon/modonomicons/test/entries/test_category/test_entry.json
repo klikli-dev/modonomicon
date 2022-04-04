@@ -17,6 +17,11 @@
       "title": "modonomicon.test.sections.test_category.test_entry.page1.title",
       "use_markdown_title": true,
       "text": "modonomicon.test.sections.test_category.test_entry.page1.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "title": "modonomicon.test.sections.test_category.test_entry.page2.title",
+      "text": "modonomicon.test.sections.test_category.test_entry.page2.text"
     }
   ]
 }

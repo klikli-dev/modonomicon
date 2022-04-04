@@ -24,6 +24,7 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
+import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -34,7 +35,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.projectile.Arrow;
 
 public class BookContentScreen extends Screen {
 
@@ -45,6 +45,8 @@ public class BookContentScreen extends Screen {
     public static final int LEFT_PAGE_X = 15;
     public static final int RIGHT_PAGE_X = 141;
     public static final int PAGE_WIDTH = 116;
+    public static final int FULL_WIDTH = 272;
+    public static final int FULL_HEIGHT = 180;
 
     private final BookOverviewScreen parentScreen;
     private final BookEntry entry;
@@ -116,11 +118,15 @@ public class BookContentScreen extends Screen {
     }
 
     /**
-     * Needs to use Button instead of ArrowButton to conform to Button.OnPress
-     * otherwise we can't use it as method reference, which we need - lambda can't use this in super constructor call.
+     * Needs to use Button instead of ArrowButton to conform to Button.OnPress otherwise we can't use it as method
+     * reference, which we need - lambda can't use this in super constructor call.
      */
     public void handleArrowButton(Button button) {
-        this.changePage(((ArrowButton)button).left, false);
+        this.changePage(((ArrowButton) button).left, false);
+    }
+
+    public void handleExitButton(Button button) {
+        this.onClose();
     }
 
     @Override
@@ -157,6 +163,10 @@ public class BookContentScreen extends Screen {
 
         this.maxOpenPagesIndex = (int) Math.ceil((float) this.entry.getPages().size() / 2);
         this.beginDisplayPages();
+
+        this.addRenderableWidget(new ArrowButton(this, this.bookLeft - 4, this.bookTop + FULL_HEIGHT - 6, true));
+        this.addRenderableWidget(new ArrowButton(this, this.bookLeft + FULL_WIDTH - 14, this.bookTop + FULL_HEIGHT - 6, false));
+        this.addRenderableWidget(new ExitButton(this, this.bookLeft + FULL_WIDTH - 10, this.bookTop - 2));
     }
 
     void renderPage(PoseStack poseStack, BookPage page, int pMouseX, int pMouseY, float pPartialTick) {
