@@ -60,6 +60,9 @@ public abstract class LangGenerator extends LanguageProvider {
 
         private void addMisc() {
             this.add(ModonimiconConstants.I18n.ITEM_GROUP, "Modonomicon");
+            this.add("modonomicon.gui.button.previous_page", "Previous Page");
+            this.add("modonomicon.gui.button.next_page", "Next Page");
+            this.add("modonomicon.gui.button.exit", "Exit");
         }
 
         private void addItems() {
@@ -76,6 +79,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add("modonomicon.test_book.title", "Test Book");
 
             this.add("modonomicon.test.entries.test_category.test_entry.description", "Test Description");
+            this.add("modonomicon.test.sections.test_category.test_entry.page0.title", "**Bold**");
             this.add("modonomicon.test.sections.test_category.test_entry.page0.text",
                     """
                     This is a **test** text.
@@ -86,12 +90,12 @@ public abstract class LangGenerator extends LanguageProvider {
                     
                     And this is a super long line where we hope it will be automatically wrapped into a new line otherwise that is super-bad.      
                     """);
+            this.add("modonomicon.test.sections.test_category.test_entry.page1.title", "*[#](55FF55)Colorful Italics*[#]()");
             this.add("modonomicon.test.sections.test_category.test_entry.page1.text",
                     """
                    And this is our page two.    
                     """);
-            this.add("modonomicon.test.sections.test_category.test_entry.page0.title", "**Bold**");
-            this.add("modonomicon.test.sections.test_category.test_entry.page1.title", "*[#](55FF55)Colorful Italics*[#]()");
+            this.add("modonomicon.test.sections.test_category.test_entry.page2.title", "Page 3");
             this.add("modonomicon.test.sections.test_category.test_entry.page2.text",
                     """
                    And this is our page three.    

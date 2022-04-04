@@ -23,11 +23,14 @@ package com.klikli_dev.modonomicon.client.gui.book;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.page.BookPage;
+import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
+import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.TextComponent;
@@ -42,6 +45,8 @@ public class BookContentScreen extends Screen {
     public static final int LEFT_PAGE_X = 15;
     public static final int RIGHT_PAGE_X = 141;
     public static final int PAGE_WIDTH = 116;
+    public static final int FULL_WIDTH = 272;
+    public static final int FULL_HEIGHT = 180;
 
     private final BookOverviewScreen parentScreen;
     private final BookEntry entry;
@@ -72,8 +77,29 @@ public class BookContentScreen extends Screen {
         this.textRenderer = new BookTextRenderer();
     }
 
+    public static void drawFromTexture(PoseStack poseStack, Book book, int x, int y, int u, int v, int w, int h) {
+        RenderSystem.setShaderTexture(0, book.getBookContentTexture());
+        blit(poseStack, x, y, u, v, w, h, 512, 256);
+    }
+
+    public static void drawTitleSeparator(PoseStack poseStack, Book book, int x, int y) {
+        int w = 110;
+        int h = 3;
+        int rx = x + PAGE_WIDTH / 2 - w / 2;
+
+        RenderSystem.enableBlend();
+        RenderSystem.setShaderColor(1F, 1F, 1F, 0.8F);
+        //u and v are the pixel coordinates in our book_content_texture
+        drawFromTexture(poseStack, book, rx, y, 0, 253, w, h);
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+    }
+
     public BookEntry getEntry() {
         return this.entry;
+    }
+
+    public Book getBook() {
+        return this.entry.getBook();
     }
 
     public void renderBookBackground(PoseStack poseStack) {
@@ -85,6 +111,22 @@ public class BookContentScreen extends Screen {
         int y = 0; // (this.height - BOOK_BACKGROUND_HEIGHT) / 2;
 
         GuiComponent.blit(poseStack, x, y, 0, 0, 272, 178, 512, 256);
+    }
+
+    public boolean canSeeArrowButton(boolean left) {
+        return left ? this.openPagesIndex > 0 : (this.openPagesIndex + 1) < this.maxOpenPagesIndex;
+    }
+
+    /**
+     * Needs to use Button instead of ArrowButton to conform to Button.OnPress otherwise we can't use it as method
+     * reference, which we need - lambda can't use this in super constructor call.
+     */
+    public void handleArrowButton(Button button) {
+        this.changePage(((ArrowButton) button).left, false);
+    }
+
+    public void handleExitButton(Button button) {
+        this.onClose();
     }
 
     @Override
@@ -121,6 +163,10 @@ public class BookContentScreen extends Screen {
 
         this.maxOpenPagesIndex = (int) Math.ceil((float) this.entry.getPages().size() / 2);
         this.beginDisplayPages();
+
+        this.addRenderableWidget(new ArrowButton(this, this.bookLeft - 4, this.bookTop + FULL_HEIGHT - 6, true));
+        this.addRenderableWidget(new ArrowButton(this, this.bookLeft + FULL_WIDTH - 14, this.bookTop + FULL_HEIGHT - 6, false));
+        this.addRenderableWidget(new ExitButton(this, this.bookLeft + FULL_WIDTH - 10, this.bookTop - 2));
     }
 
     void renderPage(PoseStack poseStack, BookPage page, int pMouseX, int pMouseY, float pPartialTick) {
@@ -160,20 +206,23 @@ public class BookContentScreen extends Screen {
         }
     }
 
-    public static void drawFromTexture(PoseStack poseStack, Book book, int x, int y, int u, int v, int w, int h) {
-        RenderSystem.setShaderTexture(0, book.getBookContentTexture());
-        blit(poseStack, x, y, u, v, w, h, 512, 256);
+    void changePage(boolean left, boolean playSound) {
+        if (this.canSeeArrowButton(left)) {
+            if (left) {
+                this.openPagesIndex--;
+            } else {
+                this.openPagesIndex++;
+            }
+
+            this.onPageChanged();
+            if (playSound) {
+                //TODO: play sound - prevent spamming by forcing a delay of e.g. 10 ticks
+                //      sound (RL) should be taken from book
+            }
+        }
     }
 
-    public static void drawTitleSeparator(PoseStack poseStack, Book book, int x, int y) {
-        int w = 110;
-        int h = 3;
-        int rx = x + PAGE_WIDTH / 2 - w / 2;
-
-        RenderSystem.enableBlend();
-        RenderSystem.setShaderColor(1F, 1F, 1F, 0.8F);
-        //u and v are the pixel coordinates in our book_content_texture
-        drawFromTexture(poseStack, book, rx, y, 0, 253, w, h);
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+    void onPageChanged() {
+        this.beginDisplayPages();
     }
 }
