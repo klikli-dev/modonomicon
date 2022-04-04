@@ -1,7 +1,7 @@
 /*
  * LGPL-3-0
  *
- * Copyright (C) 2021 klikli-dev
+ * Copyright (C) 2022 klikli-dev
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,15 +18,14 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.registry;
+package com.klikli_dev.modonomicon.client;
 
-import com.klikli_dev.modonomicon.Modonomicon;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.client.Minecraft;
 
-public class MenuRegistry {
-    //TODO: make mod loader agnostic
-    public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.CONTAINERS, Modonomicon.MODID);
+public class ClientTicks {
+    public static long ticks = 0;
 
+    public static void endClientTick(Minecraft mc) {
+        ticks++;
+    }
 }

@@ -21,7 +21,11 @@
 package com.klikli_dev.modonomicon.handlers;
 
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.registry.BookPageLoaderRegistry;
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -30,6 +34,13 @@ public class ClientSetupEventHandler {
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         registerItemModelProperties(event);
+
+        //Keep track of ticks. We do this to stay loader agnostic so we can do a fabric version in the future
+        MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent e) -> {
+            if (e.phase == TickEvent.Phase.END) {
+                ClientTicks.endClientTick(Minecraft.getInstance());
+            }
+        });
 
         //Not safe to call during parallel load, so register to run threadsafe.
         event.enqueueWork(() -> {

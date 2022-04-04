@@ -60,9 +60,14 @@ public abstract class LangGenerator extends LanguageProvider {
 
         private void addMisc() {
             this.add(ModonimiconConstants.I18n.ITEM_GROUP, "Modonomicon");
+
+            //buttons
             this.add("modonomicon.gui.button.previous_page", "Previous Page");
             this.add("modonomicon.gui.button.next_page", "Next Page");
             this.add("modonomicon.gui.button.exit", "Exit");
+
+            //sounds
+            this.add("modonomicon.subtitle.turn_page", "Turn Page");
         }
 
         private void addItems() {

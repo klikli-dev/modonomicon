@@ -32,6 +32,7 @@ import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.BookPageLoaderRegistry;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import com.klikli_dev.modonomicon.registry.MenuRegistry;
+import com.klikli_dev.modonomicon.registry.SoundRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.api.distmarker.Dist;
@@ -69,11 +70,11 @@ public class Modonomicon {
 
         ItemRegistry.ITEMS.register(modEventBus);
         MenuRegistry.MENUS.register(modEventBus);
+        SoundRegistry.SOUNDS.register(modEventBus);
 
         //directly register event handlers, can't register the object and use annotations, because we have events from both buses
         modEventBus.addListener(this::onCommonSetup);
         modEventBus.addListener(this::onServerSetup);
-        modEventBus.addListener(this::onRegisterClientReloadListeners);
         MinecraftForge.EVENT_BUS.addListener(this::onAddReloadListener);
 
         //register event listener objects
@@ -95,10 +96,6 @@ public class Modonomicon {
         event.addListener(BookDataManager.get());
     }
 
-    public void onRegisterClientReloadListeners(RegisterClientReloadListenersEvent event) {
-        //TODO: can we load data directly on client?
-        // event.registerReloadListener(BookAssetManager.get());
-    }
 
     public void onCommonSetup(FMLCommonSetupEvent event) {
         Networking.registerMessages();

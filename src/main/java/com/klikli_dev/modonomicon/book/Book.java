@@ -36,48 +36,55 @@ public class Book {
     protected String name;
     protected ResourceLocation bookOverviewTexture;
     protected ResourceLocation bookContentTexture;
+    protected ResourceLocation turnPageSound;
     protected Map<ResourceLocation, BookCategory> categories;
     protected Map<ResourceLocation, BookEntry> entries;
     protected int defaultTitleColor;
-
-    public Book(ResourceLocation id, String name, ResourceLocation bookOverviewTexture, ResourceLocation bookContentTexture, int defaultTitleColor) {
+    public Book(ResourceLocation id, String name, ResourceLocation bookOverviewTexture, ResourceLocation bookContentTexture, ResourceLocation turnPageSound, int defaultTitleColor) {
         this.id = id;
         this.name = name;
         this.bookOverviewTexture = bookOverviewTexture;
         this.bookContentTexture = bookContentTexture;
+        this.turnPageSound = turnPageSound;
         this.defaultTitleColor = defaultTitleColor;
         this.categories = new HashMap<>();
         this.entries = new HashMap<>();
     }
 
-    //TODO: further properties for customization, such as book item, title color...
-
     public static Book fromJson(ResourceLocation id, JsonObject json) {
         var name = GsonHelper.getAsString(json, "name");
         var bookOverviewTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_overview_texture", Data.Book.DEFAULT_OVERVIEW_TEXTURE));
         var bookContentTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_content_texture", Data.Book.DEFAULT_CONTENT_TEXTURE));
+        var turnPageSound = new ResourceLocation(GsonHelper.getAsString(json, "turn_page_sound", Data.Book.DEFAULT_PAGE_TURN_SOUND));
         var defaultTitleColor = GsonHelper.getAsInt(json, "defaultTitleColor", 0x00000);
-        return new Book(id, name, bookOverviewTexture, bookContentTexture, defaultTitleColor);
+        return new Book(id, name, bookOverviewTexture, bookContentTexture, turnPageSound, defaultTitleColor);
     }
+
+    //TODO: further properties for customization, such as book item, title color...
 
     public static Book fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
         var name = buffer.readUtf();
         var bookOverviewTexture = buffer.readResourceLocation();
         var bookContentTexture = buffer.readResourceLocation();
+        var turnPageSound = buffer.readResourceLocation();
         var defaultTitleColor = buffer.readInt();
-        return new Book(id, name, bookOverviewTexture, bookContentTexture, defaultTitleColor);
+        return new Book(id, name, bookOverviewTexture, bookContentTexture, turnPageSound, defaultTitleColor);
+    }
+
+    public ResourceLocation getTurnPageSound() {
+        return this.turnPageSound;
     }
 
     public void build() {
         //first "backlink" all our entries directly into the book
-        for(var category : this.categories.values()) {
-            for(var entry : category.getEntries().values()){
+        for (var category : this.categories.values()) {
+            for (var entry : category.getEntries().values()) {
                 this.addEntry(entry);
             }
         }
 
         //then build categories, which will in turn build entries (which need the above backlinks to resolve parents)
-        for(var category : this.categories.values()) {
+        for (var category : this.categories.values()) {
             category.build(this);
         }
     }

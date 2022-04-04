@@ -23,9 +23,11 @@ package com.klikli_dev.modonomicon.client.gui.book;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.page.BookPage;
+import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
+import com.klikli_dev.modonomicon.registry.SoundRegistry;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -33,8 +35,11 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class BookContentScreen extends Screen {
 
@@ -64,6 +69,8 @@ public class BookContentScreen extends Screen {
      */
     private int openPagesIndex;
     private int maxOpenPagesIndex;
+
+    private static long lastTurnPageSoundTime;
 
     public BookContentScreen(BookOverviewScreen parentScreen, BookEntry entry) {
         super(new TextComponent(""));
@@ -122,7 +129,7 @@ public class BookContentScreen extends Screen {
      * reference, which we need - lambda can't use this in super constructor call.
      */
     public void handleArrowButton(Button button) {
-        this.changePage(((ArrowButton) button).left, false);
+        this.changePage(((ArrowButton) button).left, true);
     }
 
     public void handleExitButton(Button button) {
@@ -138,8 +145,7 @@ public class BookContentScreen extends Screen {
         this.renderBookBackground(pPoseStack);
         pPoseStack.popPose();
 
-        //TODO: should super (= widget rendering) also be translated?
-        //  probably makes sense so we can keep coordinates local to the book
+        //do not translate super (= widget rendering) -> otherwise our buttons are messed up
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
 
         pPoseStack.pushPose();
@@ -216,13 +222,21 @@ public class BookContentScreen extends Screen {
 
             this.onPageChanged();
             if (playSound) {
-                //TODO: play sound - prevent spamming by forcing a delay of e.g. 10 ticks
-                //      sound (RL) should be taken from book
+                playTurnPageSound(this.getBook());
             }
         }
     }
 
     void onPageChanged() {
         this.beginDisplayPages();
+    }
+
+    public static void playTurnPageSound(Book book) {
+        if (ClientTicks.ticks - lastTurnPageSoundTime > 6) {
+            //TODO: make mod loader agnostic
+            var sound = ForgeRegistries.SOUND_EVENTS.getHolder(book.getTurnPageSound()).orElse(Holder.direct(SoundRegistry.TURN_PAGE.get()));
+            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(sound.value(), (float) (0.7 + Math.random() * 0.3)));
+            lastTurnPageSoundTime = ClientTicks.ticks;
+        }
     }
 }
