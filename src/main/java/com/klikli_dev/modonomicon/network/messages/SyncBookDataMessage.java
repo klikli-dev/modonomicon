@@ -58,7 +58,7 @@ public class SyncBookDataMessage implements Message {
                 buf.writeResourceLocation(category.getId());
                 category.toNetwork(buf);
 
-                buf.writeVarInt(book.getEntries().size());
+                buf.writeVarInt(category.getEntries().size());
                 for(var entry : category.getEntries().values()) {
                     buf.writeResourceLocation(entry.getId());
                     entry.toNetwork(buf);
