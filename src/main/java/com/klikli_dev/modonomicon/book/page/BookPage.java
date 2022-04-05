@@ -46,6 +46,16 @@ public abstract class BookPage {
     protected BookEntry parentEntry;
     protected int pageNumber;
 
+    protected String anchor;
+
+    public BookPage(String anchor) {
+        this.anchor = anchor;
+    }
+
+    public String getAnchor() {
+        return this.anchor;
+    }
+
     public abstract ResourceLocation getType();
 
     public void build(BookEntry parentEntry, int pageNum) {

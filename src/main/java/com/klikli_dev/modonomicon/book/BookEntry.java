@@ -198,4 +198,16 @@ public class BookEntry {
     public Book getBook() {
         return this.book;
     }
+
+    public int getPageNumberForAnchor(String anchor) {
+        var pages = this.getPages();
+        for (int i = 0; i < pages.size(); i++) {
+            var page = pages.get(i);
+            if (anchor.equals(page.getAnchor())) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
 }
