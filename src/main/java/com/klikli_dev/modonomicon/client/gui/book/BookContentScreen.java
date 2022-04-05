@@ -37,9 +37,12 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.List;
 
 public class BookContentScreen extends Screen {
 
@@ -66,6 +69,8 @@ public class BookContentScreen extends Screen {
      */
     private int openPagesIndex;
     private int maxOpenPagesIndex;
+
+    private List<Component> tooltip;
 
     public BookContentScreen(BookOverviewScreen parentScreen, BookEntry entry) {
         super(new TextComponent(""));
@@ -140,8 +145,88 @@ public class BookContentScreen extends Screen {
         this.onClose();
     }
 
+    public void setTooltip(List<Component> tooltip) {
+        this.tooltip = tooltip;
+    }
+
+    protected void drawTooltip(PoseStack pPoseStack, int pMouseX, int pMouseY) {
+        if (this.tooltip != null) {
+            this.renderComponentTooltip(pPoseStack, this.tooltip, pMouseX, pMouseY);
+        }
+    }
+
+    protected boolean clickPage(BookPage page, double mouseX, double mouseY, int mouseButton) {
+        if (page != null) {
+            return page.mouseClicked(mouseX - page.left, mouseY - page.top, mouseButton);
+        }
+
+        return false;
+    }
+
+    protected void renderPage(PoseStack poseStack, BookPage page, int pMouseX, int pMouseY, float pPartialTick) {
+        if (page == null) {
+            return;
+        }
+
+        poseStack.pushPose();
+        poseStack.translate(page.left, page.top, 0);
+        page.render(poseStack, pMouseX - page.left, pMouseY - page.top, pPartialTick);
+        poseStack.popPose();
+    }
+
+    protected void beginDisplayPages() {
+        //allow pages to clean up
+        if (this.leftPage != null) {
+            this.leftPage.onEndDisplayPage(this);
+        }
+        if (this.rightPage != null) {
+            this.rightPage.onEndDisplayPage(this);
+        }
+
+        //get new pages
+        var pages = this.entry.getPages();
+        int leftPageIndex = this.openPagesIndex * 2;
+        int rightPageIndex = leftPageIndex + 1;
+
+        this.leftPage = leftPageIndex < pages.size() ? pages.get(leftPageIndex) : null;
+        this.rightPage = rightPageIndex < pages.size() ? pages.get(rightPageIndex) : null;
+
+        //allow pages to prepare for being displayed
+        if (this.leftPage != null) {
+            this.leftPage.onBeginDisplayPage(this, this.textRenderer, LEFT_PAGE_X, TOP_PADDING);
+        }
+        if (this.rightPage != null) {
+            this.rightPage.onBeginDisplayPage(this, this.textRenderer, RIGHT_PAGE_X, TOP_PADDING);
+        }
+    }
+
+    protected void changePage(boolean left, boolean playSound) {
+        if (this.canSeeArrowButton(left)) {
+            if (left) {
+                this.openPagesIndex--;
+            } else {
+                this.openPagesIndex++;
+            }
+
+            this.onPageChanged();
+            if (playSound) {
+                playTurnPageSound(this.getBook());
+            }
+        }
+    }
+
+    protected void onPageChanged() {
+        this.beginDisplayPages();
+    }
+
+    protected void resetTooltip() {
+        this.tooltip = null;
+    }
+
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        this.resetTooltip();
+
         this.renderBackground(pPoseStack);
 
         pPoseStack.pushPose();
@@ -157,6 +242,9 @@ public class BookContentScreen extends Screen {
         this.renderPage(pPoseStack, this.leftPage, pMouseX, pMouseY, pPartialTick);
         this.renderPage(pPoseStack, this.rightPage, pMouseX, pMouseY, pPartialTick);
         pPoseStack.popPose();
+
+        //do not translate tooltip, would mess up location
+        this.drawTooltip(pPoseStack, pMouseX, pMouseY);
     }
 
     @Override
@@ -184,69 +272,5 @@ public class BookContentScreen extends Screen {
         return this.clickPage(this.leftPage, pMouseX, pMouseY, pButton)
                 || this.clickPage(this.rightPage, pMouseX, pMouseY, pButton)
                 || super.mouseClicked(pMouseX, pMouseY, pButton);
-    }
-
-    boolean clickPage(BookPage page, double mouseX, double mouseY, int mouseButton) {
-        if (page != null) {
-            return page.mouseClicked(mouseX - page.left, mouseY - page.top, mouseButton);
-        }
-
-        return false;
-    }
-
-    void renderPage(PoseStack poseStack, BookPage page, int pMouseX, int pMouseY, float pPartialTick) {
-        if (page == null) {
-            return;
-        }
-
-        poseStack.pushPose();
-        poseStack.translate(page.left, page.top, 0);
-        page.render(poseStack, pMouseX - page.left, pMouseY - page.top, pPartialTick);
-        poseStack.popPose();
-    }
-
-    void beginDisplayPages() {
-        //allow pages to clean up
-        if (this.leftPage != null) {
-            this.leftPage.onEndDisplayPage(this);
-        }
-        if (this.rightPage != null) {
-            this.rightPage.onEndDisplayPage(this);
-        }
-
-        //get new pages
-        var pages = this.entry.getPages();
-        int leftPageIndex = this.openPagesIndex * 2;
-        int rightPageIndex = leftPageIndex + 1;
-
-        this.leftPage = leftPageIndex < pages.size() ? pages.get(leftPageIndex) : null;
-        this.rightPage = rightPageIndex < pages.size() ? pages.get(rightPageIndex) : null;
-
-        //allow pages to prepare for being displayed
-        if (this.leftPage != null) {
-            this.leftPage.onBeginDisplayPage(this, this.textRenderer, LEFT_PAGE_X, TOP_PADDING);
-        }
-        if (this.rightPage != null) {
-            this.rightPage.onBeginDisplayPage(this, this.textRenderer, RIGHT_PAGE_X, TOP_PADDING);
-        }
-    }
-
-    void changePage(boolean left, boolean playSound) {
-        if (this.canSeeArrowButton(left)) {
-            if (left) {
-                this.openPagesIndex--;
-            } else {
-                this.openPagesIndex++;
-            }
-
-            this.onPageChanged();
-            if (playSound) {
-                playTurnPageSound(this.getBook());
-            }
-        }
-    }
-
-    void onPageChanged() {
-        this.beginDisplayPages();
     }
 }

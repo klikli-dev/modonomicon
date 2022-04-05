@@ -23,7 +23,7 @@ package com.klikli_dev.modonomicon.client.gui.book.button;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import net.minecraft.network.chat.TranslatableComponent;
 
-public class ExitButton extends ConditionalButton {
+public class ExitButton extends BookButton {
 
     public static final int U = 350;
     public static final int V = 0;
@@ -33,7 +33,8 @@ public class ExitButton extends ConditionalButton {
     public ExitButton(BookContentScreen parent, int x, int y) {
         super(parent, x, y, U, V, WIDTH, HEIGHT, () -> true,
                 new TranslatableComponent("modonomicon.gui.button.exit"),
-                parent::handleExitButton
+                parent::handleExitButton,
+                new TranslatableComponent("modonomicon.gui.button.exit") //button title equals hover text
         );
     }
 }
