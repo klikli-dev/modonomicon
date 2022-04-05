@@ -135,7 +135,7 @@ public class BookCategoryScreen {
         float yOffset = this.getYOffset();
         for (var entry : this.category.getEntries().values()) {
             if (this.isEntryHovered(entry, xOffset, yOffset, (int) pMouseX, (int) pMouseY)) {
-                ForgeHooksClient.pushGuiLayer(Minecraft.getInstance(), new BookContentScreen(this.bookOverviewScreen, entry));
+                this.openEntry(entry);
                 return true;
             }
         }
@@ -143,6 +143,11 @@ public class BookCategoryScreen {
         return false;
     }
 
+    public BookContentScreen openEntry(BookEntry entry) {
+        var bookContentScreen = new BookContentScreen(this.bookOverviewScreen, entry);
+        ForgeHooksClient.pushGuiLayer(Minecraft.getInstance(), bookContentScreen);
+        return bookContentScreen;
+    }
 
     public void renderBackground(PoseStack poseStack) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);

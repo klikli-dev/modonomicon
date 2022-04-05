@@ -33,4 +33,25 @@ public class ScreenHelper {
                 stack));
     }
 
+    public static void openCategory(ItemStack stack, ResourceLocation bookId, ResourceLocation categoryId){
+        var book = BookDataManager.get().getBook(bookId);
+        var category = book.getCategory(categoryId);
+        var overviewScreen = new BookOverviewScreen(book, stack);
+        overviewScreen.changeCategory(category);
+        Minecraft.getInstance().setScreen(overviewScreen);
+    }
+
+    public static void openEntry(ItemStack stack, ResourceLocation bookId, ResourceLocation entryId, int page){
+        //TODO: should compare to our current book gui stack so we don't create new screens if not necessary
+        var book = BookDataManager.get().getBook(bookId);
+        var entry = book.getEntry(entryId);
+        var category = entry.getCategory();
+        var overviewScreen = new BookOverviewScreen(book, stack);
+        Minecraft.getInstance().setScreen(overviewScreen);
+        overviewScreen.changeCategory(category);
+        var categoryScreen = overviewScreen.getCurrentCategoryScreen();
+        //TODO: scroll to the entry that will be opened
+        var contentScreen = categoryScreen.openEntry(entry);
+        contentScreen.changePage(page, false); //TODO: play sound here?
+    }
 }

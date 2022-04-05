@@ -20,10 +20,12 @@
 
 package com.klikli_dev.modonomicon.client.gui.book;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.client.ClientTicks;
+import com.klikli_dev.modonomicon.client.gui.ScreenHelper;
 import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
@@ -37,11 +39,15 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.ClickAction;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class BookContentScreen extends Screen {
@@ -147,6 +153,21 @@ public class BookContentScreen extends Screen {
 
     public void setTooltip(List<Component> tooltip) {
         this.tooltip = tooltip;
+    }
+
+    public void changePage(int pageIndex, boolean playSound) {
+        int openPagesIndex = pageIndex / 2; //will floor, which is what we want
+        if (openPagesIndex >= 0 && openPagesIndex < this.maxOpenPagesIndex) {
+            this.openPagesIndex = openPagesIndex;
+
+            this.onPageChanged();
+            if (playSound) {
+                playTurnPageSound(this.getBook());
+            }
+        } else {
+            Modonomicon.LOGGER.warn("Tried to change to page index {pageIndex} corresponding with " +
+                    "openPagesIndex {openPagesIndex} but max open pages index is ", pageIndex, openPagesIndex, this.maxOpenPagesIndex);
+        }
     }
 
     protected void drawTooltip(PoseStack pPoseStack, int pMouseX, int pMouseY) {
@@ -272,5 +293,20 @@ public class BookContentScreen extends Screen {
         return this.clickPage(this.leftPage, pMouseX, pMouseY, pButton)
                 || this.clickPage(this.rightPage, pMouseX, pMouseY, pButton)
                 || super.mouseClicked(pMouseX, pMouseY, pButton);
+    }
+
+    @Override
+    public boolean handleComponentClicked(@Nullable Style pStyle) {
+        if(pStyle != null){
+            var event = pStyle.getClickEvent();
+            if(event != null){
+                if(event.getAction() == Action.CHANGE_PAGE){
+                    //TODO: Parse link here
+                    ScreenHelper.openEntry(this.parentScreen.getBookStack(), this.getBook().getId(),
+                            new ResourceLocation("modonomicon:test_category/test_entry"), 3);
+                }
+            }
+        }
+        return super.handleComponentClicked(pStyle);
     }
 }
