@@ -102,7 +102,7 @@ public class BookContentScreen extends Screen {
     public static void drawTitleSeparator(PoseStack poseStack, Book book, int x, int y) {
         int w = 110;
         int h = 3;
-        int rx = x + PAGE_WIDTH / 2 - w / 2;
+        int rx = x - w / 2;
 
         RenderSystem.enableBlend();
         RenderSystem.setShaderColor(1F, 1F, 1F, 0.8F);
@@ -182,7 +182,7 @@ public class BookContentScreen extends Screen {
 
     protected boolean clickPage(BookPage page, double mouseX, double mouseY, int mouseButton) {
         if (page != null) {
-            return page.mouseClicked(mouseX - page.left, mouseY - page.top, mouseButton);
+            return page.mouseClicked(mouseX - this.bookLeft - page.left, mouseY - this.bookTop - page.top, mouseButton);
         }
 
         return false;
@@ -303,7 +303,6 @@ public class BookContentScreen extends Screen {
 
     @Nullable
     public Style getClickedComponentStyleAt(double pMouseX, double pMouseY) {
-
         var leftPageClickedStyle = this.getClickedComponentStyleAtForPage(this.leftPage, pMouseX, pMouseY);
         if (leftPageClickedStyle != null) {
             return leftPageClickedStyle;
@@ -313,36 +312,6 @@ public class BookContentScreen extends Screen {
             return rightPageClickedStyle;
         }
         return null;
-        //TODO: implement
-//        if (this.cachedPageComponents.isEmpty()) {
-//            return null;
-//        } else {
-//            //    protected static final int IMAGE_WIDTH = 192;
-//            //   public static final int PAGE_TEXT_X_OFFSET = 36;
-//            int i = Mth.floor(pMouseX - (double)((this.width - 192) / 2) - 36.0D);
-//            //   public static final int PAGE_TEXT_Y_OFFSET = 30;
-//            int j = Mth.floor(pMouseY - 2.0D - 30.0D);
-//            if (i >= 0 && j >= 0) {
-//                // protected static final int TEXT_HEIGHT = 128;
-//                // 9 = font height
-//                int k = Math.min(128 / 9, this.cachedPageComponents.size());
-//                // protected static final int TEXT_WIDTH = 114;
-//                // 9 = font height
-//                if (i <= 114 && j < 9 * k + k) {
-//                    int l = j / 9;
-//                    if (l >= 0 && l < this.cachedPageComponents.size()) {
-//                        FormattedCharSequence formattedcharsequence = this.cachedPageComponents.get(l);
-//                        return this.minecraft.font.getSplitter().componentStyleAtWidth(formattedcharsequence, i);
-//                    } else {
-//                        return null;
-//                    }
-//                } else {
-//                    return null;
-//                }
-//            } else {
-//                return null;
-//            }
-//        }
     }
 
     @Override

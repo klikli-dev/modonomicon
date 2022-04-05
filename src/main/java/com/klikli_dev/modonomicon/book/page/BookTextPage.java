@@ -118,18 +118,7 @@ public class BookTextPage extends BookPage implements PageWithText {
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float ticks) {
         if (this.hasTitle()) {
-            if (this.useMarkdownInTitle && this.title instanceof RenderedBookTextHolder renderedTitle) {
-                //if user decided to use markdown title, we need to use the  rendered version
-                var formattedCharSequence = FormattedCharSequence.fromList(
-                        renderedTitle.getRenderedText().stream().map(BaseComponent::getVisualOrderText).toList());
-                this.drawCenteredStringNoShadow(poseStack, formattedCharSequence, BookContentScreen.PAGE_WIDTH / 2, 0, 0);
-            } else {
-                //otherwise we use the component - that is either provided by the user, or created from the default title style.
-                this.drawCenteredStringNoShadow(poseStack, this.title.getComponent().getVisualOrderText(), BookContentScreen.PAGE_WIDTH / 2, 0, 0);
-            }
-
-            if (this.showTitleSeparator)
-                BookContentScreen.drawTitleSeparator(poseStack, this.book, 0, 12);
+            this.renderTitle(this.title, this.showTitleSeparator, poseStack, BookContentScreen.PAGE_WIDTH / 2, 0);
         }
 
         this.renderBookTextHolder(this.getText(), poseStack, 0, this.getTextY(), BookContentScreen.PAGE_WIDTH);
@@ -147,11 +136,18 @@ public class BookTextPage extends BookPage implements PageWithText {
     @Nullable
     @Override
     public Style getClickedComponentStyleAt(double pMouseX, double pMouseY) {
-        //TODO: handle title
-        //var titleClickedStyle = getClickedComponentStyleAtForTextHolder(this.title, BookContentScreen.PAGE_WIDTH / 2, BookContentScreen.PAGE_WIDTH0,  pMouseX, pMouseY);
-        var textStyle = this.getClickedComponentStyleAtForTextHolder(this.text, 0, this.getTextY(), BookContentScreen.PAGE_WIDTH, pMouseX, pMouseY);
-        if(textStyle != null) {
-            return textStyle;
+        if(pMouseX > 0 && pMouseY > 0){
+            if(this.hasTitle()){
+                var titleStyle = this.getClickedComponentStyleAtForTitle(this.title, BookContentScreen.PAGE_WIDTH / 2, 0, pMouseX, pMouseY);
+                if(titleStyle != null) {
+                    return titleStyle;
+                }
+            }
+
+            var textStyle = this.getClickedComponentStyleAtForTextHolder(this.text, 0, this.getTextY(), BookContentScreen.PAGE_WIDTH, pMouseX, pMouseY);
+            if(textStyle != null) {
+                return textStyle;
+            }
         }
         return super.getClickedComponentStyleAt(pMouseX, pMouseY);
     }

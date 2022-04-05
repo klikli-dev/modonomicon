@@ -84,7 +84,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add("modonomicon.test_book.title", "Test Book");
 
             this.add("modonomicon.test.entries.test_category.test_entry.description", "Test Description");
-            this.add("modonomicon.test.sections.test_category.test_entry.page0.title", "**Bold**");
+            this.add("modonomicon.test.sections.test_category.test_entry.page0.title", "[**Bold Link**](book://test)");
             this.add("modonomicon.test.sections.test_category.test_entry.page0.text",
                     """
                     [This is a **link** text](book://test).
