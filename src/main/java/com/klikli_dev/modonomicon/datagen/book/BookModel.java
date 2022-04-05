@@ -24,12 +24,20 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BookModel {
     protected ResourceLocation id;
     protected String name;
-    protected ResourceLocation bookOverviewTexture;
-    protected ResourceLocation bookContentTexture;
-    protected int defaultTitleColor;
+    protected ResourceLocation bookOverviewTexture = new ResourceLocation(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
+    protected ResourceLocation bookContentTexture = new ResourceLocation(Data.Book.DEFAULT_CONTENT_TEXTURE);
+    protected int defaultTitleColor = 0x00000;
+    protected List<BookCategoryModel> categories = new ArrayList<>();
+
+    public List<BookCategoryModel> getCategories() {
+        return this.categories;
+    }
 
     public static Builder builder() {
         return new Builder();
@@ -60,21 +68,23 @@ public class BookModel {
         json.addProperty("name", this.name);
         json.addProperty("book_overview_texture", this.bookOverviewTexture.toString());
         json.addProperty("book_content_texture", this.bookContentTexture.toString());
-        json.addProperty("defaultTitleColor", this.defaultTitleColor);
+        json.addProperty("default_title_color", this.defaultTitleColor);
         return json;
     }
 
     public static final class Builder {
         protected ResourceLocation id;
         protected String name;
-        protected ResourceLocation bookOverviewTexture;
-        protected ResourceLocation bookContentTexture;
-        protected int defaultTitleColor;
+        protected ResourceLocation bookOverviewTexture = new ResourceLocation(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
+        protected ResourceLocation bookContentTexture = new ResourceLocation(Data.Book.DEFAULT_CONTENT_TEXTURE);
+        protected int defaultTitleColor = 0x00000;
+        protected List<BookCategoryModel> categories = new ArrayList<>();
 
         private Builder() {
-            this.bookOverviewTexture = new ResourceLocation(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
-            this.bookContentTexture = new ResourceLocation(Data.Book.DEFAULT_CONTENT_TEXTURE);
-            this.defaultTitleColor = 0x00000;
+        }
+
+        public static Builder aBookModel() {
+            return new Builder();
         }
 
         public Builder withId(ResourceLocation id) {
@@ -102,13 +112,33 @@ public class BookModel {
             return this;
         }
 
+        public Builder withCategories(List<BookCategoryModel> categories) {
+            this.categories = categories;
+            return this;
+        }
+
+        public Builder withCategories(BookCategoryModel ... categories) {
+            this.categories.addAll(List.of(categories));
+            return this;
+        }
+
+        public Builder withCategory(BookCategoryModel category) {
+            this.categories.add(category);
+            return this;
+        }
+
         public BookModel build() {
             BookModel bookModel = new BookModel();
-            bookModel.name = this.name;
+            for(var category : this.categories){
+                category.book = bookModel;
+            }
+
+            bookModel.categories = this.categories;
             bookModel.bookOverviewTexture = this.bookOverviewTexture;
-            bookModel.defaultTitleColor = this.defaultTitleColor;
-            bookModel.bookContentTexture = this.bookContentTexture;
             bookModel.id = this.id;
+            bookModel.bookContentTexture = this.bookContentTexture;
+            bookModel.defaultTitleColor = this.defaultTitleColor;
+            bookModel.name = this.name;
             return bookModel;
         }
     }
