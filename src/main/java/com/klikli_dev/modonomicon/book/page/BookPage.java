@@ -72,6 +72,9 @@ public abstract class BookPage {
     public void onEndDisplayPage(BookContentScreen parentScreen) {
     }
 
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        return false;
+    }
 
     public void renderBookTextHolder(BookTextHolder text, PoseStack poseStack, int x, int y, int width) {
         if (text.hasComponent()) {

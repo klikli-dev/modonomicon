@@ -52,16 +52,13 @@ public class BookContentScreen extends Screen {
     public static final int PAGE_WIDTH = 116;
     public static final int FULL_WIDTH = 272;
     public static final int FULL_HEIGHT = 180;
-
+    private static long lastTurnPageSoundTime;
     private final BookOverviewScreen parentScreen;
     private final BookEntry entry;
-
     private final ResourceLocation bookContentTexture;
     private final BookTextRenderer textRenderer;
-
     private BookPage leftPage;
     private BookPage rightPage;
-
     private int bookLeft;
     private int bookTop;
     /**
@@ -69,8 +66,6 @@ public class BookContentScreen extends Screen {
      */
     private int openPagesIndex;
     private int maxOpenPagesIndex;
-
-    private static long lastTurnPageSoundTime;
 
     public BookContentScreen(BookOverviewScreen parentScreen, BookEntry entry) {
         super(new TextComponent(""));
@@ -99,6 +94,15 @@ public class BookContentScreen extends Screen {
         //u and v are the pixel coordinates in our book_content_texture
         drawFromTexture(poseStack, book, rx, y, 0, 253, w, h);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+    }
+
+    public static void playTurnPageSound(Book book) {
+        if (ClientTicks.ticks - lastTurnPageSoundTime > 6) {
+            //TODO: make mod loader agnostic
+            var sound = ForgeRegistries.SOUND_EVENTS.getHolder(book.getTurnPageSound()).orElse(Holder.direct(SoundRegistry.TURN_PAGE.get()));
+            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(sound.value(), (float) (0.7 + Math.random() * 0.3)));
+            lastTurnPageSoundTime = ClientTicks.ticks;
+        }
     }
 
     public BookEntry getEntry() {
@@ -175,6 +179,21 @@ public class BookContentScreen extends Screen {
         this.addRenderableWidget(new ExitButton(this, this.bookLeft + FULL_WIDTH - 10, this.bookTop - 2));
     }
 
+    @Override
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        return this.clickPage(this.leftPage, pMouseX, pMouseY, pButton)
+                || this.clickPage(this.rightPage, pMouseX, pMouseY, pButton)
+                || super.mouseClicked(pMouseX, pMouseY, pButton);
+    }
+
+    boolean clickPage(BookPage page, double mouseX, double mouseY, int mouseButton) {
+        if (page != null) {
+            return page.mouseClicked(mouseX - page.left, mouseY - page.top, mouseButton);
+        }
+
+        return false;
+    }
+
     void renderPage(PoseStack poseStack, BookPage page, int pMouseX, int pMouseY, float pPartialTick) {
         if (page == null) {
             return;
@@ -229,14 +248,5 @@ public class BookContentScreen extends Screen {
 
     void onPageChanged() {
         this.beginDisplayPages();
-    }
-
-    public static void playTurnPageSound(Book book) {
-        if (ClientTicks.ticks - lastTurnPageSoundTime > 6) {
-            //TODO: make mod loader agnostic
-            var sound = ForgeRegistries.SOUND_EVENTS.getHolder(book.getTurnPageSound()).orElse(Holder.direct(SoundRegistry.TURN_PAGE.get()));
-            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(sound.value(), (float) (0.7 + Math.random() * 0.3)));
-            lastTurnPageSoundTime = ClientTicks.ticks;
-        }
     }
 }
