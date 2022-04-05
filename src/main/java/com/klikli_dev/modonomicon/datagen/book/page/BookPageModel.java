@@ -30,6 +30,7 @@ public class BookPageModel {
     protected String anchor;
 
     protected BookPageModel(ResourceLocation type, @NotNull String anchor) {
+        this.type = type;
         this.anchor = anchor;
     }
 

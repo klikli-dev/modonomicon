@@ -31,7 +31,7 @@ import java.util.List;
 public class BookEntryModel {
     protected ResourceLocation id;
     protected BookCategoryModel category;
-    protected List<BookEntryParentModel> parents;
+    protected List<BookEntryParentModel> parents = new ArrayList<>();
     protected String name;
     protected String description = "";
     protected String icon;
@@ -102,7 +102,7 @@ public class BookEntryModel {
     public static final class Builder {
         protected ResourceLocation id;
         protected BookCategoryModel category;
-        protected List<BookEntryParentModel> parents;
+        protected List<BookEntryParentModel> parents = new ArrayList<>();
         protected String name;
         protected String description = "";
         protected String icon;

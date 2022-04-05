@@ -25,7 +25,9 @@ import com.google.gson.GsonBuilder;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.datagen.book.BookCategoryModel;
 import com.klikli_dev.modonomicon.datagen.book.BookEntryModel;
+import com.klikli_dev.modonomicon.datagen.book.BookEntryParentModel;
 import com.klikli_dev.modonomicon.datagen.book.BookModel;
+import com.klikli_dev.modonomicon.datagen.book.page.BookTextPageModel;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.TickTrigger;
@@ -85,11 +87,16 @@ public class BookGenerator implements DataProvider {
     }
 
     private BookCategoryModel makeTestCat(){
+        var page1 = BookTextPageModel.builder()
+                .withText("modonomicon.test_cat.page1.text")
+                .withTitle("modonomicon.test_cat.page1.title")
+                .build();
         var testEntry = BookEntryModel.builder()
                 .withId(this.modLoc("test_cat/test_entry"))
                 .withName("modonomicon.test_cat.name")
                 .withDescription("modonomicon.test_cat.description")
                 .withIcon("minecraft:apple")
+                .withPages(page1)
                 .build();
         var testEntry2 = BookEntryModel.builder()
                 .withId(this.modLoc("test_entry2"))
@@ -97,6 +104,14 @@ public class BookGenerator implements DataProvider {
                 .withDescription("modonomicon.test_cat2.description")
                 .withIcon("minecraft:stick")
                 .build();
+
+        //link entries with lines
+        testEntry.addParent(
+                BookEntryParentModel.builder()
+                        .withEntryId(testEntry2.getId())
+                        .build()
+        );
+
         var testCat = BookCategoryModel.builder()
                 .withId(this.modLoc("test_cat"))
                 .withName("modonomicon.test_cat.name")

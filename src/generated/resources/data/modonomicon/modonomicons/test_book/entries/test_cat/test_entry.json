@@ -5,5 +5,14 @@
   "icon": "minecraft:apple",
   "x": 0,
   "y": 0,
-  "pages": []
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "title": "modonomicon.test_cat.page1.title",
+      "use_markdown_in_title": false,
+      "show_title_separator": true,
+      "text": "modonomicon.test_cat.page1.text"
+    }
+  ]
 }

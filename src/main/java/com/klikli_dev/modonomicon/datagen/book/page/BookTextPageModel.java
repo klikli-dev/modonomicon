@@ -23,6 +23,7 @@ package com.klikli_dev.modonomicon.datagen.book.page;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.datagen.book.BookTextHolderModel;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 public class BookTextPageModel extends BookPageModel {
@@ -86,8 +87,13 @@ public class BookTextPageModel extends BookPageModel {
             return this;
         }
 
-        public Builder withTitle(BookTextHolderModel title) {
-            this.title = title;
+        public Builder withTitle(String title) {
+            this.title = new BookTextHolderModel(title);
+            return this;
+        }
+
+        public Builder withTitle(Component title) {
+            this.title = new BookTextHolderModel(title);
             return this;
         }
 
@@ -101,8 +107,13 @@ public class BookTextPageModel extends BookPageModel {
             return this;
         }
 
-        public Builder withText(BookTextHolderModel text) {
-            this.text = text;
+        public Builder withText(String text) {
+            this.text = new BookTextHolderModel(text);
+            return this;
+        }
+
+        public Builder withText(Component text) {
+            this.text = new BookTextHolderModel(text);
             return this;
         }
 
