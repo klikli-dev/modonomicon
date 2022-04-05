@@ -14,6 +14,10 @@ The following attributes are available for all page types
 The type of page, it determines which loader is used to load the json data and how the page will be displayed.
 Needs to be fully qualified `domain:name`, e.g. `modonomicon:text`. 
 
+* **anchor** (String, _optional_)
+
+A string to uniquely identify the page within the entry it belongs to. Allows to link to specific pages even if the number of pages changes.
+
 ### A note on texts
 
 Whenever a page supports texts there are two options: 
