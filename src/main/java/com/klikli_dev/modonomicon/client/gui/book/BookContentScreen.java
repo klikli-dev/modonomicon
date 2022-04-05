@@ -295,9 +295,7 @@ public class BookContentScreen extends Screen {
 
     public Style getClickedComponentStyleAtForPage(BookPage page, double pMouseX, double pMouseY) {
         if (page != null) {
-            //(double)((this.width - 192) / 2)
-            int subx = (this.width - BOOK_BACKGROUND_WIDTH) / 2;
-            return page.getClickedComponentStyleAt(pMouseX - subx - page.left, pMouseY - page.top);
+            return page.getClickedComponentStyleAt(pMouseX - this.bookLeft - page.left, pMouseY - this.bookTop - page.top);
         }
 
         return null;

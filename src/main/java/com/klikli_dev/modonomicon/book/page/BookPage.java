@@ -96,6 +96,7 @@ public abstract class BookPage {
 //            var component = text.getComponent();
 //            return this.font.getSplitter().componentStyleAtWidth(component, );
         } else if(text instanceof RenderedBookTextHolder renderedText) {
+            //TODO: currently we are too far below - we hit list item 2, that is line 4, but we are on line 1
             var components = renderedText.getRenderedText();
             for (var component : components) {
                 var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, width, width - 10, this.font);
