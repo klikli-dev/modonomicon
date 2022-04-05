@@ -36,6 +36,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.GsonHelper;
 
+import javax.annotation.Nullable;
+
 public class BookTextPage extends BookPage implements PageWithText {
     protected BookTextHolder title;
     protected boolean useMarkdownInTitle;
@@ -81,7 +83,7 @@ public class BookTextPage extends BookPage implements PageWithText {
     }
 
     @Override
-    public int getTextX() {
+    public int getTextY() {
         if (this.hasTitle()) {
             return this.showTitleSeparator ? 22 : 12;
         }
@@ -130,7 +132,7 @@ public class BookTextPage extends BookPage implements PageWithText {
                 BookContentScreen.drawTitleSeparator(poseStack, this.book, 0, 12);
         }
 
-        this.renderBookTextHolder(this.getText(), poseStack, 0, this.getTextX(), BookContentScreen.PAGE_WIDTH);
+        this.renderBookTextHolder(this.getText(), poseStack, 0, this.getTextY(), BookContentScreen.PAGE_WIDTH);
     }
 
     @Override
@@ -140,5 +142,17 @@ public class BookTextPage extends BookPage implements PageWithText {
         buffer.writeBoolean(this.showTitleSeparator);
         this.text.toNetwork(buffer);
         buffer.writeUtf(this.anchor);
+    }
+
+    @Nullable
+    @Override
+    public Style getClickedComponentStyleAt(double pMouseX, double pMouseY) {
+        //TODO: handle title
+        //var titleClickedStyle = getClickedComponentStyleAtForTextHolder(this.title, BookContentScreen.PAGE_WIDTH / 2, BookContentScreen.PAGE_WIDTH0,  pMouseX, pMouseY);
+        var textStyle = this.getClickedComponentStyleAtForTextHolder(this.text, 0, this.getTextY(), BookContentScreen.PAGE_WIDTH, pMouseX, pMouseY);
+        if(textStyle != null) {
+            return textStyle;
+        }
+        return super.getClickedComponentStyleAt(pMouseX, pMouseY);
     }
 }

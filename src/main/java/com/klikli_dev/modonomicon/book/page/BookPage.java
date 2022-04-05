@@ -32,8 +32,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
+
+import javax.annotation.Nullable;
 
 public abstract class BookPage {
     public int left;
@@ -86,6 +89,28 @@ public abstract class BookPage {
         return false;
     }
 
+    @Nullable
+    protected Style getClickedComponentStyleAtForTextHolder(BookTextHolder text, int x, int y, int width, double pMouseX, double pMouseY) {
+        if(text.hasComponent()){
+            //TODO: handle regular components
+//            var component = text.getComponent();
+//            return this.font.getSplitter().componentStyleAtWidth(component, );
+        } else if(text instanceof RenderedBookTextHolder renderedText) {
+            var components = renderedText.getRenderedText();
+            for (var component : components) {
+                var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, width, width - 10, this.font);
+                for (FormattedCharSequence formattedcharsequence : wrapped) {
+                    if(pMouseY > y && pMouseY < y + this.font.lineHeight){
+                        return this.font.getSplitter().componentStyleAtWidth(formattedcharsequence, (int) pMouseX - x);
+                    }
+                    y += this.font.lineHeight;
+                }
+            }
+        }
+
+        return null;
+    }
+
     public void renderBookTextHolder(BookTextHolder text, PoseStack poseStack, int x, int y, int width) {
         if (text.hasComponent()) {
             //if it is a component, we draw it directly
@@ -135,5 +160,16 @@ public abstract class BookPage {
 
     public void setPageNumber(int pageNumber) {
         this.pageNumber = pageNumber;
+    }
+
+    /**
+     *
+     * @param pMouseX localized to page x (mouseX - page.left)
+     * @param pMouseY localized to page y (mouseY - page.top)
+     * @return
+     */
+    @Nullable
+    public Style getClickedComponentStyleAt(double pMouseX, double pMouseY) {
+        return null;
     }
 }

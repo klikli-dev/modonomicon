@@ -44,8 +44,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -59,6 +62,7 @@ public class BookContentScreen extends Screen {
     public static final int LEFT_PAGE_X = 15;
     public static final int RIGHT_PAGE_X = 141;
     public static final int PAGE_WIDTH = 116;
+    public static final int PAGE_HEIGHT = 128; //TODO: Adjust to what is real
     public static final int FULL_WIDTH = 272;
     public static final int FULL_HEIGHT = 180;
     private static long lastTurnPageSoundTime;
@@ -288,8 +292,70 @@ public class BookContentScreen extends Screen {
         this.addRenderableWidget(new ExitButton(this, this.bookLeft + FULL_WIDTH - 10, this.bookTop - 2));
     }
 
+
+    public Style getClickedComponentStyleAtForPage(BookPage page, double pMouseX, double pMouseY) {
+        if (page != null) {
+            //(double)((this.width - 192) / 2)
+            int subx = (this.width - BOOK_BACKGROUND_WIDTH) / 2;
+            return page.getClickedComponentStyleAt(pMouseX - subx - page.left, pMouseY - page.top);
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public Style getClickedComponentStyleAt(double pMouseX, double pMouseY) {
+
+        var leftPageClickedStyle = this.getClickedComponentStyleAtForPage(this.leftPage, pMouseX, pMouseY);
+        if (leftPageClickedStyle != null) {
+            return leftPageClickedStyle;
+        }
+        var rightPageClickedStyle = this.getClickedComponentStyleAtForPage(this.rightPage, pMouseX, pMouseY);
+        if (rightPageClickedStyle != null) {
+            return rightPageClickedStyle;
+        }
+        return null;
+        //TODO: implement
+//        if (this.cachedPageComponents.isEmpty()) {
+//            return null;
+//        } else {
+//            //    protected static final int IMAGE_WIDTH = 192;
+//            //   public static final int PAGE_TEXT_X_OFFSET = 36;
+//            int i = Mth.floor(pMouseX - (double)((this.width - 192) / 2) - 36.0D);
+//            //   public static final int PAGE_TEXT_Y_OFFSET = 30;
+//            int j = Mth.floor(pMouseY - 2.0D - 30.0D);
+//            if (i >= 0 && j >= 0) {
+//                // protected static final int TEXT_HEIGHT = 128;
+//                // 9 = font height
+//                int k = Math.min(128 / 9, this.cachedPageComponents.size());
+//                // protected static final int TEXT_WIDTH = 114;
+//                // 9 = font height
+//                if (i <= 114 && j < 9 * k + k) {
+//                    int l = j / 9;
+//                    if (l >= 0 && l < this.cachedPageComponents.size()) {
+//                        FormattedCharSequence formattedcharsequence = this.cachedPageComponents.get(l);
+//                        return this.minecraft.font.getSplitter().componentStyleAtWidth(formattedcharsequence, i);
+//                    } else {
+//                        return null;
+//                    }
+//                } else {
+//                    return null;
+//                }
+//            } else {
+//                return null;
+//            }
+//        }
+    }
+
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        if(pButton == GLFW.GLFW_MOUSE_BUTTON_LEFT){
+            var style = this.getClickedComponentStyleAt(pMouseX, pMouseY);
+            if (style != null && this.handleComponentClicked(style)) {
+                return true;
+            }
+        }
+
         return this.clickPage(this.leftPage, pMouseX, pMouseY, pButton)
                 || this.clickPage(this.rightPage, pMouseX, pMouseY, pButton)
                 || super.mouseClicked(pMouseX, pMouseY, pButton);
