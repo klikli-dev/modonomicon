@@ -1,0 +1,9 @@
+{
+  "category": "modonomicon:test_cat",
+  "name": "modonomicon.test_cat.name",
+  "description": "modonomicon.test_cat.description",
+  "icon": "minecraft:apple",
+  "x": 0,
+  "y": 0,
+  "pages": []
+}
