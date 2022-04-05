@@ -1,0 +1,7 @@
+{
+  "name": "modonomicon.test_cat.name",
+  "icon": "minecraft:apple",
+  "sort_number": -1,
+  "background": "modonomicon:textures/gui/dark_slate_seamless.png",
+  "entry_textures": "modonomicon:textures/gui/entry_textures.png"
+}

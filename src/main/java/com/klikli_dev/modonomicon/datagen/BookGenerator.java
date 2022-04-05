@@ -23,6 +23,8 @@ package com.klikli_dev.modonomicon.datagen;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.datagen.book.BookCategoryModel;
+import com.klikli_dev.modonomicon.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.datagen.book.BookModel;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.critereon.EntityPredicate;
@@ -54,16 +56,54 @@ public class BookGenerator implements DataProvider {
         return path.resolve("data/" + id.getNamespace() + "/modonomicons/" + id.getPath() + "/book.json");
     }
 
+    private static Path getPath(Path path, BookCategoryModel bookCategoryModel) {
+        ResourceLocation id = bookCategoryModel.getId();
+        return path.resolve("data/" + id.getNamespace() +
+                "/modonomicons/" + bookCategoryModel.getBook().getId().getPath() +
+                "/categories/" + id.getPath() + ".json");
+    }
+
+    private static Path getPath(Path path, BookEntryModel bookEntryModel) {
+        ResourceLocation id = bookEntryModel.getId();
+        return path.resolve("data/" + id.getNamespace() +
+                "/modonomicons/" + bookEntryModel.getCategory().getBook().getId().getPath() +
+                "/entries/" + id.getPath() + ".json");
+    }
+
     public ResourceLocation modLoc(String name) {
         return new ResourceLocation(this.modid, name);
     }
 
     private void start() {
+        var testCat = makeTestCat();
         var testBook = BookModel.builder()
                 .withId(this.modLoc("test_book"))
                 .withName("modonomicon.test_book.name")
+                .withCategories(testCat)
                 .build();
         this.add(testBook);
+    }
+
+    private BookCategoryModel makeTestCat(){
+        var testEntry = BookEntryModel.builder()
+                .withId(this.modLoc("test_cat/test_entry"))
+                .withName("modonomicon.test_cat.name")
+                .withDescription("modonomicon.test_cat.description")
+                .withIcon("minecraft:apple")
+                .build();
+        var testEntry2 = BookEntryModel.builder()
+                .withId(this.modLoc("test_entry2"))
+                .withName("modonomicon.test_cat2.name")
+                .withDescription("modonomicon.test_cat2.description")
+                .withIcon("minecraft:stick")
+                .build();
+        var testCat = BookCategoryModel.builder()
+                .withId(this.modLoc("test_cat"))
+                .withName("modonomicon.test_cat.name")
+                .withIcon("minecraft:apple")
+                .withEntries(testEntry, testEntry2)
+                .build();
+        return testCat;
     }
 
     private BookModel add(BookModel bookModel) {
@@ -79,11 +119,29 @@ public class BookGenerator implements DataProvider {
         this.start();
 
         for (var bookModel : this.bookModels.values()) {
-            Path path = getPath(folder, bookModel);
+            Path bookPath = getPath(folder, bookModel);
             try {
-                DataProvider.save(GSON, cache, bookModel.toJson(), path);
+                DataProvider.save(GSON, cache, bookModel.toJson(), bookPath);
             } catch (IOException exception) {
-                Modonomicon.LOGGER.error("Couldn't save book {}", path, exception);
+                Modonomicon.LOGGER.error("Couldn't save book {}", bookPath, exception);
+            }
+
+            for(var bookCategoryModel : bookModel.getCategories()){
+                Path bookCategoryPath = getPath(folder, bookCategoryModel);
+                try {
+                    DataProvider.save(GSON, cache, bookCategoryModel.toJson(), bookCategoryPath);
+                } catch (IOException exception) {
+                    Modonomicon.LOGGER.error("Couldn't save book category {}", bookCategoryPath, exception);
+                }
+
+                for(var bookEntryModel : bookCategoryModel.getEntries()){
+                    Path bookEntryPath = getPath(folder, bookEntryModel);
+                    try {
+                        DataProvider.save(GSON, cache, bookEntryModel.toJson(), bookEntryPath);
+                    } catch (IOException exception) {
+                        Modonomicon.LOGGER.error("Couldn't save book entry {}", bookEntryPath, exception);
+                    }
+                }
             }
         }
     }
