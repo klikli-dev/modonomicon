@@ -87,7 +87,6 @@ public abstract class BookPage {
     }
 
     /**
-     *
      * @param pMouseX localized to page x (mouseX - bookLeft - page.left)
      * @param pMouseY localized to page y (mouseY - bookTop - page.top)
      */
@@ -187,7 +186,7 @@ public abstract class BookPage {
                 //check if we are vertically over the title line
 
                 x = x - this.font.width(formattedCharSequence) / 2;
-                if(pMouseX < x)
+                if (pMouseX < x)
                     return null;
                 //if we are horizontally left of the title, exit
 
@@ -200,7 +199,7 @@ public abstract class BookPage {
 
                 var formattedCharSequence = title.getComponent().getVisualOrderText();
                 x = x - this.font.width(formattedCharSequence) / 2;
-                if(pMouseX < x)
+                if (pMouseX < x)
                     return null;
                 //if we are horizontally left of the title, exit
 
