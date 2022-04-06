@@ -53,5 +53,19 @@ public class ModonimiconConstants {
     public static class I18n {
         public static final String BOOK_PREFIX = "book." +ModonomiconAPI.ID + ".";
         public static final String ITEM_GROUP = "itemGroup." + ModonomiconAPI.ID;
+
+        public static class Gui {
+            public static final String PREFIX = ModonomiconAPI.ID + ".gui.";
+            public static final String BUTTON_NEXT = PREFIX + "button.next_page";
+            public static final String BUTTON_PREVIOUS = PREFIX + "button.previous_page";
+            public static final String BUTTON_EXIT = PREFIX + "button.exit";
+
+            public static final String HOVER_BOOK_LINK = PREFIX + "hover.link";
+        }
+
+        public static class Subtitles {
+            public static final String PREFIX = ModonomiconAPI.ID + ".subtitles.";
+            public static final String TURN_PAGE = PREFIX + "turn_page";
+        }
     }
 }
