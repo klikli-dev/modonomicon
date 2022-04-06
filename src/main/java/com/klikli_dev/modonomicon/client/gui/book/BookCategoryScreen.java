@@ -50,7 +50,6 @@ public class BookCategoryScreen {
     public static final int ENTRY_HEIGHT = 26;
     public static final int ENTRY_WIDTH = 26;
 
-
     private final BookOverviewScreen bookOverviewScreen;
     private final BookCategory category;
     private final EntryConnectionRenderer connectionRenderer;
@@ -59,7 +58,6 @@ public class BookCategoryScreen {
     private float scrollX = 0;
     private float scrollY = 0;
     private boolean isScrolling;
-
     private float targetZoom;
     private float currentZoom;
 
@@ -73,6 +71,10 @@ public class BookCategoryScreen {
         this.currentZoom = this.targetZoom;
 
         this.loadCategorySettings();
+    }
+
+    public BookCategory getCategory() {
+        return this.category;
     }
 
     public float getXOffset() {
@@ -276,5 +278,6 @@ public class BookCategoryScreen {
 
     private void loadCategorySettings() {
         //TODO: load category settings from capability
+        //      Settings = scroll, zoom etc
     }
 }

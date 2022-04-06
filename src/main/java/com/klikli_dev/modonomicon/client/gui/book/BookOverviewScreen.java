@@ -52,6 +52,7 @@ public class BookOverviewScreen extends Screen {
     private final int frameThicknessW = 14;
     private final int frameThicknessH = 14;
     private int currentCategory = 0;
+
     public BookOverviewScreen(Book book, ItemStack bookStack) {
         super(new TextComponent(""));
 

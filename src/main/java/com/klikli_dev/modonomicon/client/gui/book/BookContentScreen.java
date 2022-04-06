@@ -25,7 +25,7 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.client.ClientTicks;
-import com.klikli_dev.modonomicon.client.gui.ScreenHelper;
+import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
@@ -44,9 +44,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.util.Mth;
-import net.minecraft.world.inventory.ClickAction;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
 
@@ -159,18 +156,23 @@ public class BookContentScreen extends Screen {
         this.tooltip = tooltip;
     }
 
+    /**
+     * Will change to the specified page, if not open already
+     */
     public void changePage(int pageIndex, boolean playSound) {
         int openPagesIndex = pageIndex / 2; //will floor, which is what we want
         if (openPagesIndex >= 0 && openPagesIndex < this.maxOpenPagesIndex) {
-            this.openPagesIndex = openPagesIndex;
+            if(this.openPagesIndex != openPagesIndex) {
+                this.openPagesIndex = openPagesIndex;
 
-            this.onPageChanged();
-            if (playSound) {
-                playTurnPageSound(this.getBook());
+                this.onPageChanged();
+                if (playSound) {
+                    playTurnPageSound(this.getBook());
+                }
             }
         } else {
-            Modonomicon.LOGGER.warn("Tried to change to page index {pageIndex} corresponding with " +
-                    "openPagesIndex {openPagesIndex} but max open pages index is ", pageIndex, openPagesIndex, this.maxOpenPagesIndex);
+            Modonomicon.LOGGER.warn("Tried to change to page index {} corresponding with " +
+                    "openPagesIndex {} but max open pages index is {}.", pageIndex, openPagesIndex, this.maxOpenPagesIndex);
         }
     }
 
@@ -335,7 +337,7 @@ public class BookContentScreen extends Screen {
             if(event != null){
                 if(event.getAction() == Action.CHANGE_PAGE){
                     //TODO: Parse link here
-                    ScreenHelper.openEntry(this.parentScreen.getBookStack(), this.getBook().getId(),
+                    BookGuiManager.get().openEntry(this.parentScreen.getBookStack(), this.getBook().getId(),
                             new ResourceLocation("modonomicon:test_category/test_entry"), 3);
                 }
             }
