@@ -197,7 +197,7 @@ public class BookContentScreen extends Screen {
 
         poseStack.pushPose();
         poseStack.translate(page.left, page.top, 0);
-        page.render(poseStack, pMouseX - page.left, pMouseY - page.top, pPartialTick);
+        page.render(poseStack, pMouseX - this.bookLeft - page.left, pMouseY - this.bookTop - page.top, pPartialTick);
         poseStack.popPose();
     }
 
@@ -343,5 +343,10 @@ public class BookContentScreen extends Screen {
             }
         }
         return super.handleComponentClicked(pStyle);
+    }
+
+    @Override // make public
+    public void renderComponentHoverEffect(PoseStack pPoseStack, @Nullable Style style, int mouseX, int mouseY) {
+        super.renderComponentHoverEffect(pPoseStack, style, mouseX, mouseY);
     }
 }

@@ -122,6 +122,10 @@ public class BookTextPage extends BookPage implements PageWithText {
         }
 
         this.renderBookTextHolder(this.getText(), poseStack, 0, this.getTextY(), BookContentScreen.PAGE_WIDTH);
+
+        var style = this.getClickedComponentStyleAt(mouseX, mouseY);
+        if(style != null)
+            this.parentScreen.renderComponentHoverEffect(poseStack, style, mouseX, mouseY);
     }
 
     @Override
