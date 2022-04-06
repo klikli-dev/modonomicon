@@ -50,9 +50,16 @@ public class BookGuiManager {
 
     public void openBook(ItemStack stack) {
         //TODO: we probably want to remember the last page and stuff here
-        Minecraft.getInstance().setScreen(new BookOverviewScreen(
-                BookDataManager.get().getBook(new ResourceLocation("modonomicon", "test")),
-                stack));
+        var bookId = new ResourceLocation("modonomicon", "test"); //TODO: Get from stack
+        var book = BookDataManager.get().getBook(bookId);
+
+        if(this.currentBook == book && this.currentOverviewScreen != null){
+            Minecraft.getInstance().setScreen(this.currentOverviewScreen);
+        } else {
+            this.currentBook = book;
+            this.currentOverviewScreen = new BookOverviewScreen(this.currentBook, stack);
+            Minecraft.getInstance().setScreen(this.currentOverviewScreen);
+        }
     }
 
     public void openEntry(ItemStack stack, ResourceLocation bookId, ResourceLocation entryId, int page){
