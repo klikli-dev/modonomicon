@@ -30,6 +30,7 @@ import com.klikli_dev.modonomicon.book.BookDataManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.ForgeHooksClient;
 import org.jetbrains.annotations.Nullable;
 
 public class BookGuiManager {
@@ -72,7 +73,6 @@ public class BookGuiManager {
      * Opens the book at the given location. Will open as far as possible (meaning, if category and entry are null, it will not open those obviously).
      */
     public void openEntry(ResourceLocation bookId, @Nullable ResourceLocation categoryId, @Nullable ResourceLocation entryId, int page){
-
         if(bookId == null){
             throw new IllegalArgumentException("bookId cannot be null");
         }
@@ -85,6 +85,9 @@ public class BookGuiManager {
         if(this.currentOverviewScreen == null || this.currentOverviewScreen.getBook() != book){
             this.currentOverviewScreen = new BookOverviewScreen(book);
         }
+
+        //TODO: layer cleanup
+        ForgeHooksClient.clearGuiLayers(Minecraft.getInstance());
         Minecraft.getInstance().setScreen(this.currentOverviewScreen);
 
         if(categoryId == null){
