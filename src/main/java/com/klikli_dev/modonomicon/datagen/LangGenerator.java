@@ -69,6 +69,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(Gui.BUTTON_NEXT, "Next Page");
             this.add(Gui.BUTTON_EXIT, "Exit");
             this.add(Gui.HOVER_BOOK_LINK, "Go to: %s");
+            this.add(Gui.HOVER_HTTP_LINK, "Visit: %s");
 
             //sounds
             this.add(Subtitles.TURN_PAGE, "Turn Page");
@@ -91,7 +92,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add("modonomicon.test.sections.test_category.test_entry.page0.title", "[**Bold Link**](book://modonomicon:test)");
             this.add("modonomicon.test.sections.test_category.test_entry.page0.text",
                     """
-                    [This is a **link** text](entry://modonomicon:test/test_category/stick_entry).
+                    [This is a **link** text](https://www.google.com).
                     We have a newline here.
                     - List item 
                     - List item 2
