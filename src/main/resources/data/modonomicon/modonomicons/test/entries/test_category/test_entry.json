@@ -20,7 +20,7 @@
     },
     {
       "type": "modonomicon:text",
-      "title": "modonomicon.test.sections.test_category.test_entry.page2.title",
+      "anchor": "test_anchor",
       "text": "modonomicon.test.sections.test_category.test_entry.page2.text"
     }
   ]

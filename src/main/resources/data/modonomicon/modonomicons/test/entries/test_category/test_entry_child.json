@@ -25,7 +25,7 @@
     },
     {
       "type": "modonomicon:text",
-      "text": "modonomicon.test.sections.test_category.test_entry.page2.text"
+      "text": "modonomicon.test.sections.test_category.test_entry_child.page2.text"
     }
   ]
 }

@@ -20,6 +20,7 @@
 
 package com.klikli_dev.modonomicon.client.gui.book;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
@@ -41,25 +42,22 @@ import java.util.List;
 
 public class BookOverviewScreen extends Screen {
 
-    private final ItemStack bookStack;
     private final Book book;
     private final ResourceLocation bookOverviewTexture;
     private final EntryConnectionRenderer connectionRenderer = new EntryConnectionRenderer();
     private final List<BookCategory> categories;
     private final List<BookCategoryScreen> categoryScreens;
-    private int currentCategory = 0;
     //TODO: make the frame thickness configurable in the book?
     private final int frameThicknessW = 14;
     private final int frameThicknessH = 14;
+    private int currentCategory = 0;
 
-
-    public BookOverviewScreen(Book book, ItemStack bookStack) {
+    public BookOverviewScreen(Book book) {
         super(new TextComponent(""));
 
         //somehow there are render calls before init(), leaving minecraft null
         this.minecraft = Minecraft.getInstance();
 
-        this.bookStack = bookStack;
         this.book = book;
 
         this.bookOverviewTexture = book.getBookOverviewTexture();
@@ -127,6 +125,24 @@ public class BookOverviewScreen extends Screen {
         return this.frameThicknessH;
     }
 
+    public void changeCategory(BookCategory category) {
+        int index = this.categories.indexOf(category);
+        if (index != -1) {
+            this.changeCategory(index);
+        } else {
+            Modonomicon.LOGGER.warn("Tried to change to a category ({}) that does not exist in this book ({}).", this.book.getId(), category.getId());
+        }
+    }
+
+    public void changeCategory(int categoryIndex) {
+        this.currentCategory = categoryIndex;
+        this.onCategoryChanged();
+    }
+
+    public void onCategoryChanged() {
+        //TODO: SFX for category change?
+    }
+
     /**
      * Gets the outer width of the book frame
      */
@@ -169,41 +185,12 @@ public class BookOverviewScreen extends Screen {
         GuiUtils.drawTexturedModalRect(poseStack, x + width - 17, (y + (height / 2)) - 35, 157, 35, 17, 70, blitOffset);
     }
 
-    protected void onBookCategoryButtonClick(CategoryButton button){
-        this.currentCategory = button.getCategoryIndex();
+    protected void onBookCategoryButtonClick(CategoryButton button) {
+        this.changeCategory(button.getCategoryIndex());
     }
 
-    protected void onBookCategoryButtonTooltip(CategoryButton button, PoseStack pPoseStack, int pMouseX, int pMouseY){
+    protected void onBookCategoryButtonTooltip(CategoryButton button, PoseStack pPoseStack, int pMouseX, int pMouseY) {
         this.renderTooltip(pPoseStack, new TranslatableComponent(button.getCategory().getName()), pMouseX, pMouseY);
-    }
-
-    @Override
-    protected void init() {
-        super.init();
-
-        int buttonXOffset = -8;
-
-        int buttonX = (this.width - this.getFrameWidth()) / 2 - this.getFrameThicknessW() + buttonXOffset;
-        int buttonY = (this.height - this.getFrameHeight()) / 2 - this.getFrameThicknessH() + 30;
-        //calculate button width so it aligns with the outer edge of the frame
-        int buttonWidth = (this.width - this.getFrameWidth()) / 2 + buttonXOffset;
-        int buttonHeight = 20;
-        int buttonSpacing = 2;
-
-        for(int i = 0, size = this.categories.size(); i < size; i++){
-
-            var button = new CategoryButton(this, this.categories.get(i), i,
-                    buttonX, buttonY + (buttonHeight + buttonSpacing) * i, buttonWidth, buttonHeight,
-                    (b) -> this.onBookCategoryButtonClick((CategoryButton) b),
-                    (b, stack, x, y) -> this.onBookCategoryButtonTooltip((CategoryButton) b, stack, x, y));
-
-            this.addRenderableWidget(button);
-        }
-    }
-
-    @Override
-    public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
-        return this.getCurrentCategoryScreen().mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
     }
 
     @Override
@@ -211,6 +198,11 @@ public class BookOverviewScreen extends Screen {
         //ignore return value, because we need our base class to handle dragging and such
         this.getCurrentCategoryScreen().mouseClicked(pMouseX, pMouseY, pButton);
         return super.mouseClicked(pMouseX, pMouseY, pButton);
+    }
+
+    @Override
+    public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
+        return this.getCurrentCategoryScreen().mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
     }
 
     @Override
@@ -239,10 +231,6 @@ public class BookOverviewScreen extends Screen {
 
     @Override
     public void onClose() {
-        //client side only
-        if (!this.bookStack.isEmpty())
-            this.bookStack.getOrCreateTag().putBoolean(ModonimiconConstants.Nbt.BOOK_OPEN, false);
-
         //TODO: Send packet to save category variables (zoom, etc)
         super.onClose();
     }
@@ -250,6 +238,30 @@ public class BookOverviewScreen extends Screen {
     @Override
     public boolean handleComponentClicked(@Nullable Style pStyle) {
         return super.handleComponentClicked(pStyle);
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
+        int buttonXOffset = -8;
+
+        int buttonX = (this.width - this.getFrameWidth()) / 2 - this.getFrameThicknessW() + buttonXOffset;
+        int buttonY = (this.height - this.getFrameHeight()) / 2 - this.getFrameThicknessH() + 30;
+        //calculate button width so it aligns with the outer edge of the frame
+        int buttonWidth = (this.width - this.getFrameWidth()) / 2 + buttonXOffset;
+        int buttonHeight = 20;
+        int buttonSpacing = 2;
+
+        for (int i = 0, size = this.categories.size(); i < size; i++) {
+
+            var button = new CategoryButton(this, this.categories.get(i), i,
+                    buttonX, buttonY + (buttonHeight + buttonSpacing) * i, buttonWidth, buttonHeight,
+                    (b) -> this.onBookCategoryButtonClick((CategoryButton) b),
+                    (b, stack, x, y) -> this.onBookCategoryButtonTooltip((CategoryButton) b, stack, x, y));
+
+            this.addRenderableWidget(button);
+        }
     }
 
     @Override

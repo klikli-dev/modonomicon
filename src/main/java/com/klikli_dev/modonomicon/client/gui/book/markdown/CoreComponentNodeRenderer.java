@@ -20,6 +20,7 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Gui;
 import net.minecraft.network.chat.*;
 import net.minecraft.network.chat.ClickEvent.Action;
 import org.commonmark.internal.renderer.text.BulletListHolder;
@@ -117,11 +118,12 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
 
         //if no link renderer, we just do a http link
         var currentColor = this.context.getCurrentStyle().getColor();
-
+        var hoverComponent = new TranslatableComponent(Gui.HOVER_HTTP_LINK, link.getDestination());
         //if we have a color we use it, otherwise we use link default.
         this.context.setCurrentStyle(this.context.getCurrentStyle()
                 .withColor(currentColor == null ? this.context.getLinkColor() : currentColor)
                 .withClickEvent(new ClickEvent(Action.OPEN_URL, link.getDestination()))
+                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent))
         );
 
         this.visitChildren(link);

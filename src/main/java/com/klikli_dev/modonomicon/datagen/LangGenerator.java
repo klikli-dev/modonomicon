@@ -22,6 +22,9 @@ package com.klikli_dev.modonomicon.datagen;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n;
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Gui;
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Subtitles;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -62,12 +65,14 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(ModonimiconConstants.I18n.ITEM_GROUP, "Modonomicon");
 
             //buttons
-            this.add("modonomicon.gui.button.previous_page", "Previous Page");
-            this.add("modonomicon.gui.button.next_page", "Next Page");
-            this.add("modonomicon.gui.button.exit", "Exit");
+            this.add(Gui.BUTTON_PREVIOUS, "Previous Page");
+            this.add(Gui.BUTTON_NEXT, "Next Page");
+            this.add(Gui.BUTTON_EXIT, "Exit");
+            this.add(Gui.HOVER_BOOK_LINK, "Go to: %s");
+            this.add(Gui.HOVER_HTTP_LINK, "Visit: %s");
 
             //sounds
-            this.add("modonomicon.subtitle.turn_page", "Turn Page");
+            this.add(Subtitles.TURN_PAGE, "Turn Page");
         }
 
         private void addItems() {
@@ -84,10 +89,10 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add("modonomicon.test_book.title", "Test Book");
 
             this.add("modonomicon.test.entries.test_category.test_entry.description", "Test Description");
-            this.add("modonomicon.test.sections.test_category.test_entry.page0.title", "**Bold**");
+            this.add("modonomicon.test.sections.test_category.test_entry.page0.title", "[**Bold Link**](book://modonomicon:test)");
             this.add("modonomicon.test.sections.test_category.test_entry.page0.text",
                     """
-                    This is a **test** text.
+                    [This is a **link** text](https://www.google.com).
                     We have a newline here.
                     - List item 
                     - List item 2
@@ -104,6 +109,13 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add("modonomicon.test.sections.test_category.test_entry.page2.text",
                     """
                    And this is our page three.    
+                    """);
+
+
+            this.add("modonomicon.test.sections.test_category.test_entry_child.page2.text",
+                    """
+                   And this is our page three.    
+                   [With link](entry://modonomicon:test/test_category/test_entry@test_anchor)
                     """);
         }
 

@@ -48,17 +48,17 @@ public class SyncBookDataMessage implements Message {
 
     @Override
     public void encode(FriendlyByteBuf buf) {
-        buf.writeInt(this.books.size());
+        buf.writeVarInt(this.books.size());
         for (var book : this.books.values()) {
             buf.writeResourceLocation(book.getId());
             book.toNetwork(buf);
 
-            buf.writeInt(book.getCategories().size());
+            buf.writeVarInt(book.getCategories().size());
             for(var category : book.getCategories().values()) {
                 buf.writeResourceLocation(category.getId());
                 category.toNetwork(buf);
 
-                buf.writeInt(book.getEntries().size());
+                buf.writeVarInt(category.getEntries().size());
                 for(var entry : category.getEntries().values()) {
                     buf.writeResourceLocation(entry.getId());
                     entry.toNetwork(buf);
@@ -70,13 +70,13 @@ public class SyncBookDataMessage implements Message {
     @Override
     public void decode(FriendlyByteBuf buf) {
         //build books
-        int bookCount = buf.readInt();
+        int bookCount = buf.readVarInt();
         for (int i = 0; i < bookCount; i++) {
             ResourceLocation bookId = buf.readResourceLocation();
             Book book = Book.fromNetwork(bookId, buf);
             this.books.put(bookId, book);
 
-            int categoryCount = buf.readInt();
+            int categoryCount = buf.readVarInt();
             for (int j = 0; j< categoryCount; j++) {
                 ResourceLocation categoryId = buf.readResourceLocation();
                 BookCategory category = BookCategory.fromNetwork(categoryId, buf);
@@ -84,7 +84,7 @@ public class SyncBookDataMessage implements Message {
                 //link category and book
                 book.addCategory(category);
 
-                int entryCount = buf.readInt();
+                int entryCount = buf.readVarInt();
                 for (int k = 0; k < entryCount; k++) {
                     ResourceLocation entryId = buf.readResourceLocation();
                     BookEntry bookEntry = BookEntry.fromNetwork(entryId, buf);

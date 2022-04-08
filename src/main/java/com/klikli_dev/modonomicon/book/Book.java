@@ -137,6 +137,7 @@ public class Book {
         buffer.writeUtf(this.name);
         buffer.writeResourceLocation(this.bookOverviewTexture);
         buffer.writeResourceLocation(this.bookContentTexture);
+        buffer.writeResourceLocation(this.turnPageSound);
         buffer.writeInt(this.defaultTitleColor);
     }
 

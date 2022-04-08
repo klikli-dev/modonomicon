@@ -20,10 +20,14 @@
 
 package com.klikli_dev.modonomicon.client.gui.book;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.Book;
+import com.klikli_dev.modonomicon.book.BookDataManager;
 import com.klikli_dev.modonomicon.book.BookEntry;
+import com.klikli_dev.modonomicon.book.BookLink;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.client.ClientTicks;
+import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
@@ -37,11 +41,15 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.lwjgl.glfw.GLFW;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class BookContentScreen extends Screen {
@@ -53,6 +61,7 @@ public class BookContentScreen extends Screen {
     public static final int LEFT_PAGE_X = 15;
     public static final int RIGHT_PAGE_X = 141;
     public static final int PAGE_WIDTH = 116;
+    public static final int PAGE_HEIGHT = 128; //TODO: Adjust to what is real
     public static final int FULL_WIDTH = 272;
     public static final int FULL_HEIGHT = 180;
     private static long lastTurnPageSoundTime;
@@ -92,7 +101,7 @@ public class BookContentScreen extends Screen {
     public static void drawTitleSeparator(PoseStack poseStack, Book book, int x, int y) {
         int w = 110;
         int h = 3;
-        int rx = x + PAGE_WIDTH / 2 - w / 2;
+        int rx = x - w / 2;
 
         RenderSystem.enableBlend();
         RenderSystem.setShaderColor(1F, 1F, 1F, 0.8F);
@@ -149,6 +158,44 @@ public class BookContentScreen extends Screen {
         this.tooltip = tooltip;
     }
 
+    /**
+     * Will change to the specified page, if not open already
+     */
+    public void changePage(int pageIndex, boolean playSound) {
+        int openPagesIndex = pageIndex / 2; //will floor, which is what we want
+        if (openPagesIndex >= 0 && openPagesIndex < this.maxOpenPagesIndex) {
+            if (this.openPagesIndex != openPagesIndex) {
+                this.openPagesIndex = openPagesIndex;
+
+                this.onPageChanged();
+                if (playSound) {
+                    playTurnPageSound(this.getBook());
+                }
+            }
+        } else {
+            Modonomicon.LOGGER.warn("Tried to change to page index {} corresponding with " +
+                    "openPagesIndex {} but max open pages index is {}.", pageIndex, openPagesIndex, this.maxOpenPagesIndex);
+        }
+    }
+
+    public Style getClickedComponentStyleAtForPage(BookPage page, double pMouseX, double pMouseY) {
+        if (page != null) {
+            return page.getClickedComponentStyleAt(pMouseX - this.bookLeft - page.left, pMouseY - this.bookTop - page.top);
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public Style getClickedComponentStyleAt(double pMouseX, double pMouseY) {
+        var leftPageClickedStyle = this.getClickedComponentStyleAtForPage(this.leftPage, pMouseX, pMouseY);
+        if (leftPageClickedStyle != null) {
+            return leftPageClickedStyle;
+        }
+        var rightPageClickedStyle = this.getClickedComponentStyleAtForPage(this.rightPage, pMouseX, pMouseY);
+        return rightPageClickedStyle;
+    }
+
     protected void drawTooltip(PoseStack pPoseStack, int pMouseX, int pMouseY) {
         if (this.tooltip != null) {
             this.renderComponentTooltip(pPoseStack, this.tooltip, pMouseX, pMouseY);
@@ -157,7 +204,7 @@ public class BookContentScreen extends Screen {
 
     protected boolean clickPage(BookPage page, double mouseX, double mouseY, int mouseButton) {
         if (page != null) {
-            return page.mouseClicked(mouseX - page.left, mouseY - page.top, mouseButton);
+            return page.mouseClicked(mouseX - this.bookLeft - page.left, mouseY - this.bookTop - page.top, mouseButton);
         }
 
         return false;
@@ -170,7 +217,7 @@ public class BookContentScreen extends Screen {
 
         poseStack.pushPose();
         poseStack.translate(page.left, page.top, 0);
-        page.render(poseStack, pMouseX - page.left, pMouseY - page.top, pPartialTick);
+        page.render(poseStack, pMouseX - this.bookLeft - page.left, pMouseY - this.bookTop - page.top, pPartialTick);
         poseStack.popPose();
     }
 
@@ -252,6 +299,40 @@ public class BookContentScreen extends Screen {
         return true;
     }
 
+    @Override // make public
+    public void renderComponentHoverEffect(PoseStack pPoseStack, @Nullable Style style, int mouseX, int mouseY) {
+        super.renderComponentHoverEffect(pPoseStack, style, mouseX, mouseY);
+    }
+
+    @Override
+    public boolean handleComponentClicked(@Nullable Style pStyle) {
+        if (pStyle != null) {
+            var event = pStyle.getClickEvent();
+            if (event != null) {
+                if (event.getAction() == Action.CHANGE_PAGE) {
+
+                    var link = BookLink.from(event.getValue());
+                    var book = BookDataManager.get().getBook(link.bookId);
+                    if (link.entryId != null) {
+                        var entry = book.getEntry(link.entryId);
+                        int page = link.pageNumber;
+                        if (link.pageAnchor != null) {
+                            page = entry.getPageNumberForAnchor(link.pageAnchor);
+                        }
+
+                        BookGuiManager.get().openEntry(link.bookId, link.entryId, page);
+                    } else if (link.categoryId != null) {
+                        BookGuiManager.get().openEntry(link.bookId, link.categoryId, null, 0);
+                    } else {
+                        BookGuiManager.get().openEntry(link.bookId, null, null, 0);
+                    }
+                    return true;
+                }
+            }
+        }
+        return super.handleComponentClicked(pStyle);
+    }
+
     @Override
     protected void init() {
         super.init();
@@ -269,6 +350,13 @@ public class BookContentScreen extends Screen {
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        if (pButton == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+            var style = this.getClickedComponentStyleAt(pMouseX, pMouseY);
+            if (style != null && this.handleComponentClicked(style)) {
+                return true;
+            }
+        }
+
         return this.clickPage(this.leftPage, pMouseX, pMouseY, pButton)
                 || this.clickPage(this.rightPage, pMouseX, pMouseY, pButton)
                 || super.mouseClicked(pMouseX, pMouseY, pButton);

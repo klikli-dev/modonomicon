@@ -36,6 +36,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.GsonHelper;
 
+import javax.annotation.Nullable;
+
 public class BookTextPage extends BookPage implements PageWithText {
     protected BookTextHolder title;
     protected boolean useMarkdownInTitle;
@@ -81,7 +83,7 @@ public class BookTextPage extends BookPage implements PageWithText {
     }
 
     @Override
-    public int getTextX() {
+    public int getTextY() {
         if (this.hasTitle()) {
             return this.showTitleSeparator ? 22 : 12;
         }
@@ -116,21 +118,14 @@ public class BookTextPage extends BookPage implements PageWithText {
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float ticks) {
         if (this.hasTitle()) {
-            if (this.useMarkdownInTitle && this.title instanceof RenderedBookTextHolder renderedTitle) {
-                //if user decided to use markdown title, we need to use the  rendered version
-                var formattedCharSequence = FormattedCharSequence.fromList(
-                        renderedTitle.getRenderedText().stream().map(BaseComponent::getVisualOrderText).toList());
-                this.drawCenteredStringNoShadow(poseStack, formattedCharSequence, BookContentScreen.PAGE_WIDTH / 2, 0, 0);
-            } else {
-                //otherwise we use the component - that is either provided by the user, or created from the default title style.
-                this.drawCenteredStringNoShadow(poseStack, this.title.getComponent().getVisualOrderText(), BookContentScreen.PAGE_WIDTH / 2, 0, 0);
-            }
-
-            if (this.showTitleSeparator)
-                BookContentScreen.drawTitleSeparator(poseStack, this.book, 0, 12);
+            this.renderTitle(this.title, this.showTitleSeparator, poseStack, BookContentScreen.PAGE_WIDTH / 2, 0);
         }
 
-        this.renderBookTextHolder(this.getText(), poseStack, 0, this.getTextX(), BookContentScreen.PAGE_WIDTH);
+        this.renderBookTextHolder(this.getText(), poseStack, 0, this.getTextY(), BookContentScreen.PAGE_WIDTH);
+
+        var style = this.getClickedComponentStyleAt(mouseX, mouseY);
+        if(style != null)
+            this.parentScreen.renderComponentHoverEffect(poseStack, style, mouseX, mouseY);
     }
 
     @Override
@@ -140,5 +135,24 @@ public class BookTextPage extends BookPage implements PageWithText {
         buffer.writeBoolean(this.showTitleSeparator);
         this.text.toNetwork(buffer);
         buffer.writeUtf(this.anchor);
+    }
+
+    @Nullable
+    @Override
+    public Style getClickedComponentStyleAt(double pMouseX, double pMouseY) {
+        if(pMouseX > 0 && pMouseY > 0){
+            if(this.hasTitle()){
+                var titleStyle = this.getClickedComponentStyleAtForTitle(this.title, BookContentScreen.PAGE_WIDTH / 2, 0, pMouseX, pMouseY);
+                if(titleStyle != null) {
+                    return titleStyle;
+                }
+            }
+
+            var textStyle = this.getClickedComponentStyleAtForTextHolder(this.text, 0, this.getTextY(), BookContentScreen.PAGE_WIDTH, pMouseX, pMouseY);
+            if(textStyle != null) {
+                return textStyle;
+            }
+        }
+        return super.getClickedComponentStyleAt(pMouseX, pMouseY);
     }
 }

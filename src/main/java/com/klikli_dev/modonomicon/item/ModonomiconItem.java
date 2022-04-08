@@ -21,7 +21,7 @@
 package com.klikli_dev.modonomicon.item;
 
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
-import com.klikli_dev.modonomicon.client.gui.ScreenHelper;
+import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -40,7 +40,7 @@ public class ModonomiconItem extends Item {
 
         if (pLevel.isClientSide) {
             itemInHand.getOrCreateTag().putBoolean(ModonimiconConstants.Nbt.BOOK_OPEN, true);
-            ScreenHelper.openBook(itemInHand);
+            BookGuiManager.get().openBook(itemInHand);
         }
 
         return InteractionResultHolder.sidedSuccess(itemInHand, pLevel.isClientSide);
