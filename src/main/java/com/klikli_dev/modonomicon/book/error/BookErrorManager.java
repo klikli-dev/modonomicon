@@ -49,7 +49,7 @@ public class BookErrorManager {
         return holder != null && !holder.getErrors().isEmpty();
     }
 
-    public void addBookError(ResourceLocation book, BookErrorInfo error) {
+    public void error(ResourceLocation book, BookErrorInfo error) {
         var holder = this.booksErrors.get(book);
         if (holder == null) {
             holder = new BookErrorHolder();
@@ -58,8 +58,8 @@ public class BookErrorManager {
         holder.addError(error);
     }
 
-    public void addBookError(BookErrorInfo error) {
-        this.addBookError(this.currentBookId, error);
+    public void error(BookErrorInfo error) {
+        this.error(this.currentBookId, error);
     }
 
     /**
