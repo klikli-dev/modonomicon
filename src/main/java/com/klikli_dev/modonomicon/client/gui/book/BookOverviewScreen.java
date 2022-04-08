@@ -42,7 +42,6 @@ import java.util.List;
 
 public class BookOverviewScreen extends Screen {
 
-    private final ItemStack bookStack;
     private final Book book;
     private final ResourceLocation bookOverviewTexture;
     private final EntryConnectionRenderer connectionRenderer = new EntryConnectionRenderer();
@@ -53,13 +52,12 @@ public class BookOverviewScreen extends Screen {
     private final int frameThicknessH = 14;
     private int currentCategory = 0;
 
-    public BookOverviewScreen(Book book, ItemStack bookStack) {
+    public BookOverviewScreen(Book book) {
         super(new TextComponent(""));
 
         //somehow there are render calls before init(), leaving minecraft null
         this.minecraft = Minecraft.getInstance();
 
-        this.bookStack = bookStack;
         this.book = book;
 
         this.bookOverviewTexture = book.getBookOverviewTexture();
@@ -69,10 +67,6 @@ public class BookOverviewScreen extends Screen {
         this.categoryScreens = this.categories.stream().map(c -> new BookCategoryScreen(this, c)).toList();
 
         //TODO: save/load current category and page to capability
-    }
-
-    public ItemStack getBookStack() {
-        return this.bookStack;
     }
 
     public EntryConnectionRenderer getConnectionRenderer() {
@@ -237,10 +231,6 @@ public class BookOverviewScreen extends Screen {
 
     @Override
     public void onClose() {
-        //client side only
-        if (!this.bookStack.isEmpty())
-            this.bookStack.getOrCreateTag().putBoolean(ModonimiconConstants.Nbt.BOOK_OPEN, false);
-
         //TODO: Send packet to save category variables (zoom, etc)
         super.onClose();
     }

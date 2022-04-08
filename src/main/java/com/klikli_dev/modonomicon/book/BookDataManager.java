@@ -139,6 +139,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         this.loaded = false;
         this.books.clear();
 
+        //TODO: Add book error handling
+
         //first, load all json entries
         var bookJsons = new HashMap<ResourceLocation, JsonObject>();
         var categoryJsons = new HashMap<ResourceLocation, JsonObject>();

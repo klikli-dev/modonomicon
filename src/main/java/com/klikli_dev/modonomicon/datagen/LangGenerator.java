@@ -91,7 +91,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add("modonomicon.test.sections.test_category.test_entry.page0.title", "[**Bold Link**](book://modonomicon:test)");
             this.add("modonomicon.test.sections.test_category.test_entry.page0.text",
                     """
-                    [This is a **link** text](book://modonomicon:test).
+                    [This is a **link** text](book://modonomicon:test/test_category/stick_entry).
                     We have a newline here.
                     - List item 
                     - List item 2
@@ -108,6 +108,13 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add("modonomicon.test.sections.test_category.test_entry.page2.text",
                     """
                    And this is our page three.    
+                    """);
+
+
+            this.add("modonomicon.test.sections.test_category.test_entry_child.page2.text",
+                    """
+                   And this is our page three.    
+                   [With link](book://modonomicon:test/test_category/test_entry#test_anchor)
                     """);
         }
 

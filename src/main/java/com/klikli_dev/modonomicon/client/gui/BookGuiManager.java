@@ -57,21 +57,21 @@ public class BookGuiManager {
             Minecraft.getInstance().setScreen(this.currentOverviewScreen);
         } else {
             this.currentBook = book;
-            this.currentOverviewScreen = new BookOverviewScreen(this.currentBook, stack);
+            this.currentOverviewScreen = new BookOverviewScreen(this.currentBook);
             Minecraft.getInstance().setScreen(this.currentOverviewScreen);
         }
     }
 
-    public void openEntry(ItemStack stack, ResourceLocation bookId, ResourceLocation entryId, int page){
+    public void openEntry(ResourceLocation bookId, ResourceLocation entryId, int page){
         var book = BookDataManager.get().getBook(bookId);
         var entry = book.getEntry(entryId);
-        this.openEntry(stack, bookId, entry.getCategoryId(), entryId, page);
+        this.openEntry(bookId, entry.getCategoryId(), entryId, page);
     }
 
     /**
      * Opens the book at the given location. Will open as far as possible (meaning, if category and entry are null, it will not open those obviously).
      */
-    public void openEntry(ItemStack stack, ResourceLocation bookId, @Nullable ResourceLocation categoryId, @Nullable ResourceLocation entryId, int page){
+    public void openEntry(ResourceLocation bookId, @Nullable ResourceLocation categoryId, @Nullable ResourceLocation entryId, int page){
 
         if(bookId == null){
             throw new IllegalArgumentException("bookId cannot be null");
@@ -83,7 +83,7 @@ public class BookGuiManager {
         }
 
         if(this.currentOverviewScreen == null || this.currentOverviewScreen.getBook() != book){
-            this.currentOverviewScreen = new BookOverviewScreen(book, stack);
+            this.currentOverviewScreen = new BookOverviewScreen(book);
         }
         Minecraft.getInstance().setScreen(this.currentOverviewScreen);
 
