@@ -310,7 +310,7 @@ public class BookContentScreen extends Screen {
             var event = pStyle.getClickEvent();
             if (event != null) {
                 if (event.getAction() == Action.CHANGE_PAGE) {
-                    //TODO: Add book error handling
+
                     var link = BookLink.from(event.getValue());
                     var book = BookDataManager.get().getBook(link.bookId);
                     if (link.entryId != null) {

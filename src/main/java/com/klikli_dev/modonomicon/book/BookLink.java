@@ -21,6 +21,7 @@
 package com.klikli_dev.modonomicon.book;
 
 import net.minecraft.resources.ResourceLocation;
+import org.apache.commons.lang3.StringUtils;
 
 public class BookLink {
     public static final String PROTOCOL_BOOK = "book://";
@@ -78,7 +79,7 @@ public class BookLink {
 
     private static BookLink fromEntry(String linkText) {
         //strip protocol
-        linkText = linkText.substring(PROTOCOL_CATEGORY.length());
+        linkText = linkText.substring(PROTOCOL_ENTRY.length());
         var bookLink = new BookLink();
         var parts = linkText.split("/", 2);
         bookLink.bookId = ResourceLocation.tryParse(parts[0]);
@@ -90,32 +91,33 @@ public class BookLink {
         if (parts.length == 1) //we only got a book id
             throw new IllegalArgumentException("Invalid entry link, does not contain any entry id: " + linkText);
 
-        var entryId = parts[2];
+        var entryId = parts[1];
 
-        int lastSlashIndex = entryId.lastIndexOf("/");
-        if (lastSlashIndex >= 0) {
-            //handle page number/anchor after slash
-            var postSlash = entryId.substring(lastSlashIndex + 1);
-            bookLink.entryId = new ResourceLocation(book.getId().getNamespace(), entryId.substring(0, lastSlashIndex));
-
-            if (postSlash.startsWith("#")) {
-                bookLink.pageAnchor = postSlash.substring(1);
-            } else if (!postSlash.isEmpty()) {
-                bookLink.pageNumber = Integer.parseInt(postSlash);
-            }
-            return bookLink;
+        //anchors and pages are indicated by #
+        int lastAtIndex = entryId.lastIndexOf("@");
+        if(lastAtIndex >= 0){
+            var postAt = entryId.substring(lastAtIndex);
+            var path = StringUtils.removeEnd(entryId.substring(0, lastAtIndex), "/"); //remove trailing /
+            bookLink.entryId = new ResourceLocation(book.getId().getNamespace(), path);
+            bookLink.pageAnchor = postAt;
         }
 
         int lastHashIndex = entryId.lastIndexOf("#");
         if (lastHashIndex >= 0) {
             //handle page anchor after #
-            var postHash = entryId.substring(lastHashIndex + 1);
-            bookLink.entryId = new ResourceLocation(book.getId().getNamespace(), entryId.substring(0, lastHashIndex));
-            bookLink.pageAnchor = postHash;
+            var postHash = entryId.substring(lastHashIndex);
+            var path = StringUtils.removeEnd(entryId.substring(0, lastHashIndex), "/"); //remove trailing /
+            bookLink.entryId = new ResourceLocation(book.getId().getNamespace(), path);
+            try{
+                bookLink.pageNumber = Integer.parseInt(postHash);
+            } catch (NumberFormatException e) {
+                //TODO: book error handling
+            }
+
             return bookLink;
         }
 
-        //handle no page number/nachor
+        //handle no page number/anchor
         bookLink.entryId = new ResourceLocation(book.getId().getNamespace(), entryId);
         return bookLink;
     }
@@ -126,9 +128,9 @@ public class BookLink {
         //category://modonomicon:test/test_category/
         //category://modonomicon:test/test_category
         //entry://modonomicon:test/test_category/test_entry
-        //entry://modonomicon:test/test_category/test_entry/1
-        //entry://modonomicon:test/test_category/test_entry/#anchor
-        //entry://modonomicon:test/test_category/test_entry#anchor
+        //entry://modonomicon:test/test_category/test_entry#1
+        //entry://modonomicon:test/test_category/test_entry/#1
+        //entry://modonomicon:test/test_category/test_entry@anchor
 
         if (linkText.toLowerCase().startsWith(PROTOCOL_BOOK)) {
             return fromBook(linkText);

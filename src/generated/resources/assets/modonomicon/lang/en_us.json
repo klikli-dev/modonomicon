@@ -9,12 +9,12 @@
   "modonomicon.gui.hover.link": "Go to: %s",
   "modonomicon.subtitles.turn_page": "Turn Page",
   "modonomicon.test.entries.test_category.test_entry.description": "Test Description",
-  "modonomicon.test.sections.test_category.test_entry.page0.text": "[This is a **link** text](book://modonomicon:test/test_category/stick_entry).\nWe have a newline here.\n- List item\n- List item 2\n- List item 3\n\nAnd this is a super long line where we hope it will be automatically wrapped into a new line otherwise that is super-bad.\n",
+  "modonomicon.test.sections.test_category.test_entry.page0.text": "[This is a **link** text](entry://modonomicon:test/test_category/stick_entry).\nWe have a newline here.\n- List item\n- List item 2\n- List item 3\n\nAnd this is a super long line where we hope it will be automatically wrapped into a new line otherwise that is super-bad.\n",
   "modonomicon.test.sections.test_category.test_entry.page0.title": "[**Bold Link**](book://modonomicon:test)",
   "modonomicon.test.sections.test_category.test_entry.page1.text": "And this is our page two.\n",
   "modonomicon.test.sections.test_category.test_entry.page1.title": "*[#](55FF55)Colorful Italics*[#]()",
   "modonomicon.test.sections.test_category.test_entry.page2.text": "And this is our page three.\n",
   "modonomicon.test.sections.test_category.test_entry.page2.title": "Page 3",
-  "modonomicon.test.sections.test_category.test_entry_child.page2.text": "And this is our page three.\n[With link](book://modonomicon:test/test_category/test_entry#test_anchor)\n",
+  "modonomicon.test.sections.test_category.test_entry_child.page2.text": "And this is our page three.\n[With link](entry://modonomicon:test/test_category/test_entry#test_anchor)\n",
   "modonomicon.test_book.title": "Test Book"
 }
