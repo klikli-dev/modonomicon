@@ -20,6 +20,8 @@
 
 package com.klikli_dev.modonomicon.book;
 
+import com.klikli_dev.modonomicon.book.error.BookErrorHolder;
+import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.StringUtils;
 
@@ -111,7 +113,7 @@ public class BookLink {
             try{
                 bookLink.pageNumber = Integer.parseInt(postHash);
             } catch (NumberFormatException e) {
-                //TODO: book error handling
+                BookErrorManager.get().error("Invalid page number in entry link: " + linkText, e);
             }
 
             return bookLink;
