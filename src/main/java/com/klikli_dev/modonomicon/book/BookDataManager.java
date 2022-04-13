@@ -160,7 +160,6 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                 var book = this.loadBook(bookId, entry.getValue());
                 this.books.put(book.getId(), book);
             } catch (Exception e) {
-                Modonomicon.LOGGER.error("Failed to load book '{}': {}", entry.getKey(), e);
                 BookErrorManager.get().error( "Failed to load book '" + entry.getKey() + "'", e);
             }
             BookErrorManager.get().setCurrentBookId(null);
@@ -181,7 +180,6 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                 var book = this.books.get(bookId);
                 book.addCategory(category);
             } catch (Exception e) {
-                Modonomicon.LOGGER.error("Failed to load category '{}': {}", entry.getKey(), e);
                 BookErrorManager.get().error( "Failed to load category '" + entry.getKey() + "'", e);
             }
             BookErrorManager.get().setCurrentBookId(null);
@@ -202,7 +200,6 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                 var category = book.getCategory(bookEntry.getCategoryId());
                 category.addEntry(bookEntry);
             } catch (Exception e) {
-                Modonomicon.LOGGER.error("Failed to load entry '{}': {}", entry.getKey(), e);
                 BookErrorManager.get().error("Failed to load entry '" + entry.getKey() + "'", e);
             }
             BookErrorManager.get().setCurrentBookId(null);
