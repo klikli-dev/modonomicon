@@ -28,4 +28,14 @@ public class BookErrorInfo {
         this.errorMessage = errorMessage;
         this.exception = exception;
     }
+
+    @Override
+    public String toString() {
+        var errorMessage = this.errorMessage == null ? "" : this.errorMessage;
+        var exception = this.exception == null ? "" : this.exception.toString();
+        return "BookErrorInfo{" +
+                "errorMessage='" + errorMessage + "'" +
+                ", exception='" + exception + "'" +
+                '}';
+    }
 }

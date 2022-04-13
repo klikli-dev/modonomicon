@@ -20,6 +20,7 @@
 
 package com.klikli_dev.modonomicon.book.error;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
@@ -58,7 +59,6 @@ public class BookErrorManager {
     }
 
     public void error(BookErrorInfo error) {
-        //TODO: handle no current book id
         this.error(this.currentBookId, error);
     }
 
@@ -71,6 +71,12 @@ public class BookErrorManager {
     }
 
     public void error(ResourceLocation book, BookErrorInfo error) {
+
+        if(book == null) {
+            Modonomicon.LOGGER.error("BookErrorManager.error() called with null book id for BookErrorInfo: {}", error);
+            return;
+        }
+
         var holder = this.booksErrors.get(book);
         if (holder == null) {
             holder = new BookErrorHolder();
