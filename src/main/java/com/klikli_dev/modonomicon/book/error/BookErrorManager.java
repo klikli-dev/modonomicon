@@ -49,6 +49,27 @@ public class BookErrorManager {
         return holder != null && !holder.getErrors().isEmpty();
     }
 
+    public void error(String message) {
+        this.error(new BookErrorInfo(message, null));
+    }
+
+    public void error(String message, Exception exception) {
+        this.error(new BookErrorInfo(message, exception));
+    }
+
+    public void error(BookErrorInfo error) {
+        //TODO: handle no current book id
+        this.error(this.currentBookId, error);
+    }
+
+    public void error(ResourceLocation book, String message) {
+        this.error(book, new BookErrorInfo(message, null));
+    }
+
+    public void error(ResourceLocation book, String message, Exception exception) {
+        this.error(book, new BookErrorInfo(message, exception));
+    }
+
     public void error(ResourceLocation book, BookErrorInfo error) {
         var holder = this.booksErrors.get(book);
         if (holder == null) {
@@ -58,23 +79,19 @@ public class BookErrorManager {
         holder.addError(error);
     }
 
-    public void error(BookErrorInfo error) {
-        this.error(this.currentBookId, error);
-    }
-
     /**
-     * Gets the book id of the book currently being loaded.
-     * Used to add errors that happen where we don't have a direct ref to the book.
+     * Gets the book id of the book currently being loaded. Used to add errors that happen where we don't have a direct
+     * ref to the book.
      */
-    public ResourceLocation getCurrentBookId(){
+    public ResourceLocation getCurrentBookId() {
         return this.currentBookId;
     }
 
     /**
-     * Sets the book id of the book currently being loaded.
-     * Used to add errors that happen where we don't have a direct ref to the book.
+     * Sets the book id of the book currently being loaded. Used to add errors that happen where we don't have a direct
+     * ref to the book.
      */
-    public ResourceLocation setCurrentBookId(ResourceLocation id){
+    public ResourceLocation setCurrentBookId(ResourceLocation id) {
         return this.currentBookId = id;
     }
 }

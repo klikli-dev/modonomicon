@@ -26,6 +26,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data;
+import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.network.Message;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.SyncBookDataMessage;
@@ -37,7 +38,9 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -128,7 +131,10 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                     categoryJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
                 }
                 default -> {
-                    Modonomicon.LOGGER.warn("Found unknown content for book '{}': '{}'. Should be one of: [File: book.json, Directory: entries/, Directory: categories/]", bookId, entry.getKey());
+                    Modonomicon.LOGGER.warn("Found unknown content for book '{}': '{}'. " +
+                            "Should be one of: [File: book.json, Directory: entries/, Directory: categories/]", bookId, entry.getKey());
+                    BookErrorManager.get().error(bookId, "Found unknown content for book '" + bookId + "': '" + entry.getKey() + "'. " +
+                            "Should be one of: [File: book.json, Directory: entries/, Directory: categories/]");
                 }
             }
         }
@@ -139,8 +145,6 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         this.loaded = false;
         this.books.clear();
 
-        //TODO: Add book error handling
-
         //first, load all json entries
         var bookJsons = new HashMap<ResourceLocation, JsonObject>();
         var categoryJsons = new HashMap<ResourceLocation, JsonObject>();
@@ -149,44 +153,72 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
         //build books
         for (var entry : bookJsons.entrySet()) {
-            var pathParts = entry.getKey().getPath().split("/");
-            var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
-            var book = this.loadBook(bookId, entry.getValue());
-            this.books.put(book.getId(), book);
+            try {
+                var pathParts = entry.getKey().getPath().split("/");
+                var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
+                BookErrorManager.get().setCurrentBookId(bookId);
+                var book = this.loadBook(bookId, entry.getValue());
+                this.books.put(book.getId(), book);
+            } catch (Exception e) {
+                Modonomicon.LOGGER.error("Failed to load book '{}': {}", entry.getKey(), e);
+                BookErrorManager.get().error( "Failed to load book '" + entry.getKey() + "'", e);
+            }
+            BookErrorManager.get().setCurrentBookId(null);
         }
 
         //build categories
         for (var entry : categoryJsons.entrySet()) {
-            //load categories and link to book
-            var pathParts = entry.getKey().getPath().split("/");
-            var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
-            //category id skips the book id and the category directory
-            var categoryId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
-            var category = this.loadCategory(categoryId, entry.getValue(), bookId);
+            try{
+                //load categories and link to book
+                var pathParts = entry.getKey().getPath().split("/");
+                var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
+                BookErrorManager.get().setCurrentBookId(bookId);
+                //category id skips the book id and the category directory
+                var categoryId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
+                var category = this.loadCategory(categoryId, entry.getValue(), bookId);
 
-            //link category and book
-            var book = this.books.get(bookId);
-            book.addCategory(category);
+                //link category and book
+                var book = this.books.get(bookId);
+                book.addCategory(category);
+            } catch (Exception e) {
+                Modonomicon.LOGGER.error("Failed to load category '{}': {}", entry.getKey(), e);
+                BookErrorManager.get().error( "Failed to load category '" + entry.getKey() + "'", e);
+            }
+            BookErrorManager.get().setCurrentBookId(null);
         }
 
         //build entries
         for (var entry : entryJsons.entrySet()) {
-            //load entries and link to category
-            var pathParts = entry.getKey().getPath().split("/");
-            var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
-            //entry id skips the book id and the entries directory, but keeps category so it is unique
-            var entryId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
-            var bookEntry = this.loadEntry(entryId, entry.getValue());
+            try {
+                //load entries and link to category
+                var pathParts = entry.getKey().getPath().split("/");
+                var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
+                //entry id skips the book id and the entries directory, but keeps category so it is unique
+                var entryId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
+                var bookEntry = this.loadEntry(entryId, entry.getValue());
 
-            //link entry and category
-            var book = this.books.get(bookId);
-            var category = book.getCategory(bookEntry.getCategoryId());
-            category.addEntry(bookEntry);
+                //link entry and category
+                var book = this.books.get(bookId);
+                var category = book.getCategory(bookEntry.getCategoryId());
+                category.addEntry(bookEntry);
+            } catch (Exception e) {
+                Modonomicon.LOGGER.error("Failed to load entry '{}': {}", entry.getKey(), e);
+                BookErrorManager.get().error("Failed to load entry '" + entry.getKey() + "'", e);
+            }
+            BookErrorManager.get().setCurrentBookId(null);
         }
 
         //Build books
         for (var book : this.books.values()) {
-            book.build();
+            BookErrorManager.get().setCurrentBookId(book.getId());
+            try {
+                book.build();
+                //TODO: Error Handling: render md components once to log errors
+            } catch (Exception e) {
+                Modonomicon.LOGGER.error("Failed to build book '{}': {}", book.getId(), e);
+                BookErrorManager.get().error("Failed to build book '" + book.getId() + "'", e);
+            }
+            BookErrorManager.get().setCurrentBookId(null);
         }
 
         this.onLoaded();
