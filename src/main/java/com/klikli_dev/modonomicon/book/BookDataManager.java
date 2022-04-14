@@ -153,6 +153,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         var entryJsons = new HashMap<ResourceLocation, JsonObject>();
         this.categorizeContent(content, bookJsons, categoryJsons, entryJsons);
 
+        BookErrorManager.get().setContext(""); //set to empty string to avoid using context helper internally
         //load books
         for (var entry : bookJsons.entrySet()) {
             try {
@@ -209,7 +210,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             }
             BookErrorManager.get().setCurrentBookId(null);
         }
-
+        BookErrorManager.get().setContext(null); //set to null so we start using context helper internally
         this.postLoad();
         this.onLoadingComplete();
     }
