@@ -1,8 +1,8 @@
 ---
 sidebar_position: 1
+sidebar_label: Intro
+title: Introduction
 ---
-
-# Introduction
 
 Modonomicon is an in-game documentation mod inspired by Thaumcraft's Thaumonomicon and Patchouli, and aims to provide the best of both, with some unique flavors. 
 

@@ -1,8 +1,8 @@
 ---
 sidebar_position: 10
+sidebar_label: Page Types
+title: Page Types
 ---
-
-# Default Page Types
 
 ## Common Attributes
 <!-- TODO: Attributes shared by all pages -->
@@ -25,7 +25,7 @@ Whenever a page supports texts there are two options:
 - **supply a DescriptionId** (= Translation Key) with corresponding value in the `/lang/*.json` file. In many cases that value can contain markdown styling instructions.
 - supply a vanilla component JSON (not recommended). This can contain untranslated texts and will **not** support markdown styling.
 
-## Text Pages
+## Text Page
 
 ![Text Page](/img/basics/page-types/text-page.png)
 
