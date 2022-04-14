@@ -81,7 +81,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
     public void onDatapackSyncPacket(SyncBookDataMessage message) {
         this.books = message.books;
-        this.onLoaded();
+        this.postLoad();
+        this.onLoadingComplete();
     }
 
     @SubscribeEvent
@@ -97,7 +98,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         }
     }
 
-    protected void onLoaded() {
+    protected void onLoadingComplete() {
         this.loaded = true;
     }
 
@@ -152,7 +153,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         var entryJsons = new HashMap<ResourceLocation, JsonObject>();
         this.categorizeContent(content, bookJsons, categoryJsons, entryJsons);
 
-        //build books
+        //load books
         for (var entry : bookJsons.entrySet()) {
             try {
                 var pathParts = entry.getKey().getPath().split("/");
@@ -166,7 +167,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             BookErrorManager.get().setCurrentBookId(null);
         }
 
-        //build categories
+        //load categories
         for (var entry : categoryJsons.entrySet()) {
             try{
                 //load categories and link to book
@@ -186,7 +187,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             BookErrorManager.get().setCurrentBookId(null);
         }
 
-        //build entries
+        //load entries
         for (var entry : entryJsons.entrySet()) {
             try {
                 //load entries and link to category
@@ -206,6 +207,11 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             BookErrorManager.get().setCurrentBookId(null);
         }
 
+        this.postLoad();
+        this.onLoadingComplete();
+    }
+
+    public void postLoad(){
         //Build books
         for (var book : this.books.values()) {
             BookErrorManager.get().setCurrentBookId(book.getId());
@@ -229,7 +235,5 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             }
             BookErrorManager.get().setCurrentBookId(null);
         }
-
-        this.onLoaded();
     }
 }

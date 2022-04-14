@@ -94,11 +94,6 @@ public class SyncBookDataMessage implements Message {
                 }
             }
         }
-
-        //Build books
-        for (var book : this.books.values()) {
-            book.build();
-        }
     }
 
 
