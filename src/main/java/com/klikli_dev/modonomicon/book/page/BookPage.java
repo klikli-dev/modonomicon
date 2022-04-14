@@ -62,6 +62,9 @@ public abstract class BookPage {
 
     public abstract ResourceLocation getType();
 
+    /**
+     * call after loading the book jsons to finalize.
+     */
     public void build(BookEntry parentEntry, int pageNum) {
         this.parentEntry = parentEntry;
         this.pageNumber = pageNum;
@@ -69,9 +72,16 @@ public abstract class BookPage {
     }
 
     /**
+     * Called after build() (after loading the book jsons) to render markdown and store any errors
+     */
+    public void prerenderMarkdown(BookTextRenderer textRenderer){
+
+    }
+
+    /**
      * Call when the page is being set up to be displayed (when book content screen opens, or pages are changed)
      */
-    public void onBeginDisplayPage(BookContentScreen parentScreen, BookTextRenderer textRenderer, int left, int top) {
+    public void onBeginDisplayPage(BookContentScreen parentScreen, int left, int top) {
         this.parentScreen = parentScreen;
 
         this.mc = parentScreen.getMinecraft();

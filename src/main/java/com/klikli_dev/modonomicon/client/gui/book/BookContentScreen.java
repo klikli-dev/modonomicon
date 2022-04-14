@@ -68,7 +68,6 @@ public class BookContentScreen extends Screen {
     private final BookOverviewScreen parentScreen;
     private final BookEntry entry;
     private final ResourceLocation bookContentTexture;
-    private final BookTextRenderer textRenderer;
     private BookPage leftPage;
     private BookPage rightPage;
     private int bookLeft;
@@ -90,7 +89,6 @@ public class BookContentScreen extends Screen {
         this.entry = entry;
 
         this.bookContentTexture = this.parentScreen.getBook().getBookContentTexture();
-        this.textRenderer = new BookTextRenderer();
     }
 
     public static void drawFromTexture(PoseStack poseStack, Book book, int x, int y, int u, int v, int w, int h) {
@@ -240,10 +238,10 @@ public class BookContentScreen extends Screen {
 
         //allow pages to prepare for being displayed
         if (this.leftPage != null) {
-            this.leftPage.onBeginDisplayPage(this, this.textRenderer, LEFT_PAGE_X, TOP_PADDING);
+            this.leftPage.onBeginDisplayPage(this, LEFT_PAGE_X, TOP_PADDING);
         }
         if (this.rightPage != null) {
-            this.rightPage.onBeginDisplayPage(this, this.textRenderer, RIGHT_PAGE_X, TOP_PADDING);
+            this.rightPage.onBeginDisplayPage(this, RIGHT_PAGE_X, TOP_PADDING);
         }
     }
 

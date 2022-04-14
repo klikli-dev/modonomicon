@@ -22,6 +22,7 @@ package com.klikli_dev.modonomicon.book;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Category;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -52,11 +53,23 @@ public class BookCategory {
         this.entries = new HashMap<>();
     }
 
+    /**
+     * call after loading the book jsons to finalize.
+     */
     public void build(Book book) {
         this.book = book;
 
         for(var entry : this.entries.values()) {
             entry.build(this);
+        }
+    }
+
+    /**
+     * Called after build() (after loading the book jsons) to render markdown and store any errors
+     */
+    public void prerenderMarkdown(BookTextRenderer textRenderer){
+        for (var entry : this.entries.values()) {
+            entry.prerenderMarkdown(textRenderer);
         }
     }
 

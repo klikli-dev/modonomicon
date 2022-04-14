@@ -27,6 +27,7 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.network.Message;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.SyncBookDataMessage;
@@ -210,10 +211,21 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             BookErrorManager.get().setCurrentBookId(book.getId());
             try {
                 book.build();
-                //TODO: Error Handling: render md components once to log errors
             } catch (Exception e) {
-                Modonomicon.LOGGER.error("Failed to build book '{}': {}", book.getId(), e);
                 BookErrorManager.get().error("Failed to build book '" + book.getId() + "'", e);
+            }
+            BookErrorManager.get().setCurrentBookId(null);
+        }
+
+        //prerender markdown
+        //TODO: allow modders to configure this renderer
+        var textRenderer = new BookTextRenderer();
+        for (var book : this.books.values()) {
+            BookErrorManager.get().setCurrentBookId(book.getId());
+            try {
+                book.prerenderMarkdown(textRenderer);
+            } catch (Exception e) {
+                BookErrorManager.get().error("Failed render markdown for book '" + book.getId() + "'", e);
             }
             BookErrorManager.get().setCurrentBookId(null);
         }
