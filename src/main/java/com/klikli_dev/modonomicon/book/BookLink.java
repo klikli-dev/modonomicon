@@ -102,6 +102,8 @@ public class BookLink {
             var path = StringUtils.removeEnd(entryId.substring(0, lastAtIndex), "/"); //remove trailing /
             bookLink.entryId = new ResourceLocation(book.getId().getNamespace(), path);
             bookLink.pageAnchor = postAt;
+
+            return bookLink;
         }
 
         int lastHashIndex = entryId.lastIndexOf("#");

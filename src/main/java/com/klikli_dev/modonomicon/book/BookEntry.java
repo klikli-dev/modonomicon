@@ -22,6 +22,7 @@ package com.klikli_dev.modonomicon.book;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.registry.BookPageLoaderRegistry;
@@ -136,7 +137,10 @@ public class BookEntry {
         //build pages
         int pageNum = 0;
         for (var page : this.pages) {
-            page.build(this, pageNum++);
+            BookErrorManager.get().getContextHelper().pageNumber = pageNum;
+            page.build(this, pageNum);
+            BookErrorManager.get().getContextHelper().pageNumber = -1;
+            pageNum++;
         }
     }
 
@@ -145,7 +149,9 @@ public class BookEntry {
      */
     public void prerenderMarkdown(BookTextRenderer textRenderer){
         for (var page : this.pages) {
+            BookErrorManager.get().getContextHelper().pageNumber = page.getPageNumber();
             page.prerenderMarkdown(textRenderer);
+            BookErrorManager.get().getContextHelper().pageNumber = -1;
         }
     }
 

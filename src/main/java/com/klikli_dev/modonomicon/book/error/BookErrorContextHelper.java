@@ -1,5 +1,5 @@
 /*
- * LGPL-3-0
+ * LGPL-3.0
  *
  * Copyright (C) 2022 klikli-dev
  *
@@ -20,26 +20,24 @@
 
 package com.klikli_dev.modonomicon.book.error;
 
-public class BookErrorInfo {
-    private final String errorMessage;
-    private final Exception exception;
-    private final String context;
+import net.minecraft.resources.ResourceLocation;
 
-    public BookErrorInfo(String errorMessage, Exception exception, String context) {
-        this.errorMessage = errorMessage;
-        this.exception = exception;
-        this.context = context;
+public class BookErrorContextHelper {
+    public ResourceLocation categoryId;
+    public ResourceLocation entryId;
+    public int pageNumber = 1;
+
+    public void reset(){
+        this.categoryId = null;
+        this.entryId = null;
+        this.pageNumber = -1;
     }
 
     @Override
     public String toString() {
-        var errorMessage = this.errorMessage == null ? "" : this.errorMessage;
-        var context = this.context == null ? "" : this.context;
-        var exception = this.exception == null ? "" : this.exception.toString();
-        return "BookErrorInfo{" +
-                "errorMessage='" + errorMessage + "'" +
-                ", context='" + context + "'" +
-                ", exception='" + exception + "'" +
-                '}';
+        var categoryId = this.categoryId == null ? "null" : this.categoryId.toString();
+        var entryId = this.entryId == null ? "null" : this.entryId.toString();
+        var pageNumber = this.pageNumber == -1 ? "null" : this.pageNumber;
+        return "Category: " + categoryId + ", Entry: " + entryId + ", Page: " + pageNumber;
     }
 }

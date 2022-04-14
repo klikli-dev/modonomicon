@@ -20,17 +20,15 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
-import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.BookLink;
+import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.TranslatableComponent;
 import org.commonmark.node.Link;
 import org.commonmark.node.Node;
-import org.commonmark.node.Text;
 
 import java.util.function.Consumer;
 
@@ -39,6 +37,11 @@ public class BookLinkRenderer implements LinkRenderer {
     public boolean visit(Link link, Consumer<Node> visitChildren, ComponentNodeRendererContext context) {
         if (BookLink.isBookLink(link.getDestination())) {
             var currentColor = context.getCurrentStyle().getColor();
+
+            BookErrorManager.get().setContext("Link: {}, {}",
+                    link.getDestination(),
+                    BookErrorManager.get().getContextHelper()
+            );
 
             var bookLink = BookLink.from(link.getDestination());
             var goToText = bookLink.bookId.toString().replace(":", ".");
@@ -66,6 +69,8 @@ public class BookLinkRenderer implements LinkRenderer {
                     .withClickEvent(null)
                     .withHoverEvent(null)
             );
+
+            BookErrorManager.get().setContext(null);
             return true;
         }
         return false;

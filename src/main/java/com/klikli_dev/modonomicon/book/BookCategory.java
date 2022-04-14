@@ -22,6 +22,7 @@ package com.klikli_dev.modonomicon.book;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Category;
+import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -60,7 +61,9 @@ public class BookCategory {
         this.book = book;
 
         for(var entry : this.entries.values()) {
+            BookErrorManager.get().getContextHelper().entryId = entry.getId();
             entry.build(this);
+            BookErrorManager.get().getContextHelper().entryId = null;
         }
     }
 
@@ -69,7 +72,9 @@ public class BookCategory {
      */
     public void prerenderMarkdown(BookTextRenderer textRenderer){
         for (var entry : this.entries.values()) {
+            BookErrorManager.get().getContextHelper().entryId = entry.getId();
             entry.prerenderMarkdown(textRenderer);
+            BookErrorManager.get().getContextHelper().entryId = null;
         }
     }
 

@@ -22,6 +22,7 @@ package com.klikli_dev.modonomicon.book.error;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import net.minecraft.resources.ResourceLocation;
+import org.slf4j.helpers.MessageFormatter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +33,8 @@ public class BookErrorManager {
     private final Map<ResourceLocation, BookErrorHolder> booksErrors = new HashMap<>();
 
     private ResourceLocation currentBookId;
+    private String currentContext;
+    private final BookErrorContextHelper contextHelper = new BookErrorContextHelper();
 
     private BookErrorManager() {
 
@@ -39,6 +42,10 @@ public class BookErrorManager {
 
     public static BookErrorManager get() {
         return instance;
+    }
+
+    public BookErrorContextHelper getContextHelper() {
+        return this.contextHelper;
     }
 
     public BookErrorHolder getErrors(ResourceLocation bookId) {
@@ -51,11 +58,11 @@ public class BookErrorManager {
     }
 
     public void error(String message) {
-        this.error(new BookErrorInfo(message, null));
+        this.error(new BookErrorInfo(message, null, this.currentContext));
     }
 
     public void error(String message, Exception exception) {
-        this.error(new BookErrorInfo(message, exception));
+        this.error(new BookErrorInfo(message, exception, this.currentContext));
     }
 
     public void error(BookErrorInfo error) {
@@ -63,15 +70,15 @@ public class BookErrorManager {
     }
 
     public void error(ResourceLocation book, String message) {
-        this.error(book, new BookErrorInfo(message, null));
+        this.error(book, new BookErrorInfo(message, null, this.currentContext));
     }
 
     public void error(ResourceLocation book, String message, Exception exception) {
-        this.error(book, new BookErrorInfo(message, exception));
+        this.error(book, new BookErrorInfo(message, exception, this.currentContext));
     }
 
     public void error(ResourceLocation book, BookErrorInfo error) {
-        if(book == null) {
+        if (book == null) {
             Modonomicon.LOGGER.error("BookErrorManager.error() called with null book id with error: {}", error);
             return;
         }
@@ -98,7 +105,27 @@ public class BookErrorManager {
      * Sets the book id of the book currently being loaded. Used to add errors that happen where we don't have a direct
      * ref to the book.
      */
-    public ResourceLocation setCurrentBookId(ResourceLocation id) {
-        return this.currentBookId = id;
+    public void setCurrentBookId(ResourceLocation id) {
+        this.currentBookId = id;
+    }
+
+    /**
+     * Set the context to add to all errors logged after this. Set to null to remove context. Uses
+     * {@link MessageFormatter#format(String, Object)} to format the context.
+     */
+    public void setContext(String context, Object... args) {
+        if (context != null) {
+            this.currentContext = MessageFormatter.format(context, args).getMessage();
+        } else {
+            this.currentContext = null;
+        }
+    }
+
+    public String getContext(){
+        if(this.currentContext != null){
+            return this.currentContext;
+        }
+
+        return this.contextHelper.toString();
     }
 }

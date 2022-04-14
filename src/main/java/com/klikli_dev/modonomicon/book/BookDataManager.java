@@ -174,6 +174,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                 var pathParts = entry.getKey().getPath().split("/");
                 var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
                 BookErrorManager.get().setCurrentBookId(bookId);
+
                 //category id skips the book id and the category directory
                 var categoryId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
                 var category = this.loadCategory(categoryId, entry.getValue(), bookId);
@@ -193,6 +194,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                 //load entries and link to category
                 var pathParts = entry.getKey().getPath().split("/");
                 var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
+                BookErrorManager.get().setCurrentBookId(bookId);
+
                 //entry id skips the book id and the entries directory, but keeps category so it is unique
                 var entryId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
                 var bookEntry = this.loadEntry(entryId, entry.getValue());
@@ -214,6 +217,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     public void postLoad(){
         //Build books
         for (var book : this.books.values()) {
+            BookErrorManager.get().getContextHelper().reset();
             BookErrorManager.get().setCurrentBookId(book.getId());
             try {
                 book.build();
@@ -227,6 +231,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         //TODO: allow modders to configure this renderer
         var textRenderer = new BookTextRenderer();
         for (var book : this.books.values()) {
+            BookErrorManager.get().getContextHelper().reset();
             BookErrorManager.get().setCurrentBookId(book.getId());
             try {
                 book.prerenderMarkdown(textRenderer);
