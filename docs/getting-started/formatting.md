@@ -40,9 +40,9 @@ In order to provide a bit more flexibility, the markdown parser supports a few n
 
 ### Text Color 
 
-Color instructions (ab)use the link syntax as follows: to start a colored region use `[](#<hexcode>)`, to reset to the default color use `[]()`.
+Color instructions (ab)use the link syntax as follows: to start a colored region use `[#](<hexcode>)`, to reset to the default color use `[#]()`.
 Example:
 
 ```markdown
-This is [red](#ff0000) and this is [green](#00ff00) and this is [blue](#0000ff).
+[#](ff0000)Red text [#](00ff00)from here on green [#](0000ff)now blue [#]()and finally back to default color.
 ```
