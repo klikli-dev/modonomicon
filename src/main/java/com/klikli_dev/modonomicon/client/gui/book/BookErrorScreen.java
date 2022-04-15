@@ -82,7 +82,7 @@ public class BookErrorScreen extends Screen {
 
         pPoseStack.pushPose();
         pPoseStack.translate(this.bookLeft, this.bookTop, 0);
-        this.renderError(this.errorText, pPoseStack, 10, 10, BOOK_BACKGROUND_WIDTH - 20);
+        this.renderError(this.errorText, pPoseStack, 15, 15, BOOK_BACKGROUND_WIDTH - 30);
         pPoseStack.popPose();
     }
 
