@@ -237,7 +237,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             try {
                 book.prerenderMarkdown(textRenderer);
             } catch (Exception e) {
-                BookErrorManager.get().error("Failed render markdown for book '" + book.getId() + "'", e);
+                BookErrorManager.get().error("Failed to render markdown for book '" + book.getId() + "'", e);
             }
             BookErrorManager.get().setCurrentBookId(null);
         }
