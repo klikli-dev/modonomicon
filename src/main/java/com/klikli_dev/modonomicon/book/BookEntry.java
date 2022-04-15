@@ -147,7 +147,7 @@ public class BookEntry {
     /**
      * Called after build() (after loading the book jsons) to render markdown and store any errors
      */
-    public void prerenderMarkdown(BookTextRenderer textRenderer){
+    public void prerenderMarkdown(BookTextRenderer textRenderer) {
         for (var page : this.pages) {
             BookErrorManager.get().getContextHelper().pageNumber = page.getPageNumber();
             page.prerenderMarkdown(textRenderer);

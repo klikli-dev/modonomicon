@@ -37,7 +37,7 @@ public class BookCategoryModel {
     protected ResourceLocation entryTextures = new ResourceLocation(Category.DEFAULT_ENTRY_TEXTURES);
     protected List<BookEntryModel> entries = new ArrayList<>();
 
-    private BookCategoryModel(){
+    private BookCategoryModel() {
     }
 
     public static Builder builder() {
@@ -155,9 +155,9 @@ public class BookCategoryModel {
 
         public BookCategoryModel build() {
             BookCategoryModel bookCategoryModel = new BookCategoryModel();
-            for(var entry : this.entries){
+            for (var entry : this.entries) {
                 entry.category = bookCategoryModel;
-                if(!entry.id.getPath().startsWith(this.id.getPath())){
+                if (!entry.id.getPath().startsWith(this.id.getPath())) {
                     entry.id = new ResourceLocation(entry.id.getNamespace(), this.id.getPath() + "/" + entry.id.getPath());
                 }
             }

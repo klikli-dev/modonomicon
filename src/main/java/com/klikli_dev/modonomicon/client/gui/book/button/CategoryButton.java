@@ -34,6 +34,7 @@ public class CategoryButton extends Button {
     private final BookOverviewScreen parent;
     private final BookCategory category;
     private final int categoryIndex;
+
     public CategoryButton(BookOverviewScreen parent, BookCategory category, int categoryIndex, int pX, int pY, int width, int height, OnPress pOnPress, OnTooltip pOnTooltip) {
         super(pX, pY, width, height, new TextComponent(""), pOnPress, pOnTooltip);
         this.parent = parent;
@@ -71,7 +72,7 @@ public class CategoryButton extends Button {
 
             //draw category button background
             RenderSystem.setShaderTexture(0, this.parent.getBookOverviewTexture());
-            GuiComponent.blit(pMatrixStack, renderX, this.y, this.parent.getBlitOffset()+ 50, texX, texY, renderWidth, this.height, 256, 256);
+            GuiComponent.blit(pMatrixStack, renderX, this.y, this.parent.getBlitOffset() + 50, texX, texY, renderWidth, this.height, 256, 256);
 
             //then draw icon
 

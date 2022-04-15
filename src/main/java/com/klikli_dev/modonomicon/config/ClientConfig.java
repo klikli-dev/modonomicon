@@ -23,7 +23,7 @@ package com.klikli_dev.modonomicon.config;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
-public class ClientConfig  {
+public class ClientConfig {
 
     private static final ClientConfig instance = new ClientConfig();
 
@@ -46,7 +46,7 @@ public class ClientConfig  {
         public QoLCategory(ForgeConfigSpec.Builder builder) {
             builder.comment("Quality of Life Settings").push("qol");
             this.enableSmoothZoom = builder.comment("Enable smooth zoom in book categories")
-                            .define("enableSmoothZoom", true);
+                    .define("enableSmoothZoom", true);
             builder.pop();
         }
     }

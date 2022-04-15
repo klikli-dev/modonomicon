@@ -35,12 +35,12 @@ public class BookModel {
     protected int defaultTitleColor = 0x00000;
     protected List<BookCategoryModel> categories = new ArrayList<>();
 
-    public List<BookCategoryModel> getCategories() {
-        return this.categories;
-    }
-
     public static Builder builder() {
         return new Builder();
+    }
+
+    public List<BookCategoryModel> getCategories() {
+        return this.categories;
     }
 
     public ResourceLocation getId() {
@@ -117,7 +117,7 @@ public class BookModel {
             return this;
         }
 
-        public Builder withCategories(BookCategoryModel ... categories) {
+        public Builder withCategories(BookCategoryModel... categories) {
             this.categories.addAll(List.of(categories));
             return this;
         }
@@ -129,7 +129,7 @@ public class BookModel {
 
         public BookModel build() {
             BookModel bookModel = new BookModel();
-            for(var category : this.categories){
+            for (var category : this.categories) {
                 category.book = bookModel;
             }
 

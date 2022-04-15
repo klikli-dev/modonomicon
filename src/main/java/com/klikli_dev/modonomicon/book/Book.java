@@ -42,6 +42,7 @@ public class Book {
     protected Map<ResourceLocation, BookCategory> categories;
     protected Map<ResourceLocation, BookEntry> entries;
     protected int defaultTitleColor;
+
     public Book(ResourceLocation id, String name, ResourceLocation bookOverviewTexture, ResourceLocation bookContentTexture, ResourceLocation turnPageSound, int defaultTitleColor) {
         this.id = id;
         this.name = name;
@@ -99,7 +100,7 @@ public class Book {
     /**
      * Called after build() (after loading the book jsons) to render markdown and store any errors
      */
-    public void prerenderMarkdown(BookTextRenderer textRenderer){
+    public void prerenderMarkdown(BookTextRenderer textRenderer) {
         for (var category : this.categories.values()) {
             BookErrorManager.get().getContextHelper().categoryId = category.getId();
             category.prerenderMarkdown(textRenderer);

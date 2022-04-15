@@ -132,7 +132,7 @@ public class BookEntryModel {
             return this;
         }
 
-        public Builder withParents(BookEntryParentModel ... parents) {
+        public Builder withParents(BookEntryParentModel... parents) {
             this.parents.addAll(List.of(parents));
             return this;
         }
@@ -172,7 +172,7 @@ public class BookEntryModel {
             return this;
         }
 
-        public Builder withPages(BookPageModel ... pages) {
+        public Builder withPages(BookPageModel... pages) {
             this.pages.addAll(List.of(pages));
             return this;
         }

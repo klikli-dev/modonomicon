@@ -98,6 +98,34 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         }
     }
 
+    public void postLoad() {
+        //Build books
+        for (var book : this.books.values()) {
+            BookErrorManager.get().getContextHelper().reset();
+            BookErrorManager.get().setCurrentBookId(book.getId());
+            try {
+                book.build();
+            } catch (Exception e) {
+                BookErrorManager.get().error("Failed to build book '" + book.getId() + "'", e);
+            }
+            BookErrorManager.get().setCurrentBookId(null);
+        }
+
+        //prerender markdown
+        //TODO: allow modders to configure this renderer
+        var textRenderer = new BookTextRenderer();
+        for (var book : this.books.values()) {
+            BookErrorManager.get().getContextHelper().reset();
+            BookErrorManager.get().setCurrentBookId(book.getId());
+            try {
+                book.prerenderMarkdown(textRenderer);
+            } catch (Exception e) {
+                BookErrorManager.get().error("Failed to render markdown for book '" + book.getId() + "'", e);
+            }
+            BookErrorManager.get().setCurrentBookId(null);
+        }
+    }
+
     protected void onLoadingComplete() {
         this.loaded = true;
     }
@@ -163,14 +191,14 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                 var book = this.loadBook(bookId, entry.getValue());
                 this.books.put(book.getId(), book);
             } catch (Exception e) {
-                BookErrorManager.get().error( "Failed to load book '" + entry.getKey() + "'", e);
+                BookErrorManager.get().error("Failed to load book '" + entry.getKey() + "'", e);
             }
             BookErrorManager.get().setCurrentBookId(null);
         }
 
         //load categories
         for (var entry : categoryJsons.entrySet()) {
-            try{
+            try {
                 //load categories and link to book
                 var pathParts = entry.getKey().getPath().split("/");
                 var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
@@ -184,7 +212,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                 var book = this.books.get(bookId);
                 book.addCategory(category);
             } catch (Exception e) {
-                BookErrorManager.get().error( "Failed to load category '" + entry.getKey() + "'", e);
+                BookErrorManager.get().error("Failed to load category '" + entry.getKey() + "'", e);
             }
             BookErrorManager.get().setCurrentBookId(null);
         }
@@ -213,33 +241,5 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         BookErrorManager.get().setContext(null); //set to null so we start using context helper internally
         this.postLoad();
         this.onLoadingComplete();
-    }
-
-    public void postLoad(){
-        //Build books
-        for (var book : this.books.values()) {
-            BookErrorManager.get().getContextHelper().reset();
-            BookErrorManager.get().setCurrentBookId(book.getId());
-            try {
-                book.build();
-            } catch (Exception e) {
-                BookErrorManager.get().error("Failed to build book '" + book.getId() + "'", e);
-            }
-            BookErrorManager.get().setCurrentBookId(null);
-        }
-
-        //prerender markdown
-        //TODO: allow modders to configure this renderer
-        var textRenderer = new BookTextRenderer();
-        for (var book : this.books.values()) {
-            BookErrorManager.get().getContextHelper().reset();
-            BookErrorManager.get().setCurrentBookId(book.getId());
-            try {
-                book.prerenderMarkdown(textRenderer);
-            } catch (Exception e) {
-                BookErrorManager.get().error("Failed to render markdown for book '" + book.getId() + "'", e);
-            }
-            BookErrorManager.get().setCurrentBookId(null);
-        }
     }
 }

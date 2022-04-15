@@ -20,9 +20,9 @@
 
 package com.klikli_dev.modonomicon.network.messages;
 
-import com.klikli_dev.modonomicon.book.BookDataManager;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.book.BookDataManager;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.network.Message;
 import net.minecraft.client.Minecraft;
@@ -54,12 +54,12 @@ public class SyncBookDataMessage implements Message {
             book.toNetwork(buf);
 
             buf.writeVarInt(book.getCategories().size());
-            for(var category : book.getCategories().values()) {
+            for (var category : book.getCategories().values()) {
                 buf.writeResourceLocation(category.getId());
                 category.toNetwork(buf);
 
                 buf.writeVarInt(category.getEntries().size());
-                for(var entry : category.getEntries().values()) {
+                for (var entry : category.getEntries().values()) {
                     buf.writeResourceLocation(entry.getId());
                     entry.toNetwork(buf);
                 }
@@ -77,7 +77,7 @@ public class SyncBookDataMessage implements Message {
             this.books.put(bookId, book);
 
             int categoryCount = buf.readVarInt();
-            for (int j = 0; j< categoryCount; j++) {
+            for (int j = 0; j < categoryCount; j++) {
                 ResourceLocation categoryId = buf.readResourceLocation();
                 BookCategory category = BookCategory.fromNetwork(categoryId, buf);
 

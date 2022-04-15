@@ -31,10 +31,9 @@ public class BookErrorManager {
     private static final BookErrorManager instance = new BookErrorManager();
 
     private final Map<ResourceLocation, BookErrorHolder> booksErrors = new HashMap<>();
-
+    private final BookErrorContextHelper contextHelper = new BookErrorContextHelper();
     private ResourceLocation currentBookId;
     private String currentContext;
-    private final BookErrorContextHelper contextHelper = new BookErrorContextHelper();
 
     private BookErrorManager() {
 
@@ -110,8 +109,8 @@ public class BookErrorManager {
     }
 
     /**
-     * Set the context to add to all errors logged after this. Set to null to remove context. Uses
-     * {@link MessageFormatter#format(String, Object)} to format the context.
+     * Set the context to add to all errors logged after this. Set to null to remove context. Uses {@link
+     * MessageFormatter#format(String, Object)} to format the context.
      */
     public void setContext(String context, Object... args) {
         if (context != null) {
@@ -121,8 +120,8 @@ public class BookErrorManager {
         }
     }
 
-    public String getContext(){
-        if(this.currentContext != null){
+    public String getContext() {
+        if (this.currentContext != null) {
             return this.currentContext;
         }
 

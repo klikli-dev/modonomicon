@@ -21,7 +21,6 @@
 package com.klikli_dev.modonomicon.client.gui.book.markdown.ext;
 
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ComponentNodeRendererContext;
-import org.commonmark.ext.gfm.strikethrough.Strikethrough;
 import org.commonmark.ext.ins.Ins;
 import org.commonmark.node.Node;
 import org.commonmark.renderer.NodeRenderer;

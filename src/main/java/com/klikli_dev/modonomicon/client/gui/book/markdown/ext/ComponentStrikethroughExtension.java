@@ -20,14 +20,11 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.markdown.ext;
 
-import com.klikli_dev.modonomicon.client.gui.book.markdown.ComponentNodeRendererContext;
-import com.klikli_dev.modonomicon.client.gui.book.markdown.ComponentNodeRendererFactory;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ComponentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ComponentRenderer.Builder;
 import org.commonmark.Extension;
 import org.commonmark.ext.gfm.strikethrough.internal.StrikethroughDelimiterProcessor;
 import org.commonmark.parser.Parser;
-import org.commonmark.renderer.NodeRenderer;
 
 public class ComponentStrikethroughExtension implements Parser.ParserExtension, ComponentRenderer.ComponentRendererExtension {
 

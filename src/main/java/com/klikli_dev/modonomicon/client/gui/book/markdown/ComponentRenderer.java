@@ -89,12 +89,12 @@ public class ComponentRenderer {
      */
     public static class Builder {
 
+        private final List<LinkRenderer> linkRenderers = new ArrayList<>();
+        private final List<ComponentNodeRendererFactory> nodeRendererFactories = new ArrayList<>();
         private boolean renderSoftLineBreaks = false;
         private boolean replaceSoftLineBreaksWithSpace = true;
         private TextColor linkColor = TextColor.fromRgb(0x5555FF);
         private Style style = Style.EMPTY;
-        private final List<LinkRenderer> linkRenderers = new ArrayList<>();
-        private final List<ComponentNodeRendererFactory> nodeRendererFactories = new ArrayList<>();
 
         /**
          * @return the configured {@link TextContentRenderer}
@@ -187,27 +187,6 @@ public class ComponentRenderer {
             }
         }
 
-        /**
-         * Needs to be called after rendering to handle the last component.
-         */
-        @Override
-        public void cleanupPostRender(){
-            if (!this.isEmptyComponent()) {
-                this.finalizeCurrentComponent();
-            }
-        }
-
-        public boolean isEmptyComponent() {
-            //translation contents have no content, they have a key (which doubles as content).
-            return this.getCurrentComponent().getKey().isEmpty() && this.getCurrentComponent().getSiblings().isEmpty();
-        }
-
-        public void finalizeCurrentComponent() {
-            this.getComponents().add(this.getCurrentComponent());
-            this.setCurrentComponent(this.getListHolder() == null ?
-                    new TranslatableComponent("") : new ListItemComponent(this.getListHolder(), ""));
-        }
-
         @Override
         public TranslatableComponent getCurrentComponent() {
             return ComponentRenderer.this.currentComponent;
@@ -246,6 +225,27 @@ public class ComponentRenderer {
         @Override
         public void render(Node node) {
             this.nodeRendererMap.render(node);
+        }
+
+        /**
+         * Needs to be called after rendering to handle the last component.
+         */
+        @Override
+        public void cleanupPostRender() {
+            if (!this.isEmptyComponent()) {
+                this.finalizeCurrentComponent();
+            }
+        }
+
+        public boolean isEmptyComponent() {
+            //translation contents have no content, they have a key (which doubles as content).
+            return this.getCurrentComponent().getKey().isEmpty() && this.getCurrentComponent().getSiblings().isEmpty();
+        }
+
+        public void finalizeCurrentComponent() {
+            this.getComponents().add(this.getCurrentComponent());
+            this.setCurrentComponent(this.getListHolder() == null ?
+                    new TranslatableComponent("") : new ListItemComponent(this.getListHolder(), ""));
         }
 
         @Override

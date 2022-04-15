@@ -28,14 +28,13 @@ import net.minecraft.network.chat.TranslatableComponent;
 import org.commonmark.Extension;
 import org.commonmark.parser.Parser;
 
-import java.util.Collection;
 import java.util.List;
 
 public class BookTextRenderer {
 
     private final Parser markdownParser;
 
-    private List<Extension> extensions;
+    private final List<Extension> extensions;
 
     public BookTextRenderer() {
         //TODO: make parser configurable for modders
@@ -44,7 +43,8 @@ public class BookTextRenderer {
                 .extensions(this.extensions)
                 .build();
     }
-    public List<TranslatableComponent> render(String markdown){
+
+    public List<TranslatableComponent> render(String markdown) {
         return this.render(markdown, Style.EMPTY);
     }
 

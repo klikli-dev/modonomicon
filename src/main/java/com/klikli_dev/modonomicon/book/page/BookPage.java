@@ -25,7 +25,6 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
-import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.MarkdownComponentRenderUtils;
@@ -75,7 +74,7 @@ public abstract class BookPage {
     /**
      * Called after build() (after loading the book jsons) to render markdown and store any errors
      */
-    public void prerenderMarkdown(BookTextRenderer textRenderer){
+    public void prerenderMarkdown(BookTextRenderer textRenderer) {
     }
 
     /**

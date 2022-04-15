@@ -22,8 +22,8 @@ package com.klikli_dev.modonomicon.book.page;
 
 public interface PageWithText {
     /**
-     * Gets the x-coordinate where text starts on this page.
-     * Use this to handle shifting down text below other content such as title.
+     * Gets the x-coordinate where text starts on this page. Use this to handle shifting down text below other content
+     * such as title.
      */
     int getTextY();
 }

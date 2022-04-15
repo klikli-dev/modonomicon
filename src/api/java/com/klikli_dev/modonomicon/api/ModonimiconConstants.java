@@ -51,7 +51,7 @@ public class ModonimiconConstants {
     }
 
     public static class I18n {
-        public static final String BOOK_PREFIX = "book." +ModonomiconAPI.ID + ".";
+        public static final String BOOK_PREFIX = "book." + ModonomiconAPI.ID + ".";
         public static final String ITEM_GROUP = "itemGroup." + ModonomiconAPI.ID;
 
         public static class Gui {

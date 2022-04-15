@@ -32,18 +32,18 @@ import java.util.List;
 
 public class MarkdownComponentRenderUtils {
     /**
-     * Adopted from {@link net.minecraft.client.gui.components.ComponentRenderUtils#wrapComponents(FormattedText, int, Font)}
-     * Wraps translatable components and gracefully handles markdown lists.
-     * @param text the text to wrap.
-     * @param width the max width of the text to wrap at
-     * @param listWidth the alternate width to use for lists. This is a hack to avoid issues
-     *                  with indent for wrapped lines causing the lines to exceed the width.
-     *                  Could be e.g. width-10
-     * @param font The font to use, will usually be Minecraft.getInstance().font;
+     * Adopted from {@link net.minecraft.client.gui.components.ComponentRenderUtils#wrapComponents(FormattedText, int,
+     * Font)} Wraps translatable components and gracefully handles markdown lists.
+     *
+     * @param text      the text to wrap.
+     * @param width     the max width of the text to wrap at
+     * @param listWidth the alternate width to use for lists. This is a hack to avoid issues with indent for wrapped
+     *                  lines causing the lines to exceed the width. Could be e.g. width-10
+     * @param font      The font to use, will usually be Minecraft.getInstance().font;
      * @return a list of wrapped lines ready to render via font.
      */
     public static List<FormattedCharSequence> wrapComponents(TranslatableComponent text, int width, int listWidth, Font font) {
-        if(text instanceof ListItemComponent){
+        if (text instanceof ListItemComponent) {
             width = listWidth;
         }
 
@@ -51,7 +51,7 @@ public class MarkdownComponentRenderUtils {
         font.getSplitter().splitLines(text, width, Style.EMPTY, (lineText, isWrapped) -> {
             FormattedCharSequence formattedcharsequence = Language.getInstance().getVisualOrder(lineText);
             var indent = FormattedCharSequence.EMPTY;
-            if(text instanceof ListItemComponent item){
+            if (text instanceof ListItemComponent item) {
                 indent = FormattedCharSequence.forward(item.getListHolder().getIndent() + "   ", Style.EMPTY);
             }
             list.add(isWrapped ? FormattedCharSequence.composite(indent, formattedcharsequence) : formattedcharsequence);

@@ -23,9 +23,9 @@ package com.klikli_dev.modonomicon.registry;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.item.ModonomiconItem;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public class ItemRegistry {
     //TODO: make mod loader agnostic

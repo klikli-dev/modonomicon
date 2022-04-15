@@ -73,8 +73,9 @@ public interface ComponentNodeRendererContext {
     /**
      * Render the specified node and its children using the configured renderers. This should be used to render child
      * nodes; be careful not to pass the node that is being rendered, that would result in an endless loop.
-     *
+     * <p>
      * IMPORTANT: call cleanupPostRender after!
+     *
      * @param node the node to render
      */
     void render(Node node);
@@ -95,14 +96,12 @@ public interface ComponentNodeRendererContext {
     void finalizeCurrentComponent();
 
     /**
-     * True to render soft line breaks (deviating from MD spec).
-     * Should usually be false.
+     * True to render soft line breaks (deviating from MD spec). Should usually be false.
      */
     boolean getRenderSoftLineBreaks();
 
     /**
-     * True to replace soft line breaks with spaces.
-     * Should usually be true, prevents IDE line breaks from causing words
+     * True to replace soft line breaks with spaces. Should usually be true, prevents IDE line breaks from causing words
      * to be rendered without spaces inbetween.
      */
     boolean getReplaceSoftLineBreaksWithSpace();
@@ -113,8 +112,8 @@ public interface ComponentNodeRendererContext {
     TextColor getLinkColor();
 
     /**
-     * Gets the link renderers for the component renderer.
-     * These are used to create additional markdown functionality by (ab)using the link syntax.
+     * Gets the link renderers for the component renderer. These are used to create additional markdown functionality by
+     * (ab)using the link syntax.
      */
     List<LinkRenderer> getLinkRenderers();
 }

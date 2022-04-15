@@ -28,9 +28,6 @@ import com.klikli_dev.modonomicon.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.datagen.book.BookEntryParentModel;
 import com.klikli_dev.modonomicon.datagen.book.BookModel;
 import com.klikli_dev.modonomicon.datagen.book.page.BookTextPageModel;
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.TickTrigger;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
@@ -77,7 +74,7 @@ public class BookGenerator implements DataProvider {
     }
 
     private void start() {
-        var testCat = makeTestCat();
+        var testCat = this.makeTestCat();
         var testBook = BookModel.builder()
                 .withId(this.modLoc("test_book"))
                 .withName("modonomicon.test_book.name")
@@ -86,7 +83,7 @@ public class BookGenerator implements DataProvider {
         this.add(testBook);
     }
 
-    private BookCategoryModel makeTestCat(){
+    private BookCategoryModel makeTestCat() {
         var page1 = BookTextPageModel.builder()
                 .withText("modonomicon.test_cat.page1.text")
                 .withTitle("modonomicon.test_cat.page1.title")
@@ -141,7 +138,7 @@ public class BookGenerator implements DataProvider {
                 Modonomicon.LOGGER.error("Couldn't save book {}", bookPath, exception);
             }
 
-            for(var bookCategoryModel : bookModel.getCategories()){
+            for (var bookCategoryModel : bookModel.getCategories()) {
                 Path bookCategoryPath = getPath(folder, bookCategoryModel);
                 try {
                     DataProvider.save(GSON, cache, bookCategoryModel.toJson(), bookCategoryPath);
@@ -149,7 +146,7 @@ public class BookGenerator implements DataProvider {
                     Modonomicon.LOGGER.error("Couldn't save book category {}", bookCategoryPath, exception);
                 }
 
-                for(var bookEntryModel : bookCategoryModel.getEntries()){
+                for (var bookEntryModel : bookCategoryModel.getEntries()) {
                     Path bookEntryPath = getPath(folder, bookEntryModel);
                     try {
                         DataProvider.save(GSON, cache, bookEntryModel.toJson(), bookEntryPath);

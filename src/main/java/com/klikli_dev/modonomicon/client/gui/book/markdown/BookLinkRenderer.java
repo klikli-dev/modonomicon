@@ -45,10 +45,10 @@ public class BookLinkRenderer implements LinkRenderer {
 
             var bookLink = BookLink.from(link.getDestination());
             var goToText = bookLink.bookId.toString().replace(":", ".");
-            if(bookLink.categoryId != null) {
+            if (bookLink.categoryId != null) {
                 goToText = bookLink.categoryId.toString().replace(":", ".");
             }
-            if(bookLink.entryId != null) {
+            if (bookLink.entryId != null) {
                 goToText = bookLink.entryId.toString().replace(":", ".");
             }
             var hoverComponent = new TranslatableComponent(Gui.HOVER_BOOK_LINK, goToText);

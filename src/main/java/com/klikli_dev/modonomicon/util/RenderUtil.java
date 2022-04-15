@@ -27,7 +27,8 @@ import net.minecraft.world.item.ItemStack;
 
 public class RenderUtil {
     /**
-     * Applies the pose stack to the openGL matrix, then renders using @{@link net.minecraft.client.renderer.entity.ItemRenderer#renderAndDecorateItem(ItemStack, int, int)}
+     * Applies the pose stack to the openGL matrix, then renders using @{@link net.minecraft.client.renderer.entity.ItemRenderer#renderAndDecorateItem(ItemStack,
+     * int, int)}
      */
     public static void renderAndDecorateItemWithPose(PoseStack poseStack, ItemStack stack, int x, int y) {
         PoseStack glPoseStack = RenderSystem.getModelViewStack();

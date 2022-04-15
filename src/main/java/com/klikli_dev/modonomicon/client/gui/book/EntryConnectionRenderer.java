@@ -168,17 +168,15 @@ public class EntryConnectionRenderer {
                 this.renderLinedUpEntries(stack, entry, parentEntry, parent, deltaX == 0);
             } else {
                 if (deltaX < 2 || deltaY < 2) {
-                    if(!parent.isLineReversed()){
+                    if (!parent.isLineReversed()) {
                         this.renderSmallCurves(stack, entry, parentEntry, parent);
-                    }
-                    else {
+                    } else {
                         this.renderSmallCurvesReversed(stack, entry, parentEntry, parent);
                     }
                 } else {
-                    if(!parent.isLineReversed()){
+                    if (!parent.isLineReversed()) {
                         this.renderLargeCurves(stack, entry, parentEntry, parent);
-                    }
-                    else {
+                    } else {
                         this.renderLargeCurvesReversed(stack, entry, parentEntry, parent);
                     }
                 }
@@ -271,11 +269,11 @@ public class EntryConnectionRenderer {
         }
     }
 
-    void drawHorizontalLineShortened(PoseStack stack, int y, int startX, int endX){
+    void drawHorizontalLineShortened(PoseStack stack, int y, int startX, int endX) {
         int temp = startX;
 
         // reduce length by one
-        if(startX > endX)
+        if (startX > endX)
             endX++;
         else
             endX--;
@@ -284,15 +282,15 @@ public class EntryConnectionRenderer {
         startX = min(startX, endX);
         endX = max(endX, temp);
 
-        for(int j = startX + 1; j < endX; j++)
+        for (int j = startX + 1; j < endX; j++)
             this.drawHorizontalLineAt(stack, j, y);
     }
 
-    void drawVerticalLineShortened(PoseStack stack, int x, int startY, int endY){
+    void drawVerticalLineShortened(PoseStack stack, int x, int startY, int endY) {
         int temp = startY;
 
         // reduce length by one
-        if(startY > endY)
+        if (startY > endY)
             endY++;
         else
             endY--;
@@ -301,7 +299,7 @@ public class EntryConnectionRenderer {
         startY = min(startY, endY);
         endY = max(endY, temp);
 
-        for(int j = startY + 1; j < endY; j++)
+        for (int j = startY + 1; j < endY; j++)
             this.drawVerticalLineAt(stack, x, j);
     }
 

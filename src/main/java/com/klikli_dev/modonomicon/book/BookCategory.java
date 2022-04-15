@@ -54,32 +54,8 @@ public class BookCategory {
         this.entries = new HashMap<>();
     }
 
-    /**
-     * call after loading the book jsons to finalize.
-     */
-    public void build(Book book) {
-        this.book = book;
-
-        for(var entry : this.entries.values()) {
-            BookErrorManager.get().getContextHelper().entryId = entry.getId();
-            entry.build(this);
-            BookErrorManager.get().getContextHelper().entryId = null;
-        }
-    }
-
-    /**
-     * Called after build() (after loading the book jsons) to render markdown and store any errors
-     */
-    public void prerenderMarkdown(BookTextRenderer textRenderer){
-        for (var entry : this.entries.values()) {
-            BookErrorManager.get().getContextHelper().entryId = entry.getId();
-            entry.prerenderMarkdown(textRenderer);
-            BookErrorManager.get().getContextHelper().entryId = null;
-        }
-    }
-
     public static BookCategory fromJson(ResourceLocation id, JsonObject json, ResourceLocation bookId) {
-        var name = GsonHelper.getAsString(json,"name");
+        var name = GsonHelper.getAsString(json, "name");
         var sortNumber = GsonHelper.getAsInt(json, "sort_number", -1);
         var icon = BookIcon.fromString(GsonHelper.getAsString(json, "icon"));
         var background = new ResourceLocation(GsonHelper.getAsString(json, "background", Category.DEFAULT_BACKGROUND));
@@ -95,6 +71,30 @@ public class BookCategory {
         var background = buffer.readResourceLocation();
         var entryTextures = buffer.readResourceLocation();
         return new BookCategory(id, bookId, name, sortNumber, icon, background, entryTextures);
+    }
+
+    /**
+     * call after loading the book jsons to finalize.
+     */
+    public void build(Book book) {
+        this.book = book;
+
+        for (var entry : this.entries.values()) {
+            BookErrorManager.get().getContextHelper().entryId = entry.getId();
+            entry.build(this);
+            BookErrorManager.get().getContextHelper().entryId = null;
+        }
+    }
+
+    /**
+     * Called after build() (after loading the book jsons) to render markdown and store any errors
+     */
+    public void prerenderMarkdown(BookTextRenderer textRenderer) {
+        for (var entry : this.entries.values()) {
+            BookErrorManager.get().getContextHelper().entryId = entry.getId();
+            entry.prerenderMarkdown(textRenderer);
+            BookErrorManager.get().getContextHelper().entryId = null;
+        }
     }
 
     public ResourceLocation getId() {

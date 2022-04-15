@@ -27,7 +27,7 @@ public class BookErrorContextHelper {
     public ResourceLocation entryId;
     public int pageNumber = 1;
 
-    public void reset(){
+    public void reset() {
         this.categoryId = null;
         this.entryId = null;
         this.pageNumber = -1;
