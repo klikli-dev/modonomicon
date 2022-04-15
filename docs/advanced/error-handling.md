@@ -1,6 +1,5 @@
 ---
-sidebar_position: 10
-sidebar_label: Error Handling
+sidebar_position: 20
 title: Error Handling
 ---
 
