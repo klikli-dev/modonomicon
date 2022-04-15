@@ -73,6 +73,9 @@ public abstract class LangGenerator extends LanguageProvider {
 
             //sounds
             this.add(Subtitles.TURN_PAGE, "Turn Page");
+
+            //Others
+            this.add(Gui.NO_ERRORS_FOUND, "No errors found. You should not see this page!");
         }
 
         private void addItems() {

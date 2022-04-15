@@ -62,6 +62,9 @@ public class ModonimiconConstants {
 
             public static final String HOVER_BOOK_LINK = PREFIX + "hover.book_link";
             public static final String HOVER_HTTP_LINK = PREFIX + "hover.http_link";
+
+
+            public static final String NO_ERRORS_FOUND = PREFIX + "no_errors_found";
         }
 
         public static class Subtitles {

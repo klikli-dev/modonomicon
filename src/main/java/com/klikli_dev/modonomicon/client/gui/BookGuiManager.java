@@ -22,11 +22,13 @@ package com.klikli_dev.modonomicon.client.gui;
 
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.book.BookDataManager;
 import com.klikli_dev.modonomicon.book.BookEntry;
+import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookCategoryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.BookErrorScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookOverviewScreen;
-import com.klikli_dev.modonomicon.book.BookDataManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -45,20 +47,35 @@ public class BookGuiManager {
     private BookCategoryScreen currentCategoryScreen;
     private BookContentScreen currentContentScreen;
 
+    private BookGuiManager() {
+
+    }
+
     public static BookGuiManager get() {
         return instance;
     }
 
-    private BookGuiManager(){
-
+    public boolean showErrorScreen(ResourceLocation bookId) {
+        if (BookErrorManager.get().hasErrors(bookId)) {
+            var book = BookDataManager.get().getBook(bookId);
+            ForgeHooksClient.clearGuiLayers(Minecraft.getInstance());
+            Minecraft.getInstance().setScreen(new BookErrorScreen(book));
+            return true;
+        }
+        return false;
     }
 
     public void openBook(ItemStack stack) {
         //TODO: we probably want to remember the last page and stuff here
         var bookId = new ResourceLocation("modonomicon", "test"); //TODO: Get from stack
+
+        if (this.showErrorScreen(bookId)) {
+            return;
+        }
+
         var book = BookDataManager.get().getBook(bookId);
 
-        if(this.currentBook == book && this.currentOverviewScreen != null){
+        if (this.currentBook == book && this.currentOverviewScreen != null) {
             Minecraft.getInstance().setScreen(this.currentOverviewScreen);
         } else {
             this.currentBook = book;
@@ -67,59 +84,63 @@ public class BookGuiManager {
         }
     }
 
-    public void openEntry(ResourceLocation bookId, ResourceLocation entryId, int page){
+    public void openEntry(ResourceLocation bookId, ResourceLocation entryId, int page) {
         var book = BookDataManager.get().getBook(bookId);
         var entry = book.getEntry(entryId);
         this.openEntry(bookId, entry.getCategoryId(), entryId, page);
     }
 
     /**
-     * Opens the book at the given location. Will open as far as possible (meaning, if category and entry are null, it will not open those obviously).
+     * Opens the book at the given location. Will open as far as possible (meaning, if category and entry are null, it
+     * will not open those obviously).
      */
-    public void openEntry(ResourceLocation bookId, @Nullable ResourceLocation categoryId, @Nullable ResourceLocation entryId, int page){
-        if(bookId == null){
+    public void openEntry(ResourceLocation bookId, @Nullable ResourceLocation categoryId, @Nullable ResourceLocation entryId, int page) {
+        if (bookId == null) {
             throw new IllegalArgumentException("bookId cannot be null");
         }
 
+        if (this.showErrorScreen(bookId)) {
+            return;
+        }
+
         var book = BookDataManager.get().getBook(bookId);
-        if(this.currentBook != book){
+        if (this.currentBook != book) {
             this.currentBook = book;
         }
 
-        if(this.currentOverviewScreen == null || this.currentOverviewScreen.getBook() != book){
+        if (this.currentOverviewScreen == null || this.currentOverviewScreen.getBook() != book) {
             this.currentOverviewScreen = new BookOverviewScreen(book);
         }
 
-        //TODO: layer cleanup
         ForgeHooksClient.clearGuiLayers(Minecraft.getInstance());
         Minecraft.getInstance().setScreen(this.currentOverviewScreen);
 
-        if(categoryId == null){
+        if (categoryId == null) {
             //if no category is provided, just open the book and exit.
             return;
         }
 
         var category = book.getCategory(categoryId);
-        if(this.currentCategory != category){
+        if (this.currentCategory != category) {
             this.currentCategory = category;
         }
 
-        if(this.currentCategoryScreen == null || this.currentCategoryScreen.getCategory() != category){
+        if (this.currentCategoryScreen == null || this.currentCategoryScreen.getCategory() != category) {
             this.currentOverviewScreen.changeCategory(category);
             this.currentCategoryScreen = this.currentOverviewScreen.getCurrentCategoryScreen();
         }
 
-        if(entryId == null){
+        if (entryId == null) {
             //if no entry is provided, just open the book and category and exit.
             return;
         }
 
         var entry = book.getEntry(entryId);
-        if(this.currentEntry != entry){
+        if (this.currentEntry != entry) {
             this.currentEntry = entry;
         }
 
-        if(this.currentContentScreen == null || this.currentContentScreen.getEntry() != entry){
+        if (this.currentContentScreen == null || this.currentContentScreen.getEntry() != entry) {
             this.currentContentScreen = this.currentCategoryScreen.openEntry(entry);
         }
 
