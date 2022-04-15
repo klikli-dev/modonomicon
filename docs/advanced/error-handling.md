@@ -64,6 +64,12 @@ exception='java.lang.IllegalArgumentException: Invalid entry link, anchor not fo
 }
 ```
 
+:::caution
+
+If you notice any issues such as crashes or log entries, but no Modonomicon error log in the above format or no Modonomicon error screen shown, please report this at https://github.com/klikli-dev/modonomicon/issues 
+
+:::
+
 ### Finding Modonomicon Errors in the Log
 
 Search log files for `BookErrorManager.error() called for book` to find any errors handled by Modonomicon.
