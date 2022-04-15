@@ -64,7 +64,7 @@ public class BookErrorScreen extends Screen {
 
         GuiComponent.blit(poseStack, x, y, 0, 0, 272, 178, 512, 256);
     }
-    
+
     public void renderError(Component text, PoseStack pPoseStack, int x, int y, int width) {
         for (FormattedCharSequence formattedcharsequence : this.font.split(text, width)) {
             this.font.draw(pPoseStack, formattedcharsequence, x, y, 0);

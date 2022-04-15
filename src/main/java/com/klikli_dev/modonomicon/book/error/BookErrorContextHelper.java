@@ -38,6 +38,6 @@ public class BookErrorContextHelper {
         var categoryId = this.categoryId == null ? "null" : this.categoryId.toString();
         var entryId = this.entryId == null ? "null" : this.entryId.toString();
         var pageNumber = this.pageNumber == -1 ? "null" : this.pageNumber;
-        return "Category: " + categoryId + ", Entry: " + entryId + ", Page: " + pageNumber;
+        return "Category: " + categoryId + ", \nEntry: " + entryId + ", \nPage: " + pageNumber;
     }
 }

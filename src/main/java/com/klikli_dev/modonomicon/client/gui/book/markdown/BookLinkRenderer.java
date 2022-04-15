@@ -38,7 +38,7 @@ public class BookLinkRenderer implements LinkRenderer {
         if (BookLink.isBookLink(link.getDestination())) {
             var currentColor = context.getCurrentStyle().getColor();
 
-            BookErrorManager.get().setContext("Link: {}, {}",
+            BookErrorManager.get().setContext("Link: {}, \n{}",
                     link.getDestination(),
                     BookErrorManager.get().getContextHelper()
             );

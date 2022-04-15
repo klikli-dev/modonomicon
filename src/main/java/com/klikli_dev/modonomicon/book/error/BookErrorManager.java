@@ -115,7 +115,7 @@ public class BookErrorManager {
      */
     public void setContext(String context, Object... args) {
         if (context != null) {
-            this.currentContext = MessageFormatter.format(context, args).getMessage();
+            this.currentContext = MessageFormatter.arrayFormat(context, args).getMessage();
         } else {
             this.currentContext = null;
         }

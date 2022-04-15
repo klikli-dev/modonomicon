@@ -36,10 +36,10 @@ public class BookErrorInfo {
         var errorMessage = this.errorMessage == null ? "" : this.errorMessage;
         var context = this.context == null ? "" : this.context;
         var exception = this.exception == null ? "" : this.exception.toString();
-        return "BookErrorInfo{" +
-                "errorMessage='" + errorMessage + "'" +
-                ", context='" + context + "'" +
-                ", exception='" + exception + "'" +
-                '}';
+        return "BookErrorInfo{ " +
+                "\nerrorMessage='" + errorMessage + "'" +
+                ", \ncontext='" + context + "'" +
+                ", \nexception='" + exception + "'" +
+                "\n}";
     }
 }
