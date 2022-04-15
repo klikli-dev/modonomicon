@@ -8,6 +8,7 @@
   "modonomicon.gui.button.previous_page": "Previous Page",
   "modonomicon.gui.hover.book_link": "Go to: %s",
   "modonomicon.gui.hover.http_link": "Visit: %s",
+  "modonomicon.gui.no_errors_found": "No errors found. You should not see this page!",
   "modonomicon.subtitles.turn_page": "Turn Page",
   "modonomicon.test.entries.test_category.test_entry.description": "Test Description",
   "modonomicon.test.sections.test_category.test_entry.page0.text": "[This is a **link** text](https://www.google.com).\nWe have a newline here.\n- List item\n- List item 2\n- List item 3\n\nAnd this is a super long line where we hope it will be automatically wrapped into a new line otherwise that is super-bad.\n",
@@ -17,5 +18,6 @@
   "modonomicon.test.sections.test_category.test_entry.page2.text": "And this is our page three.\n",
   "modonomicon.test.sections.test_category.test_entry.page2.title": "Page 3",
   "modonomicon.test.sections.test_category.test_entry_child.page2.text": "And this is our page three.\n[With link](entry://modonomicon:test/test_category/test_entry@test_anchor)\n",
+  "modonomicon.test.sections.test_category.test_entry_child.page_with_error.text": "Page with invalid link!\n[With link](entry://modonomicon:test/test_category/test_entry2@test_anchor)\n",
   "modonomicon.test_book.title": "Test Book"
 }
