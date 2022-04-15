@@ -1,5 +1,5 @@
 /*
- * LGPL-3-0
+ * LGPL-3.0
  *
  * Copyright (C) 2022 klikli-dev
  *
