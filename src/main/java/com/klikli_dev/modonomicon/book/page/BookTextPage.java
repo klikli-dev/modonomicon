@@ -29,11 +29,9 @@ import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.GsonHelper;
 
 import javax.annotation.Nullable;
@@ -97,8 +95,8 @@ public class BookTextPage extends BookPage implements PageWithText {
     }
 
     @Override
-    public void onBeginDisplayPage(BookContentScreen parentScreen, BookTextRenderer textRenderer, int left, int top) {
-        super.onBeginDisplayPage(parentScreen, textRenderer, left, top);
+    public void prerenderMarkdown(BookTextRenderer textRenderer) {
+        super.prerenderMarkdown(textRenderer);
 
         if (!this.title.hasComponent()) {
             if (this.useMarkdownInTitle) {
@@ -124,7 +122,7 @@ public class BookTextPage extends BookPage implements PageWithText {
         this.renderBookTextHolder(this.getText(), poseStack, 0, this.getTextY(), BookContentScreen.PAGE_WIDTH);
 
         var style = this.getClickedComponentStyleAt(mouseX, mouseY);
-        if(style != null)
+        if (style != null)
             this.parentScreen.renderComponentHoverEffect(poseStack, style, mouseX, mouseY);
     }
 
@@ -140,16 +138,16 @@ public class BookTextPage extends BookPage implements PageWithText {
     @Nullable
     @Override
     public Style getClickedComponentStyleAt(double pMouseX, double pMouseY) {
-        if(pMouseX > 0 && pMouseY > 0){
-            if(this.hasTitle()){
+        if (pMouseX > 0 && pMouseY > 0) {
+            if (this.hasTitle()) {
                 var titleStyle = this.getClickedComponentStyleAtForTitle(this.title, BookContentScreen.PAGE_WIDTH / 2, 0, pMouseX, pMouseY);
-                if(titleStyle != null) {
+                if (titleStyle != null) {
                     return titleStyle;
                 }
             }
 
             var textStyle = this.getClickedComponentStyleAtForTextHolder(this.text, 0, this.getTextY(), BookContentScreen.PAGE_WIDTH, pMouseX, pMouseY);
-            if(textStyle != null) {
+            if (textStyle != null) {
                 return textStyle;
             }
         }

@@ -22,7 +22,9 @@ package com.klikli_dev.modonomicon.book;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.registry.BookPageLoaderRegistry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -117,6 +119,9 @@ public class BookEntry {
         return new BookEntry(id, categoryId, name, description, icon, x, y, parentEntries, pages);
     }
 
+    /**
+     * call after loading the book jsons to finalize.
+     */
     public void build(BookCategory category) {
         this.category = category;
         this.book = category.getBook();
@@ -132,7 +137,21 @@ public class BookEntry {
         //build pages
         int pageNum = 0;
         for (var page : this.pages) {
-            page.build(this, pageNum++);
+            BookErrorManager.get().getContextHelper().pageNumber = pageNum;
+            page.build(this, pageNum);
+            BookErrorManager.get().getContextHelper().pageNumber = -1;
+            pageNum++;
+        }
+    }
+
+    /**
+     * Called after build() (after loading the book jsons) to render markdown and store any errors
+     */
+    public void prerenderMarkdown(BookTextRenderer textRenderer){
+        for (var page : this.pages) {
+            BookErrorManager.get().getContextHelper().pageNumber = page.getPageNumber();
+            page.prerenderMarkdown(textRenderer);
+            BookErrorManager.get().getContextHelper().pageNumber = -1;
         }
     }
 

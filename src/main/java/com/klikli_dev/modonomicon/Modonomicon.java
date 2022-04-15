@@ -33,6 +33,7 @@ import com.klikli_dev.modonomicon.registry.BookPageLoaderRegistry;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import com.klikli_dev.modonomicon.registry.MenuRegistry;
 import com.klikli_dev.modonomicon.registry.SoundRegistry;
+import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.api.distmarker.Dist;
@@ -47,13 +48,12 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 @Mod(Modonomicon.MODID)
 public class Modonomicon {
     public static final String MODID = ModonomiconAPI.ID;
-    public static final Logger LOGGER = LogManager.getLogger(MODID);
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public static final CreativeModeTab CREATIVE_MODE_TAB = new ModonomiconCreativeModeTab();
 

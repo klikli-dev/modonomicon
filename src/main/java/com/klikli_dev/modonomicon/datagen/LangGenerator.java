@@ -73,6 +73,9 @@ public abstract class LangGenerator extends LanguageProvider {
 
             //sounds
             this.add(Subtitles.TURN_PAGE, "Turn Page");
+
+            //Others
+            this.add(Gui.NO_ERRORS_FOUND, "No errors found. You should not see this page!");
         }
 
         private void addItems() {
@@ -116,6 +119,12 @@ public abstract class LangGenerator extends LanguageProvider {
                     """
                    And this is our page three.    
                    [With link](entry://modonomicon:test/test_category/test_entry@test_anchor)
+                    """);
+
+            this.add("modonomicon.test.sections.test_category.test_entry_child.page_with_error.text",
+                    """
+                   Page with invalid link! 
+                   [With link](entry://modonomicon:test/test_category/test_entry2@test_anchor)
                     """);
         }
 

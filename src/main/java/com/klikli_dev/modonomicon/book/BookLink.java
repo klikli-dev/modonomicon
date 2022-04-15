@@ -20,6 +20,8 @@
 
 package com.klikli_dev.modonomicon.book;
 
+import com.klikli_dev.modonomicon.book.error.BookErrorHolder;
+import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.StringUtils;
 
@@ -99,7 +101,17 @@ public class BookLink {
             var postAt = entryId.substring(lastAtIndex);
             var path = StringUtils.removeEnd(entryId.substring(0, lastAtIndex), "/"); //remove trailing /
             bookLink.entryId = new ResourceLocation(book.getId().getNamespace(), path);
+            var entry = book.getEntry(bookLink.entryId);
+            if(entry == null){
+                throw new IllegalArgumentException("Invalid entry link, entry not found in book: " + linkText);
+            }
+
             bookLink.pageAnchor = postAt;
+            if(entry.getPageNumberForAnchor(bookLink.pageAnchor) == -1){
+                throw new IllegalArgumentException("Invalid entry link, anchor not found in entry: " + linkText);
+            }
+
+            return bookLink;
         }
 
         int lastHashIndex = entryId.lastIndexOf("#");
@@ -108,10 +120,17 @@ public class BookLink {
             var postHash = entryId.substring(lastHashIndex);
             var path = StringUtils.removeEnd(entryId.substring(0, lastHashIndex), "/"); //remove trailing /
             bookLink.entryId = new ResourceLocation(book.getId().getNamespace(), path);
+            if(book.getEntry(bookLink.entryId) == null){
+                throw new IllegalArgumentException("Invalid entry link, entry not found in book: " + linkText);
+            }
             try{
                 bookLink.pageNumber = Integer.parseInt(postHash);
+                //check if page number is valid
+                if(bookLink.pageNumber < 0 || bookLink.pageNumber >= book.getEntry(bookLink.entryId).getPages().size()){
+                    throw new IllegalArgumentException("Invalid entry link, page number not found in entry: " + linkText);
+                }
             } catch (NumberFormatException e) {
-                //TODO: book error handling
+                BookErrorManager.get().error("Invalid page number in entry link: " + linkText, e);
             }
 
             return bookLink;
@@ -119,6 +138,9 @@ public class BookLink {
 
         //handle no page number/anchor
         bookLink.entryId = new ResourceLocation(book.getId().getNamespace(), entryId);
+        if(book.getEntry(bookLink.entryId) == null){
+            throw new IllegalArgumentException("Invalid entry link, entry not found in book: " + linkText);
+        }
         return bookLink;
     }
 

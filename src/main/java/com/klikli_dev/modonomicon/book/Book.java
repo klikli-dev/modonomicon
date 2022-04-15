@@ -22,6 +22,8 @@ package com.klikli_dev.modonomicon.book;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data;
+import com.klikli_dev.modonomicon.book.error.BookErrorManager;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -75,6 +77,9 @@ public class Book {
         return this.turnPageSound;
     }
 
+    /**
+     * call after loading the book jsons to finalize.
+     */
     public void build() {
         //first "backlink" all our entries directly into the book
         for (var category : this.categories.values()) {
@@ -85,7 +90,20 @@ public class Book {
 
         //then build categories, which will in turn build entries (which need the above backlinks to resolve parents)
         for (var category : this.categories.values()) {
+            BookErrorManager.get().getContextHelper().categoryId = category.getId();
             category.build(this);
+            BookErrorManager.get().getContextHelper().categoryId = null;
+        }
+    }
+
+    /**
+     * Called after build() (after loading the book jsons) to render markdown and store any errors
+     */
+    public void prerenderMarkdown(BookTextRenderer textRenderer){
+        for (var category : this.categories.values()) {
+            BookErrorManager.get().getContextHelper().categoryId = category.getId();
+            category.prerenderMarkdown(textRenderer);
+            BookErrorManager.get().getContextHelper().categoryId = null;
         }
     }
 
