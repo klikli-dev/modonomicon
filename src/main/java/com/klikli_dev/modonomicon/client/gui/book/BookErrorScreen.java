@@ -41,10 +41,9 @@ public class BookErrorScreen extends Screen {
     public static final int BOOK_BACKGROUND_WIDTH = 272;
     public static final int BOOK_BACKGROUND_HEIGHT = 178;
     private static final ResourceLocation BOOK_CONTENT_TEXTURE = new ResourceLocation(Modonomicon.MODID, "textures/gui/book_content.png");
+    private final Book book;
     private int bookLeft;
     private int bookTop;
-
-    private final Book book;
     private Component errorText;
 
     public BookErrorScreen(Book book) {
@@ -65,7 +64,29 @@ public class BookErrorScreen extends Screen {
 
         GuiComponent.blit(poseStack, x, y, 0, 0, 272, 178, 512, 256);
     }
+    
+    public void renderError(Component text, PoseStack pPoseStack, int x, int y, int width) {
+        for (FormattedCharSequence formattedcharsequence : this.font.split(text, width)) {
+            this.font.draw(pPoseStack, formattedcharsequence, x, y, 0);
+            y += this.font.lineHeight;
+        }
+    }
 
+    public void prepareError() {
+        var errorHolder = BookErrorManager.get().getErrors(this.book.getId());
+        if (errorHolder.getErrors().isEmpty()) {
+            this.errorText = new TranslatableComponent(Gui.NO_ERRORS_FOUND);
+            Modonomicon.LOGGER.warn("No errors found for book {}, but error screen was opened!", this.book.getId());
+        } else {
+            var firstError = errorHolder.getErrors().get(0);
+
+            var errorString = firstError.toString();
+            if (errorHolder.getErrors().size() > 1) {
+                errorString += "\n\n(" + (errorHolder.getErrors().size() - 1) + " more errors, see log)";
+            }
+            this.errorText = new TextComponent(errorString);
+        }
+    }
 
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
@@ -84,29 +105,6 @@ public class BookErrorScreen extends Screen {
         pPoseStack.translate(this.bookLeft, this.bookTop, 0);
         this.renderError(this.errorText, pPoseStack, 15, 15, BOOK_BACKGROUND_WIDTH - 30);
         pPoseStack.popPose();
-    }
-
-    public void renderError(Component text, PoseStack pPoseStack, int x, int y, int width){
-        for (FormattedCharSequence formattedcharsequence : this.font.split(text, width)) {
-            this.font.draw(pPoseStack, formattedcharsequence, x, y, 0);
-            y += this.font.lineHeight;
-        }
-    }
-
-    public void prepareError(){
-        var errorHolder = BookErrorManager.get().getErrors(book.getId());
-        if(errorHolder.getErrors().isEmpty()){
-            this.errorText = new TranslatableComponent(Gui.NO_ERRORS_FOUND);
-            Modonomicon.LOGGER.warn("No errors found for book {}, but error screen was opened!", book.getId());
-        } else {
-            var firstError = errorHolder.getErrors().get(0);
-
-            var errorString = firstError.toString();
-            if(errorHolder.getErrors().size() > 1){
-                errorString += "\n\n(" + (errorHolder.getErrors().size() - 1) + " more errors, see log)";
-            }
-            this.errorText = new TextComponent(errorString);
-        }
     }
 
     @Override
