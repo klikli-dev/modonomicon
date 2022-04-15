@@ -27,7 +27,7 @@ Whenever a page supports texts there are two options:
 
 ## Text Page
 
-![Text Page](/img/basics/page-types/text-page.png)
+![Text Page](/img/docs/getting-started/page-types/text-page.png)
 
 Page type: **"modonomicon:text"**
 
