@@ -37,7 +37,7 @@ It is highly recommend to only use DescriptionIds (= Translation Keys) whenever 
 
 ![Text Page](/img/docs/getting-started/page-types/text-page.png)
 
-Page type: **"modonomicon:text"**
+**Page type:** `modonomicon:text`
 
 The simplest page type, displays markdown text, optionally with a title and 
 <!-- TODO: Describe text page -->
@@ -62,7 +62,7 @@ Defaults to `true`. If true a separator will be rendered below the title.
 
 The page text. Can be styled using markdown.
 
-### Example Usage
+### Usage Examples
 
 `<entry>.json`:
 
