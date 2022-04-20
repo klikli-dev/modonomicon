@@ -28,42 +28,32 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TagStateMatcher implements StateMatcher {
+public class DisplayOnlyStateMatcher implements StateMatcher {
     private static final ResourceLocation ID = Modonomicon.loc("tag");
     private final BlockState displayState;
-    private final TagKey<Block> tag;
     private final TriPredicate<BlockGetter, BlockPos, BlockState> predicate;
 
-    protected TagStateMatcher(BlockState displayState, TagKey<Block> tag) {
+    protected DisplayOnlyStateMatcher(BlockState displayState) {
         this.displayState = displayState;
-        this.tag = tag;
-        this.predicate = (blockGetter, blockPos, blockState) -> blockState.is(this.tag);
+        this.predicate = (blockGetter, blockPos, blockState) -> true;
     }
 
-    public static TagStateMatcher fromJson(JsonObject json) {
+    public static DisplayOnlyStateMatcher fromJson(JsonObject json) {
         var displayState = BlockStateMatcher.blockStateFromJson(json, "display");
-        var tagRL = new ResourceLocation(GsonHelper.getAsString(json, "tag"));
-        var tag = TagKey.create(Registry.BLOCK_REGISTRY, tagRL);
-        return new TagStateMatcher(displayState, tag);
+        return new DisplayOnlyStateMatcher(displayState);
     }
 
-    public static TagStateMatcher fromNetwork(FriendlyByteBuf buffer) {
+    public static DisplayOnlyStateMatcher fromNetwork(FriendlyByteBuf buffer) {
         try {
             var displayState = new BlockStateParser(new StringReader(buffer.readUtf()), true).parse(false).getState();
-            var tagRL = buffer.readResourceLocation();
-            var tag = TagKey.create(Registry.BLOCK_REGISTRY, tagRL);
-            return new TagStateMatcher(displayState, tag);
+            return new DisplayOnlyStateMatcher(displayState);
         } catch (CommandSyntaxException e) {
-            throw new IllegalArgumentException("Failed to parse TagStateMatcher from network.", e);
+            throw new IllegalArgumentException("Failed to parse DisplayOnlyMatcher from network.", e);
         }
     }
 

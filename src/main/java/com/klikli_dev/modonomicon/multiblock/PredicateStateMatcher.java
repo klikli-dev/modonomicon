@@ -20,5 +20,7 @@
 
 package com.klikli_dev.modonomicon.multiblock;
 
-public class PredicateStateMatcher {
+import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
+
+public class PredicateStateMatcher implements StateMatcher {
 }

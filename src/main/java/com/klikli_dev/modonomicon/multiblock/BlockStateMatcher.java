@@ -22,6 +22,7 @@ package com.klikli_dev.modonomicon.multiblock;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -34,15 +35,15 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class BlockStateMatcher extends AbstractStateMatcher {
+public class BlockStateMatcher implements StateMatcher {
     private static final ResourceLocation ID = Modonomicon.loc("block");
+    private final BlockState displayState;
     private final BlockState matchState;
     private final boolean strict;
     private final TriPredicate<BlockGetter, BlockPos, BlockState> predicate;
 
-    public BlockStateMatcher(BlockState displayState, BlockState matchState, boolean strict) {
-        super(displayState);
-
+    protected BlockStateMatcher(BlockState displayState, BlockState matchState, boolean strict) {
+        this.displayState = displayState;
         this.matchState = matchState;
         this.strict = strict;
         this.predicate = (blockGetter, blockPos, blockState) ->
@@ -60,7 +61,7 @@ public class BlockStateMatcher extends AbstractStateMatcher {
         return new BlockStateMatcher(display != null ? display : block, block, isStrict);
     }
 
-    private static BlockState blockStateFromJson(JsonObject json, String memberName) {
+    public static BlockState blockStateFromJson(JsonObject json, String memberName) {
         var jsonString = GsonHelper.getAsString(json, memberName);
         var blockRL = ResourceLocation.tryParse(jsonString);
         if (blockRL != null) {
@@ -93,13 +94,18 @@ public class BlockStateMatcher extends AbstractStateMatcher {
     }
 
     @Override
+    public BlockState getDisplayedState(long ticks) {
+        return this.displayState;
+    }
+
+    @Override
     public TriPredicate<BlockGetter, BlockPos, BlockState> getStatePredicate() {
         return this.predicate;
     }
 
     @Override
     public void toNetwork(FriendlyByteBuf buffer) {
-        super.toNetwork(buffer);
+        buffer.writeUtf(BlockStateParser.serialize(this.displayState));
         buffer.writeUtf(BlockStateParser.serialize(this.matchState));
         buffer.writeBoolean(this.strict);
     }
