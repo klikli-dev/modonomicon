@@ -22,51 +22,51 @@ Besides standard JSON types, state matchers support the following attributes:
 
 * **Block** (String)
 
-A ResourceLocation for a block, in the format `modid:block`.  
-Example: `minecraft:stone` 
+  A ResourceLocation for a block, in the format `modid:block`.  
+  Example: `minecraft:stone` 
 
 * **BlockState** (String)
 
-A BlockState string as used in the Minecraft `setblock` command.
-Example: `minecraft:chest[facing=east]`
+  A BlockState string as used in the Minecraft `setblock` command.   
+  Example: `minecraft:chest[facing=east]`.  
 
-See https://minecraft.fandom.com/wiki/Commands/setblock for more information
+  The block state properties can be omitted, in which case the default BlockState will be used.   
+  Example: `minecraft:chest`.
+
+  See https://minecraft.fandom.com/wiki/Commands/setblock for more information
   
+* **Tag** (String)
+
+  A Tag string that is based on the BlockState string as used in the `setblock` command, but prefixed with `#`.   
+  Example: `#forge:chests[facing=east]`
+
+  The block state properties can be omitted, in which case the block state properties will be ignored when matching.   
+  Example: `#forge:chests`.
+
 
 ## Block Matcher
 
 **Type:** `modonomicon:block`
 
-Block matchers match Blocks or BlockState and optionally display a different Block or BlockState.
+Block matchers will ignore the BlockState and check only if the placed block fits the configured block.
 
-**Attributes**:
+### Attributes
 
-* **block** (Block or BlockState, _mandatory_)
+* **block** (Block, _mandatory_)
+  
+  The Block to match against when checking if a given block fits this matcher.
 
-The Block or BlockState to match against when checking if a given block fits this matcher.
 
-:::info
+* **display** (BlockState, _optional_)
 
-If you provide a Block, Modonomicon will match against it's default BlockState. 
-This means in most cases you should use `"strict": false` or omit `strict` entirely, otherwise e.g. stairs will only match if they are in their default rotation.
+  Defaults to the default BlockState of the `block` property.   
+  The BlockState to display in the multiblock preview. 
 
-:::
+  :::info
 
-* **strict** (Boolean, _optional_)
+  If you omit the BlockState properties (`[key=value]`), Modonomicon will display the Block's default BlockState.
 
-Defaults to `false`.  
-When `true` the matcher will only match blocks that have the exact block state specified in the `block` attribute.
-
-* **display** (Block or BlockState, _optional_)
-
-Defaults to the value of the `block` property.   
-The block to display in the multiblock preview. 
-
-:::info
-
-If you provide a Block, Modonomicon will display it's default BlockState.
-
-:::
+  :::
 
 
 ### Usage Examples
@@ -90,13 +90,45 @@ If you provide a Block, Modonomicon will display it's default BlockState.
 }
 ``` 
 
-**Example 2:** Matching only west-facing chests, but displaying an east-facing chest
+## Block State Matcher
+
+**Type:** `modonomicon:blockstate`
+
+BlockState matchers will check for the exact BlockState properties provided.
+
+### Attributes
+
+* **block** (BlockState, _mandatory_)
+
+  BlockState to match against when checking if a given block fits this matcher.
+
+  :::info
+
+  If you omit the BlockState properties (`[key=value]`), Modonomicon will match against it's default BlockState. 
+
+  :::
+
+* **display** (BlockState, _optional_)
+
+  Defaults to the value of the `block` property.   
+  The block to display in the multiblock preview. 
+
+  :::info
+
+  If you omit the BlockState properties (`[key=value]`), Modonomicon will display the Block's default BlockState.
+
+  :::
+
+
+### Usage Examples
+
+**Example:** Matching only west-facing chests, but displaying an east-facing chest
 
 ```json
 {
-    "type": "modonomicon:block",
+    "type": "modonomicon:blockstate",
     "display": "minecraft:chest[facing=east]",
-    "block": "minecraft:chest[facing=west]",
-    "strict": true
+    "block": "minecraft:chest[facing=west]"
 }
 ``` 
+
