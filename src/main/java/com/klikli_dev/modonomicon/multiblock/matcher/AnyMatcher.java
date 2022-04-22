@@ -31,7 +31,7 @@ import net.minecraft.world.level.block.Blocks;
  */
 public class AnyMatcher extends DisplayOnlyMatcher {
 
-    public static final AnyMatcher INSTANCE = new AnyMatcher();
+    public static final AnyMatcher ANY = new AnyMatcher();
 
     private static final ResourceLocation ID = Modonomicon.loc("any");
 

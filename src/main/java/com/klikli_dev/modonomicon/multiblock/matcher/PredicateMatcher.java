@@ -32,11 +32,14 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.Lazy;
 
 //TODO implement
 public class PredicateMatcher implements StateMatcher {
+    public static final PredicateMatcher AIR = new PredicateMatcher(Blocks.AIR.defaultBlockState(), Modonomicon.loc("air"));
+
     private static final ResourceLocation ID = Modonomicon.loc("predicate");
 
     private final BlockState displayState;

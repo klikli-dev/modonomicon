@@ -52,6 +52,14 @@ public class BlockMatcher implements StateMatcher {
                 blockState.getBlock() == block;
     }
 
+    public static BlockMatcher from(Block block) {
+        return new BlockMatcher(null, block);
+    }
+
+    public static BlockMatcher from(BlockState displayState, Block block) {
+        return new BlockMatcher(displayState, block);
+    }
+
     public static BlockMatcher fromJson(JsonObject json) {
         BlockState displayState = null;
         if (json.has("display")) {
@@ -75,7 +83,7 @@ public class BlockMatcher implements StateMatcher {
     public static BlockMatcher fromNetwork(FriendlyByteBuf buffer) {
         try {
             BlockState displayState = null;
-            if(buffer.readBoolean())
+            if (buffer.readBoolean())
                 displayState = new BlockStateParser(new StringReader(buffer.readUtf()), false).parse(false).getState();
 
             var block = Registry.BLOCK.getOptional(buffer.readResourceLocation()).orElseThrow();

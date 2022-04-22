@@ -32,6 +32,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
@@ -43,10 +44,18 @@ public class BlockStateMatcher implements StateMatcher {
     private final BlockState blockState;
     private final TriPredicate<BlockGetter, BlockPos, BlockState> predicate;
 
-    protected BlockStateMatcher(BlockState displayState, BlockState matchState) {
+    protected BlockStateMatcher(BlockState displayState, BlockState blockState) {
         this.displayState = displayState;
-        this.blockState = matchState;
-        this.predicate = (blockGetter, blockPos, blockState) -> blockState == matchState;
+        this.blockState = blockState;
+        this.predicate = (blockGetter, blockPos, state) -> state == blockState;
+    }
+
+    public static BlockStateMatcher from(BlockState blockState) {
+        return new BlockStateMatcher(null, blockState);
+    }
+
+    public static BlockStateMatcher from(BlockState displayState, BlockState blockState) {
+        return new BlockStateMatcher(displayState, blockState);
     }
 
     public static BlockStateMatcher fromJson(JsonObject json) {
