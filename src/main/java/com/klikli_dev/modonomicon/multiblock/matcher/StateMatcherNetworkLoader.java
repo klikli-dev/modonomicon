@@ -20,39 +20,10 @@
 
 package com.klikli_dev.modonomicon.multiblock.matcher;
 
-import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
+import com.klikli_dev.modonomicon.book.page.BookPage;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Blocks;
 
-/**
- * Matches any block, including air, and does not display anything.
- */
-public class AnyMatcher extends DisplayOnlyMatcher {
-
-    public static final AnyMatcher ANY = new AnyMatcher();
-
-    public static final ResourceLocation ID = Modonomicon.loc("any");
-
-    protected AnyMatcher() {
-        super(Blocks.AIR.defaultBlockState());
-    }
-
-    public static AnyMatcher fromJson(JsonObject json) {
-        return new AnyMatcher();
-    }
-
-    public static AnyMatcher fromNetwork(FriendlyByteBuf buffer) {
-        return new AnyMatcher();
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return ID;
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buffer) {
-    }
+public interface StateMatcherNetworkLoader<T extends StateMatcher> {
+    T fromNetwork(FriendlyByteBuf buff);
 }

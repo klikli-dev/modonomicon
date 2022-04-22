@@ -39,7 +39,7 @@ import net.minecraft.world.level.block.state.BlockState;
  * Matches any block, including air, but displays a block in the multiblock preview.
  */
 public class DisplayOnlyMatcher implements StateMatcher {
-    private static final ResourceLocation ID = Modonomicon.loc("display");
+    public static final ResourceLocation ID = Modonomicon.loc("display");
     private final BlockState displayState;
     private final TriPredicate<BlockGetter, BlockPos, BlockState> predicate;
 

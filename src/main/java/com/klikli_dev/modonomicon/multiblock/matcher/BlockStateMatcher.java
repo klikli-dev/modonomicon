@@ -32,14 +32,13 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Matches a BlockState, respecting all BlockState properties.
  */
 public class BlockStateMatcher implements StateMatcher {
-    private static final ResourceLocation ID = Modonomicon.loc("blockstate");
+    public static final ResourceLocation ID = Modonomicon.loc("blockstate");
     private final BlockState displayState;
     private final BlockState blockState;
     private final TriPredicate<BlockGetter, BlockPos, BlockState> predicate;

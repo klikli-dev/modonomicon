@@ -35,10 +35,16 @@ public class BookPageLoaderRegistry {
     private static final Map<ResourceLocation, BookPageJsonLoader<? extends BookPage>> pageJsonLoaders = new HashMap<>();
     private static final Map<ResourceLocation, BookPageNetworkLoader<? extends BookPage>> pageNetworkLoaders = new HashMap<>();
 
+    /**
+     * Call from common setup
+     */
     public static void registerDefaultPageLoaders() {
         registerPageLoader(Page.TEXT, BookTextPage::fromJson, BookTextPage::fromNetwork);
     }
 
+    /**
+     * Call from common setup
+     */
     public static void registerPageLoader(ResourceLocation id, BookPageJsonLoader<? extends BookPage> jsonLoader,
                                           BookPageNetworkLoader<? extends BookPage> networkLoader) {
         pageJsonLoaders.put(id, jsonLoader);

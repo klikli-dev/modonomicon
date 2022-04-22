@@ -29,10 +29,7 @@ import com.klikli_dev.modonomicon.datagen.DataGenerators;
 import com.klikli_dev.modonomicon.handlers.ClientSetupEventHandler;
 import com.klikli_dev.modonomicon.item.ModonomiconCreativeModeTab;
 import com.klikli_dev.modonomicon.network.Networking;
-import com.klikli_dev.modonomicon.registry.BookPageLoaderRegistry;
-import com.klikli_dev.modonomicon.registry.ItemRegistry;
-import com.klikli_dev.modonomicon.registry.MenuRegistry;
-import com.klikli_dev.modonomicon.registry.SoundRegistry;
+import com.klikli_dev.modonomicon.registry.*;
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
@@ -100,6 +97,8 @@ public class Modonomicon {
         Networking.registerMessages();
 
         BookPageLoaderRegistry.registerDefaultPageLoaders();
+        StateMatcherLoaderRegistry.registerDefaultStateMatcherLoaders();
+        StateMatcherLoaderRegistry.registerDefaultPredicates();
 
         LOGGER.info("Common setup complete.");
     }
