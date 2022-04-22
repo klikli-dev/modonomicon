@@ -18,7 +18,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.multiblock;
+package com.klikli_dev.modonomicon.multiblock.matcher;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
@@ -28,61 +28,55 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
+/**
+ * Matches a BlockState, respecting all BlockState properties.
+ */
 public class BlockStateMatcher implements StateMatcher {
-    private static final ResourceLocation ID = Modonomicon.loc("block");
+    private static final ResourceLocation ID = Modonomicon.loc("blockstate");
     private final BlockState displayState;
-    private final BlockState matchState;
-    private final boolean strict;
+    private final BlockState blockState;
     private final TriPredicate<BlockGetter, BlockPos, BlockState> predicate;
 
-    protected BlockStateMatcher(BlockState displayState, BlockState matchState, boolean strict) {
+    protected BlockStateMatcher(BlockState displayState, BlockState matchState) {
         this.displayState = displayState;
-        this.matchState = matchState;
-        this.strict = strict;
-        this.predicate = (blockGetter, blockPos, blockState) ->
-                strict ? blockState == matchState : blockState.getBlock() == matchState.getBlock();
+        this.blockState = matchState;
+        this.predicate = (blockGetter, blockPos, blockState) -> blockState == matchState;
     }
 
     public static BlockStateMatcher fromJson(JsonObject json) {
-        BlockState display = null;
-        boolean isStrict = GsonHelper.getAsBoolean(json, "strict", false);
+        BlockState displayState = null;
         if (json.has("display")) {
-            display = blockStateFromJson(json, "display");
-        }
-
-        var block = blockStateFromJson(json, "block");
-        return new BlockStateMatcher(display != null ? display : block, block, isStrict);
-    }
-
-    public static BlockState blockStateFromJson(JsonObject json, String memberName) {
-        var jsonString = GsonHelper.getAsString(json, memberName);
-        var blockRL = ResourceLocation.tryParse(jsonString);
-        if (blockRL != null) {
-            var block = Registry.BLOCK.getOptional(blockRL);
-            if (block.isPresent()) {
-                return block.get().defaultBlockState();
+            try {
+                displayState = new BlockStateParser(new StringReader(GsonHelper.getAsString(json, "display")), false).parse(false).getState();
+            } catch (CommandSyntaxException e) {
+                throw new IllegalArgumentException("Failed to parse BlockState from json member \"display\" for BlockStateMatcher.", e);
             }
         }
+
         try {
-            return new BlockStateParser(new StringReader(jsonString), true).parse(false).getState();
+            var blockState = new BlockStateParser(new StringReader(GsonHelper.getAsString(json, "block")), false).parse(false).getState();
+            return new BlockStateMatcher(displayState, blockState);
         } catch (CommandSyntaxException e) {
-            throw new IllegalArgumentException("Failed to parse BlockState \"" + memberName + "\" for BlockStateMatcher from json.", e);
+            throw new IllegalArgumentException("Failed to parse BlockState from json member \"block\" for BlockStateMatcher.", e);
         }
+
     }
 
     public static BlockStateMatcher fromNetwork(FriendlyByteBuf buffer) {
         try {
-            var displayState = new BlockStateParser(new StringReader(buffer.readUtf()), true).parse(false).getState();
-            var matcherState = new BlockStateParser(new StringReader(buffer.readUtf()), true).parse(false).getState();
-            var strict = buffer.readBoolean();
-            return new BlockStateMatcher(displayState, matcherState, strict);
+            BlockState displayState = null;
+            if (buffer.readBoolean())
+                displayState = new BlockStateParser(new StringReader(buffer.readUtf()), false).parse(false).getState();
+
+            var blockState = new BlockStateParser(new StringReader(buffer.readUtf()), false).parse(false).getState();
+
+            return new BlockStateMatcher(displayState, blockState);
         } catch (CommandSyntaxException e) {
             throw new IllegalArgumentException("Failed to parse BlockStateMatcher from network.", e);
         }
@@ -95,7 +89,7 @@ public class BlockStateMatcher implements StateMatcher {
 
     @Override
     public BlockState getDisplayedState(long ticks) {
-        return this.displayState;
+        return this.displayState == null ? this.blockState : this.displayState;
     }
 
     @Override
@@ -105,8 +99,9 @@ public class BlockStateMatcher implements StateMatcher {
 
     @Override
     public void toNetwork(FriendlyByteBuf buffer) {
-        buffer.writeUtf(BlockStateParser.serialize(this.displayState));
-        buffer.writeUtf(BlockStateParser.serialize(this.matchState));
-        buffer.writeBoolean(this.strict);
+        buffer.writeBoolean(this.displayState != null);
+        if (this.displayState != null)
+            buffer.writeUtf(BlockStateParser.serialize(this.displayState));
+        buffer.writeUtf(BlockStateParser.serialize(this.blockState));
     }
 }

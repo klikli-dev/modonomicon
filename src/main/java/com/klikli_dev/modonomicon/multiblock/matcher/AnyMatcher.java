@@ -18,7 +18,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.multiblock;
+package com.klikli_dev.modonomicon.multiblock.matcher;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
@@ -26,22 +26,25 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 
-public class AnyStateStateMatcher extends DisplayOnlyStateMatcher {
+/**
+ * Matches any block, including air, and does not display anything.
+ */
+public class AnyMatcher extends DisplayOnlyMatcher {
 
-    public static final AnyStateStateMatcher INSTANCE = new AnyStateStateMatcher();
+    public static final AnyMatcher INSTANCE = new AnyMatcher();
 
     private static final ResourceLocation ID = Modonomicon.loc("any");
 
-    protected AnyStateStateMatcher() {
+    protected AnyMatcher() {
         super(Blocks.AIR.defaultBlockState());
     }
 
-    public static AnyStateStateMatcher fromJson(JsonObject json) {
-        return new AnyStateStateMatcher();
+    public static AnyMatcher fromJson(JsonObject json) {
+        return new AnyMatcher();
     }
 
-    public static AnyStateStateMatcher fromNetwork(FriendlyByteBuf buffer) {
-        return new AnyStateStateMatcher();
+    public static AnyMatcher fromNetwork(FriendlyByteBuf buffer) {
+        return new AnyMatcher();
     }
 
     @Override

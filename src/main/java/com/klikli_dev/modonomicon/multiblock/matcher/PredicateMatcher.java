@@ -18,7 +18,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.multiblock;
+package com.klikli_dev.modonomicon.multiblock.matcher;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
@@ -28,42 +28,45 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.util.Lazy;
 
-public class TagStateMatcher implements StateMatcher {
-    private static final ResourceLocation ID = Modonomicon.loc("tag");
+//TODO implement
+public class PredicateMatcher implements StateMatcher {
+    private static final ResourceLocation ID = Modonomicon.loc("predicate");
+
     private final BlockState displayState;
-    private final TagKey<Block> tag;
-    private final TriPredicate<BlockGetter, BlockPos, BlockState> predicate;
+    private final ResourceLocation predicateId;
+    private final Lazy<TriPredicate<BlockGetter, BlockPos, BlockState>> predicate;
 
-    protected TagStateMatcher(BlockState displayState, TagKey<Block> tag) {
+    protected PredicateMatcher(BlockState displayState, ResourceLocation predicateId) {
         this.displayState = displayState;
-        this.tag = tag;
-        this.predicate = (blockGetter, blockPos, blockState) -> blockState.is(this.tag);
+        this.predicateId = predicateId;
+        //TODO: read predicate from predicate registry
+        this.predicate = Lazy.of(() -> (getter, pos, state) -> true);
     }
 
-    public static TagStateMatcher fromJson(JsonObject json) {
-        var displayState = BlockStateMatcher.blockStateFromJson(json, "display");
-        var tagRL = new ResourceLocation(GsonHelper.getAsString(json, "tag"));
-        var tag = TagKey.create(Registry.BLOCK_REGISTRY, tagRL);
-        return new TagStateMatcher(displayState, tag);
+    public static PredicateMatcher fromJson(JsonObject json) {
+        try {
+            var displayState = new BlockStateParser(new StringReader(GsonHelper.getAsString(json, "display")), false).parse(false).getState();
+            var predicateId = new ResourceLocation(GsonHelper.getAsString(json, "predicate"));
+            return new PredicateMatcher(displayState, predicateId);
+        } catch (CommandSyntaxException e) {
+            throw new IllegalArgumentException("Failed to parse BlockState from json member \"display\" for PredicateMatcher.", e);
+        }
     }
 
-    public static TagStateMatcher fromNetwork(FriendlyByteBuf buffer) {
+    public static PredicateMatcher fromNetwork(FriendlyByteBuf buffer) {
         try {
             var displayState = new BlockStateParser(new StringReader(buffer.readUtf()), true).parse(false).getState();
-            var tagRL = buffer.readResourceLocation();
-            var tag = TagKey.create(Registry.BLOCK_REGISTRY, tagRL);
-            return new TagStateMatcher(displayState, tag);
+            var predicateId = buffer.readResourceLocation();
+            return new PredicateMatcher(displayState, predicateId);
         } catch (CommandSyntaxException e) {
-            throw new IllegalArgumentException("Failed to parse TagStateMatcher from network.", e);
+            throw new IllegalArgumentException("Failed to parse PredicateMatcher from network.", e);
         }
     }
 
@@ -79,11 +82,12 @@ public class TagStateMatcher implements StateMatcher {
 
     @Override
     public TriPredicate<BlockGetter, BlockPos, BlockState> getStatePredicate() {
-        return this.predicate;
+        return this.predicate.get();
     }
 
     @Override
     public void toNetwork(FriendlyByteBuf buffer) {
         buffer.writeUtf(BlockStateParser.serialize(this.displayState));
+        buffer.writeUtf(this.predicateId.toString());
     }
 }

@@ -18,7 +18,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.multiblock;
+package com.klikli_dev.modonomicon.multiblock.matcher;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
@@ -30,28 +30,37 @@ import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class DisplayOnlyStateMatcher implements StateMatcher {
-    private static final ResourceLocation ID = Modonomicon.loc("tag");
+
+/**
+ * Matches any block, including air, but displays a block in the multiblock preview.
+ */
+public class DisplayOnlyMatcher implements StateMatcher {
+    private static final ResourceLocation ID = Modonomicon.loc("display");
     private final BlockState displayState;
     private final TriPredicate<BlockGetter, BlockPos, BlockState> predicate;
 
-    protected DisplayOnlyStateMatcher(BlockState displayState) {
+    protected DisplayOnlyMatcher(BlockState displayState) {
         this.displayState = displayState;
         this.predicate = (blockGetter, blockPos, blockState) -> true;
     }
 
-    public static DisplayOnlyStateMatcher fromJson(JsonObject json) {
-        var displayState = BlockStateMatcher.blockStateFromJson(json, "display");
-        return new DisplayOnlyStateMatcher(displayState);
+    public static DisplayOnlyMatcher fromJson(JsonObject json) {
+        try {
+            var displayState = new BlockStateParser(new StringReader(GsonHelper.getAsString(json, "display")), false).parse(false).getState();
+            return new DisplayOnlyMatcher(displayState);
+        } catch (CommandSyntaxException e) {
+            throw new IllegalArgumentException("Failed to parse BlockState from json member \"display\" for DisplayOnlyMatcher.", e);
+        }
     }
 
-    public static DisplayOnlyStateMatcher fromNetwork(FriendlyByteBuf buffer) {
+    public static DisplayOnlyMatcher fromNetwork(FriendlyByteBuf buffer) {
         try {
             var displayState = new BlockStateParser(new StringReader(buffer.readUtf()), true).parse(false).getState();
-            return new DisplayOnlyStateMatcher(displayState);
+            return new DisplayOnlyMatcher(displayState);
         } catch (CommandSyntaxException e) {
             throw new IllegalArgumentException("Failed to parse DisplayOnlyMatcher from network.", e);
         }
