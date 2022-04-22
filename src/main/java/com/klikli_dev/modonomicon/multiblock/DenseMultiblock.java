@@ -1,7 +1,7 @@
 /*
  * LGPL-3.0
  *
- * Copyright (C) 2022 Authors of Patchouli
+ * Copyright (C) 2022 Authors of Patchouli, klikli-dev
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,84 +20,54 @@
 
 package com.klikli_dev.modonomicon.multiblock;
 
+import com.google.gson.*;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
-import com.klikli_dev.modonomicon.multiblock.matcher.AnyMatcher;
-import com.klikli_dev.modonomicon.multiblock.matcher.BlockMatcher;
-import com.klikli_dev.modonomicon.multiblock.matcher.BlockStateMatcher;
-import com.klikli_dev.modonomicon.multiblock.matcher.PredicateMatcher;
+import com.klikli_dev.modonomicon.registry.StateMatcherLoaderRegistry;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 public class DenseMultiblock extends AbstractMultiblock {
 
+    private static final Gson GSON = new GsonBuilder().create();
+
     private final String[][] pattern;
     private final Vec3i size;
-    private StateMatcher[][][] stateTargets;
+    private StateMatcher[][][] stateMatchers;
 
     public DenseMultiblock(String[][] pattern, Map<Character, StateMatcher> targets) {
         this.pattern = pattern;
         this.size = this.build(targets, getPatternDimensions(pattern));
     }
 
-    public DenseMultiblock(String[][] pattern, Object... targets) {
-        this.pattern = pattern;
-        this.size = this.build(targetsToMatchers(targets), getPatternDimensions(pattern));
-    }
+    public static DenseMultiblock fromJson(JsonObject json) {
+        var pattern = GSON.fromJson(json.get("pattern"), String[][].class);
 
-    private static Map<Character, StateMatcher> targetsToMatchers(Object... targets) {
-        //TODO: do we need this at all?
-        if (targets.length % 2 == 1) {
-            throw new IllegalArgumentException("Illegal argument length for targets array " + targets.length);
-        }
-        Map<Character, StateMatcher> stateMap = new HashMap<>();
-        for (int i = 0; i < targets.length / 2; i++) {
-            char c = (Character) targets[i * 2];
-            Object o = targets[i * 2 + 1];
-            StateMatcher state;
+        var jsonMapping = GsonHelper.getAsJsonObject(json, "mapping");
 
-            if (o instanceof Block b) {
-                state = BlockMatcher.from(b);
-            } else if (o instanceof BlockState s) {
-                state = BlockStateMatcher.from(s);
-            }
-            //TODO: if we need it, enable
-//			else if (o instanceof String) {
-//				try {
-//
-//					state = StringStateMatcher.fromString((String) o);
-//				} catch (CommandSyntaxException e) {
-//					throw new RuntimeException(e);
-//				}
-//			}
-            else if (o instanceof StateMatcher) {
-                state = (StateMatcher) o;
-            } else {
-                throw new IllegalArgumentException("Invalid target " + o);
-            }
-
-            stateMap.put(c, state);
+        Map<Character, StateMatcher> mapping = new HashMap<>();
+        for (Entry<String, JsonElement> entry : jsonMapping.entrySet()) {
+            if (entry.getKey().length() != 1)
+                throw new JsonSyntaxException("Mapping key needs to be only 1 character");
+            char key = entry.getKey().charAt(0);
+            var value = entry.getValue().getAsJsonObject();
+            var stateMatcherType = ResourceLocation.tryParse(GsonHelper.getAsString(value, "type"));
+            var stateMatcher = StateMatcherLoaderRegistry.getStateMatcherJsonLoader(stateMatcherType).fromJson(value);
+            mapping.put(key, stateMatcher);
         }
 
-        if (!stateMap.containsKey('_')) {
-            stateMap.put('_', AnyMatcher.ANY);
-        }
-        if (!stateMap.containsKey(' ')) {
-            stateMap.put(' ', PredicateMatcher.AIR);
-        }
-        if (!stateMap.containsKey('0')) {
-            stateMap.put('0', PredicateMatcher.AIR);
-        }
-        return stateMap;
+        return new DenseMultiblock(pattern, mapping);
     }
 
     private static Vec3i getPatternDimensions(String[][] pattern) {
@@ -127,7 +97,7 @@ public class DenseMultiblock extends AbstractMultiblock {
     private Vec3i build(Map<Character, StateMatcher> stateMap, Vec3i dimensions) {
         boolean foundCenter = false;
 
-		this.stateTargets = new StateMatcher[dimensions.getX()][dimensions.getY()][dimensions.getZ()];
+        this.stateMatchers = new StateMatcher[dimensions.getX()][dimensions.getY()][dimensions.getZ()];
         for (int y = 0; y < dimensions.getY(); y++) {
             for (int x = 0; x < dimensions.getX(); x++) {
                 for (int z = 0; z < dimensions.getZ(); z++) {
@@ -142,13 +112,13 @@ public class DenseMultiblock extends AbstractMultiblock {
                             throw new IllegalArgumentException("A structure can't have two centers");
                         }
                         foundCenter = true;
-						this.offX = x;
-						this.offY = dimensions.getY() - y - 1;
-						this.offZ = z;
-						this.setViewOffset();
+                        this.offX = x;
+                        this.offY = dimensions.getY() - y - 1;
+                        this.offZ = z;
+                        this.setViewOffset();
                     }
 
-					this.stateTargets[x][dimensions.getY() - y - 1][z] = matcher;
+                    this.stateMatchers[x][dimensions.getY() - y - 1][z] = matcher;
                 }
             }
         }
@@ -173,7 +143,7 @@ public class DenseMultiblock extends AbstractMultiblock {
                     BlockPos currDisp = new BlockPos(x, y, z).rotate(rotation);
                     BlockPos actionPos = origin.offset(currDisp);
                     char currC = this.pattern[y][x].charAt(z);
-                    ret.add(new SimulateResultImpl(actionPos, this.stateTargets[x][y][z], currC));
+                    ret.add(new SimulateResultImpl(actionPos, this.stateMatchers[x][y][z], currC));
                 }
             }
         }
@@ -182,12 +152,12 @@ public class DenseMultiblock extends AbstractMultiblock {
 
     @Override
     public boolean test(Level world, BlockPos start, int x, int y, int z, Rotation rotation) {
-		this.setWorld(world);
+        this.setWorld(world);
         if (x < 0 || y < 0 || z < 0 || x >= this.size.getX() || y >= this.size.getY() || z >= this.size.getZ()) {
             return false;
         }
         BlockPos checkPos = start.offset(new BlockPos(x, y, z).rotate(AbstractMultiblock.fixHorizontal(rotation)));
-        TriPredicate<BlockGetter, BlockPos, BlockState> pred = this.stateTargets[x][y][z].getStatePredicate();
+        TriPredicate<BlockGetter, BlockPos, BlockState> pred = this.stateMatchers[x][y][z].getStatePredicate();
         BlockState state = world.getBlockState(checkPos).rotate(rotation);
 
         return pred.test(world, checkPos, state);
@@ -202,7 +172,7 @@ public class DenseMultiblock extends AbstractMultiblock {
             return Blocks.AIR.defaultBlockState();
         }
         long ticks = this.world != null ? this.world.getGameTime() : 0L;
-        return this.stateTargets[x][y][z].getDisplayedState(ticks);
+        return this.stateMatchers[x][y][z].getDisplayedState(ticks);
     }
 
     @Override
