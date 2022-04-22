@@ -23,6 +23,8 @@ package com.klikli_dev.modonomicon.multiblock;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
+import com.klikli_dev.modonomicon.multiblock.matcher.AnyMatcher;
+import com.klikli_dev.modonomicon.multiblock.matcher.PredicateMatcher;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -36,69 +38,69 @@ import java.util.List;
 import java.util.Map;
 
 public class SparseMultiblock extends AbstractMultiblock {
-	private final Map<BlockPos, StateMatcher> data;
-	private final Vec3i size;
+    private final Map<BlockPos, StateMatcher> data;
+    private final Vec3i size;
 
-	public SparseMultiblock(Map<BlockPos, StateMatcher> data) {
-		Preconditions.checkArgument(!data.isEmpty(), "No data given to sparse multiblock!");
-		this.data = ImmutableMap.copyOf(data);
-		this.size = calculateSize();
-	}
+    public SparseMultiblock(Map<BlockPos, StateMatcher> data) {
+        Preconditions.checkArgument(!data.isEmpty(), "No data given to sparse multiblock!");
+        this.data = ImmutableMap.copyOf(data);
+        this.size = this.calculateSize();
+    }
 
-	@Override
-	public Vec3i getSize() {
-		return size;
-	}
+    private Vec3i calculateSize() {
+        int minX = this.data.keySet().stream().mapToInt(BlockPos::getX).min().getAsInt();
+        int maxX = this.data.keySet().stream().mapToInt(BlockPos::getX).max().getAsInt();
+        int minY = this.data.keySet().stream().mapToInt(BlockPos::getY).min().getAsInt();
+        int maxY = this.data.keySet().stream().mapToInt(BlockPos::getY).max().getAsInt();
+        int minZ = this.data.keySet().stream().mapToInt(BlockPos::getZ).min().getAsInt();
+        int maxZ = this.data.keySet().stream().mapToInt(BlockPos::getZ).max().getAsInt();
+        return new Vec3i(maxX - minX + 1, maxY - minY + 1, maxZ - minZ + 1);
+    }
 
-	private Vec3i calculateSize() {
-		int minX = data.keySet().stream().mapToInt(BlockPos::getX).min().getAsInt();
-		int maxX = data.keySet().stream().mapToInt(BlockPos::getX).max().getAsInt();
-		int minY = data.keySet().stream().mapToInt(BlockPos::getY).min().getAsInt();
-		int maxY = data.keySet().stream().mapToInt(BlockPos::getY).max().getAsInt();
-		int minZ = data.keySet().stream().mapToInt(BlockPos::getZ).min().getAsInt();
-		int maxZ = data.keySet().stream().mapToInt(BlockPos::getZ).max().getAsInt();
-		return new Vec3i(maxX - minX + 1, maxY - minY + 1, maxZ - minZ + 1);
-	}
+    @Override
+    public Vec3i getSize() {
+        return this.size;
+    }
 
-	@Override
-	public BlockState getBlockState(BlockPos pos) {
-		long ticks = world != null ? world.getGameTime() : 0L;
-		return data.getOrDefault(pos, AbstractStateMatcher.AIR).getDisplayedState(ticks);
-	}
+    // These heights were assumed based being derivative of old behavior, but it may be ideal to change
+    @Override
+    public int getHeight() {
+        return 255;
+    }
 
-	@Override
-	public Pair<BlockPos, Collection<SimulateResult>> simulate(Level world, BlockPos anchor, Rotation rotation, boolean forView) {
-		BlockPos disp = forView
-				? new BlockPos(-viewOffX, -viewOffY + 1, -viewOffZ).rotate(rotation)
-				: new BlockPos(-offX, -offY, -offZ).rotate(rotation);
-		// the local origin of this multiblock, in world coordinates
-		BlockPos origin = anchor.offset(disp);
-		List<SimulateResult> ret = new ArrayList<>();
-		for (var e : data.entrySet()) {
-			BlockPos currDisp = e.getKey().rotate(rotation);
-			BlockPos actionPos = origin.offset(currDisp);
-			ret.add(new SimulateResultImpl(actionPos, e.getValue(), null));
-		}
-		return Pair.of(origin, ret);
-	}
+    @Override
+    public int getMinBuildHeight() {
+        return 0;
+    }
 
-	@Override
-	public boolean test(Level world, BlockPos start, int x, int y, int z, Rotation rotation) {
-		setWorld(world);
-		BlockPos checkPos = start.offset(new BlockPos(x, y, z).rotate(rotation));
-		BlockState state = world.getBlockState(checkPos).rotate(AbstractMultiblock.fixHorizontal(rotation));
-		StateMatcher matcher = data.getOrDefault(new BlockPos(x, y, z), AbstractStateMatcher.ANY);
-		return matcher.getStatePredicate().test(world, checkPos, state);
-	}
+    @Override
+    public BlockState getBlockState(BlockPos pos) {
+        long ticks = this.world != null ? this.world.getGameTime() : 0L;
+        return this.data.getOrDefault(pos, PredicateMatcher.AIR).getDisplayedState(ticks);
+    }
 
-	// These heights were assumed based being derivative of old behavior, but it may be ideal to change
-	@Override
-	public int getHeight() {
-		return 255;
-	}
+    @Override
+    public Pair<BlockPos, Collection<SimulateResult>> simulate(Level world, BlockPos anchor, Rotation rotation, boolean forView) {
+        BlockPos disp = forView
+                ? new BlockPos(-this.viewOffX, -this.viewOffY + 1, -this.viewOffZ).rotate(rotation)
+                : new BlockPos(-this.offX, -this.offY, -this.offZ).rotate(rotation);
+        // the local origin of this multiblock, in world coordinates
+        BlockPos origin = anchor.offset(disp);
+        List<SimulateResult> ret = new ArrayList<>();
+        for (var e : this.data.entrySet()) {
+            BlockPos currDisp = e.getKey().rotate(rotation);
+            BlockPos actionPos = origin.offset(currDisp);
+            ret.add(new SimulateResultImpl(actionPos, e.getValue(), null));
+        }
+        return Pair.of(origin, ret);
+    }
 
-	@Override
-	public int getMinBuildHeight() {
-		return 0;
-	}
+    @Override
+    public boolean test(Level world, BlockPos start, int x, int y, int z, Rotation rotation) {
+		this.setWorld(world);
+        BlockPos checkPos = start.offset(new BlockPos(x, y, z).rotate(rotation));
+        BlockState state = world.getBlockState(checkPos).rotate(AbstractMultiblock.fixHorizontal(rotation));
+        StateMatcher matcher = this.data.getOrDefault(new BlockPos(x, y, z), AnyMatcher.ANY);
+        return matcher.getStatePredicate().test(world, checkPos, state);
+    }
 }
