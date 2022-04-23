@@ -18,12 +18,11 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.multiblock.matcher;
+package com.klikli_dev.modonomicon.data;
 
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
-import com.klikli_dev.modonomicon.book.page.BookPage;
 import net.minecraft.network.FriendlyByteBuf;
 
-public interface StateMatcherNetworkLoader<T extends StateMatcher> {
+public interface NetworkLoader<T> {
     T fromNetwork(FriendlyByteBuf buff);
 }

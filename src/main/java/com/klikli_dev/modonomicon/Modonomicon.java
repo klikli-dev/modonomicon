@@ -21,10 +21,11 @@
 package com.klikli_dev.modonomicon;
 
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
-import com.klikli_dev.modonomicon.book.BookDataManager;
+import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.config.CommonConfig;
 import com.klikli_dev.modonomicon.config.ServerConfig;
+import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
 import com.klikli_dev.modonomicon.handlers.ClientSetupEventHandler;
 import com.klikli_dev.modonomicon.item.ModonomiconCreativeModeTab;
@@ -96,9 +97,7 @@ public class Modonomicon {
     public void onCommonSetup(FMLCommonSetupEvent event) {
         Networking.registerMessages();
 
-        BookPageLoaderRegistry.registerDefaultPageLoaders();
-        StateMatcherLoaderRegistry.registerDefaultStateMatcherLoaders();
-        StateMatcherLoaderRegistry.registerDefaultPredicates();
+        LoaderRegistry.registerLoaders();
 
         LOGGER.info("Common setup complete.");
     }

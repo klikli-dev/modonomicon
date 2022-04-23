@@ -18,10 +18,11 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.book.page;
+package com.klikli_dev.modonomicon.data;
 
-import net.minecraft.network.FriendlyByteBuf;
+import com.google.gson.JsonObject;
+import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 
-public interface BookPageNetworkLoader<T extends BookPage> {
-    T fromNetwork(FriendlyByteBuf buff);
+public interface JsonLoader<T> {
+    T fromJson(JsonObject json);
 }

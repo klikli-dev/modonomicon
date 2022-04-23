@@ -26,7 +26,7 @@ import com.google.gson.JsonSyntaxException;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
-import com.klikli_dev.modonomicon.registry.StateMatcherLoaderRegistry;
+import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -66,7 +66,7 @@ public abstract class AbstractMultiblock implements Multiblock, BlockAndTintGett
             char key = entry.getKey().charAt(0);
             var value = entry.getValue().getAsJsonObject();
             var stateMatcherType = ResourceLocation.tryParse(GsonHelper.getAsString(value, "type"));
-            var stateMatcher = StateMatcherLoaderRegistry.getStateMatcherJsonLoader(stateMatcherType).fromJson(value);
+            var stateMatcher = LoaderRegistry.getStateMatcherJsonLoader(stateMatcherType).fromJson(value);
             mapping.put(key, stateMatcher);
         }
 

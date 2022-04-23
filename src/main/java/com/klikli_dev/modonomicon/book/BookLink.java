@@ -21,6 +21,7 @@
 package com.klikli_dev.modonomicon.book;
 
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
+import com.klikli_dev.modonomicon.data.BookDataManager;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.StringUtils;
 

@@ -24,7 +24,7 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
-import com.klikli_dev.modonomicon.registry.StateMatcherLoaderRegistry;
+import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
@@ -39,7 +39,7 @@ import net.minecraftforge.common.util.Lazy;
 
 /**
  * Matches against the predicate with the given id. Predicates are stored in {@link
- * com.klikli_dev.modonomicon.registry.StateMatcherLoaderRegistry}
+ * LoaderRegistry}
  */
 public class PredicateMatcher implements StateMatcher {
 
@@ -53,7 +53,7 @@ public class PredicateMatcher implements StateMatcher {
     protected PredicateMatcher(BlockState displayState, ResourceLocation predicateId) {
         this.displayState = displayState;
         this.predicateId = predicateId;
-        this.predicate = Lazy.of(() -> StateMatcherLoaderRegistry.getPredicate(this.predicateId));
+        this.predicate = Lazy.of(() -> LoaderRegistry.getPredicate(this.predicateId));
     }
 
     public ResourceLocation getPredicateId() {

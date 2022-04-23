@@ -24,12 +24,8 @@ import com.google.gson.*;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
-import com.klikli_dev.modonomicon.multiblock.matcher.BlockStateMatcher;
-import com.klikli_dev.modonomicon.registry.StateMatcherLoaderRegistry;
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
@@ -42,7 +38,6 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
-import java.util.Map.Entry;
 
 public class DenseMultiblock extends AbstractMultiblock {
 
@@ -232,7 +227,7 @@ public class DenseMultiblock extends AbstractMultiblock {
         for (int i = 0; i < targetCount; i++) {
             var key = buffer.readChar();
             var type = buffer.readResourceLocation();
-            var stateMatcher = StateMatcherLoaderRegistry.getStateMatcherNetworkLoader(type).fromNetwork(buffer);
+            var stateMatcher = LoaderRegistry.getStateMatcherNetworkLoader(type).fromNetwork(buffer);
             targets.put(key, stateMatcher);
         }
 
