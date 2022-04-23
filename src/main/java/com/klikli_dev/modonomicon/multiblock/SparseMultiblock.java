@@ -27,11 +27,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
+import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.multiblock.matcher.AnyMatcher;
 import com.klikli_dev.modonomicon.multiblock.matcher.PredicateMatcher;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
@@ -50,6 +52,8 @@ public class SparseMultiblock extends AbstractMultiblock {
 
     public SparseMultiblock(Map<BlockPos, StateMatcher> stateMatchers) {
         Preconditions.checkArgument(!stateMatchers.isEmpty(), "No data given to sparse multiblock!");
+
+        //this differs from dense multiblock, where we keep a copy of the originally loaded data for serialization, but it should be fine as we have less entries.
         this.stateMatchers = ImmutableMap.copyOf(stateMatchers);
         this.size = this.calculateSize();
     }
@@ -85,7 +89,7 @@ public class SparseMultiblock extends AbstractMultiblock {
             var jsonPositions = GsonHelper.convertToJsonArray(entry.getValue(), entry.getKey());
             for (JsonElement jsonPosition : jsonPositions) {
                 var jsonPos = GsonHelper.convertToJsonArray(jsonPosition, entry.getKey());
-                if(jsonPos.size() != 3) {
+                if (jsonPos.size() != 3) {
                     throw new JsonSyntaxException("Each matcher position needs to be an array of 3 integers");
                 }
                 stateMatchers.put(
@@ -97,6 +101,27 @@ public class SparseMultiblock extends AbstractMultiblock {
         var multiblock = new SparseMultiblock(stateMatchers);
 
         return additionalPropertiesFromJson(multiblock, json);
+    }
+
+    public static SparseMultiblock fromNetwork(FriendlyByteBuf buffer) {
+        var symmetrical = buffer.readBoolean();
+        var offX = buffer.readVarInt();
+        var offY = buffer.readVarInt();
+        var offZ = buffer.readVarInt();
+
+        var size = buffer.readVarInt();
+        var stateMatchers = new HashMap<BlockPos, StateMatcher>();
+        for (int i = 0; i < size; i++) {
+            var pos = buffer.readBlockPos();
+            var type = buffer.readResourceLocation();
+            var matcher = LoaderRegistry.getStateMatcherNetworkLoader(type).fromNetwork(buffer);
+            stateMatchers.put(pos, matcher);
+        }
+
+        var multiblock = new SparseMultiblock(stateMatchers);
+        multiblock.symmetrical = symmetrical;
+        multiblock.offset(offX, offY, offZ);
+        return multiblock;
     }
 
     private Vec3i calculateSize() {
@@ -159,5 +184,20 @@ public class SparseMultiblock extends AbstractMultiblock {
         BlockState state = world.getBlockState(checkPos).rotate(AbstractMultiblock.fixHorizontal(rotation));
         StateMatcher matcher = this.stateMatchers.getOrDefault(new BlockPos(x, y, z), AnyMatcher.ANY);
         return matcher.getStatePredicate().test(world, checkPos, state);
+    }
+
+    @Override
+    public void toNetwork(FriendlyByteBuf buffer) {
+        buffer.writeBoolean(this.symmetrical);
+        buffer.writeVarInt(this.offX);
+        buffer.writeVarInt(this.offY);
+        buffer.writeVarInt(this.offZ);
+
+        buffer.writeVarInt(this.stateMatchers.size());
+        for (Entry<BlockPos, StateMatcher> entry : this.stateMatchers.entrySet()) {
+            buffer.writeBlockPos(entry.getKey());
+            buffer.writeResourceLocation(entry.getValue().getType());
+            entry.getValue().toNetwork(buffer);
+        }
     }
 }

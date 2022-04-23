@@ -20,7 +20,9 @@
 
 package com.klikli_dev.modonomicon.multiblock;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
@@ -57,6 +59,36 @@ public class DenseMultiblock extends AbstractMultiblock {
         this.pattern = pattern;
         this.targets = targets;
         this.size = this.build(targets, getPatternDimensions(pattern));
+    }
+
+    public static DenseMultiblock fromNetwork(FriendlyByteBuf buffer) {
+        var symmetrical = buffer.readBoolean();
+        var offX = buffer.readVarInt();
+        var offY = buffer.readVarInt();
+        var offZ = buffer.readVarInt();
+
+        var sizeX = buffer.readVarInt();
+        var sizeY = buffer.readVarInt();
+        var pattern = new String[sizeY][sizeX];
+        for (int y = 0; y < sizeY; y++) {
+            for (int x = 0; x < sizeX; x++) {
+                pattern[y][x] = buffer.readUtf();
+            }
+        }
+
+        var targets = new HashMap<Character, StateMatcher>();
+        var targetCount = buffer.readVarInt();
+        for (int i = 0; i < targetCount; i++) {
+            var key = buffer.readChar();
+            var type = buffer.readResourceLocation();
+            var stateMatcher = LoaderRegistry.getStateMatcherNetworkLoader(type).fromNetwork(buffer);
+            targets.put(key, stateMatcher);
+        }
+
+        var multiblock = new DenseMultiblock(pattern, targets);
+        multiblock.symmetrical = symmetrical;
+        multiblock.offset(offX, offY, offZ);
+        return multiblock;
     }
 
     public static DenseMultiblock fromJson(JsonObject json) {
@@ -168,23 +200,6 @@ public class DenseMultiblock extends AbstractMultiblock {
     }
 
     @Override
-    public BlockState getBlockState(BlockPos pos) {
-        int x = pos.getX();
-        int y = pos.getY();
-        int z = pos.getZ();
-        if (x < 0 || y < 0 || z < 0 || x >= this.size.getX() || y >= this.size.getY() || z >= this.size.getZ()) {
-            return Blocks.AIR.defaultBlockState();
-        }
-        long ticks = this.world != null ? this.world.getGameTime() : 0L;
-        return this.stateMatchers[x][y][z].getDisplayedState(ticks);
-    }
-
-    @Override
-    public Vec3i getSize() {
-        return this.size;
-    }
-
-    @Override
     public void toNetwork(FriendlyByteBuf buffer) {
         buffer.writeBoolean(this.symmetrical);
         buffer.writeVarInt(this.offX);
@@ -207,34 +222,21 @@ public class DenseMultiblock extends AbstractMultiblock {
         }
     }
 
-    public static DenseMultiblock fromNetwork(FriendlyByteBuf buffer) {
-        var symmetrical = buffer.readBoolean();
-        var offX = buffer.readVarInt();
-        var offY = buffer.readVarInt();
-        var offZ = buffer.readVarInt();
-
-        var sizeX = buffer.readVarInt();
-        var sizeY = buffer.readVarInt();
-        var pattern = new String[sizeY][sizeX];
-        for (int y = 0; y < sizeY; y++) {
-            for (int x = 0; x < sizeX; x++) {
-                pattern[y][x] = buffer.readUtf();
-            }
+    @Override
+    public BlockState getBlockState(BlockPos pos) {
+        int x = pos.getX();
+        int y = pos.getY();
+        int z = pos.getZ();
+        if (x < 0 || y < 0 || z < 0 || x >= this.size.getX() || y >= this.size.getY() || z >= this.size.getZ()) {
+            return Blocks.AIR.defaultBlockState();
         }
+        long ticks = this.world != null ? this.world.getGameTime() : 0L;
+        return this.stateMatchers[x][y][z].getDisplayedState(ticks);
+    }
 
-        var targets = new HashMap<Character, StateMatcher>();
-        var targetCount = buffer.readVarInt();
-        for (int i = 0; i < targetCount; i++) {
-            var key = buffer.readChar();
-            var type = buffer.readResourceLocation();
-            var stateMatcher = LoaderRegistry.getStateMatcherNetworkLoader(type).fromNetwork(buffer);
-            targets.put(key, stateMatcher);
-        }
-
-        var multiblock = new DenseMultiblock(pattern, targets);
-        multiblock.symmetrical = symmetrical;
-        multiblock.offset(offX, offY, offZ);
-        return multiblock;
+    @Override
+    public Vec3i getSize() {
+        return this.size;
     }
 
     // These heights were assumed based being derivative of old behavior, but it may be ideal to change
