@@ -44,7 +44,7 @@ import net.minecraftforge.common.util.Lazy;
 public class PredicateMatcher implements StateMatcher {
 
     public static final PredicateMatcher AIR = new PredicateMatcher(Blocks.AIR.defaultBlockState(), Modonomicon.loc("air"));
-    public static final ResourceLocation ID = Modonomicon.loc("predicate");
+    public static final ResourceLocation TYPE = Modonomicon.loc("predicate");
 
     private final BlockState displayState;
     private final ResourceLocation predicateId;
@@ -81,8 +81,8 @@ public class PredicateMatcher implements StateMatcher {
     }
 
     @Override
-    public ResourceLocation getId() {
-        return ID;
+    public ResourceLocation getType() {
+        return TYPE;
     }
 
     @Override

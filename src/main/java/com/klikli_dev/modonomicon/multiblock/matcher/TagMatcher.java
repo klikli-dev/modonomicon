@@ -47,7 +47,8 @@ import java.util.Map.Entry;
  * Matches against the given tag, and optionally checks for the given BlockState properties.
  */
 public class TagMatcher implements StateMatcher {
-    public static final ResourceLocation ID = Modonomicon.loc("tag");
+    public static final ResourceLocation TYPE = Modonomicon.loc("tag");
+    
     private final BlockState displayState;
     private final TagKey<Block> tag;
     private final Map<String, String> props;
@@ -121,8 +122,8 @@ public class TagMatcher implements StateMatcher {
     }
 
     @Override
-    public ResourceLocation getId() {
-        return ID;
+    public ResourceLocation getType() {
+        return TYPE;
     }
 
     @Override

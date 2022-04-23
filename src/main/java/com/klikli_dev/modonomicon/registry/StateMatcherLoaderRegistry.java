@@ -42,12 +42,12 @@ public class StateMatcherLoaderRegistry {
      * Call from common setup
      */
     public static void registerDefaultStateMatcherLoaders() {
-        registerStateMatcherLoader(AnyMatcher.ID, AnyMatcher::fromJson, AnyMatcher::fromNetwork);
-        registerStateMatcherLoader(BlockMatcher.ID, BlockMatcher::fromJson, BlockMatcher::fromNetwork);
-        registerStateMatcherLoader(BlockStateMatcher.ID, BlockStateMatcher::fromJson, BlockStateMatcher::fromNetwork);
-        registerStateMatcherLoader(DisplayOnlyMatcher.ID, DisplayOnlyMatcher::fromJson, DisplayOnlyMatcher::fromNetwork);
-        registerStateMatcherLoader(PredicateMatcher.ID, PredicateMatcher::fromJson, PredicateMatcher::fromNetwork);
-        registerStateMatcherLoader(TagMatcher.ID, TagMatcher::fromJson, TagMatcher::fromNetwork);
+        registerStateMatcherLoader(AnyMatcher.TYPE, AnyMatcher::fromJson, AnyMatcher::fromNetwork);
+        registerStateMatcherLoader(BlockMatcher.TYPE, BlockMatcher::fromJson, BlockMatcher::fromNetwork);
+        registerStateMatcherLoader(BlockStateMatcher.TYPE, BlockStateMatcher::fromJson, BlockStateMatcher::fromNetwork);
+        registerStateMatcherLoader(DisplayOnlyMatcher.TYPE, DisplayOnlyMatcher::fromJson, DisplayOnlyMatcher::fromNetwork);
+        registerStateMatcherLoader(PredicateMatcher.TYPE, PredicateMatcher::fromJson, PredicateMatcher::fromNetwork);
+        registerStateMatcherLoader(TagMatcher.TYPE, TagMatcher::fromJson, TagMatcher::fromNetwork);
     }
 
     /**

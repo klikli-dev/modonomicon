@@ -30,10 +30,9 @@ import net.minecraft.world.level.block.Blocks;
  * Matches any block, including air, and does not display anything.
  */
 public class AnyMatcher extends DisplayOnlyMatcher {
-
     public static final AnyMatcher ANY = new AnyMatcher();
 
-    public static final ResourceLocation ID = Modonomicon.loc("any");
+    public static final ResourceLocation TYPE = Modonomicon.loc("any");
 
     protected AnyMatcher() {
         super(Blocks.AIR.defaultBlockState());
@@ -48,8 +47,8 @@ public class AnyMatcher extends DisplayOnlyMatcher {
     }
 
     @Override
-    public ResourceLocation getId() {
-        return ID;
+    public ResourceLocation getType() {
+        return TYPE;
     }
 
     @Override

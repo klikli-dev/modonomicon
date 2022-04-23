@@ -40,7 +40,8 @@ import net.minecraft.world.level.block.state.BlockState;
  * Matches a block, ignoring the BlockState properties.
  */
 public class BlockMatcher implements StateMatcher {
-    public static final ResourceLocation ID = Modonomicon.loc("block");
+    public static final ResourceLocation TYPE = Modonomicon.loc("block");
+
     private final BlockState displayState;
     private final Block block;
     private final TriPredicate<BlockGetter, BlockPos, BlockState> predicate;
@@ -94,8 +95,8 @@ public class BlockMatcher implements StateMatcher {
     }
 
     @Override
-    public ResourceLocation getId() {
-        return ID;
+    public ResourceLocation getType() {
+        return TYPE;
     }
 
     @Override

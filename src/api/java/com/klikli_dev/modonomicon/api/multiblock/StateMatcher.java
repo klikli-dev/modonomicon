@@ -26,8 +26,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.Objects;
-
 /**
  * A composite element of a rendering block state, and a predicate to validate if the real state in the world is valid
  * or not. Used as the core building block for multiblocks.
@@ -37,7 +35,7 @@ public interface StateMatcher {
     /**
      * The state matcher type Id for serialization.
      */
-    ResourceLocation getId();
+    ResourceLocation getType();
 
     /**
      * Gets the state displayed by this state matcher for rendering the multiblock page type and the in-world preview.
