@@ -20,10 +20,12 @@
 
 package com.klikli_dev.modonomicon.api.stub.multiblock;
 
+import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
@@ -33,9 +35,16 @@ import java.util.Collections;
 
 public class StubMultiblock implements Multiblock {
 
+    public static final ResourceLocation TYPE = new ResourceLocation(ModonomiconAPI.ID + ":stub");
+
     public static final StubMultiblock INSTANCE = new StubMultiblock();
 
     private StubMultiblock() {
+    }
+
+    @Override
+    public ResourceLocation getType() {
+        return TYPE;
     }
 
     @Override
@@ -96,6 +105,11 @@ public class StubMultiblock implements Multiblock {
     @Override
     public Vec3i getSize() {
         return Vec3i.ZERO;
+    }
+
+    @Override
+    public void toNetwork(FriendlyByteBuf buffer) {
+
     }
 
 }

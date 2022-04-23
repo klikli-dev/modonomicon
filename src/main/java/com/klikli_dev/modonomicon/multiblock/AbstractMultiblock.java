@@ -20,14 +20,20 @@
 
 package com.klikli_dev.modonomicon.multiblock;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
+import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
+import com.klikli_dev.modonomicon.registry.StateMatcherLoaderRegistry;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.EntityBlock;
@@ -42,6 +48,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public abstract class AbstractMultiblock implements Multiblock, BlockAndTintGetter {
     private final transient Map<BlockPos, BlockEntity> teCache = new HashMap<>();
@@ -49,7 +56,37 @@ public abstract class AbstractMultiblock implements Multiblock, BlockAndTintGett
     protected int offX, offY, offZ;
     protected int viewOffX, viewOffY, viewOffZ;
     Level world;
-    private boolean symmetrical;
+    protected boolean symmetrical;
+
+    public static Map<Character, StateMatcher> mappingFromJson(JsonObject jsonMapping) {
+        var mapping = new HashMap<Character, StateMatcher>();
+        for (Entry<String, JsonElement> entry : jsonMapping.entrySet()) {
+            if (entry.getKey().length() != 1)
+                throw new JsonSyntaxException("Mapping key needs to be only 1 character");
+            char key = entry.getKey().charAt(0);
+            var value = entry.getValue().getAsJsonObject();
+            var stateMatcherType = ResourceLocation.tryParse(GsonHelper.getAsString(value, "type"));
+            var stateMatcher = StateMatcherLoaderRegistry.getStateMatcherJsonLoader(stateMatcherType).fromJson(value);
+            mapping.put(key, stateMatcher);
+        }
+
+        return mapping;
+    }
+
+    public static <T extends AbstractMultiblock> T additionalPropertiesFromJson(T multiblock, JsonObject json) {
+        if (json.has("symmetrical")) {
+            multiblock.symmetrical = GsonHelper.getAsBoolean(json, "symmetrical");
+        }
+        if(json.has("offset")) {
+            var jsonOffset = GsonHelper.getAsJsonArray(json, "offset");
+            if(jsonOffset.size() != 3) {
+                throw new JsonSyntaxException("Offset needs to be an array of 3 integers");
+            }
+            multiblock.offset(jsonOffset.get(0).getAsInt(), jsonOffset.get(1).getAsInt(), jsonOffset.get(2).getAsInt());
+        }
+
+        return multiblock;
+    }
 
     public static Rotation fixHorizontal(Rotation rot) {
         return switch (rot) {

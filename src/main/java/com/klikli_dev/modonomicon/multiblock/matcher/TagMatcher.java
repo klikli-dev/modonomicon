@@ -48,7 +48,7 @@ import java.util.Map.Entry;
  */
 public class TagMatcher implements StateMatcher {
     public static final ResourceLocation TYPE = Modonomicon.loc("tag");
-    
+
     private final BlockState displayState;
     private final TagKey<Block> tag;
     private final Map<String, String> props;

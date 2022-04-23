@@ -24,6 +24,7 @@ package com.klikli_dev.modonomicon.api.multiblock;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
@@ -84,6 +85,12 @@ public interface Multiblock {
 
 	ResourceLocation getID();
 
+	/**
+	 * The multiblock type id for serialization.
+	 */
+	ResourceLocation getType();
+
+
 	// ================================================================================================
 	// Actual functionality
 	// Note: DO NOT USE THESE METHODS IF YOUR MOD DOESN'T HAVE
@@ -135,6 +142,11 @@ public interface Multiblock {
 	 * @return The size of the multiblock
 	 */
 	Vec3i getSize();
+
+	/**
+	 * Serializes multiblock to the given buffer.
+	 */
+	void toNetwork(FriendlyByteBuf buffer);
 
 	interface SimulateResult {
 		/**

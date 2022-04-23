@@ -21,12 +21,18 @@
 package com.klikli_dev.modonomicon.multiblock;
 
 import com.google.gson.*;
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
+import com.klikli_dev.modonomicon.multiblock.matcher.BlockStateMatcher;
 import com.klikli_dev.modonomicon.registry.StateMatcherLoaderRegistry;
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
@@ -40,14 +46,21 @@ import java.util.Map.Entry;
 
 public class DenseMultiblock extends AbstractMultiblock {
 
+    public static final ResourceLocation TYPE = Modonomicon.loc("dense");
+
     private static final Gson GSON = new GsonBuilder().create();
 
     private final String[][] pattern;
     private final Vec3i size;
+    /**
+     * Keep only for serialization
+     */
+    private final Map<Character, StateMatcher> targets;
     private StateMatcher[][][] stateMatchers;
 
     public DenseMultiblock(String[][] pattern, Map<Character, StateMatcher> targets) {
         this.pattern = pattern;
+        this.targets = targets;
         this.size = this.build(targets, getPatternDimensions(pattern));
     }
 
@@ -55,19 +68,10 @@ public class DenseMultiblock extends AbstractMultiblock {
         var pattern = GSON.fromJson(json.get("pattern"), String[][].class);
 
         var jsonMapping = GsonHelper.getAsJsonObject(json, "mapping");
+        var mapping = mappingFromJson(jsonMapping);
 
-        Map<Character, StateMatcher> mapping = new HashMap<>();
-        for (Entry<String, JsonElement> entry : jsonMapping.entrySet()) {
-            if (entry.getKey().length() != 1)
-                throw new JsonSyntaxException("Mapping key needs to be only 1 character");
-            char key = entry.getKey().charAt(0);
-            var value = entry.getValue().getAsJsonObject();
-            var stateMatcherType = ResourceLocation.tryParse(GsonHelper.getAsString(value, "type"));
-            var stateMatcher = StateMatcherLoaderRegistry.getStateMatcherJsonLoader(stateMatcherType).fromJson(value);
-            mapping.put(key, stateMatcher);
-        }
-
-        return new DenseMultiblock(pattern, mapping);
+        var multiblock = new DenseMultiblock(pattern, mapping);
+        return additionalPropertiesFromJson(multiblock, json);
     }
 
     private static Vec3i getPatternDimensions(String[][] pattern) {
@@ -130,6 +134,11 @@ public class DenseMultiblock extends AbstractMultiblock {
     }
 
     @Override
+    public ResourceLocation getType() {
+        return TYPE;
+    }
+
+    @Override
     public Pair<BlockPos, Collection<SimulateResult>> simulate(Level world, BlockPos anchor, Rotation rotation, boolean forView) {
         BlockPos disp = forView
                 ? new BlockPos(-this.viewOffX, -this.viewOffY + 1, -this.viewOffZ).rotate(rotation)
@@ -178,6 +187,59 @@ public class DenseMultiblock extends AbstractMultiblock {
     @Override
     public Vec3i getSize() {
         return this.size;
+    }
+
+    @Override
+    public void toNetwork(FriendlyByteBuf buffer) {
+        buffer.writeBoolean(this.symmetrical);
+        buffer.writeVarInt(this.offX);
+        buffer.writeVarInt(this.offY);
+        buffer.writeVarInt(this.offZ);
+
+        buffer.writeVarInt(this.size.getX());
+        buffer.writeVarInt(this.size.getY());
+        for (int y = 0; y < this.size.getY(); y++) {
+            for (int x = 0; x < this.size.getX(); x++) {
+                buffer.writeUtf(this.pattern[y][x]);
+            }
+        }
+
+        buffer.writeVarInt(this.targets.size());
+        for (var entry : this.targets.entrySet()) {
+            buffer.writeChar(entry.getKey());
+            buffer.writeResourceLocation(entry.getValue().getType());
+            entry.getValue().toNetwork(buffer);
+        }
+    }
+
+    public static DenseMultiblock fromNetwork(FriendlyByteBuf buffer) {
+        var symmetrical = buffer.readBoolean();
+        var offX = buffer.readVarInt();
+        var offY = buffer.readVarInt();
+        var offZ = buffer.readVarInt();
+
+        var sizeX = buffer.readVarInt();
+        var sizeY = buffer.readVarInt();
+        var pattern = new String[sizeY][sizeX];
+        for (int y = 0; y < sizeY; y++) {
+            for (int x = 0; x < sizeX; x++) {
+                pattern[y][x] = buffer.readUtf();
+            }
+        }
+
+        var targets = new HashMap<Character, StateMatcher>();
+        var targetCount = buffer.readVarInt();
+        for (int i = 0; i < targetCount; i++) {
+            var key = buffer.readChar();
+            var type = buffer.readResourceLocation();
+            var stateMatcher = StateMatcherLoaderRegistry.getStateMatcherNetworkLoader(type).fromNetwork(buffer);
+            targets.put(key, stateMatcher);
+        }
+
+        var multiblock = new DenseMultiblock(pattern, targets);
+        multiblock.symmetrical = symmetrical;
+        multiblock.offset(offX, offY, offZ);
+        return multiblock;
     }
 
     // These heights were assumed based being derivative of old behavior, but it may be ideal to change
