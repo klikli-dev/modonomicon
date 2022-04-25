@@ -77,7 +77,6 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         return this.books.get(id);
     }
 
-
     public Message getSyncMessage() {
         return new SyncBookDataMessage(this.books);
     }
