@@ -28,7 +28,6 @@ import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 public class DataGenerators {
 
-    @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();

@@ -87,7 +87,6 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         this.onLoadingComplete();
     }
 
-    @SubscribeEvent
     public void onDatapackSync(OnDatapackSyncEvent event) {
         Message syncMessage = this.getSyncMessage();
 

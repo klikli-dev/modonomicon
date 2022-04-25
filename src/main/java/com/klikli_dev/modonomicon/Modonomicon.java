@@ -70,17 +70,13 @@ public class Modonomicon {
         MenuRegistry.MENUS.register(modEventBus);
         SoundRegistry.SOUNDS.register(modEventBus);
 
-        //directly register event handlers, can't register the object and use annotations, because we have events from both buses
+        //directly register event handlers
         modEventBus.addListener(this::onCommonSetup);
         modEventBus.addListener(this::onServerSetup);
         MinecraftForge.EVENT_BUS.addListener(this::onAddReloadListener);
-
-        //register event listener objects
-        MinecraftForge.EVENT_BUS.register(BookDataManager.get());
-        MinecraftForge.EVENT_BUS.register(MultiblockDataManager.get());
-
-        //register event listener classes
-        modEventBus.register(DataGenerators.class);
+        MinecraftForge.EVENT_BUS.addListener(BookDataManager.get()::onDatapackSync);
+        MinecraftForge.EVENT_BUS.addListener(MultiblockDataManager.get()::onDatapackSync);
+        modEventBus.addListener(DataGenerators::gatherData);
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
             modEventBus.register(ClientSetupEventHandler.class);
