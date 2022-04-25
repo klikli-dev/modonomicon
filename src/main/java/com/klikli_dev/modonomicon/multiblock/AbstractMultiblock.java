@@ -142,7 +142,7 @@ public abstract class AbstractMultiblock implements Multiblock, BlockAndTintGett
     }
 
     @Override
-    public ResourceLocation getID() {
+    public ResourceLocation getId() {
         return this.id;
     }
 

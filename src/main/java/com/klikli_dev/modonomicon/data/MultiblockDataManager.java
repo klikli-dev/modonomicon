@@ -28,6 +28,7 @@ import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.network.Message;
 import com.klikli_dev.modonomicon.network.Networking;
+import com.klikli_dev.modonomicon.network.messages.SyncMultiblockDataMessage;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -67,20 +68,14 @@ public class MultiblockDataManager extends SimpleJsonResourceReloadListener {
     }
 
     public Message getSyncMessage() {
-        //TODO: implement
-        //return new SyncBookDataMessage(this.books);
-        throw new UnsupportedOperationException("Not implemented yet");
+        return new SyncMultiblockDataMessage(this.multiblocks);
     }
 
-    //TODO: onDatapackSyncPacket
-//    public void onDatapackSyncPacket(SyncBookDataMessage message) {
-//
-//        this.books = message.books;
-//        this.postLoad();
-//        this.onLoadingComplete();
-//    }
+    public void onDatapackSyncPacket(SyncMultiblockDataMessage message) {
+        this.multiblocks = message.multiblocks;
+        this.onLoadingComplete();
+    }
 
-    @SubscribeEvent
     public void onDatapackSync(OnDatapackSyncEvent event) {
         Message syncMessage = this.getSyncMessage();
 
@@ -106,7 +101,8 @@ public class MultiblockDataManager extends SimpleJsonResourceReloadListener {
             var json = GsonHelper.convertToJsonObject(entry.getValue(), "multiblock json file");
             var type = ResourceLocation.tryParse(GsonHelper.getAsString(json, "type"));
             var multiblock = LoaderRegistry.getMultiblockJsonLoader(type).fromJson(json);
-            this.multiblocks.put(entry.getKey(), multiblock);
+            multiblock.setId(entry.getKey());
+            this.multiblocks.put(multiblock.getId(), multiblock);
         }
 
         this.onLoadingComplete();

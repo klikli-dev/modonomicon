@@ -73,7 +73,7 @@ public class StubMultiblock implements Multiblock {
     }
 
     @Override
-    public ResourceLocation getID() {
+    public ResourceLocation getId() {
         return new ResourceLocation("patchouli", "stub");
     }
 

@@ -83,7 +83,7 @@ public interface Multiblock {
 	 */
 	boolean isSymmetrical();
 
-	ResourceLocation getID();
+	ResourceLocation getId();
 
 	/**
 	 * The multiblock type id for serialization.
