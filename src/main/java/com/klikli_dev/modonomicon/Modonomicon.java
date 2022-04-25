@@ -26,6 +26,7 @@ import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.config.CommonConfig;
 import com.klikli_dev.modonomicon.config.ServerConfig;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
+import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
 import com.klikli_dev.modonomicon.handlers.ClientSetupEventHandler;
 import com.klikli_dev.modonomicon.item.ModonomiconCreativeModeTab;
@@ -76,6 +77,7 @@ public class Modonomicon {
 
         //register event listener objects
         MinecraftForge.EVENT_BUS.register(BookDataManager.get());
+        MinecraftForge.EVENT_BUS.register(MultiblockDataManager.get());
 
         //register event listener classes
         modEventBus.register(DataGenerators.class);

@@ -1,0 +1,18 @@
+{
+  "type": "modonomicon:dense",
+  "pattern": [
+    [
+      " WWW ",
+      "N   S",
+      "N 0 S",
+      "N   S",
+      " EEE "
+    ]
+  ],
+  "mapping": {
+    "N": "minecraft:oak_stairs[facing=north]",
+    "S": "minecraft:birch_stairs[facing=south]",
+    "W": "minecraft:brick_stairs[facing=west]",
+    "E": "minecraft:stone_brick_stairs[facing=east]"
+  }
+}
