@@ -34,6 +34,8 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Objects;
+
 /**
  * Matches a BlockState, respecting all BlockState properties.
  */
@@ -112,5 +114,22 @@ public class BlockStateMatcher implements StateMatcher {
         if (this.displayState != null)
             buffer.writeUtf(BlockStateParser.serialize(this.displayState));
         buffer.writeUtf(BlockStateParser.serialize(this.blockState));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.blockState, this.displayState);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
+        var that = (BlockStateMatcher) o;
+        return this.blockState.equals(that.blockState) && this.displayState.equals(that.displayState);
     }
 }

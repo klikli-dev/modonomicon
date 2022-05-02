@@ -34,6 +34,8 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Objects;
+
 
 /**
  * Matches any block, including air, but displays a block in the multiblock preview.
@@ -85,5 +87,22 @@ public class DisplayOnlyMatcher implements StateMatcher {
     @Override
     public void toNetwork(FriendlyByteBuf buffer) {
         buffer.writeUtf(BlockStateParser.serialize(this.displayState));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.displayState);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
+        var that = (DisplayOnlyMatcher) o;
+        return this.displayState.equals(that.displayState);
     }
 }

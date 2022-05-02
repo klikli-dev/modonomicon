@@ -25,7 +25,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
-import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.network.Message;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.SyncMultiblockDataMessage;
@@ -36,7 +35,6 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraftforge.event.OnDatapackSyncEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -97,7 +95,7 @@ public class MultiblockDataManager extends SimpleJsonResourceReloadListener {
         this.loaded = false;
         this.multiblocks.clear();
 
-        for(var entry : content.entrySet()){
+        for (var entry : content.entrySet()) {
             var json = GsonHelper.convertToJsonObject(entry.getValue(), "multiblock json file");
             var type = ResourceLocation.tryParse(GsonHelper.getAsString(json, "type"));
             var multiblock = LoaderRegistry.getMultiblockJsonLoader(type).fromJson(json);

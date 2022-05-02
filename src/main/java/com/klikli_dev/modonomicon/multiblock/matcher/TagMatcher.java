@@ -42,6 +42,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 /**
  * Matches against the given tag, and optionally checks for the given BlockState properties.
@@ -154,5 +155,22 @@ public class TagMatcher implements StateMatcher {
         }
         buffer.writeResourceLocation(this.tag.location());
         buffer.writeMap(this.props, FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeUtf);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.tag, this.props, this.displayState);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
+        var that = (TagMatcher) o;
+        return this.tag.equals(that.tag) && this.props.equals(that.props) && this.displayState.equals(that.displayState);
     }
 }

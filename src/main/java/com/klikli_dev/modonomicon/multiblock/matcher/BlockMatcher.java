@@ -36,6 +36,8 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Objects;
+
 /**
  * Matches a block, ignoring the BlockState properties.
  */
@@ -115,5 +117,22 @@ public class BlockMatcher implements StateMatcher {
         if (this.displayState != null)
             buffer.writeUtf(BlockStateParser.serialize(this.displayState));
         buffer.writeResourceLocation(this.block.getRegistryName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.block, this.displayState);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
+        var that = (BlockMatcher) o;
+        return this.block.equals(that.block) && this.displayState.equals(that.displayState);
     }
 }

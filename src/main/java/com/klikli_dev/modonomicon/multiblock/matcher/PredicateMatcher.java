@@ -37,13 +37,14 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.Lazy;
 
+import java.util.Objects;
+
 /**
  * Matches against the predicate with the given id. Predicates are stored in {@link
  * LoaderRegistry}
  */
 public class PredicateMatcher implements StateMatcher {
 
-    public static final PredicateMatcher AIR = new PredicateMatcher(Blocks.AIR.defaultBlockState(), Modonomicon.loc("air"));
     public static final ResourceLocation TYPE = Modonomicon.loc("predicate");
 
     private final BlockState displayState;
@@ -99,5 +100,22 @@ public class PredicateMatcher implements StateMatcher {
     public void toNetwork(FriendlyByteBuf buffer) {
         buffer.writeUtf(BlockStateParser.serialize(this.displayState));
         buffer.writeUtf(this.predicateId.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.predicateId, this.displayState);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
+        var that = (PredicateMatcher) o;
+        return this.predicateId.equals(that.predicateId) && this.displayState.equals(that.displayState);
     }
 }

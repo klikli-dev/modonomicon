@@ -40,7 +40,6 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraftforge.event.OnDatapackSyncEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.Arrays;
 import java.util.HashMap;
