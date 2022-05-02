@@ -28,7 +28,7 @@ import com.klikli_dev.modonomicon.config.ServerConfig;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
-import com.klikli_dev.modonomicon.handlers.ClientSetupEventHandler;
+import com.klikli_dev.modonomicon.client.ClientSetupEventHandler;
 import com.klikli_dev.modonomicon.item.ModonomiconCreativeModeTab;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.*;
@@ -76,10 +76,11 @@ public class Modonomicon {
         MinecraftForge.EVENT_BUS.addListener(this::onAddReloadListener);
         MinecraftForge.EVENT_BUS.addListener(BookDataManager.get()::onDatapackSync);
         MinecraftForge.EVENT_BUS.addListener(MultiblockDataManager.get()::onDatapackSync);
+
         modEventBus.addListener(DataGenerators::gatherData);
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
-            modEventBus.register(ClientSetupEventHandler.class);
+            modEventBus.addListener(ClientSetupEventHandler::onClientSetup);
         }
     }
 

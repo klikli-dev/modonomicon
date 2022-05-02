@@ -1,7 +1,7 @@
 /*
  * LGPL-3.0
  *
- * Copyright (C) 2021 klikli-dev
+ * Copyright (C) 2022 klikli-dev
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,19 +18,18 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.handlers;
+package com.klikli_dev.modonomicon.client;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.client.ClientTicks;
+import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 public class ClientSetupEventHandler {
 
-    @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         registerItemModelProperties(event);
 
@@ -40,6 +39,16 @@ public class ClientSetupEventHandler {
                 ClientTicks.endClientTick(Minecraft.getInstance());
             }
         });
+        MinecraftForge.EVENT_BUS.addListener((TickEvent.RenderTickEvent e) -> {
+            if (e.phase == TickEvent.Phase.START) {
+                ClientTicks.renderTickStart(e.renderTickTime);
+            } else {
+                ClientTicks.renderTickEnd();
+            }
+        });
+
+        //Register event handler
+        MinecraftForge.EVENT_BUS.addListener(MultiblockPreviewRenderer::onRenderLevelLastEvent);
 
         //Not safe to call during parallel load, so register to run threadsafe.
         event.enqueueWork(() -> {

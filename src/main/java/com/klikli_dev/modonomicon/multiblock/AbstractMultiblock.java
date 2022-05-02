@@ -96,6 +96,15 @@ public abstract class AbstractMultiblock implements Multiblock, BlockAndTintGett
         };
     }
 
+    public static Rotation rotationFromFacing(Direction facing) {
+        return switch (facing) {
+            case EAST -> Rotation.CLOCKWISE_90;
+            case SOUTH -> Rotation.CLOCKWISE_180;
+            case WEST -> Rotation.COUNTERCLOCKWISE_90;
+            default -> Rotation.NONE;
+        };
+    }
+
     public Multiblock setOffset(int x, int y, int z) {
 		this.offX = x;
 		this.offY = y;
