@@ -76,6 +76,7 @@ public class BookMultiblockPage extends BookPage implements PageWithText {
         super(anchor);
         this.multiblockName = multiblockName;
         this.text = text;
+        this.multiblockId = multiblockId;
     }
 
     public static BookMultiblockPage fromJson(JsonObject json) {
@@ -273,6 +274,10 @@ public class BookMultiblockPage extends BookPage implements PageWithText {
         this.renderTitle(this.multiblockName, false, poseStack, BookContentScreen.PAGE_WIDTH / 2, 0);
 
         //TODO: render mutliblock frame
+
+        //            //TODO: show multiblock preview on button click
+//            var block = MultiblockDataManager.get().getMultiblock(ResourceLocation.tryParse("modonomicon:blockentity"));
+//            MultiblockPreviewRenderer.setMultiblock(block, new TranslatableComponent("multiblock.modonomicon.test"), true);
 
         this.renderMultiblock(poseStack);
 

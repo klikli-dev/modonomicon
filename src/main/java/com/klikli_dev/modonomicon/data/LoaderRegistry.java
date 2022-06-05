@@ -24,6 +24,7 @@ import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
+import com.klikli_dev.modonomicon.book.page.BookMultiblockPage;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.book.page.BookTextPage;
 import com.klikli_dev.modonomicon.multiblock.DenseMultiblock;
@@ -62,6 +63,7 @@ public class LoaderRegistry {
 
     public static void registerDefaultPageLoaders() {
         registerPageLoader(Page.TEXT, BookTextPage::fromJson, BookTextPage::fromNetwork);
+        registerPageLoader(Page.MULTIBLOCK, BookMultiblockPage::fromJson, BookMultiblockPage::fromNetwork);
     }
 
     private static void registerDefaultMultiblockLoaders() {
