@@ -25,7 +25,6 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock.SimulateResult;
-import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.client.ClientTicks;
@@ -63,14 +62,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class BookMultiblockPage extends BookPage implements PageWithText {
+    private final Map<BlockPos, BlockEntity> blockEntityCache = new HashMap<>();
+    private final Set<BlockEntity> erroredBlockEntities = Collections.newSetFromMap(new WeakHashMap<>());
     protected BookTextHolder multiblockName;
     protected BookTextHolder text;
     protected ResourceLocation multiblockId;
-
     protected Multiblock multiblock;
-
-    private final Map<BlockPos, BlockEntity> blockEntityCache = new HashMap<>();
-    private final Set<BlockEntity> erroredBlockEntities = Collections.newSetFromMap(new WeakHashMap<>());
 
     public BookMultiblockPage(BookTextHolder multiblockName, BookTextHolder text, ResourceLocation multiblockId, String anchor) {
         super(anchor);
@@ -241,19 +238,6 @@ public class BookMultiblockPage extends BookPage implements PageWithText {
     }
 
     @Override
-    public void build(BookEntry parentEntry, int pageNum) {
-        super.build(parentEntry, pageNum);
-
-        if (this.multiblockId != null) {
-            this.multiblock = MultiblockDataManager.get().getMultiblock(this.multiblockId);
-        }
-
-        if (this.multiblock == null) {
-            throw new IllegalArgumentException("Invalid multiblock id " + this.multiblockId);
-        }
-    }
-
-    @Override
     public void prerenderMarkdown(BookTextRenderer textRenderer) {
         super.prerenderMarkdown(textRenderer);
 
@@ -265,6 +249,19 @@ public class BookMultiblockPage extends BookPage implements PageWithText {
         }
         if (!this.text.hasComponent()) {
             this.text = new RenderedBookTextHolder(this.text, textRenderer.render(this.text.getString()));
+        }
+    }
+
+    @Override
+    public void onBeginDisplayPage(BookContentScreen parentScreen, int left, int top) {
+        super.onBeginDisplayPage(parentScreen, left, top);
+
+        if (this.multiblockId != null) {
+            this.multiblock = MultiblockDataManager.get().getMultiblock(this.multiblockId);
+        }
+
+        if (this.multiblock == null) {
+            throw new IllegalArgumentException("Invalid multiblock id " + this.multiblockId);
         }
     }
 
