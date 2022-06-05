@@ -43,12 +43,8 @@ public class ModonomiconItem extends Item {
         var itemInHand = pPlayer.getItemInHand(pUsedHand);
 
         if (pLevel.isClientSide) {
-//            itemInHand.getOrCreateTag().putBoolean(ModonimiconConstants.Nbt.BOOK_OPEN, true);
-//            BookGuiManager.get().openBook(itemInHand);
-
-            //TODO: switch back to showing
-            var block = MultiblockDataManager.get().getMultiblock(ResourceLocation.tryParse("modonomicon:blockentity"));
-            MultiblockPreviewRenderer.setMultiblock(block, new TranslatableComponent("multiblock.modonomicon.test"), true);
+            itemInHand.getOrCreateTag().putBoolean(ModonimiconConstants.Nbt.BOOK_OPEN, true);
+            BookGuiManager.get().openBook(itemInHand);
         }
 
         return InteractionResultHolder.sidedSuccess(itemInHand, pLevel.isClientSide);
