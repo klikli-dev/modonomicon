@@ -90,6 +90,7 @@ public class Modonomicon {
 
     public void onAddReloadListener(AddReloadListenerEvent event) {
         event.addListener(BookDataManager.get());
+        event.addListener(MultiblockDataManager.get());
     }
 
 
