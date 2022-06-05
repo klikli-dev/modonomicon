@@ -140,23 +140,6 @@ public class SparseMultiblock extends AbstractMultiblock {
         return this.size;
     }
 
-    // These heights were assumed based being derivative of old behavior, but it may be ideal to change
-    @Override
-    public int getHeight() {
-        return 255;
-    }
-
-    @Override
-    public int getMinBuildHeight() {
-        return 0;
-    }
-
-    @Override
-    public BlockState getBlockState(BlockPos pos) {
-        long ticks = this.world != null ? this.world.getGameTime() : 0L;
-        return this.stateMatchers.getOrDefault(pos, Matchers.AIR).getDisplayedState(ticks);
-    }
-
     @Override
     public ResourceLocation getType() {
         return TYPE;

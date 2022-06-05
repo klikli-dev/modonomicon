@@ -20,6 +20,7 @@
 
 package com.klikli_dev.modonomicon.client.render;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.client.ClientTicks;
@@ -37,6 +38,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.language.I18n;
@@ -53,20 +55,23 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.client.event.RenderLevelLastEvent;
 
 import java.awt.*;
-import java.util.Collection;
-import java.util.IdentityHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 public class MultiblockPreviewRenderer {
 
     public static boolean hasMultiblock;
+
+    private static Map<BlockPos, BlockEntity> blockEntityCache = new HashMap<>();
+    private static Set<BlockEntity> erroredBlockEntities = Collections.newSetFromMap(new WeakHashMap<>());
     private static Multiblock multiblock;
     private static Component name;
     private static BlockPos pos;
@@ -88,6 +93,8 @@ public class MultiblockPreviewRenderer {
             hasMultiblock = false;
         } else {
             MultiblockPreviewRenderer.multiblock = multiblock;
+            MultiblockPreviewRenderer.blockEntityCache = new HashMap<>();
+            MultiblockPreviewRenderer.erroredBlockEntities = Collections.newSetFromMap(new WeakHashMap<>());
             MultiblockPreviewRenderer.name = name;
             MultiblockPreviewRenderer.offsetApplier = offsetApplier;
             pos = null;
@@ -271,6 +278,34 @@ public class MultiblockPreviewRenderer {
                     BlockState renderState = r.getStateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
                     renderBlock(world, renderState, r.getWorldPosition(), alpha, ms);
 
+                    if (renderState.getBlock() instanceof EntityBlock eb) {
+                        var be = blockEntityCache.computeIfAbsent(pos.immutable(), p -> eb.newBlockEntity(pos, renderState));
+                        if(be != null && !erroredBlockEntities.contains(be)) {
+                            be.setLevel(mc.level);
+
+                            // fake cached state in case the renderer checks it as we don't want to query the actual world
+                            be.setBlockState(renderState);
+
+                            ms.pushPose();
+                            var bePos = r.getWorldPosition();
+                            ms.translate(bePos.getX(), bePos.getY(), bePos.getZ());
+                            
+                            try {
+                                BlockEntityRenderer<BlockEntity> renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(be);
+                                if (renderer != null) {
+                                    renderer.render(be, ClientTicks.partialTicks, ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
+                                }
+                            } catch (Exception e) {
+                                erroredBlockEntities.add(be);
+                                Modonomicon.LOGGER.error("Error rendering block entity", e);
+                            }
+                            ms.popPose();
+                        }
+                    }
+
+                    if (air) {
+                        airFilled++;
+                    }
                     if (air) {
                         airFilled++;
                     }

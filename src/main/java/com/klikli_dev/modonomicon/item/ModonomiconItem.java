@@ -47,7 +47,7 @@ public class ModonomiconItem extends Item {
 //            BookGuiManager.get().openBook(itemInHand);
 
             //TODO: switch back to showing
-            var block = MultiblockDataManager.get().getMultiblock(ResourceLocation.tryParse("modonomicon:dense"));
+            var block = MultiblockDataManager.get().getMultiblock(ResourceLocation.tryParse("modonomicon:blockentity"));
             MultiblockPreviewRenderer.setMultiblock(block, new TranslatableComponent("multiblock.modonomicon.test"), true);
         }
 

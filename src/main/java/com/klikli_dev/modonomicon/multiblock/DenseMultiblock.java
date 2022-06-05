@@ -235,30 +235,8 @@ public class DenseMultiblock extends AbstractMultiblock {
     }
 
     @Override
-    public BlockState getBlockState(BlockPos pos) {
-        int x = pos.getX();
-        int y = pos.getY();
-        int z = pos.getZ();
-        if (x < 0 || y < 0 || z < 0 || x >= this.size.getX() || y >= this.size.getY() || z >= this.size.getZ()) {
-            return Blocks.AIR.defaultBlockState();
-        }
-        long ticks = this.world != null ? this.world.getGameTime() : 0L;
-        return this.stateMatchers[x][y][z].getDisplayedState(ticks);
-    }
-
-    @Override
     public Vec3i getSize() {
         return this.size;
     }
 
-    // These heights were assumed based being derivative of old behavior, but it may be ideal to change
-    @Override
-    public int getHeight() {
-        return 255;
-    }
-
-    @Override
-    public int getMinBuildHeight() {
-        return 0;
-    }
 }

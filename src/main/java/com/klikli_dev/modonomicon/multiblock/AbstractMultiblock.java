@@ -50,8 +50,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public abstract class AbstractMultiblock implements Multiblock, BlockAndTintGetter {
-    private final transient Map<BlockPos, BlockEntity> teCache = new HashMap<>();
+public abstract class AbstractMultiblock implements Multiblock {
+
     public ResourceLocation id;
     protected int offX, offY, offZ;
     protected int viewOffX, viewOffY, viewOffZ;
@@ -198,59 +198,6 @@ public abstract class AbstractMultiblock implements Multiblock, BlockAndTintGett
 
     @Override
     public abstract Vec3i getSize();
-
-    @Override
-    @Nullable
-    public BlockEntity getBlockEntity(BlockPos pos) {
-        BlockState state = this.getBlockState(pos);
-        if (state.getBlock() instanceof EntityBlock) {
-            return this.teCache.computeIfAbsent(pos.immutable(), p -> ((EntityBlock) state.getBlock()).newBlockEntity(pos, state));
-        }
-        return null;
-    }
-
-    @Override
-    public FluidState getFluidState(BlockPos pos) {
-        return Fluids.EMPTY.defaultFluidState();
-    }
-
-    @Override
-    public float getShade(Direction direction, boolean shaded) {
-        return 1.0F;
-    }
-
-    @Override
-    public LevelLightEngine getLightEngine() {
-        return null;
-    }
-
-    @Override
-    public int getBlockTint(BlockPos pos, ColorResolver color) {
-        var plains = this.world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY)
-                .getOrThrow(Biomes.PLAINS);
-        return color.getColor(plains, pos.getX(), pos.getZ());
-    }
-
-    @Override
-    public int getBrightness(LightLayer type, BlockPos pos) {
-        return 15;
-    }
-
-    @Override
-    public int getRawBrightness(BlockPos pos, int ambientDarkening) {
-        return 15 - ambientDarkening;
-    }
-
-    // These heights were assumed based being derivative of old behavior, but it may be ideal to change
-    @Override
-    public int getHeight() {
-        return 255;
-    }
-
-    @Override
-    public int getMinBuildHeight() {
-        return 0;
-    }
 
     void setViewOffset() {
 		this.setViewOffset(this.offX, this.offY, this.offZ);

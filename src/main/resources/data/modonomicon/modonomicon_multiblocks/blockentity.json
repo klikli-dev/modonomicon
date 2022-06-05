@@ -1,0 +1,34 @@
+{
+  "type": "modonomicon:dense",
+  "pattern": [
+    [
+      " WWW ",
+      "N   S",
+      "N 0 S",
+      "N   S",
+      " EEE "
+    ]
+  ],
+  "mapping": {
+    "N": {
+      "type": "modonomicon:blockstate",
+      "block": "minecraft:oak_stairs[facing=north]"
+    },
+    "S":  {
+      "type": "modonomicon:blockstate",
+      "block": "minecraft:oak_stairs[facing=south]"
+    },
+    "W":  {
+      "type": "modonomicon:blockstate",
+      "block": "minecraft:oak_stairs[facing=west]"
+    },
+    "E":  {
+      "type": "modonomicon:blockstate",
+      "block": "minecraft:oak_stairs[facing=east]"
+    },
+    "0":  {
+      "type": "modonomicon:block",
+      "block": "minecraft:skeleton_skull"
+    }
+  }
+}
