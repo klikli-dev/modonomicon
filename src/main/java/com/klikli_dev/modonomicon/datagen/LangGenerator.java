@@ -23,6 +23,7 @@ package com.klikli_dev.modonomicon.datagen;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Gui;
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Multiblock;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Subtitles;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.data.DataGenerator;
@@ -74,6 +75,11 @@ public abstract class LangGenerator extends LanguageProvider {
 
             //Others
             this.add(Gui.NO_ERRORS_FOUND, "No errors found. You should not see this page!");
+
+            //Multiblock Preview
+            this.add(Multiblock.COMPLETE, "Complete!");
+            this.add(Multiblock.NOT_ANCHORED, "Right-Click a Block to anchor the Structure.");
+            this.add(Multiblock.REMOVE_BLOCKS, " (Clear blocks marked in red)");
         }
 
         private void addItems() {

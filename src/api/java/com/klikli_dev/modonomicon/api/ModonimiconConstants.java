@@ -67,8 +67,15 @@ public class ModonimiconConstants {
             public static final String NO_ERRORS_FOUND = PREFIX + "no_errors_found";
         }
 
+        public static class Multiblock {
+            public static final String PREFIX = ModonomiconAPI.ID + ".multiblock.";
+            public static final String COMPLETE = PREFIX + "complete";
+            public static final String NOT_ANCHORED = PREFIX + "not_anchored";
+            public static final String REMOVE_BLOCKS = PREFIX + "remove_blocks";
+        }
+
         public static class Subtitles {
-            public static final String PREFIX = ModonomiconAPI.ID + ".subtitles.";
+            public static final String PREFIX = ModonomiconAPI.ID + ".subtitle.";
             public static final String TURN_PAGE = PREFIX + "turn_page";
         }
     }
