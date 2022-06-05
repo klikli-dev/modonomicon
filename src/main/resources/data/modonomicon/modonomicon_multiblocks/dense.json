@@ -11,19 +11,19 @@
   ],
   "mapping": {
     "N": {
-      "type": "modonomicon:block",
+      "type": "modonomicon:blockstate",
       "block": "minecraft:oak_stairs[facing=north]"
     },
     "S":  {
-      "type": "modonomicon:block",
+      "type": "modonomicon:blockstate",
       "block": "minecraft:oak_stairs[facing=south]"
     },
     "W":  {
-      "type": "modonomicon:block",
+      "type": "modonomicon:blockstate",
       "block": "minecraft:oak_stairs[facing=west]"
     },
     "E":  {
-      "type": "modonomicon:block",
+      "type": "modonomicon:blockstate",
       "block": "minecraft:oak_stairs[facing=east]"
     }
   }
