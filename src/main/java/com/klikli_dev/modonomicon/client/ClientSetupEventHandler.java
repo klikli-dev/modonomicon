@@ -23,10 +23,12 @@ package com.klikli_dev.modonomicon.client;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.InteractionResult;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 public class ClientSetupEventHandler {
@@ -45,6 +47,16 @@ public class ClientSetupEventHandler {
                 ClientTicks.renderTickStart(e.renderTickTime);
             } else {
                 ClientTicks.renderTickEnd();
+            }
+        });
+
+
+        //let multiblock preview renderer handle right clicks for anchoring
+        MinecraftForge.EVENT_BUS.addListener((PlayerInteractEvent.RightClickBlock e) -> {
+            InteractionResult result = MultiblockPreviewRenderer.onPlayerInteract(e.getPlayer(), e.getWorld(), e.getHand(), e.getHitVec());
+            if (result.consumesAction()) {
+                e.setCanceled(true);
+                e.setCancellationResult(result);
             }
         });
 
