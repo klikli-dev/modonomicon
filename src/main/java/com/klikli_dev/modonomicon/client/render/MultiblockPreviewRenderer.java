@@ -123,6 +123,7 @@ public class MultiblockPreviewRenderer {
             int top = y + 10;
 
             if (timeComplete > 0) {
+                //TODO: replace strings
                 String s = I18n.get("patchouli.gui.lexicon.structure_complete");
                 ms.pushPose();
                 ms.translate(0, Math.min(height + 5, animTime), 0);

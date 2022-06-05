@@ -29,6 +29,7 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.multiblock.matcher.AnyMatcher;
+import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
 import com.klikli_dev.modonomicon.multiblock.matcher.PredicateMatcher;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
@@ -153,7 +154,7 @@ public class SparseMultiblock extends AbstractMultiblock {
     @Override
     public BlockState getBlockState(BlockPos pos) {
         long ticks = this.world != null ? this.world.getGameTime() : 0L;
-        return this.stateMatchers.getOrDefault(pos, PredicateMatcher.AIR).getDisplayedState(ticks);
+        return this.stateMatchers.getOrDefault(pos, Matchers.AIR).getDisplayedState(ticks);
     }
 
     @Override
@@ -182,7 +183,7 @@ public class SparseMultiblock extends AbstractMultiblock {
         this.setWorld(world);
         BlockPos checkPos = start.offset(new BlockPos(x, y, z).rotate(rotation));
         BlockState state = world.getBlockState(checkPos).rotate(AbstractMultiblock.fixHorizontal(rotation));
-        StateMatcher matcher = this.stateMatchers.getOrDefault(new BlockPos(x, y, z), AnyMatcher.ANY);
+        StateMatcher matcher = this.stateMatchers.getOrDefault(new BlockPos(x, y, z), Matchers.ANY);
         return matcher.getStatePredicate().test(world, checkPos, state);
     }
 

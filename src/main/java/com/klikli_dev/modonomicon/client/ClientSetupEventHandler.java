@@ -23,6 +23,7 @@ package com.klikli_dev.modonomicon.client;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -44,6 +45,20 @@ public class ClientSetupEventHandler {
                 ClientTicks.renderTickStart(e.renderTickTime);
             } else {
                 ClientTicks.renderTickEnd();
+            }
+        });
+
+        //Tick multiblock preview
+        MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent e) -> {
+            if (e.phase == TickEvent.Phase.END) {
+                MultiblockPreviewRenderer.onClientTick(Minecraft.getInstance());
+            }
+        });
+
+        //Draw multiblock as overlay
+        MinecraftForge.EVENT_BUS.addListener((RenderGameOverlayEvent.Post e) -> {
+            if (e.getType() == RenderGameOverlayEvent.ElementType.ALL) {
+                MultiblockPreviewRenderer.onRenderHUD(e.getMatrixStack(), e.getPartialTicks());
             }
         });
 

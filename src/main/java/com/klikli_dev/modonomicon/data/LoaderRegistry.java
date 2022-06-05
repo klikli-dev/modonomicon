@@ -79,7 +79,7 @@ public class LoaderRegistry {
     }
 
     private static void registerDefaultPredicates() {
-        registerPredicate(PredicateMatcher.AIR.getPredicateId(), (getter, pos, state) -> state.isAir());
+        registerPredicate(Matchers.AIR.getPredicateId(), (getter, pos, state) -> state.isAir());
     }
 
 
