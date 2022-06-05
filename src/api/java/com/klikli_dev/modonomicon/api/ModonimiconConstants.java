@@ -41,6 +41,7 @@ public class ModonimiconConstants {
 
         public static class Page {
             public static final ResourceLocation TEXT = new ResourceLocation(ModonomiconAPI.ID, "text");
+            public static final ResourceLocation MULTIBLOCK = new ResourceLocation(ModonomiconAPI.ID, "multiblock");
         }
     }
 
