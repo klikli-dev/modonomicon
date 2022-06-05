@@ -34,6 +34,7 @@ import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Matrix4f;
@@ -41,9 +42,9 @@ import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -59,7 +60,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
+import java.util.*;
 
 public class BookMultiblockPage extends BookPage implements PageWithText {
     protected BookTextHolder multiblockName;
@@ -67,6 +68,9 @@ public class BookMultiblockPage extends BookPage implements PageWithText {
     protected ResourceLocation multiblockId;
 
     protected Multiblock multiblock;
+
+    private final Map<BlockPos, BlockEntity> blockEntityCache = new HashMap<>();
+    private final Set<BlockEntity> erroredBlockEntities = Collections.newSetFromMap(new WeakHashMap<>());
 
     public BookMultiblockPage(BookTextHolder multiblockName, BookTextHolder text, ResourceLocation multiblockId, String anchor) {
         super(anchor);
@@ -96,6 +100,132 @@ public class BookMultiblockPage extends BookPage implements PageWithText {
 
     public BookTextHolder getText() {
         return this.text;
+    }
+
+    private void renderMultiblock(PoseStack ms) {
+        var mc = Minecraft.getInstance();
+        var level = mc.level;
+
+        var pos = BlockPos.ZERO;
+        var facingRotation = Rotation.NONE;
+
+        if (this.multiblock.isSymmetrical()) {
+            facingRotation = Rotation.NONE;
+        }
+
+        Vec3i size = this.multiblock.getSize();
+        int sizeX = size.getX();
+        int sizeY = size.getY();
+        int sizeZ = size.getZ();
+        float maxX = 90;
+        float maxY = 90;
+        float diag = (float) Math.sqrt(sizeX * sizeX + sizeZ * sizeZ);
+        float scaleX = maxX / diag;
+        float scaleY = maxY / sizeY;
+        float scale = -Math.min(scaleX, scaleY);
+
+        int xPos = BookContentScreen.PAGE_WIDTH / 2;
+        int yPos = 60;
+
+        ms.pushPose();
+
+        ms.translate(xPos, yPos, 100);
+        ms.scale(scale, scale, scale);
+        ms.translate(-(float) sizeX / 2, -(float) sizeY / 2, 0);
+
+        // Initial eye pos somewhere off in the distance in the -Z direction
+        Vector4f eye = new Vector4f(0, 0, -100, 1);
+        Matrix4f rotMat = new Matrix4f();
+        rotMat.setIdentity();
+
+        // For each GL rotation done, track the opposite to keep the eye pos accurate
+        ms.mulPose(Vector3f.XP.rotationDegrees(-30F));
+        rotMat.multiply(Vector3f.XP.rotationDegrees(30));
+
+        float offX = (float) -sizeX / 2;
+        float offZ = (float) -sizeZ / 2 + 1;
+
+        float time = this.parentScreen.ticksInBook * 0.5F;
+        if (!Screen.hasShiftDown()) {
+            time += ClientTicks.partialTicks;
+        }
+        ms.translate(-offX, 0, -offZ);
+        ms.mulPose(Vector3f.YP.rotationDegrees(time));
+        rotMat.multiply(Vector3f.YP.rotationDegrees(-time));
+        ms.mulPose(Vector3f.YP.rotationDegrees(45));
+        rotMat.multiply(Vector3f.YP.rotationDegrees(-45));
+        ms.translate(offX, 0, offZ);
+
+        // Finally apply the rotations
+        eye.transform(rotMat);
+        eye.perspectiveDivide();
+
+
+        var buffers = mc.renderBuffers().bufferSource();
+
+        BlockPos checkPos = null;
+        if (mc.hitResult instanceof BlockHitResult blockRes) {
+            checkPos = blockRes.getBlockPos().relative(blockRes.getDirection());
+        }
+
+        ms.pushPose();
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        ms.translate(0, 0, -1);
+        Pair<BlockPos, Collection<SimulateResult>> sim = this.multiblock.simulate(null, pos, facingRotation, true);
+
+        for (Multiblock.SimulateResult r : sim.getSecond()) {
+            float alpha = 0.3F;
+            if (r.getWorldPosition().equals(checkPos)) {
+                alpha = 0.6F + (float) (Math.sin(ClientTicks.total * 0.3F) + 1F) * 0.1F;
+            }
+
+            if (!r.getStateMatcher().equals(Matchers.ANY)) {
+                if (!r.test(level, facingRotation)) {
+                    BlockState renderState = r.getStateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
+                    this.renderBlock(buffers, level, renderState, r.getWorldPosition(), alpha, ms);
+
+                    if (renderState.getBlock() instanceof EntityBlock eb) {
+                        var be = this.blockEntityCache.computeIfAbsent(pos.immutable(), p -> eb.newBlockEntity(pos, renderState));
+                        if (be != null && !this.erroredBlockEntities.contains(be)) {
+                            be.setLevel(mc.level);
+
+                            // fake cached state in case the renderer checks it as we don't want to query the actual world
+                            be.setBlockState(renderState);
+
+                            ms.pushPose();
+                            var bePos = r.getWorldPosition();
+                            ms.translate(bePos.getX(), bePos.getY(), bePos.getZ());
+
+                            try {
+                                BlockEntityRenderer<BlockEntity> renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(be);
+                                if (renderer != null) {
+                                    renderer.render(be, ClientTicks.partialTicks, ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
+                                }
+                            } catch (Exception e) {
+                                this.erroredBlockEntities.add(be);
+                                Modonomicon.LOGGER.error("Error rendering block entity", e);
+                            }
+                            ms.popPose();
+                        }
+                    }
+                }
+            }
+        }
+        ms.popPose();
+        buffers.endBatch();
+        ms.popPose();
+
+    }
+
+    private void renderBlock(MultiBufferSource.BufferSource buffers, ClientLevel world, BlockState state, BlockPos pos, float alpha, PoseStack ms) {
+        if (pos != null) {
+            ms.pushPose();
+            ms.translate(pos.getX(), pos.getY(), pos.getZ());
+
+            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
+
+            ms.popPose();
+        }
     }
 
     @Override
@@ -181,152 +311,4 @@ public class BookMultiblockPage extends BookPage implements PageWithText {
         return super.getClickedComponentStyleAt(pMouseX, pMouseY);
     }
 
-    private void renderMultiblock(PoseStack ms) {
-        //TODO: render multiblock
-
-        Minecraft mc = Minecraft.getInstance();
-
-        var pos = BlockPos.ZERO;
-        var facingRotation = Rotation.NONE;
-
-        if (multiblock.isSymmetrical()) {
-            facingRotation = Rotation.NONE;
-        }
-
-//        EntityRenderDispatcher erd = mc.getEntityRenderDispatcher();
-//        double renderPosX = erd.camera.getPosition().x();
-//        double renderPosY = erd.camera.getPosition().y();
-//        double renderPosZ = erd.camera.getPosition().z();
-//        ms.pushPose();
-//        ms.translate(-renderPosX, -renderPosY, -renderPosZ);
-
-        var buffers = mc.renderBuffers().bufferSource();
-
-        BlockPos checkPos = null;
-        if (mc.hitResult instanceof BlockHitResult blockRes) {
-            checkPos = blockRes.getBlockPos().relative(blockRes.getDirection());
-        }
-
-        blocks = blocksDone = airFilled = 0;
-        lookingState = null;
-        lookingPos = checkPos;
-
-        Pair<BlockPos, Collection<SimulateResult>> sim = multiblock.simulate(null, pos, facingRotation, true);
-
-        for (Multiblock.SimulateResult r : sim.getSecond()) {
-            float alpha = 0.3F;
-            if (r.getWorldPosition().equals(checkPos)) {
-                lookingState = r.getStateMatcher().getDisplayedState(ClientTicks.ticks);
-                alpha = 0.6F + (float) (Math.sin(ClientTicks.total * 0.3F) + 1F) * 0.1F;
-            }
-
-            if (!r.getStateMatcher().equals(Matchers.ANY)) {
-                boolean air = r.getStateMatcher().equals(Matchers.AIR);
-                if (!air) {
-                    blocks++;
-                }
-
-                if (!r.test(world, facingRotation)) {
-                    BlockState renderState = r.getStateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
-                    renderBlock(world, renderState, r.getWorldPosition(), alpha, ms);
-
-                    if (renderState.getBlock() instanceof EntityBlock eb) {
-                        var be = blockEntityCache.computeIfAbsent(pos.immutable(), p -> eb.newBlockEntity(pos, renderState));
-                        if(be != null && !erroredBlockEntities.contains(be)) {
-                            be.setLevel(mc.level);
-
-                            // fake cached state in case the renderer checks it as we don't want to query the actual world
-                            be.setBlockState(renderState);
-
-                            ms.pushPose();
-                            var bePos = r.getWorldPosition();
-                            ms.translate(bePos.getX(), bePos.getY(), bePos.getZ());
-
-                            try {
-                                BlockEntityRenderer<BlockEntity> renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(be);
-                                if (renderer != null) {
-                                    renderer.render(be, ClientTicks.partialTicks, ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
-                                }
-                            } catch (Exception e) {
-                                erroredBlockEntities.add(be);
-                                Modonomicon.LOGGER.error("Error rendering block entity", e);
-                            }
-                            ms.popPose();
-                        }
-                    }
-
-                    if (air) {
-                        airFilled++;
-                    }
-                    if (air) {
-                        airFilled++;
-                    }
-                } else if (!air) {
-                    blocksDone++;
-                }
-            }
-        }
-
-        buffers.endBatch();
-        ms.popPose();
-
-        if (!isAnchored) {
-            blocks = blocksDone = 0;
-        }
-    }
-
-    private void renderRef(PoseStack ms) {
-        multiblockObj.setWorld(mc.level);
-        Vec3i size = multiblockObj.getSize();
-        int sizeX = size.getX();
-        int sizeY = size.getY();
-        int sizeZ = size.getZ();
-        float maxX = 90;
-        float maxY = 90;
-        float diag = (float) Math.sqrt(sizeX * sizeX + sizeZ * sizeZ);
-        float scaleX = maxX / diag;
-        float scaleY = maxY / sizeY;
-        float scale = -Math.min(scaleX, scaleY);
-
-        int xPos = GuiBook.PAGE_WIDTH / 2;
-        int yPos = 60;
-        ms.pushPose();
-        ms.translate(xPos, yPos, 100);
-        ms.scale(scale, scale, scale);
-        ms.translate(-(float) sizeX / 2, -(float) sizeY / 2, 0);
-
-        // Initial eye pos somewhere off in the distance in the -Z direction
-        Vector4f eye = new Vector4f(0, 0, -100, 1);
-        Matrix4f rotMat = new Matrix4f();
-        rotMat.setIdentity();
-
-        // For each GL rotation done, track the opposite to keep the eye pos accurate
-        ms.mulPose(Vector3f.XP.rotationDegrees(-30F));
-        rotMat.multiply(Vector3f.XP.rotationDegrees(30));
-
-        float offX = (float) -sizeX / 2;
-        float offZ = (float) -sizeZ / 2 + 1;
-
-        float time = parent.ticksInBook * 0.5F;
-        if (!Screen.hasShiftDown()) {
-            time += ClientTicker.partialTicks;
-        }
-        ms.translate(-offX, 0, -offZ);
-        ms.mulPose(Vector3f.YP.rotationDegrees(time));
-        rotMat.multiply(Vector3f.YP.rotationDegrees(-time));
-        ms.mulPose(Vector3f.YP.rotationDegrees(45));
-        rotMat.multiply(Vector3f.YP.rotationDegrees(-45));
-        ms.translate(offX, 0, offZ);
-
-        // Finally apply the rotations
-        eye.transform(rotMat);
-        eye.perspectiveDivide();
-		/* TODO XXX This does not handle visualization of sparse multiblocks correctly.
-			Dense multiblocks store everything in positive X/Z, so this works, but sparse multiblocks store everything from the JSON as-is.
-			Potential solution: Rotate around the offset vars of the multiblock, and add AABB method for extent of the multiblock
-		*/
-        renderElements(ms, multiblockObj, BlockPos.betweenClosed(BlockPos.ZERO, new BlockPos(sizeX - 1, sizeY - 1, sizeZ - 1)), eye);
-
-        ms.popPose();
-    }
 }

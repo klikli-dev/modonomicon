@@ -77,6 +77,8 @@ public class BookContentScreen extends Screen {
     private int openPagesIndex;
     private int maxOpenPagesIndex;
 
+    public int ticksInBook;
+
     private List<Component> tooltip;
 
     public BookContentScreen(BookOverviewScreen parentScreen, BookEntry entry) {
@@ -357,5 +359,14 @@ public class BookContentScreen extends Screen {
         return this.clickPage(this.leftPage, pMouseX, pMouseY, pButton)
                 || this.clickPage(this.rightPage, pMouseX, pMouseY, pButton)
                 || super.mouseClicked(pMouseX, pMouseY, pButton);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        if (!hasShiftDown()) {
+            this.ticksInBook++;
+        }
     }
 }
