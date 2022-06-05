@@ -22,6 +22,10 @@ package com.klikli_dev.modonomicon.item;
 
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
+import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
+import com.klikli_dev.modonomicon.data.MultiblockDataManager;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -39,8 +43,12 @@ public class ModonomiconItem extends Item {
         var itemInHand = pPlayer.getItemInHand(pUsedHand);
 
         if (pLevel.isClientSide) {
-            itemInHand.getOrCreateTag().putBoolean(ModonimiconConstants.Nbt.BOOK_OPEN, true);
-            BookGuiManager.get().openBook(itemInHand);
+//            itemInHand.getOrCreateTag().putBoolean(ModonimiconConstants.Nbt.BOOK_OPEN, true);
+//            BookGuiManager.get().openBook(itemInHand);
+
+            //TODO: switch back to showing
+            var block = MultiblockDataManager.get().getMultiblock(ResourceLocation.tryParse("modonomicon:dense"));
+            MultiblockPreviewRenderer.setMultiblock(block, new TranslatableComponent("multiblock.modonomicon.test"), true);
         }
 
         return InteractionResultHolder.sidedSuccess(itemInHand, pLevel.isClientSide);
