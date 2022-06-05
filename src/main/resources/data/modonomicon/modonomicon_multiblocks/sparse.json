@@ -15,9 +15,21 @@
     ]
   },
   "mapping": {
-    "N": "minecraft:oak_stairs[facing=north]",
-    "S": "minecraft:birch_stairs[facing=south]",
-    "W": "minecraft:brick_stairs[facing=west]",
-    "E": "minecraft:stone_brick_stairs[facing=east]"
+    "N": {
+      "type": "modonomicon:block",
+      "block": "minecraft:oak_stairs[facing=north]"
+    },
+    "S":  {
+      "type": "modonomicon:block",
+      "block": "minecraft:oak_stairs[facing=south]"
+    },
+    "W":  {
+      "type": "modonomicon:block",
+      "block": "minecraft:oak_stairs[facing=west]"
+    },
+    "E":  {
+      "type": "modonomicon:block",
+      "block": "minecraft:oak_stairs[facing=east]"
+    }
   }
 }
