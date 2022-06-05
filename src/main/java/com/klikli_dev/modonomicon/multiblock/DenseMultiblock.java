@@ -27,6 +27,7 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
+import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -58,6 +59,17 @@ public class DenseMultiblock extends AbstractMultiblock {
     public DenseMultiblock(String[][] pattern, Map<Character, StateMatcher> targets) {
         this.pattern = pattern;
         this.targets = targets;
+
+        if (!targets.containsKey('_')) {
+            targets.put('_', Matchers.ANY);
+        }
+        if (!targets.containsKey(' ')) {
+            targets.put(' ', Matchers.AIR);
+        }
+        if (!targets.containsKey('0')) {
+            targets.put('0', Matchers.AIR);
+        }
+
         this.size = this.build(targets, getPatternDimensions(pattern));
     }
 
