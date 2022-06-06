@@ -1,7 +1,7 @@
 /*
  * LGPL-3.0
  *
- * Copyright (C) 2022 klikli-dev
+ * Copyright (C) 2022 Authors of Patchouli, klikli-dev
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
