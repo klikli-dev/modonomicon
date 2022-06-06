@@ -14,6 +14,8 @@
   "modonomicon.multiblock.remove_blocks": " (Clear blocks marked in red)",
   "modonomicon.subtitle.turn_page": "Turn Page",
   "modonomicon.test.entries.test_category.test_entry.description": "Test Description",
+  "modonomicon.test.sections.test_category.multiblock.page0.multiblock_name": "Sample Multiblock",
+  "modonomicon.test.sections.test_category.multiblock.page0.text": "This is a sample multiblock.\nWe have a **second** line too.\n",
   "modonomicon.test.sections.test_category.test_entry.page0.text": "[This is a **link** text](https://www.google.com).\nWe have a newline here.\n- List item\n- List item 2\n- List item 3\n\nAnd this is a super long line where we hope it will be automatically wrapped into a new line otherwise that is super-bad.\n",
   "modonomicon.test.sections.test_category.test_entry.page0.title": "[**Bold Link**](book://modonomicon:test)",
   "modonomicon.test.sections.test_category.test_entry.page1.text": "And this is our page two.\n",

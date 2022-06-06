@@ -112,7 +112,7 @@ public interface Multiblock {
 	 * This is intended to be highly general, most of the other methods below are implemented in terms of this one.
 	 * See the main Patchouli code to see what can be done with this.
 	 */
-	Pair<BlockPos, Collection<SimulateResult>> simulate(Level world, BlockPos anchor, Rotation rotation, boolean forView);
+	Pair<BlockPos, Collection<SimulateResult>> simulate(Level world, BlockPos anchor, Rotation rotation, boolean forView, boolean disableOffset);
 
 	/**
 	 * Validates if the multiblock exists at the given position. Will check all 4

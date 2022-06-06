@@ -260,7 +260,7 @@ public class MultiblockPreviewRenderer {
         lookingState = null;
         lookingPos = checkPos;
 
-        Pair<BlockPos, Collection<Multiblock.SimulateResult>> sim = multiblock.simulate(world, getStartPos(), getFacingRotation(), true);
+        Pair<BlockPos, Collection<Multiblock.SimulateResult>> sim = multiblock.simulate(world, getStartPos(), getFacingRotation(), true, false);
         for (Multiblock.SimulateResult r : sim.getSecond()) {
             float alpha = 0.3F;
             if (r.getWorldPosition().equals(checkPos)) {

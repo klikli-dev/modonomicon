@@ -68,6 +68,7 @@ public class BookMultiblockPage extends BookPage implements PageWithText {
     protected BookTextHolder text;
     protected ResourceLocation multiblockId;
     protected Multiblock multiblock;
+    protected Pair<BlockPos, Collection<SimulateResult>> multiblockSimulation;
 
     public BookMultiblockPage(BookTextHolder multiblockName, BookTextHolder text, ResourceLocation multiblockId, String anchor) {
         super(anchor);
@@ -131,6 +132,7 @@ public class BookMultiblockPage extends BookPage implements PageWithText {
         ms.scale(scale, scale, scale);
         ms.translate(-(float) sizeX / 2, -(float) sizeY / 2, 0);
 
+
         // Initial eye pos somewhere off in the distance in the -Z direction
         Vector4f eye = new Vector4f(0, 0, -100, 1);
         Matrix4f rotMat = new Matrix4f();
@@ -169,9 +171,8 @@ public class BookMultiblockPage extends BookPage implements PageWithText {
         ms.pushPose();
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         ms.translate(0, 0, -1);
-        Pair<BlockPos, Collection<SimulateResult>> sim = this.multiblock.simulate(null, pos, facingRotation, true);
 
-        for (Multiblock.SimulateResult r : sim.getSecond()) {
+        for (Multiblock.SimulateResult r : this.multiblockSimulation.getSecond()) {
             float alpha = 0.3F;
             if (r.getWorldPosition().equals(checkPos)) {
                 alpha = 0.6F + (float) (Math.sin(ClientTicks.total * 0.3F) + 1F) * 0.1F;
@@ -215,14 +216,14 @@ public class BookMultiblockPage extends BookPage implements PageWithText {
 
     }
 
-    private void renderBlock(MultiBufferSource.BufferSource buffers, ClientLevel world, BlockState state, BlockPos pos, float alpha, PoseStack ms) {
+    private void renderBlock(MultiBufferSource.BufferSource buffers, ClientLevel world, BlockState state, BlockPos pos, float alpha, PoseStack ps) {
         if (pos != null) {
-            ms.pushPose();
-            ms.translate(pos.getX(), pos.getY(), pos.getZ());
+            ps.pushPose();
+            ps.translate(pos.getX(), pos.getY(), pos.getZ());
 
-            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
+            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, ps, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
 
-            ms.popPose();
+            ps.popPose();
         }
     }
 
@@ -263,6 +264,8 @@ public class BookMultiblockPage extends BookPage implements PageWithText {
         if (this.multiblock == null) {
             throw new IllegalArgumentException("Invalid multiblock id " + this.multiblockId);
         }
+
+        this.multiblockSimulation = this.multiblock.simulate(null, BlockPos.ZERO, Rotation.NONE, true, true);
     }
 
     @Override

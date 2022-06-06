@@ -158,7 +158,7 @@ public abstract class AbstractMultiblock implements Multiblock {
     @Override
     public void place(Level world, BlockPos pos, Rotation rotation) {
 		this.setWorld(world);
-		this.simulate(world, pos, rotation, false).getSecond().forEach(r -> {
+		this.simulate(world, pos, rotation, false, false).getSecond().forEach(r -> {
             BlockPos placePos = r.getWorldPosition();
             BlockState targetState = r.getStateMatcher().getDisplayedState(world.getGameTime()).rotate(rotation);
 
@@ -185,7 +185,7 @@ public abstract class AbstractMultiblock implements Multiblock {
     @Override
     public boolean validate(Level world, BlockPos pos, Rotation rotation) {
 		this.setWorld(world);
-        Pair<BlockPos, Collection<SimulateResult>> sim = this.simulate(world, pos, rotation, false);
+        Pair<BlockPos, Collection<SimulateResult>> sim = this.simulate(world, pos, rotation, false, false);
 
         return sim.getSecond().stream().allMatch(r -> {
             BlockPos checkPos = r.getWorldPosition();

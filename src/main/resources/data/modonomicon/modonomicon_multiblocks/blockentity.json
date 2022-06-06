@@ -3,9 +3,9 @@
   "pattern": [
     [
       " WWW ",
-      "N   S",
-      "N 0 S",
-      "N   S",
+      "N G S",
+      "NG0GS",
+      "N G S",
       " EEE "
     ]
   ],
@@ -25,6 +25,10 @@
     "E":  {
       "type": "modonomicon:blockstate",
       "block": "minecraft:oak_stairs[facing=east]"
+    },
+    "G":  {
+      "type": "modonomicon:block",
+      "block": "minecraft:grass"
     },
     "0":  {
       "type": "modonomicon:block",

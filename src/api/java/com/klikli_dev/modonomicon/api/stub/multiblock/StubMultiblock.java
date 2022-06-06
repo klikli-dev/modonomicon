@@ -83,7 +83,7 @@ public class StubMultiblock implements Multiblock {
     }
 
     @Override
-    public Pair<BlockPos, Collection<SimulateResult>> simulate(Level world, BlockPos anchor, Rotation rotation, boolean forView) {
+    public Pair<BlockPos, Collection<SimulateResult>> simulate(Level world, BlockPos anchor, Rotation rotation, boolean forView, boolean disableOffset) {
         return Pair.of(BlockPos.ZERO, Collections.emptyList());
     }
 

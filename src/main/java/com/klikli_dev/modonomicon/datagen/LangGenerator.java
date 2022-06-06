@@ -130,6 +130,14 @@ public abstract class LangGenerator extends LanguageProvider {
                             Page with invalid link! 
                             [With link](entry://modonomicon:test/test_category/test_entry2@test_anchor)
                              """);
+
+
+            this.add("modonomicon.test.sections.test_category.multiblock.page0.text",
+                    """
+                            This is a sample multiblock.  
+                            We have a **second** line too.
+                            """);
+            this.add("modonomicon.test.sections.test_category.multiblock.page0.multiblock_name", "Sample Multiblock");
         }
 
         protected void addTranslations() {
