@@ -99,7 +99,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add("modonomicon.test.sections.test_category.test_entry.page0.title", "[**Bold Link**](book://modonomicon:test)");
             this.add("modonomicon.test.sections.test_category.test_entry.page0.text",
                     """
-                            [This is a **link** text](https://www.google.com).
+                            [This is a **link** text](https://www.google.com).  \s
                             We have a newline here.
                             - List item 
                             - List item 2
@@ -110,31 +110,31 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add("modonomicon.test.sections.test_category.test_entry.page1.title", "*[#](55FF55)Colorful Italics*[#]()");
             this.add("modonomicon.test.sections.test_category.test_entry.page1.text",
                     """
-                            And this is our page two.    
+                            And this is our page two.
                              """);
             this.add("modonomicon.test.sections.test_category.test_entry.page2.title", "Page 3");
             this.add("modonomicon.test.sections.test_category.test_entry.page2.text",
                     """
-                            And this is our page three.    
+                            And this is our page three.
                              """);
 
 
             this.add("modonomicon.test.sections.test_category.test_entry_child.page2.text",
                     """
-                            And this is our page three.    
+                            And this is our page three.  \s
                             [With link](entry://modonomicon:test/test_category/test_entry@test_anchor)
                              """);
 
             this.add("modonomicon.test.sections.test_category.test_entry_child.page_with_error.text",
                     """
-                            Page with invalid link! 
+                            Page with invalid link!  \s
                             [With link](entry://modonomicon:test/test_category/test_entry2@test_anchor)
                              """);
 
 
             this.add("modonomicon.test.sections.test_category.multiblock.page0.text",
                     """
-                            This is a sample multiblock.  
+                            This is a sample multiblock.  \s
                             We have a **second** line too.
                             """);
             this.add("modonomicon.test.sections.test_category.multiblock.page0.multiblock_name", "Sample Multiblock");
