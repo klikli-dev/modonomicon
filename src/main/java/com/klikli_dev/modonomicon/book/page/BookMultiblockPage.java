@@ -265,21 +265,25 @@ public class BookMultiblockPage extends BookPage implements PageWithText {
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float ticks) {
+
+        //render a frame for the multiblock render area
+        int x = BookContentScreen.PAGE_WIDTH / 2 - 53;
+        int y = 7;
+        RenderSystem.enableBlend();
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        BookContentScreen.drawFromTexture(poseStack, book, x, y, 405, 149, 106, 106);
+
         //render multiblock name in place of title
         this.renderTitle(this.multiblockName, false, poseStack, BookContentScreen.PAGE_WIDTH / 2, 0);
 
-        //TODO: render mutliblock frame
-
-        //            //TODO: show multiblock preview on button click
-//            var block = MultiblockDataManager.get().getMultiblock(ResourceLocation.tryParse("modonomicon:blockentity"));
-//            MultiblockPreviewRenderer.setMultiblock(block, new TranslatableComponent("multiblock.modonomicon.test"), true);
-
         this.renderMultiblock(poseStack);
 
-        //TODO: render text below multiblock
         this.renderBookTextHolder(this.getText(), poseStack, 0, this.getTextY(), BookContentScreen.PAGE_WIDTH);
 
         //TODO: render button to show multiblock in world
+        //            //TODO: show multiblock preview on button click
+//            var block = MultiblockDataManager.get().getMultiblock(ResourceLocation.tryParse("modonomicon:blockentity"));
+//            MultiblockPreviewRenderer.setMultiblock(block, new TranslatableComponent("multiblock.modonomicon.test"), true);
 
         var style = this.getClickedComponentStyleAt(mouseX, mouseY);
         if (style != null)
