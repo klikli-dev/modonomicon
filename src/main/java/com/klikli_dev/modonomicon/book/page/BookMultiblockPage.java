@@ -31,7 +31,6 @@ import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
-import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -178,35 +177,31 @@ public class BookMultiblockPage extends BookPage implements PageWithText {
                 alpha = 0.6F + (float) (Math.sin(ClientTicks.total * 0.3F) + 1F) * 0.1F;
             }
 
-            if (!r.getStateMatcher().equals(Matchers.ANY)) {
-                if (!r.test(level, facingRotation)) {
-                    BlockState renderState = r.getStateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
-                    this.renderBlock(buffers, level, renderState, r.getWorldPosition(), alpha, ms);
+            BlockState renderState = r.getStateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
+            this.renderBlock(buffers, level, renderState, r.getWorldPosition(), alpha, ms);
 
-                    if (renderState.getBlock() instanceof EntityBlock eb) {
-                        var be = this.blockEntityCache.computeIfAbsent(pos.immutable(), p -> eb.newBlockEntity(pos, renderState));
-                        if (be != null && !this.erroredBlockEntities.contains(be)) {
-                            be.setLevel(mc.level);
+            if (renderState.getBlock() instanceof EntityBlock eb) {
+                var be = this.blockEntityCache.computeIfAbsent(pos.immutable(), p -> eb.newBlockEntity(pos, renderState));
+                if (be != null && !this.erroredBlockEntities.contains(be)) {
+                    be.setLevel(mc.level);
 
-                            // fake cached state in case the renderer checks it as we don't want to query the actual world
-                            be.setBlockState(renderState);
+                    // fake cached state in case the renderer checks it as we don't want to query the actual world
+                    be.setBlockState(renderState);
 
-                            ms.pushPose();
-                            var bePos = r.getWorldPosition();
-                            ms.translate(bePos.getX(), bePos.getY(), bePos.getZ());
+                    ms.pushPose();
+                    var bePos = r.getWorldPosition();
+                    ms.translate(bePos.getX(), bePos.getY(), bePos.getZ());
 
-                            try {
-                                BlockEntityRenderer<BlockEntity> renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(be);
-                                if (renderer != null) {
-                                    renderer.render(be, ClientTicks.partialTicks, ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
-                                }
-                            } catch (Exception e) {
-                                this.erroredBlockEntities.add(be);
-                                Modonomicon.LOGGER.error("Error rendering block entity", e);
-                            }
-                            ms.popPose();
+                    try {
+                        BlockEntityRenderer<BlockEntity> renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(be);
+                        if (renderer != null) {
+                            renderer.render(be, ClientTicks.partialTicks, ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
                         }
+                    } catch (Exception e) {
+                        this.erroredBlockEntities.add(be);
+                        Modonomicon.LOGGER.error("Error rendering block entity", e);
                     }
+                    ms.popPose();
                 }
             }
         }

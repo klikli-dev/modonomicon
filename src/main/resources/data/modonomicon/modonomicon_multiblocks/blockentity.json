@@ -7,6 +7,13 @@
       "NG0GS",
       "N G S",
       " EEE "
+    ],
+    [
+      "DDDDD",
+      "DDDDD",
+      "DDDDD",
+      "DDDDD",
+      "DDDDD"
     ]
   ],
   "mapping": {
@@ -29,6 +36,10 @@
     "G":  {
       "type": "modonomicon:block",
       "block": "minecraft:grass"
+    },
+    "D":  {
+      "type": "modonomicon:display",
+      "display": "minecraft:stone"
     },
     "0":  {
       "type": "modonomicon:block",
