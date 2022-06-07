@@ -61,9 +61,12 @@ public class ModonimiconConstants {
             public static final String BUTTON_PREVIOUS = PREFIX + "button.previous_page";
             public static final String BUTTON_EXIT = PREFIX + "button.exit";
 
+            public static final String BUTTON_VISUALIZE = PREFIX + "button.visualize";
+            public static final String BUTTON_VISUALIZE_TOOLTIP = PREFIX + "button.visualize.tooltip";
+
+
             public static final String HOVER_BOOK_LINK = PREFIX + "hover.book_link";
             public static final String HOVER_HTTP_LINK = PREFIX + "hover.http_link";
-
 
             public static final String NO_ERRORS_FOUND = PREFIX + "no_errors_found";
         }

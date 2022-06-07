@@ -6,6 +6,8 @@
   "modonomicon.gui.button.exit": "Exit",
   "modonomicon.gui.button.next_page": "Next Page",
   "modonomicon.gui.button.previous_page": "Previous Page",
+  "modonomicon.gui.button.visualize": "Show Multiblock Preview",
+  "modonomicon.gui.button.visualize.tooltip": "Show Multiblock Preview",
   "modonomicon.gui.hover.book_link": "Go to: %s",
   "modonomicon.gui.hover.http_link": "Visit: %s",
   "modonomicon.gui.no_errors_found": "No errors found. You should not see this page!",

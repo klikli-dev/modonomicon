@@ -67,8 +67,14 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(Gui.BUTTON_PREVIOUS, "Previous Page");
             this.add(Gui.BUTTON_NEXT, "Next Page");
             this.add(Gui.BUTTON_EXIT, "Exit");
+            this.add(Gui.BUTTON_VISUALIZE, "Show Multiblock Preview");
+            this.add(Gui.BUTTON_VISUALIZE_TOOLTIP, "Show Multiblock Preview");
+
+
             this.add(Gui.HOVER_BOOK_LINK, "Go to: %s");
             this.add(Gui.HOVER_HTTP_LINK, "Visit: %s");
+
+
 
             //sounds
             this.add(Subtitles.TURN_PAGE, "Turn Page");

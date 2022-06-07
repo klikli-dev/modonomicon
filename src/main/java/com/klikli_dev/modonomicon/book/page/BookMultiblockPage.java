@@ -79,13 +79,14 @@ public class BookMultiblockPage extends BookPage implements PageWithText {
         this.multiblockName = multiblockName;
         this.text = text;
         this.multiblockId = multiblockId;
+        this.showVisualizeButton = showVisualizeButton;
     }
 
     public static BookMultiblockPage fromJson(JsonObject json) {
         var multiblockName = BookGsonHelper.getAsBookTextHolder(json, "multiblock_name", BookTextHolder.EMPTY);
         var multiblockId = ResourceLocation.tryParse(GsonHelper.getAsString(json, "multiblock_id"));
         var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY);
-        var showVisualizeButton = GsonHelper.getAsBoolean(json, "show_visualize_button");
+        var showVisualizeButton = GsonHelper.getAsBoolean(json, "show_visualize_button", true);
         var anchor = GsonHelper.getAsString(json, "anchor", "");
         return new BookMultiblockPage(multiblockName, text, multiblockId, showVisualizeButton, anchor);
     }
@@ -105,6 +106,15 @@ public class BookMultiblockPage extends BookPage implements PageWithText {
 
     public BookTextHolder getText() {
         return this.text;
+    }
+
+    public void handleButtonVisualize(Button button) {
+        MultiblockPreviewRenderer.setMultiblock(this.multiblock, this.multiblockName.getComponent(), true);
+        //TODO: close book?
+        //TODO: visualizer bookmark to go back to this page quickly?
+        //String entryKey =  this.parentEntry.getId().toString(); will be used for bookmark for multiblock
+//        Bookmark bookmark = new Bookmark(entryKey, pageNum / 2);
+//        parent.addBookmarkButtons();
     }
 
     private void renderMultiblock(PoseStack ms) {
@@ -270,22 +280,8 @@ public class BookMultiblockPage extends BookPage implements PageWithText {
         this.multiblockSimulation = this.multiblock.simulate(null, BlockPos.ZERO, Rotation.NONE, true, true);
 
         if (this.showVisualizeButton) {
-            addButton(visualizeButton = new VisualizeButton(this.parentScreen, 12, 97, this::handleButtonVisualize));
+            this.addButton(this.visualizeButton = new VisualizeButton(this.parentScreen, 12, 97, this::handleButtonVisualize));
         }
-    }
-
-    public void handleButtonVisualize(Button button) {
-        //String entryKey =  this.parentEntry.getId().toString(); will be used for bookmark for multiblock
-        MultiblockPreviewRenderer.setMultiblock(this.multiblock, this.multiblockName.getComponent(), true);
-
-        //TODO: visualizer bookmark to go back to this page quickly?
-//        Bookmark bookmark = new Bookmark(entryKey, pageNum / 2);
-//        parent.addBookmarkButtons();
-//
-//        if (!PersistentData.data.clickedVisualize) {
-//            PersistentData.data.clickedVisualize = true;
-//            PersistentData.save();
-//        }
     }
 
     @Override
@@ -296,7 +292,7 @@ public class BookMultiblockPage extends BookPage implements PageWithText {
         int y = 7;
         RenderSystem.enableBlend();
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        BookContentScreen.drawFromTexture(poseStack, book, x, y, 405, 149, 106, 106);
+        BookContentScreen.drawFromTexture(poseStack, this.book, x, y, 405, 149, 106, 106);
 
         //render multiblock name in place of title
         this.renderTitle(this.multiblockName, false, poseStack, BookContentScreen.PAGE_WIDTH / 2, 0);

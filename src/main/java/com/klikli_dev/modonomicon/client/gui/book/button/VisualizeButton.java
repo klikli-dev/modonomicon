@@ -20,6 +20,7 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.button;
 
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -36,20 +37,15 @@ public class VisualizeButton extends BookButton {
 
     public VisualizeButton(BookContentScreen parent, int x, int y, Button.OnPress onPress) {
         super(parent, x, y, U, V, WIDTH, HEIGHT,
-                new TranslatableComponent("modonomicon.gui.button.visualize"),
+                new TranslatableComponent(Gui.BUTTON_VISUALIZE),
                 onPress,
-                new TranslatableComponent("modonomicon.gui.button.visualize.info")
+                new TranslatableComponent(Gui.BUTTON_VISUALIZE_TOOLTIP)
         );
     }
 
     @Override
     public void renderButton(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
         super.renderButton(ms, mouseX, mouseY, partialTicks);
-
-        //TODO: not sure how to replace persistent data, client config might suffice
-//        if (!PersistentData.data.clickedVisualize && (ClientTicks.ticks) % 20 < 10) {
-//            parent.getMinecraft().font.drawShadow(ms, "!", x, y, 0xFF3333);
-//        }
     }
 
 }

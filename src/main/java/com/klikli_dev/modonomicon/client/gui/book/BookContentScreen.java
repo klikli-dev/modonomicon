@@ -71,7 +71,7 @@ public class BookContentScreen extends Screen {
     public static final int FULL_WIDTH = 272;
     public static final int FULL_HEIGHT = 180;
 
-    protected static Field narratablesField =  ObfuscationReflectionHelper.findField(Screen.class, "f_169368_ ");
+    protected static Field narratablesField =  ObfuscationReflectionHelper.findField(Screen.class, "f_169368_");
 
     private static long lastTurnPageSoundTime;
     private final BookOverviewScreen parentScreen;

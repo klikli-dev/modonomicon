@@ -39,6 +39,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BookPage {
@@ -54,7 +55,7 @@ public abstract class BookPage {
 
     protected String anchor;
 
-    private List<Button> buttons;
+    private List<Button> buttons = new ArrayList<>();
 
     public BookPage(String anchor) {
         this.anchor = anchor;
@@ -91,6 +92,8 @@ public abstract class BookPage {
         this.font = this.mc.font;
         this.left = left;
         this.top = top;
+
+        this.buttons = new ArrayList<>();
     }
 
     /**
