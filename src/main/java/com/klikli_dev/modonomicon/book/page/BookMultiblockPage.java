@@ -29,7 +29,9 @@ import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.button.VisualizeButton;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
+import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -39,6 +41,7 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -65,11 +68,13 @@ public class BookMultiblockPage extends BookPage implements PageWithText {
     private final Set<BlockEntity> erroredBlockEntities = Collections.newSetFromMap(new WeakHashMap<>());
     protected BookTextHolder multiblockName;
     protected BookTextHolder text;
+    protected boolean showVisualizeButton;
     protected ResourceLocation multiblockId;
     protected Multiblock multiblock;
     protected Pair<BlockPos, Collection<SimulateResult>> multiblockSimulation;
+    protected Button visualizeButton;
 
-    public BookMultiblockPage(BookTextHolder multiblockName, BookTextHolder text, ResourceLocation multiblockId, String anchor) {
+    public BookMultiblockPage(BookTextHolder multiblockName, BookTextHolder text, ResourceLocation multiblockId, boolean showVisualizeButton, String anchor) {
         super(anchor);
         this.multiblockName = multiblockName;
         this.text = text;
@@ -80,16 +85,18 @@ public class BookMultiblockPage extends BookPage implements PageWithText {
         var multiblockName = BookGsonHelper.getAsBookTextHolder(json, "multiblock_name", BookTextHolder.EMPTY);
         var multiblockId = ResourceLocation.tryParse(GsonHelper.getAsString(json, "multiblock_id"));
         var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY);
+        var showVisualizeButton = GsonHelper.getAsBoolean(json, "show_visualize_button");
         var anchor = GsonHelper.getAsString(json, "anchor", "");
-        return new BookMultiblockPage(multiblockName, text, multiblockId, anchor);
+        return new BookMultiblockPage(multiblockName, text, multiblockId, showVisualizeButton, anchor);
     }
 
     public static BookMultiblockPage fromNetwork(FriendlyByteBuf buffer) {
         var multiblockName = BookTextHolder.fromNetwork(buffer);
         var multiblockId = buffer.readResourceLocation();
         var text = BookTextHolder.fromNetwork(buffer);
+        var showVisualizeButton = buffer.readBoolean();
         var anchor = buffer.readUtf();
-        return new BookMultiblockPage(multiblockName, text, multiblockId, anchor);
+        return new BookMultiblockPage(multiblockName, text, multiblockId, showVisualizeButton, anchor);
     }
 
     public BookTextHolder getMultiblockName() {
@@ -261,6 +268,24 @@ public class BookMultiblockPage extends BookPage implements PageWithText {
         }
 
         this.multiblockSimulation = this.multiblock.simulate(null, BlockPos.ZERO, Rotation.NONE, true, true);
+
+        if (this.showVisualizeButton) {
+            addButton(visualizeButton = new VisualizeButton(this.parentScreen, 12, 97, this::handleButtonVisualize));
+        }
+    }
+
+    public void handleButtonVisualize(Button button) {
+        //String entryKey =  this.parentEntry.getId().toString(); will be used for bookmark for multiblock
+        MultiblockPreviewRenderer.setMultiblock(this.multiblock, this.multiblockName.getComponent(), true);
+
+        //TODO: visualizer bookmark to go back to this page quickly?
+//        Bookmark bookmark = new Bookmark(entryKey, pageNum / 2);
+//        parent.addBookmarkButtons();
+//
+//        if (!PersistentData.data.clickedVisualize) {
+//            PersistentData.data.clickedVisualize = true;
+//            PersistentData.save();
+//        }
     }
 
     @Override
@@ -295,6 +320,7 @@ public class BookMultiblockPage extends BookPage implements PageWithText {
         this.multiblockName.toNetwork(buffer);
         buffer.writeResourceLocation(this.multiblockId);
         this.text.toNetwork(buffer);
+        buffer.writeBoolean(this.showVisualizeButton);
         buffer.writeUtf(this.anchor);
     }
 

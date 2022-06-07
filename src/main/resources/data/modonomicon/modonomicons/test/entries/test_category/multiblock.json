@@ -10,7 +10,8 @@
       "type": "modonomicon:multiblock",
       "multiblock_name": "modonomicon.test.sections.test_category.multiblock.page0.multiblock_name",
       "multiblock_id": "modonomicon:blockentity",
-      "text": "modonomicon.test.sections.test_category.multiblock.page0.text"
+      "text": "modonomicon.test.sections.test_category.multiblock.page0.text",
+      "show_visualize_button": true
     }
   ]
 }

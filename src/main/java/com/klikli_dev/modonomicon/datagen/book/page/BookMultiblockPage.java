@@ -31,6 +31,7 @@ public class BookMultiblockPage extends BookPageModel {
     protected BookTextHolderModel multiblockName = new BookTextHolderModel("");
     protected BookTextHolderModel text = new BookTextHolderModel("");
     protected String multiblockId;
+    protected boolean showVisualizeButton = true;
 
     protected BookMultiblockPage(@NotNull String anchor) {
         super(Page.TEXT, anchor);
@@ -52,12 +53,17 @@ public class BookMultiblockPage extends BookPageModel {
         return this.text;
     }
 
+    public boolean showVisualizeButton() {
+        return this.showVisualizeButton;
+    }
+
     @Override
     public JsonObject toJson() {
         var json = super.toJson();
         json.add("multiblock_name", this.multiblockName.toJson());
         json.addProperty("multiblock_id", this.multiblockId);
         json.add("text", this.text.toJson());
+        json.addProperty("show_visualize_button", this.showVisualizeButton);
         return json;
     }
 
@@ -67,6 +73,7 @@ public class BookMultiblockPage extends BookPageModel {
         protected BookTextHolderModel multiblockName = new BookTextHolderModel("");
         protected String multiblockId = "";
         protected BookTextHolderModel text = new BookTextHolderModel("");
+        protected boolean showVisualizeButton = true;
 
         private Builder() {
         }
@@ -111,11 +118,17 @@ public class BookMultiblockPage extends BookPageModel {
             return this;
         }
 
+        public Builder withVisualizeButton(boolean showVisualizeButton) {
+            this.showVisualizeButton = showVisualizeButton;
+            return this;
+        }
+
         public BookMultiblockPage build() {
             BookMultiblockPage bookTextPageModel = new BookMultiblockPage(this.anchor);
             bookTextPageModel.multiblockId = this.multiblockId;
             bookTextPageModel.multiblockName = this.multiblockName;
             bookTextPageModel.text = this.text;
+            bookTextPageModel.showVisualizeButton = this.showVisualizeButton;
             return bookTextPageModel;
         }
     }
