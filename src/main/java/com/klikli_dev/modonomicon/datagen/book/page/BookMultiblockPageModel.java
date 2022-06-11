@@ -27,13 +27,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class BookMultiblockPage extends BookPageModel {
+public class BookMultiblockPageModel extends BookPageModel {
     protected BookTextHolderModel multiblockName = new BookTextHolderModel("");
     protected BookTextHolderModel text = new BookTextHolderModel("");
     protected String multiblockId;
     protected boolean showVisualizeButton = true;
 
-    protected BookMultiblockPage(@NotNull String anchor) {
+    protected BookMultiblockPageModel(@NotNull String anchor) {
         super(Page.TEXT, anchor);
     }
 
@@ -123,8 +123,8 @@ public class BookMultiblockPage extends BookPageModel {
             return this;
         }
 
-        public BookMultiblockPage build() {
-            BookMultiblockPage bookTextPageModel = new BookMultiblockPage(this.anchor);
+        public BookMultiblockPageModel build() {
+            BookMultiblockPageModel bookTextPageModel = new BookMultiblockPageModel(this.anchor);
             bookTextPageModel.multiblockId = this.multiblockId;
             bookTextPageModel.multiblockName = this.multiblockName;
             bookTextPageModel.text = this.text;
