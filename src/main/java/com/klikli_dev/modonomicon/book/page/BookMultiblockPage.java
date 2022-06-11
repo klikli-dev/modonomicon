@@ -25,6 +25,7 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock.SimulateResult;
+import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.client.ClientTicks;
@@ -266,16 +267,19 @@ public class BookMultiblockPage extends BookPage implements PageWithText {
     }
 
     @Override
-    public void onBeginDisplayPage(BookContentScreen parentScreen, int left, int top) {
-        super.onBeginDisplayPage(parentScreen, left, top);
+    public void build(BookEntry parentEntry, int pageNum) {
+        super.build(parentEntry, pageNum);
 
-        if (this.multiblockId != null) {
-            this.multiblock = MultiblockDataManager.get().getMultiblock(this.multiblockId);
-        }
+        this.multiblock = MultiblockDataManager.get().getMultiblock(this.multiblockId);
 
         if (this.multiblock == null) {
             throw new IllegalArgumentException("Invalid multiblock id " + this.multiblockId);
         }
+    }
+
+    @Override
+    public void onBeginDisplayPage(BookContentScreen parentScreen, int left, int top) {
+        super.onBeginDisplayPage(parentScreen, left, top);
 
         this.multiblockSimulation = this.multiblock.simulate(null, BlockPos.ZERO, Rotation.NONE, true, true);
 
