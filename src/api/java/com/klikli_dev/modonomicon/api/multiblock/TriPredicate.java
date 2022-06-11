@@ -1,7 +1,7 @@
 /*
  * LGPL-3.0
  *
- * Copyright (C) 2022 klikli-dev
+ * Copyright (C) 2022 Authors of Patchouli
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,10 +18,9 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.book.page;
+package com.klikli_dev.modonomicon.api.multiblock;
 
-import net.minecraft.network.FriendlyByteBuf;
-
-public interface BookPageNetworkLoader<T extends BookPage> {
-    T fromNetwork(FriendlyByteBuf buff);
+@FunctionalInterface
+public interface TriPredicate<A, B, C> {
+    boolean test(A a, B b, C c);
 }

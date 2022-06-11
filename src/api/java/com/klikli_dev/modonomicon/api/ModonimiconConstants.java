@@ -26,7 +26,7 @@ public class ModonimiconConstants {
 
     public static class Data {
         public static final String MODONOMICON_DATA_PATH = ModonomiconAPI.ID + "s";
-        public static final String MODONOMICON_ASSET_PATH = ModonomiconAPI.ID + "s";
+        public static final String MULTIBLOCK_DATA_PATH = ModonomiconAPI.ID + "_multiblocks";
 
         public static class Book {
             public static final String DEFAULT_OVERVIEW_TEXTURE = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/book_overview.png").toString();
@@ -41,6 +41,7 @@ public class ModonimiconConstants {
 
         public static class Page {
             public static final ResourceLocation TEXT = new ResourceLocation(ModonomiconAPI.ID, "text");
+            public static final ResourceLocation MULTIBLOCK = new ResourceLocation(ModonomiconAPI.ID, "multiblock");
         }
     }
 
@@ -60,15 +61,25 @@ public class ModonimiconConstants {
             public static final String BUTTON_PREVIOUS = PREFIX + "button.previous_page";
             public static final String BUTTON_EXIT = PREFIX + "button.exit";
 
+            public static final String BUTTON_VISUALIZE = PREFIX + "button.visualize";
+            public static final String BUTTON_VISUALIZE_TOOLTIP = PREFIX + "button.visualize.tooltip";
+
+
             public static final String HOVER_BOOK_LINK = PREFIX + "hover.book_link";
             public static final String HOVER_HTTP_LINK = PREFIX + "hover.http_link";
-
 
             public static final String NO_ERRORS_FOUND = PREFIX + "no_errors_found";
         }
 
+        public static class Multiblock {
+            public static final String PREFIX = ModonomiconAPI.ID + ".multiblock.";
+            public static final String COMPLETE = PREFIX + "complete";
+            public static final String NOT_ANCHORED = PREFIX + "not_anchored";
+            public static final String REMOVE_BLOCKS = PREFIX + "remove_blocks";
+        }
+
         public static class Subtitles {
-            public static final String PREFIX = ModonomiconAPI.ID + ".subtitles.";
+            public static final String PREFIX = ModonomiconAPI.ID + ".subtitle.";
             public static final String TURN_PAGE = PREFIX + "turn_page";
         }
     }

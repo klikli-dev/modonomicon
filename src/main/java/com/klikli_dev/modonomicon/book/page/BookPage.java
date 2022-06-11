@@ -31,13 +31,16 @@ import com.klikli_dev.modonomicon.client.gui.book.markdown.MarkdownComponentRend
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class BookPage {
     public int left;
@@ -51,6 +54,8 @@ public abstract class BookPage {
     protected int pageNumber;
 
     protected String anchor;
+
+    private List<Button> buttons = new ArrayList<>();
 
     public BookPage(String anchor) {
         this.anchor = anchor;
@@ -87,12 +92,15 @@ public abstract class BookPage {
         this.font = this.mc.font;
         this.left = left;
         this.top = top;
+
+        this.buttons = new ArrayList<>();
     }
 
     /**
      * Call when the page is will no longer be displayed (when book content screen opens, or pages are changed)
      */
     public void onEndDisplayPage(BookContentScreen parentScreen) {
+        parentScreen.removeRenderableWidgets(this.buttons);
     }
 
     /**
@@ -182,6 +190,13 @@ public abstract class BookPage {
     @Nullable
     public Style getClickedComponentStyleAt(double pMouseX, double pMouseY) {
         return null;
+    }
+
+    protected void addButton(Button button) {
+        button.x += (this.parentScreen.getBookLeft() + this.left);
+        button.y += (this.parentScreen.getBookTop() + this.top);
+        this.buttons.add(button);
+        this.parentScreen.addRenderableWidget(button);
     }
 
     @Nullable

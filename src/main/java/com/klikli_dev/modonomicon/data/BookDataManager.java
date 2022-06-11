@@ -18,7 +18,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.book;
+package com.klikli_dev.modonomicon.data;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -26,6 +26,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data;
+import com.klikli_dev.modonomicon.book.Book;
+import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.network.Message;
@@ -37,7 +40,6 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraftforge.event.OnDatapackSyncEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -74,7 +76,6 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         return this.books.get(id);
     }
 
-
     public Message getSyncMessage() {
         return new SyncBookDataMessage(this.books);
     }
@@ -85,7 +86,6 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         this.onLoadingComplete();
     }
 
-    @SubscribeEvent
     public void onDatapackSync(OnDatapackSyncEvent event) {
         Message syncMessage = this.getSyncMessage();
 
@@ -96,6 +96,12 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                 Networking.sendTo(player, syncMessage);
             }
         }
+    }
+
+    public void preLoad(){
+        this.loaded = false;
+        this.books.clear();
+        BookErrorManager.get().reset();
     }
 
     public void postLoad() {
@@ -172,8 +178,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> content, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
-        this.loaded = false;
-        this.books.clear();
+        this.preLoad();
 
         //first, load all json entries
         var bookJsons = new HashMap<ResourceLocation, JsonObject>();

@@ -20,6 +20,7 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.button;
 
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import net.minecraft.network.chat.TranslatableComponent;
 
@@ -34,9 +35,9 @@ public class ArrowButton extends BookButton {
 
     public ArrowButton(BookContentScreen parent, int x, int y, boolean left) {
         super(parent, x, y, U, left ? V + HEIGHT : V, WIDTH, HEIGHT, () -> parent.canSeeArrowButton(left),
-                new TranslatableComponent(left ? "modonomicon.gui.button.previous_page" : "modonomicon.gui.button.next_page"),
+                new TranslatableComponent(left ? Gui.BUTTON_PREVIOUS : Gui.BUTTON_NEXT),
                 parent::handleArrowButton,
-                new TranslatableComponent(left ? "modonomicon.gui.button.previous_page" : "modonomicon.gui.button.next_page")
+                new TranslatableComponent(left ? Gui.BUTTON_PREVIOUS : Gui.BUTTON_NEXT)
                 //button title equals hover text
         );
         this.left = left;

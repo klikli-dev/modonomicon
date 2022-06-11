@@ -43,6 +43,13 @@ public class BookErrorManager {
         return instance;
     }
 
+    public void reset() {
+        this.contextHelper.reset();
+        this.booksErrors.clear();
+        this.currentBookId = null;
+        this.currentContext = null;
+    }
+
     public BookErrorContextHelper getContextHelper() {
         return this.contextHelper;
     }
@@ -109,8 +116,8 @@ public class BookErrorManager {
     }
 
     /**
-     * Set the context to add to all errors logged after this. Set to null to remove context. Uses {@link
-     * MessageFormatter#format(String, Object)} to format the context.
+     * Set the context to add to all errors logged after this. Set to null to remove context. Uses
+     * {@link MessageFormatter#format(String, Object)} to format the context.
      */
     public void setContext(String context, Object... args) {
         if (context != null) {

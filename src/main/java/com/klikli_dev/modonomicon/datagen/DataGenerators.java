@@ -23,12 +23,10 @@ package com.klikli_dev.modonomicon.datagen;
 import com.klikli_dev.modonomicon.Modonomicon;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 public class DataGenerators {
 
-    @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();

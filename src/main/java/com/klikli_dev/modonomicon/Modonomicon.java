@@ -21,18 +21,17 @@
 package com.klikli_dev.modonomicon;
 
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
-import com.klikli_dev.modonomicon.book.BookDataManager;
+import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.config.CommonConfig;
 import com.klikli_dev.modonomicon.config.ServerConfig;
+import com.klikli_dev.modonomicon.data.LoaderRegistry;
+import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
-import com.klikli_dev.modonomicon.handlers.ClientSetupEventHandler;
+import com.klikli_dev.modonomicon.client.ClientSetupEventHandler;
 import com.klikli_dev.modonomicon.item.ModonomiconCreativeModeTab;
 import com.klikli_dev.modonomicon.network.Networking;
-import com.klikli_dev.modonomicon.registry.BookPageLoaderRegistry;
-import com.klikli_dev.modonomicon.registry.ItemRegistry;
-import com.klikli_dev.modonomicon.registry.MenuRegistry;
-import com.klikli_dev.modonomicon.registry.SoundRegistry;
+import com.klikli_dev.modonomicon.registry.*;
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
@@ -71,19 +70,17 @@ public class Modonomicon {
         MenuRegistry.MENUS.register(modEventBus);
         SoundRegistry.SOUNDS.register(modEventBus);
 
-        //directly register event handlers, can't register the object and use annotations, because we have events from both buses
+        //directly register event handlers
         modEventBus.addListener(this::onCommonSetup);
         modEventBus.addListener(this::onServerSetup);
         MinecraftForge.EVENT_BUS.addListener(this::onAddReloadListener);
+        MinecraftForge.EVENT_BUS.addListener(BookDataManager.get()::onDatapackSync);
+        MinecraftForge.EVENT_BUS.addListener(MultiblockDataManager.get()::onDatapackSync);
 
-        //register event listener objects
-        MinecraftForge.EVENT_BUS.register(BookDataManager.get());
-
-        //register event listener classes
-        modEventBus.register(DataGenerators.class);
+        modEventBus.addListener(DataGenerators::gatherData);
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
-            modEventBus.register(ClientSetupEventHandler.class);
+            modEventBus.addListener(ClientSetupEventHandler::onClientSetup);
         }
     }
 
@@ -93,13 +90,14 @@ public class Modonomicon {
 
     public void onAddReloadListener(AddReloadListenerEvent event) {
         event.addListener(BookDataManager.get());
+        event.addListener(MultiblockDataManager.get());
     }
 
 
     public void onCommonSetup(FMLCommonSetupEvent event) {
         Networking.registerMessages();
 
-        BookPageLoaderRegistry.registerDefaultPageLoaders();
+        LoaderRegistry.registerLoaders();
 
         LOGGER.info("Common setup complete.");
     }

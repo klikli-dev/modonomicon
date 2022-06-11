@@ -18,33 +18,11 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.client;
+package com.klikli_dev.modonomicon.data;
 
-import net.minecraft.client.Minecraft;
+import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
+import net.minecraft.network.FriendlyByteBuf;
 
-public class ClientTicks {
-    public static long ticks = 0; //Corresponds to patchouli ticksInGame
-    public static float partialTicks = 0;
-    public static float delta = 0;
-    public static float total = 0;
-
-    private static void calcDelta() {
-        float oldTotal = total;
-        total = ticks + partialTicks;
-        delta = total - oldTotal;
-    }
-    public static void renderTickStart(float pt) {
-        partialTicks = pt;
-    }
-
-    public static void renderTickEnd() {
-        calcDelta();
-    }
-
-    public static void endClientTick(Minecraft mc) {
-        ticks++;
-        partialTicks = 0;
-
-        calcDelta();
-    }
+public interface NetworkLoader<T> {
+    T fromNetwork(FriendlyByteBuf buff);
 }

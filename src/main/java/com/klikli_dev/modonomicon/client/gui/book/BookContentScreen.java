@@ -22,7 +22,6 @@ package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.Book;
-import com.klikli_dev.modonomicon.book.BookDataManager;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.BookLink;
 import com.klikli_dev.modonomicon.book.page.BookPage;
@@ -30,12 +29,16 @@ import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
+import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.registry.SoundRegistry;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -45,10 +48,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-import javax.annotation.Nullable;
+import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.List;
 
 public class BookContentScreen extends Screen {
@@ -63,10 +70,14 @@ public class BookContentScreen extends Screen {
     public static final int PAGE_HEIGHT = 128; //TODO: Adjust to what is real
     public static final int FULL_WIDTH = 272;
     public static final int FULL_HEIGHT = 180;
+
+    protected static Field narratablesField =  ObfuscationReflectionHelper.findField(Screen.class, "f_169368_");
+
     private static long lastTurnPageSoundTime;
     private final BookOverviewScreen parentScreen;
     private final BookEntry entry;
     private final ResourceLocation bookContentTexture;
+    public int ticksInBook;
     private BookPage leftPage;
     private BookPage rightPage;
     private int bookLeft;
@@ -76,7 +87,6 @@ public class BookContentScreen extends Screen {
      */
     private int openPagesIndex;
     private int maxOpenPagesIndex;
-
     private List<Component> tooltip;
 
     public BookContentScreen(BookOverviewScreen parentScreen, BookEntry entry) {
@@ -193,6 +203,14 @@ public class BookContentScreen extends Screen {
         return rightPageClickedStyle;
     }
 
+    public int getBookLeft() {
+        return this.bookLeft;
+    }
+
+    public int getBookTop() {
+        return this.bookTop;
+    }
+
     protected void drawTooltip(PoseStack pPoseStack, int pMouseX, int pMouseY) {
         if (this.tooltip != null) {
             this.renderComponentTooltip(pPoseStack, this.tooltip, pMouseX, pMouseY);
@@ -216,6 +234,18 @@ public class BookContentScreen extends Screen {
         poseStack.translate(page.left, page.top, 0);
         page.render(poseStack, pMouseX - this.bookLeft - page.left, pMouseY - this.bookTop - page.top, pPartialTick);
         poseStack.popPose();
+    }
+
+    @SuppressWarnings("unchecked")
+    public void removeRenderableWidgets(Collection<? extends Widget> widgets){
+        this.renderables.removeIf(widgets::contains);
+        this.children().removeIf(c -> c instanceof Widget && widgets.contains(c));
+
+        try {
+            ((List<NarratableEntry>)narratablesField.get(this)).removeIf(n -> n instanceof Widget && widgets.contains(n));
+        } catch (IllegalAccessException ignored) {
+
+        }
     }
 
     protected void beginDisplayPages() {
@@ -296,6 +326,14 @@ public class BookContentScreen extends Screen {
         return true;
     }
 
+    /**
+     * Make public to access from pages
+     */
+    @Override
+    public <T extends GuiEventListener & Widget & NarratableEntry> T addRenderableWidget(T pWidget) {
+        return super.addRenderableWidget(pWidget);
+    }
+
     @Override // make public
     public void renderComponentHoverEffect(PoseStack pPoseStack, @Nullable Style style, int mouseX, int mouseY) {
         super.renderComponentHoverEffect(pPoseStack, style, mouseX, mouseY);
@@ -343,6 +381,15 @@ public class BookContentScreen extends Screen {
         this.addRenderableWidget(new ArrowButton(this, this.bookLeft - 4, this.bookTop + FULL_HEIGHT - 6, true));
         this.addRenderableWidget(new ArrowButton(this, this.bookLeft + FULL_WIDTH - 14, this.bookTop + FULL_HEIGHT - 6, false));
         this.addRenderableWidget(new ExitButton(this, this.bookLeft + FULL_WIDTH - 10, this.bookTop - 2));
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        if (!hasShiftDown()) {
+            this.ticksInBook++;
+        }
     }
 
     @Override

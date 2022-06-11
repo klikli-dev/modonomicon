@@ -18,10 +18,14 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.book.page;
+package com.klikli_dev.modonomicon.multiblock.matcher;
 
-import com.google.gson.JsonObject;
+import com.klikli_dev.modonomicon.Modonomicon;
+import net.minecraft.world.level.block.Blocks;
 
-public interface BookPageJsonLoader<T extends BookPage> {
-    T fromJson(JsonObject json);
+public class Matchers {
+    public static final AnyMatcher ANY = new AnyMatcher();
+
+    public static final PredicateMatcher AIR = new PredicateMatcher(Blocks.AIR.defaultBlockState(), Modonomicon.loc("air"));
+
 }

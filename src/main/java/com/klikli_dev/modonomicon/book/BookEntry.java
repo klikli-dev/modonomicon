@@ -25,7 +25,7 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
-import com.klikli_dev.modonomicon.registry.BookPageLoaderRegistry;
+import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -83,7 +83,7 @@ public class BookEntry {
             for (var pageElem : jsonPages) {
                 var pageJson = GsonHelper.convertToJsonObject(pageElem, "page");
                 var type = new ResourceLocation(GsonHelper.getAsString(pageJson, "type"));
-                var loader = BookPageLoaderRegistry.getPageJsonLoader(type);
+                var loader = LoaderRegistry.getPageJsonLoader(type);
                 var page = loader.fromJson(pageJson);
                 pages.add(page);
             }
@@ -111,7 +111,7 @@ public class BookEntry {
         var pageCount = buffer.readVarInt();
         for (var i = 0; i < pageCount; i++) {
             var type = buffer.readResourceLocation();
-            var loader = BookPageLoaderRegistry.getPageNetworkLoader(type);
+            var loader = LoaderRegistry.getPageNetworkLoader(type);
             var page = loader.fromNetwork(buffer);
             pages.add(page);
         }

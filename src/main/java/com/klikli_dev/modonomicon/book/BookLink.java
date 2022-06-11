@@ -21,6 +21,7 @@
 package com.klikli_dev.modonomicon.book;
 
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
+import com.klikli_dev.modonomicon.data.BookDataManager;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.StringUtils;
 
@@ -94,10 +95,10 @@ public class BookLink {
 
         var entryId = parts[1];
 
-        //anchors and pages are indicated by #
+        //anchors are indicated by @
         int lastAtIndex = entryId.lastIndexOf("@");
         if (lastAtIndex >= 0) {
-            var postAt = entryId.substring(lastAtIndex);
+            var postAt = entryId.substring(lastAtIndex + 1);
             var path = StringUtils.removeEnd(entryId.substring(0, lastAtIndex), "/"); //remove trailing /
             bookLink.entryId = new ResourceLocation(book.getId().getNamespace(), path);
             var entry = book.getEntry(bookLink.entryId);
