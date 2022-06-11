@@ -98,6 +98,12 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         }
     }
 
+    public void preLoad(){
+        this.loaded = false;
+        this.books.clear();
+        BookErrorManager.get().reset();
+    }
+
     public void postLoad() {
         //Build books
         for (var book : this.books.values()) {
@@ -172,8 +178,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> content, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
-        this.loaded = false;
-        this.books.clear();
+        this.preLoad();
 
         //first, load all json entries
         var bookJsons = new HashMap<ResourceLocation, JsonObject>();
