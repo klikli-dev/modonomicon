@@ -132,6 +132,7 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
         this.context.setCurrentStyle(this.context.getCurrentStyle()
                 .withColor(currentColor)
                 .withClickEvent(null)
+                .withHoverEvent(null)
         );
     }
 
