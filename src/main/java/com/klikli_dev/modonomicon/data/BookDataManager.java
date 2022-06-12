@@ -187,6 +187,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     protected void apply(Map<ResourceLocation, JsonElement> content, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
         this.preLoad();
 
+        //TODO: handle datapack overrides, see TagLoader#load line 69 (refers to Tag.Builder#addFromJson)
+
         //first, load all json entries
         var bookJsons = new HashMap<ResourceLocation, JsonObject>();
         var categoryJsons = new HashMap<ResourceLocation, JsonObject>();
