@@ -61,7 +61,7 @@ public class LoaderRegistry {
         registerDefaultMultiblockLoaders();
     }
 
-    public static void registerDefaultPageLoaders() {
+    private static void registerDefaultPageLoaders() {
         registerPageLoader(Page.TEXT, BookTextPage::fromJson, BookTextPage::fromNetwork);
         registerPageLoader(Page.MULTIBLOCK, BookMultiblockPage::fromJson, BookMultiblockPage::fromNetwork);
     }

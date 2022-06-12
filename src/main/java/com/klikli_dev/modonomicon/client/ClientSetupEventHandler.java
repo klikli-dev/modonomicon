@@ -22,6 +22,7 @@ package com.klikli_dev.modonomicon.client;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
+import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionResult;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -34,6 +35,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class ClientSetupEventHandler {
 
     public static void onClientSetup(FMLClientSetupEvent event) {
+        PageRendererRegistry.registerPageRenderers();
+
         registerItemModelProperties(event);
 
         //Keep track of ticks. We do this to stay loader agnostic so we can do a fabric version in the future

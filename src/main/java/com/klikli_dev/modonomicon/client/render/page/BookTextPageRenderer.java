@@ -21,13 +21,12 @@
 package com.klikli_dev.modonomicon.client.render.page;
 
 import com.klikli_dev.modonomicon.book.page.BookTextPage;
-import com.klikli_dev.modonomicon.book.page.PageWithText;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Style;
 import org.jetbrains.annotations.Nullable;
 
-public class BookTextPageRenderer extends BookPageRenderer<BookTextPage> implements PageWithText {
+public class BookTextPageRenderer extends BookPageRenderer<BookTextPage> implements PageWithTextRenderer {
     public BookTextPageRenderer(BookTextPage page) {
         super(page);
     }

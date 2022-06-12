@@ -118,6 +118,9 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             }
             BookErrorManager.get().setCurrentBookId(null);
         }
+
+        //now prerender markdown
+        this.prerenderMarkdown();
     }
 
     public void prerenderMarkdown() {

@@ -18,9 +18,9 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.klikli_dev.modonomicon.book.page;
+package com.klikli_dev.modonomicon.client.render.page;
 
-public interface PageWithText {
+public interface PageWithTextRenderer {
     /**
      * Gets the x-coordinate where text starts on this page. Use this to handle shifting down text below other content
      * such as title.
