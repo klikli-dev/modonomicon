@@ -12,7 +12,8 @@ import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
+
 
 public class VisualizeButton extends BookButton {
 
@@ -23,9 +24,9 @@ public class VisualizeButton extends BookButton {
 
     public VisualizeButton(BookContentScreen parent, int x, int y, Button.OnPress onPress) {
         super(parent, x, y, U, V, WIDTH, HEIGHT,
-                new TranslatableComponent(Gui.BUTTON_VISUALIZE),
+                Component.translatable(Gui.BUTTON_VISUALIZE),
                 onPress,
-                new TranslatableComponent(Gui.BUTTON_VISUALIZE_TOOLTIP)
+                Component.translatable(Gui.BUTTON_VISUALIZE_TOOLTIP)
         );
     }
 

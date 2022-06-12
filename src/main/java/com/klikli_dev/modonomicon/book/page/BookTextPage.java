@@ -13,8 +13,8 @@ import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 
@@ -84,7 +84,7 @@ public class BookTextPage extends BookPage {
             if (this.useMarkdownInTitle) {
                 this.title = new RenderedBookTextHolder(this.title, textRenderer.render(this.title.getString()));
             } else {
-                this.title = new BookTextHolder(new TranslatableComponent(this.title.getKey())
+                this.title = new BookTextHolder(Component.translatable(this.title.getKey())
                         .withStyle(Style.EMPTY
                                 .withBold(true)
                                 .withColor(this.getParentEntry().getCategory().getBook().getDefaultTitleColor())));

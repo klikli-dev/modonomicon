@@ -11,8 +11,8 @@ import com.klikli_dev.modonomicon.book.BookLink;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.ClickEvent.Action;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.TranslatableComponent;
 import org.commonmark.node.Link;
 import org.commonmark.node.Node;
 
@@ -37,7 +37,7 @@ public class BookLinkRenderer implements LinkRenderer {
             if (bookLink.entryId != null) {
                 goToText = bookLink.entryId.toString().replace(":", ".");
             }
-            var hoverComponent = new TranslatableComponent(Gui.HOVER_BOOK_LINK, goToText);
+            var hoverComponent = Component.translatable(Gui.HOVER_BOOK_LINK, goToText);
 
 
             //if we have a color we use it, otherwise we use link default.

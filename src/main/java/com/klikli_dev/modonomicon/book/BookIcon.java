@@ -11,11 +11,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public class BookIcon {
     private final ItemStack itemStack;
@@ -35,7 +35,7 @@ public class BookIcon {
         if (value.endsWith(".png")) {
             return new BookIcon(new ResourceLocation(value));
         } else {
-            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(value));
+            Item item = Registry.ITEM.get(new ResourceLocation(value));
             return new BookIcon(new ItemStack(item));
         }
     }
@@ -45,7 +45,7 @@ public class BookIcon {
         if (rl.getPath().endsWith(".png")) {
             return new BookIcon(rl);
         } else {
-            Item item = ForgeRegistries.ITEMS.getValue(rl);
+            Item item = Registry.ITEM.get(rl);
             return new BookIcon(new ItemStack(item));
         }
     }
@@ -65,7 +65,7 @@ public class BookIcon {
         if (this.texture != null) {
             buffer.writeResourceLocation(this.texture);
         } else {
-            buffer.writeResourceLocation(this.itemStack.getItem().getRegistryName());
+            buffer.writeResourceLocation(Registry.ITEM.getKey(this.itemStack.getItem()));
         }
     }
 }

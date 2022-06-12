@@ -16,7 +16,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import net.minecraftforge.client.ForgeHooksClient;
 import org.lwjgl.opengl.GL11;
@@ -232,9 +231,9 @@ public class BookCategoryScreen {
 
             //draw name
             var tooltip = new ArrayList<Component>();
-            tooltip.add(new TranslatableComponent(entry.getName()).withStyle(ChatFormatting.BOLD));
+            tooltip.add(Component.translatable(entry.getName()).withStyle(ChatFormatting.BOLD));
             if (!entry.getDescription().isEmpty()) {
-                tooltip.add(new TranslatableComponent(entry.getDescription()));
+                tooltip.add(Component.translatable(entry.getDescription()));
             }
             //draw description
             this.bookOverviewScreen.renderTooltip(stack, tooltip, Optional.empty(), mouseX, mouseY);

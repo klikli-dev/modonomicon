@@ -10,12 +10,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.klikli_dev.modonomicon.Modonomicon;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.TickTrigger;
+import net.minecraft.advancements.critereon.PlayerTrigger;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
-import net.minecraft.network.chat.TranslatableComponent;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import java.io.IOException;
@@ -24,8 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AdvancementsGenerator implements DataProvider {
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-
     private final DataGenerator generator;
     private final Map<ResourceLocation, Advancement> advancements;
 
@@ -39,15 +41,15 @@ public class AdvancementsGenerator implements DataProvider {
         return path.resolve("data/" + id.getNamespace() + "/advancements/" + id.getPath() + ".json");
     }
 
-    private static TranslatableComponent text(String name, String type) {
-        return new TranslatableComponent("advancements." + Modonomicon.MODID + "." + name + "." + type);
+    private static MutableComponent text(String name, String type) {
+        return Component.translatable("advancements." + Modonomicon.MODID + "." + name + "." + type);
     }
 
-    public static TranslatableComponent title(String name) {
+    public static MutableComponent title(String name) {
         return text(name, "title");
     }
 
-    public static TranslatableComponent descr(String name) {
+    public static MutableComponent descr(String name) {
         return text(name, "description");
     }
 
@@ -57,7 +59,7 @@ public class AdvancementsGenerator implements DataProvider {
 //                        new ResourceLocation("textures/gui/advancements/backgrounds/stone.png"), FrameType.TASK, true,
 //                        true, false)
                 .addCriterion("modonomicon_present",
-                        new TickTrigger.TriggerInstance(EntityPredicate.Composite.ANY))
+                        new PlayerTrigger.TriggerInstance(CriteriaTriggers.TICK.getId(), EntityPredicate.Composite.ANY))
                 .build(new ResourceLocation(Modonomicon.MODID, Modonomicon.MODID + "/root")));
     }
 
@@ -69,14 +71,14 @@ public class AdvancementsGenerator implements DataProvider {
     }
 
     @Override
-    public void run(HashCache cache) throws IOException {
+    public void run(CachedOutput cache) throws IOException {
         Path folder = this.generator.getOutputFolder();
         this.start();
 
         for (Advancement advancement : this.advancements.values()) {
             Path path = getPath(folder, advancement);
             try {
-                DataProvider.save(GSON, cache, advancement.deconstruct().serializeToJson(), path);
+                DataProvider.saveStable(cache, advancement.deconstruct().serializeToJson(), path);
             } catch (IOException exception) {
                 Modonomicon.LOGGER.error("Couldn't save advancement {}", path, exception);
             }

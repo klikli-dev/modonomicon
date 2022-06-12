@@ -6,9 +6,11 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import org.commonmark.Extension;
 import org.commonmark.internal.renderer.NodeRendererMap;
 import org.commonmark.internal.renderer.text.ListHolder;
@@ -23,11 +25,11 @@ public class ComponentRenderer {
 
     private final List<ComponentNodeRendererFactory> nodeRendererFactories;
     private final List<LinkRenderer> linkRenderers;
-    private final List<TranslatableComponent> components;
+    private final List<MutableComponent> components;
     private final boolean renderSoftLineBreaks;
     private final boolean replaceSoftLineBreaksWithSpace;
     private final TextColor linkColor;
-    private TranslatableComponent currentComponent;
+    private MutableComponent currentComponent;
     private Style currentStyle;
     private ListHolder listHolder;
 
@@ -39,7 +41,7 @@ public class ComponentRenderer {
         this.linkRenderers = builder.linkRenderers;
 
         this.components = new ArrayList<>();
-        this.currentComponent = new TranslatableComponent("");
+        this.currentComponent = Component.translatable("");
 
         this.nodeRendererFactories = new ArrayList<>(builder.nodeRendererFactories.size() + 1);
         this.nodeRendererFactories.addAll(builder.nodeRendererFactories);
@@ -56,7 +58,7 @@ public class ComponentRenderer {
         return new ComponentRenderer.Builder();
     }
 
-    public List<TranslatableComponent> render(Node node) {
+    public List<MutableComponent> render(Node node) {
         ComponentRenderer.RendererContext context = new ComponentRenderer.RendererContext();
         context.render(node);
         context.cleanupPostRender();
@@ -174,17 +176,17 @@ public class ComponentRenderer {
         }
 
         @Override
-        public TranslatableComponent getCurrentComponent() {
+        public MutableComponent getCurrentComponent() {
             return ComponentRenderer.this.currentComponent;
         }
 
         @Override
-        public void setCurrentComponent(TranslatableComponent component) {
+        public void setCurrentComponent(MutableComponent component) {
             ComponentRenderer.this.currentComponent = component;
         }
 
         @Override
-        public List<TranslatableComponent> getComponents() {
+        public List<MutableComponent> getComponents() {
             return ComponentRenderer.this.components;
         }
 
@@ -225,13 +227,13 @@ public class ComponentRenderer {
 
         public boolean isEmptyComponent() {
             //translation contents have no content, they have a key (which doubles as content).
-            return this.getCurrentComponent().getKey().isEmpty() && this.getCurrentComponent().getSiblings().isEmpty();
+            return ((TranslatableContents)this.getCurrentComponent().getContents()).getKey().isEmpty() && this.getCurrentComponent().getSiblings().isEmpty();
         }
 
         public void finalizeCurrentComponent() {
             this.getComponents().add(this.getCurrentComponent());
             this.setCurrentComponent(this.getListHolder() == null ?
-                    new TranslatableComponent("") : new ListItemComponent(this.getListHolder(), ""));
+                     Component.translatable("") : MutableComponent.create(new ListItemContents(this.getListHolder(), "")));
         }
 
         @Override

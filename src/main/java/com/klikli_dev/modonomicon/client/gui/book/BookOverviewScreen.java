@@ -15,9 +15,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.gui.GuiUtils;
 import org.jetbrains.annotations.Nullable;
@@ -37,7 +36,7 @@ public class BookOverviewScreen extends Screen {
     private int currentCategory = 0;
 
     public BookOverviewScreen(Book book) {
-        super(new TextComponent(""));
+        super(Component.literal(""));
 
         //somehow there are render calls before init(), leaving minecraft null
         this.minecraft = Minecraft.getInstance();
@@ -174,7 +173,7 @@ public class BookOverviewScreen extends Screen {
     }
 
     protected void onBookCategoryButtonTooltip(CategoryButton button, PoseStack pPoseStack, int pMouseX, int pMouseY) {
-        this.renderTooltip(pPoseStack, new TranslatableComponent(button.getCategory().getName()), pMouseX, pMouseY);
+        this.renderTooltip(pPoseStack, Component.translatable(button.getCategory().getName()), pMouseX, pMouseY);
     }
 
     @Override

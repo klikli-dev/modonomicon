@@ -59,7 +59,7 @@ public class ClientSetupEventHandler {
         //Draw multiblock as overlay
         MinecraftForge.EVENT_BUS.addListener((RenderGameOverlayEvent.Post e) -> {
             if (e.getType() == RenderGameOverlayEvent.ElementType.ALL) {
-                MultiblockPreviewRenderer.onRenderHUD(e.getMatrixStack(), e.getPartialTicks());
+                MultiblockPreviewRenderer.onRenderHUD(e.getPoseStack(), e.getPartialTick());
             }
         });
 

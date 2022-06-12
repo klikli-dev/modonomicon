@@ -8,9 +8,9 @@ package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ext.ComponentStrikethroughExtension;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ext.ComponentUnderlineExtension;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TranslatableComponent;
 import org.commonmark.Extension;
 import org.commonmark.parser.Parser;
 
@@ -30,11 +30,11 @@ public class BookTextRenderer {
                 .build();
     }
 
-    public List<TranslatableComponent> render(String markdown) {
+    public List<MutableComponent> render(String markdown) {
         return this.render(markdown, Style.EMPTY);
     }
 
-    public List<TranslatableComponent> render(String markdown, Style defaultStyle) {
+    public List<MutableComponent> render(String markdown, Style defaultStyle) {
         //TODO: make renderer configurable for modders
 
         //renderer needs to be instantiated every time, because it caches the results

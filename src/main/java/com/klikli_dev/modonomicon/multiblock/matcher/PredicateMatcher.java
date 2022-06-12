@@ -15,6 +15,7 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -49,7 +50,7 @@ public class PredicateMatcher implements StateMatcher {
 
     public static PredicateMatcher fromJson(JsonObject json) {
         try {
-            var displayState = new BlockStateParser(new StringReader(GsonHelper.getAsString(json, "display")), false).parse(false).getState();
+            var displayState = BlockStateParser.parseForBlock(Registry.BLOCK, new StringReader(GsonHelper.getAsString(json, "display")), false).blockState();
             var predicateId = new ResourceLocation(GsonHelper.getAsString(json, "predicate"));
             return new PredicateMatcher(displayState, predicateId);
         } catch (CommandSyntaxException e) {
@@ -59,7 +60,7 @@ public class PredicateMatcher implements StateMatcher {
 
     public static PredicateMatcher fromNetwork(FriendlyByteBuf buffer) {
         try {
-            var displayState = new BlockStateParser(new StringReader(buffer.readUtf()), true).parse(false).getState();
+            var displayState = BlockStateParser.parseForBlock(Registry.BLOCK, new StringReader(buffer.readUtf()), false).blockState();
             var predicateId = buffer.readResourceLocation();
             return new PredicateMatcher(displayState, predicateId);
         } catch (CommandSyntaxException e) {

@@ -14,6 +14,7 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -50,14 +51,14 @@ public class BlockStateMatcher implements StateMatcher {
         BlockState displayState = null;
         if (json.has("display")) {
             try {
-                displayState = new BlockStateParser(new StringReader(GsonHelper.getAsString(json, "display")), false).parse(false).getState();
+                displayState = BlockStateParser.parseForBlock(Registry.BLOCK, new StringReader(GsonHelper.getAsString(json, "display")), false).blockState();
             } catch (CommandSyntaxException e) {
                 throw new IllegalArgumentException("Failed to parse BlockState from json member \"display\" for BlockStateMatcher.", e);
             }
         }
 
         try {
-            var blockState = new BlockStateParser(new StringReader(GsonHelper.getAsString(json, "block")), false).parse(false).getState();
+            var blockState = BlockStateParser.parseForBlock(Registry.BLOCK, new StringReader(GsonHelper.getAsString(json, "block")), false).blockState();
             return new BlockStateMatcher(displayState, blockState);
         } catch (CommandSyntaxException e) {
             throw new IllegalArgumentException("Failed to parse BlockState from json member \"block\" for BlockStateMatcher.", e);
@@ -69,9 +70,9 @@ public class BlockStateMatcher implements StateMatcher {
         try {
             BlockState displayState = null;
             if (buffer.readBoolean())
-                displayState = new BlockStateParser(new StringReader(buffer.readUtf()), false).parse(false).getState();
+                displayState = BlockStateParser.parseForBlock(Registry.BLOCK, new StringReader(buffer.readUtf()), false).blockState();
 
-            var blockState = new BlockStateParser(new StringReader(buffer.readUtf()), false).parse(false).getState();
+            var blockState = BlockStateParser.parseForBlock(Registry.BLOCK, new StringReader(buffer.readUtf()), false).blockState();
 
             return new BlockStateMatcher(displayState, blockState);
         } catch (CommandSyntaxException e) {

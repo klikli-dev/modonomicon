@@ -8,11 +8,14 @@ package com.klikli_dev.modonomicon.datagen;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
+import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class ItemModelsGenerator extends ItemModelProvider {
     public ItemModelsGenerator(DataGenerator generator, ExistingFileHelper existingFileHelper) {
@@ -20,7 +23,7 @@ public class ItemModelsGenerator extends ItemModelProvider {
     }
 
     protected String name(Item item) {
-        return item.getRegistryName().getPath();
+        return Registry.ITEM.getKey(item).getPath();
     }
 
     private void registerItemGenerated(String name) {
