@@ -1,5 +1,9 @@
 #!/usr/bin/env sh
 
+# SPDX-FileCopyrightText: 2022 klikli-dev
+#
+# SPDX-License-Identifier: MIT
+
 ##############################################################################
 ##
 ##  Gradle start up script for UN*X

@@ -1,3 +1,7 @@
+REM SPDX-FileCopyrightText: 2022 klikli-dev
+REM
+REM SPDX-License-Identifier: MIT
+
 @if "%DEBUG%" == "" @echo off
 @rem ##########################################################################
 @rem
