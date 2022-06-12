@@ -26,6 +26,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.multiblock.AbstractMultiblock;
+import com.klikli_dev.modonomicon.multiblock.matcher.DisplayOnlyMatcher;
 import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
 import com.klikli_dev.modonomicon.util.RenderUtil;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -268,7 +269,7 @@ public class MultiblockPreviewRenderer {
                 alpha = 0.6F + (float) (Math.sin(ClientTicks.total * 0.3F) + 1F) * 0.1F;
             }
 
-            if (!r.getStateMatcher().equals(Matchers.ANY)) {
+            if (!r.getStateMatcher().equals(Matchers.ANY) && r.getStateMatcher().getType() != DisplayOnlyMatcher.TYPE) {
                 boolean air = r.getStateMatcher().equals(Matchers.AIR);
                 if (!air) {
                     blocks++;
@@ -303,9 +304,6 @@ public class MultiblockPreviewRenderer {
                         }
                     }
 
-                    if (air) {
-                        airFilled++;
-                    }
                     if (air) {
                         airFilled++;
                     }
