@@ -8,3 +8,11 @@ Source: https://github.com/klikli-dev/modonomicon
 # Files: src/*
 # Copyright: $YEAR $NAME <$CONTACT>
 # License: ...
+
+Files: src/main/resources/*
+Copyright: 2022 klikli-dev
+License: CC-BY-4.0
+
+Files: src/generated/resources/*
+Copyright: 2022 klikli-dev
+License: CC-BY-4.0

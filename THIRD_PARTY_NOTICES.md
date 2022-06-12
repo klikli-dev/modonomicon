@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2022 klikli-dev
+
+SPDX-License-Identifier: MIT
+-->
+
 # Third Party Notices
 
 This project uses third party software and assets that may be distributed under licenses different from the licenses in [LICENSES](./LICENSES/).

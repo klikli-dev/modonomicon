@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2022 klikli-dev
+
+SPDX-License-Identifier: MIT
+-->
+
 # Modonomicon 
 
 Data-driven minecraft in-game documentation with progress visualization.
