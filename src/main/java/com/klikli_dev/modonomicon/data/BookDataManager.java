@@ -55,6 +55,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
     private Map<ResourceLocation, Book> books = new HashMap<>();
     private boolean loaded;
+    private boolean booksBuilt;
 
     private BookDataManager() {
         super(GSON, FOLDER);
@@ -81,9 +82,10 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     }
 
     public void onDatapackSyncPacket(SyncBookDataMessage message) {
+        this.preLoad();
         this.books = message.books;
-        this.postLoad();
         this.onLoadingComplete();
+        this.postLoad(); //needs to be called after loading complete, because that sets our loaded flag
     }
 
     public void onDatapackSync(OnDatapackSyncEvent event) {
@@ -98,14 +100,14 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         }
     }
 
-    public void preLoad(){
+    public void preLoad() {
+        this.booksBuilt = false;
         this.loaded = false;
         this.books.clear();
         BookErrorManager.get().reset();
     }
 
-    public void postLoad() {
-        //Build books
+    public void buildBooks() {
         for (var book : this.books.values()) {
             BookErrorManager.get().getContextHelper().reset();
             BookErrorManager.get().setCurrentBookId(book.getId());
@@ -117,7 +119,11 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             BookErrorManager.get().setCurrentBookId(null);
         }
 
-        //prerender markdown
+        //now prerender markdown
+        this.prerenderMarkdown();
+    }
+
+    public void prerenderMarkdown() {
         //TODO: allow modders to configure this renderer
         var textRenderer = new BookTextRenderer();
         for (var book : this.books.values()) {
@@ -130,6 +136,21 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             }
             BookErrorManager.get().setCurrentBookId(null);
         }
+    }
+
+    public boolean tryBuildBooks() {
+        if (!this.booksBuilt && this.loaded && MultiblockDataManager.get().isLoaded()) {
+            Modonomicon.LOGGER.info("Building books & pre-rendering markdown ...");
+            this.buildBooks();
+            this.booksBuilt = true;
+            Modonomicon.LOGGER.info("Books built..");
+            return true;
+        }
+        return false;
+    }
+
+    public void postLoad() {
+        this.tryBuildBooks();
     }
 
     protected void onLoadingComplete() {
@@ -244,7 +265,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             BookErrorManager.get().setCurrentBookId(null);
         }
         BookErrorManager.get().setContext(null); //set to null so we start using context helper internally
-        this.postLoad();
         this.onLoadingComplete();
+        this.postLoad(); //needs to be called after loading complete, because that sets our loaded flag
     }
 }

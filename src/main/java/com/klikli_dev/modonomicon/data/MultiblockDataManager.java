@@ -70,8 +70,10 @@ public class MultiblockDataManager extends SimpleJsonResourceReloadListener {
     }
 
     public void onDatapackSyncPacket(SyncMultiblockDataMessage message) {
+        this.preLoad();
         this.multiblocks = message.multiblocks;
         this.onLoadingComplete();
+        this.postLoad(); //needs to be called after loading complete, because that sets our loaded flag
     }
 
     public void onDatapackSync(OnDatapackSyncEvent event) {
@@ -86,14 +88,22 @@ public class MultiblockDataManager extends SimpleJsonResourceReloadListener {
         }
     }
 
+    public void postLoad() {
+        BookDataManager.get().tryBuildBooks();
+    }
+
+    public void preLoad() {
+        this.loaded = false;
+        this.multiblocks.clear();
+    }
+
     protected void onLoadingComplete() {
         this.loaded = true;
     }
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> content, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
-        this.loaded = false;
-        this.multiblocks.clear();
+        this.preLoad();
 
         for (var entry : content.entrySet()) {
             var json = GsonHelper.convertToJsonObject(entry.getValue(), "multiblock json file");
@@ -104,5 +114,6 @@ public class MultiblockDataManager extends SimpleJsonResourceReloadListener {
         }
 
         this.onLoadingComplete();
+        this.postLoad(); //needs to be called after loading complete, because that sets our loaded flag
     }
 }

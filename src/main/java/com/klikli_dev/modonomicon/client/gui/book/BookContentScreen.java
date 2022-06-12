@@ -29,6 +29,8 @@ import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
+import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
+import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.registry.SoundRegistry;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -80,6 +82,9 @@ public class BookContentScreen extends Screen {
     public int ticksInBook;
     private BookPage leftPage;
     private BookPage rightPage;
+
+    private BookPageRenderer<?> leftPageRenderer;
+    private BookPageRenderer<?> rightPageRenderer;
     private int bookLeft;
     private int bookTop;
     /**
@@ -185,7 +190,7 @@ public class BookContentScreen extends Screen {
         }
     }
 
-    public Style getClickedComponentStyleAtForPage(BookPage page, double pMouseX, double pMouseY) {
+    public Style getClickedComponentStyleAtForPage(BookPageRenderer<?> page, double pMouseX, double pMouseY) {
         if (page != null) {
             return page.getClickedComponentStyleAt(pMouseX - this.bookLeft - page.left, pMouseY - this.bookTop - page.top);
         }
@@ -195,11 +200,11 @@ public class BookContentScreen extends Screen {
 
     @Nullable
     public Style getClickedComponentStyleAt(double pMouseX, double pMouseY) {
-        var leftPageClickedStyle = this.getClickedComponentStyleAtForPage(this.leftPage, pMouseX, pMouseY);
+        var leftPageClickedStyle = this.getClickedComponentStyleAtForPage(this.leftPageRenderer, pMouseX, pMouseY);
         if (leftPageClickedStyle != null) {
             return leftPageClickedStyle;
         }
-        var rightPageClickedStyle = this.getClickedComponentStyleAtForPage(this.rightPage, pMouseX, pMouseY);
+        var rightPageClickedStyle = this.getClickedComponentStyleAtForPage(this.rightPageRenderer, pMouseX, pMouseY);
         return rightPageClickedStyle;
     }
 
@@ -217,7 +222,7 @@ public class BookContentScreen extends Screen {
         }
     }
 
-    protected boolean clickPage(BookPage page, double mouseX, double mouseY, int mouseButton) {
+    protected boolean clickPage(BookPageRenderer<?> page, double mouseX, double mouseY, int mouseButton) {
         if (page != null) {
             return page.mouseClicked(mouseX - this.bookLeft - page.left, mouseY - this.bookTop - page.top, mouseButton);
         }
@@ -225,7 +230,7 @@ public class BookContentScreen extends Screen {
         return false;
     }
 
-    protected void renderPage(PoseStack poseStack, BookPage page, int pMouseX, int pMouseY, float pPartialTick) {
+    protected void renderPage(PoseStack poseStack, BookPageRenderer<?> page, int pMouseX, int pMouseY, float pPartialTick) {
         if (page == null) {
             return;
         }
@@ -250,11 +255,11 @@ public class BookContentScreen extends Screen {
 
     protected void beginDisplayPages() {
         //allow pages to clean up
-        if (this.leftPage != null) {
-            this.leftPage.onEndDisplayPage(this);
+        if (this.leftPageRenderer != null) {
+            this.leftPageRenderer.onEndDisplayPage(this);
         }
-        if (this.rightPage != null) {
-            this.rightPage.onEndDisplayPage(this);
+        if (this.rightPageRenderer != null) {
+            this.rightPageRenderer.onEndDisplayPage(this);
         }
 
         //get new pages
@@ -267,10 +272,16 @@ public class BookContentScreen extends Screen {
 
         //allow pages to prepare for being displayed
         if (this.leftPage != null) {
-            this.leftPage.onBeginDisplayPage(this, LEFT_PAGE_X, TOP_PADDING);
+            this.leftPageRenderer = PageRendererRegistry.getPageRenderer(this.leftPage.getType()).create(this.leftPage);
+            this.leftPageRenderer.onBeginDisplayPage(this, LEFT_PAGE_X, TOP_PADDING);
+        } else {
+            this.leftPageRenderer = null;
         }
         if (this.rightPage != null) {
-            this.rightPage.onBeginDisplayPage(this, RIGHT_PAGE_X, TOP_PADDING);
+            this.rightPageRenderer = PageRendererRegistry.getPageRenderer(this.rightPage.getType()).create(this.rightPage);
+            this.rightPageRenderer.onBeginDisplayPage(this, RIGHT_PAGE_X, TOP_PADDING);
+        } else {
+            this.rightPageRenderer = null;
         }
     }
 
@@ -313,8 +324,8 @@ public class BookContentScreen extends Screen {
 
         pPoseStack.pushPose();
         pPoseStack.translate(this.bookLeft, this.bookTop, 0);
-        this.renderPage(pPoseStack, this.leftPage, pMouseX, pMouseY, pPartialTick);
-        this.renderPage(pPoseStack, this.rightPage, pMouseX, pMouseY, pPartialTick);
+        this.renderPage(pPoseStack, this.leftPageRenderer, pMouseX, pMouseY, pPartialTick);
+        this.renderPage(pPoseStack, this.rightPageRenderer, pMouseX, pMouseY, pPartialTick);
         pPoseStack.popPose();
 
         //do not translate tooltip, would mess up location
@@ -401,8 +412,8 @@ public class BookContentScreen extends Screen {
             }
         }
 
-        return this.clickPage(this.leftPage, pMouseX, pMouseY, pButton)
-                || this.clickPage(this.rightPage, pMouseX, pMouseY, pButton)
+        return this.clickPage(this.leftPageRenderer, pMouseX, pMouseY, pButton)
+                || this.clickPage(this.rightPageRenderer, pMouseX, pMouseY, pButton)
                 || super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 }
