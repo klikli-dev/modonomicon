@@ -306,9 +306,6 @@ public class MultiblockPreviewRenderer {
                     if (air) {
                         airFilled++;
                     }
-                    if (air) {
-                        airFilled++;
-                    }
                 } else if (!air) {
                     blocksDone++;
                 }
