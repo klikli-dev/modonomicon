@@ -56,7 +56,7 @@ public class TagMatcher implements StateMatcher {
         BlockState displayState = null;
         if (json.has("display")) {
             try {
-                displayState = new BlockStateParser(new StringReader(GsonHelper.getAsString(json, "display")), false).parse(false).getState();
+                displayState = BlockStateParser.parseForBlock(Registry.BLOCK, new StringReader(GsonHelper.getAsString(json, "display")), false).blockState();
             } catch (CommandSyntaxException e) {
                 throw new IllegalArgumentException("Failed to parse BlockState from json member \"display\" for TagStateMatcher.", e);
             }
@@ -64,9 +64,9 @@ public class TagMatcher implements StateMatcher {
 
         try {
             //testing=true enables tag parsing
-            var parser = new BlockStateParser(new StringReader(GsonHelper.getAsString(json, "tag")), true).parse(false);
-            var tag = parser.getTag();
-            var props = parser.getVagueProperties();
+            var parserResult = BlockStateParser.parseForTesting(Registry.BLOCK, new StringReader(GsonHelper.getAsString(json, "tag")), false).right().orElseThrow();
+            var tag = parserResult.tag().unwrap().left().orElseThrow();
+            var props = parserResult.vagueProperties();
             return new TagMatcher(displayState, tag, props);
         } catch (CommandSyntaxException e) {
             throw new IllegalArgumentException("Failed to parse Tag and BlockState properties from json member \"tag\" for TagMatcher.", e);
@@ -77,7 +77,7 @@ public class TagMatcher implements StateMatcher {
         try {
             BlockState displayState = null;
             if (buffer.readBoolean()) {
-                displayState = new BlockStateParser(new StringReader(buffer.readUtf()), true).parse(false).getState();
+                displayState = BlockStateParser.parseForBlock(Registry.BLOCK, new StringReader(buffer.readUtf()), false).blockState();
             }
 
             var tag = TagKey.create(Registry.BLOCK_REGISTRY, buffer.readResourceLocation());

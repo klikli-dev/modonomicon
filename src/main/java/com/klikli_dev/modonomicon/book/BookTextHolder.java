@@ -9,7 +9,7 @@ package com.klikli_dev.modonomicon.book;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import org.jetbrains.annotations.NotNull;
 
 public class BookTextHolder {
@@ -46,8 +46,8 @@ public class BookTextHolder {
      * Gets the translation key, or null if none
      */
     public String getKey() {
-        if (this.hasComponent() && this.component instanceof TranslatableComponent translatableComponent) {
-            return translatableComponent.getKey();
+        if (this.hasComponent() && this.component.getContents() instanceof TranslatableContents contents) {
+            return contents.getKey();
         }
         return this.string;
     }

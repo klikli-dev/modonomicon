@@ -6,19 +6,19 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import org.commonmark.internal.renderer.text.ListHolder;
 
-public class ListItemComponent extends TranslatableComponent {
+public class ListItemContents extends TranslatableContents {
 
     private final ListHolder listHolder;
 
-    public ListItemComponent(ListHolder listHolder, String pKey) {
+    public ListItemContents(ListHolder listHolder, String pKey) {
         super(pKey);
         this.listHolder = listHolder;
     }
 
-    public ListItemComponent(ListHolder listHolder, String pKey, Object... pArgs) {
+    public ListItemContents(ListHolder listHolder, String pKey, Object... pArgs) {
         super(pKey, pArgs);
         this.listHolder = listHolder;
     }

@@ -53,7 +53,7 @@ public class BlockMatcher implements StateMatcher {
         BlockState displayState = null;
         if (json.has("display")) {
             try {
-                displayState = new BlockStateParser(new StringReader(GsonHelper.getAsString(json, "display")), false).parse(false).getState();
+                displayState = BlockStateParser.parseForBlock(Registry.BLOCK, new StringReader(GsonHelper.getAsString(json, "display")), false).blockState();
             } catch (CommandSyntaxException e) {
                 throw new IllegalArgumentException("Failed to parse BlockState from json member \"display\" for BlockMatcher.", e);
             }
@@ -73,7 +73,7 @@ public class BlockMatcher implements StateMatcher {
         try {
             BlockState displayState = null;
             if (buffer.readBoolean())
-                displayState = new BlockStateParser(new StringReader(buffer.readUtf()), false).parse(false).getState();
+                displayState = BlockStateParser.parseForBlock(Registry.BLOCK, new StringReader(buffer.readUtf()), false).blockState();
 
             var block = Registry.BLOCK.getOptional(buffer.readResourceLocation()).orElseThrow();
             return new BlockMatcher(displayState, block);
@@ -102,7 +102,7 @@ public class BlockMatcher implements StateMatcher {
         buffer.writeBoolean(this.displayState != null);
         if (this.displayState != null)
             buffer.writeUtf(BlockStateParser.serialize(this.displayState));
-        buffer.writeResourceLocation(this.block.getRegistryName());
+        buffer.writeResourceLocation(Registry.BLOCK.getKey(this.block));
     }
 
     @Override

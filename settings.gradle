@@ -1,0 +1,11 @@
+// SPDX-FileCopyrightText: 2022 klikli-dev
+//
+// SPDX-License-Identifier: MIT
+
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven { url = 'https://maven.minecraftforge.net/' }
+        maven { url = 'https://maven.parchmentmc.org' }
+    }
+}

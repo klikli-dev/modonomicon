@@ -8,7 +8,8 @@ package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
+
 
 public class ExitButton extends BookButton {
 
@@ -19,9 +20,9 @@ public class ExitButton extends BookButton {
 
     public ExitButton(BookContentScreen parent, int x, int y) {
         super(parent, x, y, U, V, WIDTH, HEIGHT, () -> true,
-                new TranslatableComponent(Gui.BUTTON_EXIT),
+                Component.translatable(Gui.BUTTON_EXIT),
                 parent::handleExitButton,
-                new TranslatableComponent(Gui.BUTTON_EXIT) //button title equals hover text
+                Component.translatable(Gui.BUTTON_EXIT) //button title equals hover text
         );
     }
 }

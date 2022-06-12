@@ -16,7 +16,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.Nullable;
@@ -106,7 +106,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
         if (title instanceof RenderedBookTextHolder renderedTitle) {
             //if user decided to use markdown title, we need to use the  rendered version
             var formattedCharSequence = FormattedCharSequence.fromList(
-                    renderedTitle.getRenderedText().stream().map(BaseComponent::getVisualOrderText).toList());
+                    renderedTitle.getRenderedText().stream().map(Component::getVisualOrderText).toList());
             this.drawCenteredStringNoShadow(poseStack, formattedCharSequence, x, y, 0);
         } else {
             //otherwise we use the component - that is either provided by the user, or created from the default title style.
@@ -149,7 +149,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
         if (title instanceof RenderedBookTextHolder renderedTitle) {
             //markdown title
             var formattedCharSequence = FormattedCharSequence.fromList(
-                    renderedTitle.getRenderedText().stream().map(BaseComponent::getVisualOrderText).toList());
+                    renderedTitle.getRenderedText().stream().map(Component::getVisualOrderText).toList());
             if (pMouseY > y && pMouseY < y + this.font.lineHeight) {
                 //check if we are vertically over the title line
 

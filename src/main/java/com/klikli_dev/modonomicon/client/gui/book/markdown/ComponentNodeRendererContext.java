@@ -6,9 +6,9 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TranslatableComponent;
 import org.commonmark.internal.renderer.text.ListHolder;
 import org.commonmark.node.Node;
 
@@ -20,19 +20,19 @@ public interface ComponentNodeRendererContext {
      * The component we are currently rendering to (by appending siblings). In certain well-defined cases it will be
      * replaced with a new component and the old one added to @components
      */
-    TranslatableComponent getCurrentComponent();
+    MutableComponent getCurrentComponent();
 
     /**
      * The component we are currently rendering to (by appending siblings). In certain well-defined cases it will be
      * replaced with a new component and the old one added to @components
      */
-    void setCurrentComponent(TranslatableComponent component);
+    void setCurrentComponent(MutableComponent component);
 
     /**
      * The list of components we already finished rendering. Each hard newline will cause a new component to start,
      * while list items should share a component.
      */
-    List<TranslatableComponent> getComponents();
+    List<MutableComponent> getComponents();
 
     /**
      * List holder is used to keep track of the current markdown (ordered or unordered) list we are rendering.

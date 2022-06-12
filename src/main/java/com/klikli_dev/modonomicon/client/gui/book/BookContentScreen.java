@@ -31,12 +31,12 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
@@ -81,7 +81,7 @@ public class BookContentScreen extends Screen {
     private List<Component> tooltip;
 
     public BookContentScreen(BookOverviewScreen parentScreen, BookEntry entry) {
-        super(new TextComponent(""));
+        super(Component.literal(""));
 
         this.minecraft = Minecraft.getInstance();
 
@@ -111,8 +111,8 @@ public class BookContentScreen extends Screen {
     public static void playTurnPageSound(Book book) {
         if (ClientTicks.ticks - lastTurnPageSoundTime > 6) {
             //TODO: make mod loader agnostic
-            var sound = ForgeRegistries.SOUND_EVENTS.getHolder(book.getTurnPageSound()).orElse(Holder.direct(SoundRegistry.TURN_PAGE.get()));
-            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(sound.value(), (float) (0.7 + Math.random() * 0.3)));
+            var sound = Registry.SOUND_EVENT.getOptional(book.getTurnPageSound()).orElse(SoundRegistry.TURN_PAGE.get());
+            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(sound, (float) (0.7 + Math.random() * 0.3)));
             lastTurnPageSoundTime = ClientTicks.ticks;
         }
     }

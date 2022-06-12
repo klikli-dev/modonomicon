@@ -218,7 +218,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
         //TODO: render button to show multiblock in world
         //            //TODO: show multiblock preview on button click
 //            var block = MultiblockDataManager.get().getMultiblock(ResourceLocation.tryParse("modonomicon:blockentity"));
-//            MultiblockPreviewRenderer.setMultiblock(block, new TranslatableComponent("multiblock.modonomicon.test"), true);
+//            MultiblockPreviewRenderer.setMultiblock(block, Component.translatable("multiblock.modonomicon.test"), true);
 
         var style = this.getClickedComponentStyleAt(mouseX, mouseY);
         if (style != null)

@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Multiblock;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Subtitles;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.data.LanguageProvider;
 
@@ -32,11 +33,11 @@ public abstract class LangGenerator extends LanguageProvider {
     }
 
     protected void advancementTitle(String name, String s) {
-        this.add(AdvancementsGenerator.title(name).getKey(), s);
+        this.add(((TranslatableContents)AdvancementsGenerator.title(name).getContents()).getKey(), s);
     }
 
     protected void advancementDescr(String name, String s) {
-        this.add(AdvancementsGenerator.descr(name).getKey(), s);
+        this.add(((TranslatableContents)AdvancementsGenerator.descr(name).getContents()).getKey(), s);
     }
 
 

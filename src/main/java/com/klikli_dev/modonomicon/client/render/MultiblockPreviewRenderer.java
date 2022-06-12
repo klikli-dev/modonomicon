@@ -316,7 +316,7 @@ public class MultiblockPreviewRenderer {
             if (state.getBlock() == Blocks.AIR) {
                 float scale = 0.3F;
                 float off = (1F - scale) / 2;
-                ms.translate(off, off, -off);
+                ms.translate(off, off, off);
                 ms.scale(scale, scale, scale);
 
                 state = Blocks.RED_CONCRETE.defaultBlockState();

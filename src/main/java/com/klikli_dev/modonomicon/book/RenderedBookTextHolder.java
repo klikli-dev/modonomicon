@@ -8,21 +8,21 @@ package com.klikli_dev.modonomicon.book;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 
 import java.util.List;
 
 public class RenderedBookTextHolder extends BookTextHolder {
 
     private final BookTextHolder original;
-    private final List<TranslatableComponent> renderedText;
+    private final List<MutableComponent> renderedText;
 
-    public RenderedBookTextHolder(BookTextHolder original, List<TranslatableComponent> renderedText) {
+    public RenderedBookTextHolder(BookTextHolder original, List<MutableComponent> renderedText) {
         this.original = original;
         this.renderedText = renderedText;
     }
 
-    public List<TranslatableComponent> getRenderedText() {
+    public List<MutableComponent> getRenderedText() {
         return this.renderedText;
     }
 

@@ -17,8 +17,6 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 
@@ -33,7 +31,7 @@ public class BookErrorScreen extends Screen {
     private Component errorText;
 
     public BookErrorScreen(Book book) {
-        super(new TextComponent(""));
+        super(Component.literal(""));
 
         this.book = book;
 
@@ -61,7 +59,7 @@ public class BookErrorScreen extends Screen {
     public void prepareError() {
         var errorHolder = BookErrorManager.get().getErrors(this.book.getId());
         if (errorHolder.getErrors().isEmpty()) {
-            this.errorText = new TranslatableComponent(Gui.NO_ERRORS_FOUND);
+            this.errorText = Component.translatable(Gui.NO_ERRORS_FOUND);
             Modonomicon.LOGGER.warn("No errors found for book {}, but error screen was opened!", this.book.getId());
         } else {
             var firstError = errorHolder.getErrors().get(0);
@@ -70,7 +68,7 @@ public class BookErrorScreen extends Screen {
             if (errorHolder.getErrors().size() > 1) {
                 errorString += "\n\n(" + (errorHolder.getErrors().size() - 1) + " more errors, see log)";
             }
-            this.errorText = new TextComponent(errorString);
+            this.errorText = Component.literal(errorString);
         }
     }
 
