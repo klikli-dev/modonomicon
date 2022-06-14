@@ -29,6 +29,12 @@ public class ModonimiconConstants {
             public static final ResourceLocation TEXT = new ResourceLocation(ModonomiconAPI.ID, "text");
             public static final ResourceLocation MULTIBLOCK = new ResourceLocation(ModonomiconAPI.ID, "multiblock");
         }
+
+        public static class Condition {
+            public static final ResourceLocation ADVANCEMENT = new ResourceLocation(ModonomiconAPI.ID, "advancement");
+            public static final ResourceLocation OR = new ResourceLocation(ModonomiconAPI.ID, "or");
+            public static final ResourceLocation AND = new ResourceLocation(ModonomiconAPI.ID, "and");
+        }
     }
 
     public static class Nbt {
