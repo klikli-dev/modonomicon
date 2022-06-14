@@ -67,6 +67,9 @@ public class Modonomicon {
         modEventBus.addListener(CapabilityRegistry::onRegisterCapabilities);
         MinecraftForge.EVENT_BUS.addListener(CapabilityRegistry::onPlayerClone);
         MinecraftForge.EVENT_BUS.addListener(CapabilityRegistry::onAttachCapabilities);
+        MinecraftForge.EVENT_BUS.addListener(CapabilityRegistry::onJoinWorld);
+
+
         modEventBus.addListener(DataGenerators::gatherData);
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
