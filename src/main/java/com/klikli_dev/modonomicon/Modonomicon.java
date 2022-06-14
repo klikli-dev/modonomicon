@@ -63,6 +63,10 @@ public class Modonomicon {
         MinecraftForge.EVENT_BUS.addListener(BookDataManager.get()::onDatapackSync);
         MinecraftForge.EVENT_BUS.addListener(MultiblockDataManager.get()::onDatapackSync);
 
+        //register event handlers for our capability & cap sync
+        modEventBus.addListener(CapabilityRegistry::onRegisterCapabilities);
+        MinecraftForge.EVENT_BUS.addListener(CapabilityRegistry::onPlayerClone);
+        MinecraftForge.EVENT_BUS.addListener(CapabilityRegistry::onAttachCapabilities);
         modEventBus.addListener(DataGenerators::gatherData);
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
