@@ -7,7 +7,7 @@
 package com.klikli_dev.modonomicon.network;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.network.messages.SyncBookDataCapabilityMessage;
+import com.klikli_dev.modonomicon.network.messages.SyncBookUnlockCapabilityMessage;
 import com.klikli_dev.modonomicon.network.messages.SyncBookDataMessage;
 import com.klikli_dev.modonomicon.network.messages.SyncMultiblockDataMessage;
 import net.minecraft.resources.ResourceKey;
@@ -47,9 +47,9 @@ public class Networking {
                 MessageHandler::handle);
 
         INSTANCE.registerMessage(nextID(),
-                SyncBookDataCapabilityMessage.class,
-                SyncBookDataCapabilityMessage::encode,
-                SyncBookDataCapabilityMessage::new,
+                SyncBookUnlockCapabilityMessage.class,
+                SyncBookUnlockCapabilityMessage::encode,
+                SyncBookUnlockCapabilityMessage::new,
                 MessageHandler::handle);
     }
 

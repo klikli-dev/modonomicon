@@ -13,7 +13,7 @@ import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.network.Networking;
-import com.klikli_dev.modonomicon.network.messages.SyncBookDataCapabilityMessage;
+import com.klikli_dev.modonomicon.network.messages.SyncBookUnlockCapabilityMessage;
 import com.klikli_dev.modonomicon.registry.CapabilityRegistry;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -35,7 +35,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class BookDataCapability implements INBTSerializable<CompoundTag> {
+public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
 
     /**
      * Map Book ID to unlocked pages IDs
@@ -48,16 +48,16 @@ public class BookDataCapability implements INBTSerializable<CompoundTag> {
     public Map<ResourceLocation, Set<ResourceLocation>> unlockedCategories = new HashMap<>();
 
     public static boolean isUnlockedFor(Player player, BookCategory category) {
-        return player.getCapability(CapabilityRegistry.BOOK_DATA).map(c -> c.isUnlocked(category)).orElse(false);
+        return player.getCapability(CapabilityRegistry.BOOK_UNLOCK).map(c -> c.isUnlocked(category)).orElse(false);
     }
 
     public static boolean isUnlockedFor(Player player, BookEntry entry) {
-        return player.getCapability(CapabilityRegistry.BOOK_DATA).map(c -> c.isUnlocked(entry)).orElse(false);
+        return player.getCapability(CapabilityRegistry.BOOK_UNLOCK).map(c -> c.isUnlocked(entry)).orElse(false);
     }
 
     public static void onAdvancement(final AdvancementEvent event) {
         if (event.getPlayer() instanceof ServerPlayer serverplayer) {
-            serverplayer.getCapability(CapabilityRegistry.BOOK_DATA).ifPresent(capability -> {
+            serverplayer.getCapability(CapabilityRegistry.BOOK_UNLOCK).ifPresent(capability -> {
                 capability.update(serverplayer);
                 capability.sync(serverplayer);
             });
@@ -69,16 +69,15 @@ public class BookDataCapability implements INBTSerializable<CompoundTag> {
      *
      * @param other the existing instance.
      */
-    public void clone(BookDataCapability other) {
+    public void clone(BookUnlockCapability other) {
         this.unlockedEntries = other.unlockedEntries;
         this.unlockedCategories = other.unlockedCategories;
     }
 
     /**
-     * Call sendToClient afterwards to sync!
+     * Always call sync afterwards!
      */
     public void update(ServerPlayer owner) {
-        //TODO: call when first added to player
         //loop through available books and update unlocked pages and categories
         for (var book : BookDataManager.get().getBooks().values()) {
             for (var category : book.getCategories().values()) {
@@ -95,7 +94,7 @@ public class BookDataCapability implements INBTSerializable<CompoundTag> {
     }
 
     public void sync(ServerPlayer player) {
-        Networking.sendTo(player, new SyncBookDataCapabilityMessage(this));
+        Networking.sendTo(player, new SyncBookUnlockCapabilityMessage(this));
     }
 
     public boolean isUnlocked(BookEntry entry) {
@@ -186,13 +185,13 @@ public class BookDataCapability implements INBTSerializable<CompoundTag> {
 
     public static class Dispatcher implements ICapabilitySerializable<CompoundTag> {
 
-        private final LazyOptional<BookDataCapability> bookDataCapability = LazyOptional.of(
-                BookDataCapability::new);
+        private final LazyOptional<BookUnlockCapability> bookDataCapability = LazyOptional.of(
+                BookUnlockCapability::new);
 
         @Nonnull
         @Override
         public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-            if (cap == CapabilityRegistry.BOOK_DATA) {
+            if (cap == CapabilityRegistry.BOOK_UNLOCK) {
                 return this.bookDataCapability.cast();
             }
             return LazyOptional.empty();
@@ -200,7 +199,7 @@ public class BookDataCapability implements INBTSerializable<CompoundTag> {
 
         @Override
         public CompoundTag serializeNBT() {
-            return this.bookDataCapability.map(BookDataCapability::serializeNBT).orElse(new CompoundTag());
+            return this.bookDataCapability.map(BookUnlockCapability::serializeNBT).orElse(new CompoundTag());
         }
 
         @Override

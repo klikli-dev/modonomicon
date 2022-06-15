@@ -6,7 +6,7 @@
 
 package com.klikli_dev.modonomicon.network.messages;
 
-import com.klikli_dev.modonomicon.capability.BookDataCapability;
+import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
 import com.klikli_dev.modonomicon.network.Message;
 import com.klikli_dev.modonomicon.registry.CapabilityRegistry;
 import net.minecraft.client.Minecraft;
@@ -15,15 +15,15 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.NetworkEvent.Context;
 
-public class SyncBookDataCapabilityMessage implements Message {
+public class SyncBookUnlockCapabilityMessage implements Message {
 
     public CompoundTag tag;
 
-    public SyncBookDataCapabilityMessage(BookDataCapability capability) {
+    public SyncBookUnlockCapabilityMessage(BookUnlockCapability capability) {
         this.tag = capability.serializeNBT();
     }
 
-    public SyncBookDataCapabilityMessage(FriendlyByteBuf buf) {
+    public SyncBookUnlockCapabilityMessage(FriendlyByteBuf buf) {
         this.decode(buf);
     }
 
@@ -39,7 +39,7 @@ public class SyncBookDataCapabilityMessage implements Message {
 
     @Override
     public void onClientReceived(Minecraft minecraft, Player player, Context context) {
-        player.getCapability(CapabilityRegistry.BOOK_DATA).ifPresent(capability -> {
+        player.getCapability(CapabilityRegistry.BOOK_UNLOCK).ifPresent(capability -> {
                     capability.deserializeNBT(this.tag);
                 });
     }
