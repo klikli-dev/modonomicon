@@ -8,6 +8,8 @@ package com.klikli_dev.modonomicon.book;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Category;
+import com.klikli_dev.modonomicon.book.conditions.BookCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookTrueCondition;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import net.minecraft.network.FriendlyByteBuf;
@@ -27,13 +29,16 @@ public class BookCategory {
     protected ResourceLocation background;
     protected ResourceLocation entryTextures;
     protected Map<ResourceLocation, BookEntry> entries;
+
+    protected BookCondition condition;
     //TODO: additional backgrounds with custom rendertypes?
 
-    public BookCategory(ResourceLocation id, ResourceLocation bookId, String name, int sortNumber, BookIcon icon, ResourceLocation background, ResourceLocation entryTextures) {
+    public BookCategory(ResourceLocation id, ResourceLocation bookId, String name, int sortNumber, BookCondition condition, BookIcon icon, ResourceLocation background, ResourceLocation entryTextures) {
         this.id = id;
         this.bookId = bookId;
         this.name = name;
         this.sortNumber = sortNumber;
+        this.condition = condition;
         this.icon = icon;
         this.background = background;
         this.entryTextures = entryTextures;
@@ -46,7 +51,13 @@ public class BookCategory {
         var icon = BookIcon.fromString(GsonHelper.getAsString(json, "icon"));
         var background = new ResourceLocation(GsonHelper.getAsString(json, "background", Category.DEFAULT_BACKGROUND));
         var entryTextures = new ResourceLocation(GsonHelper.getAsString(json, "entry_textures", Category.DEFAULT_ENTRY_TEXTURES));
-        return new BookCategory(id, bookId, name, sortNumber, icon, background, entryTextures);
+
+        BookCondition condition = new BookTrueCondition(); //default to unlocked
+        if(json.has("condition")){
+            condition = BookCondition.fromJson(json.getAsJsonObject("condition"));
+        }
+
+        return new BookCategory(id, bookId, name, sortNumber, condition, icon, background, entryTextures);
     }
 
     public static BookCategory fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
@@ -56,7 +67,8 @@ public class BookCategory {
         var icon = BookIcon.fromNetwork(buffer);
         var background = buffer.readResourceLocation();
         var entryTextures = buffer.readResourceLocation();
-        return new BookCategory(id, bookId, name, sortNumber, icon, background, entryTextures);
+        var condition = BookCondition.fromNetwork(buffer);
+        return new BookCategory(id, bookId, name, sortNumber, condition, icon, background, entryTextures);
     }
 
     /**
@@ -130,6 +142,7 @@ public class BookCategory {
         this.icon.toNetwork(buffer);
         buffer.writeResourceLocation(this.background);
         buffer.writeResourceLocation(this.entryTextures);
+        this.condition.toNetwork(buffer);
     }
 
     public ResourceLocation getBookId() {
