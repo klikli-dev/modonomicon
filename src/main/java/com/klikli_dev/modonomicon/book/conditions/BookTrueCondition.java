@@ -38,7 +38,7 @@ public class BookTrueCondition extends BookCondition {
 
     @Override
     public ResourceLocation getType() {
-        return Condition.AND;
+        return Condition.TRUE;
     }
 
     @Override
