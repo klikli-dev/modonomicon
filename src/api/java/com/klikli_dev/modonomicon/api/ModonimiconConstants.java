@@ -34,6 +34,10 @@ public class ModonimiconConstants {
             public static final ResourceLocation ADVANCEMENT = new ResourceLocation(ModonomiconAPI.ID, "advancement");
             public static final ResourceLocation OR = new ResourceLocation(ModonomiconAPI.ID, "or");
             public static final ResourceLocation AND = new ResourceLocation(ModonomiconAPI.ID, "and");
+
+            public static final ResourceLocation TRUE = new ResourceLocation(ModonomiconAPI.ID, "true");
+
+            public static final ResourceLocation FALSE = new ResourceLocation(ModonomiconAPI.ID, "false");
         }
     }
 
