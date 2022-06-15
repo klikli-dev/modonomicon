@@ -8,12 +8,14 @@
 
 package com.klikli_dev.modonomicon.capability;
 
+import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.registry.CapabilityRegistry;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -31,7 +33,7 @@ public class BookDataCapability implements INBTSerializable<CompoundTag> {
     /**
      * Map Book ID to unlocked pages IDs
      */
-    public Map<ResourceLocation, Set<ResourceLocation>> unlockedPages = new HashMap<>();
+    public Map<ResourceLocation, Set<ResourceLocation>> unlockedEntries = new HashMap<>();
 
     /**
      * Map Book ID to unlocked categories IDs
@@ -44,8 +46,21 @@ public class BookDataCapability implements INBTSerializable<CompoundTag> {
      * @param other the existing instance.
      */
     public void clone(BookDataCapability other) {
-        this.unlockedPages = other.unlockedPages;
+        this.unlockedEntries = other.unlockedEntries;
         this.unlockedCategories = other.unlockedCategories;
+    }
+
+    public void update(ServerPlayer owner){
+        //loop through available books and update unlocked pages and categories
+        for(var book : BookDataManager.get().getBooks().values()){
+            for(var category : book.getCategories().values()) {
+                //TODO: Check category conditions
+
+                for(var entry :category.getEntries().values()) {
+                    //TODO: Check entry conditions
+                }
+            }
+        }
     }
 
     @Override
@@ -69,12 +84,12 @@ public class BookDataCapability implements INBTSerializable<CompoundTag> {
         });
 
         var unlockedPagesByBook = new ListTag();
-        compound.put("unlocked_pages", unlockedPagesByBook);
-        this.unlockedPages.forEach((bookId, pageId) -> {
+        compound.put("unlocked_entries", unlockedPagesByBook);
+        this.unlockedEntries.forEach((bookId, pageId) -> {
             var bookCompound = new CompoundTag();
             var unlockedPagesList = new ListTag();
             bookCompound.putString("book_id", bookId.toString());
-            bookCompound.put("unlocked_pages", unlockedPagesList);
+            bookCompound.put("unlocked_entries", unlockedPagesList);
 
             pageId.forEach(categoryId -> {
                 var categoryCompound = new CompoundTag();
@@ -108,12 +123,12 @@ public class BookDataCapability implements INBTSerializable<CompoundTag> {
             }
         }
 
-        this.unlockedPages.clear();
-        var unlockedPagesByBook = nbt.getList("unlocked_pages", Tag.TAG_COMPOUND);
-        for (var bookEntry : unlockedPagesByBook) {
+        this.unlockedEntries.clear();
+        var unlockedEntriesByBook = nbt.getList("unlocked_entries", Tag.TAG_COMPOUND);
+        for (var bookEntry : unlockedEntriesByBook) {
             if (bookEntry instanceof CompoundTag bookCompound) {
                 var bookId = ResourceLocation.tryParse(bookCompound.getString("book_id"));
-                var unlockedPagesList = bookCompound.getList("unlocked_pages", Tag.TAG_COMPOUND);
+                var unlockedPagesList = bookCompound.getList("unlocked_entries", Tag.TAG_COMPOUND);
                 var pages = new HashSet<ResourceLocation>();
                 for (var pageEntry : unlockedPagesList) {
                     if (pageEntry instanceof CompoundTag pageCompound) {
@@ -121,7 +136,7 @@ public class BookDataCapability implements INBTSerializable<CompoundTag> {
                         pages.add(pageId);
                     }
                 }
-                this.unlockedPages.put(bookId, pages);
+                this.unlockedEntries.put(bookId, pages);
             }
         }
     }
