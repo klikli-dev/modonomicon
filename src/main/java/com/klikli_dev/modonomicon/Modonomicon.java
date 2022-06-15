@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon;
 
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
+import com.klikli_dev.modonomicon.capability.BookDataCapability;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.config.CommonConfig;
@@ -68,6 +69,9 @@ public class Modonomicon {
         MinecraftForge.EVENT_BUS.addListener(CapabilityRegistry::onPlayerClone);
         MinecraftForge.EVENT_BUS.addListener(CapabilityRegistry::onAttachCapabilities);
         MinecraftForge.EVENT_BUS.addListener(CapabilityRegistry::onJoinWorld);
+
+        //event handler for condition system
+        MinecraftForge.EVENT_BUS.addListener(BookDataCapability::onAdvancement);
 
 
         modEventBus.addListener(DataGenerators::gatherData);

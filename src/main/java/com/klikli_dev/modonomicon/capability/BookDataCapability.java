@@ -8,7 +8,10 @@
 
 package com.klikli_dev.modonomicon.capability;
 
+import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.klikli_dev.modonomicon.network.Networking;
+import com.klikli_dev.modonomicon.network.messages.SyncBookDataCapabilityMessage;
 import com.klikli_dev.modonomicon.registry.CapabilityRegistry;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -20,6 +23,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.entity.player.AdvancementEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -50,17 +54,28 @@ public class BookDataCapability implements INBTSerializable<CompoundTag> {
         this.unlockedCategories = other.unlockedCategories;
     }
 
-    public void update(ServerPlayer owner){
+    /**
+     * Call sendToClient afterwards to sync!
+     */
+    public void update(ServerPlayer owner) {
+        //TODO: call when first added to player
         //loop through available books and update unlocked pages and categories
-        for(var book : BookDataManager.get().getBooks().values()){
-            for(var category : book.getCategories().values()) {
-                //TODO: Check category conditions
+        for (var book : BookDataManager.get().getBooks().values()) {
+            for (var category : book.getCategories().values()) {
 
-                for(var entry :category.getEntries().values()) {
-                    //TODO: Check entry conditions
+                if (category.getCondition().test(BookConditionContext.of(book, category), owner))
+                    this.unlockedCategories.computeIfAbsent(book.getId(), k -> new HashSet<>()).add(category.getId());
+
+                for (var entry : category.getEntries().values()) {
+                    if (entry.getCondition().test(BookConditionContext.of(book, entry), owner))
+                        this.unlockedEntries.computeIfAbsent(book.getId(), k -> new HashSet<>()).add(entry.getId());
                 }
             }
         }
+    }
+
+    public void sync(ServerPlayer player) {
+        Networking.sendTo(player, new SyncBookDataCapabilityMessage(this));
     }
 
     @Override
@@ -138,6 +153,15 @@ public class BookDataCapability implements INBTSerializable<CompoundTag> {
                 }
                 this.unlockedEntries.put(bookId, pages);
             }
+        }
+    }
+
+    public static void onAdvancement(final AdvancementEvent event){
+        if(event.getPlayer() instanceof ServerPlayer serverplayer){
+            serverplayer.getCapability(CapabilityRegistry.BOOK_DATA).ifPresent(capability -> {
+                capability.update(serverplayer);
+                capability.sync(serverplayer);
+            });
         }
     }
 

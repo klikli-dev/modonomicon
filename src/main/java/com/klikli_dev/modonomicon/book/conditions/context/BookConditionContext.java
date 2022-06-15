@@ -9,8 +9,10 @@
 package com.klikli_dev.modonomicon.book.conditions.context;
 
 import com.klikli_dev.modonomicon.book.Book;
+import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.book.BookEntry;
 
-public class BookConditionContext {
+public abstract class BookConditionContext {
     public final Book book;
 
     public BookConditionContext(Book book) {
@@ -19,5 +21,13 @@ public class BookConditionContext {
 
     public Book getBook() {
         return this.book;
+    }
+
+    public static BookConditionContext of(Book book, BookCategory category) {
+        return new BookConditionCategoryContext(book, category);
+    }
+
+    public static BookConditionContext of(Book book, BookEntry entry) {
+        return new BookConditionEntryContext(book, entry);
     }
 }

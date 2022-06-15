@@ -148,4 +148,8 @@ public class BookCategory {
     public ResourceLocation getBookId() {
         return this.bookId;
     }
+
+    public BookCondition getCondition() {
+        return this.condition;
+    }
 }

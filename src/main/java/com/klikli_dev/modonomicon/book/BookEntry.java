@@ -80,7 +80,7 @@ public class BookEntry {
         }
 
         BookCondition condition = new BookTrueCondition(); //default to unlocked
-        if(json.has("condition")){
+        if (json.has("condition")) {
             condition = BookCondition.fromJson(json.getAsJsonObject("condition"));
         }
 
@@ -227,5 +227,9 @@ public class BookEntry {
         }
 
         return -1;
+    }
+
+    public BookCondition getCondition() {
+        return this.condition;
     }
 }

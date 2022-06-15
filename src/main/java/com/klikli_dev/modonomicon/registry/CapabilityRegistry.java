@@ -10,8 +10,6 @@ package com.klikli_dev.modonomicon.registry;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.capability.BookDataCapability;
-import com.klikli_dev.modonomicon.network.Networking;
-import com.klikli_dev.modonomicon.network.messages.SyncBookDataCapabilityMessage;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -56,9 +54,10 @@ public class CapabilityRegistry {
     }
 
     public static void onJoinWorld(final EntityJoinWorldEvent event) {
-        if (!event.getWorld().isClientSide && event.getEntity() instanceof Player player) {
+        if (event.getEntity() instanceof ServerPlayer player) {
             player.getCapability(BOOK_DATA).ifPresent(capability -> {
-                        Networking.sendTo((ServerPlayer) player, new SyncBookDataCapabilityMessage(capability));
+                        capability.update(player);
+                        capability.sync(player);
                     }
             );
         }
