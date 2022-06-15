@@ -8,6 +8,8 @@ package com.klikli_dev.modonomicon.book;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.klikli_dev.modonomicon.book.conditions.BookCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookTrueCondition;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
@@ -31,10 +33,11 @@ public class BookEntry {
     protected int x;
     protected int y;
     protected List<BookPage> pages;
+    protected BookCondition condition;
 
     //TODO: entry type for background/border texture
 
-    public BookEntry(ResourceLocation id, ResourceLocation categoryId, String name, String description, BookIcon icon, int x, int y, List<BookEntryParent> parents, List<BookPage> pages) {
+    public BookEntry(ResourceLocation id, ResourceLocation categoryId, String name, String description, BookIcon icon, int x, int y, BookCondition condition, List<BookEntryParent> parents, List<BookPage> pages) {
         this.id = id;
         this.categoryId = categoryId;
         this.name = name;
@@ -44,6 +47,7 @@ public class BookEntry {
         this.y = y;
         this.parents = parents;
         this.pages = pages;
+        this.condition = condition;
     }
 
     public static BookEntry fromJson(ResourceLocation id, JsonObject json) {
@@ -75,7 +79,12 @@ public class BookEntry {
             }
         }
 
-        return new BookEntry(id, categoryId, name, description, icon, x, y, parentEntries, pages);
+        BookCondition condition = new BookTrueCondition(); //default to unlocked
+        if(json.has("condition")){
+            condition = BookCondition.fromJson(json.getAsJsonObject("condition"));
+        }
+
+        return new BookEntry(id, categoryId, name, description, icon, x, y, condition, parentEntries, pages);
     }
 
     public static BookEntry fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
@@ -102,7 +111,9 @@ public class BookEntry {
             pages.add(page);
         }
 
-        return new BookEntry(id, categoryId, name, description, icon, x, y, parentEntries, pages);
+        var condition = BookCondition.fromNetwork(buffer);
+
+        return new BookEntry(id, categoryId, name, description, icon, x, y, condition, parentEntries, pages);
     }
 
     /**
@@ -158,6 +169,8 @@ public class BookEntry {
             buffer.writeResourceLocation(page.getType());
             page.toNetwork(buffer);
         }
+
+        this.condition.toNetwork(buffer);
     }
 
     public int getY() {

@@ -18,6 +18,10 @@ import net.minecraft.world.entity.player.Player;
 
 public class BookTrueCondition extends BookCondition {
 
+    public BookTrueCondition() {
+        this(null);
+    }
+
     public BookTrueCondition(Component component) {
         super(component);
     }
