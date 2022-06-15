@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.client.gui.book;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.capability.BookDataCapability;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryButton;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -45,8 +46,8 @@ public class BookOverviewScreen extends Screen {
 
         this.bookOverviewTexture = book.getBookOverviewTexture();
 
-        //TODO: only get unlocked categories / or at least only render those
-        this.categories = book.getCategoriesSorted();
+        //we only show categories that are unlocked. Unlike entries there is no "greying out"
+        this.categories = book.getCategoriesSorted().stream().filter(cat -> BookDataCapability.isUnlockedFor(this.minecraft.player, cat)).toList();
         this.categoryScreens = this.categories.stream().map(c -> new BookCategoryScreen(this, c)).toList();
 
         //TODO: save/load current category and page to capability

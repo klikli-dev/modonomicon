@@ -8,6 +8,8 @@
 
 package com.klikli_dev.modonomicon.capability;
 
+import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.network.Networking;
@@ -19,6 +21,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -43,6 +46,23 @@ public class BookDataCapability implements INBTSerializable<CompoundTag> {
      * Map Book ID to unlocked categories IDs
      */
     public Map<ResourceLocation, Set<ResourceLocation>> unlockedCategories = new HashMap<>();
+
+    public static boolean isUnlockedFor(Player player, BookCategory category) {
+        return player.getCapability(CapabilityRegistry.BOOK_DATA).map(c -> c.isUnlocked(category)).orElse(false);
+    }
+
+    public static boolean isUnlockedFor(Player player, BookEntry entry) {
+        return player.getCapability(CapabilityRegistry.BOOK_DATA).map(c -> c.isUnlocked(entry)).orElse(false);
+    }
+
+    public static void onAdvancement(final AdvancementEvent event) {
+        if (event.getPlayer() instanceof ServerPlayer serverplayer) {
+            serverplayer.getCapability(CapabilityRegistry.BOOK_DATA).ifPresent(capability -> {
+                capability.update(serverplayer);
+                capability.sync(serverplayer);
+            });
+        }
+    }
 
     /**
      * Clones the data from an existing instance
@@ -76,6 +96,14 @@ public class BookDataCapability implements INBTSerializable<CompoundTag> {
 
     public void sync(ServerPlayer player) {
         Networking.sendTo(player, new SyncBookDataCapabilityMessage(this));
+    }
+
+    public boolean isUnlocked(BookEntry entry) {
+        return this.unlockedEntries.getOrDefault(entry.getBook().getId(), new HashSet<>()).contains(entry.getId());
+    }
+
+    public boolean isUnlocked(BookCategory category) {
+        return this.unlockedCategories.getOrDefault(category.getBook().getId(), new HashSet<>()).contains(category.getId());
     }
 
     @Override
@@ -153,15 +181,6 @@ public class BookDataCapability implements INBTSerializable<CompoundTag> {
                 }
                 this.unlockedEntries.put(bookId, pages);
             }
-        }
-    }
-
-    public static void onAdvancement(final AdvancementEvent event){
-        if(event.getPlayer() instanceof ServerPlayer serverplayer){
-            serverplayer.getCapability(CapabilityRegistry.BOOK_DATA).ifPresent(capability -> {
-                capability.update(serverplayer);
-                capability.sync(serverplayer);
-            });
         }
     }
 

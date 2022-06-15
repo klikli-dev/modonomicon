@@ -147,8 +147,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         return Book.fromJson(key, value);
     }
 
-    private BookCategory loadCategory(ResourceLocation key, JsonObject value, ResourceLocation bookId) {
-        return BookCategory.fromJson(key, value, bookId);
+    private BookCategory loadCategory(ResourceLocation key, JsonObject value) {
+        return BookCategory.fromJson(key, value);
     }
 
     private BookEntry loadEntry(ResourceLocation key, JsonObject value) {
@@ -220,7 +220,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
                 //category id skips the book id and the category directory
                 var categoryId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
-                var category = this.loadCategory(categoryId, entry.getValue(), bookId);
+                var category = this.loadCategory(categoryId, entry.getValue());
 
                 //link category and book
                 var book = this.books.get(bookId);

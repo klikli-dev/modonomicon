@@ -21,7 +21,6 @@ import java.util.Map;
 
 public class BookCategory {
     protected ResourceLocation id;
-    protected ResourceLocation bookId;
     protected Book book;
     protected String name;
     protected BookIcon icon;
@@ -33,9 +32,8 @@ public class BookCategory {
     protected BookCondition condition;
     //TODO: additional backgrounds with custom rendertypes?
 
-    public BookCategory(ResourceLocation id, ResourceLocation bookId, String name, int sortNumber, BookCondition condition, BookIcon icon, ResourceLocation background, ResourceLocation entryTextures) {
+    public BookCategory(ResourceLocation id, String name, int sortNumber, BookCondition condition, BookIcon icon, ResourceLocation background, ResourceLocation entryTextures) {
         this.id = id;
-        this.bookId = bookId;
         this.name = name;
         this.sortNumber = sortNumber;
         this.condition = condition;
@@ -45,7 +43,7 @@ public class BookCategory {
         this.entries = new HashMap<>();
     }
 
-    public static BookCategory fromJson(ResourceLocation id, JsonObject json, ResourceLocation bookId) {
+    public static BookCategory fromJson(ResourceLocation id, JsonObject json) {
         var name = GsonHelper.getAsString(json, "name");
         var sortNumber = GsonHelper.getAsInt(json, "sort_number", -1);
         var icon = BookIcon.fromString(GsonHelper.getAsString(json, "icon"));
@@ -57,18 +55,17 @@ public class BookCategory {
             condition = BookCondition.fromJson(json.getAsJsonObject("condition"));
         }
 
-        return new BookCategory(id, bookId, name, sortNumber, condition, icon, background, entryTextures);
+        return new BookCategory(id, name, sortNumber, condition, icon, background, entryTextures);
     }
 
     public static BookCategory fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
-        var bookId = buffer.readResourceLocation();
         var name = buffer.readUtf();
         var sortNumber = buffer.readInt();
         var icon = BookIcon.fromNetwork(buffer);
         var background = buffer.readResourceLocation();
         var entryTextures = buffer.readResourceLocation();
         var condition = BookCondition.fromNetwork(buffer);
-        return new BookCategory(id, bookId, name, sortNumber, condition, icon, background, entryTextures);
+        return new BookCategory(id, name, sortNumber, condition, icon, background, entryTextures);
     }
 
     /**
@@ -136,17 +133,12 @@ public class BookCategory {
     }
 
     public void toNetwork(FriendlyByteBuf buffer) {
-        buffer.writeResourceLocation(this.book.getId());
         buffer.writeUtf(this.name);
         buffer.writeInt(this.sortNumber);
         this.icon.toNetwork(buffer);
         buffer.writeResourceLocation(this.background);
         buffer.writeResourceLocation(this.entryTextures);
         this.condition.toNetwork(buffer);
-    }
-
-    public ResourceLocation getBookId() {
-        return this.bookId;
     }
 
     public BookCondition getCondition() {
