@@ -48,7 +48,7 @@ public class BookAdvancementCondition extends BookCondition {
     }
 
     public static BookAdvancementCondition fromNetwork(FriendlyByteBuf buffer) {
-        var tooltip = buffer.readComponent();
+        var tooltip = buffer.readBoolean() ? buffer.readComponent() : null;
         var advancementId = buffer.readResourceLocation();
         return new BookAdvancementCondition(tooltip, advancementId);
     }
@@ -60,7 +60,10 @@ public class BookAdvancementCondition extends BookCondition {
 
     @Override
     public void toNetwork(FriendlyByteBuf buffer) {
-        buffer.writeComponent(this.tooltip);
+        buffer.writeBoolean(this.tooltip != null);
+        if(this.tooltip != null){
+            buffer.writeComponent(this.tooltip);
+        }
         buffer.writeResourceLocation(this.advancementId);
     }
 

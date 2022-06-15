@@ -35,7 +35,9 @@ public class BookAndCondition extends BookCondition {
         this.children = children;
 
         this.tooltips = new ArrayList<>();
-        this.tooltips.add(component);
+        if(component != null)
+            this.tooltips.add(component);
+
         for (var child : children) {
             this.tooltips.addAll(child.getTooltip());
         }
@@ -53,7 +55,7 @@ public class BookAndCondition extends BookCondition {
     }
 
     public static BookAndCondition fromNetwork(FriendlyByteBuf buffer) {
-        var tooltip = buffer.readComponent();
+        var tooltip = buffer.readBoolean() ? buffer.readComponent() : null;
         var childCount = buffer.readVarInt();
         var children = new BookCondition[childCount];
         for (var i = 0; i < childCount; i++) {
@@ -69,7 +71,10 @@ public class BookAndCondition extends BookCondition {
 
     @Override
     public void toNetwork(FriendlyByteBuf buffer) {
-        buffer.writeComponent(this.tooltip);
+        buffer.writeBoolean(this.tooltip != null);
+        if(this.tooltip != null){
+            buffer.writeComponent(this.tooltip);
+        }
         buffer.writeVarInt(this.children.length);
         for (var child : this.children) {
             child.toNetwork(buffer);

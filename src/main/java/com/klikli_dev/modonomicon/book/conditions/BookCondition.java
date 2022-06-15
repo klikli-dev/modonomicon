@@ -29,11 +29,14 @@ public abstract class BookCondition {
     }
 
     public static MutableComponent tooltipFromJson(JsonObject json) {
-        var tooltipElement = json.get("tooltip");
-        if (tooltipElement.isJsonPrimitive())
-            return Component.translatable(tooltipElement.getAsString());
+        if (json.has("tooltip")) {
+            var tooltipElement = json.get("tooltip");
+            if (tooltipElement.isJsonPrimitive())
+                return Component.translatable(tooltipElement.getAsString());
 
-        return Component.Serializer.fromJson(tooltipElement);
+            return Component.Serializer.fromJson(tooltipElement);
+        }
+        return null;
     }
 
     public static BookCondition fromJson(JsonObject json) {
@@ -55,6 +58,6 @@ public abstract class BookCondition {
     public abstract boolean test(BookConditionContext context, Player player);
 
     public List<Component> getTooltip() {
-        return List.of(this.tooltip);
+        return this.tooltip != null ? List.of(this.tooltip) : List.of();
     }
 }
