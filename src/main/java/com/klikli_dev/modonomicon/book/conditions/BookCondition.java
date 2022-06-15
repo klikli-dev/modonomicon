@@ -9,20 +9,32 @@
 package com.klikli_dev.modonomicon.book.conditions;
 
 import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.book.Book;
+import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.List;
+
 public abstract class BookCondition {
 
-    public abstract ResourceLocation getType();
+    protected Component tooltip;
 
-    public abstract void toNetwork(FriendlyByteBuf buffer);
+    public BookCondition(Component tooltip) {
+        this.tooltip = tooltip;
+    }
 
-    public abstract boolean test(Book book, Player player);
+    public static MutableComponent tooltipFromJson(JsonObject json) {
+        var tooltipElement = json.get("tooltip");
+        if (tooltipElement.isJsonPrimitive())
+            return Component.translatable(tooltipElement.getAsString());
+
+        return Component.Serializer.fromJson(tooltipElement);
+    }
 
     public static BookCondition fromJson(JsonObject json) {
         var type = new ResourceLocation(GsonHelper.getAsString(json, "type"));
@@ -34,5 +46,15 @@ public abstract class BookCondition {
         var type = buf.readResourceLocation();
         var loader = LoaderRegistry.getConditionNetworkLoader(type);
         return loader.fromNetwork(buf);
+    }
+
+    public abstract ResourceLocation getType();
+
+    public abstract void toNetwork(FriendlyByteBuf buffer);
+
+    public abstract boolean test(BookConditionContext context, Player player);
+
+    public List<Component> getTooltip() {
+        return List.of(this.tooltip);
     }
 }

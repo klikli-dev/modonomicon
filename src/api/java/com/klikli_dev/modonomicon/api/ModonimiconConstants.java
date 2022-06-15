@@ -74,5 +74,11 @@ public class ModonimiconConstants {
             public static final String PREFIX = ModonomiconAPI.ID + ".subtitle.";
             public static final String TURN_PAGE = PREFIX + "turn_page";
         }
+
+        public static class Tooltips {
+            public static final String PREFIX = ModonomiconAPI.ID + ".tooltip.";
+            public static final String CONDITION_PREFIX =PREFIX + ".condition.";
+            public static final String CONDITION_ADVANCEMENT = CONDITION_PREFIX + "advancement";
+        }
     }
 }
