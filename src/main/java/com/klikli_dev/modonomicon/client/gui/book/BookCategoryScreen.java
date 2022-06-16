@@ -122,9 +122,12 @@ public class BookCategoryScreen {
         float xOffset = this.getXOffset();
         float yOffset = this.getYOffset();
         for (var entry : this.category.getEntries().values()) {
-            if (this.isEntryHovered(entry, xOffset, yOffset, (int) pMouseX, (int) pMouseY)) {
-                this.openEntry(entry);
-                return true;
+            var displayStyle = this.getEntryDisplayState(entry);
+            if (displayStyle == EntryDisplayState.UNLOCKED) {
+                if (this.isEntryHovered(entry, xOffset, yOffset, (int) pMouseX, (int) pMouseY)) {
+                    this.openEntry(entry);
+                    return true;
+                }
             }
         }
 
@@ -272,7 +275,6 @@ public class BookCategoryScreen {
 
             var tooltip = new ArrayList<Component>();
 
-            //TODO: handle locked entries tooltips
             if(displayState == EntryDisplayState.LOCKED){
                 tooltip.addAll(entry.getCondition().getTooltip());
             } else if(displayState == EntryDisplayState.UNLOCKED){
@@ -283,7 +285,6 @@ public class BookCategoryScreen {
                     tooltip.add(Component.translatable(entry.getDescription()));
                 }
             }
-
 
             //draw description
             this.bookOverviewScreen.renderTooltip(stack, tooltip, Optional.empty(), mouseX, mouseY);
