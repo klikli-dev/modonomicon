@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Multiblock;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Subtitles;
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -61,6 +62,8 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(Gui.HOVER_BOOK_LINK, "Go to: %s");
             this.add(Gui.HOVER_HTTP_LINK, "Visit: %s");
 
+            //Tooltip
+            this.add(Tooltips.CONDITION_ADVANCEMENT, "Requires Advancement: %s");
 
 
             //sounds
@@ -124,6 +127,8 @@ public abstract class LangGenerator extends LanguageProvider {
                             [With link](entry://modonomicon:test/test_category/test_entry2@test_anchor)
                              """);
 
+            this.add("modonomicon.test.sections.test_category.test_entry_child.condition.tooltip",
+                    "This page cannot be unlocked!");
 
             this.add("modonomicon.test.sections.test_category.multiblock.page0.text",
                     """

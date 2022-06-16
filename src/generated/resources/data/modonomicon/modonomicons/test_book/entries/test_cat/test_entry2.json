@@ -1,9 +1,10 @@
 {
   "category": "modonomicon:test_cat",
-  "name": "modonomicon.test_cat2.name",
   "description": "modonomicon.test_cat2.description",
+  "hide_while_locked": false,
   "icon": "minecraft:stick",
+  "name": "modonomicon.test_cat2.name",
+  "pages": [],
   "x": 0,
-  "y": 0,
-  "pages": []
+  "y": 0
 }

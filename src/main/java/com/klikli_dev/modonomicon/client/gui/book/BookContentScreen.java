@@ -30,19 +30,14 @@ import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
 
@@ -58,8 +53,6 @@ public class BookContentScreen extends Screen {
     public static final int PAGE_HEIGHT = 128; //TODO: Adjust to what is real
     public static final int FULL_WIDTH = 272;
     public static final int FULL_HEIGHT = 180;
-
-    protected static Field narratablesField =  ObfuscationReflectionHelper.findField(Screen.class, "f_169368_");
 
     private static long lastTurnPageSoundTime;
     private final BookOverviewScreen parentScreen;
@@ -202,6 +195,13 @@ public class BookContentScreen extends Screen {
         return this.bookTop;
     }
 
+    @SuppressWarnings("unchecked")
+    public void removeRenderableWidgets(Collection<? extends Widget> widgets) {
+        this.renderables.removeIf(widgets::contains);
+        this.children().removeIf(c -> c instanceof Widget && widgets.contains(c));
+        this.narratables.removeIf(n -> n instanceof Widget && widgets.contains(n));
+    }
+
     protected void drawTooltip(PoseStack pPoseStack, int pMouseX, int pMouseY) {
         if (this.tooltip != null) {
             this.renderComponentTooltip(pPoseStack, this.tooltip, pMouseX, pMouseY);
@@ -225,18 +225,6 @@ public class BookContentScreen extends Screen {
         poseStack.translate(page.left, page.top, 0);
         page.render(poseStack, pMouseX - this.bookLeft - page.left, pMouseY - this.bookTop - page.top, pPartialTick);
         poseStack.popPose();
-    }
-
-    @SuppressWarnings("unchecked")
-    public void removeRenderableWidgets(Collection<? extends Widget> widgets){
-        this.renderables.removeIf(widgets::contains);
-        this.children().removeIf(c -> c instanceof Widget && widgets.contains(c));
-
-        try {
-            ((List<NarratableEntry>)narratablesField.get(this)).removeIf(n -> n instanceof Widget && widgets.contains(n));
-        } catch (IllegalAccessException ignored) {
-
-        }
     }
 
     protected void beginDisplayPages() {

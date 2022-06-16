@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookEntry;
+import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -121,9 +122,12 @@ public class BookCategoryScreen {
         float xOffset = this.getXOffset();
         float yOffset = this.getYOffset();
         for (var entry : this.category.getEntries().values()) {
-            if (this.isEntryHovered(entry, xOffset, yOffset, (int) pMouseX, (int) pMouseY)) {
-                this.openEntry(entry);
-                return true;
+            var displayStyle = this.getEntryDisplayState(entry);
+            if (displayStyle == EntryDisplayState.UNLOCKED) {
+                if (this.isEntryHovered(entry, xOffset, yOffset, (int) pMouseX, (int) pMouseY)) {
+                    this.openEntry(entry);
+                    return true;
+                }
             }
         }
 
@@ -165,6 +169,28 @@ public class BookCategoryScreen {
                 innerWidth, innerHeight, this.backgroundTextureHeight, this.backgroundTextureWidth);
     }
 
+    private EntryDisplayState getEntryDisplayState(BookEntry entry) {
+        var player = this.bookOverviewScreen.getMinecraft().player;
+
+        var isEntryUnlocked = BookUnlockCapability.isUnlockedFor(player, entry);
+
+        var allParentsUnlocked = true;
+        for (var parent : entry.getParents()) {
+            if (!BookUnlockCapability.isUnlockedFor(player, parent.getEntry())) {
+                allParentsUnlocked = false;
+                break;
+            }
+        }
+
+        if (!allParentsUnlocked)
+            return EntryDisplayState.HIDDEN;
+
+        if (!isEntryUnlocked)
+            return entry.hideWhileLocked() ? EntryDisplayState.HIDDEN : EntryDisplayState.LOCKED;
+
+        return EntryDisplayState.UNLOCKED;
+    }
+
     private void renderEntries(PoseStack stack, int mouseX, int mouseY) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -176,7 +202,19 @@ public class BookCategoryScreen {
         stack.pushPose();
         stack.scale(this.currentZoom, this.currentZoom, 1.0f);
         for (var entry : this.category.getEntries().values()) {
-            //TODO: handle hidden entries + don't draw their tooltip
+            var displayState = this.getEntryDisplayState(entry);
+
+            if (displayState == EntryDisplayState.HIDDEN)
+                continue;
+
+            if(displayState == EntryDisplayState.LOCKED){
+                //Draw locked entries greyed out
+                RenderSystem.setShaderColor(0.2F, 0.2F, 0.2F, 1.0F);
+            } else if(this.isEntryHovered(entry, xOffset, yOffset, mouseX, mouseY)){
+                //Draw hovered entries slightly greyed out
+                RenderSystem.setShaderColor(0.8F, 0.8F, 0.8F, 1.0F);
+            }
+
             //TODO: select type of entry background
             int texX = 0; //select the entry background with this
             int texY = 0;
@@ -193,6 +231,9 @@ public class BookCategoryScreen {
             entry.getIcon().render(stack, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 5, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP + 5);
             stack.popPose();
 
+            //reset color to avoid greyed out carrying over
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+
             this.renderConnections(stack, entry, xOffset, yOffset);
         }
         stack.popPose();
@@ -207,8 +248,11 @@ public class BookCategoryScreen {
         float yOffset = this.getYOffset();
 
         for (var entry : this.category.getEntries().values()) {
-            //TODO: handle hidden entries + don't draw their tooltip
-            this.renderTooltip(stack, entry, xOffset, yOffset, mouseX, mouseY);
+            var displayState = this.getEntryDisplayState(entry);
+            if(displayState == EntryDisplayState.HIDDEN)
+                continue;
+
+            this.renderTooltip(stack, entry, displayState, xOffset, yOffset, mouseX, mouseY);
         }
     }
 
@@ -225,16 +269,23 @@ public class BookCategoryScreen {
                 && mouseY >= innerY && mouseY <= innerY + innerHeight;
     }
 
-    private void renderTooltip(PoseStack stack, BookEntry entry, float xOffset, float yOffset, int mouseX, int mouseY) {
+    private void renderTooltip(PoseStack stack, BookEntry entry, EntryDisplayState displayState, float xOffset, float yOffset, int mouseX, int mouseY) {
         //hovered?
         if (this.isEntryHovered(entry, xOffset, yOffset, mouseX, mouseY)) {
 
-            //draw name
             var tooltip = new ArrayList<Component>();
-            tooltip.add(Component.translatable(entry.getName()).withStyle(ChatFormatting.BOLD));
-            if (!entry.getDescription().isEmpty()) {
-                tooltip.add(Component.translatable(entry.getDescription()));
+
+            if(displayState == EntryDisplayState.LOCKED){
+                tooltip.addAll(entry.getCondition().getTooltip());
+            } else if(displayState == EntryDisplayState.UNLOCKED){
+                //add name in bold
+                tooltip.add(Component.translatable(entry.getName()).withStyle(ChatFormatting.BOLD));
+                //add description
+                if (!entry.getDescription().isEmpty()) {
+                    tooltip.add(Component.translatable(entry.getDescription()));
+                }
             }
+
             //draw description
             this.bookOverviewScreen.renderTooltip(stack, tooltip, Optional.empty(), mouseX, mouseY);
         }
@@ -245,6 +296,7 @@ public class BookCategoryScreen {
         RenderSystem.enableBlend();
 
         for (var parent : entry.getParents()) {
+
             this.bookOverviewScreen.getConnectionRenderer().setBlitOffset(this.bookOverviewScreen.getBlitOffset());
             stack.pushPose();
             stack.translate(xOffset, yOffset, 0);

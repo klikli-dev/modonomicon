@@ -6,10 +6,12 @@
 
 package com.klikli_dev.modonomicon.data;
 
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Condition;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
+import com.klikli_dev.modonomicon.book.conditions.*;
 import com.klikli_dev.modonomicon.book.page.BookMultiblockPage;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.book.page.BookTextPage;
@@ -29,11 +31,15 @@ public class LoaderRegistry {
     private static final Map<ResourceLocation, JsonLoader<? extends BookPage>> pageJsonLoaders = new HashMap<>();
     private static final Map<ResourceLocation, NetworkLoader<? extends BookPage>> pageNetworkLoaders = new HashMap<>();
 
+    private static final Map<ResourceLocation, JsonLoader<? extends BookCondition>> conditionJsonLoaders = new HashMap<>();
+
+    private static final Map<ResourceLocation, NetworkLoader<? extends BookCondition>> conditionNetworkLoaders = new HashMap<>();
     private static final Map<ResourceLocation, JsonLoader<? extends Multiblock>> multiblockJsonLoaders = new HashMap<>();
     private static final Map<ResourceLocation, NetworkLoader<? extends Multiblock>> multiblockNetworkLoaders = new HashMap<>();
 
     private static final Map<ResourceLocation, JsonLoader<? extends StateMatcher>> stateMatcherJsonLoaders = new HashMap<>();
     private static final Map<ResourceLocation, NetworkLoader<? extends StateMatcher>> stateMatcherNetworkLoaders = new HashMap<>();
+
 
     private static final Map<ResourceLocation, TriPredicate<BlockGetter, BlockPos, BlockState>> predicates = new HashMap<>();
 
@@ -42,6 +48,7 @@ public class LoaderRegistry {
      */
     public static void registerLoaders() {
         registerDefaultPageLoaders();
+        registerDefaultConditionLoaders();
         registerDefaultPredicates();
         registerDefaultStateMatcherLoaders();
         registerDefaultMultiblockLoaders();
@@ -50,6 +57,14 @@ public class LoaderRegistry {
     private static void registerDefaultPageLoaders() {
         registerPageLoader(Page.TEXT, BookTextPage::fromJson, BookTextPage::fromNetwork);
         registerPageLoader(Page.MULTIBLOCK, BookMultiblockPage::fromJson, BookMultiblockPage::fromNetwork);
+    }
+
+    private static void registerDefaultConditionLoaders() {
+        registerConditionLoader(Condition.ADVANCEMENT, BookAdvancementCondition::fromJson, BookAdvancementCondition::fromNetwork);
+        registerConditionLoader(Condition.OR, BookOrCondition::fromJson, BookOrCondition::fromNetwork);
+        registerConditionLoader(Condition.AND, BookAndCondition::fromJson, BookAndCondition::fromNetwork);
+        registerConditionLoader(Condition.TRUE, BookTrueCondition::fromJson, BookTrueCondition::fromNetwork);
+        registerConditionLoader(Condition.FALSE, BookFalseCondition::fromJson, BookFalseCondition::fromNetwork);
     }
 
     private static void registerDefaultMultiblockLoaders() {
@@ -78,6 +93,15 @@ public class LoaderRegistry {
                                           NetworkLoader<? extends BookPage> networkLoader) {
         pageJsonLoaders.put(id, jsonLoader);
         pageNetworkLoaders.put(id, networkLoader);
+    }
+
+    /**
+     * Call from common setup
+     */
+    public static void registerConditionLoader(ResourceLocation id, JsonLoader<? extends BookCondition> jsonLoader,
+                                          NetworkLoader<? extends BookCondition> networkLoader) {
+        conditionJsonLoaders.put(id, jsonLoader);
+        conditionNetworkLoaders.put(id, networkLoader);
     }
 
     /**
@@ -141,6 +165,22 @@ public class LoaderRegistry {
         var loader = pageNetworkLoaders.get(id);
         if (loader == null) {
             throw new IllegalArgumentException("No network loader registered for page type " + id);
+        }
+        return loader;
+    }
+
+    public static JsonLoader<? extends BookCondition> getConditionJsonLoader(ResourceLocation id) {
+        var loader = conditionJsonLoaders.get(id);
+        if (loader == null) {
+            throw new IllegalArgumentException("No json loader registered for condition type " + id);
+        }
+        return loader;
+    }
+
+    public static NetworkLoader<? extends BookCondition> getConditionNetworkLoader(ResourceLocation id) {
+        var loader = conditionNetworkLoaders.get(id);
+        if (loader == null) {
+            throw new IllegalArgumentException("No network loader registered for condition type " + id);
         }
         return loader;
     }

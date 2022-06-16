@@ -8,6 +8,8 @@ package com.klikli_dev.modonomicon.book;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.klikli_dev.modonomicon.book.conditions.BookCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookTrueCondition;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
@@ -30,11 +32,13 @@ public class BookEntry {
     protected BookIcon icon;
     protected int x;
     protected int y;
+    protected boolean hideWhileLocked;
     protected List<BookPage> pages;
+    protected BookCondition condition;
 
     //TODO: entry type for background/border texture
 
-    public BookEntry(ResourceLocation id, ResourceLocation categoryId, String name, String description, BookIcon icon, int x, int y, List<BookEntryParent> parents, List<BookPage> pages) {
+    public BookEntry(ResourceLocation id, ResourceLocation categoryId, String name, String description, BookIcon icon, int x, int y, boolean hideWhileLocked, BookCondition condition, List<BookEntryParent> parents, List<BookPage> pages) {
         this.id = id;
         this.categoryId = categoryId;
         this.name = name;
@@ -44,6 +48,8 @@ public class BookEntry {
         this.y = y;
         this.parents = parents;
         this.pages = pages;
+        this.condition = condition;
+        this.hideWhileLocked = hideWhileLocked;
     }
 
     public static BookEntry fromJson(ResourceLocation id, JsonObject json) {
@@ -53,6 +59,7 @@ public class BookEntry {
         var icon = BookIcon.fromString(GsonHelper.getAsString(json, "icon"));
         var x = GsonHelper.getAsInt(json, "x");
         var y = GsonHelper.getAsInt(json, "y");
+        var hideWhileLocked = GsonHelper.getAsBoolean(json, "hide_while_locked", false);
 
         var parentEntries = new ArrayList<BookEntryParent>();
 
@@ -75,7 +82,12 @@ public class BookEntry {
             }
         }
 
-        return new BookEntry(id, categoryId, name, description, icon, x, y, parentEntries, pages);
+        BookCondition condition = new BookTrueCondition(); //default to unlocked
+        if (json.has("condition")) {
+            condition = BookCondition.fromJson(json.getAsJsonObject("condition"));
+        }
+
+        return new BookEntry(id, categoryId, name, description, icon, x, y, hideWhileLocked, condition, parentEntries, pages);
     }
 
     public static BookEntry fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
@@ -85,6 +97,7 @@ public class BookEntry {
         var icon = BookIcon.fromNetwork(buffer);
         var x = buffer.readVarInt();
         var y = buffer.readVarInt();
+        var hideWhileLocked = buffer.readBoolean();
 
         var parentEntries = new ArrayList<BookEntryParent>();
 
@@ -102,7 +115,9 @@ public class BookEntry {
             pages.add(page);
         }
 
-        return new BookEntry(id, categoryId, name, description, icon, x, y, parentEntries, pages);
+        var condition = BookCondition.fromNetwork(buffer);
+
+        return new BookEntry(id, categoryId, name, description, icon, x, y, hideWhileLocked, condition, parentEntries, pages);
     }
 
     /**
@@ -148,6 +163,8 @@ public class BookEntry {
         this.icon.toNetwork(buffer);
         buffer.writeVarInt(this.x);
         buffer.writeVarInt(this.y);
+        buffer.writeBoolean(this.hideWhileLocked);
+
         buffer.writeVarInt(this.parents.size());
         for (var parent : this.parents) {
             parent.toNetwork(buffer);
@@ -158,6 +175,8 @@ public class BookEntry {
             buffer.writeResourceLocation(page.getType());
             page.toNetwork(buffer);
         }
+
+        BookCondition.toNetwork(this.condition, buffer);
     }
 
     public int getY() {
@@ -166,6 +185,10 @@ public class BookEntry {
 
     public int getX() {
         return this.x;
+    }
+
+    public boolean hideWhileLocked() {
+        return this.hideWhileLocked;
     }
 
     public ResourceLocation getId() {
@@ -214,5 +237,9 @@ public class BookEntry {
         }
 
         return -1;
+    }
+
+    public BookCondition getCondition() {
+        return this.condition;
     }
 }

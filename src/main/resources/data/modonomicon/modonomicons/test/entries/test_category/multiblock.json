@@ -13,5 +13,10 @@
       "text": "modonomicon.test.sections.test_category.multiblock.page0.text",
       "show_visualize_button": true
     }
+  ],
+  "parents": [
+    {
+      "entry": "modonomicon:test_category/test_entry"
+    }
   ]
 }

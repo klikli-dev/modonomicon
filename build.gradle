@@ -150,8 +150,8 @@ dependencies {
     minecraft "net.minecraftforge:forge:${forge_version}"
 
     //Jei
-    //TODO: re-enable once updated
-    //runtimeOnly fg.deobf("mezz.jei:jei-${jei_mc_version}:${jei_version}")
+    //TODO: Enable once jei is ready
+    //runtimeOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-forge:${jei_version}")
 
     //commonmark
     library "org.commonmark:commonmark:${commonmark_version}"

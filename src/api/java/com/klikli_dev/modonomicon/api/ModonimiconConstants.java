@@ -29,6 +29,16 @@ public class ModonimiconConstants {
             public static final ResourceLocation TEXT = new ResourceLocation(ModonomiconAPI.ID, "text");
             public static final ResourceLocation MULTIBLOCK = new ResourceLocation(ModonomiconAPI.ID, "multiblock");
         }
+
+        public static class Condition {
+            public static final ResourceLocation ADVANCEMENT = new ResourceLocation(ModonomiconAPI.ID, "advancement");
+            public static final ResourceLocation OR = new ResourceLocation(ModonomiconAPI.ID, "or");
+            public static final ResourceLocation AND = new ResourceLocation(ModonomiconAPI.ID, "and");
+
+            public static final ResourceLocation TRUE = new ResourceLocation(ModonomiconAPI.ID, "true");
+
+            public static final ResourceLocation FALSE = new ResourceLocation(ModonomiconAPI.ID, "false");
+        }
     }
 
     public static class Nbt {
@@ -67,6 +77,12 @@ public class ModonimiconConstants {
         public static class Subtitles {
             public static final String PREFIX = ModonomiconAPI.ID + ".subtitle.";
             public static final String TURN_PAGE = PREFIX + "turn_page";
+        }
+
+        public static class Tooltips {
+            public static final String PREFIX = ModonomiconAPI.ID + ".tooltip.";
+            public static final String CONDITION_PREFIX =PREFIX + ".condition.";
+            public static final String CONDITION_ADVANCEMENT = CONDITION_PREFIX + "advancement";
         }
     }
 }
