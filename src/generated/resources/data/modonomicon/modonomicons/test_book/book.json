@@ -1,6 +1,6 @@
 {
-  "name": "modonomicon.test_book.name",
-  "book_overview_texture": "modonomicon:textures/gui/book_overview.png",
   "book_content_texture": "modonomicon:textures/gui/book_content.png",
-  "default_title_color": 0
+  "book_overview_texture": "modonomicon:textures/gui/book_overview.png",
+  "default_title_color": 0,
+  "name": "modonomicon.test_book.name"
 }

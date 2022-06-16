@@ -1,18 +1,19 @@
 {
   "category": "modonomicon:test_cat",
-  "name": "modonomicon.test_cat.name",
   "description": "modonomicon.test_cat.description",
+  "hide_while_locked": false,
   "icon": "minecraft:apple",
-  "x": 0,
-  "y": 0,
+  "name": "modonomicon.test_cat.name",
   "pages": [
     {
       "type": "modonomicon:text",
       "anchor": "",
-      "title": "modonomicon.test_cat.page1.title",
-      "use_markdown_in_title": false,
       "show_title_separator": true,
-      "text": "modonomicon.test_cat.page1.text"
+      "text": "modonomicon.test_cat.page1.text",
+      "title": "modonomicon.test_cat.page1.title",
+      "use_markdown_in_title": false
     }
-  ]
+  ],
+  "x": 0,
+  "y": 0
 }

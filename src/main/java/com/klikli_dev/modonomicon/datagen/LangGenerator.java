@@ -127,6 +127,8 @@ public abstract class LangGenerator extends LanguageProvider {
                             [With link](entry://modonomicon:test/test_category/test_entry2@test_anchor)
                              """);
 
+            this.add("modonomicon.test.sections.test_category.test_entry_child.condition.tooltip",
+                    "This page cannot be unlocked!");
 
             this.add("modonomicon.test.sections.test_category.multiblock.page0.text",
                     """
