@@ -210,11 +210,11 @@ public class BookCategoryScreen {
             if(displayState == EntryDisplayState.LOCKED){
                 //Draw locked entries greyed out
                 RenderSystem.setShaderColor(0.2F, 0.2F, 0.2F, 1.0F);
+            } else if(this.isEntryHovered(entry, xOffset, yOffset, mouseX, mouseY)){
+                //Draw hovered entries slightly greyed out
+                RenderSystem.setShaderColor(0.8F, 0.8F, 0.8F, 1.0F);
             }
 
-            //TODO: detect entries that should be hidden, do not draw them or their tooltips
-            //TODO: detect entries that are locked but should be visible
-            //      draw them as greyed out and show their unlock tooltip instead of their regular one
             //TODO: select type of entry background
             int texX = 0; //select the entry background with this
             int texY = 0;
