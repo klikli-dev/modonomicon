@@ -59,7 +59,7 @@ public class BookEntry {
         var icon = BookIcon.fromString(GsonHelper.getAsString(json, "icon"));
         var x = GsonHelper.getAsInt(json, "x");
         var y = GsonHelper.getAsInt(json, "y");
-        var hideWhileLocked = GsonHelper.getAsBoolean(json, "hide_while_locked");
+        var hideWhileLocked = GsonHelper.getAsBoolean(json, "hide_while_locked", false);
 
         var parentEntries = new ArrayList<BookEntryParent>();
 
