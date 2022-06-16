@@ -138,7 +138,7 @@ public class BookCategory {
         this.icon.toNetwork(buffer);
         buffer.writeResourceLocation(this.background);
         buffer.writeResourceLocation(this.entryTextures);
-        this.condition.toNetwork(buffer);
+        BookCondition.toNetwork(this.condition, buffer);
     }
 
     public BookCondition getCondition() {

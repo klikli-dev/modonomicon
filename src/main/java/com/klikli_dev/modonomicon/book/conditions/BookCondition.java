@@ -51,8 +51,16 @@ public abstract class BookCondition {
         return loader.fromNetwork(buf);
     }
 
+    public static void toNetwork(BookCondition condition, FriendlyByteBuf buf) {
+        buf.writeResourceLocation(condition.getType());
+        condition.toNetwork(buf);
+    }
+
     public abstract ResourceLocation getType();
 
+    /**
+     * Always write type before calling, ideally call {@link #toNetwork(BookCondition, FriendlyByteBuf)}
+     */
     public abstract void toNetwork(FriendlyByteBuf buffer);
 
     public abstract boolean test(BookConditionContext context, Player player);

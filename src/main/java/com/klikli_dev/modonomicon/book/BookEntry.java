@@ -176,7 +176,7 @@ public class BookEntry {
             page.toNetwork(buffer);
         }
 
-        this.condition.toNetwork(buffer);
+        BookCondition.toNetwork(this.condition, buffer);
     }
 
     public int getY() {

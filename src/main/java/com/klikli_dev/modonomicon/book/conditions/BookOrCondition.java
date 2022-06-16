@@ -77,7 +77,7 @@ public class BookOrCondition extends BookCondition {
         }
         buffer.writeVarInt(this.children.length);
         for (var child : this.children) {
-            child.toNetwork(buffer);
+            BookCondition.toNetwork(child, buffer);
         }
     }
 
