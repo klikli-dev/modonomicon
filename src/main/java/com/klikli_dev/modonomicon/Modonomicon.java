@@ -8,19 +8,23 @@ package com.klikli_dev.modonomicon;
 
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
-import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.klikli_dev.modonomicon.client.ClientSetupEventHandler;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.config.CommonConfig;
 import com.klikli_dev.modonomicon.config.ServerConfig;
+import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
-import com.klikli_dev.modonomicon.client.ClientSetupEventHandler;
 import com.klikli_dev.modonomicon.item.ModonomiconCreativeModeTab;
 import com.klikli_dev.modonomicon.network.Networking;
-import com.klikli_dev.modonomicon.registry.*;
+import com.klikli_dev.modonomicon.registry.CapabilityRegistry;
+import com.klikli_dev.modonomicon.registry.ItemRegistry;
+import com.klikli_dev.modonomicon.registry.MenuRegistry;
+import com.klikli_dev.modonomicon.registry.SoundRegistry;
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -67,7 +71,7 @@ public class Modonomicon {
         //register event handlers for our capability & cap sync
         modEventBus.addListener(CapabilityRegistry::onRegisterCapabilities);
         MinecraftForge.EVENT_BUS.addListener(CapabilityRegistry::onPlayerClone);
-        MinecraftForge.EVENT_BUS.addListener(CapabilityRegistry::onAttachCapabilities);
+        MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, CapabilityRegistry::onAttachCapabilities);
         MinecraftForge.EVENT_BUS.addListener(CapabilityRegistry::onJoinWorld);
 
         //event handler for condition system
