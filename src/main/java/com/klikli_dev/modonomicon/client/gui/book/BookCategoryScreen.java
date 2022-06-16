@@ -249,7 +249,7 @@ public class BookCategoryScreen {
             if(displayState == EntryDisplayState.HIDDEN)
                 continue;
 
-            this.renderTooltip(stack, entry, xOffset, yOffset, mouseX, mouseY);
+            this.renderTooltip(stack, entry, displayState, xOffset, yOffset, mouseX, mouseY);
         }
     }
 
@@ -266,18 +266,25 @@ public class BookCategoryScreen {
                 && mouseY >= innerY && mouseY <= innerY + innerHeight;
     }
 
-    private void renderTooltip(PoseStack stack, BookEntry entry, float xOffset, float yOffset, int mouseX, int mouseY) {
+    private void renderTooltip(PoseStack stack, BookEntry entry, EntryDisplayState displayState, float xOffset, float yOffset, int mouseX, int mouseY) {
         //hovered?
         if (this.isEntryHovered(entry, xOffset, yOffset, mouseX, mouseY)) {
 
-            //TODO: handle locked entries tooltips
-
-            //draw name
             var tooltip = new ArrayList<Component>();
-            tooltip.add(Component.translatable(entry.getName()).withStyle(ChatFormatting.BOLD));
-            if (!entry.getDescription().isEmpty()) {
-                tooltip.add(Component.translatable(entry.getDescription()));
+
+            //TODO: handle locked entries tooltips
+            if(displayState == EntryDisplayState.LOCKED){
+                tooltip.addAll(entry.getCondition().getTooltip());
+            } else if(displayState == EntryDisplayState.UNLOCKED){
+                //add name in bold
+                tooltip.add(Component.translatable(entry.getName()).withStyle(ChatFormatting.BOLD));
+                //add description
+                if (!entry.getDescription().isEmpty()) {
+                    tooltip.add(Component.translatable(entry.getDescription()));
+                }
             }
+
+
             //draw description
             this.bookOverviewScreen.renderTooltip(stack, tooltip, Optional.empty(), mouseX, mouseY);
         }

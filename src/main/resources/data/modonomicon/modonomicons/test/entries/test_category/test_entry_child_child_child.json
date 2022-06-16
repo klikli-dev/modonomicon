@@ -1,16 +1,12 @@
 {
-  "name": "test entry child",
+  "name": "test entry child child",
   "icon": "minecraft:diamond",
   "x": 1,
   "y": 1,
   "category": "modonomicon:test_category",
-  "condition": {
-    "type": "modonomicon:false",
-    "tooltip": "modonomicon.test.sections.test_category.test_entry_child.condition.tooltip"
-  },
   "parents": [
     {
-      "entry": "modonomicon:test_category/test_entry"
+      "entry": "modonomicon:test_category/test_entry_child"
     }
   ],
   "pages": [
