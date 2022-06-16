@@ -32,12 +32,13 @@ public class BookEntry {
     protected BookIcon icon;
     protected int x;
     protected int y;
+    protected boolean hideWhileLocked;
     protected List<BookPage> pages;
     protected BookCondition condition;
 
     //TODO: entry type for background/border texture
 
-    public BookEntry(ResourceLocation id, ResourceLocation categoryId, String name, String description, BookIcon icon, int x, int y, BookCondition condition, List<BookEntryParent> parents, List<BookPage> pages) {
+    public BookEntry(ResourceLocation id, ResourceLocation categoryId, String name, String description, BookIcon icon, int x, int y, boolean hideWhileLocked, BookCondition condition, List<BookEntryParent> parents, List<BookPage> pages) {
         this.id = id;
         this.categoryId = categoryId;
         this.name = name;
@@ -48,6 +49,7 @@ public class BookEntry {
         this.parents = parents;
         this.pages = pages;
         this.condition = condition;
+        this.hideWhileLocked = hideWhileLocked;
     }
 
     public static BookEntry fromJson(ResourceLocation id, JsonObject json) {
@@ -57,6 +59,7 @@ public class BookEntry {
         var icon = BookIcon.fromString(GsonHelper.getAsString(json, "icon"));
         var x = GsonHelper.getAsInt(json, "x");
         var y = GsonHelper.getAsInt(json, "y");
+        var hideWhileLocked = GsonHelper.getAsBoolean(json, "hide_while_locked");
 
         var parentEntries = new ArrayList<BookEntryParent>();
 
@@ -84,7 +87,7 @@ public class BookEntry {
             condition = BookCondition.fromJson(json.getAsJsonObject("condition"));
         }
 
-        return new BookEntry(id, categoryId, name, description, icon, x, y, condition, parentEntries, pages);
+        return new BookEntry(id, categoryId, name, description, icon, x, y, hideWhileLocked, condition, parentEntries, pages);
     }
 
     public static BookEntry fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
@@ -94,6 +97,7 @@ public class BookEntry {
         var icon = BookIcon.fromNetwork(buffer);
         var x = buffer.readVarInt();
         var y = buffer.readVarInt();
+        var hideWhileLocked = buffer.readBoolean();
 
         var parentEntries = new ArrayList<BookEntryParent>();
 
@@ -113,7 +117,7 @@ public class BookEntry {
 
         var condition = BookCondition.fromNetwork(buffer);
 
-        return new BookEntry(id, categoryId, name, description, icon, x, y, condition, parentEntries, pages);
+        return new BookEntry(id, categoryId, name, description, icon, x, y, hideWhileLocked, condition, parentEntries, pages);
     }
 
     /**
@@ -159,6 +163,8 @@ public class BookEntry {
         this.icon.toNetwork(buffer);
         buffer.writeVarInt(this.x);
         buffer.writeVarInt(this.y);
+        buffer.writeBoolean(this.hideWhileLocked);
+
         buffer.writeVarInt(this.parents.size());
         for (var parent : this.parents) {
             parent.toNetwork(buffer);
@@ -179,6 +185,10 @@ public class BookEntry {
 
     public int getX() {
         return this.x;
+    }
+
+    public boolean hideWhileLocked() {
+        return this.hideWhileLocked;
     }
 
     public ResourceLocation getId() {

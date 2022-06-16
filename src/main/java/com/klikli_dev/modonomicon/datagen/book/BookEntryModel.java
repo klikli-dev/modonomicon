@@ -23,6 +23,7 @@ public class BookEntryModel {
     protected String icon;
     protected int x;
     protected int y;
+    protected boolean hideWhileLocked;
     protected List<BookPageModel> pages = new ArrayList<>();
 
     public static Builder builder() {
@@ -37,6 +38,8 @@ public class BookEntryModel {
         json.addProperty("icon", this.icon);
         json.addProperty("x", this.x);
         json.addProperty("y", this.y);
+        json.addProperty("hide_while_locked", this.hideWhileLocked);
+
         var pagesArray = new JsonArray();
         for (BookPageModel page : this.pages) {
             pagesArray.add(page.toJson());
@@ -81,6 +84,10 @@ public class BookEntryModel {
         return this.y;
     }
 
+    public boolean isHideWhileLocked() {
+        return this.hideWhileLocked;
+    }
+
     public List<BookPageModel> getPages() {
         return this.pages;
     }
@@ -94,6 +101,7 @@ public class BookEntryModel {
         protected String icon;
         protected int x;
         protected int y;
+        protected boolean hideWhileLocked;
         protected List<BookPageModel> pages = new ArrayList<>();
 
         private Builder() {
@@ -153,6 +161,11 @@ public class BookEntryModel {
             return this;
         }
 
+        public Builder hideWhileLocked(boolean hideWhileLocked) {
+            this.hideWhileLocked = hideWhileLocked;
+            return this;
+        }
+
         public Builder withPages(List<BookPageModel> pages) {
             this.pages = pages;
             return this;
@@ -175,8 +188,9 @@ public class BookEntryModel {
             bookEntryModel.name = this.name;
             bookEntryModel.icon = this.icon;
             bookEntryModel.x = this.x;
-            bookEntryModel.parents = this.parents;
             bookEntryModel.y = this.y;
+            bookEntryModel.hideWhileLocked = this.hideWhileLocked;
+            bookEntryModel.parents = this.parents;
             bookEntryModel.id = this.id;
             bookEntryModel.pages = this.pages;
             return bookEntryModel;
