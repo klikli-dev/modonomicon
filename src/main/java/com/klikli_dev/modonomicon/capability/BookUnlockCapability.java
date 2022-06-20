@@ -10,7 +10,10 @@ package com.klikli_dev.modonomicon.capability;
 
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookEntry;
+import com.klikli_dev.modonomicon.book.conditions.BookEntryUnlockedCondition;
+import com.klikli_dev.modonomicon.book.conditions.context.BookConditionCategoryContext;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
+import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.SyncBookUnlockCapabilityMessage;
@@ -30,10 +33,8 @@ import net.minecraftforge.event.entity.player.AdvancementEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
 
@@ -79,18 +80,53 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
      */
     public void update(ServerPlayer owner) {
         //loop through available books and update unlocked pages and categories
+
+        List<Entry<BookEntryUnlockedCondition, BookConditionContext>> unlockedConditions = new ArrayList<>();
+
         for (var book : BookDataManager.get().getBooks().values()) {
             for (var category : book.getCategories().values()) {
 
-                if (category.getCondition().test(BookConditionContext.of(book, category), owner))
+                var categoryContext = BookConditionContext.of(book, category);
+                if (category.getCondition().test(categoryContext, owner))
                     this.unlockedCategories.computeIfAbsent(book.getId(), k -> new HashSet<>()).add(category.getId());
+                else if(category.getCondition() instanceof BookEntryUnlockedCondition bookEntryUnlockedCondition)
+                    unlockedConditions.add(Map.entry(bookEntryUnlockedCondition, categoryContext));
 
                 for (var entry : category.getEntries().values()) {
-                    if (entry.getCondition().test(BookConditionContext.of(book, entry), owner))
+                    var entryContext = BookConditionContext.of(book, entry);
+                    if (entry.getCondition().test(entryContext, owner))
                         this.unlockedEntries.computeIfAbsent(book.getId(), k -> new HashSet<>()).add(entry.getId());
+                    else if (entry.getCondition() instanceof BookEntryUnlockedCondition bookEntryUnlockedCondition)
+                        unlockedConditions.add(Map.entry(bookEntryUnlockedCondition, entryContext));
                 }
             }
         }
+
+        boolean unlockedAny = false;
+        do{
+            var iter = unlockedConditions.iterator();
+            while(iter.hasNext()){
+                var condition = iter.next();
+                //check if condition is now unlocked
+                if(condition.getKey().test(condition.getValue(), owner)){
+
+                    //then store the unlock result
+                    if(condition.getValue() instanceof BookConditionEntryContext entryContext){
+                        this.unlockedEntries.computeIfAbsent(entryContext.getBook().getId(), k -> new HashSet<>()).add(entryContext.getEntry().getId());
+                    } else if (condition.getValue() instanceof BookConditionCategoryContext categoryContext){
+                        this.unlockedCategories.computeIfAbsent(categoryContext.getBook().getId(), k -> new HashSet<>()).add(categoryContext.getCategory().getId());
+                    }
+
+                    //make sure to iterate again now -> could unlock further conditions depending on this unlock
+                    unlockedAny = true;
+
+                    //remove the condition from the list, so it is not checked again
+                    iter.remove();
+                }
+            }
+
+            //now repeat until we no longer unlock anything
+        }while(unlockedAny);
     }
 
     public void sync(ServerPlayer player) {

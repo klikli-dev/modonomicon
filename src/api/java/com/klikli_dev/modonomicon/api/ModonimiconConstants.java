@@ -38,6 +38,8 @@ public class ModonimiconConstants {
             public static final ResourceLocation TRUE = new ResourceLocation(ModonomiconAPI.ID, "true");
 
             public static final ResourceLocation FALSE = new ResourceLocation(ModonomiconAPI.ID, "false");
+
+            public static final ResourceLocation ENTRY_UNLOCKED = new ResourceLocation(ModonomiconAPI.ID, "entry_unlocked");
         }
     }
 
@@ -83,6 +85,7 @@ public class ModonimiconConstants {
             public static final String PREFIX = ModonomiconAPI.ID + ".tooltip.";
             public static final String CONDITION_PREFIX =PREFIX + ".condition.";
             public static final String CONDITION_ADVANCEMENT = CONDITION_PREFIX + "advancement";
+            public static final String CONDITION_ENTRY_UNLOCKED = CONDITION_PREFIX + "entry_unlocked";
         }
     }
 }

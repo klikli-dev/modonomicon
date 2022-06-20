@@ -64,6 +64,7 @@ public abstract class LangGenerator extends LanguageProvider {
 
             //Tooltip
             this.add(Tooltips.CONDITION_ADVANCEMENT, "Requires Advancement: %s");
+            this.add(Tooltips.CONDITION_ENTRY_UNLOCKED, "Requires unlocked Entry: %s");
 
 
             //sounds
