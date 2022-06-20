@@ -39,7 +39,12 @@ import java.util.Map.Entry;
 public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
 
     /**
-     * Map Book ID to unlocked pages IDs
+     * Map Book ID to read entry IDs
+     */
+    public Map<ResourceLocation, Set<ResourceLocation>> readEntries = new HashMap<>();
+
+    /**
+     * Map Book ID to unlocked entry IDs
      */
     public Map<ResourceLocation, Set<ResourceLocation>> unlockedEntries = new HashMap<>();
 
@@ -54,6 +59,10 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
 
     public static boolean isUnlockedFor(Player player, BookEntry entry) {
         return player.getCapability(CapabilityRegistry.BOOK_UNLOCK).map(c -> c.isUnlocked(entry)).orElse(false);
+    }
+
+    public static boolean isReadFor(Player player, BookEntry entry) {
+        return player.getCapability(CapabilityRegistry.BOOK_UNLOCK).map(c -> c.isRead(entry)).orElse(false);
     }
 
     public static void onAdvancement(final AdvancementEvent event) {
@@ -133,6 +142,10 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
         Networking.sendTo(player, new SyncBookUnlockCapabilityMessage(this));
     }
 
+    public boolean isRead(BookEntry entry) {
+        return this.readEntries.getOrDefault(entry.getBook().getId(), new HashSet<>()).contains(entry.getId());
+    }
+
     public boolean isUnlocked(BookEntry entry) {
         return this.unlockedEntries.getOrDefault(entry.getBook().getId(), new HashSet<>()).contains(entry.getId());
     }
@@ -161,21 +174,38 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
             unlockedCategoriesByBook.add(bookCompound);
         });
 
-        var unlockedPagesByBook = new ListTag();
-        compound.put("unlocked_entries", unlockedPagesByBook);
-        this.unlockedEntries.forEach((bookId, pageId) -> {
+        var unlockedEntriesByBook = new ListTag();
+        compound.put("unlocked_entries", unlockedEntriesByBook);
+        this.unlockedEntries.forEach((bookId, entries) -> {
             var bookCompound = new CompoundTag();
-            var unlockedPagesList = new ListTag();
+            var unlockedEntriesList = new ListTag();
             bookCompound.putString("book_id", bookId.toString());
-            bookCompound.put("unlocked_entries", unlockedPagesList);
+            bookCompound.put("unlocked_entries", unlockedEntriesList);
 
-            pageId.forEach(categoryId -> {
-                var categoryCompound = new CompoundTag();
-                categoryCompound.putString("page_id", categoryId.toString());
-                unlockedPagesList.add(categoryCompound);
+            entries.forEach(entryId -> {
+                var entryCompound = new CompoundTag();
+                entryCompound.putString("entry_id", entryId.toString());
+                unlockedEntriesList.add(entryCompound);
             });
 
-            unlockedPagesByBook.add(bookCompound);
+            unlockedEntriesByBook.add(bookCompound);
+        });
+
+        var readEntriesByBook = new ListTag();
+        compound.put("read_entries", readEntriesByBook);
+        this.readEntries.forEach((bookId, entries) -> {
+            var bookCompound = new CompoundTag();
+            var readEntriesList = new ListTag();
+            bookCompound.putString("book_id", bookId.toString());
+            bookCompound.put("read_entries", readEntriesList);
+
+            entries.forEach(entryId -> {
+                var entryCompound = new CompoundTag();
+                entryCompound.putString("entry_id", entryId.toString());
+                readEntriesByBook.add(entryCompound);
+            });
+
+            readEntriesByBook.add(bookCompound);
         });
 
         return compound;
@@ -206,15 +236,32 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
         for (var bookEntry : unlockedEntriesByBook) {
             if (bookEntry instanceof CompoundTag bookCompound) {
                 var bookId = ResourceLocation.tryParse(bookCompound.getString("book_id"));
-                var unlockedPagesList = bookCompound.getList("unlocked_entries", Tag.TAG_COMPOUND);
-                var pages = new HashSet<ResourceLocation>();
-                for (var pageEntry : unlockedPagesList) {
-                    if (pageEntry instanceof CompoundTag pageCompound) {
-                        var pageId = ResourceLocation.tryParse(pageCompound.getString("page_id"));
-                        pages.add(pageId);
+                var unlockedEntriesList = bookCompound.getList("unlocked_entries", Tag.TAG_COMPOUND);
+                var entries = new HashSet<ResourceLocation>();
+                for (var entry : unlockedEntriesList) {
+                    if (entry instanceof CompoundTag pageCompound) {
+                        var entryId = ResourceLocation.tryParse(pageCompound.getString("entry_id"));
+                        entries.add(entryId);
                     }
                 }
-                this.unlockedEntries.put(bookId, pages);
+                this.unlockedEntries.put(bookId, entries);
+            }
+        }
+
+        this.readEntries.clear();
+        var readEntriesByBook = nbt.getList("read_entries", Tag.TAG_COMPOUND);
+        for (var bookEntry : readEntriesByBook) {
+            if (bookEntry instanceof CompoundTag bookCompound) {
+                var bookId = ResourceLocation.tryParse(bookCompound.getString("book_id"));
+                var readEntriesList = bookCompound.getList("read_entries", Tag.TAG_COMPOUND);
+                var entries = new HashSet<ResourceLocation>();
+                for (var entry : readEntriesList) {
+                    if (entry instanceof CompoundTag pageCompound) {
+                        var entryId = ResourceLocation.tryParse(pageCompound.getString("entry_id"));
+                        entries.add(entryId);
+                    }
+                }
+                this.readEntries.put(bookId, entries);
             }
         }
     }
