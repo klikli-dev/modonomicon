@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.network;
 
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.network.messages.BookEntryReadMessage;
 import com.klikli_dev.modonomicon.network.messages.SyncBookUnlockCapabilityMessage;
 import com.klikli_dev.modonomicon.network.messages.SyncBookDataMessage;
 import com.klikli_dev.modonomicon.network.messages.SyncMultiblockDataMessage;
@@ -50,6 +51,12 @@ public class Networking {
                 SyncBookUnlockCapabilityMessage.class,
                 SyncBookUnlockCapabilityMessage::encode,
                 SyncBookUnlockCapabilityMessage::new,
+                MessageHandler::handle);
+
+        INSTANCE.registerMessage(nextID(),
+                BookEntryReadMessage.class,
+                BookEntryReadMessage::encode,
+                BookEntryReadMessage::new,
                 MessageHandler::handle);
     }
 

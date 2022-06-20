@@ -8,9 +8,13 @@ package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookEntry;
+import com.klikli_dev.modonomicon.book.conditions.BookEntryReadCondition;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
 import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
 import com.klikli_dev.modonomicon.config.ClientConfig;
+import com.klikli_dev.modonomicon.network.Networking;
+import com.klikli_dev.modonomicon.network.messages.BookEntryReadMessage;
+import com.klikli_dev.modonomicon.registry.CapabilityRegistry;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
@@ -138,6 +142,11 @@ public class BookCategoryScreen {
     public BookContentScreen openEntry(BookEntry entry) {
         var bookContentScreen = new BookContentScreen(this.bookOverviewScreen, entry);
         ForgeHooksClient.pushGuiLayer(Minecraft.getInstance(), bookContentScreen);
+
+        if(!BookUnlockCapability.isReadFor(Minecraft.getInstance().player, entry)){
+            Networking.sendToServer(new BookEntryReadMessage(entry.getBook().getId(), entry.getId()));
+        }
+
         return bookContentScreen;
     }
 

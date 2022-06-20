@@ -142,6 +142,18 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
         Networking.sendTo(player, new SyncBookUnlockCapabilityMessage(this));
     }
 
+    /**
+     * @return true if entry is now read, false if it was already read before.
+     */
+    public boolean read(BookEntry entry){
+        if(this.isRead(entry))
+            return false;
+
+        this.readEntries.computeIfAbsent(entry.getBook().getId(), k -> new HashSet<>()).add(entry.getId());
+
+        return true;
+    }
+
     public boolean isRead(BookEntry entry) {
         return this.readEntries.getOrDefault(entry.getBook().getId(), new HashSet<>()).contains(entry.getId());
     }
