@@ -9,7 +9,6 @@ package com.klikli_dev.modonomicon.book.conditions;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Condition;
-import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -31,14 +30,6 @@ public class BookAndCondition extends BookCondition {
         if (children == null || children.length == 0)
             throw new IllegalArgumentException("AndCondition must have at least one child.");
         this.children = children;
-
-        this.tooltips = new ArrayList<>();
-        if(component != null)
-            this.tooltips.add(component);
-
-        for (var child : children) {
-            this.tooltips.addAll(child.getTooltip());
-        }
     }
 
     public static BookAndCondition fromJson(JsonObject json) {
@@ -70,7 +61,7 @@ public class BookAndCondition extends BookCondition {
     @Override
     public void toNetwork(FriendlyByteBuf buffer) {
         buffer.writeBoolean(this.tooltip != null);
-        if(this.tooltip != null){
+        if (this.tooltip != null) {
             buffer.writeComponent(this.tooltip);
         }
         buffer.writeVarInt(this.children.length);
@@ -89,7 +80,17 @@ public class BookAndCondition extends BookCondition {
     }
 
     @Override
-    public List<Component> getTooltip() {
-        return this.tooltips;
+    public List<Component> getTooltip(BookConditionContext context) {
+        if (this.tooltips == null) {
+            this.tooltips = new ArrayList<>();
+            if (this.tooltip != null)
+                this.tooltips.add(this.tooltip);
+            for (var child : this.children) {
+                this.tooltips.addAll(child.getTooltip(context));
+            }
+        }
+
+
+        return this.tooltips != null ? this.tooltips : List.of();
     }
 }

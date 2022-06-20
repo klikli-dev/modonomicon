@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookEntry;
+import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
 import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -276,7 +277,7 @@ public class BookCategoryScreen {
             var tooltip = new ArrayList<Component>();
 
             if(displayState == EntryDisplayState.LOCKED){
-                tooltip.addAll(entry.getCondition().getTooltip());
+                tooltip.addAll(entry.getCondition().getTooltip(BookConditionEntryContext.of(this.bookOverviewScreen.getBook(), entry)));
             } else if(displayState == EntryDisplayState.UNLOCKED){
                 //add name in bold
                 tooltip.add(Component.translatable(entry.getName()).withStyle(ChatFormatting.BOLD));
