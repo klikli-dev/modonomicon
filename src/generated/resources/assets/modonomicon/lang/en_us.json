@@ -28,5 +28,7 @@
   "modonomicon.test.sections.test_category.test_entry_child.page2.text": "And this is our page three.   \n[With link](entry://modonomicon:test/test_category/test_entry@test_anchor)\n",
   "modonomicon.test.sections.test_category.test_entry_child.page_with_error.text": "Page with invalid link!   \n[With link](entry://modonomicon:test/test_category/test_entry2@test_anchor)\n",
   "modonomicon.test_book.title": "Test Book",
-  "modonomicon.tooltip..condition.advancement": "Requires Advancement: %s"
+  "modonomicon.tooltip..condition.advancement": "Requires Advancement: %s",
+  "modonomicon.tooltip..condition.entry_read": "Requires read Entry: %s",
+  "modonomicon.tooltip..condition.entry_unlocked": "Requires unlocked Entry: %s"
 }

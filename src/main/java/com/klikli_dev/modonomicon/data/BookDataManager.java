@@ -12,9 +12,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data;
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Condition;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookEntry;
+import com.klikli_dev.modonomicon.book.conditions.BookAndCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookEntryReadCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookTrueCondition;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.network.Message;
@@ -124,6 +128,25 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         }
     }
 
+    public void addReadConditions(){
+        for (var book : this.books.values()) {
+            if(book.autoAddReadConditions()){
+                for (var entry : book.getEntries().values()) {
+                    if(entry.getCondition().getType().equals(Condition.TRUE)){
+                        if(entry.getParents().size() == 1){
+                            entry.setCondition(new BookEntryReadCondition(null, entry.getParents().get(0).getEntryId()));
+                        } else if(entry.getParents().size() > 1){
+                            var conditions = entry.getParents().stream().map(parent ->
+                                    new BookEntryReadCondition(null, parent.getEntryId())).toList();
+                            var andCondition = new BookAndCondition(null, conditions.toArray(new BookEntryReadCondition[0]));
+                            entry.setCondition(andCondition);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public boolean tryBuildBooks() {
         if (!this.booksBuilt && this.loaded && MultiblockDataManager.get().isLoaded()) {
             Modonomicon.LOGGER.info("Building books & pre-rendering markdown ...");
@@ -137,6 +160,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
     public void postLoad() {
         this.tryBuildBooks();
+        this.addReadConditions();
     }
 
     protected void onLoadingComplete() {
