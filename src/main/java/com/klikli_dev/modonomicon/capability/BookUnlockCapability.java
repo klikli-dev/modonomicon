@@ -19,10 +19,13 @@ import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.SyncBookUnlockCapabilityMessage;
 import com.klikli_dev.modonomicon.registry.CapabilityRegistry;
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.Unpooled;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -53,6 +56,17 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
      * Map Book ID to unlocked categories IDs
      */
     public Map<ResourceLocation, Set<ResourceLocation>> unlockedCategories = new HashMap<>();
+
+    public static String getUnlockCodeFor(Player player, Book book) {
+        return player.getCapability(CapabilityRegistry.BOOK_UNLOCK).map(c -> c.getUnlockCode(book)).orElse("No unlocked content.");
+    }
+
+    public static void applyUnlockCodeFor(ServerPlayer player, String unlockCode) {
+        player.getCapability(CapabilityRegistry.BOOK_UNLOCK).ifPresent(c -> {
+            c.applyUnlockCode(unlockCode);
+            c.sync(player);
+        });
+    }
 
     public static void updateAndSyncFor(ServerPlayer player) {
         player.getCapability(CapabilityRegistry.BOOK_UNLOCK).ifPresent(capability -> {
@@ -191,6 +205,51 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
         books.addAll(this.unlockedEntries.keySet());
         books.addAll(this.unlockedCategories.keySet());
         return books.stream().toList();
+    }
+
+    public String getUnlockCode(Book book){
+        var buf = new FriendlyByteBuf(Unpooled.buffer());
+        buf.writeResourceLocation(book.getId());
+
+        var unlockedCategories = this.unlockedCategories.getOrDefault(book.getId(), Set.of());
+        buf.writeVarInt(unlockedCategories.size());
+        unlockedCategories.forEach(buf::writeResourceLocation);
+
+        var unlockedEntries = this.unlockedEntries.getOrDefault(book.getId(), Set.of());
+        buf.writeVarInt(unlockedEntries.size());
+        unlockedEntries.forEach(buf::writeResourceLocation);
+
+        var readEntries = this.readEntries.getOrDefault(book.getId(), Set.of());
+        buf.writeVarInt(readEntries.size());
+        readEntries.forEach(buf::writeResourceLocation);
+
+        return Base64.getEncoder().encodeToString(buf.array());
+    }
+
+    public void applyUnlockCode(String code){
+        var buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(Base64.getDecoder().decode(code)));
+        var bookId = buf.readResourceLocation();
+        var unlockedCategories = new HashSet<ResourceLocation>();
+        var unlockedEntries = new HashSet<ResourceLocation>();
+        var readEntries = new HashSet<ResourceLocation>();
+        var unlockedCategoriesSize = buf.readVarInt();
+        for (var i = 0; i < unlockedCategoriesSize; i++) {
+            unlockedCategories.add(buf.readResourceLocation());
+        }
+
+        var unlockedEntriesSize = buf.readVarInt();
+        for (var i = 0; i < unlockedEntriesSize; i++) {
+            unlockedEntries.add(buf.readResourceLocation());
+        }
+
+        var readEntriesSize = buf.readVarInt();
+        for (var i = 0; i < readEntriesSize; i++) {
+            readEntries.add(buf.readResourceLocation());
+        }
+
+        this.unlockedCategories.put(bookId, unlockedCategories);
+        this.unlockedEntries.put(bookId, unlockedEntries);
+        this.readEntries.put(bookId, readEntries);
     }
 
     @Override
