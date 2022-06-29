@@ -90,5 +90,14 @@ public class ModonimiconConstants {
             public static final String CONDITION_ENTRY_UNLOCKED = CONDITION_PREFIX + "entry_unlocked";
             public static final String CONDITION_ENTRY_READ = CONDITION_PREFIX + "entry_read";
         }
+
+        public static class Command {
+            public static final String PREFIX = ModonomiconAPI.ID + ".command.";
+
+            public static final String ERROR_PREFIX = PREFIX + ".error.";
+            public static final String SUCCESS_PREFIX = PREFIX + ".error.";
+            public static final String ERROR_UNKNOWN_BOOK = ERROR_PREFIX + "unknown_book";
+            public static final String SUCCESS_RESET_BOOK = SUCCESS_PREFIX + "reset_Book";
+        }
     }
 }

@@ -8,6 +8,7 @@
 
 package com.klikli_dev.modonomicon.capability;
 
+import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.conditions.BookEntryUnlockedCondition;
@@ -53,6 +54,21 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
      */
     public Map<ResourceLocation, Set<ResourceLocation>> unlockedCategories = new HashMap<>();
 
+    public static void updateAndSyncFor(ServerPlayer player) {
+        player.getCapability(CapabilityRegistry.BOOK_UNLOCK).ifPresent(capability -> {
+            capability.update(player);
+            capability.sync(player);
+        });
+    }
+
+    public static List<ResourceLocation> getBooksFor(Player player) {
+        return player.getCapability(CapabilityRegistry.BOOK_UNLOCK).map(c -> c.getBooks()).orElse(Collections.emptyList());
+    }
+
+    public static void resetFor(Player player, Book book) {
+        player.getCapability(CapabilityRegistry.BOOK_UNLOCK).ifPresent(c -> c.reset(book));
+    }
+
     public static boolean isUnlockedFor(Player player, BookCategory category) {
         return player.getCapability(CapabilityRegistry.BOOK_UNLOCK).map(c -> c.isUnlocked(category)).orElse(false);
     }
@@ -67,10 +83,7 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
 
     public static void onAdvancement(final AdvancementEvent event) {
         if (event.getPlayer() instanceof ServerPlayer serverplayer) {
-            serverplayer.getCapability(CapabilityRegistry.BOOK_UNLOCK).ifPresent(capability -> {
-                capability.update(serverplayer);
-                capability.sync(serverplayer);
-            });
+            updateAndSyncFor(serverplayer);
         }
     }
 
@@ -98,7 +111,7 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
                 var categoryContext = BookConditionContext.of(book, category);
                 if (category.getCondition().test(categoryContext, owner))
                     this.unlockedCategories.computeIfAbsent(book.getId(), k -> new HashSet<>()).add(category.getId());
-                else if(category.getCondition() instanceof BookEntryUnlockedCondition bookEntryUnlockedCondition)
+                else if (category.getCondition() instanceof BookEntryUnlockedCondition bookEntryUnlockedCondition)
                     unlockedConditions.add(Map.entry(bookEntryUnlockedCondition, categoryContext));
 
                 for (var entry : category.getEntries().values()) {
@@ -112,17 +125,17 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
         }
 
         boolean unlockedAny = false;
-        do{
+        do {
             var iter = unlockedConditions.iterator();
-            while(iter.hasNext()){
+            while (iter.hasNext()) {
                 var condition = iter.next();
                 //check if condition is now unlocked
-                if(condition.getKey().test(condition.getValue(), owner)){
+                if (condition.getKey().test(condition.getValue(), owner)) {
 
                     //then store the unlock result
-                    if(condition.getValue() instanceof BookConditionEntryContext entryContext){
+                    if (condition.getValue() instanceof BookConditionEntryContext entryContext) {
                         this.unlockedEntries.computeIfAbsent(entryContext.getBook().getId(), k -> new HashSet<>()).add(entryContext.getEntry().getId());
-                    } else if (condition.getValue() instanceof BookConditionCategoryContext categoryContext){
+                    } else if (condition.getValue() instanceof BookConditionCategoryContext categoryContext) {
                         this.unlockedCategories.computeIfAbsent(categoryContext.getBook().getId(), k -> new HashSet<>()).add(categoryContext.getCategory().getId());
                     }
 
@@ -135,7 +148,7 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
             }
 
             //now repeat until we no longer unlock anything
-        }while(unlockedAny);
+        } while (unlockedAny);
     }
 
     public void sync(ServerPlayer player) {
@@ -145,8 +158,8 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
     /**
      * @return true if entry is now read, false if it was already read before.
      */
-    public boolean read(BookEntry entry){
-        if(this.isRead(entry))
+    public boolean read(BookEntry entry) {
+        if (this.isRead(entry))
             return false;
 
         this.readEntries.computeIfAbsent(entry.getBook().getId(), k -> new HashSet<>()).add(entry.getId());
@@ -164,6 +177,20 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
 
     public boolean isUnlocked(BookCategory category) {
         return this.unlockedCategories.getOrDefault(category.getBook().getId(), new HashSet<>()).contains(category.getId());
+    }
+
+    public void reset(Book book) {
+        this.readEntries.remove(book.getId());
+        this.unlockedEntries.remove(book.getId());
+        this.unlockedCategories.remove(book.getId());
+    }
+
+    public List<ResourceLocation> getBooks(){
+        var books = new HashSet<ResourceLocation>();
+        books.addAll(this.readEntries.keySet());
+        books.addAll(this.unlockedEntries.keySet());
+        books.addAll(this.unlockedCategories.keySet());
+        return books.stream().toList();
     }
 
     @Override

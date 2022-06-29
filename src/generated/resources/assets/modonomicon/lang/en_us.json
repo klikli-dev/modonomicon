@@ -3,6 +3,8 @@
   "advancements.modonomicon.root.title": "Modonomicon",
   "item.modonomicon.modonomicon": "Modonomicon",
   "itemGroup.modonomicon": "Modonomicon",
+  "modonomicon.command..error.reset_Book": "Successfuly reset book: %s",
+  "modonomicon.command..error.unknown_book": "Unknown book: %s",
   "modonomicon.gui.button.exit": "Exit",
   "modonomicon.gui.button.next_page": "Next Page",
   "modonomicon.gui.button.previous_page": "Previous Page",

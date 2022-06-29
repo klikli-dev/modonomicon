@@ -8,10 +8,7 @@ package com.klikli_dev.modonomicon.datagen;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Gui;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Multiblock;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Subtitles;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Tooltips;
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.*;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -67,6 +64,9 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(Tooltips.CONDITION_ENTRY_UNLOCKED, "Requires unlocked Entry: %s");
             this.add(Tooltips.CONDITION_ENTRY_READ, "Requires read Entry: %s");
 
+            //Commands
+            this.add(Command.ERROR_UNKNOWN_BOOK, "Unknown book: %s");
+            this.add(Command.SUCCESS_RESET_BOOK, "Successfuly reset book: %s");
 
             //sounds
             this.add(Subtitles.TURN_PAGE, "Turn Page");

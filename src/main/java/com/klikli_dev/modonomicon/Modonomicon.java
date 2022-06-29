@@ -18,10 +18,7 @@ import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
 import com.klikli_dev.modonomicon.item.ModonomiconCreativeModeTab;
 import com.klikli_dev.modonomicon.network.Networking;
-import com.klikli_dev.modonomicon.registry.CapabilityRegistry;
-import com.klikli_dev.modonomicon.registry.ItemRegistry;
-import com.klikli_dev.modonomicon.registry.MenuRegistry;
-import com.klikli_dev.modonomicon.registry.SoundRegistry;
+import com.klikli_dev.modonomicon.registry.*;
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -65,6 +62,7 @@ public class Modonomicon {
         modEventBus.addListener(this::onCommonSetup);
         modEventBus.addListener(this::onServerSetup);
         MinecraftForge.EVENT_BUS.addListener(this::onAddReloadListener);
+        MinecraftForge.EVENT_BUS.addListener(CommandRegistry::registerCommands);
         MinecraftForge.EVENT_BUS.addListener(BookDataManager.get()::onDatapackSync);
         MinecraftForge.EVENT_BUS.addListener(MultiblockDataManager.get()::onDatapackSync);
 
