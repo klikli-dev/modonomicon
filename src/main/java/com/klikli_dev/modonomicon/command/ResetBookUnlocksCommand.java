@@ -26,11 +26,11 @@ import net.minecraft.network.chat.Component;
 
 public class ResetBookUnlocksCommand implements com.mojang.brigadier.Command<CommandSourceStack> {
 
-    private static final DynamicCommandExceptionType ERROR_UNKNOWN_BOOK = new DynamicCommandExceptionType((message) -> {
+    public static final DynamicCommandExceptionType ERROR_UNKNOWN_BOOK = new DynamicCommandExceptionType((message) -> {
         return Component.translatable(Command.ERROR_UNKNOWN_BOOK, message);
     });
 
-    private static final SuggestionProvider<CommandSourceStack> SUGGEST_BOOK = (context, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_BOOK = (context, builder) -> {
         var books = BookUnlockCapability.getBooksFor(context.getSource().getPlayer());
         return SharedSuggestionProvider.suggestResource(books, builder);
     };

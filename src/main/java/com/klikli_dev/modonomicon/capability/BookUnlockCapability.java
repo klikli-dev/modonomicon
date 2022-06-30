@@ -61,11 +61,15 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
         return player.getCapability(CapabilityRegistry.BOOK_UNLOCK).map(c -> c.getUnlockCode(book)).orElse("No unlocked content.");
     }
 
-    public static void applyUnlockCodeFor(ServerPlayer player, String unlockCode) {
-        player.getCapability(CapabilityRegistry.BOOK_UNLOCK).ifPresent(c -> {
-            c.applyUnlockCode(unlockCode);
-            c.sync(player);
-        });
+    public static Book applyUnlockCodeFor(ServerPlayer player, String unlockCode) {
+        return player.getCapability(CapabilityRegistry.BOOK_UNLOCK).map(c -> {
+            var book = c.applyUnlockCode(unlockCode);
+            if(book != null) {
+                c.sync(player);
+
+            }
+            return book;
+        }).orElse(null);
     }
 
     public static void updateAndSyncFor(ServerPlayer player) {
@@ -223,33 +227,48 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
         buf.writeVarInt(readEntries.size());
         readEntries.forEach(buf::writeResourceLocation);
 
-        return Base64.getEncoder().encodeToString(buf.array());
+        byte[] bytes = new byte[buf.readableBytes()];
+        buf.readBytes(bytes);
+
+        return Base64.getEncoder().encodeToString(bytes);
     }
 
-    public void applyUnlockCode(String code){
-        var buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(Base64.getDecoder().decode(code)));
-        var bookId = buf.readResourceLocation();
-        var unlockedCategories = new HashSet<ResourceLocation>();
-        var unlockedEntries = new HashSet<ResourceLocation>();
-        var readEntries = new HashSet<ResourceLocation>();
-        var unlockedCategoriesSize = buf.readVarInt();
-        for (var i = 0; i < unlockedCategoriesSize; i++) {
-            unlockedCategories.add(buf.readResourceLocation());
-        }
+    public Book applyUnlockCode(String code){
+        try {
+            var decoded = Base64.getDecoder().decode(code);
+            var buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(decoded));
+            var bookId = buf.readResourceLocation();
 
-        var unlockedEntriesSize = buf.readVarInt();
-        for (var i = 0; i < unlockedEntriesSize; i++) {
-            unlockedEntries.add(buf.readResourceLocation());
-        }
+            var book = BookDataManager.get().getBook(bookId);
+            if(book == null)
+                return null;
 
-        var readEntriesSize = buf.readVarInt();
-        for (var i = 0; i < readEntriesSize; i++) {
-            readEntries.add(buf.readResourceLocation());
-        }
+            var unlockedCategories = new HashSet<ResourceLocation>();
+            var unlockedEntries = new HashSet<ResourceLocation>();
+            var readEntries = new HashSet<ResourceLocation>();
+            var unlockedCategoriesSize = buf.readVarInt();
+            for (var i = 0; i < unlockedCategoriesSize; i++) {
+                unlockedCategories.add(buf.readResourceLocation());
+            }
 
-        this.unlockedCategories.put(bookId, unlockedCategories);
-        this.unlockedEntries.put(bookId, unlockedEntries);
-        this.readEntries.put(bookId, readEntries);
+            var unlockedEntriesSize = buf.readVarInt();
+            for (var i = 0; i < unlockedEntriesSize; i++) {
+                unlockedEntries.add(buf.readResourceLocation());
+            }
+
+            var readEntriesSize = buf.readVarInt();
+            for (var i = 0; i < readEntriesSize; i++) {
+                readEntries.add(buf.readResourceLocation());
+            }
+
+            this.unlockedCategories.put(bookId, unlockedCategories);
+            this.unlockedEntries.put(bookId, unlockedEntries);
+            this.readEntries.put(bookId, readEntries);
+
+            return book;
+        } catch (Exception e){
+            return null;
+        }
     }
 
     @Override

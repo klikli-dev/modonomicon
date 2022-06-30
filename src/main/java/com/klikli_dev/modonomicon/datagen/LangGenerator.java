@@ -66,7 +66,11 @@ public abstract class LangGenerator extends LanguageProvider {
 
             //Commands
             this.add(Command.ERROR_UNKNOWN_BOOK, "Unknown book: %s");
-            this.add(Command.SUCCESS_RESET_BOOK, "Successfuly reset book: %s");
+            this.add(Command.SUCCESS_RESET_BOOK, "Successfully reset book: %s");
+            this.add(Command.SUCCESS_SAVE_PROGRESS, "Saved progress for book: %s. The unlock code has been copied to your clipboard.");
+            this.add(Command.SUCCESS_LOAD_PROGRESS, "Successfully loaded progress for book: %s.");
+            this.add(Command.ERROR_LOAD_PROGRESS, "Invalid unlock code!");
+            this.add(Command.ERROR_LOAD_PROGRESS_CLIENT, "Failed to decode unlock code. Make sure to have a valid unlock code in your clipboard! Current Clipboard content: \"%s\"");
 
             //sounds
             this.add(Subtitles.TURN_PAGE, "Turn Page");

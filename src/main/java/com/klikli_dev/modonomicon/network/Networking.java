@@ -7,10 +7,7 @@
 package com.klikli_dev.modonomicon.network;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.network.messages.BookEntryReadMessage;
-import com.klikli_dev.modonomicon.network.messages.SyncBookUnlockCapabilityMessage;
-import com.klikli_dev.modonomicon.network.messages.SyncBookDataMessage;
-import com.klikli_dev.modonomicon.network.messages.SyncMultiblockDataMessage;
+import com.klikli_dev.modonomicon.network.messages.*;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -57,6 +54,18 @@ public class Networking {
                 BookEntryReadMessage.class,
                 BookEntryReadMessage::encode,
                 BookEntryReadMessage::new,
+                MessageHandler::handle);
+
+        INSTANCE.registerMessage(nextID(),
+                SendUnlockCodeToClientMessage.class,
+                SendUnlockCodeToClientMessage::encode,
+                SendUnlockCodeToClientMessage::new,
+                MessageHandler::handle);
+
+        INSTANCE.registerMessage(nextID(),
+                SendUnlockCodeToServerMessage.class,
+                SendUnlockCodeToServerMessage::encode,
+                SendUnlockCodeToServerMessage::new,
                 MessageHandler::handle);
     }
 

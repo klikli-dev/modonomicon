@@ -63,6 +63,7 @@ public class Modonomicon {
         modEventBus.addListener(this::onServerSetup);
         MinecraftForge.EVENT_BUS.addListener(this::onAddReloadListener);
         MinecraftForge.EVENT_BUS.addListener(CommandRegistry::registerCommands);
+        MinecraftForge.EVENT_BUS.addListener(CommandRegistry::registerClientCommands);
         MinecraftForge.EVENT_BUS.addListener(BookDataManager.get()::onDatapackSync);
         MinecraftForge.EVENT_BUS.addListener(MultiblockDataManager.get()::onDatapackSync);
 
