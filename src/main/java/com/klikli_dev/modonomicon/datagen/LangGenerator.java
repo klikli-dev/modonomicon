@@ -8,10 +8,7 @@ package com.klikli_dev.modonomicon.datagen;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Gui;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Multiblock;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Subtitles;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Tooltips;
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.*;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -64,7 +61,16 @@ public abstract class LangGenerator extends LanguageProvider {
 
             //Tooltip
             this.add(Tooltips.CONDITION_ADVANCEMENT, "Requires Advancement: %s");
+            this.add(Tooltips.CONDITION_ENTRY_UNLOCKED, "Requires unlocked Entry: %s");
+            this.add(Tooltips.CONDITION_ENTRY_READ, "Requires read Entry: %s");
 
+            //Commands
+            this.add(Command.ERROR_UNKNOWN_BOOK, "Unknown book: %s");
+            this.add(Command.SUCCESS_RESET_BOOK, "Successfully reset book: %s");
+            this.add(Command.SUCCESS_SAVE_PROGRESS, "Saved progress for book: %s. The unlock code has been copied to your clipboard.");
+            this.add(Command.SUCCESS_LOAD_PROGRESS, "Successfully loaded progress for book: %s.");
+            this.add(Command.ERROR_LOAD_PROGRESS, "Invalid unlock code!");
+            this.add(Command.ERROR_LOAD_PROGRESS_CLIENT, "Failed to decode unlock code. Make sure to have a valid unlock code in your clipboard! Current Clipboard content: \"%s\"");
 
             //sounds
             this.add(Subtitles.TURN_PAGE, "Turn Page");

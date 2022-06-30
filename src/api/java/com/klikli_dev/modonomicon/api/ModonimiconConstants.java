@@ -38,6 +38,10 @@ public class ModonimiconConstants {
             public static final ResourceLocation TRUE = new ResourceLocation(ModonomiconAPI.ID, "true");
 
             public static final ResourceLocation FALSE = new ResourceLocation(ModonomiconAPI.ID, "false");
+
+            public static final ResourceLocation ENTRY_UNLOCKED = new ResourceLocation(ModonomiconAPI.ID, "entry_unlocked");
+
+            public static final ResourceLocation ENTRY_READ = new ResourceLocation(ModonomiconAPI.ID, "entry_read");
         }
     }
 
@@ -83,6 +87,21 @@ public class ModonimiconConstants {
             public static final String PREFIX = ModonomiconAPI.ID + ".tooltip.";
             public static final String CONDITION_PREFIX =PREFIX + ".condition.";
             public static final String CONDITION_ADVANCEMENT = CONDITION_PREFIX + "advancement";
+            public static final String CONDITION_ENTRY_UNLOCKED = CONDITION_PREFIX + "entry_unlocked";
+            public static final String CONDITION_ENTRY_READ = CONDITION_PREFIX + "entry_read";
+        }
+
+        public static class Command {
+            public static final String PREFIX = ModonomiconAPI.ID + ".command.";
+
+            public static final String ERROR_PREFIX = PREFIX + "error.";
+            public static final String SUCCESS_PREFIX = PREFIX + "success.";
+            public static final String ERROR_UNKNOWN_BOOK = ERROR_PREFIX + "unknown_book";
+            public static final String ERROR_LOAD_PROGRESS = ERROR_PREFIX + "load_progress";
+            public static final String ERROR_LOAD_PROGRESS_CLIENT = ERROR_PREFIX + "load_progress_client";
+            public static final String SUCCESS_RESET_BOOK = SUCCESS_PREFIX + "reset_book";
+            public static final String SUCCESS_SAVE_PROGRESS = SUCCESS_PREFIX + "save_progress";
+            public static final String SUCCESS_LOAD_PROGRESS = SUCCESS_PREFIX + "load_progress";
         }
     }
 }

@@ -55,11 +55,7 @@ public class CapabilityRegistry {
 
     public static void onJoinWorld(final EntityJoinWorldEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
-            player.getCapability(BOOK_UNLOCK).ifPresent(capability -> {
-                        capability.update(player);
-                        capability.sync(player);
-                    }
-            );
+            BookUnlockCapability.updateAndSyncFor(player);
         }
     }
 }

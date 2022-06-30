@@ -63,7 +63,7 @@ public abstract class BookCondition {
 
     public abstract boolean test(BookConditionContext context, Player player);
 
-    public List<Component> getTooltip() {
+    public List<Component> getTooltip(BookConditionContext context) {
         return this.tooltip != null ? List.of(this.tooltip) : List.of();
     }
 }

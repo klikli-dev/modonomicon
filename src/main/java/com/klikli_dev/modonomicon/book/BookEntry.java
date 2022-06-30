@@ -242,4 +242,8 @@ public class BookEntry {
     public BookCondition getCondition() {
         return this.condition;
     }
+
+    public void setCondition(BookCondition condition) {
+        this.condition = condition;
+    }
 }

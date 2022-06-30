@@ -10,9 +10,16 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeGenerationSettings;
+import net.minecraft.world.level.biome.BiomeSpecialEffects;
+import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -27,15 +34,24 @@ public class Book {
     protected ResourceLocation turnPageSound;
     protected Map<ResourceLocation, BookCategory> categories;
     protected Map<ResourceLocation, BookEntry> entries;
+
     protected int defaultTitleColor;
 
-    public Book(ResourceLocation id, String name, ResourceLocation bookOverviewTexture, ResourceLocation bookContentTexture, ResourceLocation turnPageSound, int defaultTitleColor) {
+    public boolean autoAddReadConditions() {
+        return this.autoAddReadConditions;
+    }
+
+    protected boolean autoAddReadConditions;
+
+
+    public Book(ResourceLocation id, String name, ResourceLocation bookOverviewTexture, ResourceLocation bookContentTexture, ResourceLocation turnPageSound, int defaultTitleColor, boolean autoAddReadConditions) {
         this.id = id;
         this.name = name;
         this.bookOverviewTexture = bookOverviewTexture;
         this.bookContentTexture = bookContentTexture;
         this.turnPageSound = turnPageSound;
         this.defaultTitleColor = defaultTitleColor;
+        this.autoAddReadConditions = autoAddReadConditions;
         this.categories = new HashMap<>();
         this.entries = new HashMap<>();
     }
@@ -45,8 +61,9 @@ public class Book {
         var bookOverviewTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_overview_texture", Data.Book.DEFAULT_OVERVIEW_TEXTURE));
         var bookContentTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_content_texture", Data.Book.DEFAULT_CONTENT_TEXTURE));
         var turnPageSound = new ResourceLocation(GsonHelper.getAsString(json, "turn_page_sound", Data.Book.DEFAULT_PAGE_TURN_SOUND));
-        var defaultTitleColor = GsonHelper.getAsInt(json, "defaultTitleColor", 0x00000);
-        return new Book(id, name, bookOverviewTexture, bookContentTexture, turnPageSound, defaultTitleColor);
+        var defaultTitleColor = GsonHelper.getAsInt(json, "default_title_color", 0x00000);
+        var autoAddReadConditions = GsonHelper.getAsBoolean(json, "auto_add_read_conditions", false);
+        return new Book(id, name, bookOverviewTexture, bookContentTexture, turnPageSound, defaultTitleColor, autoAddReadConditions);
     }
 
     //TODO: further properties for customization, such as book item, title color...
@@ -57,7 +74,8 @@ public class Book {
         var bookContentTexture = buffer.readResourceLocation();
         var turnPageSound = buffer.readResourceLocation();
         var defaultTitleColor = buffer.readInt();
-        return new Book(id, name, bookOverviewTexture, bookContentTexture, turnPageSound, defaultTitleColor);
+        var autoAddReadConditions = buffer.readBoolean();
+        return new Book(id, name, bookOverviewTexture, bookContentTexture, turnPageSound, defaultTitleColor, autoAddReadConditions);
     }
 
     public ResourceLocation getTurnPageSound() {
@@ -144,6 +162,7 @@ public class Book {
         buffer.writeResourceLocation(this.bookContentTexture);
         buffer.writeResourceLocation(this.turnPageSound);
         buffer.writeInt(this.defaultTitleColor);
+        buffer.writeBoolean(this.autoAddReadConditions);
     }
 
     public ResourceLocation getBookContentTexture() {
