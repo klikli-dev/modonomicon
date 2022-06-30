@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.BookLink;
 import com.klikli_dev.modonomicon.book.page.BookPage;
+import com.klikli_dev.modonomicon.capability.BookStateCapability;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
@@ -82,6 +83,8 @@ public class BookContentScreen extends Screen {
         this.entry = entry;
 
         this.bookContentTexture = this.parentScreen.getBook().getBookContentTexture();
+
+        this.loadEntryState();
     }
 
     public static void drawFromTexture(PoseStack poseStack, Book book, int x, int y, int u, int v, int w, int h) {
@@ -389,5 +392,12 @@ public class BookContentScreen extends Screen {
         return this.clickPage(this.leftPageRenderer, pMouseX, pMouseY, pButton)
                 || this.clickPage(this.rightPageRenderer, pMouseX, pMouseY, pButton)
                 || super.mouseClicked(pMouseX, pMouseY, pButton);
+    }
+
+    private void loadEntryState() {
+        var state = BookStateCapability.getCategoryStateFor(this.parentScreen.getMinecraft().player, this.entry.getCategory());
+        if (state != null) {
+            this.openPagesIndex = state.openPagesIndex;
+        }
     }
 }

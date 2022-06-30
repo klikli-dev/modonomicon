@@ -8,10 +8,7 @@ package com.klikli_dev.modonomicon.item;
 
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
-import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
-import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -29,7 +26,7 @@ public class ModonomiconItem extends Item {
         var itemInHand = pPlayer.getItemInHand(pUsedHand);
 
         if (pLevel.isClientSide) {
-            itemInHand.getOrCreateTag().putBoolean(ModonimiconConstants.Nbt.BOOK_OPEN, true);
+            itemInHand.getOrCreateTag().putBoolean(ModonimiconConstants.Nbt.BOOK_OPEN_TAG, true);
             BookGuiManager.get().openBook(itemInHand);
         }
 
