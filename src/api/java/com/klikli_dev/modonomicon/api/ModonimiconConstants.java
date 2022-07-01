@@ -46,8 +46,15 @@ public class ModonimiconConstants {
     }
 
     public static class Nbt {
+
+        public static final String VERSION_1_0 = "1.0.0";
+
+        public static final String CURRENT_VERSION = VERSION_1_0;
         public static final String PREFIX = ModonomiconAPI.ID + ":";
-        public static final String BOOK_OPEN = PREFIX + "book_open";
+
+        public static final String VERSION_TAG = PREFIX + "nbt_version";
+
+        public static final String BOOK_OPEN_TAG = PREFIX + "book_open";
 
     }
 

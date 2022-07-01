@@ -8,6 +8,7 @@
 
 package com.klikli_dev.modonomicon.capability;
 
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.Nbt;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookEntry;
@@ -274,6 +275,9 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
     @Override
     public CompoundTag serializeNBT() {
         var compound = new CompoundTag();
+
+        compound.putString(Nbt.VERSION_TAG, Nbt.CURRENT_VERSION);
+
         var unlockedCategoriesByBook = new ListTag();
         compound.put("unlocked_categories", unlockedCategoriesByBook);
         this.unlockedCategories.forEach((bookId, categories) -> {

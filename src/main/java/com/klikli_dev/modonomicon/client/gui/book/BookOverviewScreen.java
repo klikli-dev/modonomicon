@@ -9,8 +9,12 @@ package com.klikli_dev.modonomicon.client.gui.book;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.capability.BookStateCapability;
 import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryButton;
+import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.klikli_dev.modonomicon.network.Networking;
+import com.klikli_dev.modonomicon.network.messages.SaveBookStateMessage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -49,8 +53,13 @@ public class BookOverviewScreen extends Screen {
         //we only show categories that are unlocked. Unlike entries there is no "greying out"
         this.categories = book.getCategoriesSorted().stream().filter(cat -> BookUnlockCapability.isUnlockedFor(this.minecraft.player, cat)).toList();
         this.categoryScreens = this.categories.stream().map(c -> new BookCategoryScreen(this, c)).toList();
+    }
 
-        //TODO: save/load current category and page to capability
+    public void onDisplay(){
+        this.loadBookState();
+
+        var currentScreen = this.categoryScreens.get(this.currentCategory);
+        currentScreen.onDisplay();
     }
 
     public EntryConnectionRenderer getConnectionRenderer() {
@@ -119,11 +128,18 @@ public class BookOverviewScreen extends Screen {
     }
 
     public void changeCategory(int categoryIndex) {
+        var oldIndex = this.currentCategory;
         this.currentCategory = categoryIndex;
-        this.onCategoryChanged();
+        this.onCategoryChanged(oldIndex, this.currentCategory);
     }
 
-    public void onCategoryChanged() {
+    public void onCategoryChanged(int oldIndex, int newIndex) {
+        var oldScreen = this.categoryScreens.get(oldIndex);
+        oldScreen.onClose();
+
+        var newScreen = this.categoryScreens.get(newIndex);
+        newScreen.onDisplay();
+
         //TODO: SFX for category change?
     }
 
@@ -177,6 +193,18 @@ public class BookOverviewScreen extends Screen {
         this.renderTooltip(pPoseStack, Component.translatable(button.getCategory().getName()), pMouseX, pMouseY);
     }
 
+    private void loadBookState() {
+        var state = BookStateCapability.getBookStateFor(this.minecraft.player, this.book);
+        if (state != null) {
+            if(state.openCategory != null){
+                var openCategory = this.book.getCategory(state.openCategory);
+                if(openCategory != null){
+                    this.currentCategory = this.categories.indexOf(openCategory);
+                }
+            }
+        }
+    }
+
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         //ignore return value, because we need our base class to handle dragging and such
@@ -216,7 +244,9 @@ public class BookOverviewScreen extends Screen {
 
     @Override
     public void onClose() {
-        //TODO: Send packet to save category variables (zoom, etc)
+        this.getCurrentCategoryScreen().onClose();
+        Networking.sendToServer(new SaveBookStateMessage(this.book, this.getCurrentCategoryScreen().getCategory().getId()));
+
         super.onClose();
     }
 

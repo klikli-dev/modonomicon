@@ -63,10 +63,12 @@ public class BookGuiManager {
 
         if (this.currentBook == book && this.currentOverviewScreen != null) {
             Minecraft.getInstance().setScreen(this.currentOverviewScreen);
+            this.currentOverviewScreen.onDisplay();
         } else {
             this.currentBook = book;
             this.currentOverviewScreen = new BookOverviewScreen(this.currentBook);
             Minecraft.getInstance().setScreen(this.currentOverviewScreen);
+            this.currentOverviewScreen.onDisplay();
         }
     }
 

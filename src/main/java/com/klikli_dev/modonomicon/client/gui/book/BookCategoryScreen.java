@@ -8,13 +8,14 @@ package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookEntry;
-import com.klikli_dev.modonomicon.book.conditions.BookEntryReadCondition;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
+import com.klikli_dev.modonomicon.capability.BookStateCapability;
 import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.BookEntryReadMessage;
-import com.klikli_dev.modonomicon.registry.CapabilityRegistry;
+import com.klikli_dev.modonomicon.network.messages.SaveCategoryStateMessage;
+import com.klikli_dev.modonomicon.network.messages.SaveEntryStateMessage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
@@ -22,6 +23,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.client.ForgeHooksClient;
 import org.lwjgl.opengl.GL11;
@@ -52,6 +54,8 @@ public class BookCategoryScreen {
     private float targetZoom;
     private float currentZoom;
 
+    private ResourceLocation openEntry;
+
     public BookCategoryScreen(BookOverviewScreen bookOverviewScreen, BookCategory category) {
         this.bookOverviewScreen = bookOverviewScreen;
         this.category = category;
@@ -60,8 +64,6 @@ public class BookCategoryScreen {
 
         this.targetZoom = 0.7f;
         this.currentZoom = this.targetZoom;
-
-        this.loadCategorySettings();
     }
 
     public BookCategory getCategory() {
@@ -140,6 +142,7 @@ public class BookCategoryScreen {
     }
 
     public BookContentScreen openEntry(BookEntry entry) {
+        this.openEntry = entry.getId();
         var bookContentScreen = new BookContentScreen(this.bookOverviewScreen, entry);
         ForgeHooksClient.pushGuiLayer(Minecraft.getInstance(), bookContentScreen);
 
@@ -323,8 +326,31 @@ public class BookCategoryScreen {
         this.scrollY = (float) Mth.clamp(this.scrollY - pDragY, -MAX_SCROLL, MAX_SCROLL);
     }
 
-    private void loadCategorySettings() {
-        //TODO: load category settings from capability
-        //      Settings = scroll, zoom etc
+    private void loadCategoryState() {
+        var state = BookStateCapability.getCategoryStateFor(this.bookOverviewScreen.getMinecraft().player, this.category);
+        if (state != null) {
+            this.scrollX = state.scrollX;
+            this.scrollY = state.scrollY;
+            this.targetZoom = state.targetZoom;
+            this.currentZoom = state.targetZoom;
+            if(state.openEntry != null){
+                var openEntry = this.category.getEntry(state.openEntry);
+                if(openEntry != null){
+                    this.openEntry(openEntry);
+                }
+            }
+        }
+    }
+
+    public void onDisplay(){
+        this.loadCategoryState();
+    }
+
+    public void onClose() {
+        Networking.sendToServer(new SaveCategoryStateMessage(this.category, this.scrollX, this.scrollY, this.currentZoom, this.openEntry));
+    }
+
+    public void onCloseEntry(BookContentScreen screen) {
+        this.openEntry = null;
     }
 }

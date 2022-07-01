@@ -11,14 +11,19 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.BookLink;
 import com.klikli_dev.modonomicon.book.page.BookPage;
+import com.klikli_dev.modonomicon.capability.BookStateCapability;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
+import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.klikli_dev.modonomicon.network.Networking;
+import com.klikli_dev.modonomicon.network.messages.SaveEntryStateMessage;
 import com.klikli_dev.modonomicon.registry.SoundRegistry;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -54,6 +59,8 @@ public class BookContentScreen extends Screen {
     public static final int FULL_WIDTH = 272;
     public static final int FULL_HEIGHT = 180;
 
+    public static final int CLICK_SAFETY_MARGIN = 20;
+
     private static long lastTurnPageSoundTime;
     private final BookOverviewScreen parentScreen;
     private final BookEntry entry;
@@ -73,6 +80,8 @@ public class BookContentScreen extends Screen {
     private int maxOpenPagesIndex;
     private List<Component> tooltip;
 
+    public boolean simulateEscClosing;
+
     public BookContentScreen(BookOverviewScreen parentScreen, BookEntry entry) {
         super(Component.literal(""));
 
@@ -82,6 +91,8 @@ public class BookContentScreen extends Screen {
         this.entry = entry;
 
         this.bookContentTexture = this.parentScreen.getBook().getBookContentTexture();
+
+        this.loadEntryState();
     }
 
     public static void drawFromTexture(PoseStack poseStack, Book book, int x, int y, int u, int v, int w, int h) {
@@ -282,6 +293,20 @@ public class BookContentScreen extends Screen {
         this.tooltip = null;
     }
 
+    private boolean clickOutsideEntry(double pMouseX, double pMouseY) {
+        return pMouseX < this.bookLeft - CLICK_SAFETY_MARGIN
+                || pMouseX > this.bookLeft + FULL_WIDTH + CLICK_SAFETY_MARGIN
+                || pMouseY < this.bookTop - CLICK_SAFETY_MARGIN
+                || pMouseY > this.bookTop + FULL_HEIGHT + CLICK_SAFETY_MARGIN;
+    }
+
+    private void loadEntryState() {
+        var state = BookStateCapability.getEntryStateFor(this.parentScreen.getMinecraft().player, this.entry);
+        if (state != null) {
+            this.openPagesIndex = state.openPagesIndex;
+        }
+    }
+
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         this.resetTooltip();
@@ -309,6 +334,25 @@ public class BookContentScreen extends Screen {
     @Override
     public boolean shouldCloseOnEsc() {
         return true;
+    }
+
+    @Override
+    public void onClose() {
+
+        if(this.simulateEscClosing || InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_ESCAPE)){
+            Networking.sendToServer(new SaveEntryStateMessage(this.entry, this.openPagesIndex));
+
+            super.onClose();
+            this.parentScreen.onClose();
+
+            this.simulateEscClosing = true;
+        } else {
+            Networking.sendToServer(new SaveEntryStateMessage(this.entry,
+                    ClientConfig.get().qolCategory.storeLastOpenPageWhenClosingEntry.get() ? this.openPagesIndex : 0));
+
+            this.parentScreen.getCurrentCategoryScreen().onCloseEntry(this);
+            super.onClose();
+        }
     }
 
     /**
@@ -386,8 +430,14 @@ public class BookContentScreen extends Screen {
             }
         }
 
-        return this.clickPage(this.leftPageRenderer, pMouseX, pMouseY, pButton)
-                || this.clickPage(this.rightPageRenderer, pMouseX, pMouseY, pButton)
-                || super.mouseClicked(pMouseX, pMouseY, pButton);
+        var clickPage = this.clickPage(this.leftPageRenderer, pMouseX, pMouseY, pButton)
+                || this.clickPage(this.rightPageRenderer, pMouseX, pMouseY, pButton);
+
+
+        if (this.clickOutsideEntry(pMouseX, pMouseY)) {
+            this.onClose();
+        }
+
+        return clickPage || super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 }

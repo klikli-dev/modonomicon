@@ -28,11 +28,15 @@ public class ClientConfig {
 
     public static class QoLCategory {
         public final BooleanValue enableSmoothZoom;
+        public final BooleanValue storeLastOpenPageWhenClosingEntry;
 
         public QoLCategory(ForgeConfigSpec.Builder builder) {
             builder.comment("Quality of Life Settings").push("qol");
             this.enableSmoothZoom = builder.comment("Enable smooth zoom in book categories")
                     .define("enableSmoothZoom", true);
+            this.storeLastOpenPageWhenClosingEntry = builder.comment("Enable keeping the last open page stored when closing an entry. " +
+                            "Regardless of this setting it will be stored when closing the entire book with Esc.")
+                    .define("storeLastOpenPageWhenClosingEntry", false);
             builder.pop();
         }
     }
