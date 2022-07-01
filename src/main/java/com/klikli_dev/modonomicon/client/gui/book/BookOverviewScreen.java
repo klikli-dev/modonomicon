@@ -53,8 +53,13 @@ public class BookOverviewScreen extends Screen {
         //we only show categories that are unlocked. Unlike entries there is no "greying out"
         this.categories = book.getCategoriesSorted().stream().filter(cat -> BookUnlockCapability.isUnlockedFor(this.minecraft.player, cat)).toList();
         this.categoryScreens = this.categories.stream().map(c -> new BookCategoryScreen(this, c)).toList();
+    }
 
+    public void onDisplay(){
         this.loadBookState();
+
+        var currentScreen = this.categoryScreens.get(this.currentCategory);
+        currentScreen.onDisplay();
     }
 
     public EntryConnectionRenderer getConnectionRenderer() {
@@ -239,6 +244,7 @@ public class BookOverviewScreen extends Screen {
 
     @Override
     public void onClose() {
+        this.getCurrentCategoryScreen().onClose();
         Networking.sendToServer(new SaveBookStateMessage(this.book, this.getCurrentCategoryScreen().getCategory().getId()));
 
         super.onClose();

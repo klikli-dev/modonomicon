@@ -64,8 +64,6 @@ public class BookCategoryScreen {
 
         this.targetZoom = 0.7f;
         this.currentZoom = this.targetZoom;
-
-        this.loadCategoryState();
     }
 
     public BookCategory getCategory() {
@@ -353,7 +351,6 @@ public class BookCategoryScreen {
     }
 
     public void onCloseEntry(BookContentScreen screen) {
-        //TODO: If full book is closed, ensure openEntry is not set to null to save it
         this.openEntry = null;
     }
 }
