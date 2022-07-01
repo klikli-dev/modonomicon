@@ -58,6 +58,8 @@ public class BookContentScreen extends Screen {
     public static final int FULL_WIDTH = 272;
     public static final int FULL_HEIGHT = 180;
 
+    public static final int CLICK_SAFETY_MARGIN = 20;
+
     private static long lastTurnPageSoundTime;
     private final BookOverviewScreen parentScreen;
     private final BookEntry entry;
@@ -289,7 +291,10 @@ public class BookContentScreen extends Screen {
     }
 
     private boolean clickOutsideEntry(double pMouseX, double pMouseY) {
-        return pMouseX < this.bookLeft || pMouseX > this.bookLeft + FULL_WIDTH || pMouseY < this.bookTop || pMouseY > this.bookTop + FULL_HEIGHT;
+        return pMouseX < this.bookLeft - CLICK_SAFETY_MARGIN
+                || pMouseX > this.bookLeft + FULL_WIDTH + CLICK_SAFETY_MARGIN
+                || pMouseY < this.bookTop - CLICK_SAFETY_MARGIN
+                || pMouseY > this.bookTop + FULL_HEIGHT + CLICK_SAFETY_MARGIN;
     }
 
     private void loadEntryState() {
