@@ -80,6 +80,8 @@ public class BookContentScreen extends Screen {
     private int maxOpenPagesIndex;
     private List<Component> tooltip;
 
+    public boolean simulateEscClosing;
+
     public BookContentScreen(BookOverviewScreen parentScreen, BookEntry entry) {
         super(Component.literal(""));
 
@@ -337,11 +339,13 @@ public class BookContentScreen extends Screen {
     @Override
     public void onClose() {
 
-        if(InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_ESCAPE)){
+        if(this.simulateEscClosing || InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_ESCAPE)){
             Networking.sendToServer(new SaveEntryStateMessage(this.entry, this.openPagesIndex));
 
             super.onClose();
             this.parentScreen.onClose();
+
+            this.simulateEscClosing = true;
         } else {
             Networking.sendToServer(new SaveEntryStateMessage(this.entry,
                     ClientConfig.get().qolCategory.storeLastOpenPageWhenClosingEntry.get() ? this.openPagesIndex : 0));
