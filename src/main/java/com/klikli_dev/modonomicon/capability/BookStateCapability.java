@@ -118,15 +118,15 @@ public class BookStateCapability implements INBTSerializable<CompoundTag> {
     }
 
     public BookState getBookState(Book book){
-        return this.bookStates.getOrDefault(book.getId(), new BookState());
+        return this.bookStates.computeIfAbsent(book.getId(), (id) -> new BookState());
     }
 
     public CategoryState getCategoryState(BookCategory category){
-        return this.getBookState(category.getBook()).categoryStates.getOrDefault(category.getId(), new CategoryState());
+        return this.getBookState(category.getBook()).categoryStates.computeIfAbsent(category.getId(), (id) -> new CategoryState());
     }
 
     public EntryState getEntryState(BookEntry entry){
-        return this.getCategoryState(entry.getCategory()).entryStates.getOrDefault(entry.getId(), new EntryState());
+        return this.getCategoryState(entry.getCategory()).entryStates.computeIfAbsent(entry.getId(), (id) -> new EntryState());
     }
 
     public void setEntryState(BookEntry entry, EntryState state){
