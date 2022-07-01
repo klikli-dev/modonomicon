@@ -18,6 +18,7 @@ import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
+import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.SaveEntryStateMessage;
@@ -335,12 +336,16 @@ public class BookContentScreen extends Screen {
 
     @Override
     public void onClose() {
-        Networking.sendToServer(new SaveEntryStateMessage(this.entry, this.openPagesIndex));
 
         if(InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_ESCAPE)){
+            Networking.sendToServer(new SaveEntryStateMessage(this.entry, this.openPagesIndex));
+
             super.onClose();
             this.parentScreen.onClose();
         } else {
+            Networking.sendToServer(new SaveEntryStateMessage(this.entry,
+                    ClientConfig.get().qolCategory.storeLastOpenPageWhenClosingEntry.get() ? this.openPagesIndex : 0));
+
             this.parentScreen.getCurrentCategoryScreen().onCloseEntry(this);
             super.onClose();
         }
