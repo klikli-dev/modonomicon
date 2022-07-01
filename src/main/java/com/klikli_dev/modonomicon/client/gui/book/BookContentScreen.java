@@ -22,6 +22,7 @@ import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.SaveEntryStateMessage;
 import com.klikli_dev.modonomicon.registry.SoundRegistry;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -148,13 +149,6 @@ public class BookContentScreen extends Screen {
 
     public void handleExitButton(Button button) {
         this.onClose();
-    }
-
-    @Override
-    public void onClose() {
-        Networking.sendToServer(new SaveEntryStateMessage(this.entry, this.openPagesIndex));
-        this.parentScreen.getCurrentCategoryScreen().onCloseEntry(this);
-        super.onClose();
     }
 
     public void setTooltip(List<Component> tooltip) {
@@ -294,6 +288,17 @@ public class BookContentScreen extends Screen {
         this.tooltip = null;
     }
 
+    private boolean clickOutsideEntry(double pMouseX, double pMouseY) {
+        return pMouseX < this.bookLeft || pMouseX > this.bookLeft + FULL_WIDTH || pMouseY < this.bookTop || pMouseY > this.bookTop + FULL_HEIGHT;
+    }
+
+    private void loadEntryState() {
+        var state = BookStateCapability.getEntryStateFor(this.parentScreen.getMinecraft().player, this.entry);
+        if (state != null) {
+            this.openPagesIndex = state.openPagesIndex;
+        }
+    }
+
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         this.resetTooltip();
@@ -321,6 +326,18 @@ public class BookContentScreen extends Screen {
     @Override
     public boolean shouldCloseOnEsc() {
         return true;
+    }
+
+    @Override
+    public void onClose() {
+        Networking.sendToServer(new SaveEntryStateMessage(this.entry, this.openPagesIndex));
+
+        if(InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_ESCAPE))
+            this.parentScreen.getCurrentCategoryScreen().onCloseEntry(this);
+
+        super.onClose();
+
+        this.parentScreen.onClose();
     }
 
     /**
@@ -398,15 +415,14 @@ public class BookContentScreen extends Screen {
             }
         }
 
-        return this.clickPage(this.leftPageRenderer, pMouseX, pMouseY, pButton)
-                || this.clickPage(this.rightPageRenderer, pMouseX, pMouseY, pButton)
-                || super.mouseClicked(pMouseX, pMouseY, pButton);
-    }
+        var clickPage = this.clickPage(this.leftPageRenderer, pMouseX, pMouseY, pButton)
+                || this.clickPage(this.rightPageRenderer, pMouseX, pMouseY, pButton);
 
-    private void loadEntryState() {
-        var state = BookStateCapability.getEntryStateFor(this.parentScreen.getMinecraft().player, this.entry);
-        if (state != null) {
-            this.openPagesIndex = state.openPagesIndex;
+
+        if (this.clickOutsideEntry(pMouseX, pMouseY)) {
+            this.onClose();
         }
+
+        return clickPage || super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 }
