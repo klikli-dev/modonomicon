@@ -67,6 +67,30 @@ public class Networking {
                 SendUnlockCodeToServerMessage::encode,
                 SendUnlockCodeToServerMessage::new,
                 MessageHandler::handle);
+
+        INSTANCE.registerMessage(nextID(),
+                SyncBookStateCapabilityMessage.class,
+                SyncBookStateCapabilityMessage::encode,
+                SyncBookStateCapabilityMessage::new,
+                MessageHandler::handle);
+
+        INSTANCE.registerMessage(nextID(),
+                SaveEntryStateMessage.class,
+                SaveEntryStateMessage::encode,
+                SaveEntryStateMessage::new,
+                MessageHandler::handle);
+
+        INSTANCE.registerMessage(nextID(),
+                SaveCategoryStateMessage.class,
+                SaveCategoryStateMessage::encode,
+                SaveCategoryStateMessage::new,
+                MessageHandler::handle);
+
+        INSTANCE.registerMessage(nextID(),
+                SaveBookStateMessage.class,
+                SaveBookStateMessage::encode,
+                SaveBookStateMessage::new,
+                MessageHandler::handle);
     }
 
     public static <T> void sendTo(ServerPlayer player, T message) {
