@@ -153,7 +153,7 @@ public class BookContentScreen extends Screen {
     @Override
     public void onClose() {
         Networking.sendToServer(new SaveEntryStateMessage(this.entry, this.openPagesIndex));
-
+        this.parentScreen.getCurrentCategoryScreen().onCloseEntry(this);
         super.onClose();
     }
 

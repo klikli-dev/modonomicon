@@ -121,11 +121,15 @@ public class BookOverviewScreen extends Screen {
     }
 
     public void changeCategory(int categoryIndex) {
+        var oldIndex = this.currentCategory;
         this.currentCategory = categoryIndex;
-        this.onCategoryChanged();
+        this.onCategoryChanged(oldIndex, this.currentCategory);
     }
 
-    public void onCategoryChanged() {
+    public void onCategoryChanged(int oldIndex, int newIndex) {
+        var oldScreen = this.categoryScreens.get(oldIndex);
+        oldScreen.onClose();
+
         //TODO: SFX for category change?
     }
 
