@@ -44,7 +44,7 @@ public class CategoryState implements INBTSerializable<CompoundTag> {
             entryStatesList.add(stateCompound);
         });
 
-        return null;
+        return compound;
     }
 
     @Override

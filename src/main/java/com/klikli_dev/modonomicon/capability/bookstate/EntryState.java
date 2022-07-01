@@ -15,9 +15,9 @@ public class EntryState implements INBTSerializable<CompoundTag> {
 
     @Override
     public CompoundTag serializeNBT() {
-        var tag = new CompoundTag();
-        tag.putInt("openPagesIndex", this.openPagesIndex);
-        return null;
+        var compound = new CompoundTag();
+        compound.putInt("openPagesIndex", this.openPagesIndex);
+        return compound;
     }
 
     @Override
