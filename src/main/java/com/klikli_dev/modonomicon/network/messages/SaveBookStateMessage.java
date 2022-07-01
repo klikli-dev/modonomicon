@@ -35,6 +35,7 @@ public class SaveBookStateMessage implements Message {
     @Override
     public void encode(FriendlyByteBuf buf) {
         buf.writeResourceLocation(this.book.getId());
+        buf.writeBoolean(this.openCategory != null);
         if (this.openCategory != null) {
             buf.writeResourceLocation(this.openCategory);
         }
