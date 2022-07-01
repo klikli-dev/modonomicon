@@ -19,6 +19,8 @@ import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.klikli_dev.modonomicon.network.Networking;
+import com.klikli_dev.modonomicon.network.messages.SaveEntryStateMessage;
 import com.klikli_dev.modonomicon.registry.SoundRegistry;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -146,6 +148,13 @@ public class BookContentScreen extends Screen {
 
     public void handleExitButton(Button button) {
         this.onClose();
+    }
+
+    @Override
+    public void onClose() {
+        Networking.sendToServer(new SaveEntryStateMessage(this.entry, this.openPagesIndex));
+
+        super.onClose();
     }
 
     public void setTooltip(List<Component> tooltip) {

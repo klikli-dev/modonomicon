@@ -52,6 +52,18 @@ public class BookStateCapability implements INBTSerializable<CompoundTag> {
         return player.getCapability(CapabilityRegistry.BOOK_STATE).map(c -> c.getEntryState(entry)).orElse(null);
     }
 
+    public static void setEntryStateFor(Player player, BookEntry entry, EntryState state) {
+        player.getCapability(CapabilityRegistry.BOOK_STATE).ifPresent(c -> c.setEntryState(entry, state));
+    }
+
+    public static void setCategoryStateFor(Player player, BookCategory category, CategoryState state) {
+        player.getCapability(CapabilityRegistry.BOOK_STATE).ifPresent(c -> c.setCategoryState(category, state));
+    }
+
+    public static void setBookStateFor(Player player, Book book, BookState state) {
+        player.getCapability(CapabilityRegistry.BOOK_STATE).ifPresent(c -> c.setBookState(book, state));
+    }
+
     public static void syncFor(ServerPlayer player) {
         player.getCapability(CapabilityRegistry.BOOK_STATE).ifPresent(capability -> {
             capability.sync(player);
@@ -115,6 +127,18 @@ public class BookStateCapability implements INBTSerializable<CompoundTag> {
 
     public EntryState getEntryState(BookEntry entry){
         return this.getCategoryState(entry.getCategory()).entryStates.getOrDefault(entry.getId(), new EntryState());
+    }
+
+    public void setEntryState(BookEntry entry, EntryState state){
+        this.getCategoryState(entry.getCategory()).entryStates.put(entry.getId(), state);
+    }
+
+    public void setCategoryState(BookCategory category, CategoryState state){
+        this.getBookState(category.getBook()).categoryStates.put(category.getId(), state);
+    }
+
+    public void setBookState(Book book, BookState state){
+        this.bookStates.put(book.getId(), state);
     }
 
     public static class Dispatcher implements ICapabilitySerializable<CompoundTag> {
