@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.capability;
+package com.klikli_dev.modonomicon.capability.bookstate;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;

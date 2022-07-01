@@ -395,7 +395,7 @@ public class BookContentScreen extends Screen {
     }
 
     private void loadEntryState() {
-        var state = BookStateCapability.getCategoryStateFor(this.parentScreen.getMinecraft().player, this.entry.getCategory());
+        var state = BookStateCapability.getEntryStateFor(this.parentScreen.getMinecraft().player, this.entry);
         if (state != null) {
             this.openPagesIndex = state.openPagesIndex;
         }

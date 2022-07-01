@@ -11,6 +11,10 @@ package com.klikli_dev.modonomicon.capability;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Nbt;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.book.BookEntry;
+import com.klikli_dev.modonomicon.capability.bookstate.BookState;
+import com.klikli_dev.modonomicon.capability.bookstate.CategoryState;
+import com.klikli_dev.modonomicon.capability.bookstate.EntryState;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.SyncBookStateCapabilityMessage;
 import com.klikli_dev.modonomicon.registry.CapabilityRegistry;
@@ -42,6 +46,10 @@ public class BookStateCapability implements INBTSerializable<CompoundTag> {
 
     public static CategoryState getCategoryStateFor(Player player, BookCategory category) {
         return player.getCapability(CapabilityRegistry.BOOK_STATE).map(c -> c.getCategoryState(category)).orElse(null);
+    }
+
+    public static EntryState getEntryStateFor(Player player, BookEntry entry) {
+        return player.getCapability(CapabilityRegistry.BOOK_STATE).map(c -> c.getEntryState(entry)).orElse(null);
     }
 
     public static void syncFor(ServerPlayer player) {
@@ -103,6 +111,10 @@ public class BookStateCapability implements INBTSerializable<CompoundTag> {
 
     public CategoryState getCategoryState(BookCategory category){
         return this.getBookState(category.getBook()).categoryStates.getOrDefault(category.getId(), new CategoryState());
+    }
+
+    public EntryState getEntryState(BookEntry entry){
+        return this.getCategoryState(entry.getCategory()).entryStates.getOrDefault(entry.getId(), new EntryState());
     }
 
     public static class Dispatcher implements ICapabilitySerializable<CompoundTag> {
