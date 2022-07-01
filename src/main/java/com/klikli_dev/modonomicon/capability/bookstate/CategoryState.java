@@ -21,7 +21,7 @@ public class CategoryState implements INBTSerializable<CompoundTag> {
 
     public float scrollX = 0;
     public float scrollY = 0;
-    public float targetZoom;
+    public float targetZoom = 0.7f;
 
     public ResourceLocation openEntry = null;
 
