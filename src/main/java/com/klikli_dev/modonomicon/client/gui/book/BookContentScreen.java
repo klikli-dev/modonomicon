@@ -332,12 +332,13 @@ public class BookContentScreen extends Screen {
     public void onClose() {
         Networking.sendToServer(new SaveEntryStateMessage(this.entry, this.openPagesIndex));
 
-        if(InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_ESCAPE))
+        if(InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_ESCAPE)){
+            super.onClose();
+            this.parentScreen.onClose();
+        } else {
             this.parentScreen.getCurrentCategoryScreen().onCloseEntry(this);
-
-        super.onClose();
-
-        this.parentScreen.onClose();
+            super.onClose();
+        }
     }
 
     /**

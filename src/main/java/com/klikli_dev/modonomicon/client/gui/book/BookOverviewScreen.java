@@ -132,6 +132,9 @@ public class BookOverviewScreen extends Screen {
         var oldScreen = this.categoryScreens.get(oldIndex);
         oldScreen.onClose();
 
+        var newScreen = this.categoryScreens.get(newIndex);
+        newScreen.onDisplay();
+
         //TODO: SFX for category change?
     }
 

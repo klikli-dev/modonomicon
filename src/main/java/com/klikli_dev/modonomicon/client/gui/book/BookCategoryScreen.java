@@ -344,6 +344,10 @@ public class BookCategoryScreen {
         }
     }
 
+    public void onDisplay(){
+        this.loadCategoryState();
+    }
+
     public void onClose() {
         Networking.sendToServer(new SaveCategoryStateMessage(this.category, this.scrollX, this.scrollY, this.currentZoom, this.openEntry));
     }
