@@ -61,7 +61,7 @@ public class CapabilityRegistry {
                 event.addCapability(BOOK_UNLOCK_ID, new BookUnlockCapability.Dispatcher());
             }
             if (!event.getObject().getCapability(BOOK_STATE).isPresent()) {
-                event.addCapability(BOOK_STATE_ID, new BookUnlockCapability.Dispatcher());
+                event.addCapability(BOOK_STATE_ID, new BookStateCapability.Dispatcher());
             }
         }
     }
