@@ -34,7 +34,7 @@ public class BookConditionModel {
         return json;
     }
 
-    public ResourceLocation getType(){
+    public ResourceLocation getType() {
         return this.type;
     }
 }

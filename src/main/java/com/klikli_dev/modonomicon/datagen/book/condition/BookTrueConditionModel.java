@@ -8,31 +8,19 @@
 
 package com.klikli_dev.modonomicon.datagen.book.condition;
 
-import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Condition;
 import net.minecraft.network.chat.Component;
 
-public class BookAdvancementConditionModel extends BookConditionModel {
-    protected String advancementId;
-
-    protected BookAdvancementConditionModel(String advancementId, Component tooltip, String tooltipString) {
-        super(Condition.ADVANCEMENT, tooltip, tooltipString);
-        this.advancementId = advancementId;
+public class BookTrueConditionModel extends BookConditionModel {
+    protected BookTrueConditionModel(Component tooltip, String tooltipString) {
+        super(Condition.TRUE, tooltip, tooltipString);
     }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    @Override
-    public JsonObject toJson() {
-        var json = super.toJson();
-        json.addProperty("advancement_id", this.advancementId);
-        return json;
-    }
-
     public static final class Builder {
-        protected String advancementId;
         protected Component tooltip;
         protected String tooltipString;
 
@@ -41,11 +29,6 @@ public class BookAdvancementConditionModel extends BookConditionModel {
 
         public static Builder aBookAdvancementConditionModel() {
             return new Builder();
-        }
-
-        public Builder withAdvancementId(String advancementId) {
-            this.advancementId = advancementId;
-            return this;
         }
 
         public Builder withTooltip(Component tooltip) {
@@ -62,8 +45,8 @@ public class BookAdvancementConditionModel extends BookConditionModel {
         }
 
 
-        public BookAdvancementConditionModel build() {
-            BookAdvancementConditionModel model = new BookAdvancementConditionModel(this.advancementId, this.tooltip, this.tooltipString);
+        public BookTrueConditionModel build() {
+            BookTrueConditionModel model = new BookTrueConditionModel(this.tooltip, this.tooltipString);
             return model;
         }
     }
