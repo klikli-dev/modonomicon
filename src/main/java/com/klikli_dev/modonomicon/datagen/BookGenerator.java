@@ -155,6 +155,7 @@ public class BookGenerator implements DataProvider {
                 .withX(6).withY(3)
                 .withPages(conditionLevel1EntryInfoPage)
                 .withCondition(conditionLevel1EntryCondition)
+                .withParent(BookEntryParentModel.builder().withEntryId(conditionRootEntry.getId()).build())
                 .build();
         result.add(conditionLevel1Entry);
 
@@ -175,6 +176,7 @@ public class BookGenerator implements DataProvider {
                 .withX(6).withY(6)
                 .withPages(conditionLevel2EntryInfoPage)
                 .withCondition(conditionLevel2EntryCondition)
+                .withParent(BookEntryParentModel.builder().withEntryId(conditionLevel1Entry.getId()).build())
                 .build();
         result.add(conditionLevel2Entry);
 
