@@ -46,7 +46,7 @@ public class SaveUnlocksCommand implements com.mojang.brigadier.Command<CommandS
 
         var code = BookUnlockCapability.getUnlockCodeFor(context.getSource().getPlayer(), book);
 
-        Networking.sendTo(context.getSource().getPlayer(), new SendUnlockCodeToClientMessage(code));
+        Networking.sendToSplit(context.getSource().getPlayer(), new SendUnlockCodeToClientMessage(code));
 
         context.getSource().sendSuccess(Component.translatable(Command.SUCCESS_SAVE_PROGRESS, Component.translatable(book.getName())), true);
         return 1;

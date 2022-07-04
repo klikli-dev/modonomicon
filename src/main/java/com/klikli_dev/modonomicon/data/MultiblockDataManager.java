@@ -66,10 +66,10 @@ public class MultiblockDataManager extends SimpleJsonResourceReloadListener {
         Message syncMessage = this.getSyncMessage();
 
         if (event.getPlayer() != null) {
-            Networking.sendTo(event.getPlayer(), syncMessage);
+            Networking.sendToSplit(event.getPlayer(), syncMessage);
         } else {
             for (ServerPlayer player : event.getPlayerList().getPlayers()) {
-                Networking.sendTo(player, syncMessage);
+                Networking.sendToSplit(player, syncMessage);
             }
         }
     }
