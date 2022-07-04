@@ -96,6 +96,9 @@ public class SparseMultiblock extends AbstractMultiblock {
         var offX = buffer.readVarInt();
         var offY = buffer.readVarInt();
         var offZ = buffer.readVarInt();
+        var viewOffX = buffer.readVarInt();
+        var viewOffY = buffer.readVarInt();
+        var viewOffZ = buffer.readVarInt();
 
         var size = buffer.readVarInt();
         var stateMatchers = new HashMap<BlockPos, StateMatcher>();
@@ -107,8 +110,9 @@ public class SparseMultiblock extends AbstractMultiblock {
         }
 
         var multiblock = new SparseMultiblock(stateMatchers);
-        multiblock.symmetrical = symmetrical;
-        multiblock.offset(offX, offY, offZ);
+        multiblock.setSymmetrical(symmetrical);
+        multiblock.setOffset(offX, offY, offZ);
+        multiblock.setViewOffset(viewOffX, viewOffY, viewOffZ);
         return multiblock;
     }
 
@@ -166,6 +170,9 @@ public class SparseMultiblock extends AbstractMultiblock {
         buffer.writeVarInt(this.offX);
         buffer.writeVarInt(this.offY);
         buffer.writeVarInt(this.offZ);
+        buffer.writeVarInt(this.viewOffX);
+        buffer.writeVarInt(this.viewOffY);
+        buffer.writeVarInt(this.viewOffZ);
 
         buffer.writeVarInt(this.stateMatchers.size());
         for (Entry<BlockPos, StateMatcher> entry : this.stateMatchers.entrySet()) {

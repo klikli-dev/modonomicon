@@ -65,6 +65,9 @@ public class DenseMultiblock extends AbstractMultiblock {
         var offX = buffer.readVarInt();
         var offY = buffer.readVarInt();
         var offZ = buffer.readVarInt();
+        var viewOffX = buffer.readVarInt();
+        var viewOffY = buffer.readVarInt();
+        var viewOffZ = buffer.readVarInt();
 
         var sizeX = buffer.readVarInt();
         var sizeY = buffer.readVarInt();
@@ -85,8 +88,9 @@ public class DenseMultiblock extends AbstractMultiblock {
         }
 
         var multiblock = new DenseMultiblock(pattern, targets);
-        multiblock.symmetrical = symmetrical;
-        multiblock.offset(offX, offY, offZ);
+        multiblock.setSymmetrical(symmetrical);
+        multiblock.setOffset(offX, offY, offZ);
+        multiblock.setViewOffset(viewOffX, viewOffY, viewOffZ);
         return multiblock;
     }
 
@@ -207,6 +211,9 @@ public class DenseMultiblock extends AbstractMultiblock {
         buffer.writeVarInt(this.offX);
         buffer.writeVarInt(this.offY);
         buffer.writeVarInt(this.offZ);
+        buffer.writeVarInt(this.viewOffX);
+        buffer.writeVarInt(this.viewOffY);
+        buffer.writeVarInt(this.viewOffZ);
 
         buffer.writeVarInt(this.size.getX());
         buffer.writeVarInt(this.size.getY());
