@@ -1,0 +1,19 @@
+{
+  "category": "modonomicon:features",
+  "description": "book.modonomicon.demo.features.condition_root.description",
+  "hide_while_locked": false,
+  "icon": "minecraft:redstone_torch",
+  "name": "book.modonomicon.demo.features.condition_root.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.condition_root.info.text",
+      "title": "book.modonomicon.demo.features.condition_root.info.title",
+      "use_markdown_in_title": false
+    }
+  ],
+  "x": 3,
+  "y": 3
+}

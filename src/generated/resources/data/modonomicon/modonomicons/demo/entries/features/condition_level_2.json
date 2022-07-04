@@ -1,0 +1,23 @@
+{
+  "category": "modonomicon:features",
+  "condition": {
+    "type": "modonomicon:entry_unlocked",
+    "entry_id": "modonomicon:features/condition_level_1"
+  },
+  "description": "book.modonomicon.demo.features.condition_level_2.description",
+  "hide_while_locked": false,
+  "icon": "minecraft:torch",
+  "name": "book.modonomicon.demo.features.condition_level_2.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.condition_level_2.info.text",
+      "title": "book.modonomicon.demo.features.condition_level_2.info.title",
+      "use_markdown_in_title": false
+    }
+  ],
+  "x": 6,
+  "y": 6
+}

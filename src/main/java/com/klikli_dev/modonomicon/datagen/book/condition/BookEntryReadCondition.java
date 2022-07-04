@@ -11,6 +11,7 @@ package com.klikli_dev.modonomicon.datagen.book.condition;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Condition;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class BookEntryReadCondition extends BookConditionModel {
     protected String entryId;
@@ -41,6 +42,11 @@ public class BookEntryReadCondition extends BookConditionModel {
 
         public static Builder aBookAdvancementConditionModel() {
             return new Builder();
+        }
+
+        public Builder withEntry(ResourceLocation entryId) {
+            this.entryId = entryId.toString();
+            return this;
         }
 
         public Builder withEntry(String entryId) {

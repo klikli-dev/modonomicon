@@ -8,6 +8,8 @@ package com.klikli_dev.modonomicon.datagen.book;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.klikli_dev.modonomicon.datagen.book.BookCategoryModel.Builder;
+import com.klikli_dev.modonomicon.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.datagen.book.page.BookPageModel;
 import net.minecraft.resources.ResourceLocation;
 
@@ -25,6 +27,7 @@ public class BookEntryModel {
     protected int y;
     protected boolean hideWhileLocked;
     protected List<BookPageModel> pages = new ArrayList<>();
+    protected BookConditionModel condition;
 
     public static Builder builder() {
         return new Builder();
@@ -45,6 +48,11 @@ public class BookEntryModel {
             pagesArray.add(page.toJson());
         }
         json.add("pages", pagesArray);
+
+        if(this.condition != null) {
+            json.add("condition", this.condition.toJson());
+        }
+
         return json;
     }
 
@@ -103,6 +111,7 @@ public class BookEntryModel {
         protected int y;
         protected boolean hideWhileLocked;
         protected List<BookPageModel> pages = new ArrayList<>();
+        protected BookConditionModel condition;
 
         private Builder() {
         }
@@ -181,6 +190,11 @@ public class BookEntryModel {
             return this;
         }
 
+        public Builder withCondition(BookConditionModel condition) {
+            this.condition = condition;
+            return this;
+        }
+
         public BookEntryModel build() {
             BookEntryModel bookEntryModel = new BookEntryModel();
             bookEntryModel.description = this.description;
@@ -193,6 +207,7 @@ public class BookEntryModel {
             bookEntryModel.parents = this.parents;
             bookEntryModel.id = this.id;
             bookEntryModel.pages = this.pages;
+            bookEntryModel.condition = this.condition;
             return bookEntryModel;
         }
     }

@@ -61,6 +61,10 @@ public class BookLangHelper {
         return this.category() + ".name";
     }
 
+    public String categoryCondition(String conditionName){
+        return this.category() + ".condition." + conditionName;
+    }
+
     public String entry(){
         return this.category() + "." + this.entry;
     }
@@ -72,6 +76,11 @@ public class BookLangHelper {
     public String entryDescription(){
         return this.entry() + ".description";
     }
+
+    public String entryCondition(String conditionName){
+        return this.entry() + ".condition." + conditionName;
+    }
+
 
     public String page(){
         return this.entry() + "." + this.page;
