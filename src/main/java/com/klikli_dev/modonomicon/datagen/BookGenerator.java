@@ -6,18 +6,13 @@
 
 package com.klikli_dev.modonomicon.datagen;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.datagen.book.BookCategoryModel;
-import com.klikli_dev.modonomicon.datagen.book.BookEntryModel;
-import com.klikli_dev.modonomicon.datagen.book.BookEntryParentModel;
-import com.klikli_dev.modonomicon.datagen.book.BookModel;
+import com.klikli_dev.modonomicon.datagen.book.*;
+import com.klikli_dev.modonomicon.datagen.book.page.BookMultiblockPageModel;
 import com.klikli_dev.modonomicon.datagen.book.page.BookTextPageModel;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
 import net.minecraft.resources.ResourceLocation;
 
 import java.io.IOException;
@@ -60,13 +55,48 @@ public class BookGenerator implements DataProvider {
     }
 
     private void start() {
-        var testCat = this.makeTestCat();
-        var testBook = BookModel.builder()
-                .withId(this.modLoc("test_book"))
-                .withName("modonomicon.test_book.name")
-                .withCategories(testCat)
+        var demoBook = this.makeDemoBook();
+        this.add(demoBook);
+    }
+
+    private BookModel makeDemoBook(){
+        var helper = new BookLangHelper(this.modid);
+        helper.book("demo");
+        helper.category("features");
+        helper.entry("multiblock");
+        helper.page("intro");
+        var multiBlockIntroPage = BookTextPageModel.builder()
+                .withText(helper.pageText())
+                .withTitle(helper.pageTitle())
                 .build();
-        this.add(testBook);
+        helper.page("preview");
+        var multiblockPreviewPage = BookMultiblockPageModel.builder()
+                .withMultiblockId(this.modLoc("blockentity"))
+                .withMultiblockName("multiblocks.modonomicon.blockentity")
+                .withText(helper.pageText())
+                .build();
+        var multiblockEntry = BookEntryModel.builder()
+                .withId(this.modLoc("features/multiblock"))
+                .withName(helper.entryName())
+                .withDescription(helper.entryDescription())
+                .withIcon("minecraft:furnace")
+                .withX(0).withY(0)
+                .withPages(multiBlockIntroPage, multiblockPreviewPage)
+                .build();
+
+        var featuresCategory = BookCategoryModel.builder()
+                .withId(this.modLoc("features"))
+                .withName(helper.categoryName())
+                .withIcon("minecraft:nether_star")
+                .withEntries(multiblockEntry)
+                .build();
+
+        var demoBook = BookModel.builder()
+                .withId(this.modLoc("demo"))
+                .withName(helper.bookName())
+                .withCategories(featuresCategory)
+                .build();
+        return demoBook;
     }
 
     private BookCategoryModel makeTestCat() {

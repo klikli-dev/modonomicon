@@ -1,7 +1,7 @@
 {
   "background": "modonomicon:textures/gui/dark_slate_seamless.png",
   "entry_textures": "modonomicon:textures/gui/entry_textures.png",
-  "icon": "minecraft:apple",
-  "name": "modonomicon.test_cat.name",
+  "icon": "minecraft:nether_star",
+  "name": "book.modonomicon.demo.features.name",
   "sort_number": -1
 }

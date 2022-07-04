@@ -1,6 +1,13 @@
 {
   "advancements.modonomicon.root.description": "The book of all books!",
   "advancements.modonomicon.root.title": "Modonomicon",
+  "book.modonomicon.demo.features.multiblock.description": "An entry showcasing a multiblock.",
+  "book.modonomicon.demo.features.multiblock.intro.text": "Multiblock pages allow to preview multiblocks both in the book and in the world.",
+  "book.modonomicon.demo.features.multiblock.intro.title": "Multiblock Page",
+  "book.modonomicon.demo.features.multiblock.name": "Multiblock Entry",
+  "book.modonomicon.demo.features.multiblock.preview.text": "A sample multiblock.",
+  "book.modonomicon.demo.features.name": "Features Category",
+  "book.modonomicon.demo.name": "Demo Book",
   "item.modonomicon.modonomicon": "Modonomicon",
   "itemGroup.modonomicon": "Modonomicon",
   "modonomicon.command.error.load_progress": "Invalid unlock code!",
@@ -36,5 +43,6 @@
   "modonomicon.test_book.title": "Test Book",
   "modonomicon.tooltip..condition.advancement": "Requires Advancement: %s",
   "modonomicon.tooltip..condition.entry_read": "Requires read Entry: %s",
-  "modonomicon.tooltip..condition.entry_unlocked": "Requires unlocked Entry: %s"
+  "modonomicon.tooltip..condition.entry_unlocked": "Requires unlocked Entry: %s",
+  "multiblocks.modonomicon.blockentity": "Blockentity Multiblock."
 }

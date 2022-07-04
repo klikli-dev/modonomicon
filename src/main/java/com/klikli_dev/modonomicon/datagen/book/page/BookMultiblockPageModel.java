@@ -20,7 +20,7 @@ public class BookMultiblockPageModel extends BookPageModel {
     protected boolean showVisualizeButton = true;
 
     protected BookMultiblockPageModel(@NotNull String anchor) {
-        super(Page.TEXT, anchor);
+        super(Page.MULTIBLOCK, anchor);
     }
 
     public static Builder builder() {

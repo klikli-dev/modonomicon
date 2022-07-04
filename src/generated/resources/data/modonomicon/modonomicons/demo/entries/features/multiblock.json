@@ -1,0 +1,27 @@
+{
+  "category": "modonomicon:features",
+  "description": "book.modonomicon.demo.features.multiblock.description",
+  "hide_while_locked": false,
+  "icon": "minecraft:furnace",
+  "name": "book.modonomicon.demo.features.multiblock.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.multiblock.intro.text",
+      "title": "book.modonomicon.demo.features.multiblock.intro.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:multiblock",
+      "anchor": "",
+      "multiblock_id": "modonomicon:blockentity",
+      "multiblock_name": "multiblocks.modonomicon.blockentity",
+      "show_visualize_button": true,
+      "text": "book.modonomicon.demo.features.multiblock.preview.text"
+    }
+  ],
+  "x": 0,
+  "y": 0
+}
