@@ -96,9 +96,11 @@ public class BookCategoryScreen {
         GL11.glEnable(GL_SCISSOR_TEST);
 
         this.renderEntries(pPoseStack, pMouseX, pMouseY);
+        GL11.glDisable(GL_SCISSOR_TEST);
+
+
         this.renderEntryTooltips(pPoseStack, pMouseX, pMouseY);
 
-        GL11.glDisable(GL_SCISSOR_TEST);
     }
 
     public void zoom(double delta) {
