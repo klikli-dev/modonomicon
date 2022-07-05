@@ -18,6 +18,14 @@
       "use_markdown_in_title": false
     }
   ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "modonomicon:features/condition_level_1",
+      "line_enabled": true,
+      "line_reversed": false
+    }
+  ],
   "x": 6,
   "y": 6
 }

@@ -43,11 +43,22 @@ public class BookEntryModel {
         json.addProperty("y", this.y);
         json.addProperty("hide_while_locked", this.hideWhileLocked);
 
-        var pagesArray = new JsonArray();
-        for (BookPageModel page : this.pages) {
-            pagesArray.add(page.toJson());
+        if(!this.parents.isEmpty()){
+            var parentsArray = new JsonArray();
+            for (var parent : this.parents) {
+                parentsArray.add(parent.toJson());
+            }
+            json.add("parents", parentsArray);
         }
-        json.add("pages", pagesArray);
+
+        if(!this.pages.isEmpty()) {
+            var pagesArray = new JsonArray();
+            for (var page : this.pages) {
+                pagesArray.add(page.toJson());
+            }
+            json.add("pages", pagesArray);
+        }
+
 
         if(this.condition != null) {
             json.add("condition", this.condition.toJson());
