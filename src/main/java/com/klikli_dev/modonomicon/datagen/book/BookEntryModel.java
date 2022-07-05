@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.datagen.book.BookCategoryModel.Builder;
 import com.klikli_dev.modonomicon.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.datagen.book.page.BookPageModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -169,6 +170,10 @@ public class BookEntryModel {
         public Builder withIcon(String icon) {
             this.icon = icon;
             return this;
+        }
+
+        public Builder withLocation(Vec2 location) {
+            return this.withX((int)location.x).withY((int)location.y);
         }
 
         public Builder withX(int x) {

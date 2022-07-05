@@ -80,9 +80,18 @@ public class BookGenerator implements DataProvider {
     private BookCategoryModel makeFeaturesCategory(BookLangHelper helper) {
         helper.category("features");
 
-        var multiblockEntry = this.makeMultiblockEntry(helper);
+        var entryHelper = new EntryLocationHelper();
+        entryHelper.setMap(
+                "_____________________",
+                "__m__________________",
+                "__________r__________",
+                "_____________________",
+                "__________2___3______"
+        );
 
-        var conditionEntries = this.makeConditionEntries(helper);
+        var multiblockEntry = this.makeMultiblockEntry(helper, entryHelper);
+
+        var conditionEntries = this.makeConditionEntries(helper, entryHelper);
 
         return BookCategoryModel.builder()
                 .withId(this.modLoc("features"))
@@ -93,7 +102,7 @@ public class BookGenerator implements DataProvider {
                 .build();
     }
 
-    private BookEntryModel makeMultiblockEntry(BookLangHelper helper) {
+    private BookEntryModel makeMultiblockEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
         helper.entry("multiblock");
 
         helper.page("intro");
@@ -114,12 +123,12 @@ public class BookGenerator implements DataProvider {
                 .withName(helper.entryName())
                 .withDescription(helper.entryDescription())
                 .withIcon("minecraft:furnace")
-                .withX(0).withY(0)
+                .withLocation(entryHelper.get('m'))
                 .withPages(multiBlockIntroPage, multiblockPreviewPage)
                 .build();
     }
 
-    private List<BookEntryModel> makeConditionEntries(BookLangHelper helper) {
+    private List<BookEntryModel> makeConditionEntries(BookLangHelper helper, EntryLocationHelper entryHelper) {
         var result = new ArrayList<BookEntryModel>();
 
         helper.entry("condition_root");
@@ -133,7 +142,7 @@ public class BookGenerator implements DataProvider {
                 .withName(helper.entryName())
                 .withDescription(helper.entryDescription())
                 .withIcon("minecraft:redstone_torch")
-                .withX(3).withY(3)
+                .withLocation(entryHelper.get('r'))
                 .withPages(conditionRootEntryInfoPage)
                 .build();
         result.add(conditionRootEntry);
@@ -152,7 +161,7 @@ public class BookGenerator implements DataProvider {
                 .withName(helper.entryName())
                 .withDescription(helper.entryDescription())
                 .withIcon("minecraft:lever")
-                .withX(6).withY(3)
+                .withLocation(entryHelper.get('2'))
                 .withPages(conditionLevel1EntryInfoPage)
                 .withCondition(conditionLevel1EntryCondition)
                 .withParent(BookEntryParentModel.builder().withEntryId(conditionRootEntry.getId()).build())
@@ -173,7 +182,7 @@ public class BookGenerator implements DataProvider {
                 .withName(helper.entryName())
                 .withDescription(helper.entryDescription())
                 .withIcon("minecraft:torch")
-                .withX(6).withY(6)
+                .withLocation(entryHelper.get('3'))
                 .withPages(conditionLevel2EntryInfoPage)
                 .withCondition(conditionLevel2EntryCondition)
                 .withParent(BookEntryParentModel.builder().withEntryId(conditionLevel1Entry.getId()).build())
