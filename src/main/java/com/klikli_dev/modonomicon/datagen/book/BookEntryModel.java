@@ -8,8 +8,11 @@ package com.klikli_dev.modonomicon.datagen.book;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.klikli_dev.modonomicon.datagen.book.BookCategoryModel.Builder;
+import com.klikli_dev.modonomicon.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.datagen.book.page.BookPageModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,7 @@ public class BookEntryModel {
     protected int y;
     protected boolean hideWhileLocked;
     protected List<BookPageModel> pages = new ArrayList<>();
+    protected BookConditionModel condition;
 
     public static Builder builder() {
         return new Builder();
@@ -40,11 +44,27 @@ public class BookEntryModel {
         json.addProperty("y", this.y);
         json.addProperty("hide_while_locked", this.hideWhileLocked);
 
-        var pagesArray = new JsonArray();
-        for (BookPageModel page : this.pages) {
-            pagesArray.add(page.toJson());
+        if(!this.parents.isEmpty()){
+            var parentsArray = new JsonArray();
+            for (var parent : this.parents) {
+                parentsArray.add(parent.toJson());
+            }
+            json.add("parents", parentsArray);
         }
-        json.add("pages", pagesArray);
+
+        if(!this.pages.isEmpty()) {
+            var pagesArray = new JsonArray();
+            for (var page : this.pages) {
+                pagesArray.add(page.toJson());
+            }
+            json.add("pages", pagesArray);
+        }
+
+
+        if(this.condition != null) {
+            json.add("condition", this.condition.toJson());
+        }
+
         return json;
     }
 
@@ -103,6 +123,7 @@ public class BookEntryModel {
         protected int y;
         protected boolean hideWhileLocked;
         protected List<BookPageModel> pages = new ArrayList<>();
+        protected BookConditionModel condition;
 
         private Builder() {
         }
@@ -151,6 +172,10 @@ public class BookEntryModel {
             return this;
         }
 
+        public Builder withLocation(Vec2 location) {
+            return this.withX((int)location.x).withY((int)location.y);
+        }
+
         public Builder withX(int x) {
             this.x = x;
             return this;
@@ -181,6 +206,11 @@ public class BookEntryModel {
             return this;
         }
 
+        public Builder withCondition(BookConditionModel condition) {
+            this.condition = condition;
+            return this;
+        }
+
         public BookEntryModel build() {
             BookEntryModel bookEntryModel = new BookEntryModel();
             bookEntryModel.description = this.description;
@@ -193,6 +223,7 @@ public class BookEntryModel {
             bookEntryModel.parents = this.parents;
             bookEntryModel.id = this.id;
             bookEntryModel.pages = this.pages;
+            bookEntryModel.condition = this.condition;
             return bookEntryModel;
         }
     }

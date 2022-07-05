@@ -145,6 +145,7 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
 
         boolean unlockedAny = false;
         do {
+            unlockedAny = false;
             var iter = unlockedConditions.iterator();
             while (iter.hasNext()) {
                 var condition = iter.next();

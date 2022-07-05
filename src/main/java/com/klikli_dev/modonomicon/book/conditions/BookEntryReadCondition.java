@@ -65,7 +65,7 @@ public class BookEntryReadCondition extends BookCondition {
     @Override
     public List<Component> getTooltip(BookConditionContext context) {
         if (this.tooltip == null && context instanceof BookConditionEntryContext entryContext) {
-            this.tooltip = Component.translatable(Tooltips.CONDITION_ENTRY_READ, entryContext.getBook().getEntry(this.entryId).getName());
+            this.tooltip = Component.translatable(Tooltips.CONDITION_ENTRY_READ, Component.translatable(entryContext.getBook().getEntry(this.entryId).getName()));
         }
         return super.getTooltip(context);
     }

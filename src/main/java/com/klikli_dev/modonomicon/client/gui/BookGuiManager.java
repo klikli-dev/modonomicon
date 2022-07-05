@@ -53,7 +53,7 @@ public class BookGuiManager {
 
     public void openBook(ItemStack stack) {
         //TODO: we probably want to remember the last page and stuff here
-        var bookId = new ResourceLocation("modonomicon", "test"); //TODO: Get from stack
+        var bookId = new ResourceLocation("modonomicon", "demo"); //TODO: Get from stack
 
         if (this.showErrorScreen(bookId)) {
             return;

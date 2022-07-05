@@ -29,12 +29,12 @@ public class BookConditionModel {
         json.addProperty("type", this.getType().toString());
         if (this.tooltipString != null)
             json.addProperty("tooltip", this.tooltipString);
-        else
+        if (this.tooltip != null)
             json.addProperty("tooltip", Component.Serializer.toJson(this.tooltip));
         return json;
     }
 
-    public ResourceLocation getType(){
+    public ResourceLocation getType() {
         return this.type;
     }
 }

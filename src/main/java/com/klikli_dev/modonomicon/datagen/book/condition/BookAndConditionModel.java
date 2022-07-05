@@ -8,16 +8,18 @@
 
 package com.klikli_dev.modonomicon.datagen.book.condition;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Condition;
 import net.minecraft.network.chat.Component;
 
-public class BookAdvancementConditionModel extends BookConditionModel {
-    protected String advancementId;
+public class BookAndConditionModel extends BookConditionModel {
 
-    protected BookAdvancementConditionModel(String advancementId, Component tooltip, String tooltipString) {
-        super(Condition.ADVANCEMENT, tooltip, tooltipString);
-        this.advancementId = advancementId;
+    protected BookConditionModel[] children;
+
+    protected BookAndConditionModel(BookConditionModel[] children, Component tooltip, String tooltipString) {
+        super(Condition.AND, tooltip, tooltipString);
+        this.children = children;
     }
 
     public static Builder builder() {
@@ -27,12 +29,16 @@ public class BookAdvancementConditionModel extends BookConditionModel {
     @Override
     public JsonObject toJson() {
         var json = super.toJson();
-        json.addProperty("advancement_id", this.advancementId);
+        var children = new JsonArray();
+        for (var child : this.children) {
+            children.add(child.toJson());
+        }
+        json.add("children", children);
         return json;
     }
 
     public static final class Builder {
-        protected String advancementId;
+        protected BookConditionModel[] children;
         protected Component tooltip;
         protected String tooltipString;
 
@@ -43,8 +49,8 @@ public class BookAdvancementConditionModel extends BookConditionModel {
             return new Builder();
         }
 
-        public Builder withAdvancementId(String advancementId) {
-            this.advancementId = advancementId;
+        public Builder withChildren(BookConditionModel... children) {
+            this.children = children;
             return this;
         }
 
@@ -61,9 +67,8 @@ public class BookAdvancementConditionModel extends BookConditionModel {
             return this;
         }
 
-
-        public BookAdvancementConditionModel build() {
-            BookAdvancementConditionModel model = new BookAdvancementConditionModel(this.advancementId, this.tooltip, this.tooltipString);
+        public BookAndConditionModel build() {
+            BookAndConditionModel model = new BookAndConditionModel(this.children, this.tooltip, this.tooltipString);
             return model;
         }
     }

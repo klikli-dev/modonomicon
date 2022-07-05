@@ -21,6 +21,8 @@ public class BookModel {
     protected int defaultTitleColor = 0x00000;
     protected List<BookCategoryModel> categories = new ArrayList<>();
 
+    protected boolean autoAddReadConditions;
+
     public static Builder builder() {
         return new Builder();
     }
@@ -55,6 +57,7 @@ public class BookModel {
         json.addProperty("book_overview_texture", this.bookOverviewTexture.toString());
         json.addProperty("book_content_texture", this.bookContentTexture.toString());
         json.addProperty("default_title_color", this.defaultTitleColor);
+        json.addProperty("auto_add_read_conditions", this.autoAddReadConditions);
         return json;
     }
 
@@ -65,6 +68,7 @@ public class BookModel {
         protected ResourceLocation bookContentTexture = new ResourceLocation(Data.Book.DEFAULT_CONTENT_TEXTURE);
         protected int defaultTitleColor = 0x00000;
         protected List<BookCategoryModel> categories = new ArrayList<>();
+        protected boolean autoAddReadConditions;
 
         private Builder() {
         }
@@ -113,6 +117,11 @@ public class BookModel {
             return this;
         }
 
+        public Builder withAutoAddReadConditions(boolean autoAddReadConditions) {
+            this.autoAddReadConditions = autoAddReadConditions;
+            return this;
+        }
+
         public BookModel build() {
             BookModel bookModel = new BookModel();
             for (var category : this.categories) {
@@ -125,6 +134,7 @@ public class BookModel {
             bookModel.bookContentTexture = this.bookContentTexture;
             bookModel.defaultTitleColor = this.defaultTitleColor;
             bookModel.name = this.name;
+            bookModel.autoAddReadConditions = this.autoAddReadConditions;
             return bookModel;
         }
     }

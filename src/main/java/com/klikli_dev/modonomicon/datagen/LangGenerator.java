@@ -9,6 +9,14 @@ package com.klikli_dev.modonomicon.datagen;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.*;
+import com.klikli_dev.modonomicon.datagen.book.BookCategoryModel;
+import com.klikli_dev.modonomicon.datagen.book.BookEntryModel;
+import com.klikli_dev.modonomicon.datagen.book.BookLangHelper;
+import com.klikli_dev.modonomicon.datagen.book.BookModel;
+import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryReadCondition;
+import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryUnlockedCondition;
+import com.klikli_dev.modonomicon.datagen.book.page.BookMultiblockPageModel;
+import com.klikli_dev.modonomicon.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -93,8 +101,73 @@ public abstract class LangGenerator extends LanguageProvider {
             this.advancementDescr("root", "The book of all books!");
         }
 
+
+        private void addDemoBook() {
+            var helper = new BookLangHelper(Modonomicon.MODID);
+            helper.book("demo");
+
+            this.addDemoBookFeaturesCategory(helper);
+
+            this.add(helper.bookName(), "Demo Book");
+        }
+
+        private void addDemoBookFeaturesCategory(BookLangHelper helper){
+            helper.category("features");
+
+            this.addDemoBookMultiblockEntry(helper);
+            this.addDemoBookConditionEntries(helper);
+            this.add(helper.categoryName(), "Features Category");
+
+        }
+
+        private void addDemoBookMultiblockEntry(BookLangHelper helper){
+            helper.entry("multiblock");
+
+            helper.page("intro");
+            this.add(helper.pageTitle(), "Multiblock Page");
+            this.add(helper.pageText(), "Multiblock pages allow to preview multiblocks both in the book and in the world.");
+
+            helper.page("preview");
+            this.add("multiblocks.modonomicon.blockentity", "Blockentity Multiblock."); //TODO: should probably move into another part of langgen
+            this.add(helper.pageText(), "A sample multiblock.");
+
+            this.add(helper.entryName(), "Multiblock Entry");
+            this.add(helper.entryDescription(), "An entry showcasing a multiblock.");
+        }
+
+        private void addDemoBookConditionEntries(BookLangHelper helper){
+
+            helper.entry("condition_root");
+            helper.page("info");
+            this.add(helper.pageTitle(), "Condition Root");
+            this.add(helper.pageText(), "Root page for our condition / unlock tests.");
+
+            this.add(helper.entryName(), "Condition Root Entry");
+            this.add(helper.entryDescription(), "Condition Root Entry");
+
+
+            helper.entry("condition_level_1");
+            helper.page("info");
+            this.add(helper.pageTitle(), "Condition Level 1");
+            this.add(helper.pageText(), "This entry depends on Condition Root being read.");
+
+            this.add(helper.entryName(), "Condition Level 1 Entry");
+            this.add(helper.entryDescription(), "Depends on Condition Root being read.");
+
+            helper.entry("condition_level_2");
+            helper.page("info");
+            this.add(helper.pageTitle(), "Condition Level 2");
+            this.add(helper.pageText(), "This entry depends on Condition Level 1 being unlocked.");
+
+            this.add(helper.entryName(), "Condition Level 2 Entry");
+            this.add(helper.entryDescription(), "Depends on Condition Level 1 being unlocked.");
+        }
+
         private void addBooks() {
             //TODO: convert this into a real data gen for books
+
+            this.addDemoBook();
+
             this.add("modonomicon.test_book.title", "Test Book");
 
             this.add("modonomicon.test.entries.test_category.test_entry.description", "Test Description");

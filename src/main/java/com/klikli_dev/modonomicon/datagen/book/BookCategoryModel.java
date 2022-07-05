@@ -8,6 +8,8 @@ package com.klikli_dev.modonomicon.datagen.book;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Category;
+import com.klikli_dev.modonomicon.datagen.book.condition.BookConditionModel;
+import com.klikli_dev.modonomicon.datagen.book.condition.BookTrueConditionModel;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -22,6 +24,8 @@ public class BookCategoryModel {
     protected ResourceLocation background = new ResourceLocation(Category.DEFAULT_BACKGROUND);
     protected ResourceLocation entryTextures = new ResourceLocation(Category.DEFAULT_ENTRY_TEXTURES);
     protected List<BookEntryModel> entries = new ArrayList<>();
+
+    protected BookConditionModel condition;
 
     private BookCategoryModel() {
     }
@@ -45,6 +49,9 @@ public class BookCategoryModel {
         json.addProperty("sort_number", this.sortNumber);
         json.addProperty("background", this.background.toString());
         json.addProperty("entry_textures", this.entryTextures.toString());
+        if(this.condition != null) {
+            json.add("condition", this.condition.toJson());
+        }
         return json;
     }
 
@@ -81,6 +88,7 @@ public class BookCategoryModel {
         protected ResourceLocation background = new ResourceLocation(Category.DEFAULT_BACKGROUND);
         protected ResourceLocation entryTextures = new ResourceLocation(Category.DEFAULT_ENTRY_TEXTURES);
         protected List<BookEntryModel> entries = new ArrayList<>();
+        protected BookConditionModel condition;
 
         private Builder() {
         }
@@ -125,7 +133,7 @@ public class BookCategoryModel {
         }
 
         public Builder withEntries(List<BookEntryModel> entries) {
-            this.entries = entries;
+            this.entries.addAll(entries);
             return this;
         }
 
@@ -136,6 +144,11 @@ public class BookCategoryModel {
 
         public Builder withEntry(BookEntryModel entry) {
             this.entries.add(entry);
+            return this;
+        }
+
+        public Builder withCondition(BookConditionModel condition) {
+            this.condition = condition;
             return this;
         }
 
@@ -156,6 +169,7 @@ public class BookCategoryModel {
             bookCategoryModel.entries = this.entries;
             bookCategoryModel.name = this.name;
             bookCategoryModel.sortNumber = this.sortNumber;
+            bookCategoryModel.condition = this.condition;
 
             return bookCategoryModel;
         }
