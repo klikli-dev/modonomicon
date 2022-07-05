@@ -16,6 +16,7 @@ import java.util.List;
 public class BookModel {
     protected ResourceLocation id;
     protected String name;
+    protected String creativeTab = "misc";
     protected ResourceLocation bookOverviewTexture = new ResourceLocation(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
     protected ResourceLocation bookContentTexture = new ResourceLocation(Data.Book.DEFAULT_CONTENT_TEXTURE);
     protected int defaultTitleColor = 0x00000;
@@ -54,6 +55,7 @@ public class BookModel {
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("name", this.name);
+        json.addProperty("creative_tab", this.creativeTab);
         json.addProperty("book_overview_texture", this.bookOverviewTexture.toString());
         json.addProperty("book_content_texture", this.bookContentTexture.toString());
         json.addProperty("default_title_color", this.defaultTitleColor);
@@ -64,6 +66,7 @@ public class BookModel {
     public static final class Builder {
         protected ResourceLocation id;
         protected String name;
+        protected String creativeTab = "misc";
         protected ResourceLocation bookOverviewTexture = new ResourceLocation(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
         protected ResourceLocation bookContentTexture = new ResourceLocation(Data.Book.DEFAULT_CONTENT_TEXTURE);
         protected int defaultTitleColor = 0x00000;
@@ -84,6 +87,11 @@ public class BookModel {
 
         public Builder withName(String name) {
             this.name = name;
+            return this;
+        }
+
+        public Builder withCreativeTab(String creativeTab) {
+            this.creativeTab = creativeTab;
             return this;
         }
 
@@ -135,6 +143,7 @@ public class BookModel {
             bookModel.defaultTitleColor = this.defaultTitleColor;
             bookModel.name = this.name;
             bookModel.autoAddReadConditions = this.autoAddReadConditions;
+            bookModel.creativeTab = this.creativeTab;
             return bookModel;
         }
     }

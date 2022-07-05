@@ -54,8 +54,7 @@ public class ModonimiconConstants {
 
         public static final String VERSION_TAG = PREFIX + "nbt_version";
 
-        public static final String BOOK_OPEN_TAG = PREFIX + "book_open";
-
+        public static final String ITEM_BOOK_ID_TAG = PREFIX + "book_id";
     }
 
     public static class I18n {
