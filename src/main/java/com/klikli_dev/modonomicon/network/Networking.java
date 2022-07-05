@@ -8,8 +8,6 @@ package com.klikli_dev.modonomicon.network;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.network.messages.*;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.Connection;
 import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
@@ -103,10 +101,10 @@ public class Networking {
     }
 
     public static <T> void sendToSplit(ServerPlayer player, T message) {
-            Packet<?> vanillaPacket = INSTANCE.toVanillaPacket(message, NetworkDirection.PLAY_TO_CLIENT);
-            var packets = new ArrayList<Packet<?>>();
-            VanillaPacketSplitter.appendPackets(ConnectionProtocol.PLAY, PacketFlow.CLIENTBOUND, vanillaPacket, packets);
-            packets.forEach(player.connection::send);
+        Packet<?> vanillaPacket = INSTANCE.toVanillaPacket(message, NetworkDirection.PLAY_TO_CLIENT);
+        var packets = new ArrayList<Packet<?>>();
+        VanillaPacketSplitter.appendPackets(ConnectionProtocol.PLAY, PacketFlow.CLIENTBOUND, vanillaPacket, packets);
+        packets.forEach(player.connection::send);
     }
 
     public static <T> void sendTo(ServerPlayer player, T message) {
