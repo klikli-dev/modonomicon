@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.item;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Nbt;
+import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 
 import com.klikli_dev.modonomicon.data.BookDataManager;
@@ -36,8 +37,8 @@ public class ModonomiconItem extends Item {
         if (pLevel.isClientSide) {
 
             if(itemInHand.hasTag()){
-                var id = itemInHand.getTag().getString(Nbt.ITEM_BOOK_ID_TAG);
-                BookGuiManager.get().openBook(ResourceLocation.tryParse(id));
+                var id = getBookId(itemInHand);
+                BookGuiManager.get().openBook(id);
             } else {
                 Modonomicon.LOGGER.error("ModonomiconItem: ItemStack has no tag!");
             }
@@ -61,5 +62,22 @@ public class ModonomiconItem extends Item {
                 items.add(stack);
             }
         });
+    }
+
+    public static Book getBook(ItemStack stack) {
+        ResourceLocation res = getBookId(stack);
+        if (res == null) {
+            return null;
+        }
+        return BookDataManager.get().getBook(res);
+    }
+
+    private static ResourceLocation getBookId(ItemStack stack) {
+        if (!stack.hasTag() || !stack.getTag().contains(Nbt.ITEM_BOOK_ID_TAG)) {
+            return null;
+        }
+
+        String bookStr = stack.getTag().getString(Nbt.ITEM_BOOK_ID_TAG);
+        return ResourceLocation.tryParse(bookStr);
     }
 }

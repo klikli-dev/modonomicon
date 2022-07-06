@@ -7,10 +7,14 @@
 package com.klikli_dev.modonomicon.client;
 
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Book;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.InteractionResult;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -83,5 +87,13 @@ public class ClientSetupEventHandler {
 
             Modonomicon.LOGGER.debug("Registered Item Properties");
         });
+    }
+
+    public static void onModelBake(ModelBakeEvent event){
+        ModelResourceLocation key = new ModelResourceLocation(Book.ITEM_ID, "inventory");
+        BakedModel oldModel = event.getModelRegistry().get(key);
+        if (oldModel != null) {
+            event.getModelRegistry().put(key, new BookBakedModel(oldModel, event.getModelLoader()));
+        }
     }
 }

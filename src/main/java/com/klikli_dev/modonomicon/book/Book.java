@@ -30,6 +30,8 @@ public class Book {
     protected ResourceLocation id;
     protected String name;
     protected String creativeTab;
+
+    protected ResourceLocation model;
     protected ResourceLocation bookOverviewTexture;
     protected ResourceLocation bookContentTexture;
     protected ResourceLocation turnPageSound;
@@ -45,9 +47,10 @@ public class Book {
     protected boolean autoAddReadConditions;
 
 
-    public Book(ResourceLocation id, String name, String creativeTab, ResourceLocation bookOverviewTexture, ResourceLocation bookContentTexture, ResourceLocation turnPageSound, int defaultTitleColor, boolean autoAddReadConditions) {
+    public Book(ResourceLocation id, String name, ResourceLocation model, String creativeTab, ResourceLocation bookOverviewTexture, ResourceLocation bookContentTexture, ResourceLocation turnPageSound, int defaultTitleColor, boolean autoAddReadConditions) {
         this.id = id;
         this.name = name;
+        this.model = model;
         this.creativeTab = creativeTab;
         this.bookOverviewTexture = bookOverviewTexture;
         this.bookContentTexture = bookContentTexture;
@@ -60,26 +63,28 @@ public class Book {
 
     public static Book fromJson(ResourceLocation id, JsonObject json) {
         var name = GsonHelper.getAsString(json, "name");
+        var model = new ResourceLocation(GsonHelper.getAsString(json, "model", Data.Book.DEFAULT_MODEL));
         var creativeTab = GsonHelper.getAsString(json, "creative_tab", "misc");
         var bookOverviewTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_overview_texture", Data.Book.DEFAULT_OVERVIEW_TEXTURE));
         var bookContentTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_content_texture", Data.Book.DEFAULT_CONTENT_TEXTURE));
         var turnPageSound = new ResourceLocation(GsonHelper.getAsString(json, "turn_page_sound", Data.Book.DEFAULT_PAGE_TURN_SOUND));
         var defaultTitleColor = GsonHelper.getAsInt(json, "default_title_color", 0x00000);
         var autoAddReadConditions = GsonHelper.getAsBoolean(json, "auto_add_read_conditions", false);
-        return new Book(id, name, creativeTab, bookOverviewTexture, bookContentTexture, turnPageSound, defaultTitleColor, autoAddReadConditions);
+        return new Book(id, name, model, creativeTab, bookOverviewTexture, bookContentTexture, turnPageSound, defaultTitleColor, autoAddReadConditions);
     }
 
     //TODO: further properties for customization, such as book item, title color...
 
     public static Book fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
         var name = buffer.readUtf();
+        var model = buffer.readResourceLocation();
         var creativeTab = buffer.readUtf();
         var bookOverviewTexture = buffer.readResourceLocation();
         var bookContentTexture = buffer.readResourceLocation();
         var turnPageSound = buffer.readResourceLocation();
         var defaultTitleColor = buffer.readInt();
         var autoAddReadConditions = buffer.readBoolean();
-        return new Book(id, name, creativeTab, bookOverviewTexture, bookContentTexture, turnPageSound, defaultTitleColor, autoAddReadConditions);
+        return new Book(id, name, model, creativeTab, bookOverviewTexture, bookContentTexture, turnPageSound, defaultTitleColor, autoAddReadConditions);
     }
 
     public ResourceLocation getTurnPageSound() {
@@ -166,6 +171,7 @@ public class Book {
 
     public void toNetwork(FriendlyByteBuf buffer) {
         buffer.writeUtf(this.name);
+        buffer.writeResourceLocation(this.model);
         buffer.writeUtf(this.creativeTab);
         buffer.writeResourceLocation(this.bookOverviewTexture);
         buffer.writeResourceLocation(this.bookContentTexture);
@@ -176,5 +182,9 @@ public class Book {
 
     public ResourceLocation getBookContentTexture() {
         return this.bookContentTexture;
+    }
+
+    public ResourceLocation getModel() {
+        return this.model;
     }
 }

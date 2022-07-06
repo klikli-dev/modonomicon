@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.datagen.book;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data;
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Book;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -17,6 +18,8 @@ public class BookModel {
     protected ResourceLocation id;
     protected String name;
     protected String creativeTab = "misc";
+
+    protected ResourceLocation model = new ResourceLocation(Book.DEFAULT_MODEL);
     protected ResourceLocation bookOverviewTexture = new ResourceLocation(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
     protected ResourceLocation bookContentTexture = new ResourceLocation(Data.Book.DEFAULT_CONTENT_TEXTURE);
     protected int defaultTitleColor = 0x00000;
@@ -55,6 +58,7 @@ public class BookModel {
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("name", this.name);
+        json.addProperty("model", this.model.toString());
         json.addProperty("creative_tab", this.creativeTab);
         json.addProperty("book_overview_texture", this.bookOverviewTexture.toString());
         json.addProperty("book_content_texture", this.bookContentTexture.toString());
@@ -66,7 +70,10 @@ public class BookModel {
     public static final class Builder {
         protected ResourceLocation id;
         protected String name;
+
         protected String creativeTab = "misc";
+
+        protected ResourceLocation model = new ResourceLocation(Book.DEFAULT_MODEL);
         protected ResourceLocation bookOverviewTexture = new ResourceLocation(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
         protected ResourceLocation bookContentTexture = new ResourceLocation(Data.Book.DEFAULT_CONTENT_TEXTURE);
         protected int defaultTitleColor = 0x00000;
@@ -105,6 +112,12 @@ public class BookModel {
             return this;
         }
 
+        public Builder withModel(ResourceLocation model) {
+            this.model = model;
+            return this;
+        }
+
+
         public Builder withDefaultTitleColor(int defaultTitleColor) {
             this.defaultTitleColor = defaultTitleColor;
             return this;
@@ -142,6 +155,7 @@ public class BookModel {
             bookModel.bookContentTexture = this.bookContentTexture;
             bookModel.defaultTitleColor = this.defaultTitleColor;
             bookModel.name = this.name;
+            bookModel.model = this.model;
             bookModel.autoAddReadConditions = this.autoAddReadConditions;
             bookModel.creativeTab = this.creativeTab;
             return bookModel;

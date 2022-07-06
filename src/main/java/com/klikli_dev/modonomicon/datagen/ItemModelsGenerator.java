@@ -44,6 +44,10 @@ public class ItemModelsGenerator extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        this.registerItemGenerated(this.name(ItemRegistry.MODONOMICON.get()), "modonomicon");
+        this.registerItemGenerated(this.name(ItemRegistry.MODONOMICON.get()), "modonomicon_purple");
+        this.registerItemGenerated("modonomicon_blue", "modonomicon_blue");
+        this.registerItemGenerated("modonomicon_green", "modonomicon_green");
+        this.registerItemGenerated("modonomicon_purple", "modonomicon_purple");
+        this.registerItemGenerated("modonomicon_red", "modonomicon_red");
     }
 }

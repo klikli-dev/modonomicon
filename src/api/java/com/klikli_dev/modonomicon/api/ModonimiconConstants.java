@@ -18,6 +18,10 @@ public class ModonimiconConstants {
             public static final String DEFAULT_OVERVIEW_TEXTURE = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/book_overview.png").toString();
             public static final String DEFAULT_CONTENT_TEXTURE = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/book_content.png").toString();
             public static final String DEFAULT_PAGE_TURN_SOUND = new ResourceLocation(ModonomiconAPI.ID, "turn_page").toString();
+            public static final String DEFAULT_MODEL = new ResourceLocation(ModonomiconAPI.ID, "modonomicon_purple").toString();
+            public static final ResourceLocation ITEM_ID = new ResourceLocation(ModonomiconAPI.ID, "modonomicon");
+
+
         }
 
         public static class Category {

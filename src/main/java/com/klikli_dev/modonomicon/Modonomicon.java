@@ -81,6 +81,7 @@ public class Modonomicon {
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
             modEventBus.addListener(ClientSetupEventHandler::onClientSetup);
+            modEventBus.addListener(ClientSetupEventHandler::onModelBake);
         }
     }
 
