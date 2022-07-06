@@ -18,7 +18,6 @@ import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.conditions.BookAndCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookEntryReadCondition;
-import com.klikli_dev.modonomicon.book.conditions.BookTrueCondition;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.network.Message;
@@ -128,14 +127,14 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         }
     }
 
-    public void addReadConditions(){
+    public void addReadConditions() {
         for (var book : this.books.values()) {
-            if(book.autoAddReadConditions()){
+            if (book.autoAddReadConditions()) {
                 for (var entry : book.getEntries().values()) {
-                    if(entry.getCondition().getType().equals(Condition.TRUE)){
-                        if(entry.getParents().size() == 1){
+                    if (entry.getCondition().getType().equals(Condition.TRUE)) {
+                        if (entry.getParents().size() == 1) {
                             entry.setCondition(new BookEntryReadCondition(null, entry.getParents().get(0).getEntryId()));
-                        } else if(entry.getParents().size() > 1){
+                        } else if (entry.getParents().size() > 1) {
                             var conditions = entry.getParents().stream().map(parent ->
                                     new BookEntryReadCondition(null, parent.getEntryId())).toList();
                             var andCondition = new BookAndCondition(null, conditions.toArray(new BookEntryReadCondition[0]));

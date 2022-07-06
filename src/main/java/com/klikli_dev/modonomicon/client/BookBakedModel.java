@@ -19,13 +19,14 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class BookBakedModel implements BakedModel {
         this.overrides = new ItemOverrides(loader, missing, id -> missing, Collections.emptyList()) {
             @Override
             public BakedModel resolve(@NotNull BakedModel original, @NotNull ItemStack stack,
-                                      @org.jetbrains.annotations.Nullable ClientLevel world, @org.jetbrains.annotations.Nullable LivingEntity entity, int seed) {
+                                      @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
                 Book book = ModonomiconItem.getBook(stack);
                 if (book != null) {
                     ModelResourceLocation modelPath = new ModelResourceLocation(book.getModel(), "inventory");
@@ -54,42 +55,42 @@ public class BookBakedModel implements BakedModel {
 
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource random) {
-        return original.getQuads(state, side, random);
+        return this.original.getQuads(state, side, random);
     }
 
     @Override
     public boolean useAmbientOcclusion() {
-        return original.useAmbientOcclusion();
+        return this.original.useAmbientOcclusion();
     }
 
     @Override
     public boolean isGui3d() {
-        return original.isGui3d();
+        return this.original.isGui3d();
     }
 
     @Override
     public boolean usesBlockLight() {
-        return original.usesBlockLight();
+        return this.original.usesBlockLight();
     }
 
     @Override
     public boolean isCustomRenderer() {
-        return original.isCustomRenderer();
+        return this.original.isCustomRenderer();
     }
 
     @NotNull
     @Override
     public TextureAtlasSprite getParticleIcon() {
-        return original.getParticleIcon();
+        return this.original.getParticleIcon();
     }
 
     @Override
     public ItemTransforms getTransforms() {
-        return original.getTransforms();
+        return this.original.getTransforms();
     }
 
     @Override
     public ItemOverrides getOverrides() {
-        return overrides;
+        return this.overrides;
     }
 }

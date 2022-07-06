@@ -20,6 +20,16 @@ public class ItemRegistry {
     public static final RegistryObject<Item> MODONOMICON =
             ITEMS.register("modonomicon", () -> new ModonomiconItem(defaultProperties()));
 
+    //Dummy items for default models
+    public static final RegistryObject<Item> MODONOMICON_BLUE =
+            ITEMS.register("modonomicon_blue", () -> new ModonomiconItem(new Item.Properties()));
+    public static final RegistryObject<Item> MODONOMICON_GREEN =
+            ITEMS.register("modonomicon_greem", () -> new ModonomiconItem(new Item.Properties()));
+    public static final RegistryObject<Item> MODONOMICON_PURPLE =
+            ITEMS.register("modonomicon_purple", () -> new ModonomiconItem(new Item.Properties()));
+    public static final RegistryObject<Item> MODONOMICON_RED =
+            ITEMS.register("modonomicon_red", () -> new ModonomiconItem(new Item.Properties()));
+
     public static Item.Properties defaultProperties() {
         return new Item.Properties().tab(Modonomicon.CREATIVE_MODE_TAB);
     }

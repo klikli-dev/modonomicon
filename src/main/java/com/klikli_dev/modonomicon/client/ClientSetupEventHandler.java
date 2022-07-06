@@ -7,7 +7,7 @@
 package com.klikli_dev.modonomicon.client;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Book;
+import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import net.minecraft.client.Minecraft;
@@ -18,7 +18,6 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -89,8 +88,8 @@ public class ClientSetupEventHandler {
         });
     }
 
-    public static void onModelBake(ModelBakeEvent event){
-        ModelResourceLocation key = new ModelResourceLocation(Book.ITEM_ID, "inventory");
+    public static void onModelBake(ModelBakeEvent event) {
+        ModelResourceLocation key = new ModelResourceLocation(ModonimiconConstants.Data.Book.ITEM_ID, "inventory");
         BakedModel oldModel = event.getModelRegistry().get(key);
         if (oldModel != null) {
             event.getModelRegistry().put(key, new BookBakedModel(oldModel, event.getModelLoader()));
