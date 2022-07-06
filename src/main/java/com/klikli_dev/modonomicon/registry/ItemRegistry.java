@@ -24,7 +24,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> MODONOMICON_BLUE =
             ITEMS.register("modonomicon_blue", () -> new ModonomiconItem(new Item.Properties()));
     public static final RegistryObject<Item> MODONOMICON_GREEN =
-            ITEMS.register("modonomicon_greem", () -> new ModonomiconItem(new Item.Properties()));
+            ITEMS.register("modonomicon_green", () -> new ModonomiconItem(new Item.Properties()));
     public static final RegistryObject<Item> MODONOMICON_PURPLE =
             ITEMS.register("modonomicon_purple", () -> new ModonomiconItem(new Item.Properties()));
     public static final RegistryObject<Item> MODONOMICON_RED =
