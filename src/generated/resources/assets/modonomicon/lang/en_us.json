@@ -20,6 +20,7 @@
   "book.modonomicon.demo.features.multiblock.preview.text": "A sample multiblock.",
   "book.modonomicon.demo.features.name": "Features Category",
   "book.modonomicon.demo.name": "Demo Book",
+  "book.modonomicon.demo.tooltip": "A book to showcase & test Modonomicon features.",
   "item.modonomicon.modonomicon": "Modonomicon",
   "itemGroup.modonomicon": "Modonomicon",
   "modonomicon.command.error.load_progress": "Invalid unlock code!",
@@ -53,8 +54,9 @@
   "modonomicon.test.sections.test_category.test_entry_child.page2.text": "And this is our page three.   \n[With link](entry://modonomicon:test/test_category/test_entry@test_anchor)\n",
   "modonomicon.test.sections.test_category.test_entry_child.page_with_error.text": "Page with invalid link!   \n[With link](entry://modonomicon:test/test_category/test_entry2@test_anchor)\n",
   "modonomicon.test_book.title": "Test Book",
-  "modonomicon.tooltip..condition.advancement": "Requires Advancement: %s",
-  "modonomicon.tooltip..condition.entry_read": "Requires read Entry: %s",
-  "modonomicon.tooltip..condition.entry_unlocked": "Requires unlocked Entry: %s",
-  "multiblocks.modonomicon.blockentity": "Blockentity Multiblock."
+  "multiblocks.modonomicon.blockentity": "Blockentity Multiblock.",
+  "tooltip.modonomicon..condition.advancement": "Requires Advancement: %s",
+  "tooltip.modonomicon..condition.entry_read": "Requires read Entry: %s",
+  "tooltip.modonomicon..condition.entry_unlocked": "Requires unlocked Entry: %s",
+  "tooltip.modonomicon.no_book_found_for_stack": "No book found for this item in the modonomicon book database! Nbt: %s"
 }

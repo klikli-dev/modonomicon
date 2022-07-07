@@ -18,6 +18,9 @@ public class ModonimiconConstants {
             public static final String DEFAULT_OVERVIEW_TEXTURE = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/book_overview.png").toString();
             public static final String DEFAULT_CONTENT_TEXTURE = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/book_content.png").toString();
             public static final String DEFAULT_PAGE_TURN_SOUND = new ResourceLocation(ModonomiconAPI.ID, "turn_page").toString();
+            public static final String DEFAULT_MODEL = new ResourceLocation(ModonomiconAPI.ID, "modonomicon_purple").toString();
+            public static final ResourceLocation ITEM_ID = new ResourceLocation(ModonomiconAPI.ID, "modonomicon");
+
         }
 
         public static class Category {
@@ -54,8 +57,7 @@ public class ModonimiconConstants {
 
         public static final String VERSION_TAG = PREFIX + "nbt_version";
 
-        public static final String BOOK_OPEN_TAG = PREFIX + "book_open";
-
+        public static final String ITEM_BOOK_ID_TAG = PREFIX + "book_id";
     }
 
     public static class I18n {
@@ -91,11 +93,13 @@ public class ModonimiconConstants {
         }
 
         public static class Tooltips {
-            public static final String PREFIX = ModonomiconAPI.ID + ".tooltip.";
+            public static final String PREFIX = "tooltip." + ModonomiconAPI.ID + ".";
             public static final String CONDITION_PREFIX =PREFIX + ".condition.";
             public static final String CONDITION_ADVANCEMENT = CONDITION_PREFIX + "advancement";
             public static final String CONDITION_ENTRY_UNLOCKED = CONDITION_PREFIX + "entry_unlocked";
             public static final String CONDITION_ENTRY_READ = CONDITION_PREFIX + "entry_read";
+
+            public static final String ITEM_NO_BOOK_FOUND_FOR_STACK = PREFIX + "no_book_found_for_stack";
         }
 
         public static class Command {

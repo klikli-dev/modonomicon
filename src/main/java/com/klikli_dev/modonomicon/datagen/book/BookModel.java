@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.datagen.book;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data;
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Book;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -16,6 +17,10 @@ import java.util.List;
 public class BookModel {
     protected ResourceLocation id;
     protected String name;
+    protected String tooltip;
+    protected String creativeTab = "misc";
+
+    protected ResourceLocation model = new ResourceLocation(Book.DEFAULT_MODEL);
     protected ResourceLocation bookOverviewTexture = new ResourceLocation(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
     protected ResourceLocation bookContentTexture = new ResourceLocation(Data.Book.DEFAULT_CONTENT_TEXTURE);
     protected int defaultTitleColor = 0x00000;
@@ -39,6 +44,18 @@ public class BookModel {
         return this.name;
     }
 
+    public String getTooltip() {
+        return this.tooltip;
+    }
+
+    public String getCreativeTab() {
+        return this.creativeTab;
+    }
+
+    public ResourceLocation getModel() {
+        return this.model;
+    }
+
     public ResourceLocation getBookOverviewTexture() {
         return this.bookOverviewTexture;
     }
@@ -54,6 +71,9 @@ public class BookModel {
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("name", this.name);
+        json.addProperty("tooltip", this.tooltip);
+        json.addProperty("model", this.model.toString());
+        json.addProperty("creative_tab", this.creativeTab);
         json.addProperty("book_overview_texture", this.bookOverviewTexture.toString());
         json.addProperty("book_content_texture", this.bookContentTexture.toString());
         json.addProperty("default_title_color", this.defaultTitleColor);
@@ -64,6 +84,11 @@ public class BookModel {
     public static final class Builder {
         protected ResourceLocation id;
         protected String name;
+        protected String tooltip;
+
+        protected String creativeTab = "misc";
+
+        protected ResourceLocation model = new ResourceLocation(Book.DEFAULT_MODEL);
         protected ResourceLocation bookOverviewTexture = new ResourceLocation(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
         protected ResourceLocation bookContentTexture = new ResourceLocation(Data.Book.DEFAULT_CONTENT_TEXTURE);
         protected int defaultTitleColor = 0x00000;
@@ -87,6 +112,16 @@ public class BookModel {
             return this;
         }
 
+        public Builder withTooltip(String tooltip) {
+            this.tooltip = tooltip;
+            return this;
+        }
+
+        public Builder withCreativeTab(String creativeTab) {
+            this.creativeTab = creativeTab;
+            return this;
+        }
+
         public Builder withBookOverviewTexture(ResourceLocation bookOverviewTexture) {
             this.bookOverviewTexture = bookOverviewTexture;
             return this;
@@ -96,6 +131,12 @@ public class BookModel {
             this.bookContentTexture = bookContentTexture;
             return this;
         }
+
+        public Builder withModel(ResourceLocation model) {
+            this.model = model;
+            return this;
+        }
+
 
         public Builder withDefaultTitleColor(int defaultTitleColor) {
             this.defaultTitleColor = defaultTitleColor;
@@ -134,7 +175,10 @@ public class BookModel {
             bookModel.bookContentTexture = this.bookContentTexture;
             bookModel.defaultTitleColor = this.defaultTitleColor;
             bookModel.name = this.name;
+            bookModel.tooltip = this.tooltip;
+            bookModel.model = this.model;
             bookModel.autoAddReadConditions = this.autoAddReadConditions;
+            bookModel.creativeTab = this.creativeTab;
             return bookModel;
         }
     }
