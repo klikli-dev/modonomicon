@@ -5,5 +5,6 @@
   "creative_tab": "misc",
   "default_title_color": 0,
   "model": "modonomicon:modonomicon_purple",
-  "name": "book.modonomicon.demo.name"
+  "name": "book.modonomicon.demo.name",
+  "tooltip": "book.modonomicon.demo.tooltip"
 }

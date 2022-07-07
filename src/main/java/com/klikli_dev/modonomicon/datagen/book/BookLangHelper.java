@@ -52,6 +52,9 @@ public class BookLangHelper {
     public String bookName(){
         return this.book() + ".name";
     }
+    public String bookTooltip(){
+        return this.book() + ".tooltip";
+    }
 
     public String category(){
         return this.book() + "." + this.category;

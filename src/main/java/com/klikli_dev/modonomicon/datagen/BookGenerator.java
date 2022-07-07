@@ -72,6 +72,7 @@ public class BookGenerator implements DataProvider {
         var demoBook = BookModel.builder()
                 .withId(this.modLoc("demo"))
                 .withName(helper.bookName())
+                .withTooltip(helper.bookTooltip())
                 .withCategories(featuresCategory)
                 .build();
         return demoBook;

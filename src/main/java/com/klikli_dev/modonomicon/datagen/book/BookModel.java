@@ -17,6 +17,7 @@ import java.util.List;
 public class BookModel {
     protected ResourceLocation id;
     protected String name;
+    protected String tooltip;
     protected String creativeTab = "misc";
 
     protected ResourceLocation model = new ResourceLocation(Book.DEFAULT_MODEL);
@@ -43,6 +44,18 @@ public class BookModel {
         return this.name;
     }
 
+    public String getTooltip() {
+        return this.tooltip;
+    }
+
+    public String getCreativeTab() {
+        return this.creativeTab;
+    }
+
+    public ResourceLocation getModel() {
+        return this.model;
+    }
+
     public ResourceLocation getBookOverviewTexture() {
         return this.bookOverviewTexture;
     }
@@ -58,6 +71,7 @@ public class BookModel {
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("name", this.name);
+        json.addProperty("tooltip", this.tooltip);
         json.addProperty("model", this.model.toString());
         json.addProperty("creative_tab", this.creativeTab);
         json.addProperty("book_overview_texture", this.bookOverviewTexture.toString());
@@ -70,6 +84,7 @@ public class BookModel {
     public static final class Builder {
         protected ResourceLocation id;
         protected String name;
+        protected String tooltip;
 
         protected String creativeTab = "misc";
 
@@ -94,6 +109,11 @@ public class BookModel {
 
         public Builder withName(String name) {
             this.name = name;
+            return this;
+        }
+
+        public Builder withTooltip(String tooltip) {
+            this.tooltip = tooltip;
             return this;
         }
 
@@ -155,6 +175,7 @@ public class BookModel {
             bookModel.bookContentTexture = this.bookContentTexture;
             bookModel.defaultTitleColor = this.defaultTitleColor;
             bookModel.name = this.name;
+            bookModel.tooltip = this.tooltip;
             bookModel.model = this.model;
             bookModel.autoAddReadConditions = this.autoAddReadConditions;
             bookModel.creativeTab = this.creativeTab;

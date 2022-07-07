@@ -8,14 +8,22 @@ package com.klikli_dev.modonomicon.item;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Nbt;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
+import com.klikli_dev.modonomicon.registry.SoundRegistry;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -23,7 +31,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+
+import java.util.List;
 
 public class ModonomiconItem extends Item {
     public ModonomiconItem(Properties pProperties) {
@@ -37,8 +48,8 @@ public class ModonomiconItem extends Item {
         if (pLevel.isClientSide) {
 
             if(itemInHand.hasTag()){
-                var id = getBookId(itemInHand);
-                BookGuiManager.get().openBook(id);
+                var book = getBook(itemInHand);
+                BookGuiManager.get().openBook(book.getId());
             } else {
                 Modonomicon.LOGGER.error("ModonomiconItem: ItemStack has no tag!");
             }
@@ -62,6 +73,38 @@ public class ModonomiconItem extends Item {
                 items.add(stack);
             }
         });
+    }
+
+    @Override
+    public Component getName(ItemStack pStack) {
+        Book book = getBook(pStack);
+        if (book != null) {
+            return Component.translatable(book.getName());
+        }
+
+        return super.getName(pStack);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+
+        Book book = getBook(stack);
+        if(book != null){
+            if (flagIn.isAdvanced()) {
+                tooltip.add(Component.literal("Book ID: ").withStyle(ChatFormatting.DARK_GRAY)
+                        .append(Component.literal(book.getId().toString()).withStyle(ChatFormatting.RED)));
+            }
+
+            if (!book.getTooltip().isBlank()) {
+                tooltip.add(Component.translatable(book.getTooltip()).withStyle(ChatFormatting.GRAY));
+            }
+        }
+        else {
+            tooltip.add(Component.translatable(Tooltips.ITEM_NO_BOOK_FOUND_FOR_STACK,
+                    !stack.hasTag() ? Component.literal("{}") : NbtUtils.toPrettyComponent(stack.getTag()))
+                    .withStyle(ChatFormatting.DARK_GRAY));
+        }
     }
 
     public static Book getBook(ItemStack stack) {

@@ -21,7 +21,6 @@ public class ModonimiconConstants {
             public static final String DEFAULT_MODEL = new ResourceLocation(ModonomiconAPI.ID, "modonomicon_purple").toString();
             public static final ResourceLocation ITEM_ID = new ResourceLocation(ModonomiconAPI.ID, "modonomicon");
 
-
         }
 
         public static class Category {
@@ -94,11 +93,13 @@ public class ModonimiconConstants {
         }
 
         public static class Tooltips {
-            public static final String PREFIX = ModonomiconAPI.ID + ".tooltip.";
+            public static final String PREFIX = "tooltip." + ModonomiconAPI.ID + ".";
             public static final String CONDITION_PREFIX =PREFIX + ".condition.";
             public static final String CONDITION_ADVANCEMENT = CONDITION_PREFIX + "advancement";
             public static final String CONDITION_ENTRY_UNLOCKED = CONDITION_PREFIX + "entry_unlocked";
             public static final String CONDITION_ENTRY_READ = CONDITION_PREFIX + "entry_read";
+
+            public static final String ITEM_NO_BOOK_FOUND_FOR_STACK = PREFIX + "no_book_found_for_stack";
         }
 
         public static class Command {
