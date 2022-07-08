@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
 import com.klikli_dev.modonomicon.capability.BookStateCapability;
 import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
+import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.BookEntryReadMessage;
@@ -134,6 +135,7 @@ public class BookCategoryScreen {
             var displayStyle = this.getEntryDisplayState(entry);
             if (displayStyle == EntryDisplayState.UNLOCKED) {
                 if (this.isEntryHovered(entry, xOffset, yOffset, (int) pMouseX, (int) pMouseY)) {
+                    BookGuiManager.get().pushHistory(entry.getBook().getId(), entry.getCategory().getId(), entry.getId(), 0);
                     this.openEntry(entry);
                     return true;
                 }
@@ -338,6 +340,7 @@ public class BookCategoryScreen {
             if(state.openEntry != null){
                 var openEntry = this.category.getEntry(state.openEntry);
                 if(openEntry != null){
+                    //no need to load history here, will be handled by book content screen
                     this.openEntry(openEntry);
                 }
             }

@@ -69,10 +69,10 @@ public class BookGuiManager {
         }
     }
 
-    public void openEntry(ResourceLocation bookId, ResourceLocation entryId, int page) {
+    public void openEntry(ResourceLocation bookId, ResourceLocation entryId, int page, boolean pushHistory) {
         var book = BookDataManager.get().getBook(bookId);
         var entry = book.getEntry(entryId);
-        this.openEntry(bookId, entry.getCategoryId(), entryId, page);
+        this.openEntry(bookId, entry.getCategoryId(), entryId, page, pushHistory);
     }
 
     public void pushHistory(ResourceLocation bookId, @Nullable ResourceLocation categoryId, @Nullable ResourceLocation entryId, int page) {
@@ -91,8 +91,8 @@ public class BookGuiManager {
         return this.history.peek();
     }
 
-    public boolean hasHistory() {
-        return !this.history.isEmpty();
+    public int getHistorySize() {
+        return this.history.size();
     }
 
     public void resetHistory() {
@@ -103,7 +103,7 @@ public class BookGuiManager {
      * Opens the book at the given location. Will open as far as possible (meaning, if category and entry are null, it
      * will not open those obviously).
      */
-    public void openEntry(ResourceLocation bookId, @Nullable ResourceLocation categoryId, @Nullable ResourceLocation entryId, int page) {
+    public void openEntry(ResourceLocation bookId, @Nullable ResourceLocation categoryId, @Nullable ResourceLocation entryId, int page, boolean pushHistory) {
         if (bookId == null) {
             throw new IllegalArgumentException("bookId cannot be null");
         }
@@ -112,7 +112,8 @@ public class BookGuiManager {
             return;
         }
 
-        this.pushHistory(bookId, categoryId, entryId, page);
+        if(pushHistory)
+            this.pushHistory(bookId, categoryId, entryId, page);
 
         var book = BookDataManager.get().getBook(bookId);
         if (this.currentBook != book) {

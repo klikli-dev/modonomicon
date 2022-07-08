@@ -18,11 +18,10 @@ public class BackButton extends BookButton {
     public static final int WIDTH = 18;
 
     public BackButton(BookContentScreen parent, int x, int y) {
-        super(parent, x, y, U, left ? V + HEIGHT : V, WIDTH, HEIGHT, () -> parent.canSeeArrowButton(left),
-                Component.translatable(left ? Gui.BUTTON_PREVIOUS : Gui.BUTTON_NEXT),
-                parent::handleArrowButton,
-                Component.translatable(left ? Gui.BUTTON_PREVIOUS : Gui.BUTTON_NEXT)
-                //button title equals hover text
+        super(parent, x, y, U, V, WIDTH, HEIGHT, parent::canSeeBackButton,
+                Component.translatable(Gui.BUTTON_BACK),
+                parent::handleBackButton,
+                Component.translatable(Gui.BUTTON_BACK_TOOLTIP)
         );
     }
 }

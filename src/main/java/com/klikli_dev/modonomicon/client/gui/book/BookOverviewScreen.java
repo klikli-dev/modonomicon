@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.capability.BookStateCapability;
 import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
+import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryButton;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.network.Networking;
@@ -247,6 +248,8 @@ public class BookOverviewScreen extends Screen {
     public void onClose() {
         this.getCurrentCategoryScreen().onClose();
         Networking.sendToServer(new SaveBookStateMessage(this.book, this.getCurrentCategoryScreen().getCategory().getId()));
+
+        BookGuiManager.get().resetHistory();
 
         super.onClose();
     }

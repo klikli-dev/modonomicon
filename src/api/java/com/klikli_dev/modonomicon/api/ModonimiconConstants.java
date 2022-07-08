@@ -68,6 +68,8 @@ public class ModonimiconConstants {
             public static final String PREFIX = ModonomiconAPI.ID + ".gui.";
             public static final String BUTTON_NEXT = PREFIX + "button.next_page";
             public static final String BUTTON_PREVIOUS = PREFIX + "button.previous_page";
+            public static final String BUTTON_BACK = PREFIX + "button.back";
+            public static final String BUTTON_BACK_TOOLTIP = PREFIX + "button.back.tooltip";
             public static final String BUTTON_EXIT = PREFIX + "button.exit";
 
             public static final String BUTTON_VISUALIZE = PREFIX + "button.visualize";
