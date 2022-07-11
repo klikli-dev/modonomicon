@@ -62,7 +62,7 @@ public class CategoryButton extends Button {
 
             //then draw icon
 
-            int iconOffset = 6;
+            int iconOffset = 8;
             this.category.getIcon().render(pMatrixStack, renderX + iconOffset, this.y + 2);
         }
 
