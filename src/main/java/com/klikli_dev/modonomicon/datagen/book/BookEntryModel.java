@@ -113,17 +113,17 @@ public class BookEntryModel {
     }
 
     public static final class Builder {
-        protected ResourceLocation id;
-        protected BookCategoryModel category;
-        protected List<BookEntryParentModel> parents = new ArrayList<>();
-        protected String name;
-        protected String description = "";
-        protected String icon;
-        protected int x;
-        protected int y;
-        protected boolean hideWhileLocked;
-        protected List<BookPageModel> pages = new ArrayList<>();
-        protected BookConditionModel condition;
+        public ResourceLocation id;
+        public BookCategoryModel category;
+        public List<BookEntryParentModel> parents = new ArrayList<>();
+        public String name;
+        public String description = "";
+        public String icon;
+        public int x;
+        public int y;
+        public boolean hideWhileLocked;
+        public List<BookPageModel> pages = new ArrayList<>();
+        public BookConditionModel condition;
 
         private Builder() {
         }

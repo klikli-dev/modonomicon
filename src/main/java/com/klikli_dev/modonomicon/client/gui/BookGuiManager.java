@@ -8,22 +8,22 @@ package com.klikli_dev.modonomicon.client.gui;
 
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
-import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
-import com.klikli_dev.modonomicon.client.gui.book.BookCategoryScreen;
-import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
-import com.klikli_dev.modonomicon.client.gui.book.BookErrorScreen;
-import com.klikli_dev.modonomicon.client.gui.book.BookOverviewScreen;
+import com.klikli_dev.modonomicon.client.gui.book.*;
+import com.klikli_dev.modonomicon.data.BookDataManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.ForgeHooksClient;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Stack;
 
 public class BookGuiManager {
 
     private static final BookGuiManager instance = new BookGuiManager();
+
+    private final Stack<BookHistoryEntry> history = new Stack<>();
 
     private Book currentBook;
     private BookCategory currentCategory;
@@ -73,6 +73,37 @@ public class BookGuiManager {
         var book = BookDataManager.get().getBook(bookId);
         var entry = book.getEntry(entryId);
         this.openEntry(bookId, entry.getCategoryId(), entryId, page);
+    }
+
+    public void pushHistory(ResourceLocation bookId, @Nullable ResourceLocation entryId, int page) {
+        var book = BookDataManager.get().getBook(bookId);
+        var entry = book.getEntry(entryId);
+        this.history.push(new BookHistoryEntry(bookId, entry.getCategoryId(), entryId, page));
+    }
+
+    public void pushHistory(ResourceLocation bookId, @Nullable ResourceLocation categoryId, @Nullable ResourceLocation entryId, int page) {
+        this.history.push(new BookHistoryEntry(bookId, categoryId, entryId, page));
+    }
+
+
+    public void pushHistory(BookHistoryEntry entry) {
+        this.history.push(entry);
+    }
+
+    public BookHistoryEntry popHistory() {
+        return this.history.pop();
+    }
+
+    public BookHistoryEntry peekHistory() {
+        return this.history.peek();
+    }
+
+    public int getHistorySize() {
+        return this.history.size();
+    }
+
+    public void resetHistory() {
+        this.history.clear();
     }
 
     /**
@@ -127,10 +158,13 @@ public class BookGuiManager {
 
         if (this.currentContentScreen == null || this.currentContentScreen.getEntry() != entry) {
             this.currentContentScreen = this.currentCategoryScreen.openEntry(entry);
+        } else {
+            //we are clearing the gui layers above, so we have to restore here if we do not call openentry
+            ForgeHooksClient.pushGuiLayer(Minecraft.getInstance(), this.currentContentScreen);
         }
 
         //we don't need to manually check for the current page because the content screen will do that for us
-        this.currentContentScreen.changePage(page, false);
+        this.currentContentScreen.goToPage(page, false);
         //TODO: play sound here? could just make this a client config
     }
 }

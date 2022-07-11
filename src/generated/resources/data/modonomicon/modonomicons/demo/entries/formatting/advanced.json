@@ -1,0 +1,35 @@
+{
+  "category": "modonomicon:formatting",
+  "description": "book.modonomicon.demo.formatting.advanced.description",
+  "hide_while_locked": false,
+  "icon": "minecraft:feather",
+  "name": "book.modonomicon.demo.formatting.advanced.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.formatting.advanced.page1.text",
+      "title": "book.modonomicon.demo.formatting.advanced.page1.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.formatting.advanced.page2.text",
+      "title": "",
+      "use_markdown_in_title": false
+    }
+  ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "modonomicon:formatting/basic",
+      "line_enabled": true,
+      "line_reversed": false
+    }
+  ],
+  "x": -4,
+  "y": -1
+}

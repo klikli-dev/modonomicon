@@ -15,6 +15,7 @@ import com.klikli_dev.modonomicon.capability.BookStateCapability;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
+import com.klikli_dev.modonomicon.client.gui.book.button.BackButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
@@ -66,9 +67,9 @@ public class BookContentScreen extends Screen {
     private final BookEntry entry;
     private final ResourceLocation bookContentTexture;
     public int ticksInBook;
+    public boolean simulateEscClosing;
     private BookPage leftPage;
     private BookPage rightPage;
-
     private BookPageRenderer<?> leftPageRenderer;
     private BookPageRenderer<?> rightPageRenderer;
     private int bookLeft;
@@ -79,8 +80,6 @@ public class BookContentScreen extends Screen {
     private int openPagesIndex;
     private int maxOpenPagesIndex;
     private List<Component> tooltip;
-
-    public boolean simulateEscClosing;
 
     public BookContentScreen(BookOverviewScreen parentScreen, BookEntry entry) {
         super(Component.literal(""));
@@ -144,12 +143,25 @@ public class BookContentScreen extends Screen {
         return left ? this.openPagesIndex > 0 : (this.openPagesIndex + 1) < this.maxOpenPagesIndex;
     }
 
+    public boolean canSeeBackButton() {
+        return BookGuiManager.get().getHistorySize() > 0;
+    }
+
     /**
      * Needs to use Button instead of ArrowButton to conform to Button.OnPress otherwise we can't use it as method
      * reference, which we need - lambda can't use this in super constructor call.
      */
     public void handleArrowButton(Button button) {
-        this.changePage(((ArrowButton) button).left, true);
+        this.flipPage(((ArrowButton) button).left, true);
+    }
+
+    public void handleBackButton(Button button) {
+        if (BookGuiManager.get().getHistorySize() > 0) {
+            var lastPage = BookGuiManager.get().popHistory();
+            BookGuiManager.get().openEntry(lastPage.bookId, lastPage.categoryId, lastPage.entryId, lastPage.page);
+        }
+
+        //TODO: SFX?
     }
 
     public void handleExitButton(Button button) {
@@ -163,7 +175,7 @@ public class BookContentScreen extends Screen {
     /**
      * Will change to the specified page, if not open already
      */
-    public void changePage(int pageIndex, boolean playSound) {
+    public void goToPage(int pageIndex, boolean playSound) {
         int openPagesIndex = pageIndex / 2; //will floor, which is what we want
         if (openPagesIndex >= 0 && openPagesIndex < this.maxOpenPagesIndex) {
             if (this.openPagesIndex != openPagesIndex) {
@@ -177,6 +189,38 @@ public class BookContentScreen extends Screen {
         } else {
             Modonomicon.LOGGER.warn("Tried to change to page index {} corresponding with " +
                     "openPagesIndex {} but max open pages index is {}.", pageIndex, openPagesIndex, this.maxOpenPagesIndex);
+        }
+    }
+
+    protected void flipPage(boolean left, boolean playSound) {
+        if (this.canSeeArrowButton(left)) {
+
+            var oldOpenPagesIndex = this.openPagesIndex;
+            if (left) {
+                this.openPagesIndex--;
+            } else {
+                this.openPagesIndex++;
+            }
+
+            if(BookGuiManager.get().getHistorySize() > 0){
+                var lastPage = BookGuiManager.get().peekHistory();
+                if(lastPage.bookId == this.entry.getBook().getId() && lastPage.entryId == this.entry.getId() && lastPage.page == this.openPagesIndex * 2) {
+                    //if we're flipping back to the last page in the history, don't add a new history entry,
+                    // and remove the old one to avoid weird back-and-forth jumps when using the back button
+                    BookGuiManager.get().popHistory();
+                } else {
+                    //if we flip to a new page, add a new history entry for the page we were on before flipping
+                    BookGuiManager.get().pushHistory(this.entry.getBook().getId(), this.entry.getCategory().getId(), this.entry.getId(), oldOpenPagesIndex * 2);
+                }
+            } else {
+                //if we don't have any history, add a new history entry for the page we were on before flipping
+                BookGuiManager.get().pushHistory(this.entry.getBook().getId(), this.entry.getCategory().getId(), this.entry.getId(), oldOpenPagesIndex * 2);
+            }
+
+            this.onPageChanged();
+            if (playSound) {
+                playTurnPageSound(this.getBook());
+            }
         }
     }
 
@@ -270,20 +314,6 @@ public class BookContentScreen extends Screen {
         }
     }
 
-    protected void changePage(boolean left, boolean playSound) {
-        if (this.canSeeArrowButton(left)) {
-            if (left) {
-                this.openPagesIndex--;
-            } else {
-                this.openPagesIndex++;
-            }
-
-            this.onPageChanged();
-            if (playSound) {
-                playTurnPageSound(this.getBook());
-            }
-        }
-    }
 
     protected void onPageChanged() {
         this.beginDisplayPages();
@@ -339,7 +369,7 @@ public class BookContentScreen extends Screen {
     @Override
     public void onClose() {
 
-        if(this.simulateEscClosing || InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_ESCAPE)){
+        if (this.simulateEscClosing || InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_ESCAPE)) {
             Networking.sendToServer(new SaveEntryStateMessage(this.entry, this.openPagesIndex));
 
             super.onClose();
@@ -384,11 +414,15 @@ public class BookContentScreen extends Screen {
                             page = entry.getPageNumberForAnchor(link.pageAnchor);
                         }
 
+                        //we push the page we are currently on to the history
+                        BookGuiManager.get().pushHistory(this.entry.getBook().getId(), this.entry.getCategory().getId(), this.entry.getId(), this.openPagesIndex * 2);
                         BookGuiManager.get().openEntry(link.bookId, link.entryId, page);
                     } else if (link.categoryId != null) {
                         BookGuiManager.get().openEntry(link.bookId, link.categoryId, null, 0);
+                        //Currently we do not push categories to history
                     } else {
                         BookGuiManager.get().openEntry(link.bookId, null, null, 0);
+                        //Currently we do not push categories to history
                     }
                     return true;
                 }
@@ -407,6 +441,7 @@ public class BookContentScreen extends Screen {
         this.maxOpenPagesIndex = (int) Math.ceil((float) this.entry.getPages().size() / 2);
         this.beginDisplayPages();
 
+        this.addRenderableWidget(new BackButton(this, this.width / 2 - BackButton.WIDTH / 2, this.bookTop + FULL_HEIGHT - BackButton.HEIGHT / 2));
         this.addRenderableWidget(new ArrowButton(this, this.bookLeft - 4, this.bookTop + FULL_HEIGHT - 6, true));
         this.addRenderableWidget(new ArrowButton(this, this.bookLeft + FULL_WIDTH - 14, this.bookTop + FULL_HEIGHT - 6, false));
         this.addRenderableWidget(new ExitButton(this, this.bookLeft + FULL_WIDTH - 10, this.bookTop - 2));
