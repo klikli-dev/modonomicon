@@ -263,12 +263,12 @@ public class BookOverviewScreen extends Screen {
     protected void init() {
         super.init();
 
-        int buttonXOffset = -8;
+        int buttonXOffset = -11;
 
         int buttonX = (this.width - this.getFrameWidth()) / 2 - this.getFrameThicknessW() + buttonXOffset;
         int buttonY = (this.height - this.getFrameHeight()) / 2 - this.getFrameThicknessH() + 30;
         //calculate button width so it aligns with the outer edge of the frame
-        int buttonWidth = (this.width - this.getFrameWidth()) / 2 + buttonXOffset;
+        int buttonWidth = (this.width - this.getFrameWidth()) / 2 + buttonXOffset + 6;
         int buttonHeight = 20;
         int buttonSpacing = 2;
 
