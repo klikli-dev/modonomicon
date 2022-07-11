@@ -9,14 +9,7 @@ package com.klikli_dev.modonomicon.datagen;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.*;
-import com.klikli_dev.modonomicon.datagen.book.BookCategoryModel;
-import com.klikli_dev.modonomicon.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.datagen.book.BookLangHelper;
-import com.klikli_dev.modonomicon.datagen.book.BookModel;
-import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryReadCondition;
-import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryUnlockedCondition;
-import com.klikli_dev.modonomicon.datagen.book.page.BookMultiblockPageModel;
-import com.klikli_dev.modonomicon.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -39,11 +32,11 @@ public abstract class LangGenerator extends LanguageProvider {
     }
 
     protected void advancementTitle(String name, String s) {
-        this.add(((TranslatableContents)AdvancementsGenerator.title(name).getContents()).getKey(), s);
+        this.add(((TranslatableContents) AdvancementsGenerator.title(name).getContents()).getKey(), s);
     }
 
     protected void advancementDescr(String name, String s) {
-        this.add(((TranslatableContents)AdvancementsGenerator.descr(name).getContents()).getKey(), s);
+        this.add(((TranslatableContents) AdvancementsGenerator.descr(name).getContents()).getKey(), s);
     }
 
 
@@ -110,12 +103,13 @@ public abstract class LangGenerator extends LanguageProvider {
             helper.book("demo");
 
             this.addDemoBookFeaturesCategory(helper);
+            this.addDemoBookFormattingCategory(helper);
 
             this.add(helper.bookName(), "Demo Book");
             this.add(helper.bookTooltip(), "A book to showcase & test Modonomicon features.");
         }
 
-        private void addDemoBookFeaturesCategory(BookLangHelper helper){
+        private void addDemoBookFeaturesCategory(BookLangHelper helper) {
             helper.category("features");
 
             this.addDemoBookMultiblockEntry(helper);
@@ -124,7 +118,7 @@ public abstract class LangGenerator extends LanguageProvider {
 
         }
 
-        private void addDemoBookMultiblockEntry(BookLangHelper helper){
+        private void addDemoBookMultiblockEntry(BookLangHelper helper) {
             helper.entry("multiblock");
 
             helper.page("intro");
@@ -139,7 +133,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(helper.entryDescription(), "An entry showcasing a multiblock.");
         }
 
-        private void addDemoBookConditionEntries(BookLangHelper helper){
+        private void addDemoBookConditionEntries(BookLangHelper helper) {
 
             helper.entry("condition_root");
             helper.page("info");
@@ -165,6 +159,72 @@ public abstract class LangGenerator extends LanguageProvider {
 
             this.add(helper.entryName(), "Condition Level 2 Entry");
             this.add(helper.entryDescription(), "Depends on Condition Level 1 being unlocked.");
+        }
+
+        private void addDemoBookFormattingCategory(BookLangHelper helper) {
+            helper.category("formatting");
+
+            this.addDemoBookBasicFormattingEntry(helper);
+            this.addDemoBookAdvancedFormattingEntry(helper);
+//            this.addDemoBookLinkFormattingEntry(helper);
+            this.add(helper.categoryName(), "Formatting Category");
+        }
+
+        private void addDemoBookBasicFormattingEntry(BookLangHelper helper) {
+            helper.entry("basic");
+
+            helper.page("page1"); //bold, italics, underlines,
+            this.add(helper.pageTitle(), "Basic Formatting");
+            this.add(helper.pageText(),
+                    """
+                            **This is bold**    \s
+                            *This is italics*    \s
+                            ++This is underlined++
+                                 """);
+
+            helper.page("page2"); ////strikethrough, color
+
+            //this.add(helper.pageTitle(), "");
+            this.add(helper.pageText(),
+                    """
+                            ~~This is stricken through~~   \s
+                            [#](55FF55)Colorful Text![#]()
+                                 """);
+
+            this.add(helper.entryName(), "Basic Formatting Entry");
+            this.add(helper.entryDescription(), "An entry showcasing basic formatting.");
+        }
+
+        private void addDemoBookAdvancedFormattingEntry(BookLangHelper helper) {
+            helper.entry("advanced");
+
+            helper.page("page1");  //translatable texts, mixed formatting
+            this.add(helper.pageTitle(), "Advanced Formatting");
+            this.add(helper.pageText(),
+                    """
+                            <t>this.could.be.a.translation.key<t>    \s
+                            ***This is bold italics***    \s
+                            *++This is italics underlined++*
+                                 """);
+
+            helper.page("page2"); //lists
+
+            //this.add(helper.pageTitle(), "");
+            this.add(helper.pageText(),
+                    """
+                            Unordered List:
+                            - List item 
+                            - List item 2
+                            - List item 3
+                            \\
+                            \\
+                            Ordered List:
+                            1. Entry 1
+                            2. Entry 2
+                                 """);
+
+            this.add(helper.entryName(), "Advanced Formatting Entry");
+            this.add(helper.entryDescription(), "An entry showcasing advanced formatting.");
         }
 
         private void addBooks() {

@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.datagen;
 
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Book;
 import com.klikli_dev.modonomicon.datagen.book.*;
 import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryReadCondition;
 import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryUnlockedCondition;
@@ -68,12 +69,14 @@ public class BookGenerator implements DataProvider {
         helper.book("demo");
 
         var featuresCategory = this.makeFeaturesCategory(helper);
+        var formattingCategory = this.makeFormattingCategory(helper);
 
         var demoBook = BookModel.builder()
                 .withId(this.modLoc("demo"))
                 .withName(helper.bookName())
                 .withTooltip(helper.bookTooltip())
-                .withCategories(featuresCategory)
+                .withCategory(featuresCategory)
+                .withCategory(formattingCategory)
                 .build();
         return demoBook;
     }
@@ -98,7 +101,7 @@ public class BookGenerator implements DataProvider {
                 .withId(this.modLoc("features"))
                 .withName(helper.categoryName())
                 .withIcon("minecraft:nether_star")
-                .withEntries(multiblockEntry)
+                .withEntry(multiblockEntry)
                 .withEntries(conditionEntries)
                 .build();
     }
@@ -191,6 +194,114 @@ public class BookGenerator implements DataProvider {
         result.add(conditionLevel2Entry);
 
         return result;
+    }
+
+    private BookCategoryModel makeFormattingCategory(BookLangHelper helper) {
+        helper.category("formatting");
+
+        var entryHelper = new EntryLocationHelper();
+        entryHelper.setMap(
+                "_____________________",
+                "__b___a______________",
+                "__________l__________",
+                "_____________________",
+                "_____________________"
+        );
+
+        var basicFormattingEntry = this.makeBasicFormattingEntry(helper, entryHelper);
+        var advancedFormattingEntry = this.makeAdvancedFormattingEntry(helper, entryHelper);
+        var linkFormattingEntry = this.makeLinkFormattingEntry(helper, entryHelper);
+
+        linkFormattingEntry.withParent(BookEntryParentModel.builder().withEntryId(advancedFormattingEntry.id).build());
+        advancedFormattingEntry.withParent(BookEntryParentModel.builder().withEntryId(basicFormattingEntry.id).build());
+
+        return BookCategoryModel.builder()
+                .withId(this.modLoc("formatting"))
+                .withName(helper.categoryName())
+                .withIcon("minecraft:book")
+                .withEntry(basicFormattingEntry.build())
+                .withEntry(advancedFormattingEntry.build())
+                .withEntry(linkFormattingEntry.build())
+                .build();
+    }
+
+    private BookEntryModel.Builder makeBasicFormattingEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
+
+        helper.entry("basic");
+        helper.page("page1");
+        var page1 = BookTextPageModel.builder()
+                .withText(helper.pageText())
+                .withTitle(helper.pageTitle())
+                .build(); //bold, italics, underlines,
+
+        helper.page("page2");
+        var page2 = BookTextPageModel.builder()
+                .withText(helper.pageText())
+                //.withTitle(helper.pageTitle())
+                .build(); //strikethrough, color
+
+        var formattingEntry = BookEntryModel.builder()
+                .withId(this.modLoc("formatting/basic"))
+                .withName(helper.entryName())
+                .withDescription(helper.entryDescription())
+                .withIcon("minecraft:paper")
+                .withLocation(entryHelper.get('b'))
+                .withPage(page1)
+                .withPage(page2);
+
+        return formattingEntry;
+    }
+
+    private BookEntryModel.Builder makeAdvancedFormattingEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
+        helper.entry("advanced");
+        helper.page("page1");
+        var page1 = BookTextPageModel.builder()
+                .withText(helper.pageText())
+                .withTitle(helper.pageTitle())
+                .build(); //translatable texts, mixed formatting
+
+        helper.page("page2");
+        var page2 = BookTextPageModel.builder()
+                .withText(helper.pageText())
+                //.withTitle(helper.pageTitle())
+                .build(); //lists
+
+        var formattingEntry = BookEntryModel.builder()
+                .withId(this.modLoc("formatting/advanced"))
+                .withName(helper.entryName())
+                .withDescription(helper.entryDescription())
+                .withIcon("minecraft:feather")
+                .withLocation(entryHelper.get('a'))
+                .withPage(page1)
+                .withPage(page2);
+
+        return formattingEntry;
+    }
+
+    private BookEntryModel.Builder makeLinkFormattingEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
+        helper.entry("link");
+        helper.page("page1");
+        var page1 = BookTextPageModel.builder()
+                .withText(helper.pageText())
+                .withTitle(helper.pageTitle())
+                .build(); //http links
+
+        helper.page("page2");
+        var page2 = BookTextPageModel.builder()
+                .withText(helper.pageText())
+                .withTitle(helper.pageTitle())
+                .build(); //book entry links
+
+        var formattingEntry = BookEntryModel.builder()
+                .withId(this.modLoc("formatting/link"))
+                .withName(helper.entryName())
+                .withDescription(helper.entryDescription())
+                .withIcon("minecraft:writable_book")
+                .withLocation(entryHelper.get('l'))
+                .withPage(page1)
+                .withPage(page2);
+
+        return formattingEntry;
     }
 
     private BookModel add(BookModel bookModel) {
