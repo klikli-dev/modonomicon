@@ -144,7 +144,7 @@ public class BookContentScreen extends Screen {
     }
 
     public boolean canSeeBackButton() {
-        return BookGuiManager.get().getHistorySize() > 1; //1 is the current page
+        return BookGuiManager.get().getHistorySize() > 0;
     }
 
     /**
@@ -152,15 +152,13 @@ public class BookContentScreen extends Screen {
      * reference, which we need - lambda can't use this in super constructor call.
      */
     public void handleArrowButton(Button button) {
-        this.changePage(((ArrowButton) button).left, true);
+        this.flipPage(((ArrowButton) button).left, true);
     }
 
     public void handleBackButton(Button button) {
-        if (BookGuiManager.get().getHistorySize() > 1) {
-            BookGuiManager.get().popHistory(); // remove self
-
-            var lastPage = BookGuiManager.get().peekHistory();
-            BookGuiManager.get().openEntry(lastPage.bookId, lastPage.categoryId, lastPage.entryId, lastPage.page, false);
+        if (BookGuiManager.get().getHistorySize() > 0) {
+            var lastPage = BookGuiManager.get().popHistory();
+            BookGuiManager.get().openEntry(lastPage.bookId, lastPage.categoryId, lastPage.entryId, lastPage.page);
         }
 
         //TODO: SFX?
@@ -177,7 +175,7 @@ public class BookContentScreen extends Screen {
     /**
      * Will change to the specified page, if not open already
      */
-    public void changePage(int pageIndex, boolean playSound) {
+    public void goToPage(int pageIndex, boolean playSound) {
         int openPagesIndex = pageIndex / 2; //will floor, which is what we want
         if (openPagesIndex >= 0 && openPagesIndex < this.maxOpenPagesIndex) {
             if (this.openPagesIndex != openPagesIndex) {
@@ -191,6 +189,38 @@ public class BookContentScreen extends Screen {
         } else {
             Modonomicon.LOGGER.warn("Tried to change to page index {} corresponding with " +
                     "openPagesIndex {} but max open pages index is {}.", pageIndex, openPagesIndex, this.maxOpenPagesIndex);
+        }
+    }
+
+    protected void flipPage(boolean left, boolean playSound) {
+        if (this.canSeeArrowButton(left)) {
+
+            var oldOpenPagesIndex = this.openPagesIndex;
+            if (left) {
+                this.openPagesIndex--;
+            } else {
+                this.openPagesIndex++;
+            }
+
+            if(BookGuiManager.get().getHistorySize() > 0){
+                var lastPage = BookGuiManager.get().peekHistory();
+                if(lastPage.bookId == this.entry.getBook().getId() && lastPage.entryId == this.entry.getId() && lastPage.page == this.openPagesIndex * 2) {
+                    //if we're flipping back to the last page in the history, don't add a new history entry,
+                    // and remove the old one to avoid weird back-and-forth jumps when using the back button
+                    BookGuiManager.get().popHistory();
+                } else {
+                    //if we flip to a new page, add a new history entry for the page we were on before flipping
+                    BookGuiManager.get().pushHistory(this.entry.getBook().getId(), this.entry.getCategory().getId(), this.entry.getId(), oldOpenPagesIndex * 2);
+                }
+            } else {
+                //if we don't have any history, add a new history entry for the page we were on before flipping
+                BookGuiManager.get().pushHistory(this.entry.getBook().getId(), this.entry.getCategory().getId(), this.entry.getId(), oldOpenPagesIndex * 2);
+            }
+
+            this.onPageChanged();
+            if (playSound) {
+                playTurnPageSound(this.getBook());
+            }
         }
     }
 
@@ -284,20 +314,6 @@ public class BookContentScreen extends Screen {
         }
     }
 
-    protected void changePage(boolean left, boolean playSound) {
-        if (this.canSeeArrowButton(left)) {
-            if (left) {
-                this.openPagesIndex--;
-            } else {
-                this.openPagesIndex++;
-            }
-
-            this.onPageChanged();
-            if (playSound) {
-                playTurnPageSound(this.getBook());
-            }
-        }
-    }
 
     protected void onPageChanged() {
         this.beginDisplayPages();
@@ -318,9 +334,6 @@ public class BookContentScreen extends Screen {
         var state = BookStateCapability.getEntryStateFor(this.parentScreen.getMinecraft().player, this.entry);
         if (state != null) {
             this.openPagesIndex = state.openPagesIndex;
-
-            //history needs to translate open page index to a page index -> we just use the first of the two shown pages as it does not matter
-            BookGuiManager.get().pushHistory(this.entry.getBook().getId(), this.entry.getCategory().getId(), this.entry.getId(), this.openPagesIndex * 2);
         }
     }
 
@@ -401,12 +414,14 @@ public class BookContentScreen extends Screen {
                             page = entry.getPageNumberForAnchor(link.pageAnchor);
                         }
 
-                        BookGuiManager.get().openEntry(link.bookId, link.entryId, page, true);
+                        //we push the page we are currently on to the history
+                        BookGuiManager.get().pushHistory(this.entry.getBook().getId(), this.entry.getCategory().getId(), this.entry.getId(), this.openPagesIndex * 2);
+                        BookGuiManager.get().openEntry(link.bookId, link.entryId, page);
                     } else if (link.categoryId != null) {
-                        BookGuiManager.get().openEntry(link.bookId, link.categoryId, null, 0, false);
+                        BookGuiManager.get().openEntry(link.bookId, link.categoryId, null, 0);
                         //Currently we do not push categories to history
                     } else {
-                        BookGuiManager.get().openEntry(link.bookId, null, null, 0, false);
+                        BookGuiManager.get().openEntry(link.bookId, null, null, 0);
                         //Currently we do not push categories to history
                     }
                     return true;

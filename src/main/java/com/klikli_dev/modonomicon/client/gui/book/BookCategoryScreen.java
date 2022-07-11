@@ -135,7 +135,6 @@ public class BookCategoryScreen {
             var displayStyle = this.getEntryDisplayState(entry);
             if (displayStyle == EntryDisplayState.UNLOCKED) {
                 if (this.isEntryHovered(entry, xOffset, yOffset, (int) pMouseX, (int) pMouseY)) {
-                    BookGuiManager.get().pushHistory(entry.getBook().getId(), entry.getCategory().getId(), entry.getId(), 0);
                     this.openEntry(entry);
                     return true;
                 }

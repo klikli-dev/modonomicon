@@ -69,15 +69,22 @@ public class BookGuiManager {
         }
     }
 
-    public void openEntry(ResourceLocation bookId, ResourceLocation entryId, int page, boolean pushHistory) {
+    public void openEntry(ResourceLocation bookId, ResourceLocation entryId, int page) {
         var book = BookDataManager.get().getBook(bookId);
         var entry = book.getEntry(entryId);
-        this.openEntry(bookId, entry.getCategoryId(), entryId, page, pushHistory);
+        this.openEntry(bookId, entry.getCategoryId(), entryId, page);
+    }
+
+    public void pushHistory(ResourceLocation bookId, @Nullable ResourceLocation entryId, int page) {
+        var book = BookDataManager.get().getBook(bookId);
+        var entry = book.getEntry(entryId);
+        this.history.push(new BookHistoryEntry(bookId, entry.getCategoryId(), entryId, page));
     }
 
     public void pushHistory(ResourceLocation bookId, @Nullable ResourceLocation categoryId, @Nullable ResourceLocation entryId, int page) {
         this.history.push(new BookHistoryEntry(bookId, categoryId, entryId, page));
     }
+
 
     public void pushHistory(BookHistoryEntry entry) {
         this.history.push(entry);
@@ -103,7 +110,7 @@ public class BookGuiManager {
      * Opens the book at the given location. Will open as far as possible (meaning, if category and entry are null, it
      * will not open those obviously).
      */
-    public void openEntry(ResourceLocation bookId, @Nullable ResourceLocation categoryId, @Nullable ResourceLocation entryId, int page, boolean pushHistory) {
+    public void openEntry(ResourceLocation bookId, @Nullable ResourceLocation categoryId, @Nullable ResourceLocation entryId, int page) {
         if (bookId == null) {
             throw new IllegalArgumentException("bookId cannot be null");
         }
@@ -111,9 +118,6 @@ public class BookGuiManager {
         if (this.showErrorScreen(bookId)) {
             return;
         }
-
-        if(pushHistory)
-            this.pushHistory(bookId, categoryId, entryId, page);
 
         var book = BookDataManager.get().getBook(bookId);
         if (this.currentBook != book) {
@@ -154,10 +158,13 @@ public class BookGuiManager {
 
         if (this.currentContentScreen == null || this.currentContentScreen.getEntry() != entry) {
             this.currentContentScreen = this.currentCategoryScreen.openEntry(entry);
+        } else {
+            //we are clearing the gui layers above, so we have to restore here if we do not call openentry
+            ForgeHooksClient.pushGuiLayer(Minecraft.getInstance(), this.currentContentScreen);
         }
 
         //we don't need to manually check for the current page because the content screen will do that for us
-        this.currentContentScreen.changePage(page, false);
+        this.currentContentScreen.goToPage(page, false);
         //TODO: play sound here? could just make this a client config
     }
 }
