@@ -166,7 +166,7 @@ public abstract class LangGenerator extends LanguageProvider {
 
             this.addDemoBookBasicFormattingEntry(helper);
             this.addDemoBookAdvancedFormattingEntry(helper);
-//            this.addDemoBookLinkFormattingEntry(helper);
+            this.addDemoBookLinkFormattingEntry(helper);
             this.add(helper.categoryName(), "Formatting Category");
         }
 
@@ -217,7 +217,7 @@ public abstract class LangGenerator extends LanguageProvider {
                             - List item 2
                             - List item 3
                             \\
-                            \\
+                            
                             Ordered List:
                             1. Entry 1
                             2. Entry 2
@@ -225,6 +225,30 @@ public abstract class LangGenerator extends LanguageProvider {
 
             this.add(helper.entryName(), "Advanced Formatting Entry");
             this.add(helper.entryDescription(), "An entry showcasing advanced formatting.");
+        }
+
+        private void addDemoBookLinkFormattingEntry(BookLangHelper helper) {
+            helper.entry("link");
+
+            helper.page("page1"); //http links
+            this.add(helper.pageTitle(), "Http Links");
+            this.add(helper.pageText(),
+                    """
+                            [Click me!](https://klikli-dev.github.io/modonomicon/) \\
+                            [Or me!](https://github.com/klikli-dev/modonomicon)
+                                 """);
+
+            helper.page("page2"); //book entry links
+            this.add(helper.pageTitle(), "Book Links");
+            this.add(helper.pageText(),
+                    """
+                            [View a Multiblock](entry://modonomicon:demo/features/multiblock) \\
+                            [Link to a Condition](entry://modonomicon:demo/features/condition_level_1) \\
+                            [Link to basic formatting](entry://modonomicon:demo/formatting/basic)
+                                 """);
+
+            this.add(helper.entryName(), "Link Formatting Entry");
+            this.add(helper.entryDescription(), "An entry showcasing link formatting.");
         }
 
         private void addBooks() {
