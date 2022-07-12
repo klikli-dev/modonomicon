@@ -179,8 +179,7 @@ public class MultiblockPreviewRenderer {
     }
 
     public static void onRenderLevelLastEvent(RenderLevelStageEvent event) {
-        //if (event.getStage() == Stage.AFTER_TRANSLUCENT_BLOCKS) {
-        if (event.getStage() == Stage.AFTER_TRIPWIRE_BLOCKS) {
+        if (event.getStage() == Stage.AFTER_TRIPWIRE_BLOCKS) { //After translucent causes block entities to error out on render in preview
             if (hasMultiblock && multiblock != null) {
                 renderMultiblock(Minecraft.getInstance().level, event.getPoseStack());
             }
