@@ -32,13 +32,24 @@ public class BookEntry {
     protected BookIcon icon;
     protected int x;
     protected int y;
+
+    //The first two rows in "entry_texures.png" are reserved for the entry icons.
+    //the entry background is selected by querying the texture at entryBackgroundUIndex * 26 (= Y Axis / Up-Down), entryBackgroundUIndex * 26 (= X Axis / Left-Right)
+
+    /**
+     * = Y Axis / Up-Down
+     */
+    protected int entryBackgroundUIndex;
+    /**
+     * = X Axis / Left-Right
+     */
+    protected int entryBackgroundVIndex;
+
     protected boolean hideWhileLocked;
     protected List<BookPage> pages;
     protected BookCondition condition;
 
-    //TODO: entry type for background/border texture
-
-    public BookEntry(ResourceLocation id, ResourceLocation categoryId, String name, String description, BookIcon icon, int x, int y, boolean hideWhileLocked, BookCondition condition, List<BookEntryParent> parents, List<BookPage> pages) {
+    public BookEntry(ResourceLocation id, ResourceLocation categoryId, String name, String description, BookIcon icon, int x, int y, int entryBackgroundUIndex, int entryBackgroundVIndex, boolean hideWhileLocked, BookCondition condition, List<BookEntryParent> parents, List<BookPage> pages) {
         this.id = id;
         this.categoryId = categoryId;
         this.name = name;
@@ -46,6 +57,8 @@ public class BookEntry {
         this.icon = icon;
         this.x = x;
         this.y = y;
+        this.entryBackgroundUIndex = entryBackgroundUIndex;
+        this.entryBackgroundVIndex = entryBackgroundVIndex;
         this.parents = parents;
         this.pages = pages;
         this.condition = condition;
@@ -59,6 +72,8 @@ public class BookEntry {
         var icon = BookIcon.fromString(GsonHelper.getAsString(json, "icon"));
         var x = GsonHelper.getAsInt(json, "x");
         var y = GsonHelper.getAsInt(json, "y");
+        var entryBackgroundUIndex = GsonHelper.getAsInt(json, "background_u_index", 0);
+        var entryBackgroundVIndex = GsonHelper.getAsInt(json, "background_v_index", 0);
         var hideWhileLocked = GsonHelper.getAsBoolean(json, "hide_while_locked", false);
 
         var parentEntries = new ArrayList<BookEntryParent>();
@@ -87,7 +102,7 @@ public class BookEntry {
             condition = BookCondition.fromJson(json.getAsJsonObject("condition"));
         }
 
-        return new BookEntry(id, categoryId, name, description, icon, x, y, hideWhileLocked, condition, parentEntries, pages);
+        return new BookEntry(id, categoryId, name, description, icon, x, y, entryBackgroundUIndex, entryBackgroundVIndex, hideWhileLocked, condition, parentEntries, pages);
     }
 
     public static BookEntry fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
@@ -97,6 +112,8 @@ public class BookEntry {
         var icon = BookIcon.fromNetwork(buffer);
         var x = buffer.readVarInt();
         var y = buffer.readVarInt();
+        var entryBackgroundUIndex = buffer.readVarInt();
+        var entryBackgroundVIndex = buffer.readVarInt();
         var hideWhileLocked = buffer.readBoolean();
 
         var parentEntries = new ArrayList<BookEntryParent>();
@@ -117,7 +134,7 @@ public class BookEntry {
 
         var condition = BookCondition.fromNetwork(buffer);
 
-        return new BookEntry(id, categoryId, name, description, icon, x, y, hideWhileLocked, condition, parentEntries, pages);
+        return new BookEntry(id, categoryId, name, description, icon, x, y, entryBackgroundUIndex, entryBackgroundVIndex, hideWhileLocked, condition, parentEntries, pages);
     }
 
     /**
@@ -163,6 +180,8 @@ public class BookEntry {
         this.icon.toNetwork(buffer);
         buffer.writeVarInt(this.x);
         buffer.writeVarInt(this.y);
+        buffer.writeVarInt(this.entryBackgroundUIndex);
+        buffer.writeVarInt(this.entryBackgroundVIndex);
         buffer.writeBoolean(this.hideWhileLocked);
 
         buffer.writeVarInt(this.parents.size());
@@ -245,5 +264,19 @@ public class BookEntry {
 
     public void setCondition(BookCondition condition) {
         this.condition = condition;
+    }
+
+    /**
+     * = Y Axis / Up-Down
+     */
+    public int getEntryBackgroundUIndex() {
+        return this.entryBackgroundUIndex;
+    }
+
+    /**
+     * = X Axis / Left-Right
+     */
+    public int getEntryBackgroundVIndex() {
+        return this.entryBackgroundVIndex;
     }
 }

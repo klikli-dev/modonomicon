@@ -26,6 +26,9 @@ public class BookEntryModel {
     protected String icon;
     protected int x;
     protected int y;
+    protected int entryBackgroundUIndex = 0;
+    protected int entryBackgroundVIndex = 0;
+
     protected boolean hideWhileLocked;
     protected List<BookPageModel> pages = new ArrayList<>();
     protected BookConditionModel condition;
@@ -42,6 +45,8 @@ public class BookEntryModel {
         json.addProperty("icon", this.icon);
         json.addProperty("x", this.x);
         json.addProperty("y", this.y);
+        json.addProperty("background_u_index", this.entryBackgroundUIndex);
+        json.addProperty("background_v_index", this.entryBackgroundVIndex);
         json.addProperty("hide_while_locked", this.hideWhileLocked);
 
         if(!this.parents.isEmpty()){
@@ -121,6 +126,10 @@ public class BookEntryModel {
         public String icon;
         public int x;
         public int y;
+
+        protected int entryBackgroundUIndex = 0;
+        protected int entryBackgroundVIndex = 0;
+
         public boolean hideWhileLocked;
         public List<BookPageModel> pages = new ArrayList<>();
         public BookConditionModel condition;
@@ -186,6 +195,16 @@ public class BookEntryModel {
             return this;
         }
 
+        /**
+         * U = Y Axis / Up-Down
+         * V = X Axis / Left-Right
+         */
+        public Builder withEntryBackground(int u, int v) {
+            this.entryBackgroundUIndex = u;
+            this.entryBackgroundVIndex = v;
+            return this;
+        }
+
         public Builder hideWhileLocked(boolean hideWhileLocked) {
             this.hideWhileLocked = hideWhileLocked;
             return this;
@@ -219,6 +238,8 @@ public class BookEntryModel {
             bookEntryModel.icon = this.icon;
             bookEntryModel.x = this.x;
             bookEntryModel.y = this.y;
+            bookEntryModel.entryBackgroundUIndex= this.entryBackgroundUIndex;
+            bookEntryModel.entryBackgroundVIndex = this.entryBackgroundVIndex;
             bookEntryModel.hideWhileLocked = this.hideWhileLocked;
             bookEntryModel.parents = this.parents;
             bookEntryModel.id = this.id;

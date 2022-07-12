@@ -231,9 +231,8 @@ public class BookCategoryScreen {
                 RenderSystem.setShaderColor(0.8F, 0.8F, 0.8F, 1.0F);
             }
 
-            //TODO: select type of entry background
-            int texX = 0; //select the entry background with this
-            int texY = 0;
+            int texX = entry.getEntryBackgroundVIndex() * ENTRY_HEIGHT;
+            int texY = entry.getEntryBackgroundUIndex() * ENTRY_WIDTH;
 
             RenderSystem.setShaderTexture(0, this.category.getEntryTextures());
 
