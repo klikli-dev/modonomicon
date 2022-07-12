@@ -1,4 +1,6 @@
 {
+  "background_u_index": 1,
+  "background_v_index": 0,
   "category": "modonomicon:features",
   "description": "book.modonomicon.demo.features.condition_root.description",
   "hide_while_locked": false,

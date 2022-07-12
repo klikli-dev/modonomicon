@@ -147,6 +147,7 @@ public class BookGenerator implements DataProvider {
                 .withDescription(helper.entryDescription())
                 .withIcon("minecraft:redstone_torch")
                 .withLocation(entryHelper.get('r'))
+                .withEntryBackground(1, 0)
                 .withPages(conditionRootEntryInfoPage)
                 .build();
         result.add(conditionRootEntry);
@@ -272,6 +273,7 @@ public class BookGenerator implements DataProvider {
                 .withDescription(helper.entryDescription())
                 .withIcon("minecraft:feather")
                 .withLocation(entryHelper.get('a'))
+                .withEntryBackground(0, 1)
                 .withPage(page1)
                 .withPage(page2);
 
@@ -298,6 +300,7 @@ public class BookGenerator implements DataProvider {
                 .withDescription(helper.entryDescription())
                 .withIcon("minecraft:writable_book")
                 .withLocation(entryHelper.get('l'))
+                .withEntryBackground(0, 2)
                 .withPage(page1)
                 .withPage(page2);
 
