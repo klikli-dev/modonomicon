@@ -35,6 +35,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.klikli_dev.modonomicon.api.multiblock.Multiblock.SimulateResult;
+
 public abstract class AbstractMultiblock implements Multiblock {
 
     public ResourceLocation id;

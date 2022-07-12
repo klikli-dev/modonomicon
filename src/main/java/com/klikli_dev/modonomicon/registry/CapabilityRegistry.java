@@ -20,7 +20,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
 public class CapabilityRegistry {
@@ -44,11 +44,11 @@ public class CapabilityRegistry {
         //only handle respawn after death -> not portal transfers
         if (event.isWasDeath()) {
             //copy capability to new player instance
-            event.getPlayer().getCapability(BOOK_UNLOCK).ifPresent(newCap -> {
+            event.getEntity().getCapability(BOOK_UNLOCK).ifPresent(newCap -> {
                         event.getOriginal().getCapability(BOOK_UNLOCK).ifPresent(newCap::clone);
                     }
             );
-            event.getPlayer().getCapability(BOOK_STATE).ifPresent(newCap -> {
+            event.getEntity().getCapability(BOOK_STATE).ifPresent(newCap -> {
                         event.getOriginal().getCapability(BOOK_STATE).ifPresent(newCap::clone);
                     }
             );
@@ -66,7 +66,7 @@ public class CapabilityRegistry {
         }
     }
 
-    public static void onJoinWorld(final EntityJoinWorldEvent event) {
+    public static void onJoinWorld(final EntityJoinLevelEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
             BookUnlockCapability.updateAndSyncFor(player);
             BookStateCapability.syncFor(player);

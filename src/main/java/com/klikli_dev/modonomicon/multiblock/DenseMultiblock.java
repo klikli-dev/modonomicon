@@ -29,6 +29,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
 
+import com.klikli_dev.modonomicon.api.multiblock.Multiblock.SimulateResult;
+
 public class DenseMultiblock extends AbstractMultiblock {
 
     public static final ResourceLocation TYPE = Modonomicon.loc("dense");

@@ -24,7 +24,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.gui.GuiUtils;
+import net.minecraftforge.client.gui.ScreenUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -174,16 +174,16 @@ public class BookOverviewScreen extends Screen {
 
         //draw a resizeable border. Center parts of each side will be stretched
         //the exact border size mostly does not matter because the center is empty anyway, but 50 gives a lot of flexiblity
-        GuiUtils.drawContinuousTexturedBox(poseStack, x, y, 0, 0, width, height,
+        ScreenUtils.blitWithBorder(poseStack, x, y, 0, 0, width, height,
                 140, 140, 50, 50, 50, 50, blitOffset);
 
         //now draw center parts of each side. This allows to add non-repeat features here or just generally bridge the repeated pixesl
         //top, bottom, left, right
         //these parts are to the left of the repeatable frame in the texture.
-        GuiUtils.drawTexturedModalRect(poseStack, (x + (width / 2)) - 36, y, 140, 0, 72, 17, blitOffset);
-        GuiUtils.drawTexturedModalRect(poseStack, (x + (width / 2)) - 36, (y + height) - 18, 140, 17, 72, 18, blitOffset);
-        GuiUtils.drawTexturedModalRect(poseStack, x, (y + (height / 2)) - 35, 140, 35, 17, 70, blitOffset);
-        GuiUtils.drawTexturedModalRect(poseStack, x + width - 17, (y + (height / 2)) - 35, 157, 35, 17, 70, blitOffset);
+        ScreenUtils.drawTexturedModalRect(poseStack, (x + (width / 2)) - 36, y, 140, 0, 72, 17, blitOffset);
+        ScreenUtils.drawTexturedModalRect(poseStack, (x + (width / 2)) - 36, (y + height) - 18, 140, 17, 72, 18, blitOffset);
+        ScreenUtils.drawTexturedModalRect(poseStack, x, (y + (height / 2)) - 35, 140, 35, 17, 70, blitOffset);
+        ScreenUtils.drawTexturedModalRect(poseStack, x + width - 17, (y + (height / 2)) - 35, 157, 35, 17, 70, blitOffset);
     }
 
     protected void onBookCategoryButtonClick(CategoryButton button) {

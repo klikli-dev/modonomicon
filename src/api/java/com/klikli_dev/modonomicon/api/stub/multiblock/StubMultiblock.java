@@ -18,6 +18,8 @@ import net.minecraft.world.level.block.Rotation;
 import java.util.Collection;
 import java.util.Collections;
 
+import com.klikli_dev.modonomicon.api.multiblock.Multiblock.SimulateResult;
+
 public class StubMultiblock implements Multiblock {
 
     public static final ResourceLocation TYPE = new ResourceLocation(ModonomiconAPI.ID + ":stub");
