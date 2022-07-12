@@ -10,16 +10,19 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.InteractionResult;
-import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class ClientSetupEventHandler {
 
@@ -45,7 +48,7 @@ public class ClientSetupEventHandler {
 
         //let multiblock preview renderer handle right clicks for anchoring
         MinecraftForge.EVENT_BUS.addListener((PlayerInteractEvent.RightClickBlock e) -> {
-            InteractionResult result = MultiblockPreviewRenderer.onPlayerInteract(e.getPlayer(), e.getWorld(), e.getHand(), e.getHitVec());
+            InteractionResult result = MultiblockPreviewRenderer.onPlayerInteract(e.getEntity(), e.getLevel(), e.getHand(), e.getHitVec());
             if (result.consumesAction()) {
                 e.setCanceled(true);
                 e.setCancellationResult(result);
@@ -56,13 +59,6 @@ public class ClientSetupEventHandler {
         MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent e) -> {
             if (e.phase == TickEvent.Phase.END) {
                 MultiblockPreviewRenderer.onClientTick(Minecraft.getInstance());
-            }
-        });
-
-        //Draw multiblock as overlay
-        MinecraftForge.EVENT_BUS.addListener((RenderGameOverlayEvent.Post e) -> {
-            if (e.getType() == RenderGameOverlayEvent.ElementType.ALL) {
-                MultiblockPreviewRenderer.onRenderHUD(e.getPoseStack(), e.getPartialTick());
             }
         });
 
@@ -88,11 +84,17 @@ public class ClientSetupEventHandler {
         });
     }
 
-    public static void onModelBake(ModelBakeEvent event) {
+    public static void onModelBake(BakingCompleted event) {
         ModelResourceLocation key = new ModelResourceLocation(ModonimiconConstants.Data.Book.ITEM_ID, "inventory");
-        BakedModel oldModel = event.getModelRegistry().get(key);
+        BakedModel oldModel = event.getModels().get(key);
         if (oldModel != null) {
-            event.getModelRegistry().put(key, new BookBakedModel(oldModel, event.getModelLoader()));
+            event.getModels().put(key, new BookBakedModel(oldModel, event.getModelBakery()));
         }
+    }
+
+    public static void onRegisterGuiOverlays(RegisterGuiOverlaysEvent event){
+        event.registerAboveAll("multiblock_hud", (gui, poseStack, partialTick, screenWidth, screenHeight) -> {
+            MultiblockPreviewRenderer.onRenderHUD(poseStack, partialTick);
+        });
     }
 }

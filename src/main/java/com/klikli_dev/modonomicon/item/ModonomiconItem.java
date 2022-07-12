@@ -36,6 +36,8 @@ import net.minecraft.world.level.Level;
 
 import java.util.List;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class ModonomiconItem extends Item {
     public ModonomiconItem(Properties pProperties) {
         super(pProperties);

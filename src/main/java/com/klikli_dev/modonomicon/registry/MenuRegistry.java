@@ -13,6 +13,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class MenuRegistry {
     //TODO: make mod loader agnostic
-    public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.CONTAINERS, Modonomicon.MODID);
+    public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, Modonomicon.MODID);
 
 }

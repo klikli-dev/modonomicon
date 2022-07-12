@@ -101,7 +101,7 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
     }
 
     public static void onAdvancement(final AdvancementEvent event) {
-        if (event.getPlayer() instanceof ServerPlayer serverplayer) {
+        if (event.getEntity() instanceof ServerPlayer serverplayer) {
             updateAndSyncFor(serverplayer);
         }
     }
