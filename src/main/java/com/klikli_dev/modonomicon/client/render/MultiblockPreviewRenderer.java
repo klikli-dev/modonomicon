@@ -49,7 +49,6 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent.Stage;
 
@@ -180,7 +179,7 @@ public class MultiblockPreviewRenderer {
     }
 
     public static void onRenderLevelLastEvent(RenderLevelStageEvent event) {
-        if(event.getStage() == Stage.AFTER_TRANSLUCENT_BLOCKS){
+        if (event.getStage() == Stage.AFTER_TRANSLUCENT_BLOCKS) {
             if (hasMultiblock && multiblock != null) {
                 renderMultiblock(Minecraft.getInstance().level, event.getPoseStack());
             }
@@ -272,7 +271,7 @@ public class MultiblockPreviewRenderer {
 
                     if (renderState.getBlock() instanceof EntityBlock eb) {
                         var be = blockEntityCache.computeIfAbsent(pos.immutable(), p -> eb.newBlockEntity(pos, renderState));
-                        if(be != null && !erroredBlockEntities.contains(be)) {
+                        if (be != null && !erroredBlockEntities.contains(be)) {
                             be.setLevel(mc.level);
 
                             // fake cached state in case the renderer checks it as we don't want to query the actual world

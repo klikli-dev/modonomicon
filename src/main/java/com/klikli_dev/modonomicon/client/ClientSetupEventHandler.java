@@ -18,6 +18,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -93,7 +94,7 @@ public class ClientSetupEventHandler {
     }
 
     public static void onRegisterGuiOverlays(RegisterGuiOverlaysEvent event){
-        event.registerAboveAll("multiblock_hud", (gui, poseStack, partialTick, screenWidth, screenHeight) -> {
+        event.registerBelow(VanillaGuiOverlay.BOSS_EVENT_PROGRESS.id(),"multiblock_hud", (gui, poseStack, partialTick, screenWidth, screenHeight) -> {
             MultiblockPreviewRenderer.onRenderHUD(poseStack, partialTick);
         });
     }
