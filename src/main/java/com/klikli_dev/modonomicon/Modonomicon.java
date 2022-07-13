@@ -83,7 +83,7 @@ public class Modonomicon {
             modEventBus.addListener(ClientSetupEventHandler::onClientSetup);
             modEventBus.addListener(ClientSetupEventHandler::onModelBake);
             modEventBus.addListener(ClientSetupEventHandler::onRegisterGuiOverlays);
-            MinecraftForge.EVENT_BUS.addListener(ClientSetupEventHandler::onRecipesUpdated);
+            MinecraftForge.EVENT_BUS.addListener(BookDataManager.get()::onRecipesUpdated);
         }
     }
 

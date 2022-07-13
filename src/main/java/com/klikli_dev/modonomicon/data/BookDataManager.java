@@ -92,6 +92,11 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         }
     }
 
+    public void onRecipesUpdated(RecipesUpdatedEvent event) {
+        this.tryBuildBooks();
+        this.prerenderMarkdown();
+    }
+
     public void preLoad() {
         this.booksBuilt = false;
         this.loaded = false;
@@ -110,13 +115,12 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             }
             BookErrorManager.get().setCurrentBookId(null);
         }
-
-        //now prerender markdown
-        this.prerenderMarkdown();
     }
 
     public void prerenderMarkdown() {
         //TODO: allow modders to configure this renderer
+
+        Modonomicon.LOGGER.info("Pre-rendering markdown ...");
         var textRenderer = new BookTextRenderer();
         for (var book : this.books.values()) {
             BookErrorManager.get().getContextHelper().reset();
@@ -128,6 +132,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             }
             BookErrorManager.get().setCurrentBookId(null);
         }
+        Modonomicon.LOGGER.info("Finished pre-rendering markdown.");
     }
 
     public void addReadConditions() {
@@ -155,14 +160,14 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
      */
     public boolean tryBuildBooks() {
         if (!this.booksBuilt) {
-            Modonomicon.LOGGER.info("Building books & pre-rendering markdown ...");
+            Modonomicon.LOGGER.info("Building books ...");
             this.buildBooks();
             this.booksBuilt = true;
-            Modonomicon.LOGGER.info("Books built ...");
+            Modonomicon.LOGGER.info("Books built.");
 
             Modonomicon.LOGGER.info("Adding read conditions ...");
             this.addReadConditions();
-            Modonomicon.LOGGER.info("Read conditions added ...");
+            Modonomicon.LOGGER.info("Read conditions added.");
             return true;
         }
         return false;

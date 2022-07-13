@@ -100,8 +100,4 @@ public class ClientSetupEventHandler {
             MultiblockPreviewRenderer.onRenderHUD(poseStack, partialTick);
         });
     }
-
-    public static void onRecipesUpdated(RecipesUpdatedEvent event) {
-        BookDataManager.get().tryBuildBooks();
-    }
 }
