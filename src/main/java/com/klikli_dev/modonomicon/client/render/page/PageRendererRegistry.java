@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.client.render.page;
 
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Page;
+import com.klikli_dev.modonomicon.book.page.BookCraftingRecipePage;
 import com.klikli_dev.modonomicon.book.page.BookMultiblockPage;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.book.page.BookTextPage;
@@ -28,6 +29,7 @@ public class PageRendererRegistry {
     private static void registerDefaultPageRenderers() {
         registerPageRenderer(Page.TEXT, p -> new BookTextPageRenderer((BookTextPage)p));
         registerPageRenderer(Page.MULTIBLOCK, p -> new BookMultiblockPageRenderer((BookMultiblockPage)p));
+        registerPageRenderer(Page.CRAFTING_RECIPE, p -> new BookCraftingRecipePageRenderer((BookCraftingRecipePage) p));
     }
 
     /**

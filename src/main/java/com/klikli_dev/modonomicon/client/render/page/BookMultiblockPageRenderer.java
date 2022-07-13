@@ -94,7 +94,6 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
             return 0;
         }
     };
-    private static final RandomSource RAND = RandomSource.createNewThreadLocalInstance();
     private final Map<BlockPos, BlockEntity> blockEntityCache = new HashMap<>();
     private final Set<BlockEntity> erroredBlockEntities = Collections.newSetFromMap(new WeakHashMap<>());
 

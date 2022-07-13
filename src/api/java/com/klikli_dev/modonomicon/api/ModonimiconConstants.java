@@ -17,6 +17,7 @@ public class ModonimiconConstants {
         public static class Book {
             public static final String DEFAULT_OVERVIEW_TEXTURE = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/book_overview.png").toString();
             public static final String DEFAULT_CONTENT_TEXTURE = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/book_content.png").toString();
+            public static final String DEFAULT_CRAFTING_TEXTURE = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/crafting_texture.png").toString();
             public static final String DEFAULT_PAGE_TURN_SOUND = new ResourceLocation(ModonomiconAPI.ID, "turn_page").toString();
             public static final String DEFAULT_MODEL = new ResourceLocation(ModonomiconAPI.ID, "modonomicon_purple").toString();
             public static final ResourceLocation ITEM_ID = new ResourceLocation(ModonomiconAPI.ID, "modonomicon");
@@ -31,6 +32,8 @@ public class ModonimiconConstants {
         public static class Page {
             public static final ResourceLocation TEXT = new ResourceLocation(ModonomiconAPI.ID, "text");
             public static final ResourceLocation MULTIBLOCK = new ResourceLocation(ModonomiconAPI.ID, "multiblock");
+
+            public static final ResourceLocation CRAFTING_RECIPE = new ResourceLocation(ModonomiconAPI.ID, "crafting_recipe");
         }
 
         public static class Condition {
@@ -97,11 +100,13 @@ public class ModonimiconConstants {
         public static class Tooltips {
             public static final String PREFIX = "tooltip." + ModonomiconAPI.ID + ".";
             public static final String CONDITION_PREFIX =PREFIX + ".condition.";
+            public static final String RECIPE_PREFIX =PREFIX + ".recipe.";
             public static final String CONDITION_ADVANCEMENT = CONDITION_PREFIX + "advancement";
             public static final String CONDITION_ENTRY_UNLOCKED = CONDITION_PREFIX + "entry_unlocked";
             public static final String CONDITION_ENTRY_READ = CONDITION_PREFIX + "entry_read";
 
             public static final String ITEM_NO_BOOK_FOUND_FOR_STACK = PREFIX + "no_book_found_for_stack";
+            public static final String RECIPE_CRAFTING_SHAPELESS = RECIPE_PREFIX + "crafting_shapeless";
         }
 
         public static class Command {

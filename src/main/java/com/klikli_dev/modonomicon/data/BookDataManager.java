@@ -28,6 +28,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 
 import java.util.Arrays;
@@ -74,10 +75,11 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         this.preLoad();
         this.books = message.books;
         this.onLoadingComplete();
-        this.postLoad(); //needs to be called after loading complete, because that sets our loaded flag
     }
 
     public void onDatapackSync(OnDatapackSyncEvent event) {
+        this.finalizeBooks();
+
         Message syncMessage = this.getSyncMessage();
 
         if (event.getPlayer() != null) {
@@ -87,6 +89,10 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                 Networking.sendToSplit(player, syncMessage);
             }
         }
+    }
+
+    public void onRecipesUpdated(RecipesUpdatedEvent event){
+        this.finalizeBooks();
     }
 
     public void preLoad() {
@@ -157,7 +163,11 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         return false;
     }
 
-    public void postLoad() {
+    /**
+     * On server, called on datapack sync (because we need the data before we send the datapack sync packet)
+     * On client, called on recipes updated, because recipes are available to the client only after datapack sync is complete
+     */
+    public void finalizeBooks() {
         this.tryBuildBooks();
         this.addReadConditions();
     }
@@ -275,8 +285,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             }
             BookErrorManager.get().setCurrentBookId(null);
         }
+
         BookErrorManager.get().setContext(null); //set to null so we start using context helper internally
         this.onLoadingComplete();
-        this.postLoad(); //needs to be called after loading complete, because that sets our loaded flag
     }
 }

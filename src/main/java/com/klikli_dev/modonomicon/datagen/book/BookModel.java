@@ -23,6 +23,8 @@ public class BookModel {
     protected ResourceLocation model = new ResourceLocation(Book.DEFAULT_MODEL);
     protected ResourceLocation bookOverviewTexture = new ResourceLocation(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
     protected ResourceLocation bookContentTexture = new ResourceLocation(Data.Book.DEFAULT_CONTENT_TEXTURE);
+
+    protected ResourceLocation craftingTexture = new ResourceLocation(Book.DEFAULT_CRAFTING_TEXTURE);
     protected int defaultTitleColor = 0x00000;
     protected List<BookCategoryModel> categories = new ArrayList<>();
 
@@ -91,6 +93,8 @@ public class BookModel {
         protected ResourceLocation model = new ResourceLocation(Book.DEFAULT_MODEL);
         protected ResourceLocation bookOverviewTexture = new ResourceLocation(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
         protected ResourceLocation bookContentTexture = new ResourceLocation(Data.Book.DEFAULT_CONTENT_TEXTURE);
+
+        protected ResourceLocation craftingTexture = new ResourceLocation(Book.DEFAULT_CRAFTING_TEXTURE);
         protected int defaultTitleColor = 0x00000;
         protected List<BookCategoryModel> categories = new ArrayList<>();
         protected boolean autoAddReadConditions;
@@ -129,6 +133,11 @@ public class BookModel {
 
         public Builder withBookContentTexture(ResourceLocation bookContentTexture) {
             this.bookContentTexture = bookContentTexture;
+            return this;
+        }
+
+        public Builder withCraftingTexture(ResourceLocation craftingTexture) {
+            this.craftingTexture = craftingTexture;
             return this;
         }
 
@@ -173,6 +182,7 @@ public class BookModel {
             bookModel.bookOverviewTexture = this.bookOverviewTexture;
             bookModel.id = this.id;
             bookModel.bookContentTexture = this.bookContentTexture;
+            bookModel.craftingTexture = this.craftingTexture;
             bookModel.defaultTitleColor = this.defaultTitleColor;
             bookModel.name = this.name;
             bookModel.tooltip = this.tooltip;

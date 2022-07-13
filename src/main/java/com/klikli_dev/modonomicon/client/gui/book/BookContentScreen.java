@@ -24,6 +24,7 @@ import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.SaveEntryStateMessage;
 import com.klikli_dev.modonomicon.registry.SoundRegistry;
+import com.klikli_dev.modonomicon.util.RenderUtil;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -41,10 +42,13 @@ import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class BookContentScreen extends Screen {
@@ -80,6 +84,8 @@ public class BookContentScreen extends Screen {
     private int openPagesIndex;
     private int maxOpenPagesIndex;
     private List<Component> tooltip;
+
+    private ItemStack tooltipStack;
 
     public BookContentScreen(BookOverviewScreen parentScreen, BookEntry entry) {
         super(Component.literal(""));
@@ -168,8 +174,57 @@ public class BookContentScreen extends Screen {
         this.onClose();
     }
 
+    public void setTooltip(Component... strings) {
+        this.setTooltip(List.of(strings));
+    }
+
     public void setTooltip(List<Component> tooltip) {
         this.tooltip = tooltip;
+    }
+
+    public void setTooltipStack(ItemStack stack) {
+        this.setTooltip(Collections.emptyList());
+        this.tooltipStack = stack;
+    }
+
+    public boolean isMouseInRelativeRange(double absMx, double absMy, int x, int y, int w, int h) {
+        double mx = this.getRelativeX(absMx);
+        double my = this.getRelativeY(absMy);
+
+        return mx > x && my > y && mx <= (x + w) && my <= (y + h);
+    }
+
+    /**
+     * Convert the given argument from global screen coordinates to local coordinates
+     */
+    public double getRelativeX(double absX) {
+        return absX - this.bookLeft;
+    }
+
+    /**
+     * Convert the given argument from global screen coordinates to local coordinates
+     */
+    public double getRelativeY(double absY) {
+        return absY - this.bookTop;
+    }
+
+    public void renderItemStack(PoseStack poseStack, int x, int y, int mouseX, int mouseY, ItemStack stack) {
+        if (stack.isEmpty()) {
+            return;
+        }
+
+        RenderUtil.renderAndDecorateItemAndDecorationsWithPose(poseStack, stack, this.font, x, y);
+
+        if (this.isMouseInRelativeRange(mouseX, mouseY, x, y, 16, 16)) {
+            this.setTooltipStack(stack);
+        }
+    }
+
+    public void renderIngredient(PoseStack poseStack, int x, int y, int mouseX, int mouseY, Ingredient ingr) {
+        ItemStack[] stacks = ingr.getItems();
+        if (stacks.length > 0) {
+            this.renderItemStack(poseStack, x, y, mouseX, mouseY, stacks[(this.ticksInBook / 20) % stacks.length]);
+        }
     }
 
     /**
@@ -189,38 +244,6 @@ public class BookContentScreen extends Screen {
         } else {
             Modonomicon.LOGGER.warn("Tried to change to page index {} corresponding with " +
                     "openPagesIndex {} but max open pages index is {}.", pageIndex, openPagesIndex, this.maxOpenPagesIndex);
-        }
-    }
-
-    protected void flipPage(boolean left, boolean playSound) {
-        if (this.canSeeArrowButton(left)) {
-
-            var oldOpenPagesIndex = this.openPagesIndex;
-            if (left) {
-                this.openPagesIndex--;
-            } else {
-                this.openPagesIndex++;
-            }
-
-            if(BookGuiManager.get().getHistorySize() > 0){
-                var lastPage = BookGuiManager.get().peekHistory();
-                if(lastPage.bookId == this.entry.getBook().getId() && lastPage.entryId == this.entry.getId() && lastPage.page == this.openPagesIndex * 2) {
-                    //if we're flipping back to the last page in the history, don't add a new history entry,
-                    // and remove the old one to avoid weird back-and-forth jumps when using the back button
-                    BookGuiManager.get().popHistory();
-                } else {
-                    //if we flip to a new page, add a new history entry for the page we were on before flipping
-                    BookGuiManager.get().pushHistory(this.entry.getBook().getId(), this.entry.getCategory().getId(), this.entry.getId(), oldOpenPagesIndex * 2);
-                }
-            } else {
-                //if we don't have any history, add a new history entry for the page we were on before flipping
-                BookGuiManager.get().pushHistory(this.entry.getBook().getId(), this.entry.getCategory().getId(), this.entry.getId(), oldOpenPagesIndex * 2);
-            }
-
-            this.onPageChanged();
-            if (playSound) {
-                playTurnPageSound(this.getBook());
-            }
         }
     }
 
@@ -255,6 +278,38 @@ public class BookContentScreen extends Screen {
         this.renderables.removeIf(widgets::contains);
         this.children().removeIf(c -> c instanceof Widget && widgets.contains(c));
         this.narratables.removeIf(n -> n instanceof Widget && widgets.contains(n));
+    }
+
+    protected void flipPage(boolean left, boolean playSound) {
+        if (this.canSeeArrowButton(left)) {
+
+            var oldOpenPagesIndex = this.openPagesIndex;
+            if (left) {
+                this.openPagesIndex--;
+            } else {
+                this.openPagesIndex++;
+            }
+
+            if (BookGuiManager.get().getHistorySize() > 0) {
+                var lastPage = BookGuiManager.get().peekHistory();
+                if (lastPage.bookId == this.entry.getBook().getId() && lastPage.entryId == this.entry.getId() && lastPage.page == this.openPagesIndex * 2) {
+                    //if we're flipping back to the last page in the history, don't add a new history entry,
+                    // and remove the old one to avoid weird back-and-forth jumps when using the back button
+                    BookGuiManager.get().popHistory();
+                } else {
+                    //if we flip to a new page, add a new history entry for the page we were on before flipping
+                    BookGuiManager.get().pushHistory(this.entry.getBook().getId(), this.entry.getCategory().getId(), this.entry.getId(), oldOpenPagesIndex * 2);
+                }
+            } else {
+                //if we don't have any history, add a new history entry for the page we were on before flipping
+                BookGuiManager.get().pushHistory(this.entry.getBook().getId(), this.entry.getCategory().getId(), this.entry.getId(), oldOpenPagesIndex * 2);
+            }
+
+            this.onPageChanged();
+            if (playSound) {
+                playTurnPageSound(this.getBook());
+            }
+        }
     }
 
     protected void drawTooltip(PoseStack pPoseStack, int pMouseX, int pMouseY) {

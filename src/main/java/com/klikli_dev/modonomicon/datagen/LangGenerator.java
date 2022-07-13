@@ -67,6 +67,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(Tooltips.CONDITION_ENTRY_UNLOCKED, "Requires unlocked Entry: %s");
             this.add(Tooltips.CONDITION_ENTRY_READ, "Requires read Entry: %s");
             this.add(Tooltips.ITEM_NO_BOOK_FOUND_FOR_STACK, "No book found for this item in the modonomicon book database! Nbt: %s");
+            this.add(Tooltips.RECIPE_CRAFTING_SHAPELESS, "Shapeless");
 
             //Commands
             this.add(Command.ERROR_UNKNOWN_BOOK, "Unknown book: %s");

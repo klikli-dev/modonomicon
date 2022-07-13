@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.world.item.ItemStack;
 
 public class RenderUtil {
@@ -21,6 +22,17 @@ public class RenderUtil {
         glPoseStack.mulPoseMatrix(poseStack.last().pose());
         RenderSystem.applyModelViewMatrix();
         Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(stack, x, y);
+        glPoseStack.popPose();
+        RenderSystem.applyModelViewMatrix();
+    }
+
+    public static void renderAndDecorateItemAndDecorationsWithPose(PoseStack poseStack, ItemStack stack, Font font, int x, int y) {
+        PoseStack glPoseStack = RenderSystem.getModelViewStack();
+        glPoseStack.pushPose();
+        glPoseStack.mulPoseMatrix(poseStack.last().pose());
+        RenderSystem.applyModelViewMatrix();
+        Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(stack, x, y);
+        Minecraft.getInstance().getItemRenderer().renderGuiItemDecorations(font, stack, x, y);
         glPoseStack.popPose();
         RenderSystem.applyModelViewMatrix();
     }
