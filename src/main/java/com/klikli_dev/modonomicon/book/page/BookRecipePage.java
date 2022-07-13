@@ -50,10 +50,10 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
 
     public static DataHolder commonFromJson(JsonObject json) {
         var title1 = BookGsonHelper.getAsBookTextHolder(json, "title1", BookTextHolder.EMPTY);
-        ResourceLocation recipeId1 = ResourceLocation.tryParse(GsonHelper.getAsString(json, "recipeId1", "null"));
+        ResourceLocation recipeId1 = ResourceLocation.tryParse(GsonHelper.getAsString(json, "recipe_id_1", "null"));
 
         var title2 = BookGsonHelper.getAsBookTextHolder(json, "title2", BookTextHolder.EMPTY);
-        ResourceLocation recipeId2 = ResourceLocation.tryParse(GsonHelper.getAsString(json, "recipeId2", "null"));
+        ResourceLocation recipeId2 = ResourceLocation.tryParse(GsonHelper.getAsString(json, "recipe_id_2", "null"));
 
         var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY);
 

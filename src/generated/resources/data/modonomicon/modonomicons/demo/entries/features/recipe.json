@@ -1,0 +1,30 @@
+{
+  "background_u_index": 0,
+  "background_v_index": 0,
+  "category": "modonomicon:features",
+  "description": "book.modonomicon.demo.features.recipe.description",
+  "hide_while_locked": false,
+  "icon": "minecraft:crafting_table",
+  "name": "book.modonomicon.demo.features.recipe.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.recipe.intro.text",
+      "title": "book.modonomicon.demo.features.recipe.intro.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:crafting_recipe",
+      "anchor": "",
+      "recipe_id_1": "minecraft:crafting_table",
+      "recipe_id_2": "minecraft:oak_planks",
+      "text": "book.modonomicon.demo.features.recipe.crafting.text",
+      "title1": "",
+      "title2": ""
+    }
+  ],
+  "x": -8,
+  "y": 1
+}

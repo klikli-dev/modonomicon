@@ -19,6 +19,11 @@
   "book.modonomicon.demo.features.multiblock.name": "Multiblock Entry",
   "book.modonomicon.demo.features.multiblock.preview.text": "A sample multiblock.",
   "book.modonomicon.demo.features.name": "Features Category",
+  "book.modonomicon.demo.features.recipe.crafting.text": "A sample recipe page.",
+  "book.modonomicon.demo.features.recipe.description": "An entry showcasing recipe pages.",
+  "book.modonomicon.demo.features.recipe.intro.text": "Recipe pages allow to show recipes in the book.",
+  "book.modonomicon.demo.features.recipe.intro.title": "Recipe Entry",
+  "book.modonomicon.demo.features.recipe.name": "Recipe Entry",
   "book.modonomicon.demo.formatting.advanced.description": "An entry showcasing advanced formatting.",
   "book.modonomicon.demo.formatting.advanced.name": "Advanced Formatting Entry",
   "book.modonomicon.demo.formatting.advanced.page1.text": "<t>this.could.be.a.translation.key<t>     \n***This is bold italics***     \n*++This is italics underlined++*\n",
@@ -77,5 +82,6 @@
   "tooltip.modonomicon..condition.advancement": "Requires Advancement: %s",
   "tooltip.modonomicon..condition.entry_read": "Requires read Entry: %s",
   "tooltip.modonomicon..condition.entry_unlocked": "Requires unlocked Entry: %s",
+  "tooltip.modonomicon..recipe.crafting_shapeless": "Shapeless",
   "tooltip.modonomicon.no_book_found_for_stack": "No book found for this item in the modonomicon book database! Nbt: %s"
 }

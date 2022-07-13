@@ -9,7 +9,10 @@ package com.klikli_dev.modonomicon.datagen;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.*;
+import com.klikli_dev.modonomicon.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.datagen.book.BookLangHelper;
+import com.klikli_dev.modonomicon.datagen.book.page.BookCraftingRecipePageModel;
+import com.klikli_dev.modonomicon.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -114,6 +117,7 @@ public abstract class LangGenerator extends LanguageProvider {
             helper.category("features");
 
             this.addDemoBookMultiblockEntry(helper);
+            this.addDemoBookRecipeEntry(helper);
             this.addDemoBookConditionEntries(helper);
             this.add(helper.categoryName(), "Features Category");
 
@@ -160,6 +164,22 @@ public abstract class LangGenerator extends LanguageProvider {
 
             this.add(helper.entryName(), "Condition Level 2 Entry");
             this.add(helper.entryDescription(), "Depends on Condition Level 1 being unlocked.");
+        }
+
+        private void addDemoBookRecipeEntry(BookLangHelper helper) {
+            helper.entry("recipe");
+
+            helper.page("intro");
+            this.add(helper.pageTitle(), "Recipe Entry");
+            this.add(helper.pageText(), "Recipe pages allow to show recipes in the book.");
+
+            helper.page("crafting");
+            this.add(helper.pageText(), "A sample recipe page.");
+
+            //TODO: other recipe page types
+
+            this.add(helper.entryName(), "Recipe Entry");
+            this.add(helper.entryDescription(), "An entry showcasing recipe pages.");
         }
 
         private void addDemoBookFormattingCategory(BookLangHelper helper) {

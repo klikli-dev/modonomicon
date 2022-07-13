@@ -7,10 +7,10 @@
 package com.klikli_dev.modonomicon.datagen;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Book;
 import com.klikli_dev.modonomicon.datagen.book.*;
 import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryReadCondition;
 import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryUnlockedCondition;
+import com.klikli_dev.modonomicon.datagen.book.page.BookCraftingRecipePageModel;
 import com.klikli_dev.modonomicon.datagen.book.page.BookMultiblockPageModel;
 import com.klikli_dev.modonomicon.datagen.book.page.BookTextPageModel;
 import net.minecraft.data.CachedOutput;
@@ -89,7 +89,7 @@ public class BookGenerator implements DataProvider {
                 "_____________________",
                 "__m__________________",
                 "__________r__________",
-                "_____________________",
+                "__c__________________",
                 "__________2___3______"
         );
 
@@ -97,11 +97,14 @@ public class BookGenerator implements DataProvider {
 
         var conditionEntries = this.makeConditionEntries(helper, entryHelper);
 
+        var recipeEntry = this.makeRecipeEntry(helper, entryHelper);
+
         return BookCategoryModel.builder()
                 .withId(this.modLoc("features"))
                 .withName(helper.categoryName())
                 .withIcon("minecraft:nether_star")
                 .withEntry(multiblockEntry)
+                .withEntry(recipeEntry)
                 .withEntries(conditionEntries)
                 .build();
     }
@@ -195,6 +198,34 @@ public class BookGenerator implements DataProvider {
         result.add(conditionLevel2Entry);
 
         return result;
+    }
+
+    private BookEntryModel makeRecipeEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
+        helper.entry("recipe");
+
+        helper.page("intro");
+        var introPage = BookTextPageModel.builder()
+                .withText(helper.pageText())
+                .withTitle(helper.pageTitle())
+                .build();
+
+        helper.page("crafting");
+        var crafting = BookCraftingRecipePageModel.builder()
+                .withRecipeId1("minecraft:crafting_table")
+                .withRecipeId2("minecraft:oak_planks")
+                .withText(helper.pageText())
+                .build();
+
+        //TODO: other recipe types
+
+        return BookEntryModel.builder()
+                .withId(this.modLoc("features/recipe"))
+                .withName(helper.entryName())
+                .withDescription(helper.entryDescription())
+                .withIcon("minecraft:crafting_table")
+                .withLocation(entryHelper.get('c'))
+                .withPages(introPage, crafting)
+                .build();
     }
 
     private BookCategoryModel makeFormattingCategory(BookLangHelper helper) {
