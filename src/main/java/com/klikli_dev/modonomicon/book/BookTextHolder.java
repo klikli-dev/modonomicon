@@ -11,6 +11,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 
 public class BookTextHolder {
@@ -61,7 +62,7 @@ public class BookTextHolder {
         return this.component != null;
     }
     public boolean isEmpty() {
-        return this.getString().isEmpty();
+        return (this.hasComponent() ? this.component.getString() : this.string).isEmpty();
     }
 
     public void toNetwork(FriendlyByteBuf buffer) {

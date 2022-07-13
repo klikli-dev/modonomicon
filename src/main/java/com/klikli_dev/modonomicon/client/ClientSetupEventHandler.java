@@ -10,12 +10,14 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
+import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
+import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
@@ -97,5 +99,9 @@ public class ClientSetupEventHandler {
         event.registerBelow(VanillaGuiOverlay.BOSS_EVENT_PROGRESS.id(),"multiblock_hud", (gui, poseStack, partialTick, screenWidth, screenHeight) -> {
             MultiblockPreviewRenderer.onRenderHUD(poseStack, partialTick);
         });
+    }
+
+    public static void onRecipesUpdated(RecipesUpdatedEvent event) {
+        BookDataManager.get().tryBuildBooks();
     }
 }

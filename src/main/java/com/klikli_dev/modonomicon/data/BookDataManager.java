@@ -78,7 +78,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     }
 
     public void onDatapackSync(OnDatapackSyncEvent event) {
-        this.finalizeBooks();
+
+        this.tryBuildBooks(); //lazily build books when first client connects
 
         Message syncMessage = this.getSyncMessage();
 
@@ -89,10 +90,6 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                 Networking.sendToSplit(player, syncMessage);
             }
         }
-    }
-
-    public void onRecipesUpdated(RecipesUpdatedEvent event){
-        this.finalizeBooks();
     }
 
     public void preLoad() {
@@ -152,24 +149,23 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         }
     }
 
+    /**
+     * On server, called on datapack sync (because we need the data before we send the datapack sync packet) On client,
+     * called on recipes updated, because recipes are available to the client only after datapack sync is complete
+     */
     public boolean tryBuildBooks() {
-        if (!this.booksBuilt && this.loaded && MultiblockDataManager.get().isLoaded()) {
+        if (!this.booksBuilt) {
             Modonomicon.LOGGER.info("Building books & pre-rendering markdown ...");
             this.buildBooks();
             this.booksBuilt = true;
-            Modonomicon.LOGGER.info("Books built..");
+            Modonomicon.LOGGER.info("Books built ...");
+
+            Modonomicon.LOGGER.info("Adding read conditions ...");
+            this.addReadConditions();
+            Modonomicon.LOGGER.info("Read conditions added ...");
             return true;
         }
         return false;
-    }
-
-    /**
-     * On server, called on datapack sync (because we need the data before we send the datapack sync packet)
-     * On client, called on recipes updated, because recipes are available to the client only after datapack sync is complete
-     */
-    public void finalizeBooks() {
-        this.tryBuildBooks();
-        this.addReadConditions();
     }
 
     protected void onLoadingComplete() {

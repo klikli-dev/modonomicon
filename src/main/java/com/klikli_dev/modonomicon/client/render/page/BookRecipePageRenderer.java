@@ -43,7 +43,7 @@ public abstract class BookRecipePageRenderer<R extends Recipe<?>, T extends Book
         }
 
         if (!this.page.getTitle1().isEmpty()) {
-            this.renderTitle(this.page.getTitle1(), false, poseStack, BookContentScreen.PAGE_WIDTH / 2, 0);
+            this.renderTitle(this.page.getTitle1(), false, poseStack, BookContentScreen.PAGE_WIDTH / 2, - 10);
         }
 
         if (!this.page.getTitle2().isEmpty()) {
@@ -75,7 +75,7 @@ public abstract class BookRecipePageRenderer<R extends Recipe<?>, T extends Book
 
     @Override
     public int getTextY() {
-        return Y + getRecipeHeight()  * (this.page.getRecipe2() == null ? 1 : 2) - (this.page.getTitle2().isEmpty() ? 23 : 13);
+        return Y + this.getRecipeHeight()  * (this.page.getRecipe2() == null ? 1 : 2) - (this.page.getTitle2().isEmpty() ? 26 : 16);
     }
 
     protected abstract int getRecipeHeight();

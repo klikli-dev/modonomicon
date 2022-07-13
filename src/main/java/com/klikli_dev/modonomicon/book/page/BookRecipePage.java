@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -21,6 +22,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
@@ -123,7 +125,9 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
 
     private T getRecipe(ResourceLocation id) {
 
-        var manager = ServerLifecycleHooks.getCurrentServer().getRecipeManager();
+        var server = ServerLifecycleHooks.getCurrentServer();
+        RecipeManager manager = server != null ? server.getRecipeManager() : Minecraft.getInstance().level.getRecipeManager();
+
         return (T) manager.byKey(id).filter(recipe -> recipe.getType() == this.recipeType).orElse(null);
     }
 
@@ -170,6 +174,8 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
                             .withBold(true)
                             .withColor(this.getParentEntry().getCategory().getBook().getDefaultTitleColor())));
         }
+
+        //TODO: prerender should be client side only!
 
         if (!this.text.hasComponent()) {
             this.text = new RenderedBookTextHolder(this.text, textRenderer.render(this.text.getString()));

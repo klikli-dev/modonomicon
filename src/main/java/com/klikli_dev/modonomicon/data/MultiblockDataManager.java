@@ -59,7 +59,6 @@ public class MultiblockDataManager extends SimpleJsonResourceReloadListener {
         this.preLoad();
         this.multiblocks = message.multiblocks;
         this.onLoadingComplete();
-        this.postLoad(); //needs to be called after loading complete, because that sets our loaded flag
     }
 
     public void onDatapackSync(OnDatapackSyncEvent event) {
@@ -72,10 +71,6 @@ public class MultiblockDataManager extends SimpleJsonResourceReloadListener {
                 Networking.sendToSplit(player, syncMessage);
             }
         }
-    }
-
-    public void postLoad() {
-        BookDataManager.get().tryBuildBooks();
     }
 
     public void preLoad() {
@@ -100,6 +95,5 @@ public class MultiblockDataManager extends SimpleJsonResourceReloadListener {
         }
 
         this.onLoadingComplete();
-        this.postLoad(); //needs to be called after loading complete, because that sets our loaded flag
     }
 }
