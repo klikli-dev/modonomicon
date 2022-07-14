@@ -187,9 +187,12 @@ public class BookContentScreen extends Screen {
         this.tooltipStack = stack;
     }
 
+    /**
+     * Doesn't actually translate, as it's not necessary, just checks if mouse is in given area
+     */
     public boolean isMouseInRelativeRange(double absMx, double absMy, int x, int y, int w, int h) {
-        double mx = this.getRelativeX(absMx);
-        double my = this.getRelativeY(absMy);
+        double mx = absMx; //this.getRelativeX(absMx);
+        double my = absMy; //this.getRelativeY(absMy);
 
         return mx > x && my > y && mx <= (x + w) && my <= (y + h);
     }
@@ -313,7 +316,12 @@ public class BookContentScreen extends Screen {
     }
 
     protected void drawTooltip(PoseStack pPoseStack, int pMouseX, int pMouseY) {
-        if (this.tooltip != null) {
+
+        if (this.tooltipStack != null) {
+            List<Component> tooltip = this.getTooltipFromItem(this.tooltipStack);
+
+            this.renderComponentTooltip(pPoseStack, tooltip, pMouseX, pMouseY);
+        } else if (this.tooltip != null && !this.tooltip.isEmpty()) {
             this.renderComponentTooltip(pPoseStack, this.tooltip, pMouseX, pMouseY);
         }
     }
@@ -376,6 +384,7 @@ public class BookContentScreen extends Screen {
 
     protected void resetTooltip() {
         this.tooltip = null;
+        this.tooltipStack = null;
     }
 
     private boolean clickOutsideEntry(double pMouseX, double pMouseY) {
