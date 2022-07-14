@@ -34,7 +34,7 @@ public abstract class BookRecipePageRenderer<R extends Recipe<?>, T extends Book
             drawRecipe(poseStack, this.page.getRecipe1(), recipeX, recipeY, mouseX, mouseY, false);
 
 
-            if (this.page.getRecipe2()  != null) {
+            if (this.page.getRecipe2() != null) {
                 //Title 2 might be skipped if identical to Title 2, so respect that here
                 drawRecipe(poseStack, this.page.getRecipe2(), recipeX,
                         recipeY + getRecipeHeight() - (this.page.getTitle2().getString().isEmpty() ? 10 : 0),
@@ -42,16 +42,8 @@ public abstract class BookRecipePageRenderer<R extends Recipe<?>, T extends Book
             }
         }
 
-        if (!this.page.getTitle1().isEmpty()) {
-            this.renderTitle(this.page.getTitle1(), false, poseStack, BookContentScreen.PAGE_WIDTH / 2, - 10);
-        }
-
-        if (!this.page.getTitle2().isEmpty()) {
-            this.renderTitle(this.page.getTitle2(), false, poseStack, BookContentScreen.PAGE_WIDTH / 2,
-                    recipeY + getRecipeHeight() - (this.page.getTitle2().getString().isEmpty() ? 10 : 0) - 10);
-        }
-
-        this.renderBookTextHolder(this.getPage().getText(), poseStack, 0, this.getTextY(), BookContentScreen.PAGE_WIDTH);
+        if(this.page.getRecipe2() == null) //only render no second recipe
+            this.renderBookTextHolder(this.getPage().getText(), poseStack, 0, this.getTextY(), BookContentScreen.PAGE_WIDTH);
 
         var style = this.getClickedComponentStyleAt(mouseX, mouseY);
         if (style != null)

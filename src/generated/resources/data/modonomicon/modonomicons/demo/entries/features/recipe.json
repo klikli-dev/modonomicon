@@ -23,6 +23,15 @@
       "text": "book.modonomicon.demo.features.recipe.crafting.text",
       "title1": "",
       "title2": ""
+    },
+    {
+      "type": "modonomicon:smelting_recipe",
+      "anchor": "",
+      "recipe_id_1": "minecraft:charcoal",
+      "recipe_id_2": "minecraft:cooked_beef",
+      "text": "",
+      "title1": "",
+      "title2": ""
     }
   ],
   "x": -8,

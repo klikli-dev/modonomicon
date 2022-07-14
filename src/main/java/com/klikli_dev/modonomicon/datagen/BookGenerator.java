@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryReadCondition;
 import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryUnlockedCondition;
 import com.klikli_dev.modonomicon.datagen.book.page.BookCraftingRecipePageModel;
 import com.klikli_dev.modonomicon.datagen.book.page.BookMultiblockPageModel;
+import com.klikli_dev.modonomicon.datagen.book.page.BookSmeltingRecipePageModel;
 import com.klikli_dev.modonomicon.datagen.book.page.BookTextPageModel;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
@@ -218,13 +219,19 @@ public class BookGenerator implements DataProvider {
 
         //TODO: other recipe types
 
+        helper.page("smelting");
+        var smelting = BookSmeltingRecipePageModel.builder()
+                .withRecipeId1("minecraft:charcoal")
+                .withRecipeId2("minecraft:cooked_beef")
+                .build();
+
         return BookEntryModel.builder()
                 .withId(this.modLoc("features/recipe"))
                 .withName(helper.entryName())
                 .withDescription(helper.entryDescription())
                 .withIcon("minecraft:crafting_table")
                 .withLocation(entryHelper.get('c'))
-                .withPages(introPage, crafting)
+                .withPages(introPage, crafting, smelting)
                 .build();
     }
 

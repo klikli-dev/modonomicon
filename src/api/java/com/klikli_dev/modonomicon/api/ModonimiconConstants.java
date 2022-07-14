@@ -32,8 +32,8 @@ public class ModonimiconConstants {
         public static class Page {
             public static final ResourceLocation TEXT = new ResourceLocation(ModonomiconAPI.ID, "text");
             public static final ResourceLocation MULTIBLOCK = new ResourceLocation(ModonomiconAPI.ID, "multiblock");
-
             public static final ResourceLocation CRAFTING_RECIPE = new ResourceLocation(ModonomiconAPI.ID, "crafting_recipe");
+            public static final ResourceLocation SMELTING_RECIPE = new ResourceLocation(ModonomiconAPI.ID, "smelting_recipe");
         }
 
         public static class Condition {
