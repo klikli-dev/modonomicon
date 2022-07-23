@@ -61,6 +61,7 @@ public class LoaderRegistry {
         registerPageLoader(Page.CAMPFIRE_COOKING_RECIPE, BookCampfireCookingRecipePage::fromJson, BookCampfireCookingRecipePage::fromNetwork);
         registerPageLoader(Page.BLASTING_RECIPE, BookBlastingRecipePage::fromJson, BookBlastingRecipePage::fromNetwork);
         registerPageLoader(Page.STONECUTTING_RECIPE, BookStonecuttingRecipePage::fromJson, BookStonecuttingRecipePage::fromNetwork);
+        registerPageLoader(Page.SMITHING_RECIPE, BookSmithingRecipePage::fromJson, BookSmithingRecipePage::fromNetwork);
     }
 
     private static void registerDefaultConditionLoaders() {

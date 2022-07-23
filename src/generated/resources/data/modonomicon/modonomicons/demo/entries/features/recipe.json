@@ -64,6 +64,14 @@
       "text": "",
       "title1": "",
       "title2": ""
+    },
+    {
+      "type": "modonomicon:smithing_recipe",
+      "anchor": "",
+      "recipe_id_1": "minecraft:netherite_axe_smithing",
+      "text": "",
+      "title1": "",
+      "title2": ""
     }
   ],
   "x": -8,

@@ -32,6 +32,7 @@ public class PageRendererRegistry {
         registerPageRenderer(Page.CAMPFIRE_COOKING_RECIPE, p -> new BookProcessingRecipePageRenderer<>((BookCampfireCookingRecipePage) p) {});
         registerPageRenderer(Page.BLASTING_RECIPE, p -> new BookProcessingRecipePageRenderer<>((BookBlastingRecipePage) p) {});
         registerPageRenderer(Page.STONECUTTING_RECIPE, p -> new BookProcessingRecipePageRenderer<>((BookStonecuttingRecipePage) p) {});
+        registerPageRenderer(Page.SMITHING_RECIPE, p -> new BookSmithingRecipePageRenderer((BookSmithingRecipePage) p) {});
     }
 
     /**

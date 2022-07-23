@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.datagen;
 
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.book.page.BookSmithingRecipePage;
 import com.klikli_dev.modonomicon.datagen.book.*;
 import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryReadCondition;
 import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryUnlockedCondition;
@@ -240,6 +241,11 @@ public class BookGenerator implements DataProvider {
                 .withRecipeId1("minecraft:andesite_slab_from_andesite_stonecutting")
                 .build();
 
+        helper.page("smithing");
+        var smithing = BookSmithingRecipePageModel.builder()
+                .withRecipeId1("minecraft:netherite_axe_smithing")
+                .build();
+
         //TODO: other recipe types
 
         return BookEntryModel.builder()
@@ -248,7 +254,7 @@ public class BookGenerator implements DataProvider {
                 .withDescription(helper.entryDescription())
                 .withIcon("minecraft:crafting_table")
                 .withLocation(entryHelper.get('c'))
-                .withPages(introPage, crafting, smelting, smoking, blasting, campfireCooking, stonecutting)
+                .withPages(introPage, crafting, smelting, smoking, blasting, campfireCooking, stonecutting, smithing)
                 .build();
     }
 
