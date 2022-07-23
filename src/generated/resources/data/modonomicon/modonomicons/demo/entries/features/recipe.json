@@ -32,6 +32,38 @@
       "text": "",
       "title1": "",
       "title2": ""
+    },
+    {
+      "type": "modonomicon:smoking_recipe",
+      "anchor": "",
+      "recipe_id_1": "minecraft:cooked_beef_from_smoking",
+      "text": "",
+      "title1": "",
+      "title2": ""
+    },
+    {
+      "type": "modonomicon:blasting_recipe",
+      "anchor": "",
+      "recipe_id_2": "minecraft:iron_ingot_from_blasting_iron_ore",
+      "text": "",
+      "title1": "",
+      "title2": ""
+    },
+    {
+      "type": "modonomicon:campfire_cooking_recipe",
+      "anchor": "",
+      "recipe_id_1": "minecraft:cooked_beef_from_campfire_cooking",
+      "text": "",
+      "title1": "",
+      "title2": ""
+    },
+    {
+      "type": "modonomicon:stonecutting_recipe",
+      "anchor": "",
+      "recipe_id_1": "minecraft:andesite_slab_from_andesite_stonecutting",
+      "text": "",
+      "title1": "",
+      "title2": ""
     }
   ],
   "x": -8,

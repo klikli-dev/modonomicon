@@ -10,10 +10,7 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.datagen.book.*;
 import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryReadCondition;
 import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryUnlockedCondition;
-import com.klikli_dev.modonomicon.datagen.book.page.BookCraftingRecipePageModel;
-import com.klikli_dev.modonomicon.datagen.book.page.BookMultiblockPageModel;
-import com.klikli_dev.modonomicon.datagen.book.page.BookSmeltingRecipePageModel;
-import com.klikli_dev.modonomicon.datagen.book.page.BookTextPageModel;
+import com.klikli_dev.modonomicon.datagen.book.page.*;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
@@ -217,13 +214,33 @@ public class BookGenerator implements DataProvider {
                 .withText(helper.pageText())
                 .build();
 
-        //TODO: other recipe types
-
         helper.page("smelting");
         var smelting = BookSmeltingRecipePageModel.builder()
                 .withRecipeId1("minecraft:charcoal")
                 .withRecipeId2("minecraft:cooked_beef")
                 .build();
+
+        helper.page("smoking");
+        var smoking = BookSmokingRecipePageModel.builder()
+                .withRecipeId1("minecraft:cooked_beef_from_smoking")
+                .build();
+
+        helper.page("blasting");
+        var blasting = BookBlastingRecipePageModel.builder()
+                .withRecipeId2("minecraft:iron_ingot_from_blasting_iron_ore")
+                .build();
+
+        helper.page("campfire_cooking");
+        var campfireCooking = BookCampfireCookingRecipePageModel.builder()
+                .withRecipeId1("minecraft:cooked_beef_from_campfire_cooking")
+                .build();
+
+        helper.page("stonecutting");
+        var stonecutting = BookStonecuttingRecipePageModel.builder()
+                .withRecipeId1("minecraft:andesite_slab_from_andesite_stonecutting")
+                .build();
+
+        //TODO: other recipe types
 
         return BookEntryModel.builder()
                 .withId(this.modLoc("features/recipe"))
@@ -231,7 +248,7 @@ public class BookGenerator implements DataProvider {
                 .withDescription(helper.entryDescription())
                 .withIcon("minecraft:crafting_table")
                 .withLocation(entryHelper.get('c'))
-                .withPages(introPage, crafting, smelting)
+                .withPages(introPage, crafting, smelting, smoking, blasting, campfireCooking, stonecutting)
                 .build();
     }
 

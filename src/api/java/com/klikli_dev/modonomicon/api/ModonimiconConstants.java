@@ -33,7 +33,11 @@ public class ModonimiconConstants {
             public static final ResourceLocation TEXT = new ResourceLocation(ModonomiconAPI.ID, "text");
             public static final ResourceLocation MULTIBLOCK = new ResourceLocation(ModonomiconAPI.ID, "multiblock");
             public static final ResourceLocation CRAFTING_RECIPE = new ResourceLocation(ModonomiconAPI.ID, "crafting_recipe");
+            public static final ResourceLocation SMOKING_RECIPE = new ResourceLocation(ModonomiconAPI.ID, "smoking_recipe");
             public static final ResourceLocation SMELTING_RECIPE = new ResourceLocation(ModonomiconAPI.ID, "smelting_recipe");
+            public static final ResourceLocation BLASTING_RECIPE = new ResourceLocation(ModonomiconAPI.ID, "blasting_recipe");
+            public static final ResourceLocation CAMPFIRE_COOKING_RECIPE = new ResourceLocation(ModonomiconAPI.ID, "campfire_cooking_recipe");
+            public static final ResourceLocation STONECUTTING_RECIPE = new ResourceLocation(ModonomiconAPI.ID, "stonecutting_recipe");
         }
 
         public static class Condition {

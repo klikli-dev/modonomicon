@@ -89,6 +89,7 @@ public class BookEntry {
         if (json.has("pages")) {
             var jsonPages = GsonHelper.getAsJsonArray(json, "pages");
             for (var pageElem : jsonPages) {
+                BookErrorManager.get().setContext("Page Index: {}", pages.size());
                 var pageJson = GsonHelper.convertToJsonObject(pageElem, "page");
                 var type = new ResourceLocation(GsonHelper.getAsString(pageJson, "type"));
                 var loader = LoaderRegistry.getPageJsonLoader(type);

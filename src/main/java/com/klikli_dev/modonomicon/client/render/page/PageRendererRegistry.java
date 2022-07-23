@@ -28,6 +28,10 @@ public class PageRendererRegistry {
         registerPageRenderer(Page.MULTIBLOCK, p -> new BookMultiblockPageRenderer((BookMultiblockPage)p));
         registerPageRenderer(Page.CRAFTING_RECIPE, p -> new BookCraftingRecipePageRenderer((BookCraftingRecipePage) p));
         registerPageRenderer(Page.SMELTING_RECIPE, p -> new BookProcessingRecipePageRenderer<>((BookSmeltingRecipePage) p) {});
+        registerPageRenderer(Page.SMOKING_RECIPE, p -> new BookProcessingRecipePageRenderer<>((BookSmokingRecipePage) p) {});
+        registerPageRenderer(Page.CAMPFIRE_COOKING_RECIPE, p -> new BookProcessingRecipePageRenderer<>((BookCampfireCookingRecipePage) p) {});
+        registerPageRenderer(Page.BLASTING_RECIPE, p -> new BookProcessingRecipePageRenderer<>((BookBlastingRecipePage) p) {});
+        registerPageRenderer(Page.STONECUTTING_RECIPE, p -> new BookProcessingRecipePageRenderer<>((BookStonecuttingRecipePage) p) {});
     }
 
     /**

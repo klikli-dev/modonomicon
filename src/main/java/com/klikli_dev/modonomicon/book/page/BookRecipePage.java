@@ -52,10 +52,10 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
 
     public static DataHolder commonFromJson(JsonObject json) {
         var title1 = BookGsonHelper.getAsBookTextHolder(json, "title1", BookTextHolder.EMPTY);
-        ResourceLocation recipeId1 = ResourceLocation.tryParse(GsonHelper.getAsString(json, "recipe_id_1", "null"));
+        ResourceLocation recipeId1 = json.has("recipe_id_1") ? ResourceLocation.tryParse(GsonHelper.getAsString(json, "recipe_id_1")) : null;
 
         var title2 = BookGsonHelper.getAsBookTextHolder(json, "title2", BookTextHolder.EMPTY);
-        ResourceLocation recipeId2 = ResourceLocation.tryParse(GsonHelper.getAsString(json, "recipe_id_2", "null"));
+        ResourceLocation recipeId2 = json.has("recipe_id_2") ? ResourceLocation.tryParse(GsonHelper.getAsString(json, "recipe_id_2")) : null;
 
         var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY);
 
@@ -186,11 +186,15 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
     public void toNetwork(FriendlyByteBuf buffer) {
         this.title1.toNetwork(buffer);
         buffer.writeBoolean(this.recipeId1 != null);
-        buffer.writeResourceLocation(this.recipeId1);
+        if(this.recipeId1 != null){
+            buffer.writeResourceLocation(this.recipeId1);
+        }
 
         this.title2.toNetwork(buffer);
         buffer.writeBoolean(this.recipeId2 != null);
-        buffer.writeResourceLocation(this.recipeId2);
+        if(this.recipeId2 != null) {
+            buffer.writeResourceLocation(this.recipeId2);
+        }
 
         this.text.toNetwork(buffer);
     }
