@@ -15,6 +15,7 @@ import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -90,7 +91,11 @@ public class BookSpotlightPage extends BookPage {
 
         if (this.title.isEmpty()) {
             //use ingredient name if we don't have a custom title
-            this.title = new BookTextHolder(this.item.getItems()[0].getHoverName());
+            this.title = new BookTextHolder(((MutableComponent)this.item.getItems()[0].getHoverName())
+                    .withStyle(Style.EMPTY
+                            .withBold(true)
+                            .withColor(this.getParentEntry().getBook().getDefaultTitleColor())
+                    ));
         }
     }
     @Override

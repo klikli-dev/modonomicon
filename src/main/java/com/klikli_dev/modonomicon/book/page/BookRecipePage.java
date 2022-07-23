@@ -17,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -145,12 +146,20 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
 
         if (this.title1.isEmpty()) {
             //use recipe title if we don't have a custom one
-            this.title1 = new BookTextHolder(this.getRecipeOutput(this.recipe1).getHoverName());
+            this.title1 = new BookTextHolder(((MutableComponent)this.getRecipeOutput(this.recipe1).getHoverName())
+                    .withStyle(Style.EMPTY
+                    .withBold(true)
+                    .withColor(this.getParentEntry().getBook().getDefaultTitleColor())
+            ));
         }
 
         if (this.recipe2 != null && this.title2.isEmpty()) {
             //use recipe title if we don't have a custom one
-            this.title2 = new BookTextHolder(this.getRecipeOutput(this.recipe2).getHoverName());
+            this.title2 = new BookTextHolder(((MutableComponent)this.getRecipeOutput(this.recipe2).getHoverName())
+                    .withStyle(Style.EMPTY
+                            .withBold(true)
+                            .withColor(this.getParentEntry().getBook().getDefaultTitleColor())
+                    ));
         }
 
         if (this.title1.equals(this.title2)) {
