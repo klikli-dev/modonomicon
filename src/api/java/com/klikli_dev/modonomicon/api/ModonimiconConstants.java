@@ -39,6 +39,8 @@ public class ModonimiconConstants {
             public static final ResourceLocation CAMPFIRE_COOKING_RECIPE = new ResourceLocation(ModonomiconAPI.ID, "campfire_cooking_recipe");
             public static final ResourceLocation STONECUTTING_RECIPE = new ResourceLocation(ModonomiconAPI.ID, "stonecutting_recipe");
             public static final ResourceLocation SMITHING_RECIPE = new ResourceLocation(ModonomiconAPI.ID, "smithing_recipe");
+
+            public static final ResourceLocation SPOTLIGHT = new ResourceLocation(ModonomiconAPI.ID, "spotlight");
         }
 
         public static class Condition {

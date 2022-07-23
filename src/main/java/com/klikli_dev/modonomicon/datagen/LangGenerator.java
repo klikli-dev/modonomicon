@@ -12,11 +12,14 @@ import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.*;
 import com.klikli_dev.modonomicon.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.datagen.book.BookLangHelper;
 import com.klikli_dev.modonomicon.datagen.book.page.BookCraftingRecipePageModel;
+import com.klikli_dev.modonomicon.datagen.book.page.BookSpotlightPageModel;
 import com.klikli_dev.modonomicon.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.data.LanguageProvider;
 
 import java.util.function.Supplier;
@@ -119,6 +122,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.addDemoBookMultiblockEntry(helper);
             this.addDemoBookRecipeEntry(helper);
             this.addDemoBookConditionEntries(helper);
+            this.addDemoBookSpotlightEntry(helper);
             this.add(helper.categoryName(), "Features Category");
 
         }
@@ -176,10 +180,26 @@ public abstract class LangGenerator extends LanguageProvider {
             helper.page("crafting");
             this.add(helper.pageText(), "A sample recipe page.");
 
-            //TODO: other recipe page types
-
             this.add(helper.entryName(), "Recipe Entry");
             this.add(helper.entryDescription(), "An entry showcasing recipe pages.");
+        }
+
+        private void addDemoBookSpotlightEntry(BookLangHelper helper) {
+            helper.entry("spotlight");
+
+            helper.page("intro");
+            this.add(helper.pageTitle(), "Spotlight Entry");
+            this.add(helper.pageText(), "Spotlight pages allow to show items (actually, ingredients).");
+
+            helper.page("spotlight1");
+            this.add(helper.pageTitle(), "Custom Title");
+            this.add(helper.pageText(), "A sample spotlight page with custom title.");
+
+            helper.page("spotlight2");
+            this.add(helper.pageText(), "A sample spotlight page with automatic title.");
+
+            this.add(helper.entryName(), "Spotlight Entry");
+            this.add(helper.entryDescription(), "An entry showcasing spotlight pages.");
         }
 
         private void addDemoBookFormattingCategory(BookLangHelper helper) {

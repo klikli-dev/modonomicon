@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.datagen;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.page.BookSmithingRecipePage;
+import com.klikli_dev.modonomicon.book.page.BookSpotlightPage;
 import com.klikli_dev.modonomicon.datagen.book.*;
 import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryReadCondition;
 import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryUnlockedCondition;
@@ -16,6 +17,8 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -89,14 +92,18 @@ public class BookGenerator implements DataProvider {
                 "__m__________________",
                 "__________r__________",
                 "__c__________________",
-                "__________2___3______"
+                "__________2___3______",
+                "__s__________________"
         );
 
         var multiblockEntry = this.makeMultiblockEntry(helper, entryHelper);
 
         var conditionEntries = this.makeConditionEntries(helper, entryHelper);
 
-        var recipeEntry = this.makeRecipeEntry(helper, entryHelper);
+        var recipeEntry = this.makeRecipeEntry(helper, entryHelper).build();
+
+        var spotlightEntry = this.makeSpotlightEntry(helper, entryHelper);
+        spotlightEntry.withParent(BookEntryParentModel.builder().withEntryId(recipeEntry.getId()).build());
 
         return BookCategoryModel.builder()
                 .withId(this.modLoc("features"))
@@ -105,6 +112,7 @@ public class BookGenerator implements DataProvider {
                 .withEntry(multiblockEntry)
                 .withEntry(recipeEntry)
                 .withEntries(conditionEntries)
+                .withEntry(spotlightEntry.build())
                 .build();
     }
 
@@ -199,7 +207,7 @@ public class BookGenerator implements DataProvider {
         return result;
     }
 
-    private BookEntryModel makeRecipeEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
+    private BookEntryModel.Builder makeRecipeEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
         helper.entry("recipe");
 
         helper.page("intro");
@@ -246,16 +254,44 @@ public class BookGenerator implements DataProvider {
                 .withRecipeId1("minecraft:netherite_axe_smithing")
                 .build();
 
-        //TODO: other recipe types
-
         return BookEntryModel.builder()
                 .withId(this.modLoc("features/recipe"))
                 .withName(helper.entryName())
                 .withDescription(helper.entryDescription())
                 .withIcon("minecraft:crafting_table")
                 .withLocation(entryHelper.get('c'))
-                .withPages(introPage, crafting, smelting, smoking, blasting, campfireCooking, stonecutting, smithing)
+                .withPages(introPage, crafting, smelting, smoking, blasting, campfireCooking, stonecutting, smithing);
+    }
+
+    private BookEntryModel.Builder makeSpotlightEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
+        helper.entry("spotlight");
+
+        helper.page("intro");
+        var introPage = BookTextPageModel.builder()
+                .withText(helper.pageText())
+                .withTitle(helper.pageTitle())
                 .build();
+
+        helper.page("spotlight1");
+        var spotlight1 = BookSpotlightPageModel.builder()
+                .withTitle(helper.pageTitle())
+                .withText(helper.pageText())
+                .withItem(Ingredient.of(Items.APPLE))
+                .build();
+
+        helper.page("spotlight2");
+        var spotlight2 = BookSpotlightPageModel.builder()
+                .withText(helper.pageText())
+                .withItem(Ingredient.of(Items.DIAMOND))
+                .build();
+
+        return BookEntryModel.builder()
+                .withId(this.modLoc("features/spotlight"))
+                .withName(helper.entryName())
+                .withDescription(helper.entryDescription())
+                .withIcon("minecraft:item_frame")
+                .withLocation(entryHelper.get('s'))
+                .withPages(introPage, spotlight1, spotlight2);
     }
 
     private BookCategoryModel makeFormattingCategory(BookLangHelper helper) {
