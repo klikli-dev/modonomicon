@@ -123,6 +123,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.addDemoBookRecipeEntry(helper);
             this.addDemoBookConditionEntries(helper);
             this.addDemoBookSpotlightEntry(helper);
+            this.addDemoBookEmptyPageEntry(helper);
             this.add(helper.categoryName(), "Features Category");
 
         }
@@ -200,6 +201,17 @@ public abstract class LangGenerator extends LanguageProvider {
 
             this.add(helper.entryName(), "Spotlight Entry");
             this.add(helper.entryDescription(), "An entry showcasing spotlight pages.");
+        }
+
+        private void addDemoBookEmptyPageEntry(BookLangHelper helper) {
+            helper.entry("empty");
+
+            helper.page("intro");
+            this.add(helper.pageTitle(), "Empty Page Entry");
+            this.add(helper.pageText(), "Empty pages allow to add .. empty pages.");
+
+            this.add(helper.entryName(), "Empty Page Entry");
+            this.add(helper.entryDescription(), "An entry showcasing empty pages.");
         }
 
         private void addDemoBookFormattingCategory(BookLangHelper helper) {

@@ -93,7 +93,7 @@ public class BookGenerator implements DataProvider {
                 "__________r__________",
                 "__c__________________",
                 "__________2___3______",
-                "__s__________________"
+                "__s_____e____________"
         );
 
         var multiblockEntry = this.makeMultiblockEntry(helper, entryHelper);
@@ -105,6 +105,9 @@ public class BookGenerator implements DataProvider {
         var spotlightEntry = this.makeSpotlightEntry(helper, entryHelper);
         spotlightEntry.withParent(BookEntryParentModel.builder().withEntryId(recipeEntry.getId()).build());
 
+        var emptyEntry = this.makeEmptyPageEntry(helper, entryHelper);
+        emptyEntry.withParent(BookEntryParentModel.builder().withEntryId(spotlightEntry.id).build());
+
         return BookCategoryModel.builder()
                 .withId(this.modLoc("features"))
                 .withName(helper.categoryName())
@@ -113,6 +116,7 @@ public class BookGenerator implements DataProvider {
                 .withEntry(recipeEntry)
                 .withEntries(conditionEntries)
                 .withEntry(spotlightEntry.build())
+                .withEntry(emptyEntry.build())
                 .build();
     }
 
@@ -292,6 +296,32 @@ public class BookGenerator implements DataProvider {
                 .withIcon("minecraft:item_frame")
                 .withLocation(entryHelper.get('s'))
                 .withPages(introPage, spotlight1, spotlight2);
+    }
+
+    private BookEntryModel.Builder makeEmptyPageEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
+        helper.entry("empty");
+
+        helper.page("intro");
+        var introPage = BookTextPageModel.builder()
+                .withText(helper.pageText())
+                .withTitle(helper.pageTitle())
+                .build();
+
+        helper.page("empty");
+        var empty = BookEmptyPageModel.builder()
+                .build();
+
+        helper.page("empty2");
+        var empty2 = BookEmptyPageModel.builder()
+                .build();
+
+        return BookEntryModel.builder()
+                .withId(this.modLoc("features/empty"))
+                .withName(helper.entryName())
+                .withDescription(helper.entryDescription())
+                .withIcon("minecraft:obsidian")
+                .withLocation(entryHelper.get('e'))
+                .withPages(introPage, empty, empty2);
     }
 
     private BookCategoryModel makeFormattingCategory(BookLangHelper helper) {
