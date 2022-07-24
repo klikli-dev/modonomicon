@@ -41,6 +41,7 @@ public class ModonimiconConstants {
             public static final ResourceLocation SMITHING_RECIPE = new ResourceLocation(ModonomiconAPI.ID, "smithing_recipe");
             public static final ResourceLocation SPOTLIGHT = new ResourceLocation(ModonomiconAPI.ID, "spotlight");
             public static final ResourceLocation EMPTY = new ResourceLocation(ModonomiconAPI.ID, "empty");
+            public static final ResourceLocation ENTITY = new ResourceLocation(ModonomiconAPI.ID, "entity");
         }
 
         public static class Condition {
@@ -85,11 +86,11 @@ public class ModonimiconConstants {
             public static final String BUTTON_VISUALIZE = PREFIX + "button.visualize";
             public static final String BUTTON_VISUALIZE_TOOLTIP = PREFIX + "button.visualize.tooltip";
 
-
             public static final String HOVER_BOOK_LINK = PREFIX + "hover.book_link";
             public static final String HOVER_HTTP_LINK = PREFIX + "hover.http_link";
 
             public static final String NO_ERRORS_FOUND = PREFIX + "no_errors_found";
+            public static final String PAGE_ENTITY_LOADING_ERROR = PREFIX + ".page.entity.loading_error";
         }
 
         public static class Multiblock {

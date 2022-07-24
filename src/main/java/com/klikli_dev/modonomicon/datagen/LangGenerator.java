@@ -68,6 +68,9 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(Gui.HOVER_BOOK_LINK, "Go to: %s");
             this.add(Gui.HOVER_HTTP_LINK, "Visit: %s");
 
+            //other gui stuff
+            this.add(Gui.PAGE_ENTITY_LOADING_ERROR, "Failed to load entity");
+
             //Tooltip
             this.add(Tooltips.CONDITION_ADVANCEMENT, "Requires Advancement: %s");
             this.add(Tooltips.CONDITION_ENTRY_UNLOCKED, "Requires unlocked Entry: %s");
@@ -124,6 +127,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.addDemoBookConditionEntries(helper);
             this.addDemoBookSpotlightEntry(helper);
             this.addDemoBookEmptyPageEntry(helper);
+            this.addDemoBookEntityEntry(helper);
             this.add(helper.categoryName(), "Features Category");
 
         }
@@ -212,6 +216,23 @@ public abstract class LangGenerator extends LanguageProvider {
 
             this.add(helper.entryName(), "Empty Page Entry");
             this.add(helper.entryDescription(), "An entry showcasing empty pages.");
+        }
+
+        private void addDemoBookEntityEntry(BookLangHelper helper) {
+            helper.entry("entity");
+
+            helper.page("intro");
+            this.add(helper.pageTitle(), "Entity Entry");
+            this.add(helper.pageText(), "Entity pages allow to show entities.");
+
+            helper.page("entity1");
+            this.add(helper.pageTitle(), "Custom Name");
+
+            helper.page("entity2");
+            this.add(helper.pageText(), "A sample entity page with automatic title.");
+
+            this.add(helper.entryName(), "Entity Entry");
+            this.add(helper.entryDescription(), "An entry showcasing entity pages.");
         }
 
         private void addDemoBookFormattingCategory(BookLangHelper helper) {

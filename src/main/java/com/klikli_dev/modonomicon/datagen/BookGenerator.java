@@ -89,7 +89,7 @@ public class BookGenerator implements DataProvider {
         var entryHelper = new EntryLocationHelper();
         entryHelper.setMap(
                 "_____________________",
-                "__m__________________",
+                "__m______________d___",
                 "__________r__________",
                 "__c__________________",
                 "__________2___3______",
@@ -108,6 +108,8 @@ public class BookGenerator implements DataProvider {
         var emptyEntry = this.makeEmptyPageEntry(helper, entryHelper);
         emptyEntry.withParent(BookEntryParentModel.builder().withEntryId(spotlightEntry.id).build());
 
+        var entityEntry = this.makeEntityEntry(helper, entryHelper);
+
         return BookCategoryModel.builder()
                 .withId(this.modLoc("features"))
                 .withName(helper.categoryName())
@@ -117,6 +119,7 @@ public class BookGenerator implements DataProvider {
                 .withEntries(conditionEntries)
                 .withEntry(spotlightEntry.build())
                 .withEntry(emptyEntry.build())
+                .withEntry(entityEntry.build())
                 .build();
     }
 
@@ -322,6 +325,38 @@ public class BookGenerator implements DataProvider {
                 .withIcon("minecraft:obsidian")
                 .withLocation(entryHelper.get('e'))
                 .withPages(introPage, empty, empty2);
+    }
+
+    private BookEntryModel.Builder makeEntityEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
+        helper.entry("entity");
+
+        helper.page("intro");
+        var introPage = BookTextPageModel.builder()
+                .withText(helper.pageText())
+                .withTitle(helper.pageTitle())
+                .build();
+
+        helper.page("entity1");
+        var entity1 = BookEntityPageModel.builder()
+                .withEntityName(helper.pageTitle())
+                .withEntityId("minecraft:ender_dragon")
+                .withScale(0.5f)
+                .build();
+
+        helper.page("entity2");
+        var entity2 = BookEntityPageModel.builder()
+                .withText(helper.pageText())
+                .withEntityId("minecraft:spider")
+                .withScale(1f)
+                .build();
+
+        return BookEntryModel.builder()
+                .withId(this.modLoc("features/entity"))
+                .withName(helper.entryName())
+                .withDescription(helper.entryDescription())
+                .withIcon("minecraft:spider_eye")
+                .withLocation(entryHelper.get('d'))
+                .withPages(introPage, entity1, entity2);
     }
 
     private BookCategoryModel makeFormattingCategory(BookLangHelper helper) {

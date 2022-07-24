@@ -35,6 +35,7 @@ public class PageRendererRegistry {
         registerPageRenderer(Page.SMITHING_RECIPE, p -> new BookSmithingRecipePageRenderer((BookSmithingRecipePage) p) {});
         registerPageRenderer(Page.SPOTLIGHT, p -> new BookSpotlightPageRenderer((BookSpotlightPage) p) {});
         registerPageRenderer(Page.EMPTY, p -> new BookEmptyPageRenderer((BookEmptyPage) p) {});
+        registerPageRenderer(Page.ENTITY, p -> new BookEntityPageRenderer((BookEntityPage) p) {});
     }
 
     /**

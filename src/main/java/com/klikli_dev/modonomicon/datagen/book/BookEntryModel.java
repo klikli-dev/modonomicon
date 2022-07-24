@@ -185,6 +185,11 @@ public class BookEntryModel {
             return this.withX((int)location.x).withY((int)location.y);
         }
 
+        public Builder withLocation(int x, int y) {
+            return this.withX(x).withY(y);
+        }
+
+
         public Builder withX(int x) {
             this.x = x;
             return this;
