@@ -396,6 +396,10 @@ public class BookContentScreen extends Screen {
 
     private void loadEntryState() {
         var state = BookStateCapability.getEntryStateFor(this.parentScreen.getMinecraft().player, this.entry);
+
+        BookGuiManager.get().currentEntry = this.entry;
+        BookGuiManager.get().currentContentScreen = this;
+
         if (state != null) {
             this.openPagesIndex = state.openPagesIndex;
         }

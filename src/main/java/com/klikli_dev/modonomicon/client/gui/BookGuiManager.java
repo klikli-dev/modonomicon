@@ -25,13 +25,13 @@ public class BookGuiManager {
 
     private final Stack<BookHistoryEntry> history = new Stack<>();
 
-    private Book currentBook;
-    private BookCategory currentCategory;
-    private BookEntry currentEntry;
+    public Book currentBook;
+    public BookCategory currentCategory;
+    public BookEntry currentEntry;
 
-    private BookOverviewScreen currentOverviewScreen;
-    private BookCategoryScreen currentCategoryScreen;
-    private BookContentScreen currentContentScreen;
+    public BookOverviewScreen currentOverviewScreen;
+    public BookCategoryScreen currentCategoryScreen;
+    public BookContentScreen currentContentScreen;
 
     private BookGuiManager() {
 

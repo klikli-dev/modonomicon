@@ -330,6 +330,8 @@ public class BookCategoryScreen {
 
     private void loadCategoryState() {
         var state = BookStateCapability.getCategoryStateFor(this.bookOverviewScreen.getMinecraft().player, this.category);
+        BookGuiManager.get().currentCategory = this.category;
+        BookGuiManager.get().currentCategoryScreen = this;
         if (state != null) {
             this.scrollX = state.scrollX;
             this.scrollY = state.scrollY;
