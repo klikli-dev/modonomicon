@@ -28,6 +28,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 
 import java.util.Arrays;
@@ -74,10 +75,12 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         this.preLoad();
         this.books = message.books;
         this.onLoadingComplete();
-        this.postLoad(); //needs to be called after loading complete, because that sets our loaded flag
     }
 
     public void onDatapackSync(OnDatapackSyncEvent event) {
+
+        this.tryBuildBooks(); //lazily build books when first client connects
+
         Message syncMessage = this.getSyncMessage();
 
         if (event.getPlayer() != null) {
@@ -87,6 +90,11 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                 Networking.sendToSplit(player, syncMessage);
             }
         }
+    }
+
+    public void onRecipesUpdated(RecipesUpdatedEvent event) {
+        this.tryBuildBooks();
+        this.prerenderMarkdown();
     }
 
     public void preLoad() {
@@ -107,13 +115,12 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             }
             BookErrorManager.get().setCurrentBookId(null);
         }
-
-        //now prerender markdown
-        this.prerenderMarkdown();
     }
 
     public void prerenderMarkdown() {
         //TODO: allow modders to configure this renderer
+
+        Modonomicon.LOGGER.info("Pre-rendering markdown ...");
         var textRenderer = new BookTextRenderer();
         for (var book : this.books.values()) {
             BookErrorManager.get().getContextHelper().reset();
@@ -125,6 +132,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             }
             BookErrorManager.get().setCurrentBookId(null);
         }
+        Modonomicon.LOGGER.info("Finished pre-rendering markdown.");
     }
 
     public void addReadConditions() {
@@ -146,20 +154,23 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         }
     }
 
+    /**
+     * On server, called on datapack sync (because we need the data before we send the datapack sync packet) On client,
+     * called on recipes updated, because recipes are available to the client only after datapack sync is complete
+     */
     public boolean tryBuildBooks() {
-        if (!this.booksBuilt && this.loaded && MultiblockDataManager.get().isLoaded()) {
-            Modonomicon.LOGGER.info("Building books & pre-rendering markdown ...");
+        if (!this.booksBuilt) {
+            Modonomicon.LOGGER.info("Building books ...");
             this.buildBooks();
             this.booksBuilt = true;
-            Modonomicon.LOGGER.info("Books built..");
+            Modonomicon.LOGGER.info("Books built.");
+
+            Modonomicon.LOGGER.info("Adding read conditions ...");
+            this.addReadConditions();
+            Modonomicon.LOGGER.info("Read conditions added.");
             return true;
         }
         return false;
-    }
-
-    public void postLoad() {
-        this.tryBuildBooks();
-        this.addReadConditions();
     }
 
     protected void onLoadingComplete() {
@@ -275,8 +286,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             }
             BookErrorManager.get().setCurrentBookId(null);
         }
+
         BookErrorManager.get().setContext(null); //set to null so we start using context helper internally
         this.onLoadingComplete();
-        this.postLoad(); //needs to be called after loading complete, because that sets our loaded flag
     }
 }

@@ -94,7 +94,6 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
             return 0;
         }
     };
-    private static final RandomSource RAND = RandomSource.createNewThreadLocalInstance();
     private final Map<BlockPos, BlockEntity> blockEntityCache = new HashMap<>();
     private final Set<BlockEntity> erroredBlockEntities = Collections.newSetFromMap(new WeakHashMap<>());
 
@@ -267,7 +266,9 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
         BookContentScreen.drawFromTexture(poseStack, this.page.getBook(), x, y, 405, 149, 106, 106);
 
         //render multiblock name in place of title
-        this.renderTitle(this.page.getMultiblockName(), false, poseStack, BookContentScreen.PAGE_WIDTH / 2, 0);
+        if(!this.page.getMultiblockName().isEmpty()){
+            this.renderTitle(this.page.getMultiblockName(), false, poseStack, BookContentScreen.PAGE_WIDTH / 2, 0);
+        }
 
         this.renderMultiblock(poseStack);
 

@@ -154,8 +154,7 @@ dependencies {
     //Jei
     compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-forge-api:${jei_version}")
-    //runtimeOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-forge:${jei_version}")
-    //TODO: re-enable JEI
+    runtimeOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-forge:${jei_version}")
 
     //commonmark
     library "org.commonmark:commonmark:${commonmark_version}"

@@ -7,16 +7,18 @@
 package com.klikli_dev.modonomicon.datagen;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Book;
+import com.klikli_dev.modonomicon.book.page.BookSmithingRecipePage;
+import com.klikli_dev.modonomicon.book.page.BookSpotlightPage;
 import com.klikli_dev.modonomicon.datagen.book.*;
 import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryReadCondition;
 import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryUnlockedCondition;
-import com.klikli_dev.modonomicon.datagen.book.page.BookMultiblockPageModel;
-import com.klikli_dev.modonomicon.datagen.book.page.BookTextPageModel;
+import com.klikli_dev.modonomicon.datagen.book.page.*;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -87,22 +89,41 @@ public class BookGenerator implements DataProvider {
         var entryHelper = new EntryLocationHelper();
         entryHelper.setMap(
                 "_____________________",
-                "__m__________________",
+                "__m______________d___",
                 "__________r__________",
-                "_____________________",
-                "__________2___3______"
+                "__c__________________",
+                "__________2___3___i__",
+                "__s_____e____________"
         );
 
         var multiblockEntry = this.makeMultiblockEntry(helper, entryHelper);
 
         var conditionEntries = this.makeConditionEntries(helper, entryHelper);
 
+        var recipeEntry = this.makeRecipeEntry(helper, entryHelper).build();
+
+        var spotlightEntry = this.makeSpotlightEntry(helper, entryHelper);
+        spotlightEntry.withParent(BookEntryParentModel.builder().withEntryId(recipeEntry.getId()).build());
+
+        var emptyEntry = this.makeEmptyPageEntry(helper, entryHelper);
+        emptyEntry.withParent(BookEntryParentModel.builder().withEntryId(spotlightEntry.id).build());
+
+        var entityEntry = this.makeEntityEntry(helper, entryHelper);
+
+        var imageEntry = this.makeImageEntry(helper, entryHelper);
+        imageEntry.withParent(BookEntryParentModel.builder().withEntryId(emptyEntry.id).build());
+
         return BookCategoryModel.builder()
                 .withId(this.modLoc("features"))
                 .withName(helper.categoryName())
                 .withIcon("minecraft:nether_star")
                 .withEntry(multiblockEntry)
+                .withEntry(recipeEntry)
                 .withEntries(conditionEntries)
+                .withEntry(spotlightEntry.build())
+                .withEntry(emptyEntry.build())
+                .withEntry(entityEntry.build())
+                .withEntry(imageEntry.build())
                 .build();
     }
 
@@ -195,6 +216,179 @@ public class BookGenerator implements DataProvider {
         result.add(conditionLevel2Entry);
 
         return result;
+    }
+
+    private BookEntryModel.Builder makeRecipeEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
+        helper.entry("recipe");
+
+        helper.page("intro");
+        var introPage = BookTextPageModel.builder()
+                .withText(helper.pageText())
+                .withTitle(helper.pageTitle())
+                .build();
+
+        helper.page("crafting");
+        var crafting = BookCraftingRecipePageModel.builder()
+                .withRecipeId1("minecraft:crafting_table")
+                .withRecipeId2("minecraft:oak_planks")
+                .withText(helper.pageText())
+                .build();
+
+        helper.page("smelting");
+        var smelting = BookSmeltingRecipePageModel.builder()
+                .withRecipeId1("minecraft:charcoal")
+                .withRecipeId2("minecraft:cooked_beef")
+                .build();
+
+        helper.page("smoking");
+        var smoking = BookSmokingRecipePageModel.builder()
+                .withRecipeId1("minecraft:cooked_beef_from_smoking")
+                .build();
+
+        helper.page("blasting");
+        var blasting = BookBlastingRecipePageModel.builder()
+                .withRecipeId2("minecraft:iron_ingot_from_blasting_iron_ore")
+                .build();
+
+        helper.page("campfire_cooking");
+        var campfireCooking = BookCampfireCookingRecipePageModel.builder()
+                .withRecipeId1("minecraft:cooked_beef_from_campfire_cooking")
+                .build();
+
+        helper.page("stonecutting");
+        var stonecutting = BookStonecuttingRecipePageModel.builder()
+                .withRecipeId1("minecraft:andesite_slab_from_andesite_stonecutting")
+                .build();
+
+        helper.page("smithing");
+        var smithing = BookSmithingRecipePageModel.builder()
+                .withRecipeId1("minecraft:netherite_axe_smithing")
+                .build();
+
+        return BookEntryModel.builder()
+                .withId(this.modLoc("features/recipe"))
+                .withName(helper.entryName())
+                .withDescription(helper.entryDescription())
+                .withIcon("minecraft:crafting_table")
+                .withLocation(entryHelper.get('c'))
+                .withPages(introPage, crafting, smelting, smoking, blasting, campfireCooking, stonecutting, smithing);
+    }
+
+    private BookEntryModel.Builder makeSpotlightEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
+        helper.entry("spotlight");
+
+        helper.page("intro");
+        var introPage = BookTextPageModel.builder()
+                .withText(helper.pageText())
+                .withTitle(helper.pageTitle())
+                .build();
+
+        helper.page("spotlight1");
+        var spotlight1 = BookSpotlightPageModel.builder()
+                .withTitle(helper.pageTitle())
+                .withText(helper.pageText())
+                .withItem(Ingredient.of(Items.APPLE))
+                .build();
+
+        helper.page("spotlight2");
+        var spotlight2 = BookSpotlightPageModel.builder()
+                .withText(helper.pageText())
+                .withItem(Ingredient.of(Items.DIAMOND))
+                .build();
+
+        return BookEntryModel.builder()
+                .withId(this.modLoc("features/spotlight"))
+                .withName(helper.entryName())
+                .withDescription(helper.entryDescription())
+                .withIcon("minecraft:beacon")
+                .withLocation(entryHelper.get('s'))
+                .withPages(introPage, spotlight1, spotlight2);
+    }
+
+    private BookEntryModel.Builder makeEmptyPageEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
+        helper.entry("empty");
+
+        helper.page("intro");
+        var introPage = BookTextPageModel.builder()
+                .withText(helper.pageText())
+                .withTitle(helper.pageTitle())
+                .build();
+
+        helper.page("empty");
+        var empty = BookEmptyPageModel.builder()
+                .build();
+
+        helper.page("empty2");
+        var empty2 = BookEmptyPageModel.builder()
+                .build();
+
+        return BookEntryModel.builder()
+                .withId(this.modLoc("features/empty"))
+                .withName(helper.entryName())
+                .withDescription(helper.entryDescription())
+                .withIcon("minecraft:obsidian")
+                .withLocation(entryHelper.get('e'))
+                .withPages(introPage, empty, empty2);
+    }
+
+    private BookEntryModel.Builder makeEntityEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
+        helper.entry("entity");
+
+        helper.page("intro");
+        var introPage = BookTextPageModel.builder()
+                .withText(helper.pageText())
+                .withTitle(helper.pageTitle())
+                .build();
+
+        helper.page("entity1");
+        var entity1 = BookEntityPageModel.builder()
+                .withEntityName(helper.pageTitle())
+                .withEntityId("minecraft:ender_dragon")
+                .withScale(0.5f)
+                .build();
+
+        helper.page("entity2");
+        var entity2 = BookEntityPageModel.builder()
+                .withText(helper.pageText())
+                .withEntityId("minecraft:spider")
+                .withScale(1f)
+                .build();
+
+        return BookEntryModel.builder()
+                .withId(this.modLoc("features/entity"))
+                .withName(helper.entryName())
+                .withDescription(helper.entryDescription())
+                .withIcon("minecraft:spider_eye")
+                .withLocation(entryHelper.get('d'))
+                .withPages(introPage, entity1, entity2);
+    }
+
+    private BookEntryModel.Builder makeImageEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
+        helper.entry("image");
+
+        helper.page("intro");
+        var introPage = BookTextPageModel.builder()
+                .withText(helper.pageText())
+                .withTitle(helper.pageTitle())
+                .build();
+
+        helper.page("image");
+        var imagePage = BookImagePageModel.builder()
+                .withText(helper.pageText())
+                .withTitle(helper.pageTitle())
+                .withImages(
+                        new ResourceLocation("modonomicon:textures/gui/default_background.png"),
+                        new ResourceLocation("modonomicon:textures/gui/dark_slate_seamless.png")
+                )
+                .build();
+
+        return BookEntryModel.builder()
+                .withId(this.modLoc("features/image"))
+                .withName(helper.entryName())
+                .withDescription(helper.entryDescription())
+                .withIcon("minecraft:item_frame")
+                .withLocation(entryHelper.get('i'))
+                .withPages(introPage, imagePage);
     }
 
     private BookCategoryModel makeFormattingCategory(BookLangHelper helper) {

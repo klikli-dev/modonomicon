@@ -67,9 +67,8 @@ public class BookTextPage extends BookPage {
     }
 
     public boolean hasTitle() {
-        return !this.title.getString().isEmpty();
+        return !this.title.isEmpty();
     }
-
 
     @Override
     public ResourceLocation getType() {

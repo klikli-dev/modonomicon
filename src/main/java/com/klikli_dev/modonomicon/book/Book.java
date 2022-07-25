@@ -35,6 +35,8 @@ public class Book {
     protected ResourceLocation model;
     protected ResourceLocation bookOverviewTexture;
     protected ResourceLocation bookContentTexture;
+
+    protected ResourceLocation craftingTexture;
     protected ResourceLocation turnPageSound;
     protected Map<ResourceLocation, BookCategory> categories;
     protected Map<ResourceLocation, BookEntry> entries;
@@ -48,7 +50,7 @@ public class Book {
     protected boolean autoAddReadConditions;
 
 
-    public Book(ResourceLocation id, String name, String tooltip, ResourceLocation model, String creativeTab, ResourceLocation bookOverviewTexture, ResourceLocation bookContentTexture, ResourceLocation turnPageSound, int defaultTitleColor, boolean autoAddReadConditions) {
+    public Book(ResourceLocation id, String name, String tooltip, ResourceLocation model, String creativeTab, ResourceLocation bookOverviewTexture, ResourceLocation bookContentTexture, ResourceLocation craftingTexture, ResourceLocation turnPageSound, int defaultTitleColor, boolean autoAddReadConditions) {
         this.id = id;
         this.name = name;
         this.tooltip = tooltip;
@@ -56,6 +58,7 @@ public class Book {
         this.creativeTab = creativeTab;
         this.bookOverviewTexture = bookOverviewTexture;
         this.bookContentTexture = bookContentTexture;
+        this.craftingTexture = craftingTexture;
         this.turnPageSound = turnPageSound;
         this.defaultTitleColor = defaultTitleColor;
         this.autoAddReadConditions = autoAddReadConditions;
@@ -70,10 +73,11 @@ public class Book {
         var creativeTab = GsonHelper.getAsString(json, "creative_tab", "misc");
         var bookOverviewTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_overview_texture", Data.Book.DEFAULT_OVERVIEW_TEXTURE));
         var bookContentTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_content_texture", Data.Book.DEFAULT_CONTENT_TEXTURE));
+        var craftingTexture = new ResourceLocation(GsonHelper.getAsString(json, "crafting_texture", Data.Book.DEFAULT_CRAFTING_TEXTURE));
         var turnPageSound = new ResourceLocation(GsonHelper.getAsString(json, "turn_page_sound", Data.Book.DEFAULT_PAGE_TURN_SOUND));
         var defaultTitleColor = GsonHelper.getAsInt(json, "default_title_color", 0x00000);
         var autoAddReadConditions = GsonHelper.getAsBoolean(json, "auto_add_read_conditions", false);
-        return new Book(id, name, tooltip, model, creativeTab, bookOverviewTexture, bookContentTexture, turnPageSound, defaultTitleColor, autoAddReadConditions);
+        return new Book(id, name, tooltip, model, creativeTab, bookOverviewTexture, bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, autoAddReadConditions);
     }
 
     //TODO: further properties for customization, such as book item, title color...
@@ -85,10 +89,11 @@ public class Book {
         var creativeTab = buffer.readUtf();
         var bookOverviewTexture = buffer.readResourceLocation();
         var bookContentTexture = buffer.readResourceLocation();
+        var craftingTexture = buffer.readResourceLocation();
         var turnPageSound = buffer.readResourceLocation();
         var defaultTitleColor = buffer.readInt();
         var autoAddReadConditions = buffer.readBoolean();
-        return new Book(id, name, tooltip, model, creativeTab, bookOverviewTexture, bookContentTexture, turnPageSound, defaultTitleColor, autoAddReadConditions);
+        return new Book(id, name, tooltip, model, creativeTab, bookOverviewTexture, bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, autoAddReadConditions);
     }
 
     public ResourceLocation getTurnPageSound() {
@@ -184,9 +189,14 @@ public class Book {
         buffer.writeUtf(this.creativeTab);
         buffer.writeResourceLocation(this.bookOverviewTexture);
         buffer.writeResourceLocation(this.bookContentTexture);
+        buffer.writeResourceLocation(this.craftingTexture);
         buffer.writeResourceLocation(this.turnPageSound);
         buffer.writeInt(this.defaultTitleColor);
         buffer.writeBoolean(this.autoAddReadConditions);
+    }
+
+    public ResourceLocation getCraftingTexture() {
+        return this.craftingTexture;
     }
 
     public ResourceLocation getBookContentTexture() {
