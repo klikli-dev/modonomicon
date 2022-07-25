@@ -8,6 +8,8 @@ SPDX-License-Identifier: MIT
 
 Data-driven minecraft in-game documentation with progress visualization.
 
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.dev/klikli-dev/modonomicon)
+
 ## Curseforge
 
 https://www.curseforge.com/minecraft/mc-mods/modonomicon
