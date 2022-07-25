@@ -24,6 +24,8 @@
   "book.modonomicon.demo.features.entity.intro.title": "Entity Entry",
   "book.modonomicon.demo.features.entity.name": "Entity Entry",
   "book.modonomicon.demo.features.image.description": "An entry showcasing image pages.",
+  "book.modonomicon.demo.features.image.image.text": "A sample text for the sample image.",
+  "book.modonomicon.demo.features.image.image.title": "Sample image!",
   "book.modonomicon.demo.features.image.intro.text": "Image pages allow to show images.",
   "book.modonomicon.demo.features.image.intro.title": "Image Page Entry",
   "book.modonomicon.demo.features.image.name": "Image Page Entry",

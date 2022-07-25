@@ -242,6 +242,11 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(helper.pageTitle(), "Image Page Entry");
             this.add(helper.pageText(), "Image pages allow to show images.");
 
+            helper.page("image");
+            this.add(helper.pageTitle(), "Sample image!");
+            this.add(helper.pageText(), "A sample text for the sample image.");
+
+
             this.add(helper.entryName(), "Image Page Entry");
             this.add(helper.entryDescription(), "An entry showcasing image pages.");
         }

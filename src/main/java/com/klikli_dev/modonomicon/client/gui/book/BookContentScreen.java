@@ -412,14 +412,14 @@ public class BookContentScreen extends Screen {
         this.renderBookBackground(pPoseStack);
         pPoseStack.popPose();
 
-        //do not translate super (= widget rendering) -> otherwise our buttons are messed up
-        super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
-
         pPoseStack.pushPose();
         pPoseStack.translate(this.bookLeft, this.bookTop, 0);
         this.renderPage(pPoseStack, this.leftPageRenderer, pMouseX, pMouseY, pPartialTick);
         this.renderPage(pPoseStack, this.rightPageRenderer, pMouseX, pMouseY, pPartialTick);
         pPoseStack.popPose();
+
+        //do not translate super (= widget rendering) -> otherwise our buttons are messed up
+        super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
 
         //do not translate tooltip, would mess up location
         this.drawTooltip(pPoseStack, pMouseX, pMouseY);
