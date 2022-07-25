@@ -42,6 +42,7 @@ public class ModonimiconConstants {
             public static final ResourceLocation SPOTLIGHT = new ResourceLocation(ModonomiconAPI.ID, "spotlight");
             public static final ResourceLocation EMPTY = new ResourceLocation(ModonomiconAPI.ID, "empty");
             public static final ResourceLocation ENTITY = new ResourceLocation(ModonomiconAPI.ID, "entity");
+            public static final ResourceLocation IMAGE = new ResourceLocation(ModonomiconAPI.ID, "image");
         }
 
         public static class Condition {

@@ -107,7 +107,6 @@ public abstract class LangGenerator extends LanguageProvider {
             this.advancementDescr("root", "The book of all books!");
         }
 
-
         private void addDemoBook() {
             var helper = new BookLangHelper(Modonomicon.MODID);
             helper.book("demo");
@@ -128,6 +127,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.addDemoBookSpotlightEntry(helper);
             this.addDemoBookEmptyPageEntry(helper);
             this.addDemoBookEntityEntry(helper);
+            this.addDemoBookImagePageEntry(helper);
             this.add(helper.categoryName(), "Features Category");
 
         }
@@ -233,6 +233,17 @@ public abstract class LangGenerator extends LanguageProvider {
 
             this.add(helper.entryName(), "Entity Entry");
             this.add(helper.entryDescription(), "An entry showcasing entity pages.");
+        }
+
+        private void addDemoBookImagePageEntry(BookLangHelper helper) {
+            helper.entry("image");
+
+            helper.page("intro");
+            this.add(helper.pageTitle(), "Image Page Entry");
+            this.add(helper.pageText(), "Image pages allow to show images.");
+
+            this.add(helper.entryName(), "Image Page Entry");
+            this.add(helper.entryDescription(), "An entry showcasing image pages.");
         }
 
         private void addDemoBookFormattingCategory(BookLangHelper helper) {

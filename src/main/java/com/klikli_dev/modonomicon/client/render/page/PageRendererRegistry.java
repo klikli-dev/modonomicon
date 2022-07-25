@@ -36,6 +36,7 @@ public class PageRendererRegistry {
         registerPageRenderer(Page.SPOTLIGHT, p -> new BookSpotlightPageRenderer((BookSpotlightPage) p) {});
         registerPageRenderer(Page.EMPTY, p -> new BookEmptyPageRenderer((BookEmptyPage) p) {});
         registerPageRenderer(Page.ENTITY, p -> new BookEntityPageRenderer((BookEntityPage) p) {});
+        registerPageRenderer(Page.IMAGE, p -> new BookImagePageRenderer((BookImagePage) p) {});
     }
 
     /**

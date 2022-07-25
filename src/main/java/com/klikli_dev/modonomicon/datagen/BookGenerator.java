@@ -92,7 +92,7 @@ public class BookGenerator implements DataProvider {
                 "__m______________d___",
                 "__________r__________",
                 "__c__________________",
-                "__________2___3______",
+                "__________2___3___i__",
                 "__s_____e____________"
         );
 
@@ -110,6 +110,9 @@ public class BookGenerator implements DataProvider {
 
         var entityEntry = this.makeEntityEntry(helper, entryHelper);
 
+        var imageEntry = this.makeImageEntry(helper, entryHelper);
+        imageEntry.withParent(BookEntryParentModel.builder().withEntryId(emptyEntry.id).build());
+
         return BookCategoryModel.builder()
                 .withId(this.modLoc("features"))
                 .withName(helper.categoryName())
@@ -120,6 +123,7 @@ public class BookGenerator implements DataProvider {
                 .withEntry(spotlightEntry.build())
                 .withEntry(emptyEntry.build())
                 .withEntry(entityEntry.build())
+                .withEntry(imageEntry.build())
                 .build();
     }
 
@@ -296,7 +300,7 @@ public class BookGenerator implements DataProvider {
                 .withId(this.modLoc("features/spotlight"))
                 .withName(helper.entryName())
                 .withDescription(helper.entryDescription())
-                .withIcon("minecraft:item_frame")
+                .withIcon("minecraft:beacon")
                 .withLocation(entryHelper.get('s'))
                 .withPages(introPage, spotlight1, spotlight2);
     }
@@ -357,6 +361,34 @@ public class BookGenerator implements DataProvider {
                 .withIcon("minecraft:spider_eye")
                 .withLocation(entryHelper.get('d'))
                 .withPages(introPage, entity1, entity2);
+    }
+
+    private BookEntryModel.Builder makeImageEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
+        helper.entry("image");
+
+        helper.page("intro");
+        var introPage = BookTextPageModel.builder()
+                .withText(helper.pageText())
+                .withTitle(helper.pageTitle())
+                .build();
+
+        helper.page("image");
+        var imagePage = BookImagePageModel.builder()
+                .withText(helper.pageText())
+                .withTitle(helper.pageTitle())
+                .withImages(
+                        new ResourceLocation("modonomicon:textures/gui/default_background.png"),
+                        new ResourceLocation("modonomicon:textures/gui/dark_slate_seamless.png")
+                )
+                .build();
+
+        return BookEntryModel.builder()
+                .withId(this.modLoc("features/image"))
+                .withName(helper.entryName())
+                .withDescription(helper.entryDescription())
+                .withIcon("minecraft:item_frame")
+                .withLocation(entryHelper.get('i'))
+                .withPages(introPage, imagePage);
     }
 
     private BookCategoryModel makeFormattingCategory(BookLangHelper helper) {
