@@ -51,6 +51,10 @@ public class MultiblockDataManager extends SimpleJsonResourceReloadListener {
         return this.multiblocks.get(id);
     }
 
+    public Map<ResourceLocation, Multiblock> getMultiblocks() {
+        return this.multiblocks;
+    }
+
     public Message getSyncMessage() {
         return new SyncMultiblockDataMessage(this.multiblocks);
     }
