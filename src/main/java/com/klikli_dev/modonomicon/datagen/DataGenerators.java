@@ -14,6 +14,10 @@ import net.minecraftforge.data.event.GatherDataEvent;
 public class DataGenerators {
 
     public static void gatherData(GatherDataEvent event) {
+
+        if(!event.getModContainer().getModId().equals(Modonomicon.MODID))
+            return;
+
         DataGenerator generator = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
