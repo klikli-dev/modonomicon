@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
+import com.klikli_dev.modonomicon.multiblock.matcher.BlockMatcher;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -188,5 +189,23 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     void setViewOffset() {
 		this.setViewOffset(this.offX, this.offY, this.offZ);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.id.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) {
+            return true;
+        }
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
+        var that = (AbstractMultiblock) o;
+        return this.id.equals(that.id);
     }
 }
