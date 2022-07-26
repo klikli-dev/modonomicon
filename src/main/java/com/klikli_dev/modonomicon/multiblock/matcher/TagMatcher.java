@@ -65,7 +65,11 @@ public class TagMatcher implements StateMatcher {
         try {
             //testing=true enables tag parsing
             //last param = allowNBT
-            var parserResult = BlockStateParser.parseForTesting(Registry.BLOCK, new StringReader(GsonHelper.getAsString(json, "tag")), true).right().orElseThrow();
+            var tagString = GsonHelper.getAsString(json, "tag");
+            if(!tagString.startsWith("#")) {
+                tagString = "#" + tagString;
+            }
+            var parserResult = BlockStateParser.parseForTesting(Registry.BLOCK, new StringReader(tagString), true).right().orElseThrow();
             var tag = parserResult.tag().unwrap().left().orElseThrow();
             var props = parserResult.vagueProperties();
             return new TagMatcher(displayState, tag, props);
