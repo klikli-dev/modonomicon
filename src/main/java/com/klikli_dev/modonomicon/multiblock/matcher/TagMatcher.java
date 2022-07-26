@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.multiblock.matcher;
 
+import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
@@ -29,6 +30,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 /**
  * Matches against the given tag, and optionally checks for the given BlockState properties.
@@ -37,19 +39,19 @@ public class TagMatcher implements StateMatcher {
     public static final ResourceLocation TYPE = Modonomicon.loc("tag");
 
     private final BlockState displayState;
-    private final TagKey<Block> tag;
-    private final Map<String, String> props;
+    private final Supplier<TagKey<Block>> tag;
+    private final  Supplier<Map<String, String>> props;
     private final TriPredicate<BlockGetter, BlockPos, BlockState> predicate;
 
-    protected TagMatcher(TagKey<Block> tag, Map<String, String> props) {
+    protected TagMatcher( Supplier<TagKey<Block>> tag,  Supplier<Map<String, String>> props) {
         this(null, tag, props);
     }
 
-    protected TagMatcher(BlockState displayState, TagKey<Block> tag, Map<String, String> props) {
+    protected TagMatcher(BlockState displayState,  Supplier<TagKey<Block>> tag,  Supplier<Map<String, String>> props) {
         this.displayState = displayState;
         this.tag = tag;
         this.props = props;
-        this.predicate = (blockGetter, blockPos, blockState) -> blockState.is(this.tag) && this.checkProps(blockState);
+        this.predicate = (blockGetter, blockPos, blockState) -> blockState.is(this.tag.get()) && this.checkProps(blockState);
     }
 
     public static TagMatcher fromJson(JsonObject json) {
@@ -62,20 +64,36 @@ public class TagMatcher implements StateMatcher {
             }
         }
 
-        try {
+
             //testing=true enables tag parsing
             //last param = allowNBT
             var tagString = GsonHelper.getAsString(json, "tag");
             if(!tagString.startsWith("#")) {
                 tagString = "#" + tagString;
             }
-            var parserResult = BlockStateParser.parseForTesting(Registry.BLOCK, new StringReader(tagString), true).right().orElseThrow();
-            var tag = parserResult.tag().unwrap().left().orElseThrow();
-            var props = parserResult.vagueProperties();
-            return new TagMatcher(displayState, tag, props);
-        } catch (CommandSyntaxException e) {
-            throw new IllegalArgumentException("Failed to parse Tag and BlockState properties from json member \"tag\" for TagMatcher.", e);
-        }
+
+
+            String finalTagString = tagString;
+            Supplier<TagKey<Block>> tagSupplier = Suppliers.memoize(() -> {
+                try {
+                    var parserResult = BlockStateParser.parseForTesting(Registry.BLOCK, new StringReader(finalTagString), true).right().orElseThrow();
+                   return parserResult.tag().unwrap().left().orElseThrow();
+                } catch (CommandSyntaxException e) {
+                    throw new IllegalArgumentException("Failed to parse Tag and BlockState properties from json member \"tag\" for TagMatcher.", e);
+                }
+            });
+
+            Supplier<Map<String, String>> propsSupplier = Suppliers.memoize(() -> {
+                try {
+                    var parserResult = BlockStateParser.parseForTesting(Registry.BLOCK, new StringReader(finalTagString), true).right().orElseThrow();
+                    return parserResult.vagueProperties();
+                } catch (CommandSyntaxException e) {
+                    throw new IllegalArgumentException("Failed to parse Tag and BlockState properties from json member \"tag\" for TagMatcher.", e);
+                }
+            });
+
+            return new TagMatcher(displayState, tagSupplier, propsSupplier);
+
     }
 
     public static TagMatcher fromNetwork(FriendlyByteBuf buffer) {
@@ -88,14 +106,14 @@ public class TagMatcher implements StateMatcher {
             var tag = TagKey.create(Registry.BLOCK_REGISTRY, buffer.readResourceLocation());
             var props = buffer.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readUtf);
 
-            return new TagMatcher(displayState, tag, props);
+            return new TagMatcher(displayState, () -> tag, () -> props);
         } catch (CommandSyntaxException e) {
             throw new IllegalArgumentException("Failed to parse TagMatcher from network.", e);
         }
     }
 
     private boolean checkProps(BlockState state) {
-        for (Entry<String, String> entry : this.props.entrySet()) {
+        for (Entry<String, String> entry : this.props.get().entrySet()) {
             Property<?> prop = state.getBlock().getStateDefinition().getProperty(entry.getKey());
             if (prop == null) {
                 return false;
@@ -123,7 +141,7 @@ public class TagMatcher implements StateMatcher {
         if (this.displayState != null) {
             return this.displayState;
         } else {
-            var all = ImmutableList.copyOf(Registry.BLOCK.getTagOrEmpty(this.tag));
+            var all = ImmutableList.copyOf(Registry.BLOCK.getTagOrEmpty(this.tag.get()));
             if (all.isEmpty()) {
                 return Blocks.BEDROCK.defaultBlockState(); // show something impossible
             } else {
@@ -144,8 +162,8 @@ public class TagMatcher implements StateMatcher {
         if (this.displayState != null) {
             buffer.writeUtf(BlockStateParser.serialize(this.displayState));
         }
-        buffer.writeResourceLocation(this.tag.location());
-        buffer.writeMap(this.props, FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeUtf);
+        buffer.writeResourceLocation(this.tag.get().location());
+        buffer.writeMap(this.props.get(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeUtf);
     }
 
     @Override

@@ -22,6 +22,14 @@
       "multiblock_name": "multiblocks.modonomicon.blockentity",
       "show_visualize_button": true,
       "text": "book.modonomicon.demo.features.multiblock.preview.text"
+    },
+    {
+      "type": "modonomicon:multiblock",
+      "anchor": "",
+      "multiblock_id": "modonomicon:tag",
+      "multiblock_name": "",
+      "show_visualize_button": true,
+      "text": ""
     }
   ],
   "x": -8,

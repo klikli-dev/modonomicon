@@ -144,13 +144,18 @@ public class BookGenerator implements DataProvider {
                 .withText(helper.pageText())
                 .build();
 
+        helper.page("preview2");
+        var multiblockPreviewPage2 = BookMultiblockPageModel.builder()
+                .withMultiblockId(this.modLoc("tag"))
+                .build();
+
         return BookEntryModel.builder()
                 .withId(this.modLoc("features/multiblock"))
                 .withName(helper.entryName())
                 .withDescription(helper.entryDescription())
                 .withIcon("minecraft:furnace")
                 .withLocation(entryHelper.get('m'))
-                .withPages(multiBlockIntroPage, multiblockPreviewPage)
+                .withPages(multiBlockIntroPage, multiblockPreviewPage, multiblockPreviewPage2)
                 .build();
     }
 
