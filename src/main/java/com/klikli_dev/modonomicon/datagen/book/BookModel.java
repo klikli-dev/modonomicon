@@ -30,6 +30,21 @@ public class BookModel {
 
     protected boolean autoAddReadConditions;
 
+    protected boolean generateBookItem = true;
+    protected ResourceLocation customBookItem;
+
+    public ResourceLocation getCraftingTexture() {
+        return this.craftingTexture;
+    }
+
+    public boolean generateBookItem() {
+        return this.generateBookItem;
+    }
+
+    public ResourceLocation getCustomBookItem() {
+        return this.customBookItem;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -80,6 +95,10 @@ public class BookModel {
         json.addProperty("book_content_texture", this.bookContentTexture.toString());
         json.addProperty("default_title_color", this.defaultTitleColor);
         json.addProperty("auto_add_read_conditions", this.autoAddReadConditions);
+        json.addProperty("generate_book_item", this.generateBookItem);
+        if(this.customBookItem != null) {
+            json.addProperty("custom_book_item", this.customBookItem.toString());
+        }
         return json;
     }
 
@@ -98,6 +117,9 @@ public class BookModel {
         protected int defaultTitleColor = 0x00000;
         protected List<BookCategoryModel> categories = new ArrayList<>();
         protected boolean autoAddReadConditions;
+
+        protected boolean generateBookItem = true;
+        protected ResourceLocation customBookItem;
 
         private Builder() {
         }
@@ -146,6 +168,15 @@ public class BookModel {
             return this;
         }
 
+        public Builder withGenerateBookItem(boolean generateBookItem) {
+            this.generateBookItem = generateBookItem;
+            return this;
+        }
+
+        public Builder withCustomBookItem(ResourceLocation customBookItem) {
+            this.customBookItem = customBookItem;
+            return this;
+        }
 
         public Builder withDefaultTitleColor(int defaultTitleColor) {
             this.defaultTitleColor = defaultTitleColor;
@@ -187,6 +218,8 @@ public class BookModel {
             bookModel.name = this.name;
             bookModel.tooltip = this.tooltip;
             bookModel.model = this.model;
+            bookModel.generateBookItem = this.generateBookItem;
+            bookModel.customBookItem = this.customBookItem;
             bookModel.autoAddReadConditions = this.autoAddReadConditions;
             bookModel.creativeTab = this.creativeTab;
             return bookModel;

@@ -65,14 +65,15 @@ public class ModonomiconItem extends Item {
         String tabName = tab.getRecipeFolderName();
         BookDataManager.get().getBooks().values().forEach(b -> {
             if (tab == CreativeModeTab.TAB_SEARCH || b.getCreativeTab().equals(tabName)) {
+                if(b.generateBookItem()){
+                    ItemStack stack = new ItemStack(ItemRegistry.MODONOMICON.get());
 
-                ItemStack stack = new ItemStack(ItemRegistry.MODONOMICON.get());
+                    CompoundTag cmp = new CompoundTag();
+                    cmp.putString(Nbt.ITEM_BOOK_ID_TAG, b.getId().toString());
+                    stack.setTag(cmp);
 
-                CompoundTag cmp = new CompoundTag();
-                cmp.putString(Nbt.ITEM_BOOK_ID_TAG, b.getId().toString());
-                stack.setTag(cmp);
-
-                items.add(stack);
+                    items.add(stack);
+                }
             }
         });
     }

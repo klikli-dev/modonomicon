@@ -4,6 +4,7 @@
   "book_overview_texture": "modonomicon:textures/gui/book_overview.png",
   "creative_tab": "misc",
   "default_title_color": 0,
+  "generate_book_item": true,
   "model": "modonomicon:modonomicon_purple",
   "name": "book.modonomicon.demo.name",
   "tooltip": "book.modonomicon.demo.tooltip"
