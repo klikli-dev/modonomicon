@@ -1,9 +1,3 @@
-<!--
-SPDX-FileCopyrightText: 2022 klikli-dev
-
-SPDX-License-Identifier: MIT
--->
-
 ---
 name: Feature request
 about: I have an idea for this project, or need a new feature for my modpack.

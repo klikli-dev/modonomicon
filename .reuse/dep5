@@ -10,3 +10,11 @@ License: CC-BY-4.0
 Files: src/generated/resources/*
 Copyright: 2022 klikli-dev
 License: CC-BY-4.0
+
+Files: .github/*
+Copyright: 2022 klikli-dev
+License: CC-BY-4.0
+
+Files: .gitpod.*
+Copyright: 2022 klikli-dev
+License: CC-BY-4.0

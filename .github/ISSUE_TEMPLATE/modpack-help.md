@@ -1,9 +1,3 @@
-<!--
-SPDX-FileCopyrightText: 2022 klikli-dev
-
-SPDX-License-Identifier: MIT
--->
-
 ---
 name: Modpack help
 about: I need help with configuring a modpack, or making this compatible with another
