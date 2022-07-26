@@ -181,6 +181,8 @@ jar {
 }
 
 shadowJar {
+    from sourceSets.main.output
+    from sourceSets.api.output
     archiveClassifier = ""
     configurations = [project.configurations.shade]
     relocate 'org.commonmark', "${project.group}.relocated.commonmark"
