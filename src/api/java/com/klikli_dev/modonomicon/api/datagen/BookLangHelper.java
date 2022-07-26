@@ -4,9 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.datagen.book;
-
-import com.klikli_dev.modonomicon.api.ModonomiconAPI;
+package com.klikli_dev.modonomicon.api.datagen;
 
 import java.util.Stack;
 
