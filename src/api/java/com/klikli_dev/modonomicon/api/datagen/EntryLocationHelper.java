@@ -4,20 +4,27 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.datagen.book;
+package com.klikli_dev.modonomicon.api.datagen;
 
-import com.klikli_dev.modonomicon.Modonomicon;
+import com.mojang.logging.LogUtils;
 import net.minecraft.world.phys.Vec2;
+import org.slf4j.Logger;
 
 public class EntryLocationHelper {
+
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     protected String[] map;
 
     protected Vec2 offset;
 
+    public EntryLocationHelper(){
+
+    }
+
     public void setMap(String... map) {
         this.map = map;
-        this.offset = new Vec2(-(int)(map[0].length() / 2.0f), -(int)(map.length / 2.0f));
+        this.offset = new Vec2(-(int) (map[0].length() / 2.0f), -(int) (map.length / 2.0f));
     }
 
     public void setOffset(Vec2 offset) {
@@ -33,7 +40,7 @@ public class EntryLocationHelper {
             }
             y++;
         }
-        Modonomicon.LOGGER.warn("Symbol '{}' not found in map", symbol);
+        LOGGER.warn("Symbol '{}' not found in map", symbol);
         return Vec2.ZERO;
     }
 }

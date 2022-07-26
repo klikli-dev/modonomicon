@@ -7,8 +7,9 @@
 package com.klikli_dev.modonomicon.datagen;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.book.page.BookSmithingRecipePage;
-import com.klikli_dev.modonomicon.book.page.BookSpotlightPage;
+import com.klikli_dev.modonomicon.api.ModonomiconAPI;
+import com.klikli_dev.modonomicon.api.datagen.EntryLocationHelper;
+import com.klikli_dev.modonomicon.api.datagen.BookLangHelper;
 import com.klikli_dev.modonomicon.datagen.book.*;
 import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryReadCondition;
 import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryUnlockedCondition;
@@ -67,7 +68,7 @@ public class BookGenerator implements DataProvider {
     }
 
     private BookModel makeDemoBook() {
-        var helper = new BookLangHelper(this.modid);
+        var helper = ModonomiconAPI.get().getLangHelper(this.modid);
         helper.book("demo");
 
         var featuresCategory = this.makeFeaturesCategory(helper);
@@ -86,7 +87,7 @@ public class BookGenerator implements DataProvider {
     private BookCategoryModel makeFeaturesCategory(BookLangHelper helper) {
         helper.category("features");
 
-        var entryHelper = new EntryLocationHelper();
+        var entryHelper = ModonomiconAPI.get().getEntryLocationHelper();
         entryHelper.setMap(
                 "_____________________",
                 "__m______________d___",

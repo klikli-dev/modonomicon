@@ -9,7 +9,6 @@ package com.klikli_dev.modonomicon.client.gui.book.markdown;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.BookLink;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
-import com.klikli_dev.modonomicon.datagen.book.BookLangHelper;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;

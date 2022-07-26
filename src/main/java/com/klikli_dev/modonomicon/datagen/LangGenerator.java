@@ -9,17 +9,12 @@ package com.klikli_dev.modonomicon.datagen;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.*;
-import com.klikli_dev.modonomicon.datagen.book.BookEntryModel;
-import com.klikli_dev.modonomicon.datagen.book.BookLangHelper;
-import com.klikli_dev.modonomicon.datagen.book.page.BookCraftingRecipePageModel;
-import com.klikli_dev.modonomicon.datagen.book.page.BookSpotlightPageModel;
-import com.klikli_dev.modonomicon.datagen.book.page.BookTextPageModel;
+import com.klikli_dev.modonomicon.api.ModonomiconAPI;
+import com.klikli_dev.modonomicon.api.datagen.BookLangHelper;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.data.LanguageProvider;
 
 import java.util.function.Supplier;
@@ -108,7 +103,7 @@ public abstract class LangGenerator extends LanguageProvider {
         }
 
         private void addDemoBook() {
-            var helper = new BookLangHelper(Modonomicon.MODID);
+            var helper = ModonomiconAPI.get().getLangHelper(Modonomicon.MODID);
             helper.book("demo");
 
             this.addDemoBookFeaturesCategory(helper);
