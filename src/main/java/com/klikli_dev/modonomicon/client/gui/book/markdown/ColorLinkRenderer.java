@@ -16,6 +16,8 @@ import java.util.function.Consumer;
 public class ColorLinkRenderer implements LinkRenderer {
     @Override
     public boolean visit(Link link, Consumer<Node> visitChildren, ComponentNodeRendererContext context) {
+
+        //[#](55FF55)Colorful Text![#]()
         var child = link.getFirstChild();
         if (child instanceof Text t && t.getLiteral().equals("#")) {
             if (link.getDestination().isEmpty()) {
