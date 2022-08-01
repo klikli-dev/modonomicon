@@ -49,7 +49,7 @@
   "book.modonomicon.demo.features.spotlight.spotlight2.text": "A sample spotlight page with automatic title.",
   "book.modonomicon.demo.formatting.advanced.description": "An entry showcasing advanced formatting.",
   "book.modonomicon.demo.formatting.advanced.name": "Advanced Formatting Entry",
-  "book.modonomicon.demo.formatting.advanced.page1.text": "<t>this.could.be.a.translation.key<t>     \n***This is bold italics***     \n*++This is italics underlined++*\n",
+  "book.modonomicon.demo.formatting.advanced.page1.text": "<t>this.could.be.a.translation.key<t>     \n***This is bold italics***     \n*++This is italics underlined++*\n[](item://minecraft:diamond)\n[TestText](item://minecraft:emerald)\n",
   "book.modonomicon.demo.formatting.advanced.page1.title": "Advanced Formatting",
   "book.modonomicon.demo.formatting.advanced.page2.text": "Unordered List:\n- List item\n- List item 2\n- List item 3\n\\\n\nOrdered List:\n1. Entry 1\n2. Entry 2\n",
   "book.modonomicon.demo.formatting.basic.description": "An entry showcasing basic formatting.",

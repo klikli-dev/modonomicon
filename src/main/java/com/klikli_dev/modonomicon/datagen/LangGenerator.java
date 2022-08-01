@@ -290,6 +290,8 @@ public abstract class LangGenerator extends LanguageProvider {
                             <t>this.could.be.a.translation.key<t>    \s
                             ***This is bold italics***    \s
                             *++This is italics underlined++*
+                            [](item://minecraft:diamond)
+                            [TestText](item://minecraft:emerald)
                                  """);
 
             helper.page("page2"); //lists
