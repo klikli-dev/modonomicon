@@ -102,6 +102,6 @@ public class BookImagePageRenderer extends BookPageRenderer<BookImagePage> imple
 
     @Override
     public int getTextY() {
-        return 120;
+        return 115;
     }
 }
