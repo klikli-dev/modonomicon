@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.*;
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.api.datagen.BookLangHelper;
+import com.klikli_dev.modonomicon.datagen.book.page.BookSmokingRecipePageModel;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -179,6 +180,9 @@ public abstract class LangGenerator extends LanguageProvider {
 
             helper.page("crafting");
             this.add(helper.pageText(), "A sample recipe page.");
+
+            helper.page("smoking");
+            this.add(helper.pageText(), "A smoking recipe page with one recipe and some text.");
 
             this.add(helper.entryName(), "Recipe Entry");
             this.add(helper.entryDescription(), "An entry showcasing recipe pages.");

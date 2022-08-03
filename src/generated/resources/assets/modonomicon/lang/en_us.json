@@ -40,6 +40,7 @@
   "book.modonomicon.demo.features.recipe.intro.text": "Recipe pages allow to show recipes in the book.",
   "book.modonomicon.demo.features.recipe.intro.title": "Recipe Entry",
   "book.modonomicon.demo.features.recipe.name": "Recipe Entry",
+  "book.modonomicon.demo.features.recipe.smoking.text": "A smoking recipe page with one recipe and some text.",
   "book.modonomicon.demo.features.spotlight.description": "An entry showcasing spotlight pages.",
   "book.modonomicon.demo.features.spotlight.intro.text": "Spotlight pages allow to show items (actually, ingredients).",
   "book.modonomicon.demo.features.spotlight.intro.title": "Spotlight Entry",

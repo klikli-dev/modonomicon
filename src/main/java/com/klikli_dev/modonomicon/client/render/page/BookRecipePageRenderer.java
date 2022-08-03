@@ -67,7 +67,7 @@ public abstract class BookRecipePageRenderer<R extends Recipe<?>, T extends Book
 
     @Override
     public int getTextY() {
-        return Y + this.getRecipeHeight()  * (this.page.getRecipe2() == null ? 1 : 2) - (this.page.getTitle2().isEmpty() ? 26 : 16);
+        return Y + this.getRecipeHeight()  * (this.page.getRecipe2() == null ? 1 : 2) - (this.page.getTitle2().isEmpty() ? 10 : 0);
     }
 
     protected abstract int getRecipeHeight();

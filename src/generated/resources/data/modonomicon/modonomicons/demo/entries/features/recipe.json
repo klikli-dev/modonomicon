@@ -37,7 +37,7 @@
       "type": "modonomicon:smoking_recipe",
       "anchor": "",
       "recipe_id_1": "minecraft:cooked_beef_from_smoking",
-      "text": "",
+      "text": "book.modonomicon.demo.features.recipe.smoking.text",
       "title1": "",
       "title2": ""
     },

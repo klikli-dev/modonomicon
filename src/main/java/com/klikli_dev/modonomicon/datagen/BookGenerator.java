@@ -249,6 +249,7 @@ public class BookGenerator implements DataProvider {
         helper.page("smoking");
         var smoking = BookSmokingRecipePageModel.builder()
                 .withRecipeId1("minecraft:cooked_beef_from_smoking")
+                .withText(helper.pageText())
                 .build();
 
         helper.page("blasting");

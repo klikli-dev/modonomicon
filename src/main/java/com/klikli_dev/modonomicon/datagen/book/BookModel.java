@@ -93,6 +93,7 @@ public class BookModel {
         json.addProperty("creative_tab", this.creativeTab);
         json.addProperty("book_overview_texture", this.bookOverviewTexture.toString());
         json.addProperty("book_content_texture", this.bookContentTexture.toString());
+        json.addProperty("crafting_texture", this.craftingTexture.toString());
         json.addProperty("default_title_color", this.defaultTitleColor);
         json.addProperty("auto_add_read_conditions", this.autoAddReadConditions);
         json.addProperty("generate_book_item", this.generateBookItem);
