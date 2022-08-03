@@ -52,7 +52,7 @@ public class BookTextPageRenderer extends BookPageRenderer<BookTextPage> impleme
     @Override
     public int getTextY() {
         if (this.page.hasTitle()) {
-            return this.page.showTitleSeparator() ? 22 : 12;
+            return this.page.showTitleSeparator() ? 17 : 7;
         }
 
         return -4;

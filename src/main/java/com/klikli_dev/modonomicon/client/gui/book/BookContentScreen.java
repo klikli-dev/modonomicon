@@ -56,7 +56,7 @@ public class BookContentScreen extends Screen {
     public static final int BOOK_BACKGROUND_WIDTH = 272;
     public static final int BOOK_BACKGROUND_HEIGHT = 178;
 
-    public static final int TOP_PADDING = 18;
+    public static final int TOP_PADDING = 15;
     public static final int LEFT_PAGE_X = 12;
     public static final int RIGHT_PAGE_X = 141;
     public static final int PAGE_WIDTH = 124;
