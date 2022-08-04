@@ -261,4 +261,4 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 processResources.setDuplicatesStrategy(DuplicatesStrategy.WARN)
-sourcesJar.setDuplicatesStrategy(DuplicatesStrategy.WARN)
+sourcesJar.setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE)
