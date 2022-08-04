@@ -314,6 +314,12 @@ public abstract class LangGenerator extends LanguageProvider {
                             2. Entry 2
                                  """);
 
+            helper.page("page3"); //lists
+            this.add(helper.pageTitle(), "Ridiculously superlong title that should be scaled!");
+            this.add(helper.pageText(),
+                    """
+                            This page is to test title scaling!""");
+
             this.add(helper.entryName(), "Advanced Formatting Entry");
             this.add(helper.entryDescription(), "An entry showcasing advanced formatting.");
         }

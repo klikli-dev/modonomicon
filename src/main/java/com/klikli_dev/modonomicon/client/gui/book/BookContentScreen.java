@@ -64,6 +64,8 @@ public class BookContentScreen extends Screen {
     public static final int FULL_WIDTH = 272;
     public static final int FULL_HEIGHT = 180;
 
+    public static final int MAX_TITLE_WIDTH = PAGE_WIDTH - 4;
+
     public static final int CLICK_SAFETY_MARGIN = 20;
 
     private static long lastTurnPageSoundTime;

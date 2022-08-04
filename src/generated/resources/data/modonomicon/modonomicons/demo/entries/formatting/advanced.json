@@ -22,6 +22,14 @@
       "text": "book.modonomicon.demo.formatting.advanced.page2.text",
       "title": "",
       "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.formatting.advanced.page3.text",
+      "title": "book.modonomicon.demo.formatting.advanced.page3.title",
+      "use_markdown_in_title": false
     }
   ],
   "parents": [

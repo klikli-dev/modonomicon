@@ -468,6 +468,12 @@ public class BookGenerator implements DataProvider {
                 //.withTitle(helper.pageTitle())
                 .build(); //lists
 
+        helper.page("page3");
+        var page3 = BookTextPageModel.builder()
+                .withText(helper.pageText())
+                .withTitle(helper.pageTitle())
+                .build(); //lists
+
         var formattingEntry = BookEntryModel.builder()
                 .withId(this.modLoc("formatting/advanced"))
                 .withName(helper.entryName())
@@ -476,7 +482,8 @@ public class BookGenerator implements DataProvider {
                 .withLocation(entryHelper.get('a'))
                 .withEntryBackground(0, 1)
                 .withPage(page1)
-                .withPage(page2);
+                .withPage(page2)
+                .withPage(page3);
 
         return formattingEntry;
     }

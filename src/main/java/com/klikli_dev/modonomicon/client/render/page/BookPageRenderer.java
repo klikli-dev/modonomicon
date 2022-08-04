@@ -103,15 +103,32 @@ public abstract class BookPageRenderer<T extends BookPage> {
      * Will render the given BookTextHolder as (centered) title.
      */
     public void renderTitle(BookTextHolder title, boolean showTitleSeparator, PoseStack poseStack, int x, int y) {
+
+        poseStack.pushPose();
+
         if (title instanceof RenderedBookTextHolder renderedTitle) {
             //if user decided to use markdown title, we need to use the  rendered version
             var formattedCharSequence = FormattedCharSequence.fromList(
                     renderedTitle.getRenderedText().stream().map(Component::getVisualOrderText).toList());
-            this.drawCenteredStringNoShadow(poseStack, formattedCharSequence, x, y, 0);
+
+            //if title is larger than allowed, scaled to fit
+            var scale = Math.min(1.0f, (float) BookContentScreen.MAX_TITLE_WIDTH / (float) this.font.width(formattedCharSequence));
+            if (scale < 1)
+                poseStack.scale(scale, scale, scale);
+
+            this.drawCenteredStringNoShadow(poseStack, formattedCharSequence, x, y, 0, scale);
         } else {
+
+            //if title is larger than allowed, scaled to fit
+            var scale =  Math.min(1.0f, (float) BookContentScreen.MAX_TITLE_WIDTH / (float) this.font.width(title.getComponent().getVisualOrderText()));
+            if (scale < 1)
+                poseStack.scale(scale, scale, scale);
+
             //otherwise we use the component - that is either provided by the user, or created from the default title style.
-            this.drawCenteredStringNoShadow(poseStack, title.getComponent().getVisualOrderText(), x, y, 0);
+            this.drawCenteredStringNoShadow(poseStack, title.getComponent().getVisualOrderText(), x, y, 0, scale);
         }
+
+        poseStack.popPose();
 
         if (showTitleSeparator)
             BookContentScreen.drawTitleSeparator(poseStack, this.page.getBook(), x, y + 12);
@@ -119,12 +136,12 @@ public abstract class BookPageRenderer<T extends BookPage> {
 
     public abstract void render(PoseStack poseStack, int mouseX, int mouseY, float ticks);
 
-    public void drawCenteredStringNoShadow(PoseStack poseStack, FormattedCharSequence s, int x, int y, int color) {
-        this.font.draw(poseStack, s, x - this.font.width(s) / 2.0F, y, color);
+    public void drawCenteredStringNoShadow(PoseStack poseStack, FormattedCharSequence s, int x, int y, int color, float scale) {
+        this.font.draw(poseStack, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color);
     }
 
-    public void drawCenteredStringNoShadow(PoseStack poseStack, String s, int x, int y, int color) {
-        this.font.draw(poseStack, s, x - this.font.width(s) / 2.0F, y, color);
+    public void drawCenteredStringNoShadow(PoseStack poseStack, String s, int x, int y, int color, float scale) {
+        this.font.draw(poseStack, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color);
     }
 
     /**
