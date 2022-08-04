@@ -45,6 +45,7 @@ configurations {
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.withSourcesJar()
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
@@ -211,6 +212,42 @@ task apiJar(type: Jar) {
 
 build.dependsOn tasks.apiJar
 
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+            artifact apiJar
+            artifact sourcesJar
+
+            pom {
+                name = 'Modonomicon'
+                description = 'Data-driven minecraft in-game documentation with progress visualization.'
+                url = 'https://github.com/klikli-dev/modonomicon'
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://raw.githubusercontent.com/klikli-dev/modonomicon/version/1.19/LICENSES/MIT.txt'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:ssh:git@github.com:klikli-dev/modonomicon.git'
+                    url = 'https://github.com/klikli-dev/modonomicon'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url "https://repo.repsy.io/mvn/klikli-dev/mods"
+            credentials {
+                username = System.getenv('MAVEN_USER')
+                password = System.getenv('MAVEN_PASS')
+            }
+        }
+    }
+}
+
 //increase max errors from 100 to 2000
 afterEvaluate {
     tasks.withType(JavaCompile) {
@@ -218,4 +255,9 @@ afterEvaluate {
     }
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
 processResources.setDuplicatesStrategy(DuplicatesStrategy.WARN)
+sourcesJar.setDuplicatesStrategy(DuplicatesStrategy.WARN)
