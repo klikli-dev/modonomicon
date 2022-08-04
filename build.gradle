@@ -216,7 +216,7 @@ build.dependsOn tasks.apiJar
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifact jar
+            //artifact jar //no need for slim jar
             artifact shadowJar
             artifact apiJar
             artifact sourcesJar
