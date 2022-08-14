@@ -11,7 +11,6 @@ import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.*;
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.api.datagen.BookLangHelper;
-import com.klikli_dev.modonomicon.datagen.book.page.BookSmokingRecipePageModel;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -62,6 +61,8 @@ public abstract class LangGenerator extends LanguageProvider {
 
 
             this.add(Gui.HOVER_BOOK_LINK, "Go to: %s");
+            this.add(Gui.HOVER_BOOK_LINK_LOCKED, "%s.\n%s");
+            this.add(Gui.HOVER_BOOK_LINK_LOCKED_INFO, "You need to unlock this entry before you can open the link!");
             this.add(Gui.HOVER_HTTP_LINK, "Visit: %s");
 
             //other gui stuff
@@ -256,6 +257,11 @@ public abstract class LangGenerator extends LanguageProvider {
             this.addDemoBookBasicFormattingEntry(helper);
             this.addDemoBookAdvancedFormattingEntry(helper);
             this.addDemoBookLinkFormattingEntry(helper);
+
+            helper.entry("always_locked");
+            this.add(helper.entryName(), "Always Locked Entry");
+            this.add(helper.entryDescription(), "Used to demonstrate linking to locked entries");
+
             this.add(helper.categoryName(), "Formatting Category");
         }
 
@@ -308,7 +314,7 @@ public abstract class LangGenerator extends LanguageProvider {
                             - List item 2
                             - List item 3
                             \\
-                            
+                                                        
                             Ordered List:
                             1. Entry 1
                             2. Entry 2
@@ -342,6 +348,7 @@ public abstract class LangGenerator extends LanguageProvider {
                             [View a Multiblock](entry://modonomicon:demo/features/multiblock) \\
                             [Link to a Condition](entry://modonomicon:demo/features/condition_level_1) \\
                             [Link to basic formatting](entry://modonomicon:demo/formatting/basic)
+                            [Always locked](entry://modonomicon:demo/formatting/always_locked)
                                  """);
 
             this.add(helper.entryName(), "Link Formatting Entry");

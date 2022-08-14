@@ -39,6 +39,7 @@ public class BookLinkRenderer implements LinkRenderer {
                 goToText = "book." + bookLink.bookId.toString().replace(":", ".") + "."
                         + bookLink.entryId.getPath().replace(":", ".").replace("/", ".") + ".name";
             }
+            //Note: if we ever change this we need to adjust renderComponentHoverEffect
             var hoverComponent = Component.translatable(Gui.HOVER_BOOK_LINK, Component.translatable(goToText));
 
 

@@ -7,11 +7,13 @@
 package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.BookLink;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.capability.BookStateCapability;
+import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
@@ -40,7 +42,9 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -465,7 +469,66 @@ public class BookContentScreen extends Screen {
 
     @Override // make public
     public void renderComponentHoverEffect(PoseStack pPoseStack, @Nullable Style style, int mouseX, int mouseY) {
-        super.renderComponentHoverEffect(pPoseStack, style, mouseX, mouseY);
+
+        var newStyle = style;
+        if (style != null && style.getHoverEvent() != null) {
+            if (style.getHoverEvent().getAction() == HoverEvent.Action.SHOW_TEXT) {
+                var clickEvent = style.getClickEvent();
+                if (clickEvent != null) {
+                    if (clickEvent.getAction() == Action.CHANGE_PAGE) {
+
+                        var link = BookLink.from(clickEvent.getValue());
+                        var book = BookDataManager.get().getBook(link.bookId);
+                        if (link.entryId != null) {
+                            var entry = book.getEntry(link.entryId);
+
+                            if (!BookUnlockCapability.isUnlockedFor(this.minecraft.player, entry)) {
+                                //if locked, append lock warning
+                                //handleComponentClicked will prevent the actual click
+
+                                var oldComponent = style.getHoverEvent().getValue(HoverEvent.Action.SHOW_TEXT);
+
+                                var newComponent = Component.translatable(
+                                        Gui.HOVER_BOOK_LINK_LOCKED,
+                                        oldComponent,
+                                        Component.translatable(Gui.HOVER_BOOK_LINK_LOCKED_INFO)
+                                                .withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xff0015)).withBold(true)));
+
+                                newStyle = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newComponent));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        style = newStyle;
+
+        //super.renderComponentHoverEffect(pPoseStack, newStyle, mouseX, mouseY);
+        // our own copy of the render code that limits width for the show_text action to not go out of screen
+        if (style != null && style.getHoverEvent() != null) {
+            HoverEvent hoverevent = style.getHoverEvent();
+            HoverEvent.ItemStackInfo hoverevent$itemstackinfo = hoverevent.getValue(HoverEvent.Action.SHOW_ITEM);
+            if (hoverevent$itemstackinfo != null) {
+                this.renderTooltip(pPoseStack, hoverevent$itemstackinfo.getItemStack(), mouseX, mouseY);
+            } else {
+                HoverEvent.EntityTooltipInfo hoverevent$entitytooltipinfo = hoverevent.getValue(HoverEvent.Action.SHOW_ENTITY);
+                if (hoverevent$entitytooltipinfo != null) {
+                    if (this.minecraft.options.advancedItemTooltips) {
+                        this.renderComponentTooltip(pPoseStack, hoverevent$entitytooltipinfo.getTooltipLines(), mouseX, mouseY);
+                    }
+                } else {
+                    Component component = hoverevent.getValue(HoverEvent.Action.SHOW_TEXT);
+                    if (component != null) {
+                        //var width = Math.max(this.width / 2, 200); //original width calc
+                        var width = (this.width / 2) - mouseX - 10; //our own
+                        this.renderTooltip(pPoseStack, this.minecraft.font.split(component, width), mouseX, mouseY);
+                    }
+                }
+            }
+
+        }
+
     }
 
     @Override
@@ -479,6 +542,12 @@ public class BookContentScreen extends Screen {
                     var book = BookDataManager.get().getBook(link.bookId);
                     if (link.entryId != null) {
                         var entry = book.getEntry(link.entryId);
+
+                        if (!BookUnlockCapability.isUnlockedFor(this.minecraft.player, entry)) {
+                            //renderComponentHoverEffect will render a warning that it is locked so it is fine to exit here
+                            return false;
+                        }
+
                         int page = link.pageNumber;
                         if (link.pageAnchor != null) {
                             page = entry.getPageNumberForAnchor(link.pageAnchor);

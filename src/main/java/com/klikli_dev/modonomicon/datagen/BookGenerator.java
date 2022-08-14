@@ -8,11 +8,15 @@ package com.klikli_dev.modonomicon.datagen;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
-import com.klikli_dev.modonomicon.api.datagen.EntryLocationHelper;
 import com.klikli_dev.modonomicon.api.datagen.BookLangHelper;
-import com.klikli_dev.modonomicon.datagen.book.*;
+import com.klikli_dev.modonomicon.api.datagen.EntryLocationHelper;
+import com.klikli_dev.modonomicon.datagen.book.BookCategoryModel;
+import com.klikli_dev.modonomicon.datagen.book.BookEntryModel;
+import com.klikli_dev.modonomicon.datagen.book.BookEntryParentModel;
+import com.klikli_dev.modonomicon.datagen.book.BookModel;
 import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryReadCondition;
 import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryUnlockedCondition;
+import com.klikli_dev.modonomicon.datagen.book.condition.BookFalseConditionModel;
 import com.klikli_dev.modonomicon.datagen.book.page.*;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
@@ -405,7 +409,7 @@ public class BookGenerator implements DataProvider {
         entryHelper.setMap(
                 "_____________________",
                 "__b___a______________",
-                "__________l__________",
+                "__________l_____x____",
                 "_____________________",
                 "_____________________"
         );
@@ -413,6 +417,8 @@ public class BookGenerator implements DataProvider {
         var basicFormattingEntry = this.makeBasicFormattingEntry(helper, entryHelper);
         var advancedFormattingEntry = this.makeAdvancedFormattingEntry(helper, entryHelper);
         var linkFormattingEntry = this.makeLinkFormattingEntry(helper, entryHelper);
+        var alwaysLockedEntry = this.makeAlwaysLockedEntry(helper, entryHelper);
+        alwaysLockedEntry.withCondition(BookFalseConditionModel.builder().build());
 
         linkFormattingEntry.withParent(BookEntryParentModel.builder().withEntryId(advancedFormattingEntry.id).build());
         advancedFormattingEntry.withParent(BookEntryParentModel.builder().withEntryId(basicFormattingEntry.id).build());
@@ -424,6 +430,7 @@ public class BookGenerator implements DataProvider {
                 .withEntry(basicFormattingEntry.build())
                 .withEntry(advancedFormattingEntry.build())
                 .withEntry(linkFormattingEntry.build())
+                .withEntry(alwaysLockedEntry.build())
                 .build();
     }
 
@@ -514,6 +521,21 @@ public class BookGenerator implements DataProvider {
 
         return formattingEntry;
     }
+
+    private BookEntryModel.Builder makeAlwaysLockedEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
+        helper.entry("always_locked");
+
+        var entry = BookEntryModel.builder()
+                .withId(this.modLoc(helper.category + "/" + helper.entry))
+                .withName(helper.entryName())
+                .withDescription(helper.entryDescription())
+                .withIcon("minecraft:nether_star")
+                .withLocation(entryHelper.get('x'))
+                .withEntryBackground(0, 1);
+
+        return entry;
+    }
+
 
     private BookModel add(BookModel bookModel) {
         if (this.bookModels.containsKey(bookModel.getId()))
