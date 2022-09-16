@@ -22,7 +22,7 @@
       "recipe_id_2": "minecraft:oak_planks",
       "text": "book.modonomicon.demo.features.recipe.crafting.text",
       "title1": "",
-      "title2": ""
+      "title2": "test.test.test"
     },
     {
       "type": "modonomicon:smelting_recipe",

@@ -114,7 +114,10 @@ public abstract class BookPageRenderer<T extends BookPage> {
             //if title is larger than allowed, scaled to fit
             var scale = Math.min(1.0f, (float) BookContentScreen.MAX_TITLE_WIDTH / (float) this.font.width(formattedCharSequence));
             if (scale < 1)
+            {
+                poseStack.translate(0, y - y * scale, 0);
                 poseStack.scale(scale, scale, scale);
+            }
 
             this.drawCenteredStringNoShadow(poseStack, formattedCharSequence, x, y, 0, scale);
         } else {
@@ -122,7 +125,10 @@ public abstract class BookPageRenderer<T extends BookPage> {
             //if title is larger than allowed, scaled to fit
             var scale =  Math.min(1.0f, (float) BookContentScreen.MAX_TITLE_WIDTH / (float) this.font.width(title.getComponent().getVisualOrderText()));
             if (scale < 1)
+            {
+                poseStack.translate(0, y - y * scale, 0);
                 poseStack.scale(scale, scale, scale);
+            }
 
             //otherwise we use the component - that is either provided by the user, or created from the default title style.
             this.drawCenteredStringNoShadow(poseStack, title.getComponent().getVisualOrderText(), x, y, 0, scale);

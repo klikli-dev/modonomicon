@@ -242,6 +242,7 @@ public class BookGenerator implements DataProvider {
                 .withRecipeId1("minecraft:crafting_table")
                 .withRecipeId2("minecraft:oak_planks")
                 .withText(helper.pageText())
+                .withTitle2("test.test.test")
                 .build();
 
         helper.page("smelting");

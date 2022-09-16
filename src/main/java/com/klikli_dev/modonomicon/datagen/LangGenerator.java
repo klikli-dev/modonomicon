@@ -105,6 +105,7 @@ public abstract class LangGenerator extends LanguageProvider {
         }
 
         private void addDemoBook() {
+
             var helper = ModonomiconAPI.get().getLangHelper(Modonomicon.MODID);
             helper.book("demo");
 
@@ -181,6 +182,8 @@ public abstract class LangGenerator extends LanguageProvider {
 
             helper.page("crafting");
             this.add(helper.pageText(), "A sample recipe page.");
+            this.add("test.test.test", "Book of Binding: Afrit (Bound)"); //long title to test scaling on recipe 2
+
 
             helper.page("smoking");
             this.add(helper.pageText(), "A smoking recipe page with one recipe and some text.");
