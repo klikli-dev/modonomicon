@@ -18,8 +18,8 @@ import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -94,7 +94,7 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
         BookContentScreen.drawFromTexture(poseStack, this.getPage().getBook(), x, y, 405, 149, 106, 106);
 
         if (this.errored) {
-            this.font.drawShadow(poseStack, Component.translatable(Gui.PAGE_ENTITY_LOADING_ERROR), 58, 60, 0xFF0000);
+            this.font.drawShadow(poseStack, new TranslatableComponent(Gui.PAGE_ENTITY_LOADING_ERROR), 58, 60, 0xFF0000);
         }
 
         if (this.entity != null) {

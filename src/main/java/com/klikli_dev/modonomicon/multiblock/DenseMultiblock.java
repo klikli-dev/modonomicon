@@ -23,13 +23,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
-
-import com.klikli_dev.modonomicon.api.multiblock.Multiblock.SimulateResult;
 
 public class DenseMultiblock extends AbstractMultiblock {
 

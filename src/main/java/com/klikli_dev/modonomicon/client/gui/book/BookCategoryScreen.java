@@ -16,7 +16,6 @@ import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.BookEntryReadMessage;
 import com.klikli_dev.modonomicon.network.messages.SaveCategoryStateMessage;
-import com.klikli_dev.modonomicon.network.messages.SaveEntryStateMessage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
@@ -24,6 +23,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.client.ForgeHooksClient;
@@ -294,10 +294,10 @@ public class BookCategoryScreen {
                 tooltip.addAll(entry.getCondition().getTooltip(BookConditionEntryContext.of(this.bookOverviewScreen.getBook(), entry)));
             } else if(displayState == EntryDisplayState.UNLOCKED){
                 //add name in bold
-                tooltip.add(Component.translatable(entry.getName()).withStyle(ChatFormatting.BOLD));
+                tooltip.add(new TranslatableComponent(entry.getName()).withStyle(ChatFormatting.BOLD));
                 //add description
                 if (!entry.getDescription().isEmpty()) {
-                    tooltip.add(Component.translatable(entry.getDescription()));
+                    tooltip.add(new TranslatableComponent(entry.getDescription()));
                 }
             }
 

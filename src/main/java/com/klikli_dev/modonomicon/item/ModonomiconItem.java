@@ -7,23 +7,19 @@
 package com.klikli_dev.modonomicon.item;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Nbt;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
-
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
-import com.klikli_dev.modonomicon.registry.SoundRegistry;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -35,8 +31,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
-
-import net.minecraft.world.item.Item.Properties;
 
 public class ModonomiconItem extends Item {
     public ModonomiconItem(Properties pProperties) {
@@ -82,7 +76,7 @@ public class ModonomiconItem extends Item {
     public Component getName(ItemStack pStack) {
         Book book = getBook(pStack);
         if (book != null) {
-            return Component.translatable(book.getName());
+            return new TranslatableComponent(book.getName());
         }
 
         return super.getName(pStack);
@@ -95,17 +89,17 @@ public class ModonomiconItem extends Item {
         Book book = getBook(stack);
         if(book != null){
             if (flagIn.isAdvanced()) {
-                tooltip.add(Component.literal("Book ID: ").withStyle(ChatFormatting.DARK_GRAY)
-                        .append(Component.literal(book.getId().toString()).withStyle(ChatFormatting.RED)));
+                tooltip.add(new TextComponent("Book ID: ").withStyle(ChatFormatting.DARK_GRAY)
+                        .append(new TextComponent(book.getId().toString()).withStyle(ChatFormatting.RED)));
             }
 
             if (!book.getTooltip().isBlank()) {
-                tooltip.add(Component.translatable(book.getTooltip()).withStyle(ChatFormatting.GRAY));
+                tooltip.add(new TranslatableComponent(book.getTooltip()).withStyle(ChatFormatting.GRAY));
             }
         }
         else {
-            tooltip.add(Component.translatable(Tooltips.ITEM_NO_BOOK_FOUND_FOR_STACK,
-                    !stack.hasTag() ? Component.literal("{}") : NbtUtils.toPrettyComponent(stack.getTag()))
+            tooltip.add(new TranslatableComponent(Tooltips.ITEM_NO_BOOK_FOUND_FOR_STACK,
+                    !stack.hasTag() ? new TextComponent("{}") : NbtUtils.toPrettyComponent(stack.getTag()))
                     .withStyle(ChatFormatting.DARK_GRAY));
         }
     }

@@ -32,7 +32,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Style;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.ColorResolver;
 import net.minecraft.world.level.biome.Biomes;
@@ -277,7 +276,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
         //TODO: render button to show multiblock in world
         //            //TODO: show multiblock preview on button click
 //            var block = MultiblockDataManager.get().getMultiblock(ResourceLocation.tryParse("modonomicon:blockentity"));
-//            MultiblockPreviewRenderer.setMultiblock(block, Component.translatable("multiblock.modonomicon.test"), true);
+//            MultiblockPreviewRenderer.setMultiblock(block, new TranslatableComponent("multiblock.modonomicon.test"), true);
 
         var style = this.getClickedComponentStyleAt(mouseX, mouseY);
         if (style != null)

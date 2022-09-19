@@ -16,9 +16,9 @@ import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
@@ -172,13 +172,13 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
         super.prerenderMarkdown(textRenderer);
 
         if (!this.title1.hasComponent()) {
-            this.title1 = new BookTextHolder(Component.translatable(this.title1.getKey())
+            this.title1 = new BookTextHolder(new TranslatableComponent(this.title1.getKey())
                     .withStyle(Style.EMPTY
                             .withBold(true)
                             .withColor(this.getParentEntry().getCategory().getBook().getDefaultTitleColor())));
         }
         if (!this.title2.hasComponent()) {
-            this.title2 = new BookTextHolder(Component.translatable(this.title2.getKey())
+            this.title2 = new BookTextHolder(new TranslatableComponent(this.title2.getKey())
                     .withStyle(Style.EMPTY
                             .withBold(true)
                             .withColor(this.getParentEntry().getCategory().getBook().getDefaultTitleColor())));

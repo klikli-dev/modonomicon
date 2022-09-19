@@ -1,43 +1,43 @@
 {
+  "category": "modonomicon:features",
+  "name": "book.modonomicon.demo.features.entity.name",
+  "description": "book.modonomicon.demo.features.entity.description",
+  "icon": "minecraft:spider_eye",
+  "x": 7,
+  "y": -2,
   "background_u_index": 0,
   "background_v_index": 0,
-  "category": "modonomicon:features",
-  "description": "book.modonomicon.demo.features.entity.description",
   "hide_while_locked": false,
-  "icon": "minecraft:spider_eye",
-  "name": "book.modonomicon.demo.features.entity.name",
   "pages": [
     {
       "type": "modonomicon:text",
       "anchor": "",
-      "show_title_separator": true,
-      "text": "book.modonomicon.demo.features.entity.intro.text",
       "title": "book.modonomicon.demo.features.entity.intro.title",
-      "use_markdown_in_title": false
+      "use_markdown_in_title": false,
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.entity.intro.text"
     },
     {
       "type": "modonomicon:entity",
       "anchor": "",
-      "default_rotation": -45.0,
-      "entity_id": "minecraft:ender_dragon",
       "name": "book.modonomicon.demo.features.entity.entity1.title",
+      "text": "",
+      "entity_id": "minecraft:ender_dragon",
+      "scale": 0.5,
       "offset": 0.0,
       "rotate": true,
-      "scale": 0.5,
-      "text": ""
+      "default_rotation": -45.0
     },
     {
       "type": "modonomicon:entity",
       "anchor": "",
-      "default_rotation": -45.0,
-      "entity_id": "minecraft:spider",
       "name": "",
+      "text": "book.modonomicon.demo.features.entity.entity2.text",
+      "entity_id": "minecraft:spider",
+      "scale": 1.0,
       "offset": 0.0,
       "rotate": true,
-      "scale": 1.0,
-      "text": "book.modonomicon.demo.features.entity.entity2.text"
+      "default_rotation": -45.0
     }
-  ],
-  "x": 7,
-  "y": -2
+  ]
 }

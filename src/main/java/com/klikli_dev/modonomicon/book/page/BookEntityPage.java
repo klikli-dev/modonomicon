@@ -15,8 +15,8 @@ import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import com.klikli_dev.modonomicon.util.EntityUtil;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 
@@ -105,7 +105,7 @@ public class BookEntityPage extends BookPage {
         super.prerenderMarkdown(textRenderer);
 
         if (!this.entityName.hasComponent()) {
-            this.entityName = new BookTextHolder(Component.translatable(this.entityName.getKey())
+            this.entityName = new BookTextHolder(new TranslatableComponent(this.entityName.getKey())
                     .withStyle(Style.EMPTY
                             .withBold(true)
                             .withColor(this.getParentEntry().getBook().getDefaultTitleColor())));
@@ -121,7 +121,7 @@ public class BookEntityPage extends BookPage {
 
         if (this.entityName.isEmpty()) {
             //use entity name if we don't have a custom title
-            this.entityName = new BookTextHolder(Component.translatable(EntityUtil.getEntityName(this.entityId))
+            this.entityName = new BookTextHolder(new TranslatableComponent(EntityUtil.getEntityName(this.entityId))
                     .withStyle(Style.EMPTY
                             .withBold(true)
                             .withColor(this.getParentEntry().getBook().getDefaultTitleColor())

@@ -6,7 +6,6 @@
 
 package com.klikli_dev.modonomicon.multiblock.matcher;
 
-import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
@@ -40,14 +39,14 @@ public class TagMatcher implements StateMatcher {
 
     private final BlockState displayState;
     private final Supplier<TagKey<Block>> tag;
-    private final  Supplier<Map<String, String>> props;
+    private final Supplier<Map<String, String>> props;
     private final TriPredicate<BlockGetter, BlockPos, BlockState> predicate;
 
-    protected TagMatcher( Supplier<TagKey<Block>> tag,  Supplier<Map<String, String>> props) {
+    protected TagMatcher(Supplier<TagKey<Block>> tag, Supplier<Map<String, String>> props) {
         this(null, tag, props);
     }
 
-    protected TagMatcher(BlockState displayState,  Supplier<TagKey<Block>> tag,  Supplier<Map<String, String>> props) {
+    protected TagMatcher(BlockState displayState, Supplier<TagKey<Block>> tag, Supplier<Map<String, String>> props) {
         this.displayState = displayState;
         this.tag = tag;
         this.props = props;
@@ -58,49 +57,37 @@ public class TagMatcher implements StateMatcher {
         BlockState displayState = null;
         if (json.has("display")) {
             try {
-                displayState = BlockStateParser.parseForBlock(Registry.BLOCK, new StringReader(GsonHelper.getAsString(json, "display")), false).blockState();
+                displayState = new BlockStateParser(new StringReader(GsonHelper.getAsString(json, "display")), false).parse(false).getState();
             } catch (CommandSyntaxException e) {
                 throw new IllegalArgumentException("Failed to parse BlockState from json member \"display\" for TagStateMatcher.", e);
             }
         }
 
-
+        try {
             //testing=true enables tag parsing
             //last param = allowNBT
             var tagString = GsonHelper.getAsString(json, "tag");
-            if(!tagString.startsWith("#")) {
+            if (!tagString.startsWith("#")) {
                 tagString = "#" + tagString;
             }
 
 
-            String finalTagString = tagString;
-            Supplier<TagKey<Block>> tagSupplier = Suppliers.memoize(() -> {
-                try {
-                    var parserResult = BlockStateParser.parseForTesting(Registry.BLOCK, new StringReader(finalTagString), true).right().orElseThrow();
-                   return parserResult.tag().unwrap().left().orElseThrow();
-                } catch (CommandSyntaxException e) {
-                    throw new IllegalArgumentException("Failed to parse Tag and BlockState properties from json member \"tag\" for TagMatcher.", e);
-                }
-            });
-
-            Supplier<Map<String, String>> propsSupplier = Suppliers.memoize(() -> {
-                try {
-                    var parserResult = BlockStateParser.parseForTesting(Registry.BLOCK, new StringReader(finalTagString), true).right().orElseThrow();
-                    return parserResult.vagueProperties();
-                } catch (CommandSyntaxException e) {
-                    throw new IllegalArgumentException("Failed to parse Tag and BlockState properties from json member \"tag\" for TagMatcher.", e);
-                }
-            });
-
-            return new TagMatcher(displayState, tagSupplier, propsSupplier);
-
+            var parser = new BlockStateParser(
+                    new StringReader(tagString),
+                    true).parse(false);
+            var tag = parser.getTag();
+            var props = parser.getVagueProperties();
+            return new TagMatcher(displayState, () -> tag, () -> props);
+        } catch (CommandSyntaxException e) {
+            throw new IllegalArgumentException("Failed to parse Tag and BlockState properties from json member \"tag\" for TagMatcher.", e);
+        }
     }
 
     public static TagMatcher fromNetwork(FriendlyByteBuf buffer) {
         try {
             BlockState displayState = null;
             if (buffer.readBoolean()) {
-                displayState = BlockStateParser.parseForBlock(Registry.BLOCK, new StringReader(buffer.readUtf()), false).blockState();
+                displayState = new BlockStateParser(new StringReader(buffer.readUtf()), true).parse(false).getState();
             }
 
             var tag = TagKey.create(Registry.BLOCK_REGISTRY, buffer.readResourceLocation());

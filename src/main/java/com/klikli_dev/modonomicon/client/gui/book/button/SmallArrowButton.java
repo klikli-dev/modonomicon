@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.function.Supplier;
 
@@ -23,9 +23,9 @@ public class SmallArrowButton extends BookButton {
 
     public SmallArrowButton(BookContentScreen parent, int x, int y, boolean left, Supplier<Boolean> displayCondition, OnPress onPress) {
         super(parent, x, y, U, left ? V + HEIGHT : V, WIDTH, HEIGHT, displayCondition,
-                Component.translatable(left ? Gui.BUTTON_PREVIOUS : Gui.BUTTON_NEXT),
+                new TranslatableComponent(left ? Gui.BUTTON_PREVIOUS : Gui.BUTTON_NEXT),
                 onPress,
-                Component.translatable(left ? Gui.BUTTON_PREVIOUS : Gui.BUTTON_NEXT)
+                new TranslatableComponent(left ? Gui.BUTTON_PREVIOUS : Gui.BUTTON_NEXT)
                 //button title equals hover text
         );
         this.left = left;

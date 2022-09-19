@@ -30,7 +30,7 @@ public class MarkdownComponentRenderUtils {
      * @return a list of wrapped lines ready to render via font.
      */
     public static List<FormattedCharSequence> wrapComponents(MutableComponent text, int width, int listWidth, Font font) {
-        if (text.getContents() instanceof ListItemContents) {
+        if (text instanceof ListItemComponent) {
             width = listWidth;
         }
 
@@ -38,7 +38,7 @@ public class MarkdownComponentRenderUtils {
         font.getSplitter().splitLines(text, width, Style.EMPTY, (lineText, isWrapped) -> {
             FormattedCharSequence formattedcharsequence = Language.getInstance().getVisualOrder(lineText);
             var indent = FormattedCharSequence.EMPTY;
-            if (text.getContents() instanceof ListItemContents item) {
+            if (text instanceof ListItemComponent item) {
                 indent = FormattedCharSequence.forward(item.getListHolder().getIndent() + "   ", Style.EMPTY);
             }
             list.add(isWrapped ? FormattedCharSequence.composite(indent, formattedcharsequence) : formattedcharsequence);

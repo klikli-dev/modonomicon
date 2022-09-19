@@ -14,6 +14,7 @@ import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryCont
 import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
@@ -65,7 +66,7 @@ public class BookEntryReadCondition extends BookCondition {
     @Override
     public List<Component> getTooltip(BookConditionContext context) {
         if (this.tooltip == null && context instanceof BookConditionEntryContext entryContext) {
-            this.tooltip = Component.translatable(Tooltips.CONDITION_ENTRY_READ, Component.translatable(entryContext.getBook().getEntry(this.entryId).getName()));
+            this.tooltip = new TranslatableComponent(Tooltips.CONDITION_ENTRY_READ, new TranslatableComponent(entryContext.getBook().getEntry(this.entryId).getName()));
         }
         return super.getTooltip(context);
     }

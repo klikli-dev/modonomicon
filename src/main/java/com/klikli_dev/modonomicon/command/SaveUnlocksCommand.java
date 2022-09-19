@@ -7,22 +7,17 @@
 package com.klikli_dev.modonomicon.command;
 
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Command;
-import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
-import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.SendUnlockCodeToClientMessage;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
-import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public class SaveUnlocksCommand implements com.mojang.brigadier.Command<CommandSourceStack> {
 
@@ -44,11 +39,11 @@ public class SaveUnlocksCommand implements com.mojang.brigadier.Command<CommandS
     public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var book = ResetBookUnlocksCommand.getBook(context, "book");
 
-        var code = BookUnlockCapability.getUnlockCodeFor(context.getSource().getPlayer(), book);
+        var code = BookUnlockCapability.getUnlockCodeFor(context.getSource().getPlayerOrException(), book);
 
-        Networking.sendToSplit(context.getSource().getPlayer(), new SendUnlockCodeToClientMessage(code));
+        Networking.sendToSplit(context.getSource().getPlayerOrException(), new SendUnlockCodeToClientMessage(code));
 
-        context.getSource().sendSuccess(Component.translatable(Command.SUCCESS_SAVE_PROGRESS, Component.translatable(book.getName())), true);
+        context.getSource().sendSuccess(new TranslatableComponent(Command.SUCCESS_SAVE_PROGRESS, new TranslatableComponent(book.getName())), true);
         return 1;
     }
 }

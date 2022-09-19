@@ -7,12 +7,10 @@
 package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Gui;
-import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 
 public class VisualizeButton extends BookButton {
@@ -24,9 +22,9 @@ public class VisualizeButton extends BookButton {
 
     public VisualizeButton(BookContentScreen parent, int x, int y, Button.OnPress onPress) {
         super(parent, x, y, U, V, WIDTH, HEIGHT,
-                Component.translatable(Gui.BUTTON_VISUALIZE),
+                new TranslatableComponent(Gui.BUTTON_VISUALIZE),
                 onPress,
-                Component.translatable(Gui.BUTTON_VISUALIZE_TOOLTIP)
+                new TranslatableComponent(Gui.BUTTON_VISUALIZE_TOOLTIP)
         );
     }
 

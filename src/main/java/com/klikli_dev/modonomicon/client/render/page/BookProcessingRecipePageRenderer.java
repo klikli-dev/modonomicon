@@ -6,7 +6,6 @@
 
 package com.klikli_dev.modonomicon.client.render.page;
 
-import com.klikli_dev.modonomicon.book.page.BookCraftingRecipePage;
 import com.klikli_dev.modonomicon.book.page.BookProcessingRecipePage;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.mojang.blaze3d.systems.RenderSystem;

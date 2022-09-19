@@ -15,8 +15,6 @@ import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.function.Supplier;
 
-import net.minecraft.client.gui.components.Button.OnPress;
-
 public class BookButton extends Button {
 
     protected final BookContentScreen parent;

@@ -6,12 +6,10 @@
 
 package com.klikli_dev.modonomicon.book;
 
-import com.klikli_dev.modonomicon.multiblock.matcher.BlockMatcher;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.contents.TranslatableContents;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.minecraft.network.chat.TranslatableComponent;
 import org.jetbrains.annotations.NotNull;
 
 public class BookTextHolder {
@@ -48,8 +46,8 @@ public class BookTextHolder {
      * Gets the translation key, or null if none
      */
     public String getKey() {
-        if (this.hasComponent() && this.component.getContents() instanceof TranslatableContents contents) {
-            return contents.getKey();
+        if (this.hasComponent() && this.component instanceof TranslatableComponent translatableComponent) {
+            return translatableComponent.getKey();
         }
         return this.string;
     }

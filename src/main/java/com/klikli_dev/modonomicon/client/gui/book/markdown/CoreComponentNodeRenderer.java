@@ -85,7 +85,7 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
         // due to java stripping trailing white spaces from text blocks
         // and data gen will use text blocks 99% of the time
         // one way to still get them is to use \s as the last space at the end of the line in the text block
-        this.context.getCurrentComponent().append(Component.literal("\n"));
+        this.context.getCurrentComponent().append(new TextComponent("\n"));
 
         //finalization is only required by lists currently, and they do it on their own
 //        if (this.context.getListHolder() == null) {
@@ -104,7 +104,7 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
 
         //if no link renderer, we just do a http link
         var currentColor = this.context.getCurrentStyle().getColor();
-        var hoverComponent = Component.translatable(Gui.HOVER_HTTP_LINK, link.getDestination());
+        var hoverComponent = new TranslatableComponent(Gui.HOVER_HTTP_LINK, link.getDestination());
         //if we have a color we use it, otherwise we use link default.
         this.context.setCurrentStyle(this.context.getCurrentStyle()
                 .withColor(currentColor == null ? this.context.getLinkColor() : currentColor)
@@ -130,7 +130,7 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
         var listHolder = this.context.getListHolder();
         if (listHolder != null && listHolder instanceof OrderedListHolder orderedListHolder) {
             //List bullets/numbers will not be affected by current style
-            this.context.getCurrentComponent().append(Component.translatable(
+            this.context.getCurrentComponent().append(new TranslatableComponent(
                     orderedListHolder.getIndent() + orderedListHolder.getCounter() + orderedListHolder.getDelimiter() + " ")
                     .withStyle(Style.EMPTY));
 
@@ -138,7 +138,7 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
             orderedListHolder.increaseCounter();
         } else if (listHolder != null && listHolder instanceof BulletListHolder bulletListHolder) {
             //List bullets/numbers will not be affected by current style
-            this.context.getCurrentComponent().append(Component.translatable(
+            this.context.getCurrentComponent().append(new TranslatableComponent(
                     bulletListHolder.getIndent() + bulletListHolder.getMarker() + " ")
                     .withStyle(Style.EMPTY));
             this.visitChildren(listItem);
@@ -172,7 +172,7 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
         if (this.context.getRenderSoftLineBreaks()) {
             this.context.getCurrentComponent().append("\n");
         } else if (this.context.getReplaceSoftLineBreaksWithSpace()) {
-            this.context.getCurrentComponent().append(Component.literal(" "));
+            this.context.getCurrentComponent().append(new TextComponent(" "));
         }
         this.visitChildren(softLineBreak);
     }
@@ -189,7 +189,7 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
     @Override
     public void visit(Text text) {
         this.context.getCurrentComponent().append(
-                Component.translatable(text.getLiteral()).withStyle(this.context.getCurrentStyle()));
+                new TranslatableComponent(text.getLiteral()).withStyle(this.context.getCurrentStyle()));
         this.visitChildren(text);
     }
 

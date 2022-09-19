@@ -8,14 +8,12 @@ package com.klikli_dev.modonomicon.client.render.page;
 
 import com.klikli_dev.modonomicon.book.page.BookImagePage;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
-import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.SmallArrowButton;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Style;
-import net.minecraft.world.entity.projectile.Arrow;
 import org.jetbrains.annotations.Nullable;
 
 public class BookImagePageRenderer extends BookPageRenderer<BookImagePage> implements PageWithTextRenderer {

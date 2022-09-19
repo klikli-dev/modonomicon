@@ -7,7 +7,6 @@
 package com.klikli_dev.modonomicon.capability.bookstate;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.INBTSerializable;
 
 public class EntryState implements INBTSerializable<CompoundTag> {

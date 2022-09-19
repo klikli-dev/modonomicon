@@ -6,12 +6,10 @@
 
 package com.klikli_dev.modonomicon.command;
 
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Command;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
 import com.klikli_dev.modonomicon.data.BookDataManager;
-import com.klikli_dev.modonomicon.registry.CapabilityRegistry;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -22,16 +20,16 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public class ResetBookUnlocksCommand implements com.mojang.brigadier.Command<CommandSourceStack> {
 
     public static final DynamicCommandExceptionType ERROR_UNKNOWN_BOOK = new DynamicCommandExceptionType((message) -> {
-        return Component.translatable(Command.ERROR_UNKNOWN_BOOK, message);
+        return new TranslatableComponent(Command.ERROR_UNKNOWN_BOOK, message);
     });
 
     public static final SuggestionProvider<CommandSourceStack> SUGGEST_BOOK = (context, builder) -> {
-        var books = BookUnlockCapability.getBooksFor(context.getSource().getPlayer());
+        var books = BookUnlockCapability.getBooksFor(context.getSource().getPlayerOrException());
         return SharedSuggestionProvider.suggestResource(books, builder);
     };
     private static final ResetBookUnlocksCommand CMD = new ResetBookUnlocksCommand();
@@ -61,9 +59,9 @@ public class ResetBookUnlocksCommand implements com.mojang.brigadier.Command<Com
     @Override
     public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var book = getBook(context, "book");
-        BookUnlockCapability.resetFor(context.getSource().getPlayer(), book);
-        BookUnlockCapability.updateAndSyncFor(context.getSource().getPlayer());
-        context.getSource().sendSuccess(Component.translatable(Command.SUCCESS_RESET_BOOK, Component.translatable(book.getName())), true);
+        BookUnlockCapability.resetFor(context.getSource().getPlayerOrException(), book);
+        BookUnlockCapability.updateAndSyncFor(context.getSource().getPlayerOrException());
+        context.getSource().sendSuccess(new TranslatableComponent(Command.SUCCESS_RESET_BOOK, new TranslatableComponent(book.getName())), true);
         return 1;
     }
 }

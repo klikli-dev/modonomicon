@@ -6,11 +6,10 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.network.chat.TranslatableComponent;
 import org.commonmark.Extension;
 import org.commonmark.internal.renderer.NodeRendererMap;
 import org.commonmark.internal.renderer.text.ListHolder;
@@ -41,7 +40,7 @@ public class ComponentRenderer {
         this.linkRenderers = builder.linkRenderers;
 
         this.components = new ArrayList<>();
-        this.currentComponent = Component.translatable("");
+        this.currentComponent = new TranslatableComponent("");
 
         this.nodeRendererFactories = new ArrayList<>(builder.nodeRendererFactories.size() + 1);
         this.nodeRendererFactories.addAll(builder.nodeRendererFactories);
@@ -227,13 +226,12 @@ public class ComponentRenderer {
 
         public boolean isEmptyComponent() {
             //translation contents have no content, they have a key (which doubles as content).
-            return ((TranslatableContents)this.getCurrentComponent().getContents()).getKey().isEmpty() && this.getCurrentComponent().getSiblings().isEmpty();
+            return ((TranslatableComponent)this.getCurrentComponent()).getKey().isEmpty() && this.getCurrentComponent().getSiblings().isEmpty();
         }
-
         public void finalizeCurrentComponent() {
             this.getComponents().add(this.getCurrentComponent());
             this.setCurrentComponent(this.getListHolder() == null ?
-                     Component.translatable("") : MutableComponent.create(new ListItemContents(this.getListHolder(), "")));
+                    new TranslatableComponent("") : new ListItemComponent(this.getListHolder(), ""));
         }
 
         @Override

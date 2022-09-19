@@ -15,9 +15,7 @@ import com.google.gson.JsonSyntaxException;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
-import com.klikli_dev.modonomicon.multiblock.matcher.AnyMatcher;
 import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
-import com.klikli_dev.modonomicon.multiblock.matcher.PredicateMatcher;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -30,8 +28,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
 import java.util.Map.Entry;
-
-import com.klikli_dev.modonomicon.api.multiblock.Multiblock.SimulateResult;
 
 public class SparseMultiblock extends AbstractMultiblock {
 

@@ -1,7 +1,7 @@
 {
-  "background": "modonomicon:textures/gui/dark_slate_seamless.png",
-  "entry_textures": "modonomicon:textures/gui/entry_textures.png",
-  "icon": "minecraft:book",
   "name": "book.modonomicon.demo.formatting.name",
-  "sort_number": -1
+  "icon": "minecraft:book",
+  "sort_number": -1,
+  "background": "modonomicon:textures/gui/dark_slate_seamless.png",
+  "entry_textures": "modonomicon:textures/gui/entry_textures.png"
 }

@@ -1,33 +1,33 @@
 {
+  "category": "modonomicon:features",
+  "name": "book.modonomicon.demo.features.condition_level_2.name",
+  "description": "book.modonomicon.demo.features.condition_level_2.description",
+  "icon": "minecraft:torch",
+  "x": 4,
+  "y": 1,
   "background_u_index": 0,
   "background_v_index": 0,
-  "category": "modonomicon:features",
-  "condition": {
-    "type": "modonomicon:entry_unlocked",
-    "entry_id": "modonomicon:features/condition_level_1"
-  },
-  "description": "book.modonomicon.demo.features.condition_level_2.description",
   "hide_while_locked": false,
-  "icon": "minecraft:torch",
-  "name": "book.modonomicon.demo.features.condition_level_2.name",
-  "pages": [
-    {
-      "type": "modonomicon:text",
-      "anchor": "",
-      "show_title_separator": true,
-      "text": "book.modonomicon.demo.features.condition_level_2.info.text",
-      "title": "book.modonomicon.demo.features.condition_level_2.info.title",
-      "use_markdown_in_title": false
-    }
-  ],
   "parents": [
     {
-      "draw_arrow": true,
       "entry": "modonomicon:features/condition_level_1",
+      "draw_arrow": true,
       "line_enabled": true,
       "line_reversed": false
     }
   ],
-  "x": 4,
-  "y": 1
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "title": "book.modonomicon.demo.features.condition_level_2.info.title",
+      "use_markdown_in_title": false,
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.condition_level_2.info.text"
+    }
+  ],
+  "condition": {
+    "type": "modonomicon:entry_unlocked",
+    "entry_id": "modonomicon:features/condition_level_1"
+  }
 }

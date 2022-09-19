@@ -16,7 +16,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.Base64;
 
@@ -49,7 +49,7 @@ public class LoadUnlocksCommand implements com.mojang.brigadier.Command<CommandS
 
             return 1;
         } catch (Exception e) {
-            context.getSource().sendFailure(Component.translatable(Command.ERROR_LOAD_PROGRESS_CLIENT, code));
+            context.getSource().sendFailure(new TranslatableComponent(Command.ERROR_LOAD_PROGRESS_CLIENT, code));
             return 0;
         }
     }

@@ -1,37 +1,37 @@
 {
+  "category": "modonomicon:features",
+  "name": "book.modonomicon.demo.features.empty.name",
+  "description": "book.modonomicon.demo.features.empty.description",
+  "icon": "minecraft:obsidian",
+  "x": -2,
+  "y": 2,
   "background_u_index": 0,
   "background_v_index": 0,
-  "category": "modonomicon:features",
-  "description": "book.modonomicon.demo.features.empty.description",
   "hide_while_locked": false,
-  "icon": "minecraft:obsidian",
-  "name": "book.modonomicon.demo.features.empty.name",
-  "pages": [
-    {
-      "type": "modonomicon:text",
-      "anchor": "",
-      "show_title_separator": true,
-      "text": "book.modonomicon.demo.features.empty.intro.text",
-      "title": "book.modonomicon.demo.features.empty.intro.title",
-      "use_markdown_in_title": false
-    },
-    {
-      "type": "modonomicon:empty",
-      "anchor": ""
-    },
-    {
-      "type": "modonomicon:empty",
-      "anchor": ""
-    }
-  ],
   "parents": [
     {
-      "draw_arrow": true,
       "entry": "modonomicon:features/spotlight",
+      "draw_arrow": true,
       "line_enabled": true,
       "line_reversed": false
     }
   ],
-  "x": -2,
-  "y": 2
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "title": "book.modonomicon.demo.features.empty.intro.title",
+      "use_markdown_in_title": false,
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.empty.intro.text"
+    },
+    {
+      "type": "modonomicon:empty",
+      "anchor": ""
+    },
+    {
+      "type": "modonomicon:empty",
+      "anchor": ""
+    }
+  ]
 }

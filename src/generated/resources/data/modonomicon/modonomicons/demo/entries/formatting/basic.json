@@ -1,29 +1,29 @@
 {
+  "category": "modonomicon:formatting",
+  "name": "book.modonomicon.demo.formatting.basic.name",
+  "description": "book.modonomicon.demo.formatting.basic.description",
+  "icon": "minecraft:paper",
+  "x": -8,
+  "y": -1,
   "background_u_index": 0,
   "background_v_index": 0,
-  "category": "modonomicon:formatting",
-  "description": "book.modonomicon.demo.formatting.basic.description",
   "hide_while_locked": false,
-  "icon": "minecraft:paper",
-  "name": "book.modonomicon.demo.formatting.basic.name",
   "pages": [
     {
       "type": "modonomicon:text",
       "anchor": "",
-      "show_title_separator": true,
-      "text": "book.modonomicon.demo.formatting.basic.page1.text",
       "title": "book.modonomicon.demo.formatting.basic.page1.title",
-      "use_markdown_in_title": false
+      "use_markdown_in_title": false,
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.formatting.basic.page1.text"
     },
     {
       "type": "modonomicon:text",
       "anchor": "",
-      "show_title_separator": true,
-      "text": "book.modonomicon.demo.formatting.basic.page2.text",
       "title": "",
-      "use_markdown_in_title": false
+      "use_markdown_in_title": false,
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.formatting.basic.page2.text"
     }
-  ],
-  "x": -8,
-  "y": -1
+  ]
 }

@@ -6,6 +6,8 @@
 
 package com.klikli_dev.modonomicon.datagen;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.api.datagen.BookLangHelper;
@@ -18,9 +20,9 @@ import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryReadCondition;
 import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryUnlockedCondition;
 import com.klikli_dev.modonomicon.datagen.book.condition.BookFalseConditionModel;
 import com.klikli_dev.modonomicon.datagen.book.page.*;
-import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.HashCache;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -33,6 +35,8 @@ import java.util.List;
 import java.util.Map;
 
 public class BookGenerator implements DataProvider {
+
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final DataGenerator generator;
     private final Map<ResourceLocation, BookModel> bookModels;
     protected String modid;
@@ -546,14 +550,14 @@ public class BookGenerator implements DataProvider {
     }
 
     @Override
-    public void run(CachedOutput cache) throws IOException {
+    public void run(HashCache cache) throws IOException {
         Path folder = this.generator.getOutputFolder();
         this.start();
 
         for (var bookModel : this.bookModels.values()) {
             Path bookPath = getPath(folder, bookModel);
             try {
-                DataProvider.saveStable(cache, bookModel.toJson(), bookPath);
+                DataProvider.save(GSON, cache, bookModel.toJson(), bookPath);
             } catch (IOException exception) {
                 Modonomicon.LOGGER.error("Couldn't save book {}", bookPath, exception);
             }
@@ -561,7 +565,7 @@ public class BookGenerator implements DataProvider {
             for (var bookCategoryModel : bookModel.getCategories()) {
                 Path bookCategoryPath = getPath(folder, bookCategoryModel);
                 try {
-                    DataProvider.saveStable(cache, bookCategoryModel.toJson(), bookCategoryPath);
+                    DataProvider.save(GSON, cache, bookCategoryModel.toJson(), bookCategoryPath);
                 } catch (IOException exception) {
                     Modonomicon.LOGGER.error("Couldn't save book category {}", bookCategoryPath, exception);
                 }
@@ -569,7 +573,7 @@ public class BookGenerator implements DataProvider {
                 for (var bookEntryModel : bookCategoryModel.getEntries()) {
                     Path bookEntryPath = getPath(folder, bookEntryModel);
                     try {
-                        DataProvider.saveStable(cache, bookEntryModel.toJson(), bookEntryPath);
+                        DataProvider.save(GSON, cache, bookEntryModel.toJson(), bookEntryPath);
                     } catch (IOException exception) {
                         Modonomicon.LOGGER.error("Couldn't save book entry {}", bookEntryPath, exception);
                     }

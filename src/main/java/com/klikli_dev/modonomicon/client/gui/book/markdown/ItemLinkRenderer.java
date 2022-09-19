@@ -6,14 +6,12 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
-import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.HoverEvent.Action;
 import net.minecraft.network.chat.HoverEvent.ItemStackInfo;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -53,12 +51,12 @@ public class ItemLinkRenderer implements LinkRenderer {
             //if we have a color we use it, otherwise we use item link default.
             context.setCurrentStyle(context.getCurrentStyle()
                     .withColor(currentColor == null ? ITEM_LINK_COLOR : currentColor)
-                    .withHoverEvent(new HoverEvent(Action.SHOW_ITEM, new ItemStackInfo(new ItemStack(item.get()))))
+                    .withHoverEvent(new HoverEvent(Action.SHOW_ITEM, new ItemStackInfo(new ItemStack(item.value()))))
             );
 
             if(link.getLastChild() == null){
                 //if no children, render item name
-                link.appendChild(new Text(Component.translatable(item.get().getDescriptionId()).getString()));
+                link.appendChild(new Text(new TranslatableComponent(item.value().getDescriptionId()).getString()));
             }
 
             visitChildren.accept(link);

@@ -13,10 +13,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.Component;
-
-import net.minecraft.client.gui.components.Button.OnPress;
-import net.minecraft.client.gui.components.Button.OnTooltip;
+import net.minecraft.network.chat.TextComponent;
 
 public class CategoryButton extends Button {
 
@@ -25,7 +22,7 @@ public class CategoryButton extends Button {
     private final int categoryIndex;
 
     public CategoryButton(BookOverviewScreen parent, BookCategory category, int categoryIndex, int pX, int pY, int width, int height, OnPress pOnPress, OnTooltip pOnTooltip) {
-        super(pX, pY, width, height, Component.literal(""), pOnPress, pOnTooltip);
+        super(pX, pY, width, height, new TextComponent(""), pOnPress, pOnTooltip);
         this.parent = parent;
         this.category = category;
         this.categoryIndex = categoryIndex;

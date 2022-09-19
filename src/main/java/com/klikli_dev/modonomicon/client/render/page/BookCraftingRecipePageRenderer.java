@@ -13,7 +13,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -53,7 +53,7 @@ public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recip
             int iconY = recipeY + 2;
             GuiComponent.blit(poseStack, iconX, iconY, 0, 64, 11, 11, 128, 256);
             if (this.parentScreen.isMouseInRelativeRange(mouseX, mouseY, iconX, iconY, 11, 11)) {
-                this.parentScreen.setTooltip(Component.translatable(Tooltips.RECIPE_CRAFTING_SHAPELESS));
+                this.parentScreen.setTooltip(new TranslatableComponent(Tooltips.RECIPE_CRAFTING_SHAPELESS));
             }
         }
 

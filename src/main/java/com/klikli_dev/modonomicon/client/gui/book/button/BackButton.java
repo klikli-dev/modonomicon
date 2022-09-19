@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public class BackButton extends BookButton {
 
@@ -19,9 +19,9 @@ public class BackButton extends BookButton {
 
     public BackButton(BookContentScreen parent, int x, int y) {
         super(parent, x, y, U, V, WIDTH, HEIGHT, parent::canSeeBackButton,
-                Component.translatable(Gui.BUTTON_BACK),
+                new TranslatableComponent(Gui.BUTTON_BACK),
                 parent::handleBackButton,
-                Component.translatable(Gui.BUTTON_BACK_TOOLTIP)
+                new TranslatableComponent(Gui.BUTTON_BACK_TOOLTIP)
         );
     }
 }

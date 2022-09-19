@@ -40,11 +40,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Registry;
+import net.minecraft.network.chat.*;
 import net.minecraft.network.chat.ClickEvent.Action;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -94,7 +91,7 @@ public class BookContentScreen extends Screen {
     private ItemStack tooltipStack;
 
     public BookContentScreen(BookOverviewScreen parentScreen, BookEntry entry) {
-        super(Component.literal(""));
+        super(new TextComponent(""));
 
         this.minecraft = Minecraft.getInstance();
 
@@ -488,10 +485,10 @@ public class BookContentScreen extends Screen {
 
                                 var oldComponent = style.getHoverEvent().getValue(HoverEvent.Action.SHOW_TEXT);
 
-                                var newComponent = Component.translatable(
+                                var newComponent = new TranslatableComponent(
                                         Gui.HOVER_BOOK_LINK_LOCKED,
                                         oldComponent,
-                                        Component.translatable(Gui.HOVER_BOOK_LINK_LOCKED_INFO)
+                                        new TranslatableComponent(Gui.HOVER_BOOK_LINK_LOCKED_INFO)
                                                 .withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xff0015)).withBold(true)));
 
                                 newStyle = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newComponent));

@@ -1,8 +1,8 @@
 {
   "criteria": {
     "modonomicon_present": {
-      "conditions": {},
-      "trigger": "minecraft:tick"
+      "trigger": "minecraft:tick",
+      "conditions": {}
     }
   },
   "requirements": [

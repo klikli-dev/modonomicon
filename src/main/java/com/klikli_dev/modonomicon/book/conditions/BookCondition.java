@@ -12,6 +12,8 @@ import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
@@ -30,7 +32,7 @@ public abstract class BookCondition {
         if (json.has("tooltip")) {
             var tooltipElement = json.get("tooltip");
             if (tooltipElement.isJsonPrimitive())
-                return Component.translatable(tooltipElement.getAsString());
+                return new TranslatableComponent(tooltipElement.getAsString());
 
             return Component.Serializer.fromJson(tooltipElement);
         }

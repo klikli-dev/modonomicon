@@ -51,14 +51,14 @@ public class BlockStateMatcher implements StateMatcher {
         BlockState displayState = null;
         if (json.has("display")) {
             try {
-                displayState = BlockStateParser.parseForBlock(Registry.BLOCK, new StringReader(GsonHelper.getAsString(json, "display")), false).blockState();
+                displayState = new BlockStateParser(new StringReader(GsonHelper.getAsString(json, "display")), false).parse(false).getState();
             } catch (CommandSyntaxException e) {
                 throw new IllegalArgumentException("Failed to parse BlockState from json member \"display\" for BlockStateMatcher.", e);
             }
         }
 
         try {
-            var blockState = BlockStateParser.parseForBlock(Registry.BLOCK, new StringReader(GsonHelper.getAsString(json, "block")), false).blockState();
+            var blockState = new BlockStateParser(new StringReader(GsonHelper.getAsString(json, "block")), false).parse(false).getState();
             return new BlockStateMatcher(displayState, blockState);
         } catch (CommandSyntaxException e) {
             throw new IllegalArgumentException("Failed to parse BlockState from json member \"block\" for BlockStateMatcher.", e);
@@ -70,9 +70,9 @@ public class BlockStateMatcher implements StateMatcher {
         try {
             BlockState displayState = null;
             if (buffer.readBoolean())
-                displayState = BlockStateParser.parseForBlock(Registry.BLOCK, new StringReader(buffer.readUtf()), false).blockState();
+                displayState = new BlockStateParser(new StringReader(buffer.readUtf()), false).parse(false).getState();
 
-            var blockState = BlockStateParser.parseForBlock(Registry.BLOCK, new StringReader(buffer.readUtf()), false).blockState();
+            var blockState = new BlockStateParser(new StringReader(buffer.readUtf()), false).parse(false).getState();
 
             return new BlockStateMatcher(displayState, blockState);
         } catch (CommandSyntaxException e) {

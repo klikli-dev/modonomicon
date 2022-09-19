@@ -1,47 +1,47 @@
 {
+  "category": "modonomicon:features",
+  "name": "book.modonomicon.demo.features.spotlight.name",
+  "description": "book.modonomicon.demo.features.spotlight.description",
+  "icon": "minecraft:beacon",
+  "x": -8,
+  "y": 2,
   "background_u_index": 0,
   "background_v_index": 0,
-  "category": "modonomicon:features",
-  "description": "book.modonomicon.demo.features.spotlight.description",
   "hide_while_locked": false,
-  "icon": "minecraft:beacon",
-  "name": "book.modonomicon.demo.features.spotlight.name",
-  "pages": [
-    {
-      "type": "modonomicon:text",
-      "anchor": "",
-      "show_title_separator": true,
-      "text": "book.modonomicon.demo.features.spotlight.intro.text",
-      "title": "book.modonomicon.demo.features.spotlight.intro.title",
-      "use_markdown_in_title": false
-    },
-    {
-      "type": "modonomicon:spotlight",
-      "anchor": "",
-      "item": {
-        "item": "minecraft:apple"
-      },
-      "text": "book.modonomicon.demo.features.spotlight.spotlight1.text",
-      "title": "book.modonomicon.demo.features.spotlight.spotlight1.title"
-    },
-    {
-      "type": "modonomicon:spotlight",
-      "anchor": "",
-      "item": {
-        "item": "minecraft:diamond"
-      },
-      "text": "book.modonomicon.demo.features.spotlight.spotlight2.text",
-      "title": ""
-    }
-  ],
   "parents": [
     {
-      "draw_arrow": true,
       "entry": "modonomicon:features/recipe",
+      "draw_arrow": true,
       "line_enabled": true,
       "line_reversed": false
     }
   ],
-  "x": -8,
-  "y": 2
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "title": "book.modonomicon.demo.features.spotlight.intro.title",
+      "use_markdown_in_title": false,
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.spotlight.intro.text"
+    },
+    {
+      "type": "modonomicon:spotlight",
+      "anchor": "",
+      "title": "book.modonomicon.demo.features.spotlight.spotlight1.title",
+      "item": {
+        "item": "minecraft:apple"
+      },
+      "text": "book.modonomicon.demo.features.spotlight.spotlight1.text"
+    },
+    {
+      "type": "modonomicon:spotlight",
+      "anchor": "",
+      "title": "",
+      "item": {
+        "item": "minecraft:diamond"
+      },
+      "text": "book.modonomicon.demo.features.spotlight.spotlight2.text"
+    }
+  ]
 }

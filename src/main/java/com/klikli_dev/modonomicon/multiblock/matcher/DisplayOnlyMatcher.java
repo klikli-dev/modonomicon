@@ -40,7 +40,7 @@ public class DisplayOnlyMatcher implements StateMatcher {
 
     public static DisplayOnlyMatcher fromJson(JsonObject json) {
         try {
-            var displayState = BlockStateParser.parseForBlock(Registry.BLOCK, new StringReader(GsonHelper.getAsString(json, "display")), false).blockState();
+            var displayState = new BlockStateParser(new StringReader(GsonHelper.getAsString(json, "display")), false).parse(false).getState();
             return new DisplayOnlyMatcher(displayState);
         } catch (CommandSyntaxException e) {
             throw new IllegalArgumentException("Failed to parse BlockState from json member \"display\" for DisplayOnlyMatcher.", e);
@@ -49,7 +49,7 @@ public class DisplayOnlyMatcher implements StateMatcher {
 
     public static DisplayOnlyMatcher fromNetwork(FriendlyByteBuf buffer) {
         try {
-            var displayState = BlockStateParser.parseForBlock(Registry.BLOCK, new StringReader(buffer.readUtf()), false).blockState();
+            var displayState = new BlockStateParser(new StringReader(buffer.readUtf()), true).parse(false).getState();
             return new DisplayOnlyMatcher(displayState);
         } catch (CommandSyntaxException e) {
             throw new IllegalArgumentException("Failed to parse DisplayOnlyMatcher from network.", e);

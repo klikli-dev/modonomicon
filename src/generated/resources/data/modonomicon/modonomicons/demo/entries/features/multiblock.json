@@ -1,37 +1,37 @@
 {
+  "category": "modonomicon:features",
+  "name": "book.modonomicon.demo.features.multiblock.name",
+  "description": "book.modonomicon.demo.features.multiblock.description",
+  "icon": "minecraft:furnace",
+  "x": -8,
+  "y": -2,
   "background_u_index": 0,
   "background_v_index": 0,
-  "category": "modonomicon:features",
-  "description": "book.modonomicon.demo.features.multiblock.description",
   "hide_while_locked": false,
-  "icon": "minecraft:furnace",
-  "name": "book.modonomicon.demo.features.multiblock.name",
   "pages": [
     {
       "type": "modonomicon:text",
       "anchor": "",
-      "show_title_separator": true,
-      "text": "book.modonomicon.demo.features.multiblock.intro.text",
       "title": "book.modonomicon.demo.features.multiblock.intro.title",
-      "use_markdown_in_title": false
+      "use_markdown_in_title": false,
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.multiblock.intro.text"
     },
     {
       "type": "modonomicon:multiblock",
       "anchor": "",
-      "multiblock_id": "modonomicon:blockentity",
       "multiblock_name": "multiblocks.modonomicon.blockentity",
-      "show_visualize_button": true,
-      "text": "book.modonomicon.demo.features.multiblock.preview.text"
+      "multiblock_id": "modonomicon:blockentity",
+      "text": "book.modonomicon.demo.features.multiblock.preview.text",
+      "show_visualize_button": true
     },
     {
       "type": "modonomicon:multiblock",
       "anchor": "",
-      "multiblock_id": "modonomicon:tag",
       "multiblock_name": "",
-      "show_visualize_button": true,
-      "text": ""
+      "multiblock_id": "modonomicon:tag",
+      "text": "",
+      "show_visualize_button": true
     }
-  ],
-  "x": -8,
-  "y": -2
+  ]
 }

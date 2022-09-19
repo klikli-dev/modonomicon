@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.GsonHelper;
@@ -30,11 +31,12 @@ public class BookAdvancementCondition extends BookCondition {
         var advancementId = new ResourceLocation(GsonHelper.getAsString(json, "advancement_id"));
 
         //default tooltip
-        var tooltip = Component.translatable(Tooltips.CONDITION_ADVANCEMENT,
+        var tooltip = new TranslatableComponent(Tooltips.CONDITION_ADVANCEMENT,
                 "advancements." + advancementId.toString().replace(":", ".") + ".title");
 
         if (json.has("tooltip")) {
-            tooltip = tooltipFromJson(json);
+            //TODO: Does it work
+            tooltip = (TranslatableComponent) tooltipFromJson(json);
         }
 
         return new BookAdvancementCondition(tooltip, advancementId);
