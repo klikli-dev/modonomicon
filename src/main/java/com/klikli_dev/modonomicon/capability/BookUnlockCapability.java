@@ -187,20 +187,14 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
     }
 
     public boolean isRead(BookEntry entry) {
-        if(entry.getBook() == null)
-            return false;
         return this.readEntries.getOrDefault(entry.getBook().getId(), new HashSet<>()).contains(entry.getId());
     }
 
     public boolean isUnlocked(BookEntry entry) {
-        if(entry.getBook() == null)
-            return false;
         return this.unlockedEntries.getOrDefault(entry.getBook().getId(), new HashSet<>()).contains(entry.getId());
     }
 
     public boolean isUnlocked(BookCategory category) {
-        if(category.getBook() == null)
-            return false;
         return this.unlockedCategories.getOrDefault(category.getBook().getId(), new HashSet<>()).contains(category.getId());
     }
 
