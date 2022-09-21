@@ -74,10 +74,12 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
     }
 
     public static void updateAndSyncFor(ServerPlayer player) {
-        player.getCapability(CapabilityRegistry.BOOK_UNLOCK).ifPresent(capability -> {
-            capability.update(player);
-            capability.sync(player);
-        });
+        if(BookDataManager.get().areBooksBuilt()){
+            player.getCapability(CapabilityRegistry.BOOK_UNLOCK).ifPresent(capability -> {
+                capability.update(player);
+                capability.sync(player);
+            });
+        }
     }
 
     public static List<ResourceLocation> getBooksFor(Player player) {

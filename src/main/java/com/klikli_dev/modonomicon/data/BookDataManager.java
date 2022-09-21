@@ -71,6 +71,10 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         return new SyncBookDataMessage(this.books);
     }
 
+    public boolean areBooksBuilt() {
+        return booksBuilt;
+    }
+
     public void onDatapackSyncPacket(SyncBookDataMessage message) {
         this.preLoad();
         this.books = message.books;
