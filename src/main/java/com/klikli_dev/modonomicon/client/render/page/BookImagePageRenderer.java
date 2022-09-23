@@ -39,7 +39,7 @@ public class BookImagePageRenderer extends BookPageRenderer<BookImagePage> imple
     public void onBeginDisplayPage(BookContentScreen parentScreen, int left, int top) {
         super.onBeginDisplayPage(parentScreen, left, top);
 
-        int x = 90;
+        int x = 94;
         int y = 101;
 
         this.addButton(new SmallArrowButton(parentScreen, x, y, true, () -> this.index > 0, this::handleButtonArrow));
@@ -60,9 +60,11 @@ public class BookImagePageRenderer extends BookPageRenderer<BookImagePage> imple
         int y = 7;
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.enableBlend();
+        poseStack.pushPose();
         poseStack.scale(0.5F, 0.5F, 0.5F);
         this.parentScreen.blit(poseStack, x * 2 + 6, y * 2 + 6, 0, 0, 200, 200);
         poseStack.scale(2F, 2F, 2F);
+        poseStack.popPose();
 
         if (this.page.hasBorder()) {
             BookContentScreen.drawFromTexture(poseStack, this.getPage().getBook(), x, y, 405, 149, 106, 106);
