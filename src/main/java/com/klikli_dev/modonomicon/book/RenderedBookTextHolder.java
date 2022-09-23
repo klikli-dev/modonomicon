@@ -37,6 +37,11 @@ public class RenderedBookTextHolder extends BookTextHolder {
     }
 
     @Override
+    public boolean isEmpty() {
+        return this.getRenderedText().isEmpty();
+    }
+
+    @Override
     public boolean hasComponent() {
         return this.original.hasComponent();
     }

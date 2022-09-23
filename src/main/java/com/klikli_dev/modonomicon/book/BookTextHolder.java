@@ -62,6 +62,7 @@ public class BookTextHolder {
         return this.component != null;
     }
     public boolean isEmpty() {
+        //Note: BookTextHolder needs to override this, because string will always be null for it
         return (this.hasComponent() ? this.component.getString() : this.string).isEmpty();
     }
 
