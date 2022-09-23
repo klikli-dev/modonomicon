@@ -87,6 +87,9 @@ public class ModonimiconConstants {
             public static final String BUTTON_VISUALIZE = PREFIX + "button.visualize";
             public static final String BUTTON_VISUALIZE_TOOLTIP = PREFIX + "button.visualize.tooltip";
 
+            public static final String BUTTON_READ_ALL = PREFIX + "button.read_all";
+            public static final String BUTTON_READ_ALL_TOOLTIP = PREFIX + "button.read_all.tooltip";
+
             public static final String HOVER_BOOK_LINK = PREFIX + "hover.book_link";
             public static final String HOVER_BOOK_LINK_LOCKED = PREFIX + "hover.book_link_locked";
             public static final String HOVER_BOOK_LINK_LOCKED_INFO = PREFIX + "hover.book_link_locked_info";

@@ -85,6 +85,8 @@
   "modonomicon.gui.button.exit": "Exit",
   "modonomicon.gui.button.next_page": "Next Page",
   "modonomicon.gui.button.previous_page": "Previous Page",
+  "modonomicon.gui.button.read_all": "Mark all entries as read",
+  "modonomicon.gui.button.read_all.tooltip": "Mark all entries as read",
   "modonomicon.gui.button.visualize": "Show Multiblock Preview",
   "modonomicon.gui.button.visualize.tooltip": "Show Multiblock Preview",
   "modonomicon.gui.hover.book_link": "Go to: %s",
@@ -112,7 +114,7 @@
   "multiblocks.modonomicon.blockentity": "Blockentity Multiblock.",
   "test.test.test": "Book of Binding: Afrit (Bound)",
   "tooltip.modonomicon..condition.advancement": "Requires Advancement: %s",
-  "tooltip.modonomicon..condition.entry_read": "Requires read Entry: %s",
+  "tooltip.modonomicon..condition.entry_read": "Requires read Entry: %s\nHint: Mark all entries as read with the \"eye\" button at the top left.",
   "tooltip.modonomicon..condition.entry_unlocked": "Requires unlocked Entry: %s",
   "tooltip.modonomicon..recipe.crafting_shapeless": "Shapeless",
   "tooltip.modonomicon.no_book_found_for_stack": "No book found for this item in the modonomicon book database! Nbt: %s"

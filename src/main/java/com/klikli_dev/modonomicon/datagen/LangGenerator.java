@@ -58,7 +58,8 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(Gui.BUTTON_EXIT, "Exit");
             this.add(Gui.BUTTON_VISUALIZE, "Show Multiblock Preview");
             this.add(Gui.BUTTON_VISUALIZE_TOOLTIP, "Show Multiblock Preview");
-
+            this.add(Gui.BUTTON_READ_ALL, "Mark all entries as read");
+            this.add(Gui.BUTTON_READ_ALL_TOOLTIP, "Mark all entries as read");
 
             this.add(Gui.HOVER_BOOK_LINK, "Go to: %s");
             this.add(Gui.HOVER_BOOK_LINK_LOCKED, "%s.\n%s");
@@ -71,7 +72,7 @@ public abstract class LangGenerator extends LanguageProvider {
             //Tooltip
             this.add(Tooltips.CONDITION_ADVANCEMENT, "Requires Advancement: %s");
             this.add(Tooltips.CONDITION_ENTRY_UNLOCKED, "Requires unlocked Entry: %s");
-            this.add(Tooltips.CONDITION_ENTRY_READ, "Requires read Entry: %s");
+            this.add(Tooltips.CONDITION_ENTRY_READ, "Requires read Entry: %s\nHint: Mark all entries as read with the \"eye\" button at the top left.");
             this.add(Tooltips.ITEM_NO_BOOK_FOUND_FOR_STACK, "No book found for this item in the modonomicon book database! Nbt: %s");
             this.add(Tooltips.RECIPE_CRAFTING_SHAPELESS, "Shapeless");
 
