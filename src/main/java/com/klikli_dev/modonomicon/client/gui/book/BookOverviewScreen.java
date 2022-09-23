@@ -13,8 +13,11 @@ import com.klikli_dev.modonomicon.capability.BookStateCapability;
 import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryButton;
+import com.klikli_dev.modonomicon.client.gui.book.button.ReadAllButton;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.network.Networking;
+import com.klikli_dev.modonomicon.network.messages.BookEntryReadMessage;
+import com.klikli_dev.modonomicon.network.messages.ClickReadAllButtonMessage;
 import com.klikli_dev.modonomicon.network.messages.SaveBookStateMessage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -41,6 +44,8 @@ public class BookOverviewScreen extends Screen {
     private final int frameThicknessH = 14;
     private int currentCategory = 0;
 
+    private boolean hasUnreadEntries;
+
     public BookOverviewScreen(Book book) {
         super(Component.literal(""));
 
@@ -58,6 +63,14 @@ public class BookOverviewScreen extends Screen {
 
     public void onDisplay(){
         this.loadBookState();
+
+        for(var entry : book.getEntries().values()){
+            if(!BookUnlockCapability.isReadFor(this.minecraft.player, entry)){
+                this.hasUnreadEntries = true;
+               // break;
+            }
+        }
+        this.hasUnreadEntries = book.getEntries().values().stream().anyMatch(e -> !BookUnlockCapability.isReadFor(this.minecraft.player, e));
 
         var currentScreen = this.categoryScreens.get(this.currentCategory);
         currentScreen.onDisplay();
@@ -194,6 +207,21 @@ public class BookOverviewScreen extends Screen {
         this.renderTooltip(pPoseStack, Component.translatable(button.getCategory().getName()), pMouseX, pMouseY);
     }
 
+    protected void onReadAllButtonClick(ReadAllButton button){
+        if(this.hasUnreadEntries){
+            Networking.sendToServer(new ClickReadAllButtonMessage(this.book.getId()));
+            this.hasUnreadEntries = false;
+        }
+    }
+
+    protected void onReadAllButtonTooltip(ReadAllButton button, PoseStack poseStack, int mouseX, int mouseY){
+        this.renderTooltip(poseStack, button.getTooltip(), mouseX, mouseY);
+    }
+
+    protected boolean canSeeReadAllButton() {
+        return this.hasUnreadEntries;
+    }
+
     private void loadBookState() {
         var state = BookStateCapability.getBookStateFor(this.minecraft.player, this.book);
         if (state != null) {
@@ -281,6 +309,17 @@ public class BookOverviewScreen extends Screen {
 
             this.addRenderableWidget(button);
         }
+
+
+        int readAllButtonX = this.getFrameWidth() + this.getFrameThicknessW() + ReadAllButton.WIDTH / 2 - 3; //(this.width - this.getFrameWidth()); // / 2 - this.getFrameThicknessW() + buttonXOffset;
+        int readAllButtonY = (this.height - this.getFrameHeight()) / 2 + ReadAllButton.HEIGHT / 2;
+
+        var readAllButton = new ReadAllButton(this, readAllButtonX, readAllButtonY,
+                this::canSeeReadAllButton,
+                (b) -> this.onReadAllButtonClick((ReadAllButton) b),
+                (b, stack, x, y) -> this.onReadAllButtonTooltip((ReadAllButton) b, stack, x, y));
+
+        this.addRenderableWidget(readAllButton);
     }
 
     @Override

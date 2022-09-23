@@ -332,7 +332,7 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
             entries.forEach(entryId -> {
                 var entryCompound = new CompoundTag();
                 entryCompound.putString("entry_id", entryId.toString());
-                readEntriesByBook.add(entryCompound);
+                readEntriesList.add(entryCompound);
             });
 
             readEntriesByBook.add(bookCompound);

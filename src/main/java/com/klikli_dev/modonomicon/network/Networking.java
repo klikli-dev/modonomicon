@@ -98,6 +98,12 @@ public class Networking {
                 SaveBookStateMessage::encode,
                 SaveBookStateMessage::new,
                 MessageHandler::handle);
+
+        INSTANCE.registerMessage(nextID(),
+                ClickReadAllButtonMessage.class,
+                ClickReadAllButtonMessage::encode,
+                ClickReadAllButtonMessage::new,
+                MessageHandler::handle);
     }
 
     public static <T> void sendToSplit(ServerPlayer player, T message) {
