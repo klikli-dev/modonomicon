@@ -415,7 +415,11 @@ public class BookContentScreen extends Screen {
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         this.resetTooltip();
 
+        //we need to modify blit offset to not draw over toasts
+        var blitOffset = this.getBlitOffset();
+        this.setBlitOffset(-1300); //magic number arrived by testing until toasts show, but BookOverviewScreen does not
         this.renderBackground(pPoseStack);
+        this.setBlitOffset(blitOffset);
 
         pPoseStack.pushPose();
         pPoseStack.translate(this.bookLeft, this.bookTop, 0);
