@@ -37,7 +37,7 @@ public class BookImagePageRenderer extends BookPageRenderer<BookImagePage> imple
     public void onBeginDisplayPage(BookContentScreen parentScreen, int left, int top) {
         super.onBeginDisplayPage(parentScreen, left, top);
 
-        int x = 90;
+        int x = 94;
         int y = 101;
 
         this.addButton(new SmallArrowButton(parentScreen, x, y, true, () -> this.index > 0, this::handleButtonArrow));
