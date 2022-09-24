@@ -67,4 +67,4 @@ See [Entries](./entries) for details.
 ![Pages](/img/docs/basics/structure/pages.png)
 
 Pages are placed inside entries and represent the actual content of the book. They can be used to display text, images, recipes and more.   
-See [Page Types](../page-types/page-types) for details.
+See [Page Types](../page-types) for details.

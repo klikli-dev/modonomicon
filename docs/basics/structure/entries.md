@@ -66,7 +66,7 @@ Default value: `0`. Use this to select a different entry background from the `en
 * **condition** (Condition, _optional_)
 
 Entries, like Categories, can be hidden until an Unlock Condition is fulfilled. Conditions are JSON objects.  
-See [Unlock Conditions](../unlock-conditions/unlock-conditions) for details.
+See [Unlock Conditions](../unlock-conditions) for details.
 
 * **parents** (Parent[], _optional_)
 

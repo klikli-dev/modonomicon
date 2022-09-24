@@ -71,7 +71,7 @@ JSON does not support hex values, so you need to convert them to decimal. For ex
 * **auto_add_read_conditions** (Boolean, _optional_)
 
 Default value: `false`. If true, the book will automatically generate an "Entry Read Condition" for each entry in the book. This means that the entry will only be visible if the parent entry has been read. This is useful if you want to make sure that the player reads the book in order.   
-See also [Unlock Conditions](../unlock-conditions/unlock-conditions) for details on Conditions and manually adding Conditions.
+See also [Unlock Conditions](../unlock-conditions) for details on Conditions and manually adding Conditions.
 
 * **book_overview_texture** (ResourceLocation, _optional_)
 
