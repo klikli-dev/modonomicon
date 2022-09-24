@@ -31,7 +31,7 @@ Category "Bookmark"-Buttos on the left side of the Book will be sorted by this n
 * **condition** (Condition, _optional_)
 
 Categories, like Entries, can be hidden until an Unlock Condition is fulfilled. Conditions are JSON objects.  
-See [Unlock Conditions](../unlock-conditions) for details.
+See **[Unlock Conditions](../unlock-conditions)** for details.
 
 * **background** (ResourceLocation, _optional_)
 
