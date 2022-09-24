@@ -82,7 +82,7 @@ public class Book {
         var model = new ResourceLocation(GsonHelper.getAsString(json, "model", Data.Book.DEFAULT_MODEL));
         var generateBookItem = GsonHelper.getAsBoolean(json, "generate_book_item", true);
         var customBookItem = json.has("custom_book_item") ?
-                new ResourceLocation(GsonHelper.getAsString(json, "custom_book_item", Data.Book.DEFAULT_OVERVIEW_TEXTURE)) :
+                new ResourceLocation(GsonHelper.getAsString(json, "custom_book_item")) :
                 null;
         var creativeTab = GsonHelper.getAsString(json, "creative_tab", "misc");
         var bookOverviewTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_overview_texture", Data.Book.DEFAULT_OVERVIEW_TEXTURE));
