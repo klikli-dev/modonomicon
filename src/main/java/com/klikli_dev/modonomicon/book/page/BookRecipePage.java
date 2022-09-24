@@ -184,8 +184,6 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
                             .withColor(this.getParentEntry().getCategory().getBook().getDefaultTitleColor())));
         }
 
-        //TODO: prerender should be client side only!
-
         if (!this.text.hasComponent()) {
             this.text = new RenderedBookTextHolder(this.text, textRenderer.render(this.text.getString()));
         }
