@@ -3,6 +3,37 @@ sidebar_position: 20
 title: Formatting
 ---
 
+## General
+
+### Bold 
+
+Format: `**bold**`
+
+### Italics 
+
+Format: `*italics*` or `_italics_`
+
+### Underline
+
+Format: `++underline++`
+
+### Strikethrough
+
+Format: `~~stricken through~~`
+
+### Newline
+
+Newlines work like in markdown, meaning a linebreak only renders as newline if it is preceded by three spaces.
+
+A linebreak can be forced with two slashes: `//`
+
+
+:::tip
+
+If using Java Text Blocks to datagen texts java actually trims spaces at the end of lines so you need to use forced line breaks!
+
+:::
+
 ## Links 
 
 Markdown links use the following syntax: `[text](url)`.
@@ -28,7 +59,7 @@ Format: `[display text](book://<book-id>/<category-id>)`.
 
 * **Entry Link**
 
-Opens an entry (in the same book, or in another book), optionally at a given page number / page anchor.
+Opens an entry (in the same book, or in another book), optionally at either a given page number or page anchor.
 Format: `[display text](book://<book-id>/<entry-id>[#page-number][@page-anchor])`.
 
 *Note*: The entry id is the full path of the entry within the `/entries/` folder, that often includes the category id, if it is used as a subdirectory, e.g. for `/entries/my-category/my-entry` the entry id is `my-category/my-entry`.
