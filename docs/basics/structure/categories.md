@@ -28,6 +28,11 @@ To use a texture make sure the ResourceLocation includes the file endinge `.png`
 Defaults to `-1`.   
 Category "Bookmark"-Buttos on the left side of the Book will be sorted by this number.
 
+* **condition** (Condition, _optional_)
+
+Categories, like Entries, can be hidden until an Unlock Condition is fulfilled. Conditions are JSON objects.  
+See [Unlock Conditions](../unlock-conditions/unlock-conditions) for details.
+
 * **background** (ResourceLocation, _optional_)
 
 Defaults to `modonomicon:textures/gui/dark_slate_seamless.png`.   

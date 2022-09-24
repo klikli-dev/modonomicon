@@ -1,7 +1,8 @@
 ---
 sidebar_position: 20
-title: Page Types
 ---
+
+# Page Types
 
 ## Common Attributes
 
