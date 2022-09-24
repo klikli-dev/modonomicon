@@ -8,8 +8,7 @@ sidebar_position: 20
 
 **Page type:** `modonomicon:text`
 
-The simplest page type, displays markdown text, optionally with a title and 
-<!-- TODO: Describe text page -->
+The simplest page type, displays markdown text, optionally with a title.
 
 ## Attributes
 
