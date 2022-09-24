@@ -14,15 +14,14 @@ Displays an Ingredient and optionally a title and text.
 
 * **title** (DescriptionId or Component JSON, _optional_)
 
-The page title. Will not parse markdown, instead it uses the default title color as defined in the `book.json`.   
+The page title. Will not parse markdown, instead it uses the default title color as defined in the `book.json`.     
+See [Book.json](../structure/book) for details.
 
 :::tip
 
 If ommited, the ingredients name will be used. If the ingredient is not an item, the first matching item's name will be used.
 
 :::
-
-<!-- TODO: link to book settings here -->
 
 * **item** (Ingredient, _mandatory_)
 

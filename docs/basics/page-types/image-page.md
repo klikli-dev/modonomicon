@@ -14,12 +14,13 @@ Displays an image and optionally a title and text.
 
 * **title** (DescriptionId or Component JSON, _optional_)
 
-The page title. Will not parse markdown, instead it uses the default title color as defined in the `book.json`.
-<!-- TODO: link to book settings here -->
+The page title. Will not parse markdown, instead it uses the default title color as defined in the `book.json`.   
+See [Book.json](../structure/book) for details.
 
 * **images** (ResourceLocation[], _mandatory_)
 
-Array of ResourceLocations of the images to display.
+Array of ResourceLocations of the textures to display.   
+The files should be 256px by 256px. The upper 200px by 200px will be rendered. 
 
 * **text** (DescriptionId or Component JSON, _optional_)
 

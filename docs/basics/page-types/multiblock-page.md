@@ -14,8 +14,8 @@ Displays a multiblock, optionally the multiblock's name and a text.
 
 * **multiblock_name** (DescriptionId or Component JSON, _optional_)
 
-The multiblock name. Will not parse markdown, instead it uses the default title color as defined in the `book.json`.
-<!-- TODO: link to book settings here -->
+The multiblock name. Will not parse markdown, instead it uses the default title color as defined in the `book.json`.   
+See [Book.json](../structure/book) for details.
 
 * **multiblock_id** (ResourceLocation, _mandatory_)
 

@@ -29,6 +29,7 @@ Each page type only supports recipes of the matching recipe type. If you want to
 * **title1** (DescriptionId or Component JSON, _optional_)
 
 The title for the first recipe. Will not parse markdown, instead it uses the default title color as defined in the `book.json`.   
+See [Book.json](../structure/book) for details.
 
 :::tip
 
@@ -36,7 +37,6 @@ If ommited, the recipe output's name will be used.
 
 :::
 
-<!-- TODO: link to book settings here -->
 
 * **recipe_id_1** (ResourceLocation, _mandatory_)
 
@@ -45,6 +45,7 @@ The ResourceLocation of the first recipe to display. Make sure to match the reci
 * **title2** (DescriptionId or Component JSON, _optional_)
 
 The title for the second recipe. Will not parse markdown, instead it uses the default title color as defined in the `book.json`.   
+See [Book.json](../structure/book) for details.
 
 :::tip
 
@@ -52,7 +53,6 @@ If ommited, the recipe output's name will be used.
 
 :::
 
-<!-- TODO: link to book settings here -->
 
 * **recipe_id_2** (ResourceLocation, _optional_)
 

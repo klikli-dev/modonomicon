@@ -1,10 +1,9 @@
 ---
-sidebar_position: 10
+sidebar_position: 20
 title: Page Types
 ---
 
 ## Common Attributes
-<!-- TODO: Attributes shared by all pages -->
 
 The following attributes are available for all page types
 
@@ -19,12 +18,12 @@ A string to uniquely identify the page within the entry it belongs to. Allows to
 
 ### A note on texts
 
-See also [Localization](../advanced/localization).
+See also [Localization](../../advanced/localization).
 
 Whenever a page supports texts there are two options: 
 
 - **supply a DescriptionId** (= Translation Key) with corresponding value in the `/lang/*.json` file.  
-  In most cases that value can contain markdown styling instructions.
+  In many cases that value can contain markdown styling instructions.
 - supply a vanilla component JSON (not recommended). This can contain untranslated texts and will **not** support markdown styling.
 
 :::tip

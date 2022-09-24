@@ -14,14 +14,14 @@ Displays an Entity and optionally a custom name and text.
 
 * **name** (DescriptionId or Component JSON, _optional_)
 
-The entity name. Will not parse markdown, instead it uses the default title color as defined in the `book.json`.   
+The entity name. Will not parse markdown, instead it uses the default title color as defined in the `book.json`.    
+See [Book.json](../structure/book) for details.
 
 :::tip
 
 If ommited, the entity's default name will be used.
 
 :::
-<!-- TODO: link to book settings here -->
 
 * **entity_id** (ResourceLocation, _mandatory_)
 

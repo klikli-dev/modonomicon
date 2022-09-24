@@ -1,7 +1,8 @@
 ---
-sidebar_position: 20
-title: Formatting
+sidebar_position: 30
 ---
+
+# Formatting
 
 ## General
 
