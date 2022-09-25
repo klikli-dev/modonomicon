@@ -4,22 +4,22 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.datagen.book.page;
+package com.klikli_dev.modonomicon.api.datagen.book.page;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Page;
-import com.klikli_dev.modonomicon.datagen.book.BookTextHolderModel;
+import com.klikli_dev.modonomicon.api.datagen.book.BookTextHolderModel;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 
-public class BookSpotlightPageModel extends BookPageModel {
-    protected Ingredient item = Ingredient.EMPTY;
+public class BookTextPageModel extends BookPageModel {
     protected BookTextHolderModel title = new BookTextHolderModel("");
+    protected boolean useMarkdownInTitle = false;
+    protected boolean showTitleSeparator = true;
     protected BookTextHolderModel text = new BookTextHolderModel("");
 
-    protected BookSpotlightPageModel(@NotNull String anchor) {
-        super(Page.SPOTLIGHT, anchor);
+    protected BookTextPageModel(@NotNull String anchor) {
+        super(Page.TEXT, anchor);
     }
 
     public static Builder builder() {
@@ -30,8 +30,12 @@ public class BookSpotlightPageModel extends BookPageModel {
         return this.title;
     }
 
-    public Ingredient getItem() {
-        return this.item;
+    public boolean useMarkdownInTitle() {
+        return this.useMarkdownInTitle;
+    }
+
+    public boolean showTitleSeparator() {
+        return this.showTitleSeparator;
     }
 
     public BookTextHolderModel getText() {
@@ -42,7 +46,8 @@ public class BookSpotlightPageModel extends BookPageModel {
     public JsonObject toJson() {
         var json = super.toJson();
         json.add("title", this.title.toJson());
-        json.add("item", this.item.toJson());
+        json.addProperty("use_markdown_in_title", this.useMarkdownInTitle);
+        json.addProperty("show_title_separator", this.showTitleSeparator);
         json.add("text", this.text.toJson());
         return json;
     }
@@ -51,7 +56,8 @@ public class BookSpotlightPageModel extends BookPageModel {
     public static final class Builder {
         protected String anchor = "";
         protected BookTextHolderModel title = new BookTextHolderModel("");
-        protected Ingredient item = Ingredient.EMPTY;
+        protected boolean useMarkdownInTitle = false;
+        protected boolean showTitleSeparator = true;
         protected BookTextHolderModel text = new BookTextHolderModel("");
 
         private Builder() {
@@ -77,8 +83,13 @@ public class BookSpotlightPageModel extends BookPageModel {
             return this;
         }
 
-        public Builder withItem(Ingredient item) {
-            this.item = item;
+        public Builder withUseMarkdownInTitle(boolean useMarkdownInTitle) {
+            this.useMarkdownInTitle = useMarkdownInTitle;
+            return this;
+        }
+
+        public Builder withShowTitleSeparator(boolean showTitleSeparator) {
+            this.showTitleSeparator = showTitleSeparator;
             return this;
         }
 
@@ -92,12 +103,13 @@ public class BookSpotlightPageModel extends BookPageModel {
             return this;
         }
 
-        public BookSpotlightPageModel build() {
-            BookSpotlightPageModel model = new BookSpotlightPageModel(this.anchor);
-            model.item = this.item;
-            model.title = this.title;
-            model.text = this.text;
-            return model;
+        public BookTextPageModel build() {
+            BookTextPageModel bookTextPageModel = new BookTextPageModel(this.anchor);
+            bookTextPageModel.showTitleSeparator = this.showTitleSeparator;
+            bookTextPageModel.useMarkdownInTitle = this.useMarkdownInTitle;
+            bookTextPageModel.title = this.title;
+            bookTextPageModel.text = this.text;
+            return bookTextPageModel;
         }
     }
 }

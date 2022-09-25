@@ -6,19 +6,18 @@
  *
  */
 
-package com.klikli_dev.modonomicon.datagen.book.condition;
+package com.klikli_dev.modonomicon.api.datagen.book.condition;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Condition;
-import com.klikli_dev.modonomicon.datagen.book.condition.BookEntryReadCondition.Builder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class BookEntryUnlockedCondition extends BookConditionModel {
+public class BookEntryReadCondition extends BookConditionModel {
     protected String entryId;
 
-    protected BookEntryUnlockedCondition(String entryId, Component tooltip, String tooltipString) {
-        super(Condition.ENTRY_UNLOCKED, tooltip, tooltipString);
+    protected BookEntryReadCondition(String entryId, Component tooltip, String tooltipString) {
+        super(Condition.ENTRY_READ, tooltip, tooltipString);
         this.entryId = entryId;
     }
 
@@ -69,8 +68,8 @@ public class BookEntryUnlockedCondition extends BookConditionModel {
         }
 
 
-        public BookEntryUnlockedCondition build() {
-            BookEntryUnlockedCondition model = new BookEntryUnlockedCondition(this.entryId, this.tooltip, this.tooltipString);
+        public BookEntryReadCondition build() {
+            BookEntryReadCondition model = new BookEntryReadCondition(this.entryId, this.tooltip, this.tooltipString);
             return model;
         }
     }

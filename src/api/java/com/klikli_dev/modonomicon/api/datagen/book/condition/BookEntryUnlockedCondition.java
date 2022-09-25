@@ -6,18 +6,19 @@
  *
  */
 
-package com.klikli_dev.modonomicon.datagen.book.condition;
+package com.klikli_dev.modonomicon.api.datagen.book.condition;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Condition;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
-public class BookAdvancementConditionModel extends BookConditionModel {
-    protected String advancementId;
+public class BookEntryUnlockedCondition extends BookConditionModel {
+    protected String entryId;
 
-    protected BookAdvancementConditionModel(String advancementId, Component tooltip, String tooltipString) {
-        super(Condition.ADVANCEMENT, tooltip, tooltipString);
-        this.advancementId = advancementId;
+    protected BookEntryUnlockedCondition(String entryId, Component tooltip, String tooltipString) {
+        super(Condition.ENTRY_UNLOCKED, tooltip, tooltipString);
+        this.entryId = entryId;
     }
 
     public static Builder builder() {
@@ -27,12 +28,12 @@ public class BookAdvancementConditionModel extends BookConditionModel {
     @Override
     public JsonObject toJson() {
         var json = super.toJson();
-        json.addProperty("advancement_id", this.advancementId);
+        json.addProperty("entry_id", this.entryId);
         return json;
     }
 
     public static final class Builder {
-        protected String advancementId;
+        protected String entryId;
         protected Component tooltip;
         protected String tooltipString;
 
@@ -43,8 +44,13 @@ public class BookAdvancementConditionModel extends BookConditionModel {
             return new Builder();
         }
 
-        public Builder withAdvancementId(String advancementId) {
-            this.advancementId = advancementId;
+        public Builder withEntry(ResourceLocation entryId) {
+            this.entryId = entryId.toString();
+            return this;
+        }
+
+        public Builder withEntry(String entryId) {
+            this.entryId = entryId;
             return this;
         }
 
@@ -62,8 +68,8 @@ public class BookAdvancementConditionModel extends BookConditionModel {
         }
 
 
-        public BookAdvancementConditionModel build() {
-            BookAdvancementConditionModel model = new BookAdvancementConditionModel(this.advancementId, this.tooltip, this.tooltipString);
+        public BookEntryUnlockedCondition build() {
+            BookEntryUnlockedCondition model = new BookEntryUnlockedCondition(this.entryId, this.tooltip, this.tooltipString);
             return model;
         }
     }

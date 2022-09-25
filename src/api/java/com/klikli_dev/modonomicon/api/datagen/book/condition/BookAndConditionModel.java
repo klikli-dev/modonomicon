@@ -6,7 +6,7 @@
  *
  */
 
-package com.klikli_dev.modonomicon.datagen.book.condition;
+package com.klikli_dev.modonomicon.api.datagen.book.condition;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

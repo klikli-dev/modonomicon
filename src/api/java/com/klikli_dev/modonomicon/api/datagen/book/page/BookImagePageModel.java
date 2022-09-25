@@ -4,15 +4,14 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.datagen.book.page;
+package com.klikli_dev.modonomicon.api.datagen.book.page;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Page;
-import com.klikli_dev.modonomicon.datagen.book.BookTextHolderModel;
+import com.klikli_dev.modonomicon.api.datagen.book.BookTextHolderModel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 
 public class BookImagePageModel extends BookPageModel {

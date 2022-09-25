@@ -4,13 +4,12 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.datagen.book;
+package com.klikli_dev.modonomicon.api.datagen.book;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.datagen.book.BookCategoryModel.Builder;
-import com.klikli_dev.modonomicon.datagen.book.condition.BookConditionModel;
-import com.klikli_dev.modonomicon.datagen.book.page.BookPageModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec2;
 
