@@ -1,24 +1,22 @@
 /*
+ * SPDX-FileCopyrightText: 2022 klikli-dev
  *
- *  * SPDX-FileCopyrightText: 2022 klikli-dev
- *  *
- *  * SPDX-License-Identifier: MIT
- *
+ * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.datagen.book.condition;
+package com.klikli_dev.modonomicon.api.datagen.book.condition;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Condition;
 import net.minecraft.network.chat.Component;
 
-public class BookAndConditionModel extends BookConditionModel {
+public class BookOrConditionModel extends BookConditionModel {
 
     protected BookConditionModel[] children;
 
-    protected BookAndConditionModel(BookConditionModel[] children, Component tooltip, String tooltipString) {
-        super(Condition.AND, tooltip, tooltipString);
+    protected BookOrConditionModel(BookConditionModel[] children, Component tooltip, String tooltipString) {
+        super(Condition.OR, tooltip, tooltipString);
         this.children = children;
     }
 
@@ -67,8 +65,8 @@ public class BookAndConditionModel extends BookConditionModel {
             return this;
         }
 
-        public BookAndConditionModel build() {
-            BookAndConditionModel model = new BookAndConditionModel(this.children, this.tooltip, this.tooltipString);
+        public BookOrConditionModel build() {
+            BookOrConditionModel model = new BookOrConditionModel(this.children, this.tooltip, this.tooltipString);
             return model;
         }
     }

@@ -4,25 +4,22 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.datagen.book.page;
+package com.klikli_dev.modonomicon.api.datagen.book.page;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Page;
-import com.klikli_dev.modonomicon.datagen.book.BookTextHolderModel;
+import com.klikli_dev.modonomicon.api.datagen.book.BookTextHolderModel;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class BookImagePageModel extends BookPageModel {
+public class BookTextPageModel extends BookPageModel {
     protected BookTextHolderModel title = new BookTextHolderModel("");
+    protected boolean useMarkdownInTitle = false;
+    protected boolean showTitleSeparator = true;
     protected BookTextHolderModel text = new BookTextHolderModel("");
 
-    protected ResourceLocation[] images = new ResourceLocation[0];
-    protected boolean border = true;
-
-    protected BookImagePageModel(@NotNull String anchor) {
-        super(Page.IMAGE, anchor);
+    protected BookTextPageModel(@NotNull String anchor) {
+        super(Page.TEXT, anchor);
     }
 
     public static Builder builder() {
@@ -33,12 +30,12 @@ public class BookImagePageModel extends BookPageModel {
         return this.title;
     }
 
-    public ResourceLocation[] getImages() {
-        return this.images;
+    public boolean useMarkdownInTitle() {
+        return this.useMarkdownInTitle;
     }
 
-    public boolean isBorder() {
-        return this.border;
+    public boolean showTitleSeparator() {
+        return this.showTitleSeparator;
     }
 
     public BookTextHolderModel getText() {
@@ -49,15 +46,9 @@ public class BookImagePageModel extends BookPageModel {
     public JsonObject toJson() {
         var json = super.toJson();
         json.add("title", this.title.toJson());
+        json.addProperty("use_markdown_in_title", this.useMarkdownInTitle);
+        json.addProperty("show_title_separator", this.showTitleSeparator);
         json.add("text", this.text.toJson());
-        json.addProperty("border", this.border);
-
-        var imagesArray = new JsonArray();
-        for (int i = 0; i < this.images.length; i++) {
-            imagesArray.add(this.images[i].toString());
-        }
-        json.add("images", imagesArray);
-
         return json;
     }
 
@@ -65,9 +56,9 @@ public class BookImagePageModel extends BookPageModel {
     public static final class Builder {
         protected String anchor = "";
         protected BookTextHolderModel title = new BookTextHolderModel("");
+        protected boolean useMarkdownInTitle = false;
+        protected boolean showTitleSeparator = true;
         protected BookTextHolderModel text = new BookTextHolderModel("");
-        protected ResourceLocation[] images = new ResourceLocation[0];
-        protected boolean border = true;
 
         private Builder() {
         }
@@ -92,13 +83,13 @@ public class BookImagePageModel extends BookPageModel {
             return this;
         }
 
-        public Builder withBorder(boolean border) {
-            this.border = border;
+        public Builder withUseMarkdownInTitle(boolean useMarkdownInTitle) {
+            this.useMarkdownInTitle = useMarkdownInTitle;
             return this;
         }
 
-        public Builder withImages(ResourceLocation... images) {
-            this.images = images;
+        public Builder withShowTitleSeparator(boolean showTitleSeparator) {
+            this.showTitleSeparator = showTitleSeparator;
             return this;
         }
 
@@ -112,13 +103,13 @@ public class BookImagePageModel extends BookPageModel {
             return this;
         }
 
-        public BookImagePageModel build() {
-            BookImagePageModel model = new BookImagePageModel(this.anchor);
-            model.title = this.title;
-            model.text = this.text;
-            model.images = this.images;
-            model.border = this.border;
-            return model;
+        public BookTextPageModel build() {
+            BookTextPageModel bookTextPageModel = new BookTextPageModel(this.anchor);
+            bookTextPageModel.showTitleSeparator = this.showTitleSeparator;
+            bookTextPageModel.useMarkdownInTitle = this.useMarkdownInTitle;
+            bookTextPageModel.title = this.title;
+            bookTextPageModel.text = this.text;
+            return bookTextPageModel;
         }
     }
 }

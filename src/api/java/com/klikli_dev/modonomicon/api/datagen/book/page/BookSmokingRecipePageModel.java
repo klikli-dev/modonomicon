@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.datagen.book.page;
+package com.klikli_dev.modonomicon.api.datagen.book.page;
 
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Page;
 import org.jetbrains.annotations.NotNull;

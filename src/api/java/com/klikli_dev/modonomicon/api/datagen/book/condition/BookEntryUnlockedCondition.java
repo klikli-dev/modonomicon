@@ -1,25 +1,22 @@
 /*
+ * SPDX-FileCopyrightText: 2022 klikli-dev
  *
- *  * SPDX-FileCopyrightText: 2022 klikli-dev
- *  *
- *  * SPDX-License-Identifier: MIT
- *
+ * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.datagen.book.condition;
+package com.klikli_dev.modonomicon.api.datagen.book.condition;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Condition;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
-public class BookOrConditionModel extends BookConditionModel {
+public class BookEntryUnlockedCondition extends BookConditionModel {
+    protected String entryId;
 
-    protected BookConditionModel[] children;
-
-    protected BookOrConditionModel(BookConditionModel[] children, Component tooltip, String tooltipString) {
-        super(Condition.OR, tooltip, tooltipString);
-        this.children = children;
+    protected BookEntryUnlockedCondition(String entryId, Component tooltip, String tooltipString) {
+        super(Condition.ENTRY_UNLOCKED, tooltip, tooltipString);
+        this.entryId = entryId;
     }
 
     public static Builder builder() {
@@ -29,16 +26,12 @@ public class BookOrConditionModel extends BookConditionModel {
     @Override
     public JsonObject toJson() {
         var json = super.toJson();
-        var children = new JsonArray();
-        for (var child : this.children) {
-            children.add(child.toJson());
-        }
-        json.add("children", children);
+        json.addProperty("entry_id", this.entryId);
         return json;
     }
 
     public static final class Builder {
-        protected BookConditionModel[] children;
+        protected String entryId;
         protected Component tooltip;
         protected String tooltipString;
 
@@ -49,8 +42,13 @@ public class BookOrConditionModel extends BookConditionModel {
             return new Builder();
         }
 
-        public Builder withChildren(BookConditionModel... children) {
-            this.children = children;
+        public Builder withEntry(ResourceLocation entryId) {
+            this.entryId = entryId.toString();
+            return this;
+        }
+
+        public Builder withEntry(String entryId) {
+            this.entryId = entryId;
             return this;
         }
 
@@ -67,8 +65,9 @@ public class BookOrConditionModel extends BookConditionModel {
             return this;
         }
 
-        public BookOrConditionModel build() {
-            BookOrConditionModel model = new BookOrConditionModel(this.children, this.tooltip, this.tooltipString);
+
+        public BookEntryUnlockedCondition build() {
+            BookEntryUnlockedCondition model = new BookEntryUnlockedCondition(this.entryId, this.tooltip, this.tooltipString);
             return model;
         }
     }

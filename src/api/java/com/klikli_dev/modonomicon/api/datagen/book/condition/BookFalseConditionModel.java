@@ -1,19 +1,17 @@
 /*
+ * SPDX-FileCopyrightText: 2022 klikli-dev
  *
- *  * SPDX-FileCopyrightText: 2022 klikli-dev
- *  *
- *  * SPDX-License-Identifier: MIT
- *
+ * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.datagen.book.condition;
+package com.klikli_dev.modonomicon.api.datagen.book.condition;
 
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Condition;
 import net.minecraft.network.chat.Component;
 
-public class BookTrueConditionModel extends BookConditionModel {
-    protected BookTrueConditionModel(Component tooltip, String tooltipString) {
-        super(Condition.TRUE, tooltip, tooltipString);
+public class BookFalseConditionModel extends BookConditionModel {
+    protected BookFalseConditionModel(Component tooltip, String tooltipString) {
+        super(Condition.FALSE, tooltip, tooltipString);
     }
 
     public static Builder builder() {
@@ -45,8 +43,8 @@ public class BookTrueConditionModel extends BookConditionModel {
         }
 
 
-        public BookTrueConditionModel build() {
-            BookTrueConditionModel model = new BookTrueConditionModel(this.tooltip, this.tooltipString);
+        public BookFalseConditionModel build() {
+            BookFalseConditionModel model = new BookFalseConditionModel(this.tooltip, this.tooltipString);
             return model;
         }
     }

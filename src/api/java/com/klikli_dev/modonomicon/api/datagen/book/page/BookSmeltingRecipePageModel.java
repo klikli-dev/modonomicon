@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.datagen.book.page;
+package com.klikli_dev.modonomicon.api.datagen.book.page;
 
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Page;
 import org.jetbrains.annotations.NotNull;
 
-public class BookStonecuttingRecipePageModel extends BookRecipePageModel {
-    protected BookStonecuttingRecipePageModel(@NotNull String anchor) {
-        super(Page.STONECUTTING_RECIPE, anchor);
+public class BookSmeltingRecipePageModel extends BookRecipePageModel {
+    protected BookSmeltingRecipePageModel(@NotNull String anchor) {
+        super(Page.SMELTING_RECIPE, anchor);
     }
 
     public static Builder builder() {
@@ -23,8 +23,8 @@ public class BookStonecuttingRecipePageModel extends BookRecipePageModel {
             super();
         }
 
-        public BookStonecuttingRecipePageModel build() {
-            BookStonecuttingRecipePageModel model = new BookStonecuttingRecipePageModel(this.anchor);
+        public BookSmeltingRecipePageModel build() {
+            BookSmeltingRecipePageModel model = new BookSmeltingRecipePageModel(this.anchor);
             model.title1 = this.title1;
             model.recipeId1 = this.recipeId1;
             model.title2 = this.title2;
