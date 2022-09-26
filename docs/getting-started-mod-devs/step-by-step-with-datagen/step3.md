@@ -108,6 +108,7 @@ Let's see if that fixed our crash:
 5. Et voila: 
    ![Category](/img/docs/getting-started/step3-create-category.png)
 6. Success! No crash, but no content either. Not too bad, right?
+7. You will notice that when hovering over the category's button on the left side we again have a weird text instead of a nice category name - no worries, we'll fix that later!
 
 ## Our first Entry
 
@@ -154,6 +155,7 @@ Let's see if that fixed our crash:
     ```
 
 This will create an entry with a text page and a page that displays a multiblock. 
+Text and title properties can be skipped, then the page will simply not use them. Especially pages with content like multiblocks or recipes may not need a text, or are better off without a text because there is only very little space on the page, and you can always add additional text pages to explain things in more detail.
 
 :::info
 
@@ -170,10 +172,15 @@ Let's take a look at our entry!
 3. Re-join our old world.
 4. Right click with the book in hand.
 5. Find and click the entry in the book (you may have to zoom/pan to find it)
-6. 
+   ![Entry](/img/docs/getting-started/step3-create-entry.png)
+6. Still no nice texts, but we see a multiblock, so that's pretty good, right?
 
 ## Time for texts!
 
+Finally, it is time to fix our texts. That means we will now tell the game what texts to display for all the language keys (or "Description Ids"). To this end we will once again use our langHelper to make things easier, as it will help us keep track of the correct language keys so we just have to focus on the texts.
+
+1. Open `EnUsProvider.java`
+2. 
 
 
 <!-- TODO: Link to the final version of this step on github -->
