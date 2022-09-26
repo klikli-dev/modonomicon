@@ -12,3 +12,9 @@ Some of the most interesting features are:
   ![Quest View](/img/docs/intro/quest_view.png)
 - Easy styling of content with (extended) Markdown syntax.
 - Various page types to display text, recipes, images, items and more.
+
+:::tip
+
+If you run into any issues or have any questions, join our Discord: **https://invite.gg/klikli**
+
+:::
