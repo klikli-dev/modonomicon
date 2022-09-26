@@ -37,7 +37,7 @@ This is especially relevant if you want to extend Modonomicon content rendering 
 
 ### Use Case 1: I want to use datagen and convenience features to generate a Modonomicon Book
 
-In this case you need a compile time dependency against the Modonomicon API jar to access the Modonomicon Datamodel and datagen helpers. 
+In this case you need a compileOnly dependency against the Modonomicon API jar to access the Modonomicon Datamodel and datagen helpers. 
 Additionally a runtimeOnly dependency against the full Modonomicon jar is required to load Modonomicon in your dev environment.
 
 The `dependencies` section of your `build.gradle` should look like this:
@@ -45,7 +45,7 @@ The `dependencies` section of your `build.gradle` should look like this:
 `build.gradle`:
 ```groovy
 dependencies {
-    runtimeOnly fg.deobf("com.klikli_dev:modonomicon:${modonomicon_mc_version}-${modonomicon_version}:api")
+    compileOnly fg.deobf("com.klikli_dev:modonomicon:${modonomicon_mc_version}-${modonomicon_version}:api")
     runtimeOnly fg.deobf("com.klikli_dev:modonomicon:${modonomicon_mc_version}-${modonomicon_version}")
 }
 ```
