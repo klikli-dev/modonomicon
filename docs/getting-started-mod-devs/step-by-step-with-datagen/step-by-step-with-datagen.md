@@ -21,7 +21,7 @@ You can find the files at **https://github.com/klikli-dev/modonomicon-demo-book*
 ### For Mod Developers
 
 You can copy and paste code from the Demo Project into your own mod. 
-Please also see [Maven Dependencies](./maven-dependencies) for information on how to set up the Modonomicon dependency (alternatively, look into the `build.gradle` and `gradle.properties` files of the demo project).
+Please also see [Maven Dependencies](../maven-dependencies) for information on how to set up the Modonomicon dependency (alternatively, look into the `build.gradle` and `gradle.properties` files of the demo project).
 
 :::caution
 
