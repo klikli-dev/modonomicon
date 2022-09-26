@@ -24,7 +24,7 @@ public class DataGenerators {
 
         if(event.includeServer()){
             generator.addProvider(new AdvancementsGenerator(generator));
-            generator.addProvider(new BookGenerator(generator, Modonomicon.MODID));
+            generator.addProvider(new DemoBookProvider(generator, Modonomicon.MODID));
         }
 
     }
