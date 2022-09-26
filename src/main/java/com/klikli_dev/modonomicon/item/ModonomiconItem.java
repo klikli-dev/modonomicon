@@ -72,7 +72,11 @@ public class ModonomiconItem extends Item {
                     cmp.putString(Nbt.ITEM_BOOK_ID_TAG, b.getId().toString());
                     stack.setTag(cmp);
 
-                    items.add(stack);
+                    if(items.stream().noneMatch(s -> s.hasTag()
+                            && s.getTag().contains(Nbt.ITEM_BOOK_ID_TAG)
+                            && s.getTag().getString(Nbt.ITEM_BOOK_ID_TAG).equals(b.getId().toString()))){
+                        items.add(stack);
+                    }
                 }
             }
         });
