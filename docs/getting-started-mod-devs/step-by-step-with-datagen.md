@@ -259,7 +259,7 @@ Now it is time to add code to generate our book, a first category and an entry w
 
     This will create a new book with the id "demo" (the code for that follows in the next step) and add it to the list of books to be generated.
 
-3. Now we add the method we're calling above to the bottom of the file:
+3. Now we add the method we're calling above to the bottom of the file, before the last `}`:
     ```java
     private BookModel makeDemoBook(String bookName) {
         //The lang helper keeps track of the "DescriptionIds", that is, the language keys for translations, for us
@@ -295,6 +295,57 @@ Congratulations! This will generate a book for us. Let's test how that works!
 9. Crash! That's ok - if we do not add any categories the book does not know what to display. Let's fix that!
 
 ### Our first Category
+
+1. Open `DemoBookProvider.java`
+2. Add the following code to the bottom of the file, before the last `}`:
+    ```java
+    private BookCategoryModel makeFeaturesCategory(BookLangHelper helper, String categoryName) {
+        helper.category(categoryName); //tell our lang helper the category we are in
+
+        //the entry helper is the second helper for book datagen
+        //it allows us to place entries in the category without manually defining the coordinates.
+        //each letter can be used to represent an entry
+        var entryHelper = ModonomiconAPI.get().getEntryLocationHelper();
+        entryHelper.setMap(
+                "_____________________",
+                "__m______________d___",
+                "__________r__________",
+                "__c__________________",
+                "__________2___3___i__",
+                "__s_____e____________"
+        );
+
+        return BookCategoryModel.builder()
+                .withId(this.modLoc(categoryName)) //the id of the book. modLoc() prepends the mod id.
+                .withName(helper.categoryName()) //the name of the category. The lang helper gives us the correct translation key.
+                .withIcon("minecraft:nether_star") //the icon for the category. In this case we simply use an existing item.
+                .build();
+    }
+    ```
+3. Now we need to add our category to the book. In `makeDemoBook` add:
+   1. below `helper.book(bookName);`:
+    ```java
+    var featuresCategory = this.makeFeaturesCategory(helper, "features");
+    ```  
+    1. below `.withCreativeTab("modonomicon")`:
+    ```java 
+    .withCategories(featuresCategory) 
+    ```
+
+This will create a category with the id "features" using a nether star as icon and add it to our book. See also **[Categories](../basics/structure/categories.md#attributes)** to learn more about the other attributes of a category, and how icons work.    
+
+We also already set up the entryHelper which gives us an idea where entries will be shown in the category in-game.
+
+
+Let's see if that fixed our crash:
+
+1. In the terminal, run `./gradlew runData` to generate the json file(s).
+2. After it is complete, run `./gradlew runClient` to start Minecraft.
+3. Re-join our old world.
+4. Right click with the book in hand.
+5. Et voila: 
+   ![Category](../../static/img/docs/getting-started/step3-create-category.png)
+6. Success! No crash, but no content either. Not too bad, right?
 
 ### Our first Entry
 
