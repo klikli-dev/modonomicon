@@ -1,6 +1,6 @@
-@rem SPDX-FileCopyrightText: 2022 klikli-dev
+@rem SPDX-FileCopyrightText: 2015 the original author or authors.
 @rem
-@rem SPDX-License-Identifier: MIT
+@rem SPDX-License-Identifier: Apache-2.0
 
 @rem
 @rem Copyright 2015 the original author or authors.
