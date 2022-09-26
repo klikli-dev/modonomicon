@@ -21,6 +21,6 @@ public class DataGenerators {
         generator.addProvider(event.includeClient(), new ItemModelsGenerator(generator, existingFileHelper));
 
         generator.addProvider(event.includeServer(), new AdvancementsGenerator(generator));
-        generator.addProvider(event.includeServer(), new BookGenerator(generator, Modonomicon.MODID));
+        generator.addProvider(event.includeServer(), new DemoBookProvider(generator, Modonomicon.MODID));
     }
 }
