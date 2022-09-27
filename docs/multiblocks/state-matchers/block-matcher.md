@@ -39,7 +39,7 @@ Block matchers will ignore the BlockState and check only if the placed block fit
 }
 ```
 
-**Example 3:** Matching any chest, but displaying a west-facing chest
+**Example 2:** Matching any chest, but displaying a west-facing chest
 
 ```json
 {
