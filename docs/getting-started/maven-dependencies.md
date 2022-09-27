@@ -6,6 +6,12 @@ sidebar_position: 30
 
 To use modonomicon you need to set up your `build.gradle` file (and `gradle.properties`, if you want to store versions in variables) to include modonomicon as dependency.
 
+:::tip 
+
+If you followed the **[Step by Step with Datagen](./step-by-step-with-datagen/)** guide you already have this set up. This section is only if you want to add modonomicon to an existing project. 
+
+::: 
+
 ## Repository 
 
 First, add the Modonomicon Maven repository to your `build.gradle` file in the `repositories` section:
