@@ -6,6 +6,9 @@ sidebar_position: 30
 # Step 3: Creating the Book
 
 Now it is time to add code to generate our book, a first category and an entry with a page.
+We will focus on the structure and layout of the book in this step, and add the texts in the next step.
+
+If you are impatient you can skip ahead to **[Results](#results)** to see what we will be creating.
 
 ## Our first Book
 
@@ -175,12 +178,14 @@ Let's take a look at our entry!
    ![Entry](/img/docs/getting-started/step3-create-entry.png)
 6. Still no nice texts, but we see a multiblock, so that's pretty good, right?
 
-## Time for texts!
+## Results
 
-Finally, it is time to fix our texts. That means we will now tell the game what texts to display for all the language keys (or "Description Ids"). To this end we will once again use our langHelper to make things easier, as it will help us keep track of the correct language keys so we just have to focus on the texts.
+You can view the final code for this step in the branch for step 3: https://github.com/klikli-dev/modonomicon-demo-book/tree/guide/step3 
 
-1. Open `EnUsProvider.java`
-2. 
+Using the green "Code" Button and "Download ZIP" you can download the code for this step as a zip file to compare to your code.
 
+:::info
 
-<!-- TODO: Link to the final version of this step on github -->
+There is no branch for step 2, because that was only reviewing the files you downloaded in step 1!
+
+::: 
