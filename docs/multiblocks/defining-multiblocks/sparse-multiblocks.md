@@ -17,7 +17,7 @@ In almost all scenarios Dense Multiblocks are the best choice. Only if you have 
 ## Pattern 
 
 Sparse multiblocks are defined as key-value pairs in the `pattern` field of the multiblock definition JSON file, similar to how `mappings` are defined.
-The key is the character corresponding to the `mappings` entry, and the value is a set of 3D coordinates representing the location of the block in the multiblock, relative to the center of the multiblock (which is represented by [`0`](./defining-multiblocks#multiblock-center-0)).
+The key is the character corresponding to the `mappings` entry, and the value is a set of 3D coordinates representing the location of the block in the multiblock, relative to the center of the multiblock (which is represented by [`0`](./#multiblock-center-0)).
 
 It could look something like this:
 
