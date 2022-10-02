@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Copy
-        uses: soichisumi/issue-copy-action@v0.2.0
+        uses: klikli-dev/issue-copy-action@master
         with:
           keyword: "/copy"
           targetRepository: klikli-dev/modonomicon
