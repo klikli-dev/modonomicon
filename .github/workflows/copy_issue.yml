@@ -1,0 +1,16 @@
+on:
+  issue_comment:
+    types: [created]
+name: Copy Issue
+jobs:
+  copy-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Copy
+        uses: soichisumi/issue-copy-action@v0.2.0
+        with:
+          keyword: "/copy"
+          targetRepository: klikli-dev/modonomicon
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          contentOfNewIssue: '[COPY]'
+
