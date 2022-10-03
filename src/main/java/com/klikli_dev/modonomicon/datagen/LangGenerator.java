@@ -355,6 +355,14 @@ public abstract class LangGenerator extends LanguageProvider {
                             [Always locked](entry://modonomicon:demo/formatting/always_locked)
                                  """);
 
+            helper.page("page3"); //patchouli links
+            this.add(helper.pageTitle(), "Patchouli Links");
+            this.add(helper.pageText(),
+                    """
+                            [Link to a Patchouli Entry](patchouli://occultism:dictionary_of_spirits//misc/books_of_calling)
+                                 """);
+            this.add("patchouli.occultism.dictionary_of_spirits.misc.books_of_calling.name", "Books of Calling"); //patchouli entry name
+
             this.add(helper.entryName(), "Link Formatting Entry");
             this.add(helper.entryDescription(), "An entry showcasing link formatting.");
         }

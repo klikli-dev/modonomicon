@@ -147,6 +147,13 @@ repositories {
         name = "Progwm16 maven - JEI"
         url = 'https://dvs1.progwml6.com/files/maven'
     }
+    maven {
+        name = "Curse Maven"
+        url = "https://www.cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
 }
 
 dependencies {
@@ -160,6 +167,15 @@ dependencies {
     library "org.commonmark:commonmark:${commonmark_version}"
     library "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
     library "org.commonmark:commonmark-ext-ins:${commonmark_version}"
+
+    //Patchouli API
+    compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_mc_version}-${patchouli_version}:api")
+
+    //for some tests we use occultism + deps
+    runtimeOnly fg.deobf("curse.maven:occultism-361026:4001660") //1.18.2-1.41.3
+    runtimeOnly fg.deobf("curse.maven:curios-309927:3841948") //1.18.2-5.0.7.1
+    runtimeOnly fg.deobf("curse.maven:geckolib-388172:4017008") //1.18-3.0.40
+    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_mc_version}-${patchouli_version}")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

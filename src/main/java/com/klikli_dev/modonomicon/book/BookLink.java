@@ -102,7 +102,7 @@ public class BookLink {
 
         int lastHashIndex = entryId.lastIndexOf("#");
         if (lastHashIndex >= 0) {
-            //handle page anchor after #
+            //handle page index after #
             var postHash = entryId.substring(lastHashIndex);
             var path = StringUtils.removeEnd(entryId.substring(0, lastHashIndex), "/"); //remove trailing /
             bookLink.entryId = new ResourceLocation(book.getId().getNamespace(), path);

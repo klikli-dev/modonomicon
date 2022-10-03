@@ -32,6 +32,14 @@
       "use_markdown_in_title": false,
       "show_title_separator": true,
       "text": "book.modonomicon.demo.formatting.link.page2.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "title": "book.modonomicon.demo.formatting.link.page3.title",
+      "use_markdown_in_title": false,
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.formatting.link.page3.text"
     }
   ]
 }
