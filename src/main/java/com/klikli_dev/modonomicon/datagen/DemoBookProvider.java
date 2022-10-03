@@ -472,6 +472,12 @@ public class DemoBookProvider extends BookProvider {
                 .withTitle(helper.pageTitle())
                 .build(); //book entry links
 
+        helper.page("page3");
+        var page3 = BookTextPageModel.builder()
+                .withText(helper.pageText())
+                .withTitle(helper.pageTitle())
+                .build(); //patchouli link
+
         var formattingEntry = BookEntryModel.builder()
                 .withId(this.modLoc("formatting/link"))
                 .withName(helper.entryName())
@@ -479,8 +485,7 @@ public class DemoBookProvider extends BookProvider {
                 .withIcon("minecraft:writable_book")
                 .withLocation(entryHelper.get('l'))
                 .withEntryBackground(0, 2)
-                .withPage(page1)
-                .withPage(page2);
+                .withPages(page1, page2, page3);
 
         return formattingEntry;
     }

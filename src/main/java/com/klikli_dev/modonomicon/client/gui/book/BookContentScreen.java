@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.BookLink;
+import com.klikli_dev.modonomicon.book.PatchouliLink;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.capability.BookStateCapability;
 import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
@@ -23,6 +24,7 @@ import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.klikli_dev.modonomicon.integration.ModonomiconPatchouliIntegration;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.SaveEntryStateMessage;
 import com.klikli_dev.modonomicon.registry.SoundRegistry;
@@ -453,7 +455,7 @@ public class BookContentScreen extends Screen {
             super.onClose();
             this.parentScreen.onClose();
 
-            this.simulateEscClosing = true;
+            this.simulateEscClosing = false;
         } else {
             Networking.sendToServer(new SaveEntryStateMessage(this.entry,
                     ClientConfig.get().qolCategory.storeLastOpenPageWhenClosingEntry.get() ? this.openPagesIndex : 0));
@@ -481,26 +483,31 @@ public class BookContentScreen extends Screen {
                 if (clickEvent != null) {
                     if (clickEvent.getAction() == Action.CHANGE_PAGE) {
 
-                        var link = BookLink.from(clickEvent.getValue());
-                        var book = BookDataManager.get().getBook(link.bookId);
-                        if (link.entryId != null) {
-                            var entry = book.getEntry(link.entryId);
+                        //handle book links -> check if locked
+                        if(BookLink.isBookLink(clickEvent.getValue())){
+                            var link = BookLink.from(clickEvent.getValue());
+                            var book = BookDataManager.get().getBook(link.bookId);
+                            if (link.entryId != null) {
+                                var entry = book.getEntry(link.entryId);
 
-                            if (!BookUnlockCapability.isUnlockedFor(this.minecraft.player, entry)) {
-                                //if locked, append lock warning
-                                //handleComponentClicked will prevent the actual click
+                                if (!BookUnlockCapability.isUnlockedFor(this.minecraft.player, entry)) {
+                                    //if locked, append lock warning
+                                    //handleComponentClicked will prevent the actual click
 
-                                var oldComponent = style.getHoverEvent().getValue(HoverEvent.Action.SHOW_TEXT);
+                                    var oldComponent = style.getHoverEvent().getValue(HoverEvent.Action.SHOW_TEXT);
 
-                                var newComponent = Component.translatable(
-                                        Gui.HOVER_BOOK_LINK_LOCKED,
-                                        oldComponent,
-                                        Component.translatable(Gui.HOVER_BOOK_LINK_LOCKED_INFO)
-                                                .withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xff0015)).withBold(true)));
+                                    var newComponent = Component.translatable(
+                                            Gui.HOVER_BOOK_LINK_LOCKED,
+                                            oldComponent,
+                                            Component.translatable(Gui.HOVER_BOOK_LINK_LOCKED_INFO)
+                                                    .withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xff0015)).withBold(true)));
 
-                                newStyle = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newComponent));
+                                    newStyle = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newComponent));
+                                }
                             }
                         }
+
+                        //we do not handle patchouli links here, if locked .. patchouli needs to handle that
                     }
                 }
             }
@@ -542,32 +549,48 @@ public class BookContentScreen extends Screen {
             if (event != null) {
                 if (event.getAction() == Action.CHANGE_PAGE) {
 
-                    var link = BookLink.from(event.getValue());
-                    var book = BookDataManager.get().getBook(link.bookId);
-                    if (link.entryId != null) {
-                        var entry = book.getEntry(link.entryId);
+                    //handle book links
+                    if(BookLink.isBookLink(event.getValue())) {
+                        var link = BookLink.from(event.getValue());
+                        var book = BookDataManager.get().getBook(link.bookId);
+                        if (link.entryId != null) {
+                            var entry = book.getEntry(link.entryId);
 
-                        if (!BookUnlockCapability.isUnlockedFor(this.minecraft.player, entry)) {
-                            //renderComponentHoverEffect will render a warning that it is locked so it is fine to exit here
-                            return false;
+                            if (!BookUnlockCapability.isUnlockedFor(this.minecraft.player, entry)) {
+                                //renderComponentHoverEffect will render a warning that it is locked so it is fine to exit here
+                                return false;
+                            }
+
+                            int page = link.pageNumber;
+                            if (link.pageAnchor != null) {
+                                page = entry.getPageNumberForAnchor(link.pageAnchor);
+                            }
+
+                            //we push the page we are currently on to the history
+                            BookGuiManager.get().pushHistory(this.entry.getBook().getId(), this.entry.getCategory().getId(), this.entry.getId(), this.openPagesIndex * 2);
+                            BookGuiManager.get().openEntry(link.bookId, link.entryId, page);
+                        } else if (link.categoryId != null) {
+                            BookGuiManager.get().openEntry(link.bookId, link.categoryId, null, 0);
+                            //Currently we do not push categories to history
+                        } else {
+                            BookGuiManager.get().openEntry(link.bookId, null, null, 0);
+                            //Currently we do not push categories to history
                         }
-
-                        int page = link.pageNumber;
-                        if (link.pageAnchor != null) {
-                            page = entry.getPageNumberForAnchor(link.pageAnchor);
-                        }
-
-                        //we push the page we are currently on to the history
-                        BookGuiManager.get().pushHistory(this.entry.getBook().getId(), this.entry.getCategory().getId(), this.entry.getId(), this.openPagesIndex * 2);
-                        BookGuiManager.get().openEntry(link.bookId, link.entryId, page);
-                    } else if (link.categoryId != null) {
-                        BookGuiManager.get().openEntry(link.bookId, link.categoryId, null, 0);
-                        //Currently we do not push categories to history
-                    } else {
-                        BookGuiManager.get().openEntry(link.bookId, null, null, 0);
-                        //Currently we do not push categories to history
+                        return true;
                     }
-                    return true;
+
+                    //handle patchouli link clicks
+                    if(PatchouliLink.isPatchouliLink(event.getValue())){
+                        var link = PatchouliLink.from(event.getValue());
+                        if(link.bookId != null){
+                            //the integration class handles class loading guards if patchouli is not present
+                            this.simulateEscClosing = true;
+                            this.onClose();
+
+                            ModonomiconPatchouliIntegration.openEntry(link.bookId, link.entryId, link.pageNumber);
+                            return true;
+                        }
+                    }
                 }
             }
         }

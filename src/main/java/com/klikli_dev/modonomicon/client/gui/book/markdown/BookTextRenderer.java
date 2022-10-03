@@ -42,7 +42,7 @@ public class BookTextRenderer {
                 .renderSoftLineBreaks(false)
                 .replaceSoftLineBreaksWithSpace(true)
                 .linkColor(TextColor.fromRgb(0x5555FF))
-                .linkRenderers(List.of(new ColorLinkRenderer(), new BookLinkRenderer(), new ItemLinkRenderer()))
+                .linkRenderers(List.of(new ColorLinkRenderer(), new BookLinkRenderer(), new ItemLinkRenderer(), new PatchouliLinkRenderer()))
                 .style(defaultStyle)
                 .extensions(this.extensions)
                 .build();
