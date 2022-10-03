@@ -18,7 +18,7 @@ Tag matchers will check if the placed block is part of the provided tag. Additio
 
 * **display** (BlockState, _optional_)
 
-  If none is provied, Modonomicon will cycle through the blocks in the tag.
+  If none is provided, Modonomicon will cycle through the blocks in the tag.
   The BlockState to display in the multiblock preview. 
 
   :::info
@@ -39,7 +39,7 @@ Tag matchers will check if the placed block is part of the provided tag. Additio
 }
 ```
 
-**Example 3:** Matching any wooden stairs facing west, but displaying a west-facing oak stair
+**Example 2:** Matching any wooden stairs facing west, but displaying a west-facing oak stair
 
 ```json
 {
