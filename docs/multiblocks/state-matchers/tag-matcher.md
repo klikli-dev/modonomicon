@@ -17,9 +17,9 @@ Tag matchers will check if the placed block is part of the provided tag. Additio
 
 
 * **display** (BlockState, _optional_)
-
+  The BlockState to display in the multiblock preview.   
   If none is provided, Modonomicon will cycle through the blocks in the tag.
-  The BlockState to display in the multiblock preview. 
+
 
   :::info
 
