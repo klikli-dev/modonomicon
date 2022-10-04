@@ -1,7 +1,8 @@
 ---
 sidebar_position: 20
-title: Error Handling
 ---
+
+# Error Handling
 
 Depending on the type of error there are different ways Modonomicon will handle them.
 Syntax errors in the JSON files representing your book will be caught by Minecraft's `SimpleJsonResourceReloadListener`, while any errors later in the loading process will be caught by the Modonomicon's own error handler.

@@ -100,9 +100,13 @@ Syntax: `[display text](book://<book-id>/<category-id>)`.
 * **Entry Link**
 
 Opens an entry (in the same book, or in another book), optionally at either a given page number or page anchor.
-Format: `[display text](book://<book-id>/<entry-id>[#page-number][@page-anchor])`.
+Syntax: `[display text](book://<book-id>/<entry-id>[#page-number][@page-anchor])`.
 
-*Note*: The entry id is the full path of the entry within the `/entries/` folder, that often includes the category id, if it is used as a subdirectory, e.g. for `/entries/my-category/my-entry` the entry id is `my-category/my-entry`.
+:::tip
+
+The entry id is the full path of the entry within the `/entries/` folder, that often includes the category id, if it is used as a subdirectory, e.g. for `/entries/my-category/my-entry` the entry id is `my-category/my-entry`.
+
+:::
 
 ### Item / Block Link
 
@@ -111,6 +115,42 @@ Item links are links that cannot be clicked, but that will show the (translated)
 Syntax: 
 - `[optional display text](item://minecraft:apple)`
 - `[](item://minecraft:chest)`
+
+### Patchouli Links
+
+Patchouli links are special links that can be used to link to a particular patchouli entry and open it on click.
+
+Syntax: 
+  - `[display text](patchouli://<mod_id>:<patchouli_book_id>//<entry_id>#<page_number>)`.
+  - `[display text](patchouli://<mod_id>:<patchouli_book_id>//<entry_id>)`.
+
+Example:
+- `[Link to a Patchouli Entry](patchouli://occultism:dictionary_of_spirits//misc/books_of_calling)`
+
+:::caution 
+
+Note the double `//` separating the book id from the entry id. This is required, because both book and entry ids may contain one or multile  `/` characters if the files are in subdirectories.
+::: 
+
+:::tip 
+
+The entry id is the full path of the entry within the `/entries/` folder in `patchouli_books`, the path you would also use for links within patchouli with the `$(l:<entry_id>)` syntax.
+
+::: 
+
+#### Translations
+
+On hover the link will attempt to display the name of the patchouli page that will be opened on click.
+Patchouli does not have a standard DescriptionId format for entry names (in fact, entry names can be provided without using the translation system at all), so you need to manually include the translation for the link text in your `lang.json` file. 
+
+The DescriptionId used for hover texts is `patchouli.<patchouli_book_id>.<entry_id>.name`, e.g. `patchouli.occultism.dictionary_of_spirits.misc.books_of_calling.name`. Make sure to provide a translation for this DescriptionId in your `lang.json` file (or better, in your language datagen), otherwise the hover text will show the DescriptionId itself.
+
+:::tip 
+
+The `<patchouli_book_id>` will include the mod id, the `<entry_id>` will not.
+
+::: 
+
 
 ## Non-Standard Markdown
 
