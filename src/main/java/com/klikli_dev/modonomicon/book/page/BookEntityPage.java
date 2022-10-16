@@ -101,6 +101,20 @@ public class BookEntityPage extends BookPage {
     }
 
     @Override
+    public void build(BookEntry parentEntry, int pageNum) {
+        super.build(parentEntry, pageNum);
+
+        if (this.entityName.isEmpty()) {
+            //use entity name if we don't have a custom title
+            this.entityName = new BookTextHolder(Component.translatable(EntityUtil.getEntityName(this.entityId))
+                    .withStyle(Style.EMPTY
+                            .withBold(true)
+                            .withColor(this.getParentEntry().getBook().getDefaultTitleColor())
+                    ));
+        }
+    }
+
+    @Override
     public void prerenderMarkdown(BookTextRenderer textRenderer) {
         super.prerenderMarkdown(textRenderer);
 
@@ -116,19 +130,6 @@ public class BookEntityPage extends BookPage {
     }
 
     @Override
-    public void build(BookEntry parentEntry, int pageNum) {
-        super.build(parentEntry, pageNum);
-
-        if (this.entityName.isEmpty()) {
-            //use entity name if we don't have a custom title
-            this.entityName = new BookTextHolder(Component.translatable(EntityUtil.getEntityName(this.entityId))
-                    .withStyle(Style.EMPTY
-                            .withBold(true)
-                            .withColor(this.getParentEntry().getBook().getDefaultTitleColor())
-                    ));
-        }
-    }
-    @Override
     public void toNetwork(FriendlyByteBuf buffer) {
         this.entityName.toNetwork(buffer);
         this.text.toNetwork(buffer);
@@ -138,5 +139,11 @@ public class BookEntityPage extends BookPage {
         buffer.writeBoolean(this.rotate);
         buffer.writeFloat(this.defaultRotation);
         buffer.writeUtf(this.anchor);
+    }
+
+    @Override
+    public boolean matchesQuery(String query) {
+        return this.entityName.getString().toLowerCase().contains(query)
+                || this.text.getString().toLowerCase().contains(query);
     }
 }

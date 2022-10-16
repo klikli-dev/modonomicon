@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -20,6 +21,8 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.Ingredient;
+
+import java.util.Arrays;
 
 public class BookSpotlightPage extends BookPage {
     protected BookTextHolder title;
@@ -71,6 +74,20 @@ public class BookSpotlightPage extends BookPage {
     }
 
     @Override
+    public void build(BookEntry parentEntry, int pageNum) {
+        super.build(parentEntry, pageNum);
+
+        if (this.title.isEmpty()) {
+            //use ingredient name if we don't have a custom title
+            this.title = new BookTextHolder(((MutableComponent) this.item.getItems()[0].getHoverName())
+                    .withStyle(Style.EMPTY
+                            .withBold(true)
+                            .withColor(this.getParentEntry().getBook().getDefaultTitleColor())
+                    ));
+        }
+    }
+
+    @Override
     public void prerenderMarkdown(BookTextRenderer textRenderer) {
         super.prerenderMarkdown(textRenderer);
 
@@ -86,23 +103,17 @@ public class BookSpotlightPage extends BookPage {
     }
 
     @Override
-    public void build(BookEntry parentEntry, int pageNum) {
-        super.build(parentEntry, pageNum);
-
-        if (this.title.isEmpty()) {
-            //use ingredient name if we don't have a custom title
-            this.title = new BookTextHolder(((MutableComponent)this.item.getItems()[0].getHoverName())
-                    .withStyle(Style.EMPTY
-                            .withBold(true)
-                            .withColor(this.getParentEntry().getBook().getDefaultTitleColor())
-                    ));
-        }
-    }
-    @Override
     public void toNetwork(FriendlyByteBuf buffer) {
         this.title.toNetwork(buffer);
         this.item.toNetwork(buffer);
         this.text.toNetwork(buffer);
         buffer.writeUtf(this.anchor);
+    }
+
+    @Override
+    public boolean matchesQuery(String query) {
+        return this.title.getString().toLowerCase().contains(query)
+                || Arrays.stream(this.item.getItems()).anyMatch(i -> I18n.get(i.getDescriptionId()).toLowerCase().contains(query))
+                || this.text.getString().toLowerCase().contains(query);
     }
 }

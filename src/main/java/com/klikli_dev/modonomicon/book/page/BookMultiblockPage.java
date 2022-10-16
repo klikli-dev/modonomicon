@@ -112,4 +112,10 @@ public class BookMultiblockPage extends BookPage {
         buffer.writeBoolean(this.showVisualizeButton);
         buffer.writeUtf(this.anchor);
     }
+
+    @Override
+    public boolean matchesQuery(String query) {
+        return this.multiblockName.getString().toLowerCase().contains(query)
+                || this.text.getString().toLowerCase().contains(query);
+    }
 }

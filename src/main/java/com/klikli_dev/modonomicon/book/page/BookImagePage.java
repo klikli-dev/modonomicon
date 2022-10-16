@@ -42,7 +42,7 @@ public class BookImagePage extends BookPage {
             images[i] = new ResourceLocation(GsonHelper.convertToString(imagesArray.get(i), "images[" + i + "]"));
         }
 
-        var border =  GsonHelper.getAsBoolean(json, "border", true);
+        var border = GsonHelper.getAsBoolean(json, "border", true);
 
         var anchor = GsonHelper.getAsString(json, "anchor", "");
         return new BookImagePage(title, text, images, border, anchor);
@@ -116,5 +116,11 @@ public class BookImagePage extends BookPage {
 
         buffer.writeBoolean(this.border);
         buffer.writeUtf(this.anchor);
+    }
+
+    @Override
+    public boolean matchesQuery(String query) {
+        return this.title.getString().toLowerCase().contains(query)
+                || this.text.getString().toLowerCase().contains(query);
     }
 }
