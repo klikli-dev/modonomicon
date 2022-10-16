@@ -125,6 +125,10 @@ public class BookContentScreen extends Screen {
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
     }
 
+    public static void drawLock(PoseStack ms, Book book, int x, int y) {
+        drawFromTexture(ms, book, x, y, 496, 0, 16, 16);
+    }
+
     public static void playTurnPageSound(Book book) {
         if (ClientTicks.ticks - lastTurnPageSoundTime > 6) {
             //TODO: make mod loader agnostic

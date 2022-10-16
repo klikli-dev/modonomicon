@@ -97,6 +97,12 @@ public class ModonimiconConstants {
 
             public static final String NO_ERRORS_FOUND = PREFIX + "no_errors_found";
             public static final String PAGE_ENTITY_LOADING_ERROR = PREFIX + ".page.entity.loading_error";
+
+            public static final String SEARCH_ENTRY_LOCKED = PREFIX + "search.entry.locked";
+            public static final String SEARCH_NO_RESULTS = PREFIX + "search.no_results";
+            public static final String SEARCH_NO_RESULTS_SAD = PREFIX + "search.sad";
+            public static final String SEARCH_INFO_TEXT = PREFIX + "search.info";
+            public static final String SEARCH_ENTRY_LIST_TITLE= PREFIX + "search.entry_list_title";
         }
 
         public static class Multiblock {

@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2022 klikli-dev
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 package com.klikli_dev.modonomicon.integration;
 
 import com.klikli_dev.modonomicon.Modonomicon;
