@@ -17,7 +17,9 @@ import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -40,6 +42,7 @@ public class BookSearchScreen extends Screen {
     private int maxOpenPagesIndex;
     private List<BookEntry> allEntries;
     private EditBox searchField;
+    protected final List<Button> entryButtons = new ArrayList<>();
 
     private BookTextHolder infoText;
 
@@ -60,7 +63,38 @@ public class BookSearchScreen extends Screen {
     private void createEntryList() {
         //TODO: Implement
 
-        
+
+        this.entryButtons.forEach(b -> {
+            this.renderables.remove(b);
+            this.children().remove(b);
+            this.narratables.remove(b);
+        });
+
+        entryButtons.clear();
+        visibleEntries.clear();
+
+        String query = searchField.getValue().toLowerCase();
+        allEntries.stream().filter((e) -> e.matchesQuery(query)).forEach(visibleEntries::add);
+
+        maxOpenPagesIndex = 1;
+        int count = visibleEntries.size();
+        count -= ENTRIES_IN_FIRST_PAGE;
+        if (count > 0) {
+            maxOpenPagesIndex += (int) Math.ceil((float) count / (ENTRIES_PER_PAGE * 2));
+        }
+
+        while (getEntryCountStart() > visibleEntries.size()) {
+            openPagesIndex--;
+        }
+
+        if (openPagesIndex == 0) {
+            addEntryButtons(BookContentScreen.RIGHT_PAGE_X, BookContentScreen.TOP_PADDING + 20, 0, ENTRIES_IN_FIRST_PAGE);
+            addSubcategoryButtons();
+        } else {
+            int start = getEntryCountStart();
+            addEntryButtons(BookContentScreen.LEFT_PAGE_X, BookContentScreen.TOP_PADDING, start, ENTRIES_PER_PAGE);
+            addEntryButtons(BookContentScreen.RIGHT_PAGE_X, BookContentScreen.TOP_PADDING, start + ENTRIES_PER_PAGE, ENTRIES_PER_PAGE);
+        }
     }
 
     private List<BookEntry> getEntries() {
