@@ -57,7 +57,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class BookContentScreen extends Screen {
+public class BookContentScreen extends Screen implements BookScreenWithButtons{
 
     public static final int BOOK_BACKGROUND_WIDTH = 272;
     public static final int BOOK_BACKGROUND_HEIGHT = 178;
@@ -612,9 +612,9 @@ public class BookContentScreen extends Screen {
         this.beginDisplayPages();
 
         this.addRenderableWidget(new BackButton(this, this.width / 2 - BackButton.WIDTH / 2, this.bookTop + FULL_HEIGHT - BackButton.HEIGHT / 2));
-        this.addRenderableWidget(new ArrowButton(this, this.bookLeft - 4, this.bookTop + FULL_HEIGHT - 6, true));
-        this.addRenderableWidget(new ArrowButton(this, this.bookLeft + FULL_WIDTH - 14, this.bookTop + FULL_HEIGHT - 6, false));
-        this.addRenderableWidget(new ExitButton(this, this.bookLeft + FULL_WIDTH - 10, this.bookTop - 2));
+        this.addRenderableWidget(new ArrowButton(this, this.bookLeft - 4, this.bookTop + FULL_HEIGHT - 6, true, () -> canSeeArrowButton(true), this::handleArrowButton));
+        this.addRenderableWidget(new ArrowButton(this, this.bookLeft + FULL_WIDTH - 14, this.bookTop + FULL_HEIGHT - 6, false, () -> canSeeArrowButton(false), this::handleArrowButton));
+        this.addRenderableWidget(new ExitButton(this, this.bookLeft + FULL_WIDTH - 10, this.bookTop - 2, this::handleExitButton));
     }
 
     @Override

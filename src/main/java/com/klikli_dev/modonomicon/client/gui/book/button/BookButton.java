@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.BookScreenWithButtons;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
@@ -15,20 +16,18 @@ import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.function.Supplier;
 
-import net.minecraft.client.gui.components.Button.OnPress;
-
 public class BookButton extends Button {
 
-    protected final BookContentScreen parent;
+    protected final BookScreenWithButtons parent;
     protected final int u, v;
     protected final Supplier<Boolean> displayCondition;
     protected final List<Component> tooltip;
 
-    public BookButton(BookContentScreen parent, int x, int y, int u, int v, int w, int h, Component pMessage, OnPress onPress, Component... tooltip) {
+    public BookButton(BookScreenWithButtons parent, int x, int y, int u, int v, int w, int h, Component pMessage, OnPress onPress, Component... tooltip) {
         this(parent, x, y, u, v, w, h, () -> true, pMessage, onPress, tooltip);
     }
 
-    public BookButton(BookContentScreen parent, int x, int y, int u, int v, int w, int h, Supplier<Boolean> displayCondition, Component pMessage, OnPress onPress, Component... tooltip) {
+    public BookButton(BookScreenWithButtons parent, int x, int y, int u, int v, int w, int h, Supplier<Boolean> displayCondition, Component pMessage, OnPress onPress, Component... tooltip) {
         super(x, y, w, h, pMessage, onPress);
         this.parent = parent;
         this.u = u;

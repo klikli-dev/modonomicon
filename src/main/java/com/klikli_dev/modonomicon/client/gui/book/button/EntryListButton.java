@@ -14,6 +14,7 @@ import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookOverviewScreen;
+import com.klikli_dev.modonomicon.client.gui.book.BookSearchScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -27,11 +28,11 @@ public class EntryListButton extends Button {
 
     private static final int ANIM_TIME = 5;
 
-    private final BookOverviewScreen parent;
+    private final BookSearchScreen parent;
     private final BookEntry entry;
     private float timeHovered;
 
-    public EntryListButton(BookOverviewScreen parent, BookEntry entry, int pX, int pY, OnPress pOnPress) {
+    public EntryListButton(BookSearchScreen parent, BookEntry entry, int pX, int pY, OnPress pOnPress) {
         super(pX, pY, BookContentScreen.PAGE_WIDTH, 10, Component.translatable(entry.getName()), pOnPress);
 
         this.parent = parent;
@@ -65,7 +66,7 @@ public class EntryListButton extends Button {
 
             if (locked) {
                 RenderSystem.setShaderColor(1F, 1F, 1F, 0.7F);
-                BookContentScreen.drawLock(ms, parent.getBook(), x * 2 + 2, y * 2 + 2);
+                BookContentScreen.drawLock(ms, parent.getParentScreen().getBook(), x * 2 + 2, y * 2 + 2);
             } else {
                 entry.getIcon().render(ms, x * 2 + 2, y * 2 + 2);
             }
@@ -90,4 +91,6 @@ public class EntryListButton extends Button {
             //TODO: play flip sound
         }
     }
+
+
 }

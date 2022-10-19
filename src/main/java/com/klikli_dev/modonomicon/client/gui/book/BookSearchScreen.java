@@ -8,31 +8,32 @@
 package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Gui;
+import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
-import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
+import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
+import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
+import com.klikli_dev.modonomicon.client.gui.book.button.EntryListButton;
+import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
-import net.minecraft.util.FormattedCharSequence;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookSearchScreen extends Screen {
+public class BookSearchScreen extends Screen implements BookScreenWithButtons {
     public static final int ENTRIES_PER_PAGE = 13;
     public static final int ENTRIES_IN_FIRST_PAGE = 11;
-
+    protected final List<Button> entryButtons = new ArrayList<>();
     private final BookOverviewScreen parentScreen;
     private final List<BookEntry> visibleEntries = new ArrayList<>();
     /**
@@ -42,9 +43,11 @@ public class BookSearchScreen extends Screen {
     private int maxOpenPagesIndex;
     private List<BookEntry> allEntries;
     private EditBox searchField;
-    protected final List<Button> entryButtons = new ArrayList<>();
-
     private BookTextHolder infoText;
+    private int bookLeft;
+    private int bookTop;
+
+    private List<Component> tooltip;
 
     protected BookSearchScreen(BookOverviewScreen parentScreen) {
         super(Component.literal(""));
@@ -53,8 +56,79 @@ public class BookSearchScreen extends Screen {
         this.infoText = new BookTextHolder(Gui.SEARCH_INFO_TEXT);
     }
 
+    public void handleButtonEntry(Button button) {
+        var entry = ((EntryListButton) button).getEntry();
+        BookGuiManager.get().openEntry(entry.getBook().getId(), entry.getId(), 0);
+    }
+
+    public void prerenderMarkdown(BookTextRenderer textRenderer) {
+
+        if (!this.infoText.hasComponent()) {
+            this.infoText = new RenderedBookTextHolder(this.infoText, textRenderer.render(this.infoText.getString()));
+        }
+    }
+
+    public void drawCenteredStringNoShadow(PoseStack poseStack, Component s, int x, int y, int color) {
+        this.drawCenteredStringNoShadow(poseStack, s, x, y, color, 1.0f);
+    }
+
+    public void drawCenteredStringNoShadow(PoseStack poseStack, Component s, int x, int y, int color, float scale) {
+        this.font.draw(poseStack, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color);
+    }
+
+    public BookOverviewScreen getParentScreen() {
+        return this.parentScreen;
+    }
+
+    public boolean canSeeArrowButton(boolean left) {
+        return left ? this.openPagesIndex > 0 : (this.openPagesIndex + 1) < this.maxOpenPagesIndex;
+    }
+
+    /**
+     * Needs to use Button instead of ArrowButton to conform to Button.OnPress otherwise we can't use it as method
+     * reference, which we need - lambda can't use this in super constructor call.
+     */
+    public void handleArrowButton(Button button) {
+        this.flipPage(((ArrowButton) button).left, true);
+    }
+
+    public void handleExitButton(Button button) {
+        this.onClose();
+    }
+
+    protected void flipPage(boolean left, boolean playSound) {
+        if (this.canSeeArrowButton(left)) {
+
+            if (left) {
+                this.openPagesIndex--;
+            } else {
+                this.openPagesIndex++;
+            }
+
+            this.onPageChanged();
+            if (playSound) {
+                BookContentScreen.playTurnPageSound(this.parentScreen.getBook());
+            }
+        }
+    }
+
+
+    protected void drawTooltip(PoseStack pPoseStack, int pMouseX, int pMouseY) {
+        if (this.tooltip != null && !this.tooltip.isEmpty()) {
+            this.renderComponentTooltip(pPoseStack, this.tooltip, pMouseX, pMouseY);
+        }
+    }
+
+    protected void onPageChanged() {
+        this.createEntryList();
+    }
+
+    protected void resetTooltip() {
+        this.tooltip = null;
+    }
+
     private void createSearchBar() {
-        this.searchField = new EditBox(font, 160, 170, 90, 12, Component.literal(""));
+        this.searchField = new EditBox(this.font, 160, 170, 90, 12, Component.literal(""));
         this.searchField.setMaxLength(32);
         this.searchField.setCanLoseFocus(false);
         this.searchField.changeFocus(true);
@@ -70,108 +144,182 @@ public class BookSearchScreen extends Screen {
             this.narratables.remove(b);
         });
 
-        entryButtons.clear();
-        visibleEntries.clear();
+        this.entryButtons.clear();
+        this.visibleEntries.clear();
 
-        String query = searchField.getValue().toLowerCase();
-        allEntries.stream().filter((e) -> e.matchesQuery(query)).forEach(visibleEntries::add);
+        String query = this.searchField.getValue().toLowerCase();
+        this.allEntries.stream().filter((e) -> e.matchesQuery(query)).forEach(this.visibleEntries::add);
 
-        maxOpenPagesIndex = 1;
-        int count = visibleEntries.size();
+        this.maxOpenPagesIndex = 1;
+        int count = this.visibleEntries.size();
         count -= ENTRIES_IN_FIRST_PAGE;
         if (count > 0) {
-            maxOpenPagesIndex += (int) Math.ceil((float) count / (ENTRIES_PER_PAGE * 2));
+            this.maxOpenPagesIndex += (int) Math.ceil((float) count / (ENTRIES_PER_PAGE * 2));
         }
 
-        while (getEntryCountStart() > visibleEntries.size()) {
-            openPagesIndex--;
+        while (this.getEntryCountStart() > this.visibleEntries.size()) {
+            this.openPagesIndex--;
         }
 
-        if (openPagesIndex == 0) {
-            addEntryButtons(BookContentScreen.RIGHT_PAGE_X, BookContentScreen.TOP_PADDING + 20, 0, ENTRIES_IN_FIRST_PAGE);
-            addSubcategoryButtons();
+        if (this.openPagesIndex == 0) {
+            //only show on the right for the first page
+            this.addEntryButtons(BookContentScreen.RIGHT_PAGE_X, BookContentScreen.TOP_PADDING + 20, 0, ENTRIES_IN_FIRST_PAGE);
         } else {
-            int start = getEntryCountStart();
-            addEntryButtons(BookContentScreen.LEFT_PAGE_X, BookContentScreen.TOP_PADDING, start, ENTRIES_PER_PAGE);
-            addEntryButtons(BookContentScreen.RIGHT_PAGE_X, BookContentScreen.TOP_PADDING, start + ENTRIES_PER_PAGE, ENTRIES_PER_PAGE);
+            int start = this.getEntryCountStart();
+            this.addEntryButtons(BookContentScreen.LEFT_PAGE_X, BookContentScreen.TOP_PADDING, start, ENTRIES_PER_PAGE);
+            this.addEntryButtons(BookContentScreen.RIGHT_PAGE_X, BookContentScreen.TOP_PADDING, start + ENTRIES_PER_PAGE, ENTRIES_PER_PAGE);
         }
+    }
+
+    private int getEntryCountStart() {
+        if (this.openPagesIndex == 0) {
+            return 0;
+        }
+
+        int start = ENTRIES_IN_FIRST_PAGE;
+        start += (ENTRIES_PER_PAGE * 2) * (this.openPagesIndex - 1);
+        return start;
     }
 
     private List<BookEntry> getEntries() {
         return this.parentScreen.getBook().getEntries().values().stream().toList();
     }
 
+    private boolean clickOutsideEntry(double pMouseX, double pMouseY) {
+        return pMouseX < this.bookLeft - BookContentScreen.CLICK_SAFETY_MARGIN
+                || pMouseX > this.bookLeft + BookContentScreen.FULL_WIDTH + BookContentScreen.CLICK_SAFETY_MARGIN
+                || pMouseY < this.bookTop - BookContentScreen.CLICK_SAFETY_MARGIN
+                || pMouseY > this.bookTop + BookContentScreen.FULL_HEIGHT + BookContentScreen.CLICK_SAFETY_MARGIN;
+    }
+
     @Override
-    public void init() {
-        super.init();
-
-        var textRenderer = new BookTextRenderer();
-        this.prerenderMarkdown(textRenderer);
-
-        //we filter out entries that are locked or in locked categories
-        allEntries = getEntries().stream().filter(e ->
-                BookUnlockCapability.isUnlockedFor(this.minecraft.player, e.getCategory()) &&
-                        BookUnlockCapability.isUnlockedFor(this.minecraft.player, e)
-        ).sorted().toList();
-
-        //TODO: should we NOT filter out locked but visible entries and display them with a lock?
-
-        createSearchBar();
-        createEntryList();
+    public void setTooltip(List<Component> tooltip) {
+        this.tooltip = tooltip;
     }
 
-    public void prerenderMarkdown(BookTextRenderer textRenderer) {
-
-        if (!this.infoText.hasComponent()) {
-            this.infoText = new RenderedBookTextHolder(this.infoText, textRenderer.render(this.infoText.getString()));
-        }
+    @Override
+    public Book getBook() {
+        return this.parentScreen.getBook();
     }
-
 
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        this.resetTooltip();
 
-        if (openPagesIndex == 0) {
-            drawCenteredStringNoShadow(pPoseStack, getTitle(),
+        if (this.openPagesIndex == 0) {
+            this.drawCenteredStringNoShadow(pPoseStack, this.getTitle(),
                     BookContentScreen.LEFT_PAGE_X + BookContentScreen.PAGE_WIDTH / 2, BookContentScreen.TOP_PADDING,
                     this.parentScreen.getBook().getDefaultTitleColor());
-            drawCenteredStringNoShadow(pPoseStack, Component.translatable(Gui.SEARCH_ENTRY_LIST_TITLE),
+            this.drawCenteredStringNoShadow(pPoseStack, Component.translatable(Gui.SEARCH_ENTRY_LIST_TITLE),
                     BookContentScreen.RIGHT_PAGE_X + BookContentScreen.PAGE_WIDTH / 2, BookContentScreen.TOP_PADDING,
                     this.parentScreen.getBook().getDefaultTitleColor());
 
             BookContentScreen.drawTitleSeparator(pPoseStack, this.parentScreen.getBook(), BookContentScreen.LEFT_PAGE_X, BookContentScreen.TOP_PADDING + 12);
             BookContentScreen.drawTitleSeparator(pPoseStack, this.parentScreen.getBook(), BookContentScreen.RIGHT_PAGE_X, BookContentScreen.TOP_PADDING + 12);
 
-            BookPageRenderer.renderBookTextHolder(infoText, this.font, pPoseStack, pMouseX, pMouseY, BookContentScreen.PAGE_WIDTH);
+            BookPageRenderer.renderBookTextHolder(this.infoText, this.font, pPoseStack, pMouseX, pMouseY, BookContentScreen.PAGE_WIDTH);
         }
 
-        if (!searchField.getValue().isEmpty()) {
+        if (!this.searchField.getValue().isEmpty()) {
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-            BookContentScreen.drawFromTexture(pPoseStack, this.parentScreen.getBook(), searchField.x - 8, searchField.y, 140, 183, 99, 14);
-            var searchComponent = Component.literal(searchField.getValue());
+            BookContentScreen.drawFromTexture(pPoseStack, this.parentScreen.getBook(), this.searchField.x - 8, this.searchField.y, 140, 183, 99, 14);
+            var searchComponent = Component.literal(this.searchField.getValue());
             //TODO: if we want to support a font style, we set it here
-            font.draw(pPoseStack, searchComponent, searchField.x + 7, searchField.y + 1, 0);
+            this.font.draw(pPoseStack, searchComponent, this.searchField.x + 7, this.searchField.y + 1, 0);
         }
 
-        if (visibleEntries.isEmpty()) {
-            if (!searchField.getValue().isEmpty()) {
-                drawCenteredStringNoShadow(pPoseStack, Component.translatable(Gui.SEARCH_NO_RESULTS), BookContentScreen.RIGHT_PAGE_X + BookContentScreen.PAGE_WIDTH / 2, 80, 0x333333);
+        if (this.visibleEntries.isEmpty()) {
+            if (!this.searchField.getValue().isEmpty()) {
+                this.drawCenteredStringNoShadow(pPoseStack, Component.translatable(Gui.SEARCH_NO_RESULTS), BookContentScreen.RIGHT_PAGE_X + BookContentScreen.PAGE_WIDTH / 2, 80, 0x333333);
                 pPoseStack.scale(2F, 2F, 2F);
-                drawCenteredStringNoShadow(pPoseStack, Component.translatable(Gui.SEARCH_NO_RESULTS_SAD), BookContentScreen.RIGHT_PAGE_X / 2 + BookContentScreen.PAGE_WIDTH / 4, 47, 0x999999);
+                this.drawCenteredStringNoShadow(pPoseStack, Component.translatable(Gui.SEARCH_NO_RESULTS_SAD), BookContentScreen.RIGHT_PAGE_X / 2 + BookContentScreen.PAGE_WIDTH / 4, 47, 0x999999);
                 pPoseStack.scale(0.5F, 0.5F, 0.5F);
             } else {
-                drawCenteredStringNoShadow(pPoseStack, Component.translatable(Gui.SEARCH_NO_RESULTS), BookContentScreen.RIGHT_PAGE_X + BookContentScreen.PAGE_WIDTH / 2, 80, 0x333333);
+                this.drawCenteredStringNoShadow(pPoseStack, Component.translatable(Gui.SEARCH_NO_RESULTS), BookContentScreen.RIGHT_PAGE_X + BookContentScreen.PAGE_WIDTH / 2, 80, 0x333333);
             }
         }
 
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+
+        this.drawTooltip(pPoseStack, pMouseX, pMouseY);
     }
 
-    public void drawCenteredStringNoShadow(PoseStack poseStack, Component s, int x, int y, int color) {
-        this.drawCenteredStringNoShadow(poseStack, s, x, y, color, 1.0f);
+    @Override
+    public boolean keyPressed(int key, int scanCode, int modifiers) {
+        String currQuery = this.searchField.getValue();
+
+        if (key == GLFW.GLFW_KEY_ENTER) {
+            if (this.visibleEntries.size() == 1) {
+                var entry = this.visibleEntries.get(0);
+                BookGuiManager.get().openEntry(entry.getBook().getId(), entry.getId(), 0);
+                return true;
+            }
+        } else if (this.searchField.keyPressed(key, scanCode, modifiers)) {
+            if (!this.searchField.getValue().equals(currQuery)) {
+                this.createEntryList();
+            }
+
+            return true;
+        }
+
+        return super.keyPressed(key, scanCode, modifiers);
     }
 
-    public void drawCenteredStringNoShadow(PoseStack poseStack, Component s, int x, int y, int color, float scale) {
-        this.font.draw(poseStack, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color);
+    @Override
+    public void init() {
+        super.init();
+
+        this.bookLeft = (this.width - BookContentScreen.BOOK_BACKGROUND_WIDTH) / 2;
+        this.bookTop = (this.height - BookContentScreen.BOOK_BACKGROUND_HEIGHT) / 2;
+
+        var textRenderer = new BookTextRenderer();
+        this.prerenderMarkdown(textRenderer);
+
+        //we filter out entries that are locked or in locked categories
+        this.allEntries = this.getEntries().stream().filter(e ->
+                BookUnlockCapability.isUnlockedFor(this.minecraft.player, e.getCategory()) &&
+                        BookUnlockCapability.isUnlockedFor(this.minecraft.player, e)
+        ).sorted().toList();
+
+        //TODO: should we NOT filter out locked but visible entries and display them with a lock?
+
+        this.createSearchBar();
+        this.createEntryList();
+
+        this.addRenderableWidget(new ArrowButton(this, this.bookLeft - 4, this.bookTop + BookContentScreen.FULL_HEIGHT - 6, true, () -> this.canSeeArrowButton(true), this::handleArrowButton));
+        this.addRenderableWidget(new ArrowButton(this, this.bookLeft + BookContentScreen.FULL_WIDTH - 14, this.bookTop + BookContentScreen.FULL_HEIGHT - 6, false, () -> this.canSeeArrowButton(false), this::handleArrowButton));
+        this.addRenderableWidget(new ExitButton(this, this.bookLeft + BookContentScreen.FULL_WIDTH - 10, this.bookTop - 2, this::handleExitButton));
+    }
+
+    @Override
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+
+        if (this.clickOutsideEntry(pMouseX, pMouseY)) {
+            this.onClose();
+        }
+
+        return this.searchField.mouseClicked(pMouseX - this.bookLeft, pMouseY - this.bookTop, pButton) || super.mouseClicked(pMouseX, pMouseY, pButton);
+    }
+
+    @Override
+    public boolean charTyped(char c, int i) {
+        String currQuery = this.searchField.getValue();
+        if (this.searchField.charTyped(c, i)) {
+            if (!this.searchField.getValue().equals(currQuery)) {
+                this.createEntryList();
+            }
+
+            return true;
+        }
+
+        return super.charTyped(c, i);
+    }
+
+    void addEntryButtons(int x, int y, int start, int count) {
+        for (int i = 0; i < count && (i + start) < this.visibleEntries.size(); i++) {
+            Button button = new EntryListButton(this, this.visibleEntries.get(start + i), this.bookLeft + x, this.bookTop + y + i * 11, this::handleButtonEntry);
+            this.addRenderableWidget(button);
+            this.entryButtons.add(button);
+        }
     }
 }
