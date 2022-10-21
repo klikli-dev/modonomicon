@@ -135,9 +135,6 @@ public class BookSearchScreen extends Screen implements BookScreenWithButtons {
     }
 
     private void createEntryList() {
-        //TODO: Implement
-
-
         this.entryButtons.forEach(b -> {
             this.renderables.remove(b);
             this.children().remove(b);
@@ -222,6 +219,7 @@ public class BookSearchScreen extends Screen implements BookScreenWithButtons {
 
         if (!this.searchField.getValue().isEmpty()) {
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+            //draw search field bg
             BookContentScreen.drawFromTexture(pPoseStack, this.parentScreen.getBook(), this.searchField.x - 8, this.searchField.y, 140, 183, 99, 14);
             var searchComponent = Component.literal(this.searchField.getValue());
             //TODO: if we want to support a font style, we set it here

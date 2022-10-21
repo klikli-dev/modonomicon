@@ -75,6 +75,7 @@ public abstract class LangGenerator extends LanguageProvider {
                     To search for entries, simply start typing what you are looking for.
                     """);
             this.add(Gui.SEARCH_ENTRY_LIST_TITLE, "Entries");
+            this.add(Gui.OPEN_SEARCH, "Open Search");
 
 
             //Tooltip
