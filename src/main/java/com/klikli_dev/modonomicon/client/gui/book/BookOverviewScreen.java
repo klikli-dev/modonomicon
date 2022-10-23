@@ -342,7 +342,7 @@ public class BookOverviewScreen extends Screen {
     }
 
     protected void onSearchButtonClick(SearchButton button) {
-        ForgeHooksClient.pushGuiLayer(Minecraft.getInstance(), new BookSearchScreen(this));
+        ForgeHooksClient.pushGuiLayer(this.getMinecraft(), new BookSearchScreen(this));
     }
 
     protected void onSearchButtonTooltip(SearchButton button, PoseStack pPoseStack, int pMouseX, int pMouseY) {

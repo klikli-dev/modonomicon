@@ -24,10 +24,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class BookSearchScreen extends Screen implements BookScreenWithButtons {
@@ -277,7 +279,7 @@ public class BookSearchScreen extends Screen implements BookScreenWithButtons {
         this.allEntries = this.getEntries().stream().filter(e ->
                 BookUnlockCapability.isUnlockedFor(this.minecraft.player, e.getCategory()) &&
                         BookUnlockCapability.isUnlockedFor(this.minecraft.player, e)
-        ).sorted().toList();
+        ).sorted(Comparator.comparing(a -> I18n.get(a.getName()))).toList();
 
         //TODO: should we NOT filter out locked but visible entries and display them with a lock?
 
