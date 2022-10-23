@@ -100,14 +100,14 @@ public class BookOverviewScreen extends Screen {
     }
 
     /**
-     * gets the width of the inner area of the book frame
+     * gets the x coordinate of the inner area of the book frame
      */
     public int getInnerX() {
         return (this.width - this.getFrameWidth()) / 2 + this.frameThicknessW / 2;
     }
 
     /**
-     * gets the height of the inner area of the book frame
+     * gets the y coordinate of the inner area of the book frame
      */
     public int getInnerY() {
         return (this.height - this.getFrameHeight()) / 2 + this.frameThicknessH / 2;
@@ -329,10 +329,11 @@ public class BookOverviewScreen extends Screen {
         int searchButtonYOffset = -30;
         int searchButtonX = this.getFrameWidth() + this.getFrameThicknessW() + ReadAllButton.WIDTH / 2 + searchButtonXOffset;
         int searchButtonY = this.getFrameHeight() + this.getFrameThicknessH() - ReadAllButton.HEIGHT / 2 + searchButtonYOffset;
-        int searchButtonWidth = 40;
-        //        int buttonWidth = (this.width - this.getFrameWidth()) / 2 + buttonXOffset + 6;
+        int searchButtonWidth = 44; //width in png
+        int scissorX = this.getFrameWidth() + this.getFrameThicknessW() * 2 + 2; //this is the render location of our frame so our search button never overlaps
 
         var searchButton = new SearchButton(this, searchButtonX, searchButtonY,
+                scissorX,
                 searchButtonWidth, buttonHeight,
                 (b) -> this.onSearchButtonClick((SearchButton) b),
                 (b, stack, x, y) -> this.onSearchButtonTooltip((SearchButton) b, stack, x, y));
