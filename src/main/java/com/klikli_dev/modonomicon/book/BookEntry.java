@@ -280,4 +280,21 @@ public class BookEntry {
     public int getEntryBackgroundVIndex() {
         return this.entryBackgroundVIndex;
     }
+
+    /**
+     * Returns true if this entry should show up in search for the given query.
+     */
+    public boolean matchesQuery(String query) {
+        if (this.getName().toLowerCase().contains(query)) {
+            return true;
+        }
+
+        for(var page : this.getPages()){
+            if(page.matchesQuery(query)){
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

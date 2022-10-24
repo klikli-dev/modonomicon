@@ -14,17 +14,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.crafting.UpgradeRecipe;
 
 public class BookSmithingRecipePage extends BookRecipePage<UpgradeRecipe> {
     public BookSmithingRecipePage(BookTextHolder title1, ResourceLocation recipeId1, BookTextHolder title2, ResourceLocation recipeId2, BookTextHolder text, String anchor) {
         super(RecipeType.SMITHING, title1, recipeId1, title2, recipeId2, text, anchor);
-    }
-
-    @Override
-    public ResourceLocation getType() {
-        return Page.SMITHING_RECIPE;
     }
 
     public static BookSmithingRecipePage fromJson(JsonObject json) {
@@ -37,6 +31,11 @@ public class BookSmithingRecipePage extends BookRecipePage<UpgradeRecipe> {
         var common = BookRecipePage.commonFromNetwork(buffer);
         var anchor = buffer.readUtf();
         return new BookSmithingRecipePage(common.title1(), common.recipeId1(), common.title2(), common.recipeId2(), common.text(), anchor);
+    }
+
+    @Override
+    public ResourceLocation getType() {
+        return Page.SMITHING_RECIPE;
     }
 
     @Override

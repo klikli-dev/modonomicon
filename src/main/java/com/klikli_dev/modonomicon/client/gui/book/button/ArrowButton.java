@@ -7,8 +7,10 @@
 package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Gui;
-import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.BookScreenWithButtons;
 import net.minecraft.network.chat.Component;
+
+import java.util.function.Supplier;
 
 public class ArrowButton extends BookButton {
 
@@ -19,10 +21,10 @@ public class ArrowButton extends BookButton {
 
     public final boolean left;
 
-    public ArrowButton(BookContentScreen parent, int x, int y, boolean left) {
-        super(parent, x, y, U, left ? V + HEIGHT : V, WIDTH, HEIGHT, () -> parent.canSeeArrowButton(left),
+    public ArrowButton(BookScreenWithButtons parent, int x, int y, boolean left, Supplier<Boolean> displayCondition, OnPress onPress) {
+        super(parent, x, y, U, left ? V + HEIGHT : V, WIDTH, HEIGHT, displayCondition,
                 Component.translatable(left ? Gui.BUTTON_PREVIOUS : Gui.BUTTON_NEXT),
-                parent::handleArrowButton,
+                onPress,
                 Component.translatable(left ? Gui.BUTTON_PREVIOUS : Gui.BUTTON_NEXT)
                 //button title equals hover text
         );

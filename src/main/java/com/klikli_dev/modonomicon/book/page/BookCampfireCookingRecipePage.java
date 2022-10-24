@@ -12,18 +12,12 @@ import com.klikli_dev.modonomicon.book.BookTextHolder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.CampfireCookingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 
 public class BookCampfireCookingRecipePage extends BookProcessingRecipePage<CampfireCookingRecipe> {
     public BookCampfireCookingRecipePage(BookTextHolder title1, ResourceLocation recipeId1, BookTextHolder title2, ResourceLocation recipeId2, BookTextHolder text, String anchor) {
         super(RecipeType.CAMPFIRE_COOKING, title1, recipeId1, title2, recipeId2, text, anchor);
-    }
-
-    @Override
-    public ResourceLocation getType() {
-        return Page.CAMPFIRE_COOKING_RECIPE;
     }
 
     public static BookCampfireCookingRecipePage fromJson(JsonObject json) {
@@ -36,6 +30,11 @@ public class BookCampfireCookingRecipePage extends BookProcessingRecipePage<Camp
         var common = BookRecipePage.commonFromNetwork(buffer);
         var anchor = buffer.readUtf();
         return new BookCampfireCookingRecipePage(common.title1(), common.recipeId1(), common.title2(), common.recipeId2(), common.text(), anchor);
+    }
+
+    @Override
+    public ResourceLocation getType() {
+        return Page.CAMPFIRE_COOKING_RECIPE;
     }
 
     @Override

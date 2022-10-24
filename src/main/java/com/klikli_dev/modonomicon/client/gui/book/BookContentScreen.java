@@ -57,7 +57,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class BookContentScreen extends Screen {
+public class BookContentScreen extends Screen implements BookScreenWithButtons{
 
     public static final int BOOK_BACKGROUND_WIDTH = 272;
     public static final int BOOK_BACKGROUND_HEIGHT = 178;
@@ -125,6 +125,10 @@ public class BookContentScreen extends Screen {
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
     }
 
+    public static void drawLock(PoseStack ms, Book book, int x, int y) {
+        drawFromTexture(ms, book, x, y, 496, 0, 16, 16);
+    }
+
     public static void playTurnPageSound(Book book) {
         if (ClientTicks.ticks - lastTurnPageSoundTime > 6) {
             //TODO: make mod loader agnostic
@@ -142,10 +146,10 @@ public class BookContentScreen extends Screen {
         return this.entry.getBook();
     }
 
-    public void renderBookBackground(PoseStack poseStack) {
+    public static void renderBookBackground(PoseStack poseStack, ResourceLocation bookContentTexture) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, this.bookContentTexture);
+        RenderSystem.setShaderTexture(0, bookContentTexture);
 
         int x = 0; // (this.width - BOOK_BACKGROUND_WIDTH) / 2;
         int y = 0; // (this.height - BOOK_BACKGROUND_HEIGHT) / 2;
@@ -425,7 +429,7 @@ public class BookContentScreen extends Screen {
 
         pPoseStack.pushPose();
         pPoseStack.translate(this.bookLeft, this.bookTop, 0);
-        this.renderBookBackground(pPoseStack);
+        renderBookBackground(pPoseStack, this.bookContentTexture);
         pPoseStack.popPose();
 
         pPoseStack.pushPose();
@@ -608,9 +612,9 @@ public class BookContentScreen extends Screen {
         this.beginDisplayPages();
 
         this.addRenderableWidget(new BackButton(this, this.width / 2 - BackButton.WIDTH / 2, this.bookTop + FULL_HEIGHT - BackButton.HEIGHT / 2));
-        this.addRenderableWidget(new ArrowButton(this, this.bookLeft - 4, this.bookTop + FULL_HEIGHT - 6, true));
-        this.addRenderableWidget(new ArrowButton(this, this.bookLeft + FULL_WIDTH - 14, this.bookTop + FULL_HEIGHT - 6, false));
-        this.addRenderableWidget(new ExitButton(this, this.bookLeft + FULL_WIDTH - 10, this.bookTop - 2));
+        this.addRenderableWidget(new ArrowButton(this, this.bookLeft - 4, this.bookTop + FULL_HEIGHT - 6, true, () -> canSeeArrowButton(true), this::handleArrowButton));
+        this.addRenderableWidget(new ArrowButton(this, this.bookLeft + FULL_WIDTH - 14, this.bookTop + FULL_HEIGHT - 6, false, () -> canSeeArrowButton(false), this::handleArrowButton));
+        this.addRenderableWidget(new ExitButton(this, this.bookLeft + FULL_WIDTH - 10, this.bookTop - 2, this::handleExitButton));
     }
 
     @Override

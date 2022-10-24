@@ -77,21 +77,28 @@ public abstract class BookPageRenderer<T extends BookPage> {
      * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
      */
     public void renderBookTextHolder(BookTextHolder text, PoseStack poseStack, int x, int y, int width) {
+        renderBookTextHolder(text, this.font, poseStack, x, y, width);
+    }
+
+    /**
+     * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
+     */
+    public static void renderBookTextHolder(BookTextHolder text, Font font, PoseStack poseStack, int x, int y, int width) {
         if (text.hasComponent()) {
             //if it is a component, we draw it directly
-            for (FormattedCharSequence formattedcharsequence : this.font.split(text.getComponent(), width)) {
-                this.font.draw(poseStack, formattedcharsequence, x, y, 0);
-                y += this.font.lineHeight;
+            for (FormattedCharSequence formattedcharsequence : font.split(text.getComponent(), width)) {
+                font.draw(poseStack, formattedcharsequence, x, y, 0);
+                y += font.lineHeight;
             }
         } else if (text instanceof RenderedBookTextHolder renderedText) {
             //if it is not a component it was sent through the markdown renderer
             var components = renderedText.getRenderedText();
 
             for (var component : components) {
-                var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, width, width - 10, this.font);
+                var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, width, width - 10, font);
                 for (FormattedCharSequence formattedcharsequence : wrapped) {
-                    this.font.draw(poseStack, formattedcharsequence, x, y, 0);
-                    y += this.font.lineHeight;
+                    font.draw(poseStack, formattedcharsequence, x, y, 0);
+                    y += font.lineHeight;
                 }
             }
         } else {

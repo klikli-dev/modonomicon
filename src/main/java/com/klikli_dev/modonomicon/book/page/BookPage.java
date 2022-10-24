@@ -69,5 +69,5 @@ public abstract class BookPage {
         this.pageNumber = pageNumber;
     }
 
-
+    public abstract boolean matchesQuery(String query);
 }

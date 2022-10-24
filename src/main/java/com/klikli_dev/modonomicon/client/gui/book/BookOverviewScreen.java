@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.api.ModonimiconConstants;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.capability.BookStateCapability;
@@ -14,6 +15,7 @@ import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ReadAllButton;
+import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.BookEntryReadMessage;
@@ -27,6 +29,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.gui.ScreenUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -97,14 +100,14 @@ public class BookOverviewScreen extends Screen {
     }
 
     /**
-     * gets the width of the inner area of the book frame
+     * gets the x coordinate of the inner area of the book frame
      */
     public int getInnerX() {
         return (this.width - this.getFrameWidth()) / 2 + this.frameThicknessW / 2;
     }
 
     /**
-     * gets the height of the inner area of the book frame
+     * gets the y coordinate of the inner area of the book frame
      */
     public int getInnerY() {
         return (this.height - this.getFrameHeight()) / 2 + this.frameThicknessH / 2;
@@ -320,6 +323,30 @@ public class BookOverviewScreen extends Screen {
                 (b, stack, x, y) -> this.onReadAllButtonTooltip((ReadAllButton) b, stack, x, y));
 
         this.addRenderableWidget(readAllButton);
+
+
+        int searchButtonXOffset = 7;
+        int searchButtonYOffset = -30;
+        int searchButtonX = this.getFrameWidth() + this.getFrameThicknessW() + ReadAllButton.WIDTH / 2 + searchButtonXOffset;
+        int searchButtonY = this.getFrameHeight() + this.getFrameThicknessH() - ReadAllButton.HEIGHT / 2 + searchButtonYOffset;
+        int searchButtonWidth = 44; //width in png
+        int scissorX = this.getFrameWidth() + this.getFrameThicknessW() * 2 + 2; //this is the render location of our frame so our search button never overlaps
+
+        var searchButton = new SearchButton(this, searchButtonX, searchButtonY,
+                scissorX,
+                searchButtonWidth, buttonHeight,
+                (b) -> this.onSearchButtonClick((SearchButton) b),
+                (b, stack, x, y) -> this.onSearchButtonTooltip((SearchButton) b, stack, x, y));
+
+        this.addRenderableWidget(searchButton);
+    }
+
+    protected void onSearchButtonClick(SearchButton button) {
+        ForgeHooksClient.pushGuiLayer(this.getMinecraft(), new BookSearchScreen(this));
+    }
+
+    protected void onSearchButtonTooltip(SearchButton button, PoseStack pPoseStack, int pMouseX, int pMouseY) {
+        this.renderTooltip(pPoseStack, Component.translatable(ModonimiconConstants.I18n.Gui.OPEN_SEARCH), pMouseX, pMouseY);
     }
 
     @Override
