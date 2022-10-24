@@ -105,8 +105,8 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
 
     public void handleButtonVisualize(Button button) {
         MultiblockPreviewRenderer.setMultiblock(this.page.getMultiblock(), this.page.getMultiblockName().getComponent(), true);
-//        this.parentScreen.simulateEscClosing = true; //will cause the book to close entirely, and safe open page
-//        this.parentScreen.onClose();
+        this.parentScreen.simulateEscClosing = true; //will cause the book to close entirely, and safe open page
+        this.parentScreen.onClose();
 
         //TODO: visualizer bookmark to go back to this page quickly?
         //String entryKey =  this.parentEntry.getId().toString(); will be used for bookmark for multiblock
