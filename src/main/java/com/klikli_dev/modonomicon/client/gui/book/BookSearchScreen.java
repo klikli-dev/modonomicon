@@ -52,7 +52,7 @@ public class BookSearchScreen extends Screen implements BookScreenWithButtons {
     private List<Component> tooltip;
 
     protected BookSearchScreen(BookOverviewScreen parentScreen) {
-        super(Component.literal(""));
+        super(Component.translatable(Gui.SEARCH_SCREEN_TITLE));
 
         this.parentScreen = parentScreen;
         this.infoText = new BookTextHolder(Gui.SEARCH_INFO_TEXT);
@@ -162,11 +162,11 @@ public class BookSearchScreen extends Screen implements BookScreenWithButtons {
 
         if (this.openPagesIndex == 0) {
             //only show on the right for the first page
-            this.addEntryButtons(BookContentScreen.RIGHT_PAGE_X, BookContentScreen.TOP_PADDING + 20, 0, ENTRIES_IN_FIRST_PAGE);
+            this.addEntryButtons(BookContentScreen.RIGHT_PAGE_X - 3, BookContentScreen.TOP_PADDING + 20, 0, ENTRIES_IN_FIRST_PAGE);
         } else {
             int start = this.getEntryCountStart();
             this.addEntryButtons(BookContentScreen.LEFT_PAGE_X, BookContentScreen.TOP_PADDING, start, ENTRIES_PER_PAGE);
-            this.addEntryButtons(BookContentScreen.RIGHT_PAGE_X, BookContentScreen.TOP_PADDING, start + ENTRIES_PER_PAGE, ENTRIES_PER_PAGE);
+            this.addEntryButtons(BookContentScreen.RIGHT_PAGE_X - 3, BookContentScreen.TOP_PADDING, start + ENTRIES_PER_PAGE, ENTRIES_PER_PAGE);
         }
     }
 
@@ -203,7 +203,20 @@ public class BookSearchScreen extends Screen implements BookScreenWithButtons {
 
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+
         this.resetTooltip();
+
+        //we need to modify blit offset to not draw over toasts
+        var blitOffset = this.getBlitOffset();
+        this.setBlitOffset(-1300); //magic number arrived by testing until toasts show, but BookOverviewScreen does not
+        this.renderBackground(pPoseStack);
+        this.setBlitOffset(blitOffset);
+
+        pPoseStack.pushPose();
+        pPoseStack.translate(this.bookLeft, this.bookTop, 0);
+
+        BookContentScreen.renderBookBackground(pPoseStack, this.getBook().getBookContentTexture());
+
 
         if (this.openPagesIndex == 0) {
             this.drawCenteredStringNoShadow(pPoseStack, this.getTitle(),
@@ -213,11 +226,16 @@ public class BookSearchScreen extends Screen implements BookScreenWithButtons {
                     BookContentScreen.RIGHT_PAGE_X + BookContentScreen.PAGE_WIDTH / 2, BookContentScreen.TOP_PADDING,
                     this.parentScreen.getBook().getDefaultTitleColor());
 
-            BookContentScreen.drawTitleSeparator(pPoseStack, this.parentScreen.getBook(), BookContentScreen.LEFT_PAGE_X, BookContentScreen.TOP_PADDING + 12);
-            BookContentScreen.drawTitleSeparator(pPoseStack, this.parentScreen.getBook(), BookContentScreen.RIGHT_PAGE_X, BookContentScreen.TOP_PADDING + 12);
+            //TODO: render separator at right location
+            BookContentScreen.drawTitleSeparator(pPoseStack, this.parentScreen.getBook(),
+                    BookContentScreen.LEFT_PAGE_X  + BookContentScreen.PAGE_WIDTH / 2, BookContentScreen.TOP_PADDING + 12);
+            BookContentScreen.drawTitleSeparator(pPoseStack, this.parentScreen.getBook(),
+                    BookContentScreen.RIGHT_PAGE_X + BookContentScreen.PAGE_WIDTH / 2, BookContentScreen.TOP_PADDING + 12);
 
-            BookPageRenderer.renderBookTextHolder(this.infoText, this.font, pPoseStack, pMouseX, pMouseY, BookContentScreen.PAGE_WIDTH);
+            BookPageRenderer.renderBookTextHolder(this.infoText, this.font, pPoseStack,
+                    BookContentScreen.LEFT_PAGE_X, BookContentScreen.TOP_PADDING + 22, BookContentScreen.PAGE_WIDTH);
         }
+
 
         if (!this.searchField.getValue().isEmpty()) {
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
@@ -238,6 +256,7 @@ public class BookSearchScreen extends Screen implements BookScreenWithButtons {
                 this.drawCenteredStringNoShadow(pPoseStack, Component.translatable(Gui.SEARCH_NO_RESULTS), BookContentScreen.RIGHT_PAGE_X + BookContentScreen.PAGE_WIDTH / 2, 80, 0x333333);
             }
         }
+        pPoseStack.popPose();
 
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
 

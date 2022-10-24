@@ -102,6 +102,7 @@
   "modonomicon.gui.search.info": "To search for entries, simply start typing what you are looking for.\n",
   "modonomicon.gui.search.no_results": "No Results",
   "modonomicon.gui.search.sad": ":(",
+  "modonomicon.gui.search.screen.title": "Search in Book",
   "modonomicon.multiblock.complete": "Complete!",
   "modonomicon.multiblock.not_anchored": "Right-Click a Block to anchor the Structure.",
   "modonomicon.multiblock.remove_blocks": " (Clear blocks marked in red)",

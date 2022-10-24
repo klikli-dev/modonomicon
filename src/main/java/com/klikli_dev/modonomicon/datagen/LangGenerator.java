@@ -68,6 +68,7 @@ public abstract class LangGenerator extends LanguageProvider {
 
             //other gui stuff
             this.add(Gui.PAGE_ENTITY_LOADING_ERROR, "Failed to load entity");
+            this.add(Gui.SEARCH_SCREEN_TITLE, "Search in Book");
             this.add(Gui.SEARCH_ENTRY_LOCKED, "(Locked)");
             this.add(Gui.SEARCH_NO_RESULTS, "No Results");
             this.add(Gui.SEARCH_NO_RESULTS_SAD, ":(");

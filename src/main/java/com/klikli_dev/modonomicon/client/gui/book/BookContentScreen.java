@@ -146,10 +146,10 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
         return this.entry.getBook();
     }
 
-    public void renderBookBackground(PoseStack poseStack) {
+    public static void renderBookBackground(PoseStack poseStack, ResourceLocation bookContentTexture) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, this.bookContentTexture);
+        RenderSystem.setShaderTexture(0, bookContentTexture);
 
         int x = 0; // (this.width - BOOK_BACKGROUND_WIDTH) / 2;
         int y = 0; // (this.height - BOOK_BACKGROUND_HEIGHT) / 2;
@@ -429,7 +429,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
 
         pPoseStack.pushPose();
         pPoseStack.translate(this.bookLeft, this.bookTop, 0);
-        this.renderBookBackground(pPoseStack);
+        renderBookBackground(pPoseStack, this.bookContentTexture);
         pPoseStack.popPose();
 
         pPoseStack.pushPose();
