@@ -139,4 +139,10 @@ public class BookEntityPage extends BookPage {
         buffer.writeFloat(this.defaultRotation);
         buffer.writeUtf(this.anchor);
     }
+
+    @Override
+    public boolean matchesQuery(String query) {
+        return this.entityName.getString().toLowerCase().contains(query)
+                || this.text.getString().toLowerCase().contains(query);
+    }
 }

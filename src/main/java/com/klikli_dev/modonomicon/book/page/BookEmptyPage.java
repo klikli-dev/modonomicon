@@ -37,4 +37,9 @@ public class BookEmptyPage extends BookPage {
     public void toNetwork(FriendlyByteBuf buffer) {
         buffer.writeUtf(this.anchor);
     }
+
+    @Override
+    public boolean matchesQuery(String query) {
+        return false;
+    }
 }

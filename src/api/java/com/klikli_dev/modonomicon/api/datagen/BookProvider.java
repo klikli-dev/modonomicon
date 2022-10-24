@@ -1,3 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: 2022 klikli-dev
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+
 package com.klikli_dev.modonomicon.api.datagen;
 
 import com.google.gson.Gson;

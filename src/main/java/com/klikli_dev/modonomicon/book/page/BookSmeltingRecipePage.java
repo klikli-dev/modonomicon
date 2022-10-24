@@ -20,11 +20,6 @@ public class BookSmeltingRecipePage extends BookProcessingRecipePage<SmeltingRec
         super(RecipeType.SMELTING, title1, recipeId1, title2, recipeId2, text, anchor);
     }
 
-    @Override
-    public ResourceLocation getType() {
-        return Page.SMELTING_RECIPE;
-    }
-
     public static BookSmeltingRecipePage fromJson(JsonObject json) {
         var common = BookRecipePage.commonFromJson(json);
         var anchor = GsonHelper.getAsString(json, "anchor", "");
@@ -35,6 +30,11 @@ public class BookSmeltingRecipePage extends BookProcessingRecipePage<SmeltingRec
         var common = BookRecipePage.commonFromNetwork(buffer);
         var anchor = buffer.readUtf();
         return new BookSmeltingRecipePage(common.title1(), common.recipeId1(), common.title2(), common.recipeId2(), common.text(), anchor);
+    }
+
+    @Override
+    public ResourceLocation getType() {
+        return Page.SMELTING_RECIPE;
     }
 
     @Override

@@ -104,5 +104,9 @@ public class BookTextPage extends BookPage {
         buffer.writeUtf(this.anchor);
     }
 
-
+    @Override
+    public boolean matchesQuery(String query) {
+        return this.title.getString().toLowerCase().contains(query)
+                || this.text.getString().toLowerCase().contains(query);
+    }
 }

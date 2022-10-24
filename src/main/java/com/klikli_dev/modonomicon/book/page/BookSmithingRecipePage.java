@@ -21,11 +21,6 @@ public class BookSmithingRecipePage extends BookRecipePage<UpgradeRecipe> {
         super(RecipeType.SMITHING, title1, recipeId1, title2, recipeId2, text, anchor);
     }
 
-    @Override
-    public ResourceLocation getType() {
-        return Page.SMITHING_RECIPE;
-    }
-
     public static BookSmithingRecipePage fromJson(JsonObject json) {
         var common = BookRecipePage.commonFromJson(json);
         var anchor = GsonHelper.getAsString(json, "anchor", "");
@@ -36,6 +31,11 @@ public class BookSmithingRecipePage extends BookRecipePage<UpgradeRecipe> {
         var common = BookRecipePage.commonFromNetwork(buffer);
         var anchor = buffer.readUtf();
         return new BookSmithingRecipePage(common.title1(), common.recipeId1(), common.title2(), common.recipeId2(), common.text(), anchor);
+    }
+
+    @Override
+    public ResourceLocation getType() {
+        return Page.SMITHING_RECIPE;
     }
 
     @Override

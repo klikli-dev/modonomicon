@@ -146,16 +146,16 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
 
         if (this.title1.isEmpty()) {
             //use recipe title if we don't have a custom one
-            this.title1 = new BookTextHolder(((MutableComponent)this.getRecipeOutput(this.recipe1).getHoverName())
+            this.title1 = new BookTextHolder(((MutableComponent) this.getRecipeOutput(this.recipe1).getHoverName())
                     .withStyle(Style.EMPTY
-                    .withBold(true)
-                    .withColor(this.getParentEntry().getBook().getDefaultTitleColor())
-            ));
+                            .withBold(true)
+                            .withColor(this.getParentEntry().getBook().getDefaultTitleColor())
+                    ));
         }
 
         if (this.recipe2 != null && this.title2.isEmpty()) {
             //use recipe title if we don't have a custom one
-            this.title2 = new BookTextHolder(((MutableComponent)this.getRecipeOutput(this.recipe2).getHoverName())
+            this.title2 = new BookTextHolder(((MutableComponent) this.getRecipeOutput(this.recipe2).getHoverName())
                     .withStyle(Style.EMPTY
                             .withBold(true)
                             .withColor(this.getParentEntry().getBook().getDefaultTitleColor())
@@ -193,17 +193,24 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
     public void toNetwork(FriendlyByteBuf buffer) {
         this.title1.toNetwork(buffer);
         buffer.writeBoolean(this.recipeId1 != null);
-        if(this.recipeId1 != null){
+        if (this.recipeId1 != null) {
             buffer.writeResourceLocation(this.recipeId1);
         }
 
         this.title2.toNetwork(buffer);
         buffer.writeBoolean(this.recipeId2 != null);
-        if(this.recipeId2 != null) {
+        if (this.recipeId2 != null) {
             buffer.writeResourceLocation(this.recipeId2);
         }
 
         this.text.toNetwork(buffer);
+    }
+
+    @Override
+    public boolean matchesQuery(String query) {
+        return this.title1.getString().toLowerCase().contains(query)
+                || this.title2.getString().toLowerCase().contains(query)
+                || this.text.getString().toLowerCase().contains(query);
     }
 
     public record DataHolder(BookTextHolder title1, ResourceLocation recipeId1, BookTextHolder title2,

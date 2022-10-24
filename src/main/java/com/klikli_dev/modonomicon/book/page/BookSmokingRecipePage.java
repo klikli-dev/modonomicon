@@ -20,11 +20,6 @@ public class BookSmokingRecipePage extends BookProcessingRecipePage<SmokingRecip
         super(RecipeType.SMOKING, title1, recipeId1, title2, recipeId2, text, anchor);
     }
 
-    @Override
-    public ResourceLocation getType() {
-        return Page.SMOKING_RECIPE;
-    }
-
     public static BookSmokingRecipePage fromJson(JsonObject json) {
         var common = BookRecipePage.commonFromJson(json);
         var anchor = GsonHelper.getAsString(json, "anchor", "");
@@ -35,6 +30,11 @@ public class BookSmokingRecipePage extends BookProcessingRecipePage<SmokingRecip
         var common = BookRecipePage.commonFromNetwork(buffer);
         var anchor = buffer.readUtf();
         return new BookSmokingRecipePage(common.title1(), common.recipeId1(), common.title2(), common.recipeId2(), common.text(), anchor);
+    }
+
+    @Override
+    public ResourceLocation getType() {
+        return Page.SMOKING_RECIPE;
     }
 
     @Override

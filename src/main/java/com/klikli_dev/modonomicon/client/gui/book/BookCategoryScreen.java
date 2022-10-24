@@ -90,15 +90,17 @@ public class BookCategoryScreen {
         int scale = (int) this.bookOverviewScreen.getMinecraft().getWindow().getGuiScale();
         int innerX = this.bookOverviewScreen.getInnerX();
         int innerY = this.bookOverviewScreen.getInnerY();
-        int innerWidth = this.bookOverviewScreen.getInnerWidth();
+        int innerWidth = this.bookOverviewScreen.getInnerWidth() -1; //idk magic, otherwise it overflows by one (scaled) pixel into the border
         int innerHeight = this.bookOverviewScreen.getInnerHeight();
 
-        GL11.glScissor(innerX * scale, innerY * scale, innerWidth * scale, innerHeight * scale);
-        GL11.glEnable(GL_SCISSOR_TEST);
+        //use scissors to constrain entries to inner area of category screen
+        //scissors always needs to use gui scale because it runs in absolute coords!
+        //see also vanilla class SocialInteractionsPlayerList using scissors in #render
+        RenderSystem.enableScissor(innerX * scale, innerY * scale, innerWidth * scale, innerHeight * scale);
 
         this.renderEntries(pPoseStack, pMouseX, pMouseY);
-        GL11.glDisable(GL_SCISSOR_TEST);
 
+        RenderSystem.disableScissor();
 
         this.renderEntryTooltips(pPoseStack, pMouseX, pMouseY);
 
