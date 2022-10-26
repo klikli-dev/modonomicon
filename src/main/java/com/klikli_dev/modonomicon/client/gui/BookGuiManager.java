@@ -51,7 +51,20 @@ public class BookGuiManager {
         return false;
     }
 
+    public void safeguardBooksBuilt() {
+        if (!BookDataManager.get().areBooksBuilt()) {
+            //This is a workaround/fallback for cases like https://github.com/klikli-dev/modonomicon/issues/48
+            //Generally it should never happen, because client builds books on UpdateRecipesPacket
+            //If that packet for some reason is not handled clientside, we build books here and hope for the best :)
+            //Why don't we generally do it lazily like that? Because then markdown prerender errors only show in log if a book is actually opened
+            BookDataManager.get().tryBuildBooks();
+            BookDataManager.get().prerenderMarkdown();
+        }
+    }
+
     public void openBook(ResourceLocation bookId) {
+        this.safeguardBooksBuilt();
+
         if (this.showErrorScreen(bookId)) {
             return;
         }
@@ -111,12 +124,23 @@ public class BookGuiManager {
      * will not open those obviously).
      */
     public void openEntry(ResourceLocation bookId, @Nullable ResourceLocation categoryId, @Nullable ResourceLocation entryId, int page) {
+        this.safeguardBooksBuilt();
+
         if (bookId == null) {
             throw new IllegalArgumentException("bookId cannot be null");
         }
 
         if (this.showErrorScreen(bookId)) {
             return;
+        }
+
+        if(!BookDataManager.get().areBooksBuilt()){
+            //This is a workaround/fallback for cases like https://github.com/klikli-dev/modonomicon/issues/48
+            //Generally it should never happen, because client builds books on UpdateRecipesPacket
+            //If that packet for some reason is not handled clientside, we build books here and hope for the best :)
+            //Why don't we generally do it lazily like that? Because then markdown prerender errors only show in log if a book is actually opened
+            BookDataManager.get().tryBuildBooks();
+            BookDataManager.get().prerenderMarkdown();
         }
 
         var book = BookDataManager.get().getBook(bookId);
