@@ -270,7 +270,7 @@ public class MultiblockPreviewRenderer {
                     renderBlock(world, renderState, r.getWorldPosition(), alpha, ms);
 
                     if (renderState.getBlock() instanceof EntityBlock eb) {
-                        var be = blockEntityCache.computeIfAbsent(pos.immutable(), p -> eb.newBlockEntity(pos, renderState));
+                        var be = blockEntityCache.computeIfAbsent(r.getWorldPosition().immutable(), p -> eb.newBlockEntity(p, renderState));
                         if (be != null && !erroredBlockEntities.contains(be)) {
                             be.setLevel(mc.level);
 

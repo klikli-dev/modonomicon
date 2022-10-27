@@ -3,9 +3,9 @@
   "pattern": [
     [
       " WWW ",
-      "N G S",
+      "NHGHS",
       "NG0GS",
-      "N G S",
+      "NHGHS",
       " EEE "
     ],
     [
@@ -44,6 +44,10 @@
     "0":  {
       "type": "modonomicon:block",
       "block": "minecraft:skeleton_skull"
+    },
+    "H":  {
+      "type": "modonomicon:block",
+      "block": "minecraft:wither_skeleton_skull"
     }
   }
 }
