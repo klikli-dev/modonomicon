@@ -46,6 +46,17 @@ Entry textures govern how the Entry background behind the Icon as well as the ar
 
 If you want to use a custom texture, make sure to copy the default file from [`/assets/modonomicon/textures/gui/entry_textures.png`](https://github.com/klikli-dev/modonomicon/blob/version/1.19/src/main/resources/assets/modonomicon/textures/gui/entry_textures.png) and modify it in order to preserve the UV coordinates of all parts.
 
+* **show_category_button** (Boolean, _optional_)
+
+Defaults to `true`.   
+If false, the book overview screen will not show a button/bookmark for this category. 
+
+:::tip
+
+This is intended to be used with an entry that links to this category to effectively create "sub-categories". See also **[Entries](./entries)** for the `category_to_open` attribute.
+
+:::
+
 ## Usage Examples
 
 `/data/<mod_id>/modonomicons/<book_id>/categories/features.json`:

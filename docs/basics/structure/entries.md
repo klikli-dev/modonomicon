@@ -79,6 +79,17 @@ A parent connection does not imply an unlock condition or any logical dependency
 
 Pages are JSON Objects that define the actual book content. See [Page Types](../page-types/page-types.md) for the available types of pages.
 
+* **category_to_open** (ResourceLocation, _optional_)
+
+The resource location to the category that should be opened when this entry is clicked. 
+If this is set, the entry will never show it's pages, but instead open the category directly.
+
+:::tip
+
+This allows to create "sub-category" that does not show up in the category navigation menu, if combined with `"show_category_button" : false` setting for the target category. See also [Categories](./categories#attributes).
+
+::: 
+
 ## Parents 
 
 Entry Parents define which entry comes visually before this entry in the book, as in, which entry points an arrow at this entry.
