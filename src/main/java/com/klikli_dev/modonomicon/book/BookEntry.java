@@ -49,7 +49,13 @@ public class BookEntry {
     protected List<BookPage> pages;
     protected BookCondition condition;
 
-    public BookEntry(ResourceLocation id, ResourceLocation categoryId, String name, String description, BookIcon icon, int x, int y, int entryBackgroundUIndex, int entryBackgroundVIndex, boolean hideWhileLocked, BookCondition condition, List<BookEntryParent> parents, List<BookPage> pages) {
+    /**
+     * if this is not null pages will be ignored and the entry instead will open a new category
+     */
+    protected ResourceLocation categoryToOpenId;
+    protected BookCategory categoryToOpen;
+
+    public BookEntry(ResourceLocation id, ResourceLocation categoryId, String name, String description, BookIcon icon, int x, int y, int entryBackgroundUIndex, int entryBackgroundVIndex, boolean hideWhileLocked, BookCondition condition, List<BookEntryParent> parents, List<BookPage> pages, ResourceLocation categoryToOpenId) {
         this.id = id;
         this.categoryId = categoryId;
         this.name = name;
@@ -63,6 +69,8 @@ public class BookEntry {
         this.pages = pages;
         this.condition = condition;
         this.hideWhileLocked = hideWhileLocked;
+
+        this.categoryToOpenId = categoryToOpenId;
     }
 
     public static BookEntry fromJson(ResourceLocation id, JsonObject json) {
@@ -103,7 +111,13 @@ public class BookEntry {
             condition = BookCondition.fromJson(json.getAsJsonObject("condition"));
         }
 
-        return new BookEntry(id, categoryId, name, description, icon, x, y, entryBackgroundUIndex, entryBackgroundVIndex, hideWhileLocked, condition, parentEntries, pages);
+        ResourceLocation categoryToOpen = null;
+        if (json.has("category_to_open")) {
+            categoryToOpen = new ResourceLocation(GsonHelper.getAsString(json, "category_to_open"));
+        }
+
+        return new BookEntry(id, categoryId, name, description, icon, x, y, entryBackgroundUIndex,
+                entryBackgroundVIndex, hideWhileLocked, condition, parentEntries, pages, categoryToOpen);
     }
 
     public static BookEntry fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
@@ -135,7 +149,17 @@ public class BookEntry {
 
         var condition = BookCondition.fromNetwork(buffer);
 
-        return new BookEntry(id, categoryId, name, description, icon, x, y, entryBackgroundUIndex, entryBackgroundVIndex, hideWhileLocked, condition, parentEntries, pages);
+        ResourceLocation categoryToOpen = null;
+        if (buffer.readBoolean()) {
+            categoryToOpen = buffer.readResourceLocation();
+        }
+
+        return new BookEntry(id, categoryId, name, description, icon, x, y, entryBackgroundUIndex,
+                entryBackgroundVIndex, hideWhileLocked, condition, parentEntries, pages, categoryToOpen);
+    }
+
+    public BookCategory getCategoryToOpen() {
+        return this.categoryToOpen;
     }
 
     /**
@@ -152,6 +176,15 @@ public class BookEntry {
             newParents.add(new ResolvedBookEntryParent(parentEntry));
         }
         this.parents = newParents;
+
+        if (this.categoryToOpenId != null) {
+            this.categoryToOpen = this.book.getCategory(this.categoryToOpenId);
+
+            if(this.categoryToOpen == null){
+                BookErrorManager.get().error("Category to open \"" + this.categoryToOpenId + "\" does not exist in this book. Set to null.");
+                this.categoryToOpenId = null;
+            }
+        }
 
         //build pages
         int pageNum = 0;
@@ -197,6 +230,11 @@ public class BookEntry {
         }
 
         BookCondition.toNetwork(this.condition, buffer);
+
+        buffer.writeBoolean(this.categoryToOpenId != null);
+        if (this.categoryToOpenId != null) {
+            buffer.writeResourceLocation(this.categoryToOpenId);
+        }
     }
 
     public int getY() {
@@ -289,8 +327,8 @@ public class BookEntry {
             return true;
         }
 
-        for(var page : this.getPages()){
-            if(page.matchesQuery(query)){
+        for (var page : this.getPages()) {
+            if (page.matchesQuery(query)) {
                 return true;
             }
         }

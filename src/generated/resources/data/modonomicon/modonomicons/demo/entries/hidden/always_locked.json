@@ -1,0 +1,14 @@
+{
+  "category": "modonomicon:hidden",
+  "name": "book.modonomicon.demo.hidden.always_locked.name",
+  "description": "book.modonomicon.demo.hidden.always_locked.description",
+  "icon": "minecraft:nether_star",
+  "x": 0,
+  "y": 0,
+  "background_u_index": 0,
+  "background_v_index": 1,
+  "hide_while_locked": false,
+  "condition": {
+    "type": "modonomicon:false"
+  }
+}
