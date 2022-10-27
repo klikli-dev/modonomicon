@@ -39,6 +39,7 @@ public class DemoBookProvider extends BookProvider {
 
         var featuresCategory = this.makeFeaturesCategory(helper);
         var formattingCategory = this.makeFormattingCategory(helper);
+        var makeHiddenCategory = this.makeHiddenCategory(helper);
 
         var demoBook = BookModel.builder()
                 .withId(this.modLoc("demo"))
@@ -46,6 +47,7 @@ public class DemoBookProvider extends BookProvider {
                 .withTooltip(helper.bookTooltip())
                 .withCategory(featuresCategory)
                 .withCategory(formattingCategory)
+                .withCategory(makeHiddenCategory)
                 .build();
         return demoBook;
     }
@@ -55,7 +57,7 @@ public class DemoBookProvider extends BookProvider {
 
         var entryHelper = ModonomiconAPI.get().getEntryLocationHelper();
         entryHelper.setMap(
-                "_____________________",
+                "________5____________",
                 "__m______________d___",
                 "__________r__________",
                 "__c__________________",
@@ -80,6 +82,8 @@ public class DemoBookProvider extends BookProvider {
         var imageEntry = this.makeImageEntry(helper, entryHelper);
         imageEntry.withParent(BookEntryParentModel.builder().withEntryId(emptyEntry.id).build());
 
+        var redirectEntry = this.makeRedirectEntry(helper, entryHelper).build();
+
         return BookCategoryModel.builder()
                 .withId(this.modLoc("features"))
                 .withName(helper.categoryName())
@@ -91,6 +95,7 @@ public class DemoBookProvider extends BookProvider {
                 .withEntry(emptyEntry.build())
                 .withEntry(entityEntry.build())
                 .withEntry(imageEntry.build())
+                .withEntry(redirectEntry)
                 .build();
     }
 
@@ -365,6 +370,18 @@ public class DemoBookProvider extends BookProvider {
                 .withPages(introPage, imagePage);
     }
 
+    private BookEntryModel.Builder makeRedirectEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
+        helper.entry("redirect");
+
+        return BookEntryModel.builder()
+                .withId(this.modLoc("features/redirect"))
+                .withName(helper.entryName())
+                .withDescription(helper.entryDescription())
+                .withIcon("minecraft:ender_pearl")
+                .withLocation(entryHelper.get('5'))
+                .withCategoryToOpen(new ResourceLocation("modonomicon:hidden"));
+    }
+
     private BookCategoryModel makeFormattingCategory(BookLangHelper helper) {
         helper.category("formatting");
 
@@ -502,6 +519,38 @@ public class DemoBookProvider extends BookProvider {
                 .withEntryBackground(0, 1);
 
         return entry;
+    }
+
+    private BookCategoryModel makeHiddenCategory(BookLangHelper helper) {
+        helper.category("hidden");
+
+        var entryHelper = new EntryLocationHelper();
+        entryHelper.setMap(
+                "_____________________",
+                "_____________________",
+                "__________l__________",
+                "_____________________",
+                "_____________________"
+        );
+
+        helper.entry("always_locked");
+
+        var entry = BookEntryModel.builder()
+                .withId(this.modLoc(helper.category + "/" + helper.entry))
+                .withName(helper.entryName())
+                .withDescription(helper.entryDescription())
+                .withIcon("minecraft:nether_star")
+                .withLocation(entryHelper.get('l'))
+                .withEntryBackground(0, 1)
+                .withCondition(BookFalseConditionModel.builder().build());
+
+        return BookCategoryModel.builder()
+                .withId(this.modLoc(helper.category))
+                .withName(helper.categoryName())
+                .withIcon("minecraft:book")
+                .withShowCategoryButton(false)
+                .withEntry(entry.build())
+                .build();
     }
 
     @Override

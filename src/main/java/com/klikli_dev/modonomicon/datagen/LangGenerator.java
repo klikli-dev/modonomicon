@@ -122,6 +122,7 @@ public abstract class LangGenerator extends LanguageProvider {
 
             this.addDemoBookFeaturesCategory(helper);
             this.addDemoBookFormattingCategory(helper);
+            this.addDemoBookHiddenCategory(helper);
 
             this.add(helper.bookName(), "Demo Book");
             this.add(helper.bookTooltip(), "A book to showcase & test Modonomicon features.");
@@ -137,6 +138,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.addDemoBookEmptyPageEntry(helper);
             this.addDemoBookEntityEntry(helper);
             this.addDemoBookImagePageEntry(helper);
+            this.addDemoBookImageRedirectEntry(helper);
             this.add(helper.categoryName(), "Features Category");
 
         }
@@ -265,6 +267,13 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(helper.entryDescription(), "An entry showcasing image pages.");
         }
 
+        private void addDemoBookImageRedirectEntry(BookLangHelper helper) {
+            helper.entry("redirect");
+            this.add(helper.entryName(), "Category Redirect Entry");
+            this.add(helper.entryDescription(), "Redirects to another category.");
+        }
+
+
         private void addDemoBookFormattingCategory(BookLangHelper helper) {
             helper.category("formatting");
 
@@ -375,6 +384,16 @@ public abstract class LangGenerator extends LanguageProvider {
 
             this.add(helper.entryName(), "Link Formatting Entry");
             this.add(helper.entryDescription(), "An entry showcasing link formatting.");
+        }
+
+        private void addDemoBookHiddenCategory(BookLangHelper helper) {
+            helper.category("hidden");
+
+            helper.entry("always_locked");
+            this.add(helper.entryName(), "Always Locked Entry");
+            this.add(helper.entryDescription(), "Placeholder because I could not be bothered to create sample content here");
+
+            this.add(helper.categoryName(), "Hidden Category");
         }
 
         private void addBooks() {

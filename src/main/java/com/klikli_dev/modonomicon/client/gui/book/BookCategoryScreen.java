@@ -16,7 +16,6 @@ import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.BookEntryReadMessage;
 import com.klikli_dev.modonomicon.network.messages.SaveCategoryStateMessage;
-import com.klikli_dev.modonomicon.network.messages.SaveEntryStateMessage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
@@ -27,12 +26,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.client.ForgeHooksClient;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.Optional;
-
-import static org.lwjgl.opengl.GL11.GL_SCISSOR_TEST;
 
 
 public class BookCategoryScreen {
@@ -147,7 +143,13 @@ public class BookCategoryScreen {
     }
 
     public BookContentScreen openEntry(BookEntry entry) {
+        if(entry.getCategoryToOpen() != null){
+            this.bookOverviewScreen.changeCategory(entry.getCategoryToOpen());
+            return null;
+        }
+
         this.openEntry = entry.getId();
+
         var bookContentScreen = new BookContentScreen(this.bookOverviewScreen, entry);
         ForgeHooksClient.pushGuiLayer(Minecraft.getInstance(), bookContentScreen);
 

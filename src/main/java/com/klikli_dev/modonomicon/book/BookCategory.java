@@ -30,18 +30,20 @@ public class BookCategory {
     protected Map<ResourceLocation, BookEntry> entries;
 
     protected BookCondition condition;
-    //TODO: additional backgrounds with custom rendertypes?
+    protected boolean showCategoryButton;
 
-    public BookCategory(ResourceLocation id, String name, int sortNumber, BookCondition condition, BookIcon icon, ResourceLocation background, ResourceLocation entryTextures) {
+    public BookCategory(ResourceLocation id, String name, int sortNumber, BookCondition condition, boolean showCategoryButton, BookIcon icon, ResourceLocation background, ResourceLocation entryTextures) {
         this.id = id;
         this.name = name;
         this.sortNumber = sortNumber;
         this.condition = condition;
+        this.showCategoryButton = showCategoryButton;
         this.icon = icon;
         this.background = background;
         this.entryTextures = entryTextures;
         this.entries = new HashMap<>();
     }
+    //TODO: additional backgrounds with custom rendertypes?
 
     public static BookCategory fromJson(ResourceLocation id, JsonObject json) {
         var name = GsonHelper.getAsString(json, "name");
@@ -49,13 +51,14 @@ public class BookCategory {
         var icon = BookIcon.fromString(GsonHelper.getAsString(json, "icon"));
         var background = new ResourceLocation(GsonHelper.getAsString(json, "background", Category.DEFAULT_BACKGROUND));
         var entryTextures = new ResourceLocation(GsonHelper.getAsString(json, "entry_textures", Category.DEFAULT_ENTRY_TEXTURES));
+        var showCategoryButton = GsonHelper.getAsBoolean(json, "show_category_button", true);
 
         BookCondition condition = new BookTrueCondition(); //default to unlocked
-        if(json.has("condition")){
+        if (json.has("condition")) {
             condition = BookCondition.fromJson(json.getAsJsonObject("condition"));
         }
 
-        return new BookCategory(id, name, sortNumber, condition, icon, background, entryTextures);
+        return new BookCategory(id, name, sortNumber, condition, showCategoryButton, icon, background, entryTextures);
     }
 
     public static BookCategory fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
@@ -65,7 +68,12 @@ public class BookCategory {
         var background = buffer.readResourceLocation();
         var entryTextures = buffer.readResourceLocation();
         var condition = BookCondition.fromNetwork(buffer);
-        return new BookCategory(id, name, sortNumber, condition, icon, background, entryTextures);
+        var showCategoryButton = buffer.readBoolean();
+        return new BookCategory(id, name, sortNumber, condition, showCategoryButton, icon, background, entryTextures);
+    }
+
+    public boolean showCategoryButton() {
+        return this.showCategoryButton;
     }
 
     /**
@@ -139,6 +147,7 @@ public class BookCategory {
         buffer.writeResourceLocation(this.background);
         buffer.writeResourceLocation(this.entryTextures);
         BookCondition.toNetwork(this.condition, buffer);
+        buffer.writeBoolean(this.showCategoryButton);
     }
 
     public BookCondition getCondition() {

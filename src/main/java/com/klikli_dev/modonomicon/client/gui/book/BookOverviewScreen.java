@@ -303,14 +303,17 @@ public class BookOverviewScreen extends Screen {
         int buttonHeight = 20;
         int buttonSpacing = 2;
 
+        int buttonCount = 0;
         for (int i = 0, size = this.categories.size(); i < size; i++) {
+            if(this.categories.get(i).showCategoryButton()){
+                var button = new CategoryButton(this, this.categories.get(i), i,
+                        buttonX, buttonY + (buttonHeight + buttonSpacing) * buttonCount, buttonWidth, buttonHeight,
+                        (b) -> this.onBookCategoryButtonClick((CategoryButton) b),
+                        (b, stack, x, y) -> this.onBookCategoryButtonTooltip((CategoryButton) b, stack, x, y));
 
-            var button = new CategoryButton(this, this.categories.get(i), i,
-                    buttonX, buttonY + (buttonHeight + buttonSpacing) * i, buttonWidth, buttonHeight,
-                    (b) -> this.onBookCategoryButtonClick((CategoryButton) b),
-                    (b, stack, x, y) -> this.onBookCategoryButtonTooltip((CategoryButton) b, stack, x, y));
-
-            this.addRenderableWidget(button);
+                this.addRenderableWidget(button);
+                buttonCount++;
+            }
         }
 
 
