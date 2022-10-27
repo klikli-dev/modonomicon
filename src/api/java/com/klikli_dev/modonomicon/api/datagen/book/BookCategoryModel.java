@@ -26,6 +26,8 @@ public class BookCategoryModel {
 
     protected BookConditionModel condition;
 
+    protected boolean showCategoryButton = true;
+
     private BookCategoryModel() {
     }
 
@@ -51,6 +53,7 @@ public class BookCategoryModel {
         if(this.condition != null) {
             json.add("condition", this.condition.toJson());
         }
+        json.addProperty("show_category_button", this.showCategoryButton);
         return json;
     }
 
@@ -88,6 +91,7 @@ public class BookCategoryModel {
         protected ResourceLocation entryTextures = new ResourceLocation(Category.DEFAULT_ENTRY_TEXTURES);
         protected List<BookEntryModel> entries = new ArrayList<>();
         protected BookConditionModel condition;
+        protected boolean showCategoryButton = true;
 
         private Builder() {
         }
@@ -151,6 +155,11 @@ public class BookCategoryModel {
             return this;
         }
 
+        public Builder withShowCategoryButton(boolean showCategoryButton) {
+            this.showCategoryButton = showCategoryButton;
+            return this;
+        }
+
         public BookCategoryModel build() {
             BookCategoryModel bookCategoryModel = new BookCategoryModel();
             for (var entry : this.entries) {
@@ -169,6 +178,7 @@ public class BookCategoryModel {
             bookCategoryModel.name = this.name;
             bookCategoryModel.sortNumber = this.sortNumber;
             bookCategoryModel.condition = this.condition;
+            bookCategoryModel.showCategoryButton = this.showCategoryButton;
 
             return bookCategoryModel;
         }

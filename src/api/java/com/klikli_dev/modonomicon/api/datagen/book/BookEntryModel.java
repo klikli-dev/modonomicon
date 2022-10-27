@@ -31,6 +31,7 @@ public class BookEntryModel {
     protected boolean hideWhileLocked;
     protected List<BookPageModel> pages = new ArrayList<>();
     protected BookConditionModel condition;
+    protected ResourceLocation categoryToOpen;
 
     public static Builder builder() {
         return new Builder();
@@ -67,6 +68,10 @@ public class BookEntryModel {
 
         if(this.condition != null) {
             json.add("condition", this.condition.toJson());
+        }
+
+        if(this.categoryToOpen != null) {
+            json.addProperty("category_to_open", this.categoryToOpen.toString());
         }
 
         return json;
@@ -132,6 +137,7 @@ public class BookEntryModel {
         public boolean hideWhileLocked;
         public List<BookPageModel> pages = new ArrayList<>();
         public BookConditionModel condition;
+        protected ResourceLocation categoryToOpen;
 
         private Builder() {
         }
@@ -234,6 +240,11 @@ public class BookEntryModel {
             return this;
         }
 
+        public Builder withCategoryToOpen(ResourceLocation categoryToOpen) {
+            this.categoryToOpen = categoryToOpen;
+            return this;
+        }
+
         public BookEntryModel build() {
             BookEntryModel bookEntryModel = new BookEntryModel();
             bookEntryModel.description = this.description;
@@ -249,6 +260,7 @@ public class BookEntryModel {
             bookEntryModel.id = this.id;
             bookEntryModel.pages = this.pages;
             bookEntryModel.condition = this.condition;
+            bookEntryModel.categoryToOpen = this.categoryToOpen;
             return bookEntryModel;
         }
     }
