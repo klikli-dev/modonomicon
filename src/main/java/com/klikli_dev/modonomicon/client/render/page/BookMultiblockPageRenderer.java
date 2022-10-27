@@ -197,7 +197,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
             this.renderBlock(buffers, level, renderState, r.getWorldPosition(), alpha, ms);
 
             if (renderState.getBlock() instanceof EntityBlock eb) {
-                var be = this.blockEntityCache.computeIfAbsent(pos.immutable(), p -> eb.newBlockEntity(pos, renderState));
+                var be = this.blockEntityCache.computeIfAbsent(r.getWorldPosition().immutable(), p -> eb.newBlockEntity(p, renderState));
                 if (be != null && !this.erroredBlockEntities.contains(be)) {
                     be.setLevel(mc.level);
 
