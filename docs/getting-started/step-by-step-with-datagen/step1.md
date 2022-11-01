@@ -26,6 +26,12 @@ If the installer asks to "Add Java to PATH" and or "Set JAVA_HOME" please accept
 
 For the purposes of this Guide we will start with an empty version of the Demo Project.
 
+:::info
+
+The demo project is on 1.19.2. However, the generated book should work on both 1.18.2 and 1.192. If not please create a github issue at https://github.com/klikli-dev/modonomicon.
+
+:::
+
 ### via Git (Mod Developers)
 
 1. Open terminal
@@ -58,6 +64,18 @@ If you know what you are doing you can also skip ahead and download the "main" b
 
 The next steps are required to set up a minecraft development environment allowing you to run the datagen as well as minecraft locally for testing the generated files.
 
+1. Open Terminal in the folder you downloaded and extracted the Demo Project to
+   1. If you see the files `gradlew` and `gradlew.bat` you are in the right folder
+
+:::tip
+
+Not sure how to open the terminal in the folder? 
+1. Most Operating Systems will allow you to right click or shift + right click in the folder and select "Open in Terminal" or similar.
+2. Otherwise use the command `cd` like so: `cd "<path to folder>"`
+   1. Note: On windows you might first have to switch to the correct drive. If e.g. terminal shows `C:\\` but your path starts with `D:\\` you can switch to the correct drive by running simply `D:` (no `cd` or any other command/prefix required)
+
+::: 
+
 ### IDE Setup 
 
 :::info
@@ -66,13 +84,19 @@ If you are not using an IDE you can skip this step.
 
 :::
 
-1. Open Terminal in the folder you downloaded the Demo Project to
+1. Open Terminal in the folder you downloaded and extracted the Demo Project to
 2. Generate run configurations:
    - For IntelliJ Users: Run `./gradlew genIntellijRuns` 
    - For Eclipse Users: Run `./gradlew genEclipseRuns`
    - For VSCode Users: Run `./gradlew genVSCodeRuns`
 
 In future steps you can use the provided run configurations to run the datagen and minecraft, instead of the commands this guide will use.
+
+:::tip 
+
+**Windows Users:** If you are getting a message along the lines of `command . not found` try running `gradlew.bat <...>` instead of `./gradlew <...>`
+
+:::
 
 ### Running Minecraft
 
@@ -81,9 +105,8 @@ In future steps you can use the provided run configurations to run the datagen a
 3. After a few seconds (possibly minutes) Minecraft should open and show the main menu.   
 4. Success!
 
-:::tip
+:::tip 
 
-Not sure how to open the terminal in the folder? 
-Most Operating Systems will allow you to right click or shift + right click in the folder and select "Open in Terminal" or similar.
+**Windows Users:** If you are getting a message along the lines of `command . not found` try running `gradlew.bat <...>` instead of `./gradlew <...>`
 
-::: 
+:::
