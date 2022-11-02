@@ -66,7 +66,10 @@ public class CategoryButton extends Button {
             //then draw icon
 
             int iconOffset = 8;
+            pMatrixStack.pushPose();
+            pMatrixStack.translate(0, 0, 100);
             this.category.getIcon().render(pMatrixStack, renderX + iconOffset, this.y + 2);
+            pMatrixStack.popPose();
         }
 
         if (this.isHoveredOrFocused()) {

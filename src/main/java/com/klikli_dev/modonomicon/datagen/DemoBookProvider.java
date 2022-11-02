@@ -406,7 +406,7 @@ public class DemoBookProvider extends BookProvider {
         return BookCategoryModel.builder()
                 .withId(this.modLoc("formatting"))
                 .withName(helper.categoryName())
-                .withIcon("minecraft:book")
+                .withIcon("minecraft:textures/item/book.png")
                 .withEntry(basicFormattingEntry.build())
                 .withEntry(advancedFormattingEntry.build())
                 .withEntry(linkFormattingEntry.build())
