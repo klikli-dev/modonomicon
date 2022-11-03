@@ -293,7 +293,7 @@ public class BookSearchScreen extends Screen implements BookScreenWithButtons {
         this.bookLeft = (this.width - BookContentScreen.BOOK_BACKGROUND_WIDTH) / 2;
         this.bookTop = (this.height - BookContentScreen.BOOK_BACKGROUND_HEIGHT) / 2;
 
-        var textRenderer = new BookTextRenderer();
+        var textRenderer = new BookTextRenderer(this.getBook());
         this.prerenderMarkdown(textRenderer);
 
         //we filter out entries that are locked or in locked categories

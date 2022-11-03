@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
+import com.klikli_dev.modonomicon.book.Book;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -102,4 +103,9 @@ public interface ComponentNodeRendererContext {
      * (ab)using the link syntax.
      */
     List<LinkRenderer> getLinkRenderers();
+
+    /**
+     * Gets the book we are rendering.
+     */
+    Book getBook();
 }

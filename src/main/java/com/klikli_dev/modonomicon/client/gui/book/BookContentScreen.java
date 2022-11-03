@@ -486,7 +486,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
 
                         //handle book links -> check if locked
                         if(BookLink.isBookLink(clickEvent.getValue())){
-                            var link = BookLink.from(clickEvent.getValue());
+                            var link = BookLink.from(this.getBook(), clickEvent.getValue());
                             var book = BookDataManager.get().getBook(link.bookId);
                             if (link.entryId != null) {
                                 var entry = book.getEntry(link.entryId);
@@ -552,7 +552,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
 
                     //handle book links
                     if(BookLink.isBookLink(event.getValue())) {
-                        var link = BookLink.from(event.getValue());
+                        var link = BookLink.from(this.getBook(), event.getValue());
                         var book = BookDataManager.get().getBook(link.bookId);
                         if (link.entryId != null) {
                             var entry = book.getEntry(link.entryId);

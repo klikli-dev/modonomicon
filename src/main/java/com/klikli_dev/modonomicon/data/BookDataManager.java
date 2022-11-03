@@ -121,8 +121,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         //TODO: allow modders to configure this renderer
 
         Modonomicon.LOGGER.info("Pre-rendering markdown ...");
-        var textRenderer = new BookTextRenderer();
         for (var book : this.books.values()) {
+            var textRenderer = new BookTextRenderer(book);
             BookErrorManager.get().getContextHelper().reset();
             BookErrorManager.get().setCurrentBookId(book.getId());
             try {

@@ -29,7 +29,7 @@ public class BookLinkRenderer implements LinkRenderer {
                     BookErrorManager.get().getContextHelper()
             );
 
-            var bookLink = BookLink.from(link.getDestination());
+            var bookLink = BookLink.from(context.getBook(), link.getDestination());
             var goToText = "book." + bookLink.bookId.toString().replace(":", ".") + ".name";
             if (bookLink.categoryId != null) {
                 goToText = "book." + bookLink.bookId.toString().replace(":", ".") + "."
