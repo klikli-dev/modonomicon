@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
+import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ext.ComponentStrikethroughExtension;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ext.ComponentUnderlineExtension;
 import net.minecraft.network.chat.MutableComponent;
@@ -22,12 +23,15 @@ public class BookTextRenderer {
 
     private final List<Extension> extensions;
 
-    public BookTextRenderer() {
+    private final Book book;
+
+    public BookTextRenderer(Book book) {
         //TODO: make parser configurable for modders
         this.extensions = List.of(ComponentStrikethroughExtension.create(), ComponentUnderlineExtension.create());
         this.markdownParser = Parser.builder()
                 .extensions(this.extensions)
                 .build();
+        this.book = book;
     }
 
     public List<MutableComponent> render(String markdown) {
@@ -49,6 +53,6 @@ public class BookTextRenderer {
 
         var document = this.markdownParser.parse(markdown);
 
-        return renderer.render(document);
+        return renderer.render(document, this.book);
     }
 }

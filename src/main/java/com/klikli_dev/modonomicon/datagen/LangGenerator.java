@@ -370,8 +370,10 @@ public abstract class LangGenerator extends LanguageProvider {
                     """
                             [View a Multiblock](entry://modonomicon:demo/features/multiblock) \\
                             [Link to a Condition](entry://modonomicon:demo/features/condition_level_1) \\
-                            [Link to basic formatting](entry://modonomicon:demo/formatting/basic)
-                            [Always locked](entry://modonomicon:demo/formatting/always_locked)
+                            [Link to basic formatting](entry://modonomicon:demo/formatting/basic) \\
+                            [Link without book id](entry://formatting/basic) \\
+                            [Always locked](entry://modonomicon:demo/formatting/always_locked) \\
+                            [Category Link without book id](category://formatting/)
                                  """);
 
             helper.page("page3"); //patchouli links

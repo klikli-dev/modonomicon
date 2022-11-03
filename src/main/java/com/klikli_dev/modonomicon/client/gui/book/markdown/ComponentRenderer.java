@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
+import com.klikli_dev.modonomicon.book.Book;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -58,8 +59,8 @@ public class ComponentRenderer {
         return new ComponentRenderer.Builder();
     }
 
-    public List<MutableComponent> render(Node node) {
-        ComponentRenderer.RendererContext context = new ComponentRenderer.RendererContext();
+    public List<MutableComponent> render(Node node, Book book) {
+        ComponentRenderer.RendererContext context = new ComponentRenderer.RendererContext(book);
         context.render(node);
         context.cleanupPostRender();
         return context.getComponents();
@@ -165,8 +166,10 @@ public class ComponentRenderer {
     private class RendererContext implements ComponentNodeRendererContext {
 
         private final NodeRendererMap nodeRendererMap = new NodeRendererMap();
+        private final Book book;
 
-        private RendererContext() {
+        private RendererContext(Book book) {
+            this.book = book;
             // The first node renderer for a node type "wins".
             for (int i = ComponentRenderer.this.nodeRendererFactories.size() - 1; i >= 0; i--) {
                 var nodeRendererFactory = ComponentRenderer.this.nodeRendererFactories.get(i);
@@ -227,13 +230,13 @@ public class ComponentRenderer {
 
         public boolean isEmptyComponent() {
             //translation contents have no content, they have a key (which doubles as content).
-            return ((TranslatableContents)this.getCurrentComponent().getContents()).getKey().isEmpty() && this.getCurrentComponent().getSiblings().isEmpty();
+            return ((TranslatableContents) this.getCurrentComponent().getContents()).getKey().isEmpty() && this.getCurrentComponent().getSiblings().isEmpty();
         }
 
         public void finalizeCurrentComponent() {
             this.getComponents().add(this.getCurrentComponent());
             this.setCurrentComponent(this.getListHolder() == null ?
-                     Component.translatable("") : MutableComponent.create(new ListItemContents(this.getListHolder(), "")));
+                    Component.translatable("") : MutableComponent.create(new ListItemContents(this.getListHolder(), "")));
         }
 
         @Override
@@ -254,6 +257,11 @@ public class ComponentRenderer {
         @Override
         public List<LinkRenderer> getLinkRenderers() {
             return ComponentRenderer.this.linkRenderers;
+        }
+
+        @Override
+        public Book getBook() {
+            return this.book;
         }
     }
 }

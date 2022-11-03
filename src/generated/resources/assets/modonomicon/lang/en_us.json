@@ -68,7 +68,7 @@
   "book.modonomicon.demo.formatting.link.name": "Link Formatting Entry",
   "book.modonomicon.demo.formatting.link.page1.text": "[Click me!](https://klikli-dev.github.io/modonomicon/) \\\n[Or me!](https://github.com/klikli-dev/modonomicon)\n",
   "book.modonomicon.demo.formatting.link.page1.title": "Http Links",
-  "book.modonomicon.demo.formatting.link.page2.text": "[View a Multiblock](entry://modonomicon:demo/features/multiblock) \\\n[Link to a Condition](entry://modonomicon:demo/features/condition_level_1) \\\n[Link to basic formatting](entry://modonomicon:demo/formatting/basic)\n[Always locked](entry://modonomicon:demo/formatting/always_locked)\n",
+  "book.modonomicon.demo.formatting.link.page2.text": "[View a Multiblock](entry://modonomicon:demo/features/multiblock) \\\n[Link to a Condition](entry://modonomicon:demo/features/condition_level_1) \\\n[Link to basic formatting](entry://modonomicon:demo/formatting/basic) \\\n[Link without book id](entry://formatting/basic) \\\n[Always locked](entry://modonomicon:demo/formatting/always_locked) \\\n[Category Link without book id](category://formatting/) \\\n",
   "book.modonomicon.demo.formatting.link.page2.title": "Book Links",
   "book.modonomicon.demo.formatting.link.page3.text": "[Link to a Patchouli Entry](patchouli://occultism:dictionary_of_spirits//misc/books_of_calling)\n",
   "book.modonomicon.demo.formatting.link.page3.title": "Patchouli Links",
