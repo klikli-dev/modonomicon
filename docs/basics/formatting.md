@@ -102,7 +102,7 @@ Syntax:
 
 :::tip 
 
-If <book-id> is ommitted the current book is assumed.
+If `<book-id>` is ommitted the current book is assumed.
 
 ::: 
   
@@ -115,7 +115,7 @@ Syntax:
 
 :::tip 
 
-If <book-id> is ommitted the current book is assumed.
+If `<book-id>` is ommitted the current book is assumed.
 
 ::: 
 
