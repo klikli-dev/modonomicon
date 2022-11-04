@@ -102,7 +102,7 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
         return player.getCapability(CapabilityRegistry.BOOK_UNLOCK).map(c -> c.isRead(entry)).orElse(false);
     }
 
-    public static void onAdvancement(final AdvancementEvent event) {
+    public static void onAdvancement(final AdvancementEvent.AdvancementEarnEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverplayer) {
             updateAndSyncFor(serverplayer);
         }
