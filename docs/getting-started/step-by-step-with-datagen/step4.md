@@ -8,6 +8,24 @@ Finally, it is time to add our texts. That means we will now tell the game what 
 
 If you are impatient you can skip ahead to **[Results](#results)** to see what we will be creating.
 
+
+## Preparations: Java Imports
+
+1. Open `EnUsProvider.java` in your IDE or text editor.
+2. Below `package ...` but above `public class ...` add the following lines:
+   ```java 
+   import com.klikli_dev.modonomicon.api.ModonomiconAPI;
+   import com.klikli_dev.modonomicon.api.datagen.BookLangHelper;
+   import com.klikli_dev.modonomicon_demo_book.ModonomiconDemoBook;
+   ```
+
+:::tip 
+
+If you are using an IDE it might do this step for you.
+
+::: 
+
+
 ## Adding translations for the Book Name and Tooltip
 
 1. Open `EnUsProvider.java`

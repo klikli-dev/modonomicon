@@ -10,6 +10,25 @@ We will focus on the structure and layout of the book in this step, and add the 
 
 If you are impatient you can skip ahead to **[Results](#results)** to see what we will be creating.
 
+## Preparations: Java Imports
+
+1. Open `DemoBookProvider.java` in your IDE or text editor.
+2. Below `package ...` but above `public class ...` add the following lines:
+   ```java 
+   import com.klikli_dev.modonomicon.api.datagen.EntryLocationHelper;
+   import com.klikli_dev.modonomicon.api.datagen.book.page.BookMultiblockPageModel;
+   import com.klikli_dev.modonomicon.api.datagen.book.page.BookSpotlightPageModel;
+   import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
+   import net.minecraft.world.item.crafting.Ingredient;
+   ```
+
+
+:::tip 
+
+If you are using an IDE it might do this step for you.
+
+::: 
+
 ## Our first Book
 
 1. Open `DemoBookProvider.java` in your IDE or text editor.
