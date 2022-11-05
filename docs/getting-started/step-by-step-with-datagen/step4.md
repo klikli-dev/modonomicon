@@ -75,6 +75,16 @@ Let's take a look at our all-new translated book item:
    ```java
    this.addDemoBookFeaturesCategory(helper);
    ```
+   
+   so it looks something like this
+   ```java
+   private void addDemoBook(){
+        //existing code (unchanged)
+        //...
+        this.addDemoBookFeaturesCategory(helper);
+    }
+
+   ```
 
 Now we can test our translated category:
 
