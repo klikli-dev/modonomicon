@@ -244,13 +244,18 @@ public class DemoBookProvider extends BookProvider {
                 .withRecipeId1("minecraft:netherite_axe_smithing")
                 .build();
 
+        helper.page("missing");
+        var missing = BookSmithingRecipePageModel.builder()
+                .withRecipeId1("minecraft:netherite_axe_smithing_does_not_exist")
+                .build();
+
         return BookEntryModel.builder()
                 .withId(this.modLoc("features/recipe"))
                 .withName(helper.entryName())
                 .withDescription(helper.entryDescription())
                 .withIcon("minecraft:crafting_table")
                 .withLocation(entryHelper.get('c'))
-                .withPages(introPage, crafting, smelting, smoking, blasting, campfireCooking, stonecutting, smithing);
+                .withPages(introPage, crafting, smelting, smoking, blasting, campfireCooking, stonecutting, smithing, missing);
     }
 
     private BookEntryModel.Builder makeSpotlightEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {

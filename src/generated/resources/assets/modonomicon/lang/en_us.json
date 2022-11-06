@@ -102,6 +102,7 @@
   "modonomicon.gui.hover.http_link": "Visit: %s",
   "modonomicon.gui.no_errors_found": "No errors found. You should not see this page!",
   "modonomicon.gui.open_search": "Open Search",
+  "modonomicon.gui.recipe_page.recipe_missing": "Recipe %s is was not found! This may be an issue with the mod, or the modpack may have disabled it.",
   "modonomicon.gui.search.entry.locked": "(Locked)",
   "modonomicon.gui.search.entry_list_title": "Entries",
   "modonomicon.gui.search.info": "To search for entries, simply start typing what you are looking for.\n",
