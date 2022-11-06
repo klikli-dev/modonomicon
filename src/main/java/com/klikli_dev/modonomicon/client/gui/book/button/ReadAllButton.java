@@ -6,14 +6,12 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.button;
 
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Gui;
-import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookOverviewScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 

@@ -7,8 +7,8 @@
 package com.klikli_dev.modonomicon.item;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Tooltips;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.Nbt;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.Nbt;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.data.BookDataManager;

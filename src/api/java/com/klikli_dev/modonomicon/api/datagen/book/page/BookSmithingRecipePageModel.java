@@ -6,7 +6,7 @@
 
 package com.klikli_dev.modonomicon.api.datagen.book.page;
 
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Page;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import org.jetbrains.annotations.NotNull;
 
 public class BookSmithingRecipePageModel extends BookRecipePageModel {

@@ -7,7 +7,7 @@
 package com.klikli_dev.modonomicon.book.page;
 
 import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Page;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;

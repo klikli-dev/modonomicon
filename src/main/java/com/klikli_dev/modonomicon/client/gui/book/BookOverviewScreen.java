@@ -7,7 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.capability.BookStateCapability;
@@ -16,9 +16,7 @@ import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ReadAllButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
-import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.network.Networking;
-import com.klikli_dev.modonomicon.network.messages.BookEntryReadMessage;
 import com.klikli_dev.modonomicon.network.messages.ClickReadAllButtonMessage;
 import com.klikli_dev.modonomicon.network.messages.SaveBookStateMessage;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -26,7 +24,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -351,7 +348,7 @@ public class BookOverviewScreen extends Screen {
     }
 
     protected void onSearchButtonTooltip(SearchButton button, PoseStack pPoseStack, int pMouseX, int pMouseY) {
-        this.renderTooltip(pPoseStack, new TranslatableComponent(ModonimiconConstants.I18n.Gui.OPEN_SEARCH), pMouseX, pMouseY);
+        this.renderTooltip(pPoseStack, new TranslatableComponent(ModonomiconConstants.I18n.Gui.OPEN_SEARCH), pMouseX, pMouseY);
     }
 
     @Override

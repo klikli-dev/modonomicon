@@ -6,7 +6,7 @@
 
 package com.klikli_dev.modonomicon.network.messages;
 
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Command;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Command;
 import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
 import com.klikli_dev.modonomicon.network.Message;
 import net.minecraft.ChatFormatting;

@@ -7,8 +7,8 @@
 package com.klikli_dev.modonomicon.datagen;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.*;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.*;
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.api.datagen.BookLangHelper;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
@@ -48,7 +48,7 @@ public abstract class LangGenerator extends LanguageProvider {
         }
 
         private void addMisc() {
-            this.add(ModonimiconConstants.I18n.ITEM_GROUP, "Modonomicon");
+            this.add(ModonomiconConstants.I18n.ITEM_GROUP, "Modonomicon");
 
             //buttons
             this.add(Gui.BUTTON_PREVIOUS, "Previous Page");

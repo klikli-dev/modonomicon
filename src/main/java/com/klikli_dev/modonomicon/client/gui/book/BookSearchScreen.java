@@ -7,7 +7,7 @@
 
 package com.klikli_dev.modonomicon.client.gui.book;
 
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Gui;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.BookTextHolder;

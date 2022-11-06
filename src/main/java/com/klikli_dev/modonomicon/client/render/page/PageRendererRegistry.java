@@ -6,7 +6,7 @@
 
 package com.klikli_dev.modonomicon.client.render.page;
 
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Page;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.book.page.*;
 import net.minecraft.resources.ResourceLocation;
 

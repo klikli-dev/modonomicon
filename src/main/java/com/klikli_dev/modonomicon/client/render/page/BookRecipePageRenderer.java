@@ -6,11 +6,10 @@
 
 package com.klikli_dev.modonomicon.client.render.page;
 
-import com.klikli_dev.modonomicon.api.ModonimiconConstants;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.book.page.BookRecipePage;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.crafting.Recipe;
@@ -44,7 +43,7 @@ public abstract class BookRecipePageRenderer<R extends Recipe<?>, T extends Book
             }
         } else {
             this.drawWrappedStringNoShadow(poseStack,
-                    new TranslatableComponent(ModonimiconConstants.I18n.Gui.RECIPE_PAGE_RECIPE_MISSING, this.page.getRecipeId1()),
+                    new TranslatableComponent(ModonomiconConstants.I18n.Gui.RECIPE_PAGE_RECIPE_MISSING, this.page.getRecipeId1()),
                     recipeX - 13, recipeY - 15, 0xFF0000, BookContentScreen.PAGE_WIDTH);
         }
 

@@ -7,7 +7,7 @@
 package com.klikli_dev.modonomicon.book.page;
 
 import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Page;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;

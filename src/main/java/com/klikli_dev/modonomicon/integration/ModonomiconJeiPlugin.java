@@ -6,7 +6,7 @@
 
 package com.klikli_dev.modonomicon.integration;
 
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.Nbt;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.Nbt;
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import mezz.jei.api.IModPlugin;

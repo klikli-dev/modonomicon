@@ -7,8 +7,8 @@
 package com.klikli_dev.modonomicon.api.datagen.book;
 
 import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Book;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Book;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;

@@ -8,7 +8,7 @@
 package com.klikli_dev.modonomicon.client.render;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.client.ClientTicks;
@@ -120,7 +120,7 @@ public class MultiblockPreviewRenderer {
             int top = y + 10;
 
             if (timeComplete > 0) {
-                String s = I18n.get(ModonimiconConstants.I18n.Multiblock.COMPLETE);
+                String s = I18n.get(ModonomiconConstants.I18n.Multiblock.COMPLETE);
                 ms.pushPose();
                 ms.translate(0, Math.min(height + 5, animTime), 0);
                 mc.font.drawShadow(ms, s, x - mc.font.width(s) / 2.0F, top + height - 10, 0x00FF00);
@@ -137,7 +137,7 @@ public class MultiblockPreviewRenderer {
             drawGradientRect(ms, left, top, left + progressWidth, top + height, color, color2);
 
             if (!isAnchored) {
-                String s = I18n.get(ModonimiconConstants.I18n.Multiblock.NOT_ANCHORED);
+                String s = I18n.get(ModonomiconConstants.I18n.Multiblock.NOT_ANCHORED);
                 mc.font.drawShadow(ms, s, x - mc.font.width(s) / 2.0F, top + height + 8, 0xFFFFFF);
             } else {
                 if (lookingState != null) {
@@ -163,7 +163,7 @@ public class MultiblockPreviewRenderer {
                     String progress = blocksDone + "/" + blocks;
 
                     if (blocksDone == blocks && airFilled > 0) {
-                        progress = I18n.get(ModonimiconConstants.I18n.Multiblock.REMOVE_BLOCKS);
+                        progress = I18n.get(ModonomiconConstants.I18n.Multiblock.REMOVE_BLOCKS);
                         color = 0xDA4E3F;
                         mult *= 2;
                         posx -= width / 2;
