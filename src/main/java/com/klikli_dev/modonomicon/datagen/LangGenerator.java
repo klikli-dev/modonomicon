@@ -79,6 +79,10 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(Gui.OPEN_SEARCH, "Open Search");
 
 
+            this.add(Gui.RECIPE_PAGE_RECIPE_MISSING, "Recipe %s is was not found! This may be an issue with the mod, or the modpack may have disabled it.");
+
+
+
             //Tooltip
             this.add(Tooltips.CONDITION_ADVANCEMENT, "Requires Advancement: %s");
             this.add(Tooltips.CONDITION_ENTRY_UNLOCKED, "Requires unlocked Entry: %s");

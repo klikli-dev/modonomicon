@@ -74,6 +74,14 @@
       "recipe_id_1": "minecraft:netherite_axe_smithing",
       "title2": "",
       "text": ""
+    },
+    {
+      "type": "modonomicon:smithing_recipe",
+      "anchor": "",
+      "title1": "",
+      "recipe_id_1": "minecraft:netherite_axe_smithing_does_not_exist",
+      "title2": "",
+      "text": ""
     }
   ]
 }

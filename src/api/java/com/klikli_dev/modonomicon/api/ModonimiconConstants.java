@@ -106,6 +106,8 @@ public class ModonimiconConstants {
             public static final String SEARCH_ENTRY_LIST_TITLE= PREFIX + "search.entry_list_title";
 
             public static final String OPEN_SEARCH= PREFIX + "open_search";
+
+            public static final String RECIPE_PAGE_RECIPE_MISSING = PREFIX + "recipe_page.recipe_missing";
         }
 
         public static class Multiblock {

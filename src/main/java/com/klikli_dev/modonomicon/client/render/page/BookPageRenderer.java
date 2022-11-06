@@ -157,6 +157,13 @@ public abstract class BookPageRenderer<T extends BookPage> {
         this.font.draw(poseStack, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color);
     }
 
+    public void drawWrappedStringNoShadow(PoseStack poseStack, Component s, int x, int y, int color, int width) {
+        for (FormattedCharSequence formattedcharsequence : this.font.split(s, width)) {
+            this.font.draw(poseStack, formattedcharsequence, x, y + (this.font.lineHeight), color);
+            y += this.font.lineHeight;
+        }
+    }
+
     /**
      * @param pMouseX localized to page x (mouseX - bookLeft - page.left)
      * @param pMouseY localized to page y (mouseY - bookTop - page.top)
