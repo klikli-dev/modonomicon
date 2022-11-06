@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.api;
 
 import net.minecraft.resources.ResourceLocation;
 
-public class ModonimiconConstants {
+public class ModonomiconConstants {
 
     public static class Data {
         public static final String MODONOMICON_DATA_PATH = ModonomiconAPI.ID + "s";

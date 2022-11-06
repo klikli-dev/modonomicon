@@ -8,7 +8,7 @@
 
 package com.klikli_dev.modonomicon.capability;
 
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.Nbt;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.Nbt;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookEntry;

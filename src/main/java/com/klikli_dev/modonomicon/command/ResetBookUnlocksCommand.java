@@ -6,12 +6,10 @@
 
 package com.klikli_dev.modonomicon.command;
 
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Command;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Command;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
 import com.klikli_dev.modonomicon.data.BookDataManager;
-import com.klikli_dev.modonomicon.registry.CapabilityRegistry;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;

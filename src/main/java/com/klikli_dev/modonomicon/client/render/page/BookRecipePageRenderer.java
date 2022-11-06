@@ -6,7 +6,7 @@
 
 package com.klikli_dev.modonomicon.client.render.page;
 
-import com.klikli_dev.modonomicon.api.ModonimiconConstants;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.book.page.BookRecipePage;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -43,7 +43,7 @@ public abstract class BookRecipePageRenderer<R extends Recipe<?>, T extends Book
             }
         } else {
             this.drawWrappedStringNoShadow(poseStack,
-                    Component.translatable(ModonimiconConstants.I18n.Gui.RECIPE_PAGE_RECIPE_MISSING, this.page.getRecipeId1()),
+                    Component.translatable(ModonomiconConstants.I18n.Gui.RECIPE_PAGE_RECIPE_MISSING, this.page.getRecipeId1()),
                     recipeX - 13, recipeY - 15, 0xFF0000, BookContentScreen.PAGE_WIDTH);
         }
 

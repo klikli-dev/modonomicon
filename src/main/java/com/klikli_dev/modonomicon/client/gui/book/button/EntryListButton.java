@@ -8,12 +8,11 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.button;
 
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Gui;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
-import com.klikli_dev.modonomicon.client.gui.book.BookOverviewScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookSearchScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;

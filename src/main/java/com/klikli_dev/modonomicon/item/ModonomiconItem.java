@@ -7,20 +7,15 @@
 package com.klikli_dev.modonomicon.item;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Tooltips;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.Nbt;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.Nbt;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
-import com.klikli_dev.modonomicon.registry.SoundRegistry;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
@@ -35,8 +30,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
-
-import net.minecraft.world.item.Item.Properties;
 
 public class ModonomiconItem extends Item {
     public ModonomiconItem(Properties pProperties) {

@@ -6,21 +6,16 @@
 
 package com.klikli_dev.modonomicon.command;
 
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Command;
-import com.klikli_dev.modonomicon.book.Book;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Command;
 import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
-import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.SendUnlockCodeToClientMessage;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
-import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.network.chat.Component;
 

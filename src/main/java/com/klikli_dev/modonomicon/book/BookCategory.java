@@ -7,7 +7,7 @@
 package com.klikli_dev.modonomicon.book;
 
 import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.Data.Category;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Category;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookTrueCondition;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;

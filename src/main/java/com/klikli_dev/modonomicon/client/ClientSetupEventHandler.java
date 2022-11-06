@@ -7,25 +7,20 @@
 package com.klikli_dev.modonomicon.client;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.api.ModonimiconConstants;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
-import com.klikli_dev.modonomicon.data.BookDataManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
-import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public class ClientSetupEventHandler {
 
@@ -88,7 +83,7 @@ public class ClientSetupEventHandler {
     }
 
     public static void onModelBake(BakingCompleted event) {
-        ModelResourceLocation key = new ModelResourceLocation(ModonimiconConstants.Data.Book.ITEM_ID, "inventory");
+        ModelResourceLocation key = new ModelResourceLocation(ModonomiconConstants.Data.Book.ITEM_ID, "inventory");
         BakedModel oldModel = event.getModels().get(key);
         if (oldModel != null) {
             event.getModels().put(key, new BookBakedModel(oldModel, event.getModelBakery()));

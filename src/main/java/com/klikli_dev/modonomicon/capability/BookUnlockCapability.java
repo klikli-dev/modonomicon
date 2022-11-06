@@ -8,7 +8,7 @@
 
 package com.klikli_dev.modonomicon.capability;
 
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.Nbt;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.Nbt;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookEntry;
@@ -20,7 +20,6 @@ import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.SyncBookUnlockCapabilityMessage;
 import com.klikli_dev.modonomicon.registry.CapabilityRegistry;
-import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

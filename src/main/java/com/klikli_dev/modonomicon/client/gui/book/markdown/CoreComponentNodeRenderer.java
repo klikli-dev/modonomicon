@@ -6,7 +6,7 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
-import com.klikli_dev.modonomicon.api.ModonimiconConstants.I18n.Gui;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import net.minecraft.network.chat.*;
 import net.minecraft.network.chat.ClickEvent.Action;
 import org.commonmark.internal.renderer.text.BulletListHolder;
