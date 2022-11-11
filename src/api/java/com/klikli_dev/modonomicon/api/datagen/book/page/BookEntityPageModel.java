@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 public class BookEntityPageModel extends BookPageModel {
     protected BookTextHolderModel entityName = new BookTextHolderModel("");
     protected BookTextHolderModel text = new BookTextHolderModel("");
-    protected ResourceLocation entityId;
+    protected String entityId;
     protected float scale = 1.0f;
     protected float offset = 0f;
     protected boolean rotate = true;
@@ -34,12 +34,11 @@ public class BookEntityPageModel extends BookPageModel {
         return this.entityName;
     }
 
-
     public BookTextHolderModel getText() {
         return this.text;
     }
 
-    public ResourceLocation getEntityId() {
+    public String getEntityId() {
         return this.entityId;
     }
 
@@ -64,7 +63,7 @@ public class BookEntityPageModel extends BookPageModel {
         var json = super.toJson();
         json.add("name", this.entityName.toJson());
         json.add("text", this.text.toJson());
-        json.addProperty("entity_id", this.entityId.toString());
+        json.addProperty("entity_id", this.entityId);
         json.addProperty("scale", this.scale);
         json.addProperty("offset", this.offset);
         json.addProperty("rotate", this.rotate);
@@ -78,7 +77,7 @@ public class BookEntityPageModel extends BookPageModel {
         protected String anchor = "";
         protected BookTextHolderModel entityName = new BookTextHolderModel("");
         protected BookTextHolderModel text = new BookTextHolderModel("");
-        protected ResourceLocation entityId;
+        protected String entityId;
         protected float scale = 1.0f;
         protected float offset = 0f;
         protected boolean rotate = true;
@@ -107,13 +106,8 @@ public class BookEntityPageModel extends BookPageModel {
             return this;
         }
 
-        public Builder withEntityId(ResourceLocation entityId) {
-            this.entityId = entityId;
-            return this;
-        }
-
         public Builder withEntityId(String entityId) {
-            this.entityId = new ResourceLocation(entityId);
+            this.entityId = entityId;
             return this;
         }
 

@@ -33,8 +33,8 @@ public class EntityUtil {
         return Pair.of(entityId, nbtStr);
     }
 
-    public static String getEntityName(ResourceLocation entityId) {
-        Pair<String, String> nameAndNbt = splitNameAndNBT(entityId.toString());
+    public static String getEntityName(String entityId) {
+        Pair<String, String> nameAndNbt = splitNameAndNBT(entityId);
         EntityType<?> type = Registry.ENTITY_TYPE.get(new ResourceLocation(nameAndNbt.getLeft()));
 
         return type.getDescriptionId();

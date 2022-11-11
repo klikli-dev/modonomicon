@@ -24,14 +24,16 @@ public class BookEntityPage extends BookPage {
 
     protected BookTextHolder entityName;
     protected BookTextHolder text;
-    protected ResourceLocation entityId;
+
+    //is string, because we allow appending nbt 
+    protected String entityId;
     protected float scale = 1.0f;
     protected float offset = 0f;
     protected boolean rotate = true;
     protected float defaultRotation = -45f;
 
 
-    public BookEntityPage(BookTextHolder entityName, BookTextHolder text, ResourceLocation entityId, float scale, float offset, boolean rotate, float defaultRotation, String anchor) {
+    public BookEntityPage(BookTextHolder entityName, BookTextHolder text, String entityId, float scale, float offset, boolean rotate, float defaultRotation, String anchor) {
         super(anchor);
         this.entityName = entityName;
         this.text = text;
@@ -45,7 +47,7 @@ public class BookEntityPage extends BookPage {
     public static BookEntityPage fromJson(JsonObject json) {
         var entityName = BookGsonHelper.getAsBookTextHolder(json, "name", BookTextHolder.EMPTY);
         var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY);
-        var entityId = ResourceLocation.tryParse(GsonHelper.getAsString(json, "entity_id"));
+        var entityId = GsonHelper.getAsString(json, "entity_id");
         var scale = GsonHelper.getAsFloat(json, "scale", 1.0f);
         var offset = GsonHelper.getAsFloat(json, "offset", 0.0f);
         var rotate = GsonHelper.getAsBoolean(json, "rotate", true);
@@ -58,7 +60,7 @@ public class BookEntityPage extends BookPage {
     public static BookEntityPage fromNetwork(FriendlyByteBuf buffer) {
         var entityName = BookTextHolder.fromNetwork(buffer);
         var text = BookTextHolder.fromNetwork(buffer);
-        var entityId = buffer.readResourceLocation();
+        var entityId = buffer.readUtf();
         var scale = buffer.readFloat();
         var offset = buffer.readFloat();
         var rotate = buffer.readBoolean();
@@ -67,7 +69,7 @@ public class BookEntityPage extends BookPage {
         return new BookEntityPage(entityName, text, entityId, scale, offset, rotate, defaultRotation, anchor);
     }
 
-    public ResourceLocation getEntityId() {
+    public String getEntityId() {
         return this.entityId;
     }
 
@@ -132,7 +134,7 @@ public class BookEntityPage extends BookPage {
     public void toNetwork(FriendlyByteBuf buffer) {
         this.entityName.toNetwork(buffer);
         this.text.toNetwork(buffer);
-        buffer.writeResourceLocation(this.entityId);
+        buffer.writeUtf(this.entityId);
         buffer.writeFloat(this.scale);
         buffer.writeFloat(this.offset);
         buffer.writeBoolean(this.rotate);
