@@ -55,7 +55,7 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
     private void loadEntity(Level world) {
         if (!this.errored && (this.entity == null || !this.entity.isAlive())) {
             try {
-                var entityLoader = EntityUtil.getEntityLoader(this.page.getEntityId().toString());
+                var entityLoader = EntityUtil.getEntityLoader(this.page.getEntityId());
                 this.entity = entityLoader.apply(world);
 
                 float width = this.entity.getBbWidth();
