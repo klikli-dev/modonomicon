@@ -25,7 +25,13 @@ If ommited, the entity's default name will be used.
 
 * **entity_id** (ResourceLocation, _mandatory_)
 
-Array of ResourceLocations of the images to display.
+ResourceLocations of the entity to display.
+
+:::tip
+
+Supports appending entity NBT in the format `minecraft:sheep{<nbt>}`, like the minecraft `data` command.
+
+:::
 
 * **text** (DescriptionId or Component JSON, _optional_)
 
