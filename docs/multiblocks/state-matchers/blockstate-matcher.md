@@ -7,7 +7,21 @@ sidebar_position: 30
 
 **Type:** `modonomicon:blockstate`
 
-BlockState matchers will check for the exact BlockState properties provided.
+BlockState matchers will check for **all existing properties for a Block** BlockState. 
+
+:::warn
+
+Block State Matchers  match against the full blockstate (= all blockstate properties the block has). 
+If you do not provide a value for any of the properties, it will check against the default value.
+
+:::
+
+:::tip
+
+In most use cases you will want to check only against the properties you actually provide, and ignore all other properties.
+For this behaviour, see **[BlockStateProperty Matcher](./blockstate-property-matcher)**.
+
+:::
 
 ## Attributes
 
@@ -43,5 +57,4 @@ BlockState matchers will check for the exact BlockState properties provided.
     "display": "minecraft:chest[facing=east]",
     "block": "minecraft:chest[facing=west]"
 }
-``` 
-
+```
