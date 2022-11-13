@@ -50,7 +50,7 @@ public class TagMatcher implements StateMatcher {
         this.displayState = displayState;
         this.tag = tag;
         this.props = props;
-        this.predicate = (blockGetter, blockPos, blockState) -> blockState.is(this.tag.get()) && this.checkProps(blockState);
+        this.predicate = (blockGetter, blockPos, blockState) -> blockState.is(this.tag.get()) && checkProps(blockState, this.props);
     }
 
     public static TagMatcher fromJson(JsonObject json) {
@@ -99,8 +99,8 @@ public class TagMatcher implements StateMatcher {
         }
     }
 
-    private boolean checkProps(BlockState state) {
-        for (Entry<String, String> entry : this.props.get().entrySet()) {
+    public static boolean checkProps(BlockState state, Supplier<Map<String, String>> props) {
+        for (Entry<String, String> entry : props.get().entrySet()) {
             Property<?> prop = state.getBlock().getStateDefinition().getProperty(entry.getKey());
             if (prop == null) {
                 return false;

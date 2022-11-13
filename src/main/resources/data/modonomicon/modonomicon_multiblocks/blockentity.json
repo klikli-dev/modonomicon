@@ -2,11 +2,11 @@
   "type": "modonomicon:dense",
   "pattern": [
     [
-      " WWW ",
+      "CWWWC",
       "NHGHS",
       "NG0GS",
       "NHGHS",
-      " EEE "
+      "CEEEC"
     ],
     [
       "DDDDD",
@@ -48,6 +48,10 @@
     "H":  {
       "type": "modonomicon:block",
       "block": "minecraft:wither_skeleton_skull"
+    },
+    "C":  {
+      "type": "modonomicon:blockstateproperty",
+      "block": "minecraft:white_candle[lit=true]"
     }
   }
 }
