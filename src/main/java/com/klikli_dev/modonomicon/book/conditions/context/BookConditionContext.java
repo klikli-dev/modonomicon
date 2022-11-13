@@ -21,6 +21,13 @@ public abstract class BookConditionContext {
         return this.book;
     }
 
+    @Override
+    public String toString() {
+        return "BookConditionContext{" +
+                "book=" + this.book +
+                '}';
+    }
+
     public static BookConditionContext of(Book book, BookCategory category) {
         return new BookConditionCategoryContext(book, category);
     }

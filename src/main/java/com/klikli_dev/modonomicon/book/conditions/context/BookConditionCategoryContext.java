@@ -17,6 +17,14 @@ public class BookConditionCategoryContext extends BookConditionContext {
         this.category = category;
     }
 
+    @Override
+    public String toString() {
+        return "BookConditionCategoryContext{" +
+                "book=" + this.book +
+                ", category=" + this.category +
+                '}';
+    }
+
     public BookCategory getCategory() {
         return this.category;
     }

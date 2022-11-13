@@ -17,6 +17,14 @@ public class BookConditionEntryContext extends BookConditionContext {
         this.entry = entry;
     }
 
+    @Override
+    public String toString() {
+        return "BookConditionEntryContext{" +
+                "book=" + this.book +
+                ", entry=" + this.entry +
+                '}';
+    }
+
     public BookEntry getEntry() {
         return this.entry;
     }

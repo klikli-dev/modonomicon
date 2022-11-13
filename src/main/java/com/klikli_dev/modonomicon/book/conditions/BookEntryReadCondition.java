@@ -59,7 +59,11 @@ public class BookEntryReadCondition extends BookCondition {
 
     @Override
     public boolean test(BookConditionContext context, Player player) {
-        return BookUnlockCapability.isReadFor(player, context.getBook().getEntry(this.entryId));
+        var entry = context.getBook().getEntry(this.entryId);
+        if (entry == null) {
+            throw new IllegalArgumentException("Entry with id " + this.entryId + " not found in book " + context.getBook().getId()+ "for BookEntryReadCondition. This happened while trying to unlock " + context);
+        }
+        return BookUnlockCapability.isReadFor(player, entry);
     }
 
     @Override
