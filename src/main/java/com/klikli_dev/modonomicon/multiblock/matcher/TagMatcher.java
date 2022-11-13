@@ -40,18 +40,18 @@ public class TagMatcher implements StateMatcher {
 
     private final BlockState displayState;
     private final Supplier<TagKey<Block>> tag;
-    private final  Supplier<Map<String, String>> props;
+    private final Supplier<Map<String, String>> props;
     private final TriPredicate<BlockGetter, BlockPos, BlockState> predicate;
 
     protected TagMatcher( Supplier<TagKey<Block>> tag,  Supplier<Map<String, String>> props) {
         this(null, tag, props);
     }
 
-    protected TagMatcher(BlockState displayState,  Supplier<TagKey<Block>> tag,  Supplier<Map<String, String>> props) {
+    protected TagMatcher(BlockState displayState,  Supplier<TagKey<Block>> tag, Supplier<Map<String, String>> props) {
         this.displayState = displayState;
         this.tag = tag;
         this.props = props;
-        this.predicate = (blockGetter, blockPos, blockState) -> blockState.is(this.tag.get()) && this.checkProps(blockState);
+        this.predicate = (blockGetter, blockPos, blockState) -> blockState.is(this.tag.get()) && checkProps(blockState, this.props);
     }
 
     public static TagMatcher fromJson(JsonObject json) {
@@ -112,8 +112,8 @@ public class TagMatcher implements StateMatcher {
         }
     }
 
-    private boolean checkProps(BlockState state) {
-        for (Entry<String, String> entry : this.props.get().entrySet()) {
+    public static boolean checkProps(BlockState state, Supplier<Map<String, String>> props) {
+        for (Entry<String, String> entry : props.get().entrySet()) {
             Property<?> prop = state.getBlock().getStateDefinition().getProperty(entry.getKey());
             if (prop == null) {
                 return false;
