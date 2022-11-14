@@ -11,11 +11,11 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class BookEntryUnlockedCondition extends BookConditionModel {
+public class BookEntryReadConditionModel extends BookConditionModel {
     protected String entryId;
 
-    protected BookEntryUnlockedCondition(String entryId, Component tooltip, String tooltipString) {
-        super(Condition.ENTRY_UNLOCKED, tooltip, tooltipString);
+    protected BookEntryReadConditionModel(String entryId, Component tooltip, String tooltipString) {
+        super(Condition.ENTRY_READ, tooltip, tooltipString);
         this.entryId = entryId;
     }
 
@@ -66,8 +66,8 @@ public class BookEntryUnlockedCondition extends BookConditionModel {
         }
 
 
-        public BookEntryUnlockedCondition build() {
-            BookEntryUnlockedCondition model = new BookEntryUnlockedCondition(this.entryId, this.tooltip, this.tooltipString);
+        public BookEntryReadConditionModel build() {
+            BookEntryReadConditionModel model = new BookEntryReadConditionModel(this.entryId, this.tooltip, this.tooltipString);
             return model;
         }
     }
