@@ -14,8 +14,8 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryParentModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
-import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryReadCondition;
-import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryUnlockedCondition;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryReadConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryUnlockedConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookFalseConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.*;
 import net.minecraft.data.DataGenerator;
@@ -156,7 +156,7 @@ public class DemoBookProvider extends BookProvider {
                 .withText(helper.pageText())
                 .withTitle(helper.pageTitle())
                 .build();
-        var conditionLevel1EntryCondition = BookEntryReadCondition.builder()
+        var conditionLevel1EntryCondition = BookEntryReadConditionModel.builder()
                 .withEntry(conditionRootEntry.getId())
                 .build();
         var conditionLevel1Entry = BookEntryModel.builder()
@@ -177,7 +177,7 @@ public class DemoBookProvider extends BookProvider {
                 .withText(helper.pageText())
                 .withTitle(helper.pageTitle())
                 .build();
-        var conditionLevel2EntryCondition = BookEntryUnlockedCondition.builder()
+        var conditionLevel2EntryCondition = BookEntryUnlockedConditionModel.builder()
                 .withEntry(conditionLevel1Entry.getId())
                 .build();
         var conditionLevel2Entry = BookEntryModel.builder()
