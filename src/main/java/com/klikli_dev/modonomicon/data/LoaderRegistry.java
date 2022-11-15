@@ -69,6 +69,7 @@ public class LoaderRegistry {
     }
 
     private static void registerDefaultConditionLoaders() {
+        registerConditionLoader(Condition.NONE, BookNoneCondition::fromJson, BookNoneCondition::fromNetwork);
         registerConditionLoader(Condition.ADVANCEMENT, BookAdvancementCondition::fromJson, BookAdvancementCondition::fromNetwork);
         registerConditionLoader(Condition.ENTRY_UNLOCKED, BookEntryUnlockedCondition::fromJson, BookEntryUnlockedCondition::fromNetwork);
         registerConditionLoader(Condition.ENTRY_READ, BookEntryReadCondition::fromJson, BookEntryReadCondition::fromNetwork);

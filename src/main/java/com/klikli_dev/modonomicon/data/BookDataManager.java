@@ -139,7 +139,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         for (var book : this.books.values()) {
             if (book.autoAddReadConditions()) {
                 for (var entry : book.getEntries().values()) {
-                    if (entry.getCondition().getType().equals(Condition.TRUE)) {
+                    if (entry.getCondition().getType().equals(Condition.NONE)) {
                         if (entry.getParents().size() == 1) {
                             entry.setCondition(new BookEntryReadCondition(null, entry.getParents().get(0).getEntryId()));
                         } else if (entry.getParents().size() > 1) {
