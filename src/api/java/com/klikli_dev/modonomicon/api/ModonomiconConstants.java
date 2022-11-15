@@ -46,6 +46,8 @@ public class ModonomiconConstants {
         }
 
         public static class Condition {
+
+            public static final ResourceLocation NONE = new ResourceLocation(ModonomiconAPI.ID, "none");
             public static final ResourceLocation ADVANCEMENT = new ResourceLocation(ModonomiconAPI.ID, "advancement");
             public static final ResourceLocation OR = new ResourceLocation(ModonomiconAPI.ID, "or");
             public static final ResourceLocation AND = new ResourceLocation(ModonomiconAPI.ID, "and");

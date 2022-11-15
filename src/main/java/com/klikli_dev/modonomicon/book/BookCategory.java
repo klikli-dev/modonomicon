@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.book;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Category;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookTrueCondition;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
@@ -53,7 +54,7 @@ public class BookCategory {
         var entryTextures = new ResourceLocation(GsonHelper.getAsString(json, "entry_textures", Category.DEFAULT_ENTRY_TEXTURES));
         var showCategoryButton = GsonHelper.getAsBoolean(json, "show_category_button", true);
 
-        BookCondition condition = new BookTrueCondition(); //default to unlocked
+        BookCondition condition = new BookNoneCondition(); //default to unlocked
         if (json.has("condition")) {
             condition = BookCondition.fromJson(json.getAsJsonObject("condition"));
         }

@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.book;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookTrueCondition;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
@@ -106,7 +107,7 @@ public class BookEntry {
             }
         }
 
-        BookCondition condition = new BookTrueCondition(); //default to unlocked
+        BookCondition condition = new BookNoneCondition(); //default to unlocked
         if (json.has("condition")) {
             condition = BookCondition.fromJson(json.getAsJsonObject("condition"));
         }
