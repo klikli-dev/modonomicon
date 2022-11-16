@@ -30,16 +30,32 @@ public class BookEntryReadConditionModel extends BookConditionModel {
         return json;
     }
 
+    public String getEntryId() {
+        return this.entryId;
+    }
+
     public static final class Builder {
-        protected String entryId;
-        protected Component tooltip;
-        protected String tooltipString;
+        private String entryId;
+        private Component tooltip;
+        private String tooltipString;
 
         private Builder() {
         }
 
         public static Builder aBookAdvancementConditionModel() {
             return new Builder();
+        }
+
+        public String getEntryId() {
+            return this.entryId;
+        }
+
+        public Component getTooltip() {
+            return this.tooltip;
+        }
+
+        public String getTooltipString() {
+            return this.tooltipString;
         }
 
         public Builder withEntry(ResourceLocation entryId) {

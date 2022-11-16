@@ -19,8 +19,8 @@ public class BookFalseConditionModel extends BookConditionModel {
     }
 
     public static final class Builder {
-        protected Component tooltip;
-        protected String tooltipString;
+        private Component tooltip;
+        private String tooltipString;
 
         private Builder() {
         }
@@ -32,6 +32,14 @@ public class BookFalseConditionModel extends BookConditionModel {
         public Builder withTooltip(Component tooltip) {
             this.tooltip = tooltip;
             return this;
+        }
+
+        public Component getTooltip() {
+            return this.tooltip;
+        }
+
+        public String getTooltipString() {
+            return this.tooltipString;
         }
 
         /**

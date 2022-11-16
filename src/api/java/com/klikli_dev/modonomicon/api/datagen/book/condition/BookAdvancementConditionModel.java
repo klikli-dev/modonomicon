@@ -11,7 +11,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
 import net.minecraft.network.chat.Component;
 
 public class BookAdvancementConditionModel extends BookConditionModel {
-    protected String advancementId;
+    private final String advancementId;
 
     protected BookAdvancementConditionModel(String advancementId, Component tooltip, String tooltipString) {
         super(Condition.ADVANCEMENT, tooltip, tooltipString);
@@ -29,10 +29,14 @@ public class BookAdvancementConditionModel extends BookConditionModel {
         return json;
     }
 
+    public String getAdvancementId() {
+        return this.advancementId;
+    }
+
     public static final class Builder {
-        protected String advancementId;
-        protected Component tooltip;
-        protected String tooltipString;
+        private String advancementId;
+        private Component tooltip;
+        private String tooltipString;
 
         private Builder() {
         }
@@ -59,6 +63,17 @@ public class BookAdvancementConditionModel extends BookConditionModel {
             return this;
         }
 
+        public String getAdvancementId() {
+            return this.advancementId;
+        }
+
+        public Component getTooltip() {
+            return this.tooltip;
+        }
+
+        public String getTooltipString() {
+            return this.tooltipString;
+        }
 
         public BookAdvancementConditionModel build() {
             BookAdvancementConditionModel model = new BookAdvancementConditionModel(this.advancementId, this.tooltip, this.tooltipString);

@@ -49,7 +49,7 @@ public class BookEntryModel {
         json.addProperty("background_v_index", this.entryBackgroundVIndex);
         json.addProperty("hide_while_locked", this.hideWhileLocked);
 
-        if(!this.parents.isEmpty()){
+        if (!this.parents.isEmpty()) {
             var parentsArray = new JsonArray();
             for (var parent : this.parents) {
                 parentsArray.add(parent.toJson());
@@ -57,7 +57,7 @@ public class BookEntryModel {
             json.add("parents", parentsArray);
         }
 
-        if(!this.pages.isEmpty()) {
+        if (!this.pages.isEmpty()) {
             var pagesArray = new JsonArray();
             for (var page : this.pages) {
                 pagesArray.add(page.toJson());
@@ -66,15 +66,31 @@ public class BookEntryModel {
         }
 
 
-        if(this.condition != null) {
+        if (this.condition != null) {
             json.add("condition", this.condition.toJson());
         }
 
-        if(this.categoryToOpen != null) {
+        if (this.categoryToOpen != null) {
             json.addProperty("category_to_open", this.categoryToOpen.toString());
         }
 
         return json;
+    }
+
+    public int getEntryBackgroundUIndex() {
+        return this.entryBackgroundUIndex;
+    }
+
+    public int getEntryBackgroundVIndex() {
+        return this.entryBackgroundVIndex;
+    }
+
+    public BookConditionModel getCondition() {
+        return this.condition;
+    }
+
+    public ResourceLocation getCategoryToOpen() {
+        return this.categoryToOpen;
     }
 
     public ResourceLocation getId() {
@@ -130,14 +146,12 @@ public class BookEntryModel {
         public String icon;
         public int x;
         public int y;
-
-        protected int entryBackgroundUIndex = 0;
-        protected int entryBackgroundVIndex = 0;
-
         public boolean hideWhileLocked;
         public List<BookPageModel> pages = new ArrayList<>();
         public BookConditionModel condition;
-        protected ResourceLocation categoryToOpen;
+        private int entryBackgroundUIndex = 0;
+        private int entryBackgroundVIndex = 0;
+        private ResourceLocation categoryToOpen;
 
         private Builder() {
         }
@@ -187,7 +201,7 @@ public class BookEntryModel {
         }
 
         public Builder withLocation(Vec2 location) {
-            return this.withX((int)location.x).withY((int)location.y);
+            return this.withX((int) location.x).withY((int) location.y);
         }
 
         public Builder withLocation(int x, int y) {
@@ -245,6 +259,62 @@ public class BookEntryModel {
             return this;
         }
 
+        public ResourceLocation getId() {
+            return this.id;
+        }
+
+        public BookCategoryModel getCategory() {
+            return this.category;
+        }
+
+        public List<BookEntryParentModel> getParents() {
+            return this.parents;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+
+        public String getDescription() {
+            return this.description;
+        }
+
+        public String getIcon() {
+            return this.icon;
+        }
+
+        public int getX() {
+            return this.x;
+        }
+
+        public int getY() {
+            return this.y;
+        }
+
+        public int getEntryBackgroundUIndex() {
+            return this.entryBackgroundUIndex;
+        }
+
+        public int getEntryBackgroundVIndex() {
+            return this.entryBackgroundVIndex;
+        }
+
+        public boolean isHideWhileLocked() {
+            return this.hideWhileLocked;
+        }
+
+        public List<BookPageModel> getPages() {
+            return this.pages;
+        }
+
+        public BookConditionModel getCondition() {
+            return this.condition;
+        }
+
+        public ResourceLocation getCategoryToOpen() {
+            return this.categoryToOpen;
+        }
+
         public BookEntryModel build() {
             BookEntryModel bookEntryModel = new BookEntryModel();
             bookEntryModel.description = this.description;
@@ -253,7 +323,7 @@ public class BookEntryModel {
             bookEntryModel.icon = this.icon;
             bookEntryModel.x = this.x;
             bookEntryModel.y = this.y;
-            bookEntryModel.entryBackgroundUIndex= this.entryBackgroundUIndex;
+            bookEntryModel.entryBackgroundUIndex = this.entryBackgroundUIndex;
             bookEntryModel.entryBackgroundVIndex = this.entryBackgroundVIndex;
             bookEntryModel.hideWhileLocked = this.hideWhileLocked;
             bookEntryModel.parents = this.parents;
