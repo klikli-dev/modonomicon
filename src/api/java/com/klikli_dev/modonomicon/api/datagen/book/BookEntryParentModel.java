@@ -45,10 +45,10 @@ public class BookEntryParentModel {
     }
 
     public static final class Builder {
-        protected ResourceLocation entryId;
-        protected boolean drawArrow = true;
-        protected boolean lineEnabled = true;
-        protected boolean lineReversed = false;
+        private ResourceLocation entryId;
+        private boolean drawArrow = true;
+        private boolean lineEnabled = true;
+        private boolean lineReversed = false;
 
         private Builder() {
         }
@@ -84,6 +84,22 @@ public class BookEntryParentModel {
             bookEntryParentModel.lineEnabled = this.lineEnabled;
             bookEntryParentModel.lineReversed = this.lineReversed;
             return bookEntryParentModel;
+        }
+
+        public ResourceLocation getEntryId() {
+            return this.entryId;
+        }
+
+        public boolean isDrawArrow() {
+            return this.drawArrow;
+        }
+
+        public boolean isLineEnabled() {
+            return this.lineEnabled;
+        }
+
+        public boolean isLineReversed() {
+            return this.lineReversed;
         }
     }
 }

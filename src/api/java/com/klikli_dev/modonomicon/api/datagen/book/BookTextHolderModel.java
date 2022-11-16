@@ -33,4 +33,12 @@ public class BookTextHolderModel {
         }
         return new JsonPrimitive(this.string);
     }
+
+    public Component getComponent() {
+        return this.component;
+    }
+
+    public String getString() {
+        return this.string;
+    }
 }

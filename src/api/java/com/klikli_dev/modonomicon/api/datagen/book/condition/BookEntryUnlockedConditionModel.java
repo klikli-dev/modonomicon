@@ -25,6 +25,10 @@ public class BookEntryUnlockedConditionModel extends BookConditionModel {
         return new Builder();
     }
 
+    public String getEntryId() {
+        return this.entryId;
+    }
+
     @Override
     public JsonObject toJson() {
         var json = super.toJson();
@@ -33,15 +37,27 @@ public class BookEntryUnlockedConditionModel extends BookConditionModel {
     }
 
     public static final class Builder {
-        protected String entryId;
-        protected Component tooltip;
-        protected String tooltipString;
+        private String entryId;
+        private Component tooltip;
+        private String tooltipString;
 
         private Builder() {
         }
 
         public static Builder aBookAdvancementConditionModel() {
             return new Builder();
+        }
+
+        public String getEntryId() {
+            return this.entryId;
+        }
+
+        public Component getTooltip() {
+            return this.tooltip;
+        }
+
+        public String getTooltipString() {
+            return this.tooltipString;
         }
 
         public Builder withEntry(ResourceLocation entryId) {

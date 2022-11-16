@@ -26,6 +26,10 @@ public class BookOrConditionModel extends BookConditionModel {
         return new Builder();
     }
 
+    public BookConditionModel[] getChildren() {
+        return this.children;
+    }
+
     @Override
     public JsonObject toJson() {
         var json = super.toJson();
@@ -38,15 +42,27 @@ public class BookOrConditionModel extends BookConditionModel {
     }
 
     public static final class Builder {
-        protected BookConditionModel[] children;
-        protected Component tooltip;
-        protected String tooltipString;
+        private BookConditionModel[] children;
+        private Component tooltip;
+        private String tooltipString;
 
         private Builder() {
         }
 
         public static Builder aBookAdvancementConditionModel() {
             return new Builder();
+        }
+
+        public BookConditionModel[] getChildren() {
+            return this.children;
+        }
+
+        public Component getTooltip() {
+            return this.tooltip;
+        }
+
+        public String getTooltipString() {
+            return this.tooltipString;
         }
 
         public Builder withChildren(BookConditionModel... children) {

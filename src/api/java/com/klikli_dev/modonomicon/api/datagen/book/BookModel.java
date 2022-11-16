@@ -29,9 +29,20 @@ public class BookModel {
     protected List<BookCategoryModel> categories = new ArrayList<>();
 
     protected boolean autoAddReadConditions;
-
     protected boolean generateBookItem = true;
     protected ResourceLocation customBookItem;
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public boolean isAutoAddReadConditions() {
+        return this.autoAddReadConditions;
+    }
+
+    public boolean isGenerateBookItem() {
+        return this.generateBookItem;
+    }
 
     public ResourceLocation getCraftingTexture() {
         return this.craftingTexture;
@@ -43,10 +54,6 @@ public class BookModel {
 
     public ResourceLocation getCustomBookItem() {
         return this.customBookItem;
-    }
-
-    public static Builder builder() {
-        return new Builder();
     }
 
     public List<BookCategoryModel> getCategories() {
@@ -97,36 +104,88 @@ public class BookModel {
         json.addProperty("default_title_color", this.defaultTitleColor);
         json.addProperty("auto_add_read_conditions", this.autoAddReadConditions);
         json.addProperty("generate_book_item", this.generateBookItem);
-        if(this.customBookItem != null) {
+        if (this.customBookItem != null) {
             json.addProperty("custom_book_item", this.customBookItem.toString());
         }
         return json;
     }
 
     public static final class Builder {
-        protected ResourceLocation id;
-        protected String name;
-        protected String tooltip;
+        private ResourceLocation id;
+        private String name;
+        private String tooltip;
 
-        protected String creativeTab = "modonomicon";
+        private String creativeTab = "modonomicon";
 
-        protected ResourceLocation model = new ResourceLocation(Book.DEFAULT_MODEL);
-        protected ResourceLocation bookOverviewTexture = new ResourceLocation(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
-        protected ResourceLocation bookContentTexture = new ResourceLocation(Data.Book.DEFAULT_CONTENT_TEXTURE);
+        private ResourceLocation model = new ResourceLocation(Book.DEFAULT_MODEL);
+        private ResourceLocation bookOverviewTexture = new ResourceLocation(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
+        private ResourceLocation bookContentTexture = new ResourceLocation(Data.Book.DEFAULT_CONTENT_TEXTURE);
 
-        protected ResourceLocation craftingTexture = new ResourceLocation(Book.DEFAULT_CRAFTING_TEXTURE);
-        protected int defaultTitleColor = 0x00000;
-        protected List<BookCategoryModel> categories = new ArrayList<>();
-        protected boolean autoAddReadConditions;
+        private ResourceLocation craftingTexture = new ResourceLocation(Book.DEFAULT_CRAFTING_TEXTURE);
+        private int defaultTitleColor = 0x00000;
+        private List<BookCategoryModel> categories = new ArrayList<>();
+        private boolean autoAddReadConditions;
 
-        protected boolean generateBookItem = true;
-        protected ResourceLocation customBookItem;
+        private boolean generateBookItem = true;
+        private ResourceLocation customBookItem;
 
         private Builder() {
         }
 
         public static Builder aBookModel() {
             return new Builder();
+        }
+
+        public ResourceLocation getId() {
+            return this.id;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+
+        public String getTooltip() {
+            return this.tooltip;
+        }
+
+        public String getCreativeTab() {
+            return this.creativeTab;
+        }
+
+        public ResourceLocation getModel() {
+            return this.model;
+        }
+
+        public ResourceLocation getBookOverviewTexture() {
+            return this.bookOverviewTexture;
+        }
+
+        public ResourceLocation getBookContentTexture() {
+            return this.bookContentTexture;
+        }
+
+        public ResourceLocation getCraftingTexture() {
+            return this.craftingTexture;
+        }
+
+        public int getDefaultTitleColor() {
+            return this.defaultTitleColor;
+        }
+
+        public List<BookCategoryModel> getCategories() {
+            return this.categories;
+        }
+
+        public boolean isAutoAddReadConditions() {
+            return this.autoAddReadConditions;
+        }
+
+        public boolean isGenerateBookItem() {
+            return this.generateBookItem;
+        }
+
+        public ResourceLocation getCustomBookItem() {
+            return this.customBookItem;
         }
 
         public Builder withId(ResourceLocation id) {

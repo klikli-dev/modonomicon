@@ -25,7 +25,6 @@ public class BookCategoryModel {
     protected List<BookEntryModel> entries = new ArrayList<>();
 
     protected BookConditionModel condition;
-
     protected boolean showCategoryButton = true;
 
     private BookCategoryModel() {
@@ -33,6 +32,14 @@ public class BookCategoryModel {
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    public BookConditionModel getCondition() {
+        return this.condition;
+    }
+
+    public boolean isShowCategoryButton() {
+        return this.showCategoryButton;
     }
 
     public List<BookEntryModel> getEntries() {
@@ -50,7 +57,7 @@ public class BookCategoryModel {
         json.addProperty("sort_number", this.sortNumber);
         json.addProperty("background", this.background.toString());
         json.addProperty("entry_textures", this.entryTextures.toString());
-        if(this.condition != null) {
+        if (this.condition != null) {
             json.add("condition", this.condition.toJson());
         }
         json.addProperty("show_category_button", this.showCategoryButton);
@@ -82,16 +89,16 @@ public class BookCategoryModel {
     }
 
     public static final class Builder {
-        protected BookModel book;
-        protected ResourceLocation id;
-        protected String name;
-        protected String icon;
-        protected int sortNumber = -1;
-        protected ResourceLocation background = new ResourceLocation(Category.DEFAULT_BACKGROUND);
-        protected ResourceLocation entryTextures = new ResourceLocation(Category.DEFAULT_ENTRY_TEXTURES);
-        protected List<BookEntryModel> entries = new ArrayList<>();
-        protected BookConditionModel condition;
-        protected boolean showCategoryButton = true;
+        private final List<BookEntryModel> entries = new ArrayList<>();
+        private BookModel book;
+        private ResourceLocation id;
+        private String name;
+        private String icon;
+        private int sortNumber = -1;
+        private ResourceLocation background = new ResourceLocation(Category.DEFAULT_BACKGROUND);
+        private ResourceLocation entryTextures = new ResourceLocation(Category.DEFAULT_ENTRY_TEXTURES);
+        private BookConditionModel condition;
+        private boolean showCategoryButton = true;
 
         private Builder() {
         }
@@ -181,6 +188,46 @@ public class BookCategoryModel {
             bookCategoryModel.showCategoryButton = this.showCategoryButton;
 
             return bookCategoryModel;
+        }
+
+        public BookModel getBook() {
+            return this.book;
+        }
+
+        public ResourceLocation getId() {
+            return this.id;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+
+        public String getIcon() {
+            return this.icon;
+        }
+
+        public int getSortNumber() {
+            return this.sortNumber;
+        }
+
+        public ResourceLocation getBackground() {
+            return this.background;
+        }
+
+        public ResourceLocation getEntryTextures() {
+            return this.entryTextures;
+        }
+
+        public List<BookEntryModel> getEntries() {
+            return this.entries;
+        }
+
+        public BookConditionModel getCondition() {
+            return this.condition;
+        }
+
+        public boolean isShowCategoryButton() {
+            return this.showCategoryButton;
         }
     }
 }

@@ -24,6 +24,14 @@ public class BookConditionModel {
         this.tooltipString = tooltipString;
     }
 
+    public Component getTooltip() {
+        return this.tooltip;
+    }
+
+    public String getTooltipString() {
+        return this.tooltipString;
+    }
+
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("type", this.getType().toString());

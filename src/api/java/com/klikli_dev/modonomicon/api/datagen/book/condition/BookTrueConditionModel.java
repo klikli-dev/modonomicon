@@ -21,14 +21,22 @@ public class BookTrueConditionModel extends BookConditionModel {
     }
 
     public static final class Builder {
-        protected Component tooltip;
-        protected String tooltipString;
+        private Component tooltip;
+        private String tooltipString;
 
         private Builder() {
         }
 
         public static Builder aBookAdvancementConditionModel() {
             return new Builder();
+        }
+
+        public Component getTooltip() {
+            return this.tooltip;
+        }
+
+        public String getTooltipString() {
+            return this.tooltipString;
         }
 
         public Builder withTooltip(Component tooltip) {
