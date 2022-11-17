@@ -60,12 +60,12 @@ public class DemoBookProvider extends BookProvider {
 
         var entryHelper = ModonomiconAPI.get().getEntryLocationHelper();
         entryHelper.setMap(
-                "________5____________",
-                "__m______________d___",
-                "__________r__________",
-                "__c__________________",
-                "__________2___3___i__",
-                "__s_____e____________"
+                "___           _____5____________",
+                "__(multiblock)______________d___",
+                "___           _______r__________",
+                "__c           __________________",
+                "___           _______2___3___i__",
+                "__s           _____e____________"
         );
 
         var multiblockEntry = this.makeMultiblockEntry(helper, entryHelper);
@@ -128,7 +128,7 @@ public class DemoBookProvider extends BookProvider {
                 .withName(helper.entryName())
                 .withDescription(helper.entryDescription())
                 .withIcon("minecraft:furnace")
-                .withLocation(entryHelper.get('m'))
+                .withLocation(entryHelper.get("multiblock"))
                 .withPages(multiBlockIntroPage, multiblockPreviewPage, multiblockPreviewPage2)
                 .build();
     }

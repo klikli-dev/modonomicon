@@ -3,7 +3,7 @@
   "name": "book.modonomicon.demo.features.condition_level_2.name",
   "description": "book.modonomicon.demo.features.condition_level_2.description",
   "icon": "minecraft:torch",
-  "x": 4,
+  "x": -2,
   "y": 1,
   "background_u_index": 0,
   "background_v_index": 0,
