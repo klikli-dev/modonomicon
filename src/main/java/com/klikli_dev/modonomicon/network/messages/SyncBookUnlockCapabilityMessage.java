@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.network.messages;
 
 import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
+import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.network.Message;
 import com.klikli_dev.modonomicon.registry.CapabilityRegistry;
 import net.minecraft.client.Minecraft;
@@ -40,7 +41,11 @@ public class SyncBookUnlockCapabilityMessage implements Message {
     @Override
     public void onClientReceived(Minecraft minecraft, Player player, Context context) {
         player.getCapability(CapabilityRegistry.BOOK_UNLOCK).ifPresent(capability -> {
-                    capability.deserializeNBT(this.tag);
-                });
+            capability.deserializeNBT(this.tag);
+        });
+
+        if (BookGuiManager.get().openOverviewScreen != null) {
+            BookGuiManager.get().openOverviewScreen.onSyncBookUnlockCapabilityMessage(this);
+        }
     }
 }

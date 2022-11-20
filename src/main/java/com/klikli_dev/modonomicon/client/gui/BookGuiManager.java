@@ -33,6 +33,8 @@ public class BookGuiManager {
     public BookCategoryScreen currentCategoryScreen;
     public BookContentScreen currentContentScreen;
 
+    public BookOverviewScreen openOverviewScreen;
+
     private BookGuiManager() {
 
     }
@@ -134,7 +136,7 @@ public class BookGuiManager {
             return;
         }
 
-        if(!BookDataManager.get().areBooksBuilt()){
+        if (!BookDataManager.get().areBooksBuilt()) {
             //This is a workaround/fallback for cases like https://github.com/klikli-dev/modonomicon/issues/48
             //Generally it should never happen, because client builds books on UpdateRecipesPacket
             //If that packet for some reason is not handled clientside, we build books here and hope for the best :)
