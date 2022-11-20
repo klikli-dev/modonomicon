@@ -19,6 +19,7 @@ import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.ClickReadAllButtonMessage;
 import com.klikli_dev.modonomicon.network.messages.SaveBookStateMessage;
+import com.klikli_dev.modonomicon.network.messages.SyncBookUnlockCapabilityMessage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -62,16 +63,16 @@ public class BookOverviewScreen extends Screen {
         this.categoryScreens = this.categories.stream().map(c -> new BookCategoryScreen(this, c)).toList();
     }
 
-    public void onDisplay(){
+    public void onDisplay() {
         this.loadBookState();
 
-        for(var entry : book.getEntries().values()){
-            if(!BookUnlockCapability.isReadFor(this.minecraft.player, entry)){
+        for (var entry : this.book.getEntries().values()) {
+            if (!BookUnlockCapability.isReadFor(this.minecraft.player, entry)) {
                 this.hasUnreadEntries = true;
-               // break;
+                // break;
             }
         }
-        this.hasUnreadEntries = book.getEntries().values().stream().anyMatch(e -> !BookUnlockCapability.isReadFor(this.minecraft.player, e));
+        this.hasUnreadEntries = this.book.getEntries().values().stream().anyMatch(e -> !BookUnlockCapability.isReadFor(this.minecraft.player, e));
 
         var currentScreen = this.categoryScreens.get(this.currentCategory);
         currentScreen.onDisplay();
@@ -208,14 +209,14 @@ public class BookOverviewScreen extends Screen {
         this.renderTooltip(pPoseStack, Component.translatable(button.getCategory().getName()), pMouseX, pMouseY);
     }
 
-    protected void onReadAllButtonClick(ReadAllButton button){
-        if(this.hasUnreadEntries){
+    protected void onReadAllButtonClick(ReadAllButton button) {
+        if (this.hasUnreadEntries) {
             Networking.sendToServer(new ClickReadAllButtonMessage(this.book.getId()));
             this.hasUnreadEntries = false;
         }
     }
 
-    protected void onReadAllButtonTooltip(ReadAllButton button, PoseStack poseStack, int mouseX, int mouseY){
+    protected void onReadAllButtonTooltip(ReadAllButton button, PoseStack poseStack, int mouseX, int mouseY) {
         this.renderTooltip(poseStack, button.getTooltip(), mouseX, mouseY);
     }
 
@@ -226,9 +227,9 @@ public class BookOverviewScreen extends Screen {
     private void loadBookState() {
         var state = BookStateCapability.getBookStateFor(this.minecraft.player, this.book);
         if (state != null) {
-            if(state.openCategory != null){
+            if (state.openCategory != null) {
                 var openCategory = this.book.getCategory(state.openCategory);
-                if(openCategory != null){
+                if (openCategory != null) {
                     this.currentCategory = this.categories.indexOf(openCategory);
                 }
             }
@@ -280,6 +281,8 @@ public class BookOverviewScreen extends Screen {
 
         BookGuiManager.get().resetHistory();
 
+        BookGuiManager.get().openOverviewScreen = null;
+
         super.onClose();
     }
 
@@ -288,9 +291,20 @@ public class BookOverviewScreen extends Screen {
         return super.handleComponentClicked(pStyle);
     }
 
+    public void onSyncBookUnlockCapabilityMessage(SyncBookUnlockCapabilityMessage message) {
+        //this leads to re-init of the categor buttons after a potential unlock
+        this.init();
+    }
+
     @Override
     protected void init() {
         super.init();
+
+        BookGuiManager.get().openOverviewScreen = this;
+
+        this.renderables.clear();
+        this.children().clear();
+        this.narratables.clear();
 
         int buttonXOffset = -11;
 
@@ -303,7 +317,7 @@ public class BookOverviewScreen extends Screen {
 
         int buttonCount = 0;
         for (int i = 0, size = this.categories.size(); i < size; i++) {
-            if(this.categories.get(i).showCategoryButton()){
+            if (this.categories.get(i).showCategoryButton() && BookUnlockCapability.isUnlockedFor(this.minecraft.player, this.categories.get(i))) {
                 var button = new CategoryButton(this, this.categories.get(i), i,
                         buttonX, buttonY + (buttonHeight + buttonSpacing) * buttonCount, buttonWidth, buttonHeight,
                         (b) -> this.onBookCategoryButtonClick((CategoryButton) b),
@@ -313,7 +327,6 @@ public class BookOverviewScreen extends Screen {
                 buttonCount++;
             }
         }
-
 
         int readAllButtonX = this.getFrameWidth() + this.getFrameThicknessW() + ReadAllButton.WIDTH / 2 - 3; //(this.width - this.getFrameWidth()); // / 2 - this.getFrameThicknessW() + buttonXOffset;
         int readAllButtonY = (this.height - this.getFrameHeight()) / 2 + ReadAllButton.HEIGHT / 2;
