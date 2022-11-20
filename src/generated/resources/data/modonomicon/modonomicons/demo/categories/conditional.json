@@ -1,0 +1,12 @@
+{
+  "name": "book.modonomicon.demo.conditional.name",
+  "icon": "minecraft:diamond",
+  "sort_number": -1,
+  "background": "modonomicon:textures/gui/dark_slate_seamless.png",
+  "entry_textures": "modonomicon:textures/gui/entry_textures.png",
+  "condition": {
+    "type": "modonomicon:entry_read",
+    "entry_id": "modonomicon:features/condition_root"
+  },
+  "show_category_button": true
+}
