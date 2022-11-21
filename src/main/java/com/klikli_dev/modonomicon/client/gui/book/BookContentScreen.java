@@ -534,7 +534,11 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
                 if(style.getClickEvent() != null)// && ItemLinkRenderer.isItemLink(style.getClickEvent().getValue()))
                     this.isHoveringItemLink = true;
 
+                //temporarily modify width to force forge to handle wrapping correctly
+                var backupWidth = this.width;
+                this.width = this.width / 2; //not quite sure why exaclty / 2 works, but then forge wrapping handles it correctly on gui scale 3+4
                 this.renderTooltip(pPoseStack, hoverevent$itemstackinfo.getItemStack(), mouseX, mouseY);
+                this.width = backupWidth;
 
                 //then we reset so other item tooltip renders are not affected
                 this.isHoveringItemLink = false;
