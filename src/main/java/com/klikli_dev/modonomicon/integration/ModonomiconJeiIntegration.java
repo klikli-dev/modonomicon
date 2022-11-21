@@ -24,9 +24,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class ModonomiconJeiIntegration {
 
-    public static void showRecipe(ItemStack stack) {
+    public static boolean isJeiLoaded(){
+        return ModList.get().isLoaded("jei");
+    }
 
-        if (ModList.get().isLoaded("jei")) {
+    public static void showRecipe(ItemStack stack) {
+        if (isJeiLoaded()) {
             ModonomiconJeiHelper.showRecipe(stack);
         } else {
             Modonomicon.LOGGER.warn("Attempted to show JEI recipe for {} without JEI installed!", ForgeRegistries.ITEMS.getKey(stack.getItem()));
@@ -34,7 +37,7 @@ public class ModonomiconJeiIntegration {
     }
 
     public static void showUses(ItemStack stack) {
-        if (ModList.get().isLoaded("jei")) {
+        if (isJeiLoaded()) {
             ModonomiconJeiHelper.showUses(stack);
         } else {
             Modonomicon.LOGGER.warn("Attempted to show JEI usages for {} without JEI installed!", ForgeRegistries.ITEMS.getKey(stack.getItem()));
