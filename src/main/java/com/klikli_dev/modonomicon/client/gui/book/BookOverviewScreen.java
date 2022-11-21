@@ -293,7 +293,7 @@ public class BookOverviewScreen extends Screen {
 
     public void onSyncBookUnlockCapabilityMessage(SyncBookUnlockCapabilityMessage message) {
         //this leads to re-init of the categor buttons after a potential unlock
-        this.init();
+        this.rebuildWidgets();
     }
 
     @Override
@@ -301,10 +301,6 @@ public class BookOverviewScreen extends Screen {
         super.init();
 
         BookGuiManager.get().openOverviewScreen = this;
-
-        this.renderables.clear();
-        this.children().clear();
-        this.narratables.clear();
 
         int buttonXOffset = -11;
 

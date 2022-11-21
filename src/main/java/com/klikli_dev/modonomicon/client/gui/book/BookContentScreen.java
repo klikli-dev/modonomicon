@@ -20,18 +20,23 @@ import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.BackButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.ItemLinkRenderer;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.klikli_dev.modonomicon.integration.ModonomiconJeiIntegration;
 import com.klikli_dev.modonomicon.integration.ModonomiconPatchouliIntegration;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.SaveEntryStateMessage;
 import com.klikli_dev.modonomicon.registry.SoundRegistry;
+import com.klikli_dev.modonomicon.util.ItemStackUtil;
 import com.klikli_dev.modonomicon.util.RenderUtil;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import mezz.jei.api.runtime.IRecipesGui;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
@@ -94,6 +99,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
     private List<Component> tooltip;
 
     private ItemStack tooltipStack;
+    private boolean isHoveringItemLink;
 
     public BookContentScreen(BookOverviewScreen parentScreen, BookEntry entry) {
         super(Component.literal(""));
@@ -511,7 +517,6 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
                             }
                         }
 
-                        //we do not handle patchouli links here, if locked .. patchouli needs to handle that
                     }
                 }
             }
@@ -525,7 +530,14 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
             HoverEvent hoverevent = style.getHoverEvent();
             HoverEvent.ItemStackInfo hoverevent$itemstackinfo = hoverevent.getValue(HoverEvent.Action.SHOW_ITEM);
             if (hoverevent$itemstackinfo != null) {
+                //special handling for item link hovers -> we append another line in this.getTooltipFromItem
+                if(style.getClickEvent() != null)// && ItemLinkRenderer.isItemLink(style.getClickEvent().getValue()))
+                    this.isHoveringItemLink = true;
+
                 this.renderTooltip(pPoseStack, hoverevent$itemstackinfo.getItemStack(), mouseX, mouseY);
+
+                //then we reset so other item tooltip renders are not affected
+                this.isHoveringItemLink = false;
             } else {
                 HoverEvent.EntityTooltipInfo hoverevent$entitytooltipinfo = hoverevent.getValue(HoverEvent.Action.SHOW_ENTITY);
                 if (hoverevent$entitytooltipinfo != null) {
@@ -544,6 +556,19 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
 
         }
 
+    }
+
+    @Override
+    public List<Component> getTooltipFromItem(ItemStack pItemStack) {
+        var tooltip = super.getTooltipFromItem(pItemStack);
+
+        if(this.isHoveringItemLink && ModonomiconJeiIntegration.isJeiLoaded()){
+            tooltip.add(Component.literal(""));
+            tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GREEN)));
+            tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO_LINE2).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GRAY)));
+        }
+
+        return tooltip;
     }
 
     @Override
@@ -589,11 +614,37 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
                         if(link.bookId != null){
                             //the integration class handles class loading guards if patchouli is not present
                             this.simulateEscClosing = true;
-                            this.onClose();
+                            //this.onClose();
 
                             ModonomiconPatchouliIntegration.openEntry(link.bookId, link.entryId, link.pageNumber);
                             return true;
                         }
+                    }
+
+                    if(ItemLinkRenderer.isItemLink(event.getValue())){
+
+                        var itemId = event.getValue().substring(ItemLinkRenderer.PROTOCOL_ITEM_LENGTH);
+                        var itemStack = ItemStackUtil.loadFromParsed(ItemStackUtil.parseItemStackString(itemId));
+
+                        this.onClose(); //we have to do this before showing JEI, because super.onClose() clears Gui Layers, and thus would kill JEIs freshly spawned gui
+
+                        if(Screen.hasShiftDown()){
+                            ModonomiconJeiIntegration.showUses(itemStack);
+                        } else {
+                            ModonomiconJeiIntegration.showRecipe(itemStack);
+                        }
+
+                        if(!(this.minecraft.screen instanceof IRecipesGui)){
+                            //if we did not open a JEI gui, restore self
+                            this.minecraft.pushGuiLayer(this);
+                        }
+
+                        //TODO: Consider adding logic to restore content screen after JEI gui close
+                        //      currently only the overview screen is restored (because JEI does not use Forges Gui Stack, only vanilla screen, thus only saves one parent screen)
+                        //      we could fix that by listening to the Closing event from forge, and in that set the closing time
+                        //      -> then on init of overview screen, if closing time is < delta, push last content screen from gui manager
+
+                        return true;
                     }
                 }
             }
