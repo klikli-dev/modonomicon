@@ -97,6 +97,7 @@ public class ModonomiconConstants {
             public static final String HOVER_BOOK_LINK_LOCKED_INFO = PREFIX + "hover.book_link_locked_info";
             public static final String HOVER_HTTP_LINK = PREFIX + "hover.http_link";
             public static final String HOVER_ITEM_LINK_INFO = PREFIX + "hover.item_link_info";
+            public static final String HOVER_ITEM_LINK_INFO_LINE2 = PREFIX + "hover.item_link_info_line2";
 
             public static final String NO_ERRORS_FOUND = PREFIX + "no_errors_found";
             public static final String PAGE_ENTITY_LOADING_ERROR = PREFIX + ".page.entity.loading_error";

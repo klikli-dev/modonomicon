@@ -562,8 +562,11 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
     public List<Component> getTooltipFromItem(ItemStack pItemStack) {
         var tooltip = super.getTooltipFromItem(pItemStack);
 
-        if(this.isHoveringItemLink && ModonomiconJeiIntegration.isJeiLoaded())
-            tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GRAY)));
+        if(this.isHoveringItemLink && ModonomiconJeiIntegration.isJeiLoaded()){
+            tooltip.add(Component.literal(""));
+            tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GREEN)));
+            tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO_LINE2).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GRAY)));
+        }
 
         return tooltip;
     }
@@ -635,6 +638,11 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
                             //if we did not open a JEI gui, restore self
                             this.minecraft.pushGuiLayer(this);
                         }
+
+                        //TODO: Consider adding logic to restore content screen after JEI gui close
+                        //      currently only the overview screen is restored (because JEI does not use Forges Gui Stack, only vanilla screen, thus only saves one parent screen)
+                        //      we could fix that by listening to the Closing event from forge, and in that set the closing time
+                        //      -> then on init of overview screen, if closing time is < delta, push last content screen from gui manager
 
                         return true;
                     }
