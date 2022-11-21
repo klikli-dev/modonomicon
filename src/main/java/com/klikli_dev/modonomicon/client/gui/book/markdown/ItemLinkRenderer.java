@@ -7,6 +7,8 @@
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
+import com.klikli_dev.modonomicon.util.ItemStackUtil;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.HoverEvent.Action;
@@ -45,18 +47,21 @@ public class ItemLinkRenderer implements LinkRenderer {
             var currentColor = context.getCurrentStyle().getColor();
 
 
-            var itemId = new ResourceLocation(link.getDestination().substring(PROTOCOL_ITEM_LENGTH));
-            var item = ForgeRegistries.ITEMS.getHolder(itemId).get();
+            var itemId = link.getDestination().substring(PROTOCOL_ITEM_LENGTH);
+            var itemStack = ItemStackUtil.loadFromParsed(ItemStackUtil.parseItemStackString(itemId));
 
             //if we have a color we use it, otherwise we use item link default.
             context.setCurrentStyle(context.getCurrentStyle()
                     .withColor(currentColor == null ? ITEM_LINK_COLOR : currentColor)
-                    .withHoverEvent(new HoverEvent(Action.SHOW_ITEM, new ItemStackInfo(new ItemStack(item.get()))))
+                    .withHoverEvent(new HoverEvent(Action.SHOW_ITEM, new ItemStackInfo(itemStack)))
+                    .withClickEvent(new ClickEvent(ClickEvent.Action.CHANGE_PAGE, link.getDestination()))
             );
+
+            //TODO: show usage infos -> shift to show usage, click to show recipe
 
             if(link.getLastChild() == null){
                 //if no children, render item name
-                link.appendChild(new Text(Component.translatable(item.get().getDescriptionId()).getString()));
+                link.appendChild(new Text(Component.translatable(itemStack.getItem().getDescriptionId()).getString()));
             }
 
             visitChildren.accept(link);
@@ -73,6 +78,9 @@ public class ItemLinkRenderer implements LinkRenderer {
             return true;
         }
         return false;
+    }
 
+    public static boolean isItemLink(String linkText) {
+        return linkText.toLowerCase().startsWith(PROTOCOL_ITEM);
     }
 }
