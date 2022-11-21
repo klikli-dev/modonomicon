@@ -23,6 +23,7 @@ import com.klikli_dev.modonomicon.network.messages.SyncBookUnlockCapabilityMessa
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Style;
@@ -293,7 +294,9 @@ public class BookOverviewScreen extends Screen {
     }
 
     public void onSyncBookUnlockCapabilityMessage(SyncBookUnlockCapabilityMessage message) {
-        //this leads to re-init of the categor buttons after a potential unlock
+        //this leads to re-init of the category buttons after a potential unlock
+        this.clearWidgets();
+        this.setFocused(null);
         this.init();
     }
 
@@ -302,10 +305,6 @@ public class BookOverviewScreen extends Screen {
         super.init();
 
         BookGuiManager.get().openOverviewScreen = this;
-
-        this.renderables.clear();
-        this.children().clear();
-        this.narratables.clear();
 
         int buttonXOffset = -11;
 

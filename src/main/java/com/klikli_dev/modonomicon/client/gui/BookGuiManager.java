@@ -46,7 +46,6 @@ public class BookGuiManager {
     public boolean showErrorScreen(ResourceLocation bookId) {
         if (BookErrorManager.get().hasErrors(bookId)) {
             var book = BookDataManager.get().getBook(bookId);
-            ForgeHooksClient.clearGuiLayers(Minecraft.getInstance());
             Minecraft.getInstance().setScreen(new BookErrorScreen(book));
             return true;
         }
@@ -153,7 +152,6 @@ public class BookGuiManager {
             this.currentOverviewScreen = new BookOverviewScreen(book);
         }
 
-        ForgeHooksClient.clearGuiLayers(Minecraft.getInstance());
         Minecraft.getInstance().setScreen(this.currentOverviewScreen);
 
         if (categoryId == null) {
@@ -185,7 +183,7 @@ public class BookGuiManager {
             this.currentContentScreen = this.currentCategoryScreen.openEntry(entry);
         } else {
             //we are clearing the gui layers above, so we have to restore here if we do not call openentry
-            ForgeHooksClient.pushGuiLayer(Minecraft.getInstance(), this.currentContentScreen);
+            Minecraft.getInstance().pushGuiLayer(this.currentContentScreen);
         }
 
         //we don't need to manually check for the current page because the content screen will do that for us

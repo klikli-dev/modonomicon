@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.client.gui.book;
 
+import com.google.common.collect.Lists;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.Book;
@@ -20,18 +21,23 @@ import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.BackButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.ItemLinkRenderer;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.klikli_dev.modonomicon.integration.ModonomiconJeiIntegration;
 import com.klikli_dev.modonomicon.integration.ModonomiconPatchouliIntegration;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.SaveEntryStateMessage;
 import com.klikli_dev.modonomicon.registry.SoundRegistry;
+import com.klikli_dev.modonomicon.util.ItemStackUtil;
 import com.klikli_dev.modonomicon.util.RenderUtil;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import mezz.jei.api.runtime.IRecipesGui;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
@@ -39,20 +45,20 @@ import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.*;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class BookContentScreen extends Screen implements BookScreenWithButtons{
 
@@ -91,6 +97,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
     private List<Component> tooltip;
 
     private ItemStack tooltipStack;
+    private boolean isHoveringItemLink;
 
     public BookContentScreen(BookOverviewScreen parentScreen, BookEntry entry) {
         super(new TextComponent(""));
@@ -508,7 +515,6 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
                             }
                         }
 
-                        //we do not handle patchouli links here, if locked .. patchouli needs to handle that
                     }
                 }
             }
@@ -522,7 +528,18 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
             HoverEvent hoverevent = style.getHoverEvent();
             HoverEvent.ItemStackInfo hoverevent$itemstackinfo = hoverevent.getValue(HoverEvent.Action.SHOW_ITEM);
             if (hoverevent$itemstackinfo != null) {
+                //special handling for item link hovers -> we append another line in this.getTooltipFromItem
+                if(style.getClickEvent() != null)// && ItemLinkRenderer.isItemLink(style.getClickEvent().getValue()))
+                    this.isHoveringItemLink = true;
+
+                //temporarily modify width to force forge to handle wrapping correctly
+                var backupWidth = this.width;
+                this.width = this.width / 2; //not quite sure why exaclty / 2 works, but then forge wrapping handles it correctly on gui scale 3+4
                 this.renderTooltip(pPoseStack, hoverevent$itemstackinfo.getItemStack(), mouseX, mouseY);
+                this.width = backupWidth;
+
+                //then we reset so other item tooltip renders are not affected
+                this.isHoveringItemLink = false;
             } else {
                 HoverEvent.EntityTooltipInfo hoverevent$entitytooltipinfo = hoverevent.getValue(HoverEvent.Action.SHOW_ENTITY);
                 if (hoverevent$entitytooltipinfo != null) {
@@ -541,6 +558,51 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
 
         }
 
+    }
+
+//    @Override
+//    public void renderTooltip(PoseStack pPoseStack, List<Component> pTooltips, Optional<TooltipComponent> pVisualTooltipComponent, int pMouseX, int pMouseY) {
+//
+//
+//        var width = (this.width / 2) - pMouseX - 10; //our own width calc
+//        var finalTooltip = pTooltips.stream().flatMap(c -> {
+//            return minecraft.font.split(c, width).stream();
+//        } ).toList();
+//
+//        List<ClientTooltipComponent> list = net.minecraftforge.client.ForgeHooksClient.gatherTooltipComponents(this.tooltipStack, finalTooltip, pVisualTooltipComponent, pMouseX, width, height, this.tooltipFont, this.font);
+//        this.renderTooltipInternal(pPoseStack, list, pMouseX, pMouseY);
+//    }
+//
+//    @Override
+//    protected void renderTooltip(PoseStack pPoseStack, ItemStack pItemStack, int pMouseX, int pMouseY) {
+//        tooltipStack = pItemStack;
+//
+//        var originalTooltip = this.getTooltipFromItem(pItemStack);
+//        var finalTooltip = new ArrayList<Component>();
+//
+//        var width = (this.width / 2) - pMouseX - 10; //our own width calc
+//
+//
+//        originalTooltip.stream().flatMap(c -> {
+//            return minecraft.font.split(c, width);
+//        } )
+//        this.renderTooltip(pPoseStack, this.minecraft.font.split(component, width), mouseX, mouseY);
+//
+//        this.renderTooltip(pPoseStack, pItemStack.getTooltipImage(), pMouseX, pMouseY);
+//        tooltipStack = ItemStack.EMPTY;
+//    }
+
+    @Override
+    public List<Component> getTooltipFromItem(ItemStack pItemStack) {
+        var tooltip = super.getTooltipFromItem(pItemStack);
+
+        if(this.isHoveringItemLink && ModonomiconJeiIntegration.isJeiLoaded()){
+            tooltip.add(new TextComponent(""));
+            tooltip.add(new TranslatableComponent(Gui.HOVER_ITEM_LINK_INFO).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GREEN)));
+            tooltip.add(new TranslatableComponent(Gui.HOVER_ITEM_LINK_INFO_LINE2).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GRAY)));
+        }
+
+        return tooltip;
     }
 
     @Override
@@ -586,11 +648,37 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
                         if(link.bookId != null){
                             //the integration class handles class loading guards if patchouli is not present
                             this.simulateEscClosing = true;
-                            this.onClose();
+                            //this.onClose();
 
                             ModonomiconPatchouliIntegration.openEntry(link.bookId, link.entryId, link.pageNumber);
                             return true;
                         }
+                    }
+
+                    if(ItemLinkRenderer.isItemLink(event.getValue())){
+
+                        var itemId = event.getValue().substring(ItemLinkRenderer.PROTOCOL_ITEM_LENGTH);
+                        var itemStack = ItemStackUtil.loadFromParsed(ItemStackUtil.parseItemStackString(itemId));
+
+                        this.onClose(); //we have to do this before showing JEI, because super.onClose() clears Gui Layers, and thus would kill JEIs freshly spawned gui
+
+                        if(Screen.hasShiftDown()){
+                            ModonomiconJeiIntegration.showUses(itemStack);
+                        } else {
+                            ModonomiconJeiIntegration.showRecipe(itemStack);
+                        }
+
+                        if(!(this.minecraft.screen instanceof IRecipesGui)){
+                            //if we did not open a JEI gui, restore self
+                            this.minecraft.pushGuiLayer(this);
+                        }
+
+                        //TODO: Consider adding logic to restore content screen after JEI gui close
+                        //      currently only the overview screen is restored (because JEI does not use Forges Gui Stack, only vanilla screen, thus only saves one parent screen)
+                        //      we could fix that by listening to the Closing event from forge, and in that set the closing time
+                        //      -> then on init of overview screen, if closing time is < delta, push last content screen from gui manager
+
+                        return true;
                     }
                 }
             }
