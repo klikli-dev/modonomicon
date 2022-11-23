@@ -16,6 +16,8 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
+import mezz.jei.api.runtime.IRecipesGui;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.ModList;
@@ -26,6 +28,15 @@ public class ModonomiconJeiIntegration {
 
     public static boolean isJeiLoaded(){
         return ModList.get().isLoaded("jei");
+    }
+
+    public static boolean isJEIRecipesGuiOpen() {
+        if (isJeiLoaded()) {
+            return ModonomiconJeiHelper.isJEIRecipesGuiOpen();
+        } else {
+            Modonomicon.LOGGER.warn("Attempted check if JEI recipes GUI is open without JEI installed!");
+        }
+        return false;
     }
 
     public static void showRecipe(ItemStack stack) {
@@ -53,6 +64,10 @@ public class ModonomiconJeiIntegration {
         public static void showUses(ItemStack stack) {
             var focus = ModonomiconJeiPlugin.jeiRuntime.getJeiHelpers().getFocusFactory().createFocus(RecipeIngredientRole.INPUT, VanillaTypes.ITEM_STACK, stack);
             ModonomiconJeiPlugin.jeiRuntime.getRecipesGui().show(focus);
+        }
+
+        public static boolean isJEIRecipesGuiOpen() {
+            return Minecraft.getInstance().screen instanceof IRecipesGui;
         }
     }
 

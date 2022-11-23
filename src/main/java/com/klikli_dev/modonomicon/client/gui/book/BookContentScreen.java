@@ -566,10 +566,14 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
     public List<Component> getTooltipFromItem(ItemStack pItemStack) {
         var tooltip = super.getTooltipFromItem(pItemStack);
 
-        if(this.isHoveringItemLink && ModonomiconJeiIntegration.isJeiLoaded()){
+        if(this.isHoveringItemLink){
             tooltip.add(Component.literal(""));
-            tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GREEN)));
-            tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO_LINE2).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GRAY)));
+            if(ModonomiconJeiIntegration.isJeiLoaded()){
+                tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GREEN)));
+                tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO_LINE2).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GRAY)));
+            } else {
+                tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO_NO_JEI).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.RED)));
+            }
         }
 
         return tooltip;
@@ -625,7 +629,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
                         }
                     }
 
-                    if(ItemLinkRenderer.isItemLink(event.getValue())){
+                    if(ItemLinkRenderer.isItemLink(event.getValue()) && ModonomiconJeiIntegration.isJeiLoaded()){
 
                         var itemId = event.getValue().substring(ItemLinkRenderer.PROTOCOL_ITEM_LENGTH);
                         var itemStack = ItemStackUtil.loadFromParsed(ItemStackUtil.parseItemStackString(itemId));
@@ -638,8 +642,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
                             ModonomiconJeiIntegration.showRecipe(itemStack);
                         }
 
-                        if(!(this.minecraft.screen instanceof IRecipesGui)){
-                            //if we did not open a JEI gui, restore self
+                        if(!ModonomiconJeiIntegration.isJEIRecipesGuiOpen()){
                             this.minecraft.pushGuiLayer(this);
                         }
 
