@@ -144,6 +144,10 @@ public class BookCategoryScreen {
     }
 
     public BookContentScreen openEntry(BookEntry entry) {
+        if(!BookUnlockCapability.isReadFor(Minecraft.getInstance().player, entry)){
+            Networking.sendToServer(new BookEntryReadMessage(entry.getBook().getId(), entry.getId()));
+        }
+
         if(entry.getCategoryToOpen() != null){
             this.bookOverviewScreen.changeCategory(entry.getCategoryToOpen());
             return null;
@@ -152,11 +156,7 @@ public class BookCategoryScreen {
         this.openEntry = entry.getId();
 
         var bookContentScreen = new BookContentScreen(this.bookOverviewScreen, entry);
-        ForgeHooksClient.pushGuiLayer(Minecraft.getInstance(), bookContentScreen);
-
-        if(!BookUnlockCapability.isReadFor(Minecraft.getInstance().player, entry)){
-            Networking.sendToServer(new BookEntryReadMessage(entry.getBook().getId(), entry.getId()));
-        }
+        Minecraft.getInstance().pushGuiLayer(bookContentScreen);
 
         return bookContentScreen;
     }
@@ -224,6 +224,7 @@ public class BookCategoryScreen {
         stack.scale(this.currentZoom, this.currentZoom, 1.0f);
         for (var entry : this.category.getEntries().values()) {
             var displayState = this.getEntryDisplayState(entry);
+            var isHovered = this.isEntryHovered(entry, xOffset, yOffset, mouseX, mouseY);
 
             if (displayState == EntryDisplayState.HIDDEN)
                 continue;
@@ -231,7 +232,7 @@ public class BookCategoryScreen {
             if(displayState == EntryDisplayState.LOCKED){
                 //Draw locked entries greyed out
                 RenderSystem.setShaderColor(0.2F, 0.2F, 0.2F, 1.0F);
-            } else if(this.isEntryHovered(entry, xOffset, yOffset, mouseX, mouseY)){
+            } else if(isHovered){
                 //Draw hovered entries slightly greyed out
                 RenderSystem.setShaderColor(0.8F, 0.8F, 0.8F, 1.0F);
             }
@@ -249,6 +250,31 @@ public class BookCategoryScreen {
 
             //render icon
             entry.getIcon().render(stack, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 5, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP + 5);
+
+            //render unread icon
+            if(displayState == EntryDisplayState.UNLOCKED && !BookUnlockCapability.isReadFor(this.bookOverviewScreen.getMinecraft().player, entry)){
+                final int U = 350;
+                final int V = 19;
+                final int width = 11;
+                final int height = 11;
+
+                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                //RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
+                RenderSystem.enableDepthTest();
+
+                //testing
+                stack.pushPose();
+                stack.translate(0,0,10);
+                //if focused we go to the right of our normal button (instead of down, like mc buttons do)
+                BookContentScreen.drawFromTexture(stack, this.bookOverviewScreen.getBook(),
+                        entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 16 + 2,
+                        entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP - 2, U + (isHovered ? width : 0), V, width, height);
+                stack.popPose();
+            }
+
             stack.popPose();
 
             //reset color to avoid greyed out carrying over
