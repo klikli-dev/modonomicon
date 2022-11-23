@@ -629,27 +629,29 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
                         }
                     }
 
-                    if(ItemLinkRenderer.isItemLink(event.getValue()) && ModonomiconJeiIntegration.isJeiLoaded()){
+                    if(ItemLinkRenderer.isItemLink(event.getValue())){
 
-                        var itemId = event.getValue().substring(ItemLinkRenderer.PROTOCOL_ITEM_LENGTH);
-                        var itemStack = ItemStackUtil.loadFromParsed(ItemStackUtil.parseItemStackString(itemId));
+                        if(ModonomiconJeiIntegration.isJeiLoaded()){
+                            var itemId = event.getValue().substring(ItemLinkRenderer.PROTOCOL_ITEM_LENGTH);
+                            var itemStack = ItemStackUtil.loadFromParsed(ItemStackUtil.parseItemStackString(itemId));
 
-                        this.onClose(); //we have to do this before showing JEI, because super.onClose() clears Gui Layers, and thus would kill JEIs freshly spawned gui
+                            this.onClose(); //we have to do this before showing JEI, because super.onClose() clears Gui Layers, and thus would kill JEIs freshly spawned gui
 
-                        if(Screen.hasShiftDown()){
-                            ModonomiconJeiIntegration.showUses(itemStack);
-                        } else {
-                            ModonomiconJeiIntegration.showRecipe(itemStack);
+                            if(Screen.hasShiftDown()){
+                                ModonomiconJeiIntegration.showUses(itemStack);
+                            } else {
+                                ModonomiconJeiIntegration.showRecipe(itemStack);
+                            }
+
+                            if(!ModonomiconJeiIntegration.isJEIRecipesGuiOpen()){
+                                this.minecraft.pushGuiLayer(this);
+                            }
+
+                            //TODO: Consider adding logic to restore content screen after JEI gui close
+                            //      currently only the overview screen is restored (because JEI does not use Forges Gui Stack, only vanilla screen, thus only saves one parent screen)
+                            //      we could fix that by listening to the Closing event from forge, and in that set the closing time
+                            //      -> then on init of overview screen, if closing time is < delta, push last content screen from gui manager
                         }
-
-                        if(!ModonomiconJeiIntegration.isJEIRecipesGuiOpen()){
-                            this.minecraft.pushGuiLayer(this);
-                        }
-
-                        //TODO: Consider adding logic to restore content screen after JEI gui close
-                        //      currently only the overview screen is restored (because JEI does not use Forges Gui Stack, only vanilla screen, thus only saves one parent screen)
-                        //      we could fix that by listening to the Closing event from forge, and in that set the closing time
-                        //      -> then on init of overview screen, if closing time is < delta, push last content screen from gui manager
 
                         return true;
                     }
