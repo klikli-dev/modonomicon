@@ -68,25 +68,21 @@ public class BookOverviewScreen extends Screen {
     public void onDisplay() {
         this.loadBookState();
 
-        //TODO: set state for read all button
-//        for (var entry : this.book.getEntries().values()) {
-//            if (!BookUnlockCapability.isReadFor(this.minecraft.player, entry)) {
-//                this.hasUnreadEntries = true;
-//                // break;
-//            }
-//        }
+        this.updateUnreadEntriesState();
+
+        var currentScreen = this.categoryScreens.get(this.currentCategory);
+        currentScreen.onDisplay();
+    }
+
+    protected void updateUnreadEntriesState(){
         //check if ANY entry is unread
         this.hasUnreadEntries = this.book.getEntries().values().stream().anyMatch(e -> !BookUnlockCapability.isReadFor(this.minecraft.player, e));
 
         //check if any currently unlocked entry is unread
         this.hasUnreadUnlockedEntries = this.book.getEntries().values().stream().anyMatch(e ->
                 BookUnlockCapability.isUnlockedFor(this.minecraft.player, e) &&
-                !BookUnlockCapability.isReadFor(this.minecraft.player, e));
-
-        var currentScreen = this.categoryScreens.get(this.currentCategory);
-        currentScreen.onDisplay();
+                        !BookUnlockCapability.isReadFor(this.minecraft.player, e));
     }
-
     public EntryConnectionRenderer getConnectionRenderer() {
         return this.connectionRenderer;
     }
@@ -219,11 +215,12 @@ public class BookOverviewScreen extends Screen {
     }
 
     protected void onReadAllButtonClick(ReadAllButton button) {
-        if (this.hasUnreadEntries) {
-            //TODO: depending on button state do different things
-            Networking.sendToServer(new ClickReadAllButtonMessage(this.book.getId()));
+        if (this.hasUnreadUnlockedEntries) {
+            Networking.sendToServer(new ClickReadAllButtonMessage(this.book.getId(), false));
+            this.hasUnreadUnlockedEntries = false;
+        } else if (this.hasUnreadEntries && Screen.hasShiftDown()) {
+            Networking.sendToServer(new ClickReadAllButtonMessage(this.book.getId(), true));
             this.hasUnreadEntries = false;
-            //TODO: set state for read all button
         }
     }
 
@@ -303,8 +300,9 @@ public class BookOverviewScreen extends Screen {
     }
 
     public void onSyncBookUnlockCapabilityMessage(SyncBookUnlockCapabilityMessage message) {
-        //this leads to re-init of the categor buttons after a potential unlock
+        //this leads to re-init of the category buttons after a potential unlock
         this.rebuildWidgets();
+        this.updateUnreadEntriesState();
     }
 
     @Override
@@ -339,8 +337,8 @@ public class BookOverviewScreen extends Screen {
         int readAllButtonY = (this.height - this.getFrameHeight()) / 2 + ReadAllButton.HEIGHT / 2;
 
         var readAllButton = new ReadAllButton(this, readAllButtonX, readAllButtonY,
-                this::canSeeReadAllButton,
-                () -> this.hasUnreadUnlockedEntries,
+                () -> this.hasUnreadUnlockedEntries, //if we have unlocked entries that are not read -> blue
+                this::canSeeReadAllButton, //display condition -> if we have any unlocked entries -> grey
                 (b) -> this.onReadAllButtonClick((ReadAllButton) b),
                 (b, stack, x, y) -> this.onReadAllButtonTooltip((ReadAllButton) b, stack, x, y));
 
