@@ -251,7 +251,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
         this.multiblockSimulation = this.page.getMultiblock().simulate(null, BlockPos.ZERO, Rotation.NONE, true, true);
 
         if (this.page.showVisualizeButton()) {
-            this.addButton(this.visualizeButton = new VisualizeButton(this.parentScreen, 12, 97, this::handleButtonVisualize));
+            this.addButton(this.visualizeButton = new VisualizeButton(this.parentScreen, 13, 102, this::handleButtonVisualize));
         }
     }
 

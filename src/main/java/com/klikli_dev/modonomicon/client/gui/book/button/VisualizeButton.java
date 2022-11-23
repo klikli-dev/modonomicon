@@ -17,7 +17,7 @@ public class VisualizeButton extends BookButton {
 
     public static final int U = 350;
     public static final int V = 12;
-    public static final int HEIGHT = 11;
+    public static final int HEIGHT = 7;
     public static final int WIDTH = 11;
 
     public VisualizeButton(BookContentScreen parent, int x, int y, Button.OnPress onPress) {
