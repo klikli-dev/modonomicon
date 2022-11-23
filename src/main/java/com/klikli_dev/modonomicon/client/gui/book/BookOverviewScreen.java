@@ -41,12 +41,14 @@ public class BookOverviewScreen extends Screen {
     private final EntryConnectionRenderer connectionRenderer = new EntryConnectionRenderer();
     private final List<BookCategory> categories;
     private final List<BookCategoryScreen> categoryScreens;
+
     //TODO: make the frame thickness configurable in the book?
     private final int frameThicknessW = 14;
     private final int frameThicknessH = 14;
     private int currentCategory = 0;
 
     private boolean hasUnreadEntries;
+    private boolean hasUnreadUnlockedEntries;
 
     public BookOverviewScreen(Book book) {
         super(Component.literal(""));
@@ -66,13 +68,20 @@ public class BookOverviewScreen extends Screen {
     public void onDisplay() {
         this.loadBookState();
 
-        for (var entry : this.book.getEntries().values()) {
-            if (!BookUnlockCapability.isReadFor(this.minecraft.player, entry)) {
-                this.hasUnreadEntries = true;
-                // break;
-            }
-        }
+        //TODO: set state for read all button
+//        for (var entry : this.book.getEntries().values()) {
+//            if (!BookUnlockCapability.isReadFor(this.minecraft.player, entry)) {
+//                this.hasUnreadEntries = true;
+//                // break;
+//            }
+//        }
+        //check if ANY entry is unread
         this.hasUnreadEntries = this.book.getEntries().values().stream().anyMatch(e -> !BookUnlockCapability.isReadFor(this.minecraft.player, e));
+
+        //check if any currently unlocked entry is unread
+        this.hasUnreadUnlockedEntries = this.book.getEntries().values().stream().anyMatch(e ->
+                BookUnlockCapability.isUnlockedFor(this.minecraft.player, e) &&
+                !BookUnlockCapability.isReadFor(this.minecraft.player, e));
 
         var currentScreen = this.categoryScreens.get(this.currentCategory);
         currentScreen.onDisplay();
@@ -211,8 +220,10 @@ public class BookOverviewScreen extends Screen {
 
     protected void onReadAllButtonClick(ReadAllButton button) {
         if (this.hasUnreadEntries) {
+            //TODO: depending on button state do different things
             Networking.sendToServer(new ClickReadAllButtonMessage(this.book.getId()));
             this.hasUnreadEntries = false;
+            //TODO: set state for read all button
         }
     }
 
@@ -221,7 +232,7 @@ public class BookOverviewScreen extends Screen {
     }
 
     protected boolean canSeeReadAllButton() {
-        return this.hasUnreadEntries;
+        return this.hasUnreadEntries || this.hasUnreadUnlockedEntries;
     }
 
     private void loadBookState() {
@@ -329,6 +340,7 @@ public class BookOverviewScreen extends Screen {
 
         var readAllButton = new ReadAllButton(this, readAllButtonX, readAllButtonY,
                 this::canSeeReadAllButton,
+                () -> this.hasUnreadUnlockedEntries,
                 (b) -> this.onReadAllButtonClick((ReadAllButton) b),
                 (b, stack, x, y) -> this.onReadAllButtonTooltip((ReadAllButton) b, stack, x, y));
 
