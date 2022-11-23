@@ -90,7 +90,11 @@ public class ModonomiconConstants {
             public static final String BUTTON_VISUALIZE_TOOLTIP = PREFIX + "button.visualize.tooltip";
 
             public static final String BUTTON_READ_ALL = PREFIX + "button.read_all";
-            public static final String BUTTON_READ_ALL_TOOLTIP = PREFIX + "button.read_all.tooltip";
+            public static final String BUTTON_READ_ALL_TOOLTIP_READ_UNLOCKED = PREFIX + "button.read_all.tooltip.read_unlocked";
+            public static final String BUTTON_READ_ALL_TOOLTIP_READ_ALL = PREFIX + "button.read_all.tooltip.read_all";
+            public static final String BUTTON_READ_ALL_TOOLTIP_NONE = PREFIX + "button.read_all.tooltip.none";
+            public static final String BUTTON_READ_ALL_TOOLTIP_SHIFT_INSTRUCTIONS = PREFIX + "button.read_all.tooltip.shift";
+            public static final String BUTTON_READ_ALL_TOOLTIP_SHIFT_WARNING = PREFIX + "button.read_all.tooltip.shift_warning";
 
             public static final String HOVER_BOOK_LINK = PREFIX + "hover.book_link";
             public static final String HOVER_BOOK_LINK_LOCKED = PREFIX + "hover.book_link_locked";

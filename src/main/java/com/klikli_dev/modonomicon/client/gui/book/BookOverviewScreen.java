@@ -26,6 +26,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.ForgeHooksClient;
@@ -74,7 +75,7 @@ public class BookOverviewScreen extends Screen {
         currentScreen.onDisplay();
     }
 
-    protected void updateUnreadEntriesState(){
+    protected void updateUnreadEntriesState() {
         //check if ANY entry is unread
         this.hasUnreadEntries = this.book.getEntries().values().stream().anyMatch(e -> !BookUnlockCapability.isReadFor(this.minecraft.player, e));
 
@@ -83,6 +84,7 @@ public class BookOverviewScreen extends Screen {
                 BookUnlockCapability.isUnlockedFor(this.minecraft.player, e) &&
                         !BookUnlockCapability.isReadFor(this.minecraft.player, e));
     }
+
     public EntryConnectionRenderer getConnectionRenderer() {
         return this.connectionRenderer;
     }
@@ -225,7 +227,7 @@ public class BookOverviewScreen extends Screen {
     }
 
     protected void onReadAllButtonTooltip(ReadAllButton button, PoseStack poseStack, int mouseX, int mouseY) {
-        this.renderTooltip(poseStack, button.getTooltip(), mouseX, mouseY);
+        this.renderTooltip(poseStack, button.getTooltips().stream().map(MutableComponent::getVisualOrderText).toList(), mouseX, mouseY);
     }
 
     protected boolean canSeeReadAllButton() {

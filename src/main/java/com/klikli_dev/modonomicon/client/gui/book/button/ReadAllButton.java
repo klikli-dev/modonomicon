@@ -15,6 +15,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 
@@ -30,7 +31,11 @@ public class ReadAllButton extends Button {
 
     private final BookOverviewScreen parent;
 
-    private final MutableComponent tooltip;
+    private final MutableComponent tooltipReadUnlocked;
+    private final MutableComponent tooltipReadAll;
+    private final MutableComponent tooltipNone;
+    private final MutableComponent tooltipShiftInstructions;
+    private final MutableComponent tooltipShiftWarning;
     private final Supplier<Boolean> displayCondition;
     private final Supplier<Boolean> hasUnreadUnlockedEntries;
 
@@ -41,7 +46,11 @@ public class ReadAllButton extends Button {
                 onPress, onTooltip
         );
         this.parent = parent;
-        this.tooltip = Component.translatable(Gui.BUTTON_READ_ALL_TOOLTIP);
+        this.tooltipReadUnlocked = Component.translatable(Gui.BUTTON_READ_ALL_TOOLTIP_READ_UNLOCKED);
+        this.tooltipReadAll = Component.translatable(Gui.BUTTON_READ_ALL_TOOLTIP_READ_ALL);
+        this.tooltipNone = Component.translatable(Gui.BUTTON_READ_ALL_TOOLTIP_NONE);
+        this.tooltipShiftInstructions = Component.translatable(Gui.BUTTON_READ_ALL_TOOLTIP_SHIFT_INSTRUCTIONS);
+        this.tooltipShiftWarning = Component.translatable(Gui.BUTTON_READ_ALL_TOOLTIP_SHIFT_WARNING);
         this.hasUnreadUnlockedEntries = hasUnreadUnlockedEntries;
         this.displayCondition = displayCondition;
     }
@@ -68,10 +77,10 @@ public class ReadAllButton extends Button {
         //if neither is possible the button should be hidden which is handled by BookOverviewScreen#canSeeReadAllButton
         int v = this.hasUnreadUnlockedEntries.get() ? V_READ_UNLOCKED : V_NONE;
 
-        if(hovered)
+        if (hovered)
             u += this.width; //shift to the right for hover variant
 
-        if(Screen.hasShiftDown()){
+        if (Screen.hasShiftDown()) {
             v = V_READ_ALL;
         }
 
@@ -84,7 +93,28 @@ public class ReadAllButton extends Button {
         }
     }
 
-    public MutableComponent getTooltip() {
-        return this.tooltip;
+    public List<MutableComponent> getTooltips() {
+
+        if (Screen.hasShiftDown()) {
+            return List.of(
+                    this.tooltipReadAll,
+                    Component.empty(),
+                    this.tooltipShiftWarning
+            );
+        }
+
+        if (this.hasUnreadUnlockedEntries.get()) {
+            return List.of(
+                    this.tooltipReadUnlocked,
+                    Component.empty(),
+                    this.tooltipShiftInstructions
+            );
+        }
+
+        return List.of(
+                this.tooltipNone,
+                Component.empty(),
+                this.tooltipShiftInstructions
+        );
     }
 }
