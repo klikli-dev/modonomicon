@@ -7,36 +7,53 @@
 package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
-import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookOverviewScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 
 public class ReadAllButton extends Button {
 
-    public static final int U = 300;
-    public static final int V = 21;
-    public static final int HEIGHT = 16;
+    public static final int U = 0;
+    public static final int V_READ_UNLOCKED = 196;
+    public static final int V_READ_ALL = 210;
+    public static final int V_NONE = 224;
     public static final int WIDTH = 16;
+    public static final int HEIGHT = 14;
+
 
     private final BookOverviewScreen parent;
 
-    private MutableComponent tooltip;
-    private Supplier<Boolean> displayCondition;
+    private final MutableComponent tooltipReadUnlocked;
+    private final MutableComponent tooltipReadAll;
+    private final MutableComponent tooltipNone;
+    private final MutableComponent tooltipShiftInstructions;
+    private final MutableComponent tooltipShiftWarning;
+    private final Supplier<Boolean> displayCondition;
+    private final Supplier<Boolean> hasUnreadUnlockedEntries;
 
-    public ReadAllButton(BookOverviewScreen parent, int x, int y, Supplier<Boolean> displayCondition, OnPress onPress, OnTooltip onTooltip) {
-        super(x, y,WIDTH, HEIGHT,
+
+    public ReadAllButton(BookOverviewScreen parent, int x, int y, Supplier<Boolean> hasUnreadUnlockedEntries, Supplier<Boolean> displayCondition, OnPress onPress, OnTooltip onTooltip) {
+        super(x, y, WIDTH, HEIGHT,
                 new TranslatableComponent(Gui.BUTTON_READ_ALL),
                 onPress, onTooltip
         );
         this.parent = parent;
-        this.tooltip =  new TranslatableComponent(Gui.BUTTON_READ_ALL_TOOLTIP);
+        this.tooltipReadUnlocked = new TranslatableComponent(Gui.BUTTON_READ_ALL_TOOLTIP_READ_UNLOCKED);
+        this.tooltipReadAll = new TranslatableComponent(Gui.BUTTON_READ_ALL_TOOLTIP_READ_ALL);
+        this.tooltipNone = new TranslatableComponent(Gui.BUTTON_READ_ALL_TOOLTIP_NONE);
+        this.tooltipShiftInstructions = new TranslatableComponent(Gui.BUTTON_READ_ALL_TOOLTIP_SHIFT_INSTRUCTIONS);
+        this.tooltipShiftWarning = new TranslatableComponent(Gui.BUTTON_READ_ALL_TOOLTIP_SHIFT_WARNING);
+        this.hasUnreadUnlockedEntries = hasUnreadUnlockedEntries;
         this.displayCondition = displayCondition;
     }
 
@@ -53,14 +70,53 @@ public class ReadAllButton extends Button {
 
         ms.pushPose();
         ms.translate(0, 0, 200);
-        BookContentScreen.drawFromTexture(ms, this.parent.getBook(), this.x, this.y, U + (this.isHoveredOrFocused() ? this.width : 0), V, this.width, this.height);
+        var hovered = this.isHoveredOrFocused();
+
+        int u = U;
+
+        //by default we show green if we can read unlocked entries or gray if none
+        //if shift is down we offer to mark all as read
+        //if neither is possible the button should be hidden which is handled by BookOverviewScreen#canSeeReadAllButton
+        int v = this.hasUnreadUnlockedEntries.get() ? V_READ_UNLOCKED : V_NONE;
+
+        if (hovered)
+            u += this.width; //shift to the right for hover variant
+
+        if (Screen.hasShiftDown()) {
+            v = V_READ_ALL;
+        }
+
+        RenderSystem.setShaderTexture(0, this.parent.getBook().getBookOverviewTexture());
+        blit(ms, this.x, this.y, u, v, this.width, this.height, 256, 256);
         ms.popPose();
-        if (this.isHoveredOrFocused()) {
+
+        if (hovered) {
             this.renderToolTip(ms, mouseX, mouseY);
         }
     }
 
-    public MutableComponent getTooltip() {
-        return tooltip;
+    public List<MutableComponent> getTooltips() {
+
+        if (Screen.hasShiftDown()) {
+            return List.of(
+                    this.tooltipReadAll,
+                    new TextComponent(""),
+                    this.tooltipShiftWarning
+            );
+        }
+
+        if (this.hasUnreadUnlockedEntries.get()) {
+            return List.of(
+                    this.tooltipReadUnlocked,
+                    new TextComponent(""),
+                    this.tooltipShiftInstructions
+            );
+        }
+
+        return List.of(
+                this.tooltipNone,
+                new TextComponent(""),
+                this.tooltipShiftInstructions
+        );
     }
 }

@@ -59,7 +59,11 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(Gui.BUTTON_VISUALIZE, "Show Multiblock Preview");
             this.add(Gui.BUTTON_VISUALIZE_TOOLTIP, "Show Multiblock Preview");
             this.add(Gui.BUTTON_READ_ALL, "Mark all entries as read");
-            this.add(Gui.BUTTON_READ_ALL_TOOLTIP, "Mark all entries as read");
+            this.add(Gui.BUTTON_READ_ALL_TOOLTIP_READ_UNLOCKED, "Mark all §aunlocked§r entries as read.");
+            this.add(Gui.BUTTON_READ_ALL_TOOLTIP_SHIFT_INSTRUCTIONS, "Shift-Click to mark §call§r (even locked) entries as read.");
+            this.add(Gui.BUTTON_READ_ALL_TOOLTIP_READ_ALL, "Mark §call§r (even locked) entries as read.");
+            this.add(Gui.BUTTON_READ_ALL_TOOLTIP_SHIFT_WARNING,"§l§cWarning:§r This may make it harder to read progress-oriented books.");
+            this.add(Gui.BUTTON_READ_ALL_TOOLTIP_NONE, "There are currently §lno unread§r unlocked entries.");
 
             this.add(Gui.HOVER_BOOK_LINK, "Go to: %s");
             this.add(Gui.HOVER_BOOK_LINK_LOCKED, "%s.\n%s");
