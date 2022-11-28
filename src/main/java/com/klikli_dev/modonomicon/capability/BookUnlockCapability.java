@@ -115,6 +115,7 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
     public void clone(BookUnlockCapability other) {
         this.unlockedEntries = other.unlockedEntries;
         this.unlockedCategories = other.unlockedCategories;
+        this.readEntries = other.readEntries;
     }
 
     /**
