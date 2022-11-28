@@ -43,6 +43,8 @@ public class CapabilityRegistry {
     public static void onPlayerClone(final PlayerEvent.Clone event) {
         //only handle respawn after death -> not portal transfers
         if (event.isWasDeath()) {
+            event.getOriginal().reviveCaps();
+
             //copy capability to new player instance
             event.getEntity().getCapability(BOOK_UNLOCK).ifPresent(newCap -> {
                         event.getOriginal().getCapability(BOOK_UNLOCK).ifPresent(newCap::clone);
