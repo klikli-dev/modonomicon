@@ -61,8 +61,7 @@ public class BookOverviewScreen extends Screen {
 
         this.bookOverviewTexture = book.getBookOverviewTexture();
 
-        //we only show categories that are unlocked. Unlike entries there is no "greying out"
-        this.categories = book.getCategoriesSorted().stream().filter(cat -> BookUnlockCapability.isUnlockedFor(this.minecraft.player, cat)).toList();
+        this.categories = book.getCategoriesSorted(); //we no longer handle category locking here, is done on init to be able to refresh on unlock
         this.categoryScreens = this.categories.stream().map(c -> new BookCategoryScreen(this, c)).toList();
     }
 
