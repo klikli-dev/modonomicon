@@ -22,6 +22,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.data.LanguageProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +30,8 @@ import java.util.List;
 public class DemoBookProvider extends BookProvider {
 
 
-    public DemoBookProvider(DataGenerator generator, String modid) {
-        super(generator, modid);
+    public DemoBookProvider(DataGenerator generator, String modid, LanguageProvider lang) {
+        super(generator, modid, lang);
     }
 
     private BookModel makeDemoBook() {

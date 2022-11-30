@@ -15,6 +15,7 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.common.data.LanguageProvider;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -27,12 +28,18 @@ public abstract class BookProvider implements DataProvider {
     protected static final Logger LOGGER = LogUtils.getLogger();
 
     protected final DataGenerator generator;
+    protected final LanguageProvider lang;
     protected final Map<ResourceLocation, BookModel> bookModels;
     protected final String modid;
 
-    public BookProvider(DataGenerator generator, String modid) {
+    /**
+     *
+     * @param lang The LanguageProvider to fill with this book provider. IMPORTANT: the Languag Provider needs to be added to the DataGenerator AFTER the BookProvider.
+     */
+    public BookProvider(DataGenerator generator, String modid, LanguageProvider lang) {
         this.modid = modid;
         this.generator = generator;
+        this.lang = lang;
         this.bookModels = new HashMap<>();
     }
 
@@ -70,6 +77,7 @@ public abstract class BookProvider implements DataProvider {
 
     @Override
     public void run(CachedOutput cache) throws IOException {
+
         Path folder = this.generator.getOutputFolder();
 
         this.generate();

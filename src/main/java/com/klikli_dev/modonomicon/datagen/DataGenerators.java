@@ -17,10 +17,12 @@ public class DataGenerators {
         DataGenerator generator = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
-        generator.addProvider(event.includeClient(), new LangGenerator.English(generator));
+        var lang =  new LangGenerator.English(generator);
         generator.addProvider(event.includeClient(), new ItemModelsGenerator(generator, existingFileHelper));
 
         generator.addProvider(event.includeServer(), new AdvancementsGenerator(generator));
-        generator.addProvider(event.includeServer(), new DemoBookProvider(generator, Modonomicon.MODID));
+        generator.addProvider(event.includeServer(), new DemoBookProvider(generator, Modonomicon.MODID, lang));
+        generator.addProvider(event.includeClient(), lang);
+
     }
 }
