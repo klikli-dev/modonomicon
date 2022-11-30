@@ -14,13 +14,20 @@ If you are impatient you can skip ahead to **[Results](#results)** to see what w
 
 1. Open `DemoBookProvider.java` in your IDE or text editor.
 2. Below `package ...` but above `public class ...` add the following lines:
-   ```java 
-   import com.klikli_dev.modonomicon.api.datagen.EntryLocationHelper;
-   import com.klikli_dev.modonomicon.api.datagen.book.page.BookMultiblockPageModel;
-   import com.klikli_dev.modonomicon.api.datagen.book.page.BookSpotlightPageModel;
-   import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
-   import net.minecraft.world.item.crafting.Ingredient;
-   ```
+    ```java 
+    import com.klikli_dev.modonomicon.api.ModonomiconAPI;
+    import com.klikli_dev.modonomicon.api.datagen.BookLangHelper;
+    import com.klikli_dev.modonomicon.api.datagen.BookProvider;
+    import com.klikli_dev.modonomicon.api.datagen.EntryLocationHelper;
+    import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
+    import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
+    import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
+    import com.klikli_dev.modonomicon.api.datagen.book.page.BookMultiblockPageModel;
+    import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
+    import net.minecraft.data.DataGenerator;
+    import net.minecraft.resources.ResourceLocation;
+    import net.minecraftforge.common.data.LanguageProvider;
+    ```
 
 
 :::tip 
