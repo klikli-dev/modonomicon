@@ -17,6 +17,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.common.data.LanguageProvider;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -30,12 +31,18 @@ public abstract class BookProvider implements DataProvider {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     protected final DataGenerator generator;
+    protected final LanguageProvider lang;
     protected final Map<ResourceLocation, BookModel> bookModels;
     protected final String modid;
 
-    public BookProvider(DataGenerator generator, String modid) {
+    /**
+     *
+     * @param lang The LanguageProvider to fill with this book provider. IMPORTANT: the Languag Provider needs to be added to the DataGenerator AFTER the BookProvider.
+     */
+    public BookProvider(DataGenerator generator, String modid, LanguageProvider lang) {
         this.modid = modid;
         this.generator = generator;
+        this.lang = lang;
         this.bookModels = new HashMap<>();
     }
 

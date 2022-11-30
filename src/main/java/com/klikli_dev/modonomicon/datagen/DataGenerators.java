@@ -17,14 +17,17 @@ public class DataGenerators {
         DataGenerator generator = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
-        if(event.includeClient()){
-            generator.addProvider(new LangGenerator.English(generator));
-            generator.addProvider(new ItemModelsGenerator(generator, existingFileHelper));
-        }
+        var lang = new LangGenerator.English(generator);
 
         if(event.includeServer()){
             generator.addProvider(new AdvancementsGenerator(generator));
-            generator.addProvider(new DemoBookProvider(generator, Modonomicon.MODID));
+            generator.addProvider(new DemoBookProvider(generator, Modonomicon.MODID, lang));
+        }
+
+        if(event.includeClient()){
+            //Important: Lang provider needs to be added after the book provider to process the texts added by the book provider
+            generator.addProvider(lang);
+            generator.addProvider(new ItemModelsGenerator(generator, existingFileHelper));
         }
 
     }
