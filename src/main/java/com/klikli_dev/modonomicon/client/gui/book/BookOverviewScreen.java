@@ -220,7 +220,7 @@ public class BookOverviewScreen extends Screen {
     }
 
     protected void onReadAllButtonClick(ReadAllButton button) {
-        if (this.hasUnreadUnlockedEntries) {
+        if (this.hasUnreadUnlockedEntries && !Screen.hasShiftDown()) {
             Networking.sendToServer(new ClickReadAllButtonMessage(this.book.getId(), false));
             this.hasUnreadUnlockedEntries = false;
         } else if (this.hasUnreadEntries && Screen.hasShiftDown()) {
