@@ -21,7 +21,7 @@ jobs:
           distribution: temurin
       - name: Get release type from github tag
         id: get_release_type
-        uses: actions/github-script@0.4.0
+        uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.RELEASE_NOTES_TOKEN }}
           result-encoding: string
@@ -29,7 +29,7 @@ jobs:
             return '${{ github.ref }}'.match(/refs\/tags\/(.*)\/v((.*)-(.*))/)[1];
       - name: Get file version from tag
         id: get_version
-        uses: actions/github-script@0.4.0
+        uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.RELEASE_NOTES_TOKEN }}
           result-encoding: string
@@ -37,7 +37,7 @@ jobs:
             return '${{ github.ref }}'.match(/refs\/tags\/(.*)\/v((.*)-(.*))/)[4];
       - name: Get main mc version from tag
         id: get_mc_version
-        uses: actions/github-script@0.4.0
+        uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.RELEASE_NOTES_TOKEN }}
           result-encoding: string
@@ -58,33 +58,35 @@ jobs:
           MAVEN_USER: ${{ secrets.MAVEN_USER }}
           MAVEN_PASS: ${{ secrets.MAVEN_PASS }}
           VERSION: ${{ steps.get_mc_version.outputs.result }}-${{ steps.get_version.outputs.result }}
+      - name: Update CHANGELOG
+        id: changelog
+        uses: klikli-dev/changelog-action@main
+        with:
+          token: ${{ github.token }}
+          tag: ${{ github.ref_name }}
+          mcVersion: ${{ steps.get_mc_version.outputs.result }}
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_NOTES_TOKEN }}
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: modonomicon-${{ steps.get_mc_version.outputs.result }}-${{ steps.get_version.outputs.result }}-${{ steps.get_release_type.outputs.result }}
-          body: |
-            [[Automated Build]]
-            Changelog will be added on milestone close.
+          allowUpdates: true
           draft: false
-          prerelease: false
-      - name: Upload release asset
-        id: upload_release_asset
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_NOTES_TOKEN }}
+          name: modonomicon-${{ steps.get_mc_version.outputs.result }}-${{ steps.get_version.outputs.result }}-${{ steps.get_release_type.outputs.result }}
+          body: ${{ steps.changelog.outputs.changes }}
+          token: ${{ github.token }}
+          tag: ${{ github.ref }}
+          artifacts: ./build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-${{ steps.get_version.outputs.result }}.jar
+          artifactContentType: application/java-archive
+      - name: Commit CHANGELOG.md
+        uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-${{ steps.get_version.outputs.result }}.jar
-          asset_name: modonomicon-${{ steps.get_mc_version.outputs.result }}-${{ steps.get_version.outputs.result }}-${{ steps.get_release_type.outputs.result }}.jar
-          asset_content_type: application/java-archive
+          branch: version/1.19
+          commit_message: 'docs: update CHANGELOG.md for ${{ github.ref_name }} [skip ci]'
+          file_pattern: CHANGELOG.md
       - name: Upload to Curseforge
         id: curseforge
         uses: itsmeow/curseforge-upload@master
-        if: ${{ steps.get_release_type.outputs.result }} != "test"
+        if: ${{ steps.get_release_type.outputs.result != 'test' }}
         with:
           token: ${{ secrets.CURSEFORGE_API_KEY }}
           project_id: 538392
@@ -92,8 +94,8 @@ jobs:
           file_path: ./build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-${{ steps.get_version.outputs.result }}.jar
           changelog: |-
             [Automated Build]
-            ${{ steps.get_version.outputs.result }}
-            Changelog for this build: https://github.com/klikli-dev/modonomicon/releases/tag/${{ steps.get_release_type.outputs.result }}%2Fv${{ steps.get_mc_version.outputs.result }}-${{ steps.get_version.outputs.result }}
+            ${{ steps.changelog.outputs.changes }}
+            
             Find changes for all versions at https://github.com/klikli-dev/modonomicon/releases
           game_versions: Forge,Minecraft 1.19:1.19,Minecraft 1.19:1.19.1,Minecraft 1.19:${{ steps.get_mc_version.outputs.result }}
           display_name: modonomicon-${{ steps.get_mc_version.outputs.result }}-${{ steps.get_version.outputs.result }}.jar
