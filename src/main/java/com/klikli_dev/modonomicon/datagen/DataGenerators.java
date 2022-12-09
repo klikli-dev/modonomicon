@@ -23,6 +23,6 @@ public class DataGenerators {
 
         //Important: Lang provider needs to be added after the book provider to process the texts added by the book provider
         generator.addProvider(event.includeClient(), lang);
-        generator.addProvider(event.includeClient(), new ItemModelsGenerator(generator, existingFileHelper));
+        generator.addProvider(event.includeClient(), new ItemModelProvider(generator, existingFileHelper));
     }
 }
