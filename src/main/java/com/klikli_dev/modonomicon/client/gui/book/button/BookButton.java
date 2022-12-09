@@ -29,7 +29,7 @@ public class BookButton extends Button {
     }
 
     public BookButton(BookScreenWithButtons parent, int x, int y, int u, int v, int w, int h, Supplier<Boolean> displayCondition, Component pMessage, OnPress onPress, Component... tooltip) {
-        super(x, y, w, h, pMessage, onPress);
+        super(x, y, w, h, pMessage, onPress, Button.DEFAULT_NARRATION);
         this.parent = parent;
         this.u = u;
         this.v = v;
@@ -57,7 +57,7 @@ public class BookButton extends Button {
         RenderSystem.enableDepthTest();
 
         //if focused we go to the right of our normal button (instead of down, like mc buttons do)
-        BookContentScreen.drawFromTexture(ms, this.parent.getBook(), this.x, this.y, this.u + (this.isHoveredOrFocused() ? this.width : 0), this.v, this.width, this.height);
+        BookContentScreen.drawFromTexture(ms, this.parent.getBook(), this.getX(), this.getY(), this.u + (this.isHoveredOrFocused() ? this.width : 0), this.v, this.width, this.height);
         if (this.isHoveredOrFocused()) {
             this.parent.setTooltip(this.tooltip);
         }

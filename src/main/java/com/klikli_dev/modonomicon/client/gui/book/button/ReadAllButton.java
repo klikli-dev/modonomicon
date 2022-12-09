@@ -10,12 +10,14 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.client.gui.book.BookOverviewScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 
@@ -39,11 +41,15 @@ public class ReadAllButton extends Button {
     private final Supplier<Boolean> displayCondition;
     private final Supplier<Boolean> hasUnreadUnlockedEntries;
 
+    private boolean wasHoveredOrFocused;
+    private int tooltipMsDelay;
+    private long hoverOrFocusedStartTime;
 
-    public ReadAllButton(BookOverviewScreen parent, int x, int y, Supplier<Boolean> hasUnreadUnlockedEntries, Supplier<Boolean> displayCondition, OnPress onPress, OnTooltip onTooltip) {
+
+    public ReadAllButton(BookOverviewScreen parent, int x, int y, Supplier<Boolean> hasUnreadUnlockedEntries, Supplier<Boolean> displayCondition, OnPress onPress) {
         super(x, y, WIDTH, HEIGHT,
                 Component.translatable(Gui.BUTTON_READ_ALL),
-                onPress, onTooltip
+                onPress, Button.DEFAULT_NARRATION
         );
         this.parent = parent;
         this.tooltipReadUnlocked = Component.translatable(Gui.BUTTON_READ_ALL_TOOLTIP_READ_UNLOCKED);
@@ -59,6 +65,7 @@ public class ReadAllButton extends Button {
     public final void render(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
         this.active = this.visible = this.displayCondition.get();
         super.render(ms, mouseX, mouseY, partialTicks);
+        this.updateCustomTooltip();
     }
 
     @Override
@@ -85,36 +92,43 @@ public class ReadAllButton extends Button {
         }
 
         RenderSystem.setShaderTexture(0, this.parent.getBook().getBookOverviewTexture());
-        blit(ms, this.x, this.y, u, v, this.width, this.height, 256, 256);
+        blit(ms, this.getX(), this.getY(), u, v, this.width, this.height, 256, 256);
         ms.popPose();
-
-        if (hovered) {
-            this.renderToolTip(ms, mouseX, mouseY);
-        }
     }
 
-    public List<MutableComponent> getTooltips() {
+    private void updateCustomTooltip() {
+
+        boolean flag = this.isHoveredOrFocused();
+        if (flag != this.wasHoveredOrFocused) {
+            if (flag) {
+                this.hoverOrFocusedStartTime = Util.getMillis();
+            }
+
+            this.wasHoveredOrFocused = flag;
+        }
+
+        if (flag && Util.getMillis() - this.hoverOrFocusedStartTime > (long) this.tooltipMsDelay) {
+            var tooltip = this.getCustomTooltip();
+
+            Screen screen = Minecraft.getInstance().screen;
+            if (screen != null) {
+                screen.setTooltipForNextRenderPass(Tooltip.create(tooltip), this.createTooltipPositioner(), this.isFocused());
+            }
+        }
+
+    }
+
+    public MutableComponent getCustomTooltip() {
 
         if (Screen.hasShiftDown()) {
-            return List.of(
-                    this.tooltipReadAll,
-                    Component.empty(),
-                    this.tooltipShiftWarning
-            );
+            return Component.empty().append(this.tooltipReadAll).append(Component.empty()).append(this.tooltipShiftWarning);
         }
 
         if (this.hasUnreadUnlockedEntries.get()) {
-            return List.of(
-                    this.tooltipReadUnlocked,
-                    Component.empty(),
-                    this.tooltipShiftInstructions
-            );
+            return Component.empty().append(this.tooltipReadUnlocked).append(Component.empty()).append(this.tooltipShiftInstructions);
         }
 
-        return List.of(
-                this.tooltipNone,
-                Component.empty(),
-                this.tooltipShiftInstructions
-        );
+        return Component.empty().append(this.tooltipNone).append(Component.empty()).append(this.tooltipShiftInstructions);
     }
+
 }

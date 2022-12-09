@@ -29,24 +29,21 @@ import com.klikli_dev.modonomicon.integration.ModonomiconJeiIntegration;
 import com.klikli_dev.modonomicon.integration.ModonomiconPatchouliIntegration;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.SaveEntryStateMessage;
-import com.klikli_dev.modonomicon.registry.SoundRegistry;
 import com.klikli_dev.modonomicon.util.ItemStackUtil;
 import com.klikli_dev.modonomicon.util.RenderUtil;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.core.Registry;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -55,6 +52,7 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -138,7 +136,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
     public static void playTurnPageSound(Book book) {
         if (ClientTicks.ticks - lastTurnPageSoundTime > 6) {
             //TODO: make mod loader agnostic
-            var sound = Registry.SOUND_EVENT.getOptional(book.getTurnPageSound()).orElse(SoundRegistry.TURN_PAGE.get());
+            var sound = ForgeRegistries.SOUND_EVENTS.getValue(book.getTurnPageSound());
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(sound, (float) (0.7 + Math.random() * 0.3)));
             lastTurnPageSoundTime = ClientTicks.ticks;
         }
@@ -295,10 +293,10 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
     }
 
     @SuppressWarnings("unchecked")
-    public void removeRenderableWidgets(Collection<? extends Widget> widgets) {
-        this.renderables.removeIf(widgets::contains);
-        this.children().removeIf(c -> c instanceof Widget && widgets.contains(c));
-        this.narratables.removeIf(n -> n instanceof Widget && widgets.contains(n));
+    public void removeRenderableWidgets(Collection<? extends Renderable> renderables) {
+        this.renderables.removeIf(renderables::contains);
+        this.children().removeIf(c -> c instanceof Renderable && renderables.contains(c));
+        this.narratables.removeIf(n -> n instanceof Renderable && renderables.contains(n));
     }
 
     protected void flipPage(boolean left, boolean playSound) {
@@ -479,7 +477,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
      * Make public to access from pages
      */
     @Override
-    public <T extends GuiEventListener & Widget & NarratableEntry> T addRenderableWidget(T pWidget) {
+    public <T extends GuiEventListener & Renderable & NarratableEntry> T addRenderableWidget(T pWidget) {
         return super.addRenderableWidget(pWidget);
     }
 
