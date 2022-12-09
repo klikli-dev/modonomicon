@@ -7,13 +7,12 @@
 package com.klikli_dev.modonomicon.datagen;
 
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.*;
-import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.api.datagen.BookLangHelper;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.data.LanguageProvider;
 
@@ -30,14 +29,6 @@ public abstract class LangGenerator extends LanguageProvider {
 
     protected String itemKey(String id) {
         return "item." + Modonomicon.MODID + "." + id;
-    }
-
-    protected void advancementTitle(String name, String s) {
-        this.add(((TranslatableContents) AdvancementsGenerator.title(name).getContents()).getKey(), s);
-    }
-
-    protected void advancementDescr(String name, String s) {
-        this.add(((TranslatableContents) AdvancementsGenerator.descr(name).getContents()).getKey(), s);
     }
 
 
@@ -62,7 +53,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(Gui.BUTTON_READ_ALL_TOOLTIP_READ_UNLOCKED, "Mark all §aunlocked§r entries as read.");
             this.add(Gui.BUTTON_READ_ALL_TOOLTIP_SHIFT_INSTRUCTIONS, "Shift-Click to mark §call§r (even locked) entries as read.");
             this.add(Gui.BUTTON_READ_ALL_TOOLTIP_READ_ALL, "Mark §call§r (even locked) entries as read.");
-            this.add(Gui.BUTTON_READ_ALL_TOOLTIP_SHIFT_WARNING,"§l§cWarning:§r This may make it harder to read progress-oriented books.");
+            this.add(Gui.BUTTON_READ_ALL_TOOLTIP_SHIFT_WARNING, "§l§cWarning:§r This may make it harder to read progress-oriented books.");
             this.add(Gui.BUTTON_READ_ALL_TOOLTIP_NONE, "There are currently §lno unread§r unlocked entries.");
 
             this.add(Gui.HOVER_BOOK_LINK, "Go to: %s");
@@ -87,7 +78,6 @@ public abstract class LangGenerator extends LanguageProvider {
 
 
             this.add(Gui.RECIPE_PAGE_RECIPE_MISSING, "Recipe %s is was not found! This may be an issue with the mod, or the modpack may have disabled it.");
-
 
 
             //Tooltip
@@ -119,11 +109,6 @@ public abstract class LangGenerator extends LanguageProvider {
 
         private void addItems() {
             this.addItem(ItemRegistry.MODONOMICON, "Modonomicon");
-        }
-
-        private void addAdvancements() {
-            this.advancementTitle("root", "Modonomicon");
-            this.advancementDescr("root", "The book of all books!");
         }
 
         private void addDemoBook() {
@@ -464,7 +449,6 @@ public abstract class LangGenerator extends LanguageProvider {
         protected void addTranslations() {
             this.addMisc();
             this.addItems();
-            this.addAdvancements();
             this.addBooks();
         }
     }

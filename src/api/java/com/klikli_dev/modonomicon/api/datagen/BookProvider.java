@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public abstract class BookProvider implements DataProvider {
 
@@ -76,7 +77,7 @@ public abstract class BookProvider implements DataProvider {
     }
 
     @Override
-    public void run(CachedOutput cache) throws IOException {
+    public CompletableFuture<?> run(CachedOutput cache) {
 
         Path folder = this.generator.getOutputFolder();
 
