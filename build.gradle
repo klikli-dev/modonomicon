@@ -172,7 +172,7 @@ dependencies {
 
     //Patchouli API
     //TODO: renable once update
-    compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_mc_version}-${patchouli_version}:api")
+    //compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_mc_version}-${patchouli_version}:api")
 
     //for some tests we use occultism + deps
 //    runtimeOnly fg.deobf("curse.maven:occultism-361026:4029677") //1.19.2-1.45.4
