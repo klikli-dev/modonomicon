@@ -121,14 +121,14 @@ public class ReadAllButton extends Button {
     public MutableComponent getCustomTooltip() {
 
         if (Screen.hasShiftDown()) {
-            return Component.empty().append(this.tooltipReadAll).append(Component.empty()).append(this.tooltipShiftWarning);
+            return Component.empty().append(this.tooltipReadAll).append(Component.literal("\n\n")).append(this.tooltipShiftWarning);
         }
 
         if (this.hasUnreadUnlockedEntries.get()) {
-            return Component.empty().append(this.tooltipReadUnlocked).append(Component.empty()).append(this.tooltipShiftInstructions);
+            return Component.empty().append(this.tooltipReadUnlocked).append(Component.literal("\n\n")).append(this.tooltipShiftInstructions);
         }
 
-        return Component.empty().append(this.tooltipNone).append(Component.empty()).append(this.tooltipShiftInstructions);
+        return Component.empty().append(this.tooltipNone).append(Component.literal("\n\n")).append(this.tooltipShiftInstructions);
     }
 
 }
