@@ -160,9 +160,10 @@ dependencies {
     minecraft "net.minecraftforge:forge:${forge_version}"
 
     //Jei
-    compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}")
-    compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-forge-api:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-forge:${jei_version}")
+    //TODO: renable once update
+//    compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}")
+//    compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-forge-api:${jei_version}")
+//    runtimeOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-forge:${jei_version}")
 
     //commonmark
     library "org.commonmark:commonmark:${commonmark_version}"
@@ -170,7 +171,8 @@ dependencies {
     library "org.commonmark:commonmark-ext-ins:${commonmark_version}"
 
     //Patchouli API
-    compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_mc_version}-${patchouli_version}:api")
+    //TODO: renable once update
+    //compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_mc_version}-${patchouli_version}:api")
 
     //for some tests we use occultism + deps
 //    runtimeOnly fg.deobf("curse.maven:occultism-361026:4029677") //1.19.2-1.45.4

@@ -15,6 +15,7 @@ import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -25,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
@@ -116,7 +118,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
 
 
         if (tempRecipe == null) {
-            Modonomicon.LOGGER.warn("Recipe {} (of type {}) not found.", recipeId, Registry.RECIPE_TYPE.getKey(this.recipeType));
+            Modonomicon.LOGGER.warn("Recipe {} (of type {}) not found.", recipeId, ForgeRegistries.RECIPE_TYPES.getKey(this.recipeType));
         }
 
         return tempRecipe;

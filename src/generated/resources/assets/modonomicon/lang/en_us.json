@@ -1,6 +1,4 @@
 {
-  "advancements.modonomicon.root.description": "The book of all books!",
-  "advancements.modonomicon.root.title": "Modonomicon",
   "book.modonomicon.demo.features.condition_level_1.description": "Depends on Condition Root being read.",
   "book.modonomicon.demo.features.condition_level_1.info.text": "This entry depends on Condition Root being read.",
   "book.modonomicon.demo.features.condition_level_1.info.title": "Condition Level 1",

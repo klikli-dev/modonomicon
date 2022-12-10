@@ -174,8 +174,8 @@ public abstract class BookPageRenderer<T extends BookPage> {
     }
 
     protected void addButton(Button button) {
-        button.x += (this.parentScreen.getBookLeft() + this.left);
-        button.y += (this.parentScreen.getBookTop() + this.top);
+        button.setX(button.getX() + this.parentScreen.getBookLeft() + this.left);
+        button.setY(button.getY() + this.parentScreen.getBookTop() + this.top);
         this.buttons.add(button);
         this.parentScreen.addRenderableWidget(button);
     }

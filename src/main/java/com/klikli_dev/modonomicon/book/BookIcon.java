@@ -16,6 +16,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class BookIcon {
     private final ItemStack itemStack;
@@ -35,7 +36,7 @@ public class BookIcon {
         if (value.endsWith(".png")) {
             return new BookIcon(new ResourceLocation(value));
         } else {
-            Item item = Registry.ITEM.get(new ResourceLocation(value));
+            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(value));
             return new BookIcon(new ItemStack(item));
         }
     }
@@ -45,7 +46,7 @@ public class BookIcon {
         if (rl.getPath().endsWith(".png")) {
             return new BookIcon(rl);
         } else {
-            Item item = Registry.ITEM.get(rl);
+            Item item = ForgeRegistries.ITEMS.getValue(rl);
             return new BookIcon(new ItemStack(item));
         }
     }
@@ -65,7 +66,7 @@ public class BookIcon {
         if (this.texture != null) {
             buffer.writeResourceLocation(this.texture);
         } else {
-            buffer.writeResourceLocation(Registry.ITEM.getKey(this.itemStack.getItem()));
+            buffer.writeResourceLocation(ForgeRegistries.ITEMS.getKey(this.itemStack.getItem()));
         }
     }
 }

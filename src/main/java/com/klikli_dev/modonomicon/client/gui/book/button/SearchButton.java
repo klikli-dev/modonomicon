@@ -11,6 +11,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.opengl.GL11;
@@ -22,8 +23,9 @@ public class SearchButton extends Button {
     private final BookOverviewScreen parent;
     private int scissorX;
 
-    public SearchButton(BookOverviewScreen parent, int pX, int pY, int scissorX, int width, int height, OnPress pOnPress, OnTooltip pOnTooltip) {
-        super(pX, pY, width, height, Component.literal(""), pOnPress, pOnTooltip);
+    public SearchButton(BookOverviewScreen parent, int pX, int pY, int scissorX, int width, int height, OnPress pOnPress, Tooltip tooltip) {
+        super(pX, pY, width, height, Component.literal(""), pOnPress, Button.DEFAULT_NARRATION);
+        this.setTooltip(tooltip);
         this.scissorX = scissorX;
         this.parent = parent;
     }
@@ -37,9 +39,9 @@ public class SearchButton extends Button {
             int texX = 15;
             int texY = 165;
 
-            int renderX = this.x;
-            int scissorWidth = this.width + (this.x - this.scissorX);
-            int scissorY = (this.parent.height - this.y - this.height - 1); //from the bottom up
+            int renderX = this.getX();
+            int scissorWidth = this.width + (this.getX() - this.scissorX);
+            int scissorY = (this.parent.height - this.getY() - this.height - 1); //from the bottom up
 
             if (this.isHoveredOrFocused()) {
                 renderX += 1;
@@ -51,21 +53,17 @@ public class SearchButton extends Button {
             //GL scissors allows us to move the button on hover without intersecting with book border
             //scissors always needs to use gui scale because it runs in absolute coords!
             //see also vanilla class SocialInteractionsPlayerList using scissors in #render
-            RenderSystem.enableScissor(this.scissorX, this.y - 10, scissorWidth, this.height + 20);
+            RenderSystem.enableScissor(this.scissorX, this.getY() - 10, scissorWidth, this.height + 20);
             RenderSystem.enableScissor(this.scissorX * scale,  scissorY * scale, scissorWidth * scale, 1000);
 
             RenderSystem.setShaderTexture(0, this.parent.getBookOverviewTexture());
-            GuiComponent.blit(pMatrixStack, renderX, this.y, this.parent.getBlitOffset() + 50, texX, texY, this.width, this.height, 256, 256);
+            GuiComponent.blit(pMatrixStack, renderX, this.getY(), this.parent.getBlitOffset() + 50, texX, texY, this.width, this.height, 256, 256);
 
             RenderSystem.disableScissor();
 
 
 
             //draw search button
-        }
-
-        if (this.isHoveredOrFocused()) {
-            this.renderToolTip(pMatrixStack, pMouseX, pMouseY);
         }
     }
 }

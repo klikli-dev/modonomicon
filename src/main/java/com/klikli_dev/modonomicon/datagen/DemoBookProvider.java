@@ -48,6 +48,7 @@ public class DemoBookProvider extends BookProvider {
                 .withId(this.modLoc("demo"))
                 .withName(helper.bookName())
                 .withTooltip(helper.bookTooltip())
+                .withModel(new ResourceLocation("modonomicon:modonomicon_green"))
                 .withCategory(featuresCategory)
                 .withCategory(formattingCategory)
                 .withCategory(hiddenCategory)

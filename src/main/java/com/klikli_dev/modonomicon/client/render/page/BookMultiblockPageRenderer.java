@@ -17,9 +17,7 @@ import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -29,10 +27,9 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Style;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.ColorResolver;
 import net.minecraft.world.level.biome.Biomes;
@@ -45,6 +42,8 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
+import org.joml.Vector4f;
 
 import java.util.*;
 
@@ -63,7 +62,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
 
         @Override
         public int getBlockTint(BlockPos pBlockPos, ColorResolver pColorResolver) {
-            var plains = Minecraft.getInstance().player.level.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY)
+            var plains = Minecraft.getInstance().player.level.registryAccess().registryOrThrow(Registries.BIOME)
                     .getOrThrow(Biomes.PLAINS);
             return pColorResolver.getColor(plains, pBlockPos.getX(), pBlockPos.getZ());
         }
@@ -150,11 +149,11 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
         // Initial eye pos somewhere off in the distance in the -Z direction
         Vector4f eye = new Vector4f(0, 0, -100, 1);
         Matrix4f rotMat = new Matrix4f();
-        rotMat.setIdentity();
+        rotMat.identity();
 
         // For each GL rotation done, track the opposite to keep the eye pos accurate
-        ms.mulPose(Vector3f.XP.rotationDegrees(-30F));
-        rotMat.multiply(Vector3f.XP.rotationDegrees(30));
+        ms.mulPose(Axis.XP.rotationDegrees(-30F));
+        rotMat.rotate(Axis.XP.rotationDegrees(30));
 
         float offX = (float) -sizeX / 2;
         float offZ = (float) -sizeZ / 2 + 1;
@@ -164,15 +163,15 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
             time += ClientTicks.partialTicks;
         }
         ms.translate(-offX, 0, -offZ);
-        ms.mulPose(Vector3f.YP.rotationDegrees(time));
-        rotMat.multiply(Vector3f.YP.rotationDegrees(-time));
-        ms.mulPose(Vector3f.YP.rotationDegrees(45));
-        rotMat.multiply(Vector3f.YP.rotationDegrees(-45));
+        ms.mulPose(Axis.YP.rotationDegrees(time));
+        rotMat.rotate(Axis.YP.rotationDegrees(-time));
+        ms.mulPose(Axis.YP.rotationDegrees(45));
+        rotMat.rotate(Axis.YP.rotationDegrees(-45));
         ms.translate(offX, 0, offZ);
 
         // Finally apply the rotations
-        eye.transform(rotMat);
-        eye.perspectiveDivide();
+        rotMat.transform(eye);
+        eye.div(eye.w);
 
 
         var buffers = mc.renderBuffers().bufferSource();
@@ -266,7 +265,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
         BookContentScreen.drawFromTexture(poseStack, this.page.getBook(), x, y, 405, 149, 106, 106);
 
         //render multiblock name in place of title
-        if(!this.page.getMultiblockName().isEmpty()){
+        if (!this.page.getMultiblockName().isEmpty()) {
             this.renderTitle(this.page.getMultiblockName(), false, poseStack, BookContentScreen.PAGE_WIDTH / 2, 0);
         }
 

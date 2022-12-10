@@ -12,11 +12,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-
-import net.minecraft.client.gui.components.Button.OnPress;
-import net.minecraft.client.gui.components.Button.OnTooltip;
 
 public class CategoryButton extends Button {
 
@@ -24,8 +22,9 @@ public class CategoryButton extends Button {
     private final BookCategory category;
     private final int categoryIndex;
 
-    public CategoryButton(BookOverviewScreen parent, BookCategory category, int categoryIndex, int pX, int pY, int width, int height, OnPress pOnPress, OnTooltip pOnTooltip) {
-        super(pX, pY, width, height, Component.literal(""), pOnPress, pOnTooltip);
+    public CategoryButton(BookOverviewScreen parent, BookCategory category, int categoryIndex, int pX, int pY, int width, int height, OnPress pOnPress, Tooltip tooltip) {
+        super(pX, pY, width, height, Component.literal(""), pOnPress, Button.DEFAULT_NARRATION);
+        this.setTooltip(tooltip);
         this.parent = parent;
         this.category = category;
         this.categoryIndex = categoryIndex;
@@ -48,7 +47,7 @@ public class CategoryButton extends Button {
             int texX = 0;
             int texY = 145;
 
-            int renderX = this.x;
+            int renderX = this.getX();
             int renderWidth = this.width;
 
             if (this.categoryIndex == this.parent.getCurrentCategory()) {
@@ -61,19 +60,15 @@ public class CategoryButton extends Button {
 
             //draw category button background
             RenderSystem.setShaderTexture(0, this.parent.getBookOverviewTexture());
-            GuiComponent.blit(pMatrixStack, renderX, this.y, this.parent.getBlitOffset() + 50, texX, texY, renderWidth, this.height, 256, 256);
+            GuiComponent.blit(pMatrixStack, renderX, this.getY(), this.parent.getBlitOffset() + 50, texX, texY, renderWidth, this.height, 256, 256);
 
             //then draw icon
 
             int iconOffset = 8;
             pMatrixStack.pushPose();
             pMatrixStack.translate(0, 0, 100);
-            this.category.getIcon().render(pMatrixStack, renderX + iconOffset, this.y + 2);
+            this.category.getIcon().render(pMatrixStack, renderX + iconOffset, this.getY() + 2);
             pMatrixStack.popPose();
-        }
-
-        if (this.isHoveredOrFocused()) {
-            this.renderToolTip(pMatrixStack, pMouseX, pMouseY);
         }
     }
 }

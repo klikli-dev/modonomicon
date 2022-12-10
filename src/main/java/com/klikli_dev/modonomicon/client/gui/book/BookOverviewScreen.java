@@ -23,10 +23,10 @@ import com.klikli_dev.modonomicon.network.messages.SyncBookUnlockCapabilityMessa
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.ForgeHooksClient;
@@ -211,9 +211,6 @@ public class BookOverviewScreen extends Screen {
         this.changeCategory(button.getCategoryIndex());
     }
 
-    protected void onBookCategoryButtonTooltip(CategoryButton button, PoseStack pPoseStack, int pMouseX, int pMouseY) {
-        this.renderTooltip(pPoseStack, Component.translatable(button.getCategory().getName()), pMouseX, pMouseY);
-    }
 
     protected void onReadAllButtonClick(ReadAllButton button) {
         if (this.hasUnreadUnlockedEntries && !Screen.hasShiftDown()) {
@@ -223,10 +220,6 @@ public class BookOverviewScreen extends Screen {
             Networking.sendToServer(new ClickReadAllButtonMessage(this.book.getId(), true));
             this.hasUnreadEntries = false;
         }
-    }
-
-    protected void onReadAllButtonTooltip(ReadAllButton button, PoseStack poseStack, int mouseX, int mouseY) {
-        this.renderTooltip(poseStack, button.getTooltips().stream().map(MutableComponent::getVisualOrderText).toList(), mouseX, mouseY);
     }
 
     protected boolean canSeeReadAllButton() {
@@ -327,7 +320,7 @@ public class BookOverviewScreen extends Screen {
                 var button = new CategoryButton(this, this.categories.get(i), i,
                         buttonX, buttonY + (buttonHeight + buttonSpacing) * buttonCount, buttonWidth, buttonHeight,
                         (b) -> this.onBookCategoryButtonClick((CategoryButton) b),
-                        (b, stack, x, y) -> this.onBookCategoryButtonTooltip((CategoryButton) b, stack, x, y));
+                        Tooltip.create(Component.translatable(this.categories.get(i).getName())));
 
                 this.addRenderableWidget(button);
                 buttonCount++;
@@ -340,8 +333,7 @@ public class BookOverviewScreen extends Screen {
         var readAllButton = new ReadAllButton(this, readAllButtonX, readAllButtonY,
                 () -> this.hasUnreadUnlockedEntries, //if we have unlocked entries that are not read -> blue
                 this::canSeeReadAllButton, //display condition -> if we have any unlocked entries -> grey
-                (b) -> this.onReadAllButtonClick((ReadAllButton) b),
-                (b, stack, x, y) -> this.onReadAllButtonTooltip((ReadAllButton) b, stack, x, y));
+                (b) -> this.onReadAllButtonClick((ReadAllButton) b));
 
         this.addRenderableWidget(readAllButton);
 
@@ -357,7 +349,7 @@ public class BookOverviewScreen extends Screen {
                 scissorX,
                 searchButtonWidth, buttonHeight,
                 (b) -> this.onSearchButtonClick((SearchButton) b),
-                (b, stack, x, y) -> this.onSearchButtonTooltip((SearchButton) b, stack, x, y));
+                Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_SEARCH)));
 
         this.addRenderableWidget(searchButton);
     }

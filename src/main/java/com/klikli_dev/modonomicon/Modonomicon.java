@@ -16,13 +16,12 @@ import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
-import com.klikli_dev.modonomicon.item.ModonomiconCreativeModeTab;
+import com.klikli_dev.modonomicon.item.ModonomiconItem;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.*;
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
@@ -41,8 +40,6 @@ public class Modonomicon {
     public static final String MODID = ModonomiconAPI.ID;
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public static final CreativeModeTab CREATIVE_MODE_TAB = new ModonomiconCreativeModeTab();
-
     public static Modonomicon INSTANCE;
 
     public Modonomicon() {
@@ -58,9 +55,13 @@ public class Modonomicon {
         MenuRegistry.MENUS.register(modEventBus);
         SoundRegistry.SOUNDS.register(modEventBus);
 
+
         //directly register event handlers
         modEventBus.addListener(this::onCommonSetup);
         modEventBus.addListener(this::onServerSetup);
+        modEventBus.addListener(ModonomiconItem::onCreativeModeTabBuildContents);
+        modEventBus.addListener(ItemRegistry::onRegisterCreativeModeTabs);
+
         MinecraftForge.EVENT_BUS.addListener(this::onAddReloadListener);
         MinecraftForge.EVENT_BUS.addListener(CommandRegistry::registerCommands);
         MinecraftForge.EVENT_BUS.addListener(CommandRegistry::registerClientCommands);
@@ -81,7 +82,7 @@ public class Modonomicon {
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
             modEventBus.addListener(ClientSetupEventHandler::onClientSetup);
-            modEventBus.addListener(ClientSetupEventHandler::onModelBake);
+            modEventBus.addListener(ClientSetupEventHandler::onRegisterGeometryLoaders);
             modEventBus.addListener(ClientSetupEventHandler::onRegisterGuiOverlays);
             MinecraftForge.EVENT_BUS.addListener(BookDataManager.get()::onRecipesUpdated);
         }
