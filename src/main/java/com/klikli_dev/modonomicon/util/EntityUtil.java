@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Optional;
@@ -35,7 +36,7 @@ public class EntityUtil {
 
     public static String getEntityName(String entityId) {
         Pair<String, String> nameAndNbt = splitNameAndNBT(entityId);
-        EntityType<?> type = Registry.ENTITY_TYPE.get(new ResourceLocation(nameAndNbt.getLeft()));
+        var type = ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(nameAndNbt.getLeft()));
 
         return type.getDescriptionId();
     }
@@ -55,11 +56,11 @@ public class EntityUtil {
         }
 
         ResourceLocation key = new ResourceLocation(entityId);
-        Optional<EntityType<?>> maybeType = Registry.ENTITY_TYPE.getOptional(key);
-        if (maybeType.isEmpty()) {
+        var type = ForgeRegistries.ENTITY_TYPES.getValue(key);
+        if (type == null) {
             throw new RuntimeException("Unknown entity id: " + entityId);
         }
-        EntityType<?> type = maybeType.get();
+
         final CompoundTag useNbt = nbt;
         final String useId = entityId;
         return (world) -> {
