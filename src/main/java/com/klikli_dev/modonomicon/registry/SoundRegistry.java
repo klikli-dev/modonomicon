@@ -28,6 +28,6 @@ public class SoundRegistry {
      */
     private static SoundEvent loadSoundEvent(String name) {
         ResourceLocation location = new ResourceLocation(Modonomicon.MODID, name);
-        return new SoundEvent(location);
+        return SoundEvent.createVariableRangeEvent(location);
     }
 }
