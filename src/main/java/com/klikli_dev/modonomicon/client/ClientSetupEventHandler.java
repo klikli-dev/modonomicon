@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.InteractionResult;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
@@ -82,12 +83,9 @@ public class ClientSetupEventHandler {
         });
     }
 
-    public static void onModelBake(BakingCompleted event) {
-        ModelResourceLocation key = new ModelResourceLocation(ModonomiconConstants.Data.Book.ITEM_ID, "inventory");
-        BakedModel oldModel = event.getModels().get(key);
-        if (oldModel != null) {
-            event.getModels().put(key, new BookBakedModel(oldModel, event.getModelBakery()));
-        }
+    public static void onRegisterGeometryLoaders(ModelEvent.RegisterGeometryLoaders event)
+    {
+        event.register("book_model_loader", new BookModelLoader());
     }
 
     public static void onRegisterGuiOverlays(RegisterGuiOverlaysEvent event){

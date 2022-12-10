@@ -6,7 +6,7 @@
   "creative_tab": "modonomicon",
   "default_title_color": 0,
   "generate_book_item": true,
-  "model": "modonomicon:modonomicon_purple",
+  "model": "modonomicon:modonomicon_green",
   "name": "book.modonomicon.demo.name",
   "tooltip": "book.modonomicon.demo.tooltip"
 }

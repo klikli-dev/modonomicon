@@ -41,12 +41,12 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
 
     @Override
     protected void registerModels() {
-        this.registerItemGenerated(this.name(ItemRegistry.MODONOMICON.get()), "modonomicon_purple");
+        //moved to manually created json, because we have a custom loader and only one instance
+        //this.registerItemGenerated(this.name(ItemRegistry.MODONOMICON.get()), "modonomicon_purple");
 
         this.registerItemGenerated(this.name(ItemRegistry.MODONOMICON_BLUE.get()), "modonomicon_blue");
         this.registerItemGenerated(this.name(ItemRegistry.MODONOMICON_GREEN.get()), "modonomicon_green");
         this.registerItemGenerated(this.name(ItemRegistry.MODONOMICON_PURPLE.get()), "modonomicon_purple");
         this.registerItemGenerated(this.name(ItemRegistry.MODONOMICON_RED.get()), "modonomicon_red");
-        //this.registerItemGenerated("modonomicon_red", "modonomicon_red");
     }
 }

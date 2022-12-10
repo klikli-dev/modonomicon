@@ -81,7 +81,7 @@ public class Modonomicon {
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
             modEventBus.addListener(ClientSetupEventHandler::onClientSetup);
-            modEventBus.addListener(ClientSetupEventHandler::onModelBake);
+            modEventBus.addListener(ClientSetupEventHandler::onRegisterGeometryLoaders);
             modEventBus.addListener(ClientSetupEventHandler::onRegisterGuiOverlays);
             MinecraftForge.EVENT_BUS.addListener(BookDataManager.get()::onRecipesUpdated);
         }
