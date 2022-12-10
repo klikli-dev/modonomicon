@@ -18,7 +18,7 @@ public class BookModel {
     protected ResourceLocation id;
     protected String name;
     protected String tooltip;
-    protected String creativeTab = "modonomicon";
+    protected String creativeTab = "modonomicon:modonomicon";
 
     protected ResourceLocation model = new ResourceLocation(Book.DEFAULT_MODEL);
     protected ResourceLocation bookOverviewTexture = new ResourceLocation(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
@@ -115,7 +115,7 @@ public class BookModel {
         private String name;
         private String tooltip;
 
-        private String creativeTab = "modonomicon";
+        private String creativeTab = "modonomicon:modonomicon";
 
         private ResourceLocation model = new ResourceLocation(Book.DEFAULT_MODEL);
         private ResourceLocation bookOverviewTexture = new ResourceLocation(Data.Book.DEFAULT_OVERVIEW_TEXTURE);

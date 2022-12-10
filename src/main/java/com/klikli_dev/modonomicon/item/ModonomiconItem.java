@@ -57,9 +57,12 @@ public class ModonomiconItem extends Item {
     public static void onCreativeModeTabBuildContents(CreativeModeTabEvent.BuildContents event) {
         var items = new ArrayList<ItemStack>();
 
-        String tabName = CreativeModeTabRegistry.getName(event.getTab()).toString();
+        var tabName = CreativeModeTabRegistry.getName(event.getTab());
+        if(tabName == null)
+            return;
+
         BookDataManager.get().getBooks().values().forEach(b -> {
-            if (event.getTab() == CreativeModeTabs.SEARCH || b.getCreativeTab().equals(tabName)) {
+            if (event.getTab() == CreativeModeTabs.SEARCH || b.getCreativeTab().equals(tabName.toString())) {
                 if (b.generateBookItem()) {
                     ItemStack stack = new ItemStack(ItemRegistry.MODONOMICON.get());
 

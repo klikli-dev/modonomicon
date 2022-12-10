@@ -3,7 +3,7 @@
   "book_content_texture": "modonomicon:textures/gui/book_content.png",
   "book_overview_texture": "modonomicon:textures/gui/book_overview.png",
   "crafting_texture": "modonomicon:textures/gui/crafting_textures.png",
-  "creative_tab": "modonomicon",
+  "creative_tab": "modonomicon:modonomicon",
   "default_title_color": 0,
   "generate_book_item": true,
   "model": "modonomicon:modonomicon_green",

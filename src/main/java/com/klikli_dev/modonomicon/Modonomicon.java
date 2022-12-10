@@ -60,6 +60,7 @@ public class Modonomicon {
         modEventBus.addListener(this::onCommonSetup);
         modEventBus.addListener(this::onServerSetup);
         modEventBus.addListener(ModonomiconItem::onCreativeModeTabBuildContents);
+        modEventBus.addListener(ItemRegistry::onRegisterCreativeModeTabs);
 
         MinecraftForge.EVENT_BUS.addListener(this::onAddReloadListener);
         MinecraftForge.EVENT_BUS.addListener(CommandRegistry::registerCommands);
