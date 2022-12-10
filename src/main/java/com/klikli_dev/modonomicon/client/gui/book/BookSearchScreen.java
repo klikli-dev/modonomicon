@@ -240,10 +240,10 @@ public class BookSearchScreen extends Screen implements BookScreenWithButtons {
         if (!this.searchField.getValue().isEmpty()) {
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             //draw search field bg
-            BookContentScreen.drawFromTexture(pPoseStack, this.parentScreen.getBook(), this.searchField.x - 8, this.searchField.y, 140, 183, 99, 14);
+            BookContentScreen.drawFromTexture(pPoseStack, this.parentScreen.getBook(), this.searchField.getX() - 8, this.searchField.getY(), 140, 183, 99, 14);
             var searchComponent = Component.literal(this.searchField.getValue());
             //TODO: if we want to support a font style, we set it here
-            this.font.draw(pPoseStack, searchComponent, this.searchField.x + 7, this.searchField.y + 1, 0);
+            this.font.draw(pPoseStack, searchComponent, this.searchField.getX() + 7, this.searchField.getY() + 1, 0);
         }
 
         if (this.visibleEntries.isEmpty()) {
