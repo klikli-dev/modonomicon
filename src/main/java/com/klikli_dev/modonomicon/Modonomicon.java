@@ -16,6 +16,7 @@ import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
+import com.klikli_dev.modonomicon.item.ModonomiconItem;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.*;
 import com.mojang.logging.LogUtils;
@@ -58,6 +59,7 @@ public class Modonomicon {
         //directly register event handlers
         modEventBus.addListener(this::onCommonSetup);
         modEventBus.addListener(this::onServerSetup);
+        modEventBus.addListener(ModonomiconItem::onCreativeModeTabBuildContents);
 
         MinecraftForge.EVENT_BUS.addListener(this::onAddReloadListener);
         MinecraftForge.EVENT_BUS.addListener(CommandRegistry::registerCommands);
