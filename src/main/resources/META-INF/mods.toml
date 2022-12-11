@@ -34,3 +34,9 @@ credits="""See https://github.com/klikli-dev/modonomicon#licensing""" #optional
 authors="Kli Kli" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''Data-driven minecraft in-game documentation with progress visualization.'''
+
+[[dependencies.modonomicon]]
+modId = "forge"
+mandatory = true
+versionRange = "[1.19.3-44.0.5,)"
+side = "BOTH"
