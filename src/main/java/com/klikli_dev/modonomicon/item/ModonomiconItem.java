@@ -55,8 +55,6 @@ public class ModonomiconItem extends Item {
     }
 
     public static void onCreativeModeTabBuildContents(CreativeModeTabEvent.BuildContents event) {
-        var items = new ArrayList<ItemStack>();
-
         var tabName = CreativeModeTabRegistry.getName(event.getTab());
         if(tabName == null)
             return;
@@ -73,14 +71,10 @@ public class ModonomiconItem extends Item {
                     if (event.getTab().getDisplayItems().stream().noneMatch(s -> s.hasTag()
                             && s.getTag().contains(Nbt.ITEM_BOOK_ID_TAG)
                             && s.getTag().getString(Nbt.ITEM_BOOK_ID_TAG).equals(b.getId().toString()))) {
-                        items.add(stack);
+                        event.accept(stack);
                     }
                 }
             }
-        });
-
-        event.register((flags, builder, hasPermissions) -> {
-            items.forEach(builder::accept);
         });
     }
 
