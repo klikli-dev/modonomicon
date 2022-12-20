@@ -13,14 +13,15 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.*;
 import com.klikli_dev.modonomicon.api.datagen.BookLangHelper;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.data.LanguageProvider;
 
 import java.util.function.Supplier;
 
 public abstract class LangGenerator extends LanguageProvider {
-    public LangGenerator(DataGenerator generator, String locale) {
-        super(generator, Modonomicon.MODID, locale);
+    public LangGenerator(PackOutput packOutput, String locale) {
+        super(packOutput, Modonomicon.MODID, locale);
     }
 
     public void addItemSuffix(Supplier<? extends Item> key, String suffix, String name) {
@@ -34,8 +35,8 @@ public abstract class LangGenerator extends LanguageProvider {
 
     public static final class English extends LangGenerator {
 
-        public English(DataGenerator generator) {
-            super(generator, "en_us");
+        public English(PackOutput packOutput) {
+            super(packOutput, "en_us");
         }
 
         private void addMisc() {

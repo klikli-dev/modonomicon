@@ -14,6 +14,7 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.data.LanguageProvider;
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ public abstract class BookProvider implements DataProvider {
 
     protected static final Logger LOGGER = LogUtils.getLogger();
 
-    protected final DataGenerator generator;
+    protected final PackOutput packOutput;
     protected final LanguageProvider lang;
     protected final Map<ResourceLocation, BookModel> bookModels;
     protected final String modid;
@@ -37,9 +38,9 @@ public abstract class BookProvider implements DataProvider {
     /**
      * @param lang The LanguageProvider to fill with this book provider. IMPORTANT: the Languag Provider needs to be added to the DataGenerator AFTER the BookProvider.
      */
-    public BookProvider(DataGenerator generator, String modid, LanguageProvider lang) {
+    public BookProvider(PackOutput packOutput, String modid, LanguageProvider lang) {
         this.modid = modid;
-        this.generator = generator;
+        this.packOutput = packOutput;
         this.lang = lang;
         this.bookModels = new HashMap<>();
     }
@@ -82,7 +83,7 @@ public abstract class BookProvider implements DataProvider {
         List<CompletableFuture<?>> futures = new ArrayList<>();
 
 
-        Path folder = this.generator.getPackOutput().getOutputFolder();
+        Path folder = this.packOutput.getOutputFolder();
 
         this.generate();
 

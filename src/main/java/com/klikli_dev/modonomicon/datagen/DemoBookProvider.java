@@ -19,6 +19,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryUnlockedCo
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookFalseConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.*;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -30,8 +31,8 @@ import java.util.List;
 public class DemoBookProvider extends BookProvider {
 
 
-    public DemoBookProvider(DataGenerator generator, String modid, LanguageProvider lang) {
-        super(generator, modid, lang);
+    public DemoBookProvider(PackOutput packOutput, String modid, LanguageProvider lang) {
+        super(packOutput, modid, lang);
     }
 
     private BookModel makeDemoBook() {
