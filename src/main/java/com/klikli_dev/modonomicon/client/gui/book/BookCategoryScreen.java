@@ -306,7 +306,7 @@ public class BookCategoryScreen {
         int x = (int) ((entry.getX() * ENTRY_GRID_SCALE + xOffset + 2) * this.currentZoom);
         int y = (int) ((entry.getY() * ENTRY_GRID_SCALE + yOffset + 2) * this.currentZoom);
         int innerX = this.bookOverviewScreen.getInnerX();
-        int innerY = this.bookOverviewScreen.getInnerX();
+        int innerY = this.bookOverviewScreen.getInnerY();
         int innerWidth = this.bookOverviewScreen.getInnerWidth();
         int innerHeight = this.bookOverviewScreen.getInnerHeight();
         return mouseX >= x && mouseX <= x + (ENTRY_WIDTH * this.currentZoom)
