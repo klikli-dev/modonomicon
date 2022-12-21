@@ -21,27 +21,10 @@ if (System.getenv('VERSION') != null) {
 group = "com.klikli_dev"
 archivesBaseName = "modonomicon"
 
-// see https://github.com/mezz/JustEnoughItems/blob/1.17/build.gradle
-sourceSets {
-    api {
-        //no resources for api
-        resources.srcDirs = []
-    }
-    main {
-        resources {
-            srcDir 'src/generated/resources'
-        }
-        compileClasspath += sourceSets.api.output
-        runtimeClasspath += sourceSets.api.output
-    }
-}
-
 configurations {
     library
     shade.extendsFrom library
     implementation.extendsFrom shade
-    apiImplementation.extendsFrom(implementation)
-    apiRuntimeOnly.extendsFrom(runtimeOnly)
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -80,7 +63,6 @@ minecraft {
             mods {
                 modonomicon {
                     source sourceSets.main
-                    source sourceSets.api
                 }
             }
         }
@@ -101,7 +83,6 @@ minecraft {
             mods {
                 modonomicon {
                     source sourceSets.main
-                    source sourceSets.api
                 }
             }
         }
@@ -125,7 +106,6 @@ minecraft {
             mods {
                 modonomicon {
                     source sourceSets.main
-                    source sourceSets.api
                 }
             }
         }
@@ -136,16 +116,18 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
     maven {
-        name = "KliKli Maven Mirror"
-        url = "https://klikli-dev.github.io/maven"
-    }
-    maven {
         name = "Patchouli Maven"
         url = 'https://maven.blamejared.com'
+        content {
+            includeGroup "vazkii.patchouli"
+        }
     }
     maven {
         name = "Progwm16 maven - JEI"
         url = 'https://dvs1.progwml6.com/files/maven'
+        content {
+            includeGroup "mezz.jei"
+        }
     }
     maven {
         name = "Curse Maven"
@@ -181,7 +163,6 @@ dependencies {
 // Example for how to get properties into the manifest for reading by the runtime..
 jar {
     from sourceSets.main.output
-    from sourceSets.api.output
     archiveClassifier = "slim"
     manifest {
         attributes([
@@ -196,14 +177,8 @@ jar {
     }
 }
 
-sourcesJar {
-    from sourceSets.main.allJava
-    from sourceSets.api.allJava
-}
-
 shadowJar {
     from sourceSets.main.output
-    from sourceSets.api.output
     archiveClassifier = ""
     configurations = [project.configurations.shade]
     relocate 'org.commonmark', "${project.group}.relocated.commonmark"
@@ -218,20 +193,7 @@ reobf {
     shadowJar {}
 }
 
-// Example configuration to allow publishing using the maven-publish task
-// This is the preferred method to reobfuscate your jar file
 jar.finalizedBy('reobfJar')
-// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
-//publish.dependsOn('reobfJar')
-
-task apiJar(type: Jar) {
-    archiveClassifier = "api"
-    from sourceSets.api.output
-    afterEvaluate {finalizedBy('reobfJar') }
-}
-
-build.dependsOn tasks.apiJar
-
 
 publishing {
     publications {
@@ -240,7 +202,6 @@ publishing {
 
             //artifact jar //no need for slim jar
             artifact shadowJar
-            artifact apiJar
             artifact sourcesJar
 
             pom {
