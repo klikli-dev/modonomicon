@@ -206,6 +206,15 @@ public class BookEntryModel {
             return this;
         }
 
+
+        /**
+         * Creates a default BookEntryParentModel from the given BookEntryModel.Builder and adds it to the Entry's parents.
+         */
+        public Builder withParent(BookEntryModel.Builder parent) {
+            this.parents.add(BookEntryParentModel.builder().withEntryId(parent.id).build());
+            return this;
+        }
+
         /**
          * Sets the entry's name.
          *
