@@ -51,7 +51,7 @@ It could look something like this:
 
 <!-- TODO: link to state matchers -->
 
-The Multiblock with the id `<modid>:blockentity` would be placed in `resources/data/<modid>/modonomicon_multiblocks/blockentity.json` as follows:
+The Multiblock with the id `<modid>:blockentity` would be placed in `resources/data/<modid>/modonomicon/multiblocks/blockentity.json` as follows:
 ```json
 {
   "type": "modonomicon:dense",

@@ -4,7 +4,7 @@ sidebar_position: 40
 
 # Entries
 
-Entries are defined in json files placed in the `/data/<mod_id>/modonomicons/<book_id>/entries/<category_id>/` folder. 
+Entries are defined in json files placed in the `/data/<mod_id>/modonomicon/books/<book_id>/entries/<category_id>/` folder. 
 
 ## Attributes
 

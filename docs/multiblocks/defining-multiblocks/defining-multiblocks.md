@@ -6,7 +6,7 @@ sidebar_position: 10
 
 ## Multiblock Files 
 
-Multiblocks are defined in `.json` files in `/resources/data/<modid>/modonomicon_multiblocks/*.json`. The file name is the ID of the multiblock.
+Multiblocks are defined in `.json` files in `/resources/data/<modid>/modonomicon/multiblocks/*.json`. The file name is the ID of the multiblock.
 
 
 ## Multiblock Types

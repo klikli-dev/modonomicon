@@ -4,7 +4,7 @@ sidebar_position: 20
 
 # Book.json
 
-`book.json` defines the general settings for a book. It is placed in the `/data/<mod_id>/modonomicons/<book_id>/` folder.
+`book.json` defines the general settings for a book. It is placed in the `/data/<mod_id>/modonomicon/books/<book_id>/` folder.
 
 ## Attributes
 
@@ -98,7 +98,7 @@ Default value: `minecraft:turn_page`. The sound to play when turning a page. The
 
 ## Usage Examples
 
-`/data/<mod_id>/modonomicons/<book_id>/book.json`:
+`/data/<mod_id>/modonomicon/books/<book_id>/book.json`:
 
 ```json 
 {

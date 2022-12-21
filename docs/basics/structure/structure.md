@@ -14,7 +14,7 @@ import TabItem from '@theme/TabItem';
 <Tabs>
   <TabItem value="hierarchy" label="Hierarchy" default>
 
-- `data/<mod_id>/modonomicons/<book_id>/`
+- `data/<mod_id>/modonomicon/books/<book_id>/`
   - `book.json`
   - `categories/`
     - `<category_id1>.json`

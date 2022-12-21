@@ -24,7 +24,7 @@ In Singleplayer you will find the error log in your `/logs/latest.log` file in y
 
 The log could be e.g. as follows for an extra comma where there shouldn't be one: 
 ```
-[minecraft/SimpleJsonResourceReloadListener]: Couldn't parse data file modonomicon:test/entries/test_category/test_entry_child from modonomicon:modonomicons/test/entries/test_category/test_entry_child.json
+[minecraft/SimpleJsonResourceReloadListener]: Couldn't parse data file modonomicon:test/entries/test_category/test_entry_child from modonomicon:modonomicon/books/test/entries/test_category/test_entry_child.json
 com.google.gson.JsonParseException: com.google.gson.stream.MalformedJsonException: Use JsonReader.setLenient(true) to accept malformed JSON at line 30 column 4 path $.pages[3]
 ```
 
