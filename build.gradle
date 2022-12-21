@@ -231,6 +231,8 @@ build.dependsOn tasks.apiJar
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            artifactId = 'modonomicon'
+
             //artifact jar //no need for slim jar
             artifact shadowJar
             artifact apiJar
