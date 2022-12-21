@@ -11,8 +11,8 @@ import net.minecraft.resources.ResourceLocation;
 public class ModonomiconConstants {
 
     public static class Data {
-        public static final String MODONOMICON_DATA_PATH = ModonomiconAPI.ID + "s";
-        public static final String MULTIBLOCK_DATA_PATH = ModonomiconAPI.ID + "_multiblocks";
+        public static final String MODONOMICON_DATA_PATH = ModonomiconAPI.ID + "/books";
+        public static final String MULTIBLOCK_DATA_PATH = ModonomiconAPI.ID + "/multiblocks";
 
         public static class Book {
             public static final String DEFAULT_OVERVIEW_TEXTURE = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/book_overview.png").toString();

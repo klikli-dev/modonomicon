@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.api.datagen;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
@@ -61,20 +62,20 @@ public abstract class BookProvider implements DataProvider {
 
     private Path getPath(Path path, BookModel bookModel) {
         ResourceLocation id = bookModel.getId();
-        return path.resolve("data/" + id.getNamespace() + "/modonomicons/" + id.getPath() + "/book.json");
+        return path.resolve("data/" + id.getNamespace() + "/" + ModonomiconConstants.Data.MODONOMICON_DATA_PATH + "/" + id.getPath() + "/book.json");
     }
 
     private Path getPath(Path path, BookCategoryModel bookCategoryModel) {
         ResourceLocation id = bookCategoryModel.getId();
         return path.resolve("data/" + id.getNamespace() +
-                "/modonomicons/" + bookCategoryModel.getBook().getId().getPath() +
+                        "/" + ModonomiconConstants.Data.MODONOMICON_DATA_PATH + "/" + bookCategoryModel.getBook().getId().getPath() +
                 "/categories/" + id.getPath() + ".json");
     }
 
     private Path getPath(Path path, BookEntryModel bookEntryModel) {
         ResourceLocation id = bookEntryModel.getId();
         return path.resolve("data/" + id.getNamespace() +
-                "/modonomicons/" + bookEntryModel.getCategory().getBook().getId().getPath() +
+                "/" + ModonomiconConstants.Data.MODONOMICON_DATA_PATH + "/" + bookEntryModel.getCategory().getBook().getId().getPath() +
                 "/entries/" + id.getPath() + ".json");
     }
 
