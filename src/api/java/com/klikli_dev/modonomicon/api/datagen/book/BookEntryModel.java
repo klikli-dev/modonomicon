@@ -156,70 +156,132 @@ public class BookEntryModel {
         private Builder() {
         }
 
-        public static Builder aBookEntryModel() {
-            return new Builder();
-        }
-
+        /**
+         * Sets the entry ID (= file name).
+         * The ID must be unique within the book, so it is recommended to prepend the category: "<mod_id>:<cat_id>/<entry_id>".
+         * @param id the entry ID, e.g. "modonomicon:features/image"
+         */
         public Builder withId(ResourceLocation id) {
             this.id = id;
             return this;
         }
 
+        /**
+         * Sets the category this entry belongs to
+         */
         public Builder withCategory(BookCategoryModel category) {
             this.category = category;
             return this;
         }
 
+        /**
+         * Replaces the Entry's parents with the given list.
+         */
         public Builder withParents(List<BookEntryParentModel> parents) {
             this.parents = parents;
             return this;
         }
 
+        /**
+         * Adds the given parents to the Entry's parents.
+         */
         public Builder withParents(BookEntryParentModel... parents) {
             this.parents.addAll(List.of(parents));
             return this;
         }
 
+        /**
+         * Adds the given parent to the Entry's parents.
+         */
         public Builder withParent(BookEntryParentModel parent) {
             this.parents.add(parent);
             return this;
         }
 
+        /**
+         * Creates a default BookEntryParentModel from the given BookEntryModel and adds it to the Entry's parents.
+         */
+        public Builder withParent(BookEntryModel parent) {
+            this.parents.add(BookEntryParentModel.builder().withEntryId(parent.id).build());
+            return this;
+        }
+
+
+        /**
+         * Creates a default BookEntryParentModel from the given BookEntryModel.Builder and adds it to the Entry's parents.
+         */
+        public Builder withParent(BookEntryModel.Builder parent) {
+            this.parents.add(BookEntryParentModel.builder().withEntryId(parent.id).build());
+            return this;
+        }
+
+        /**
+         * Sets the entry's name.
+         *
+         * @param name Should be a translation key.
+         */
         public Builder withName(String name) {
             this.name = name;
             return this;
         }
 
+        /**
+         * Sets the entry's description.
+         *
+         * @param description Should be a translation key.
+         */
         public Builder withDescription(String description) {
             this.description = description;
             return this;
         }
 
+        /**
+         * Sets the entry's icon.
+         *
+         * @param icon Either an item ResourceLocation (e.g.: "minecraft:stone") or a texture ResourceLocation (e.g. "minecraft:textures/block/stone.png" - note the ".png" at the end)
+         */
         public Builder withIcon(String icon) {
             this.icon = icon;
             return this;
         }
 
+        /**
+         * Sets the entry's position in the category screen.
+         * Should usually be obtained from a {@link com.klikli_dev.modonomicon.api.datagen.EntryLocationHelper}.
+         */
         public Builder withLocation(Vec2 location) {
             return this.withX((int) location.x).withY((int) location.y);
         }
 
+        /**
+         * Sets the entry's position in the category screen.
+         * Should usually be obtained from a {@link com.klikli_dev.modonomicon.api.datagen.EntryLocationHelper}.
+         */
         public Builder withLocation(int x, int y) {
             return this.withX(x).withY(y);
         }
 
-
+        /**
+         * Sets the entry's position in the category screen.
+         * Should usually be obtained from a {@link com.klikli_dev.modonomicon.api.datagen.EntryLocationHelper}.
+         */
         public Builder withX(int x) {
             this.x = x;
             return this;
         }
 
+        /**
+         * Sets the entry's position in the category screen.
+         * Should usually be obtained from a {@link com.klikli_dev.modonomicon.api.datagen.EntryLocationHelper}.
+         */
         public Builder withY(int y) {
             this.y = y;
             return this;
         }
 
         /**
+         * Select the entry background as found in the Category's "entry_textures" array.
+         * You need to provide the starting UV coordinates of the background - use a tool like Photoshop or Photopea to find out the pixel coordinate of the upper left corner of the desired background.
          * U = Y Axis / Up-Down
          * V = X Axis / Left-Right
          */
@@ -229,31 +291,55 @@ public class BookEntryModel {
             return this;
         }
 
+        /**
+         * If true, the entry will not be shown while locked, even if the entry before it has been unlocked.
+         * If false, the entry will be shown as greyed out once the entry before it has been unlocked.
+         * If the entry before it is locked, it will not be shown independent of this setting.
+         */
         public Builder hideWhileLocked(boolean hideWhileLocked) {
             this.hideWhileLocked = hideWhileLocked;
             return this;
         }
 
+        /**
+         * Replaces the entry's pages with the given list.
+         */
         public Builder withPages(List<BookPageModel> pages) {
             this.pages = pages;
             return this;
         }
 
+        /**
+         * Adds the given pages to the entry's pages.
+         */
         public Builder withPages(BookPageModel... pages) {
             this.pages.addAll(List.of(pages));
             return this;
         }
 
+        /**
+         * Adds the given page to the entry's pages.
+         */
         public Builder withPage(BookPageModel page) {
             this.pages.add(page);
             return this;
         }
 
+        /**
+         * Sets the condition that needs to be met for this entry to be unlocked.
+         * If no condition is set, the entry will be unlocked by default.
+         * Use {@link com.klikli_dev.modonomicon.api.datagen.book.condition.BookAndConditionModel} or {@link com.klikli_dev.modonomicon.api.datagen.book.condition.BookOrConditionModel} to combine multiple conditions.
+         */
         public Builder withCondition(BookConditionModel condition) {
             this.condition = condition;
             return this;
         }
 
+        /**
+         * If you provide a category resource location, this entry will not show book pages, but instead act as a link to that category.
+         *
+         * @param categoryToOpen The category to open when this entry is clicked. Should be a resource location (e.g.: "modonomicon:features").
+         */
         public Builder withCategoryToOpen(ResourceLocation categoryToOpen) {
             this.categoryToOpen = categoryToOpen;
             return this;

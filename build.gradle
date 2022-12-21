@@ -199,6 +199,11 @@ jar {
     }
 }
 
+sourcesJar {
+    from sourceSets.main.allJava
+    from sourceSets.api.allJava
+}
+
 shadowJar {
     from sourceSets.main.output
     from sourceSets.api.output
@@ -234,6 +239,8 @@ build.dependsOn tasks.apiJar
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            artifactId = 'modonomicon'
+
             //artifact jar //no need for slim jar
             artifact shadowJar
             artifact apiJar
