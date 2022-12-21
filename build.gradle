@@ -196,6 +196,11 @@ jar {
     }
 }
 
+sourcesJar {
+    from sourceSets.main.output
+    from sourceSets.api.output
+}
+
 shadowJar {
     from sourceSets.main.output
     from sourceSets.api.output
