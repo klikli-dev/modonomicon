@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.3-1.21.0] - 2022-12-21
+### :boom: BREAKING CHANGES
+- due to [`c0a4abd`](https://github.com/klikli-dev/modonomicon/commit/c0a4abde333d161b2105ab6ff60edc9012aed6cd) - change folder for modonomicon data. *(commit by [@klikli-dev](https://github.com/klikli-dev))*:
+
+  /data/<modid>/modonomicons is now /data/<modid>/modonomicon/books and /data/<modid>/modonomicon_multiblocks is now /data/<modid>/modonomicon/multiblocks
+
+
+### :sparkles: New Features
+- [`c0a4abd`](https://github.com/klikli-dev/modonomicon/commit/c0a4abde333d161b2105ab6ff60edc9012aed6cd) - change folder for modonomicon data. *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`874af30`](https://github.com/klikli-dev/modonomicon/commit/874af309ab30799bc71bfccb5609e013733ca022) - refactor source sets *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.3-1.20.0] - 2022-12-21
 ### :sparkles: New Features
 - [`1475f92`](https://github.com/klikli-dev/modonomicon/commit/1475f923b8a5ad4f3695c0f54a4e340e583e2e31) - add shortcut for withParent from BookEntryModel *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -60,3 +72,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [beta/v1.19.3-1.18.1]: https://github.com/klikli-dev/modonomicon/compare/beta/v1.19.3-1.18.0...beta/v1.19.3-1.18.1
 [release/v1.19.3-1.19.0]: https://github.com/klikli-dev/modonomicon/compare/beta/v1.19.3-1.18.1...release/v1.19.3-1.19.0
 [release/v1.19.3-1.20.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.19.0...release/v1.19.3-1.20.0
+[release/v1.19.3-1.21.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.20.0...release/v1.19.3-1.21.0
