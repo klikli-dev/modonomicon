@@ -200,6 +200,7 @@ jar {
 sourcesJar {
     from sourceSets.main.output
     from sourceSets.api.output
+    finalizedBy 'reobfSourcesJar'
 }
 
 shadowJar {
@@ -217,6 +218,7 @@ artifacts {
 
 reobf {
     shadowJar {}
+    sourcesJar {}
 }
 
 // Example configuration to allow publishing using the maven-publish task
