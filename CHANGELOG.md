@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.18.2-1.21.1] - 2022-12-22
+### :sparkles: New Features
+- [`6084eee`](https://github.com/klikli-dev/modonomicon/commit/6084eee3a985cd6c7e5c5989594040bb32cb78f2) - add shortcut for cat/entry icons from item and add docs *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`615dd77`](https://github.com/klikli-dev/modonomicon/commit/615dd771423eba13ffae222e165430bf5238fd77) - update mod version *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.18.2-1.21.0] - 2022-12-21
 ### :boom: BREAKING CHANGES
 - due to [`34daaa4`](https://github.com/klikli-dev/modonomicon/commit/34daaa4ccf5dc9aeba476eaf51a33175084cc159) - change folder for modonomicon data. *(commit by [@klikli-dev](https://github.com/klikli-dev))*:
@@ -40,3 +48,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [release/v1.18.2-1.19.0]: https://github.com/klikli-dev/modonomicon/compare/beta/v1.18.2-1.16.2...release/v1.18.2-1.19.0
 [release/v1.18.2-1.21.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.18.2-1.19.0...release/v1.18.2-1.21.0
+[release/v1.18.2-1.21.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.18.2-1.21.0...release/v1.18.2-1.21.1
