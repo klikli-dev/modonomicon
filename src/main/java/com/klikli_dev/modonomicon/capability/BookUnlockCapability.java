@@ -73,11 +73,25 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
     }
 
     public static void updateAndSyncFor(ServerPlayer player) {
-        if(BookDataManager.get().areBooksBuilt()){
+        if (BookDataManager.get().areBooksBuilt()) {
             player.getCapability(CapabilityRegistry.BOOK_UNLOCK).ifPresent(capability -> {
                 capability.update(player);
                 capability.sync(player);
             });
+        } else {
+            //we have some edge cases where RecipesUpdatedEvent is fired after EntityJoinLevelEvent.
+            //in SP this means that books are not built yet when updateAndSyncFor is called for the first time.
+            //so we poll until it is available.
+            var timer = new Timer(true);
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    player.server.execute(() -> {
+                        updateAndSyncFor(player);
+                    });
+                }
+            }, 1000);
+
         }
     }
 
