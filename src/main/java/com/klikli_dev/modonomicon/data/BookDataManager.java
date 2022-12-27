@@ -72,7 +72,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     }
 
     public boolean areBooksBuilt() {
-        return booksBuilt;
+        return this.booksBuilt;
     }
 
     public void onDatapackSyncPacket(SyncBookDataMessage message) {
