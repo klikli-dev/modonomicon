@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.2-1.22.0] - 2022-12-27
+### :sparkles: New Features
+- [`29adaba`](https://github.com/klikli-dev/modonomicon/commit/29adabaccf98f9d8b70c8f6d33cb5a5f58d2e843) - add better error reporting to book condition checks *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`4c09da2`](https://github.com/klikli-dev/modonomicon/commit/4c09da2030c7e714a3544bb27cb887b6a4d9598d) - handle edge case where capability is updated before books are built *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`0eb3cbb`](https://github.com/klikli-dev/modonomicon/commit/0eb3cbb4d6c95c2e5a192be8bab6b6bf5da9e5b3) - reformat *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.2-1.21.1] - 2022-12-22
 ### :sparkles: New Features
 - [`b916d1e`](https://github.com/klikli-dev/modonomicon/commit/b916d1ef5b6c024c6567d43198d02183034ae3b3) - add shortcut for cat/entry icons from item and add docs *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -55,3 +66,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.2-1.20.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.19.0...release/v1.19.2-1.20.0
 [release/v1.19.2-1.21.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.20.0...release/v1.19.2-1.21.0
 [release/v1.19.2-1.21.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.21.0...release/v1.19.2-1.21.1
+[release/v1.19.2-1.22.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.21.1...release/v1.19.2-1.22.0
