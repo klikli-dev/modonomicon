@@ -174,7 +174,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     }
 
     public boolean areBooksBuilt() {
-        return booksBuilt;
+        return this.booksBuilt;
     }
 
     protected void onLoadingComplete() {

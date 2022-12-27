@@ -65,7 +65,7 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
     public static Book applyUnlockCodeFor(ServerPlayer player, String unlockCode) {
         return player.getCapability(CapabilityRegistry.BOOK_UNLOCK).map(c -> {
             var book = c.applyUnlockCode(unlockCode);
-            if(book != null) {
+            if (book != null) {
                 c.sync(player);
 
             }
@@ -235,14 +235,20 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
     }
 
     public boolean isRead(BookEntry entry) {
+        if (entry.getBook() == null)
+            return false;
         return this.readEntries.getOrDefault(entry.getBook().getId(), new HashSet<>()).contains(entry.getId());
     }
 
     public boolean isUnlocked(BookEntry entry) {
+        if (entry.getBook() == null)
+            return false;
         return this.unlockedEntries.getOrDefault(entry.getBook().getId(), new HashSet<>()).contains(entry.getId());
     }
 
     public boolean isUnlocked(BookCategory category) {
+        if (category.getBook() == null)
+            return false;
         return this.unlockedCategories.getOrDefault(category.getBook().getId(), new HashSet<>()).contains(category.getId());
     }
 
@@ -252,7 +258,7 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
         this.unlockedCategories.remove(book.getId());
     }
 
-    public List<ResourceLocation> getBooks(){
+    public List<ResourceLocation> getBooks() {
         var books = new HashSet<ResourceLocation>();
         books.addAll(this.readEntries.keySet());
         books.addAll(this.unlockedEntries.keySet());
@@ -260,7 +266,7 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
         return books.stream().toList();
     }
 
-    public String getUnlockCode(Book book){
+    public String getUnlockCode(Book book) {
         var buf = new FriendlyByteBuf(Unpooled.buffer());
         buf.writeResourceLocation(book.getId());
 
@@ -282,14 +288,14 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
         return Base64.getEncoder().encodeToString(bytes);
     }
 
-    public Book applyUnlockCode(String code){
+    public Book applyUnlockCode(String code) {
         try {
             var decoded = Base64.getDecoder().decode(code);
             var buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(decoded));
             var bookId = buf.readResourceLocation();
 
             var book = BookDataManager.get().getBook(bookId);
-            if(book == null)
+            if (book == null)
                 return null;
 
             var unlockedCategories = new HashSet<ResourceLocation>();
@@ -315,7 +321,7 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
             this.readEntries.put(bookId, readEntries);
 
             return book;
-        } catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
