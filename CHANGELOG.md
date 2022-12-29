@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.3-1.22.1] - 2022-12-29
+### :bug: Bug Fixes
+- [`e96784f`](https://github.com/klikli-dev/modonomicon/commit/e96784fa4433f46eed59714ad73be42d065e1b30) - switch to concurrent maps where necessary *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.3-1.22.0] - 2022-12-27
 ### :sparkles: New Features
 - [`2f26c11`](https://github.com/klikli-dev/modonomicon/commit/2f26c11c14c7a97fa48f2533f8bfb5c050694b25) - add better error reporting to book condition checks *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -94,3 +99,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.3-1.21.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.20.0...release/v1.19.3-1.21.0
 [release/v1.19.3-1.21.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.21.0...release/v1.19.3-1.21.1
 [release/v1.19.3-1.22.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.21.1...release/v1.19.3-1.22.0
+[release/v1.19.3-1.22.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.22.0...release/v1.19.3-1.22.1
