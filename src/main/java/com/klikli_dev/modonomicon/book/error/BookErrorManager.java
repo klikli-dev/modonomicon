@@ -12,11 +12,13 @@ import org.slf4j.helpers.MessageFormatter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class BookErrorManager {
     private static final BookErrorManager instance = new BookErrorManager();
 
-    private final Map<ResourceLocation, BookErrorHolder> booksErrors = new HashMap<>();
+    private final ConcurrentMap<ResourceLocation, BookErrorHolder> booksErrors = new ConcurrentHashMap<>();
     private final BookErrorContextHelper contextHelper = new BookErrorContextHelper();
     private ResourceLocation currentBookId;
     private String currentContext;

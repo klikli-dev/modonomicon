@@ -34,10 +34,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class BookStateCapability implements INBTSerializable<CompoundTag> {
 
-    public Map<ResourceLocation, BookState> bookStates = new HashMap<>();
+    public ConcurrentMap<ResourceLocation, BookState> bookStates = new ConcurrentHashMap<>();
 
 
     public static BookState getBookStateFor(Player player, Book book) {

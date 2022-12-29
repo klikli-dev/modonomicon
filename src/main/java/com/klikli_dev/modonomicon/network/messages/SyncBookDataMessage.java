@@ -17,14 +17,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.NetworkEvent.Context;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class SyncBookDataMessage implements Message {
 
-    public Map<ResourceLocation, Book> books = new HashMap<>();
+    public ConcurrentMap<ResourceLocation, Book> books = new ConcurrentHashMap<>();
 
-    public SyncBookDataMessage(Map<ResourceLocation, Book> books) {
+    public SyncBookDataMessage(ConcurrentMap<ResourceLocation, Book> books) {
         this.books = books;
     }
 

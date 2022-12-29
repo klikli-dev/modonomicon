@@ -14,10 +14,12 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class CategoryState implements INBTSerializable<CompoundTag> {
 
-    public Map<ResourceLocation, EntryState> entryStates = new HashMap<>();
+    public ConcurrentMap<ResourceLocation, EntryState> entryStates = new ConcurrentHashMap<>();
 
     public float scrollX = 0;
     public float scrollY = 0;

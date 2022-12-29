@@ -10,15 +10,15 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Category;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
-import com.klikli_dev.modonomicon.book.conditions.BookTrueCondition;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class BookCategory {
     protected ResourceLocation id;
@@ -28,7 +28,7 @@ public class BookCategory {
     protected int sortNumber;
     protected ResourceLocation background;
     protected ResourceLocation entryTextures;
-    protected Map<ResourceLocation, BookEntry> entries;
+    protected ConcurrentMap<ResourceLocation, BookEntry> entries;
 
     protected BookCondition condition;
     protected boolean showCategoryButton;
@@ -42,7 +42,7 @@ public class BookCategory {
         this.icon = icon;
         this.background = background;
         this.entryTextures = entryTextures;
-        this.entries = new HashMap<>();
+        this.entries = new ConcurrentHashMap<>();
     }
     //TODO: additional backgrounds with custom rendertypes?
 
