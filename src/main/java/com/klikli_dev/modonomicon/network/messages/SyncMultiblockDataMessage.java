@@ -18,12 +18,14 @@ import net.minecraftforge.network.NetworkEvent.Context;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class SyncMultiblockDataMessage implements Message {
 
-    public Map<ResourceLocation, Multiblock> multiblocks = new HashMap<>();
+    public ConcurrentMap<ResourceLocation, Multiblock> multiblocks = new ConcurrentHashMap<>();
 
-    public SyncMultiblockDataMessage(Map<ResourceLocation, Multiblock> multiblocks) {
+    public SyncMultiblockDataMessage(ConcurrentMap<ResourceLocation, Multiblock> multiblocks) {
         this.multiblocks = multiblocks;
     }
 

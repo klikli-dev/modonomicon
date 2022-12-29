@@ -34,6 +34,8 @@ import net.minecraftforge.event.OnDatapackSyncEvent;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 
@@ -43,7 +45,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
     private static final BookDataManager instance = new BookDataManager();
 
-    private Map<ResourceLocation, Book> books = new HashMap<>();
+    private ConcurrentMap<ResourceLocation, Book> books = new ConcurrentHashMap<>();
     private boolean loaded;
     private boolean booksBuilt;
 
@@ -59,7 +61,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         return this.loaded;
     }
 
-    public Map<ResourceLocation, Book> getBooks() {
+    public ConcurrentMap<ResourceLocation, Book> getBooks() {
         return this.books;
     }
 
@@ -174,7 +176,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     }
 
     public boolean areBooksBuilt() {
-        return booksBuilt;
+        return this.booksBuilt;
     }
 
     protected void onLoadingComplete() {

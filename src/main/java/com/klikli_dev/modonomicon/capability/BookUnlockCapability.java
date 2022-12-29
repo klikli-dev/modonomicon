@@ -39,23 +39,25 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
 
     /**
      * Map Book ID to read entry IDs
      */
-    public Map<ResourceLocation, Set<ResourceLocation>> readEntries = new HashMap<>();
+    public ConcurrentMap<ResourceLocation, Set<ResourceLocation>> readEntries = new ConcurrentHashMap<>();
 
     /**
      * Map Book ID to unlocked entry IDs
      */
-    public Map<ResourceLocation, Set<ResourceLocation>> unlockedEntries = new HashMap<>();
+    public ConcurrentMap<ResourceLocation, Set<ResourceLocation>> unlockedEntries = new ConcurrentHashMap<>();
 
     /**
      * Map Book ID to unlocked categories IDs
      */
-    public Map<ResourceLocation, Set<ResourceLocation>> unlockedCategories = new HashMap<>();
+    public ConcurrentMap<ResourceLocation, Set<ResourceLocation>> unlockedCategories = new ConcurrentHashMap<>();
 
     public static String getUnlockCodeFor(Player player, Book book) {
         return player.getCapability(CapabilityRegistry.BOOK_UNLOCK).map(c -> c.getUnlockCode(book)).orElse("No unlocked content.");
@@ -64,7 +66,7 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
     public static Book applyUnlockCodeFor(ServerPlayer player, String unlockCode) {
         return player.getCapability(CapabilityRegistry.BOOK_UNLOCK).map(c -> {
             var book = c.applyUnlockCode(unlockCode);
-            if(book != null) {
+            if (book != null) {
                 c.sync(player);
 
             }
@@ -73,7 +75,7 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
     }
 
     public static void updateAndSyncFor(ServerPlayer player) {
-        if(BookDataManager.get().areBooksBuilt()){
+        if (BookDataManager.get().areBooksBuilt()) {
             player.getCapability(CapabilityRegistry.BOOK_UNLOCK).ifPresent(capability -> {
                 capability.update(player);
                 capability.sync(player);
@@ -207,7 +209,7 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
         this.unlockedCategories.remove(book.getId());
     }
 
-    public List<ResourceLocation> getBooks(){
+    public List<ResourceLocation> getBooks() {
         var books = new HashSet<ResourceLocation>();
         books.addAll(this.readEntries.keySet());
         books.addAll(this.unlockedEntries.keySet());
@@ -215,7 +217,7 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
         return books.stream().toList();
     }
 
-    public String getUnlockCode(Book book){
+    public String getUnlockCode(Book book) {
         var buf = new FriendlyByteBuf(Unpooled.buffer());
         buf.writeResourceLocation(book.getId());
 
@@ -237,14 +239,14 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
         return Base64.getEncoder().encodeToString(bytes);
     }
 
-    public Book applyUnlockCode(String code){
+    public Book applyUnlockCode(String code) {
         try {
             var decoded = Base64.getDecoder().decode(code);
             var buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(decoded));
             var bookId = buf.readResourceLocation();
 
             var book = BookDataManager.get().getBook(bookId);
-            if(book == null)
+            if (book == null)
                 return null;
 
             var unlockedCategories = new HashSet<ResourceLocation>();
@@ -270,7 +272,7 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
             this.readEntries.put(bookId, readEntries);
 
             return book;
-        } catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
