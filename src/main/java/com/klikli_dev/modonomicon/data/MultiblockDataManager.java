@@ -24,6 +24,8 @@ import net.minecraftforge.event.OnDatapackSyncEvent;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 
 public class MultiblockDataManager extends SimpleJsonResourceReloadListener {
@@ -32,7 +34,7 @@ public class MultiblockDataManager extends SimpleJsonResourceReloadListener {
 
     private static final MultiblockDataManager instance = new MultiblockDataManager();
 
-    private Map<ResourceLocation, Multiblock> multiblocks = new HashMap<>();
+    private ConcurrentMap<ResourceLocation, Multiblock> multiblocks = new ConcurrentHashMap<>();
     private boolean loaded;
 
     private MultiblockDataManager() {

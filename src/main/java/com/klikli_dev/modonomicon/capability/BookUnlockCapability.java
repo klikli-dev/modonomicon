@@ -40,23 +40,25 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
 
     /**
      * Map Book ID to read entry IDs
      */
-    public Map<ResourceLocation, Set<ResourceLocation>> readEntries = new HashMap<>();
+    public ConcurrentMap<ResourceLocation, Set<ResourceLocation>> readEntries = new ConcurrentHashMap<>();
 
     /**
      * Map Book ID to unlocked entry IDs
      */
-    public Map<ResourceLocation, Set<ResourceLocation>> unlockedEntries = new HashMap<>();
+    public ConcurrentMap<ResourceLocation, Set<ResourceLocation>> unlockedEntries = new ConcurrentHashMap<>();
 
     /**
      * Map Book ID to unlocked categories IDs
      */
-    public Map<ResourceLocation, Set<ResourceLocation>> unlockedCategories = new HashMap<>();
+    public ConcurrentMap<ResourceLocation, Set<ResourceLocation>> unlockedCategories = new ConcurrentHashMap<>();
 
     public static String getUnlockCodeFor(Player player, Book book) {
         return player.getCapability(CapabilityRegistry.BOOK_UNLOCK).map(c -> c.getUnlockCode(book)).orElse("No unlocked content.");

@@ -21,9 +21,10 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
 
 public class Book {
@@ -38,8 +39,8 @@ public class Book {
 
     protected ResourceLocation craftingTexture;
     protected ResourceLocation turnPageSound;
-    protected Map<ResourceLocation, BookCategory> categories;
-    protected Map<ResourceLocation, BookEntry> entries;
+    protected ConcurrentMap<ResourceLocation, BookCategory> categories;
+    protected ConcurrentMap<ResourceLocation, BookEntry> entries;
 
     protected int defaultTitleColor;
     protected boolean autoAddReadConditions;
@@ -72,8 +73,8 @@ public class Book {
         this.turnPageSound = turnPageSound;
         this.defaultTitleColor = defaultTitleColor;
         this.autoAddReadConditions = autoAddReadConditions;
-        this.categories = new HashMap<>();
-        this.entries = new HashMap<>();
+        this.categories = new ConcurrentHashMap<>();
+        this.entries = new ConcurrentHashMap<>();
     }
 
     public static Book fromJson(ResourceLocation id, JsonObject json) {
