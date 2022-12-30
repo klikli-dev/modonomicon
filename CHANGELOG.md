@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.3-1.23.1] - 2022-12-30
+### :bug: Bug Fixes
+- [`963ea27`](https://github.com/klikli-dev/modonomicon/commit/963ea27af7f95617cedf34e1f759e60078c3ffa5) - add missing model for book mod loaded condition *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.3-1.23.0] - 2022-12-30
 ### :sparkles: New Features
 - [`7d813a1`](https://github.com/klikli-dev/modonomicon/commit/7d813a16cf7771f66124f0ef697966ac0e78c2bf) - add mod loaded unlock condition *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -106,3 +111,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.3-1.22.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.21.1...release/v1.19.3-1.22.0
 [release/v1.19.3-1.22.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.22.0...release/v1.19.3-1.22.1
 [release/v1.19.3-1.23.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.22.1...release/v1.19.3-1.23.0
+[release/v1.19.3-1.23.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.23.0...release/v1.19.3-1.23.1
