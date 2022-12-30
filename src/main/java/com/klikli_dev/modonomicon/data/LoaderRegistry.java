@@ -77,6 +77,7 @@ public class LoaderRegistry {
         registerConditionLoader(Condition.AND, BookAndCondition::fromJson, BookAndCondition::fromNetwork);
         registerConditionLoader(Condition.TRUE, BookTrueCondition::fromJson, BookTrueCondition::fromNetwork);
         registerConditionLoader(Condition.FALSE, BookFalseCondition::fromJson, BookFalseCondition::fromNetwork);
+        registerConditionLoader(Condition.MOD_LOADED, BookModLoadedCondition::fromJson, BookModLoadedCondition::fromNetwork);
     }
 
     private static void registerDefaultMultiblockLoaders() {

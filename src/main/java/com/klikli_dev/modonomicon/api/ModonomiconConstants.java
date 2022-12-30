@@ -49,6 +49,7 @@ public class ModonomiconConstants {
 
             public static final ResourceLocation NONE = new ResourceLocation(ModonomiconAPI.ID, "none");
             public static final ResourceLocation ADVANCEMENT = new ResourceLocation(ModonomiconAPI.ID, "advancement");
+            public static final ResourceLocation MOD_LOADED = new ResourceLocation(ModonomiconAPI.ID, "mod_loaded");
             public static final ResourceLocation OR = new ResourceLocation(ModonomiconAPI.ID, "or");
             public static final ResourceLocation AND = new ResourceLocation(ModonomiconAPI.ID, "and");
 
@@ -135,6 +136,8 @@ public class ModonomiconConstants {
             public static final String CONDITION_PREFIX =PREFIX + ".condition.";
             public static final String RECIPE_PREFIX =PREFIX + ".recipe.";
             public static final String CONDITION_ADVANCEMENT = CONDITION_PREFIX + "advancement";
+
+            public static final String CONDITION_MOD_LOADED = CONDITION_PREFIX + "mod_loaded";
             public static final String CONDITION_ENTRY_UNLOCKED = CONDITION_PREFIX + "entry_unlocked";
             public static final String CONDITION_ENTRY_READ = CONDITION_PREFIX + "entry_read";
 
