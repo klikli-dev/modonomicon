@@ -48,7 +48,7 @@ public class BookModLoadedCondition extends BookCondition {
 
     @Override
     public ResourceLocation getType() {
-        return Condition.ADVANCEMENT;
+        return Condition.MOD_LOADED;
     }
 
     @Override
