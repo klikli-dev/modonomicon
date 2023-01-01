@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.18.2-1.23.2] - 2023-01-01
+### :bug: Bug Fixes
+- [`d268b4b`](https://github.com/klikli-dev/modonomicon/commit/d268b4b7cd31f72dd2f53ce404941fbb8d353d62) - network replicated type of mod loaded condition was advancement condition *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.18.2-1.23.1] - 2022-12-30
 ### :bug: Bug Fixes
 - [`2556454`](https://github.com/klikli-dev/modonomicon/commit/2556454c429c6f2f4520cc8f0d289f64b6fc7775) - add missing model for book mod loaded condition *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -79,3 +84,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.18.2-1.22.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.18.2-1.22.0...release/v1.18.2-1.22.1
 [release/v1.18.2-1.23.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.18.2-1.22.1...release/v1.18.2-1.23.0
 [release/v1.18.2-1.23.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.18.2-1.23.0...release/v1.18.2-1.23.1
+[release/v1.18.2-1.23.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.18.2-1.23.1...release/v1.18.2-1.23.2
