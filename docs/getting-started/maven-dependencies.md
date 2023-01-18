@@ -27,7 +27,7 @@ repositories {
 
 ## Dependencies
 
-Depending on your use case you need a compile time dependency against the Modonomicon API, against the full Modonomicon jar, or just a runtime dependency against the full Modonomicon jar (to load Modonomicon in your Dev env). 
+Modonomicon only provides a single jar file, which contains both the API and the implementation. 
 
 :::tip
 
@@ -52,7 +52,7 @@ modonomicon_version=1.3.0
 
 ### Use Case 1: I want to use datagen and convenience features to generate a Modonomicon Book
 
-In this case you need a compileOnly dependency against the Modonomicon API jar to access the Modonomicon Datamodel and datagen helpers. 
+In this case you need a compileOnly dependency against the Modonomicon jar to access the Modonomicon Datamodel and datagen helpers in the API namespace. 
 Additionally a runtimeOnly dependency against the full Modonomicon jar is required to load Modonomicon in your dev environment.
 
 The `dependencies` section of your `build.gradle` should look like this:
@@ -61,10 +61,19 @@ The `dependencies` section of your `build.gradle` should look like this:
 ```groovy
 dependencies {
     ... //other dependencies
-    compileOnly fg.deobf("com.klikli_dev:modonomicon:${modonomicon_mc_version}-${modonomicon_version}:api")
+    compileOnly fg.deobf("com.klikli_dev:modonomicon:${modonomicon_mc_version}-${modonomicon_version}")
     runtimeOnly fg.deobf("com.klikli_dev:modonomicon:${modonomicon_mc_version}-${modonomicon_version}")
 }
 ```
+
+alternatively you can use the `implementation` configuration instead of `compileOnly` and `runtimeOnly`:
+
+`build.gradle`:
+```groovy
+dependencies {
+    ... //other dependencies
+    implementation fg.deobf("com.klikli_dev:modonomicon:${modonomicon_mc_version}-${modonomicon_version}")
+}
 
 **Ensure UTF-8 Encoding**
 
