@@ -27,16 +27,57 @@ Format: `~~stricken through~~`
 
 ### Newline
 
-Newlines work like in markdown, meaning a linebreak only renders as newline if it is preceded by three spaces.
-In markdown linebreak can also be forced with a backslash `\`. In both Java and JSON you need to escape it: `\\`.
+Newlines *generally* work like in markdown, meaning a linebreak only renders as newline if it is preceded by three spaces.
 
-
-:::tip
+:::warning
 
 If using Java Text Blocks to datagen texts java actually trims spaces at the end of lines so you need to use forced line breaks!
 Alternatively you can place `\s` at the end of the line after the three spaces to prevent java from trimming the spaces.
 
 :::
+
+In markdown linebreak can also be forced with a backslash `\`. In modonomicon, due to the underlying techonology you need to escape the backslash in both Java and JSON by simply doing two backslashes: `\\`.
+
+#### Empty Line
+
+Because in many cases a line of text does not perfectly and at the end of the maximum length a line can have in the book, you need to use a little "trick" to force a fully empty line. 
+
+You need two escaped backslashes (= 4 backslashes) like so `\\\\`, which will tell the markdown parser to do two line breaks. The first linebreak ends the previous text line, the second line then is the empty line.
+
+As seen in the code sample below, you can also spread the two escaped backslashes over two lines for better readability:
+
+```JAVA
+        this.add(helper.pageText(),
+                """
+                    Chalk is used to draw pentacle runes and define the pentacle shape. Different types of chalk are used for different purposes, as outlined on the next pages.
+                    \\
+                    \\
+                    The different runes are purely decorative.
+                    """);
+
+```
+
+or 
+
+```JAVA
+        this.add(helper.pageText(),
+                """
+                    Chalk is used to draw pentacle runes and define the pentacle shape. Different types of chalk are used for different purposes, as outlined on the next pages.\\
+                    \\
+                    The different runes are purely decorative.
+                    """);
+
+```
+
+:::info
+
+This is only necessary in modonomicon (but not in "normal" markdown editors) because of the above-mentioned behaviour of java to strip trailing spaces. 
+In normal markdown you would simply add three spaces at the end of your text line, and then insert the forced line break with a backslash.
+
+:::
+
+
+
 
 <!-- TODO Mention the book/render setting that makes soft linebreaks act as hard line breaks -->
 
