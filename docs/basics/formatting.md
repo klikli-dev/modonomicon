@@ -93,7 +93,7 @@ A newline/empty line should be placed after a list, otherwise the parser will ad
 
 :::caution
 
-Nested lists only have limited support and may not correctly wrap to the next line. If there are issues reduce nesting level or force a line break with `//`.
+Nested lists only have limited support and may not correctly wrap to the next line. If there are issues reduce nesting level or force a line break with `\\`.
 
 :::
 
