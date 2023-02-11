@@ -46,27 +46,25 @@ You need two escaped backslashes (= 4 backslashes) like so `\\\\`, which will te
 
 As seen in the code sample below, you can also spread the two escaped backslashes over two lines for better readability:
 
-```JAVA
-        this.add(helper.pageText(),
-                """
-                    Chalk is used to draw pentacle runes and define the pentacle shape. Different types of chalk are used for different purposes, as outlined on the next pages.
-                    \\
-                    \\
-                    The different runes are purely decorative.
-                    """);
-
+```java
+this.add(helper.pageText(),
+  """
+      Chalk is used to draw pentacle runes and define the pentacle shape. Different types of chalk are used for different purposes, as outlined on the next pages.
+      \\
+      \\
+      The different runes are purely decorative.
+      """);
 ```
 
 or 
 
-```JAVA
-        this.add(helper.pageText(),
-                """
-                    Chalk is used to draw pentacle runes and define the pentacle shape. Different types of chalk are used for different purposes, as outlined on the next pages.\\
-                    \\
-                    The different runes are purely decorative.
-                    """);
-
+```java
+this.add(helper.pageText(),
+  """
+      Chalk is used to draw pentacle runes and define the pentacle shape. Different types of chalk are used for different purposes, as outlined on the next pages.\\
+      \\
+      The different runes are purely decorative.
+      """);
 ```
 
 :::info
