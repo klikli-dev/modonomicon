@@ -29,7 +29,7 @@ Format: `~~stricken through~~`
 
 Newlines *generally* work like in markdown, meaning a linebreak only renders as newline if it is preceded by three spaces.
 
-:::warning
+:::tip
 
 If using Java Text Blocks to datagen texts java actually trims spaces at the end of lines so you need to use forced line breaks!
 Alternatively you can place `\s` at the end of the line after the three spaces to prevent java from trimming the spaces.
