@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.3-1.24.0] - 2023-02-12
+### :sparkles: New Features
+- [`d798c93`](https://github.com/klikli-dev/modonomicon/commit/d798c93675d3d2fb095aeb87a23850dd342b588a) - add text margin config to book *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`3b52872`](https://github.com/klikli-dev/modonomicon/commit/3b52872f8797525e61c2ddbd4e5b881dc9570414) - use constant mod id *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.3-1.23.2] - 2023-01-01
 ### :bug: Bug Fixes
 - [`5c8cad7`](https://github.com/klikli-dev/modonomicon/commit/5c8cad718437707e3308a16c91bf4aeb66c0f775) - network replicated type of mod loaded condition was advancement condition *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -118,3 +126,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.3-1.23.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.22.1...release/v1.19.3-1.23.0
 [release/v1.19.3-1.23.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.23.0...release/v1.19.3-1.23.1
 [release/v1.19.3-1.23.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.23.1...release/v1.19.3-1.23.2
+[release/v1.19.3-1.24.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.23.2...release/v1.19.3-1.24.0
