@@ -32,6 +32,23 @@ public class BookModel {
     protected boolean generateBookItem = true;
     protected ResourceLocation customBookItem;
 
+    /**
+     * When rendering book text holders, add this offset to the x position (basically, create a left margin).
+     * Will be automatically subtracted from the width to avoid overflow.
+     */
+    protected int bookTextOffsetX;
+
+    /**
+     * When rendering book text holders, add this offset to the y position (basically, create a top margin).
+     */
+    protected int bookTextOffsetY;
+
+    /**
+     * When rendering book text holders, add this offset to the width (allows to create a right margin)
+     * To make the line end move to the left (as it would for a margin setting in eg css), use a negative value.
+     */
+    protected int bookTextOffsetWidth;
+
     public static Builder builder() {
         return new Builder();
     }
@@ -92,6 +109,18 @@ public class BookModel {
         return this.defaultTitleColor;
     }
 
+    public int getBookTextOffsetX() {
+        return this.bookTextOffsetX;
+    }
+
+    public int getBookTextOffsetY() {
+        return this.bookTextOffsetY;
+    }
+
+    public int getBookTextOffsetWidth() {
+        return this.bookTextOffsetWidth;
+    }
+
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("name", this.name);
@@ -102,6 +131,9 @@ public class BookModel {
         json.addProperty("book_content_texture", this.bookContentTexture.toString());
         json.addProperty("crafting_texture", this.craftingTexture.toString());
         json.addProperty("default_title_color", this.defaultTitleColor);
+        json.addProperty("book_text_offset_x", this.bookTextOffsetX);
+        json.addProperty("book_text_offset_y", this.bookTextOffsetY);
+        json.addProperty("book_text_offset_width", this.bookTextOffsetWidth);
         json.addProperty("auto_add_read_conditions", this.autoAddReadConditions);
         json.addProperty("generate_book_item", this.generateBookItem);
         if (this.customBookItem != null) {
@@ -128,6 +160,23 @@ public class BookModel {
 
         private boolean generateBookItem = true;
         private ResourceLocation customBookItem;
+
+        /**
+         * When rendering book text holders, add this offset to the x position (basically, create a left margin).
+         * Will be automatically subtracted from the width to avoid overflow.
+         */
+        protected int bookTextOffsetX;
+
+        /**
+         * When rendering book text holders, add this offset to the y position (basically, create a top margin).
+         */
+        protected int bookTextOffsetY;
+
+        /**
+         * When rendering book text holders, add this offset to the width (allows to create a right margin)
+         * To make the line end move to the left (as it would for a margin setting in eg css), use a negative value.
+         */
+        protected int bookTextOffsetWidth;
 
         private Builder() {
         }
@@ -263,6 +312,32 @@ public class BookModel {
             return this;
         }
 
+        /**
+         * When rendering book text holders, add this offset to the x position (basically, create a left margin).
+         * Will be automatically subtracted from the width to avoid overflow.
+         */
+        public Builder withBookTextOffsetX(int bookTextOffsetX) {
+            this.bookTextOffsetX = bookTextOffsetX;
+            return this;
+        }
+
+        /**
+         * When rendering book text holders, add this offset to the y position (basically, create a top margin).
+         */
+        public Builder withBookTextOffsetY(int bookTextOffsetY) {
+            this.bookTextOffsetY = bookTextOffsetY;
+            return this;
+        }
+
+        /**
+         * When rendering book text holders, add this offset to the width (allows to create a right margin)
+         * To make the line end move to the left (as it would for a margin setting in eg css), use a negative value.
+         */
+        public Builder withBookTextOffsetWidth(int bookTextOffsetWidth) {
+            this.bookTextOffsetWidth = bookTextOffsetWidth;
+            return this;
+        }
+
         public BookModel build() {
             BookModel bookModel = new BookModel();
             for (var category : this.categories) {
@@ -282,6 +357,9 @@ public class BookModel {
             bookModel.customBookItem = this.customBookItem;
             bookModel.autoAddReadConditions = this.autoAddReadConditions;
             bookModel.creativeTab = this.creativeTab;
+            bookModel.bookTextOffsetX = this.bookTextOffsetX;
+            bookModel.bookTextOffsetY = this.bookTextOffsetY;
+            bookModel.bookTextOffsetWidth = this.bookTextOffsetWidth;
             return bookModel;
         }
     }

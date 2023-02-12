@@ -77,6 +77,11 @@ public abstract class BookPageRenderer<T extends BookPage> {
      * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
      */
     public void renderBookTextHolder(BookTextHolder text, PoseStack poseStack, int x, int y, int width) {
+        x += this.parentScreen.getBook().getBookTextOffsetX();
+        y += this.parentScreen.getBook().getBookTextOffsetY();
+        width += this.parentScreen.getBook().getBookTextOffsetWidth();
+        width -= this.parentScreen.getBook().getBookTextOffsetX(); //always remove the offset x from the width to avoid overflow
+
         renderBookTextHolder(text, this.font, poseStack, x, y, width);
     }
 
