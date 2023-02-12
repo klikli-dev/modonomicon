@@ -7,6 +7,9 @@
   "book_content_texture": "modonomicon:textures/gui/book_content.png",
   "crafting_texture": "modonomicon:textures/gui/crafting_textures.png",
   "default_title_color": 0,
+  "book_text_offset_x": 5,
+  "book_text_offset_y": 0,
+  "book_text_offset_width": -5,
   "auto_add_read_conditions": false,
   "generate_book_item": true
 }
