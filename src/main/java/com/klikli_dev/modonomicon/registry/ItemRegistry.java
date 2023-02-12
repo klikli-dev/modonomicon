@@ -35,7 +35,7 @@ public class ItemRegistry {
             ITEMS.register("modonomicon_red", () -> new ModonomiconItem(new Item.Properties()));
 
     public static void onRegisterCreativeModeTabs(CreativeModeTabEvent.Register event){
-        event.registerCreativeModeTab(Modonomicon.loc("modonomicon"),
+        event.registerCreativeModeTab(Modonomicon.loc(Modonomicon.MODID),
                 (b) -> b
                         .icon(() -> new ItemStack(MODONOMICON_PURPLE.get()))
                         .title(Component.translatable(ModonomiconConstants.I18n.ITEM_GROUP))
