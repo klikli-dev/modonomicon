@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Nbt;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
+import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import com.klikli_dev.modonomicon.util.ItemStackUtil;
@@ -47,6 +48,23 @@ public class Book {
     protected boolean generateBookItem;
     protected ResourceLocation customBookItem;
 
+    /**
+     * When rendering book text holders, add this offset to the x position (basically, create a left margin).
+     * Will be automatically subtracted from the width to avoid overflow.
+     */
+    protected int bookTextOffsetX;
+
+    /**
+     * When rendering book text holders, add this offset to the y position (basically, create a top margin).
+     */
+    protected int bookTextOffsetY;
+
+    /**
+     * When rendering book text holders, add this offset to the width (allows to create a right margin)
+     * To make the line end move to the left (as it would for a margin setting in eg css), use a negative value.
+     */
+    protected int bookTextOffsetWidth;
+
     protected Supplier<ItemStack> bookItem = Suppliers.memoize(() -> {
         if (this.customBookItem != null) {
             var parsed = ItemStackUtil.parseItemStackString(this.customBookItem.toString());
@@ -59,7 +77,7 @@ public class Book {
         return stack;
     });
 
-    public Book(ResourceLocation id, String name, String tooltip, ResourceLocation model, boolean generateBookItem, ResourceLocation customBookItem, String creativeTab, ResourceLocation bookOverviewTexture, ResourceLocation bookContentTexture, ResourceLocation craftingTexture, ResourceLocation turnPageSound, int defaultTitleColor, boolean autoAddReadConditions) {
+    public Book(ResourceLocation id, String name, String tooltip, ResourceLocation model, boolean generateBookItem, ResourceLocation customBookItem, String creativeTab, ResourceLocation bookOverviewTexture, ResourceLocation bookContentTexture, ResourceLocation craftingTexture, ResourceLocation turnPageSound, int defaultTitleColor, boolean autoAddReadConditions, int bookTextOffsetX, int bookTextOffsetY, int bookTextOffsetWidth) {
         this.id = id;
         this.name = name;
         this.tooltip = tooltip;
@@ -75,6 +93,9 @@ public class Book {
         this.autoAddReadConditions = autoAddReadConditions;
         this.categories = new ConcurrentHashMap<>();
         this.entries = new ConcurrentHashMap<>();
+        this.bookTextOffsetX = bookTextOffsetX;
+        this.bookTextOffsetY = bookTextOffsetY;
+        this.bookTextOffsetWidth = bookTextOffsetWidth;
     }
 
     public static Book fromJson(ResourceLocation id, JsonObject json) {
@@ -92,7 +113,12 @@ public class Book {
         var turnPageSound = new ResourceLocation(GsonHelper.getAsString(json, "turn_page_sound", Data.Book.DEFAULT_PAGE_TURN_SOUND));
         var defaultTitleColor = GsonHelper.getAsInt(json, "default_title_color", 0x00000);
         var autoAddReadConditions = GsonHelper.getAsBoolean(json, "auto_add_read_conditions", false);
-        return new Book(id, name, tooltip, model, generateBookItem, customBookItem, creativeTab, bookOverviewTexture, bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, autoAddReadConditions);
+
+        var bookTextOffsetX = GsonHelper.getAsInt(json, "book_text_offset_x", 0);
+        var bookTextOffsetY = GsonHelper.getAsInt(json, "book_text_offset_y", 0);
+        var bookTextOffsetWidth = GsonHelper.getAsInt(json, "book_text_offset_width", 0);
+
+        return new Book(id, name, tooltip, model, generateBookItem, customBookItem, creativeTab, bookOverviewTexture, bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth);
     }
 
     public static Book fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
@@ -108,7 +134,10 @@ public class Book {
         var turnPageSound = buffer.readResourceLocation();
         var defaultTitleColor = buffer.readInt();
         var autoAddReadConditions = buffer.readBoolean();
-        return new Book(id, name, tooltip, model, generateBookItem, customBookItem, creativeTab, bookOverviewTexture, bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, autoAddReadConditions);
+        var bookTextOffsetX = (int) buffer.readShort();
+        var bookTextOffsetY =  (int) buffer.readShort();
+        var bookTextOffsetWidth =  (int) buffer.readShort();
+        return new Book(id, name, tooltip, model, generateBookItem, customBookItem, creativeTab, bookOverviewTexture, bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth);
     }
 
     public ItemStack getBookItem() {
@@ -221,6 +250,10 @@ public class Book {
         buffer.writeResourceLocation(this.turnPageSound);
         buffer.writeInt(this.defaultTitleColor);
         buffer.writeBoolean(this.autoAddReadConditions);
+
+        buffer.writeShort(this.bookTextOffsetX);
+        buffer.writeShort(this.bookTextOffsetY);
+        buffer.writeShort(this.bookTextOffsetWidth);
     }
 
     public ResourceLocation getCustomBookItem() {
@@ -241,5 +274,17 @@ public class Book {
 
     public boolean generateBookItem() {
         return this.generateBookItem;
+    }
+
+    public int getBookTextOffsetX() {
+        return this.bookTextOffsetX;
+    }
+
+    public int getBookTextOffsetY() {
+        return this.bookTextOffsetY;
+    }
+
+    public int getBookTextOffsetWidth() {
+        return this.bookTextOffsetWidth;
     }
 }

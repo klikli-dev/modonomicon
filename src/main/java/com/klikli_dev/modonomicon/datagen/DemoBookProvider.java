@@ -50,6 +50,9 @@ public class DemoBookProvider extends BookProvider {
                 .withName(helper.bookName())
                 .withTooltip(helper.bookTooltip())
                 .withModel(new ResourceLocation("modonomicon:modonomicon_green"))
+                .withBookTextOffsetX(5)
+                .withBookTextOffsetY(0) //no top offset
+                .withBookTextOffsetWidth(-5)
                 .withCategory(featuresCategory)
                 .withCategory(formattingCategory)
                 .withCategory(hiddenCategory)
