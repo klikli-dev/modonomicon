@@ -75,16 +75,6 @@ public interface Multiblock {
 	 */
 	ResourceLocation getType();
 
-
-	// ================================================================================================
-	// Actual functionality
-	// Note: DO NOT USE THESE METHODS IF YOUR MOD DOESN'T HAVE
-	// A HARD DEPENDENCY ON PATCHOULI
-	//
-	// The stub API will return an empty multiblock that doesn't
-	// do any of these things!
-	// ================================================================================================
-
 	/**
 	 * Places the multiblock at the given position with the given rotation.
 	 */
@@ -95,7 +85,7 @@ public interface Multiblock {
 	 * return a pair whose first element is the final center position (after rotation and {@link #offset}),
 	 * and whose second element describes each position of the multiblock.
 	 * This is intended to be highly general, most of the other methods below are implemented in terms of this one.
-	 * See the main Patchouli code to see what can be done with this.
+	 * See the main Modonomicon code to see what can be done with this.
 	 */
 	Pair<BlockPos, Collection<SimulateResult>> simulate(Level world, BlockPos anchor, Rotation rotation, boolean forView, boolean disableOffset);
 
