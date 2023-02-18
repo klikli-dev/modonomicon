@@ -5,7 +5,6 @@
  */
 package com.klikli_dev.modonomicon.api.stub.multiblock;
 
-import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.mojang.datafixers.util.Pair;
@@ -18,8 +17,6 @@ import net.minecraft.world.level.block.Rotation;
 
 import java.util.Collection;
 import java.util.Collections;
-
-import com.klikli_dev.modonomicon.api.multiblock.Multiblock.SimulateResult;
 
 public class StubMultiblock implements Multiblock {
 
@@ -92,6 +89,16 @@ public class StubMultiblock implements Multiblock {
 
     @Override
     public Vec3i getSize() {
+        return Vec3i.ZERO;
+    }
+
+    @Override
+    public Vec3i getOffset() {
+        return Vec3i.ZERO;
+    }
+
+    @Override
+    public Vec3i getViewOffset() {
         return Vec3i.ZERO;
     }
 

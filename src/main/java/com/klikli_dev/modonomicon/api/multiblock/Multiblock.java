@@ -118,6 +118,10 @@ public interface Multiblock {
 	 */
 	Vec3i getSize();
 
+	Vec3i getOffset();
+
+	Vec3i getViewOffset();
+
 	/**
 	 * Serializes multiblock to the given buffer.
 	 */
