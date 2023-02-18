@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.3-1.25.0] - 2023-02-18
+### :sparkles: New Features
+- [`a754d7c`](https://github.com/klikli-dev/modonomicon/commit/a754d7c7e3eca3e3987a2435b86440663cf00def) - add offset getters to multiblock *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`d627b87`](https://github.com/klikli-dev/modonomicon/commit/d627b8734b39018335c7b567e83bc8b4af9dcf7d) - outdated references to patchouli *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.3-1.24.0] - 2023-02-12
 ### :sparkles: New Features
 - [`d798c93`](https://github.com/klikli-dev/modonomicon/commit/d798c93675d3d2fb095aeb87a23850dd342b588a) - add text margin config to book *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -127,3 +135,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.3-1.23.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.23.0...release/v1.19.3-1.23.1
 [release/v1.19.3-1.23.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.23.1...release/v1.19.3-1.23.2
 [release/v1.19.3-1.24.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.23.2...release/v1.19.3-1.24.0
+[release/v1.19.3-1.25.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.24.0...release/v1.19.3-1.25.0
