@@ -12,39 +12,29 @@ import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
-import com.klikli_dev.modonomicon.multiblock.matcher.BlockMatcher;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.level.*;
-import net.minecraft.world.level.biome.Biomes;
-import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.lighting.LevelLightEngine;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.klikli_dev.modonomicon.api.multiblock.Multiblock.SimulateResult;
-
 public abstract class AbstractMultiblock implements Multiblock {
 
     public ResourceLocation id;
     protected int offX, offY, offZ;
     protected int viewOffX, viewOffY, viewOffZ;
-    Level world;
     protected boolean symmetrical;
+    Level world;
 
     public static Map<Character, StateMatcher> mappingFromJson(JsonObject jsonMapping) {
         var mapping = new HashMap<Character, StateMatcher>();
@@ -65,9 +55,9 @@ public abstract class AbstractMultiblock implements Multiblock {
         if (json.has("symmetrical")) {
             multiblock.symmetrical = GsonHelper.getAsBoolean(json, "symmetrical");
         }
-        if(json.has("offset")) {
+        if (json.has("offset")) {
             var jsonOffset = GsonHelper.getAsJsonArray(json, "offset");
-            if(jsonOffset.size() != 3) {
+            if (jsonOffset.size() != 3) {
                 throw new JsonSyntaxException("Offset needs to be an array of 3 integers");
             }
             multiblock.offset(jsonOffset.get(0).getAsInt(), jsonOffset.get(1).getAsInt(), jsonOffset.get(2).getAsInt());
@@ -94,16 +84,16 @@ public abstract class AbstractMultiblock implements Multiblock {
     }
 
     public Multiblock setOffset(int x, int y, int z) {
-		this.offX = x;
-		this.offY = y;
-		this.offZ = z;
+        this.offX = x;
+        this.offY = y;
+        this.offZ = z;
         return this.setViewOffset(x, y, z);
     }
 
     public Multiblock setViewOffset(int x, int y, int z) {
-		this.viewOffX = x;
-		this.viewOffY = y;
-		this.viewOffZ = z;
+        this.viewOffX = x;
+        this.viewOffY = y;
+        this.viewOffZ = z;
         return this;
     }
 
@@ -145,8 +135,8 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     @Override
     public void place(Level world, BlockPos pos, Rotation rotation) {
-		this.setWorld(world);
-		this.simulate(world, pos, rotation, false, false).getSecond().forEach(r -> {
+        this.setWorld(world);
+        this.simulate(world, pos, rotation, false, false).getSecond().forEach(r -> {
             BlockPos placePos = r.getWorldPosition();
             BlockState targetState = r.getStateMatcher().getDisplayedState(world.getGameTime()).rotate(rotation);
 
@@ -172,7 +162,7 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     @Override
     public boolean validate(Level world, BlockPos pos, Rotation rotation) {
-		this.setWorld(world);
+        this.setWorld(world);
         Pair<BlockPos, Collection<SimulateResult>> sim = this.simulate(world, pos, rotation, false, false);
 
         return sim.getSecond().stream().allMatch(r -> {
@@ -187,8 +177,18 @@ public abstract class AbstractMultiblock implements Multiblock {
     @Override
     public abstract Vec3i getSize();
 
+    @Override
+    public Vec3i getOffset() {
+        return new Vec3i(this.offX, this.offY, this.offZ);
+    }
+
+    @Override
+    public Vec3i getViewOffset() {
+        return new Vec3i(this.viewOffX, this.viewOffY, this.viewOffZ);
+    }
+
     void setViewOffset() {
-		this.setViewOffset(this.offX, this.offY, this.offZ);
+        this.setViewOffset(this.offX, this.offY, this.offZ);
     }
 
     @Override
