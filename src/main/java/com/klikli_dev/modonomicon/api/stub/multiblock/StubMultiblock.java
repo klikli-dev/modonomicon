@@ -5,6 +5,7 @@
  */
 package com.klikli_dev.modonomicon.api.stub.multiblock;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.mojang.datafixers.util.Pair;
@@ -61,7 +62,7 @@ public class StubMultiblock implements Multiblock {
 
     @Override
     public ResourceLocation getId() {
-        return new ResourceLocation("patchouli", "stub");
+        return new ResourceLocation(ModonomiconAPI.ID, "stub");
     }
 
     @Override
