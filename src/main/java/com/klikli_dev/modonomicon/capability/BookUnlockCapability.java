@@ -140,50 +140,59 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
      */
     public void update(ServerPlayer owner) {
 
-        //loop through available books and update unlocked pages and categories
+        //unlockedConditions are not conditions that have been met, but rather conditions of the type "condition is met, if entry is unlocked"
+        //that means whenever we encounter one of them and it is NOT met, we store it to then iterate on them after we did an initial check over all conditions
+        //that second iteration is needed to catch any conditions that are met because content was unlocked in the first iteration
         List<Entry<BookEntryUnlockedCondition, BookConditionContext>> unlockedConditions = new ArrayList<>();
+
+        //we also keep track of ALL content that was unlocked in the first + second iteration to create events if needed
+        Set<BookConditionContext> newlyUnlockedContent = new HashSet<>();
 
         for (var book : BookDataManager.get().getBooks().values()) {
             BookErrorManager.get().reset();
             BookErrorManager.get().setCurrentBookId(book.getId());
             for (var category : book.getCategories().values()) {
-                BookErrorManager.get().setContext("Category to perform condition test on: {}",
-                        category.getId().toString()
-                );
+                BookErrorManager.get().setContext("Category to perform condition test on: {}", category.getId().toString());
                 try {
                     var categoryContext = BookConditionContext.of(book, category);
-                    if (category.getCondition().test(categoryContext, owner))
-                        this.unlockedCategories.computeIfAbsent(book.getId(), k -> new HashSet<>()).add(category.getId());
-                    else if (category.getCondition() instanceof BookEntryUnlockedCondition bookEntryUnlockedCondition)
+                    if (category.getCondition().test(categoryContext, owner)) {
+                        var set = this.unlockedCategories.computeIfAbsent(book.getId(), k -> new HashSet<>());
+                        if (!set.contains(category.getId())) {
+                            set.add(category.getId());
+                            newlyUnlockedContent.add(categoryContext);
+                        }
+                    } else if (category.getCondition() instanceof BookEntryUnlockedCondition bookEntryUnlockedCondition) {
                         unlockedConditions.add(Map.entry(bookEntryUnlockedCondition, categoryContext));
+                    }
                 } catch (Exception e) {
                     BookErrorManager.get().error("Error while testing category condition", e);
                 }
 
-
                 for (var entry : category.getEntries().values()) {
-                    BookErrorManager.get().setContext("Entry to perform condition test on: {}",
-                            entry.getId().toString()
-                    );
-
+                    BookErrorManager.get().setContext("Entry to perform condition test on: {}", entry.getId().toString());
                     try {
                         var entryContext = BookConditionContext.of(book, entry);
-                        if (entry.getCondition().test(entryContext, owner))
-                            this.unlockedEntries.computeIfAbsent(book.getId(), k -> new HashSet<>()).add(entry.getId());
-                        else if (entry.getCondition() instanceof BookEntryUnlockedCondition bookEntryUnlockedCondition)
+                        if (entry.getCondition().test(entryContext, owner)) {
+                            var set = this.unlockedEntries.computeIfAbsent(book.getId(), k -> new HashSet<>());
+                            if (!set.contains(entry.getId())) {
+                                set.add(entry.getId());
+                                newlyUnlockedContent.add(entryContext);
+                            }
+                        } else if (entry.getCondition() instanceof BookEntryUnlockedCondition bookEntryUnlockedCondition) {
                             unlockedConditions.add(Map.entry(bookEntryUnlockedCondition, entryContext));
+                        }
                     } catch (Exception e) {
                         BookErrorManager.get().error("Error while testing entry condition", e);
                     }
                 }
             }
         }
-
         BookErrorManager.get().reset();
 
-        boolean unlockedAny = false;
+        //now we do the second iteration to check for BookEntryUnlockedConditions that were met by unlocking content in the first iteration
+        boolean unlockedAny;
         do {
-            unlockedAny = false;
+            unlockedAny = false; //we need to reset it so the iteration can check if anything new was unlocked in THIS iteration
             var iter = unlockedConditions.iterator();
             while (iter.hasNext()) {
                 var condition = iter.next();
@@ -197,9 +206,17 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
                     try {
                         //then store the unlock result
                         if (condition.getValue() instanceof BookConditionEntryContext entryContext) {
-                            this.unlockedEntries.computeIfAbsent(entryContext.getBook().getId(), k -> new HashSet<>()).add(entryContext.getEntry().getId());
+                            var set = this.unlockedEntries.computeIfAbsent(entryContext.getBook().getId(), k -> new HashSet<>());
+                            if (!set.contains(entryContext.getEntry().getId())) {
+                                set.add(entryContext.getEntry().getId());
+                                newlyUnlockedContent.add(entryContext);
+                            }
                         } else if (condition.getValue() instanceof BookConditionCategoryContext categoryContext) {
-                            this.unlockedCategories.computeIfAbsent(categoryContext.getBook().getId(), k -> new HashSet<>()).add(categoryContext.getCategory().getId());
+                            var set = this.unlockedCategories.computeIfAbsent(categoryContext.getBook().getId(), k -> new HashSet<>());
+                            if (!set.contains(categoryContext.getCategory().getId())) {
+                                set.add(categoryContext.getCategory().getId());
+                                newlyUnlockedContent.add(categoryContext);
+                            }
                         }
 
                         //make sure to iterate again now -> could unlock further conditions depending on this unlock
@@ -218,6 +235,12 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
         } while (unlockedAny);
 
         BookErrorManager.get().reset();
+
+        this.notifyNewlyUnlockedContent(owner, newlyUnlockedContent);
+    }
+
+    public void notifyNewlyUnlockedContent(ServerPlayer player, Set<BookConditionContext> newlyUnlockedContent){
+
     }
 
     public void sync(ServerPlayer player) {
