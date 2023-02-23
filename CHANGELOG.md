@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.18.2-1.26.0] - 2023-02-23
+### :sparkles: New Features
+- [`38aee50`](https://github.com/klikli-dev/modonomicon/commit/38aee50ff3d0457f6deed212853237b894a16ee4) - add functionality to keep track of content unlocked in one update *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`d0c5de4`](https://github.com/klikli-dev/modonomicon/commit/d0c5de4755102d9429dc52dbbe74857ff26453ee) - add kubejs event integration *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.18.2-1.25.0] - 2023-02-18
 ### :sparkles: New Features
 - [`348372f`](https://github.com/klikli-dev/modonomicon/commit/348372fa64e709205531fd7e6987ffab0f7ee56d) - add offset getters to multiblock *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -100,3 +106,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.18.2-1.23.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.18.2-1.23.1...release/v1.18.2-1.23.2
 [release/v1.18.2-1.24.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.18.2-1.23.2...release/v1.18.2-1.24.0
 [release/v1.18.2-1.25.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.18.2-1.24.0...release/v1.18.2-1.25.0
+[release/v1.18.2-1.26.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.18.2-1.25.0...release/v1.18.2-1.26.0
