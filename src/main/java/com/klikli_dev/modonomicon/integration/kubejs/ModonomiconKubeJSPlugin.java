@@ -21,7 +21,7 @@ public class ModonomiconKubeJSPlugin extends dev.latvian.mods.kubejs.KubeJSPlugi
 
     public static final EventGroup EVENT_GROUP = EventGroup.of("ModonomiconEvents");
 
-    public static final EventHandler UPDATE_UNLOCKED_CONTENT = EVENT_GROUP.server("updateUnlockedContent", () -> ContentUnlockedEventJS.class).extra(Extra.STRING).cancelable();
+    public static final EventHandler UPDATE_UNLOCKED_CONTENT = EVENT_GROUP.server("updateUnlockedContent", () -> UpdateUnlockedContentEventJS.class).extra(Extra.STRING).cancelable();
 
     public static final EventHandler CATEGORY_UNLOCKED = EVENT_GROUP.server("categoryUnlocked", () -> CategoryUnlockedEventJS.class).extra(Extra.STRING).cancelable();
 
@@ -34,7 +34,7 @@ public class ModonomiconKubeJSPlugin extends dev.latvian.mods.kubejs.KubeJSPlugi
             return;
 
         //post one event for all unlocked stuff
-        UPDATE_UNLOCKED_CONTENT.post(new ContentUnlockedEventJS(player, newlyUnlockedContent));
+        UPDATE_UNLOCKED_CONTENT.post(new UpdateUnlockedContentEventJS(player, newlyUnlockedContent));
 
         //then for each unlocked piece of content fire an event
         for (BookConditionContext context : newlyUnlockedContent) {

@@ -12,12 +12,12 @@ import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Set;
 
-public class ContentUnlockedEventJS extends ServerEventJS {
+public class UpdateUnlockedContentEventJS extends ServerEventJS {
 
     ServerPlayer player;
     Set<BookConditionContext> unlockedContent;
 
-    public ContentUnlockedEventJS(ServerPlayer player, Set<BookConditionContext> unlockedContent) {
+    public UpdateUnlockedContentEventJS(ServerPlayer player, Set<BookConditionContext> unlockedContent) {
         super(player.getServer());
         this.player = player;
         this.unlockedContent = unlockedContent;
