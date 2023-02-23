@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.2-1.26.0] - 2023-02-23
+### :sparkles: New Features
+- [`91e1623`](https://github.com/klikli-dev/modonomicon/commit/91e1623b471ad546257e696811199bac66b763ae) - add functionality to keep track of content unlocked in one update *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`a17d7ef`](https://github.com/klikli-dev/modonomicon/commit/a17d7ef58851a76b0bf2b0cddf58e8e04e838c8a) - add kubejs event integration *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`886c865`](https://github.com/klikli-dev/modonomicon/commit/886c86558790653396d539e40c9956de7f7ad3de) - update mod version for maven publish *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`f080f8b`](https://github.com/klikli-dev/modonomicon/commit/f080f8b3d6d555309a66afc8f246c1619f4d066f) - rename event to fit meaning *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.2-1.25.0] - 2023-02-18
 ### :sparkles: New Features
 - [`c3ce0ce`](https://github.com/klikli-dev/modonomicon/commit/c3ce0ce1de83c2b15d4f7b1965ff292906a7fedb) - add offset getters to multiblock *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -112,3 +122,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.2-1.23.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.23.1...release/v1.19.2-1.23.2
 [release/v1.19.2-1.24.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.23.2...release/v1.19.2-1.24.0
 [release/v1.19.2-1.25.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.24.0...release/v1.19.2-1.25.0
+[release/v1.19.2-1.26.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.25.0...release/v1.19.2-1.26.0
