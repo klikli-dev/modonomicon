@@ -49,7 +49,7 @@ public class ClickReadAllButtonMessage implements Message {
                 //unlock pages, then update the unlock capability, finally sync.
                 var anyRead = false;
                 for(var entry : book.getEntries().values()){
-                    if ((this.readAll || capability.isUnlocked(entry)) && capability.read(entry)) {
+                    if ((this.readAll || capability.isUnlocked(entry)) && capability.read(player, entry)) {
                         anyRead = true;
                     }
                 }
