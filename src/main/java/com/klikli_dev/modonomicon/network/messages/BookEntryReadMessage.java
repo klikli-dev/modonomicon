@@ -46,7 +46,7 @@ public class BookEntryReadMessage implements Message {
         player.getCapability(CapabilityRegistry.BOOK_UNLOCK).ifPresent(capability -> {
             var entry = BookDataManager.get().getBook(this.bookId).getEntry(this.entryId);
             //unlock page, then update the unlock capability, finally sync.
-            if (capability.read(entry)) {
+            if (capability.read(player, entry)) {
                 capability.update(player);
                 capability.sync(player);
             }

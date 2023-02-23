@@ -56,7 +56,7 @@ minecraft {
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
 
-            //Fix for patchouli mixin crash
+            //Fix for patchouli and KubejS mixin crash
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
@@ -76,7 +76,7 @@ minecraft {
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
 
-            //Fix for patchouli mixin crash
+            //Fix for patchouli and KubejS mixin crash
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
@@ -96,7 +96,7 @@ minecraft {
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
 
-            //Fix for patchouli mixin crash
+            //Fix for patchouli and KubejS mixin crash
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
@@ -136,6 +136,20 @@ repositories {
             includeGroup "curse.maven"
         }
     }
+    maven {
+        // Shedaniel's maven (Architectury API -> for KubeJS)
+        url = "https://maven.architectury.dev"
+        content {
+            includeGroup "dev.architectury"
+        }
+    }
+    maven {
+        // saps.dev Maven (KubeJS and Rhino)
+        url = "https://maven.saps.dev/minecraft"
+        content {
+            includeGroup "dev.latvian.mods"
+        }
+    }
 }
 
 dependencies {
@@ -155,6 +169,11 @@ dependencies {
     //Patchouli API
     //TODO: reenable once update
     //compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_mc_version}-${patchouli_version}:api")
+
+    //KubeJS
+    implementation fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")
+    implementation fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")
+    implementation fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
 
     //for some tests we use occultism + deps
 //    runtimeOnly fg.deobf("curse.maven:occultism-361026:4029677") //1.19.2-1.45.4
@@ -182,6 +201,7 @@ jar {
 
 shadowJar {
     from sourceSets.main.output
+    from sourceSets.main.resources //ensure kubejs plugin config is included
     archiveClassifier = ""
     configurations = [project.configurations.shade]
     relocate 'org.commonmark', "${project.group}.relocated.commonmark"

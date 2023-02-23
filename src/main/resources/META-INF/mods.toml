@@ -40,3 +40,10 @@ modId = "forge"
 mandatory = true
 versionRange = "[1.19.3-44.0.37,)"
 side = "BOTH"
+
+[[dependencies.modonomicon]]
+modId = "kubejs"
+mandatory = false
+versionRange = "[TODO,)"
+ordering = "AFTER"
+side = "BOTH"
