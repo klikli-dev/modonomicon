@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2022 klikli-dev
+ * SPDX-FileCopyrightText: 2023 klikli-dev
  *
  * SPDX-License-Identifier: MIT
  */

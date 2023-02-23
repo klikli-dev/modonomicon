@@ -18,6 +18,7 @@ import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.klikli_dev.modonomicon.integration.ModonomiconKubeJSIntegration;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.SyncBookUnlockCapabilityMessage;
 import com.klikli_dev.modonomicon.registry.CapabilityRegistry;
@@ -240,7 +241,7 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
     }
 
     public void notifyNewlyUnlockedContent(ServerPlayer player, Set<BookConditionContext> newlyUnlockedContent){
-
+        ModonomiconKubeJSIntegration.postNewContentUnlockedEvent(player, newlyUnlockedContent);
     }
 
     public void sync(ServerPlayer player) {
@@ -250,11 +251,13 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
     /**
      * @return true if entry is now read, false if it was already read before.
      */
-    public boolean read(BookEntry entry) {
+    public boolean read(ServerPlayer player, BookEntry entry) {
         if (this.isRead(entry))
             return false;
 
         this.readEntries.computeIfAbsent(entry.getBook().getId(), k -> new HashSet<>()).add(entry.getId());
+
+        ModonomiconKubeJSIntegration.postEntryReadEvent(player, entry);
 
         return true;
     }
