@@ -15,6 +15,6 @@ Some of the most interesting features are:
 
 :::tip
 
-If you run into any issues or have any questions, join our Discord: **https://invite.gg/klikli**
+If you run into any issues or have any questions, join our Discord: **https://dsc.gg/klikli**
 
 :::

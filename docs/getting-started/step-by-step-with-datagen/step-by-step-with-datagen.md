@@ -8,7 +8,7 @@ This page will guide you through the recommended and most convenient way to crea
 
 :::tip
 
-If you run into any issues or have any questions, join our Discord: **https://invite.gg/klikli**
+If you run into any issues or have any questions, join our Discord: **https://dsc.gg/klikli**
 
 :::
 

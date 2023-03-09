@@ -80,7 +80,7 @@ const config = {
             items: [
               {
                 label: 'Discord',
-                href: 'https://invite.gg/klikli',
+                href: 'https://dsc.gg/klikli',
               }
             ],
           },
