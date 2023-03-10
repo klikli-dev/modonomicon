@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.3-1.27.0] - 2023-03-10
+### :sparkles: New Features
+- [`f84d8a3`](https://github.com/klikli-dev/modonomicon/commit/f84d8a3948e5aa46f048994c338f02541c2177c2) - add withEntryBackground overload that takes a pair *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`2b611e8`](https://github.com/klikli-dev/modonomicon/commit/2b611e8ba92706de24f0b03ff7298316ac9c0fe1) - update mod version to 1.27.0 *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.3-1.25.0] - 2023-02-18
 ### :sparkles: New Features
 - [`a754d7c`](https://github.com/klikli-dev/modonomicon/commit/a754d7c7e3eca3e3987a2435b86440663cf00def) - add offset getters to multiblock *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -136,3 +144,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.3-1.23.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.23.1...release/v1.19.3-1.23.2
 [release/v1.19.3-1.24.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.23.2...release/v1.19.3-1.24.0
 [release/v1.19.3-1.25.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.24.0...release/v1.19.3-1.25.0
+[release/v1.19.3-1.27.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.25.0...release/v1.19.3-1.27.0
