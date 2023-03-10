@@ -10,6 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.phys.Vec2;
@@ -298,6 +299,18 @@ public class BookEntryModel {
         public Builder withEntryBackground(int u, int v) {
             this.entryBackgroundUIndex = u;
             this.entryBackgroundVIndex = v;
+            return this;
+        }
+
+        /**
+         * Select the entry background as found in the Category's "entry_textures" array.
+         * You need to provide the starting UV coordinates of the background - use a tool like Photoshop or Photopea to find out the pixel coordinate of the upper left corner of the desired background.
+         * First = U = Y Axis / Up-Down
+         * Second = V = X Axis / Left-Right
+         */
+        public Builder withEntryBackground(Pair<Integer, Integer> uv) {
+            this.entryBackgroundUIndex = uv.getFirst();
+            this.entryBackgroundVIndex = uv.getSecond();
             return this;
         }
 
