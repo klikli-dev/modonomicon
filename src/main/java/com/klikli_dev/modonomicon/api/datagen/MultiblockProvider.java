@@ -50,7 +50,7 @@ public abstract class MultiblockProvider implements DataProvider {
     @Override
     public void run(CachedOutput pOutput) {
         Set<ResourceLocation> set = Sets.newHashSet();
-        List<CompletableFuture<?>> futures = new ArrayList<>();
+
         this.multiblockConsumer = (id, recipe) -> {
             if (!set.add(id)) {
                 throw new IllegalStateException("Duplicate multiblock " + id);
