@@ -37,7 +37,6 @@ public abstract class BookProvider implements DataProvider {
     protected final String modid;
 
     /**
-     *
      * @param lang The LanguageProvider to fill with this book provider. IMPORTANT: the Languag Provider needs to be added to the DataGenerator AFTER the BookProvider.
      */
     public BookProvider(DataGenerator generator, String modid, LanguageProvider lang) {
@@ -60,32 +59,41 @@ public abstract class BookProvider implements DataProvider {
         return bookModel;
     }
 
-    private Path getPath(Path path, BookModel bookModel) {
+    private Path getPath(Path dataFolder, BookModel bookModel) {
         ResourceLocation id = bookModel.getId();
-        return path.resolve("data/" + id.getNamespace() + "/" + ModonomiconConstants.Data.MODONOMICON_DATA_PATH + "/" + id.getPath() + "/book.json");
+        return dataFolder
+                .resolve(id.getNamespace())
+                .resolve(ModonomiconConstants.Data.MODONOMICON_DATA_PATH)
+                .resolve(id.getPath() + "/book.json");
     }
 
-    private Path getPath(Path path, BookCategoryModel bookCategoryModel) {
+    private Path getPath(Path dataFolder, BookCategoryModel bookCategoryModel) {
         ResourceLocation id = bookCategoryModel.getId();
-        return path.resolve("data/" + id.getNamespace() +
-                        "/" + ModonomiconConstants.Data.MODONOMICON_DATA_PATH + "/" + bookCategoryModel.getBook().getId().getPath() +
-                "/categories/" + id.getPath() + ".json");
+        return dataFolder
+                .resolve(id.getNamespace())
+                .resolve(ModonomiconConstants.Data.MODONOMICON_DATA_PATH)
+                .resolve(bookCategoryModel.getBook().getId().getPath())
+                .resolve("categories")
+                .resolve(id.getPath() + ".json");
     }
 
-    private Path getPath(Path path, BookEntryModel bookEntryModel) {
+    private Path getPath(Path dataFolder, BookEntryModel bookEntryModel) {
         ResourceLocation id = bookEntryModel.getId();
-        return path.resolve("data/" + id.getNamespace() +
-                "/" + ModonomiconConstants.Data.MODONOMICON_DATA_PATH + "/" + bookEntryModel.getCategory().getBook().getId().getPath() +
-                "/entries/" + id.getPath() + ".json");
+        return dataFolder
+                .resolve(id.getNamespace())
+                .resolve(ModonomiconConstants.Data.MODONOMICON_DATA_PATH)
+                .resolve(bookEntryModel.getCategory().getBook().getId().getPath())
+                .resolve("entries")
+                .resolve(id.getPath() + ".json");
     }
 
     @Override
     public void run(HashCache cache) throws IOException {
-        Path folder = this.generator.getOutputFolder();
+        Path dataFolder = this.generator.getOutputFolder().resolve("data");
         this.generate();
 
         for (var bookModel : this.bookModels.values()) {
-            Path bookPath = this.getPath(folder, bookModel);
+            Path bookPath = this.getPath(dataFolder, bookModel);
             try {
                 DataProvider.save(GSON, cache, bookModel.toJson(), bookPath);
             } catch (IOException exception) {
@@ -93,7 +101,7 @@ public abstract class BookProvider implements DataProvider {
             }
 
             for (var bookCategoryModel : bookModel.getCategories()) {
-                Path bookCategoryPath = this.getPath(folder, bookCategoryModel);
+                Path bookCategoryPath = this.getPath(dataFolder, bookCategoryModel);
                 try {
                     DataProvider.save(GSON, cache, bookCategoryModel.toJson(), bookCategoryPath);
                 } catch (IOException exception) {
@@ -101,7 +109,7 @@ public abstract class BookProvider implements DataProvider {
                 }
 
                 for (var bookEntryModel : bookCategoryModel.getEntries()) {
-                    Path bookEntryPath = this.getPath(folder, bookEntryModel);
+                    Path bookEntryPath = this.getPath(dataFolder, bookEntryModel);
                     try {
                         DataProvider.save(GSON, cache, bookEntryModel.toJson(), bookEntryPath);
                     } catch (IOException exception) {
