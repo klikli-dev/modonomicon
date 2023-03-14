@@ -58,23 +58,32 @@ public abstract class BookProvider implements DataProvider {
         return bookModel;
     }
 
-    private Path getPath(Path path, BookModel bookModel) {
+    private Path getPath(Path dataFolder, BookModel bookModel) {
         ResourceLocation id = bookModel.getId();
-        return path.resolve("data/" + id.getNamespace() + "/" + ModonomiconConstants.Data.MODONOMICON_DATA_PATH + "/" + id.getPath() + "/book.json");
+        return dataFolder
+                .resolve(id.getNamespace())
+                .resolve(ModonomiconConstants.Data.MODONOMICON_DATA_PATH)
+                .resolve(id.getPath() + "/book.json");
     }
 
-    private Path getPath(Path path, BookCategoryModel bookCategoryModel) {
+    private Path getPath(Path dataFolder, BookCategoryModel bookCategoryModel) {
         ResourceLocation id = bookCategoryModel.getId();
-        return path.resolve("data/" + id.getNamespace() +
-                        "/" + ModonomiconConstants.Data.MODONOMICON_DATA_PATH + "/" + bookCategoryModel.getBook().getId().getPath() +
-                "/categories/" + id.getPath() + ".json");
+        return dataFolder
+                .resolve(id.getNamespace())
+                .resolve(ModonomiconConstants.Data.MODONOMICON_DATA_PATH)
+                .resolve(bookCategoryModel.getBook().getId().getPath())
+                .resolve("categories")
+                .resolve(id.getPath() + ".json");
     }
 
-    private Path getPath(Path path, BookEntryModel bookEntryModel) {
+    private Path getPath(Path dataFolder, BookEntryModel bookEntryModel) {
         ResourceLocation id = bookEntryModel.getId();
-        return path.resolve("data/" + id.getNamespace() +
-                "/" + ModonomiconConstants.Data.MODONOMICON_DATA_PATH + "/" + bookEntryModel.getCategory().getBook().getId().getPath() +
-                "/entries/" + id.getPath() + ".json");
+        return dataFolder
+                .resolve(id.getNamespace())
+                .resolve(ModonomiconConstants.Data.MODONOMICON_DATA_PATH)
+                .resolve(bookEntryModel.getCategory().getBook().getId().getPath())
+                .resolve("entries")
+                .resolve(id.getPath() + ".json");
     }
 
     @Override
@@ -82,21 +91,20 @@ public abstract class BookProvider implements DataProvider {
 
         List<CompletableFuture<?>> futures = new ArrayList<>();
 
-
-        Path folder = this.packOutput.getOutputFolder();
+        Path dataFolder = this.packOutput.getOutputFolder(PackOutput.Target.DATA_PACK);
 
         this.generate();
 
         for (var bookModel : this.bookModels.values()) {
-            Path bookPath = this.getPath(folder, bookModel);
+            Path bookPath = this.getPath(dataFolder, bookModel);
             futures.add(DataProvider.saveStable(cache, bookModel.toJson(), bookPath));
 
             for (var bookCategoryModel : bookModel.getCategories()) {
-                Path bookCategoryPath = this.getPath(folder, bookCategoryModel);
+                Path bookCategoryPath = this.getPath(dataFolder, bookCategoryModel);
                 futures.add(DataProvider.saveStable(cache, bookCategoryModel.toJson(), bookCategoryPath));
 
                 for (var bookEntryModel : bookCategoryModel.getEntries()) {
-                    Path bookEntryPath = this.getPath(folder, bookEntryModel);
+                    Path bookEntryPath = this.getPath(dataFolder, bookEntryModel);
                     futures.add(DataProvider.saveStable(cache, bookEntryModel.toJson(), bookEntryPath));
                 }
             }
