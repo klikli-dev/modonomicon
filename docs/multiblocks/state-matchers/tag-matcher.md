@@ -13,6 +13,7 @@ Tag matchers will check if the placed block is part of the provided tag. Additio
 * **tag** (Tag, _mandatory_)
   
   The Tag to match against when checking if a given block fits this matcher.   
+  Tag string should be in the format `#namespace:tag_name` (note the `#`").   
   BlockState properties can be provided in square brackets: `[key=value]`
 
 
@@ -35,7 +36,7 @@ Tag matchers will check if the placed block is part of the provided tag. Additio
 ```json
 {
   "type": "modonomicon:tag",
-  "tag": "minecraft:planks"
+  "tag": "#minecraft:planks"
 }
 ```
 
@@ -45,6 +46,6 @@ Tag matchers will check if the placed block is part of the provided tag. Additio
 {
     "type": "modonomicon:block",
     "display": "minecraft:oak_stairs[facing=west]",
-    "tag": "minecraft:wooden_stairs[facing=west]"
+    "tag": "#minecraft:wooden_stairs[facing=west]"
 }
 ``` 
