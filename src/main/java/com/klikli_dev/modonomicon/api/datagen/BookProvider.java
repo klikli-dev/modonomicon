@@ -57,34 +57,41 @@ public abstract class BookProvider implements DataProvider {
         return bookModel;
     }
 
-    private Path getPath(Path path, BookModel bookModel) {
+    private Path getPath(Path dataFolder, BookModel bookModel) {
         ResourceLocation id = bookModel.getId();
-        return path.resolve("data/" + id.getNamespace() + "/" + ModonomiconConstants.Data.MODONOMICON_DATA_PATH + "/" + id.getPath() + "/book.json");
+        return dataFolder
+                .resolve(id.getNamespace())
+                .resolve(ModonomiconConstants.Data.MODONOMICON_DATA_PATH)
+                .resolve(id.getPath() + "/book.json");
     }
 
-    private Path getPath(Path path, BookCategoryModel bookCategoryModel) {
+    private Path getPath(Path dataFolder, BookCategoryModel bookCategoryModel) {
         ResourceLocation id = bookCategoryModel.getId();
-        return path.resolve("data/" + id.getNamespace() +
-                        "/" + ModonomiconConstants.Data.MODONOMICON_DATA_PATH + "/" + bookCategoryModel.getBook().getId().getPath() +
-                "/categories/" + id.getPath() + ".json");
+        return dataFolder
+                .resolve(id.getNamespace())
+                .resolve(ModonomiconConstants.Data.MODONOMICON_DATA_PATH)
+                .resolve(bookCategoryModel.getBook().getId().getPath())
+                .resolve("categories")
+                .resolve(id.getPath() + ".json");
     }
 
-    private Path getPath(Path path, BookEntryModel bookEntryModel) {
+    private Path getPath(Path dataFolder, BookEntryModel bookEntryModel) {
         ResourceLocation id = bookEntryModel.getId();
-        return path.resolve("data/" + id.getNamespace() +
-                "/" + ModonomiconConstants.Data.MODONOMICON_DATA_PATH + "/" + bookEntryModel.getCategory().getBook().getId().getPath() +
-                "/entries/" + id.getPath() + ".json");
+        return dataFolder
+                .resolve(id.getNamespace())
+                .resolve(ModonomiconConstants.Data.MODONOMICON_DATA_PATH)
+                .resolve(bookEntryModel.getCategory().getBook().getId().getPath())
+                .resolve("entries")
+                .resolve(id.getPath() + ".json");
     }
 
     @Override
     public void run(CachedOutput cache) throws IOException {
-
-        Path folder = this.generator.getOutputFolder();
-
+        Path dataFolder = this.generator.getOutputFolder(DataGenerator.Target.DATA_PACK);
         this.generate();
 
         for (var bookModel : this.bookModels.values()) {
-            Path bookPath = getPath(folder, bookModel);
+            Path bookPath = getPath(dataFolder, bookModel);
             try {
                 DataProvider.saveStable(cache, bookModel.toJson(), bookPath);
             } catch (IOException exception) {
@@ -92,7 +99,7 @@ public abstract class BookProvider implements DataProvider {
             }
 
             for (var bookCategoryModel : bookModel.getCategories()) {
-                Path bookCategoryPath = getPath(folder, bookCategoryModel);
+                Path bookCategoryPath = getPath(dataFolder, bookCategoryModel);
                 try {
                     DataProvider.saveStable(cache, bookCategoryModel.toJson(), bookCategoryPath);
                 } catch (IOException exception) {
@@ -100,7 +107,7 @@ public abstract class BookProvider implements DataProvider {
                 }
 
                 for (var bookEntryModel : bookCategoryModel.getEntries()) {
-                    Path bookEntryPath = getPath(folder, bookEntryModel);
+                    Path bookEntryPath = getPath(dataFolder, bookEntryModel);
                     try {
                         DataProvider.saveStable(cache, bookEntryModel.toJson(), bookEntryPath);
                     } catch (IOException exception) {
