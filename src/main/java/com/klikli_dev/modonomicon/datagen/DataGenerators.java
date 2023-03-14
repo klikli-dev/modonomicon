@@ -22,6 +22,7 @@ public class DataGenerators {
         if(event.includeServer()){
             generator.addProvider(new AdvancementsGenerator(generator));
             generator.addProvider(new DemoBookProvider(generator, Modonomicon.MODID, lang));
+            generator.addProvider(new DemoMultiblockProvider(generator, Modonomicon.MODID));
         }
 
         if(event.includeClient()){
