@@ -20,6 +20,7 @@ public class DataGenerators {
         var lang = new LangGenerator.English(generator.getPackOutput());
 
         generator.addProvider(event.includeServer(), new DemoBookProvider(generator.getPackOutput(), Modonomicon.MODID, lang));
+        generator.addProvider(event.includeServer(), new DemoMultiblockProvider(generator.getPackOutput(), Modonomicon.MODID));
 
         //Important: Lang provider needs to be added after the book provider to process the texts added by the book provider
         generator.addProvider(event.includeClient(), lang);
