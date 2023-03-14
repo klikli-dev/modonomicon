@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.2-1.28.0] - 2023-03-14
+### :sparkles: New Features
+- [`a5b8711`](https://github.com/klikli-dev/modonomicon/commit/a5b8711b59aebe1468d35a2bc12f3756fb1f6fc5) - add multiblock datagen *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.2-1.27.0] - 2023-03-10
 ### :sparkles: New Features
 - [`45c4aa2`](https://github.com/klikli-dev/modonomicon/commit/45c4aa2533b52152b6a532f071a8f4036bfb6792) - add withEntryBackground overload that takes a pair *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -132,3 +137,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.2-1.25.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.24.0...release/v1.19.2-1.25.0
 [release/v1.19.2-1.26.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.25.0...release/v1.19.2-1.26.0
 [release/v1.19.2-1.27.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.26.0...release/v1.19.2-1.27.0
+[release/v1.19.2-1.28.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.27.0...release/v1.19.2-1.28.0
