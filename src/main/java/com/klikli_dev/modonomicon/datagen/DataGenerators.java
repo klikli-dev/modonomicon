@@ -21,6 +21,7 @@ public class DataGenerators {
 
         generator.addProvider(event.includeServer(), new AdvancementsGenerator(generator));
         generator.addProvider(event.includeServer(), new DemoBookProvider(generator, Modonomicon.MODID, lang));
+        generator.addProvider(event.includeServer(), new DemoMultiblockProvider(generator, Modonomicon.MODID));
 
         //Important: Lang provider needs to be added after the book provider to process the texts added by the book provider
         generator.addProvider(event.includeClient(), lang);
