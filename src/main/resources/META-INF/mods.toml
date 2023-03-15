@@ -38,5 +38,5 @@ description='''Data-driven minecraft in-game documentation with progress visuali
 [[dependencies.modonomicon]]
 modId = "forge"
 mandatory = true
-versionRange = "[1.19.3-44.0.37,)"
+versionRange = "[1.19.3-44.1.0,)"
 side = "BOTH"

@@ -116,16 +116,10 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
     maven {
-        name = "Patchouli Maven"
+        name = "Jei and Patchouli Maven"
         url = 'https://maven.blamejared.com'
         content {
             includeGroup "vazkii.patchouli"
-        }
-    }
-    maven {
-        name = "Progwm16 maven - JEI"
-        url = 'https://dvs1.progwml6.com/files/maven'
-        content {
             includeGroup "mezz.jei"
         }
     }
@@ -142,10 +136,9 @@ dependencies {
     minecraft "net.minecraftforge:forge:${forge_version}"
 
     //Jei
-    //TODO: renable once update
-//    compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}")
-//    compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-forge-api:${jei_version}")
-//    runtimeOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-forge:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-forge-api:${jei_version}")
+    runtimeOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-forge:${jei_version}")
 
     //commonmark
     library "org.commonmark:commonmark:${commonmark_version}"
