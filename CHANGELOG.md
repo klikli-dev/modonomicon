@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.3-1.29.0] - 2023-03-15
+### :sparkles: New Features
+- [`d25945d`](https://github.com/klikli-dev/modonomicon/commit/d25945d12c1ec735b88fb48767fb04246c1acc97) - update book model to require proper 1.19.3 creative tab *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`be901d5`](https://github.com/klikli-dev/modonomicon/commit/be901d5276b6b312329a2c50bf3b15465e395ee3) - cleanup paths in book provider *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.3-1.28.0] - 2023-03-14
 ### :sparkles: New Features
 - [`86d938a`](https://github.com/klikli-dev/modonomicon/commit/86d938a528c06675c86d81f50828344a3613ae70) - add multiblock datagen *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -151,3 +159,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.3-1.25.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.24.0...release/v1.19.3-1.25.0
 [release/v1.19.3-1.27.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.25.0...release/v1.19.3-1.27.0
 [release/v1.19.3-1.28.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.27.0...release/v1.19.3-1.28.0
+[release/v1.19.3-1.29.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.28.0...release/v1.19.3-1.29.0
