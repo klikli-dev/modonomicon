@@ -191,7 +191,7 @@ public class BookOverviewScreen extends Screen {
         int x = (this.width - width) / 2;
         int y = (this.height - height) / 2;
 
-        int blitOffset = this.getBlitOffset();
+        int blitOffset = 0;
 
         //draw a resizeable border. Center parts of each side will be stretched
         //the exact border size mostly does not matter because the center is empty anyway, but 50 gives a lot of flexiblity

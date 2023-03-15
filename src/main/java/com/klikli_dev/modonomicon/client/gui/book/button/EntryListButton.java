@@ -47,7 +47,7 @@ public class EntryListButton extends Button {
     }
 
     @Override
-    public void renderButton(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
         if (this.active) {
             if (this.isHoveredOrFocused()) {
                 this.timeHovered = Math.min(ANIM_TIME, this.timeHovered + ClientTicks.delta);

@@ -15,7 +15,6 @@ import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.multiblock.AbstractMultiblock;
 import com.klikli_dev.modonomicon.multiblock.matcher.DisplayOnlyMatcher;
 import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
-import com.klikli_dev.modonomicon.util.RenderUtil;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -112,7 +111,7 @@ public class MultiblockPreviewRenderer {
             int x = mc.getWindow().getGuiScaledWidth() / 2;
             int y = 12;
 
-            mc.font.drawShadow(ms, name, x - mc.font.width(name) / 2.0F, y, 0xFFFFFF);
+            mc.font.draw(ms, name, x - mc.font.width(name) / 2.0F, y, 0xFFFFFF);
 
             int width = 180;
             int height = 9;
@@ -123,7 +122,7 @@ public class MultiblockPreviewRenderer {
                 String s = I18n.get(ModonomiconConstants.I18n.Multiblock.COMPLETE);
                 ms.pushPose();
                 ms.translate(0, Math.min(height + 5, animTime), 0);
-                mc.font.drawShadow(ms, s, x - mc.font.width(s) / 2.0F, top + height - 10, 0x00FF00);
+                mc.font.draw(ms, s, x - mc.font.width(s) / 2.0F, top + height - 10, 0x00FF00);
                 ms.popPose();
             }
 
@@ -138,7 +137,7 @@ public class MultiblockPreviewRenderer {
 
             if (!isAnchored) {
                 String s = I18n.get(ModonomiconConstants.I18n.Multiblock.NOT_ANCHORED);
-                mc.font.drawShadow(ms, s, x - mc.font.width(s) / 2.0F, top + height + 8, 0xFFFFFF);
+                mc.font.draw(ms, s, x - mc.font.width(s) / 2.0F, top + height + 8, 0xFFFFFF);
             } else {
                 if (lookingState != null) {
                     // try-catch around here because the state isn't necessarily present in the world in this instance,
@@ -148,8 +147,9 @@ public class MultiblockPreviewRenderer {
                         ItemStack stack = block.getCloneItemStack(mc.level, lookingPos, lookingState);
 
                         if (!stack.isEmpty()) {
-                            mc.font.drawShadow(ms, stack.getHoverName(), left + 20, top + height + 8, 0xFFFFFF);
-                            RenderUtil.renderAndDecorateItemWithPose(ms, stack, left, top + height + 2);
+                            mc.font.draw(ms, stack.getHoverName(), left + 20, top + height + 8, 0xFFFFFF);
+
+                            mc.getItemRenderer().renderAndDecorateItem(ms, stack, left, top + height + 2);
                         }
                     } catch (Exception ignored) {
                     }
@@ -356,7 +356,6 @@ public class MultiblockPreviewRenderer {
         float f5 = (float) (endColor >> 16 & 255) / 255.0F;
         float f6 = (float) (endColor >> 8 & 255) / 255.0F;
         float f7 = (float) (endColor & 255) / 255.0F;
-        RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         Tesselator tessellator = Tesselator.getInstance();
@@ -369,7 +368,6 @@ public class MultiblockPreviewRenderer {
         bufferbuilder.vertex(mat, right, bottom, 0).color(f5, f6, f7, f4).endVertex();
         tessellator.end();
         RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
     }
 
     /**

@@ -133,7 +133,7 @@ public class BookSearchScreen extends Screen implements BookScreenWithButtons {
         this.searchField = new EditBox(this.font, 160, 170, 90, 12, Component.literal(""));
         this.searchField.setMaxLength(32);
         this.searchField.setCanLoseFocus(false);
-        this.searchField.changeFocus(true);
+        this.searchField.setFocused(true);
     }
 
     private void createEntryList() {
@@ -206,11 +206,11 @@ public class BookSearchScreen extends Screen implements BookScreenWithButtons {
 
         this.resetTooltip();
 
-        //we need to modify blit offset to not draw over toasts
-        var blitOffset = this.getBlitOffset();
-        this.setBlitOffset(-1300); //magic number arrived by testing until toasts show, but BookOverviewScreen does not
+        //we need to modify blit offset (now: z pose) to not draw over toasts
+        pPoseStack.pushPose();
+        pPoseStack.translate(0, 0, -1300);  //magic number arrived by testing until toasts show, but BookOverviewScreen does not
         this.renderBackground(pPoseStack);
-        this.setBlitOffset(blitOffset);
+        pPoseStack.popPose();
 
         pPoseStack.pushPose();
         pPoseStack.translate(this.bookLeft, this.bookTop, 0);

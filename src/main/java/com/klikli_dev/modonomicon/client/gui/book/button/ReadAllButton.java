@@ -69,7 +69,7 @@ public class ReadAllButton extends Button {
     }
 
     @Override
-    public void renderButton(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         //if focused we go to the right of our normal button (instead of down, like mc buttons do)
 

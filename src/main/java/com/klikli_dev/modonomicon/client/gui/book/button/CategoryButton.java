@@ -39,7 +39,7 @@ public class CategoryButton extends Button {
     }
 
     @Override
-    public void renderButton(PoseStack pMatrixStack, int pMouseX, int pMouseY, float pPartialTicks) {
+    public void renderWidget(PoseStack pMatrixStack, int pMouseX, int pMouseY, float pPartialTicks) {
         if (this.visible) {
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -60,7 +60,9 @@ public class CategoryButton extends Button {
 
             //draw category button background
             RenderSystem.setShaderTexture(0, this.parent.getBookOverviewTexture());
-            GuiComponent.blit(pMatrixStack, renderX, this.getY(), this.parent.getBlitOffset() + 50, texX, texY, renderWidth, this.height, 256, 256);
+
+            int blitOffset = 50;
+            GuiComponent.blit(pMatrixStack, renderX, this.getY(), blitOffset, texX, texY, renderWidth, this.height, 256, 256);
 
             //then draw icon
 

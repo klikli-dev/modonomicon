@@ -48,7 +48,7 @@ public class BookButton extends Button {
     }
 
     @Override
-    public void renderButton(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 

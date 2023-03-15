@@ -27,10 +27,4 @@ public class VisualizeButton extends BookButton {
                 Component.translatable(Gui.BUTTON_VISUALIZE_TOOLTIP)
         );
     }
-
-    @Override
-    public void renderButton(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
-        super.renderButton(ms, mouseX, mouseY, partialTicks);
-    }
-
 }

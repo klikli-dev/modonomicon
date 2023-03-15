@@ -31,7 +31,7 @@ public class SearchButton extends Button {
     }
 
     @Override
-    public void renderButton(PoseStack pMatrixStack, int pMouseX, int pMouseY, float pPartialTicks) {
+    public void renderWidget(PoseStack pMatrixStack, int pMouseX, int pMouseY, float pPartialTicks) {
         if (this.visible) {
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -57,7 +57,9 @@ public class SearchButton extends Button {
             RenderSystem.enableScissor(this.scissorX * scale,  scissorY * scale, scissorWidth * scale, 1000);
 
             RenderSystem.setShaderTexture(0, this.parent.getBookOverviewTexture());
-            GuiComponent.blit(pMatrixStack, renderX, this.getY(), this.parent.getBlitOffset() + 50, texX, texY, this.width, this.height, 256, 256);
+
+            int blitOffset = 50;
+            GuiComponent.blit(pMatrixStack, renderX, this.getY(), blitOffset, texX, texY, this.width, this.height, 256, 256);
 
             RenderSystem.disableScissor();
 

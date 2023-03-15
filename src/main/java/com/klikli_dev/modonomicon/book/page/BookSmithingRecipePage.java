@@ -9,14 +9,16 @@ package com.klikli_dev.modonomicon.book.page;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.UpgradeRecipe;
+import net.minecraft.world.item.crafting.SmithingRecipe;
+import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 
-public class BookSmithingRecipePage extends BookRecipePage<UpgradeRecipe> {
+public class BookSmithingRecipePage extends BookRecipePage<SmithingRecipe> {
     public BookSmithingRecipePage(BookTextHolder title1, ResourceLocation recipeId1, BookTextHolder title2, ResourceLocation recipeId2, BookTextHolder text, String anchor) {
         super(RecipeType.SMITHING, title1, recipeId1, title2, recipeId2, text, anchor);
     }
@@ -39,12 +41,12 @@ public class BookSmithingRecipePage extends BookRecipePage<UpgradeRecipe> {
     }
 
     @Override
-    protected ItemStack getRecipeOutput(UpgradeRecipe recipe) {
+    protected ItemStack getRecipeOutput(SmithingRecipe recipe) {
         if (recipe == null) {
             return ItemStack.EMPTY;
         }
 
-        return recipe.getResultItem();
+        return recipe.getResultItem(this.getRegistryAccess());
     }
 
     @Override

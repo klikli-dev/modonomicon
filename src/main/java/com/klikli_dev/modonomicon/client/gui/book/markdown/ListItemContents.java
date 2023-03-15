@@ -14,12 +14,11 @@ public class ListItemContents extends TranslatableContents {
     private final ListHolder listHolder;
 
     public ListItemContents(ListHolder listHolder, String pKey) {
-        super(pKey);
-        this.listHolder = listHolder;
+        this(listHolder, pKey, TranslatableContents.NO_ARGS);
     }
 
     public ListItemContents(ListHolder listHolder, String pKey, Object... pArgs) {
-        super(pKey, pArgs);
+        super(pKey, null, pArgs);
         this.listHolder = listHolder;
     }
 

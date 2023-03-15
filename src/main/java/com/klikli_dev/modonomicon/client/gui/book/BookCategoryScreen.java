@@ -183,7 +183,9 @@ public class BookCategoryScreen {
 
         //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
         //force offset to int here to reduce difference to entry rendering which is pos based and thus int precision only
-        GuiComponent.blit(poseStack, innerX, innerY, this.bookOverviewScreen.getBlitOffset(),
+
+        int blitOffset = 0;
+        GuiComponent.blit(poseStack, innerX, innerY, blitOffset,
                 (this.scrollX + MAX_SCROLL) / scale + xOffset,
                 (this.scrollY + MAX_SCROLL) / scale + yOffset,
                 innerWidth, innerHeight, this.backgroundTextureHeight, this.backgroundTextureWidth);
@@ -342,7 +344,8 @@ public class BookCategoryScreen {
 
         for (var parent : entry.getParents()) {
 
-            this.bookOverviewScreen.getConnectionRenderer().setBlitOffset(this.bookOverviewScreen.getBlitOffset());
+            int blitOffset = 0;
+            this.bookOverviewScreen.getConnectionRenderer().setBlitOffset(blitOffset);
             stack.pushPose();
             stack.translate(xOffset, yOffset, 0);
             RenderSystem.setShaderTexture(0, this.category.getEntryTextures());

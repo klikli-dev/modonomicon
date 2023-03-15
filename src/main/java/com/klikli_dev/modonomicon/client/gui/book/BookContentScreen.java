@@ -30,7 +30,6 @@ import com.klikli_dev.modonomicon.integration.ModonomiconPatchouliIntegration;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.SaveEntryStateMessage;
 import com.klikli_dev.modonomicon.util.ItemStackUtil;
-import com.klikli_dev.modonomicon.util.RenderUtil;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -60,7 +59,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class BookContentScreen extends Screen implements BookScreenWithButtons{
+public class BookContentScreen extends Screen implements BookScreenWithButtons {
 
     public static final int BOOK_BACKGROUND_WIDTH = 272;
     public static final int BOOK_BACKGROUND_HEIGHT = 178;
@@ -142,14 +141,6 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
         }
     }
 
-    public BookEntry getEntry() {
-        return this.entry;
-    }
-
-    public Book getBook() {
-        return this.entry.getBook();
-    }
-
     public static void renderBookBackground(PoseStack poseStack, ResourceLocation bookContentTexture) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -159,6 +150,14 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
         int y = 0; // (this.height - BOOK_BACKGROUND_HEIGHT) / 2;
 
         GuiComponent.blit(poseStack, x, y, 0, 0, 272, 178, 512, 256);
+    }
+
+    public BookEntry getEntry() {
+        return this.entry;
+    }
+
+    public Book getBook() {
+        return this.entry.getBook();
     }
 
     public boolean canSeeArrowButton(boolean left) {
@@ -232,7 +231,8 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
             return;
         }
 
-        RenderUtil.renderAndDecorateItemAndDecorationsWithPose(poseStack, stack, this.font, x, y);
+        this.getMinecraft().getItemRenderer().renderAndDecorateItem(poseStack, stack, x, y);
+        this.getMinecraft().getItemRenderer().renderGuiItemDecorations(poseStack, this.font, stack, x, y);
 
         if (this.isMouseInRelativeRange(mouseX, mouseY, x, y, 16, 16)) {
             this.setTooltipStack(stack);
@@ -425,11 +425,11 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         this.resetTooltip();
 
-        //we need to modify blit offset to not draw over toasts
-        var blitOffset = this.getBlitOffset();
-        this.setBlitOffset(-1300); //magic number arrived by testing until toasts show, but BookOverviewScreen does not
+        //we need to modify blit offset (now: z pose) to not draw over toasts
+        pPoseStack.pushPose();
+        pPoseStack.translate(0, 0, -1300);  //magic number arrived by testing until toasts show, but BookOverviewScreen does not
         this.renderBackground(pPoseStack);
-        this.setBlitOffset(blitOffset);
+        pPoseStack.popPose();
 
         pPoseStack.pushPose();
         pPoseStack.translate(this.bookLeft, this.bookTop, 0);
@@ -492,7 +492,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
                     if (clickEvent.getAction() == Action.CHANGE_PAGE) {
 
                         //handle book links -> check if locked
-                        if(BookLink.isBookLink(clickEvent.getValue())){
+                        if (BookLink.isBookLink(clickEvent.getValue())) {
                             var link = BookLink.from(this.getBook(), clickEvent.getValue());
                             var book = BookDataManager.get().getBook(link.bookId);
                             if (link.entryId != null) {
@@ -529,7 +529,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
             HoverEvent.ItemStackInfo hoverevent$itemstackinfo = hoverevent.getValue(HoverEvent.Action.SHOW_ITEM);
             if (hoverevent$itemstackinfo != null) {
                 //special handling for item link hovers -> we append another line in this.getTooltipFromItem
-                if(style.getClickEvent() != null)// && ItemLinkRenderer.isItemLink(style.getClickEvent().getValue()))
+                if (style.getClickEvent() != null)// && ItemLinkRenderer.isItemLink(style.getClickEvent().getValue()))
                     this.isHoveringItemLink = true;
 
                 //temporarily modify width to force forge to handle wrapping correctly
@@ -564,9 +564,9 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
     public List<Component> getTooltipFromItem(ItemStack pItemStack) {
         var tooltip = super.getTooltipFromItem(pItemStack);
 
-        if(this.isHoveringItemLink){
+        if (this.isHoveringItemLink) {
             tooltip.add(Component.literal(""));
-            if(ModonomiconJeiIntegration.isJeiLoaded()){
+            if (ModonomiconJeiIntegration.isJeiLoaded()) {
                 tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GREEN)));
                 tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO_LINE2).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GRAY)));
             } else {
@@ -585,7 +585,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
                 if (event.getAction() == Action.CHANGE_PAGE) {
 
                     //handle book links
-                    if(BookLink.isBookLink(event.getValue())) {
+                    if (BookLink.isBookLink(event.getValue())) {
                         var link = BookLink.from(this.getBook(), event.getValue());
                         var book = BookDataManager.get().getBook(link.bookId);
                         if (link.entryId != null) {
@@ -615,9 +615,9 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
                     }
 
                     //handle patchouli link clicks
-                    if(PatchouliLink.isPatchouliLink(event.getValue())){
+                    if (PatchouliLink.isPatchouliLink(event.getValue())) {
                         var link = PatchouliLink.from(event.getValue());
-                        if(link.bookId != null){
+                        if (link.bookId != null) {
                             //the integration class handles class loading guards if patchouli is not present
                             this.simulateEscClosing = true;
                             //this.onClose();
@@ -627,21 +627,21 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
                         }
                     }
 
-                    if(ItemLinkRenderer.isItemLink(event.getValue())){
+                    if (ItemLinkRenderer.isItemLink(event.getValue())) {
 
-                        if(ModonomiconJeiIntegration.isJeiLoaded()){
+                        if (ModonomiconJeiIntegration.isJeiLoaded()) {
                             var itemId = event.getValue().substring(ItemLinkRenderer.PROTOCOL_ITEM_LENGTH);
                             var itemStack = ItemStackUtil.loadFromParsed(ItemStackUtil.parseItemStackString(itemId));
 
                             this.onClose(); //we have to do this before showing JEI, because super.onClose() clears Gui Layers, and thus would kill JEIs freshly spawned gui
 
-                            if(Screen.hasShiftDown()){
+                            if (Screen.hasShiftDown()) {
                                 ModonomiconJeiIntegration.showUses(itemStack);
                             } else {
                                 ModonomiconJeiIntegration.showRecipe(itemStack);
                             }
 
-                            if(!ModonomiconJeiIntegration.isJEIRecipesGuiOpen()){
+                            if (!ModonomiconJeiIntegration.isJEIRecipesGuiOpen()) {
                                 this.minecraft.pushGuiLayer(this);
                             }
 
@@ -670,8 +670,8 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
         this.beginDisplayPages();
 
         this.addRenderableWidget(new BackButton(this, this.width / 2 - BackButton.WIDTH / 2, this.bookTop + FULL_HEIGHT - BackButton.HEIGHT / 2));
-        this.addRenderableWidget(new ArrowButton(this, this.bookLeft - 4, this.bookTop + FULL_HEIGHT - 6, true, () -> canSeeArrowButton(true), this::handleArrowButton));
-        this.addRenderableWidget(new ArrowButton(this, this.bookLeft + FULL_WIDTH - 14, this.bookTop + FULL_HEIGHT - 6, false, () -> canSeeArrowButton(false), this::handleArrowButton));
+        this.addRenderableWidget(new ArrowButton(this, this.bookLeft - 4, this.bookTop + FULL_HEIGHT - 6, true, () -> this.canSeeArrowButton(true), this::handleArrowButton));
+        this.addRenderableWidget(new ArrowButton(this, this.bookLeft + FULL_WIDTH - 14, this.bookTop + FULL_HEIGHT - 6, false, () -> this.canSeeArrowButton(false), this::handleArrowButton));
         this.addRenderableWidget(new ExitButton(this, this.bookLeft + FULL_WIDTH - 10, this.bookTop - 2, this::handleExitButton));
     }
 
