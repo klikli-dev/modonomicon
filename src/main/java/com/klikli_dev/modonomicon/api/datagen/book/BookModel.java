@@ -18,7 +18,7 @@ public class BookModel {
     protected ResourceLocation id;
     protected String name;
     protected String tooltip;
-    protected String creativeTab = "modonomicon:modonomicon";
+    protected ResourceLocation creativeTab = new ResourceLocation("modonomicon:modonomicon");
 
     protected ResourceLocation model = new ResourceLocation(Book.DEFAULT_MODEL);
     protected ResourceLocation bookOverviewTexture = new ResourceLocation(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
@@ -89,7 +89,7 @@ public class BookModel {
         return this.tooltip;
     }
 
-    public String getCreativeTab() {
+    public ResourceLocation getCreativeTab() {
         return this.creativeTab;
     }
 
@@ -126,7 +126,7 @@ public class BookModel {
         json.addProperty("name", this.name);
         json.addProperty("tooltip", this.tooltip);
         json.addProperty("model", this.model.toString());
-        json.addProperty("creative_tab", this.creativeTab);
+        json.addProperty("creative_tab", this.creativeTab.toString());
         json.addProperty("book_overview_texture", this.bookOverviewTexture.toString());
         json.addProperty("book_content_texture", this.bookContentTexture.toString());
         json.addProperty("crafting_texture", this.craftingTexture.toString());
@@ -147,7 +147,7 @@ public class BookModel {
         private String name;
         private String tooltip;
 
-        private String creativeTab = "modonomicon:modonomicon";
+        protected ResourceLocation creativeTab = new ResourceLocation("modonomicon:modonomicon");
 
         private ResourceLocation model = new ResourceLocation(Book.DEFAULT_MODEL);
         private ResourceLocation bookOverviewTexture = new ResourceLocation(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
@@ -197,7 +197,7 @@ public class BookModel {
             return this.tooltip;
         }
 
-        public String getCreativeTab() {
+        public ResourceLocation getCreativeTab() {
             return this.creativeTab;
         }
 
@@ -252,7 +252,7 @@ public class BookModel {
             return this;
         }
 
-        public Builder withCreativeTab(String creativeTab) {
+        public Builder withCreativeTab(ResourceLocation creativeTab) {
             this.creativeTab = creativeTab;
             return this;
         }
