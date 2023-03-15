@@ -72,10 +72,34 @@ Please note that this will only create the structure of the book as well as all 
 
 For now this file is mostly empty - that's OK!
 
+:::caution
+
+Due to vanilla changes to CreativeTabs, if you are on **1.19.3** you need to slightly adjust the code in this file:
+
+```java
+//1.18.2/1.19.2
+.withCreativeTab("modonomicon")
+```
+
+becomes 
+
+```java
+//1.19.3
+.withCreativeTab(new ResourceLocation("modonomicon","modonomicon"))
+```
+
+::: 
+
+
 ### EnUsProvider.java
 
 "EnUS" corresponds to the "en_us" in the line `super(generator, modid, "en_us");` in the upper region of the file. 
-This is the language code for the English language, meaning in this file we will generate English texts. If you want to provide translations for other languages, you can copy and rename the file, and change the language code to e.g. "fr_fr" for French.
+This is the language code for the English language, meaning in this file we will generate English texts. 
+
+
+#### Optional: Additional Languages
+
+If you want to provide translations for other languages, you can copy and rename the file, and change the language code to e.g. "fr_fr" for French.
 
 In Java the "class" name and file name must correspond. Thus, a hypothethical file FrFrProvider would have to look something like this:
 
@@ -90,5 +114,12 @@ public class FrFrProvider extends LanguageProvider {
 :::tip
 
 If you do create a second language - make sure to register it in the DataGenerators.java file as well!
+
+e.g.:
+```java
+
+generator.addProvider(event.includeClient(), new FrFrProvider(generator, ModonomiconDemoBook.MODID));
+
+```
 
 :::
