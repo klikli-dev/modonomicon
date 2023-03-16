@@ -49,7 +49,7 @@ public class BookCategory {
     public static BookCategory fromJson(ResourceLocation id, JsonObject json) {
         var name = GsonHelper.getAsString(json, "name");
         var sortNumber = GsonHelper.getAsInt(json, "sort_number", -1);
-        var icon = BookIcon.fromString(GsonHelper.getAsString(json, "icon"));
+        var icon = BookIcon.fromString(new ResourceLocation(GsonHelper.getAsString(json, "icon")));
         var background = new ResourceLocation(GsonHelper.getAsString(json, "background", Category.DEFAULT_BACKGROUND));
         var entryTextures = new ResourceLocation(GsonHelper.getAsString(json, "entry_textures", Category.DEFAULT_ENTRY_TEXTURES));
         var showCategoryButton = GsonHelper.getAsBoolean(json, "show_category_button", true);
