@@ -5,11 +5,48 @@
   "book_text_offset_width": -5,
   "book_text_offset_x": 5,
   "book_text_offset_y": 0,
+  "bottom_frame_overlay": {
+    "frame_height": 8,
+    "frame_width": 72,
+    "frame_x_offset": 0,
+    "frame_y_offset": -4,
+    "texture": "modonomicon:textures/gui/book_frame_bottom_overlay.png",
+    "texture_height": 256,
+    "texture_width": 256
+  },
   "crafting_texture": "modonomicon:textures/gui/crafting_textures.png",
   "creative_tab": "modonomicon",
   "default_title_color": 0,
+  "frame_texture": "modonomicon:textures/gui/book_frame.png",
   "generate_book_item": true,
+  "left_frame_overlay": {
+    "frame_height": 70,
+    "frame_width": 7,
+    "frame_x_offset": 3,
+    "frame_y_offset": 0,
+    "texture": "modonomicon:textures/gui/book_frame_left_overlay.png",
+    "texture_height": 256,
+    "texture_width": 256
+  },
   "model": "modonomicon:modonomicon_purple",
   "name": "book.modonomicon.demo.name",
-  "tooltip": "book.modonomicon.demo.tooltip"
+  "right_frame_overlay": {
+    "frame_height": 70,
+    "frame_width": 8,
+    "frame_x_offset": -4,
+    "frame_y_offset": 0,
+    "texture": "modonomicon:textures/gui/book_frame_right_overlay.png",
+    "texture_height": 256,
+    "texture_width": 256
+  },
+  "tooltip": "book.modonomicon.demo.tooltip",
+  "top_frame_overlay": {
+    "frame_height": 7,
+    "frame_width": 72,
+    "frame_x_offset": 0,
+    "frame_y_offset": 4,
+    "texture": "modonomicon:textures/gui/book_frame_top_overlay.png",
+    "texture_height": 256,
+    "texture_width": 256
+  }
 }

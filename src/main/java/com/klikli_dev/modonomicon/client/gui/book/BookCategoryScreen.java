@@ -244,11 +244,18 @@ public class BookCategoryScreen {
             stack.pushPose();
             //we translate instead of applying the offset to the entry x/y to avoid jittering when moving
             stack.translate(xOffset, yOffset, 0);
+
+            stack.translate(0, 0, -350); //push the whole entry behind the frame
             //render entry background
             this.bookOverviewScreen.blit(stack, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT);
 
+            stack.pushPose();
+            stack.translate(0, 0, 10); //now push the icon in front of the background
+
             //render icon
             entry.getIcon().render(stack, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 5, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP + 5);
+
+            stack.popPose();
 
             //render unread icon
             if(displayState == EntryDisplayState.UNLOCKED && !BookUnlockCapability.isReadFor(this.bookOverviewScreen.getMinecraft().player, entry)){
@@ -266,7 +273,7 @@ public class BookCategoryScreen {
 
                 //testing
                 stack.pushPose();
-                stack.translate(0,0,10);
+                stack.translate(0,0,11); //and push the unread icon in front of the icon
                 //if focused we go to the right of our normal button (instead of down, like mc buttons do)
                 BookContentScreen.drawFromTexture(stack, this.bookOverviewScreen.getBook(),
                         entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 16 + 2,

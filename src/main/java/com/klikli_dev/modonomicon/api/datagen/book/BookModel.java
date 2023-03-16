@@ -9,6 +9,8 @@ package com.klikli_dev.modonomicon.api.datagen.book;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Book;
+import com.klikli_dev.modonomicon.book.BookFrameOverlay;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,6 +27,11 @@ public class BookModel {
     protected ResourceLocation model = new ResourceLocation(Book.DEFAULT_MODEL);
     protected ResourceLocation bookOverviewTexture = new ResourceLocation(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
 
+    protected ResourceLocation frameTexture  = new ResourceLocation(Book.DEFAULT_FRAME_TEXTURE);
+    protected BookFrameOverlay topFrameOverlay = Data.Book.DEFAULT_TOP_FRAME_OVERLAY;
+    protected BookFrameOverlay bottomFrameOverlay = Data.Book.DEFAULT_BOTTOM_FRAME_OVERLAY;
+    protected BookFrameOverlay leftFrameOverlay = Data.Book.DEFAULT_LEFT_FRAME_OVERLAY;
+    protected BookFrameOverlay rightFrameOverlay = Data.Book.DEFAULT_RIGHT_FRAME_OVERLAY;
     protected ResourceLocation bookContentTexture = new ResourceLocation(Data.Book.DEFAULT_CONTENT_TEXTURE);
 
     protected ResourceLocation craftingTexture = new ResourceLocation(Book.DEFAULT_CRAFTING_TEXTURE);
@@ -113,6 +120,10 @@ public class BookModel {
         return this.bookOverviewTexture;
     }
 
+    public ResourceLocation getFrameTexture() {
+        return this.frameTexture;
+    }
+
     public ResourceLocation getBookContentTexture() {
         return this.bookContentTexture;
     }
@@ -140,6 +151,11 @@ public class BookModel {
         json.addProperty("model", this.model.toString());
         json.addProperty("creative_tab", this.creativeTab);
         json.addProperty("book_overview_texture", this.bookOverviewTexture.toString());
+        json.addProperty("frame_texture", this.frameTexture.toString());
+        json.add("top_frame_overlay", BookFrameOverlay.CODEC.encodeStart(JsonOps.INSTANCE, this.topFrameOverlay).get().orThrow());
+        json.add("bottom_frame_overlay", BookFrameOverlay.CODEC.encodeStart(JsonOps.INSTANCE, this.bottomFrameOverlay).get().orThrow());
+        json.add("left_frame_overlay", BookFrameOverlay.CODEC.encodeStart(JsonOps.INSTANCE, this.leftFrameOverlay).get().orThrow());
+        json.add("right_frame_overlay", BookFrameOverlay.CODEC.encodeStart(JsonOps.INSTANCE, this.rightFrameOverlay).get().orThrow());
         json.addProperty("book_content_texture", this.bookContentTexture.toString());
         json.addProperty("crafting_texture", this.craftingTexture.toString());
         json.addProperty("default_title_color", this.defaultTitleColor);
@@ -166,6 +182,11 @@ public class BookModel {
 
     public BookModel withBookOverviewTexture(ResourceLocation bookOverviewTexture) {
         this.bookOverviewTexture = bookOverviewTexture;
+        return this;
+    }
+
+    public BookModel withFrameTexture(ResourceLocation frameTexture) {
+        this.frameTexture = frameTexture;
         return this;
     }
 
