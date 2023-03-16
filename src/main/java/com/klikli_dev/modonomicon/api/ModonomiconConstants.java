@@ -6,6 +6,8 @@
 
 package com.klikli_dev.modonomicon.api;
 
+import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.book.BookFrameOverlay;
 import net.minecraft.resources.ResourceLocation;
 
 public class ModonomiconConstants {
@@ -16,6 +18,23 @@ public class ModonomiconConstants {
 
         public static class Book {
             public static final String DEFAULT_OVERVIEW_TEXTURE = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/book_overview.png").toString();
+
+            public static final BookFrameOverlay DEFAULT_TOP_FRAME_OVERLAY = new BookFrameOverlay(
+                    Modonomicon.loc("textures/gui/book_frame_top_overlay.png"),
+                    256, 256, 256, 256, 0, 0);
+
+            public static final BookFrameOverlay DEFAULT_BOTTOM_FRAME_OVERLAY = new BookFrameOverlay(
+                    Modonomicon.loc("textures/gui/book_frame_bottom_overlay.png"),
+                    256, 256, 256, 256, 0, 0);
+
+            public static final BookFrameOverlay DEFAULT_LEFT_FRAME_OVERLAY = new BookFrameOverlay(
+                    Modonomicon.loc("textures/gui/book_frame_left_overlay.png"),
+                    256, 256, 256, 256, 0, 0);
+
+            public static final BookFrameOverlay DEFAULT_RIGHT_FRAME_OVERLAY = new BookFrameOverlay(
+                    Modonomicon.loc("textures/gui/book_frame_right_overlay.png"),
+                    256, 256, 256, 256, 0, 0);
+
             public static final String DEFAULT_CONTENT_TEXTURE = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/book_content.png").toString();
             public static final String DEFAULT_CRAFTING_TEXTURE = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/crafting_textures.png").toString();
             public static final String DEFAULT_PAGE_TURN_SOUND = new ResourceLocation(ModonomiconAPI.ID, "turn_page").toString();
@@ -25,6 +44,7 @@ public class ModonomiconConstants {
         }
 
         public static class Category {
+            public static final String DEFAULT_ICON = new ResourceLocation(ModonomiconAPI.ID, "modonomicon_purple").toString();
             public static final String DEFAULT_BACKGROUND = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/dark_slate_seamless.png").toString();
             public static final String DEFAULT_ENTRY_TEXTURES = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/entry_textures.png").toString();
         }

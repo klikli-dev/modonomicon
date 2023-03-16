@@ -44,9 +44,7 @@ public class DemoBookProvider extends BookProvider {
         var conditionalCategory = this.makeConditionalCategory(helper);
         conditionalCategory.withCondition(BookEntryReadConditionModel.builder().withEntry(this.modLoc("features/condition_root")).build());
 
-        var demoBook = BookModel.builder()
-                .withId(this.modLoc("demo"))
-                .withName(helper.bookName())
+        var demoBook = BookModel.create(this.modLoc("demo"), helper.bookName())
                 .withTooltip(helper.bookTooltip())
                 .withBookTextOffsetX(5)
                 .withBookTextOffsetY(0) //no top offset
@@ -54,8 +52,7 @@ public class DemoBookProvider extends BookProvider {
                 .withCategory(featuresCategory)
                 .withCategory(formattingCategory)
                 .withCategory(hiddenCategory)
-                .withCategory(conditionalCategory.build())
-                .build();
+                .withCategory(conditionalCategory);
         return demoBook;
     }
 
@@ -91,9 +88,7 @@ public class DemoBookProvider extends BookProvider {
 
         var redirectEntry = this.makeRedirectEntry(helper, entryHelper).build();
 
-        return BookCategoryModel.builder()
-                .withId(this.modLoc("features"))
-                .withName(helper.categoryName())
+        return BookCategoryModel.create(this.modLoc("features"), helper.categoryName())
                 .withIcon("minecraft:nether_star")
                 .withEntry(multiblockEntry)
                 .withEntry(recipeEntry)
@@ -102,8 +97,7 @@ public class DemoBookProvider extends BookProvider {
                 .withEntry(emptyEntry.build())
                 .withEntry(entityEntry.build())
                 .withEntry(imageEntry.build())
-                .withEntry(redirectEntry)
-                .build();
+                .withEntry(redirectEntry);
     }
 
     private BookEntryModel makeMultiblockEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
@@ -415,15 +409,12 @@ public class DemoBookProvider extends BookProvider {
         linkFormattingEntry.withParent(BookEntryParentModel.builder().withEntryId(advancedFormattingEntry.id).build());
         advancedFormattingEntry.withParent(BookEntryParentModel.builder().withEntryId(basicFormattingEntry.id).build());
 
-        return BookCategoryModel.builder()
-                .withId(this.modLoc("formatting"))
-                .withName(helper.categoryName())
+        return BookCategoryModel.create(this.modLoc("formatting"),helper.categoryName())
                 .withIcon("minecraft:textures/item/book.png")
                 .withEntry(basicFormattingEntry.build())
                 .withEntry(advancedFormattingEntry.build())
                 .withEntry(linkFormattingEntry.build())
-                .withEntry(alwaysLockedEntry.build())
-                .build();
+                .withEntry(alwaysLockedEntry.build());
     }
 
     private BookEntryModel.Builder makeBasicFormattingEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
@@ -556,16 +547,13 @@ public class DemoBookProvider extends BookProvider {
                 .withEntryBackground(0, 1)
                 .withCondition(BookFalseConditionModel.builder().build());
 
-        return BookCategoryModel.builder()
-                .withId(this.modLoc(helper.category))
-                .withName(helper.categoryName())
+        return BookCategoryModel.create(this.modLoc(helper.category), helper.categoryName())
                 .withIcon("minecraft:book")
                 .withShowCategoryButton(false)
-                .withEntry(entry.build())
-                .build();
+                .withEntry(entry.build());
     }
 
-    private BookCategoryModel.Builder makeConditionalCategory(BookLangHelper helper) {
+    private BookCategoryModel makeConditionalCategory(BookLangHelper helper) {
         helper.category("conditional");
 
         var entryHelper = new EntryLocationHelper();
@@ -588,9 +576,7 @@ public class DemoBookProvider extends BookProvider {
                 .withEntryBackground(0, 1)
                 .withCondition(BookFalseConditionModel.builder().build());
 
-        return BookCategoryModel.builder()
-                .withId(this.modLoc(helper.category))
-                .withName(helper.categoryName())
+        return BookCategoryModel.create(this.modLoc(helper.category), helper.categoryName())
                 .withIcon("minecraft:diamond")
                 .withEntry(entry.build());
     }

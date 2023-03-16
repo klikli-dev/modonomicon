@@ -10,55 +10,66 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Book;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BookModel {
+
     protected ResourceLocation id;
     protected String name;
-    protected String tooltip;
+    protected String tooltip = "";
     protected String creativeTab = "modonomicon";
 
     protected ResourceLocation model = new ResourceLocation(Book.DEFAULT_MODEL);
     protected ResourceLocation bookOverviewTexture = new ResourceLocation(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
+
     protected ResourceLocation bookContentTexture = new ResourceLocation(Data.Book.DEFAULT_CONTENT_TEXTURE);
 
     protected ResourceLocation craftingTexture = new ResourceLocation(Book.DEFAULT_CRAFTING_TEXTURE);
     protected int defaultTitleColor = 0x00000;
+
     protected List<BookCategoryModel> categories = new ArrayList<>();
 
-    protected boolean autoAddReadConditions;
+    protected boolean autoAddReadConditions = false;
     protected boolean generateBookItem = true;
-    protected ResourceLocation customBookItem;
+
+    @Nullable
+    protected ResourceLocation customBookItem = null;
 
     /**
      * When rendering book text holders, add this offset to the x position (basically, create a left margin).
      * Will be automatically subtracted from the width to avoid overflow.
      */
-    protected int bookTextOffsetX;
+    protected int bookTextOffsetX = 0;
 
     /**
      * When rendering book text holders, add this offset to the y position (basically, create a top margin).
      */
-    protected int bookTextOffsetY;
+    protected int bookTextOffsetY = 0;
 
     /**
      * When rendering book text holders, add this offset to the width (allows to create a right margin)
      * To make the line end move to the left (as it would for a margin setting in eg css), use a negative value.
      */
-    protected int bookTextOffsetWidth;
+    protected int bookTextOffsetWidth = 0;
 
-    public static Builder builder() {
-        return new Builder();
+    protected BookModel(ResourceLocation id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
-    public boolean isAutoAddReadConditions() {
+    /**
+     * @param id The book ID, e.g. "modonomicon:demo". The ID must be unique (usually that is guaranteed by the mod ID).
+     * @param name Should be a translation key.
+     */
+    public static BookModel create(ResourceLocation id, String name) {
+        return new BookModel(id, name);
+    }
+
+    public boolean autoAddReadConditions() {
         return this.autoAddReadConditions;
-    }
-
-    public boolean isGenerateBookItem() {
-        return this.generateBookItem;
     }
 
     public ResourceLocation getCraftingTexture() {
@@ -69,6 +80,7 @@ public class BookModel {
         return this.generateBookItem;
     }
 
+    @Nullable
     public ResourceLocation getCustomBookItem() {
         return this.customBookItem;
     }
@@ -142,225 +154,94 @@ public class BookModel {
         return json;
     }
 
-    public static final class Builder {
-        private ResourceLocation id;
-        private String name;
-        private String tooltip;
+    public BookModel withTooltip(String tooltip) {
+        this.tooltip = tooltip;
+        return this;
+    }
 
-        private String creativeTab = "modonomicon";
+    public BookModel withCreativeTab(String creativeTab) {
+        this.creativeTab = creativeTab;
+        return this;
+    }
 
-        private ResourceLocation model = new ResourceLocation(Book.DEFAULT_MODEL);
-        private ResourceLocation bookOverviewTexture = new ResourceLocation(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
-        private ResourceLocation bookContentTexture = new ResourceLocation(Data.Book.DEFAULT_CONTENT_TEXTURE);
+    public BookModel withBookOverviewTexture(ResourceLocation bookOverviewTexture) {
+        this.bookOverviewTexture = bookOverviewTexture;
+        return this;
+    }
 
-        private ResourceLocation craftingTexture = new ResourceLocation(Book.DEFAULT_CRAFTING_TEXTURE);
-        private int defaultTitleColor = 0x00000;
-        private List<BookCategoryModel> categories = new ArrayList<>();
-        private boolean autoAddReadConditions;
+    public BookModel withBookContentTexture(ResourceLocation bookContentTexture) {
+        this.bookContentTexture = bookContentTexture;
+        return this;
+    }
 
-        private boolean generateBookItem = true;
-        private ResourceLocation customBookItem;
+    public BookModel withCraftingTexture(ResourceLocation craftingTexture) {
+        this.craftingTexture = craftingTexture;
+        return this;
+    }
 
-        /**
-         * When rendering book text holders, add this offset to the x position (basically, create a left margin).
-         * Will be automatically subtracted from the width to avoid overflow.
-         */
-        protected int bookTextOffsetX;
+    public BookModel withModel(ResourceLocation model) {
+        this.model = model;
+        return this;
+    }
 
-        /**
-         * When rendering book text holders, add this offset to the y position (basically, create a top margin).
-         */
-        protected int bookTextOffsetY;
+    public BookModel withGenerateBookItem(boolean generateBookItem) {
+        this.generateBookItem = generateBookItem;
+        return this;
+    }
 
-        /**
-         * When rendering book text holders, add this offset to the width (allows to create a right margin)
-         * To make the line end move to the left (as it would for a margin setting in eg css), use a negative value.
-         */
-        protected int bookTextOffsetWidth;
+    public BookModel withCustomBookItem(ResourceLocation customBookItem) {
+        this.customBookItem = customBookItem;
+        return this;
+    }
 
-        private Builder() {
-        }
+    public BookModel withDefaultTitleColor(int defaultTitleColor) {
+        this.defaultTitleColor = defaultTitleColor;
+        return this;
+    }
 
-        public static Builder aBookModel() {
-            return new Builder();
-        }
+    public BookModel withCategories(List<BookCategoryModel> categories) {
+        categories.forEach(category -> category.book = this);
+        this.categories.addAll(categories);
+        return this;
+    }
 
-        public ResourceLocation getId() {
-            return this.id;
-        }
+    public BookModel withCategories(BookCategoryModel... categories) {
+        return this.withCategories(List.of(categories));
+    }
 
-        public String getName() {
-            return this.name;
-        }
+    public BookModel withCategory(BookCategoryModel category) {
+        this.categories.add(category);
+        return this;
+    }
 
-        public String getTooltip() {
-            return this.tooltip;
-        }
+    public BookModel withAutoAddReadConditions(boolean autoAddReadConditions) {
+        this.autoAddReadConditions = autoAddReadConditions;
+        return this;
+    }
 
-        public String getCreativeTab() {
-            return this.creativeTab;
-        }
+    /**
+     * When rendering book text holders, add this offset to the x position (basically, create a left margin).
+     * Will be automatically subtracted from the width to avoid overflow.
+     */
+    public BookModel withBookTextOffsetX(int bookTextOffsetX) {
+        this.bookTextOffsetX = bookTextOffsetX;
+        return this;
+    }
 
-        public ResourceLocation getModel() {
-            return this.model;
-        }
+    /**
+     * When rendering book text holders, add this offset to the y position (basically, create a top margin).
+     */
+    public BookModel withBookTextOffsetY(int bookTextOffsetY) {
+        this.bookTextOffsetY = bookTextOffsetY;
+        return this;
+    }
 
-        public ResourceLocation getBookOverviewTexture() {
-            return this.bookOverviewTexture;
-        }
-
-        public ResourceLocation getBookContentTexture() {
-            return this.bookContentTexture;
-        }
-
-        public ResourceLocation getCraftingTexture() {
-            return this.craftingTexture;
-        }
-
-        public int getDefaultTitleColor() {
-            return this.defaultTitleColor;
-        }
-
-        public List<BookCategoryModel> getCategories() {
-            return this.categories;
-        }
-
-        public boolean isAutoAddReadConditions() {
-            return this.autoAddReadConditions;
-        }
-
-        public boolean isGenerateBookItem() {
-            return this.generateBookItem;
-        }
-
-        public ResourceLocation getCustomBookItem() {
-            return this.customBookItem;
-        }
-
-        public Builder withId(ResourceLocation id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder withName(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder withTooltip(String tooltip) {
-            this.tooltip = tooltip;
-            return this;
-        }
-
-        public Builder withCreativeTab(String creativeTab) {
-            this.creativeTab = creativeTab;
-            return this;
-        }
-
-        public Builder withBookOverviewTexture(ResourceLocation bookOverviewTexture) {
-            this.bookOverviewTexture = bookOverviewTexture;
-            return this;
-        }
-
-        public Builder withBookContentTexture(ResourceLocation bookContentTexture) {
-            this.bookContentTexture = bookContentTexture;
-            return this;
-        }
-
-        public Builder withCraftingTexture(ResourceLocation craftingTexture) {
-            this.craftingTexture = craftingTexture;
-            return this;
-        }
-
-        public Builder withModel(ResourceLocation model) {
-            this.model = model;
-            return this;
-        }
-
-        public Builder withGenerateBookItem(boolean generateBookItem) {
-            this.generateBookItem = generateBookItem;
-            return this;
-        }
-
-        public Builder withCustomBookItem(ResourceLocation customBookItem) {
-            this.customBookItem = customBookItem;
-            return this;
-        }
-
-        public Builder withDefaultTitleColor(int defaultTitleColor) {
-            this.defaultTitleColor = defaultTitleColor;
-            return this;
-        }
-
-        public Builder withCategories(List<BookCategoryModel> categories) {
-            this.categories = categories;
-            return this;
-        }
-
-        public Builder withCategories(BookCategoryModel... categories) {
-            this.categories.addAll(List.of(categories));
-            return this;
-        }
-
-        public Builder withCategory(BookCategoryModel category) {
-            this.categories.add(category);
-            return this;
-        }
-
-        public Builder withAutoAddReadConditions(boolean autoAddReadConditions) {
-            this.autoAddReadConditions = autoAddReadConditions;
-            return this;
-        }
-
-        /**
-         * When rendering book text holders, add this offset to the x position (basically, create a left margin).
-         * Will be automatically subtracted from the width to avoid overflow.
-         */
-        public Builder withBookTextOffsetX(int bookTextOffsetX) {
-            this.bookTextOffsetX = bookTextOffsetX;
-            return this;
-        }
-
-        /**
-         * When rendering book text holders, add this offset to the y position (basically, create a top margin).
-         */
-        public Builder withBookTextOffsetY(int bookTextOffsetY) {
-            this.bookTextOffsetY = bookTextOffsetY;
-            return this;
-        }
-
-        /**
-         * When rendering book text holders, add this offset to the width (allows to create a right margin)
-         * To make the line end move to the left (as it would for a margin setting in eg css), use a negative value.
-         */
-        public Builder withBookTextOffsetWidth(int bookTextOffsetWidth) {
-            this.bookTextOffsetWidth = bookTextOffsetWidth;
-            return this;
-        }
-
-        public BookModel build() {
-            BookModel bookModel = new BookModel();
-            for (var category : this.categories) {
-                category.book = bookModel;
-            }
-
-            bookModel.categories = this.categories;
-            bookModel.bookOverviewTexture = this.bookOverviewTexture;
-            bookModel.id = this.id;
-            bookModel.bookContentTexture = this.bookContentTexture;
-            bookModel.craftingTexture = this.craftingTexture;
-            bookModel.defaultTitleColor = this.defaultTitleColor;
-            bookModel.name = this.name;
-            bookModel.tooltip = this.tooltip;
-            bookModel.model = this.model;
-            bookModel.generateBookItem = this.generateBookItem;
-            bookModel.customBookItem = this.customBookItem;
-            bookModel.autoAddReadConditions = this.autoAddReadConditions;
-            bookModel.creativeTab = this.creativeTab;
-            bookModel.bookTextOffsetX = this.bookTextOffsetX;
-            bookModel.bookTextOffsetY = this.bookTextOffsetY;
-            bookModel.bookTextOffsetWidth = this.bookTextOffsetWidth;
-            return bookModel;
-        }
+    /**
+     * When rendering book text holders, add this offset to the width (allows to create a right margin)
+     * To make the line end move to the left (as it would for a margin setting in eg css), use a negative value.
+     */
+    public BookModel withBookTextOffsetWidth(int bookTextOffsetWidth) {
+        this.bookTextOffsetWidth = bookTextOffsetWidth;
+        return this;
     }
 }
