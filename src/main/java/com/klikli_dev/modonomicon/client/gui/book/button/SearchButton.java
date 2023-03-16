@@ -53,15 +53,14 @@ public class SearchButton extends Button {
             //GL scissors allows us to move the button on hover without intersecting with book border
             //scissors always needs to use gui scale because it runs in absolute coords!
             //see also vanilla class SocialInteractionsPlayerList using scissors in #render
-            RenderSystem.enableScissor(this.scissorX, this.getY() - 10, scissorWidth, this.height + 20);
-            RenderSystem.enableScissor(this.scissorX * scale,  scissorY * scale, scissorWidth * scale, 1000);
+            GuiComponent.enableScissor(this.scissorX * scale,  scissorY * scale, scissorWidth * scale, 1000);
 
             RenderSystem.setShaderTexture(0, this.parent.getBookOverviewTexture());
 
             int blitOffset = 50;
             GuiComponent.blit(pMatrixStack, renderX, this.getY(), blitOffset, texX, texY, this.width, this.height, 256, 256);
 
-            RenderSystem.disableScissor();
+            GuiComponent.disableScissor();
 
 
 

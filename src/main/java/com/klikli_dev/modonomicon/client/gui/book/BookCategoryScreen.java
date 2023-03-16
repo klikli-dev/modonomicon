@@ -20,6 +20,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -92,11 +93,11 @@ public class BookCategoryScreen {
         //use scissors to constrain entries to inner area of category screen
         //scissors always needs to use gui scale because it runs in absolute coords!
         //see also vanilla class SocialInteractionsPlayerList using scissors in #render
-        RenderSystem.enableScissor(innerX * scale, innerY * scale, innerWidth * scale, innerHeight * scale);
+        GuiComponent.enableScissor(innerX * scale, innerY * scale, innerWidth * scale, innerHeight * scale);
 
         this.renderEntries(pPoseStack, pMouseX, pMouseY);
 
-        RenderSystem.disableScissor();
+        GuiComponent.disableScissor();
 
         this.renderEntryTooltips(pPoseStack, pMouseX, pMouseY);
 
