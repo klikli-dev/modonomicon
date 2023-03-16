@@ -65,10 +65,23 @@ public class CategoryButton extends Button {
 
             //then draw icon
 
-            int iconOffset = 8;
+            int iconSize = 16;
+            int centerIconOffset = iconSize / 2;
+            float scale = this.getCategory().getBook().getCategoryButtonIconScale();
+
             pMatrixStack.pushPose();
-            pMatrixStack.translate(0, 0, 100);
-            this.category.getIcon().render(pMatrixStack, renderX + iconOffset, this.y + 2);
+            pMatrixStack.translate(0, 0, 100); //push category icon to front
+            pMatrixStack.translate(renderX + 8, this.y+2, 0); //move to desired render location
+
+            //now scale around center
+            pMatrixStack.pushPose();
+            pMatrixStack.translate(centerIconOffset, centerIconOffset, 0);
+            pMatrixStack.scale(scale, scale, 0);
+            pMatrixStack.translate(-centerIconOffset, -centerIconOffset, 0);
+
+            this.category.getIcon().render(pMatrixStack, 0, 0);
+            pMatrixStack.popPose();
+
             pMatrixStack.popPose();
         }
 

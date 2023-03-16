@@ -27,7 +27,7 @@ public class BookModel {
     protected ResourceLocation model = new ResourceLocation(Book.DEFAULT_MODEL);
     protected ResourceLocation bookOverviewTexture = new ResourceLocation(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
 
-    protected ResourceLocation frameTexture  = new ResourceLocation(Book.DEFAULT_FRAME_TEXTURE);
+    protected ResourceLocation frameTexture = new ResourceLocation(Book.DEFAULT_FRAME_TEXTURE);
     protected BookFrameOverlay topFrameOverlay = Data.Book.DEFAULT_TOP_FRAME_OVERLAY;
     protected BookFrameOverlay bottomFrameOverlay = Data.Book.DEFAULT_BOTTOM_FRAME_OVERLAY;
     protected BookFrameOverlay leftFrameOverlay = Data.Book.DEFAULT_LEFT_FRAME_OVERLAY;
@@ -36,6 +36,7 @@ public class BookModel {
 
     protected ResourceLocation craftingTexture = new ResourceLocation(Book.DEFAULT_CRAFTING_TEXTURE);
     protected int defaultTitleColor = 0x00000;
+    protected float categoryButtonIconScale = 1.0f;
 
     protected List<BookCategoryModel> categories = new ArrayList<>();
 
@@ -68,7 +69,7 @@ public class BookModel {
     }
 
     /**
-     * @param id The book ID, e.g. "modonomicon:demo". The ID must be unique (usually that is guaranteed by the mod ID).
+     * @param id   The book ID, e.g. "modonomicon:demo". The ID must be unique (usually that is guaranteed by the mod ID).
      * @param name Should be a translation key.
      */
     public static BookModel create(ResourceLocation id, String name) {
@@ -132,6 +133,10 @@ public class BookModel {
         return this.defaultTitleColor;
     }
 
+    public float getCategoryButtonIconScale() {
+        return this.categoryButtonIconScale;
+    }
+
     public int getBookTextOffsetX() {
         return this.bookTextOffsetX;
     }
@@ -159,6 +164,7 @@ public class BookModel {
         json.addProperty("book_content_texture", this.bookContentTexture.toString());
         json.addProperty("crafting_texture", this.craftingTexture.toString());
         json.addProperty("default_title_color", this.defaultTitleColor);
+        json.addProperty("category_button_icon_scale", this.categoryButtonIconScale);
         json.addProperty("book_text_offset_x", this.bookTextOffsetX);
         json.addProperty("book_text_offset_y", this.bookTextOffsetY);
         json.addProperty("book_text_offset_width", this.bookTextOffsetWidth);
@@ -217,6 +223,11 @@ public class BookModel {
 
     public BookModel withDefaultTitleColor(int defaultTitleColor) {
         this.defaultTitleColor = defaultTitleColor;
+        return this;
+    }
+
+    public BookModel withCategoryButtonIconScale(float categoryButtonIconScale) {
+        this.categoryButtonIconScale = categoryButtonIconScale;
         return this;
     }
 

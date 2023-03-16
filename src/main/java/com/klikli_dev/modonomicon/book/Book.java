@@ -50,6 +50,7 @@ public class Book {
     protected ConcurrentMap<ResourceLocation, BookEntry> entries;
 
     protected int defaultTitleColor;
+    protected float categoryButtonIconScale;
     protected boolean autoAddReadConditions;
     protected boolean generateBookItem;
     @Nullable
@@ -88,7 +89,7 @@ public class Book {
                 ResourceLocation customBookItem, String creativeTab, ResourceLocation bookOverviewTexture, ResourceLocation frameTexture,
                 BookFrameOverlay topFrameOverlay, BookFrameOverlay bottomFrameOverlay, BookFrameOverlay leftFrameOverlay, BookFrameOverlay rightFrameOverlay,
                 ResourceLocation bookContentTexture, ResourceLocation craftingTexture, ResourceLocation turnPageSound,
-                int defaultTitleColor, boolean autoAddReadConditions, int bookTextOffsetX, int bookTextOffsetY, int bookTextOffsetWidth) {
+                int defaultTitleColor, float categoryButtonIconScale, boolean autoAddReadConditions, int bookTextOffsetX, int bookTextOffsetY, int bookTextOffsetWidth) {
         this.id = id;
         this.name = name;
         this.tooltip = tooltip;
@@ -106,6 +107,7 @@ public class Book {
         this.craftingTexture = craftingTexture;
         this.turnPageSound = turnPageSound;
         this.defaultTitleColor = defaultTitleColor;
+        this.categoryButtonIconScale = categoryButtonIconScale;
         this.autoAddReadConditions = autoAddReadConditions;
         this.categories = new ConcurrentHashMap<>();
         this.entries = new ConcurrentHashMap<>();
@@ -146,6 +148,7 @@ public class Book {
         var craftingTexture = new ResourceLocation(GsonHelper.getAsString(json, "crafting_texture", Data.Book.DEFAULT_CRAFTING_TEXTURE));
         var turnPageSound = new ResourceLocation(GsonHelper.getAsString(json, "turn_page_sound", Data.Book.DEFAULT_PAGE_TURN_SOUND));
         var defaultTitleColor = GsonHelper.getAsInt(json, "default_title_color", 0x00000);
+        var categoryButtonIconScale = GsonHelper.getAsFloat(json, "category_button_icon_scale", 1.0f);
         var autoAddReadConditions = GsonHelper.getAsBoolean(json, "auto_add_read_conditions", false);
 
         var bookTextOffsetX = GsonHelper.getAsInt(json, "book_text_offset_x", 0);
@@ -154,7 +157,7 @@ public class Book {
 
         return new Book(id, name, tooltip, model, generateBookItem, customBookItem, creativeTab, bookOverviewTexture,
                 frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
-                bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth);
+                bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth);
     }
 
 
@@ -178,13 +181,14 @@ public class Book {
         var craftingTexture = buffer.readResourceLocation();
         var turnPageSound = buffer.readResourceLocation();
         var defaultTitleColor = buffer.readInt();
+        var categoryButtonIconScale = buffer.readFloat();
         var autoAddReadConditions = buffer.readBoolean();
         var bookTextOffsetX = (int) buffer.readShort();
         var bookTextOffsetY = (int) buffer.readShort();
         var bookTextOffsetWidth = (int) buffer.readShort();
         return new Book(id, name, tooltip, model, generateBookItem, customBookItem, creativeTab, bookOverviewTexture,
                 frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
-                bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth);
+                bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth);
     }
 
     /**
@@ -240,6 +244,7 @@ public class Book {
         buffer.writeResourceLocation(this.craftingTexture);
         buffer.writeResourceLocation(this.turnPageSound);
         buffer.writeInt(this.defaultTitleColor);
+        buffer.writeFloat(this.categoryButtonIconScale);
         buffer.writeBoolean(this.autoAddReadConditions);
 
         buffer.writeShort(this.bookTextOffsetX);
@@ -261,6 +266,10 @@ public class Book {
 
     public int getDefaultTitleColor() {
         return this.defaultTitleColor;
+    }
+
+    public float getCategoryButtonIconScale() {
+        return this.categoryButtonIconScale;
     }
 
     public ResourceLocation getId() {
