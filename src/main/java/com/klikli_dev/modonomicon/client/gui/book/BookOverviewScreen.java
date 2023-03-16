@@ -317,8 +317,11 @@ public class BookOverviewScreen extends Screen {
 
         int buttonXOffset = -11;
 
+
+        int buttonYOffset = 30 + this.getBook().getCategoryButtonYOffset();
+
         int buttonX = (this.width - this.getFrameWidth()) / 2 - this.getFrameThicknessW() + buttonXOffset;
-        int buttonY = (this.height - this.getFrameHeight()) / 2 - this.getFrameThicknessH() + 30;
+        int buttonY = (this.height - this.getFrameHeight()) / 2 - this.getFrameThicknessH() + buttonYOffset;
         //calculate button width so it aligns with the outer edge of the frame
         int buttonWidth = (this.width - this.getFrameWidth()) / 2 + buttonXOffset + 6;
         int buttonHeight = 20;
@@ -338,7 +341,9 @@ public class BookOverviewScreen extends Screen {
         }
 
         int readAllButtonX = this.getFrameWidth() + this.getFrameThicknessW() + ReadAllButton.WIDTH / 2 - 3; //(this.width - this.getFrameWidth()); // / 2 - this.getFrameThicknessW() + buttonXOffset;
-        int readAllButtonY = (this.height - this.getFrameHeight()) / 2 + ReadAllButton.HEIGHT / 2;
+        int readAllButtonXOffset = 30 + this.getBook().getReadAllButtonYOffset();
+
+        int readAllButtonY = (this.height - this.getFrameHeight()) / 2 + ReadAllButton.HEIGHT / 2 + readAllButtonXOffset;
 
         var readAllButton = new ReadAllButton(this, readAllButtonX, readAllButtonY,
                 () -> this.hasUnreadUnlockedEntries, //if we have unlocked entries that are not read -> blue
@@ -350,7 +355,7 @@ public class BookOverviewScreen extends Screen {
 
 
         int searchButtonXOffset = 7;
-        int searchButtonYOffset = -30;
+        int searchButtonYOffset = -30 + this.getBook().getSearchButtonYOffset();
         int searchButtonX = this.getFrameWidth() + this.getFrameThicknessW() + ReadAllButton.WIDTH / 2 + searchButtonXOffset;
         int searchButtonY = this.getFrameHeight() + this.getFrameThicknessH() - ReadAllButton.HEIGHT / 2 + searchButtonYOffset;
         int searchButtonWidth = 44; //width in png

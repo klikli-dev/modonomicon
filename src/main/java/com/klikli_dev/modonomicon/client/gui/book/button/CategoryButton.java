@@ -45,6 +45,10 @@ public class CategoryButton extends Button {
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
+            pMatrixStack.pushPose();
+            int xOffset = this.getCategory().getBook().getCategoryButtonXOffset();
+            pMatrixStack.translate(xOffset, 0, 0);
+
             int texX = 0;
             int texY = 145;
 
@@ -80,6 +84,8 @@ public class CategoryButton extends Button {
             pMatrixStack.translate(-centerIconOffset, -centerIconOffset, 0);
 
             this.category.getIcon().render(pMatrixStack, 0, 0);
+            pMatrixStack.popPose();
+
             pMatrixStack.popPose();
 
             pMatrixStack.popPose();

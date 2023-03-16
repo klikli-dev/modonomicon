@@ -34,11 +34,16 @@ public class SearchButton extends Button {
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
+            pMatrixStack.pushPose();
+            int xOffset = this.getCategory().getBook().getSearchButtonXOffset();
+            pMatrixStack.translate(xOffset, 0, 0);
+
+            int scissorX = this.scissorX + xOffset;
             int texX = 15;
             int texY = 165;
 
             int renderX = this.x;
-            int scissorWidth = this.width + (this.x - this.scissorX);
+            int scissorWidth = this.width + (this.x - scissorX);
             int scissorY = (this.parent.height - this.y - this.height - 1); //from the bottom up
 
             if (this.isHoveredOrFocused()) {
@@ -51,17 +56,16 @@ public class SearchButton extends Button {
             //GL scissors allows us to move the button on hover without intersecting with book border
             //scissors always needs to use gui scale because it runs in absolute coords!
             //see also vanilla class SocialInteractionsPlayerList using scissors in #render
-            RenderSystem.enableScissor(this.scissorX, this.y - 10, scissorWidth, this.height + 20);
-            RenderSystem.enableScissor(this.scissorX * scale,  scissorY * scale, scissorWidth * scale, 1000);
+            RenderSystem.enableScissor(scissorX * scale,  scissorY * scale, scissorWidth * scale, 1000);
 
             RenderSystem.setShaderTexture(0, this.parent.getBookOverviewTexture());
+
+            pMatrixStack.translate(xOffset, 0, -1000);
             GuiComponent.blit(pMatrixStack, renderX, this.y, this.parent.getBlitOffset() + 50, texX, texY, this.width, this.height, 256, 256);
 
             RenderSystem.disableScissor();
 
-
-
-            //draw search button
+            pMatrixStack.popPose();
         }
 
         if (this.isHoveredOrFocused()) {
