@@ -210,6 +210,7 @@ public class BookModel {
     }
 
     public BookModel withCategory(BookCategoryModel category) {
+        category.book = this;
         this.categories.add(category);
         return this;
     }
