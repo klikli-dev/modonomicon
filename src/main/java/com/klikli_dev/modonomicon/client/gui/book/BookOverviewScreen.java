@@ -21,7 +21,6 @@ import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.ClickReadAllButtonMessage;
 import com.klikli_dev.modonomicon.network.messages.SaveBookStateMessage;
 import com.klikli_dev.modonomicon.network.messages.SyncBookUnlockCapabilityMessage;
-import com.mojang.blaze3d.platform.TextureUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -204,8 +203,8 @@ public class BookOverviewScreen extends Screen {
         this.renderFrameOverlay(this.book.getRightFrameOverlay(), x + width, y + (height / 2), blitOffset);
     }
 
-    protected void renderFrameOverlay(BookFrameOverlay overlay, int x, int y, int blitOffset){
-        if(overlay.getFrameWidth() > 0 && overlay.getFrameHeight() > 0){
+    protected void renderFrameOverlay(BookFrameOverlay overlay, int x, int y, int blitOffset) {
+        if (overlay.getFrameWidth() > 0 && overlay.getFrameHeight() > 0) {
             RenderSystem.setShaderTexture(0, overlay.getTexture());
             ScreenUtils.drawTexturedModalRect(new PoseStack(), overlay.getFrameX(x), overlay.getFrameY(y), overlay.getFrameU(), overlay.getFrameV(), overlay.getFrameWidth(), overlay.getFrameHeight(), blitOffset);
         }
@@ -341,9 +340,9 @@ public class BookOverviewScreen extends Screen {
         }
 
         int readAllButtonX = this.getFrameWidth() + this.getFrameThicknessW() + ReadAllButton.WIDTH / 2 - 3; //(this.width - this.getFrameWidth()); // / 2 - this.getFrameThicknessW() + buttonXOffset;
-        int readAllButtonXOffset = 30 + this.getBook().getReadAllButtonYOffset();
+        int readAllButtonYOffset = 30 + this.getBook().getReadAllButtonYOffset();
 
-        int readAllButtonY = (this.height - this.getFrameHeight()) / 2 + ReadAllButton.HEIGHT / 2 + readAllButtonXOffset;
+        int readAllButtonY = (this.height - this.getFrameHeight()) / 2 + ReadAllButton.HEIGHT / 2 + readAllButtonYOffset;
 
         var readAllButton = new ReadAllButton(this, readAllButtonX, readAllButtonY,
                 () -> this.hasUnreadUnlockedEntries, //if we have unlocked entries that are not read -> blue

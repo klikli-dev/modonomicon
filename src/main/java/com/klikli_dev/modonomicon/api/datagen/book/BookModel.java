@@ -63,6 +63,13 @@ public class BookModel {
      */
     protected int bookTextOffsetWidth = 0;
 
+
+    protected int categoryButtonXOffset = 0;
+    protected int categoryButtonYOffset = 0;
+    protected int searchButtonXOffset = 0;
+    protected int searchButtonYOffset = 0;
+    protected int readAllButtonYOffset = 0;
+
     protected BookModel(ResourceLocation id, String name) {
         this.id = id;
         this.name = name;
@@ -168,6 +175,12 @@ public class BookModel {
         json.addProperty("book_text_offset_x", this.bookTextOffsetX);
         json.addProperty("book_text_offset_y", this.bookTextOffsetY);
         json.addProperty("book_text_offset_width", this.bookTextOffsetWidth);
+        json.addProperty("category_button_x_offset", this.categoryButtonXOffset);
+        json.addProperty("category_button_y_offset", this.categoryButtonYOffset);
+        json.addProperty("search_button_x_offset", this.searchButtonXOffset);
+        json.addProperty("search_button_y_offset", this.searchButtonYOffset);
+        json.addProperty("read_all_button_y_offset", this.readAllButtonYOffset);
+
         json.addProperty("auto_add_read_conditions", this.autoAddReadConditions);
         json.addProperty("generate_book_item", this.generateBookItem);
         if (this.customBookItem != null) {
@@ -275,6 +288,31 @@ public class BookModel {
      */
     public BookModel withBookTextOffsetWidth(int bookTextOffsetWidth) {
         this.bookTextOffsetWidth = bookTextOffsetWidth;
+        return this;
+    }
+
+    public BookModel withCategoryButtonXOffset(int categoryButtonXOffset) {
+        this.categoryButtonXOffset = categoryButtonXOffset;
+        return this;
+    }
+
+    public BookModel withCategoryButtonYOffset(int categoryButtonYOffset) {
+        this.categoryButtonYOffset = categoryButtonYOffset;
+        return this;
+    }
+
+    public BookModel withSearchButtonXOffset(int searchButtonXOffset) {
+        this.searchButtonXOffset = searchButtonXOffset;
+        return this;
+    }
+
+    public BookModel withSearchButtonYOffset(int searchButtonYOffset) {
+        this.searchButtonYOffset = searchButtonYOffset;
+        return this;
+    }
+
+    public BookModel withReadAllButtonYOffset(int readAllButtonYOffset) {
+        this.readAllButtonYOffset = readAllButtonYOffset;
         return this;
     }
 }

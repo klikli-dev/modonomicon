@@ -14,6 +14,9 @@
     "texture_height": 256,
     "texture_width": 256
   },
+  "category_button_icon_scale": 1.0,
+  "category_button_x_offset": 0,
+  "category_button_y_offset": 0,
   "crafting_texture": "modonomicon:textures/gui/crafting_textures.png",
   "creative_tab": "modonomicon",
   "default_title_color": 0,
@@ -30,6 +33,7 @@
   },
   "model": "modonomicon:modonomicon_purple",
   "name": "book.modonomicon.demo.name",
+  "read_all_button_y_offset": 0,
   "right_frame_overlay": {
     "frame_height": 70,
     "frame_width": 8,
@@ -39,6 +43,8 @@
     "texture_height": 256,
     "texture_width": 256
   },
+  "search_button_x_offset": 0,
+  "search_button_y_offset": 0,
   "tooltip": "book.modonomicon.demo.tooltip",
   "top_frame_overlay": {
     "frame_height": 7,

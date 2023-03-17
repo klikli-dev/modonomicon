@@ -35,7 +35,7 @@ public class SearchButton extends Button {
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
             pMatrixStack.pushPose();
-            int xOffset = this.getCategory().getBook().getSearchButtonXOffset();
+            int xOffset = this.parent.getBook().getSearchButtonXOffset();
             pMatrixStack.translate(xOffset, 0, 0);
 
             int scissorX = this.scissorX + xOffset;

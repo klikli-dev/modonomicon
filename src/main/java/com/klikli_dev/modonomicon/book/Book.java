@@ -73,6 +73,12 @@ public class Book {
      */
     protected int bookTextOffsetWidth;
 
+    protected int categoryButtonXOffset;
+    protected int categoryButtonYOffset;
+    protected int searchButtonXOffset;
+    protected int searchButtonYOffset;
+    protected int readAllButtonYOffset;
+
     protected Supplier<ItemStack> bookItem = Suppliers.memoize(() -> {
         if (this.customBookItem != null) {
             var parsed = ItemStackUtil.parseItemStackString(this.customBookItem.toString());
@@ -89,7 +95,9 @@ public class Book {
                 ResourceLocation customBookItem, String creativeTab, ResourceLocation bookOverviewTexture, ResourceLocation frameTexture,
                 BookFrameOverlay topFrameOverlay, BookFrameOverlay bottomFrameOverlay, BookFrameOverlay leftFrameOverlay, BookFrameOverlay rightFrameOverlay,
                 ResourceLocation bookContentTexture, ResourceLocation craftingTexture, ResourceLocation turnPageSound,
-                int defaultTitleColor, float categoryButtonIconScale, boolean autoAddReadConditions, int bookTextOffsetX, int bookTextOffsetY, int bookTextOffsetWidth) {
+                int defaultTitleColor, float categoryButtonIconScale, boolean autoAddReadConditions, int bookTextOffsetX, int bookTextOffsetY, int bookTextOffsetWidth,
+                int categoryButtonXOffset, int categoryButtonYOffset, int searchButtonXOffset, int searchButtonYOffset, int readAllButtonYOffset
+    ) {
         this.id = id;
         this.name = name;
         this.tooltip = tooltip;
@@ -114,6 +122,12 @@ public class Book {
         this.bookTextOffsetX = bookTextOffsetX;
         this.bookTextOffsetY = bookTextOffsetY;
         this.bookTextOffsetWidth = bookTextOffsetWidth;
+
+        this.categoryButtonXOffset = categoryButtonXOffset;
+        this.categoryButtonYOffset = categoryButtonYOffset;
+        this.searchButtonXOffset = searchButtonXOffset;
+        this.searchButtonYOffset = searchButtonYOffset;
+        this.readAllButtonYOffset = readAllButtonYOffset;
     }
 
     public static Book fromJson(ResourceLocation id, JsonObject json) {
@@ -155,9 +169,16 @@ public class Book {
         var bookTextOffsetY = GsonHelper.getAsInt(json, "book_text_offset_y", 0);
         var bookTextOffsetWidth = GsonHelper.getAsInt(json, "book_text_offset_width", 0);
 
+        var categoryButtonXOffset = GsonHelper.getAsInt(json, "category_button_x_offset", 0);
+        var categoryButtonYOffset = GsonHelper.getAsInt(json, "category_button_y_offset", 0);
+        var searchButtonXOffset = GsonHelper.getAsInt(json, "search_button_x_offset", 0);
+        var searchButtonYOffset = GsonHelper.getAsInt(json, "search_button_y_offset", 0);
+        var readAllButtonYOffset = GsonHelper.getAsInt(json, "read_all_button_y_offset", 0);
+
         return new Book(id, name, tooltip, model, generateBookItem, customBookItem, creativeTab, bookOverviewTexture,
                 frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
-                bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth);
+                bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, categoryButtonXOffset, categoryButtonYOffset,
+                searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset);
     }
 
 
@@ -186,9 +207,17 @@ public class Book {
         var bookTextOffsetX = (int) buffer.readShort();
         var bookTextOffsetY = (int) buffer.readShort();
         var bookTextOffsetWidth = (int) buffer.readShort();
+
+        var categoryButtonXOffset = (int) buffer.readShort();
+        var categoryButtonYOffset = (int) buffer.readShort();
+        var searchButtonXOffset = (int) buffer.readShort();
+        var searchButtonYOffset = (int) buffer.readShort();
+        var readAllButtonYOffset = (int) buffer.readShort();
+
         return new Book(id, name, tooltip, model, generateBookItem, customBookItem, creativeTab, bookOverviewTexture,
                 frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
-                bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth);
+                bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, categoryButtonXOffset, categoryButtonYOffset,
+                searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset);
     }
 
     /**
@@ -250,6 +279,12 @@ public class Book {
         buffer.writeShort(this.bookTextOffsetX);
         buffer.writeShort(this.bookTextOffsetY);
         buffer.writeShort(this.bookTextOffsetWidth);
+
+        buffer.writeShort(this.categoryButtonXOffset);
+        buffer.writeShort(this.categoryButtonYOffset);
+        buffer.writeShort(this.searchButtonXOffset);
+        buffer.writeShort(this.searchButtonYOffset);
+        buffer.writeShort(this.readAllButtonYOffset);
     }
 
     public ItemStack getBookItem() {
@@ -371,5 +406,25 @@ public class Book {
 
     public int getBookTextOffsetWidth() {
         return this.bookTextOffsetWidth;
+    }
+
+    public int getCategoryButtonXOffset() {
+        return this.categoryButtonXOffset;
+    }
+
+    public int getCategoryButtonYOffset() {
+        return this.categoryButtonYOffset;
+    }
+
+    public int getSearchButtonXOffset() {
+        return this.searchButtonXOffset;
+    }
+
+    public int getSearchButtonYOffset() {
+        return this.searchButtonYOffset;
+    }
+
+    public int getReadAllButtonYOffset() {
+        return this.readAllButtonYOffset;
     }
 }
