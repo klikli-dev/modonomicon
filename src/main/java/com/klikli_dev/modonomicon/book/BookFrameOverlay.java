@@ -6,8 +6,11 @@
 
 package com.klikli_dev.modonomicon.book;
 
+import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -57,6 +60,18 @@ public class BookFrameOverlay {
         this.frameHeight = frameHeight;
         this.frameXOffset = frameXOffset;
         this.frameYOffset = frameYOffset;
+    }
+
+    public static BookFrameOverlay fromJson(JsonObject json) {
+        return BookFrameOverlay.CODEC.parse(JsonOps.INSTANCE, json).get().orThrow();
+    }
+
+    public static BookFrameOverlay fromNetwork(FriendlyByteBuf buffer) {
+        return buffer.readWithCodec(BookFrameOverlay.CODEC);
+    }
+
+    public void toNetwork(FriendlyByteBuf buffer) {
+        buffer.writeWithCodec(BookFrameOverlay.CODEC, this);
     }
 
     public int getFrameU() {

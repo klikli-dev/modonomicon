@@ -143,19 +143,19 @@ public class Book {
         var frameTexture = new ResourceLocation(GsonHelper.getAsString(json, "frame_texture", Data.Book.DEFAULT_FRAME_TEXTURE));
 
         var topFrameOverlay = json.has("top_frame_overlay") ?
-                BookFrameOverlay.CODEC.parse(JsonOps.INSTANCE, json.get("top_frame_overlay")).get().orThrow() :
+                BookFrameOverlay.fromJson(json.get("top_frame_overlay").getAsJsonObject()) :
                 Data.Book.DEFAULT_TOP_FRAME_OVERLAY;
 
         var bottomFrameOverlay = json.has("bottom_frame_overlay") ?
-                BookFrameOverlay.CODEC.parse(JsonOps.INSTANCE, json.get("bottom_frame_overlay")).get().orThrow() :
+                BookFrameOverlay.fromJson(json.get("bottom_frame_overlay").getAsJsonObject()) :
                 Data.Book.DEFAULT_BOTTOM_FRAME_OVERLAY;
 
         var leftFrameOverlay = json.has("left_frame_overlay") ?
-                BookFrameOverlay.CODEC.parse(JsonOps.INSTANCE, json.get("left_frame_overlay")).get().orThrow() :
+                BookFrameOverlay.fromJson(json.get("left_frame_overlay").getAsJsonObject()) :
                 Data.Book.DEFAULT_LEFT_FRAME_OVERLAY;
 
         var rightFrameOverlay = json.has("right_frame_overlay") ?
-                BookFrameOverlay.CODEC.parse(JsonOps.INSTANCE, json.get("right_frame_overlay")).get().orThrow() :
+                BookFrameOverlay.fromJson(json.get("right_frame_overlay").getAsJsonObject()) :
                 Data.Book.DEFAULT_RIGHT_FRAME_OVERLAY;
 
         var bookContentTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_content_texture", Data.Book.DEFAULT_CONTENT_TEXTURE));
@@ -193,10 +193,11 @@ public class Book {
         var bookOverviewTexture = buffer.readResourceLocation();
 
         var frameTexture = buffer.readResourceLocation();
-        var topFrameOverlay = buffer.readWithCodec(BookFrameOverlay.CODEC);
-        var bottomFrameOverlay = buffer.readWithCodec(BookFrameOverlay.CODEC);
-        var leftFrameOverlay = buffer.readWithCodec(BookFrameOverlay.CODEC);
-        var rightFrameOverlay = buffer.readWithCodec(BookFrameOverlay.CODEC);
+
+        var topFrameOverlay = BookFrameOverlay.fromNetwork(buffer);
+        var bottomFrameOverlay = BookFrameOverlay.fromNetwork(buffer);
+        var leftFrameOverlay = BookFrameOverlay.fromNetwork(buffer);
+        var rightFrameOverlay = BookFrameOverlay.fromNetwork(buffer);
 
         var bookContentTexture = buffer.readResourceLocation();
         var craftingTexture = buffer.readResourceLocation();
@@ -264,10 +265,10 @@ public class Book {
         buffer.writeResourceLocation(this.bookOverviewTexture);
         buffer.writeResourceLocation(this.frameTexture);
 
-        buffer.writeWithCodec(BookFrameOverlay.CODEC, this.topFrameOverlay);
-        buffer.writeWithCodec(BookFrameOverlay.CODEC, this.bottomFrameOverlay);
-        buffer.writeWithCodec(BookFrameOverlay.CODEC, this.leftFrameOverlay);
-        buffer.writeWithCodec(BookFrameOverlay.CODEC, this.rightFrameOverlay);
+        this.topFrameOverlay.toNetwork(buffer);
+        this.bottomFrameOverlay.toNetwork(buffer);
+        this.leftFrameOverlay.toNetwork(buffer);
+        this.rightFrameOverlay.toNetwork(buffer);
 
         buffer.writeResourceLocation(this.bookContentTexture);
         buffer.writeResourceLocation(this.craftingTexture);
