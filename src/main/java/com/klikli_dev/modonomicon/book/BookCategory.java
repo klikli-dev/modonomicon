@@ -6,34 +6,42 @@
 
 package com.klikli_dev.modonomicon.book;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Category;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class BookCategory {
+
     protected ResourceLocation id;
     protected Book book;
     protected String name;
     protected BookIcon icon;
     protected int sortNumber;
     protected ResourceLocation background;
+    protected List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers;
     protected ResourceLocation entryTextures;
     protected ConcurrentMap<ResourceLocation, BookEntry> entries;
 
     protected BookCondition condition;
     protected boolean showCategoryButton;
 
-    public BookCategory(ResourceLocation id, String name, int sortNumber, BookCondition condition, boolean showCategoryButton, BookIcon icon, ResourceLocation background, ResourceLocation entryTextures) {
+    public BookCategory(ResourceLocation id, String name, int sortNumber, BookCondition condition, boolean showCategoryButton, BookIcon icon, ResourceLocation background, List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers, ResourceLocation entryTextures) {
         this.id = id;
         this.name = name;
         this.sortNumber = sortNumber;
@@ -41,10 +49,10 @@ public class BookCategory {
         this.showCategoryButton = showCategoryButton;
         this.icon = icon;
         this.background = background;
+        this.backgroundParallaxLayers = backgroundParallaxLayers;
         this.entryTextures = entryTextures;
         this.entries = new ConcurrentHashMap<>();
     }
-    //TODO: additional backgrounds with custom rendertypes?
 
     public static BookCategory fromJson(ResourceLocation id, JsonObject json) {
         var name = GsonHelper.getAsString(json, "name");
@@ -59,7 +67,11 @@ public class BookCategory {
             condition = BookCondition.fromJson(json.getAsJsonObject("condition"));
         }
 
-        return new BookCategory(id, name, sortNumber, condition, showCategoryButton, icon, background, entryTextures);
+        List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers = List.of();
+        if (json.has("background_parallax_layers"))
+            backgroundParallaxLayers = BookCategoryBackgroundParallaxLayer.fromJson(json.getAsJsonArray("background_parallax_layers"));
+
+        return new BookCategory(id, name, sortNumber, condition, showCategoryButton, icon, background, backgroundParallaxLayers, entryTextures);
     }
 
     public static BookCategory fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
@@ -67,10 +79,22 @@ public class BookCategory {
         var sortNumber = buffer.readInt();
         var icon = BookIcon.fromNetwork(buffer);
         var background = buffer.readResourceLocation();
+        var backgroundParallaxLayers = buffer.readList(BookCategoryBackgroundParallaxLayer::fromNetwork);
         var entryTextures = buffer.readResourceLocation();
         var condition = BookCondition.fromNetwork(buffer);
         var showCategoryButton = buffer.readBoolean();
-        return new BookCategory(id, name, sortNumber, condition, showCategoryButton, icon, background, entryTextures);
+        return new BookCategory(id, name, sortNumber, condition, showCategoryButton, icon, background, backgroundParallaxLayers, entryTextures);
+    }
+
+    public void toNetwork(FriendlyByteBuf buffer) {
+        buffer.writeUtf(this.name);
+        buffer.writeInt(this.sortNumber);
+        this.icon.toNetwork(buffer);
+        buffer.writeResourceLocation(this.background);
+        buffer.writeCollection(this.backgroundParallaxLayers, (buf, layer) -> layer.toNetwork(buf));
+        buffer.writeResourceLocation(this.entryTextures);
+        BookCondition.toNetwork(this.condition, buffer);
+        buffer.writeBoolean(this.showCategoryButton);
     }
 
     public boolean showCategoryButton() {
@@ -125,6 +149,10 @@ public class BookCategory {
         return this.background;
     }
 
+    public List<BookCategoryBackgroundParallaxLayer> getBackgroundParallaxLayers() {
+        return this.backgroundParallaxLayers;
+    }
+
     public ResourceLocation getEntryTextures() {
         return this.entryTextures;
     }
@@ -139,16 +167,6 @@ public class BookCategory {
 
     public BookEntry getEntry(ResourceLocation id) {
         return this.entries.get(id);
-    }
-
-    public void toNetwork(FriendlyByteBuf buffer) {
-        buffer.writeUtf(this.name);
-        buffer.writeInt(this.sortNumber);
-        this.icon.toNetwork(buffer);
-        buffer.writeResourceLocation(this.background);
-        buffer.writeResourceLocation(this.entryTextures);
-        BookCondition.toNetwork(this.condition, buffer);
-        buffer.writeBoolean(this.showCategoryButton);
     }
 
     public BookCondition getCondition() {

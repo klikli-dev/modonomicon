@@ -18,6 +18,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryReadCondit
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryUnlockedConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookFalseConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.*;
+import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
@@ -90,6 +91,11 @@ public class DemoBookProvider extends BookProvider {
 
         return BookCategoryModel.create(this.modLoc("features"), helper.categoryName())
                 .withIcon("minecraft:nether_star")
+                .withBackgroundParallaxLayers(
+                        new BookCategoryBackgroundParallaxLayer(this.modLoc("textures/gui/parallax/flow/base.png"), 0.7f, -1),
+                        new BookCategoryBackgroundParallaxLayer(this.modLoc("textures/gui/parallax/flow/1.png"), 1f, -1),
+                        new BookCategoryBackgroundParallaxLayer(this.modLoc("textures/gui/parallax/flow/2.png"), 1.4f, -1)
+                )
                 .withEntry(multiblockEntry)
                 .withEntry(recipeEntry)
                 .withEntries(conditionEntries)

@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
 import com.klikli_dev.modonomicon.capability.BookStateCapability;
@@ -161,10 +162,6 @@ public class BookCategoryScreen {
     }
 
     public void renderBackground(PoseStack poseStack) {
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, this.category.getBackground());
-
         //based on the frame's total width and its thickness, calculate where the inner area starts
         int innerX = this.bookOverviewScreen.getInnerX();
         int innerY = this.bookOverviewScreen.getInnerY();
@@ -181,13 +178,37 @@ public class BookCategoryScreen {
         float xOffset = xScale == scale ? 0 : (MAX_SCROLL - (innerWidth + MAX_SCROLL * 2.0f / scale)) / 2;
         float yOffset = yScale == scale ? 0 : (MAX_SCROLL - (innerHeight + MAX_SCROLL * 2.0f / scale)) / 2;
 
-        //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
-        //force offset to int here to reduce difference to entry rendering which is pos based and thus int precision only
-        GuiComponent.blit(poseStack, innerX, innerY, this.bookOverviewScreen.getBlitOffset(),
-                (this.scrollX + MAX_SCROLL) / scale + xOffset,
-                (this.scrollY + MAX_SCROLL) / scale + yOffset,
-                innerWidth, innerHeight, this.backgroundTextureHeight, this.backgroundTextureWidth);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+
+        if(!this.category.getBackgroundParallaxLayers().isEmpty()){
+            this.category.getBackgroundParallaxLayers().forEach(layer -> {
+
+
+                renderBackgroundParallaxLayer(layer, poseStack, innerX, innerY, innerWidth, innerHeight, this.scrollX, this.scrollY, scale, xOffset, yOffset, this.currentZoom);
+                    });
+        } else {
+            RenderSystem.setShaderTexture(0, this.category.getBackground());
+            //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
+            //force offset to int here to reduce difference to entry rendering which is pos based and thus int precision only
+            GuiComponent.blit(poseStack, innerX, innerY, this.bookOverviewScreen.getBlitOffset(),
+                    (this.scrollX + MAX_SCROLL) / scale + xOffset,
+                    (this.scrollY + MAX_SCROLL) / scale + yOffset,
+                    innerWidth, innerHeight, this.backgroundTextureHeight, this.backgroundTextureWidth);
+        }
     }
+
+    public void renderBackgroundParallaxLayer(BookCategoryBackgroundParallaxLayer layer, PoseStack poseStack, int x, int y, int width, int height, float scrollX, float scrollY, float parallax, float xOffset, float yOffset, float zoom){
+        float parallax1 = parallax / layer.getSpeed();
+        RenderSystem.setShaderTexture(0, layer.getBackground());
+
+        if(layer.getVanishZoom() == -1 || layer.getVanishZoom() > zoom)
+            GuiComponent.blit(poseStack, x, y, this.bookOverviewScreen.getBlitOffset(),
+                    (scrollX + MAX_SCROLL) / parallax1 + xOffset,
+                    (scrollY + MAX_SCROLL) / parallax1 + yOffset,
+                    width, height, this.backgroundTextureHeight, this.backgroundTextureWidth);
+    }
+
 
     private EntryDisplayState getEntryDisplayState(BookEntry entry) {
         var player = this.bookOverviewScreen.getMinecraft().player;

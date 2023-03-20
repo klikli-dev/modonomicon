@@ -6,9 +6,12 @@
 
 package com.klikli_dev.modonomicon.api.datagen.book;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Category;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
+import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -25,6 +28,7 @@ public class BookCategoryModel {
     protected ResourceLocation icon = new ResourceLocation(Category.DEFAULT_ICON);
     protected int sortNumber = -1;
     protected ResourceLocation background = new ResourceLocation(Category.DEFAULT_BACKGROUND);
+    protected List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers = new ArrayList<>();
     protected ResourceLocation entryTextures = new ResourceLocation(Category.DEFAULT_ENTRY_TEXTURES);
     protected List<BookEntryModel> entries = new ArrayList<>();
 
@@ -38,7 +42,7 @@ public class BookCategoryModel {
     }
 
     /**
-     * @param id The category ID, e.g. "modonomicon:features". The ID must be unique within the book.
+     * @param id   The category ID, e.g. "modonomicon:features". The ID must be unique within the book.
      * @param name Should be a translation key.
      */
     public static BookCategoryModel create(ResourceLocation id, String name) {
@@ -68,6 +72,10 @@ public class BookCategoryModel {
         json.addProperty("icon", this.icon.toString());
         json.addProperty("sort_number", this.sortNumber);
         json.addProperty("background", this.background.toString());
+        json.add("background_parallax_layers",
+                this.backgroundParallaxLayers.stream()
+                        .map(layer -> BookCategoryBackgroundParallaxLayer.CODEC.encodeStart(JsonOps.INSTANCE, layer).get().orThrow())
+                        .collect(JsonArray::new, JsonArray::add, JsonArray::addAll));
         json.addProperty("entry_textures", this.entryTextures.toString());
         if (this.condition != null) {
             json.add("condition", this.condition.toJson());
@@ -96,6 +104,10 @@ public class BookCategoryModel {
         return this.background;
     }
 
+    public List<BookCategoryBackgroundParallaxLayer> getBackgroundParallaxLayers() {
+        return this.backgroundParallaxLayers;
+    }
+
     public ResourceLocation getEntryTextures() {
         return this.entryTextures;
     }
@@ -109,7 +121,6 @@ public class BookCategoryModel {
         this.icon = icon;
         return this;
     }
-
 
     /**
      * Sets the category's icon.
@@ -139,11 +150,41 @@ public class BookCategoryModel {
 
     /**
      * Sets the category's background texture.
-     * The texture must be a 256x256 png file.
+     * The texture must be a 512x512 png file.
      * Default value is {@link Category#DEFAULT_BACKGROUND}
      */
     public BookCategoryModel withBackground(ResourceLocation background) {
         this.background = background;
+        return this;
+    }
+
+    /**
+     * Adds a parallax layer to the category's background.
+     * If there are any parallax layers, the background texture will be ignored.
+     * The texture must be a 512x512 png file.
+     */
+    public BookCategoryModel withBackgroundParallaxLayers(BookCategoryBackgroundParallaxLayer ... layers) {
+        this.backgroundParallaxLayers.addAll(List.of(layers));
+        return this;
+    }
+
+    /**
+     * Adds a parallax layer to the category's background.
+     * If there are any parallax layers, the background texture will be ignored.
+     * The texture must be a 512x512 png file.
+     */
+    public BookCategoryModel withBackgroundParallaxLayer(BookCategoryBackgroundParallaxLayer layer) {
+        this.backgroundParallaxLayers.add(layer);
+        return this;
+    }
+
+    /**
+     * Adds a parallax layer to the category's background.
+     * If there are any parallax layers, the background texture will be ignored.
+     * The texture must be a 512x512 png file.
+     */
+    public BookCategoryModel withBackgroundParallaxLayer(ResourceLocation layerTexture) {
+        this.backgroundParallaxLayers.add(new BookCategoryBackgroundParallaxLayer(layerTexture));
         return this;
     }
 

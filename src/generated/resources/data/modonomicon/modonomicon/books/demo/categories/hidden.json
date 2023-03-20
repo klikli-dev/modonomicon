@@ -1,5 +1,6 @@
 {
   "background": "modonomicon:textures/gui/dark_slate_seamless.png",
+  "background_parallax_layers": [],
   "entry_textures": "modonomicon:textures/gui/entry_textures.png",
   "icon": "minecraft:book",
   "name": "book.modonomicon.demo.hidden.name",
