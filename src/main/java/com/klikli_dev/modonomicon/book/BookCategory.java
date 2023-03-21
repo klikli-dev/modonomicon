@@ -34,6 +34,8 @@ public class BookCategory {
     protected BookIcon icon;
     protected int sortNumber;
     protected ResourceLocation background;
+    protected int backgroundWidth;
+    protected int backgroundHeight;
     protected List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers;
     protected ResourceLocation entryTextures;
     protected ConcurrentMap<ResourceLocation, BookEntry> entries;
@@ -41,7 +43,7 @@ public class BookCategory {
     protected BookCondition condition;
     protected boolean showCategoryButton;
 
-    public BookCategory(ResourceLocation id, String name, int sortNumber, BookCondition condition, boolean showCategoryButton, BookIcon icon, ResourceLocation background, List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers, ResourceLocation entryTextures) {
+    public BookCategory(ResourceLocation id, String name, int sortNumber, BookCondition condition, boolean showCategoryButton, BookIcon icon, ResourceLocation background, int backgroundWidth, int backgroundHeight, List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers, ResourceLocation entryTextures) {
         this.id = id;
         this.name = name;
         this.sortNumber = sortNumber;
@@ -49,6 +51,8 @@ public class BookCategory {
         this.showCategoryButton = showCategoryButton;
         this.icon = icon;
         this.background = background;
+        this.backgroundWidth = backgroundWidth;
+        this.backgroundHeight = backgroundHeight;
         this.backgroundParallaxLayers = backgroundParallaxLayers;
         this.entryTextures = entryTextures;
         this.entries = new ConcurrentHashMap<>();
@@ -59,6 +63,8 @@ public class BookCategory {
         var sortNumber = GsonHelper.getAsInt(json, "sort_number", -1);
         var icon = BookIcon.fromString(new ResourceLocation(GsonHelper.getAsString(json, "icon")));
         var background = new ResourceLocation(GsonHelper.getAsString(json, "background", Category.DEFAULT_BACKGROUND));
+        var backgroundWidth = GsonHelper.getAsInt(json, "background_width", Category.DEFAULT_BACKGROUND_WIDTH);
+        var backgroundHeight = GsonHelper.getAsInt(json, "background_height", Category.DEFAULT_BACKGROUND_HEIGHT);
         var entryTextures = new ResourceLocation(GsonHelper.getAsString(json, "entry_textures", Category.DEFAULT_ENTRY_TEXTURES));
         var showCategoryButton = GsonHelper.getAsBoolean(json, "show_category_button", true);
 
@@ -71,7 +77,7 @@ public class BookCategory {
         if (json.has("background_parallax_layers"))
             backgroundParallaxLayers = BookCategoryBackgroundParallaxLayer.fromJson(json.getAsJsonArray("background_parallax_layers"));
 
-        return new BookCategory(id, name, sortNumber, condition, showCategoryButton, icon, background, backgroundParallaxLayers, entryTextures);
+        return new BookCategory(id, name, sortNumber, condition, showCategoryButton, icon, background, backgroundWidth, backgroundHeight, backgroundParallaxLayers, entryTextures);
     }
 
     public static BookCategory fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
@@ -79,11 +85,13 @@ public class BookCategory {
         var sortNumber = buffer.readInt();
         var icon = BookIcon.fromNetwork(buffer);
         var background = buffer.readResourceLocation();
+        var backgroundWidth = buffer.readVarInt();
+        var backgroundHeight = buffer.readVarInt();
         var backgroundParallaxLayers = buffer.readList(BookCategoryBackgroundParallaxLayer::fromNetwork);
         var entryTextures = buffer.readResourceLocation();
         var condition = BookCondition.fromNetwork(buffer);
         var showCategoryButton = buffer.readBoolean();
-        return new BookCategory(id, name, sortNumber, condition, showCategoryButton, icon, background, backgroundParallaxLayers, entryTextures);
+        return new BookCategory(id, name, sortNumber, condition, showCategoryButton, icon, background, backgroundWidth, backgroundHeight, backgroundParallaxLayers, entryTextures);
     }
 
     public void toNetwork(FriendlyByteBuf buffer) {
@@ -91,6 +99,8 @@ public class BookCategory {
         buffer.writeInt(this.sortNumber);
         this.icon.toNetwork(buffer);
         buffer.writeResourceLocation(this.background);
+        buffer.writeVarInt(this.backgroundWidth);
+        buffer.writeVarInt(this.backgroundHeight);
         buffer.writeCollection(this.backgroundParallaxLayers, (buf, layer) -> layer.toNetwork(buf));
         buffer.writeResourceLocation(this.entryTextures);
         BookCondition.toNetwork(this.condition, buffer);
@@ -147,6 +157,14 @@ public class BookCategory {
 
     public ResourceLocation getBackground() {
         return this.background;
+    }
+
+    public int getBackgroundWidth() {
+        return this.backgroundWidth;
+    }
+
+    public int getBackgroundHeight() {
+        return this.backgroundHeight;
     }
 
     public List<BookCategoryBackgroundParallaxLayer> getBackgroundParallaxLayers() {

@@ -44,8 +44,6 @@ public class BookCategoryScreen {
     private final BookOverviewScreen bookOverviewScreen;
     private final BookCategory category;
     private final EntryConnectionRenderer connectionRenderer;
-    protected int backgroundTextureWidth = 512;
-    protected int backgroundTextureHeight = 512;
     private float scrollX = 0;
     private float scrollY = 0;
     private boolean isScrolling;
@@ -194,7 +192,7 @@ public class BookCategoryScreen {
             GuiComponent.blit(poseStack, innerX, innerY, this.bookOverviewScreen.getBlitOffset(),
                     (this.scrollX + MAX_SCROLL) / scale + xOffset,
                     (this.scrollY + MAX_SCROLL) / scale + yOffset,
-                    innerWidth, innerHeight, this.backgroundTextureHeight, this.backgroundTextureWidth);
+                    innerWidth, innerHeight, this.category.getBackgroundHeight(), this.category.getBackgroundWidth());
         }
     }
 
@@ -203,10 +201,11 @@ public class BookCategoryScreen {
         RenderSystem.setShaderTexture(0, layer.getBackground());
 
         if(layer.getVanishZoom() == -1 || layer.getVanishZoom() > zoom)
+            //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
             GuiComponent.blit(poseStack, x, y, this.bookOverviewScreen.getBlitOffset(),
                     (scrollX + MAX_SCROLL) / parallax1 + xOffset,
                     (scrollY + MAX_SCROLL) / parallax1 + yOffset,
-                    width, height, this.backgroundTextureHeight, this.backgroundTextureWidth);
+                    width, height, this.category.getBackgroundHeight(), this.category.getBackgroundWidth());
     }
 
 

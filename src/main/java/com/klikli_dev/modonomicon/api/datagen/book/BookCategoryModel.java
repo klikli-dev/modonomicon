@@ -28,6 +28,8 @@ public class BookCategoryModel {
     protected ResourceLocation icon = new ResourceLocation(Category.DEFAULT_ICON);
     protected int sortNumber = -1;
     protected ResourceLocation background = new ResourceLocation(Category.DEFAULT_BACKGROUND);
+    protected int backgroundWidth = Category.DEFAULT_BACKGROUND_WIDTH;
+    protected int backgroundHeight = Category.DEFAULT_BACKGROUND_HEIGHT;
     protected List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers = new ArrayList<>();
     protected ResourceLocation entryTextures = new ResourceLocation(Category.DEFAULT_ENTRY_TEXTURES);
     protected List<BookEntryModel> entries = new ArrayList<>();
@@ -72,6 +74,8 @@ public class BookCategoryModel {
         json.addProperty("icon", this.icon.toString());
         json.addProperty("sort_number", this.sortNumber);
         json.addProperty("background", this.background.toString());
+        json.addProperty("background_width", this.backgroundWidth);
+        json.addProperty("background_height", this.backgroundHeight);
         json.add("background_parallax_layers",
                 this.backgroundParallaxLayers.stream()
                         .map(layer -> BookCategoryBackgroundParallaxLayer.CODEC.encodeStart(JsonOps.INSTANCE, layer).get().orThrow())
@@ -102,6 +106,14 @@ public class BookCategoryModel {
 
     public ResourceLocation getBackground() {
         return this.background;
+    }
+
+    public int getBackgroundWidth() {
+        return this.backgroundWidth;
+    }
+
+    public int getBackgroundHeight() {
+        return this.backgroundHeight;
     }
 
     public List<BookCategoryBackgroundParallaxLayer> getBackgroundParallaxLayers() {
@@ -150,8 +162,8 @@ public class BookCategoryModel {
 
     /**
      * Sets the category's background texture.
-     * The texture must be a 512x512 png file.
-     * Default value is {@link Category#DEFAULT_BACKGROUND}
+     * The texture needs to be a 512x512 png file, unless withBackgroundSize is called to specify a different size.
+     * Default value is {@link Category#DEFAULT_BACKGROUND}.
      */
     public BookCategoryModel withBackground(ResourceLocation background) {
         this.background = background;
@@ -159,9 +171,20 @@ public class BookCategoryModel {
     }
 
     /**
+     * Sets the category's background texture size.
+     * Also used for the parallax layers.
+     * Width and height should be identical otherwise undesirable effects may occur.
+     */
+    public BookCategoryModel withBackgroundSize(int width, int height) {
+        this.backgroundWidth = width;
+        this.backgroundHeight = height;
+        return this;
+    }
+
+    /**
      * Adds a parallax layer to the category's background.
      * If there are any parallax layers, the background texture will be ignored.
-     * The texture must be a 512x512 png file.
+     * The texture needs to be a 512x512 png file, unless withBackgroundSize is called to specify a different size.
      */
     public BookCategoryModel withBackgroundParallaxLayers(BookCategoryBackgroundParallaxLayer ... layers) {
         this.backgroundParallaxLayers.addAll(List.of(layers));
@@ -171,7 +194,7 @@ public class BookCategoryModel {
     /**
      * Adds a parallax layer to the category's background.
      * If there are any parallax layers, the background texture will be ignored.
-     * The texture must be a 512x512 png file.
+     * The texture needs to be a 512x512 png file, unless withBackgroundSize is called to specify a different size.
      */
     public BookCategoryModel withBackgroundParallaxLayer(BookCategoryBackgroundParallaxLayer layer) {
         this.backgroundParallaxLayers.add(layer);
@@ -181,7 +204,7 @@ public class BookCategoryModel {
     /**
      * Adds a parallax layer to the category's background.
      * If there are any parallax layers, the background texture will be ignored.
-     * The texture must be a 512x512 png file.
+     * The texture needs to be a 512x512 png file, unless withBackgroundSize is called to specify a different size.
      */
     public BookCategoryModel withBackgroundParallaxLayer(ResourceLocation layerTexture) {
         this.backgroundParallaxLayers.add(new BookCategoryBackgroundParallaxLayer(layerTexture));
