@@ -113,6 +113,13 @@ Sample value:
   },
 ```
 
+:::tip
+
+To disable rendering of a frame overlay entirely, set the `frame_height` and `frame_width` to `0`. 
+In that case you should still supply a a valid texture property (note that omitting it is valid, but an empty string is not) in order to avoid issues during loading, but it will not be rendered.
+
+::: 
+
 
 * **book_content_texture** (ResourceLocation, _optional_)
 
