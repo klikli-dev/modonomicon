@@ -11,7 +11,7 @@
         <item>
             <title><![CDATA[Modonomicon Docs]]></title>
             <link>https://klikli-dev.github.io/modonomicon/blog/hello</link>
-            <guid>hello</guid>
+            <guid>https://klikli-dev.github.io/modonomicon/blog/hello</guid>
             <pubDate>Tue, 29 Mar 2022 00:00:00 GMT</pubDate>
             <description><![CDATA[The Modonomicon Documentation site is now available and will grow as the mod does - so bear with me :)]]></description>
             <content:encoded><![CDATA[<p>The Modonomicon Documentation site is now available and will grow as the mod does - so bear with me :)</p>]]></content:encoded>

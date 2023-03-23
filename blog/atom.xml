@@ -9,7 +9,7 @@
     <icon>https://klikli-dev.github.io/modonomicon/img/favicon.ico</icon>
     <entry>
         <title type="html"><![CDATA[Modonomicon Docs]]></title>
-        <id>hello</id>
+        <id>https://klikli-dev.github.io/modonomicon/blog/hello</id>
         <link href="https://klikli-dev.github.io/modonomicon/blog/hello"/>
         <updated>2022-03-29T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[The Modonomicon Documentation site is now available and will grow as the mod does - so bear with me :)]]></summary>
