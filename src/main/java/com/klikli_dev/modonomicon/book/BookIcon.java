@@ -32,11 +32,11 @@ public class BookIcon {
         this.itemStack = ItemStack.EMPTY;
     }
 
-    public static BookIcon fromString(String value) {
-        if (value.endsWith(".png")) {
-            return new BookIcon(new ResourceLocation(value));
+    public static BookIcon fromString(ResourceLocation value) {
+        if (value.getPath().endsWith(".png")) {
+            return new BookIcon(value);
         } else {
-            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(value));
+            Item item = ForgeRegistries.ITEMS.getValue(value);
             return new BookIcon(new ItemStack(item));
         }
     }
