@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.18.2-1.30.0] - 2023-03-23
+### :sparkles: New Features
+- [`f5256e2`](https://github.com/klikli-dev/modonomicon/commit/f5256e23aa4d3b83cae48c55e74e8d64468384ae) - render improvements *(PR [#111](https://github.com/klikli-dev/modonomicon/pull/111) by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`fbc0439`](https://github.com/klikli-dev/modonomicon/commit/fbc0439c22de4c49bd952327f7b7096f649d9b5b) - json property name *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.18.2-1.28.0] - 2023-03-14
 ### :sparkles: New Features
 - [`463eda2`](https://github.com/klikli-dev/modonomicon/commit/463eda2bc6f73e700491a23a9563448aafe3c026) - add multiblock datagen *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -125,3 +133,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.18.2-1.26.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.18.2-1.25.0...release/v1.18.2-1.26.0
 [release/v1.18.2-1.27.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.18.2-1.26.0...release/v1.18.2-1.27.0
 [release/v1.18.2-1.28.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.18.2-1.27.0...release/v1.18.2-1.28.0
+[release/v1.18.2-1.30.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.18.2-1.28.0...release/v1.18.2-1.30.0
