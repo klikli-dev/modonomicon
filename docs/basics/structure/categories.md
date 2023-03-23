@@ -38,6 +38,43 @@ See **[Unlock Conditions](../unlock-conditions)** for details.
 Defaults to `modonomicon:textures/gui/dark_slate_seamless.png`.   
 The ResourceLocation for the Background texture to use for this category. The texture must be 512px by 512px.
 
+
+* **background_parallax_layers** (JSON Array of JSON Objects, _optional_)
+
+If any parallax layers are supplied, the `background` property will be ignored.   
+
+Parallax layers allow a multi-layered background with a parallax effect. That means, the textures supplied here likely will feature transparent elements, however the first layer should be fully opaque to avoid visual artifacts.   
+
+Sample Value: 
+
+```json
+"background_parallax_layers": [
+    {
+      "background": "modonomicon:textures/gui/parallax/flow/base.png",
+      "speed": 0.7
+    },
+    {
+      "background": "modonomicon:textures/gui/parallax/flow/1.png",
+      "speed": 1.0
+    },
+    {
+      "background": "modonomicon:textures/gui/parallax/flow/2.png",
+      "speed": 1.4,
+      "vanish_zoom": 0.9
+    }
+  ],
+```
+
+* **background_height** (Integer, _optional_)
+
+Default value: `512`   
+The height of the background texture. Applies both to the `background` property as well as the `background_parallax_layers` property.
+
+* **background_width** (Integer, _optional_)
+
+Default value: `512`   
+The width of the background texture. Applies both to the `background` property as well as the `background_parallax_layers` property.
+
 * **entry_textures** (ResourceLocation, _optional_)
 
 Defaults to `modonomicon:textures/gui/entry_textures.png`.   
@@ -56,6 +93,7 @@ If false, the book overview screen will not show a button/bookmark for this cate
 This is intended to be used with an entry that links to this category to effectively create "sub-categories". See also **[Entries](./entries)** for the `category_to_open` attribute.
 
 :::
+
 
 ## Usage Examples
 

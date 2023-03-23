@@ -81,16 +81,84 @@ Categories are not affected by this. Category conditions can only be added manua
 
 * **book_overview_texture** (ResourceLocation, _optional_)
 
-Default value: `modonomicon:textures/gui/book_overview.png`. The texture to use for the book overview page, that is the page that shows the current category, with a book border and the "bookmark" texture for bookmark buttons.   
-The texture must be a **256x256** png file.
+Default value: `modonomicon:textures/gui/book_overview.png`.   
+The file for the category, search and read all button textures.   
+The texture must be a **256x256** png file.   
+
+* **frame_texture** (ResourceLocation, _optional_)
+
+Default value: `modonomicon:textures/gui/book_frame.png`.   
+The file for the main book frame texture. This book frame is rendered in such a way that the central part of each side is stretched to fit the screen.
+
+* **\*_frame_overlay** (JSON Object, _optional_) 
+
+Variants: `left_frame_overlay`, `right_frame_overlay`, `top_frame_overlay`, `bottom_frame_overlay`    
+Default values are set up to render the default `modonomicon:textures/gui/book_frame_*_overlay.png` over the repeating center a of the frame texture.  
+
+The frame overlay textures are used to render a non-repeating texture over the repeating center part of the frame texture. This is useful if you want to add details or ornaments to your frame.   
+
+The texture must be a **256x256**, unless a different `texture_width` and `texture_height` are specified in the object.
+
+Sample value: 
+
+```JSON
+"bottom_frame_overlay": {
+    "frame_height": 8,
+    "frame_width": 72,
+    "frame_x_offset": 0,
+    "frame_y_offset": -4,
+    "texture": "modonomicon:textures/gui/book_frame_bottom_overlay.png",
+    "texture_height": 256,
+    "texture_width": 256
+  },
+```
+
 
 * **book_content_texture** (ResourceLocation, _optional_)
 
-Default value: `modonomicon:textures/gui/book_content.png`. The texture to use for rendering the pages in an entry, that is the book background, navigation buttons, title separator and image frames. The texture must be a **512x256** png file.
+Default value: `modonomicon:textures/gui/book_content.png`. The texture to use for rendering the pages in an entry, that is the book background, navigation buttons, title separator and image frames. 
+The texture must be a **512x256** png file.
 
 * **crafting_texture** (ResourceLocation, _optional_)
 
 Default value: `modonomicon:textures/gui/crafting_textures.png`. The texture to use for crafting page elements such as crafting grids, slot borders and crafting arrows. The texture must be a **128x256** png file.
+
+* **category_button_icon_scale** (Float, _optional_)
+
+Default value: `1.0`   
+The render scale for icons on the category buttons. This is useful when using non-default category button textures to make the icons fit better.
+
+* **category_button_x_offset** (Integer, _optional_)
+
+Default value: `0`  
+Allows to move category buttons horizontally to make them fit with your custom frame texture.
+
+* **category_button_y_offset** (Integer, _optional_)
+
+Default value: `0`  
+Allows to move the vertical render start position of category buttons up or down to make them fit with your custom frame texture.
+
+* **search_button_x_offset** (Integer, _optional_)
+
+Default value: `0`  
+Allows to move the search button horizontally to make it fit with your custom frame texture.
+
+* **search_button_y_offset** (Integer, _optional_)
+
+Default value: `0`  
+Allows to move the search button vertically to make it fit with your custom frame texture.
+
+* **read_all_button_y_offset** (Integer, _optional_)
+
+Default value: `0`  
+Allows to move the read all button vertically to make it fit with your custom frame texture.   
+
+:::info
+
+A horizontal offset is currently not supported as it does not need to fit evenly to the side of the frame texture like the other buttons, and instead is centered over the frame. Feel free to request additional features if you have a use case for this!
+
+:::
+
 
 * **turn_page_sound** (ResourceLocation, _optional_)
 
@@ -102,16 +170,61 @@ Default value: `minecraft:turn_page`. The sound to play when turning a page. The
 
 ```json 
 {
-  "auto_add_read_conditions": true,
+  "auto_add_read_conditions": false,
   "book_content_texture": "modonomicon:textures/gui/book_content.png",
   "book_overview_texture": "modonomicon:textures/gui/book_overview.png",
-  "crafting_texture": "occultism:textures/gui/book/crafting_textures.png",
-  "creative_tab": "misc",
+  "book_text_offset_width": -5,
+  "book_text_offset_x": 5,
+  "book_text_offset_y": 0,
+  "bottom_frame_overlay": {
+    "frame_height": 8,
+    "frame_width": 72,
+    "frame_x_offset": 0,
+    "frame_y_offset": -4,
+    "texture": "modonomicon:textures/gui/book_frame_bottom_overlay.png",
+    "texture_height": 256,
+    "texture_width": 256
+  },
+  "category_button_icon_scale": 1.0,
+  "category_button_x_offset": 0,
+  "category_button_y_offset": 0,
+  "crafting_texture": "modonomicon:textures/gui/crafting_textures.png",
+  "creative_tab": "modonomicon",
   "default_title_color": 0,
+  "frame_texture": "modonomicon:textures/gui/book_frame.png",
   "generate_book_item": true,
-  //in the case of occultism, this is a dummy item with corresponding model that is not used in game
-  "model": "occultism:dictionary_of_spirits_icon", 
-  "name": "book.occultism.dictionary_of_spirits.name",
-  "tooltip": "book.occultism.dictionary_of_spirits.tooltip"
+  "left_frame_overlay": {
+    "frame_height": 70,
+    "frame_width": 7,
+    "frame_x_offset": 3,
+    "frame_y_offset": 0,
+    "texture": "modonomicon:textures/gui/book_frame_left_overlay.png",
+    "texture_height": 256,
+    "texture_width": 256
+  },
+  "model": "modonomicon:modonomicon_purple",
+  "name": "book.modonomicon.demo.name",
+  "read_all_button_y_offset": 0,
+  "right_frame_overlay": {
+    "frame_height": 70,
+    "frame_width": 8,
+    "frame_x_offset": -4,
+    "frame_y_offset": 0,
+    "texture": "modonomicon:textures/gui/book_frame_right_overlay.png",
+    "texture_height": 256,
+    "texture_width": 256
+  },
+  "search_button_x_offset": 0,
+  "search_button_y_offset": 0,
+  "tooltip": "book.modonomicon.demo.tooltip",
+  "top_frame_overlay": {
+    "frame_height": 7,
+    "frame_width": 72,
+    "frame_x_offset": 0,
+    "frame_y_offset": 4,
+    "texture": "modonomicon:textures/gui/book_frame_top_overlay.png",
+    "texture_height": 256,
+    "texture_width": 256
+  }
 }
 ```
