@@ -55,19 +55,22 @@ public class SearchButton extends Button {
 
             int scale = (int) this.parent.getMinecraft().getWindow().getGuiScale();
 
-            //GL scissors allows us to move the button on hover without intersecting with book border
-            //scissors always needs to use gui scale because it runs in absolute coords!
-            //see also vanilla class SocialInteractionsPlayerList using scissors in #render
-            GuiComponent.enableScissor(scissorX * scale,  scissorY * scale, scissorWidth * scale, 1000);
 
             RenderSystem.setShaderTexture(0, this.parent.getBookOverviewTexture());
 
             pMatrixStack.translate(xOffset, 0, -1000);
 
+            //GL scissors allows us to move the button on hover without intersecting with book border
+            //scissors always needs to use gui scale because it runs in absolute coords!
+            //see also vanilla class SocialInteractionsPlayerList using scissors in #render
+            //we are not using GuiComponent.enableScissor because a) we'd have to calculate absolute coords from width/height and b) we don't need the stack functionality
+
+            RenderSystem.enableScissor(scissorX * scale,  scissorY * scale, scissorWidth * scale, 1000);
+
             int blitOffset = 50;
             GuiComponent.blit(pMatrixStack, renderX, this.getY(), blitOffset, texX, texY, this.width, this.height, 256, 256);
 
-            GuiComponent.disableScissor();
+            RenderSystem.disableScissor();
 
             pMatrixStack.popPose();
 

@@ -90,11 +90,11 @@ public class BookCategoryScreen {
         //use scissors to constrain entries to inner area of category screen
         //scissors always needs to use gui scale because it runs in absolute coords!
         //see also vanilla class SocialInteractionsPlayerList using scissors in #render
-        GuiComponent.enableScissor(innerX * scale, innerY * scale, innerWidth * scale, innerHeight * scale);
+        //we are not using GuiComponent.enableScissor because a) we'd have to calculate absolute coords from width/height and b) we don't need the stack functionality
 
+        RenderSystem.enableScissor(innerX * scale, innerY * scale, innerWidth * scale, innerHeight * scale);
         this.renderEntries(pPoseStack, pMouseX, pMouseY);
-
-        GuiComponent.disableScissor();
+        RenderSystem.disableScissor();
 
         this.renderEntryTooltips(pPoseStack, pMouseX, pMouseY);
 
