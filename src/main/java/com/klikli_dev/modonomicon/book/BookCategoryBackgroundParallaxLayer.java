@@ -24,7 +24,7 @@ public class BookCategoryBackgroundParallaxLayer {
             builder.group(
                     ResourceLocation.CODEC.fieldOf("background").forGetter((overlay) -> overlay.background),
                     Codec.FLOAT.optionalFieldOf("speed", 0.5f).forGetter((overlay) -> overlay.speed),
-                    Codec.FLOAT.optionalFieldOf("vanishZoom", -1.0f).forGetter((overlay) -> overlay.vanishZoom)
+                    Codec.FLOAT.optionalFieldOf("vanish_zoom", -1.0f).forGetter((overlay) -> overlay.vanishZoom)
             ).apply(builder, BookCategoryBackgroundParallaxLayer::new));
 
     /**
