@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.2-1.30.0] - 2023-03-23
+### :sparkles: New Features
+- [`65cce77`](https://github.com/klikli-dev/modonomicon/commit/65cce7726b573183414d175a55131817f1392301) - render improvements *(PR [#111](https://github.com/klikli-dev/modonomicon/pull/111) by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`b83c639`](https://github.com/klikli-dev/modonomicon/commit/b83c639190acf8a2c052767313798347d34653b4) - json property name *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`6fe7f46`](https://github.com/klikli-dev/modonomicon/commit/6fe7f46bf876bfdc2d36e36ba92b648cde4ec7ff) - remove unused left over code from 1.19.3 *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`c299f36`](https://github.com/klikli-dev/modonomicon/commit/c299f3617f5f784904cfb6f501a0272a42fb2732) - cleanup paths in book provider *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.2-1.28.0] - 2023-03-14
 ### :sparkles: New Features
 - [`a5b8711`](https://github.com/klikli-dev/modonomicon/commit/a5b8711b59aebe1468d35a2bc12f3756fb1f6fc5) - add multiblock datagen *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -138,3 +150,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.2-1.26.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.25.0...release/v1.19.2-1.26.0
 [release/v1.19.2-1.27.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.26.0...release/v1.19.2-1.27.0
 [release/v1.19.2-1.28.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.27.0...release/v1.19.2-1.28.0
+[release/v1.19.2-1.30.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.28.0...release/v1.19.2-1.30.0
