@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
 import com.klikli_dev.modonomicon.capability.BookStateCapability;
@@ -20,13 +21,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraftforge.client.ForgeHooksClient;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -44,8 +43,6 @@ public class BookCategoryScreen {
     private final BookOverviewScreen bookOverviewScreen;
     private final BookCategory category;
     private final EntryConnectionRenderer connectionRenderer;
-    protected int backgroundTextureWidth = 512;
-    protected int backgroundTextureHeight = 512;
     private float scrollX = 0;
     private float scrollY = 0;
     private boolean isScrolling;
@@ -87,7 +84,7 @@ public class BookCategoryScreen {
         int scale = (int) this.bookOverviewScreen.getMinecraft().getWindow().getGuiScale();
         int innerX = this.bookOverviewScreen.getInnerX();
         int innerY = this.bookOverviewScreen.getInnerY();
-        int innerWidth = this.bookOverviewScreen.getInnerWidth() -1; //idk magic, otherwise it overflows by one (scaled) pixel into the border
+        int innerWidth = this.bookOverviewScreen.getInnerWidth() - 1; //idk magic, otherwise it overflows by one (scaled) pixel into the border
         int innerHeight = this.bookOverviewScreen.getInnerHeight();
 
         //use scissors to constrain entries to inner area of category screen
@@ -144,11 +141,11 @@ public class BookCategoryScreen {
     }
 
     public BookContentScreen openEntry(BookEntry entry) {
-        if(!BookUnlockCapability.isReadFor(Minecraft.getInstance().player, entry)){
+        if (!BookUnlockCapability.isReadFor(Minecraft.getInstance().player, entry)) {
             Networking.sendToServer(new BookEntryReadMessage(entry.getBook().getId(), entry.getId()));
         }
 
-        if(entry.getCategoryToOpen() != null){
+        if (entry.getCategoryToOpen() != null) {
             this.bookOverviewScreen.changeCategory(entry.getCategoryToOpen());
             return null;
         }
@@ -162,10 +159,6 @@ public class BookCategoryScreen {
     }
 
     public void renderBackground(PoseStack poseStack) {
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, this.category.getBackground());
-
         //based on the frame's total width and its thickness, calculate where the inner area starts
         int innerX = this.bookOverviewScreen.getInnerX();
         int innerY = this.bookOverviewScreen.getInnerY();
@@ -182,15 +175,40 @@ public class BookCategoryScreen {
         float xOffset = xScale == scale ? 0 : (MAX_SCROLL - (innerWidth + MAX_SCROLL * 2.0f / scale)) / 2;
         float yOffset = yScale == scale ? 0 : (MAX_SCROLL - (innerHeight + MAX_SCROLL * 2.0f / scale)) / 2;
 
-        //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
-        //force offset to int here to reduce difference to entry rendering which is pos based and thus int precision only
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
-        int blitOffset = 0;
-        GuiComponent.blit(poseStack, innerX, innerY, blitOffset,
-                (this.scrollX + MAX_SCROLL) / scale + xOffset,
-                (this.scrollY + MAX_SCROLL) / scale + yOffset,
-                innerWidth, innerHeight, this.backgroundTextureHeight, this.backgroundTextureWidth);
+        if (!this.category.getBackgroundParallaxLayers().isEmpty()) {
+            this.category.getBackgroundParallaxLayers().forEach(layer -> {
+                this.renderBackgroundParallaxLayer(layer, poseStack, innerX, innerY, innerWidth, innerHeight, this.scrollX, this.scrollY, scale, xOffset, yOffset, this.currentZoom);
+            });
+        } else {
+            RenderSystem.setShaderTexture(0, this.category.getBackground());
+            //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
+            //force offset to int here to reduce difference to entry rendering which is pos based and thus int precision only
+            int blitOffset = 0;
+            GuiComponent.blit(poseStack, innerX, innerY, blitOffset,
+                    (this.scrollX + MAX_SCROLL) / scale + xOffset,
+                    (this.scrollY + MAX_SCROLL) / scale + yOffset,
+                    innerWidth, innerHeight, this.category.getBackgroundHeight(), this.category.getBackgroundWidth());
+        }
     }
+
+    public void renderBackgroundParallaxLayer(BookCategoryBackgroundParallaxLayer layer, PoseStack poseStack, int x, int y, int width, int height, float scrollX, float scrollY, float parallax, float xOffset, float yOffset, float zoom) {
+        float parallax1 = parallax / layer.getSpeed();
+        RenderSystem.setShaderTexture(0, layer.getBackground());
+
+        if (layer.getVanishZoom() == -1 || layer.getVanishZoom() > zoom) {
+            //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
+            int blitOffset = 0;
+            GuiComponent.blit(poseStack, x, y, blitOffset,
+                    (scrollX + MAX_SCROLL) / parallax1 + xOffset,
+                    (scrollY + MAX_SCROLL) / parallax1 + yOffset,
+                    width, height, this.category.getBackgroundHeight(), this.category.getBackgroundWidth());
+        }
+
+    }
+
 
     private EntryDisplayState getEntryDisplayState(BookEntry entry) {
         var player = this.bookOverviewScreen.getMinecraft().player;
@@ -231,10 +249,10 @@ public class BookCategoryScreen {
             if (displayState == EntryDisplayState.HIDDEN)
                 continue;
 
-            if(displayState == EntryDisplayState.LOCKED){
+            if (displayState == EntryDisplayState.LOCKED) {
                 //Draw locked entries greyed out
                 RenderSystem.setShaderColor(0.2F, 0.2F, 0.2F, 1.0F);
-            } else if(isHovered){
+            } else if (isHovered) {
                 //Draw hovered entries slightly greyed out
                 RenderSystem.setShaderColor(0.8F, 0.8F, 0.8F, 1.0F);
             }
@@ -247,14 +265,21 @@ public class BookCategoryScreen {
             stack.pushPose();
             //we translate instead of applying the offset to the entry x/y to avoid jittering when moving
             stack.translate(xOffset, yOffset, 0);
+
+            stack.translate(0, 0, -350); //push the whole entry behind the frame
             //render entry background
-            this.bookOverviewScreen.blit(stack, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT);
+            GuiComponent.blit(stack, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT);
+
+            stack.pushPose();
+            stack.translate(0, 0, 10); //now push the icon in front of the background
 
             //render icon
             entry.getIcon().render(stack, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 5, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP + 5);
 
+            stack.popPose();
+
             //render unread icon
-            if(displayState == EntryDisplayState.UNLOCKED && !BookUnlockCapability.isReadFor(this.bookOverviewScreen.getMinecraft().player, entry)){
+            if (displayState == EntryDisplayState.UNLOCKED && !BookUnlockCapability.isReadFor(this.bookOverviewScreen.getMinecraft().player, entry)) {
                 final int U = 350;
                 final int V = 19;
                 final int width = 11;
@@ -269,7 +294,7 @@ public class BookCategoryScreen {
 
                 //testing
                 stack.pushPose();
-                stack.translate(0,0,10);
+                stack.translate(0, 0, 11); //and push the unread icon in front of the icon
                 //if focused we go to the right of our normal button (instead of down, like mc buttons do)
                 BookContentScreen.drawFromTexture(stack, this.bookOverviewScreen.getBook(),
                         entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 16 + 2,
@@ -297,7 +322,7 @@ public class BookCategoryScreen {
 
         for (var entry : this.category.getEntries().values()) {
             var displayState = this.getEntryDisplayState(entry);
-            if(displayState == EntryDisplayState.HIDDEN)
+            if (displayState == EntryDisplayState.HIDDEN)
                 continue;
 
             this.renderTooltip(stack, entry, displayState, xOffset, yOffset, mouseX, mouseY);
@@ -323,9 +348,9 @@ public class BookCategoryScreen {
 
             var tooltip = new ArrayList<Component>();
 
-            if(displayState == EntryDisplayState.LOCKED){
+            if (displayState == EntryDisplayState.LOCKED) {
                 tooltip.addAll(entry.getCondition().getTooltip(BookConditionEntryContext.of(this.bookOverviewScreen.getBook(), entry)));
-            } else if(displayState == EntryDisplayState.UNLOCKED){
+            } else if (displayState == EntryDisplayState.UNLOCKED) {
                 //add name in bold
                 tooltip.add(Component.translatable(entry.getName()).withStyle(ChatFormatting.BOLD));
                 //add description
@@ -371,9 +396,9 @@ public class BookCategoryScreen {
             this.scrollY = state.scrollY;
             this.targetZoom = state.targetZoom;
             this.currentZoom = state.targetZoom;
-            if(state.openEntry != null){
+            if (state.openEntry != null) {
                 var openEntry = this.category.getEntry(state.openEntry);
-                if(openEntry != null){
+                if (openEntry != null) {
                     //no need to load history here, will be handled by book content screen
                     this.openEntry(openEntry);
                 }
@@ -381,7 +406,7 @@ public class BookCategoryScreen {
         }
     }
 
-    public void onDisplay(){
+    public void onDisplay() {
         this.loadCategoryState();
     }
 
