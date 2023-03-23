@@ -18,6 +18,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryReadCondit
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryUnlockedConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookFalseConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.*;
+import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
@@ -44,9 +45,7 @@ public class DemoBookProvider extends BookProvider {
         var conditionalCategory = this.makeConditionalCategory(helper);
         conditionalCategory.withCondition(BookEntryReadConditionModel.builder().withEntry(this.modLoc("features/condition_root")).build());
 
-        var demoBook = BookModel.builder()
-                .withId(this.modLoc("demo"))
-                .withName(helper.bookName())
+        var demoBook = BookModel.create(this.modLoc("demo"), helper.bookName())
                 .withTooltip(helper.bookTooltip())
                 .withBookTextOffsetX(5)
                 .withBookTextOffsetY(0) //no top offset
@@ -54,8 +53,7 @@ public class DemoBookProvider extends BookProvider {
                 .withCategory(featuresCategory)
                 .withCategory(formattingCategory)
                 .withCategory(hiddenCategory)
-                .withCategory(conditionalCategory.build())
-                .build();
+                .withCategory(conditionalCategory);
         return demoBook;
     }
 
@@ -91,10 +89,13 @@ public class DemoBookProvider extends BookProvider {
 
         var redirectEntry = this.makeRedirectEntry(helper, entryHelper).build();
 
-        return BookCategoryModel.builder()
-                .withId(this.modLoc("features"))
-                .withName(helper.categoryName())
+        return BookCategoryModel.create(this.modLoc("features"), helper.categoryName())
                 .withIcon("minecraft:nether_star")
+                .withBackgroundParallaxLayers(
+                        new BookCategoryBackgroundParallaxLayer(this.modLoc("textures/gui/parallax/flow/base.png"), 0.7f, -1),
+                        new BookCategoryBackgroundParallaxLayer(this.modLoc("textures/gui/parallax/flow/1.png"), 1f, -1),
+                        new BookCategoryBackgroundParallaxLayer(this.modLoc("textures/gui/parallax/flow/2.png"), 1.4f, -1)
+                )
                 .withEntry(multiblockEntry)
                 .withEntry(recipeEntry)
                 .withEntries(conditionEntries)
@@ -102,8 +103,7 @@ public class DemoBookProvider extends BookProvider {
                 .withEntry(emptyEntry.build())
                 .withEntry(entityEntry.build())
                 .withEntry(imageEntry.build())
-                .withEntry(redirectEntry)
-                .build();
+                .withEntry(redirectEntry);
     }
 
     private BookEntryModel makeMultiblockEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
@@ -415,15 +415,12 @@ public class DemoBookProvider extends BookProvider {
         linkFormattingEntry.withParent(BookEntryParentModel.builder().withEntryId(advancedFormattingEntry.id).build());
         advancedFormattingEntry.withParent(BookEntryParentModel.builder().withEntryId(basicFormattingEntry.id).build());
 
-        return BookCategoryModel.builder()
-                .withId(this.modLoc("formatting"))
-                .withName(helper.categoryName())
+        return BookCategoryModel.create(this.modLoc("formatting"),helper.categoryName())
                 .withIcon("minecraft:textures/item/book.png")
                 .withEntry(basicFormattingEntry.build())
                 .withEntry(advancedFormattingEntry.build())
                 .withEntry(linkFormattingEntry.build())
-                .withEntry(alwaysLockedEntry.build())
-                .build();
+                .withEntry(alwaysLockedEntry.build());
     }
 
     private BookEntryModel.Builder makeBasicFormattingEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
@@ -556,16 +553,13 @@ public class DemoBookProvider extends BookProvider {
                 .withEntryBackground(0, 1)
                 .withCondition(BookFalseConditionModel.builder().build());
 
-        return BookCategoryModel.builder()
-                .withId(this.modLoc(helper.category))
-                .withName(helper.categoryName())
+        return BookCategoryModel.create(this.modLoc(helper.category), helper.categoryName())
                 .withIcon("minecraft:book")
                 .withShowCategoryButton(false)
-                .withEntry(entry.build())
-                .build();
+                .withEntry(entry.build());
     }
 
-    private BookCategoryModel.Builder makeConditionalCategory(BookLangHelper helper) {
+    private BookCategoryModel makeConditionalCategory(BookLangHelper helper) {
         helper.category("conditional");
 
         var entryHelper = new EntryLocationHelper();
@@ -588,9 +582,7 @@ public class DemoBookProvider extends BookProvider {
                 .withEntryBackground(0, 1)
                 .withCondition(BookFalseConditionModel.builder().build());
 
-        return BookCategoryModel.builder()
-                .withId(this.modLoc(helper.category))
-                .withName(helper.categoryName())
+        return BookCategoryModel.create(this.modLoc(helper.category), helper.categoryName())
                 .withIcon("minecraft:diamond")
                 .withEntry(entry.build());
     }
