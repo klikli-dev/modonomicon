@@ -16,26 +16,26 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmithingRecipe;
 
-public class BookSmithingRecipePage extends BookRecipePage<SmithingRecipe> {
-    public BookSmithingRecipePage(BookTextHolder title1, ResourceLocation recipeId1, BookTextHolder title2, ResourceLocation recipeId2, BookTextHolder text, String anchor) {
+public class BookLegacySmithingRecipePage extends BookRecipePage<SmithingRecipe> {
+    public BookLegacySmithingRecipePage(BookTextHolder title1, ResourceLocation recipeId1, BookTextHolder title2, ResourceLocation recipeId2, BookTextHolder text, String anchor) {
         super(RecipeType.SMITHING, title1, recipeId1, title2, recipeId2, text, anchor);
     }
 
-    public static BookSmithingRecipePage fromJson(JsonObject json) {
+    public static BookLegacySmithingRecipePage fromJson(JsonObject json) {
         var common = BookRecipePage.commonFromJson(json);
         var anchor = GsonHelper.getAsString(json, "anchor", "");
-        return new BookSmithingRecipePage(common.title1(), common.recipeId1(), common.title2(), common.recipeId2(), common.text(), anchor);
+        return new BookLegacySmithingRecipePage(common.title1(), common.recipeId1(), common.title2(), common.recipeId2(), common.text(), anchor);
     }
 
-    public static BookSmithingRecipePage fromNetwork(FriendlyByteBuf buffer) {
+    public static BookLegacySmithingRecipePage fromNetwork(FriendlyByteBuf buffer) {
         var common = BookRecipePage.commonFromNetwork(buffer);
         var anchor = buffer.readUtf();
-        return new BookSmithingRecipePage(common.title1(), common.recipeId1(), common.title2(), common.recipeId2(), common.text(), anchor);
+        return new BookLegacySmithingRecipePage(common.title1(), common.recipeId1(), common.title2(), common.recipeId2(), common.text(), anchor);
     }
 
     @Override
     public ResourceLocation getType() {
-        return Page.SMITHING_RECIPE;
+        return Page.LEGACY_SMITHING_RECIPE;
     }
 
     @Override

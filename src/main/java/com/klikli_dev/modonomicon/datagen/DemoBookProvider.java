@@ -19,7 +19,6 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryUnlockedCo
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookFalseConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.*;
 import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
@@ -248,13 +247,25 @@ public class DemoBookProvider extends BookProvider {
                 .withRecipeId1("minecraft:andesite_slab_from_andesite_stonecutting")
                 .build();
 
+        helper.page("legacy_smithing");
+        var legacySmithing = BookLegacySmithingRecipePageModel.builder()
+                .withRecipeId1("minecraft:netherite_axe_smithing")
+                .withTitle1(helper.pageTitle())
+                .build();
+
+        this.lang.add(helper.pageTitle(), "Legacy Smithing Recipe");
+
         helper.page("smithing");
         var smithing = BookSmithingRecipePageModel.builder()
                 .withRecipeId1("minecraft:netherite_axe_smithing")
+                .withTitle1(helper.pageTitle())
+                .withRecipeId2("minecraft:netherite_chestplate_smithing")
                 .build();
+        this.lang.add(helper.pageTitle(), "1.20+ Smithing Recipe");
+
 
         helper.page("missing");
-        var missing = BookSmithingRecipePageModel.builder()
+        var missing = BookLegacySmithingRecipePageModel.builder()
                 .withRecipeId1("minecraft:netherite_axe_smithing_does_not_exist")
                 .build();
 
@@ -264,7 +275,7 @@ public class DemoBookProvider extends BookProvider {
                 .withDescription(helper.entryDescription())
                 .withIcon("minecraft:crafting_table")
                 .withLocation(entryHelper.get('c'))
-                .withPages(introPage, crafting, smelting, smoking, blasting, campfireCooking, stonecutting, smithing, missing);
+                .withPages(introPage, crafting, smelting, smoking, blasting, campfireCooking, stonecutting, legacySmithing, smithing, missing);
     }
 
     private BookEntryModel.Builder makeSpotlightEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
