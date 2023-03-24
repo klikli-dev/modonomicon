@@ -95,9 +95,6 @@ public class BookCategoryScreen {
         RenderSystem.enableScissor(innerX * scale, innerY * scale, innerWidth * scale, innerHeight * scale);
         this.renderEntries(pPoseStack, pMouseX, pMouseY);
         RenderSystem.disableScissor();
-
-        this.renderEntryTooltips(pPoseStack, pMouseX, pMouseY);
-
     }
 
     public void zoom(double delta) {
@@ -312,7 +309,7 @@ public class BookCategoryScreen {
         stack.popPose();
     }
 
-    private void renderEntryTooltips(PoseStack stack, int mouseX, int mouseY) {
+    public void renderEntryTooltips(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
 

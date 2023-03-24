@@ -269,6 +269,8 @@ public class BookOverviewScreen extends Screen {
 
         this.renderFrame(pPoseStack);
 
+        this.getCurrentCategoryScreen().renderEntryTooltips(pPoseStack, pMouseX, pMouseY, pPartialTick);
+
         //do super render last -> it does the widgets including especially the tooltips and we want those to go over the frame
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
     }
