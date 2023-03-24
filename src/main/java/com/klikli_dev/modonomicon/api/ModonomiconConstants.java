@@ -6,6 +6,8 @@
 
 package com.klikli_dev.modonomicon.api;
 
+import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.book.BookFrameOverlay;
 import net.minecraft.resources.ResourceLocation;
 
 public class ModonomiconConstants {
@@ -16,6 +18,24 @@ public class ModonomiconConstants {
 
         public static class Book {
             public static final String DEFAULT_OVERVIEW_TEXTURE = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/book_overview.png").toString();
+            public static final String DEFAULT_FRAME_TEXTURE = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/book_frame.png").toString();
+
+            public static final BookFrameOverlay DEFAULT_TOP_FRAME_OVERLAY = new BookFrameOverlay(
+                    Modonomicon.loc("textures/gui/book_frame_top_overlay.png"),
+                    256, 256, 72, 7, 0, 4);
+
+            public static final BookFrameOverlay DEFAULT_BOTTOM_FRAME_OVERLAY = new BookFrameOverlay(
+                    Modonomicon.loc("textures/gui/book_frame_bottom_overlay.png"),
+                    256, 256, 72, 8, 0, -4);
+
+            public static final BookFrameOverlay DEFAULT_LEFT_FRAME_OVERLAY = new BookFrameOverlay(
+                    Modonomicon.loc("textures/gui/book_frame_left_overlay.png"),
+                    256, 256, 7, 70, 3, 0);
+
+            public static final BookFrameOverlay DEFAULT_RIGHT_FRAME_OVERLAY = new BookFrameOverlay(
+                    Modonomicon.loc("textures/gui/book_frame_right_overlay.png"),
+                    256, 256, 8, 70, -4, 0);
+
             public static final String DEFAULT_CONTENT_TEXTURE = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/book_content.png").toString();
             public static final String DEFAULT_CRAFTING_TEXTURE = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/crafting_textures.png").toString();
             public static final String DEFAULT_PAGE_TURN_SOUND = new ResourceLocation(ModonomiconAPI.ID, "turn_page").toString();
@@ -25,7 +45,10 @@ public class ModonomiconConstants {
         }
 
         public static class Category {
+            public static final String DEFAULT_ICON = new ResourceLocation(ModonomiconAPI.ID, "modonomicon_purple").toString();
             public static final String DEFAULT_BACKGROUND = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/dark_slate_seamless.png").toString();
+            public static final int DEFAULT_BACKGROUND_WIDTH = 512;
+            public static final int DEFAULT_BACKGROUND_HEIGHT = 512;
             public static final String DEFAULT_ENTRY_TEXTURES = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/entry_textures.png").toString();
         }
 
@@ -39,6 +62,7 @@ public class ModonomiconConstants {
             public static final ResourceLocation CAMPFIRE_COOKING_RECIPE = new ResourceLocation(ModonomiconAPI.ID, "campfire_cooking_recipe");
             public static final ResourceLocation STONECUTTING_RECIPE = new ResourceLocation(ModonomiconAPI.ID, "stonecutting_recipe");
             public static final ResourceLocation SMITHING_RECIPE = new ResourceLocation(ModonomiconAPI.ID, "smithing_recipe");
+            public static final ResourceLocation LEGACY_SMITHING_RECIPE = new ResourceLocation(ModonomiconAPI.ID, "legacy_smithing_recipe");
             public static final ResourceLocation SPOTLIGHT = new ResourceLocation(ModonomiconAPI.ID, "spotlight");
             public static final ResourceLocation EMPTY = new ResourceLocation(ModonomiconAPI.ID, "empty");
             public static final ResourceLocation ENTITY = new ResourceLocation(ModonomiconAPI.ID, "entity");

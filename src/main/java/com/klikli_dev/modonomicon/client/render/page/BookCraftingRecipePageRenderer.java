@@ -57,7 +57,7 @@ public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recip
             }
         }
 
-        this.parentScreen.renderItemStack(poseStack, recipeX + 79, recipeY + 22, mouseX, mouseY, recipe.getResultItem());
+        this.parentScreen.renderItemStack(poseStack, recipeX + 79, recipeY + 22, mouseX, mouseY, recipe.getResultItem(this.parentScreen.getMinecraft().level.registryAccess()));
 
         NonNullList<Ingredient> ingredients = recipe.getIngredients();
         int wrap = 3;

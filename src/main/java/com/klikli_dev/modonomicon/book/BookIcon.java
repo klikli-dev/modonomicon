@@ -6,12 +6,11 @@
 
 package com.klikli_dev.modonomicon.book;
 
-import com.klikli_dev.modonomicon.util.RenderUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -32,11 +31,11 @@ public class BookIcon {
         this.itemStack = ItemStack.EMPTY;
     }
 
-    public static BookIcon fromString(String value) {
-        if (value.endsWith(".png")) {
-            return new BookIcon(new ResourceLocation(value));
+    public static BookIcon fromString(ResourceLocation value) {
+        if (value.getPath().endsWith(".png")) {
+            return new BookIcon(value);
         } else {
-            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(value));
+            Item item = ForgeRegistries.ITEMS.getValue(value);
             return new BookIcon(new ItemStack(item));
         }
     }
@@ -58,7 +57,7 @@ public class BookIcon {
             RenderSystem.setShaderTexture(0, this.texture);
             GuiComponent.blit(ms, x, y, 0, 0, 0, 16, 16, 16, 16);
         } else {
-            RenderUtil.renderAndDecorateItemWithPose(ms, this.itemStack, x, y);
+            Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(ms, this.itemStack, x, y);
         }
     }
 

@@ -11,15 +11,16 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Nbt;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
-import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import com.klikli_dev.modonomicon.util.ItemStackUtil;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.List;
@@ -36,6 +37,11 @@ public class Book {
 
     protected ResourceLocation model;
     protected ResourceLocation bookOverviewTexture;
+    protected ResourceLocation frameTexture;
+    protected BookFrameOverlay topFrameOverlay;
+    protected BookFrameOverlay bottomFrameOverlay;
+    protected BookFrameOverlay leftFrameOverlay;
+    protected BookFrameOverlay rightFrameOverlay;
     protected ResourceLocation bookContentTexture;
 
     protected ResourceLocation craftingTexture;
@@ -44,8 +50,10 @@ public class Book {
     protected ConcurrentMap<ResourceLocation, BookEntry> entries;
 
     protected int defaultTitleColor;
+    protected float categoryButtonIconScale;
     protected boolean autoAddReadConditions;
     protected boolean generateBookItem;
+    @Nullable
     protected ResourceLocation customBookItem;
 
     /**
@@ -65,6 +73,12 @@ public class Book {
      */
     protected int bookTextOffsetWidth;
 
+    protected int categoryButtonXOffset;
+    protected int categoryButtonYOffset;
+    protected int searchButtonXOffset;
+    protected int searchButtonYOffset;
+    protected int readAllButtonYOffset;
+
     protected Supplier<ItemStack> bookItem = Suppliers.memoize(() -> {
         if (this.customBookItem != null) {
             var parsed = ItemStackUtil.parseItemStackString(this.customBookItem.toString());
@@ -77,7 +91,13 @@ public class Book {
         return stack;
     });
 
-    public Book(ResourceLocation id, String name, String tooltip, ResourceLocation model, boolean generateBookItem, ResourceLocation customBookItem, String creativeTab, ResourceLocation bookOverviewTexture, ResourceLocation bookContentTexture, ResourceLocation craftingTexture, ResourceLocation turnPageSound, int defaultTitleColor, boolean autoAddReadConditions, int bookTextOffsetX, int bookTextOffsetY, int bookTextOffsetWidth) {
+    public Book(ResourceLocation id, String name, String tooltip, ResourceLocation model, boolean generateBookItem,
+                ResourceLocation customBookItem, String creativeTab, ResourceLocation bookOverviewTexture, ResourceLocation frameTexture,
+                BookFrameOverlay topFrameOverlay, BookFrameOverlay bottomFrameOverlay, BookFrameOverlay leftFrameOverlay, BookFrameOverlay rightFrameOverlay,
+                ResourceLocation bookContentTexture, ResourceLocation craftingTexture, ResourceLocation turnPageSound,
+                int defaultTitleColor, float categoryButtonIconScale, boolean autoAddReadConditions, int bookTextOffsetX, int bookTextOffsetY, int bookTextOffsetWidth,
+                int categoryButtonXOffset, int categoryButtonYOffset, int searchButtonXOffset, int searchButtonYOffset, int readAllButtonYOffset
+    ) {
         this.id = id;
         this.name = name;
         this.tooltip = tooltip;
@@ -86,16 +106,28 @@ public class Book {
         this.customBookItem = customBookItem;
         this.creativeTab = creativeTab;
         this.bookOverviewTexture = bookOverviewTexture;
+        this.frameTexture = frameTexture;
+        this.topFrameOverlay = topFrameOverlay;
+        this.bottomFrameOverlay = bottomFrameOverlay;
+        this.leftFrameOverlay = leftFrameOverlay;
+        this.rightFrameOverlay = rightFrameOverlay;
         this.bookContentTexture = bookContentTexture;
         this.craftingTexture = craftingTexture;
         this.turnPageSound = turnPageSound;
         this.defaultTitleColor = defaultTitleColor;
+        this.categoryButtonIconScale = categoryButtonIconScale;
         this.autoAddReadConditions = autoAddReadConditions;
         this.categories = new ConcurrentHashMap<>();
         this.entries = new ConcurrentHashMap<>();
         this.bookTextOffsetX = bookTextOffsetX;
         this.bookTextOffsetY = bookTextOffsetY;
         this.bookTextOffsetWidth = bookTextOffsetWidth;
+
+        this.categoryButtonXOffset = categoryButtonXOffset;
+        this.categoryButtonYOffset = categoryButtonYOffset;
+        this.searchButtonXOffset = searchButtonXOffset;
+        this.searchButtonYOffset = searchButtonYOffset;
+        this.readAllButtonYOffset = readAllButtonYOffset;
     }
 
     public static Book fromJson(ResourceLocation id, JsonObject json) {
@@ -108,19 +140,49 @@ public class Book {
                 null;
         var creativeTab = GsonHelper.getAsString(json, "creative_tab", "misc");
         var bookOverviewTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_overview_texture", Data.Book.DEFAULT_OVERVIEW_TEXTURE));
+        var frameTexture = new ResourceLocation(GsonHelper.getAsString(json, "frame_texture", Data.Book.DEFAULT_FRAME_TEXTURE));
+
+        var topFrameOverlay = json.has("top_frame_overlay") ?
+                BookFrameOverlay.fromJson(json.get("top_frame_overlay").getAsJsonObject()) :
+                Data.Book.DEFAULT_TOP_FRAME_OVERLAY;
+
+        var bottomFrameOverlay = json.has("bottom_frame_overlay") ?
+                BookFrameOverlay.fromJson(json.get("bottom_frame_overlay").getAsJsonObject()) :
+                Data.Book.DEFAULT_BOTTOM_FRAME_OVERLAY;
+
+        var leftFrameOverlay = json.has("left_frame_overlay") ?
+                BookFrameOverlay.fromJson(json.get("left_frame_overlay").getAsJsonObject()) :
+                Data.Book.DEFAULT_LEFT_FRAME_OVERLAY;
+
+        var rightFrameOverlay = json.has("right_frame_overlay") ?
+                BookFrameOverlay.fromJson(json.get("right_frame_overlay").getAsJsonObject()) :
+                Data.Book.DEFAULT_RIGHT_FRAME_OVERLAY;
+
         var bookContentTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_content_texture", Data.Book.DEFAULT_CONTENT_TEXTURE));
         var craftingTexture = new ResourceLocation(GsonHelper.getAsString(json, "crafting_texture", Data.Book.DEFAULT_CRAFTING_TEXTURE));
         var turnPageSound = new ResourceLocation(GsonHelper.getAsString(json, "turn_page_sound", Data.Book.DEFAULT_PAGE_TURN_SOUND));
         var defaultTitleColor = GsonHelper.getAsInt(json, "default_title_color", 0x00000);
+        var categoryButtonIconScale = GsonHelper.getAsFloat(json, "category_button_icon_scale", 1.0f);
         var autoAddReadConditions = GsonHelper.getAsBoolean(json, "auto_add_read_conditions", false);
 
         var bookTextOffsetX = GsonHelper.getAsInt(json, "book_text_offset_x", 0);
         var bookTextOffsetY = GsonHelper.getAsInt(json, "book_text_offset_y", 0);
         var bookTextOffsetWidth = GsonHelper.getAsInt(json, "book_text_offset_width", 0);
 
-        return new Book(id, name, tooltip, model, generateBookItem, customBookItem, creativeTab, bookOverviewTexture, bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth);
+        var categoryButtonXOffset = GsonHelper.getAsInt(json, "category_button_x_offset", 0);
+        var categoryButtonYOffset = GsonHelper.getAsInt(json, "category_button_y_offset", 0);
+        var searchButtonXOffset = GsonHelper.getAsInt(json, "search_button_x_offset", 0);
+        var searchButtonYOffset = GsonHelper.getAsInt(json, "search_button_y_offset", 0);
+        var readAllButtonYOffset = GsonHelper.getAsInt(json, "read_all_button_y_offset", 0);
+
+        return new Book(id, name, tooltip, model, generateBookItem, customBookItem, creativeTab, bookOverviewTexture,
+                frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
+                bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, categoryButtonXOffset, categoryButtonYOffset,
+                searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset);
     }
 
+
+    @SuppressWarnings("deprecation")
     public static Book fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
         var name = buffer.readUtf();
         var tooltip = buffer.readUtf();
@@ -129,27 +191,34 @@ public class Book {
         var customBookItem = buffer.readBoolean() ? buffer.readResourceLocation() : null;
         var creativeTab = buffer.readUtf();
         var bookOverviewTexture = buffer.readResourceLocation();
+
+        var frameTexture = buffer.readResourceLocation();
+
+        var topFrameOverlay = BookFrameOverlay.fromNetwork(buffer);
+        var bottomFrameOverlay = BookFrameOverlay.fromNetwork(buffer);
+        var leftFrameOverlay = BookFrameOverlay.fromNetwork(buffer);
+        var rightFrameOverlay = BookFrameOverlay.fromNetwork(buffer);
+
         var bookContentTexture = buffer.readResourceLocation();
         var craftingTexture = buffer.readResourceLocation();
         var turnPageSound = buffer.readResourceLocation();
         var defaultTitleColor = buffer.readInt();
+        var categoryButtonIconScale = buffer.readFloat();
         var autoAddReadConditions = buffer.readBoolean();
         var bookTextOffsetX = (int) buffer.readShort();
-        var bookTextOffsetY =  (int) buffer.readShort();
-        var bookTextOffsetWidth =  (int) buffer.readShort();
-        return new Book(id, name, tooltip, model, generateBookItem, customBookItem, creativeTab, bookOverviewTexture, bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth);
-    }
+        var bookTextOffsetY = (int) buffer.readShort();
+        var bookTextOffsetWidth = (int) buffer.readShort();
 
-    public ItemStack getBookItem() {
-        return this.bookItem.get();
-    }
+        var categoryButtonXOffset = (int) buffer.readShort();
+        var categoryButtonYOffset = (int) buffer.readShort();
+        var searchButtonXOffset = (int) buffer.readShort();
+        var searchButtonYOffset = (int) buffer.readShort();
+        var readAllButtonYOffset = (int) buffer.readShort();
 
-    public boolean autoAddReadConditions() {
-        return this.autoAddReadConditions;
-    }
-
-    public ResourceLocation getTurnPageSound() {
-        return this.turnPageSound;
+        return new Book(id, name, tooltip, model, generateBookItem, customBookItem, creativeTab, bookOverviewTexture,
+                frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
+                bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, categoryButtonXOffset, categoryButtonYOffset,
+                searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset);
     }
 
     /**
@@ -182,8 +251,61 @@ public class Book {
         }
     }
 
+    @SuppressWarnings("deprecation")
+    public void toNetwork(FriendlyByteBuf buffer) {
+        buffer.writeUtf(this.name);
+        buffer.writeUtf(this.tooltip);
+        buffer.writeResourceLocation(this.model);
+        buffer.writeBoolean(this.generateBookItem);
+        buffer.writeBoolean(this.customBookItem != null);
+        if (this.customBookItem != null) {
+            buffer.writeResourceLocation(this.customBookItem);
+        }
+        buffer.writeUtf(this.creativeTab);
+        buffer.writeResourceLocation(this.bookOverviewTexture);
+        buffer.writeResourceLocation(this.frameTexture);
+
+        this.topFrameOverlay.toNetwork(buffer);
+        this.bottomFrameOverlay.toNetwork(buffer);
+        this.leftFrameOverlay.toNetwork(buffer);
+        this.rightFrameOverlay.toNetwork(buffer);
+
+        buffer.writeResourceLocation(this.bookContentTexture);
+        buffer.writeResourceLocation(this.craftingTexture);
+        buffer.writeResourceLocation(this.turnPageSound);
+        buffer.writeInt(this.defaultTitleColor);
+        buffer.writeFloat(this.categoryButtonIconScale);
+        buffer.writeBoolean(this.autoAddReadConditions);
+
+        buffer.writeShort(this.bookTextOffsetX);
+        buffer.writeShort(this.bookTextOffsetY);
+        buffer.writeShort(this.bookTextOffsetWidth);
+
+        buffer.writeShort(this.categoryButtonXOffset);
+        buffer.writeShort(this.categoryButtonYOffset);
+        buffer.writeShort(this.searchButtonXOffset);
+        buffer.writeShort(this.searchButtonYOffset);
+        buffer.writeShort(this.readAllButtonYOffset);
+    }
+
+    public ItemStack getBookItem() {
+        return this.bookItem.get();
+    }
+
+    public boolean autoAddReadConditions() {
+        return this.autoAddReadConditions;
+    }
+
+    public ResourceLocation getTurnPageSound() {
+        return this.turnPageSound;
+    }
+
     public int getDefaultTitleColor() {
         return this.defaultTitleColor;
+    }
+
+    public float getCategoryButtonIconScale() {
+        return this.categoryButtonIconScale;
     }
 
     public ResourceLocation getId() {
@@ -234,28 +356,27 @@ public class Book {
         return this.bookOverviewTexture;
     }
 
-    public void toNetwork(FriendlyByteBuf buffer) {
-        buffer.writeUtf(this.name);
-        buffer.writeUtf(this.tooltip);
-        buffer.writeResourceLocation(this.model);
-        buffer.writeBoolean(this.generateBookItem);
-        buffer.writeBoolean(this.customBookItem != null);
-        if (this.customBookItem != null) {
-            buffer.writeResourceLocation(this.customBookItem);
-        }
-        buffer.writeUtf(this.creativeTab);
-        buffer.writeResourceLocation(this.bookOverviewTexture);
-        buffer.writeResourceLocation(this.bookContentTexture);
-        buffer.writeResourceLocation(this.craftingTexture);
-        buffer.writeResourceLocation(this.turnPageSound);
-        buffer.writeInt(this.defaultTitleColor);
-        buffer.writeBoolean(this.autoAddReadConditions);
-
-        buffer.writeShort(this.bookTextOffsetX);
-        buffer.writeShort(this.bookTextOffsetY);
-        buffer.writeShort(this.bookTextOffsetWidth);
+    public ResourceLocation getFrameTexture() {
+        return this.frameTexture;
     }
 
+    public BookFrameOverlay getTopFrameOverlay() {
+        return this.topFrameOverlay;
+    }
+
+    public BookFrameOverlay getBottomFrameOverlay() {
+        return this.bottomFrameOverlay;
+    }
+
+    public BookFrameOverlay getLeftFrameOverlay() {
+        return this.leftFrameOverlay;
+    }
+
+    public BookFrameOverlay getRightFrameOverlay() {
+        return this.rightFrameOverlay;
+    }
+
+    @Nullable
     public ResourceLocation getCustomBookItem() {
         return this.customBookItem;
     }
@@ -286,5 +407,25 @@ public class Book {
 
     public int getBookTextOffsetWidth() {
         return this.bookTextOffsetWidth;
+    }
+
+    public int getCategoryButtonXOffset() {
+        return this.categoryButtonXOffset;
+    }
+
+    public int getCategoryButtonYOffset() {
+        return this.categoryButtonYOffset;
+    }
+
+    public int getSearchButtonXOffset() {
+        return this.searchButtonXOffset;
+    }
+
+    public int getSearchButtonYOffset() {
+        return this.searchButtonYOffset;
+    }
+
+    public int getReadAllButtonYOffset() {
+        return this.readAllButtonYOffset;
     }
 }

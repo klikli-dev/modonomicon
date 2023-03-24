@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.book.BookFrameOverlay;
 import com.klikli_dev.modonomicon.capability.BookStateCapability;
 import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
@@ -38,7 +39,6 @@ import java.util.List;
 public class BookOverviewScreen extends Screen {
 
     private final Book book;
-    private final ResourceLocation bookOverviewTexture;
     private final EntryConnectionRenderer connectionRenderer = new EntryConnectionRenderer();
     private final List<BookCategory> categories;
     private final List<BookCategoryScreen> categoryScreens;
@@ -58,8 +58,6 @@ public class BookOverviewScreen extends Screen {
         this.minecraft = Minecraft.getInstance();
 
         this.book = book;
-
-        this.bookOverviewTexture = book.getBookOverviewTexture();
 
         this.categories = book.getCategoriesSorted(); //we no longer handle category locking here, is done on init to be able to refresh on unlock
         this.categoryScreens = this.categories.stream().map(c -> new BookCategoryScreen(this, c)).toList();
@@ -101,7 +99,7 @@ public class BookOverviewScreen extends Screen {
     }
 
     public ResourceLocation getBookOverviewTexture() {
-        return this.bookOverviewTexture;
+        return this.book.getBookOverviewTexture();
     }
 
     /**
@@ -184,27 +182,32 @@ public class BookOverviewScreen extends Screen {
     protected void renderFrame(PoseStack poseStack) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, this.bookOverviewTexture);
+        RenderSystem.setShaderTexture(0, this.book.getFrameTexture());
 
         int width = this.getFrameWidth();
         int height = this.getFrameHeight();
         int x = (this.width - width) / 2;
         int y = (this.height - height) / 2;
 
-        int blitOffset = this.getBlitOffset();
+        int blitOffset = 0;
 
         //draw a resizeable border. Center parts of each side will be stretched
         //the exact border size mostly does not matter because the center is empty anyway, but 50 gives a lot of flexiblity
         ScreenUtils.blitWithBorder(poseStack, x, y, 0, 0, width, height,
                 140, 140, 50, 50, 50, 50, blitOffset);
 
-        //now draw center parts of each side. This allows to add non-repeat features here or just generally bridge the repeated pixesl
-        //top, bottom, left, right
-        //these parts are to the left of the repeatable frame in the texture.
-        ScreenUtils.drawTexturedModalRect(poseStack, (x + (width / 2)) - 36, y, 140, 0, 72, 17, blitOffset);
-        ScreenUtils.drawTexturedModalRect(poseStack, (x + (width / 2)) - 36, (y + height) - 18, 140, 17, 72, 18, blitOffset);
-        ScreenUtils.drawTexturedModalRect(poseStack, x, (y + (height / 2)) - 35, 140, 35, 17, 70, blitOffset);
-        ScreenUtils.drawTexturedModalRect(poseStack, x + width - 17, (y + (height / 2)) - 35, 157, 35, 17, 70, blitOffset);
+        //now render overlays on top of that border to cover repeating elements
+        this.renderFrameOverlay(this.book.getTopFrameOverlay(), (x + (width / 2)), y, blitOffset);
+        this.renderFrameOverlay(this.book.getBottomFrameOverlay(), (x + (width / 2)), (y + height), blitOffset);
+        this.renderFrameOverlay(this.book.getLeftFrameOverlay(), x, y + (height / 2), blitOffset);
+        this.renderFrameOverlay(this.book.getRightFrameOverlay(), x + width, y + (height / 2), blitOffset);
+    }
+
+    protected void renderFrameOverlay(BookFrameOverlay overlay, int x, int y, int blitOffset) {
+        if (overlay.getFrameWidth() > 0 && overlay.getFrameHeight() > 0) {
+            RenderSystem.setShaderTexture(0, overlay.getTexture());
+            ScreenUtils.drawTexturedModalRect(new PoseStack(), overlay.getFrameX(x), overlay.getFrameY(y), overlay.getFrameU(), overlay.getFrameV(), overlay.getFrameWidth(), overlay.getFrameHeight(), blitOffset);
+        }
     }
 
     protected void onBookCategoryButtonClick(CategoryButton button) {
@@ -262,10 +265,11 @@ public class BookOverviewScreen extends Screen {
 
         this.getCurrentCategoryScreen().renderBackground(pPoseStack);
 
-        this.renderFrame(pPoseStack);
-
         this.getCurrentCategoryScreen().render(pPoseStack, pMouseX, pMouseY, pPartialTick);
 
+        this.renderFrame(pPoseStack);
+
+        this.getCurrentCategoryScreen().renderEntryTooltips(pPoseStack, pMouseX, pMouseY, pPartialTick);
 
         //do super render last -> it does the widgets including especially the tooltips and we want those to go over the frame
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
@@ -307,8 +311,11 @@ public class BookOverviewScreen extends Screen {
 
         int buttonXOffset = -11;
 
+
+        int buttonYOffset = 30 + this.getBook().getCategoryButtonYOffset();
+
         int buttonX = (this.width - this.getFrameWidth()) / 2 - this.getFrameThicknessW() + buttonXOffset;
-        int buttonY = (this.height - this.getFrameHeight()) / 2 - this.getFrameThicknessH() + 30;
+        int buttonY = (this.height - this.getFrameHeight()) / 2 - this.getFrameThicknessH() + buttonYOffset;
         //calculate button width so it aligns with the outer edge of the frame
         int buttonWidth = (this.width - this.getFrameWidth()) / 2 + buttonXOffset + 6;
         int buttonHeight = 20;
@@ -328,7 +335,9 @@ public class BookOverviewScreen extends Screen {
         }
 
         int readAllButtonX = this.getFrameWidth() + this.getFrameThicknessW() + ReadAllButton.WIDTH / 2 - 3; //(this.width - this.getFrameWidth()); // / 2 - this.getFrameThicknessW() + buttonXOffset;
-        int readAllButtonY = (this.height - this.getFrameHeight()) / 2 + ReadAllButton.HEIGHT / 2;
+        int readAllButtonYOffset = 30 + this.getBook().getReadAllButtonYOffset();
+
+        int readAllButtonY = (this.height - this.getFrameHeight()) / 2 + ReadAllButton.HEIGHT / 2 + readAllButtonYOffset;
 
         var readAllButton = new ReadAllButton(this, readAllButtonX, readAllButtonY,
                 () -> this.hasUnreadUnlockedEntries, //if we have unlocked entries that are not read -> blue
@@ -339,7 +348,7 @@ public class BookOverviewScreen extends Screen {
 
 
         int searchButtonXOffset = 7;
-        int searchButtonYOffset = -30;
+        int searchButtonYOffset = -30 + this.getBook().getSearchButtonYOffset();
         int searchButtonX = this.getFrameWidth() + this.getFrameThicknessW() + ReadAllButton.WIDTH / 2 + searchButtonXOffset;
         int searchButtonY = this.getFrameHeight() + this.getFrameThicknessH() - ReadAllButton.HEIGHT / 2 + searchButtonYOffset;
         int searchButtonWidth = 44; //width in png

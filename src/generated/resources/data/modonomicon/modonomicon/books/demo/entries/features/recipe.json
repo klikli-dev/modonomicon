@@ -66,15 +66,24 @@
       "title2": ""
     },
     {
-      "type": "modonomicon:smithing_recipe",
+      "type": "modonomicon:legacy_smithing_recipe",
       "anchor": "",
       "recipe_id_1": "minecraft:netherite_axe_smithing",
       "text": "",
-      "title1": "",
+      "title1": "book.modonomicon.demo.features.recipe.legacy_smithing.title",
       "title2": ""
     },
     {
       "type": "modonomicon:smithing_recipe",
+      "anchor": "",
+      "recipe_id_1": "minecraft:netherite_axe_smithing",
+      "recipe_id_2": "minecraft:netherite_chestplate_smithing",
+      "text": "",
+      "title1": "book.modonomicon.demo.features.recipe.smithing.title",
+      "title2": ""
+    },
+    {
+      "type": "modonomicon:legacy_smithing_recipe",
       "anchor": "",
       "recipe_id_1": "minecraft:netherite_axe_smithing_does_not_exist",
       "text": "",

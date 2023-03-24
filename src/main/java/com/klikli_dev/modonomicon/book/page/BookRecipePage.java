@@ -14,8 +14,7 @@ import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -127,11 +126,19 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
     protected abstract ItemStack getRecipeOutput(T recipe);
 
     private T getRecipe(ResourceLocation id) {
-
         var server = ServerLifecycleHooks.getCurrentServer();
         RecipeManager manager = server != null ? server.getRecipeManager() : Minecraft.getInstance().level.getRecipeManager();
-
         return (T) manager.byKey(id).filter(recipe -> recipe.getType() == this.recipeType).orElse(null);
+    }
+
+    /**
+     * Get the registry access for the current server or client.
+     * Not very clean, but it works and prevents us from handing registry access around.
+     */
+    protected RegistryAccess getRegistryAccess() {
+        var server = ServerLifecycleHooks.getCurrentServer();
+        var access = server != null ? server.registryAccess() : Minecraft.getInstance().level.registryAccess();
+        return access;
     }
 
     @Override

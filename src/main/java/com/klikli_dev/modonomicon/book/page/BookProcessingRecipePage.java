@@ -23,6 +23,6 @@ public abstract class BookProcessingRecipePage<T extends Recipe<?>> extends Book
             return ItemStack.EMPTY;
         }
 
-        return recipe.getResultItem();
+        return recipe.getResultItem(this.getRegistryAccess());
     }
 }

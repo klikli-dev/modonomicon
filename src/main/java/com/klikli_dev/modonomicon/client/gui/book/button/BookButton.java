@@ -48,7 +48,7 @@ public class BookButton extends Button {
     }
 
     @Override
-    public void renderButton(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
@@ -57,8 +57,8 @@ public class BookButton extends Button {
         RenderSystem.enableDepthTest();
 
         //if focused we go to the right of our normal button (instead of down, like mc buttons do)
-        BookContentScreen.drawFromTexture(ms, this.parent.getBook(), this.getX(), this.getY(), this.u + (this.isHoveredOrFocused() ? this.width : 0), this.v, this.width, this.height);
-        if (this.isHoveredOrFocused()) {
+        BookContentScreen.drawFromTexture(ms, this.parent.getBook(), this.getX(), this.getY(), this.u + (this.isHovered() ? this.width : 0), this.v, this.width, this.height);
+        if (this.isHovered()) {
             this.parent.setTooltip(this.tooltip);
         }
     }

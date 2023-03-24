@@ -31,11 +31,16 @@ public class SearchButton extends Button {
     }
 
     @Override
-    public void renderButton(PoseStack pMatrixStack, int pMouseX, int pMouseY, float pPartialTicks) {
+    public void renderWidget(PoseStack pMatrixStack, int pMouseX, int pMouseY, float pPartialTicks) {
         if (this.visible) {
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
+            pMatrixStack.pushPose();
+            int xOffset = this.parent.getBook().getSearchButtonXOffset();
+            pMatrixStack.translate(xOffset, 0, 0);
+
+            int scissorX = this.scissorX + xOffset;
             int texX = 15;
             int texY = 165;
 
@@ -43,27 +48,32 @@ public class SearchButton extends Button {
             int scissorWidth = this.width + (this.getX() - this.scissorX);
             int scissorY = (this.parent.height - this.getY() - this.height - 1); //from the bottom up
 
-            if (this.isHoveredOrFocused()) {
+            if (this.isHovered()) {
                 renderX += 1;
                 scissorWidth -= 1;
             }
 
             int scale = (int) this.parent.getMinecraft().getWindow().getGuiScale();
 
+
+            RenderSystem.setShaderTexture(0, this.parent.getBookOverviewTexture());
+
+            pMatrixStack.translate(xOffset, 0, -1000);
+
             //GL scissors allows us to move the button on hover without intersecting with book border
             //scissors always needs to use gui scale because it runs in absolute coords!
             //see also vanilla class SocialInteractionsPlayerList using scissors in #render
-            RenderSystem.enableScissor(this.scissorX, this.getY() - 10, scissorWidth, this.height + 20);
-            RenderSystem.enableScissor(this.scissorX * scale,  scissorY * scale, scissorWidth * scale, 1000);
+            //we are not using GuiComponent.enableScissor because a) we'd have to calculate absolute coords from width/height and b) we don't need the stack functionality
 
-            RenderSystem.setShaderTexture(0, this.parent.getBookOverviewTexture());
-            GuiComponent.blit(pMatrixStack, renderX, this.getY(), this.parent.getBlitOffset() + 50, texX, texY, this.width, this.height, 256, 256);
+            RenderSystem.enableScissor(scissorX * scale,  scissorY * scale, scissorWidth * scale, 1000);
+
+            int blitOffset = 50;
+            GuiComponent.blit(pMatrixStack, renderX, this.getY(), blitOffset, texX, texY, this.width, this.height, 256, 256);
 
             RenderSystem.disableScissor();
 
+            pMatrixStack.popPose();
 
-
-            //draw search button
         }
     }
 }

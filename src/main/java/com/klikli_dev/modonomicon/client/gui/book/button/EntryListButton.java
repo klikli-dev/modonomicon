@@ -47,15 +47,15 @@ public class EntryListButton extends Button {
     }
 
     @Override
-    public void renderButton(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
         if (this.active) {
-            if (this.isHoveredOrFocused()) {
+            if (this.isHovered()) {
                 this.timeHovered = Math.min(ANIM_TIME, this.timeHovered + ClientTicks.delta);
             } else {
                 this.timeHovered = Math.max(0, this.timeHovered - ClientTicks.delta);
             }
 
-            float time = Math.max(0, Math.min(ANIM_TIME, this.timeHovered + (this.isHoveredOrFocused() ? partialTicks : -partialTicks)));
+            float time = Math.max(0, Math.min(ANIM_TIME, this.timeHovered + (this.isHovered() ? partialTicks : -partialTicks)));
             float widthFract = time / ANIM_TIME;
             boolean locked = !BookUnlockCapability.isUnlockedFor(Minecraft.getInstance().player, this.entry);
 
