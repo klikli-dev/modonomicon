@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.4-1.30.0] - 2023-03-24
+### :sparkles: New Features
+- [`46ea912`](https://github.com/klikli-dev/modonomicon/commit/46ea912a219fbbe9fbedd179518fd20d5df00dda) - update to 1.19.4 *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`9b9cf5d`](https://github.com/klikli-dev/modonomicon/commit/9b9cf5dce7144ff9863bb12aaab6a23d8b80955d) - render improvements *(PR [#111](https://github.com/klikli-dev/modonomicon/pull/111) by [@klikli-dev](https://github.com/klikli-dev))*
+- [`dc9907f`](https://github.com/klikli-dev/modonomicon/commit/dc9907f8bb24a733d081430b4ae877996c2706d2) - new smithing recipe rendering *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`816a0f4`](https://github.com/klikli-dev/modonomicon/commit/816a0f4c39f2c01c2a0ebb66b6f0f282ace42001) - scissor rendering *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`7325e6d`](https://github.com/klikli-dev/modonomicon/commit/7325e6d3e76628ce0caaa2fe5744fa43e77d6706) - entry tooltips rendering behind frame *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`3611de2`](https://github.com/klikli-dev/modonomicon/commit/3611de217b0cc5c4b1ec04ddddcf06f09cd6a435) - button tooltips "stuck" after click *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`062e56f`](https://github.com/klikli-dev/modonomicon/commit/062e56f6198b958031c98d325614e0f95b7fe9b4) - update scissor usage to use MC helper *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`5b761c9`](https://github.com/klikli-dev/modonomicon/commit/5b761c96658ae270e85db1d2b47c67d76c5c0a93) - set correct branch for changelogs *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.3-1.29.0] - 2023-03-15
 ### :sparkles: New Features
 - [`d25945d`](https://github.com/klikli-dev/modonomicon/commit/d25945d12c1ec735b88fb48767fb04246c1acc97) - update book model to require proper 1.19.3 creative tab *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -160,3 +176,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.3-1.27.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.25.0...release/v1.19.3-1.27.0
 [release/v1.19.3-1.28.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.27.0...release/v1.19.3-1.28.0
 [release/v1.19.3-1.29.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.28.0...release/v1.19.3-1.29.0
+[release/v1.19.4-1.30.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-0.0.0...release/v1.19.4-1.30.0
