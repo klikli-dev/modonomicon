@@ -41,9 +41,9 @@ public class ReadAllButton extends Button {
     private final Supplier<Boolean> displayCondition;
     private final Supplier<Boolean> hasUnreadUnlockedEntries;
 
-    private boolean wasHoveredOrFocused;
+    private boolean wasHovered;
     private int tooltipMsDelay;
-    private long hoverOrFocusedStartTime;
+    private long hoveredStartTime;
 
 
     public ReadAllButton(BookOverviewScreen parent, int x, int y, Supplier<Boolean> hasUnreadUnlockedEntries, Supplier<Boolean> displayCondition, OnPress onPress) {
@@ -75,7 +75,7 @@ public class ReadAllButton extends Button {
 
         ms.pushPose();
         ms.translate(0, 0, 200);
-        var hovered = this.isHoveredOrFocused();
+        var hovered = this.isHovered();
 
         int u = U;
 
@@ -98,21 +98,21 @@ public class ReadAllButton extends Button {
 
     private void updateCustomTooltip() {
 
-        boolean flag = this.isHoveredOrFocused();
-        if (flag != this.wasHoveredOrFocused) {
+        boolean flag = this.isHovered();
+        if (flag != this.wasHovered) {
             if (flag) {
-                this.hoverOrFocusedStartTime = Util.getMillis();
+                this.hoveredStartTime = Util.getMillis();
             }
 
-            this.wasHoveredOrFocused = flag;
+            this.wasHovered = flag;
         }
 
-        if (flag && Util.getMillis() - this.hoverOrFocusedStartTime > (long) this.tooltipMsDelay) {
+        if (flag && Util.getMillis() - this.hoveredStartTime > (long) this.tooltipMsDelay) {
             var tooltip = this.getCustomTooltip();
 
             Screen screen = Minecraft.getInstance().screen;
             if (screen != null) {
-                screen.setTooltipForNextRenderPass(Tooltip.create(tooltip), this.createTooltipPositioner(), this.isFocused());
+                screen.setTooltipForNextRenderPass(Tooltip.create(tooltip), this.createTooltipPositioner(), this.isHovered());
             }
         }
 

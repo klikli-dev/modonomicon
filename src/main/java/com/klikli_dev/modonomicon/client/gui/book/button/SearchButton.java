@@ -48,7 +48,7 @@ public class SearchButton extends Button {
             int scissorWidth = this.width + (this.getX() - this.scissorX);
             int scissorY = (this.parent.height - this.getY() - this.height - 1); //from the bottom up
 
-            if (this.isHoveredOrFocused()) {
+            if (this.isHovered()) {
                 renderX += 1;
                 scissorWidth -= 1;
             }

@@ -57,7 +57,7 @@ public class CategoryButton extends Button {
             if (this.categoryIndex == this.parent.getCurrentCategory()) {
                 renderX -= 3;
                 renderWidth += 3;
-            } else if (this.isHoveredOrFocused()) {
+            } else if (this.isHovered()) {
                 renderX -= 1;
                 renderWidth += 1;
             }
