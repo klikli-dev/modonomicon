@@ -423,6 +423,8 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
 
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        RenderSystem.disableDepthTest(); //guard against depth test being enabled by other rendering code, that would cause ui elements to vanish
+
         this.resetTooltip();
 
         //we need to modify blit offset (now: z pose) to not draw over toasts
