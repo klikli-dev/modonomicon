@@ -80,12 +80,9 @@ public class CategoryButton extends Button {
 
             //now scale around center
             pMatrixStack.pushPose();
-            if(scale != 1.0f){
-                //TODO: this causes the chest to look odd, it gets scaled correctly but somehow the lid renders behind the body
-                pMatrixStack.translate(centerIconOffset, centerIconOffset, 0);
-                pMatrixStack.scale(scale, scale, 0);
-                pMatrixStack.translate(-centerIconOffset, -centerIconOffset, 0);
-            }
+            pMatrixStack.translate(centerIconOffset, centerIconOffset, 0);
+            pMatrixStack.scale(scale, scale, 1);
+            pMatrixStack.translate(-centerIconOffset, -centerIconOffset, 0);
 
             this.category.getIcon().render(pMatrixStack, 0, 0);
 
