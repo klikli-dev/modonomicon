@@ -271,6 +271,8 @@ public class BookOverviewScreen extends Screen {
 
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        RenderSystem.disableDepthTest(); //guard against depth test being enabled by other rendering code, that would cause ui elements to vanish
+
         this.renderBackground(pPoseStack);
 
         this.getCurrentCategoryScreen().renderBackground(pPoseStack);

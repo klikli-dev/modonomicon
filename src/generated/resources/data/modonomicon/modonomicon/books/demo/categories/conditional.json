@@ -1,6 +1,6 @@
 {
   "name": "book.modonomicon.demo.conditional.name",
-  "icon": "minecraft:diamond",
+  "icon": "minecraft:chest",
   "sort_number": -1,
   "background": "modonomicon:textures/gui/dark_slate_seamless.png",
   "background_width": 512,
