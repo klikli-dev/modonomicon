@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.18.2-1.30.1] - 2023-04-01
+### :sparkles: New Features
+- [`4b48600`](https://github.com/klikli-dev/modonomicon/commit/4b48600a8367786ffa64daf2965a06deff365d0c) - Create ru_ru.json *(PR [#113](https://github.com/klikli-dev/modonomicon/pull/113) by [@Heimdallr-1](https://github.com/Heimdallr-1))*
+
+### :bug: Bug Fixes
+- [`f7a5a9b`](https://github.com/klikli-dev/modonomicon/commit/f7a5a9bbef6dcf2d55f324fe667a600397c42bf4) - render issues if ftb chunks or chunk pregenerator are present *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`9f505e7`](https://github.com/klikli-dev/modonomicon/commit/9f505e75a566fbdf7f8f6425f166240dcf9e9658) - reformat *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.18.2-1.30.0] - 2023-03-23
 ### :sparkles: New Features
 - [`f5256e2`](https://github.com/klikli-dev/modonomicon/commit/f5256e23aa4d3b83cae48c55e74e8d64468384ae) - render improvements *(PR [#111](https://github.com/klikli-dev/modonomicon/pull/111) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -134,3 +145,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.18.2-1.27.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.18.2-1.26.0...release/v1.18.2-1.27.0
 [release/v1.18.2-1.28.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.18.2-1.27.0...release/v1.18.2-1.28.0
 [release/v1.18.2-1.30.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.18.2-1.28.0...release/v1.18.2-1.30.0
+[release/v1.18.2-1.30.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.18.2-1.30.0...release/v1.18.2-1.30.1
