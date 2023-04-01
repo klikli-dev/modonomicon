@@ -583,7 +583,7 @@ public class DemoBookProvider extends BookProvider {
                 .withCondition(BookFalseConditionModel.builder().build());
 
         return BookCategoryModel.create(this.modLoc(helper.category), helper.categoryName())
-                .withIcon("minecraft:diamond")
+                .withIcon("minecraft:chest")
                 .withEntry(entry.build());
     }
 
