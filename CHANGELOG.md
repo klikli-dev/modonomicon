@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.4-1.30.1] - 2023-04-01
+### :sparkles: New Features
+- [`17ebb72`](https://github.com/klikli-dev/modonomicon/commit/17ebb72ce5d75391371e1d05e50d63abe387b8e3) - Create ru_ru.json *(PR [#113](https://github.com/klikli-dev/modonomicon/pull/113) by [@Heimdallr-1](https://github.com/Heimdallr-1))*
+
+### :bug: Bug Fixes
+- [`923bdac`](https://github.com/klikli-dev/modonomicon/commit/923bdac637722b01d778566d33dae7e614130373) - render issues if ftb chunks or chunk pregenerator are present *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.4-1.30.0] - 2023-03-24
 ### :sparkles: New Features
 - [`46ea912`](https://github.com/klikli-dev/modonomicon/commit/46ea912a219fbbe9fbedd179518fd20d5df00dda) - update to 1.19.4 *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -177,3 +185,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.3-1.28.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.27.0...release/v1.19.3-1.28.0
 [release/v1.19.3-1.29.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.28.0...release/v1.19.3-1.29.0
 [release/v1.19.4-1.30.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-0.0.0...release/v1.19.4-1.30.0
+[release/v1.19.4-1.30.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.30.0...release/v1.19.4-1.30.1
