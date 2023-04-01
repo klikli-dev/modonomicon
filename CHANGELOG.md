@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.2-1.30.1] - 2023-04-01
+### :sparkles: New Features
+- [`d35fe06`](https://github.com/klikli-dev/modonomicon/commit/d35fe0611f12e3081cc5d0b37f9de92f254a94fd) - Create ru_ru.json *(PR [#113](https://github.com/klikli-dev/modonomicon/pull/113) by [@Heimdallr-1](https://github.com/Heimdallr-1))*
+
+### :bug: Bug Fixes
+- [`ffa8954`](https://github.com/klikli-dev/modonomicon/commit/ffa89540dc16f17280d52c6ccac79b4be20653f9) - render issues if ftb chunks or chunk pregenerator are present *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`f536516`](https://github.com/klikli-dev/modonomicon/commit/f536516105a038951b84cb55aaca2db99d27eeba) - update mod version *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`edd3e4c`](https://github.com/klikli-dev/modonomicon/commit/edd3e4c0cac35f63ffe2527d9e3209dd57c1d3ec) - reformat *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.2-1.30.0] - 2023-03-23
 ### :sparkles: New Features
 - [`65cce77`](https://github.com/klikli-dev/modonomicon/commit/65cce7726b573183414d175a55131817f1392301) - render improvements *(PR [#111](https://github.com/klikli-dev/modonomicon/pull/111) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -151,3 +163,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.2-1.27.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.26.0...release/v1.19.2-1.27.0
 [release/v1.19.2-1.28.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.27.0...release/v1.19.2-1.28.0
 [release/v1.19.2-1.30.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.28.0...release/v1.19.2-1.30.0
+[release/v1.19.2-1.30.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.30.0...release/v1.19.2-1.30.1
