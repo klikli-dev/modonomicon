@@ -25,6 +25,26 @@
       ],
       "text": "book.modonomicon.demo.features.image.image.text",
       "title": "book.modonomicon.demo.features.image.image.title"
+    },
+    {
+      "type": "modonomicon:spotlight",
+      "anchor": "",
+      "item": {
+        "item": "minecraft:spawner"
+      },
+      "text": "book.modonomicon.demo.features.image.test_spotlight.text",
+      "title": ""
+    },
+    {
+      "type": "modonomicon:image",
+      "anchor": "",
+      "border": true,
+      "images": [
+        "modonomicon:textures/gui/default_background.png",
+        "modonomicon:textures/gui/dark_slate_seamless.png"
+      ],
+      "text": "book.modonomicon.demo.features.image.test_image.text",
+      "title": "book.modonomicon.demo.features.image.test_image.title"
     }
   ],
   "parents": [

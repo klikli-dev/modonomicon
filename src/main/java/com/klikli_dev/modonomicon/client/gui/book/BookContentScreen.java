@@ -486,6 +486,8 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
     @Override // make public
     public void renderComponentHoverEffect(PoseStack pPoseStack, @Nullable Style style, int mouseX, int mouseY) {
 
+        pPoseStack.pushPose();
+        pPoseStack.translate(0, 0, 1000);
         var newStyle = style;
         if (style != null && style.getHoverEvent() != null) {
             if (style.getHoverEvent().getAction() == HoverEvent.Action.SHOW_TEXT) {
@@ -559,7 +561,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
             }
 
         }
-
+        pPoseStack.popPose();
     }
 
     @Override

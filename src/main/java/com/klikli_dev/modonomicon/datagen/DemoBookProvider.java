@@ -23,6 +23,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.data.LanguageProvider;
 
 import java.util.ArrayList;
@@ -386,13 +387,30 @@ public class DemoBookProvider extends BookProvider {
                 )
                 .build();
 
+        //now test if  tooltips render correctly over the image
+        helper.page("test_spotlight");
+        var testSpotlight = BookSpotlightPageModel.builder()
+                .withText(helper.pageText())
+                .withItem(Ingredient.of(Blocks.SPAWNER))
+                .build();
+
+        helper.page("test_image");
+        var testImage = BookImagePageModel.builder()
+                .withText(helper.pageText())
+                .withTitle(helper.pageTitle())
+                .withImages(
+                        new ResourceLocation("modonomicon:textures/gui/default_background.png"),
+                        new ResourceLocation("modonomicon:textures/gui/dark_slate_seamless.png")
+                )
+                .build();
+
         return BookEntryModel.builder()
                 .withId(this.modLoc("features/image"))
                 .withName(helper.entryName())
                 .withDescription(helper.entryDescription())
                 .withIcon("minecraft:item_frame")
                 .withLocation(entryHelper.get('i'))
-                .withPages(introPage, imagePage);
+                .withPages(introPage, imagePage, testSpotlight, testImage);
     }
 
     private BookEntryModel.Builder makeRedirectEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
