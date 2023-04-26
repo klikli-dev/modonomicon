@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.4-1.30.3] - 2023-04-26
+### :bug: Bug Fixes
+- [`cc6a563`](https://github.com/klikli-dev/modonomicon/commit/cc6a563e3c7d1863ebf60e9fc1dc1aececf247e9) - tooltip rendering behind images *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.4-1.30.2] - 2023-04-03
 ### :sparkles: New Features
 - [`1cf2618`](https://github.com/klikli-dev/modonomicon/commit/1cf26180051846af046d0c0b3bc55587388e8857) - enable jei integration now that jei is updated *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -195,3 +200,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.4-1.30.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-0.0.0...release/v1.19.4-1.30.0
 [release/v1.19.4-1.30.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.30.0...release/v1.19.4-1.30.1
 [release/v1.19.4-1.30.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.30.1...release/v1.19.4-1.30.2
+[release/v1.19.4-1.30.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.30.2...release/v1.19.4-1.30.3
