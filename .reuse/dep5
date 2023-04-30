@@ -13,8 +13,12 @@ License: CC-BY-4.0
 
 Files: .github/*
 Copyright: 2022 klikli-dev
-License: CC-BY-4.0
+License: CC0-1.0
 
 Files: .gitpod.*
 Copyright: 2022 klikli-dev
-License: CC-BY-4.0
+License: CC0-1.0
+
+Files: CHANGELOG.md
+Copyright: 2022 klikli-dev
+License: CC0-1.0

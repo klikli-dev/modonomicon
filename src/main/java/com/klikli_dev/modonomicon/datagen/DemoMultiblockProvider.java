@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 klikli-dev
+//
+// SPDX-License-Identifier: MIT
+
 package com.klikli_dev.modonomicon.datagen;
 
 import com.klikli_dev.modonomicon.api.datagen.MultiblockProvider;
