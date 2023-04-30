@@ -80,13 +80,14 @@ public abstract class LangGenerator extends LanguageProvider {
 
             this.add(Gui.RECIPE_PAGE_RECIPE_MISSING, "Recipe %s is was not found! This may be an issue with the mod, or the modpack may have disabled it.");
 
-
             //Tooltip
             this.add(Tooltips.CONDITION_ADVANCEMENT, "Requires Advancement: %s");
             this.add(Tooltips.CONDITION_ENTRY_UNLOCKED, "Requires unlocked Entry: %s");
             this.add(Tooltips.CONDITION_ENTRY_READ, "Requires read Entry: %s\nHint: Mark all entries as read with the \"eye\" button at the top left.");
             this.add(Tooltips.ITEM_NO_BOOK_FOUND_FOR_STACK, "No book found for this item in the modonomicon book database! Nbt: %s");
             this.add(Tooltips.RECIPE_CRAFTING_SHAPELESS, "Shapeless");
+            this.add(Tooltips.FLUID_AMOUNT, "%s mb");
+            this.add(Tooltips.FLUID_AMOUNT_AND_CAPACITY, "%s / %s mb");
 
             //Commands
             this.add(Command.ERROR_UNKNOWN_BOOK, "Unknown book: %s");

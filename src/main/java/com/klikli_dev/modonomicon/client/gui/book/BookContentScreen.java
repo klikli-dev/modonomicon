@@ -21,6 +21,7 @@ import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.BackButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ItemLinkRenderer;
+import com.klikli_dev.modonomicon.client.render.FluidRenderHelper;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.config.ClientConfig;
@@ -50,7 +51,10 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -96,6 +100,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
     private List<Component> tooltip;
 
     private ItemStack tooltipStack;
+    private FluidStack tooltipFluidStack;
     private boolean isHoveringItemLink;
 
     public BookContentScreen(BookOverviewScreen parentScreen, BookEntry entry) {
@@ -199,7 +204,14 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
 
     public void setTooltipStack(ItemStack stack) {
         this.setTooltip(Collections.emptyList());
+        this.setTooltipStack((FluidStack) null);
         this.tooltipStack = stack;
+    }
+
+    public void setTooltipStack(FluidStack stack) {
+        this.setTooltip(Collections.emptyList());
+        this.setTooltipStack((ItemStack) null);
+        this.tooltipFluidStack = stack;
     }
 
     /**
@@ -243,6 +255,27 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
         ItemStack[] stacks = ingr.getItems();
         if (stacks.length > 0) {
             this.renderItemStack(poseStack, x, y, mouseX, mouseY, stacks[(this.ticksInBook / 20) % stacks.length]);
+        }
+    }
+
+    public void renderFluidStack(PoseStack poseStack, int x, int y, int mouseX, int mouseY, FluidStack stack, int capacity) {
+        if (stack.isEmpty()) {
+            return;
+        }
+
+        poseStack.pushPose();
+        poseStack.translate(x, y, 0);
+        FluidRenderHelper.drawFluid(poseStack, 16, 16, stack, capacity);
+        poseStack.popPose();
+
+        if (this.isMouseInRelativeRange(mouseX, mouseY, x, y, 16, 16)) {
+            this.setTooltipStack(stack);
+        }
+    }
+
+    public void renderFluidStacks(PoseStack poseStack, int x, int y, int mouseX, int mouseY, FluidStack[] stacks, int capacity) {
+        if (stacks.length > 0) {
+            this.renderFluidStack(poseStack, x, y, mouseX, mouseY, stacks[(this.ticksInBook / 20) % stacks.length], capacity);
         }
     }
 
@@ -337,6 +370,10 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
             List<Component> tooltip = this.getTooltipFromItem(this.tooltipStack);
 
             this.renderComponentTooltip(pPoseStack, tooltip, pMouseX, pMouseY);
+        } else if (this.tooltipFluidStack != null) {
+            List<Component> tooltip = this.getTooltipFromFluid(this.tooltipFluidStack);
+
+            this.renderComponentTooltip(pPoseStack, tooltip, pMouseX, pMouseY);
         } else if (this.tooltip != null && !this.tooltip.isEmpty()) {
             this.renderComponentTooltip(pPoseStack, this.tooltip, pMouseX, pMouseY);
         }
@@ -392,7 +429,6 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
             this.rightPageRenderer = null;
         }
     }
-
 
     protected void onPageChanged() {
         this.beginDisplayPages();
@@ -580,6 +616,23 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
 
         return tooltip;
     }
+
+    public List<Component> getTooltipFromFluid(FluidStack fluidStack) {
+        var tooltip = FluidRenderHelper.getTooltip(fluidStack, FluidType.BUCKET_VOLUME, this.minecraft.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL, FluidRenderHelper.TooltipMode.SHOW_AMOUNT_AND_CAPACITY);
+
+        if (this.isHoveringItemLink) {
+            tooltip.add(Component.literal(""));
+            if (ModonomiconJeiIntegration.isJeiLoaded()) {
+                tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GREEN)));
+                tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO_LINE2).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GRAY)));
+            } else {
+                tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO_NO_JEI).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.RED)));
+            }
+        }
+
+        return tooltip;
+    }
+
 
     @Override
     public boolean handleComponentClicked(@Nullable Style pStyle) {
