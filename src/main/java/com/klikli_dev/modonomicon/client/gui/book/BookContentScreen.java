@@ -204,13 +204,13 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
 
     public void setTooltipStack(ItemStack stack) {
         this.setTooltip(Collections.emptyList());
-        this.setTooltipStack((FluidStack) null);
+        this.tooltipFluidStack = null;
         this.tooltipStack = stack;
     }
 
     public void setTooltipStack(FluidStack stack) {
         this.setTooltip(Collections.emptyList());
-        this.setTooltipStack((ItemStack) null);
+        this.tooltipStack = null;
         this.tooltipFluidStack = stack;
     }
 
