@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.4-1.31.3] - 2023-04-30
+### :wrench: Chores
+- [`10e1040`](https://github.com/klikli-dev/modonomicon/commit/10e1040fadbf576490855d96ff1e41d4d4e1bf3e) - remove number formatting for fluid tooltips *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.4-1.31.2] - 2023-04-30
 ### :bug: Bug Fixes
 - [`40c2510`](https://github.com/klikli-dev/modonomicon/commit/40c2510e6e5e7fd3a9817a188739c5315694b428) - tooltip not resetting *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -223,3 +228,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.4-1.31.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.30.3...release/v1.19.4-1.31.0
 [release/v1.19.4-1.31.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.31.0...release/v1.19.4-1.31.1
 [release/v1.19.4-1.31.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.31.1...release/v1.19.4-1.31.2
+[release/v1.19.4-1.31.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.31.2...release/v1.19.4-1.31.3
