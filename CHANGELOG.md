@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.4-1.31.4] - 2023-04-30
+### :wrench: Chores
+- [`ce4a361`](https://github.com/klikli-dev/modonomicon/commit/ce4a361c65476658a54ec15acd82ecb1d432e62c) - improve fluid stack rendering *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.4-1.31.3] - 2023-04-30
 ### :wrench: Chores
 - [`10e1040`](https://github.com/klikli-dev/modonomicon/commit/10e1040fadbf576490855d96ff1e41d4d4e1bf3e) - remove number formatting for fluid tooltips *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -229,3 +234,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.4-1.31.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.31.0...release/v1.19.4-1.31.1
 [release/v1.19.4-1.31.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.31.1...release/v1.19.4-1.31.2
 [release/v1.19.4-1.31.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.31.2...release/v1.19.4-1.31.3
+[release/v1.19.4-1.31.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.31.3...release/v1.19.4-1.31.4
