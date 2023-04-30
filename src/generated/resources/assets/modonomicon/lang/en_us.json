@@ -140,5 +140,7 @@
   "tooltip.modonomicon..condition.entry_read": "Requires read Entry: %s\nHint: Mark all entries as read with the \"eye\" button at the top left.",
   "tooltip.modonomicon..condition.entry_unlocked": "Requires unlocked Entry: %s",
   "tooltip.modonomicon..recipe.crafting_shapeless": "Shapeless",
+  "tooltip.modonomicon.fluid.amount": "%s mb",
+  "tooltip.modonomicon.fluid.amount_and_capacity": "%s / %s mb",
   "tooltip.modonomicon.no_book_found_for_stack": "No book found for this item in the modonomicon book database! Nbt: %s"
 }

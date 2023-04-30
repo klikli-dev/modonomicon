@@ -168,8 +168,8 @@ public class ModonomiconConstants {
             public static final String ITEM_NO_BOOK_FOUND_FOR_STACK = PREFIX + "no_book_found_for_stack";
             public static final String RECIPE_CRAFTING_SHAPELESS = RECIPE_PREFIX + "crafting_shapeless";
 
-            public static final String FLUID_AMOUNT = PREFIX + ".fluid.amount";
-            public static final String FLUID_AMOUNT_AND_CAPACITY = PREFIX + ".fluid.amount_and_capacity";
+            public static final String FLUID_AMOUNT = PREFIX + "fluid.amount";
+            public static final String FLUID_AMOUNT_AND_CAPACITY = PREFIX + "fluid.amount_and_capacity";
 
         }
 
