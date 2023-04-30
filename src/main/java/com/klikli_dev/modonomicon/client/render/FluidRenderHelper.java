@@ -27,7 +27,6 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.joml.Matrix4f;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -157,12 +156,11 @@ public class FluidRenderHelper {
             long amount = fluidStack.getAmount();
             long milliBuckets = (amount * 1000) / FluidType.BUCKET_VOLUME;
 
-            var nf = NumberFormat.getIntegerInstance();
             if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
-                MutableComponent amountString = Component.translatable(ModonomiconConstants.I18n.Tooltips.FLUID_AMOUNT_AND_CAPACITY, nf.format(milliBuckets), nf.format(capacity));
+                MutableComponent amountString = Component.translatable(ModonomiconConstants.I18n.Tooltips.FLUID_AMOUNT_AND_CAPACITY, milliBuckets, capacity);
                 tooltip.add(amountString.withStyle(ChatFormatting.GRAY));
             } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
-                MutableComponent amountString = Component.translatable(ModonomiconConstants.I18n.Tooltips.FLUID_AMOUNT, nf.format(milliBuckets));
+                MutableComponent amountString = Component.translatable(ModonomiconConstants.I18n.Tooltips.FLUID_AMOUNT, milliBuckets);
                 tooltip.add(amountString.withStyle(ChatFormatting.GRAY));
             }
             return tooltip;
