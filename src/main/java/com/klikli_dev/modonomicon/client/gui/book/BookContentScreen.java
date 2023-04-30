@@ -199,18 +199,17 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
     }
 
     public void setTooltip(List<Component> tooltip) {
+        this.resetTooltip();
         this.tooltip = tooltip;
     }
 
     public void setTooltipStack(ItemStack stack) {
-        this.setTooltip(Collections.emptyList());
-        this.tooltipFluidStack = null;
+        this.resetTooltip();
         this.tooltipStack = stack;
     }
 
     public void setTooltipStack(FluidStack stack) {
-        this.setTooltip(Collections.emptyList());
-        this.tooltipStack = null;
+        this.resetTooltip();
         this.tooltipFluidStack = stack;
     }
 
@@ -437,6 +436,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
     protected void resetTooltip() {
         this.tooltip = null;
         this.tooltipStack = null;
+        this.tooltipFluidStack = null;
     }
 
     private boolean clickOutsideEntry(double pMouseX, double pMouseY) {
