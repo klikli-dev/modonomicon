@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.4-1.31.1] - 2023-04-30
+### :bug: Bug Fixes
+- [`d1a4641`](https://github.com/klikli-dev/modonomicon/commit/d1a46417c7b2bf70e7c4b233cee72e00066f2077) - recursion *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.4-1.31.0] - 2023-04-30
 ### :sparkles: New Features
 - [`11f031f`](https://github.com/klikli-dev/modonomicon/commit/11f031f6facda764e947dbf207f86d71100da408) - add fluid stack rendering *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -210,3 +215,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.4-1.30.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.30.1...release/v1.19.4-1.30.2
 [release/v1.19.4-1.30.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.30.2...release/v1.19.4-1.30.3
 [release/v1.19.4-1.31.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.30.3...release/v1.19.4-1.31.0
+[release/v1.19.4-1.31.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.31.0...release/v1.19.4-1.31.1
