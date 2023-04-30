@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.4-1.31.2] - 2023-04-30
+### :bug: Bug Fixes
+- [`40c2510`](https://github.com/klikli-dev/modonomicon/commit/40c2510e6e5e7fd3a9817a188739c5315694b428) - tooltip not resetting *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`525fcd7`](https://github.com/klikli-dev/modonomicon/commit/525fcd73496dc16119263886103467c4a65a10d9) - fluid tooltip lang key -> translation missing *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.4-1.31.1] - 2023-04-30
 ### :bug: Bug Fixes
 - [`d1a4641`](https://github.com/klikli-dev/modonomicon/commit/d1a46417c7b2bf70e7c4b233cee72e00066f2077) - recursion *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -216,3 +222,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.4-1.30.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.30.2...release/v1.19.4-1.30.3
 [release/v1.19.4-1.31.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.30.3...release/v1.19.4-1.31.0
 [release/v1.19.4-1.31.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.31.0...release/v1.19.4-1.31.1
+[release/v1.19.4-1.31.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.31.1...release/v1.19.4-1.31.2
