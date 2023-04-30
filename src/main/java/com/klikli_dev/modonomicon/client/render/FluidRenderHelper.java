@@ -113,6 +113,8 @@ public class FluidRenderHelper {
                 }
             }
         }
+        //now reset color
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
     }
 
     private static void setGLColorFromInt(int color) {
