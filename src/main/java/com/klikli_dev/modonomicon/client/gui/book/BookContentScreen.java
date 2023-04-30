@@ -264,10 +264,10 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
 
         poseStack.pushPose();
         poseStack.translate(x, y, 0);
-        FluidRenderHelper.drawFluid(poseStack, 16, 16, stack, capacity);
+        FluidRenderHelper.drawFluid(poseStack, 18, 18, stack, capacity);
         poseStack.popPose();
 
-        if (this.isMouseInRelativeRange(mouseX, mouseY, x, y, 16, 16)) {
+        if (this.isMouseInRelativeRange(mouseX, mouseY, x, y, 18, 18)) {
             this.setTooltipStack(stack);
         }
     }
