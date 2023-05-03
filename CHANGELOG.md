@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.4-1.31.6] - 2023-05-03
+### :sparkles: New Features
+- [`abd2776`](https://github.com/klikli-dev/modonomicon/commit/abd277666221a3cf5d082e098804a76a53ea4661) - Update ru_ru.json *(PR [#117](https://github.com/klikli-dev/modonomicon/pull/117) by [@Heimdallr-1](https://github.com/Heimdallr-1))*
+
+### :wrench: Chores
+- [`5c7586d`](https://github.com/klikli-dev/modonomicon/commit/5c7586d43b77b6b7a2751c46f311d61d001952be) - update to latest jei *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.4-1.31.5] - 2023-04-30
 ### :bug: Bug Fixes
 - [`2bab28f`](https://github.com/klikli-dev/modonomicon/commit/2bab28f6666259eee7bd0c3dd89190bac700bd68) - reset render color after fluid rendering *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -241,3 +249,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.4-1.31.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.31.2...release/v1.19.4-1.31.3
 [release/v1.19.4-1.31.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.31.3...release/v1.19.4-1.31.4
 [release/v1.19.4-1.31.5]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.31.4...release/v1.19.4-1.31.5
+[release/v1.19.4-1.31.6]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.31.5...release/v1.19.4-1.31.6
