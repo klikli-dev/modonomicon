@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.2-1.30.2] - 2023-05-03
+### :bug: Bug Fixes
+- [`eab2d2c`](https://github.com/klikli-dev/modonomicon/commit/eab2d2c3f7f6640229c05d12289b1bd3d17e2a7d) - render issues with block items *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`4103ac9`](https://github.com/klikli-dev/modonomicon/commit/4103ac9a0c477caa1ec69ab000108368d3c49b65) - add workaround for multiblock rendering with rubidium present *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.2-1.30.1] - 2023-04-01
 ### :sparkles: New Features
 - [`d35fe06`](https://github.com/klikli-dev/modonomicon/commit/d35fe0611f12e3081cc5d0b37f9de92f254a94fd) - Create ru_ru.json *(PR [#113](https://github.com/klikli-dev/modonomicon/pull/113) by [@Heimdallr-1](https://github.com/Heimdallr-1))*
@@ -164,3 +170,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.2-1.28.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.27.0...release/v1.19.2-1.28.0
 [release/v1.19.2-1.30.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.28.0...release/v1.19.2-1.30.0
 [release/v1.19.2-1.30.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.30.0...release/v1.19.2-1.30.1
+[release/v1.19.2-1.30.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.30.1...release/v1.19.2-1.30.2
