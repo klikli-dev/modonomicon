@@ -172,6 +172,9 @@ dependencies {
     implementation fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")
     implementation fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
 
+//    //Rubidium testing
+//    runtimeOnly fg.deobf("curse.maven:rubidium-574856:4494903")
+
     //for some tests we use occultism + deps
 //    runtimeOnly fg.deobf("curse.maven:occultism-361026:4001660") //1.18.2-1.41.3
 //    runtimeOnly fg.deobf("curse.maven:curios-309927:3841948") //1.18.2-5.0.7.1

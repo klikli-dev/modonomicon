@@ -51,6 +51,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent.Stage;
+import net.minecraftforge.fml.ModList;
 
 import java.awt.*;
 import java.util.*;
@@ -73,6 +74,8 @@ public class MultiblockPreviewRenderer {
     private static BlockState lookingState;
     private static BlockPos lookingPos;
     private static MultiBufferSource.BufferSource buffers = null;
+
+    private static boolean isRubidiumLoaded = ModList.get().isLoaded("rubidium");
 
     public static void setMultiblock(Multiblock multiblock, Component name, boolean flip) {
         setMultiblock(multiblock, name, flip, pos -> pos);
@@ -179,7 +182,8 @@ public class MultiblockPreviewRenderer {
     }
 
     public static void onRenderLevelLastEvent(RenderLevelStageEvent event) {
-        if (event.getStage() == Stage.AFTER_TRIPWIRE_BLOCKS) { //After translucent causes block entities to error out on render in preview
+        if (event.getStage() == Stage.AFTER_TRIPWIRE_BLOCKS || //After translucent causes block entities to error out on render in preview
+                (isRubidiumLoaded && event.getStage() == Stage.AFTER_PARTICLES  )) { //rubidium skips most render stages, so we need this one.
             if (hasMultiblock && multiblock != null) {
                 renderMultiblock(Minecraft.getInstance().level, event.getPoseStack());
             }
