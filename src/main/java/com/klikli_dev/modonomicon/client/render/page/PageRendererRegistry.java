@@ -9,14 +9,16 @@ package com.klikli_dev.modonomicon.client.render.page;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.book.page.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.*;
 
 public class PageRendererRegistry {
-    static final Set<ItemStack> ITEM_STACKS_NOT_TO_RENDER = new HashSet<>();
-    static final Set<FluidStack> FLUID_STACKS_NOT_TO_RENDER = new HashSet<>();
+    static final Set<Item> ITEMS_NOT_TO_RENDER = new HashSet<>();
+    static final Set<Fluid> FLUIDS_NOT_TO_RENDER = new HashSet<>();
     private static final Map<ResourceLocation, PageRendererFactory> pageRenderers = new HashMap<>();
 
     /**
@@ -70,46 +72,46 @@ public class PageRendererRegistry {
     }
 
     /**
-     * Any item stacks registered here, will not be rendered by the renderIngredient / renderItemStacks / renderItemStack methods.
+     * Any items registered here, will not be rendered by the renderIngredient / renderItemStacks / renderItemStack methods.
      * Can be called at any time.
      */
     public static void registerItemStackNotToRender(ItemStack stack) {
-        ITEM_STACKS_NOT_TO_RENDER.add(stack);
+        ITEMS_NOT_TO_RENDER.add(stack.getItem());
     }
 
     /**
-     * Any item fluid registered here, will not be rendered by the renderFluidStacks / renderFluidStack methods.
+     * Any fluids registered here, will not be rendered by the renderFluidStacks / renderFluidStack methods.
      * Can be called at any time.
      */
     public static void registerFluidStackNotToRender(FluidStack stack) {
-        FLUID_STACKS_NOT_TO_RENDER.add(stack);
+        FLUIDS_NOT_TO_RENDER.add(stack.getFluid());
     }
 
     /**
      * Returns false, if the given stack should not be rendered in the book, e.g. in recipes.
      */
     public static boolean isRenderable(ItemStack stack) {
-        return !ITEM_STACKS_NOT_TO_RENDER.contains(stack);
+        return !ITEMS_NOT_TO_RENDER.contains(stack.getItem());
     }
 
     /**
      * Returns false, if the given stack should not be rendered in the book, e.g. in recipes.
      */
     public static boolean isRenderable(FluidStack stack) {
-        return !FLUID_STACKS_NOT_TO_RENDER.contains(stack);
+        return !FLUIDS_NOT_TO_RENDER.contains(stack.getFluid());
     }
 
     /**
      * Returns only those stacks in the list, that should be rendered in the book, e.g. in recipes.
      */
     public static List<ItemStack> filterRenderableItemStacks(Collection<ItemStack> stacks) {
-        return stacks.stream().filter(stack -> !ITEM_STACKS_NOT_TO_RENDER.contains(stack)).toList();
+        return stacks.stream().filter(stack -> !ITEMS_NOT_TO_RENDER.contains(stack.getItem())).toList();
     }
 
     /**
      * Returns only those stacks in the list, that should be rendered in the book, e.g. in recipes.
      */
     public static List<FluidStack> filterRenderableFluidStacks(Collection<FluidStack> stacks) {
-        return stacks.stream().filter(stack -> !FLUID_STACKS_NOT_TO_RENDER.contains(stack)).toList();
+        return stacks.stream().filter(stack -> !FLUIDS_NOT_TO_RENDER.contains(stack.getFluid())).toList();
     }
 }
