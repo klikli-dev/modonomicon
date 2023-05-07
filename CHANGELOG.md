@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.4-1.32.1] - 2023-05-07
+### :bug: Bug Fixes
+- [`ccd83d8`](https://github.com/klikli-dev/modonomicon/commit/ccd83d8cbf57529a74495cb245422e66f768989e) - itemstacks are not valid set unique identifiers *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.4-1.32.0] - 2023-05-07
 ### :sparkles: New Features
 - [`be4d677`](https://github.com/klikli-dev/modonomicon/commit/be4d677cebb05474039a5760cbaeb0ae6ff95d51) - add render filtering for item/fluid stacks in the book *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -256,3 +261,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.4-1.31.5]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.31.4...release/v1.19.4-1.31.5
 [release/v1.19.4-1.31.6]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.31.5...release/v1.19.4-1.31.6
 [release/v1.19.4-1.32.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.31.6...release/v1.19.4-1.32.0
+[release/v1.19.4-1.32.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.32.0...release/v1.19.4-1.32.1
