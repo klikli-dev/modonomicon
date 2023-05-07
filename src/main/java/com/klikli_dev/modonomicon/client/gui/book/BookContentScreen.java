@@ -59,8 +59,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class BookContentScreen extends Screen implements BookScreenWithButtons {
@@ -238,7 +238,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
     }
 
     public void renderItemStack(PoseStack poseStack, int x, int y, int mouseX, int mouseY, ItemStack stack) {
-        if (stack.isEmpty()) {
+        if (stack.isEmpty() || !PageRendererRegistry.isRenderable(stack)) {
             return;
         }
 
@@ -250,15 +250,32 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
         }
     }
 
-    public void renderIngredient(PoseStack poseStack, int x, int y, int mouseX, int mouseY, Ingredient ingr) {
-        ItemStack[] stacks = ingr.getItems();
-        if (stacks.length > 0) {
-            this.renderItemStack(poseStack, x, y, mouseX, mouseY, stacks[(this.ticksInBook / 20) % stacks.length]);
+    public void renderItemStacks(PoseStack poseStack, int x, int y, int mouseX, int mouseY, Collection<ItemStack> stacks) {
+        this.renderItemStacks(poseStack, x, y, mouseX, mouseY, stacks, -1);
+    }
+
+    public void renderItemStacks(PoseStack poseStack, int x, int y, int mouseX, int mouseY, Collection<ItemStack> stacks, int countOverride) {
+        var filteredStacks = PageRendererRegistry.filterRenderableItemStacks(stacks);
+        if (filteredStacks.size() > 0) {
+            var currentStack = filteredStacks.get((this.ticksInBook / 20) % filteredStacks.size());
+            this.renderItemStack(poseStack, x, y, mouseX, mouseY, countOverride > 0 ? currentStack.copyWithCount(countOverride) : currentStack);
         }
     }
 
+    public void renderIngredient(PoseStack poseStack, int x, int y, int mouseX, int mouseY, Ingredient ingr) {
+        this.renderItemStacks(poseStack, x, y, mouseX, mouseY, Arrays.asList(ingr.getItems()), -1);
+    }
+
+    public void renderIngredient(PoseStack poseStack, int x, int y, int mouseX, int mouseY, Ingredient ingr, int countOverride) {
+        this.renderItemStacks(poseStack, x, y, mouseX, mouseY, Arrays.asList(ingr.getItems()), countOverride);
+    }
+
+    public void renderFluidStack(PoseStack poseStack, int x, int y, int mouseX, int mouseY, FluidStack stack) {
+        this.renderFluidStack(poseStack, x, y, mouseX, mouseY, stack, FluidType.BUCKET_VOLUME);
+    }
+
     public void renderFluidStack(PoseStack poseStack, int x, int y, int mouseX, int mouseY, FluidStack stack, int capacity) {
-        if (stack.isEmpty()) {
+        if (stack.isEmpty() || !PageRendererRegistry.isRenderable(stack)) {
             return;
         }
 
@@ -272,9 +289,14 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
         }
     }
 
-    public void renderFluidStacks(PoseStack poseStack, int x, int y, int mouseX, int mouseY, FluidStack[] stacks, int capacity) {
-        if (stacks.length > 0) {
-            this.renderFluidStack(poseStack, x, y, mouseX, mouseY, stacks[(this.ticksInBook / 20) % stacks.length], capacity);
+    public void renderFluidStacks(PoseStack poseStack, int x, int y, int mouseX, int mouseY, Collection<FluidStack> stacks) {
+        this.renderFluidStacks(poseStack, x, y, mouseX, mouseY, stacks, FluidType.BUCKET_VOLUME);
+    }
+
+    public void renderFluidStacks(PoseStack poseStack, int x, int y, int mouseX, int mouseY, Collection<FluidStack> stacks, int capacity) {
+        var filteredStacks = PageRendererRegistry.filterRenderableFluidStacks(stacks);
+        if (filteredStacks.size() > 0) {
+            this.renderFluidStack(poseStack, x, y, mouseX, mouseY, filteredStacks.get((this.ticksInBook / 20) % filteredStacks.size()), capacity);
         }
     }
 
