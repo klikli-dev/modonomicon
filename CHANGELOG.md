@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.4-1.32.2] - 2023-05-31
+### :sparkles: New Features
+- [`7c45a56`](https://github.com/klikli-dev/modonomicon/commit/7c45a56ddac8860a531f000cc969f8020ec608cd) - create zh_cn.json *(PR [#120](https://github.com/klikli-dev/modonomicon/pull/120) by [@Zoshsgahdnkc](https://github.com/Zoshsgahdnkc))*
+
+
 ## [release/v1.19.4-1.32.1] - 2023-05-07
 ### :bug: Bug Fixes
 - [`ccd83d8`](https://github.com/klikli-dev/modonomicon/commit/ccd83d8cbf57529a74495cb245422e66f768989e) - itemstacks are not valid set unique identifiers *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -262,3 +267,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.4-1.31.6]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.31.5...release/v1.19.4-1.31.6
 [release/v1.19.4-1.32.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.31.6...release/v1.19.4-1.32.0
 [release/v1.19.4-1.32.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.32.0...release/v1.19.4-1.32.1
+[release/v1.19.4-1.32.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.32.1...release/v1.19.4-1.32.2
