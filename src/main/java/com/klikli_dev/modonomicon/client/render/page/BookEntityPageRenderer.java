@@ -36,9 +36,6 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
     }
 
     public static void renderEntity(GuiGraphics guiGraphics, Entity entity, Level world, float x, float y, float rotation, float renderScale, float offset) {
-        //TODO: Upgrade: verify if we need to set the level
-        //entity.level = world;
-
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(x, y, 50);
         guiGraphics.pose().scale(renderScale, renderScale, renderScale);

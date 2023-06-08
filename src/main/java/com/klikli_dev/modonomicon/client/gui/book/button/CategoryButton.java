@@ -58,8 +58,6 @@ public class CategoryButton extends Button {
             }
 
             //draw category button background
-            //TODO: Upgrade: check if blit is correct here
-//            int blitOffset = 50;
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             guiGraphics.blit(this.parent.getBookOverviewTexture(), renderX, this.getY(), texX, texY, renderWidth, this.height, 256, 256);
 
