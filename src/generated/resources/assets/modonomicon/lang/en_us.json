@@ -53,7 +53,7 @@
   "book.modonomicon.demo.formatting.advanced.name": "Advanced Formatting Entry",
   "book.modonomicon.demo.formatting.advanced.page1.text": "<t>this.could.be.a.translation.key<t>     \n***This is bold italics***     \n*++This is italics underlined++*\n[](item://minecraft:diamond)\n[TestText](item://minecraft:emerald)\n",
   "book.modonomicon.demo.formatting.advanced.page1.title": "Advanced Formatting",
-  "book.modonomicon.demo.formatting.advanced.page2.text": "Unordered List:\n- List item\n- List item 2\n- List item 3\n\\\n\nOrdered List:\n1. Entry 1\n2. Entry 2\n",
+  "book.modonomicon.demo.formatting.advanced.page2.text": "Unordered List:\n- List item\n- List item 2\n- List item 3\n\nOrdered List:\n1. Entry 1\n2. Entry 2\n",
   "book.modonomicon.demo.formatting.advanced.page3.text": "This page is to test title scaling!",
   "book.modonomicon.demo.formatting.advanced.page3.title": "Ridiculously superlong title that should be scaled!",
   "book.modonomicon.demo.formatting.always_locked.description": "Used to demonstrate linking to locked entries",
