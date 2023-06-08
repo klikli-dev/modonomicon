@@ -9,7 +9,7 @@ package com.klikli_dev.modonomicon.client.gui.book.button;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookScreenWithButtons;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -37,18 +37,14 @@ public class BookButton extends Button {
         this.tooltip = List.of(tooltip);
     }
 
-    public List<Component> getTooltip() {
-        return this.tooltip;
-    }
-
     @Override
-    public final void render(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
+    public final void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         this.active = this.visible = this.displayCondition.get();
-        super.render(ms, mouseX, mouseY, partialTicks);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override
-    public void renderWidget(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
@@ -57,7 +53,7 @@ public class BookButton extends Button {
         RenderSystem.enableDepthTest();
 
         //if focused we go to the right of our normal button (instead of down, like mc buttons do)
-        BookContentScreen.drawFromTexture(ms, this.parent.getBook(), this.getX(), this.getY(), this.u + (this.isHovered() ? this.width : 0), this.v, this.width, this.height);
+        BookContentScreen.drawFromTexture(guiGraphics, this.parent.getBook(), this.getX(), this.getY(), this.u + (this.isHovered() ? this.width : 0), this.v, this.width, this.height);
         if (this.isHovered()) {
             this.parent.setTooltip(this.tooltip);
         }

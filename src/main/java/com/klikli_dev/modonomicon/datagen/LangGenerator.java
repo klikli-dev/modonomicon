@@ -12,7 +12,6 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.*;
 import com.klikli_dev.modonomicon.api.datagen.BookLangHelper;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.data.LanguageProvider;
@@ -334,8 +333,7 @@ public abstract class LangGenerator extends LanguageProvider {
                             - List item 
                             - List item 2
                             - List item 3
-                            \\
-                                                        
+
                             Ordered List:
                             1. Entry 1
                             2. Entry 2

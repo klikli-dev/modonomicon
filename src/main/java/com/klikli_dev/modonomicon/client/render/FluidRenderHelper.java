@@ -8,9 +8,13 @@ package com.klikli_dev.modonomicon.client.render;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -39,13 +43,13 @@ public class FluidRenderHelper {
     private static final int MIN_FLUID_HEIGHT = 1; // ensure tiny amounts of fluid are still visible
 
     /**
-     * @param poseStack  the pose stack.
-     * @param width      the width of the fluid "slot" to render.
-     * @param height     the height of the fluid "slot" to render.
-     * @param fluidStack the fluid stack representing the fluid and the amount to render.
-     * @param capacity   the capacity of the fluid "slot" - together with the amount it determines the actual height of the fluid rendered within the slot.
+     * @param guiGraphics the gui graphics.
+     * @param width       the width of the fluid "slot" to render.
+     * @param height      the height of the fluid "slot" to render.
+     * @param fluidStack  the fluid stack representing the fluid and the amount to render.
+     * @param capacity    the capacity of the fluid "slot" - together with the amount it determines the actual height of the fluid rendered within the slot.
      */
-    public static void drawFluid(PoseStack poseStack, final int width, final int height, FluidStack fluidStack, int capacity) {
+    public static void drawFluid(GuiGraphics guiGraphics, final int width, final int height, FluidStack fluidStack, int capacity) {
         Fluid fluid = fluidStack.getFluid();
         if (fluid.isSame(Fluids.EMPTY)) {
             return;
@@ -64,7 +68,7 @@ public class FluidRenderHelper {
                         scaledAmount = height;
                     }
 
-                    drawTiledSprite(poseStack, width, height, fluidColor, scaledAmount, fluidStillSprite);
+                    drawTiledSprite(guiGraphics, width, height, fluidColor, scaledAmount, fluidStillSprite);
                 });
     }
 
@@ -87,9 +91,9 @@ public class FluidRenderHelper {
     }
 
 
-    private static void drawTiledSprite(PoseStack poseStack, final int tiledWidth, final int tiledHeight, int color, long scaledAmount, TextureAtlasSprite sprite) {
+    private static void drawTiledSprite(GuiGraphics guiGraphics, final int tiledWidth, final int tiledHeight, int color, long scaledAmount, TextureAtlasSprite sprite) {
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-        Matrix4f matrix = poseStack.last().pose();
+        Matrix4f matrix = guiGraphics.pose().last().pose();
         setGLColorFromInt(color);
 
         final int xTileCount = tiledWidth / TEXTURE_SIZE;

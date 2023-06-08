@@ -61,7 +61,7 @@ public class ResetBookUnlocksCommand implements com.mojang.brigadier.Command<Com
         var book = getBook(context, "book");
         BookUnlockCapability.resetFor(context.getSource().getPlayer(), book);
         BookUnlockCapability.updateAndSyncFor(context.getSource().getPlayer());
-        context.getSource().sendSuccess(Component.translatable(Command.SUCCESS_RESET_BOOK, Component.translatable(book.getName())), true);
+        context.getSource().sendSuccess(() -> Component.translatable(Command.SUCCESS_RESET_BOOK, Component.translatable(book.getName())), true);
         return 1;
     }
 }

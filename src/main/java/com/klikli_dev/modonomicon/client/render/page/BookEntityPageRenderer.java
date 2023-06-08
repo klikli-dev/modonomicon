@@ -16,6 +16,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.network.chat.Component;
@@ -34,22 +35,20 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
         super(page);
     }
 
-    public static void renderEntity(PoseStack ms, Entity entity, Level world, float x, float y, float rotation, float renderScale, float offset) {
-        entity.level = world;
-
-        ms.pushPose();
-        ms.translate(x, y, 50);
-        ms.scale(renderScale, renderScale, renderScale);
-        ms.translate(0, offset, 0);
-        ms.mulPose(Axis.ZP.rotationDegrees(180));
-        ms.mulPose(Axis.YP.rotationDegrees(rotation));
+    public static void renderEntity(GuiGraphics guiGraphics, Entity entity, Level world, float x, float y, float rotation, float renderScale, float offset) {
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(x, y, 50);
+        guiGraphics.pose().scale(renderScale, renderScale, renderScale);
+        guiGraphics.pose().translate(0, offset, 0);
+        guiGraphics.pose().mulPose(Axis.ZP.rotationDegrees(180));
+        guiGraphics.pose().mulPose(Axis.YP.rotationDegrees(rotation));
         EntityRenderDispatcher erd = Minecraft.getInstance().getEntityRenderDispatcher();
         MultiBufferSource.BufferSource immediate = Minecraft.getInstance().renderBuffers().bufferSource();
         erd.setRenderShadow(false);
-        erd.render(entity, 0, 0, 0, 0, 1, ms, immediate, 0xF000F0);
+        erd.render(entity, 0, 0, 0, 0, 1, guiGraphics.pose(), immediate, 0xF000F0);
         erd.setRenderShadow(true);
         immediate.endBatch();
-        ms.popPose();
+        guiGraphics.pose().popPose();
     }
 
     private void loadEntity(Level world) {
@@ -80,31 +79,31 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float ticks) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float ticks) {
         if (!this.page.getEntityName().isEmpty()) {
-            this.renderTitle(this.page.getEntityName(), false, poseStack, BookContentScreen.PAGE_WIDTH / 2, 0);
+            this.renderTitle(guiGraphics, this.page.getEntityName(), false, BookContentScreen.PAGE_WIDTH / 2, 0);
         }
 
-        this.renderBookTextHolder(this.getPage().getText(), poseStack, 0, this.getTextY(), BookContentScreen.PAGE_WIDTH);
+        this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, this.getTextY(), BookContentScreen.PAGE_WIDTH);
 
         int x = BookContentScreen.PAGE_WIDTH / 2 - 53;
         int y = 7;
         RenderSystem.enableBlend();
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        BookContentScreen.drawFromTexture(poseStack, this.getPage().getBook(), x, y, 405, 149, 106, 106);
+        BookContentScreen.drawFromTexture(guiGraphics, this.getPage().getBook(), x, y, 405, 149, 106, 106);
 
         if (this.errored) {
-            this.font.drawShadow(poseStack, Component.translatable(Gui.PAGE_ENTITY_LOADING_ERROR), 58, 60, 0xFF0000);
+            guiGraphics.drawString(this.font, Component.translatable(Gui.PAGE_ENTITY_LOADING_ERROR), 58, 60, 0xFF0000, true);
         }
 
         if (this.entity != null) {
             float rotation = this.page.doesRotate() ? ClientTicks.total : this.page.getDefaultRotation();
-            renderEntity(poseStack, this.entity, this.parentScreen.getMinecraft().level, 58, 60, rotation, this.renderScale, this.renderOffset);
+            renderEntity(guiGraphics, this.entity, this.parentScreen.getMinecraft().level, 58, 60, rotation, this.renderScale, this.renderOffset);
         }
 
         var style = this.getClickedComponentStyleAt(mouseX, mouseY);
         if (style != null)
-            this.parentScreen.renderComponentHoverEffect(poseStack, style, mouseX, mouseY);
+            this.parentScreen.renderComponentHoverEffect(guiGraphics, style, mouseX, mouseY);
     }
 
     @Nullable

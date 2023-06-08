@@ -27,7 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.CreativeModeTabRegistry;
-import net.minecraftforge.event.CreativeModeTabEvent;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,13 +54,13 @@ public class ModonomiconItem extends Item {
         return ResourceLocation.tryParse(bookStr);
     }
 
-    public static void onCreativeModeTabBuildContents(CreativeModeTabEvent.BuildContents event) {
+    public static void onCreativeModeTabBuildContents(BuildCreativeModeTabContentsEvent event) {
         var tabName = CreativeModeTabRegistry.getName(event.getTab());
         if(tabName == null)
             return;
 
         BookDataManager.get().getBooks().values().forEach(b -> {
-            if (event.getTab() == CreativeModeTabs.SEARCH || b.getCreativeTab().equals(tabName.toString())) {
+            if (event.getTabKey() == CreativeModeTabs.SEARCH || b.getCreativeTab().equals(tabName.toString())) {
                 if (b.generateBookItem()) {
                     ItemStack stack = new ItemStack(ItemRegistry.MODONOMICON.get());
 

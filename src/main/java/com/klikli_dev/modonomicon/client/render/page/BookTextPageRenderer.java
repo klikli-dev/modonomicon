@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.client.render.page;
 
 import com.klikli_dev.modonomicon.book.page.BookTextPage;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Style;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,16 +18,16 @@ public class BookTextPageRenderer extends BookPageRenderer<BookTextPage> impleme
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float ticks) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float ticks) {
         if (this.page.hasTitle()) {
-            this.renderTitle(this.page.getTitle(), this.page.showTitleSeparator(), poseStack, BookContentScreen.PAGE_WIDTH / 2, 0);
+            this.renderTitle(guiGraphics, this.page.getTitle(), this.page.showTitleSeparator(), BookContentScreen.PAGE_WIDTH / 2, 0);
         }
 
-        this.renderBookTextHolder(this.getPage().getText(), poseStack, 0, this.getTextY(), BookContentScreen.PAGE_WIDTH);
+        this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, this.getTextY(), BookContentScreen.PAGE_WIDTH);
 
         var style = this.getClickedComponentStyleAt(mouseX, mouseY);
         if (style != null)
-            this.parentScreen.renderComponentHoverEffect(poseStack, style, mouseX, mouseY);
+            this.parentScreen.renderComponentHoverEffect(guiGraphics, style, mouseX, mouseY);
     }
 
     @Nullable

@@ -15,9 +15,8 @@ import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookSearchScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
@@ -47,7 +46,7 @@ public class EntryListButton extends Button {
     }
 
     @Override
-    public void renderWidget(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (this.active) {
             if (this.isHovered()) {
                 this.timeHovered = Math.min(ANIM_TIME, this.timeHovered + ClientTicks.delta);
@@ -59,18 +58,18 @@ public class EntryListButton extends Button {
             float widthFract = time / ANIM_TIME;
             boolean locked = !BookUnlockCapability.isUnlockedFor(Minecraft.getInstance().player, this.entry);
 
-            ms.scale(0.5F, 0.5F, 0.5F);
-            GuiComponent.fill(ms, this.getX() * 2, this.getY() * 2, (this.getX() + (int) ((float) this.width * widthFract)) * 2, (this.getY() + this.height) * 2, 0x22000000);
+            guiGraphics.pose().scale(0.5F, 0.5F, 0.5F);
+            guiGraphics.fill(this.getX() * 2, this.getY() * 2, (this.getX() + (int) ((float) this.width * widthFract)) * 2, (this.getY() + this.height) * 2, 0x22000000);
             RenderSystem.enableBlend();
 
             if (locked) {
                 RenderSystem.setShaderColor(1F, 1F, 1F, 0.7F);
-                BookContentScreen.drawLock(ms, this.parent.getParentScreen().getBook(), this.getX() * 2 + 2, this.getY() * 2 + 2);
+                BookContentScreen.drawLock(guiGraphics, this.parent.getParentScreen().getBook(), this.getX() * 2 + 2, this.getY() * 2 + 2);
             } else {
-                this.entry.getIcon().render(ms, this.getX() * 2 + 2, this.getY() * 2 + 2);
+                this.entry.getIcon().render(guiGraphics, this.getX() * 2 + 2, this.getY() * 2 + 2);
             }
 
-            ms.scale(2F, 2F, 2F);
+            guiGraphics.pose().scale(2F, 2F, 2F);
 
             MutableComponent name;
             if (locked) {
@@ -80,7 +79,7 @@ public class EntryListButton extends Button {
             }
 
             //TODO: if we ever add a font style setting to the book, use it here
-            Minecraft.getInstance().font.draw(ms, name, this.getX() + 12, this.getY(), this.getEntryColor());
+            guiGraphics.drawString(Minecraft.getInstance().font, name, this.getX() + 12, this.getY(), this.getEntryColor(), false);
         }
     }
 

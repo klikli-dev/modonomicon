@@ -18,10 +18,14 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -140,7 +144,7 @@ public abstract class AbstractMultiblock implements Multiblock {
             BlockPos placePos = r.getWorldPosition();
             BlockState targetState = r.getStateMatcher().getDisplayedState(world.getGameTime()).rotate(rotation);
 
-            if (!targetState.isAir() && targetState.canSurvive(world, placePos) && world.getBlockState(placePos).getMaterial().isReplaceable()) {
+            if (!targetState.isAir() && targetState.canSurvive(world, placePos) && world.getBlockState(placePos).canBeReplaced()) {
                 world.setBlockAndUpdate(placePos, targetState);
             }
         });

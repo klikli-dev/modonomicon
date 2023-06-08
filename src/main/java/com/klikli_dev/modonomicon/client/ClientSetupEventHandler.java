@@ -89,8 +89,8 @@ public class ClientSetupEventHandler {
     }
 
     public static void onRegisterGuiOverlays(RegisterGuiOverlaysEvent event){
-        event.registerBelow(VanillaGuiOverlay.BOSS_EVENT_PROGRESS.id(),"multiblock_hud", (gui, poseStack, partialTick, screenWidth, screenHeight) -> {
-            MultiblockPreviewRenderer.onRenderHUD(poseStack, partialTick);
+        event.registerBelow(VanillaGuiOverlay.BOSS_EVENT_PROGRESS.id(),"multiblock_hud", (gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
+            MultiblockPreviewRenderer.onRenderHUD(guiGraphics, partialTick);
         });
     }
 }

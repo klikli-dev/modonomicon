@@ -9,7 +9,6 @@ package com.klikli_dev.modonomicon.integration;
 import com.klikli_dev.modonomicon.Modonomicon;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.ModList;
-//import vazkii.patchouli.api.PatchouliAPI;
 
 public class ModonomiconPatchouliIntegration {
 

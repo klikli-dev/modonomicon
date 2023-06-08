@@ -24,6 +24,7 @@ import com.klikli_dev.modonomicon.network.messages.SyncBookUnlockCapabilityMessa
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -39,7 +40,6 @@ import java.util.List;
 public class BookOverviewScreen extends Screen {
 
     private final Book book;
-    private final EntryConnectionRenderer connectionRenderer = new EntryConnectionRenderer();
     private final List<BookCategory> categories;
     private final List<BookCategoryScreen> categoryScreens;
 
@@ -80,10 +80,6 @@ public class BookOverviewScreen extends Screen {
         this.hasUnreadUnlockedEntries = this.book.getEntries().values().stream().anyMatch(e ->
                 BookUnlockCapability.isUnlockedFor(this.minecraft.player, e) &&
                         !BookUnlockCapability.isReadFor(this.minecraft.player, e));
-    }
-
-    public EntryConnectionRenderer getConnectionRenderer() {
-        return this.connectionRenderer;
     }
 
     public BookCategoryScreen getCurrentCategoryScreen() {
@@ -179,34 +175,28 @@ public class BookOverviewScreen extends Screen {
         return this.height - 20;
     }
 
-    protected void renderFrame(PoseStack poseStack) {
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, this.book.getFrameTexture());
-
+    protected void renderFrame(GuiGraphics guiGraphics) {
         int width = this.getFrameWidth();
         int height = this.getFrameHeight();
         int x = (this.width - width) / 2;
         int y = (this.height - height) / 2;
 
-        int blitOffset = 0;
-
         //draw a resizeable border. Center parts of each side will be stretched
         //the exact border size mostly does not matter because the center is empty anyway, but 50 gives a lot of flexiblity
-        ScreenUtils.blitWithBorder(poseStack, x, y, 0, 0, width, height,
-                140, 140, 50, 50, 50, 50, blitOffset);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.enableBlend();
+        guiGraphics.blitWithBorder(this.book.getFrameTexture(), x, y, 0, 0, width, height,140, 140, 50, 50, 50, 50);
 
         //now render overlays on top of that border to cover repeating elements
-        this.renderFrameOverlay(this.book.getTopFrameOverlay(), (x + (width / 2)), y, blitOffset);
-        this.renderFrameOverlay(this.book.getBottomFrameOverlay(), (x + (width / 2)), (y + height), blitOffset);
-        this.renderFrameOverlay(this.book.getLeftFrameOverlay(), x, y + (height / 2), blitOffset);
-        this.renderFrameOverlay(this.book.getRightFrameOverlay(), x + width, y + (height / 2), blitOffset);
+        this.renderFrameOverlay(guiGraphics, this.book.getTopFrameOverlay(), (x + (width / 2)), y);
+        this.renderFrameOverlay(guiGraphics, this.book.getBottomFrameOverlay(), (x + (width / 2)), (y + height));
+        this.renderFrameOverlay(guiGraphics, this.book.getLeftFrameOverlay(), x, y + (height / 2));
+        this.renderFrameOverlay(guiGraphics, this.book.getRightFrameOverlay(), x + width, y + (height / 2));
     }
 
-    protected void renderFrameOverlay(BookFrameOverlay overlay, int x, int y, int blitOffset) {
+    protected void renderFrameOverlay(GuiGraphics guiGraphics, BookFrameOverlay overlay, int x, int y) {
         if (overlay.getFrameWidth() > 0 && overlay.getFrameHeight() > 0) {
-            RenderSystem.setShaderTexture(0, overlay.getTexture());
-            ScreenUtils.drawTexturedModalRect(new PoseStack(), overlay.getFrameX(x), overlay.getFrameY(y), overlay.getFrameU(), overlay.getFrameV(), overlay.getFrameWidth(), overlay.getFrameHeight(), blitOffset);
+            guiGraphics.blit(overlay.getTexture(), overlay.getFrameX(x), overlay.getFrameY(y), overlay.getFrameU(), overlay.getFrameV(), overlay.getFrameWidth(), overlay.getFrameHeight());
         }
     }
 
@@ -260,21 +250,21 @@ public class BookOverviewScreen extends Screen {
     }
 
     @Override
-    public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         RenderSystem.disableDepthTest(); //guard against depth test being enabled by other rendering code, that would cause ui elements to vanish
 
-        this.renderBackground(pPoseStack);
+        this.renderBackground(guiGraphics);
 
-        this.getCurrentCategoryScreen().renderBackground(pPoseStack);
+        this.getCurrentCategoryScreen().renderBackground(guiGraphics);
 
-        this.getCurrentCategoryScreen().render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+        this.getCurrentCategoryScreen().render(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
-        this.renderFrame(pPoseStack);
+        this.renderFrame(guiGraphics);
 
-        this.getCurrentCategoryScreen().renderEntryTooltips(pPoseStack, pMouseX, pMouseY, pPartialTick);
+        this.getCurrentCategoryScreen().renderEntryTooltips(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
         //do super render last -> it does the widgets including especially the tooltips and we want those to go over the frame
-        super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+        super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
     }
 
     @Override
@@ -367,10 +357,6 @@ public class BookOverviewScreen extends Screen {
 
     protected void onSearchButtonClick(SearchButton button) {
         ForgeHooksClient.pushGuiLayer(this.getMinecraft(), new BookSearchScreen(this));
-    }
-
-    protected void onSearchButtonTooltip(SearchButton button, PoseStack pPoseStack, int pMouseX, int pMouseY) {
-        this.renderTooltip(pPoseStack, Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_SEARCH), pMouseX, pMouseY);
     }
 
     @Override

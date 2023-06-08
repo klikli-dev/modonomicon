@@ -12,9 +12,9 @@ import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.MarkdownComponentRenderUtils;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -39,6 +39,31 @@ public abstract class BookPageRenderer<T extends BookPage> {
         this.page = page;
     }
 
+    /**
+     * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
+     */
+    public static void renderBookTextHolder(GuiGraphics guiGraphics, BookTextHolder text, Font font, int x, int y, int width) {
+        if (text.hasComponent()) {
+            //if it is a component, we draw it directly
+            for (FormattedCharSequence formattedcharsequence : font.split(text.getComponent(), width)) {
+                guiGraphics.drawString(font, formattedcharsequence, x, y, 0, false);
+                y += font.lineHeight;
+            }
+        } else if (text instanceof RenderedBookTextHolder renderedText) {
+            //if it is not a component it was sent through the markdown renderer
+            var components = renderedText.getRenderedText();
+
+            for (var component : components) {
+                var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, width, width - 10, font);
+                for (FormattedCharSequence formattedcharsequence : wrapped) {
+                    guiGraphics.drawString(font, formattedcharsequence, x, y, 0, false);
+                    y += font.lineHeight;
+                }
+            }
+        } else {
+            Modonomicon.LOGGER.warn("BookTextHolder with String {} has no component, but is not rendered to markdown either.", text.getString());
+        }
+    }
 
     /**
      * Call when the page is being set up to be displayed (when book content screen opens, or pages are changed)
@@ -76,47 +101,21 @@ public abstract class BookPageRenderer<T extends BookPage> {
     /**
      * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
      */
-    public void renderBookTextHolder(BookTextHolder text, PoseStack poseStack, int x, int y, int width) {
+    public void renderBookTextHolder(GuiGraphics guiGraphics, BookTextHolder text, int x, int y, int width) {
         x += this.parentScreen.getBook().getBookTextOffsetX();
         y += this.parentScreen.getBook().getBookTextOffsetY();
         width += this.parentScreen.getBook().getBookTextOffsetWidth();
         width -= this.parentScreen.getBook().getBookTextOffsetX(); //always remove the offset x from the width to avoid overflow
 
-        renderBookTextHolder(text, this.font, poseStack, x, y, width);
-    }
-
-    /**
-     * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
-     */
-    public static void renderBookTextHolder(BookTextHolder text, Font font, PoseStack poseStack, int x, int y, int width) {
-        if (text.hasComponent()) {
-            //if it is a component, we draw it directly
-            for (FormattedCharSequence formattedcharsequence : font.split(text.getComponent(), width)) {
-                font.draw(poseStack, formattedcharsequence, x, y, 0);
-                y += font.lineHeight;
-            }
-        } else if (text instanceof RenderedBookTextHolder renderedText) {
-            //if it is not a component it was sent through the markdown renderer
-            var components = renderedText.getRenderedText();
-
-            for (var component : components) {
-                var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, width, width - 10, font);
-                for (FormattedCharSequence formattedcharsequence : wrapped) {
-                    font.draw(poseStack, formattedcharsequence, x, y, 0);
-                    y += font.lineHeight;
-                }
-            }
-        } else {
-            Modonomicon.LOGGER.warn("BookTextHolder with String {} has no component, but is not rendered to markdown either.", text.getString());
-        }
+        renderBookTextHolder(guiGraphics, text, this.font, x, y, width);
     }
 
     /**
      * Will render the given BookTextHolder as (centered) title.
      */
-    public void renderTitle(BookTextHolder title, boolean showTitleSeparator, PoseStack poseStack, int x, int y) {
+    public void renderTitle(GuiGraphics guiGraphics, BookTextHolder title, boolean showTitleSeparator, int x, int y) {
 
-        poseStack.pushPose();
+        guiGraphics.pose().pushPose();
 
         if (title instanceof RenderedBookTextHolder renderedTitle) {
             //if user decided to use markdown title, we need to use the  rendered version
@@ -125,46 +124,44 @@ public abstract class BookPageRenderer<T extends BookPage> {
 
             //if title is larger than allowed, scaled to fit
             var scale = Math.min(1.0f, (float) BookContentScreen.MAX_TITLE_WIDTH / (float) this.font.width(formattedCharSequence));
-            if (scale < 1)
-            {
-                poseStack.translate(0, y - y * scale, 0);
-                poseStack.scale(scale, scale, scale);
+            if (scale < 1) {
+                guiGraphics.pose().translate(0, y - y * scale, 0);
+                guiGraphics.pose().scale(scale, scale, scale);
             }
 
-            this.drawCenteredStringNoShadow(poseStack, formattedCharSequence, x, y, 0, scale);
+            this.drawCenteredStringNoShadow(guiGraphics, formattedCharSequence, x, y, 0, scale);
         } else {
 
             //if title is larger than allowed, scaled to fit
-            var scale =  Math.min(1.0f, (float) BookContentScreen.MAX_TITLE_WIDTH / (float) this.font.width(title.getComponent().getVisualOrderText()));
-            if (scale < 1)
-            {
-                poseStack.translate(0, y - y * scale, 0);
-                poseStack.scale(scale, scale, scale);
+            var scale = Math.min(1.0f, (float) BookContentScreen.MAX_TITLE_WIDTH / (float) this.font.width(title.getComponent().getVisualOrderText()));
+            if (scale < 1) {
+                guiGraphics.pose().translate(0, y - y * scale, 0);
+                guiGraphics.pose().scale(scale, scale, scale);
             }
 
             //otherwise we use the component - that is either provided by the user, or created from the default title style.
-            this.drawCenteredStringNoShadow(poseStack, title.getComponent().getVisualOrderText(), x, y, 0, scale);
+            this.drawCenteredStringNoShadow(guiGraphics, title.getComponent().getVisualOrderText(), x, y, 0, scale);
         }
 
-        poseStack.popPose();
+        guiGraphics.pose().popPose();
 
         if (showTitleSeparator)
-            BookContentScreen.drawTitleSeparator(poseStack, this.page.getBook(), x, y + 12);
+            BookContentScreen.drawTitleSeparator(guiGraphics, this.page.getBook(), x, y + 12);
     }
 
-    public abstract void render(PoseStack poseStack, int mouseX, int mouseY, float ticks);
+    public abstract void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float ticks);
 
-    public void drawCenteredStringNoShadow(PoseStack poseStack, FormattedCharSequence s, int x, int y, int color, float scale) {
-        this.font.draw(poseStack, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color);
+    public void drawCenteredStringNoShadow(GuiGraphics guiGraphics, FormattedCharSequence s, int x, int y, int color, float scale) {
+        guiGraphics.drawString(this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
     }
 
-    public void drawCenteredStringNoShadow(PoseStack poseStack, String s, int x, int y, int color, float scale) {
-        this.font.draw(poseStack, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color);
+    public void drawCenteredStringNoShadow(GuiGraphics guiGraphics, String s, int x, int y, int color, float scale) {
+        guiGraphics.drawString(this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
     }
 
-    public void drawWrappedStringNoShadow(PoseStack poseStack, Component s, int x, int y, int color, int width) {
+    public void drawWrappedStringNoShadow(GuiGraphics guiGraphics, Component s, int x, int y, int color, int width) {
         for (FormattedCharSequence formattedcharsequence : this.font.split(s, width)) {
-            this.font.draw(poseStack, formattedcharsequence, x, y + (this.font.lineHeight), color);
+            guiGraphics.drawString(this.font, formattedcharsequence, x, y + (this.font.lineHeight), color, false);
             y += this.font.lineHeight;
         }
     }

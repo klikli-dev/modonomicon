@@ -33,16 +33,14 @@ import com.klikli_dev.modonomicon.network.messages.SaveEntryStateMessage;
 import com.klikli_dev.modonomicon.util.ItemStackUtil;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
@@ -116,12 +114,11 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
         this.loadEntryState();
     }
 
-    public static void drawFromTexture(PoseStack poseStack, Book book, int x, int y, int u, int v, int w, int h) {
-        RenderSystem.setShaderTexture(0, book.getBookContentTexture());
-        blit(poseStack, x, y, u, v, w, h, 512, 256);
+    public static void drawFromTexture(GuiGraphics guiGraphics, Book book, int x, int y, int u, int v, int w, int h) {
+        guiGraphics.blit(book.getBookContentTexture(), x, y, u, v, w, h, 512, 256);
     }
 
-    public static void drawTitleSeparator(PoseStack poseStack, Book book, int x, int y) {
+    public static void drawTitleSeparator(GuiGraphics guiGraphics, Book book, int x, int y) {
         int w = 110;
         int h = 3;
         int rx = x - w / 2;
@@ -129,12 +126,12 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
         RenderSystem.enableBlend();
         RenderSystem.setShaderColor(1F, 1F, 1F, 0.8F);
         //u and v are the pixel coordinates in our book_content_texture
-        drawFromTexture(poseStack, book, rx, y, 0, 253, w, h);
+        drawFromTexture(guiGraphics, book, rx, y, 0, 253, w, h);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
     }
 
-    public static void drawLock(PoseStack ms, Book book, int x, int y) {
-        drawFromTexture(ms, book, x, y, 496, 0, 16, 16);
+    public static void drawLock(GuiGraphics guiGraphics, Book book, int x, int y) {
+        drawFromTexture(guiGraphics, book, x, y, 496, 0, 16, 16);
     }
 
     public static void playTurnPageSound(Book book) {
@@ -146,15 +143,12 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
         }
     }
 
-    public static void renderBookBackground(PoseStack poseStack, ResourceLocation bookContentTexture) {
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, bookContentTexture);
-
+    public static void renderBookBackground(GuiGraphics guiGraphics, ResourceLocation bookContentTexture) {
         int x = 0; // (this.width - BOOK_BACKGROUND_WIDTH) / 2;
         int y = 0; // (this.height - BOOK_BACKGROUND_HEIGHT) / 2;
 
-        GuiComponent.blit(poseStack, x, y, 0, 0, 272, 178, 512, 256);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        guiGraphics.blit(bookContentTexture, x, y, 0, 0, 272, 178, 512, 256);
     }
 
     public BookEntry getEntry() {
@@ -237,66 +231,66 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
         return absY - this.bookTop;
     }
 
-    public void renderItemStack(PoseStack poseStack, int x, int y, int mouseX, int mouseY, ItemStack stack) {
+    public void renderItemStack(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, ItemStack stack) {
         if (stack.isEmpty() || !PageRendererRegistry.isRenderable(stack)) {
             return;
         }
 
-        this.getMinecraft().getItemRenderer().renderAndDecorateItem(poseStack, stack, x, y);
-        this.getMinecraft().getItemRenderer().renderGuiItemDecorations(poseStack, this.font, stack, x, y);
+        guiGraphics.renderItem(stack, x, y);
+        guiGraphics.renderItemDecorations(this.font, stack, x, y);
 
         if (this.isMouseInRelativeRange(mouseX, mouseY, x, y, 16, 16)) {
             this.setTooltipStack(stack);
         }
     }
 
-    public void renderItemStacks(PoseStack poseStack, int x, int y, int mouseX, int mouseY, Collection<ItemStack> stacks) {
-        this.renderItemStacks(poseStack, x, y, mouseX, mouseY, stacks, -1);
+    public void renderItemStacks(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, Collection<ItemStack> stacks) {
+        this.renderItemStacks(guiGraphics, x, y, mouseX, mouseY, stacks, -1);
     }
 
-    public void renderItemStacks(PoseStack poseStack, int x, int y, int mouseX, int mouseY, Collection<ItemStack> stacks, int countOverride) {
+    public void renderItemStacks(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, Collection<ItemStack> stacks, int countOverride) {
         var filteredStacks = PageRendererRegistry.filterRenderableItemStacks(stacks);
         if (filteredStacks.size() > 0) {
             var currentStack = filteredStacks.get((this.ticksInBook / 20) % filteredStacks.size());
-            this.renderItemStack(poseStack, x, y, mouseX, mouseY, countOverride > 0 ? currentStack.copyWithCount(countOverride) : currentStack);
+            this.renderItemStack(guiGraphics, x, y, mouseX, mouseY, countOverride > 0 ? currentStack.copyWithCount(countOverride) : currentStack);
         }
     }
 
-    public void renderIngredient(PoseStack poseStack, int x, int y, int mouseX, int mouseY, Ingredient ingr) {
-        this.renderItemStacks(poseStack, x, y, mouseX, mouseY, Arrays.asList(ingr.getItems()), -1);
+    public void renderIngredient(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, Ingredient ingr) {
+        this.renderItemStacks(guiGraphics, x, y, mouseX, mouseY, Arrays.asList(ingr.getItems()), -1);
     }
 
-    public void renderIngredient(PoseStack poseStack, int x, int y, int mouseX, int mouseY, Ingredient ingr, int countOverride) {
-        this.renderItemStacks(poseStack, x, y, mouseX, mouseY, Arrays.asList(ingr.getItems()), countOverride);
+    public void renderIngredient(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, Ingredient ingr, int countOverride) {
+        this.renderItemStacks(guiGraphics, x, y, mouseX, mouseY, Arrays.asList(ingr.getItems()), countOverride);
     }
 
-    public void renderFluidStack(PoseStack poseStack, int x, int y, int mouseX, int mouseY, FluidStack stack) {
-        this.renderFluidStack(poseStack, x, y, mouseX, mouseY, stack, FluidType.BUCKET_VOLUME);
+    public void renderFluidStack(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, FluidStack stack) {
+        this.renderFluidStack(guiGraphics, x, y, mouseX, mouseY, stack, FluidType.BUCKET_VOLUME);
     }
 
-    public void renderFluidStack(PoseStack poseStack, int x, int y, int mouseX, int mouseY, FluidStack stack, int capacity) {
+    public void renderFluidStack(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, FluidStack stack, int capacity) {
         if (stack.isEmpty() || !PageRendererRegistry.isRenderable(stack)) {
             return;
         }
 
-        poseStack.pushPose();
-        poseStack.translate(x, y, 0);
-        FluidRenderHelper.drawFluid(poseStack, 18, 18, stack, capacity);
-        poseStack.popPose();
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(x, y, 0);
+        FluidRenderHelper.drawFluid(guiGraphics, 18, 18, stack, capacity);
+        guiGraphics.pose().popPose();
 
         if (this.isMouseInRelativeRange(mouseX, mouseY, x, y, 18, 18)) {
             this.setTooltipStack(stack);
         }
     }
 
-    public void renderFluidStacks(PoseStack poseStack, int x, int y, int mouseX, int mouseY, Collection<FluidStack> stacks) {
-        this.renderFluidStacks(poseStack, x, y, mouseX, mouseY, stacks, FluidType.BUCKET_VOLUME);
+    public void renderFluidStacks(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, Collection<FluidStack> stacks) {
+        this.renderFluidStacks(guiGraphics, x, y, mouseX, mouseY, stacks, FluidType.BUCKET_VOLUME);
     }
 
-    public void renderFluidStacks(PoseStack poseStack, int x, int y, int mouseX, int mouseY, Collection<FluidStack> stacks, int capacity) {
+    public void renderFluidStacks(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, Collection<FluidStack> stacks, int capacity) {
         var filteredStacks = PageRendererRegistry.filterRenderableFluidStacks(stacks);
         if (filteredStacks.size() > 0) {
-            this.renderFluidStack(poseStack, x, y, mouseX, mouseY, filteredStacks.get((this.ticksInBook / 20) % filteredStacks.size()), capacity);
+            this.renderFluidStack(guiGraphics, x, y, mouseX, mouseY, filteredStacks.get((this.ticksInBook / 20) % filteredStacks.size()), capacity);
         }
     }
 
@@ -385,18 +379,15 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
         }
     }
 
-    protected void drawTooltip(PoseStack pPoseStack, int pMouseX, int pMouseY) {
-
+    protected void drawTooltip(GuiGraphics guiGraphics, int pMouseX, int pMouseY) {
         if (this.tooltipStack != null) {
             List<Component> tooltip = this.getTooltipFromItem(this.tooltipStack);
-
-            this.renderComponentTooltip(pPoseStack, tooltip, pMouseX, pMouseY);
+            guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, tooltip, pMouseX, pMouseY);
         } else if (this.tooltipFluidStack != null) {
             List<Component> tooltip = this.getTooltipFromFluid(this.tooltipFluidStack);
-
-            this.renderComponentTooltip(pPoseStack, tooltip, pMouseX, pMouseY);
+            guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, tooltip, pMouseX, pMouseY);
         } else if (this.tooltip != null && !this.tooltip.isEmpty()) {
-            this.renderComponentTooltip(pPoseStack, this.tooltip, pMouseX, pMouseY);
+            guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, this.tooltip, pMouseX, pMouseY);
         }
     }
 
@@ -408,15 +399,15 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
         return false;
     }
 
-    protected void renderPage(PoseStack poseStack, BookPageRenderer<?> page, int pMouseX, int pMouseY, float pPartialTick) {
+    protected void renderPage(GuiGraphics guiGraphics, BookPageRenderer<?> page, int pMouseX, int pMouseY, float pPartialTick) {
         if (page == null) {
             return;
         }
 
-        poseStack.pushPose();
-        poseStack.translate(page.left, page.top, 0);
-        page.render(poseStack, pMouseX - this.bookLeft - page.left, pMouseY - this.bookTop - page.top, pPartialTick);
-        poseStack.popPose();
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(page.left, page.top, 0);
+        page.render(guiGraphics, pMouseX - this.bookLeft - page.left, pMouseY - this.bookTop - page.top, pPartialTick);
+        guiGraphics.pose().popPose();
     }
 
     protected void beginDisplayPages() {
@@ -480,33 +471,33 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
     }
 
     @Override
-    public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         RenderSystem.disableDepthTest(); //guard against depth test being enabled by other rendering code, that would cause ui elements to vanish
 
         this.resetTooltip();
 
         //we need to modify blit offset (now: z pose) to not draw over toasts
-        pPoseStack.pushPose();
-        pPoseStack.translate(0, 0, -1300);  //magic number arrived by testing until toasts show, but BookOverviewScreen does not
-        this.renderBackground(pPoseStack);
-        pPoseStack.popPose();
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, -1300);  //magic number arrived by testing until toasts show, but BookOverviewScreen does not
+        this.renderBackground(guiGraphics);
+        guiGraphics.pose().popPose();
 
-        pPoseStack.pushPose();
-        pPoseStack.translate(this.bookLeft, this.bookTop, 0);
-        renderBookBackground(pPoseStack, this.bookContentTexture);
-        pPoseStack.popPose();
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(this.bookLeft, this.bookTop, 0);
+        renderBookBackground(guiGraphics, this.bookContentTexture);
+        guiGraphics.pose().popPose();
 
-        pPoseStack.pushPose();
-        pPoseStack.translate(this.bookLeft, this.bookTop, 0);
-        this.renderPage(pPoseStack, this.leftPageRenderer, pMouseX, pMouseY, pPartialTick);
-        this.renderPage(pPoseStack, this.rightPageRenderer, pMouseX, pMouseY, pPartialTick);
-        pPoseStack.popPose();
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(this.bookLeft, this.bookTop, 0);
+        this.renderPage(guiGraphics, this.leftPageRenderer, pMouseX, pMouseY, pPartialTick);
+        this.renderPage(guiGraphics, this.rightPageRenderer, pMouseX, pMouseY, pPartialTick);
+        guiGraphics.pose().popPose();
 
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
-        super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+        super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
         //do not translate tooltip, would mess up location
-        this.drawTooltip(pPoseStack, pMouseX, pMouseY);
+        this.drawTooltip(guiGraphics, pMouseX, pMouseY);
     }
 
     @Override
@@ -541,11 +532,12 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
         return super.addRenderableWidget(pWidget);
     }
 
-    @Override // make public
-    public void renderComponentHoverEffect(PoseStack pPoseStack, @Nullable Style style, int mouseX, int mouseY) {
-
-        pPoseStack.pushPose();
-        pPoseStack.translate(0, 0, 1000);
+    /**
+     * Our copy of guiGraphics.renderComponentHoverEffect(); to handle book links
+     */
+    public void renderComponentHoverEffect(GuiGraphics guiGraphics, @Nullable Style style, int mouseX, int mouseY) {
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, 1000);
         var newStyle = style;
         if (style != null && style.getHoverEvent() != null) {
             if (style.getHoverEvent().getAction() == HoverEvent.Action.SHOW_TEXT) {
@@ -584,7 +576,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
 
         style = newStyle;
 
-        //super.renderComponentHoverEffect(pPoseStack, newStyle, mouseX, mouseY);
+        //original GuiGraphics.renderComponentHoverEffect(pPoseStack, newStyle, mouseX, mouseY);
         // our own copy of the render code that limits width for the show_text action to not go out of screen
         if (style != null && style.getHoverEvent() != null) {
             HoverEvent hoverevent = style.getHoverEvent();
@@ -597,7 +589,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
                 //temporarily modify width to force forge to handle wrapping correctly
                 var backupWidth = this.width;
                 this.width = this.width / 2; //not quite sure why exaclty / 2 works, but then forge wrapping handles it correctly on gui scale 3+4
-                this.renderTooltip(pPoseStack, hoverevent$itemstackinfo.getItemStack(), mouseX, mouseY);
+                guiGraphics.renderTooltip(this.minecraft.font, hoverevent$itemstackinfo.getItemStack(), mouseX, mouseY);
                 this.width = backupWidth;
 
                 //then we reset so other item tooltip renders are not affected
@@ -606,25 +598,27 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
                 HoverEvent.EntityTooltipInfo hoverevent$entitytooltipinfo = hoverevent.getValue(HoverEvent.Action.SHOW_ENTITY);
                 if (hoverevent$entitytooltipinfo != null) {
                     if (this.minecraft.options.advancedItemTooltips) {
-                        this.renderComponentTooltip(pPoseStack, hoverevent$entitytooltipinfo.getTooltipLines(), mouseX, mouseY);
+                        guiGraphics.renderComponentTooltip(this.minecraft.font, hoverevent$entitytooltipinfo.getTooltipLines(), mouseX, mouseY);
                     }
                 } else {
                     Component component = hoverevent.getValue(HoverEvent.Action.SHOW_TEXT);
                     if (component != null) {
                         //var width = Math.max(this.width / 2, 200); //original width calc
                         var width = (this.width / 2) - mouseX - 10; //our own
-                        this.renderTooltip(pPoseStack, this.minecraft.font.split(component, width), mouseX, mouseY);
+                        guiGraphics.renderTooltip(this.minecraft.font, this.minecraft.font.split(component, width), mouseX, mouseY);
                     }
                 }
             }
 
         }
-        pPoseStack.popPose();
+        guiGraphics.pose().popPose();
     }
 
-    @Override
+    /**
+     * Used to be override of < 1.20.0 Screen.getTooltipFromItem, which is now static
+     */
     public List<Component> getTooltipFromItem(ItemStack pItemStack) {
-        var tooltip = super.getTooltipFromItem(pItemStack);
+        var tooltip = getTooltipFromItem(Minecraft.getInstance(), pItemStack);
 
         if (this.isHoveringItemLink) {
             tooltip.add(Component.literal(""));

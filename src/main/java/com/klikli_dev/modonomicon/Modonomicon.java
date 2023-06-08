@@ -52,6 +52,7 @@ public class Modonomicon {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         ItemRegistry.ITEMS.register(modEventBus);
+        CreativeModeTabRegistry.CREATIVE_MODE_TABS.register(modEventBus);
         MenuRegistry.MENUS.register(modEventBus);
         SoundRegistry.SOUNDS.register(modEventBus);
 
@@ -60,7 +61,6 @@ public class Modonomicon {
         modEventBus.addListener(this::onCommonSetup);
         modEventBus.addListener(this::onServerSetup);
         modEventBus.addListener(ModonomiconItem::onCreativeModeTabBuildContents);
-        modEventBus.addListener(ItemRegistry::onRegisterCreativeModeTabs);
 
         MinecraftForge.EVENT_BUS.addListener(this::onAddReloadListener);
         MinecraftForge.EVENT_BUS.addListener(CommandRegistry::registerCommands);

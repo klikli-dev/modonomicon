@@ -11,11 +11,9 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -38,20 +36,17 @@ public class BookErrorScreen extends Screen {
         this.minecraft = Minecraft.getInstance();
     }
 
-    public void renderBookBackground(PoseStack poseStack) {
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, BOOK_CONTENT_TEXTURE);
-
+    public void renderBookBackground(GuiGraphics guiGraphics) {
         int x = 0;
         int y = 0;
 
-        GuiComponent.blit(poseStack, x, y, 0, 0, 272, 178, 512, 256);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        guiGraphics.blit(BOOK_CONTENT_TEXTURE, x, y, 0, 0, 272, 178, 512, 256);
     }
 
-    public void renderError(Component text, PoseStack pPoseStack, int x, int y, int width) {
+    public void renderError(GuiGraphics guiGraphics, Component text, int x, int y, int width) {
         for (FormattedCharSequence formattedcharsequence : this.font.split(text, width)) {
-            this.font.draw(pPoseStack, formattedcharsequence, x, y, 0);
+            guiGraphics.drawString(this.font, formattedcharsequence, x, y, 0, false);
             y += this.font.lineHeight;
         }
     }
@@ -73,22 +68,22 @@ public class BookErrorScreen extends Screen {
     }
 
     @Override
-    public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
 
-        this.renderBackground(pPoseStack);
+        this.renderBackground(guiGraphics);
 
-        pPoseStack.pushPose();
-        pPoseStack.translate(this.bookLeft, this.bookTop, 0);
-        this.renderBookBackground(pPoseStack);
-        pPoseStack.popPose();
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(this.bookLeft, this.bookTop, 0);
+        this.renderBookBackground(guiGraphics);
+        guiGraphics.pose().popPose();
 
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
-        super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+        super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
-        pPoseStack.pushPose();
-        pPoseStack.translate(this.bookLeft, this.bookTop, 0);
-        this.renderError(this.errorText, pPoseStack, 15, 15, BOOK_BACKGROUND_WIDTH - 30);
-        pPoseStack.popPose();
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(this.bookLeft, this.bookTop, 0);
+        this.renderError(guiGraphics, this.errorText, 15, 15, BOOK_BACKGROUND_WIDTH - 30);
+        guiGraphics.pose().popPose();
     }
 
     @Override

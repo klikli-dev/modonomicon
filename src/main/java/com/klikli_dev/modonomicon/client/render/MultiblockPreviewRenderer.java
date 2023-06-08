@@ -8,13 +8,14 @@
 package com.klikli_dev.modonomicon.client.render;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.multiblock.AbstractMultiblock;
 import com.klikli_dev.modonomicon.multiblock.matcher.DisplayOnlyMatcher;
 import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
+import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -22,7 +23,7 @@ import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -92,7 +93,7 @@ public class MultiblockPreviewRenderer {
         }
     }
 
-    public static void onRenderHUD(PoseStack ms, float partialTicks) {
+    public static void onRenderHUD(GuiGraphics guiGraphics, float partialTicks) {
         if (hasMultiblock) {
             int waitTime = 40;
             int fadeOutSpeed = 4;
@@ -104,14 +105,14 @@ public class MultiblockPreviewRenderer {
                 return;
             }
 
-            ms.pushPose();
-            ms.translate(0, -Math.max(0, animTime - waitTime) * fadeOutSpeed, 0);
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(0, -Math.max(0, animTime - waitTime) * fadeOutSpeed, 0);
 
             Minecraft mc = Minecraft.getInstance();
             int x = mc.getWindow().getGuiScaledWidth() / 2;
             int y = 12;
 
-            mc.font.draw(ms, name, x - mc.font.width(name) / 2.0F, y, 0xFFFFFF);
+            GuiGraphicsExt.drawString(guiGraphics, mc.font, name, x - mc.font.width(name) / 2.0F, y, 0xFFFFFF, false);
 
             int width = 180;
             int height = 9;
@@ -120,24 +121,24 @@ public class MultiblockPreviewRenderer {
 
             if (timeComplete > 0) {
                 String s = I18n.get(ModonomiconConstants.I18n.Multiblock.COMPLETE);
-                ms.pushPose();
-                ms.translate(0, Math.min(height + 5, animTime), 0);
-                mc.font.draw(ms, s, x - mc.font.width(s) / 2.0F, top + height - 10, 0x00FF00);
-                ms.popPose();
+                guiGraphics.pose().pushPose();
+                guiGraphics.pose().translate(0, Math.min(height + 5, animTime), 0);
+                guiGraphics.drawString(mc.font, s, x - mc.font.width(s) / 2.0F, top + height - 10, 0x00FF00, false);
+                guiGraphics.pose().popPose();
             }
 
-            GuiComponent.fill(ms, left - 1, top - 1, left + width + 1, top + height + 1, 0xFF000000);
-            drawGradientRect(ms, left, top, left + width, top + height, 0xFF666666, 0xFF555555);
+            guiGraphics.fill(left - 1, top - 1, left + width + 1, top + height + 1, 0xFF000000);
+            drawGradientRect(guiGraphics, left, top, left + width, top + height, 0xFF666666, 0xFF555555);
 
             float fract = (float) blocksDone / Math.max(1, blocks);
             int progressWidth = (int) ((float) width * fract);
             int color = Mth.hsvToRgb(fract / 3.0F, 1.0F, 1.0F) | 0xFF000000;
             int color2 = new Color(color).darker().getRGB();
-            drawGradientRect(ms, left, top, left + progressWidth, top + height, color, color2);
+            drawGradientRect(guiGraphics, left, top, left + progressWidth, top + height, color, color2);
 
             if (!isAnchored) {
                 String s = I18n.get(ModonomiconConstants.I18n.Multiblock.NOT_ANCHORED);
-                mc.font.draw(ms, s, x - mc.font.width(s) / 2.0F, top + height + 8, 0xFFFFFF);
+                guiGraphics.drawString(mc.font, s, x - mc.font.width(s) / 2.0F, top + height + 8, 0xFFFFFF, false);
             } else {
                 if (lookingState != null) {
                     // try-catch around here because the state isn't necessarily present in the world in this instance,
@@ -147,9 +148,9 @@ public class MultiblockPreviewRenderer {
                         ItemStack stack = block.getCloneItemStack(mc.level, lookingPos, lookingState);
 
                         if (!stack.isEmpty()) {
-                            mc.font.draw(ms, stack.getHoverName(), left + 20, top + height + 8, 0xFFFFFF);
+                            guiGraphics.drawString(mc.font, stack.getHoverName(), left + 20, top + height + 8, 0xFFFFFF, false);
 
-                            mc.getItemRenderer().renderAndDecorateItem(ms, stack, left, top + height + 2);
+                            guiGraphics.renderItem(stack, left, top + height + 2);
                         }
                     } catch (Exception ignored) {
                     }
@@ -170,11 +171,11 @@ public class MultiblockPreviewRenderer {
                         posy += 2;
                     }
 
-                    mc.font.drawShadow(ms, progress, posx - mc.font.width(progress) / mult, posy, color);
+                    guiGraphics.drawString(mc.font, progress, posx - mc.font.width(progress) / mult, posy, color, true);
                 }
             }
 
-            ms.popPose();
+            guiGraphics.pose().popPose();
         }
     }
 
@@ -347,7 +348,7 @@ public class MultiblockPreviewRenderer {
         return offsetApplier.apply(pos);
     }
 
-    private static void drawGradientRect(PoseStack ms, int left, int top, int right, int bottom, int startColor, int endColor) {
+    private static void drawGradientRect(GuiGraphics guiGraphics, int left, int top, int right, int bottom, int startColor, int endColor) {
         float f = (float) (startColor >> 24 & 255) / 255.0F;
         float f1 = (float) (startColor >> 16 & 255) / 255.0F;
         float f2 = (float) (startColor >> 8 & 255) / 255.0F;
@@ -361,7 +362,7 @@ public class MultiblockPreviewRenderer {
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuilder();
         bufferbuilder.begin(Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        Matrix4f mat = ms.last().pose();
+        Matrix4f mat = guiGraphics.pose().last().pose();
         bufferbuilder.vertex(mat, right, top, 0).color(f1, f2, f3, f).endVertex();
         bufferbuilder.vertex(mat, left, top, 0).color(f1, f2, f3, f).endVertex();
         bufferbuilder.vertex(mat, left, bottom, 0).color(f5, f6, f7, f4).endVertex();
