@@ -9,8 +9,7 @@ package com.klikli_dev.modonomicon.client.render.page;
 import com.klikli_dev.modonomicon.book.page.BookSpotlightPage;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
@@ -28,26 +27,25 @@ public class BookSpotlightPageRenderer extends BookPageRenderer<BookSpotlightPag
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float ticks) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float ticks) {
         if (this.page.hasTitle()) {
-            this.renderTitle(this.page.getTitle(), false, poseStack, BookContentScreen.PAGE_WIDTH / 2, 0);
+            this.renderTitle(guiGraphics, this.page.getTitle(), false, BookContentScreen.PAGE_WIDTH / 2, 0);
         }
 
-        this.renderBookTextHolder(this.getPage().getText(), poseStack, 0, this.getTextY(), BookContentScreen.PAGE_WIDTH);
+        this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, this.getTextY(), BookContentScreen.PAGE_WIDTH);
 
         int w = 66;
         int h = 26;
 
-        RenderSystem.setShaderTexture(0, this.page.getBook().getCraftingTexture());
         RenderSystem.enableBlend();
-        GuiComponent.blit(poseStack, BookContentScreen.PAGE_WIDTH / 2 - w / 2, 10, 0, 128 - h, w, h, 128, 256);
+        guiGraphics.blit(this.page.getBook().getCraftingTexture(), BookContentScreen.PAGE_WIDTH / 2 - w / 2, 10, 0, 128 - h, w, h, 128, 256);
 
-        this.parentScreen.renderIngredient(poseStack, ITEM_X, ITEM_Y, mouseX, mouseY, this.page.getItem());
+        this.parentScreen.renderIngredient(guiGraphics, ITEM_X, ITEM_Y, mouseX, mouseY, this.page.getItem());
 
 
         var style = this.getClickedComponentStyleAt(mouseX, mouseY);
         if (style != null)
-            this.parentScreen.renderComponentHoverEffect(poseStack, style, mouseX, mouseY);
+            this.parentScreen.renderComponentHoverEffect(guiGraphics, style, mouseX, mouseY);
     }
 
     @Nullable

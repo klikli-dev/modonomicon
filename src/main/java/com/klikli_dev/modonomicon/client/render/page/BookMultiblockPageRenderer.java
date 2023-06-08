@@ -19,6 +19,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -62,7 +63,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
 
         @Override
         public int getBlockTint(BlockPos pBlockPos, ColorResolver pColorResolver) {
-            var plains = Minecraft.getInstance().player.level.registryAccess().registryOrThrow(Registries.BIOME)
+            var plains = Minecraft.getInstance().player.level().registryAccess().registryOrThrow(Registries.BIOME)
                     .getOrThrow(Biomes.PLAINS);
             return pColorResolver.getColor(plains, pBlockPos.getX(), pBlockPos.getZ());
         }
@@ -114,7 +115,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
 //        parent.addBookmarkButtons();
     }
 
-    private void renderMultiblock(PoseStack ms) {
+    private void renderMultiblock(GuiGraphics guiGraphics) {
         var mc = Minecraft.getInstance();
         var level = mc.level;
 
@@ -139,11 +140,11 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
         int xPos = BookContentScreen.PAGE_WIDTH / 2;
         int yPos = 60;
 
-        ms.pushPose();
+        guiGraphics.pose().pushPose();
 
-        ms.translate(xPos, yPos, 100);
-        ms.scale(scale, scale, scale);
-        ms.translate(-(float) sizeX / 2, -(float) sizeY / 2, 0);
+        guiGraphics.pose().translate(xPos, yPos, 100);
+        guiGraphics.pose().scale(scale, scale, scale);
+        guiGraphics.pose().translate(-(float) sizeX / 2, -(float) sizeY / 2, 0);
 
 
         // Initial eye pos somewhere off in the distance in the -Z direction
@@ -152,7 +153,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
         rotMat.identity();
 
         // For each GL rotation done, track the opposite to keep the eye pos accurate
-        ms.mulPose(Axis.XP.rotationDegrees(-30F));
+        guiGraphics.pose().mulPose(Axis.XP.rotationDegrees(-30F));
         rotMat.rotate(Axis.XP.rotationDegrees(30));
 
         float offX = (float) -sizeX / 2;
@@ -162,12 +163,12 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
         if (!Screen.hasShiftDown()) {
             time += ClientTicks.partialTicks;
         }
-        ms.translate(-offX, 0, -offZ);
-        ms.mulPose(Axis.YP.rotationDegrees(time));
+        guiGraphics.pose().translate(-offX, 0, -offZ);
+        guiGraphics.pose().mulPose(Axis.YP.rotationDegrees(time));
         rotMat.rotate(Axis.YP.rotationDegrees(-time));
-        ms.mulPose(Axis.YP.rotationDegrees(45));
+        guiGraphics.pose().mulPose(Axis.YP.rotationDegrees(45));
         rotMat.rotate(Axis.YP.rotationDegrees(-45));
-        ms.translate(offX, 0, offZ);
+        guiGraphics.pose().translate(offX, 0, offZ);
 
         // Finally apply the rotations
         rotMat.transform(eye);
@@ -181,9 +182,9 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
             checkPos = blockRes.getBlockPos().relative(blockRes.getDirection());
         }
 
-        ms.pushPose();
+        guiGraphics.pose().pushPose();
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        ms.translate(0, 0, -1);
+        guiGraphics.pose().translate(0, 0, -1);
 
         for (Multiblock.SimulateResult r : this.multiblockSimulation.getSecond()) {
             float alpha = 0.3F;
@@ -193,7 +194,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
 
             BlockState renderState = r.getStateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
 
-            this.renderBlock(buffers, level, renderState, r.getWorldPosition(), alpha, ms);
+            this.renderBlock(buffers, level, renderState, r.getWorldPosition(), alpha, guiGraphics.pose());
 
             if (renderState.getBlock() instanceof EntityBlock eb) {
                 var be = this.blockEntityCache.computeIfAbsent(r.getWorldPosition().immutable(), p -> eb.newBlockEntity(p, renderState));
@@ -203,26 +204,26 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
                     // fake cached state in case the renderer checks it as we don't want to query the actual world
                     be.setBlockState(renderState);
 
-                    ms.pushPose();
+                    guiGraphics.pose().pushPose();
                     var bePos = r.getWorldPosition();
-                    ms.translate(bePos.getX(), bePos.getY(), bePos.getZ());
+                    guiGraphics.pose().translate(bePos.getX(), bePos.getY(), bePos.getZ());
 
                     try {
                         BlockEntityRenderer<BlockEntity> renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(be);
                         if (renderer != null) {
-                            renderer.render(be, ClientTicks.partialTicks, ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
+                            renderer.render(be, ClientTicks.partialTicks, guiGraphics.pose(), buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
                         }
                     } catch (Exception e) {
                         this.erroredBlockEntities.add(be);
                         Modonomicon.LOGGER.error("Error rendering block entity", e);
                     }
-                    ms.popPose();
+                    guiGraphics.pose().popPose();
                 }
             }
         }
-        ms.popPose();
+        guiGraphics.pose().popPose();
         buffers.endBatch();
-        ms.popPose();
+        guiGraphics.pose().popPose();
 
     }
 
@@ -255,23 +256,23 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float ticks) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float ticks) {
 
         //render a frame for the multiblock render area
         int x = BookContentScreen.PAGE_WIDTH / 2 - 53;
         int y = 7;
         RenderSystem.enableBlend();
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        BookContentScreen.drawFromTexture(poseStack, this.page.getBook(), x, y, 405, 149, 106, 106);
+        BookContentScreen.drawFromTexture(guiGraphics, this.page.getBook(), x, y, 405, 149, 106, 106);
 
         //render multiblock name in place of title
         if (!this.page.getMultiblockName().isEmpty()) {
-            this.renderTitle(this.page.getMultiblockName(), false, poseStack, BookContentScreen.PAGE_WIDTH / 2, 0);
+            this.renderTitle(guiGraphics, this.page.getMultiblockName(), false, BookContentScreen.PAGE_WIDTH / 2, 0);
         }
 
-        this.renderMultiblock(poseStack);
+        this.renderMultiblock(guiGraphics);
 
-        this.renderBookTextHolder(this.page.getText(), poseStack, 0, this.getTextY(), BookContentScreen.PAGE_WIDTH);
+        this.renderBookTextHolder(guiGraphics, this.page.getText(), 0, this.getTextY(), BookContentScreen.PAGE_WIDTH);
 
         //TODO: render button to show multiblock in world
         //            //TODO: show multiblock preview on button click
@@ -280,7 +281,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
 
         var style = this.getClickedComponentStyleAt(mouseX, mouseY);
         if (style != null)
-            this.parentScreen.renderComponentHoverEffect(poseStack, style, mouseX, mouseY);
+            this.parentScreen.renderComponentHoverEffect(guiGraphics, style, mouseX, mouseY);
     }
 
     @Nullable

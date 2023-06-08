@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.book.page.BookEmptyPage;
 import com.klikli_dev.modonomicon.book.page.BookTextPage;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Style;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,7 +20,7 @@ public class BookEmptyPageRenderer extends BookPageRenderer<BookEmptyPage>  {
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float ticks) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float ticks) {
 
     }
 }
