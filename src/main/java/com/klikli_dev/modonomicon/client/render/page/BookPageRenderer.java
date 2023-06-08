@@ -46,7 +46,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
         if (text.hasComponent()) {
             //if it is a component, we draw it directly
             for (FormattedCharSequence formattedcharsequence : font.split(text.getComponent(), width)) {
-                guiGraphics.drawString(font, formattedcharsequence, x, y, 0);
+                guiGraphics.drawString(font, formattedcharsequence, x, y, 0, false);
                 y += font.lineHeight;
             }
         } else if (text instanceof RenderedBookTextHolder renderedText) {
@@ -56,7 +56,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
             for (var component : components) {
                 var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, width, width - 10, font);
                 for (FormattedCharSequence formattedcharsequence : wrapped) {
-                    guiGraphics.drawString(font, formattedcharsequence, x, y, 0);
+                    guiGraphics.drawString(font, formattedcharsequence, x, y, 0, false);
                     y += font.lineHeight;
                 }
             }

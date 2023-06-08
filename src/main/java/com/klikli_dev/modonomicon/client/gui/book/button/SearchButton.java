@@ -45,25 +45,16 @@ public class SearchButton extends Button {
                 scissorWidth -= 1;
             }
 
-            int scale = (int) this.parent.getMinecraft().getWindow().getGuiScale();
-
-            guiGraphics.pose().translate(xOffset, 0, -1000);
+            //as of 1.20 this causes the button to vanish behind the rendered world, so we don't use it
+            //guiGraphics.pose().translate(xOffset, 0, -1000);
 
             //GL scissors allows us to move the button on hover without intersecting with book border
-            //scissors always needs to use gui scale because it runs in absolute coords!
-            //see also vanilla class SocialInteractionsPlayerList using scissors in #render
-            //we are not using GuiComponent.enableScissor because a) we'd have to calculate absolute coords from width/height and b) we don't need the stack functionality
+            guiGraphics.enableScissor(scissorX, scissorY, scissorX + scissorWidth, scissorY + 1000);
 
-            RenderSystem.enableScissor(scissorX * scale, scissorY * scale, scissorWidth * scale, 1000);
-
-            //TODO: Upgrade: check if blit is correct here
-            //     int blitOffset = 50;
-            //            GuiComponent.blit(pMatrixStack, renderX, this.getY(), blitOffset, texX, texY, this.width, this.height, 256, 256);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             guiGraphics.blit(this.parent.getBookOverviewTexture(), renderX, this.getY(), texX, texY, this.width, this.height, 256, 256);
 
-
-            RenderSystem.disableScissor();
+            guiGraphics.disableScissor();
 
             guiGraphics.pose().popPose();
 

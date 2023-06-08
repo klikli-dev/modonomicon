@@ -80,20 +80,14 @@ public class BookCategoryScreen {
             this.currentZoom = this.targetZoom;
 
         //GL Scissors to the inner frame area so entries do not stick out
-        int scale = (int) this.bookOverviewScreen.getMinecraft().getWindow().getGuiScale();
         int innerX = this.bookOverviewScreen.getInnerX();
         int innerY = this.bookOverviewScreen.getInnerY();
-        int innerWidth = this.bookOverviewScreen.getInnerWidth() - 1; //idk magic, otherwise it overflows by one (scaled) pixel into the border
+        int innerWidth = this.bookOverviewScreen.getInnerWidth();
         int innerHeight = this.bookOverviewScreen.getInnerHeight();
-
-        //use scissors to constrain entries to inner area of category screen
-        //scissors always needs to use gui scale because it runs in absolute coords!
-        //see also vanilla class SocialInteractionsPlayerList using scissors in #render
-        //we are not using GuiComponent.enableScissor because a) we'd have to calculate absolute coords from width/height and b) we don't need the stack functionality
-
-        RenderSystem.enableScissor(innerX * scale, innerY * scale, innerWidth * scale, innerHeight * scale);
+        //the -1 are magic numbers to avoid an overflow of 1px.
+        guiGraphics.enableScissor(innerX, innerY, innerX + innerWidth - 1, innerY + innerHeight - 1);
         this.renderEntries(guiGraphics, pMouseX, pMouseY);
-        RenderSystem.disableScissor();
+        guiGraphics.disableScissor();
     }
 
     public void zoom(double delta) {
@@ -182,17 +176,11 @@ public class BookCategoryScreen {
             //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
             //force offset to int here to reduce difference to entry rendering which is pos based and thus int precision only
 
-            //TODO: Upgrade: check if blit is correct here
             guiGraphics.blit(this.category.getBackground(), innerX, innerY,
                     (this.scrollX + MAX_SCROLL) / scale + xOffset,
                     (this.scrollY + MAX_SCROLL) / scale + yOffset,
                     innerWidth, innerHeight, this.category.getBackgroundHeight(), this.category.getBackgroundWidth());
 
-            // int blitOffset = 0;
-//            GuiComponent.blit(poseStack, innerX, innerY, blitOffset,
-//                    (this.scrollX + MAX_SCROLL) / scale + xOffset,
-//                    (this.scrollY + MAX_SCROLL) / scale + yOffset,
-//                    innerWidth, innerHeight, this.category.getBackgroundHeight(), this.category.getBackgroundWidth());
         }
     }
 
@@ -202,18 +190,10 @@ public class BookCategoryScreen {
 
         if (layer.getVanishZoom() == -1 || layer.getVanishZoom() > zoom) {
             //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
-
-            //TODO: Upgrade: check if blit is correct here
             guiGraphics.blit(layer.getBackground(), x, y,
                     (scrollX + MAX_SCROLL) / parallax1 + xOffset,
                     (scrollY + MAX_SCROLL) / parallax1 + yOffset,
                     width, height, this.category.getBackgroundHeight(), this.category.getBackgroundWidth());
-
-//            int blitOffset = 0;
-//            GuiComponent.blit(poseStack, x, y, blitOffset,
-//                    (scrollX + MAX_SCROLL) / parallax1 + xOffset,
-//                    (scrollY + MAX_SCROLL) / parallax1 + yOffset,
-//                    width, height, this.category.getBackgroundHeight(), this.category.getBackgroundWidth());
         }
 
     }
@@ -265,7 +245,8 @@ public class BookCategoryScreen {
             //we translate instead of applying the offset to the entry x/y to avoid jittering when moving
             guiGraphics.pose().translate(xOffset, yOffset, 0);
 
-            guiGraphics.pose().translate(0, 0, -350); //push the whole entry behind the frame
+            //As of 1.20 this is not necessary, in fact it causes the entry to render behind the bg
+            //guiGraphics.pose().translate(0, 0, -10); //push the whole entry behind the frame
 
 
             if (displayState == EntryDisplayState.LOCKED) {
@@ -279,7 +260,7 @@ public class BookCategoryScreen {
             guiGraphics.blit(this.category.getEntryTextures(), entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT);
 
             guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(0, 0, 10); //now push the icon in front of the background
+            guiGraphics.pose().translate(0, 0, -100); //now push the icon in front of the background
 
             //render icon
             entry.getIcon().render(guiGraphics, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 5, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP + 5);

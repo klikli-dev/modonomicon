@@ -79,7 +79,7 @@ public class EntryListButton extends Button {
             }
 
             //TODO: if we ever add a font style setting to the book, use it here
-            guiGraphics.drawString(Minecraft.getInstance().font, name, this.getX() + 12, this.getY(), this.getEntryColor());
+            guiGraphics.drawString(Minecraft.getInstance().font, name, this.getX() + 12, this.getY(), this.getEntryColor(), false);
         }
     }
 
