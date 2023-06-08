@@ -6,22 +6,22 @@
 # The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
 modLoader="javafml" #mandatory
 # A version range to match for said mod loader - for regular FML @Mod it will be the forge version
-loaderVersion="[45,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
+loaderVersion="${loader_version_range}" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
 # The license for you mod. This is mandatory metadata and allows for easier comprehension of your redistributive properties.
 # Review your options at https://choosealicense.com/. All rights reserved is the default copyright stance, and is thus the default here.
-license="MIT and CC-BY-4.0"
+license="${mod_license}"
 # A URL to refer people to when problems occur with this mod
 issueTrackerURL="https://github.com/klikli-dev/modonomicon/issues" #optional
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
 # The modid of the mod
-modId="modonomicon" #mandatory
+modId="${mod_id}" #mandatory
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
 # ${file.jarVersion} will substitute the value of the Implementation-Version as read from the mod's JAR file metadata
 # see the associated build.gradle script for how to populate this completely automatically during a build
-version="${file.jarVersion}" #mandatory
+version="${mod_version}" #mandatory
 # A display name for the mod
-displayName="Modonomicon" #mandatory
+displayName="${mod_name}" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification <here>
 # updateJSONURL="http://myurl.me/" #optional
 # A URL for the "homepage" for this mod, displayed in the mod UI
@@ -31,12 +31,12 @@ logoFile="modonomicon.png" #optional
 # A text field displayed in the mod UI
 credits="""See https://github.com/klikli-dev/modonomicon#licensing""" #optional
 # A text field displayed in the mod UI
-authors="Kli Kli" #optional
+authors="${mod_authors}" #optional
 # The description text for the mod (multi line!) (#mandatory)
-description='''Data-driven minecraft in-game documentation with progress visualization.'''
+description='''${mod_description}'''
 
 [[dependencies.modonomicon]]
 modId = "forge"
 mandatory = true
-versionRange = "[1.19.4-45.0.1,)"
+versionRange = "${forge_version_range}"
 side = "BOTH"
