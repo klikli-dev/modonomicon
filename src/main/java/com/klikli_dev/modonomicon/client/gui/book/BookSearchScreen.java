@@ -19,8 +19,10 @@ import com.klikli_dev.modonomicon.client.gui.book.button.EntryListButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
+import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
@@ -70,12 +72,12 @@ public class BookSearchScreen extends Screen implements BookScreenWithButtons {
         }
     }
 
-    public void drawCenteredStringNoShadow(PoseStack poseStack, Component s, int x, int y, int color) {
-        this.drawCenteredStringNoShadow(poseStack, s, x, y, color, 1.0f);
+    public void drawCenteredStringNoShadow(GuiGraphics guiGraphics, Component s, int x, int y, int color) {
+        this.drawCenteredStringNoShadow(guiGraphics, s, x, y, color, 1.0f);
     }
 
-    public void drawCenteredStringNoShadow(PoseStack poseStack, Component s, int x, int y, int color, float scale) {
-        this.font.draw(poseStack, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color);
+    public void drawCenteredStringNoShadow(GuiGraphics guiGraphics, Component s, int x, int y, int color, float scale) {
+        GuiGraphicsExt.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
     }
 
     public BookOverviewScreen getParentScreen() {
@@ -115,9 +117,9 @@ public class BookSearchScreen extends Screen implements BookScreenWithButtons {
     }
 
 
-    protected void drawTooltip(PoseStack pPoseStack, int pMouseX, int pMouseY) {
+    protected void drawTooltip(GuiGraphics guiGraphics, int pMouseX, int pMouseY) {
         if (this.tooltip != null && !this.tooltip.isEmpty()) {
-            this.renderComponentTooltip(pPoseStack, this.tooltip, pMouseX, pMouseY);
+            guiGraphics.renderComponentTooltip(this.font, this.tooltip, pMouseX, pMouseY);
         }
     }
 
@@ -202,37 +204,37 @@ public class BookSearchScreen extends Screen implements BookScreenWithButtons {
     }
 
     @Override
-    public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
 
         this.resetTooltip();
 
         //we need to modify blit offset (now: z pose) to not draw over toasts
-        pPoseStack.pushPose();
-        pPoseStack.translate(0, 0, -1300);  //magic number arrived by testing until toasts show, but BookOverviewScreen does not
-        this.renderBackground(pPoseStack);
-        pPoseStack.popPose();
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, -1300);  //magic number arrived by testing until toasts show, but BookOverviewScreen does not
+        this.renderBackground(guiGraphics);
+        guiGraphics.pose().popPose();
 
-        pPoseStack.pushPose();
-        pPoseStack.translate(this.bookLeft, this.bookTop, 0);
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(this.bookLeft, this.bookTop, 0);
 
-        BookContentScreen.renderBookBackground(pPoseStack, this.getBook().getBookContentTexture());
+        BookContentScreen.renderBookBackground(guiGraphics, this.getBook().getBookContentTexture());
 
 
         if (this.openPagesIndex == 0) {
-            this.drawCenteredStringNoShadow(pPoseStack, this.getTitle(),
+            this.drawCenteredStringNoShadow(guiGraphics, this.getTitle(),
                     BookContentScreen.LEFT_PAGE_X + BookContentScreen.PAGE_WIDTH / 2, BookContentScreen.TOP_PADDING,
                     this.parentScreen.getBook().getDefaultTitleColor());
-            this.drawCenteredStringNoShadow(pPoseStack, Component.translatable(Gui.SEARCH_ENTRY_LIST_TITLE),
+            this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.SEARCH_ENTRY_LIST_TITLE),
                     BookContentScreen.RIGHT_PAGE_X + BookContentScreen.PAGE_WIDTH / 2, BookContentScreen.TOP_PADDING,
                     this.parentScreen.getBook().getDefaultTitleColor());
 
             //TODO: render separator at right location
-            BookContentScreen.drawTitleSeparator(pPoseStack, this.parentScreen.getBook(),
+            BookContentScreen.drawTitleSeparator(guiGraphics, this.parentScreen.getBook(),
                     BookContentScreen.LEFT_PAGE_X  + BookContentScreen.PAGE_WIDTH / 2, BookContentScreen.TOP_PADDING + 12);
-            BookContentScreen.drawTitleSeparator(pPoseStack, this.parentScreen.getBook(),
+            BookContentScreen.drawTitleSeparator(guiGraphics, this.parentScreen.getBook(),
                     BookContentScreen.RIGHT_PAGE_X + BookContentScreen.PAGE_WIDTH / 2, BookContentScreen.TOP_PADDING + 12);
 
-            BookPageRenderer.renderBookTextHolder(this.infoText, this.font, pPoseStack,
+            BookPageRenderer.renderBookTextHolder(guiGraphics, this.infoText, this.font,
                     BookContentScreen.LEFT_PAGE_X, BookContentScreen.TOP_PADDING + 22, BookContentScreen.PAGE_WIDTH);
         }
 
@@ -240,27 +242,27 @@ public class BookSearchScreen extends Screen implements BookScreenWithButtons {
         if (!this.searchField.getValue().isEmpty()) {
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             //draw search field bg
-            BookContentScreen.drawFromTexture(pPoseStack, this.parentScreen.getBook(), this.searchField.getX() - 8, this.searchField.getY(), 140, 183, 99, 14);
+            BookContentScreen.drawFromTexture(guiGraphics, this.parentScreen.getBook(), this.searchField.getX() - 8, this.searchField.getY(), 140, 183, 99, 14);
             var searchComponent = Component.literal(this.searchField.getValue());
             //TODO: if we want to support a font style, we set it here
-            this.font.draw(pPoseStack, searchComponent, this.searchField.getX() + 7, this.searchField.getY() + 1, 0);
+            guiGraphics.drawString(this.font, searchComponent, this.searchField.getX() + 7, this.searchField.getY() + 1, 0, false);
         }
 
         if (this.visibleEntries.isEmpty()) {
             if (!this.searchField.getValue().isEmpty()) {
-                this.drawCenteredStringNoShadow(pPoseStack, Component.translatable(Gui.SEARCH_NO_RESULTS), BookContentScreen.RIGHT_PAGE_X + BookContentScreen.PAGE_WIDTH / 2, 80, 0x333333);
-                pPoseStack.scale(2F, 2F, 2F);
-                this.drawCenteredStringNoShadow(pPoseStack, Component.translatable(Gui.SEARCH_NO_RESULTS_SAD), BookContentScreen.RIGHT_PAGE_X / 2 + BookContentScreen.PAGE_WIDTH / 4, 47, 0x999999);
-                pPoseStack.scale(0.5F, 0.5F, 0.5F);
+                this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.SEARCH_NO_RESULTS), BookContentScreen.RIGHT_PAGE_X + BookContentScreen.PAGE_WIDTH / 2, 80, 0x333333);
+                guiGraphics.pose().scale(2F, 2F, 2F);
+                this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.SEARCH_NO_RESULTS_SAD), BookContentScreen.RIGHT_PAGE_X / 2 + BookContentScreen.PAGE_WIDTH / 4, 47, 0x999999);
+                guiGraphics.pose().scale(0.5F, 0.5F, 0.5F);
             } else {
-                this.drawCenteredStringNoShadow(pPoseStack, Component.translatable(Gui.SEARCH_NO_RESULTS), BookContentScreen.RIGHT_PAGE_X + BookContentScreen.PAGE_WIDTH / 2, 80, 0x333333);
+                this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.SEARCH_NO_RESULTS), BookContentScreen.RIGHT_PAGE_X + BookContentScreen.PAGE_WIDTH / 2, 80, 0x333333);
             }
         }
-        pPoseStack.popPose();
+        guiGraphics.pose().popPose();
 
-        super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+        super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
-        this.drawTooltip(pPoseStack, pMouseX, pMouseY);
+        this.drawTooltip(guiGraphics, pMouseX, pMouseY);
     }
 
     @Override

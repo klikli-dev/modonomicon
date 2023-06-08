@@ -9,9 +9,9 @@ package com.klikli_dev.modonomicon.client.gui.book.button;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.client.gui.book.BookOverviewScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
@@ -62,19 +62,18 @@ public class ReadAllButton extends Button {
     }
 
     @Override
-    public final void render(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
+    public final void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         this.active = this.visible = this.displayCondition.get();
-        super.render(ms, mouseX, mouseY, partialTicks);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.updateCustomTooltip();
     }
 
     @Override
-    public void renderWidget(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //if focused we go to the right of our normal button (instead of down, like mc buttons do)
 
-        ms.pushPose();
-        ms.translate(0, 0, 200);
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, 200);
         var hovered = this.isHovered();
 
         int u = U;
@@ -91,9 +90,10 @@ public class ReadAllButton extends Button {
             v = V_READ_ALL;
         }
 
-        RenderSystem.setShaderTexture(0, this.parent.getBook().getBookOverviewTexture());
-        blit(ms, this.getX(), this.getY(), u, v, this.width, this.height, 256, 256);
-        ms.popPose();
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        guiGraphics.blit(this.parent.getBook().getBookOverviewTexture(), this.getX(), this.getY(), u, v, this.width, this.height, 256, 256);
+
+        guiGraphics.pose().popPose();
     }
 
     private void updateCustomTooltip() {

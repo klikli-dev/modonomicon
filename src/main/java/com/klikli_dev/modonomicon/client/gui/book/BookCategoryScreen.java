@@ -18,10 +18,9 @@ import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.BookEntryReadMessage;
 import com.klikli_dev.modonomicon.network.messages.SaveCategoryStateMessage;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -55,7 +54,7 @@ public class BookCategoryScreen {
         this.bookOverviewScreen = bookOverviewScreen;
         this.category = category;
 
-        this.connectionRenderer = this.bookOverviewScreen.getConnectionRenderer();
+        this.connectionRenderer = new EntryConnectionRenderer(category.getEntryTextures());
 
         this.targetZoom = 0.7f;
         this.currentZoom = this.targetZoom;
@@ -73,7 +72,7 @@ public class BookCategoryScreen {
         return ((this.bookOverviewScreen.getInnerHeight() / 2f) * (1 / this.currentZoom)) - this.scrollY / 2;
     }
 
-    public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         if (ClientConfig.get().qolCategory.enableSmoothZoom.get()) {
             float diff = this.targetZoom - this.currentZoom;
             this.currentZoom = this.currentZoom + Math.min(pPartialTick * (2 / 3f), 1) * diff;
@@ -93,7 +92,7 @@ public class BookCategoryScreen {
         //we are not using GuiComponent.enableScissor because a) we'd have to calculate absolute coords from width/height and b) we don't need the stack functionality
 
         RenderSystem.enableScissor(innerX * scale, innerY * scale, innerWidth * scale, innerHeight * scale);
-        this.renderEntries(pPoseStack, pMouseX, pMouseY);
+        this.renderEntries(guiGraphics, pMouseX, pMouseY);
         RenderSystem.disableScissor();
     }
 
@@ -155,7 +154,7 @@ public class BookCategoryScreen {
         return bookContentScreen;
     }
 
-    public void renderBackground(PoseStack poseStack) {
+    public void renderBackground(GuiGraphics guiGraphics) {
         //based on the frame's total width and its thickness, calculate where the inner area starts
         int innerX = this.bookOverviewScreen.getInnerX();
         int innerY = this.bookOverviewScreen.getInnerY();
@@ -177,31 +176,44 @@ public class BookCategoryScreen {
 
         if (!this.category.getBackgroundParallaxLayers().isEmpty()) {
             this.category.getBackgroundParallaxLayers().forEach(layer -> {
-                this.renderBackgroundParallaxLayer(layer, poseStack, innerX, innerY, innerWidth, innerHeight, this.scrollX, this.scrollY, scale, xOffset, yOffset, this.currentZoom);
+                this.renderBackgroundParallaxLayer(guiGraphics, layer, innerX, innerY, innerWidth, innerHeight, this.scrollX, this.scrollY, scale, xOffset, yOffset, this.currentZoom);
             });
         } else {
-            RenderSystem.setShaderTexture(0, this.category.getBackground());
             //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
             //force offset to int here to reduce difference to entry rendering which is pos based and thus int precision only
-            int blitOffset = 0;
-            GuiComponent.blit(poseStack, innerX, innerY, blitOffset,
+
+            //TODO: Upgrade: check if blit is correct here
+            guiGraphics.blit(this.category.getBackground(), innerX, innerY,
                     (this.scrollX + MAX_SCROLL) / scale + xOffset,
                     (this.scrollY + MAX_SCROLL) / scale + yOffset,
                     innerWidth, innerHeight, this.category.getBackgroundHeight(), this.category.getBackgroundWidth());
+
+            // int blitOffset = 0;
+//            GuiComponent.blit(poseStack, innerX, innerY, blitOffset,
+//                    (this.scrollX + MAX_SCROLL) / scale + xOffset,
+//                    (this.scrollY + MAX_SCROLL) / scale + yOffset,
+//                    innerWidth, innerHeight, this.category.getBackgroundHeight(), this.category.getBackgroundWidth());
         }
     }
 
-    public void renderBackgroundParallaxLayer(BookCategoryBackgroundParallaxLayer layer, PoseStack poseStack, int x, int y, int width, int height, float scrollX, float scrollY, float parallax, float xOffset, float yOffset, float zoom) {
+    public void renderBackgroundParallaxLayer(GuiGraphics guiGraphics, BookCategoryBackgroundParallaxLayer layer, int x, int y, int width, int height, float scrollX, float scrollY, float parallax, float xOffset, float yOffset, float zoom) {
         float parallax1 = parallax / layer.getSpeed();
         RenderSystem.setShaderTexture(0, layer.getBackground());
 
         if (layer.getVanishZoom() == -1 || layer.getVanishZoom() > zoom) {
             //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
-            int blitOffset = 0;
-            GuiComponent.blit(poseStack, x, y, blitOffset,
+
+            //TODO: Upgrade: check if blit is correct here
+            guiGraphics.blit(layer.getBackground(), x, y,
                     (scrollX + MAX_SCROLL) / parallax1 + xOffset,
                     (scrollY + MAX_SCROLL) / parallax1 + yOffset,
                     width, height, this.category.getBackgroundHeight(), this.category.getBackgroundWidth());
+
+//            int blitOffset = 0;
+//            GuiComponent.blit(poseStack, x, y, blitOffset,
+//                    (scrollX + MAX_SCROLL) / parallax1 + xOffset,
+//                    (scrollY + MAX_SCROLL) / parallax1 + yOffset,
+//                    width, height, this.category.getBackgroundHeight(), this.category.getBackgroundWidth());
         }
 
     }
@@ -229,7 +241,7 @@ public class BookCategoryScreen {
         return EntryDisplayState.UNLOCKED;
     }
 
-    private void renderEntries(PoseStack stack, int mouseX, int mouseY) {
+    private void renderEntries(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
@@ -237,14 +249,24 @@ public class BookCategoryScreen {
         float xOffset = this.getXOffset();
         float yOffset = this.getYOffset();
 
-        stack.pushPose();
-        stack.scale(this.currentZoom, this.currentZoom, 1.0f);
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().scale(this.currentZoom, this.currentZoom, 1.0f);
         for (var entry : this.category.getEntries().values()) {
             var displayState = this.getEntryDisplayState(entry);
             var isHovered = this.isEntryHovered(entry, xOffset, yOffset, mouseX, mouseY);
 
             if (displayState == EntryDisplayState.HIDDEN)
                 continue;
+
+            int texX = entry.getEntryBackgroundVIndex() * ENTRY_HEIGHT;
+            int texY = entry.getEntryBackgroundUIndex() * ENTRY_WIDTH;
+
+            guiGraphics.pose().pushPose();
+            //we translate instead of applying the offset to the entry x/y to avoid jittering when moving
+            guiGraphics.pose().translate(xOffset, yOffset, 0);
+
+            guiGraphics.pose().translate(0, 0, -350); //push the whole entry behind the frame
+
 
             if (displayState == EntryDisplayState.LOCKED) {
                 //Draw locked entries greyed out
@@ -253,27 +275,16 @@ public class BookCategoryScreen {
                 //Draw hovered entries slightly greyed out
                 RenderSystem.setShaderColor(0.8F, 0.8F, 0.8F, 1.0F);
             }
-
-            int texX = entry.getEntryBackgroundVIndex() * ENTRY_HEIGHT;
-            int texY = entry.getEntryBackgroundUIndex() * ENTRY_WIDTH;
-
-            RenderSystem.setShaderTexture(0, this.category.getEntryTextures());
-
-            stack.pushPose();
-            //we translate instead of applying the offset to the entry x/y to avoid jittering when moving
-            stack.translate(xOffset, yOffset, 0);
-
-            stack.translate(0, 0, -350); //push the whole entry behind the frame
             //render entry background
-            GuiComponent.blit(stack, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT);
+            guiGraphics.blit(this.category.getEntryTextures(), entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT);
 
-            stack.pushPose();
-            stack.translate(0, 0, 10); //now push the icon in front of the background
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(0, 0, 10); //now push the icon in front of the background
 
             //render icon
-            entry.getIcon().render(stack, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 5, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP + 5);
+            entry.getIcon().render(guiGraphics, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 5, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP + 5);
 
-            stack.popPose();
+            guiGraphics.pose().popPose();
 
             //render unread icon
             if (displayState == EntryDisplayState.UNLOCKED && !BookUnlockCapability.isReadFor(this.bookOverviewScreen.getMinecraft().player, entry)) {
@@ -290,29 +301,26 @@ public class BookCategoryScreen {
                 RenderSystem.enableDepthTest();
 
                 //testing
-                stack.pushPose();
-                stack.translate(0, 0, 11); //and push the unread icon in front of the icon
+                guiGraphics.pose().pushPose();
+                guiGraphics.pose().translate(0, 0, 11); //and push the unread icon in front of the icon
                 //if focused we go to the right of our normal button (instead of down, like mc buttons do)
-                BookContentScreen.drawFromTexture(stack, this.bookOverviewScreen.getBook(),
+                BookContentScreen.drawFromTexture(guiGraphics, this.bookOverviewScreen.getBook(),
                         entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 16 + 2,
                         entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP - 2, U + (isHovered ? width : 0), V, width, height);
-                stack.popPose();
+                guiGraphics.pose().popPose();
             }
 
-            stack.popPose();
+            guiGraphics.pose().popPose();
 
             //reset color to avoid greyed out carrying over
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
-            this.renderConnections(stack, entry, xOffset, yOffset);
+            this.renderConnections(guiGraphics, entry, xOffset, yOffset);
         }
-        stack.popPose();
+        guiGraphics.pose().popPose();
     }
 
-    public void renderEntryTooltips(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-
+    public void renderEntryTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //calculate the render offset
         float xOffset = this.getXOffset();
         float yOffset = this.getYOffset();
@@ -322,7 +330,7 @@ public class BookCategoryScreen {
             if (displayState == EntryDisplayState.HIDDEN)
                 continue;
 
-            this.renderTooltip(stack, entry, displayState, xOffset, yOffset, mouseX, mouseY);
+            this.renderTooltip(guiGraphics, entry, displayState, xOffset, yOffset, mouseX, mouseY);
         }
     }
 
@@ -339,7 +347,7 @@ public class BookCategoryScreen {
                 && mouseY >= innerY && mouseY <= innerY + innerHeight;
     }
 
-    private void renderTooltip(PoseStack stack, BookEntry entry, EntryDisplayState displayState, float xOffset, float yOffset, int mouseX, int mouseY) {
+    private void renderTooltip(GuiGraphics guiGraphics, BookEntry entry, EntryDisplayState displayState, float xOffset, float yOffset, int mouseX, int mouseY) {
         //hovered?
         if (this.isEntryHovered(entry, xOffset, yOffset, mouseX, mouseY)) {
 
@@ -357,23 +365,23 @@ public class BookCategoryScreen {
             }
 
             //draw description
-            this.bookOverviewScreen.renderTooltip(stack, tooltip, Optional.empty(), mouseX, mouseY);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            guiGraphics.renderTooltip(Minecraft.getInstance().font, tooltip, Optional.empty(), mouseX, mouseY);
         }
     }
 
-    private void renderConnections(PoseStack stack, BookEntry entry, float xOffset, float yOffset) {
+    private void renderConnections(GuiGraphics guiGraphics, BookEntry entry, float xOffset, float yOffset) {
         //our arrows are aliased and need blending
         RenderSystem.enableBlend();
 
         for (var parent : entry.getParents()) {
 
             int blitOffset = 0;
-            this.bookOverviewScreen.getConnectionRenderer().setBlitOffset(blitOffset);
-            stack.pushPose();
-            stack.translate(xOffset, yOffset, 0);
-            RenderSystem.setShaderTexture(0, this.category.getEntryTextures());
-            this.connectionRenderer.render(stack, entry, parent);
-            stack.popPose();
+            this.connectionRenderer.setBlitOffset(blitOffset);
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(xOffset, yOffset, 0);
+            this.connectionRenderer.render(guiGraphics, entry, parent);
+            guiGraphics.pose().popPose();
         }
 
         RenderSystem.disableBlend();

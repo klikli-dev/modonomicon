@@ -9,140 +9,142 @@ package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.BookEntryParent;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 
 import static java.lang.Math.*;
 
 public class EntryConnectionRenderer {
 
     public int blitOffset;
+    public ResourceLocation entryTextures;
 
-    public EntryConnectionRenderer() {
+    public EntryConnectionRenderer(ResourceLocation entryTextures) {
+        this.entryTextures = entryTextures;
     }
 
-    public void renderLinedUpEntries(PoseStack stack, BookEntry entry, BookEntry parentEntry, BookEntryParent parent, boolean isVertical) {
+    public void renderLinedUpEntries(GuiGraphics guiGraphics, BookEntry entry, BookEntry parentEntry, BookEntryParent parent, boolean isVertical) {
         if (isVertical) {
-            this.drawVerticalLine(stack, parentEntry.getX(), entry.getY(), parentEntry.getY());
+            this.drawVerticalLine(guiGraphics, parentEntry.getX(), entry.getY(), parentEntry.getY());
             if (parent.drawArrow()) {
                 //move the arrow head one grid slot before the target, because it occupies 30x30
                 if (parentEntry.getY() > entry.getY())
-                    this.drawUpArrow(stack, entry.getX(), entry.getY() + 1);
+                    this.drawUpArrow(guiGraphics, entry.getX(), entry.getY() + 1);
                 else
-                    this.drawDownArrow(stack, entry.getX(), entry.getY() - 1);
+                    this.drawDownArrow(guiGraphics, entry.getX(), entry.getY() - 1);
             }
 
         } else {
-            this.drawHorizontalLine(stack, parentEntry.getY(), entry.getX(), parentEntry.getX());
+            this.drawHorizontalLine(guiGraphics, parentEntry.getY(), entry.getX(), parentEntry.getX());
             if (parent.drawArrow()) {
                 //move the arrow head one grid slot before the target, because it occupies 30x30
                 if (parentEntry.getX() > entry.getX())
-                    this.drawLeftArrow(stack, entry.getX() + 1, entry.getY());
+                    this.drawLeftArrow(guiGraphics, entry.getX() + 1, entry.getY());
                 else
-                    this.drawRightArrow(stack, entry.getX() - 1, entry.getY());
+                    this.drawRightArrow(guiGraphics, entry.getX() - 1, entry.getY());
             }
         }
     }
 
-    public void renderSmallCurves(PoseStack stack, BookEntry entry, BookEntry parentEntry, BookEntryParent parent) {
-        this.drawVerticalLine(stack, entry.getX(), parentEntry.getY(), entry.getY());
-        this.drawHorizontalLine(stack, parentEntry.getY(), parentEntry.getX(), entry.getX());
+    public void renderSmallCurves(GuiGraphics guiGraphics, BookEntry entry, BookEntry parentEntry, BookEntryParent parent) {
+        this.drawVerticalLine(guiGraphics, entry.getX(), parentEntry.getY(), entry.getY());
+        this.drawHorizontalLine(guiGraphics, parentEntry.getY(), parentEntry.getX(), entry.getX());
         if (entry.getX() > parentEntry.getX()) {
             if (entry.getY() > parentEntry.getY()) {
-                this.drawSmallCurveLeftDown(stack, entry.getX(), parentEntry.getY());
+                this.drawSmallCurveLeftDown(guiGraphics, entry.getX(), parentEntry.getY());
                 if (parent.drawArrow())
-                    this.drawDownArrow(stack, entry.getX(), entry.getY() - 1);
+                    this.drawDownArrow(guiGraphics, entry.getX(), entry.getY() - 1);
             } else {
-                this.drawSmallCurveLeftUp(stack, entry.getX(), parentEntry.getY());
+                this.drawSmallCurveLeftUp(guiGraphics, entry.getX(), parentEntry.getY());
                 if (parent.drawArrow())
-                    this.drawUpArrow(stack, entry.getX(), entry.getY() + 1);
+                    this.drawUpArrow(guiGraphics, entry.getX(), entry.getY() + 1);
             }
         } else {
             if (entry.getY() > parentEntry.getY()) {
-                this.drawSmallCurveRightDown(stack, entry.getX(), parentEntry.getY());
+                this.drawSmallCurveRightDown(guiGraphics, entry.getX(), parentEntry.getY());
                 if (parent.drawArrow())
-                    this.drawDownArrow(stack, entry.getX(), entry.getY() - 1);
+                    this.drawDownArrow(guiGraphics, entry.getX(), entry.getY() - 1);
             } else {
-                this.drawSmallCurveRightUp(stack, entry.getX(), parentEntry.getY());
+                this.drawSmallCurveRightUp(guiGraphics, entry.getX(), parentEntry.getY());
                 if (parent.drawArrow())
-                    this.drawUpArrow(stack, entry.getX(), entry.getY() + 1);
+                    this.drawUpArrow(guiGraphics, entry.getX(), entry.getY() + 1);
             }
         }
     }
 
-    public void renderSmallCurvesReversed(PoseStack stack, BookEntry entry, BookEntry parentEntry, BookEntryParent parent) {
-        this.drawHorizontalLine(stack, entry.getY(), entry.getX(), parentEntry.getX());
-        this.drawVerticalLine(stack, parentEntry.getX(), parentEntry.getY(), entry.getY());
+    public void renderSmallCurvesReversed(GuiGraphics guiGraphics, BookEntry entry, BookEntry parentEntry, BookEntryParent parent) {
+        this.drawHorizontalLine(guiGraphics, entry.getY(), entry.getX(), parentEntry.getX());
+        this.drawVerticalLine(guiGraphics, parentEntry.getX(), parentEntry.getY(), entry.getY());
         if (entry.getX() > parentEntry.getX()) {
             if (entry.getY() > parentEntry.getY()) {
-                this.drawSmallCurveRightUp(stack, parentEntry.getX(), entry.getY());
+                this.drawSmallCurveRightUp(guiGraphics, parentEntry.getX(), entry.getY());
                 if (parent.drawArrow())
-                    this.drawRightArrow(stack, entry.getX() - 1, entry.getY());
+                    this.drawRightArrow(guiGraphics, entry.getX() - 1, entry.getY());
             } else {
-                this.drawSmallCurveRightDown(stack, entry.getX() - 1, parentEntry.getY() - 1);
+                this.drawSmallCurveRightDown(guiGraphics, entry.getX() - 1, parentEntry.getY() - 1);
                 if (parent.drawArrow())
-                    this.drawRightArrow(stack, entry.getX() - 1, entry.getY());
+                    this.drawRightArrow(guiGraphics, entry.getX() - 1, entry.getY());
             }
         } else {
             if (entry.getY() > parentEntry.getY()) {
-                this.drawSmallCurveLeftUp(stack, entry.getX() + 1, entry.getY());
+                this.drawSmallCurveLeftUp(guiGraphics, entry.getX() + 1, entry.getY());
                 if (parent.drawArrow())
-                    this.drawLeftArrow(stack, entry.getX() + 1, entry.getY());
+                    this.drawLeftArrow(guiGraphics, entry.getX() + 1, entry.getY());
             } else {
-                this.drawSmallCurveLeftDown(stack, entry.getX() + 1, parentEntry.getY() - 1);
+                this.drawSmallCurveLeftDown(guiGraphics, entry.getX() + 1, parentEntry.getY() - 1);
                 if (parent.drawArrow())
-                    this.drawLeftArrow(stack, entry.getX() + 1, entry.getY());
+                    this.drawLeftArrow(guiGraphics, entry.getX() + 1, entry.getY());
             }
         }
     }
 
-    public void renderLargeCurves(PoseStack stack, BookEntry entry, BookEntry parentEntry, BookEntryParent parent) {
-        this.drawHorizontalLineShortened(stack, parentEntry.getY(), parentEntry.getX(), entry.getX());
-        this.drawVerticalLineShortened(stack, entry.getX(), entry.getY(), parentEntry.getY());
+    public void renderLargeCurves(GuiGraphics guiGraphics, BookEntry entry, BookEntry parentEntry, BookEntryParent parent) {
+        this.drawHorizontalLineShortened(guiGraphics, parentEntry.getY(), parentEntry.getX(), entry.getX());
+        this.drawVerticalLineShortened(guiGraphics, entry.getX(), entry.getY(), parentEntry.getY());
         if (entry.getX() > parentEntry.getX()) {
             if (entry.getY() > parentEntry.getY()) {
-                this.drawLargeCurveLeftDown(stack, entry.getX() - 1, parentEntry.getY());
+                this.drawLargeCurveLeftDown(guiGraphics, entry.getX() - 1, parentEntry.getY());
                 if (parent.drawArrow())
-                    this.drawDownArrow(stack, entry.getX(), entry.getY() - 1);
+                    this.drawDownArrow(guiGraphics, entry.getX(), entry.getY() - 1);
             } else {
-                this.drawLargeCurveLeftUp(stack, entry.getX() - 1, parentEntry.getY() - 1);
+                this.drawLargeCurveLeftUp(guiGraphics, entry.getX() - 1, parentEntry.getY() - 1);
                 if (parent.drawArrow())
-                    this.drawUpArrow(stack, entry.getX(), entry.getY() + 1);
+                    this.drawUpArrow(guiGraphics, entry.getX(), entry.getY() + 1);
             }
         } else {
             if (entry.getY() > parentEntry.getY()) {
-                this.drawLargeCurveRightDown(stack, entry.getX(), parentEntry.getY());
+                this.drawLargeCurveRightDown(guiGraphics, entry.getX(), parentEntry.getY());
                 if (parent.drawArrow())
-                    this.drawDownArrow(stack, entry.getX(), entry.getY() - 1);
+                    this.drawDownArrow(guiGraphics, entry.getX(), entry.getY() - 1);
             } else {
-                this.drawLargeCurveRightUp(stack, entry.getX(), parentEntry.getY() - 1);
+                this.drawLargeCurveRightUp(guiGraphics, entry.getX(), parentEntry.getY() - 1);
                 if (parent.drawArrow())
-                    this.drawUpArrow(stack, entry.getX(), entry.getY() + 1);
+                    this.drawUpArrow(guiGraphics, entry.getX(), entry.getY() + 1);
             }
         }
     }
 
-    public void renderLargeCurvesReversed(PoseStack stack, BookEntry entry, BookEntry parentEntry, BookEntryParent parent) {
-        this.drawHorizontalLineShortened(stack, entry.getY(), entry.getX(), parentEntry.getX());
-        this.drawVerticalLineShortened(stack, parentEntry.getX(), parentEntry.getY(), entry.getY());
+    public void renderLargeCurvesReversed(GuiGraphics guiGraphics, BookEntry entry, BookEntry parentEntry, BookEntryParent parent) {
+        this.drawHorizontalLineShortened(guiGraphics, entry.getY(), entry.getX(), parentEntry.getX());
+        this.drawVerticalLineShortened(guiGraphics, parentEntry.getX(), parentEntry.getY(), entry.getY());
         if (entry.getX() > parentEntry.getX()) {
             if (entry.getY() > parentEntry.getY())
-                this.drawLargeCurveRightUp(stack, parentEntry.getX(), entry.getY() - 1);
+                this.drawLargeCurveRightUp(guiGraphics, parentEntry.getX(), entry.getY() - 1);
             else
-                this.drawLargeCurveRightDown(stack, parentEntry.getX(), entry.getY());
+                this.drawLargeCurveRightDown(guiGraphics, parentEntry.getX(), entry.getY());
             if (parent.drawArrow())
-                this.drawRightArrow(stack, entry.getX() - 1, entry.getY());
+                this.drawRightArrow(guiGraphics, entry.getX() - 1, entry.getY());
         } else {
             if (entry.getY() > parentEntry.getY())
-                this.drawLargeCurveLeftUp(stack, entry.getX() + 1, entry.getY() - 1);
+                this.drawLargeCurveLeftUp(guiGraphics, entry.getX() + 1, entry.getY() - 1);
             else
-                this.drawLargeCurveLeftDown(stack, entry.getX() + 1, entry.getY());
+                this.drawLargeCurveLeftDown(guiGraphics, entry.getX() + 1, entry.getY());
             if (parent.drawArrow())
-                this.drawLeftArrow(stack, entry.getX() + 1, entry.getY());
+                this.drawLeftArrow(guiGraphics, entry.getX() + 1, entry.getY());
         }
     }
 
-    public void render(PoseStack stack, BookEntry entry, BookEntryParent parent) {
+    public void render(GuiGraphics guiGraphics, BookEntry entry, BookEntryParent parent) {
         BookEntry parentEntry = parent.getEntry();
 
         //only render if line is enabled and if we are in the same category (other category -> other page!)
@@ -152,19 +154,19 @@ public class EntryConnectionRenderer {
 
             if (deltaX == 0 || deltaY == 0) {
                 //if the entries are in a line, just draw a line
-                this.renderLinedUpEntries(stack, entry, parentEntry, parent, deltaX == 0);
+                this.renderLinedUpEntries(guiGraphics, entry, parentEntry, parent, deltaX == 0);
             } else {
                 if (deltaX < 2 || deltaY < 2) {
                     if (!parent.isLineReversed()) {
-                        this.renderSmallCurves(stack, entry, parentEntry, parent);
+                        this.renderSmallCurves(guiGraphics, entry, parentEntry, parent);
                     } else {
-                        this.renderSmallCurvesReversed(stack, entry, parentEntry, parent);
+                        this.renderSmallCurvesReversed(guiGraphics, entry, parentEntry, parent);
                     }
                 } else {
                     if (!parent.isLineReversed()) {
-                        this.renderLargeCurves(stack, entry, parentEntry, parent);
+                        this.renderLargeCurves(guiGraphics, entry, parentEntry, parent);
                     } else {
-                        this.renderLargeCurvesReversed(stack, entry, parentEntry, parent);
+                        this.renderLargeCurvesReversed(guiGraphics, entry, parentEntry, parent);
                     }
                 }
             }
@@ -189,51 +191,51 @@ public class EntryConnectionRenderer {
         return y * BookCategoryScreen.ENTRY_GRID_SCALE;
     }
 
-    protected void blit(PoseStack stack, int pX, int pY, float pUOffset, float pVOffset, int pUWidth, int pVHeight) {
-        GuiComponent.blit(stack, pX, pY, this.blitOffset, pUOffset, pVOffset, pUWidth, pVHeight, 256, 256);
+    protected void blit(GuiGraphics guiGraphics, int pX, int pY, float pUOffset, float pVOffset, int pUWidth, int pVHeight) {
+        guiGraphics.blit(this.entryTextures, pX, pY, this.blitOffset, pUOffset, pVOffset, pUWidth, pVHeight, 256, 256);
     }
 
-    protected void drawSmallCurveLeftDown(PoseStack stack, int x, int y) {
-        this.blit(stack, this.screenX(x), this.screenY(y), 0, 226, 30, 30);
+    protected void drawSmallCurveLeftDown(GuiGraphics guiGraphics, int x, int y) {
+        this.blit(guiGraphics, this.screenX(x), this.screenY(y), 0, 226, 30, 30);
     }
 
-    protected void drawSmallCurveRightDown(PoseStack stack, int x, int y) {
-        this.blit(stack, this.screenX(x), this.screenY(y), 30, 226, 30, 30);
+    protected void drawSmallCurveRightDown(GuiGraphics guiGraphics, int x, int y) {
+        this.blit(guiGraphics, this.screenX(x), this.screenY(y), 30, 226, 30, 30);
     }
 
-    protected void drawSmallCurveLeftUp(PoseStack stack, int x, int y) {
-        this.blit(stack, this.screenX(x), this.screenY(y), 0, 196, 30, 30);
+    protected void drawSmallCurveLeftUp(GuiGraphics guiGraphics, int x, int y) {
+        this.blit(guiGraphics, this.screenX(x), this.screenY(y), 0, 196, 30, 30);
     }
 
-    protected void drawSmallCurveRightUp(PoseStack stack, int x, int y) {
-        this.blit(stack, this.screenX(x), this.screenY(y), 30, 196, 30, 30);
+    protected void drawSmallCurveRightUp(GuiGraphics guiGraphics, int x, int y) {
+        this.blit(guiGraphics, this.screenX(x), this.screenY(y), 30, 196, 30, 30);
     }
 
-    protected void drawLargeCurveLeftDown(PoseStack stack, int x, int y) {
-        this.blit(stack, this.screenX(x), this.screenY(y), 62, 196, 60, 60);
+    protected void drawLargeCurveLeftDown(GuiGraphics guiGraphics, int x, int y) {
+        this.blit(guiGraphics, this.screenX(x), this.screenY(y), 62, 196, 60, 60);
     }
 
-    protected void drawLargeCurveRightDown(PoseStack stack, int x, int y) {
-        this.blit(stack, this.screenX(x), this.screenY(y), 122, 196, 60, 60);
+    protected void drawLargeCurveRightDown(GuiGraphics guiGraphics, int x, int y) {
+        this.blit(guiGraphics, this.screenX(x), this.screenY(y), 122, 196, 60, 60);
     }
 
-    protected void drawLargeCurveLeftUp(PoseStack stack, int x, int y) {
-        this.blit(stack, this.screenX(x), this.screenY(y), 62, 134, 60, 60);
+    protected void drawLargeCurveLeftUp(GuiGraphics guiGraphics, int x, int y) {
+        this.blit(guiGraphics, this.screenX(x), this.screenY(y), 62, 134, 60, 60);
     }
 
-    protected void drawLargeCurveRightUp(PoseStack stack, int x, int y) {
-        this.blit(stack, this.screenX(x), this.screenY(y), 122, 134, 60, 60);
+    protected void drawLargeCurveRightUp(GuiGraphics guiGraphics, int x, int y) {
+        this.blit(guiGraphics, this.screenX(x), this.screenY(y), 122, 134, 60, 60);
     }
 
-    void drawVerticalLineAt(PoseStack stack, int x, int y) {
-        this.blit(stack, this.screenX(x), this.screenY(y), 184, 164, 30, 31);
+    void drawVerticalLineAt(GuiGraphics guiGraphics, int x, int y) {
+        this.blit(guiGraphics, this.screenX(x), this.screenY(y), 184, 164, 30, 31);
     }
 
-    void drawHorizontalLineAt(PoseStack stack, int x, int y) {
-        this.blit(stack, this.screenX(x), this.screenY(y), 184, 226, 31, 30);
+    void drawHorizontalLineAt(GuiGraphics guiGraphics, int x, int y) {
+        this.blit(guiGraphics, this.screenX(x), this.screenY(y), 184, 226, 31, 30);
     }
 
-    void drawVerticalLine(PoseStack stack, int x, int startY, int endY) {
+    void drawVerticalLine(GuiGraphics guiGraphics, int x, int startY, int endY) {
         int temp = startY;
 
         //swap them if endY > startY
@@ -241,10 +243,10 @@ public class EntryConnectionRenderer {
         endY = max(endY, temp);
 
         for (int j = startY + 1; j < endY; j++)
-            this.drawVerticalLineAt(stack, x, j);
+            this.drawVerticalLineAt(guiGraphics, x, j);
     }
 
-    void drawHorizontalLine(PoseStack stack, int y, int startX, int endX) {
+    void drawHorizontalLine(GuiGraphics guiGraphics, int y, int startX, int endX) {
         int temp = startX;
 
         //swap them if endX > startX
@@ -252,11 +254,11 @@ public class EntryConnectionRenderer {
         endX = max(endX, temp);
         // *exclusive*
         for (int j = startX + 1; j < endX; j++) {
-            this.drawHorizontalLineAt(stack, j, y);
+            this.drawHorizontalLineAt(guiGraphics, j, y);
         }
     }
 
-    void drawHorizontalLineShortened(PoseStack stack, int y, int startX, int endX) {
+    void drawHorizontalLineShortened(GuiGraphics guiGraphics, int y, int startX, int endX) {
         int temp = startX;
 
         // reduce length by one
@@ -270,10 +272,10 @@ public class EntryConnectionRenderer {
         endX = max(endX, temp);
 
         for (int j = startX + 1; j < endX; j++)
-            this.drawHorizontalLineAt(stack, j, y);
+            this.drawHorizontalLineAt(guiGraphics, j, y);
     }
 
-    void drawVerticalLineShortened(PoseStack stack, int x, int startY, int endY) {
+    void drawVerticalLineShortened(GuiGraphics guiGraphics, int x, int startY, int endY) {
         int temp = startY;
 
         // reduce length by one
@@ -287,23 +289,23 @@ public class EntryConnectionRenderer {
         endY = max(endY, temp);
 
         for (int j = startY + 1; j < endY; j++)
-            this.drawVerticalLineAt(stack, x, j);
+            this.drawVerticalLineAt(guiGraphics, x, j);
     }
 
 
-    void drawUpArrow(PoseStack stack, int x, int y) {
-        this.blit(stack, this.screenX(x), this.screenY(y) - 1, 0, 134, 30, 30);
+    void drawUpArrow(GuiGraphics guiGraphics, int x, int y) {
+        this.blit(guiGraphics, this.screenX(x), this.screenY(y) - 1, 0, 134, 30, 30);
     }
 
-    void drawDownArrow(PoseStack stack, int x, int y) {
-        this.blit(stack, this.screenX(x), this.screenY(y) + 1, 0, 164, 30, 30);
+    void drawDownArrow(GuiGraphics guiGraphics, int x, int y) {
+        this.blit(guiGraphics, this.screenX(x), this.screenY(y) + 1, 0, 164, 30, 30);
     }
 
-    void drawRightArrow(PoseStack stack, int x, int y) {
-        this.blit(stack, this.screenX(x) + 1, this.screenY(y), 30, 134, 30, 30);
+    void drawRightArrow(GuiGraphics guiGraphics, int x, int y) {
+        this.blit(guiGraphics, this.screenX(x) + 1, this.screenY(y), 30, 134, 30, 30);
     }
 
-    void drawLeftArrow(PoseStack stack, int x, int y) {
-        this.blit(stack, this.screenX(x) - 1, this.screenY(y), 30, 164, 30, 30);
+    void drawLeftArrow(GuiGraphics guiGraphics, int x, int y) {
+        this.blit(guiGraphics, this.screenX(x) - 1, this.screenY(y), 30, 164, 30, 30);
     }
 }

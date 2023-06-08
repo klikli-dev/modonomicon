@@ -9,11 +9,9 @@ package com.klikli_dev.modonomicon.client.gui.book.button;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.client.gui.book.BookOverviewScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 
 public class CategoryButton extends Button {
@@ -39,14 +37,11 @@ public class CategoryButton extends Button {
     }
 
     @Override
-    public void renderWidget(PoseStack pMatrixStack, int pMouseX, int pMouseY, float pPartialTicks) {
+    public void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTicks) {
         if (this.visible) {
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
-
-            pMatrixStack.pushPose();
+            guiGraphics.pose().pushPose();
             int xOffset = this.getCategory().getBook().getCategoryButtonXOffset();
-            pMatrixStack.translate(xOffset, 0, 0);
+            guiGraphics.pose().translate(xOffset, 0, 0);
 
             int texX = 0;
             int texY = 145;
@@ -63,34 +58,33 @@ public class CategoryButton extends Button {
             }
 
             //draw category button background
-            RenderSystem.setShaderTexture(0, this.parent.getBookOverviewTexture());
-
-            int blitOffset = 50;
-            GuiComponent.blit(pMatrixStack, renderX, this.getY(), blitOffset, texX, texY, renderWidth, this.height, 256, 256);
+            //TODO: Upgrade: check if blit is correct here
+//            int blitOffset = 50;
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            guiGraphics.blit(this.parent.getBookOverviewTexture(), renderX, this.getY(), texX, texY, renderWidth, this.height, 256, 256);
 
             //then draw icon
-
             int iconSize = 16;
             int centerIconOffset = iconSize / 2;
             float scale = this.getCategory().getBook().getCategoryButtonIconScale();
 
-            pMatrixStack.pushPose();
-            pMatrixStack.translate(0, 0, 100); //push category icon to front
-            pMatrixStack.translate(renderX + 8, this.getY() + 2, 0); //move to desired render location
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(0, 0, 100); //push category icon to front
+            guiGraphics.pose().translate(renderX + 8, this.getY() + 2, 0); //move to desired render location
 
             //now scale around center
-            pMatrixStack.pushPose();
-            pMatrixStack.translate(centerIconOffset, centerIconOffset, 0);
-            pMatrixStack.scale(scale, scale, 1);
-            pMatrixStack.translate(-centerIconOffset, -centerIconOffset, 0);
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(centerIconOffset, centerIconOffset, 0);
+            guiGraphics.pose().scale(scale, scale, 1);
+            guiGraphics.pose().translate(-centerIconOffset, -centerIconOffset, 0);
 
-            this.category.getIcon().render(pMatrixStack, 0, 0);
+            this.category.getIcon().render(guiGraphics, 0, 0);
 
-            pMatrixStack.popPose();
+            guiGraphics.pose().popPose();
 
-            pMatrixStack.popPose();
+            guiGraphics.pose().popPose();
 
-            pMatrixStack.popPose();
+            guiGraphics.pose().popPose();
         }
     }
 }

@@ -7,10 +7,7 @@
 package com.klikli_dev.modonomicon.book;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -50,14 +47,12 @@ public class BookIcon {
         }
     }
 
-    public void render(PoseStack ms, int x, int y) {
+    public void render(GuiGraphics guiGraphics, int x, int y) {
         if (this.texture != null) {
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderTexture(0, this.texture);
-            GuiComponent.blit(ms, x, y, 0, 0, 0, 16, 16, 16, 16);
+            guiGraphics.blit(this.texture, x, y, 0, 0, 0, 16, 16, 16, 16);
         } else {
-            Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(ms, this.itemStack, x, y);
+            guiGraphics.renderItem(this.itemStack, x, y);
         }
     }
 
