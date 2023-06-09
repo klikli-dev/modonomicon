@@ -143,10 +143,9 @@ dependencies {
     minecraft "net.minecraftforge:forge:${forge_version}"
 
     //Jei
-    //TODO: reenable once updated
-//    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
-//    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
-//    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
     //commonmark
     library "org.commonmark:commonmark:${commonmark_version}"
@@ -181,7 +180,9 @@ def replaceProperties = [
         mod_license            : mod_license,
         mod_version            : mod_version,
         mod_authors            : mod_authors,
-        mod_description        : mod_description
+        mod_description        : mod_description,
+        jei_version_range      : jei_version_range,
+        patchouli_version_range: patchouli_version_range,
 ]
 processResources {
     inputs.properties replaceProperties

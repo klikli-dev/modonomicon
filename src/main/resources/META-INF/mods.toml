@@ -38,3 +38,15 @@ modId = "forge"
 mandatory = true
 versionRange = "${forge_version_range}"
 side = "BOTH"
+
+[[dependencies.modonomicon]]
+modId = "jei"
+mandatory = false
+versionRange = "${jei_version_range}"
+side = "BOTH"
+
+[[dependencies.modonomicon]]
+modId = "patchouli"
+mandatory = false
+versionRange = "${patchouli_version_range}"
+side = "BOTH"
