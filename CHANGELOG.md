@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20-1.32.4] - 2023-06-09
+### :bug: Bug Fixes
+- [`34c2fee`](https://github.com/klikli-dev/modonomicon/commit/34c2feea349f28056e9eab7223bc8831bda13abd) - allow all patchouli versions *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`dc2df38`](https://github.com/klikli-dev/modonomicon/commit/dc2df387d43aac602125688cc2cfb385ffc50bcf) - re-establish reuse compliance *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20-1.32.3] - 2023-06-09
 ### :wrench: Chores
 - [`86f9c2a`](https://github.com/klikli-dev/modonomicon/commit/86f9c2a35034177ba5f0d8a04960bb9576810101) - enable jei *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -283,3 +291,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.4-1.32.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.32.1...release/v1.19.4-1.32.2
 [release/v1.20-1.32.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20-0.0.0...release/v1.20-1.32.2
 [release/v1.20-1.32.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20-1.32.2...release/v1.20-1.32.3
+[release/v1.20-1.32.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20-1.32.3...release/v1.20-1.32.4
