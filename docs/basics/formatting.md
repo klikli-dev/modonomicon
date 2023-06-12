@@ -164,6 +164,22 @@ The entry id is the full path of the entry within the `/entries/` folder, that o
 
 :::
 
+### Command Link 
+
+Command links are links that can run [Commands](./structure/commands.md) when clicked.
+See [Commands](./structure/commands.md) on how to create commands.
+Syntax: 
+- `[display text](command://<book-id>/<command-id>`.
+- `[display text](command://<command-id>`. 
+
+If no book id is provided the link will look for the command in the currently open book.
+
+:::tip 
+
+Command links can be used to e.g. give rewards to players by adding them to a page.
+
+::: 
+
 ### Item / Block Link
 
 Item links are links that cannot be clicked, but that will show the (translated) item or block name if hovered, and if not provided with a link text, will also automatically have the translated name as rendered text.

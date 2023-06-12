@@ -90,6 +90,17 @@ This allows to create "sub-category" that does not show up in the category navig
 
 ::: 
 
+* **command_to_run_on_first_read** (ResourceLocation, _optional_)
+
+The resource location to the command that should be opened when this entry is read/opened for the first time.
+See [Commands](./commands.md) on how to create the command.
+
+:::tip
+
+This can be used to e.g. give rewards to players for reaching a certain part of the book.
+
+::: 
+
 ## Parents 
 
 Entry Parents define which entry comes visually before this entry in the book, as in, which entry points an arrow at this entry.
