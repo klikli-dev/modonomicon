@@ -60,20 +60,20 @@ public class BookCommand {
     public static BookCommand fromJson(ResourceLocation id, JsonObject json) {
         var command = GsonHelper.getAsString(json, "command");
         var permissionLevel = GsonHelper.getAsInt(json, "permission_level", ModonomiconConstants.Data.Command.DEFAULT_PERMISSION_LEVEL);
-        var maxUsages = GsonHelper.getAsInt(json, "max_uses", ModonomiconConstants.Data.Command.DEFAULT_MAX_USES);
+        var maxUses = GsonHelper.getAsInt(json, "max_uses", ModonomiconConstants.Data.Command.DEFAULT_MAX_USES);
         var failureMessage = GsonHelper.getAsString(json, "failure_message", null);
         var successMessage = GsonHelper.getAsString(json, "success_message", null);
 
-        return new BookCommand(id, command, permissionLevel, maxUsages, failureMessage, successMessage);
+        return new BookCommand(id, command, permissionLevel, maxUses, failureMessage, successMessage);
     }
 
     public static BookCommand fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
         var command = buffer.readUtf();
         var permissionLevel = (int) buffer.readByte();
-        var maxUsages = buffer.readVarInt();
+        var maxUses = buffer.readVarInt();
         var failureMessage = buffer.readNullable(FriendlyByteBuf::readUtf);
         var successMessage = buffer.readNullable(FriendlyByteBuf::readUtf);
-        return new BookCommand(id, command, permissionLevel, maxUsages, failureMessage, successMessage);
+        return new BookCommand(id, command, permissionLevel, maxUses, failureMessage, successMessage);
     }
 
     /**
