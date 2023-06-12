@@ -12,7 +12,7 @@ This condition type will be automatically generated for all entries if `auto_add
 
 ## Attributes
 
-* **entry_id** (ResourceLocation, _mandatory_)
+### **entry_id** (ResourceLocation, _mandatory_)
 
 The ResourceLocation of the entry that needs to be read to unlock.
 

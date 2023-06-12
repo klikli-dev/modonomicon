@@ -12,7 +12,7 @@ State matchers are defined [in the `mappings` part of the multiblock definition]
 
 All state matchers need to have the following attributes:
 
-* **type** (State Matcher Type, _mandatory_)
+### **type** (State Matcher Type, _mandatory_)
 
 A ResourceLocation identifying the type of state matcher to use.   
 Example: `modonomicon:block` 
@@ -21,12 +21,12 @@ Example: `modonomicon:block`
 
 Besides standard JSON types, state matchers support the following attributes:
 
-* **Block** (String)
+### **Block** (String)
 
   A ResourceLocation for a block, in the format `modid:block`.  
   Example: `minecraft:stone` 
 
-* **BlockState** (String)
+### **BlockState** (String)
 
   A BlockState string as used in the Minecraft `setblock` command.   
   Example: `minecraft:chest[facing=east]`.  
@@ -36,7 +36,7 @@ Besides standard JSON types, state matchers support the following attributes:
 
   See https://minecraft.fandom.com/wiki/Commands/setblock for more information
   
-* **Tag** (String)
+### **Tag** (String)
 
   A Tag string that is based on the BlockState string as used in the `setblock` command, but prefixed with `#`.   
   Example: `#forge:chests[facing=east]`

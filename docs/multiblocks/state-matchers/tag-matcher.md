@@ -10,14 +10,14 @@ Tag matchers will check if the placed block is part of the provided tag. Additio
 
 ## Attributes
 
-* **tag** (Tag, _mandatory_)
+### **tag** (Tag, _mandatory_)
   
   The Tag to match against when checking if a given block fits this matcher.   
   Tag string should be in the format `#namespace:tag_name` (note the `#`").   
   BlockState properties can be provided in square brackets: `[key=value]`
 
 
-* **display** (BlockState, _optional_)
+### **display** (BlockState, _optional_)
   The BlockState to display in the multiblock preview.   
   If none is provided, Modonomicon will cycle through the blocks in the tag.
 

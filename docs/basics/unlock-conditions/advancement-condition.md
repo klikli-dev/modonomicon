@@ -10,7 +10,7 @@ This condition will be met, if the player has the specified advancement.
 
 ## Attributes
 
-* **advancement_id** (ResourceLocation, _mandatory_)
+### **advancement_id** (ResourceLocation, _mandatory_)
 
 The ResourceLocation of the advancement that the player needs to have to unlock this entry.
 

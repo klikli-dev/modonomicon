@@ -1,5 +1,6 @@
 ---
 sidebar_position: 30
+toc_max_heading_level: 5
 ---
 
 # Formatting
@@ -126,13 +127,13 @@ HTTP URLs will be handled like in the minecraft chat, which means clicking them 
 Book links are special links between different pages of the same book, or even to other books.
 There are three types:
 
-* **Book Link**
+#### Book Link
 
 Open another book on it's default page.
 Syntax: 
-- [display text](book://<book-id>)` 
+- `[display text](book://<book-id>)` 
 
-* **Category Link**
+#### Category Link
 
 Open a category (in the same book, or in another book).
 Syntax: 
@@ -145,7 +146,7 @@ If `<book-id>` is ommitted the current book is assumed.
 
 ::: 
   
-* **Entry Link**
+#### Entry Link
 
 Opens an entry (in the same book, or in another book), optionally at either a given page number or page anchor.
 Syntax: 

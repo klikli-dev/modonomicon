@@ -12,20 +12,20 @@ Displays a multiblock, optionally the multiblock's name and a text.
 
 ## Attributes
 
-* **multiblock_name** (DescriptionId or Component JSON, _optional_)
+### **multiblock_name** (DescriptionId or Component JSON, _optional_)
 
 The multiblock name. Will not parse markdown, instead it uses the default title color as defined in the `book.json`.   
 See [Book.json](../structure/book) for details.
 
-* **multiblock_id** (ResourceLocation, _mandatory_)
+### **multiblock_id** (ResourceLocation, _mandatory_)
 
 The ResourceLocation to the multiblock to display.
 
-* **text** (DescriptionId or Component JSON, _optional_)
+### **text** (DescriptionId or Component JSON, _optional_)
 
 The page text. Can be styled using markdown.
 
-* **show_visualize_button** (Boolean, _optional_)
+### **show_visualize_button** (Boolean, _optional_)
 
 Defaults to `true`. If true, the visualize button will be enabled for this page, allowing the player to preview the multiblock in-world.
 

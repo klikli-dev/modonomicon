@@ -8,15 +8,15 @@ sidebar_position: 20
 
 ## Attributes
 
-* **name** (DescriptionId, _mandatory_)
+### **name** (DescriptionId, _mandatory_)
 
 The book name. Will not parse markdown.
 
-* **tooltip** (DescriptionId, _optional_)
+### **tooltip** (DescriptionId, _optional_)
 
 The book tooltip, shown when the item is hovered. Will not parse markdown.
 
-* **generate_book_item** (Boolean, _optional_)
+### **generate_book_item** (Boolean, _optional_)
 
 Default value: `true`. If true, a book item will be automatically generated for this book. If false, no book item will be generated and you need to create a Java item class that will open this book. 
 
@@ -30,7 +30,7 @@ if `false`, `custom_book_item` needs to be set.
 :::
 
 
-* **model** (ResourceLocation, _mandatory_ if `generate_book_item` is `true`)
+### **model** (ResourceLocation, _mandatory_ if `generate_book_item` is `true`)
 
 Default value: `modonomicon:modonomicon_purple`. 
 The ResourceLocation for the item model to use for the book item, if an item should be automatically generated.
@@ -48,17 +48,17 @@ Beware: This cannot just be a texture, it must be a **loaded** model in `/assets
 
 :::
 
-* **custom_book_item** (ResourceLocation, _mandatory_ if `generate_book_item` is `false`)
+### **custom_book_item** (ResourceLocation, _mandatory_ if `generate_book_item` is `false`)
 
 The ResourceLocation for the custom book item. This is your custom item instance that will open the book.
 
 <!-- TODO: Link to extending book guide and maybe occultism example -->
 
-* **creative_tab** (String, _optional_)
+### **creative_tab** (String, _optional_)
 
 Default value: `misc`. The creative tab to place the automatically generated book item in. If `generate_book_item` is `false`, this setting is ignored.
 
-* **default_title_color** (Integer, _optional_)
+### **default_title_color** (Integer, _optional_)
 
 Default value: `0` (= black). The default title color for all entries in this book that are not markdown-styled. The color is specified as a **decimal RGB value**.
 
@@ -68,7 +68,7 @@ JSON does not support hex values, so you need to convert them to decimal. For ex
 
 :::
 
-* **auto_add_read_conditions** (Boolean, _optional_)
+### **auto_add_read_conditions** (Boolean, _optional_)
 
 Default value: `false`. If true, the book will automatically generate an "Entry Read Condition" for each entry in the book. This means that the entry will only be visible if the parent entry has been read. This is useful if you want to make sure that the player reads the book in order.   
 See also [Unlock Conditions](../unlock-conditions) for details on Conditions and manually adding Conditions.
@@ -79,18 +79,18 @@ Categories are not affected by this. Category conditions can only be added manua
 
 :::
 
-* **book_overview_texture** (ResourceLocation, _optional_)
+### **book_overview_texture** (ResourceLocation, _optional_)
 
 Default value: `modonomicon:textures/gui/book_overview.png`.   
 The file for the category, search and read all button textures.   
 The texture must be a **256x256** png file.   
 
-* **frame_texture** (ResourceLocation, _optional_)
+### **frame_texture** (ResourceLocation, _optional_)
 
 Default value: `modonomicon:textures/gui/book_frame.png`.   
 The file for the main book frame texture. This book frame is rendered in such a way that the central part of each side is stretched to fit the screen.
 
-* **\*_frame_overlay** (JSON Object, _optional_) 
+### **\*_frame_overlay** (JSON Object, _optional_) 
 
 Variants: `left_frame_overlay`, `right_frame_overlay`, `top_frame_overlay`, `bottom_frame_overlay`    
 Default values are set up to render the default `modonomicon:textures/gui/book_frame_*_overlay.png` over the repeating center a of the frame texture.  
@@ -121,41 +121,41 @@ In that case you should still supply a a valid texture property (note that omitt
 ::: 
 
 
-* **book_content_texture** (ResourceLocation, _optional_)
+### **book_content_texture** (ResourceLocation, _optional_)
 
 Default value: `modonomicon:textures/gui/book_content.png`. The texture to use for rendering the pages in an entry, that is the book background, navigation buttons, title separator and image frames. 
 The texture must be a **512x256** png file.
 
-* **crafting_texture** (ResourceLocation, _optional_)
+### **crafting_texture** (ResourceLocation, _optional_)
 
 Default value: `modonomicon:textures/gui/crafting_textures.png`. The texture to use for crafting page elements such as crafting grids, slot borders and crafting arrows. The texture must be a **128x256** png file.
 
-* **category_button_icon_scale** (Float, _optional_)
+### **category_button_icon_scale** (Float, _optional_)
 
 Default value: `1.0`   
 The render scale for icons on the category buttons. This is useful when using non-default category button textures to make the icons fit better.
 
-* **category_button_x_offset** (Integer, _optional_)
+### **category_button_x_offset** (Integer, _optional_)
 
 Default value: `0`  
 Allows to move category buttons horizontally to make them fit with your custom frame texture.
 
-* **category_button_y_offset** (Integer, _optional_)
+### **category_button_y_offset** (Integer, _optional_)
 
 Default value: `0`  
 Allows to move the vertical render start position of category buttons up or down to make them fit with your custom frame texture.
 
-* **search_button_x_offset** (Integer, _optional_)
+### **search_button_x_offset** (Integer, _optional_)
 
 Default value: `0`  
 Allows to move the search button horizontally to make it fit with your custom frame texture.
 
-* **search_button_y_offset** (Integer, _optional_)
+### **search_button_y_offset** (Integer, _optional_)
 
 Default value: `0`  
 Allows to move the search button vertically to make it fit with your custom frame texture.
 
-* **read_all_button_y_offset** (Integer, _optional_)
+### **read_all_button_y_offset** (Integer, _optional_)
 
 Default value: `0`  
 Allows to move the read all button vertically to make it fit with your custom frame texture.   
@@ -167,7 +167,7 @@ A horizontal offset is currently not supported as it does not need to fit evenly
 :::
 
 
-* **turn_page_sound** (ResourceLocation, _optional_)
+### **turn_page_sound** (ResourceLocation, _optional_)
 
 Default value: `minecraft:turn_page`. The sound to play when turning a page. The sound must be a **loaded sound event** specified in `/assets/<mod_id>/sounds.json`.
 

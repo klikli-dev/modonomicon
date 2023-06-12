@@ -25,7 +25,7 @@ For this behaviour, see **[BlockStateProperty Matcher](./blockstate-property-mat
 
 ## Attributes
 
-* **block** (BlockState, _mandatory_)
+### **block** (BlockState, _mandatory_)
 
   BlockState to match against when checking if a given block fits this matcher.
 
@@ -35,7 +35,7 @@ For this behaviour, see **[BlockStateProperty Matcher](./blockstate-property-mat
 
   :::
 
-* **display** (BlockState, _optional_)
+### **display** (BlockState, _optional_)
 
   Defaults to the value of the `block` property.   
   The block to display in the multiblock preview. 

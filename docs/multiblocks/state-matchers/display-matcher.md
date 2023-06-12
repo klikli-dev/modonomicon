@@ -14,7 +14,7 @@ Their main use is to provide background blocks for the multiblock when rendering
 ## Attributes
 
 
-* **display** (BlockState, _optional_)
+### **display** (BlockState, _optional_)
    
   The BlockState to display in the multiblock preview. 
 

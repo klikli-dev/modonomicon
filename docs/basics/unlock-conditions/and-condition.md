@@ -11,7 +11,7 @@ Can be chained with [`modonomicon:or`](./or-condition) to create complex unlock 
 
 ## Attributes
 
-* **children** (Condition[], _mandatory_)
+### **children** (Condition[], _mandatory_)
 
 The conditions that need to be met cumulatively to unlock this entry.
 

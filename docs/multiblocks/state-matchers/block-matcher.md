@@ -11,12 +11,12 @@ Block matchers will ignore the BlockState and check only if the placed block fit
 
 ## Attributes
 
-* **block** (Block, _mandatory_)
+### **block** (Block, _mandatory_)
   
   The Block to match against when checking if a given block fits this matcher.
 
 
-* **display** (BlockState, _optional_)
+### **display** (BlockState, _optional_)
 
   Defaults to the default BlockState of the `block` property.   
   The BlockState to display in the multiblock preview. 

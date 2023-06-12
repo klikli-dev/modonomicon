@@ -11,7 +11,7 @@ This allows to lock one entry behind a specific condition, and "chain" other ent
 
 ## Attributes
 
-* **entry_id** (ResourceLocation, _mandatory_)
+### **entry_id** (ResourceLocation, _mandatory_)
 
 The ResourceLocation of the entry that needs to be unlocked to unlock this entry.
 

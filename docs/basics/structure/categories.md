@@ -8,11 +8,11 @@ Categories are defined in json files placed in the `/data/<mod_id>/modonomicons/
 
 ## Attributes
 
-* **name** (DescriptionId, _mandatory_)
+### **name** (DescriptionId, _mandatory_)
 
 The category name. Will not parse markdown.
 
-* **icon** (ResourceLocation, _mandatory_)
+### **icon** (ResourceLocation, _mandatory_)
 
 **Either** an item/block ResourceLocation that should be used as icon. E.g.:  `minecraft:nether_star` or `minecraft:chest`.  
 **Or** the ResourceLocation to a texture. The texture must be 16x16 pixels. E.g.:  `modonomicon:textures/gui/some_random_icon.png`. 
@@ -23,23 +23,23 @@ To use a texture make sure the ResourceLocation includes the file endinge `.png`
 
 ::: 
 
-* **sort_number** (Integer, _optional_)
+### **sort_number** (Integer, _optional_)
 
 Defaults to `-1`.   
 Category "Bookmark"-Buttos on the left side of the Book will be sorted by this number.
 
-* **condition** (Condition, _optional_)
+### **condition** (Condition, _optional_)
 
 Categories, like Entries, can be hidden until an Unlock Condition is fulfilled. Conditions are JSON objects.  
 See **[Unlock Conditions](../unlock-conditions)** for details.
 
-* **background** (ResourceLocation, _optional_)
+### **background** (ResourceLocation, _optional_)
 
 Defaults to `modonomicon:textures/gui/dark_slate_seamless.png`.   
 The ResourceLocation for the Background texture to use for this category. The texture must be 512px by 512px.
 
 
-* **background_parallax_layers** (JSON Array of JSON Objects, _optional_)
+### **background_parallax_layers** (JSON Array of JSON Objects, _optional_)
 
 If any parallax layers are supplied, the `background` property will be ignored.   
 
@@ -65,17 +65,17 @@ Sample Value:
   ],
 ```
 
-* **background_height** (Integer, _optional_)
+### **background_height** (Integer, _optional_)
 
 Default value: `512`   
 The height of the background texture. Applies both to the `background` property as well as the `background_parallax_layers` property.
 
-* **background_width** (Integer, _optional_)
+### **background_width** (Integer, _optional_)
 
 Default value: `512`   
 The width of the background texture. Applies both to the `background` property as well as the `background_parallax_layers` property.
 
-* **entry_textures** (ResourceLocation, _optional_)
+### **entry_textures** (ResourceLocation, _optional_)
 
 Defaults to `modonomicon:textures/gui/entry_textures.png`.   
 The ResourceLocation for the Entry textures to use for this category. The texture must be 512px by 512px.   
@@ -83,7 +83,7 @@ Entry textures govern how the Entry background behind the Icon as well as the ar
 
 If you want to use a custom texture, make sure to copy the default file from [`/assets/modonomicon/textures/gui/entry_textures.png`](https://github.com/klikli-dev/modonomicon/blob/version/1.19/src/main/resources/assets/modonomicon/textures/gui/entry_textures.png) and modify it in order to preserve the UV coordinates of all parts.
 
-* **show_category_button** (Boolean, _optional_)
+### **show_category_button** (Boolean, _optional_)
 
 Defaults to `true`.   
 If false, the book overview screen will not show a button/bookmark for this category. 

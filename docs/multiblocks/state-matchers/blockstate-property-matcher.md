@@ -19,7 +19,7 @@ E.g.: If you provide a `facing` property, but the block you are checking against
 
 ## Attributes
 
-* **block** (BlockState, _mandatory_)
+### **block** (BlockState, _mandatory_)
 
   BlockState to match against when checking if a given block fits this matcher.
 
@@ -30,7 +30,7 @@ E.g.: If you provide a `facing` property, but the block you are checking against
   :::
 
 
-* **display** (BlockState, _optional_)
+### **display** (BlockState, _optional_)
 
   Defaults to the value of the `block` property.   
   The block to display in the multiblock preview. 

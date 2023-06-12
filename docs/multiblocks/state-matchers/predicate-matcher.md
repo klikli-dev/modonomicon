@@ -13,11 +13,11 @@ Tag matchers will check if the placed block is part of the provided tag. Additio
 
 ## Attributes
 
-* **predicate** (ResourceLocation, _mandatory_)
+### **predicate** (ResourceLocation, _mandatory_)
   
   The ID of the predicate to use for the matcher.
 
-* **display** (BlockState, _mandatory_)
+### **display** (BlockState, _mandatory_)
   
   The block to display in the multiblock preview. 
 

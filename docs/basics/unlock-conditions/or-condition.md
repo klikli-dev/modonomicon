@@ -11,7 +11,7 @@ Can be chained with [`modonomicon:and`](./and-condition) to create complex unloc
 
 ## Attributes
 
-* **children** (Condition[], _mandatory_)
+### **children** (Condition[], _mandatory_)
 
 The conditions that need to be met alternatively to unlock this entry.
 

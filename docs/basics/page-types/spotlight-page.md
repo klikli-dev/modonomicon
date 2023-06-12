@@ -12,7 +12,7 @@ Displays an Ingredient and optionally a title and text.
 
 ## Attributes
 
-* **title** (DescriptionId or Component JSON, _optional_)
+### **title** (DescriptionId or Component JSON, _optional_)
 
 The page title. Will not parse markdown, instead it uses the default title color as defined in the `book.json`.     
 See [Book.json](../structure/book) for details.
@@ -23,11 +23,11 @@ If ommited, the ingredients name will be used. If the ingredient is not an item,
 
 :::
 
-* **item** (Ingredient, _mandatory_)
+### **item** (Ingredient, _mandatory_)
 
 The Ingredient to display. Uses the forge ingredient system, so any valid recipe ingredient JSON object can be used.
 
-* **text** (DescriptionId or Component JSON, _optional_)
+### **text** (DescriptionId or Component JSON, _optional_)
 
 The page text. Can be styled using markdown.
 
