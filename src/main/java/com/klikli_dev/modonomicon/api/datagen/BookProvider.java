@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.api.datagen;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
+import com.klikli_dev.modonomicon.api.datagen.book.BookCommandModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
 import com.mojang.logging.LogUtils;
@@ -76,6 +77,16 @@ public abstract class BookProvider implements DataProvider {
                 .resolve(id.getPath() + ".json");
     }
 
+    private Path getPath(Path dataFolder, BookCommandModel bookCommandModel) {
+        ResourceLocation id = bookCommandModel.getId();
+        return dataFolder
+                .resolve(id.getNamespace())
+                .resolve(ModonomiconConstants.Data.MODONOMICON_DATA_PATH)
+                .resolve(bookCommandModel.getBook().getId().getPath())
+                .resolve("commands")
+                .resolve(id.getPath() + ".json");
+    }
+
     private Path getPath(Path dataFolder, BookEntryModel bookEntryModel) {
         ResourceLocation id = bookEntryModel.getId();
         return dataFolder
@@ -107,6 +118,11 @@ public abstract class BookProvider implements DataProvider {
                     Path bookEntryPath = this.getPath(dataFolder, bookEntryModel);
                     futures.add(DataProvider.saveStable(cache, bookEntryModel.toJson(), bookEntryPath));
                 }
+            }
+
+            for (var bookCommandModel : bookModel.getCommands()) {
+                Path bookCommandPath = this.getPath(dataFolder, bookCommandModel);
+                futures.add(DataProvider.saveStable(cache, bookCommandModel.toJson(), bookCommandPath));
             }
         }
 

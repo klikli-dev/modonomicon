@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.network.messages;
 
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.book.BookCommand;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.network.Message;
@@ -50,6 +51,12 @@ public class SyncBookDataMessage implements Message {
                     entry.toNetwork(buf);
                 }
             }
+
+            buf.writeVarInt(book.getCommands().size());
+            for (var command : book.getCommands().values()) {
+                buf.writeResourceLocation(command.getId());
+                command.toNetwork(buf);
+            }
         }
     }
 
@@ -78,6 +85,15 @@ public class SyncBookDataMessage implements Message {
                     //link entry and category
                     category.addEntry(bookEntry);
                 }
+            }
+
+            int commandCount = buf.readVarInt();
+            for (int j = 0; j < commandCount; j++) {
+                ResourceLocation commandId = buf.readResourceLocation();
+                BookCommand command = BookCommand.fromNetwork(commandId, buf);
+
+                //link command and book
+                book.addCommand(command);
             }
         }
     }
