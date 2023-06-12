@@ -15,6 +15,14 @@
       "text": "book.modonomicon.demo.features.command.intro.text",
       "title": "book.modonomicon.demo.features.command.intro.title",
       "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.command.command_link.text",
+      "title": "book.modonomicon.demo.features.command.command_link.title",
+      "use_markdown_in_title": false
     }
   ],
   "parents": [

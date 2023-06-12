@@ -1,4 +1,6 @@
 {
+  "book.modonomicon.demo.features.command.command_link.text": "[Click me to run the command!](command://test_command2)",
+  "book.modonomicon.demo.features.command.command_link.title": "Command Link",
   "book.modonomicon.demo.features.command.description": "This entry runs a command when you first read it.",
   "book.modonomicon.demo.features.command.intro.text": "This entry just ran a command when you first read it. Look into your chat!",
   "book.modonomicon.demo.features.command.intro.title": "Entry Read Commands",
@@ -91,6 +93,7 @@
   "modonomicon.command.success.reset_book": "Successfully reset book: %s",
   "modonomicon.command.success.save_progress": "Saved progress for book: %s. The unlock code has been copied to your clipboard.",
   "modonomicon.command.test_command.success": "You got an apple, because reading is cool!",
+  "modonomicon.command.test_command2.success": "You got wheat, because clicking is cool!",
   "modonomicon.gui..page.entity.loading_error": "Failed to load entity",
   "modonomicon.gui.button.back": "Back",
   "modonomicon.gui.button.back.tooltip": "Go back to the last page you visited",
@@ -108,6 +111,8 @@
   "modonomicon.gui.hover.book_link": "Go to: %s",
   "modonomicon.gui.hover.book_link_locked": "%s.\n%s",
   "modonomicon.gui.hover.book_link_locked_info": "You need to unlock this entry before you can open the link!",
+  "modonomicon.gui.hover.command_link": "Click to run linked command. Hold down shift to show command.",
+  "modonomicon.gui.hover.command_link.unavailable": "You already used this command too many times, you cannot use it again.",
   "modonomicon.gui.hover.http_link": "Visit: %s",
   "modonomicon.gui.hover.item_link_info": "Click to show recipe in JEI, Shift-Click to show usage.",
   "modonomicon.gui.hover.item_link_info.no_jei": "Install JEI to show recipe/usage on click.",

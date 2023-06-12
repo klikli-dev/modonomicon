@@ -64,6 +64,9 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(Gui.HOVER_ITEM_LINK_INFO_LINE2, "Will not do anything, if no recipe/usage is found.");
             this.add(Gui.HOVER_ITEM_LINK_INFO_NO_JEI, "Install JEI to show recipe/usage on click.");
 
+            this.add(Gui.HOVER_COMMAND_LINK, "Click to run linked command. Hold down shift to show command.");
+            this.add(Gui.HOVER_COMMAND_LINK_UNAVAILABLE, "You already used this command too many times, you cannot use it again.");
+
             //other gui stuff
             this.add(Gui.PAGE_ENTITY_LOADING_ERROR, "Failed to load entity");
             this.add(Gui.SEARCH_SCREEN_TITLE, "Search in Book");

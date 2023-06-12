@@ -47,8 +47,12 @@ public class DemoBookProvider extends BookProvider {
         var commandEntryCommand = BookCommandModel.create(this.modLoc("test_command"), "/give @s minecraft:apple 1")
                 .withPermissionLevel(2)
                 .withSuccessMessage("modonomicon.command.test_command.success");
-
         this.lang.add(commandEntryCommand.getSuccessMessage(), "You got an apple, because reading is cool!");
+
+        var commandEntryLinkCommand = BookCommandModel.create(this.modLoc("test_command2"), "/give @s minecraft:wheat 1")
+                .withPermissionLevel(2)
+                .withSuccessMessage("modonomicon.command.test_command2.success");
+        this.lang.add(commandEntryLinkCommand.getSuccessMessage(), "You got wheat, because clicking is cool!");
 
         var demoBook = BookModel.create(this.modLoc("demo"), helper.bookName())
                 .withTooltip(helper.bookTooltip())
@@ -60,7 +64,8 @@ public class DemoBookProvider extends BookProvider {
                 .withCategory(formattingCategory)
                 .withCategory(hiddenCategory)
                 .withCategory(conditionalCategory)
-                .withCommand(commandEntryCommand);
+                .withCommand(commandEntryCommand)
+                .withCommand(commandEntryLinkCommand);
         return demoBook;
     }
 
@@ -356,13 +361,24 @@ public class DemoBookProvider extends BookProvider {
         this.lang.add(helper.pageTitle(), "Entry Read Commands");
         this.lang.add(helper.pageText(), "This entry just ran a command when you first read it. Look into your chat!");
 
+        //this.modLoc("test_command")
+
+        helper.page("command_link");
+        var commandLink = BookTextPageModel.builder()
+                .withText(helper.pageText())
+                .withTitle(helper.pageTitle())
+                .build();
+
+        this.lang.add(helper.pageTitle(), "Command Link");
+        this.lang.add(helper.pageText(), "[Click me to run the command!](command://test_command2)");
+
         return BookEntryModel.builder()
                 .withId(this.modLoc("features/command"))
                 .withName(helper.entryName())
                 .withDescription(helper.entryDescription())
                 .withIcon("minecraft:oak_sign")
                 .withLocation(entryHelper.get('f'))
-                .withPages(introPage);
+                .withPages(introPage, commandLink);
     }
 
 
