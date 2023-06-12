@@ -305,7 +305,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         }
 
         //load commands
-        for (var entry : categoryJsons.entrySet()) {
+        for (var entry : commandJsons.entrySet()) {
             try {
                 //load commands and link to book
                 var pathParts = entry.getKey().getPath().split("/");

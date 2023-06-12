@@ -36,7 +36,7 @@ public class BookEntryModel {
     protected List<BookPageModel> pages = new ArrayList<>();
     protected BookConditionModel condition;
     protected ResourceLocation categoryToOpen;
-    protected BookCommandModel commandToRunOnFirstRead;
+    protected ResourceLocation commandToRunOnFirstRead;
 
     public static Builder builder() {
         return new Builder();
@@ -79,7 +79,7 @@ public class BookEntryModel {
             json.addProperty("category_to_open", this.categoryToOpen.toString());
         }
         if (this.commandToRunOnFirstRead != null) {
-            json.addProperty("command_to_run_on_first_read", this.commandToRunOnFirstRead.id.toString());
+            json.addProperty("command_to_run_on_first_read", this.commandToRunOnFirstRead.toString());
         }
 
         return json;
@@ -101,7 +101,7 @@ public class BookEntryModel {
         return this.categoryToOpen;
     }
 
-    public BookCommandModel getCommandToRunOnFirstRead() {
+    public ResourceLocation getCommandToRunOnFirstRead() {
         return this.commandToRunOnFirstRead;
     }
 
@@ -164,7 +164,7 @@ public class BookEntryModel {
         private int entryBackgroundUIndex = 0;
         private int entryBackgroundVIndex = 0;
         private ResourceLocation categoryToOpen;
-        private BookCommandModel commandToRunOnFirstRead;
+        private ResourceLocation commandToRunOnFirstRead;
 
         private Builder() {
         }
@@ -382,9 +382,18 @@ public class BookEntryModel {
          * The command to run when this entry is first read.
          */
         public Builder withCommandToRunOnFirstRead(BookCommandModel bookCommandModel) {
+            return this.withCommandToRunOnFirstRead(bookCommandModel.getId());
+        }
+
+
+        /**
+         * The command to run when this entry is first read.
+         */
+        public Builder withCommandToRunOnFirstRead(ResourceLocation bookCommandModel) {
             this.commandToRunOnFirstRead = bookCommandModel;
             return this;
         }
+
 
 
         public ResourceLocation getId() {

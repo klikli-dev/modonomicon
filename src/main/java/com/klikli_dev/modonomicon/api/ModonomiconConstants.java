@@ -188,6 +188,8 @@ public class ModonomiconConstants {
             public static final String SUCCESS_RESET_BOOK = SUCCESS_PREFIX + "reset_book";
             public static final String SUCCESS_SAVE_PROGRESS = SUCCESS_PREFIX + "save_progress";
             public static final String SUCCESS_LOAD_PROGRESS = SUCCESS_PREFIX + "load_progress";
+
+            public static final String DEFAULT_FAILURE_MESSAGE = PREFIX + "failure";
         }
     }
 }

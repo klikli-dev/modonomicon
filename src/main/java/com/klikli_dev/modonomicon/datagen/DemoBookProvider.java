@@ -10,10 +10,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.api.datagen.BookLangHelper;
 import com.klikli_dev.modonomicon.api.datagen.BookProvider;
 import com.klikli_dev.modonomicon.api.datagen.EntryLocationHelper;
-import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
-import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
-import com.klikli_dev.modonomicon.api.datagen.book.BookEntryParentModel;
-import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
+import com.klikli_dev.modonomicon.api.datagen.book.*;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryReadConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryUnlockedConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookFalseConditionModel;
@@ -46,6 +43,13 @@ public class DemoBookProvider extends BookProvider {
         var conditionalCategory = this.makeConditionalCategory(helper);
         conditionalCategory.withCondition(BookEntryReadConditionModel.builder().withEntry(this.modLoc("features/condition_root")).build());
 
+
+        var commandEntryCommand = BookCommandModel.create(this.modLoc("test_command"), "/give @s minecraft:apple 1")
+                .withPermissionLevel(2)
+                .withSuccessMessage("modonomicon.command.test_command.success");
+
+        this.lang.add(commandEntryCommand.getSuccessMessage(), "You got an apple, because reading is cool!");
+
         var demoBook = BookModel.create(this.modLoc("demo"), helper.bookName())
                 .withTooltip(helper.bookTooltip())
                 .withModel(new ResourceLocation("modonomicon:modonomicon_green"))
@@ -55,7 +59,8 @@ public class DemoBookProvider extends BookProvider {
                 .withCategory(featuresCategory)
                 .withCategory(formattingCategory)
                 .withCategory(hiddenCategory)
-                .withCategory(conditionalCategory);
+                .withCategory(conditionalCategory)
+                .withCommand(commandEntryCommand);
         return demoBook;
     }
 
@@ -69,7 +74,9 @@ public class DemoBookProvider extends BookProvider {
                 "___           _______r__________",
                 "__c           __________________",
                 "___           _______2___3___i__",
-                "__s           _____e____________"
+                "__s           _____e____________",
+                "___           __________________",
+                "___           _____f____________"
         );
 
         var multiblockEntry = this.makeMultiblockEntry(helper, entryHelper);
@@ -83,6 +90,11 @@ public class DemoBookProvider extends BookProvider {
 
         var emptyEntry = this.makeEmptyPageEntry(helper, entryHelper);
         emptyEntry.withParent(BookEntryParentModel.builder().withEntryId(spotlightEntry.id).build());
+
+        var commandEntry = this.makeCommandEntry(helper, entryHelper);
+        commandEntry.withParent(emptyEntry);
+        commandEntry.withCommandToRunOnFirstRead(this.modLoc("test_command"));
+
 
         var entityEntry = this.makeEntityEntry(helper, entryHelper);
 
@@ -105,7 +117,8 @@ public class DemoBookProvider extends BookProvider {
                 .withEntry(emptyEntry.build())
                 .withEntry(entityEntry.build())
                 .withEntry(imageEntry.build())
-                .withEntry(redirectEntry);
+                .withEntry(redirectEntry)
+                .withEntry(commandEntry.build());
     }
 
     private BookEntryModel makeMultiblockEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
@@ -327,6 +340,31 @@ public class DemoBookProvider extends BookProvider {
                 .withLocation(entryHelper.get('e'))
                 .withPages(introPage, empty, empty2);
     }
+
+    private BookEntryModel.Builder makeCommandEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
+        helper.entry("command");
+
+        this.lang.add(helper.entryName(), "Entry Read Commands");
+        this.lang.add(helper.entryDescription(), "This entry runs a command when you first read it.");
+
+        helper.page("intro");
+        var introPage = BookTextPageModel.builder()
+                .withText(helper.pageText())
+                .withTitle(helper.pageTitle())
+                .build();
+
+        this.lang.add(helper.pageTitle(), "Entry Read Commands");
+        this.lang.add(helper.pageText(), "This entry just ran a command when you first read it. Look into your chat!");
+
+        return BookEntryModel.builder()
+                .withId(this.modLoc("features/command"))
+                .withName(helper.entryName())
+                .withDescription(helper.entryDescription())
+                .withIcon("minecraft:oak_sign")
+                .withLocation(entryHelper.get('f'))
+                .withPages(introPage);
+    }
+
 
     private BookEntryModel.Builder makeEntityEntry(BookLangHelper helper, EntryLocationHelper entryHelper) {
         helper.entry("entity");

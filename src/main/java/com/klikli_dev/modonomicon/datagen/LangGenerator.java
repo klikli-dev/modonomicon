@@ -96,6 +96,8 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(Command.ERROR_LOAD_PROGRESS, "Invalid unlock code!");
             this.add(Command.ERROR_LOAD_PROGRESS_CLIENT, "Failed to decode unlock code. Make sure to have a valid unlock code in your clipboard! Current Clipboard content: \"%s\"");
 
+            this.add(Command.DEFAULT_FAILURE_MESSAGE, "Modonomicon tried to run a command for you (e.g. because you read an entry for the first time, or clicked a command button or command link). However, it seems you already reached the maximum use limit for this command.");
+
             //sounds
             this.add(Subtitles.TURN_PAGE, "Turn Page");
 

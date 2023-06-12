@@ -6,8 +6,6 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
-apply from: 'https://raw.githubusercontent.com/SizableShrimp/ForgeUpdatesRemapper/main/remapper.gradle'
-
 if (System.getenv('MOD_VERSION') != null) {
     mod_version = System.getenv('MOD_VERSION')
 }
