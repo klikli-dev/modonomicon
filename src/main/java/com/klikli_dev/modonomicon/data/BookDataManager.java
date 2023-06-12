@@ -15,6 +15,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.book.BookCommand;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.conditions.BookAndCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookEntryReadCondition;
@@ -195,10 +196,16 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         return BookEntry.fromJson(key, value);
     }
 
+    private BookCommand loadCommand(ResourceLocation key, JsonObject value) {
+        return BookCommand.fromJson(key, value);
+    }
+
     private void categorizeContent(Map<ResourceLocation, JsonElement> content,
                                    HashMap<ResourceLocation, JsonObject> bookJsons,
                                    HashMap<ResourceLocation, JsonObject> categoryJsons,
-                                   HashMap<ResourceLocation, JsonObject> entryJsons) {
+                                   HashMap<ResourceLocation, JsonObject> entryJsons,
+                                   HashMap<ResourceLocation, JsonObject> commandJsons
+    ) {
         for (var entry : content.entrySet()) {
             var pathParts = entry.getKey().getPath().split("/");
 
@@ -213,11 +220,14 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                 case "categories" -> {
                     categoryJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
                 }
+                case "commands" -> {
+                    commandJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
+                }
                 default -> {
                     Modonomicon.LOGGER.warn("Found unknown content for book '{}': '{}'. " +
-                            "Should be one of: [File: book.json, Directory: entries/, Directory: categories/]", bookId, entry.getKey());
+                            "Should be one of: [File: book.json, Directory: entries/, Directory: categories/, Directory: commands/]", bookId, entry.getKey());
                     BookErrorManager.get().error(bookId, "Found unknown content for book '" + bookId + "': '" + entry.getKey() + "'. " +
-                            "Should be one of: [File: book.json, Directory: entries/, Directory: categories/]");
+                            "Should be one of: [File: book.json, Directory: entries/, Directory: categories/, Directory: commands/]");
                 }
             }
         }
@@ -233,7 +243,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         var bookJsons = new HashMap<ResourceLocation, JsonObject>();
         var categoryJsons = new HashMap<ResourceLocation, JsonObject>();
         var entryJsons = new HashMap<ResourceLocation, JsonObject>();
-        this.categorizeContent(content, bookJsons, categoryJsons, entryJsons);
+        var commandJsons = new HashMap<ResourceLocation, JsonObject>();
+        this.categorizeContent(content, bookJsons, categoryJsons, entryJsons, commandJsons);
 
         BookErrorManager.get().setContext(""); //set to empty string to avoid using context helper internally
         //load books
@@ -289,6 +300,27 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                 category.addEntry(bookEntry);
             } catch (Exception e) {
                 BookErrorManager.get().error("Failed to load entry '" + entry.getKey() + "'", e);
+            }
+            BookErrorManager.get().setCurrentBookId(null);
+        }
+
+        //load commands
+        for (var entry : categoryJsons.entrySet()) {
+            try {
+                //load commands and link to book
+                var pathParts = entry.getKey().getPath().split("/");
+                var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
+                BookErrorManager.get().setCurrentBookId(bookId);
+
+                //commands id skips the book id and the commands directory
+                var commandId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
+                var command = this.loadCommand(commandId, entry.getValue());
+
+                //link command and book
+                var book = this.books.get(bookId);
+                book.addCommand(command);
+            } catch (Exception e) {
+                BookErrorManager.get().error("Failed to load command '" + entry.getKey() + "'", e);
             }
             BookErrorManager.get().setCurrentBookId(null);
         }

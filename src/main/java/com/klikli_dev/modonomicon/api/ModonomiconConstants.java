@@ -52,6 +52,11 @@ public class ModonomiconConstants {
             public static final String DEFAULT_ENTRY_TEXTURES = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/entry_textures.png").toString();
         }
 
+        public static class Command {
+            public static final int DEFAULT_MAX_USES = 1;
+            public static final int DEFAULT_PERMISSION_LEVEL = 0;
+        }
+
         public static class Page {
             public static final ResourceLocation TEXT = new ResourceLocation(ModonomiconAPI.ID, "text");
             public static final ResourceLocation MULTIBLOCK = new ResourceLocation(ModonomiconAPI.ID, "multiblock");
