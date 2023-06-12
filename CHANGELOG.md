@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20-1.33.1] - 2023-06-12
+### :bug: Bug Fixes
+- [`c1c0ab3`](https://github.com/klikli-dev/modonomicon/commit/c1c0ab3e2c7e6feae12ab1d657a7b9d918fa38ad) - discrepancy in command data model *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20-1.33.0] - 2023-06-12
 ### :sparkles: New Features
 - [`ef94f76`](https://github.com/klikli-dev/modonomicon/commit/ef94f76d50ca7e10a879867af41bcfa5c2750d30) - add command support for links and for entry read *(PR [#125](https://github.com/klikli-dev/modonomicon/pull/125) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -307,3 +312,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20-1.32.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20-1.32.3...release/v1.20-1.32.4
 [release/v1.20-1.32.5]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20-1.32.4...release/v1.20-1.32.5
 [release/v1.20-1.33.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20-1.32.5...release/v1.20-1.33.0
+[release/v1.20-1.33.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20-1.33.0...release/v1.20-1.33.1
