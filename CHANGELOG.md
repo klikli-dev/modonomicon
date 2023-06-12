@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20-1.32.5] - 2023-06-12
+### :bug: Bug Fixes
+- [`6d58c9a`](https://github.com/klikli-dev/modonomicon/commit/6d58c9a32f728804b56b213c6a4534369ba5b633) - texture (= non item) entry icons rendering behind entry background *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`251d63c`](https://github.com/klikli-dev/modonomicon/commit/251d63ce878b67a5c38f487481673ad6728cf414) - increase mod version *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20-1.32.4] - 2023-06-09
 ### :bug: Bug Fixes
 - [`34c2fee`](https://github.com/klikli-dev/modonomicon/commit/34c2feea349f28056e9eab7223bc8831bda13abd) - allow all patchouli versions *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -292,3 +300,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20-1.32.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20-0.0.0...release/v1.20-1.32.2
 [release/v1.20-1.32.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20-1.32.2...release/v1.20-1.32.3
 [release/v1.20-1.32.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20-1.32.3...release/v1.20-1.32.4
+[release/v1.20-1.32.5]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20-1.32.4...release/v1.20-1.32.5
