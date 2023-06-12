@@ -4,7 +4,7 @@
   "category": "modonomicon:formatting",
   "description": "book.modonomicon.demo.formatting.basic.description",
   "hide_while_locked": false,
-  "icon": "minecraft:paper",
+  "icon": "minecraft:textures/item/paper.png",
   "name": "book.modonomicon.demo.formatting.basic.name",
   "pages": [
     {

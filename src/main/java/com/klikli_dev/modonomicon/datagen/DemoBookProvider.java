@@ -465,7 +465,7 @@ public class DemoBookProvider extends BookProvider {
                 .withId(this.modLoc("formatting/basic"))
                 .withName(helper.entryName())
                 .withDescription(helper.entryDescription())
-                .withIcon("minecraft:paper")
+                .withIcon("minecraft:textures/item/paper.png")
                 .withLocation(entryHelper.get('b'))
                 .withPage(page1)
                 .withPage(page2);

@@ -260,7 +260,6 @@ public class BookCategoryScreen {
             guiGraphics.blit(this.category.getEntryTextures(), entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT);
 
             guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(0, 0, -100); //now push the icon in front of the background
 
             //render icon
             entry.getIcon().render(guiGraphics, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 5, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP + 5);
