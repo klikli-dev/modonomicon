@@ -10,6 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
+import com.klikli_dev.modonomicon.book.BookCommand;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
@@ -35,6 +36,7 @@ public class BookEntryModel {
     protected List<BookPageModel> pages = new ArrayList<>();
     protected BookConditionModel condition;
     protected ResourceLocation categoryToOpen;
+    protected ResourceLocation commandToRunOnFirstRead;
 
     public static Builder builder() {
         return new Builder();
@@ -76,6 +78,9 @@ public class BookEntryModel {
         if (this.categoryToOpen != null) {
             json.addProperty("category_to_open", this.categoryToOpen.toString());
         }
+        if (this.commandToRunOnFirstRead != null) {
+            json.addProperty("command_to_run_on_first_read", this.commandToRunOnFirstRead.toString());
+        }
 
         return json;
     }
@@ -94,6 +99,10 @@ public class BookEntryModel {
 
     public ResourceLocation getCategoryToOpen() {
         return this.categoryToOpen;
+    }
+
+    public ResourceLocation getCommandToRunOnFirstRead() {
+        return this.commandToRunOnFirstRead;
     }
 
     public ResourceLocation getId() {
@@ -155,6 +164,7 @@ public class BookEntryModel {
         private int entryBackgroundUIndex = 0;
         private int entryBackgroundVIndex = 0;
         private ResourceLocation categoryToOpen;
+        private ResourceLocation commandToRunOnFirstRead;
 
         private Builder() {
         }
@@ -368,6 +378,24 @@ public class BookEntryModel {
             return this;
         }
 
+        /**
+         * The command to run when this entry is first read.
+         */
+        public Builder withCommandToRunOnFirstRead(BookCommandModel bookCommandModel) {
+            return this.withCommandToRunOnFirstRead(bookCommandModel.getId());
+        }
+
+
+        /**
+         * The command to run when this entry is first read.
+         */
+        public Builder withCommandToRunOnFirstRead(ResourceLocation bookCommandModel) {
+            this.commandToRunOnFirstRead = bookCommandModel;
+            return this;
+        }
+
+
+
         public ResourceLocation getId() {
             return this.id;
         }
@@ -440,6 +468,7 @@ public class BookEntryModel {
             bookEntryModel.pages = this.pages;
             bookEntryModel.condition = this.condition;
             bookEntryModel.categoryToOpen = this.categoryToOpen;
+            bookEntryModel.commandToRunOnFirstRead = this.commandToRunOnFirstRead;
             return bookEntryModel;
         }
     }

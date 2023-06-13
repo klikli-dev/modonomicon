@@ -48,6 +48,8 @@ public class Book {
     protected ResourceLocation turnPageSound;
     protected ConcurrentMap<ResourceLocation, BookCategory> categories;
     protected ConcurrentMap<ResourceLocation, BookEntry> entries;
+    protected ConcurrentMap<ResourceLocation, BookCommand> commands;
+
 
     protected int defaultTitleColor;
     protected float categoryButtonIconScale;
@@ -119,6 +121,7 @@ public class Book {
         this.autoAddReadConditions = autoAddReadConditions;
         this.categories = new ConcurrentHashMap<>();
         this.entries = new ConcurrentHashMap<>();
+        this.commands = new ConcurrentHashMap<>();
         this.bookTextOffsetX = bookTextOffsetX;
         this.bookTextOffsetY = bookTextOffsetY;
         this.bookTextOffsetWidth = bookTextOffsetWidth;
@@ -238,6 +241,10 @@ public class Book {
             category.build(this);
             BookErrorManager.get().getContextHelper().categoryId = null;
         }
+
+        for (var command : this.commands.values()) {
+            command.build(this);
+        }
     }
 
     /**
@@ -338,6 +345,18 @@ public class Book {
 
     public Map<ResourceLocation, BookEntry> getEntries() {
         return this.entries;
+    }
+
+    public void addCommand(BookCommand command) {
+        this.commands.putIfAbsent(command.id, command);
+    }
+
+    public ConcurrentMap<ResourceLocation, BookCommand> getCommands() {
+        return this.commands;
+    }
+
+    public BookCommand getCommand(ResourceLocation id) {
+        return this.commands.get(id);
     }
 
     public String getName() {
