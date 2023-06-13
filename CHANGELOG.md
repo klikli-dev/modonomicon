@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.4-1.33.0] - 2023-06-13
+### :sparkles: New Features
+- [`e581940`](https://github.com/klikli-dev/modonomicon/commit/e5819403540e823382eab126f94e98011a05ef21) - add command support for links and for entry read *(PR [#125](https://github.com/klikli-dev/modonomicon/pull/125) by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`e362e82`](https://github.com/klikli-dev/modonomicon/commit/e362e823ff3cb2769819d4815f772c20a43e930d) - discrepancy in command data model *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`47029e1`](https://github.com/klikli-dev/modonomicon/commit/47029e10de6ff6144dcf8f80dc33e5826fcb03df) - merge errors *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.4-1.32.2] - 2023-05-31
 ### :sparkles: New Features
 - [`7c45a56`](https://github.com/klikli-dev/modonomicon/commit/7c45a56ddac8860a531f000cc969f8020ec608cd) - create zh_cn.json *(PR [#120](https://github.com/klikli-dev/modonomicon/pull/120) by [@Zoshsgahdnkc](https://github.com/Zoshsgahdnkc))*
@@ -268,3 +277,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.4-1.32.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.31.6...release/v1.19.4-1.32.0
 [release/v1.19.4-1.32.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.32.0...release/v1.19.4-1.32.1
 [release/v1.19.4-1.32.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.32.1...release/v1.19.4-1.32.2
+[release/v1.19.4-1.33.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.4-1.32.2...release/v1.19.4-1.33.0
