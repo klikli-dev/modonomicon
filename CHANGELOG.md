@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.2-1.33.0] - 2023-06-13
+### :sparkles: New Features
+- [`908a2c2`](https://github.com/klikli-dev/modonomicon/commit/908a2c287c29da38293fcf0454b395718ee250fb) - add command support for links and for entry read *(PR [#125](https://github.com/klikli-dev/modonomicon/pull/125) by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`ea13e68`](https://github.com/klikli-dev/modonomicon/commit/ea13e682ffd42426ef1dd04a29cb11f3356fa76a) - discrepancy in command data model *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`51b7a2c`](https://github.com/klikli-dev/modonomicon/commit/51b7a2cb4c69c7b3fba8f7f18fdc854aa029a1b9) - merge errors *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.2-1.30.2] - 2023-05-03
 ### :bug: Bug Fixes
 - [`eab2d2c`](https://github.com/klikli-dev/modonomicon/commit/eab2d2c3f7f6640229c05d12289b1bd3d17e2a7d) - render issues with block items *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -171,3 +180,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.2-1.30.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.28.0...release/v1.19.2-1.30.0
 [release/v1.19.2-1.30.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.30.0...release/v1.19.2-1.30.1
 [release/v1.19.2-1.30.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.30.1...release/v1.19.2-1.30.2
+[release/v1.19.2-1.33.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.30.2...release/v1.19.2-1.33.0
