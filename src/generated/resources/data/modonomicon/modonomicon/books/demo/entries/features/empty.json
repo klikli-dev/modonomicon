@@ -4,7 +4,7 @@
   "description": "book.modonomicon.demo.features.empty.description",
   "icon": "minecraft:obsidian",
   "x": -8,
-  "y": 2,
+  "y": 1,
   "background_u_index": 0,
   "background_v_index": 0,
   "hide_while_locked": false,
@@ -33,19 +33,5 @@
       "type": "modonomicon:empty",
       "anchor": ""
     }
-<<<<<<< HEAD
   ]
-=======
-  ],
-  "parents": [
-    {
-      "draw_arrow": true,
-      "entry": "modonomicon:features/spotlight",
-      "line_enabled": true,
-      "line_reversed": false
-    }
-  ],
-  "x": -8,
-  "y": 1
->>>>>>> 908a2c2... feat: add command support for links and for entry read (#125)
 }

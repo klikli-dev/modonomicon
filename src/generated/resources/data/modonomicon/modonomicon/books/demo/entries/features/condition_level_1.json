@@ -4,7 +4,7 @@
   "description": "book.modonomicon.demo.features.condition_level_1.description",
   "icon": "minecraft:lever",
   "x": -6,
-  "y": 1,
+  "y": 0,
   "background_u_index": 0,
   "background_v_index": 0,
   "hide_while_locked": false,
@@ -16,7 +16,6 @@
       "line_reversed": false
     }
   ],
-<<<<<<< HEAD
   "pages": [
     {
       "type": "modonomicon:text",
@@ -31,8 +30,4 @@
     "type": "modonomicon:entry_read",
     "entry_id": "modonomicon:features/condition_root"
   }
-=======
-  "x": -6,
-  "y": 0
->>>>>>> 908a2c2... feat: add command support for links and for entry read (#125)
 }

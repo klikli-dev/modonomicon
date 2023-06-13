@@ -4,7 +4,7 @@
   "description": "book.modonomicon.demo.features.condition_root.description",
   "icon": "minecraft:redstone_torch",
   "x": -6,
-  "y": -1,
+  "y": -2,
   "background_u_index": 1,
   "background_v_index": 0,
   "hide_while_locked": false,
@@ -17,11 +17,5 @@
       "show_title_separator": true,
       "text": "book.modonomicon.demo.features.condition_root.info.text"
     }
-<<<<<<< HEAD
   ]
-=======
-  ],
-  "x": -6,
-  "y": -2
->>>>>>> 908a2c2... feat: add command support for links and for entry read (#125)
 }

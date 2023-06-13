@@ -15,6 +15,7 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.TranslatableComponent;
 import org.commonmark.node.Link;
 import org.commonmark.node.Node;
 
@@ -33,7 +34,7 @@ public class CommandLinkRenderer implements LinkRenderer {
 
             var commandLink = CommandLink.from(context.getBook(), link.getDestination()); //check parsing to throw error if needed
 
-            var hoverComponent = Component.translatable(Gui.HOVER_COMMAND_LINK).withStyle(ChatFormatting.WHITE);
+            var hoverComponent = new TranslatableComponent(Gui.HOVER_COMMAND_LINK).withStyle(ChatFormatting.WHITE);
 
             //if we have a color we use it, otherwise we use link default.
             context.setCurrentStyle(context.getCurrentStyle()

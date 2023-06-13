@@ -12,14 +12,18 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
 import com.klikli_dev.modonomicon.registry.CapabilityRegistry;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.GsonHelper;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 public class BookCommand {
     protected ResourceLocation id;
@@ -71,8 +75,8 @@ public class BookCommand {
         var command = buffer.readUtf();
         var permissionLevel = (int) buffer.readByte();
         var maxUses = buffer.readVarInt();
-        var failureMessage = buffer.readNullable(FriendlyByteBuf::readUtf);
-        var successMessage = buffer.readNullable(FriendlyByteBuf::readUtf);
+        var failureMessage = buffer.readOptional(FriendlyByteBuf::readUtf).orElse(null);
+        var successMessage = buffer.readOptional(FriendlyByteBuf::readUtf).orElse(null);
         return new BookCommand(id, command, permissionLevel, maxUses, failureMessage, successMessage);
     }
 
@@ -87,8 +91,8 @@ public class BookCommand {
         buffer.writeUtf(this.command);
         buffer.writeByte(this.permissionLevel);
         buffer.writeVarInt(this.maxUses);
-        buffer.writeNullable(this.failureMessage, FriendlyByteBuf::writeUtf);
-        buffer.writeNullable(this.successMessage, FriendlyByteBuf::writeUtf);
+        buffer.writeOptional(Optional.ofNullable(this.failureMessage), FriendlyByteBuf::writeUtf);
+        buffer.writeOptional(Optional.ofNullable(this.successMessage), FriendlyByteBuf::writeUtf);
     }
 
     public ResourceLocation getId() {
@@ -122,19 +126,18 @@ public class BookCommand {
     public void execute(ServerPlayer player){
         if(!BookUnlockCapability.canRunFor(player, this)){
             var failureMessage = this.failureMessage == null ? ModonomiconConstants.I18n.Command.DEFAULT_FAILURE_MESSAGE : this.failureMessage;
-
-            player.sendSystemMessage(Component.translatable(failureMessage).withStyle(ChatFormatting.RED));
+            player.sendMessage(new TranslatableComponent(failureMessage).withStyle(ChatFormatting.RED), Util.NIL_UUID);
             return;
         } else {
-            var commandSourceStack = new CommandSourceStack(player, player.position(),player.getRotationVector(), player.serverLevel(), this.permissionLevel, player.getName().getString(), player.getDisplayName(), player.server, player);
+            var commandSourceStack = new CommandSourceStack(player, player.position(),player.getRotationVector(), player.getLevel(), this.permissionLevel, player.getName().getString(), player.getDisplayName(), player.server, player);
 
             BookUnlockCapability.setRunFor(player, this);
 
             try{
-                player.server.getCommands().performPrefixedCommand(commandSourceStack, this.command);
+                player.server.getCommands().performCommand(commandSourceStack, this.command);
 
                 if(this.successMessage != null){
-                    player.sendSystemMessage(Component.translatable(this.successMessage).withStyle(ChatFormatting.GREEN));
+                    player.sendMessage(new TranslatableComponent(this.successMessage).withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
                 }
             }
             catch (Exception e){

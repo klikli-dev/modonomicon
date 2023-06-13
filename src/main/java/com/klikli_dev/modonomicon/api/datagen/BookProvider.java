@@ -131,7 +131,11 @@ public abstract class BookProvider implements DataProvider {
 
             for (var bookCommandModel : bookModel.getCommands()) {
                 Path bookCommandPath = this.getPath(dataFolder, bookCommandModel);
-                futures.add(DataProvider.saveStable(cache, bookCommandModel.toJson(), bookCommandPath));
+                try {
+                    DataProvider.save(GSON, cache, bookCommandModel.toJson(), bookCommandPath);
+                } catch (IOException exception) {
+                    LOGGER.error("Couldn't save book command {}", bookCommandPath, exception);
+                }
             }
         }
     }

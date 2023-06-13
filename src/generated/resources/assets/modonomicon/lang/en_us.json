@@ -1,15 +1,12 @@
 {
-<<<<<<< HEAD
   "advancements.modonomicon.root.description": "The book of all books!",
   "advancements.modonomicon.root.title": "Modonomicon",
-=======
   "book.modonomicon.demo.features.command.command_link.text": "[Click me to run the command!](command://test_command2)",
   "book.modonomicon.demo.features.command.command_link.title": "Command Link",
   "book.modonomicon.demo.features.command.description": "This entry runs a command when you first read it.",
   "book.modonomicon.demo.features.command.intro.text": "This entry just ran a command when you first read it. Look into your chat!",
   "book.modonomicon.demo.features.command.intro.title": "Entry Read Commands",
   "book.modonomicon.demo.features.command.name": "Entry Read Commands",
->>>>>>> ef94f76... feat: add command support for links and for entry read (#125)
   "book.modonomicon.demo.features.condition_level_1.description": "Depends on Condition Root being read.",
   "book.modonomicon.demo.features.condition_level_1.info.text": "This entry depends on Condition Root being read.",
   "book.modonomicon.demo.features.condition_level_1.info.title": "Condition Level 1",

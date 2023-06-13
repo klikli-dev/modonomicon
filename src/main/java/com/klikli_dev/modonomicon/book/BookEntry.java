@@ -21,6 +21,7 @@ import net.minecraft.util.GsonHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class BookEntry {
     protected ResourceLocation id;
@@ -162,8 +163,8 @@ public class BookEntry {
 
         var condition = BookCondition.fromNetwork(buffer);
 
-        ResourceLocation categoryToOpen = buffer.readNullable(FriendlyByteBuf::readResourceLocation);
-        ResourceLocation commandToRunOnFirstRead = buffer.readNullable(FriendlyByteBuf::readResourceLocation);
+        ResourceLocation categoryToOpen = buffer.readOptional(FriendlyByteBuf::readResourceLocation).orElse(null);
+        ResourceLocation commandToRunOnFirstRead = buffer.readOptional(FriendlyByteBuf::readResourceLocation).orElse(null);
 
         return new BookEntry(id, categoryId, name, description, icon, x, y, entryBackgroundUIndex,
                 entryBackgroundVIndex, hideWhileLocked, condition, parentEntries, pages, categoryToOpen, commandToRunOnFirstRead);
@@ -255,8 +256,8 @@ public class BookEntry {
 
         BookCondition.toNetwork(this.condition, buffer);
 
-        buffer.writeNullable(this.categoryToOpenId, FriendlyByteBuf::writeResourceLocation);
-        buffer.writeNullable(this.commandToRunOnFirstReadId, FriendlyByteBuf::writeResourceLocation);
+        buffer.writeOptional(Optional.ofNullable(this.categoryToOpenId), FriendlyByteBuf::writeResourceLocation);
+        buffer.writeOptional(Optional.ofNullable(this.commandToRunOnFirstReadId), FriendlyByteBuf::writeResourceLocation);
     }
 
     public int getY() {

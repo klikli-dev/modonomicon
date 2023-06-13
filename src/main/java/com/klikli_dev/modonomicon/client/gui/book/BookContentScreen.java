@@ -526,14 +526,14 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
                                 var oldComponent = style.getHoverEvent().getValue(HoverEvent.Action.SHOW_TEXT);
 
                                 if (!BookUnlockCapability.canRunFor(this.minecraft.player, command)) {
-                                    var hoverComponent = Component.translatable(Gui.HOVER_COMMAND_LINK_UNAVAILABLE).withStyle(ChatFormatting.RED);
+                                    var hoverComponent = new TranslatableComponent(Gui.HOVER_COMMAND_LINK_UNAVAILABLE).withStyle(ChatFormatting.RED);
                                     newStyle = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent));
                                     oldComponent = hoverComponent;
                                 }
 
                                 if(hasShiftDown()){
-                                    var newComponent = oldComponent.copy().append(Component.literal("\n")).append(
-                                            Component.literal(command.getCommand()).withStyle(ChatFormatting.GRAY));
+                                    var newComponent = oldComponent.copy().append(new TextComponent("\n")).append(
+                                            new TextComponent(command.getCommand()).withStyle(ChatFormatting.GRAY));
                                     newStyle = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newComponent));
                                 }
                             }
