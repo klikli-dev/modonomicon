@@ -104,6 +104,12 @@ public class Networking {
                 ClickReadAllButtonMessage::encode,
                 ClickReadAllButtonMessage::new,
                 MessageHandler::handle);
+
+        INSTANCE.registerMessage(nextID(),
+                ClickCommandLinkMessage.class,
+                ClickCommandLinkMessage::encode,
+                ClickCommandLinkMessage::new,
+                MessageHandler::handle);
     }
 
     public static <T> void sendToSplit(ServerPlayer player, T message) {

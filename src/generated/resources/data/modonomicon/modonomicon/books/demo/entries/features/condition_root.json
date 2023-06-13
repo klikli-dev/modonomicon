@@ -17,5 +17,11 @@
       "show_title_separator": true,
       "text": "book.modonomicon.demo.features.condition_root.info.text"
     }
+<<<<<<< HEAD
   ]
+=======
+  ],
+  "x": -6,
+  "y": -2
+>>>>>>> 908a2c2... feat: add command support for links and for entry read (#125)
 }

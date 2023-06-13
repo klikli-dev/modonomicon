@@ -11,6 +11,7 @@ package com.klikli_dev.modonomicon.capability;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Nbt;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.book.BookCommand;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.conditions.BookEntryUnlockedCondition;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionCategoryContext;
@@ -46,6 +47,8 @@ import java.util.concurrent.ConcurrentMap;
 
 public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
 
+    protected final Player player;
+
     /**
      * Map Book ID to read entry IDs
      */
@@ -61,6 +64,15 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
      */
     public ConcurrentMap<ResourceLocation, Set<ResourceLocation>> unlockedCategories = new ConcurrentHashMap<>();
 
+    /**
+     * Map Book ID to commands used. This is never wiped to avoid reusing reward commands.
+     */
+    public ConcurrentMap<ResourceLocation, Map<ResourceLocation, Integer>> usedCommands = new ConcurrentHashMap<>();
+
+    public BookUnlockCapability(Player player) {
+        this.player = player;
+    }
+
     public static String getUnlockCodeFor(Player player, Book book) {
         return player.getCapability(CapabilityRegistry.BOOK_UNLOCK).map(c -> c.getUnlockCode(book)).orElse("No unlocked content.");
     }
@@ -74,6 +86,10 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
             }
             return book;
         }).orElse(null);
+    }
+
+    public static void syncFor(ServerPlayer player) {
+        player.getCapability(CapabilityRegistry.BOOK_UNLOCK).ifPresent(c -> c.sync(player));
     }
 
     public static void updateAndSyncFor(ServerPlayer player) {
@@ -119,6 +135,14 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
         return player.getCapability(CapabilityRegistry.BOOK_UNLOCK).map(c -> c.isRead(entry)).orElse(false);
     }
 
+    public static boolean canRunFor(Player player, BookCommand command) {
+        return player.getCapability(CapabilityRegistry.BOOK_UNLOCK).map(c -> c.canRun(command)).orElse(false);
+    }
+
+    public static void setRunFor(Player player, BookCommand command) {
+        player.getCapability(CapabilityRegistry.BOOK_UNLOCK).ifPresent(c -> c.setRun(command));
+    }
+
     public static void onAdvancement(final AdvancementEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverplayer) {
             updateAndSyncFor(serverplayer);
@@ -134,6 +158,7 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
         this.unlockedEntries = other.unlockedEntries;
         this.unlockedCategories = other.unlockedCategories;
         this.readEntries = other.readEntries;
+        this.usedCommands = other.usedCommands;
     }
 
     /**
@@ -257,9 +282,32 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
 
         this.readEntries.computeIfAbsent(entry.getBook().getId(), k -> new HashSet<>()).add(entry.getId());
 
+        var command = entry.getCommandToRunOnFirstRead();
+        if(command != null && this.player instanceof ServerPlayer serverPlayer) {
+            command.execute(serverPlayer);
+        }
+        
         ModonomiconKubeJSIntegration.postEntryReadEvent(player, entry);
 
         return true;
+    }
+
+    public void setRun(BookCommand command) {
+        if (command.getBook() == null)
+            return;
+
+        var uses = this.usedCommands.getOrDefault(command.getBook().getId(), new HashMap<>()).getOrDefault(command.getId(), 0);
+        this.usedCommands.computeIfAbsent(command.getBook().getId(), k -> new HashMap<>()).put(command.getId(), uses + 1);
+    }
+
+    public boolean canRun(BookCommand command) {
+        if (command.getBook() == null)
+            return false;
+
+        if (command.getMaxUses() == -1) //unlimited uses
+            return true;
+
+        return this.usedCommands.getOrDefault(command.getBook().getId(), new HashMap<>()).getOrDefault(command.getId(), 0) < command.getMaxUses();
     }
 
     public boolean isRead(BookEntry entry) {
@@ -284,6 +332,7 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
         this.readEntries.remove(book.getId());
         this.unlockedEntries.remove(book.getId());
         this.unlockedCategories.remove(book.getId());
+        //Do not reset the commands!
     }
 
     public List<ResourceLocation> getBooks() {
@@ -411,6 +460,24 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
             readEntriesByBook.add(bookCompound);
         });
 
+        var usedCommandsByBook = new ListTag();
+        compound.put("used_commands", usedCommandsByBook);
+        this.usedCommands.forEach((bookId, commands) -> {
+            var bookCompound = new CompoundTag();
+            var usedCommandsList = new ListTag();
+            bookCompound.putString("book_id", bookId.toString());
+            bookCompound.put("used_commands", usedCommandsList);
+
+            commands.forEach((command, used) -> {
+                var commandCompound = new CompoundTag();
+                commandCompound.putString("command", command.toString());
+                commandCompound.putInt("used", used);
+                usedCommandsList.add(commandCompound);
+            });
+
+            usedCommandsByBook.add(bookCompound);
+        });
+
         return compound;
     }
 
@@ -467,30 +534,53 @@ public class BookUnlockCapability implements INBTSerializable<CompoundTag> {
                 this.readEntries.put(bookId, entries);
             }
         }
+
+        this.usedCommands.clear();
+        var usedCommandsByBook = nbt.getList("used_commands", Tag.TAG_COMPOUND);
+        for (var usedCommand : usedCommandsByBook) {
+            if (usedCommand instanceof CompoundTag bookCompound) {
+                var bookId = ResourceLocation.tryParse(bookCompound.getString("book_id"));
+                var usedCommandsList = bookCompound.getList("used_commands", Tag.TAG_COMPOUND);
+                var commands = new HashMap<ResourceLocation, Integer>();
+                for (var command : usedCommandsList) {
+                    if (command instanceof CompoundTag commandCompound) {
+                        var commandId = ResourceLocation.tryParse(commandCompound.getString("command"));
+                        var used = commandCompound.getInt("used");
+                        commands.put(commandId, used);
+                    }
+                }
+                this.usedCommands.put(bookId, commands);
+            }
+        }
     }
 
     public static class Dispatcher implements ICapabilitySerializable<CompoundTag> {
 
-        private final LazyOptional<BookUnlockCapability> bookDataCapability = LazyOptional.of(
-                BookUnlockCapability::new);
+        private final BookUnlockCapability bookUnlockCapability;
+        private final LazyOptional<BookUnlockCapability> bookUnlockCapabilityLazy;
+
+        public Dispatcher(Player player) {
+            this.bookUnlockCapability = new BookUnlockCapability(player);
+            this.bookUnlockCapabilityLazy = LazyOptional.of(() -> this.bookUnlockCapability);
+        }
 
         @Nonnull
         @Override
         public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
             if (cap == CapabilityRegistry.BOOK_UNLOCK) {
-                return this.bookDataCapability.cast();
+                return this.bookUnlockCapabilityLazy.cast();
             }
             return LazyOptional.empty();
         }
 
         @Override
         public CompoundTag serializeNBT() {
-            return this.bookDataCapability.map(BookUnlockCapability::serializeNBT).orElse(new CompoundTag());
+            return this.bookUnlockCapability.serializeNBT();
         }
 
         @Override
         public void deserializeNBT(CompoundTag nbt) {
-            this.bookDataCapability.ifPresent(capability -> capability.deserializeNBT(nbt));
+            this.bookUnlockCapability.deserializeNBT(nbt);
         }
     }
 }

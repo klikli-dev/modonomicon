@@ -43,5 +43,11 @@
       },
       "text": "book.modonomicon.demo.features.spotlight.spotlight2.text"
     }
+<<<<<<< HEAD
   ]
+=======
+  ],
+  "x": -14,
+  "y": 1
+>>>>>>> 908a2c2... feat: add command support for links and for entry read (#125)
 }

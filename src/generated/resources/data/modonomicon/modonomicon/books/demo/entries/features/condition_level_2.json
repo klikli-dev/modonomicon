@@ -16,6 +16,7 @@
       "line_reversed": false
     }
   ],
+<<<<<<< HEAD
   "pages": [
     {
       "type": "modonomicon:text",
@@ -30,4 +31,8 @@
     "type": "modonomicon:entry_unlocked",
     "entry_id": "modonomicon:features/condition_level_1"
   }
+=======
+  "x": -2,
+  "y": 0
+>>>>>>> 908a2c2... feat: add command support for links and for entry read (#125)
 }

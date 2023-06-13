@@ -39,5 +39,11 @@
       "rotate": true,
       "default_rotation": -45.0
     }
+<<<<<<< HEAD
   ]
+=======
+  ],
+  "x": 1,
+  "y": -3
+>>>>>>> 908a2c2... feat: add command support for links and for entry read (#125)
 }

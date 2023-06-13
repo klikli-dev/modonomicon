@@ -36,5 +36,19 @@
         "modonomicon:textures/gui/dark_slate_seamless.png"
       ]
     }
+<<<<<<< HEAD
   ]
+=======
+  ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "modonomicon:features/empty",
+      "line_enabled": true,
+      "line_reversed": false
+    }
+  ],
+  "x": 2,
+  "y": 0
+>>>>>>> 908a2c2... feat: add command support for links and for entry read (#125)
 }

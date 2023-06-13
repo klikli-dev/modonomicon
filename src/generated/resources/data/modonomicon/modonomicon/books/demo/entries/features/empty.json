@@ -33,5 +33,19 @@
       "type": "modonomicon:empty",
       "anchor": ""
     }
+<<<<<<< HEAD
   ]
+=======
+  ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "modonomicon:features/spotlight",
+      "line_enabled": true,
+      "line_reversed": false
+    }
+  ],
+  "x": -8,
+  "y": 1
+>>>>>>> 908a2c2... feat: add command support for links and for entry read (#125)
 }
