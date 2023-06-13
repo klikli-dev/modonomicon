@@ -56,7 +56,13 @@ public class BookEntry {
     protected ResourceLocation categoryToOpenId;
     protected BookCategory categoryToOpen;
 
-    public BookEntry(ResourceLocation id, ResourceLocation categoryId, String name, String description, BookIcon icon, int x, int y, int entryBackgroundUIndex, int entryBackgroundVIndex, boolean hideWhileLocked, BookCondition condition, List<BookEntryParent> parents, List<BookPage> pages, ResourceLocation categoryToOpenId) {
+    /**
+     * if this is not null, the command will be run when the entry is first read.
+     */
+    protected ResourceLocation commandToRunOnFirstReadId;
+    protected BookCommand commandToRunOnFirstRead;
+
+    public BookEntry(ResourceLocation id, ResourceLocation categoryId, String name, String description, BookIcon icon, int x, int y, int entryBackgroundUIndex, int entryBackgroundVIndex, boolean hideWhileLocked, BookCondition condition, List<BookEntryParent> parents, List<BookPage> pages, ResourceLocation categoryToOpenId,ResourceLocation commandToRunOnFirstReadId) {
         this.id = id;
         this.categoryId = categoryId;
         this.name = name;
@@ -72,6 +78,7 @@ public class BookEntry {
         this.hideWhileLocked = hideWhileLocked;
 
         this.categoryToOpenId = categoryToOpenId;
+        this.commandToRunOnFirstReadId = commandToRunOnFirstReadId;
     }
 
     public static BookEntry fromJson(ResourceLocation id, JsonObject json) {
@@ -117,8 +124,13 @@ public class BookEntry {
             categoryToOpen = new ResourceLocation(GsonHelper.getAsString(json, "category_to_open"));
         }
 
+        ResourceLocation commandToRunOnFirstRead = null;
+        if (json.has("command_to_run_on_first_read")) {
+            commandToRunOnFirstRead = new ResourceLocation(GsonHelper.getAsString(json, "command_to_run_on_first_read"));
+        }
+
         return new BookEntry(id, categoryId, name, description, icon, x, y, entryBackgroundUIndex,
-                entryBackgroundVIndex, hideWhileLocked, condition, parentEntries, pages, categoryToOpen);
+                entryBackgroundVIndex, hideWhileLocked, condition, parentEntries, pages, categoryToOpen, commandToRunOnFirstRead);
     }
 
     public static BookEntry fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
@@ -150,17 +162,19 @@ public class BookEntry {
 
         var condition = BookCondition.fromNetwork(buffer);
 
-        ResourceLocation categoryToOpen = null;
-        if (buffer.readBoolean()) {
-            categoryToOpen = buffer.readResourceLocation();
-        }
+        ResourceLocation categoryToOpen = buffer.readNullable(FriendlyByteBuf::readResourceLocation);
+        ResourceLocation commandToRunOnFirstRead = buffer.readNullable(FriendlyByteBuf::readResourceLocation);
 
         return new BookEntry(id, categoryId, name, description, icon, x, y, entryBackgroundUIndex,
-                entryBackgroundVIndex, hideWhileLocked, condition, parentEntries, pages, categoryToOpen);
+                entryBackgroundVIndex, hideWhileLocked, condition, parentEntries, pages, categoryToOpen, commandToRunOnFirstRead);
     }
 
     public BookCategory getCategoryToOpen() {
         return this.categoryToOpen;
+    }
+
+    public BookCommand getCommandToRunOnFirstRead() {
+        return this.commandToRunOnFirstRead;
     }
 
     /**
@@ -184,6 +198,15 @@ public class BookEntry {
             if(this.categoryToOpen == null){
                 BookErrorManager.get().error("Category to open \"" + this.categoryToOpenId + "\" does not exist in this book. Set to null.");
                 this.categoryToOpenId = null;
+            }
+        }
+
+        if (this.commandToRunOnFirstReadId != null) {
+            this.commandToRunOnFirstRead = this.book.getCommand(this.commandToRunOnFirstReadId);
+
+            if(this.commandToRunOnFirstRead == null){
+                BookErrorManager.get().error("Command to run on first read \"" + this.commandToRunOnFirstReadId + "\" does not exist in this book. Set to null.");
+                this.commandToRunOnFirstReadId = null;
             }
         }
 
@@ -232,10 +255,8 @@ public class BookEntry {
 
         BookCondition.toNetwork(this.condition, buffer);
 
-        buffer.writeBoolean(this.categoryToOpenId != null);
-        if (this.categoryToOpenId != null) {
-            buffer.writeResourceLocation(this.categoryToOpenId);
-        }
+        buffer.writeNullable(this.categoryToOpenId, FriendlyByteBuf::writeResourceLocation);
+        buffer.writeNullable(this.commandToRunOnFirstReadId, FriendlyByteBuf::writeResourceLocation);
     }
 
     public int getY() {

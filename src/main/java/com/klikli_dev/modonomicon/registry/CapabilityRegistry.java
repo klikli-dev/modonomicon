@@ -58,9 +58,9 @@ public class CapabilityRegistry {
     }
 
     public static void onAttachCapabilities(final AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof Player) {
+        if (event.getObject() instanceof Player player) {
             if (!event.getObject().getCapability(BOOK_UNLOCK).isPresent()) {
-                event.addCapability(BOOK_UNLOCK_ID, new BookUnlockCapability.Dispatcher());
+                event.addCapability(BOOK_UNLOCK_ID, new BookUnlockCapability.Dispatcher(player));
             }
             if (!event.getObject().getCapability(BOOK_STATE).isPresent()) {
                 event.addCapability(BOOK_STATE_ID, new BookStateCapability.Dispatcher());

@@ -1,6 +1,15 @@
 {
+<<<<<<< HEAD
   "advancements.modonomicon.root.description": "The book of all books!",
   "advancements.modonomicon.root.title": "Modonomicon",
+=======
+  "book.modonomicon.demo.features.command.command_link.text": "[Click me to run the command!](command://test_command2)",
+  "book.modonomicon.demo.features.command.command_link.title": "Command Link",
+  "book.modonomicon.demo.features.command.description": "This entry runs a command when you first read it.",
+  "book.modonomicon.demo.features.command.intro.text": "This entry just ran a command when you first read it. Look into your chat!",
+  "book.modonomicon.demo.features.command.intro.title": "Entry Read Commands",
+  "book.modonomicon.demo.features.command.name": "Entry Read Commands",
+>>>>>>> ef94f76... feat: add command support for links and for entry read (#125)
   "book.modonomicon.demo.features.condition_level_1.description": "Depends on Condition Root being read.",
   "book.modonomicon.demo.features.condition_level_1.info.text": "This entry depends on Condition Root being read.",
   "book.modonomicon.demo.features.condition_level_1.info.title": "Condition Level 1",
@@ -83,9 +92,12 @@
   "modonomicon.command.error.load_progress": "Invalid unlock code!",
   "modonomicon.command.error.load_progress_client": "Failed to decode unlock code. Make sure to have a valid unlock code in your clipboard! Current Clipboard content: \"%s\"",
   "modonomicon.command.error.unknown_book": "Unknown book: %s",
+  "modonomicon.command.failure": "Modonomicon tried to run a command for you (e.g. because you read an entry for the first time, or clicked a command button or command link). However, it seems you already reached the maximum use limit for this command.",
   "modonomicon.command.success.load_progress": "Successfully loaded progress for book: %s.",
   "modonomicon.command.success.reset_book": "Successfully reset book: %s",
   "modonomicon.command.success.save_progress": "Saved progress for book: %s. The unlock code has been copied to your clipboard.",
+  "modonomicon.command.test_command.success": "You got an apple, because reading is cool!",
+  "modonomicon.command.test_command2.success": "You got wheat, because clicking is cool!",
   "modonomicon.gui..page.entity.loading_error": "Failed to load entity",
   "modonomicon.gui.button.back": "Back",
   "modonomicon.gui.button.back.tooltip": "Go back to the last page you visited",
@@ -103,6 +115,8 @@
   "modonomicon.gui.hover.book_link": "Go to: %s",
   "modonomicon.gui.hover.book_link_locked": "%s.\n%s",
   "modonomicon.gui.hover.book_link_locked_info": "You need to unlock this entry before you can open the link!",
+  "modonomicon.gui.hover.command_link": "Click to run linked command. Hold down shift to show command.",
+  "modonomicon.gui.hover.command_link.unavailable": "You already used this command too many times, you cannot use it again.",
   "modonomicon.gui.hover.http_link": "Visit: %s",
   "modonomicon.gui.hover.item_link_info": "Click to show recipe in JEI, Shift-Click to show usage.",
   "modonomicon.gui.hover.item_link_info.no_jei": "Install JEI to show recipe/usage on click.",

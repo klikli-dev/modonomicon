@@ -52,6 +52,11 @@ public class ModonomiconConstants {
             public static final String DEFAULT_ENTRY_TEXTURES = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/entry_textures.png").toString();
         }
 
+        public static class Command {
+            public static final int DEFAULT_MAX_USES = 1;
+            public static final int DEFAULT_PERMISSION_LEVEL = 0;
+        }
+
         public static class Page {
             public static final ResourceLocation TEXT = new ResourceLocation(ModonomiconAPI.ID, "text");
             public static final ResourceLocation MULTIBLOCK = new ResourceLocation(ModonomiconAPI.ID, "multiblock");
@@ -127,6 +132,8 @@ public class ModonomiconConstants {
             public static final String HOVER_ITEM_LINK_INFO = PREFIX + "hover.item_link_info";
             public static final String HOVER_ITEM_LINK_INFO_LINE2 = PREFIX + "hover.item_link_info_line2";
             public static final String HOVER_ITEM_LINK_INFO_NO_JEI = PREFIX + "hover.item_link_info.no_jei";
+            public static final String HOVER_COMMAND_LINK = PREFIX + "hover.command_link";
+            public static final String HOVER_COMMAND_LINK_UNAVAILABLE = PREFIX + "hover.command_link.unavailable";
             public static final String NO_ERRORS_FOUND = PREFIX + "no_errors_found";
             public static final String PAGE_ENTITY_LOADING_ERROR = PREFIX + ".page.entity.loading_error";
 
@@ -179,6 +186,8 @@ public class ModonomiconConstants {
             public static final String SUCCESS_RESET_BOOK = SUCCESS_PREFIX + "reset_book";
             public static final String SUCCESS_SAVE_PROGRESS = SUCCESS_PREFIX + "save_progress";
             public static final String SUCCESS_LOAD_PROGRESS = SUCCESS_PREFIX + "load_progress";
+
+            public static final String DEFAULT_FAILURE_MESSAGE = PREFIX + "failure";
         }
     }
 }

@@ -39,6 +39,7 @@ public class BookModel {
     protected float categoryButtonIconScale = 1.0f;
 
     protected List<BookCategoryModel> categories = new ArrayList<>();
+    protected List<BookCommandModel> commands = new ArrayList<>();
 
     protected boolean autoAddReadConditions = false;
     protected boolean generateBookItem = true;
@@ -102,6 +103,9 @@ public class BookModel {
 
     public List<BookCategoryModel> getCategories() {
         return this.categories;
+    }
+    public List<BookCommandModel> getCommands() {
+        return this.commands;
     }
 
     public ResourceLocation getId() {
@@ -257,6 +261,22 @@ public class BookModel {
     public BookModel withCategory(BookCategoryModel category) {
         category.book = this;
         this.categories.add(category);
+        return this;
+    }
+
+    public BookModel withCommands(List<BookCommandModel> commands) {
+        commands.forEach(command -> command.book = this);
+        this.commands.addAll(commands);
+        return this;
+    }
+
+    public BookModel withCommands(BookCommandModel... commands) {
+        return this.withCommands(List.of(commands));
+    }
+
+    public BookModel withCommand(BookCommandModel command) {
+        command.book = this;
+        this.commands.add(command);
         return this;
     }
 

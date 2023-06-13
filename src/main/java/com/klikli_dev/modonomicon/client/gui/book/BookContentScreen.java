@@ -8,10 +8,7 @@ package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
-import com.klikli_dev.modonomicon.book.Book;
-import com.klikli_dev.modonomicon.book.BookEntry;
-import com.klikli_dev.modonomicon.book.BookLink;
-import com.klikli_dev.modonomicon.book.PatchouliLink;
+import com.klikli_dev.modonomicon.book.*;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.capability.BookStateCapability;
 import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
@@ -28,6 +25,7 @@ import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.integration.ModonomiconJeiIntegration;
 import com.klikli_dev.modonomicon.integration.ModonomiconPatchouliIntegration;
 import com.klikli_dev.modonomicon.network.Networking;
+import com.klikli_dev.modonomicon.network.messages.ClickCommandLinkMessage;
 import com.klikli_dev.modonomicon.network.messages.SaveEntryStateMessage;
 import com.klikli_dev.modonomicon.registry.SoundRegistry;
 import com.klikli_dev.modonomicon.util.ItemStackUtil;
@@ -518,7 +516,30 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
                                 }
                             }
                         }
+                    }
 
+                    if (clickEvent.getAction() == Action.RUN_COMMAND) {
+                        if (CommandLink.isCommandLink(clickEvent.getValue())) {
+                            var link = CommandLink.from(this.getBook(), clickEvent.getValue());
+                            var book = BookDataManager.get().getBook(link.bookId);
+                            if (link.commandId != null) {
+                                var command = book.getCommand(link.commandId);
+
+                                var oldComponent = style.getHoverEvent().getValue(HoverEvent.Action.SHOW_TEXT);
+
+                                if (!BookUnlockCapability.canRunFor(this.minecraft.player, command)) {
+                                    var hoverComponent = Component.translatable(Gui.HOVER_COMMAND_LINK_UNAVAILABLE).withStyle(ChatFormatting.RED);
+                                    newStyle = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent));
+                                    oldComponent = hoverComponent;
+                                }
+
+                                if(hasShiftDown()){
+                                    var newComponent = oldComponent.copy().append(Component.literal("\n")).append(
+                                            Component.literal(command.getCommand()).withStyle(ChatFormatting.GRAY));
+                                    newStyle = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newComponent));
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -656,6 +677,26 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons{
                         }
 
                         return true;
+                    }
+                }
+                if (event.getAction() == Action.RUN_COMMAND) {
+                    //handle command link clicks
+                    if (CommandLink.isCommandLink(event.getValue())) {
+                        var link = CommandLink.from(this.getBook(), event.getValue());
+                        var book = BookDataManager.get().getBook(link.bookId);
+                        if (link.commandId != null) {
+                            var command = book.getCommand(link.commandId);
+
+                            if (BookUnlockCapability.canRunFor(this.minecraft.player, command)) {
+                                Networking.sendToServer(new ClickCommandLinkMessage(link.bookId, link.commandId));
+
+                                //we immediately count up the usage client side -> to avoid spamming the server
+                                //if the server ends up not counting up the usage, it will sync the correct info back down to us
+                                BookUnlockCapability.setRunFor(this.minecraft.player, command);
+                            }
+
+                            return true;
+                        }
                     }
                 }
             }
