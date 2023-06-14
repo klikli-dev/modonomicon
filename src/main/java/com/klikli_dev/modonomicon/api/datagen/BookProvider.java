@@ -21,11 +21,9 @@ import net.minecraftforge.common.data.LanguageProvider;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 public abstract class BookProvider implements DataProvider {
 
@@ -33,17 +31,27 @@ public abstract class BookProvider implements DataProvider {
 
     protected final PackOutput packOutput;
     protected final LanguageProvider lang;
+    protected final Map<String, LanguageProvider> translations;
     protected final Map<ResourceLocation, BookModel> bookModels;
     protected final String modid;
 
     /**
-     * @param lang The LanguageProvider to fill with this book provider. IMPORTANT: the Languag Provider needs to be added to the DataGenerator AFTER the BookProvider.
+     * @param defaultLang The LanguageProvider to fill with this book provider. IMPORTANT: the Languag Provider needs to be added to the DataGenerator AFTER the BookProvider.
      */
-    public BookProvider(PackOutput packOutput, String modid, LanguageProvider lang) {
+    public BookProvider(PackOutput packOutput, String modid, LanguageProvider defaultLang, LanguageProvider... translations) {
         this.modid = modid;
         this.packOutput = packOutput;
-        this.lang = lang;
+        this.lang = defaultLang;
         this.bookModels = new HashMap<>();
+        this.translations = Stream.concat(Arrays.stream(translations), Stream.of(defaultLang)).map(l -> new AbstractMap.SimpleEntry<>(l.getName().split(": ")[1], l)).collect(HashMap::new, (m, v) -> m.put(v.getKey(), v.getValue()), HashMap::putAll);
+    }
+
+    protected LanguageProvider lang(){
+        return this.lang;
+    }
+
+    protected LanguageProvider lang(String locale){
+        return this.translations.get(locale);
     }
 
     protected abstract void generate();

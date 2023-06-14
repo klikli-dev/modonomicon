@@ -29,13 +29,19 @@ import java.util.List;
 public class DemoBookProvider extends BookProvider {
 
 
-    public DemoBookProvider(PackOutput packOutput, String modid, LanguageProvider lang) {
-        super(packOutput, modid, lang);
+    public DemoBookProvider(PackOutput packOutput, String modid, LanguageProvider lang, LanguageProvider... translations) {
+        super(packOutput, modid, lang, translations);
     }
 
     private BookModel makeDemoBook() {
         var helper = ModonomiconAPI.get().getLangHelper(this.modid);
         helper.book("demo");
+
+        this.lang().add(helper.bookName(), "Demo Book");
+        this.lang().add(helper.bookTooltip(), "A book to showcase & test Modonomicon features.");
+
+        this.lang("ru_ru").add(helper.bookName(), "Демонстрационная книга");
+        this.lang("ru_ru").add(helper.bookTooltip(), "Книга для демонстрации и тестирования функций \"Модономикона\".");
 
         var featuresCategory = this.makeFeaturesCategory(helper);
         var formattingCategory = this.makeFormattingCategory(helper);
@@ -48,7 +54,6 @@ public class DemoBookProvider extends BookProvider {
                 .withPermissionLevel(2)
                 .withSuccessMessage("modonomicon.command.test_command.success");
         this.lang.add(commandEntryCommand.getSuccessMessage(), "You got an apple, because reading is cool!");
-
         var commandEntryLinkCommand = BookCommandModel.create(this.modLoc("test_command2"), "/give @s minecraft:wheat 1")
                 .withPermissionLevel(2)
                 .withSuccessMessage("modonomicon.command.test_command2.success");

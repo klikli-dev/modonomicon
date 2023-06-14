@@ -18,12 +18,15 @@ public class DataGenerators {
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
         var lang = new LangGenerator.English(generator.getPackOutput());
+        var langRuRu = new LangGenerator.Russian(generator.getPackOutput());
 
-        generator.addProvider(event.includeServer(), new DemoBookProvider(generator.getPackOutput(), Modonomicon.MODID, lang));
+        generator.addProvider(event.includeServer(), new DemoBookProvider(generator.getPackOutput(), Modonomicon.MODID, lang, langRuRu));
         generator.addProvider(event.includeServer(), new DemoMultiblockProvider(generator.getPackOutput(), Modonomicon.MODID));
 
         //Important: Lang provider needs to be added after the book provider to process the texts added by the book provider
         generator.addProvider(event.includeClient(), lang);
+        generator.addProvider(event.includeClient(), langRuRu);
+
         generator.addProvider(event.includeClient(), new ItemModelProvider(generator.getPackOutput(), existingFileHelper));
     }
 }

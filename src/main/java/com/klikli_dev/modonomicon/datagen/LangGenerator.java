@@ -31,6 +31,16 @@ public abstract class LangGenerator extends LanguageProvider {
         return "item." + Modonomicon.MODID + "." + id;
     }
 
+    public static final class Russian extends LangGenerator{
+        public Russian(PackOutput packOutput) {
+            super(packOutput, "ru_ru");
+        }
+
+        @Override
+        protected void addTranslations() {
+            //nothing - we just use this as a test for the multi-lang support of BookProvider
+        }
+    }
 
     public static final class English extends LangGenerator {
 
@@ -126,8 +136,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.addDemoBookFormattingCategory(helper);
             this.addDemoBookHiddenCategory(helper);
 
-            this.add(helper.bookName(), "Demo Book");
-            this.add(helper.bookTooltip(), "A book to showcase & test Modonomicon features.");
+
         }
 
         private void addDemoBookFeaturesCategory(BookLangHelper helper) {
