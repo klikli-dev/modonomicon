@@ -6,8 +6,8 @@
 
 package com.klikli_dev.modonomicon.api;
 
-import com.klikli_dev.modonomicon.api.datagen.BookLangHelper;
-import com.klikli_dev.modonomicon.api.datagen.EntryLocationHelper;
+import com.klikli_dev.modonomicon.api.datagen.BookContextHelper;
+import com.klikli_dev.modonomicon.api.datagen.CategoryEntryMap;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.stub.ModonomiconAPIStub;
 import net.minecraft.resources.ResourceLocation;
@@ -28,9 +28,17 @@ public interface ModonomiconAPI {
      */
     boolean isStub();
 
-    BookLangHelper getLangHelper(String modid);
+    /**
+     * You should use .context() in the CategoryProvider instead.
+     */
+    @Deprecated
+    BookContextHelper getContextHelper(String modid);
 
-    EntryLocationHelper getEntryLocationHelper();
+    /**
+     * You should use .entryMap() in the CategoryProvider instead.
+     */
+    @Deprecated
+    CategoryEntryMap getEntryMap();
 
     Multiblock getMultiblock(ResourceLocation id);
 

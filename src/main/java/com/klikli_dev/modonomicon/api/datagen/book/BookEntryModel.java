@@ -8,9 +8,9 @@ package com.klikli_dev.modonomicon.api.datagen.book;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.klikli_dev.modonomicon.api.datagen.CategoryEntryMap;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
-import com.klikli_dev.modonomicon.book.BookCommand;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
@@ -268,7 +268,7 @@ public class BookEntryModel {
 
         /**
          * Sets the entry's position in the category screen.
-         * Should usually be obtained from a {@link com.klikli_dev.modonomicon.api.datagen.EntryLocationHelper}.
+         * Should usually be obtained from a {@link CategoryEntryMap}.
          */
         public Builder withLocation(Vec2 location) {
             return this.withX((int) location.x).withY((int) location.y);
@@ -276,7 +276,7 @@ public class BookEntryModel {
 
         /**
          * Sets the entry's position in the category screen.
-         * Should usually be obtained from a {@link com.klikli_dev.modonomicon.api.datagen.EntryLocationHelper}.
+         * Should usually be obtained from a {@link CategoryEntryMap}.
          */
         public Builder withLocation(int x, int y) {
             return this.withX(x).withY(y);
@@ -284,7 +284,7 @@ public class BookEntryModel {
 
         /**
          * Sets the entry's position in the category screen.
-         * Should usually be obtained from a {@link com.klikli_dev.modonomicon.api.datagen.EntryLocationHelper}.
+         * Should usually be obtained from a {@link CategoryEntryMap}.
          */
         public Builder withX(int x) {
             this.x = x;
@@ -293,7 +293,7 @@ public class BookEntryModel {
 
         /**
          * Sets the entry's position in the category screen.
-         * Should usually be obtained from a {@link com.klikli_dev.modonomicon.api.datagen.EntryLocationHelper}.
+         * Should usually be obtained from a {@link CategoryEntryMap}.
          */
         public Builder withY(int y) {
             this.y = y;

@@ -8,7 +8,11 @@ package com.klikli_dev.modonomicon.api.datagen;
 
 import java.util.Stack;
 
-public class BookLangHelper {
+/**
+ * A helper class to keep track where in the book we are.
+ * This allows to generate correct IDs, DescriptionIds, and so on.
+ */
+public class BookContextHelper {
     public static final String BOOK_PREFIX = "book.";
 
     public Stack<String> stack = new Stack<>();
@@ -19,26 +23,26 @@ public class BookLangHelper {
     public String entry;
     public String page;
 
-    public BookLangHelper(String mod) {
+    public BookContextHelper(String mod) {
         this.mod = mod;
     }
 
-    public BookLangHelper book(String book){
+    public BookContextHelper book(String book){
         this.book = book;
         return this;
     }
 
-    public BookLangHelper category(String category){
+    public BookContextHelper category(String category){
         this.category = category;
         return this;
     }
 
-    public BookLangHelper entry(String entry){
+    public BookContextHelper entry(String entry){
         this.entry = entry;
         return this;
     }
 
-    public BookLangHelper page(String page){
+    public BookContextHelper page(String page){
         this.page = page;
         return this;
     }

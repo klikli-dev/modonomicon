@@ -10,7 +10,7 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.*;
-import com.klikli_dev.modonomicon.api.datagen.BookLangHelper;
+import com.klikli_dev.modonomicon.api.datagen.BookContextHelper;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Item;
@@ -129,7 +129,7 @@ public abstract class LangGenerator extends LanguageProvider {
 
         private void addDemoBook() {
 
-            var helper = ModonomiconAPI.get().getLangHelper(Modonomicon.MODID);
+            var helper = ModonomiconAPI.get().getContextHelper(Modonomicon.MODID);
             helper.book("demo");
 
             this.addDemoBookFeaturesCategory(helper);
@@ -139,7 +139,7 @@ public abstract class LangGenerator extends LanguageProvider {
 
         }
 
-        private void addDemoBookFeaturesCategory(BookLangHelper helper) {
+        private void addDemoBookFeaturesCategory(BookContextHelper helper) {
             helper.category("features");
 
             this.addDemoBookMultiblockEntry(helper);
@@ -154,7 +154,7 @@ public abstract class LangGenerator extends LanguageProvider {
 
         }
 
-        private void addDemoBookMultiblockEntry(BookLangHelper helper) {
+        private void addDemoBookMultiblockEntry(BookContextHelper helper) {
             helper.entry("multiblock");
 
             helper.page("intro");
@@ -169,7 +169,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(helper.entryDescription(), "An entry showcasing a multiblock.");
         }
 
-        private void addDemoBookConditionEntries(BookLangHelper helper) {
+        private void addDemoBookConditionEntries(BookContextHelper helper) {
 
             helper.entry("condition_root");
             helper.page("info");
@@ -197,7 +197,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(helper.entryDescription(), "Depends on Condition Level 1 being unlocked.");
         }
 
-        private void addDemoBookRecipeEntry(BookLangHelper helper) {
+        private void addDemoBookRecipeEntry(BookContextHelper helper) {
             helper.entry("recipe");
 
             helper.page("intro");
@@ -216,7 +216,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(helper.entryDescription(), "An entry showcasing recipe pages.");
         }
 
-        private void addDemoBookSpotlightEntry(BookLangHelper helper) {
+        private void addDemoBookSpotlightEntry(BookContextHelper helper) {
             helper.entry("spotlight");
 
             helper.page("intro");
@@ -234,7 +234,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(helper.entryDescription(), "An entry showcasing spotlight pages.");
         }
 
-        private void addDemoBookEmptyPageEntry(BookLangHelper helper) {
+        private void addDemoBookEmptyPageEntry(BookContextHelper helper) {
             helper.entry("empty");
 
             helper.page("intro");
@@ -245,7 +245,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(helper.entryDescription(), "An entry showcasing empty pages.");
         }
 
-        private void addDemoBookEntityEntry(BookLangHelper helper) {
+        private void addDemoBookEntityEntry(BookContextHelper helper) {
             helper.entry("entity");
 
             helper.page("intro");
@@ -262,7 +262,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(helper.entryDescription(), "An entry showcasing entity pages.");
         }
 
-        private void addDemoBookImagePageEntry(BookLangHelper helper) {
+        private void addDemoBookImagePageEntry(BookContextHelper helper) {
             helper.entry("image");
 
             helper.page("intro");
@@ -278,14 +278,14 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(helper.entryDescription(), "An entry showcasing image pages.");
         }
 
-        private void addDemoBookImageRedirectEntry(BookLangHelper helper) {
+        private void addDemoBookImageRedirectEntry(BookContextHelper helper) {
             helper.entry("redirect");
             this.add(helper.entryName(), "Category Redirect Entry");
             this.add(helper.entryDescription(), "Redirects to another category.");
         }
 
 
-        private void addDemoBookFormattingCategory(BookLangHelper helper) {
+        private void addDemoBookFormattingCategory(BookContextHelper helper) {
             helper.category("formatting");
 
             this.addDemoBookBasicFormattingEntry(helper);
@@ -299,7 +299,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(helper.categoryName(), "Formatting Category");
         }
 
-        private void addDemoBookBasicFormattingEntry(BookLangHelper helper) {
+        private void addDemoBookBasicFormattingEntry(BookContextHelper helper) {
             helper.entry("basic");
 
             helper.page("page1"); //bold, italics, underlines,
@@ -324,7 +324,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(helper.entryDescription(), "An entry showcasing basic formatting.");
         }
 
-        private void addDemoBookAdvancedFormattingEntry(BookLangHelper helper) {
+        private void addDemoBookAdvancedFormattingEntry(BookContextHelper helper) {
             helper.entry("advanced");
 
             helper.page("page1");  //translatable texts, mixed formatting
@@ -363,7 +363,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(helper.entryDescription(), "An entry showcasing advanced formatting.");
         }
 
-        private void addDemoBookLinkFormattingEntry(BookLangHelper helper) {
+        private void addDemoBookLinkFormattingEntry(BookContextHelper helper) {
             helper.entry("link");
 
             helper.page("page1"); //http links
@@ -398,7 +398,7 @@ public abstract class LangGenerator extends LanguageProvider {
             this.add(helper.entryDescription(), "An entry showcasing link formatting.");
         }
 
-        private void addDemoBookHiddenCategory(BookLangHelper helper) {
+        private void addDemoBookHiddenCategory(BookContextHelper helper) {
             helper.category("hidden");
 
             helper.entry("always_locked");

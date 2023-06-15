@@ -8,8 +8,8 @@ package com.klikli_dev.modonomicon.api.stub;
 
 
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
-import com.klikli_dev.modonomicon.api.datagen.BookLangHelper;
-import com.klikli_dev.modonomicon.api.datagen.EntryLocationHelper;
+import com.klikli_dev.modonomicon.api.datagen.BookContextHelper;
+import com.klikli_dev.modonomicon.api.datagen.CategoryEntryMap;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import net.minecraft.resources.ResourceLocation;
 
@@ -29,12 +29,12 @@ public class ModonomiconAPIStub implements ModonomiconAPI {
     }
 
     @Override
-    public BookLangHelper getLangHelper(String modid) {
+    public BookContextHelper getContextHelper(String modid) {
         return null;
     }
 
     @Override
-    public EntryLocationHelper getEntryLocationHelper() {
+    public CategoryEntryMap getEntryMap() {
         return null;
     }
 

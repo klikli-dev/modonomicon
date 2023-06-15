@@ -12,7 +12,11 @@ import org.slf4j.Logger;
 
 import java.util.Arrays;
 
-public class EntryLocationHelper {
+/**
+ * A helper class to visualize entry positions within a category.
+ * Allows to map characters to positions in a 2D grid which will be used as coordinates for entries within the category for rendering.
+ */
+public class CategoryEntryMap {
 
     public static final Logger LOGGER = LogUtils.getLogger();
 
@@ -20,7 +24,7 @@ public class EntryLocationHelper {
 
     protected Vec2 offset;
 
-    public EntryLocationHelper(){
+    public CategoryEntryMap(){
 
     }
 

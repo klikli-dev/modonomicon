@@ -34,27 +34,70 @@ public abstract class BookProvider implements DataProvider {
     protected final Map<String, LanguageProvider> translations;
     protected final Map<ResourceLocation, BookModel> bookModels;
     protected final String modid;
+    protected BookContextHelper context;
+
+    protected Map<String, String> defaultMacros;
 
     /**
      * @param defaultLang The LanguageProvider to fill with this book provider. IMPORTANT: the Languag Provider needs to be added to the DataGenerator AFTER the BookProvider.
      */
-    public BookProvider(PackOutput packOutput, String modid, LanguageProvider defaultLang, LanguageProvider... translations) {
+    public BookProvider(String bookId, PackOutput packOutput, String modid, LanguageProvider defaultLang, LanguageProvider... translations) {
         this.modid = modid;
         this.packOutput = packOutput;
         this.lang = defaultLang;
         this.bookModels = new HashMap<>();
         this.translations = Stream.concat(Arrays.stream(translations), Stream.of(defaultLang)).map(l -> new AbstractMap.SimpleEntry<>(l.getName().split(": ")[1], l)).collect(HashMap::new, (m, v) -> m.put(v.getKey(), v.getValue()), HashMap::putAll);
+
+        this.context = new BookContextHelper(this.modid);
+        this.context.book(bookId);
+        this.defaultMacros = new HashMap<>();
     }
 
-    protected LanguageProvider lang(){
+    protected LanguageProvider lang() {
         return this.lang;
     }
 
-    protected LanguageProvider lang(String locale){
+    protected LanguageProvider lang(String locale) {
         return this.translations.get(locale);
     }
 
-    protected abstract void generate();
+    protected BookContextHelper context() {
+        return this.context;
+    }
+
+    /**
+     * Override this to generate your book.
+     * Each BookProvider should generate only one book.
+     * Context already is set to the book id provided in the constructor.
+     */
+    protected abstract BookModel generateBook();
+
+    /**
+     * Call registerMacro() here to make macros (= simple string.replace() of macro -> value) available to all category providers of this book.
+     */
+    protected abstract void registerDefaultMacros();
+
+    /**
+     * Register a macro (= simple string.replace() of macro -> value) to be used in all category providers of this book.
+     */
+    protected void registerDefaultMacro(String macro, String value) {
+        this.defaultMacros.put(macro, value);
+    }
+
+    /**
+     * Get the default macros (= simple string.replace() of macro -> value) to be used in all category providers of this book.
+     */
+    protected Map<String, String> defaultMacros() {
+        return this.defaultMacros;
+    }
+
+    /**
+     * Only override if you know what you are doing.
+     * Generally you should not.
+     */
+    protected void generate() {
+        this.add(this.generateBook());
+    }
 
     protected ResourceLocation modLoc(String name) {
         return new ResourceLocation(this.modid, name);
