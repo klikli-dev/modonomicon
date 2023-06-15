@@ -15,20 +15,12 @@ If you are impatient you can skip ahead to **[Results](#results)** to see what w
 1. Open `DemoBookProvider.java` in your IDE or text editor.
 2. Below `package ...` but above `public class ...` add the following lines:
     ```java 
-    import com.klikli_dev.modonomicon.api.ModonomiconAPI;
-    import com.klikli_dev.modonomicon.api.datagen.BookLangHelper;
     import com.klikli_dev.modonomicon.api.datagen.BookProvider;
-    import com.klikli_dev.modonomicon.api.datagen.EntryLocationHelper;
-    import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
-    import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
     import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
-    import com.klikli_dev.modonomicon.api.datagen.book.page.BookMultiblockPageModel;
-    import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
-    import net.minecraft.data.DataGenerator;
+    import net.minecraft.data.PackOutput;
     import net.minecraft.resources.ResourceLocation;
     import net.minecraftforge.common.data.LanguageProvider;
     ```
-
 
 :::tip 
 
@@ -38,41 +30,36 @@ If you are using an IDE it might do this step for you.
 
 ## Our first Book
 
+The code for just an empty book is already present if you cloned the step1 branch.
+
 1. Open `DemoBookProvider.java` in your IDE or text editor.
-2. In the `generate` method, add the following code:
+2. In the `DemoBookProvider` constructor, note that we hand `"demo"` to the super constructor - that is our book id.
+   It will be used in our context `BookContextHelper` (acessible via `this.context()`) to create DescriptionIds/Translation Keys and ResourceLocations.
+3. In the Method `generateBook` we see some code that sets up a basic book model for us
     ```java
-     //call our code that generates a book with the id "demo"
-    var demoBook = this.makeDemoBook("demo");
-
-    //then add the book to the list of books to generate    
-    this.add(demoBook);
-    ```
-
-    This will create a new book with the id "demo" (the code for that follows in the next step) and add it to the list of books to be generated.
-
-3. Now we add the method we're calling above to the bottom of the file, before the last `}`:
-    ```java
-    private BookModel makeDemoBook(String bookName) {
-        //The lang helper keeps track of the "DescriptionIds", that is, the language keys for translations, for us
-        var helper = ModonomiconAPI.get().getLangHelper(this.modid);
-
-        //we tell the helper the book we're in.
-        helper.book(bookName);
-
-        //Now we create the book with settings of our choosing
-        var demoBook = BookModel.builder()
-                .withId(this.modLoc(bookName)) //the id of the book. modLoc() prepends the mod id.
-                .withName(helper.bookName()) //the name of the book. The lang helper gives us the correct translation key.
-                .withTooltip(helper.bookTooltip()) //the hover tooltip for the book. Again we get a translation key.
+    @Override
+    protected BookModel generateBook() {
+        var demoBook = BookModel.create(
+                        this.modLoc(this.context().book), //the id of the book. modLoc() prepends the mod id.
+                        this.context().bookName() //the name of the book. The lang helper gives us the correct translation key.
+                )
+                .withTooltip(this.context().bookTooltip()) //the hover tooltip for the book. Again we get a translation key.
                 .withGenerateBookItem(true) //auto-generate a book item for us.
                 .withModel(new ResourceLocation("modonomicon:modonomicon_red")) //use the default red modonomicon icon for the book
-                .withCreativeTab("modonomicon") //and put it in the modonomicon tab
-                .build();
+                .withCreativeTab(new ResourceLocation("modonomicon", "modonomicon")) //and put it in the modonomicon tab
+                ;
+
         return demoBook;
     }
     ```
 
-Congratulations! This will generate a book for us. Let's test how that works!
+:::tip
+
+Note the use of `this.context()`. We will use it a lot - whenever we work on a new piece of the book we update the context, which then allows us to retrieve context information (such as the translation key to set the text of a specific page) easily.
+
+::: 
+
+This will generate a book for us. Let's test how that works!
 
 1. In the terminal, run `./gradlew runData` to generate the json file(s).
 2. After it is complete, run `./gradlew runClient` to start Minecraft.
@@ -90,14 +77,16 @@ Congratulations! This will generate a book for us. Let's test how that works!
 1. Open `DemoBookProvider.java`
 2. Add the following code to the bottom of the file, before the last `}`:
     ```java
-    private BookCategoryModel makeFeaturesCategory(BookLangHelper helper) {
-        helper.category("features"); //tell our lang helper the category we are in
+    private BookCategoryModel makeFeaturesCategory() {
+        this.context().category("features"); //set context to our new category
 
-        //the entry helper is the second helper for book datagen
+        //the entry map is another helper for book datagen
         //it allows us to place entries in the category without manually defining the coordinates.
         //each letter can be used to represent an entry
-        var entryHelper = ModonomiconAPI.get().getEntryLocationHelper();
-        entryHelper.setMap(
+        //Note that getting it this way is deprecated, but will not be removed.
+        //  it is just a hint that it is better to use CategoryProviders, for an example see https://github.com/klikli-dev/modonomicon/tree/version/1.20.1/src/main/java/com/klikli_dev/modonomicon/datagen/book
+        var entryMap = ModonomiconAPI.get().getEntryMap();
+        entryMap.setMap(
                 "_____________________",
                 "__m______________d___",
                 "__________r__________",
@@ -106,26 +95,37 @@ Congratulations! This will generate a book for us. Let's test how that works!
                 "__s_____e____________"
         );
 
-        return BookCategoryModel.builder()
-                .withId(this.modLoc(helper.category)) //the id of the category, as stored in the lang helper. modLoc() prepends the mod id.
-                .withName(helper.categoryName()) //the name of the category. The lang helper gives us the correct translation key.
+        return BookCategoryModel.create(
+                        this.modLoc(this.context().category), //the id of the category, as stored in the lang helper. modLoc() prepends the mod id.
+                        this.context().categoryName() //the name of the category. The lang helper gives us the correct translation key.
+                )
                 .withIcon("minecraft:nether_star") //the icon for the category. In this case we simply use an existing item.
-                .build();
+                .withEntries(multiblockEntry);
     }
     ```
-3. Now we need to add our category to the book. In `makeDemoBook` add:
-   1. below `helper.book(bookName);`:
+3. Now we need to add our category to the book. In `generateBook` add:
+   1. Right at the start:
     ```java
-    var featuresCategory = this.makeFeaturesCategory(helper);
+    var featuresCategory = this.makeFeaturesCategory();
     ```  
-    1. below `.withCreativeTab("modonomicon")`:
+    This calls our newly created method that makes our category.
+
+   2. below `.withCreativeTab("modonomicon")`:
     ```java 
-    .withCategories(featuresCategory) 
+    .withCategories(
+            featuresCategory
+    );
     ```
+
+    And with this we hand over the category to be added to the book.
 
 This will create a category with the id "features" using a nether star as icon and add it to our book. See also **[Categories](../../basics/structure/categories.md#attributes)** to learn more about the other attributes of a category, and how icons work.    
 
-We also already set up the entryHelper which gives us an idea where entries will be shown in the category in-game.
+:::tip
+
+Note the use of `entryMap`. This is a helper that allows us to visualize how our category will look and use that to get the right coordinates without manually experimenting.
+
+::: 
 
 
 Let's see if that fixed our crash:
@@ -144,43 +144,45 @@ Let's see if that fixed our crash:
 1. Open `DemoBookProvider.java`
 2. 2. Add the following code to the bottom of the file, before the last `}`:
     ```java
-    private BookEntryModel makeMultiblockEntry(BookLangHelper helper, EntryLocationHelper entryHelper, char location) {
-        helper.entry("multiblock"); //tell our lang helper the entry we are in
+     private BookEntryModel makeMultiblockEntry(CategoryEntryMap entryMap, char location) {
+        this.context().entry("multiblock"); //tell our context the entry we are in. It puts it on top of the category.
 
-        helper.page("intro"); //and now the page
+        this.context().page("intro"); //and now the page
         var multiBlockIntroPage =
                 BookTextPageModel.builder() //we start with a text page
-                .withText(helper.pageText()) //lang key for the text
-                .withTitle(helper.pageTitle()) //and for the title
-                .build();
+                        .withText(this.context().pageText()) //now we can use the context to retrieve the description id for the text
+                        .withTitle(this.context().pageTitle()) //and for the title
+                        .build();
 
-        helper.page("multiblock"); //next page
+        this.context().page("multiblock"); //next page
         var multiblockPreviewPage =
                 BookMultiblockPageModel.builder() //now a page to show a multiblock
-                .withMultiblockId("modonomicon:blockentity") //sample multiblock from modonomicon
-                .withMultiblockName("multiblocks.modonomicon_demo_book.blockentity") //and the lang key for its name
-                .withText(helper.pageText()) //plus a page text
-                .build();
+                        .withMultiblockId("modonomicon:blockentity") //sample multiblock from modonomicon
+                        .withMultiblockName("multiblocks.modonomicon_demo_book.blockentity") //and the lang key for its name
+                        .withText(this.context().pageText()) //plus a page text
+                        .build();
 
         return BookEntryModel.builder()
-                .withId(this.modLoc(helper.category + "/" + helper.entry)) //make entry id from lang helper data
-                .withName(helper.entryName()) //entry name lang key
-                .withDescription(helper.entryDescription()) //entry description lang key
+                .withId(this.modLoc(this.context().category + "/" + this.context().entry)) //make entry id from lang helper data. It is good practice to use the category as a prefix like this which causes the entry to be in a subfolder.
+                .withName(this.context().entryName()) //entry name lang key
+                .withDescription(this.context().entryDescription()) //entry description lang key
                 .withIcon("minecraft:furnace") //we use furnace as icon
-                .withLocation(entryHelper.get(location)) //and we place it at the location we defined earlier in the entry helper mapping
+                .withLocation(entryMap.get(location)) //and we place it at the location we defined earlier in the entry helper mapping
                 .withPages(multiBlockIntroPage, multiblockPreviewPage) //finally we add our pages to the entry
                 .build();
     }
     ```
 3. Now we need to add our entry to the features category. In `makeFeaturesCategory` add:
-   1. below `entryHelper.setMap( ... );`:
+   1. below `entryMap.setMap( ... );`:
     ```java
     //place the multiblock entry where we put the "m" in the map above
-    var multiblockEntry = this.makeMultiblockEntry(helper, entryHelper, 'm');
+    var multiblockEntry = this.makeMultiblockEntry(entryMap, 'm');
     ```  
     1. below `.withIcon("minecraft:nether_star")`:
     ```java 
-    .withEntries(multiblockEntry)
+    .withEntries(
+            multiblockEntry
+    );
     ```
 
 This will create an entry with a text page and a page that displays a multiblock. 

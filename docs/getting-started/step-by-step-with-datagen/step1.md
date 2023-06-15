@@ -110,3 +110,11 @@ In future steps you can use the provided run configurations to run the datagen a
 **Windows Users:** If you are getting a message along the lines of `command . not found` try running `gradlew.bat <...>` instead of `./gradlew <...>`
 
 :::
+
+## Important: Improvements & Convenience 
+
+Sometimes the Demo Project does not use the cutting edge of available Modonomicon datagen features.
+A good reference for Modonomicon Datagen features are:
+- the [Demo Book](https://github.com/klikli-dev/modonomicon/tree/version/1.20.1/src/main/java/com/klikli_dev/modonomicon/datagen/book) - especially the CategoryProviders are interesting. Play around with them - they have support for macros, formatting helpers, shortcuts for creating links, ...
+- [Theurgy](https://github.com/klikli-dev/theurgy) and sometimes it's [develop Branch](https://github.com/klikli-dev/theurgy/tree/develop) 
+- [Occultism](https://github.com/klikli-dev/occultism) usually has outdated Modonomicon Datagen features, but comes with huge modonomicon book, so a lot of examples.

@@ -14,16 +14,23 @@ If you are impatient you can skip ahead to **[Results](#results)** to see what w
 ## Adding translations for the Book Name and Tooltip
 
 1. Open `DemoBookProvider.java`
-2. Into the existing method `makeDemoBook` add below `helper.book(bookName);`:
+2. Into the existing method `generateBook` add at the top:
    ```java
    //we can reference the language providers in the book provider
-   this.lang().add(helper.bookName(), "Demo Book"); //and now we add the actual textual book name
-   this.lang().add(helper.bookTooltip(), "A book to showcase & test Modonomicon features."); //and the tooltip text
+   this.lang().add(this.context().bookName(), "Demo Book"); //and now we add the actual textual book name
+   this.lang().add(this.context().bookTooltip(), "A book to showcase & test Modonomicon features."); //and the tooltip text
    ```
+
+   ::: tip
+
+   The base BookProvider Class already sets up context for our book before calling generateBook, so we don't need to do it manually.
+
+   :::
+
 3. Optionally, you can add translations, by their language code:
    ```java
-   this.lang("es_es").add(helper.bookName(), "Libro de demostración");
-   this.lang("es_es").add(helper.bookTooltip(), "Un libro para mostrar y probar las funciones de Modonomicon."); 
+   this.lang("es_es").add(this.context().bookName(), "Libro de demostración");
+   this.lang("es_es").add(this.context().bookTooltip(), "Un libro para mostrar y probar las funciones de Modonomicon."); 
    ```
 
 
@@ -47,7 +54,7 @@ Let's take a look at our all-new translated book item:
 1. Open `DemoBookProvider.java`
 2. In the method `makeFeaturesCategory` add below `helper.category("features");`: 
    ```java
-   this.lang().add(helper.categoryName(), "Features Category"); //and provide the category name text
+   this.lang().add(this.context().categoryName(), "Features Category"); //and provide the category name text
    //here is where you would provide translations, as above with the book name and tooltip
    ```
 
@@ -67,15 +74,15 @@ Finally it is time to add our page texts!
 2. Find the method `makeMultiblockEntry`
 3. Below `helper.entry("multiblock");` add: 
    ```java
-   this.lang().add(helper.entryName(), "Multiblock Entry"); //provide the entry name
-   this.lang().add(helper.entryDescription(), "An entry showcasing a multiblock."); //and description
+   this.lang().add(this.context().entryName(), "Multiblock Entry"); //provide the entry name
+   this.lang().add(this.context().entryDescription(), "An entry showcasing a multiblock."); //and description
    ```
    *This adds the text for hovering over the entry in the category/quest view* 
 
 4. Below `helper.page("intro"); ... .build();` (= after the lines that create the "multiBlockIntroPage") add: 
    ```java
-   this.lang().add(helper.pageTitle(), "Multiblock Page"); //page title
-   this.lang().add(helper.pageText(), "Multiblock pages allow to preview multiblocks both in the book and in the world."); //page text
+   this.lang().add(this.context().pageTitle(), "Multiblock Page"); //page title
+   this.lang().add(this.context().pageText(), "Multiblock pages allow to preview multiblocks both in the book and in the world."); //page text
    ```
    *This adds the page text for the intro page* 
 
@@ -86,7 +93,7 @@ Finally it is time to add our page texts!
    //the lang helper does not handle multiblocks, so we manually add the same key we provided in the DemoBookProvider
    this.lang().add("multiblocks.modonomicon_demo_book.blockentity", "Blockentity Multiblock.");
    //and the multiblock page text
-   this.lang().add(helper.pageText(), "A sample multiblock.");
+   this.lang().add(this.context().pageText(), "A sample multiblock.");
    ```
    *This adds the name for the multiblock, and the page text for the multiblock preview page* 
 
