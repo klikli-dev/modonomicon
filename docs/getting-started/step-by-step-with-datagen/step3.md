@@ -158,7 +158,7 @@ Let's see if that fixed our crash:
         var multiblockPreviewPage =
                 BookMultiblockPageModel.builder() //now a page to show a multiblock
                 .withMultiblockId("modonomicon:blockentity") //sample multiblock from modonomicon
-                .withMultiblockName("multiblocks.modonomicon.blockentity") //and the lang key for its name
+                .withMultiblockName("multiblocks.modonomicon_demo_book.blockentity") //and the lang key for its name
                 .withText(helper.pageText()) //plus a page text
                 .build();
 

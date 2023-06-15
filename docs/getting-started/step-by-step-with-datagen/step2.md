@@ -68,27 +68,10 @@ This file registers the two Data Generators from the Demo Project - one that wil
 ### DemoBookProvider.java
 
 In this file we will add instructions that will generate our book content, such as categories, entries and pages. 
-Please note that this will only create the structure of the book as well as all styling instructions, but not the actual texts the players will see. This is due to how minecraft's translation / multi language system works. 
+Please note that this will only create the structure of the book as well as all styling instructions.  
+Additionally it holds a reference to the language providers to also easily add the actual book texts.
 
 For now this file is mostly empty - that's OK!
-
-:::caution
-
-Due to vanilla changes to CreativeTabs, if you are on **1.19.3** you need to slightly adjust the code in this file:
-
-```java
-//1.18.2/1.19.2
-.withCreativeTab("modonomicon")
-```
-
-becomes 
-
-```java
-//1.19.3
-.withCreativeTab(new ResourceLocation("modonomicon","modonomicon"))
-```
-
-::: 
 
 
 ### EnUsProvider.java
@@ -99,6 +82,7 @@ This is the language code for the English language, meaning in this file we will
 
 #### Optional: Additional Languages
 
+The Demo Book comes with a language provider for Spanish (although only small parts of the demo book are translated to Spanish!).
 If you want to provide translations for other languages, you can copy and rename the file, and change the language code to e.g. "fr_fr" for French.
 
 In Java the "class" name and file name must correspond. Thus, a hypothethical file FrFrProvider would have to look something like this:
@@ -113,12 +97,25 @@ public class FrFrProvider extends LanguageProvider {
 
 :::tip
 
-If you do create a second language - make sure to register it in the DataGenerators.java file as well!
+If you do create an additional language - make sure to register it in the DataGenerators.java file as well!
 
-e.g.:
+e.g. for frFr Provider modify it to look like this:
 ```java
 
-generator.addProvider(event.includeClient(), new FrFrProvider(generator, ModonomiconDemoBook.MODID));
+var enUsProvider = new EnUsProvider(generator.getPackOutput(), ModonomiconDemoBook.MODID);
+var esEsProvider = new EsEsProvider(generator.getPackOutput(), ModonomiconDemoBook.MODID);
+var frFrProvider = new EsEsProvider(generator.getPackOutput(), ModonomiconDemoBook.MODID);
+
+generator.addProvider(event.includeServer(), new DemoBookProvider(generator.getPackOutput(), ModonomiconDemoBook.MODID,
+        enUsProvider, //first add the default language, will be accessed via .lang()
+        esEsProvider, //then all other languages, will be accessed via .lang("<lang code>"), for example .lang("es_es")
+        frFrProvider
+));
+
+//Important: Lang providers need to be added after the book provider to process the texts added by the book provider
+generator.addProvider(event.includeClient(), enUsProvider);
+generator.addProvider(event.includeClient(), esEsProvider);
+generator.addProvider(event.includeClient(), frFrProvider);
 
 ```
 

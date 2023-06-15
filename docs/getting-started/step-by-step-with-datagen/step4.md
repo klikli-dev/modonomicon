@@ -4,53 +4,34 @@ sidebar_position: 40
 
 # Step 4: Adding texts
 
-Finally, it is time to add our texts. That means we will now tell the game what texts to display for all the language keys (or "Description Ids") we have seen in the previous step. To this end we will once again use Modonomicon's LanguageHelper to make things easier, as it will help us keep track of the correct language keys so we just have to focus on the texts.
+Finally, it is time to add our texts. That means we will now tell the game what texts to display for all the language keys (or "Description Ids") we have seen in the previous step. 
+
+Modonomicon allows to access LanguageProviders in the book provider, so it is very easy to add texts alongside the book structure.
 
 If you are impatient you can skip ahead to **[Results](#results)** to see what we will be creating.
 
 
-## Preparations: Java Imports
-
-1. Open `EnUsProvider.java` in your IDE or text editor.
-2. Below `package ...` but above `public class ...` add the following lines:
-   ```java 
-   import com.klikli_dev.modonomicon.api.ModonomiconAPI;
-   import com.klikli_dev.modonomicon.api.datagen.BookLangHelper;
-   import com.klikli_dev.modonomicon_demo_book.ModonomiconDemoBook;
-   ```
-
-:::tip 
-
-If you are using an IDE it might do this step for you.
-
-::: 
-
-
 ## Adding translations for the Book Name and Tooltip
 
-1. Open `EnUsProvider.java`
-2. Into the existing method `addTranslations` add:
+1. Open `DemoBookProvider.java`
+2. Into the existing method `makeDemoBook` add below `helper.book(bookName);`:
    ```java
-    this.addDemoBook();
+   //we can reference the language providers in the book provider
+   this.lang().add(helper.bookName(), "Demo Book"); //and now we add the actual textual book name
+   this.lang().add(helper.bookTooltip(), "A book to showcase & test Modonomicon features."); //and the tooltip text
    ```
-3. And at the bottom of the file, before the last `}`, add the `addDemoBook()` method we are calling above:
+3. Optionally, you can add translations, by their language code:
    ```java
-    private void addDemoBook(){
-        //We again set up a lang helper to keep track of the translation keys for us.
-        //Forge language provider does not give us access to this.modid, so we get it from our main mod class
-        var helper = ModonomiconAPI.get().getLangHelper(ModonomiconDemoBook.MODID);
-        helper.book("demo"); //we tell the helper the book we're in.
-        this.add(helper.bookName(), "Demo Book"); //and now we add the actual textual book name
-        this.add(helper.bookTooltip(), "A book to showcase & test Modonomicon features."); //and the tooltip text
-    }
+   this.lang("es_es").add(helper.bookName(), "Libro de demostración");
+   this.lang("es_es").add(helper.bookTooltip(), "Un libro para mostrar y probar las funciones de Modonomicon."); 
    ```
 
 
-What is happening here? `this.add(<language key>, <text>)` adds a mapping for a given translation key, which we get from our helper, to the given text. The game will then display the text wherever the translation key is used in the book. 
+What is happening here? `this.lang().add(<language key>, <text>)` adds a mapping for a given translation key, which we get from our helper, to the given text. The game will then display the text wherever the translation key is used in the book. Under the hood `.lang()` simply gives us a reference to a LanguageProvider that works just like any forge language provider, the only special element is that we get the translation key / description id from our helper. 
 
 :::tip
 
-The final ingredient is the language code we talked about in [Step 2](./step2#enusproviderjava). This way we can have different texts for different languages, by providing a different Language Provider that uses a different text (such as, a French version) for the same language key. Minecraft will select the correct text based on the language settings of each player.
+In order for translations to work a corresponding language provider must be handed over to the DemoBookProvider in the DataGenerators.java file!
 
 ::: 
 
@@ -63,27 +44,11 @@ Let's take a look at our all-new translated book item:
 
 ## Adding translations for the Features Category
 
-1. Open `EnUsProvider.java`
-2. And at the bottom of the file, before the last `}`, add:
+1. Open `DemoBookProvider.java`
+2. In the method `makeFeaturesCategory` add below `helper.category("features");`: 
    ```java
-    private void addDemoBookFeaturesCategory(BookLangHelper helper) {
-        helper.category("features"); //tell the helper the category we are in
-        this.add(helper.categoryName(), "Features Category"); //annd provide the category name text
-    }
-   ```
-3. Now, at the end of the `addDemoBook` method, add:
-   ```java
-   this.addDemoBookFeaturesCategory(helper);
-   ```
-   
-   so it looks something like this
-   ```java
-   private void addDemoBook(){
-        //existing code (unchanged)
-        //...
-        this.addDemoBookFeaturesCategory(helper);
-    }
-
+   this.lang().add(helper.categoryName(), "Features Category"); //and provide the category name text
+   //here is where you would provide translations, as above with the book name and tooltip
    ```
 
 Now we can test our translated category:
@@ -94,43 +59,40 @@ Now we can test our translated category:
 4. Open the book by right-clicking with the book item.
 5. Hover over the category button on the top leftyou should now see the correct name.
 
-## Addint translations for our Entry and Pages
+## Adding translations for our Entry and Pages
 
 Finally it is time to add our page texts!
 
-1. Open `EnUsProvider.java`
-2. And at the bottom of the file, before the last `}`, add:
+1. Open `DemoBookProvider.java`
+2. Find the method `makeMultiblockEntry`
+3. Below `helper.entry("multiblock");` add: 
    ```java
-    private void addDemoBookMultiblockEntry(BookLangHelper helper) {
-        helper.entry("multiblock"); //tell the helper the entry we are in
-        this.add(helper.entryName(), "Multiblock Entry"); //provide the entry name
-        this.add(helper.entryDescription(), "An entry showcasing a multiblock."); //and description
-
-        helper.page("intro"); //now we configure the intro page
-        this.add(helper.pageTitle(), "Multiblock Page"); //page title
-        this.add(helper.pageText(), "Multiblock pages allow to preview multiblocks both in the book and in the world."); //page text
-
-        helper.page("multiblock"); //and finally the multiblock page
-        //now provide the multiblock name
-        //the lang helper does not handle multiblocks, so we manually add the same key we provided in the DemoBookProvider
-        this.add("multiblocks.modonomicon.blockentity", "Blockentity Multiblock.");
-        this.add(helper.pageText(), "A sample multiblock."); //and the multiblock page text 
-    }
+   this.lang().add(helper.entryName(), "Multiblock Entry"); //provide the entry name
+   this.lang().add(helper.entryDescription(), "An entry showcasing a multiblock."); //and description
    ```
-3. Now, at the end of the `addDemoBookFeaturesCategory` method, add:
+   *This adds the text for hovering over the entry in the category/quest view* 
+
+4. Below `helper.page("intro"); ... .build();` (= after the lines that create the "multiBlockIntroPage") add: 
    ```java
-   this.addDemoBookMultiblockEntry(helper);
+   this.lang().add(helper.pageTitle(), "Multiblock Page"); //page title
+   this.lang().add(helper.pageText(), "Multiblock pages allow to preview multiblocks both in the book and in the world."); //page text
    ```
+   *This adds the page text for the intro page* 
 
-:::info 
 
-Note how we mirror the book setup we prepared in DemoBookProvider here in the EnUSProvider. The language helper works hierarchically - if we call `page()` it keeps the book, category and entry, but changes the page, if we call `entry()` it keeps the book and category, but switches the entry, and so on. This way we can easily keep track of what we are configuring, we just need to remember in each `addDemoBook<...>()` method to call the correct helper method before we add the texts.
-
-::: 
+4. Below `helper.page("multiblock"); ... .build();` (= after the lines that create the "multiblockPreviewPage") add: 
+   ```java
+   //now provide the multiblock name
+   //the lang helper does not handle multiblocks, so we manually add the same key we provided in the DemoBookProvider
+   this.lang().add("multiblocks.modonomicon_demo_book.blockentity", "Blockentity Multiblock.");
+   //and the multiblock page text
+   this.lang().add(helper.pageText(), "A sample multiblock.");
+   ```
+   *This adds the name for the multiblock, and the page text for the multiblock preview page* 
 
 :::tip 
 
-If a text element - such as a title or text - is shown is governed in the DemoBookProvider. If we e.g. do not call the `withTitle()` method, there will not be a title on that page. Here in the Language provider we only need to provide the text for elements we configured in the Book Provider. If we do not provide a text for any element the language key will be shown in game, reminding us to add a translation.
+If a text element - such as a title or text - is shown is governed in the BookXYZPageModel. If we e.g. do not call the `withTitle()` method, there will not be a title on that page. Calls to this.lang().add() we only provide the text. If we do not provide a text for any element the language key will be shown in game, reminding us to add a translation.
 
 ::: 
 
