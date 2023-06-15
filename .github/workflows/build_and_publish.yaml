@@ -86,12 +86,18 @@ jobs:
           branch: version/1.20.1
           commit_message: 'docs: update CHANGELOG.md for ${{ github.ref_name }} [skip ci]'
           file_pattern: CHANGELOG.md
-      - uses: Kir-Antipov/mc-publish@v3.3
+      - name: Upload to Mod Platforms
+        uses: Kir-Antipov/mc-publish@v3.3
         with:
           modrinth-id: 692GClaE
           modrinth-token: ${{ secrets.MODRINTH_API_KEY }}
           curseforge-id: 538392
           curseforge-token: ${{ secrets.CURSEFORGE_API_KEY }}
+
+          files: |
+            build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-${{ steps.get_version.outputs.result }}.jar
+            build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-${{ steps.get_version.outputs.result }}-sources.jar
+
           name: modonomicon-${{ steps.get_mc_version.outputs.result }}-${{ steps.get_version.outputs.result }}.jar
           version: ${{ steps.get_mc_version.outputs.result }}-${{ steps.get_version.outputs.result }}
           version-type: ${{ steps.get_release_type.outputs.result }}
