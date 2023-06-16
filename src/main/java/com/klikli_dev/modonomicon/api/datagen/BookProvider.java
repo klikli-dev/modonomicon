@@ -34,6 +34,7 @@ public abstract class BookProvider implements DataProvider {
     protected final Map<String, LanguageProvider> translations;
     protected final Map<ResourceLocation, BookModel> bookModels;
     protected final String modid;
+    protected String bookId;
     protected BookContextHelper context;
 
     protected Map<String, String> defaultMacros;
@@ -48,8 +49,8 @@ public abstract class BookProvider implements DataProvider {
         this.bookModels = new HashMap<>();
         this.translations = Stream.concat(Arrays.stream(translations), Stream.of(defaultLang)).map(l -> new AbstractMap.SimpleEntry<>(l.getName().split(": ")[1], l)).collect(HashMap::new, (m, v) -> m.put(v.getKey(), v.getValue()), HashMap::putAll);
 
+        this.bookId = bookId;
         this.context = new BookContextHelper(this.modid);
-        this.context.book(bookId);
         this.defaultMacros = new HashMap<>();
     }
 
@@ -61,9 +62,18 @@ public abstract class BookProvider implements DataProvider {
         return this.translations.get(locale);
     }
 
+    public String bookId() {
+        return this.bookId;
+    }
+
     protected BookContextHelper context() {
         return this.context;
     }
+
+    /**
+     * Call registerMacro() here to make macros (= simple string.replace() of macro -> value) available to all category providers of this book.
+     */
+    protected abstract void registerDefaultMacros();
 
     /**
      * Override this to generate your book.
@@ -71,11 +81,6 @@ public abstract class BookProvider implements DataProvider {
      * Context already is set to the book id provided in the constructor.
      */
     protected abstract BookModel generateBook();
-
-    /**
-     * Call registerMacro() here to make macros (= simple string.replace() of macro -> value) available to all category providers of this book.
-     */
-    protected abstract void registerDefaultMacros();
 
     /**
      * Register a macro (= simple string.replace() of macro -> value) to be used in all category providers of this book.
@@ -96,6 +101,7 @@ public abstract class BookProvider implements DataProvider {
      * Generally you should not.
      */
     protected void generate() {
+        this.context.book(this.bookId);
         this.add(this.generateBook());
     }
 
@@ -155,6 +161,7 @@ public abstract class BookProvider implements DataProvider {
 
         Path dataFolder = this.packOutput.getOutputFolder(PackOutput.Target.DATA_PACK);
 
+        this.registerDefaultMacros();
         this.generate();
 
         for (var bookModel : this.bookModels.values()) {

@@ -24,6 +24,10 @@ public abstract class CategoryProvider {
         this.macros = new HashMap<>();
     }
 
+    public String categoryId(){
+        return this.categoryId;
+    }
+
     protected LanguageProvider lang() {
         return this.parent.lang();
     }

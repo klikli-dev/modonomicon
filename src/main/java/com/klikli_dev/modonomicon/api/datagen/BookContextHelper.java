@@ -15,87 +15,108 @@ import java.util.Stack;
 public class BookContextHelper {
     public static final String BOOK_PREFIX = "book.";
 
-    public Stack<String> stack = new Stack<>();
+    protected Stack<String> stack = new Stack<>();
 
-    public String mod;
-    public String book;
-    public String category;
-    public String entry;
-    public String page;
+    protected String modId;
+    protected String bookId;
+    protected String categoryId;
+    protected String entryId;
+    protected String pageId;
 
-    public BookContextHelper(String mod) {
-        this.mod = mod;
+    public BookContextHelper(String modId) {
+        this.modId = modId;
     }
 
-    public BookContextHelper book(String book){
-        this.book = book;
+    public BookContextHelper book(String book) {
+        this.bookId = book;
         return this;
     }
 
-    public BookContextHelper category(String category){
-        this.category = category;
+    public BookContextHelper category(String category) {
+        this.categoryId = category;
         return this;
     }
 
-    public BookContextHelper entry(String entry){
-        this.entry = entry;
+    public BookContextHelper entry(String entry) {
+        this.entryId = entry;
         return this;
     }
 
-    public BookContextHelper page(String page){
-        this.page = page;
+    public BookContextHelper page(String page) {
+        this.pageId = page;
         return this;
     }
 
-    public String book(){
-        return BOOK_PREFIX + this.mod + "." + this.book;
+    public String book() {
+        return BOOK_PREFIX + this.modId + "." + this.bookId;
     }
 
-    public String bookName(){
+    public String bookName() {
         return this.book() + ".name";
     }
-    public String bookTooltip(){
+
+    public String bookTooltip() {
         return this.book() + ".tooltip";
     }
 
-    public String category(){
-        return this.book() + "." + this.category;
+    public String modId() {
+        return this.modId;
     }
 
-    public String categoryName(){
+    public String bookId() {
+        return this.bookId;
+    }
+
+    public String categoryId() {
+        return this.categoryId;
+    }
+
+    public String entryId() {
+        return this.entryId;
+    }
+
+    public String pageId() {
+        return this.pageId;
+    }
+
+    public String category() {
+        return this.book() + "." + this.categoryId;
+    }
+
+    public String categoryName() {
         return this.category() + ".name";
     }
 
-    public String categoryCondition(String conditionName){
+    public String categoryCondition(String conditionName) {
         return this.category() + ".condition." + conditionName;
     }
 
-    public String entry(){
-        return this.category() + "." + this.entry;
+    public String entry() {
+        return this.category() + "." + this.entryId;
     }
 
-    public String entryName(){
+    public String entryName() {
         return this.entry() + ".name";
     }
 
-    public String entryDescription(){
+    public String entryDescription() {
         return this.entry() + ".description";
     }
 
-    public String entryCondition(String conditionName){
+    public String entryCondition(String conditionName) {
         return this.entry() + ".condition." + conditionName;
     }
 
 
-    public String page(){
-        return this.entry() + "." + this.page;
+    public String page() {
+        return this.entry() + "." + this.pageId;
     }
 
-    public String pageTitle(){
+    public String pageTitle() {
         return this.page() + ".title";
     }
 
-    public String pageText(){
+    public String pageText() {
         return this.page() + ".text";
     }
 

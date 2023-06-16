@@ -35,7 +35,7 @@ public class FormattingCategoryProvider extends CategoryProvider {
         linkFormattingEntry.withParent(BookEntryParentModel.builder().withEntryId(advancedFormattingEntry.id).build());
         advancedFormattingEntry.withParent(BookEntryParentModel.builder().withEntryId(basicFormattingEntry.id).build());
 
-        return BookCategoryModel.create(this.modLoc(this.context().category), this.context().categoryName())
+        return BookCategoryModel.create(this.modLoc(this.context().categoryId()), this.context().categoryName())
                 .withIcon("minecraft:textures/item/book.png")
                 .withEntries(
                         basicFormattingEntry.build(),
@@ -61,7 +61,7 @@ public class FormattingCategoryProvider extends CategoryProvider {
                 .build(); //strikethrough, color
 
         var formattingEntry = BookEntryModel.builder()
-                .withId(this.modLoc(this.context().category + "/" + this.context().entry))
+                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
                 .withName(this.context().entryName())
                 .withDescription(this.context().entryDescription())
                 .withIcon("minecraft:textures/item/paper.png")
@@ -93,7 +93,7 @@ public class FormattingCategoryProvider extends CategoryProvider {
                 .build(); //lists
 
         var formattingEntry = BookEntryModel.builder()
-                .withId(this.modLoc(this.context().category + "/" + this.context().entry))
+                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
                 .withName(this.context().entryName())
                 .withDescription(this.context().entryDescription())
                 .withIcon("minecraft:feather")
@@ -142,7 +142,7 @@ public class FormattingCategoryProvider extends CategoryProvider {
         this.context().entry("always_locked");
 
         var entry = BookEntryModel.builder()
-                .withId(this.modLoc(this.context().category + "/" + this.context().entry))
+                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
                 .withName(this.context().entryName())
                 .withDescription(this.context().entryDescription())
                 .withIcon("minecraft:nether_star")

@@ -62,7 +62,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
 
         var redirectEntry = this.makeRedirectEntry('5');
 
-        return BookCategoryModel.create(this.modLoc(this.context().category), this.context().categoryName())
+        return BookCategoryModel.create(this.modLoc(this.context().categoryId()), this.context().categoryName())
                 .withIcon("minecraft:nether_star")
                 .withBackgroundParallaxLayers(
                         new BookCategoryBackgroundParallaxLayer(this.modLoc("textures/gui/parallax/flow/base.png"), 0.7f, -1),
@@ -104,7 +104,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .build();
 
         return BookEntryModel.builder()
-                .withId(this.modLoc(this.context().category + "/" + this.context().entry))
+                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
                 .withName(this.context().entryName())
                 .withDescription(this.context().entryDescription())
                 .withIcon("minecraft:furnace")
@@ -122,7 +122,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .withTitle(this.context().pageTitle())
                 .build();
         var conditionRootEntry = BookEntryModel.builder()
-                .withId(this.modLoc(this.context().category + "/" + this.context().entry))
+                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
                 .withName(this.context().entryName())
                 .withDescription(this.context().entryDescription())
                 .withIcon("minecraft:redstone_torch")
@@ -141,7 +141,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .withEntry(conditionRootEntry.getId())
                 .build();
         var conditionLevel1Entry = BookEntryModel.builder()
-                .withId(this.modLoc(this.context().category + "/" + this.context().entry))
+                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
                 .withName(this.context().entryName())
                 .withDescription(this.context().entryDescription())
                 .withIcon("minecraft:lever")
@@ -161,7 +161,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .withEntry(conditionLevel1Entry.getId())
                 .build();
         var conditionLevel2Entry = BookEntryModel.builder()
-                .withId(this.modLoc(this.context().category + "/" + this.context().entry))
+                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
                 .withName(this.context().entryName())
                 .withDescription(this.context().entryDescription())
                 .withIcon("minecraft:torch")
@@ -233,7 +233,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .build();
 
         return BookEntryModel.builder()
-                .withId(this.modLoc(this.context().category + "/" + this.context().entry))
+                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
                 .withName(this.context().entryName())
                 .withDescription(this.context().entryDescription())
                 .withIcon("minecraft:crafting_table")
@@ -264,7 +264,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .build();
 
         return BookEntryModel.builder()
-                .withId(this.modLoc(this.context().category + "/" + this.context().entry))
+                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
                 .withName(this.context().entryName())
                 .withDescription(this.context().entryDescription())
                 .withIcon("minecraft:beacon")
@@ -290,7 +290,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .build();
 
         return BookEntryModel.builder()
-                .withId(this.modLoc(this.context().category + "/" + this.context().entry))
+                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
                 .withName(this.context().entryName())
                 .withDescription(this.context().entryDescription())
                 .withIcon("minecraft:obsidian")
@@ -323,7 +323,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         this.add(this.context().pageText(), "{0}", this.commandLink("Click me to run the command!", "test_command2"));
 
         return BookEntryModel.builder()
-                .withId(this.modLoc(this.context().category + "/" + this.context().entry))
+                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
                 .withName(this.context().entryName())
                 .withDescription(this.context().entryDescription())
                 .withIcon("minecraft:oak_sign")
@@ -356,7 +356,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .build();
 
         return BookEntryModel.builder()
-                .withId(this.modLoc(this.context().category + "/" + this.context().entry))
+                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
                 .withName(this.context().entryName())
                 .withDescription(this.context().entryDescription())
                 .withIcon("minecraft:spider_eye")
@@ -401,7 +401,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .build();
 
         return BookEntryModel.builder()
-                .withId(this.modLoc(this.context().category + "/" + this.context().entry))
+                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
                 .withName(this.context().entryName())
                 .withDescription(this.context().entryDescription())
                 .withIcon("minecraft:item_frame")
@@ -413,7 +413,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         this.context().entry("redirect");
 
         return BookEntryModel.builder()
-                .withId(this.modLoc(this.context().category + "/" + this.context().entry))
+                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
                 .withName(this.context().entryName())
                 .withDescription(this.context().entryDescription())
                 .withIcon("minecraft:ender_pearl")

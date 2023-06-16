@@ -86,7 +86,7 @@ public class DemoBookProvider extends BookProvider {
         this.context().entry("always_locked");
 
         var entry = BookEntryModel.builder()
-                .withId(this.modLoc(this.context().category + "/" + this.context().entry))
+                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
                 .withName(this.context().entryName())
                 .withDescription(this.context().entryDescription())
                 .withIcon("minecraft:nether_star")
@@ -94,7 +94,7 @@ public class DemoBookProvider extends BookProvider {
                 .withEntryBackground(0, 1)
                 .withCondition(BookFalseConditionModel.builder().build());
 
-        return BookCategoryModel.create(this.modLoc(this.context().category), this.context().categoryName())
+        return BookCategoryModel.create(this.modLoc(this.context().categoryId()), this.context().categoryName())
                 .withIcon("minecraft:book")
                 .withShowCategoryButton(false)
                 .withEntry(entry.build());
@@ -115,7 +115,7 @@ public class DemoBookProvider extends BookProvider {
         this.context().entry("always_locked");
 
         var entry = BookEntryModel.builder()
-                .withId(this.modLoc(this.context().category + "/" + this.context().entry))
+                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
                 .withName(this.context().entryName())
                 .withDescription(this.context().entryDescription())
                 .withIcon("minecraft:nether_star")
@@ -123,7 +123,7 @@ public class DemoBookProvider extends BookProvider {
                 .withEntryBackground(0, 1)
                 .withCondition(BookFalseConditionModel.builder().build());
 
-        return BookCategoryModel.create(this.modLoc(this.context().category), this.context().categoryName())
+        return BookCategoryModel.create(this.modLoc(this.context().categoryId()), this.context().categoryName())
                 .withIcon("minecraft:chest")
                 .withEntry(entry.build());
     }
