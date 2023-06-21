@@ -1,0 +1,191 @@
+plugins {
+    id 'idea'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'org.spongepowered.mixin'
+    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'com.github.johnrengelman.shadow' version version "${shadow_version}"
+}
+
+if (System.getenv('MOD_VERSION') != null) {
+    version = System.getenv('MOD_VERSION')
+}
+
+base {
+    archivesName = "${mod_name}-forge-${minecraft_version}"
+}
+
+mixin {
+    add(sourceSets.main, "${mod_id}.refmap.json")
+
+    config("${mod_id}.mixins.json")
+    config("${mod_id}.forge.mixins.json")
+}
+
+configurations {
+    library
+    shade.extendsFrom library
+    implementation.extendsFrom shade
+}
+
+minecraft {
+    mappings channel: 'official', version: mapping_version
+
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            taskName 'Client'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            mods {
+                modClientRun {
+                    source sourceSets.main
+                    source project(":common").sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            taskName 'Server'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            mods {
+                modServerRun {
+                    source sourceSets.main
+                    source project(":common").sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            taskName 'Data'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            mods {
+                modDataRun {
+                    source sourceSets.main
+                    source project(":common").sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+sourceSets.main.resources.srcDir 'src/generated/resources'
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${forge_version}"
+    compileOnly project(":common")
+    annotationProcessor("org.spongepowered:mixin:${mixin_version}:processor")
+
+    //Jei
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+
+    //commonmark
+    library "org.commonmark:commonmark:${commonmark_version}"
+    library "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
+    library "org.commonmark:commonmark-ext-ins:${commonmark_version}"
+}
+
+tasks.withType(JavaCompile).configureEach {
+    source(project(":common").sourceSets.main.allSource)
+}
+tasks.withType(Javadoc).configureEach {
+    source(project(":common").sourceSets.main.allJava)
+}
+tasks.named("sourcesJar", Jar) {
+    from(project(":common").sourceSets.main.allSource)
+}
+
+def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']
+def replaceProperties = [
+        minecraft_version      : minecraft_version,
+        minecraft_version_range: minecraft_version_range,
+        forge_version          : forge_version,
+        forge_version_range    : forge_version_range,
+        loader_version_range   : loader_version_range,
+        mod_id                 : mod_id,
+        mod_name               : mod_name,
+        mod_license            : mod_license,
+        mod_version            : minecraft_version + "-" + mod_version,
+        mod_authors            : mod_authors,
+        mod_description        : mod_description,
+        jei_version_range      : jei_version_range,
+        patchouli_version_range: patchouli_version_range,
+]
+processResources {
+    from project(":common").sourceSets.main.resources
+
+    inputs.properties replaceProperties
+    replaceProperties.put 'project', project
+
+    filesMatching(resourceTargets) {
+        expand replaceProperties
+    }
+}
+
+shadowJar {
+    from project(":common").sourceSets.main.output
+    from sourceSets.main.output
+    archiveClassifier = ""
+    configurations = [project.configurations.shade]
+    relocate 'org.commonmark', "${project.group}.relocated.commonmark"
+    finalizedBy 'reobfShadowJar'
+}
+
+artifacts {
+    shadowJar
+}
+
+reobf {
+    shadowJar {}
+}
+
+jar.finalizedBy('reobfJar')
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = mod_id
+
+            //artifact jar //no need for slim jar
+            artifact shadowJar
+            artifact sourcesJar
+
+            pom {
+                name = mod_name
+                description = 'Data-driven minecraft in-game documentation with progress visualization.'
+                url = 'https://github.com/klikli-dev/modonomicon'
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://raw.githubusercontent.com/klikli-dev/modonomicon/version/1.19/LICENSES/MIT.txt'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:ssh:git@github.com:klikli-dev/modonomicon.git'
+                    url = 'https://github.com/klikli-dev/modonomicon'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url "https://repo.repsy.io/mvn/klikli-dev/mods"
+            credentials {
+                username = System.getenv('MAVEN_USER')
+                password = System.getenv('MAVEN_PASS')
+            }
+        }
+    }
+}

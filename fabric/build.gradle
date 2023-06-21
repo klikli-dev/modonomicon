@@ -1,0 +1,105 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'maven-publish'
+    id 'fabric-loom'
+}
+
+if (System.getenv('MOD_VERSION') != null) {
+    version = System.getenv('MOD_VERSION')
+}
+
+base {
+    archivesName = "${mod_name}-fabric-${minecraft_version}"
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: "${jsr305_version}"
+    implementation project(":common")
+
+    //Jei
+    modCompileOnlyApi ("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    modCompileOnlyApi ("mezz.jei:jei-${minecraft_version}-fabric-api:${jei_version}")
+    modRuntimeOnly ("mezz.jei:jei-${minecraft_version}-fabric:${jei_version}")
+
+    //commonmark
+    include "org.commonmark:commonmark:${commonmark_version}"
+    include "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
+    include "org.commonmark:commonmark-ext-ins:${commonmark_version}"
+}
+
+loom {
+    if (project(":common").file("src/main/resources/${mod_id}.accesswidener").exists()) {
+        accessWidenerPath.set(project(":common").file("src/main/resources/${mod_id}.accesswidener"))
+    }
+    mixin {
+        defaultRefmapName.set("${mod_id}.refmap.json")
+    }
+    runs {
+        client {
+            client()
+            setConfigName("Fabric Client")
+            ideConfigGenerated(true)
+            runDir("run")
+        }
+        server {
+            server()
+            setConfigName("Fabric Server")
+            ideConfigGenerated(true)
+            runDir("run")
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    source(project(":common").sourceSets.main.allSource)
+}
+tasks.withType(Javadoc).configureEach {
+    source(project(":common").sourceSets.main.allJava)
+}
+tasks.named("sourcesJar", Jar) {
+    from(project(":common").sourceSets.main.allSource)
+}
+
+processResources {
+    from project(":common").sourceSets.main.resources
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = mod_id
+
+            artifact jar
+
+            pom {
+                name = mod_name
+                description = 'Data-driven minecraft in-game documentation with progress visualization.'
+                url = 'https://github.com/klikli-dev/modonomicon'
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://raw.githubusercontent.com/klikli-dev/modonomicon/version/1.19/LICENSES/MIT.txt'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:ssh:git@github.com:klikli-dev/modonomicon.git'
+                    url = 'https://github.com/klikli-dev/modonomicon'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url "https://repo.repsy.io/mvn/klikli-dev/mods"
+            credentials {
+                username = System.getenv('MAVEN_USER')
+                password = System.getenv('MAVEN_PASS')
+            }
+        }
+    }
+}

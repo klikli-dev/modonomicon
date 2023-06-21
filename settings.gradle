@@ -8,6 +8,13 @@ pluginManagement {
                 includeGroup "net.minecraftforge"
             }
         }
+        maven {
+            url = 'https://maven.fabricmc.net/'
+        }
+        maven {
+            name = 'Sponge Snapshots'
+            url = 'https://repo.spongepowered.org/repository/maven-public/'
+        }
         maven { url = 'https://maven.parchmentmc.org' }
     }
 }
@@ -15,3 +22,8 @@ pluginManagement {
 plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '0.5.0'
 }
+
+rootProject.name = 'Modonomicon'
+include("common")
+include("fabric")
+include("forge")

@@ -1,0 +1,72 @@
+plugins {
+    id 'idea'
+    id 'java'
+    id 'maven-publish'
+    id 'org.spongepowered.gradle.vanilla'
+}
+
+if (System.getenv('MOD_VERSION') != null) {
+    version = System.getenv('MOD_VERSION')
+}
+
+base {
+    archivesName = "${mod_name}-common-${minecraft_version}"
+}
+
+configurations {
+    library
+    shade.extendsFrom library
+    implementation.extendsFrom shade
+}
+
+minecraft {
+    version(minecraft_version)
+    if(file("src/main/resources/${mod_id}.accesswidener").exists()){
+        accessWideners(file("src/main/resources/${mod_id}.accesswidener"))
+    }
+}
+
+dependencies {
+     compileOnly group:'org.spongepowered', name:'mixin', version:"${mixin_version}"
+     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: "${jsr305_version}"
+
+    //commonmark
+    library "org.commonmark:commonmark:${commonmark_version}"
+    library "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
+    library "org.commonmark:commonmark-ext-ins:${commonmark_version}"
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = mod_id
+
+            from components.java
+
+            pom {
+                name = mod_name
+                description = 'Data-driven minecraft in-game documentation with progress visualization.'
+                url = 'https://github.com/klikli-dev/modonomicon'
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://raw.githubusercontent.com/klikli-dev/modonomicon/version/1.19/LICENSES/MIT.txt'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:ssh:git@github.com:klikli-dev/modonomicon.git'
+                    url = 'https://github.com/klikli-dev/modonomicon'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url "https://repo.repsy.io/mvn/klikli-dev/mods"
+            credentials {
+                username = System.getenv('MAVEN_USER')
+                password = System.getenv('MAVEN_PASS')
+            }
+        }
+    }
+}
