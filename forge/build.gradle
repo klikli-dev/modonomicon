@@ -4,7 +4,6 @@ plugins {
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.spongepowered.mixin'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
-    id 'com.github.johnrengelman.shadow' version version "${shadow_version}"
 }
 
 if (System.getenv('MOD_VERSION') != null) {
@@ -22,14 +21,10 @@ mixin {
     config("${mod_id}.forge.mixins.json")
 }
 
-configurations {
-    library
-    shade.extendsFrom library
-    implementation.extendsFrom shade
-}
+jarJar.enable()
 
 minecraft {
-    mappings channel: 'official', version: mapping_version
+    mappings channel: mapping_channel, version: mapping_version
 
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -92,9 +87,9 @@ dependencies {
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
     //commonmark
-    library "org.commonmark:commonmark:${commonmark_version}"
-    library "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
-    library "org.commonmark:commonmark-ext-ins:${commonmark_version}"
+    jarJar(group: 'org.commonmark', name: 'commonmark', version: "[${commonmark_version},)")
+    jarJar(group: 'org.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: "[${commonmark_version},)")
+    jarJar(group: 'org.commonmark', name: 'commonmark-ext-ins', version: "[${commonmark_version},)")
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -134,23 +129,6 @@ processResources {
     }
 }
 
-shadowJar {
-    from project(":common").sourceSets.main.output
-    from sourceSets.main.output
-    archiveClassifier = ""
-    configurations = [project.configurations.shade]
-    relocate 'org.commonmark', "${project.group}.relocated.commonmark"
-    finalizedBy 'reobfShadowJar'
-}
-
-artifacts {
-    shadowJar
-}
-
-reobf {
-    shadowJar {}
-}
-
 jar.finalizedBy('reobfJar')
 
 publishing {
@@ -158,9 +136,7 @@ publishing {
         mavenJava(MavenPublication) {
             artifactId = mod_id
 
-            //artifact jar //no need for slim jar
-            artifact shadowJar
-            artifact sourcesJar
+            artifact jar
 
             pom {
                 name = mod_name

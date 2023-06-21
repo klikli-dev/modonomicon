@@ -5,7 +5,7 @@
     "name": "${mod_name}",
     "description": "This is an example description! Tell everyone what your mod is about!",
     "authors": [
-        "${mod_author}"
+        "${mod_authors}"
     ],
     "contact": {
         "homepage": "https://fabricmc.net/",
