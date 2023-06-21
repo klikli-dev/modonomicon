@@ -13,12 +13,6 @@ base {
     archivesName = "${mod_name}-common-${minecraft_version}"
 }
 
-configurations {
-    library
-    shade.extendsFrom library
-    implementation.extendsFrom shade
-}
-
 minecraft {
     version(minecraft_version)
     if(file("src/main/resources/${mod_id}.accesswidener").exists()){
@@ -31,9 +25,9 @@ dependencies {
      implementation group: 'com.google.code.findbugs', name: 'jsr305', version: "${jsr305_version}"
 
     //commonmark
-    library "org.commonmark:commonmark:${commonmark_version}"
-    library "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
-    library "org.commonmark:commonmark-ext-ins:${commonmark_version}"
+    implementation "org.commonmark:commonmark:${commonmark_version}"
+    implementation "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
+    implementation "org.commonmark:commonmark-ext-ins:${commonmark_version}"
 }
 
 publishing {
