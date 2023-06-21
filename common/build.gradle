@@ -2,8 +2,10 @@ plugins {
     id 'idea'
     id 'java'
     id 'maven-publish'
-    id 'org.spongepowered.gradle.vanilla'
+//    id 'org.spongepowered.gradle.vanilla'
+    id 'fabric-loom'
 }
+
 
 if (System.getenv('MOD_VERSION') != null) {
     version = System.getenv('MOD_VERSION')
@@ -13,16 +15,21 @@ base {
     archivesName = "${mod_name}-common-${minecraft_version}"
 }
 
-minecraft {
-    version(minecraft_version)
-    if(file("src/main/resources/${mod_id}.accesswidener").exists()){
-        accessWideners(file("src/main/resources/${mod_id}.accesswidener"))
+loom {
+    mixin {
+        useLegacyMixinAp = false
     }
 }
 
 dependencies {
-     compileOnly group:'org.spongepowered', name:'mixin', version:"${mixin_version}"
-     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: "${jsr305_version}"
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.layered(){
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${loom_mapping_version}@zip")
+    }
+
+    compileOnly group:'org.spongepowered', name:'mixin', version:"${mixin_version}"
+    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: "${jsr305_version}"
 
     //commonmark
     implementation "org.commonmark:commonmark:${commonmark_version}"
