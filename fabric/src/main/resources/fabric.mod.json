@@ -16,7 +16,7 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "com.example.examplemod.ExampleMod"
+            "com.klikli_dev.modonomicon.Modonomicon"
         ]
     },
     "mixins": [

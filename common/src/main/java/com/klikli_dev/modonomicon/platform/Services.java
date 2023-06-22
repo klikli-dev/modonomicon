@@ -1,7 +1,7 @@
-package com.example.examplemod.platform;
+package com.klikli_dev.modonomicon.platform;
 
-import com.example.examplemod.Constants;
-import com.example.examplemod.platform.services.IPlatformHelper;
+import com.klikli_dev.modonomicon.Constants;
+import com.klikli_dev.modonomicon.platform.services.IPlatformHelper;
 
 import java.util.ServiceLoader;
 

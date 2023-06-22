@@ -1,4 +1,4 @@
-package com.example.examplemod.platform.services;
+package com.klikli_dev.modonomicon.platform.services;
 
 public interface IPlatformHelper {
 

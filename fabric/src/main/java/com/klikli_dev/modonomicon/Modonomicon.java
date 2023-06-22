@@ -1,8 +1,8 @@
-package com.example.examplemod;
+package com.klikli_dev.modonomicon;
 
 import net.fabricmc.api.ModInitializer;
 
-public class ExampleMod implements ModInitializer {
+public class Modonomicon implements ModInitializer {
     
     @Override
     public void onInitialize() {

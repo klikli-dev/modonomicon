@@ -1,6 +1,6 @@
-package com.example.examplemod;
+package com.klikli_dev.modonomicon;
 
-import com.example.examplemod.platform.Services;
+import com.klikli_dev.modonomicon.platform.Services;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Items;
 import org.commonmark.node.Node;
@@ -26,9 +26,9 @@ public class CommonClass {
         // your own abstraction layer. You can learn more about this in our provided services class. In this example
         // we have an interface in the common code and use a loader specific implementation to delegate our call to
         // the platform specific approach.
-        if (Services.PLATFORM.isModLoaded("examplemod")) {
+        if (Services.PLATFORM.isModLoaded("modonomicon")) {
 
-            Constants.LOG.info("Hello to examplemod");
+            Constants.LOG.info("Hello to modonomicon");
         }
 
         Parser parser = Parser.builder().build();

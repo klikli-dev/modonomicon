@@ -1,4 +1,4 @@
-package com.example.examplemod;
+package com.klikli_dev.modonomicon;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,6 +6,6 @@ import org.slf4j.LoggerFactory;
 public class Constants {
 
 	public static final String MOD_ID = "modonomicon";
-	public static final String MOD_NAME = "Multi Loader Template";
+	public static final String MOD_NAME = "Modonomicon";
 	public static final Logger LOG = LoggerFactory.getLogger(MOD_NAME);
 }
