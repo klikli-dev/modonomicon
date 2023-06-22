@@ -32,6 +32,7 @@ dependencies {
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: "${jsr305_version}"
 
     //commonmark
+    //here we just need to add it to the classpaths, forge/fabric will put it in the jar for distribution
     implementation "org.commonmark:commonmark:${commonmark_version}"
     implementation "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
     implementation "org.commonmark:commonmark-ext-ins:${commonmark_version}"

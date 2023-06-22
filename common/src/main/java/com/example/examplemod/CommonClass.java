@@ -3,6 +3,9 @@ package com.example.examplemod;
 import com.example.examplemod.platform.Services;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Items;
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 
 // This class is part of the common project meaning it is shared between all supported loaders. Code written here can only
 // import and access the vanilla codebase, libraries used by vanilla, and optionally third party libraries that provide
@@ -27,5 +30,10 @@ public class CommonClass {
 
             Constants.LOG.info("Hello to examplemod");
         }
+
+        Parser parser = Parser.builder().build();
+        Node document = parser.parse("This is *Sparta*");
+        HtmlRenderer renderer = HtmlRenderer.builder().build();
+        Constants.LOG.info(renderer.render(document));  // "<p>This is <em>Sparta</em></p>\n"
     }
 }

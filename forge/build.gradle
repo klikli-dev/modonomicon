@@ -87,6 +87,11 @@ dependencies {
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
     //commonmark
+    //mark it for forge to add to the classpath
+    minecraftLibrary "org.commonmark:commonmark:${commonmark_version}"
+    minecraftLibrary "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
+    minecraftLibrary "org.commonmark:commonmark-ext-ins:${commonmark_version}"
+    //and include it in the jar
     jarJar(group: 'org.commonmark', name: 'commonmark', version: "[${commonmark_version},)")
     jarJar(group: 'org.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: "[${commonmark_version},)")
     jarJar(group: 'org.commonmark', name: 'commonmark-ext-ins', version: "[${commonmark_version},)")

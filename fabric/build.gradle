@@ -31,6 +31,12 @@ dependencies {
     modRuntimeOnly ("mezz.jei:jei-${minecraft_version}-fabric:${jei_version}")
 
     //commonmark
+    //make it available for compile/runtime classpath
+    implementation "org.commonmark:commonmark:${commonmark_version}"
+    implementation "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
+    implementation "org.commonmark:commonmark-ext-ins:${commonmark_version}"
+
+    //let fabric include it in the jar
     include "org.commonmark:commonmark:${commonmark_version}"
     include "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
     include "org.commonmark:commonmark-ext-ins:${commonmark_version}"
