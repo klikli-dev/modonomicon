@@ -6,13 +6,15 @@
 
 package com.klikli_dev.modonomicon.api;
 
+import com.google.common.base.Suppliers;
 import com.klikli_dev.modonomicon.api.datagen.BookContextHelper;
 import com.klikli_dev.modonomicon.api.datagen.CategoryEntryMap;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.stub.ModonomiconAPIStub;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.util.Lazy;
 import org.apache.logging.log4j.LogManager;
+
+import java.util.function.Supplier;
 
 public interface ModonomiconAPI {
 
@@ -43,7 +45,7 @@ public interface ModonomiconAPI {
     Multiblock getMultiblock(ResourceLocation id);
 
     class Helper {
-        private static final Lazy<ModonomiconAPI> lazyInstance = Lazy.concurrentOf(() -> {
+        private static final Supplier<ModonomiconAPI> lazyInstance = Suppliers.memoize(() -> {
             try {
                 return (ModonomiconAPI) Class.forName("com.klikli_dev.modonomicon.apiimpl.ModonomiconAPIImpl").getDeclaredConstructor().newInstance();
             } catch (ReflectiveOperationException e) {

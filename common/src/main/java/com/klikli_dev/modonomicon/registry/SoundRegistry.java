@@ -15,7 +15,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class SoundRegistry {
     //TODO: make mod loader agnostic
-    public static DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, Modonomicon.MODID);
+    public static DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, Modonomicon.MOD_ID);
 
     public static final RegistryObject<SoundEvent> TURN_PAGE = SOUNDS.register("turn_page", () -> loadSoundEvent("turn_page"));
 
@@ -27,7 +27,7 @@ public class SoundRegistry {
      * @return the sound event.
      */
     private static SoundEvent loadSoundEvent(String name) {
-        ResourceLocation location = new ResourceLocation(Modonomicon.MODID, name);
+        ResourceLocation location = new ResourceLocation(Modonomicon.MOD_ID, name);
         return SoundEvent.createVariableRangeEvent(location);
     }
 }

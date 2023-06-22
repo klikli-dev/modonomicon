@@ -20,7 +20,7 @@ public class CommandRegistry {
 
     public static void registerCommands(RegisterCommandsEvent event) {
         LiteralCommandNode<CommandSourceStack> modonomiconCommand = event.getDispatcher().register(
-                Commands.literal(Modonomicon.MODID)
+                Commands.literal(Modonomicon.MOD_ID)
                         .then(ResetBookUnlocksCommand.register(event.getDispatcher()))
                         .then(SaveUnlocksCommand.register(event.getDispatcher()))
         );
@@ -31,7 +31,7 @@ public class CommandRegistry {
     public static void registerClientCommands(RegisterClientCommandsEvent event) {
 
         LiteralCommandNode<CommandSourceStack> modonomiconCommand = event.getDispatcher().register(
-                Commands.literal(Modonomicon.MODID)
+                Commands.literal(Modonomicon.MOD_ID)
                         .then(LoadUnlocksCommand.register(event.getDispatcher()))
         );
 

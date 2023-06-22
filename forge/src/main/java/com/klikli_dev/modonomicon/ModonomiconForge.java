@@ -2,18 +2,18 @@ package com.klikli_dev.modonomicon;
 
 import net.minecraftforge.fml.common.Mod;
 
-@Mod(Constants.MOD_ID)
-public class Modonomicon {
+@Mod(CommonConstants.MOD_ID)
+public class ModonomiconForge {
     
-    public Modonomicon() {
+    public ModonomiconForge() {
     
         // This method is invoked by the Forge mod loader when it is ready
         // to load your mod. You can access Forge and Common code in this
         // project.
     
         // Use Forge to bootstrap the Common mod.
-        Constants.LOG.info("Hello Forge world!");
-        CommonClass.init();
+        CommonConstants.LOG.info("Hello Forge world!");
+        Modonomicon.init();
         
     }
 }

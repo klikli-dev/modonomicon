@@ -8,7 +8,6 @@ package com.klikli_dev.modonomicon.datagen;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -17,7 +16,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class ItemModelProvider extends net.minecraftforge.client.model.generators.ItemModelProvider {
     public ItemModelProvider(PackOutput packOutput, ExistingFileHelper existingFileHelper) {
-        super(packOutput, Modonomicon.MODID, existingFileHelper);
+        super(packOutput, Modonomicon.MOD_ID, existingFileHelper);
     }
 
     protected String name(Item item) {

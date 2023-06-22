@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 
 public abstract class LangGenerator extends LanguageProvider {
     public LangGenerator(PackOutput packOutput, String locale) {
-        super(packOutput, Modonomicon.MODID, locale);
+        super(packOutput, Modonomicon.MOD_ID, locale);
     }
 
     public void addItemSuffix(Supplier<? extends Item> key, String suffix, String name) {
@@ -28,7 +28,7 @@ public abstract class LangGenerator extends LanguageProvider {
     }
 
     protected String itemKey(String id) {
-        return "item." + Modonomicon.MODID + "." + id;
+        return "item." + Modonomicon.MOD_ID + "." + id;
     }
 
     public static final class Russian extends LangGenerator{
@@ -129,7 +129,7 @@ public abstract class LangGenerator extends LanguageProvider {
 
         private void addDemoBook() {
 
-            var helper = ModonomiconAPI.get().getContextHelper(Modonomicon.MODID);
+            var helper = ModonomiconAPI.get().getContextHelper(Modonomicon.MOD_ID);
             helper.book("demo");
 
             this.addDemoBookFeaturesCategory(helper);

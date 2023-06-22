@@ -2,7 +2,7 @@ package com.klikli_dev.modonomicon;
 
 import net.fabricmc.api.ModInitializer;
 
-public class Modonomicon implements ModInitializer {
+public class ModonomiconFabric implements ModInitializer {
     
     @Override
     public void onInitialize() {
@@ -12,7 +12,7 @@ public class Modonomicon implements ModInitializer {
         // project.
 
         // Use Fabric to bootstrap the Common mod.
-        Constants.LOG.info("Hello Fabric world!");
-        CommonClass.init();
+        CommonConstants.LOG.info("Hello Fabric world!");
+        Modonomicon.init();
     }
 }

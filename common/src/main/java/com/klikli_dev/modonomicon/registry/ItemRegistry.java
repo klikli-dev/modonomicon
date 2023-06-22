@@ -16,7 +16,7 @@ import net.minecraftforge.registries.RegistryObject;
 public class ItemRegistry {
     //TODO: make mod loader agnostic
 
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Modonomicon.MODID);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Modonomicon.MOD_ID);
 
     public static final RegistryObject<Item> MODONOMICON =
             ITEMS.register("modonomicon", () -> new ModonomiconItem(new Item.Properties()));
