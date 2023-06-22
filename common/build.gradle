@@ -32,6 +32,9 @@ dependencies {
     compileOnly group:'org.spongepowered', name:'mixin', version:"${mixin_version}"
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: "${jsr305_version}"
 
+    //Jei
+    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+
     //commonmark
     //here we just need to add it to the classpaths, forge/fabric will put it in the jar for distribution
     implementation "org.commonmark:commonmark:${commonmark_version}"
