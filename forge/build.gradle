@@ -125,9 +125,10 @@ jar.finalizedBy('reobfJar')
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = mod_id
+            artifactId base.archivesName.get()
 
-            artifact jar
+            from components.java
+            fg.component(it)
 
             pom {
                 name = mod_name

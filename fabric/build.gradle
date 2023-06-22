@@ -83,9 +83,8 @@ processResources {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = mod_id
-
-            artifact jar
+            artifactId base.archivesName.get()
+            from components.java
 
             pom {
                 name = mod_name
