@@ -7,11 +7,12 @@ plugins {
 }
 
 if (System.getenv('MOD_VERSION') != null) {
-    version = System.getenv('MOD_VERSION')
+    mod_version = System.getenv('MOD_VERSION')
 }
+version = mod_version
 
 base {
-    archivesName = "${mod_name}-forge-${minecraft_version}"
+    archivesName = "${mod_id}-forge-${minecraft_version}"
 }
 
 mixin {
@@ -115,31 +116,8 @@ tasks.named('jarJar') {
     archiveClassifier = ""
 }
 
-def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']
-def replaceProperties = [
-        minecraft_version      : minecraft_version,
-        minecraft_version_range: minecraft_version_range,
-        forge_version          : forge_version,
-        forge_version_range    : forge_version_range,
-        loader_version_range   : loader_version_range,
-        mod_id                 : mod_id,
-        mod_name               : mod_name,
-        mod_license            : mod_license,
-        mod_version            : minecraft_version + "-" + mod_version,
-        mod_authors            : mod_authors,
-        mod_description        : mod_description,
-        jei_version_range      : jei_version_range,
-        patchouli_version_range: patchouli_version_range,
-]
 processResources {
     from project(":common").sourceSets.main.resources
-
-    inputs.properties replaceProperties
-    replaceProperties.put 'project', project
-
-    filesMatching(resourceTargets) {
-        expand replaceProperties
-    }
 }
 
 jar.finalizedBy('reobfJar')
