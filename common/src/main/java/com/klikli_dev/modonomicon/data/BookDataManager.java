@@ -127,7 +127,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     public void prerenderMarkdown() {
         //TODO: allow modders to configure this renderer
 
-        Modonomicon.LOGGER.info("Pre-rendering markdown ...");
+        Modonomicon.LOG.info("Pre-rendering markdown ...");
         for (var book : this.books.values()) {
             var textRenderer = new BookTextRenderer(book);
             BookErrorManager.get().getContextHelper().reset();
@@ -139,7 +139,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             }
             BookErrorManager.get().setCurrentBookId(null);
         }
-        Modonomicon.LOGGER.info("Finished pre-rendering markdown.");
+        Modonomicon.LOG.info("Finished pre-rendering markdown.");
     }
 
     public void addReadConditions() {
@@ -167,14 +167,14 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
      */
     public boolean tryBuildBooks() {
         if (!this.booksBuilt) {
-            Modonomicon.LOGGER.info("Building books ...");
+            Modonomicon.LOG.info("Building books ...");
             this.buildBooks();
             this.booksBuilt = true;
-            Modonomicon.LOGGER.info("Books built.");
+            Modonomicon.LOG.info("Books built.");
 
-            Modonomicon.LOGGER.info("Adding read conditions ...");
+            Modonomicon.LOG.info("Adding read conditions ...");
             this.addReadConditions();
-            Modonomicon.LOGGER.info("Read conditions added.");
+            Modonomicon.LOG.info("Read conditions added.");
             return true;
         }
         return false;
@@ -224,7 +224,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                     commandJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
                 }
                 default -> {
-                    Modonomicon.LOGGER.warn("Found unknown content for book '{}': '{}'. " +
+                    Modonomicon.LOG.warn("Found unknown content for book '{}': '{}'. " +
                             "Should be one of: [File: book.json, Directory: entries/, Directory: categories/, Directory: commands/]", bookId, entry.getKey());
                     BookErrorManager.get().error(bookId, "Found unknown content for book '" + bookId + "': '" + entry.getKey() + "'. " +
                             "Should be one of: [File: book.json, Directory: entries/, Directory: categories/, Directory: commands/]");

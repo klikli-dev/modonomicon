@@ -10,19 +10,17 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class BookState implements INBTSerializable<CompoundTag> {
+public class BookState {
 
     public Map<ResourceLocation, CategoryState> categoryStates = new HashMap<>();
 
     public ResourceLocation openCategory = null;
 
 
-    @Override
     public CompoundTag serializeNBT() {
         var compound = new CompoundTag();
 
@@ -42,7 +40,6 @@ public class BookState implements INBTSerializable<CompoundTag> {
         return compound;
     }
 
-    @Override
     public void deserializeNBT(CompoundTag nbt) {
         this.categoryStates.clear();
 

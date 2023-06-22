@@ -66,7 +66,7 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
                 this.renderOffset = Math.max(height, entitySize) * 0.5F + this.getPage().getOffset();
             } catch (Exception e) {
                 this.errored = true;
-                Modonomicon.LOGGER.error("Failed to load entity", e);
+                Modonomicon.LOG.error("Failed to load entity", e);
             }
         }
     }

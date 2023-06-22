@@ -10,14 +10,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.util.INBTSerializable;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class CategoryState implements INBTSerializable<CompoundTag> {
+public class CategoryState {
 
     public ConcurrentMap<ResourceLocation, EntryState> entryStates = new ConcurrentHashMap<>();
 
@@ -27,13 +24,12 @@ public class CategoryState implements INBTSerializable<CompoundTag> {
 
     public ResourceLocation openEntry = null;
 
-    @Override
     public CompoundTag serializeNBT() {
         var compound = new CompoundTag();
         compound.putFloat("scrollX", this.scrollX);
         compound.putFloat("scrollY", this.scrollY);
         compound.putFloat("targetZoom", this.targetZoom);
-        if(this.openEntry != null) {
+        if (this.openEntry != null) {
             compound.putString("openEntry", this.openEntry.toString());
         }
 
@@ -49,12 +45,11 @@ public class CategoryState implements INBTSerializable<CompoundTag> {
         return compound;
     }
 
-    @Override
     public void deserializeNBT(CompoundTag nbt) {
         this.scrollX = nbt.getFloat("scrollX");
         this.scrollY = nbt.getFloat("scrollY");
         this.targetZoom = nbt.getFloat("targetZoom");
-        if(nbt.contains("openEntry")) {
+        if (nbt.contains("openEntry")) {
             this.openEntry = new ResourceLocation(nbt.getString("openEntry"));
         }
 

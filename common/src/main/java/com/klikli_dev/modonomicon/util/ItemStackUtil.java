@@ -60,7 +60,7 @@ public class ItemStackUtil {
         var key = parsed.getLeft();
         var count = parsed.getMiddle();
         var nbt = parsed.getRight();
-        var item = ForgeRegistries.ITEMS.getValue(key);
+        var item = BuiltInRegistries.ITEM.get(key);
         if (item == null) {
             throw new RuntimeException("Unknown item ID: " + key);
         }

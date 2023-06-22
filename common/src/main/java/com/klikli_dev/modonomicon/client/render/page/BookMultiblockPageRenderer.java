@@ -215,7 +215,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
                         }
                     } catch (Exception e) {
                         this.erroredBlockEntities.add(be);
-                        Modonomicon.LOGGER.error("Error rendering block entity", e);
+                        Modonomicon.LOG.error("Error rendering block entity", e);
                     }
                     guiGraphics.pose().popPose();
                 }

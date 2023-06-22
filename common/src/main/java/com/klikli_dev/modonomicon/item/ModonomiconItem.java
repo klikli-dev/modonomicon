@@ -88,7 +88,7 @@ public class ModonomiconItem extends Item {
                 var book = getBook(itemInHand);
                 BookGuiManager.get().openBook(book.getId());
             } else {
-                Modonomicon.LOGGER.error("ModonomiconItem: ItemStack has no tag!");
+                Modonomicon.LOG.error("ModonomiconItem: ItemStack has no tag!");
             }
         }
 

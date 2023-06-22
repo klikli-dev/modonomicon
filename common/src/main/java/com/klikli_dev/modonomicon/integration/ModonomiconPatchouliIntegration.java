@@ -16,7 +16,7 @@ public class ModonomiconPatchouliIntegration {
         if (ModList.get().isLoaded("patchouli")) {
             PatchouliHelper.openEntry(book, entry, page);
         } else {
-            Modonomicon.LOGGER.warn("Attempted to open patchouli entry {} in book {} without patchouli installed!", entry, book);
+            Modonomicon.LOG.warn("Attempted to open patchouli entry {} in book {} without patchouli installed!", entry, book);
         }
     }
 

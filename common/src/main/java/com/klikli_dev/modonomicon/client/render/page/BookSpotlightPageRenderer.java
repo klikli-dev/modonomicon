@@ -70,7 +70,7 @@ public class BookSpotlightPageRenderer extends BookPageRenderer<BookSpotlightPag
                 var stacks = this.page.getItem().getItems();
                 if (stacks.length > 0) {
                     var stack = stacks[(this.parentScreen.ticksInBook / 20) % stacks.length];
-                    var itemLink = "item://" + ForgeRegistries.ITEMS.getKey(stack.getItem());
+                    var itemLink = "item://" + BuiltInRegistries.ITEM.getKey(stack.getItem());
                     if (stack.hasTag()) {
                         itemLink += stack.getTag().toString();
                     }

@@ -51,7 +51,7 @@ public class EntityUtil {
             try {
                 nbt = TagParser.parseTag(nbtStr);
             } catch (CommandSyntaxException e) {
-                Modonomicon.LOGGER.error("Failed to load entity data", e);
+                Modonomicon.LOG.error("Failed to load entity data", e);
             }
         }
 

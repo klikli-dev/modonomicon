@@ -12,10 +12,10 @@ import com.klikli_dev.modonomicon.api.datagen.CategoryEntryMap;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.phys.Vec2;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -262,7 +262,7 @@ public class BookEntryModel {
          * Sets the entry's icon to the texture of the given item
          */
         public Builder withIcon(ItemLike item) {
-            this.icon = ForgeRegistries.ITEMS.getKey(item.asItem()).toString();
+            this.icon = BuiltInRegistries.ITEM.getKey(item.asItem()).toString();
             return this;
         }
 

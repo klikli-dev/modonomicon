@@ -172,7 +172,7 @@ public class FluidRenderHelper {
             return tooltip;
         } catch (RuntimeException e) {
             Component displayName = fluidStack.getDisplayName();
-            Modonomicon.LOGGER.error("Failed to get tooltip for fluid: " + displayName, e);
+            Modonomicon.LOG.error("Failed to get tooltip for fluid: " + displayName, e);
         }
 
         return new ArrayList<>();

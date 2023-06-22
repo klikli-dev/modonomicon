@@ -73,7 +73,7 @@ public class BookErrorManager {
 
     public void error(ResourceLocation book, BookErrorInfo error) {
         if (book == null) {
-            Modonomicon.LOGGER.error("BookErrorManager.error() called with null book id with error: {}", error);
+            Modonomicon.LOG.error("BookErrorManager.error() called with null book id with error: {}", error);
             return;
         }
 
@@ -84,7 +84,7 @@ public class BookErrorManager {
         }
         holder.addError(error);
 
-        Modonomicon.LOGGER.warn("BookErrorManager.error() called for book: {} with error: {}", book, error);
+        Modonomicon.LOG.warn("BookErrorManager.error() called for book: {} with error: {}", book, error);
     }
 
     /**

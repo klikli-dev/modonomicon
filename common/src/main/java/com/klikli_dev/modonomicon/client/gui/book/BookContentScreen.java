@@ -307,7 +307,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
                 }
             }
         } else {
-            Modonomicon.LOGGER.warn("Tried to change to page index {} corresponding with " +
+            Modonomicon.LOG.warn("Tried to change to page index {} corresponding with " +
                     "openPagesIndex {} but max open pages index is {}.", pageIndex, openPagesIndex, this.maxOpenPagesIndex);
         }
     }

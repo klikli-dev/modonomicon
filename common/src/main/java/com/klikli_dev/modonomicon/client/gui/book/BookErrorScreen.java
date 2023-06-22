@@ -55,7 +55,7 @@ public class BookErrorScreen extends Screen {
         var errorHolder = BookErrorManager.get().getErrors(this.book.getId());
         if (errorHolder.getErrors().isEmpty()) {
             this.errorText = Component.translatable(Gui.NO_ERRORS_FOUND);
-            Modonomicon.LOGGER.warn("No errors found for book {}, but error screen was opened!", this.book.getId());
+            Modonomicon.LOG.warn("No errors found for book {}, but error screen was opened!", this.book.getId());
         } else {
             var firstError = errorHolder.getErrors().get(0);
 

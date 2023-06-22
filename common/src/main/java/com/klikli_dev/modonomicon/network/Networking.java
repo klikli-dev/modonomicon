@@ -123,7 +123,7 @@ public class Networking {
         if(player.connection == null){
             //workaround for https://github.com/klikli-dev/modonomicon/issues/46 / https://github.com/klikli-dev/modonomicon/issues/62
             //we should never get here unless some other mod interferes with networking
-            Modonomicon.LOGGER.warn("Tried to send message of type {} to player without connection. Id: {}, Name: {}.", player.getStringUUID(), player.getName().getString(), message.getClass().getName());
+            Modonomicon.LOG.warn("Tried to send message of type {} to player without connection. Id: {}, Name: {}.", player.getStringUUID(), player.getName().getString(), message.getClass().getName());
             return;
         }
         INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);

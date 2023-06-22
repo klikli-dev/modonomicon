@@ -7,20 +7,16 @@
 package com.klikli_dev.modonomicon.capability.bookstate;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.util.INBTSerializable;
 
-public class EntryState implements INBTSerializable<CompoundTag> {
+public class EntryState {
     public int openPagesIndex;
 
-    @Override
     public CompoundTag serializeNBT() {
         var compound = new CompoundTag();
         compound.putInt("openPagesIndex", this.openPagesIndex);
         return compound;
     }
 
-    @Override
     public void deserializeNBT(CompoundTag nbt) {
         this.openPagesIndex = nbt.getInt("openPagesIndex");
     }

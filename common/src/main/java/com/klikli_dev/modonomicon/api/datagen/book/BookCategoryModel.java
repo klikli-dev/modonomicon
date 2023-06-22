@@ -12,9 +12,9 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Category;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
 import com.mojang.serialization.JsonOps;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -147,7 +147,7 @@ public class BookCategoryModel {
      * Sets the category's icon to the texture of the given item
      */
     public BookCategoryModel withIcon(ItemLike item) {
-        return this.withIcon(ForgeRegistries.ITEMS.getKey(item.asItem()));
+        return this.withIcon(BuiltInRegistries.ITEM.getKey(item.asItem()));
     }
 
 
@@ -186,7 +186,7 @@ public class BookCategoryModel {
      * If there are any parallax layers, the background texture will be ignored.
      * The texture needs to be a 512x512 png file, unless withBackgroundSize is called to specify a different size.
      */
-    public BookCategoryModel withBackgroundParallaxLayers(BookCategoryBackgroundParallaxLayer ... layers) {
+    public BookCategoryModel withBackgroundParallaxLayers(BookCategoryBackgroundParallaxLayer... layers) {
         this.backgroundParallaxLayers.addAll(List.of(layers));
         return this;
     }

@@ -10,6 +10,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -17,7 +18,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -160,7 +160,7 @@ public abstract class MultiblockProvider implements DataProvider {
         public DenseMultiblockBuilder block(char c, Supplier<? extends Block> b) {
             JsonObject json = new JsonObject();
             json.addProperty("type", "modonomicon:block");
-            json.addProperty("block", ForgeRegistries.BLOCKS.getKey(b.get()).toString());
+            json.addProperty("block", BuiltInRegistries.BLOCK.getKey(b.get()).toString());
 
             return this.map(String.valueOf(c), json);
         }
@@ -176,8 +176,8 @@ public abstract class MultiblockProvider implements DataProvider {
         public DenseMultiblockBuilder block(char c, Supplier<? extends Block> b, Supplier<? extends Block> display, String displayState) {
             JsonObject json = new JsonObject();
             json.addProperty("type", "modonomicon:block");
-            json.addProperty("block", ForgeRegistries.BLOCKS.getKey(b.get()).toString());
-            json.addProperty("display", ForgeRegistries.BLOCKS.getKey(display.get()).toString() + displayState);
+            json.addProperty("block", BuiltInRegistries.BLOCK.getKey(b.get()).toString());
+            json.addProperty("display", BuiltInRegistries.BLOCK.getKey(display.get()) + displayState);
 
             return this.map(String.valueOf(c), json);
         }
@@ -192,7 +192,7 @@ public abstract class MultiblockProvider implements DataProvider {
         public DenseMultiblockBuilder blockstate(char c, Supplier<? extends Block> b, String matchState) {
             JsonObject json = new JsonObject();
             json.addProperty("type", "modonomicon:blockstate");
-            json.addProperty("block", ForgeRegistries.BLOCKS.getKey(b.get()).toString() + matchState);
+            json.addProperty("block", BuiltInRegistries.BLOCK.getKey(b.get()) + matchState);
 
             return this.map(String.valueOf(c), json);
         }
@@ -221,8 +221,8 @@ public abstract class MultiblockProvider implements DataProvider {
         public DenseMultiblockBuilder blockstate(char c, Supplier<? extends Block> b, String matchState, Supplier<? extends Block> display, String displayState) {
             JsonObject json = new JsonObject();
             json.addProperty("type", "modonomicon:blockstate");
-            json.addProperty("block", ForgeRegistries.BLOCKS.getKey(b.get()).toString() + matchState);
-            json.addProperty("display", ForgeRegistries.BLOCKS.getKey(display.get()).toString() + displayState);
+            json.addProperty("block", BuiltInRegistries.BLOCK.getKey(b.get()) + matchState);
+            json.addProperty("display", BuiltInRegistries.BLOCK.getKey(display.get()) + displayState);
 
             return this.map(String.valueOf(c), json);
         }
@@ -237,7 +237,7 @@ public abstract class MultiblockProvider implements DataProvider {
         public DenseMultiblockBuilder blockstateproperty(char c, Supplier<? extends Block> b, String matchState) {
             JsonObject json = new JsonObject();
             json.addProperty("type", "modonomicon:blockstateproperty");
-            json.addProperty("block", ForgeRegistries.BLOCKS.getKey(b.get()).toString() + matchState);
+            json.addProperty("block", BuiltInRegistries.BLOCK.getKey(b.get()) + matchState);
 
             return this.map(String.valueOf(c), json);
         }
@@ -267,8 +267,8 @@ public abstract class MultiblockProvider implements DataProvider {
         public DenseMultiblockBuilder blockstateproperty(char c, Supplier<? extends Block> b, String matchState, Supplier<? extends Block> display, String displayState) {
             JsonObject json = new JsonObject();
             json.addProperty("type", "modonomicon:blockstblockstatepropertyate");
-            json.addProperty("block", ForgeRegistries.BLOCKS.getKey(b.get()).toString() + matchState);
-            json.addProperty("display", ForgeRegistries.BLOCKS.getKey(display.get()).toString() + displayState);
+            json.addProperty("block", BuiltInRegistries.BLOCK.getKey(b.get()) + matchState);
+            json.addProperty("display", BuiltInRegistries.BLOCK.getKey(display.get()) + displayState);
 
             return this.map(String.valueOf(c), json);
         }
@@ -285,7 +285,7 @@ public abstract class MultiblockProvider implements DataProvider {
         public DenseMultiblockBuilder display(char c, Supplier<? extends Block> display, String displayState) {
             JsonObject json = new JsonObject();
             json.addProperty("type", "modonomicon:display");
-            json.addProperty("display", ForgeRegistries.BLOCKS.getKey(display.get()).toString() + displayState);
+            json.addProperty("display", BuiltInRegistries.BLOCK.getKey(display.get()) + displayState);
 
             return this.map(String.valueOf(c), json);
         }
@@ -314,7 +314,7 @@ public abstract class MultiblockProvider implements DataProvider {
             JsonObject json = new JsonObject();
             json.addProperty("type", "modonomicon:tag");
             json.addProperty("tag", "#" + tag.location() + matchState);
-            json.addProperty("display", ForgeRegistries.BLOCKS.getKey(display.get()).toString() + displayState);
+            json.addProperty("display", BuiltInRegistries.BLOCK.getKey(display.get()) + displayState);
 
             return this.map(String.valueOf(c), json);
         }

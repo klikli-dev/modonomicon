@@ -8,11 +8,11 @@ package com.klikli_dev.modonomicon.book;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public class BookIcon {
     private final ItemStack itemStack;
@@ -32,7 +32,7 @@ public class BookIcon {
         if (value.getPath().endsWith(".png")) {
             return new BookIcon(value);
         } else {
-            Item item = ForgeRegistries.ITEMS.getValue(value);
+            Item item = BuiltInRegistries.ITEM.get(value);
             return new BookIcon(new ItemStack(item));
         }
     }
@@ -42,7 +42,7 @@ public class BookIcon {
         if (rl.getPath().endsWith(".png")) {
             return new BookIcon(rl);
         } else {
-            Item item = ForgeRegistries.ITEMS.getValue(rl);
+            Item item = BuiltInRegistries.ITEM.get(rl);
             return new BookIcon(new ItemStack(item));
         }
     }
@@ -60,7 +60,7 @@ public class BookIcon {
         if (this.texture != null) {
             buffer.writeResourceLocation(this.texture);
         } else {
-            buffer.writeResourceLocation(ForgeRegistries.ITEMS.getKey(this.itemStack.getItem()));
+            buffer.writeResourceLocation(BuiltInRegistries.ITEM.getKey(this.itemStack.getItem()));
         }
     }
 }

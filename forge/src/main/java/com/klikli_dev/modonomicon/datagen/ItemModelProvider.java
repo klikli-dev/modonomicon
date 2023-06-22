@@ -20,7 +20,7 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
     }
 
     protected String name(Item item) {
-        return ForgeRegistries.ITEMS.getKey(item).getPath();
+        return BuiltInRegistries.ITEM.getKey(item).getPath();
     }
 
     private void registerItemGenerated(String name) {

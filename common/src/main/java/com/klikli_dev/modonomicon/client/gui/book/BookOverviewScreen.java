@@ -139,7 +139,7 @@ public class BookOverviewScreen extends Screen {
         if (index != -1) {
             this.changeCategory(index);
         } else {
-            Modonomicon.LOGGER.warn("Tried to change to a category ({}) that does not exist in this book ({}).", this.book.getId(), category.getId());
+            Modonomicon.LOG.warn("Tried to change to a category ({}) that does not exist in this book ({}).", this.book.getId(), category.getId());
         }
     }
 

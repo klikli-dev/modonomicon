@@ -289,7 +289,7 @@ public class MultiblockPreviewRenderer {
                                 }
                             } catch (Exception e) {
                                 erroredBlockEntities.add(be);
-                                Modonomicon.LOGGER.error("Error rendering block entity", e);
+                                Modonomicon.LOG.error("Error rendering block entity", e);
                             }
                             ms.popPose();
                         }

@@ -6,12 +6,10 @@
 
 package com.klikli_dev.modonomicon.book;
 
-import com.klikli_dev.modonomicon.multiblock.matcher.BlockMatcher;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
-import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 
 public class BookTextHolder {
@@ -61,6 +59,7 @@ public class BookTextHolder {
     public boolean hasComponent() {
         return this.component != null;
     }
+
     public boolean isEmpty() {
         //Note: BookTextHolder needs to override this, because string will always be null for it
         return (this.hasComponent() ? this.component.getString() : this.string).isEmpty();
@@ -85,11 +84,11 @@ public class BookTextHolder {
         }
         var that = (BookTextHolder) o;
 
-        if(this.hasComponent() && that.hasComponent()){
+        if (this.hasComponent() && that.hasComponent()) {
             return this.component.equals(that.component);
         }
 
-        if(this.string != null)
+        if (this.string != null)
             return this.string.equals(that.string);
 
         return false;

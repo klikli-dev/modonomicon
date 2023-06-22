@@ -67,10 +67,10 @@ public class ClientSetupEventHandler {
         //Not safe to call during parallel load, so register to run threadsafe.
         event.enqueueWork(() -> {
             //Register screen factories
-            Modonomicon.LOGGER.debug("Registered Screen Containers");
+            Modonomicon.LOG.debug("Registered Screen Containers");
         });
 
-        Modonomicon.LOGGER.info("Client setup complete.");
+        Modonomicon.LOG.info("Client setup complete.");
     }
 
     public static void registerItemModelProperties(FMLClientSetupEvent event) {
@@ -79,7 +79,7 @@ public class ClientSetupEventHandler {
         event.enqueueWork(() -> {
             //Register item model properties
 
-            Modonomicon.LOGGER.debug("Registered Item Properties");
+            Modonomicon.LOG.debug("Registered Item Properties");
         });
     }
 

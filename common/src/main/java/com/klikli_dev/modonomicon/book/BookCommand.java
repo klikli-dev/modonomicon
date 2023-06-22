@@ -138,7 +138,7 @@ public class BookCommand {
                 }
             }
             catch (Exception e){
-                Modonomicon.LOGGER.error("Running command [" + this.id.toString() + "] failed: ", e);
+                Modonomicon.LOG.error("Running command [" + this.id.toString() + "] failed: ", e);
             }
         }
 

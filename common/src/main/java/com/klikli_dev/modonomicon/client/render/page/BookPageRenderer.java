@@ -61,7 +61,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
                 }
             }
         } else {
-            Modonomicon.LOGGER.warn("BookTextHolder with String {} has no component, but is not rendered to markdown either.", text.getString());
+            Modonomicon.LOG.warn("BookTextHolder with String {} has no component, but is not rendered to markdown either.", text.getString());
         }
     }
 

@@ -101,7 +101,7 @@ public abstract class CategoryProvider {
      * Create an item link with a custom text (instead of item name)
      */
     protected String itemLink(String text, ItemLike item) {
-        var rl = ForgeRegistries.ITEMS.getKey(item.asItem());
+        var rl = BuiltInRegistries.ITEM.getKey(item.asItem());
         return this.format("[{0}](item://{1})", text, rl);
     }
 

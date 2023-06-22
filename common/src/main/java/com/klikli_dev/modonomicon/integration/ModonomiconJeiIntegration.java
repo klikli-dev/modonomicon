@@ -34,7 +34,7 @@ public class ModonomiconJeiIntegration {
         if (isJeiLoaded()) {
             return ModonomiconJeiHelper.isJEIRecipesGuiOpen();
         } else {
-            Modonomicon.LOGGER.warn("Attempted check if JEI recipes GUI is open without JEI installed!");
+            Modonomicon.LOG.warn("Attempted check if JEI recipes GUI is open without JEI installed!");
         }
         return false;
     }
@@ -43,7 +43,7 @@ public class ModonomiconJeiIntegration {
         if (isJeiLoaded()) {
             ModonomiconJeiHelper.showRecipe(stack);
         } else {
-            Modonomicon.LOGGER.warn("Attempted to show JEI recipe for {} without JEI installed!", ForgeRegistries.ITEMS.getKey(stack.getItem()));
+            Modonomicon.LOG.warn("Attempted to show JEI recipe for {} without JEI installed!", BuiltInRegistries.ITEM.getKey(stack.getItem()));
         }
     }
 
@@ -51,7 +51,7 @@ public class ModonomiconJeiIntegration {
         if (isJeiLoaded()) {
             ModonomiconJeiHelper.showUses(stack);
         } else {
-            Modonomicon.LOGGER.warn("Attempted to show JEI usages for {} without JEI installed!", ForgeRegistries.ITEMS.getKey(stack.getItem()));
+            Modonomicon.LOG.warn("Attempted to show JEI usages for {} without JEI installed!", BuiltInRegistries.ITEM.getKey(stack.getItem()));
         }
     }
 
