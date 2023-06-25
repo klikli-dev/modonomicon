@@ -10,12 +10,14 @@ package com.klikli_dev.modonomicon.api.datagen.book.condition;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class BookAdvancementConditionModel extends BookConditionModel {
-    private final String advancementId;
+    private final ResourceLocation advancementId;
 
-    protected BookAdvancementConditionModel(String advancementId, Component tooltip, String tooltipString) {
+    protected BookAdvancementConditionModel(ResourceLocation advancementId, Component tooltip, String tooltipString) {
         super(Condition.ADVANCEMENT, tooltip, tooltipString);
         this.advancementId = advancementId;
     }
@@ -27,16 +29,16 @@ public class BookAdvancementConditionModel extends BookConditionModel {
     @Override
     public JsonObject toJson() {
         var json = super.toJson();
-        json.addProperty("advancement_id", this.advancementId);
+        json.addProperty("advancement_id", this.advancementId.toString());
         return json;
     }
 
-    public String getAdvancementId() {
+    public ResourceLocation getAdvancementId() {
         return this.advancementId;
     }
 
     public static final class Builder {
-        private String advancementId;
+        private ResourceLocation advancementId;
         private Component tooltip;
         private String tooltipString;
 
@@ -47,8 +49,18 @@ public class BookAdvancementConditionModel extends BookConditionModel {
             return new Builder();
         }
 
-        public Builder withAdvancementId(String advancementId) {
+        public Builder withAdvancementId(ResourceLocation advancementId) {
             this.advancementId = advancementId;
+            return this;
+        }
+
+        public Builder withAdvancementId(String advancementId) {
+            this.advancementId = new ResourceLocation(advancementId);
+            return this;
+        }
+
+        public Builder withAdvancement(Advancement advancement) {
+            this.advancementId = advancement.getId();
             return this;
         }
 
@@ -65,7 +77,7 @@ public class BookAdvancementConditionModel extends BookConditionModel {
             return this;
         }
 
-        public String getAdvancementId() {
+        public ResourceLocation getAdvancementId() {
             return this.advancementId;
         }
 
