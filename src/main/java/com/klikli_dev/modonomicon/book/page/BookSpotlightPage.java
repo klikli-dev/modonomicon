@@ -38,7 +38,7 @@ public class BookSpotlightPage extends BookPage {
 
     public static BookSpotlightPage fromJson(JsonObject json) {
         var title = BookGsonHelper.getAsBookTextHolder(json, "title", BookTextHolder.EMPTY);
-        var item = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "item"));
+        var item = Ingredient.fromJson(json.get("item"));
         var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY);
         var anchor = GsonHelper.getAsString(json, "anchor", "");
         return new BookSpotlightPage(title, text, item, anchor);
