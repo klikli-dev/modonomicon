@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.36.2] - 2023-06-25
+### :bug: Bug Fixes
+- [`87f83a2`](https://github.com/klikli-dev/modonomicon/commit/87f83a20f4934c20b78dff0f6b3939df6fd6ae6c) - make advancement condition take resource location as id *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.36.1] - 2023-06-25
 ### :bug: Bug Fixes
 - [`7123c9c`](https://github.com/klikli-dev/modonomicon/commit/7123c9cee7396128191cd904fd9ef01fe2263cad) - multi-item ingredient not supported, only tag *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -350,3 +355,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.35.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.34.0...release/v1.20.1-1.35.0
 [release/v1.20.1-1.36.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.35.0...release/v1.20.1-1.36.0
 [release/v1.20.1-1.36.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.36.0...release/v1.20.1-1.36.1
+[release/v1.20.1-1.36.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.36.1...release/v1.20.1-1.36.2
