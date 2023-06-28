@@ -91,6 +91,13 @@ public abstract class CategoryProvider {
     }
 
     /**
+     * Create a link to a category in the same book.
+     */
+    protected String categoryLink(String text, String category) {
+        return this.format("[{0}](category://{1})", text, category);
+    }
+
+    /**
      * Create an item link with no text (will use item name)
      */
     protected String itemLink(ItemLike item) {
@@ -118,6 +125,14 @@ public abstract class CategoryProvider {
      */
     protected String entryLinkDummy(String text, String category, String entry) {
         return this.format("[{0}]()", text, category, entry);
+    }
+
+    /**
+     * Dummy category link for use in the book provider, as the linked category is not available at that point.
+     * Replace with identical call to categoryLink once the entry is available.
+     */
+    protected String categoryLinkDummy(String text, String category) {
+        return this.format("[{0}]()", text, category);
     }
 
     /**
