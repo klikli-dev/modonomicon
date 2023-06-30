@@ -259,6 +259,16 @@ public class BookEntryModel {
         }
 
         /**
+         * Sets the entry's icon.
+         *
+         * @param icon Either an item ResourceLocation (e.g.: "minecraft:stone") or a texture ResourceLocation (e.g. "minecraft:textures/block/stone.png" - note the ".png" at the end)
+         */
+        public Builder withIcon(ResourceLocation icon) {
+            this.icon = icon.toString();
+            return this;
+        }
+
+        /**
          * Sets the entry's icon to the texture of the given item
          */
         public Builder withIcon(ItemLike item) {

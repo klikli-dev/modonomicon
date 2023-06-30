@@ -1,6 +1,10 @@
 package com.klikli_dev.modonomicon.api.datagen;
 
 import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
+import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookAndConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookOrConditionModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.data.LanguageProvider;
@@ -17,11 +21,14 @@ public abstract class CategoryProvider {
     protected CategoryEntryMap entryMap;
     protected Map<String, String> macros;
 
+    protected ConditionHelper conditionHelper;
+
     public CategoryProvider(BookProvider parent, String categoryId) {
         this.parent = parent;
         this.categoryId = categoryId;
         this.entryMap = new CategoryEntryMap();
         this.macros = new HashMap<>();
+        this.conditionHelper = new ConditionHelper();
     }
 
     public String categoryId(){
@@ -42,6 +49,9 @@ public abstract class CategoryProvider {
 
     protected BookContextHelper context() {
         return this.parent.context();
+    }
+    protected ConditionHelper condition() {
+        return this.parent.condition();
     }
 
     protected CategoryEntryMap entryMap() {
@@ -133,6 +143,33 @@ public abstract class CategoryProvider {
      */
     protected String categoryLinkDummy(String text, String category) {
         return this.format("[{0}]()", text, category);
+    }
+
+    protected BookEntryModel.Builder entry(char location, String icon) {
+        return this.entry(location).withIcon(icon);
+    }
+
+    protected BookEntryModel.Builder entry(char location, ItemLike icon) {
+        return this.entry(location).withIcon(icon);
+    }
+
+    protected BookEntryModel.Builder entry(char location) {
+        return this.entry().withLocation(this.entryMap().get(location));
+    }
+
+    protected BookEntryModel.Builder entry() {
+        return BookEntryModel.builder()
+                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
+                .withName(this.context().entryName())
+                .withDescription(this.context().entryDescription());
+    }
+
+    public BookAndConditionModel and(BookConditionModel... children) {
+        return this.condition().and(children);
+    }
+
+    public BookOrConditionModel or(BookConditionModel... children) {
+        return this.condition().or(children);
     }
 
     /**
