@@ -85,9 +85,7 @@ public class DemoBookProvider extends BookProvider {
 
         this.context().entry("always_locked");
 
-        var entry = BookEntryModel.builder()
-                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
-                .withName(this.context().entryName())
+        var entry = BookEntryModel.create(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()), this.context().entryName())
                 .withDescription(this.context().entryDescription())
                 .withIcon("minecraft:nether_star")
                 .withLocation(entryHelper.get('l'))
@@ -97,7 +95,7 @@ public class DemoBookProvider extends BookProvider {
         return BookCategoryModel.create(this.modLoc(this.context().categoryId()), this.context().categoryName())
                 .withIcon("minecraft:book")
                 .withShowCategoryButton(false)
-                .withEntry(entry.build());
+                .withEntry(entry);
     }
 
     private BookCategoryModel makeConditionalCategory(BookContextHelper helper) {
@@ -114,9 +112,7 @@ public class DemoBookProvider extends BookProvider {
 
         this.context().entry("always_locked");
 
-        var entry = BookEntryModel.builder()
-                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
-                .withName(this.context().entryName())
+        var entry = BookEntryModel.create(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()), this.context().entryName())
                 .withDescription(this.context().entryDescription())
                 .withIcon("minecraft:nether_star")
                 .withLocation(entryHelper.get('l'))
@@ -125,6 +121,6 @@ public class DemoBookProvider extends BookProvider {
 
         return BookCategoryModel.create(this.modLoc(this.context().categoryId()), this.context().categoryName())
                 .withIcon("minecraft:chest")
-                .withEntry(entry.build());
+                .withEntry(entry);
     }
 }

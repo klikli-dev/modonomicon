@@ -21,10 +21,10 @@ public class ConditionHelper {
         return BookEntryReadConditionModel.builder().withEntry(entryId);
     }
 
-    public BookEntryReadConditionModel entryRead(BookEntryModel.Builder entry) {
+    public BookEntryReadConditionModel entryRead(BookEntryModel entry) {
         return BookEntryReadConditionModel.builder().withEntry(entry.getId()).build();
     }
-    public BookEntryReadConditionModel.Builder entryReadBuilder(BookEntryModel.Builder entry) {
+    public BookEntryReadConditionModel.Builder entryReadBuilder(BookEntryModel entry) {
         return BookEntryReadConditionModel.builder().withEntry(entry.getId());
     }
 

@@ -2,6 +2,7 @@ package com.klikli_dev.modonomicon.api.datagen;
 
 import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
+import com.klikli_dev.modonomicon.api.datagen.book.BookEntryParentModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookAndConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookOrConditionModel;
@@ -12,6 +13,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class CategoryProvider {
@@ -23,15 +25,18 @@ public abstract class CategoryProvider {
 
     protected ConditionHelper conditionHelper;
 
+    protected BookCategoryModel category;
+
     public CategoryProvider(BookProvider parent, String categoryId) {
         this.parent = parent;
         this.categoryId = categoryId;
         this.entryMap = new CategoryEntryMap();
         this.macros = new HashMap<>();
         this.conditionHelper = new ConditionHelper();
+        this.category = null;
     }
 
-    public String categoryId(){
+    public String categoryId() {
         return this.categoryId;
     }
 
@@ -50,6 +55,7 @@ public abstract class CategoryProvider {
     protected BookContextHelper context() {
         return this.parent.context();
     }
+
     protected ConditionHelper condition() {
         return this.parent.condition();
     }
@@ -145,23 +151,40 @@ public abstract class CategoryProvider {
         return this.format("[{0}]()", text, category);
     }
 
-    protected BookEntryModel.Builder entry(char location, String icon) {
+    protected BookEntryModel entry(String location, String icon) {
         return this.entry(location).withIcon(icon);
     }
 
-    protected BookEntryModel.Builder entry(char location, ItemLike icon) {
+    protected BookEntryModel entry(String location, ItemLike icon) {
         return this.entry(location).withIcon(icon);
     }
 
-    protected BookEntryModel.Builder entry(char location) {
+    protected BookEntryModel entry(char location, String icon) {
+        return this.entry(location).withIcon(icon);
+    }
+
+    protected BookEntryModel entry(char location, ItemLike icon) {
+        return this.entry(location).withIcon(icon);
+    }
+
+    protected BookEntryModel entry(char location) {
         return this.entry().withLocation(this.entryMap().get(location));
     }
 
-    protected BookEntryModel.Builder entry() {
-        return BookEntryModel.builder()
-                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
-                .withName(this.context().entryName())
+    protected BookEntryModel entry(String location) {
+        return this.entry().withLocation(this.entryMap().get(location));
+    }
+
+    protected BookEntryModel entry() {
+        return BookEntryModel.create(
+                        this.modLoc(this.context().categoryId() + "/" + this.context().entryId()),
+                        this.context().entryName()
+                )
                 .withDescription(this.context().entryDescription());
+    }
+
+    protected BookEntryParentModel parent(BookEntryModel parentEntry) {
+        return BookEntryParentModel.create(parentEntry.getId());
     }
 
     public BookAndConditionModel and(BookConditionModel... children) {
@@ -208,13 +231,25 @@ public abstract class CategoryProvider {
         this.add(translation, key, this.format(pattern, args));
     }
 
+    protected BookEntryModel add(BookEntryModel entry) {
+        this.category.withEntry(entry);
+        return entry;
+    }
+
+    protected List<BookEntryModel> add(List<BookEntryModel> entries) {
+        this.category.withEntries(entries);
+        return entries;
+    }
+
     /**
      * Call this in your BookProvider to get the category.
      */
     public BookCategoryModel generate() {
         this.context().category(this.categoryId);
         this.entryMap().setMap(this.generateEntryMap());
-        return this.generateCategory();
+        this.category = this.generateCategory();
+        this.generateEntries();
+        return this.category;
     }
 
     /**
@@ -223,7 +258,14 @@ public abstract class CategoryProvider {
     protected abstract String[] generateEntryMap();
 
     /**
+     * Implement this and in it generate, link (= set parents and conditions) and .add() your entries.
+     * Context already is set to this category.
+     */
+    protected abstract void generateEntries();
+
+    /**
      * Implement this and return your category.
+     * Entries should not be added here, instead call .add() in generateEntries().
      * Context already is set to this category.
      */
     protected abstract BookCategoryModel generateCategory();
