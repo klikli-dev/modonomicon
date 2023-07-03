@@ -8,100 +8,38 @@ Finally, it is time to add our texts. That means we will now tell the game what 
 
 Modonomicon allows to access LanguageProviders in the book provider, so it is very easy to add texts alongside the book structure.
 
-If you are impatient you can skip ahead to **[Results](#results)** to see what we will be creating.
+You can view the final code for this step in the branch for step 4: https://github.com/klikli-dev/modonomicon-demo-book/tree/guide/step4 
 
+Using the green "Code" Button and "Download ZIP" you can download the code for this step as a zip file to compare to your code.
 
-## Adding translations for the Book Name and Tooltip
+## [Changes to DemoBookProvider.java](https://github.com/klikli-dev/modonomicon-demo-book/compare/guide/step3..guide/step4#diff-bae90ab237cc5e78b10e53c7ad47160887a6536b0f8cb361732336cf3f986782)
 
-1. Open `DemoBookProvider.java`
-2. Into the existing method `generateBook` add at the top:
-   ```java
-   //we can reference the language providers in the book provider
-   this.lang().add(this.context().bookName(), "Demo Book"); //and now we add the actual textual book name
-   this.lang().add(this.context().bookTooltip(), "A book to showcase & test Modonomicon features."); //and the tooltip text
-   ```
+The changes are very simple, view the **[Diff](https://github.com/klikli-dev/modonomicon-demo-book/compare/guide/step3..guide/step4#diff-bae90ab237cc5e78b10e53c7ad47160887a6536b0f8cb361732336cf3f986782)** here.
 
-   ::: tip
+Translations work using `this.lang().add(...)` in the BookProvider.
 
-   The base BookProvider Class already sets up context for our book before calling generateBook, so we don't need to do it manually.
+:::info
 
-   :::
-
-3. Optionally, you can add translations, by their language code:
-   ```java
-   this.lang("es_es").add(this.context().bookName(), "Libro de demostración");
-   this.lang("es_es").add(this.context().bookTooltip(), "Un libro para mostrar y probar las funciones de Modonomicon."); 
-   ```
-
-
-What is happening here? `this.lang().add(<language key>, <text>)` adds a mapping for a given translation key, which we get from our helper, to the given text. The game will then display the text wherever the translation key is used in the book. Under the hood `.lang()` simply gives us a reference to a LanguageProvider that works just like any forge language provider, the only special element is that we get the translation key / description id from our helper. 
-
-:::tip
-
-In order for translations to work a corresponding language provider must be handed over to the DemoBookProvider in the DataGenerators.java file!
+this.lang() returns the language provider you handed over to the book provider. That means, if you prefer, you can also do your translations in the language provider directly, but generally it is more convenient to do it in the book provider.
 
 ::: 
 
-Let's take a look at our all-new translated book item:
+As you can see we use the context to get the translation keys for our book name and tooltip, and then provide the text.
 
-1. In the terminal, run `./gradlew runData` to generate the json file(s).
-2. After it is complete, run `./gradlew runClient` to start Minecraft.
-3. Re-join our old world.
-4. Hover over the book item - you should now see the name and tooltip we just added, instead of the language key we saw before.
+## [Changes to FeaturesCategoryProvider.java](https://github.com/klikli-dev/modonomicon-demo-book/compare/guide/step3..guide/step4#diff-35d687e007c80093b71ad3400be6e689d5641e8f772b6881d0ccf08642f04598)
 
-## Adding translations for the Features Category
+View the **[Diff](https://github.com/klikli-dev/modonomicon-demo-book/compare/guide/step3..guide/step4#diff-35d687e007c80093b71ad3400be6e689d5641e8f772b6881d0ccf08642f04598)** here.
 
-1. Open `DemoBookProvider.java`
-2. In the method `makeFeaturesCategory` add below `helper.category("features");`: 
-   ```java
-   this.lang().add(this.context().categoryName(), "Features Category"); //and provide the category name text
-   //here is where you would provide translations, as above with the book name and tooltip
-   ```
-
-Now we can test our translated category:
-
-1. In the terminal, run `./gradlew runData` to generate the json file(s).
-2. After it is complete, run `./gradlew runClient` to start Minecraft.
-3. Re-join our old world.
-4. Open the book by right-clicking with the book item.
-5. Hover over the category button on the top leftyou should now see the correct name.
-
-## Adding translations for our Entry and Pages
-
-Finally it is time to add our page texts!
-
-1. Open `DemoBookProvider.java`
-2. Find the method `makeMultiblockEntry`
-3. Below `helper.entry("multiblock");` add: 
-   ```java
-   this.lang().add(this.context().entryName(), "Multiblock Entry"); //provide the entry name
-   this.lang().add(this.context().entryDescription(), "An entry showcasing a multiblock."); //and description
-   ```
-   *This adds the text for hovering over the entry in the category/quest view* 
-
-4. Below `helper.page("intro"); ... .build();` (= after the lines that create the "multiBlockIntroPage") add: 
-   ```java
-   this.lang().add(this.context().pageTitle(), "Multiblock Page"); //page title
-   this.lang().add(this.context().pageText(), "Multiblock pages allow to preview multiblocks both in the book and in the world."); //page text
-   ```
-   *This adds the page text for the intro page* 
-
-
-4. Below `helper.page("multiblock"); ... .build();` (= after the lines that create the "multiblockPreviewPage") add: 
-   ```java
-   //now provide the multiblock name
-   //the lang helper does not handle multiblocks, so we manually add the same key we provided in the DemoBookProvider
-   this.lang().add("multiblocks.modonomicon_demo_book.blockentity", "Blockentity Multiblock.");
-   //and the multiblock page text
-   this.lang().add(this.context().pageText(), "A sample multiblock.");
-   ```
-   *This adds the name for the multiblock, and the page text for the multiblock preview page* 
+Much like in the DemoBookProvider we simply add calls to `this.lang().add(...)` in the CategoryProvider.
+Note that the calls have to be preceded by calls to `this.context.entry()` / `this.context.page()` so the language provider gets the correct translation keys. In our example code that is done by simply doing the `this.lang().add()` calls after we make the page they are associated with *and before we make the next page*.
 
 :::tip 
 
-If a text element - such as a title or text - is shown is governed in the BookXYZPageModel. If we e.g. do not call the `withTitle()` method, there will not be a title on that page. Calls to this.lang().add() we only provide the text. If we do not provide a text for any element the language key will be shown in game, reminding us to add a translation.
+If a text element - such as a title or text - is shown is governed in the BookXYZPageModel. If we e.g. do not call the `withTitle()` method, there will not be a title on that page. Calls to `this.lang().add()` only provide the text. If we do not provide a text for any element the language key will be shown in game, reminding us to add a translation.
 
 ::: 
+
+## Generate our updated book
 
 Now let's take the entry and pages for a spin:
 
@@ -114,9 +52,11 @@ Now let's take the entry and pages for a spin:
 7. You should see the page texts:
    ![Entry Texts](/img/docs/getting-started/step4-add-entry-texts.png)
 
-## Results
 
+You now have a working Book that you can extend to your liking:
+- Add additional category providers for more categories.
+- Add more entries and pages to the existing category provider.
 
-You can view the final code for this step in the branch for step 3: https://github.com/klikli-dev/modonomicon-demo-book/tree/guide/step4 
+For an overview of the possible page types, you can view modonomicon's builtin demo book: https://github.com/klikli-dev/modonomicon/tree/version/1.20.1/src/main/java/com/klikli_dev/modonomicon/datagen/book
 
-Using the green "Code" Button and "Download ZIP" you can download the code for this step as a zip file to compare to your code.
+Another good resource is: https://github.com/klikli-dev/theurgy/tree/develop/src/main/java/com/klikli_dev/theurgy/datagen/book
