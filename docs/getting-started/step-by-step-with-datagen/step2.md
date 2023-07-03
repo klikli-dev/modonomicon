@@ -67,8 +67,7 @@ This file registers the two Data Generators from the Demo Project - one that wil
 
 ### DemoBookProvider.java
 
-In this file we will add instructions that will generate our book content, such as categories, entries and pages. 
-Please note that this will only create the structure of the book as well as all styling instructions.  
+In this file we will add instructions that will generate our book content, such as calls to category providers, which in turn will create entries and pages.
 Additionally it holds a reference to the language providers to also easily add the actual book texts.
 
 For now this file is mostly empty - that's OK!
