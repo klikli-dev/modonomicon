@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.integration;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 public class ModonomiconJeiIntegration {
 
     public static boolean isJeiLoaded() {
-        return ModList.get().isLoaded("jei");
+        return Services.PLATFORM.isModLoaded("jei");
     }
 
     public static boolean isJEIRecipesGuiOpen() {
