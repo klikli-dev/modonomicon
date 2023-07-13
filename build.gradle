@@ -14,9 +14,9 @@ if (System.getenv('MOD_VERSION') != null) {
     mod_version = System.getenv('MOD_VERSION')
 }
 if (System.getenv('MINECRAFT_VERSION') != null) {
-    minecraft_version = System.getenv('MINECRAFT_VERSION')
+    mc_version = System.getenv('MINECRAFT_VERSION')
 }
-version = "${minecraft_version}-${mod_version}"
+version = "${mc_version}-${mod_version}"
 
 group = "com.klikli_dev"
 archivesBaseName = "modonomicon"
