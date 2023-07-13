@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.3-1.30.2] - 2023-07-13
+### :sparkles: New Features
+- [`f64d5bb`](https://github.com/klikli-dev/modonomicon/commit/f64d5bbc8a377f1d0466f140f83b19760bc7cdf7) - Include Modrinth uploads *(PR [#133](https://github.com/klikli-dev/modonomicon/pull/133) by [@ColonelGerdauf](https://github.com/ColonelGerdauf))*
+
+### :bug: Bug Fixes
+- [`ee86a25`](https://github.com/klikli-dev/modonomicon/commit/ee86a2542458ca837a356667e3cc2636a2cb98be) - render issues with block items *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`be3df6e`](https://github.com/klikli-dev/modonomicon/commit/be3df6e7bd9850474ae97d155727d9572ddfca29) - action *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.3-1.30.1] - 2023-04-01
 ### :sparkles: New Features
 - [`f1ebfeb`](https://github.com/klikli-dev/modonomicon/commit/f1ebfeb38bd594fe0543955ed20e14c608ce11c8) - Create ru_ru.json *(PR [#113](https://github.com/klikli-dev/modonomicon/pull/113) by [@Heimdallr-1](https://github.com/Heimdallr-1))*
@@ -184,3 +193,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.3-1.29.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.29.0...release/v1.19.3-1.29.1
 [release/v1.19.3-1.30.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.29.1...release/v1.19.3-1.30.0
 [release/v1.19.3-1.30.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.30.0...release/v1.19.3-1.30.1
+[release/v1.19.3-1.30.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.3-1.30.1...release/v1.19.3-1.30.2
