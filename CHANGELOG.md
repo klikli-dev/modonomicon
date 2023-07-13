@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.2-1.33.1] - 2023-07-13
+### :sparkles: New Features
+- [`5704a05`](https://github.com/klikli-dev/modonomicon/commit/5704a0509f0421917dc956f9a11d534859854244) - Include Modrinth uploads *(PR [#132](https://github.com/klikli-dev/modonomicon/pull/132) by [@ColonelGerdauf](https://github.com/ColonelGerdauf))*
+
+### :bug: Bug Fixes
+- [`2f9f880`](https://github.com/klikli-dev/modonomicon/commit/2f9f880cbcae71b55e66b4906244f92c22e09da4) - action *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.2-1.33.0] - 2023-06-13
 ### :sparkles: New Features
 - [`908a2c2`](https://github.com/klikli-dev/modonomicon/commit/908a2c287c29da38293fcf0454b395718ee250fb) - add command support for links and for entry read *(PR [#125](https://github.com/klikli-dev/modonomicon/pull/125) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -181,3 +189,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.2-1.30.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.30.0...release/v1.19.2-1.30.1
 [release/v1.19.2-1.30.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.30.1...release/v1.19.2-1.30.2
 [release/v1.19.2-1.33.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.30.2...release/v1.19.2-1.33.0
+[release/v1.19.2-1.33.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.33.0...release/v1.19.2-1.33.1
