@@ -7,7 +7,6 @@
 package com.klikli_dev.modonomicon.network.messages;
 
 import com.klikli_dev.modonomicon.capability.BookStateCapability;
-import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
 import com.klikli_dev.modonomicon.network.Message;
 import com.klikli_dev.modonomicon.registry.CapabilityRegistry;
 import net.minecraft.client.Minecraft;
