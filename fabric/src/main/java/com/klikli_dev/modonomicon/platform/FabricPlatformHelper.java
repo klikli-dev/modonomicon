@@ -1,9 +1,9 @@
 package com.klikli_dev.modonomicon.platform;
 
-import com.klikli_dev.modonomicon.platform.services.IPlatformHelper;
+import com.klikli_dev.modonomicon.platform.services.PlatformHelper;
 import net.fabricmc.loader.api.FabricLoader;
 
-public class FabricPlatformHelper implements IPlatformHelper {
+public class FabricPlatformHelper implements PlatformHelper {
 
     @Override
     public String getPlatformName() {
