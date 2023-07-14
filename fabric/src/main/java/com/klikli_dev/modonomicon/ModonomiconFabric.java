@@ -12,7 +12,9 @@ public class ModonomiconFabric implements ModInitializer {
         // project.
 
         // Use Fabric to bootstrap the Common mod.
-        CommonConstants.LOG.info("Hello Fabric world!");
+        Modonomicon.LOG.info("Hello Fabric world!");
         Modonomicon.init();
+
+        //TODO: Listen for advancement events and call it on BookUnlockStateManager
     }
 }

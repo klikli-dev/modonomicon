@@ -7,13 +7,11 @@ import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
 import com.klikli_dev.modonomicon.platform.Services;
-import com.klikli_dev.modonomicon.registry.CapabilityRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -27,7 +25,7 @@ public class BookUnlockStateManager {
         return instance;
     }
 
-    private BookUnlockStates getStateFor(Player player){
+    private BookUnlockStates getStateFor(Player player) {
         this.getSaveDataIfNecessary(player);
         return this.saveData.unlockStates.get(player.getUUID());
     }
@@ -44,7 +42,6 @@ public class BookUnlockStateManager {
         }
         return book;
     }
-
 
     public void syncFor(ServerPlayer player) {
         Services.NETWORK.sendTo(player, new SyncBookUnlockStatesMessage(this.getStateFor(player)));
@@ -63,7 +60,7 @@ public class BookUnlockStateManager {
                 @Override
                 public void run() {
                     player.server.execute(() -> {
-                        updateAndSyncFor(player);
+                        BookUnlockStateManager.this.updateAndSyncFor(player);
                     });
                 }
             }, 1000);
@@ -71,38 +68,43 @@ public class BookUnlockStateManager {
         }
     }
 
-    public static List<ResourceLocation> getBooksFor(Player player) {
-        return player.getCapability(CapabilityRegistry.BOOK_UNLOCK).map(c -> c.getBooks()).orElse(Collections.emptyList());
+    public List<ResourceLocation> getBooksFor(Player player) {
+        return this.getStateFor(player).getBooks();
     }
 
-    public static void resetFor(Player player, Book book) {
-        player.getCapability(CapabilityRegistry.BOOK_UNLOCK).ifPresent(c -> c.reset(book));
+    public void resetFor(ServerPlayer player, Book book) {
+        this.getStateFor(player).reset(book);
+        this.saveData.setDirty();
+        this.syncFor(player);
     }
 
-    public static boolean isUnlockedFor(Player player, BookCategory category) {
-        return player.getCapability(CapabilityRegistry.BOOK_UNLOCK).map(c -> c.isUnlocked(category)).orElse(false);
+    public boolean isUnlockedFor(Player player, BookCategory category) {
+        return this.getStateFor(player).isUnlocked(category);
     }
 
-    public static boolean isUnlockedFor(Player player, BookEntry entry) {
-        return player.getCapability(CapabilityRegistry.BOOK_UNLOCK).map(c -> c.isUnlocked(entry)).orElse(false);
+    public boolean isUnlockedFor(Player player, BookEntry entry) {
+        return this.getStateFor(player).isUnlocked(entry);
     }
 
-    public static boolean isReadFor(Player player, BookEntry entry) {
-        return player.getCapability(CapabilityRegistry.BOOK_UNLOCK).map(c -> c.isRead(entry)).orElse(false);
+    public boolean isReadFor(Player player, BookEntry entry) {
+        return this.getStateFor(player).isRead(entry);
     }
 
-    public static boolean canRunFor(Player player, BookCommand command) {
-        return player.getCapability(CapabilityRegistry.BOOK_UNLOCK).map(c -> c.canRun(command)).orElse(false);
+    public boolean canRunFor(Player player, BookCommand command) {
+        return this.getStateFor(player).canRun(command);
     }
 
-    public static void setRunFor(Player player, BookCommand command) {
-        player.getCapability(CapabilityRegistry.BOOK_UNLOCK).ifPresent(c -> c.setRun(command));
+    /**
+     * Sets the given command as run (counts up the run count).
+     * Modifies state, but needs to be run on client side to update the book gui quickly.
+     * Does not call syncFor, needs to be done by the caller side if needed.
+     */
+    public void setRunFor(Player player, BookCommand command) {
+        this.getStateFor(player).setRun(command);
     }
 
-    public static void onAdvancement(final AdvancementEvent.AdvancementEarnEvent event) {
-        if (event.getEntity() instanceof ServerPlayer serverplayer) {
-            updateAndSyncFor(serverplayer);
-        }
+    public void onAdvancement(ServerPlayer player) {
+        this.updateAndSyncFor(player);
     }
 
     /**
