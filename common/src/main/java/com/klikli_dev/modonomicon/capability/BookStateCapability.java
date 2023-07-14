@@ -12,9 +12,9 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.Nbt;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookEntry;
-import com.klikli_dev.modonomicon.capability.bookstate.BookState;
-import com.klikli_dev.modonomicon.capability.bookstate.CategoryState;
-import com.klikli_dev.modonomicon.capability.bookstate.EntryState;
+import com.klikli_dev.modonomicon.bookstate.visual.BookVisualState;
+import com.klikli_dev.modonomicon.bookstate.visual.CategoryVisualState;
+import com.klikli_dev.modonomicon.bookstate.visual.EntryVisualState;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.SyncBookStateCapabilityMessage;
 import com.klikli_dev.modonomicon.registry.CapabilityRegistry;
@@ -32,37 +32,35 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class BookStateCapability implements INBTSerializable<CompoundTag> {
 
-    public ConcurrentMap<ResourceLocation, BookState> bookStates = new ConcurrentHashMap<>();
+    public ConcurrentMap<ResourceLocation, BookVisualState> bookStates = new ConcurrentHashMap<>();
 
 
-    public static BookState getBookStateFor(Player player, Book book) {
+    public static BookVisualState getBookStateFor(Player player, Book book) {
         return player.getCapability(CapabilityRegistry.BOOK_STATE).map(c -> c.getBookState(book)).orElse(null);
     }
 
-    public static CategoryState getCategoryStateFor(Player player, BookCategory category) {
+    public static CategoryVisualState getCategoryStateFor(Player player, BookCategory category) {
         return player.getCapability(CapabilityRegistry.BOOK_STATE).map(c -> c.getCategoryState(category)).orElse(null);
     }
 
-    public static EntryState getEntryStateFor(Player player, BookEntry entry) {
+    public static EntryVisualState getEntryStateFor(Player player, BookEntry entry) {
         return player.getCapability(CapabilityRegistry.BOOK_STATE).map(c -> c.getEntryState(entry)).orElse(null);
     }
 
-    public static void setEntryStateFor(Player player, BookEntry entry, EntryState state) {
+    public static void setEntryStateFor(Player player, BookEntry entry, EntryVisualState state) {
         player.getCapability(CapabilityRegistry.BOOK_STATE).ifPresent(c -> c.setEntryState(entry, state));
     }
 
-    public static void setCategoryStateFor(Player player, BookCategory category, CategoryState state) {
+    public static void setCategoryStateFor(Player player, BookCategory category, CategoryVisualState state) {
         player.getCapability(CapabilityRegistry.BOOK_STATE).ifPresent(c -> c.setCategoryState(category, state));
     }
 
-    public static void setBookStateFor(Player player, Book book, BookState state) {
+    public static void setBookStateFor(Player player, Book book, BookVisualState state) {
         player.getCapability(CapabilityRegistry.BOOK_STATE).ifPresent(c -> c.setBookState(book, state));
     }
 
@@ -112,34 +110,34 @@ public class BookStateCapability implements INBTSerializable<CompoundTag> {
             if (bookStateEntry instanceof CompoundTag bookStateCompound) {
                 var bookId = new ResourceLocation(bookStateCompound.getString("book_id"));
                 var stateCompound = bookStateCompound.getCompound("state");
-                var state = new BookState();
+                var state = new BookVisualState();
                 state.deserializeNBT(stateCompound);
                 this.bookStates.put(bookId, state);
             }
         }
     }
 
-    public BookState getBookState(Book book){
-        return this.bookStates.computeIfAbsent(book.getId(), (id) -> new BookState());
+    public BookVisualState getBookState(Book book){
+        return this.bookStates.computeIfAbsent(book.getId(), (id) -> new BookVisualState());
     }
 
-    public CategoryState getCategoryState(BookCategory category){
-        return this.getBookState(category.getBook()).categoryStates.computeIfAbsent(category.getId(), (id) -> new CategoryState());
+    public CategoryVisualState getCategoryState(BookCategory category){
+        return this.getBookState(category.getBook()).categoryStates.computeIfAbsent(category.getId(), (id) -> new CategoryVisualState());
     }
 
-    public EntryState getEntryState(BookEntry entry){
-        return this.getCategoryState(entry.getCategory()).entryStates.computeIfAbsent(entry.getId(), (id) -> new EntryState());
+    public EntryVisualState getEntryState(BookEntry entry){
+        return this.getCategoryState(entry.getCategory()).entryStates.computeIfAbsent(entry.getId(), (id) -> new EntryVisualState());
     }
 
-    public void setEntryState(BookEntry entry, EntryState state){
+    public void setEntryState(BookEntry entry, EntryVisualState state){
         this.getCategoryState(entry.getCategory()).entryStates.put(entry.getId(), state);
     }
 
-    public void setCategoryState(BookCategory category, CategoryState state){
+    public void setCategoryState(BookCategory category, CategoryVisualState state){
         this.getBookState(category.getBook()).categoryStates.put(category.getId(), state);
     }
 
-    public void setBookState(Book book, BookState state){
+    public void setBookState(Book book, BookVisualState state){
         this.bookStates.put(book.getId(), state);
     }
 
