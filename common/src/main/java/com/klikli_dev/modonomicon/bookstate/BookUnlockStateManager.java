@@ -5,6 +5,8 @@ import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCommand;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
+import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.registry.CapabilityRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -39,24 +41,19 @@ public class BookUnlockStateManager {
         if (book != null) {
             this.saveData.setDirty();
             this.syncFor(player);
-            this.saveData.sync(player);
         }
         return book;
     }
 
 
     public void syncFor(ServerPlayer player) {
-
-
-        player.getCapability(CapabilityRegistry.BOOK_UNLOCK).ifPresent(c -> c.sync(player));
+        Services.NETWORK.sendTo(player, new SyncBookUnlockStatesMessage(this.getStateFor(player)));
     }
 
-    public static void updateAndSyncFor(ServerPlayer player) {
+    public void updateAndSyncFor(ServerPlayer player) {
         if (BookDataManager.get().areBooksBuilt()) {
-            player.getCapability(CapabilityRegistry.BOOK_UNLOCK).ifPresent(capability -> {
-                capability.update(player);
-                capability.sync(player);
-            });
+            this.getStateFor(player).update(player);
+            this.syncFor(player);
         } else {
             //we have some edge cases where RecipesUpdatedEvent is fired after EntityJoinLevelEvent.
             //in SP this means that books are not built yet when updateAndSyncFor is called for the first time.
