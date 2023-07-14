@@ -1,6 +1,7 @@
 package com.klikli_dev.modonomicon.platform;
 
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.platform.services.NetworkHelper;
 import com.klikli_dev.modonomicon.platform.services.PlatformHelper;
 
 import java.util.ServiceLoader;
@@ -10,10 +11,8 @@ import java.util.ServiceLoader;
 // is swapped out for the platform specific implementation at runtime.
 public class Services {
 
-    // In this example we provide a platform helper which provides information about what platform the mod is running on.
-    // For example this can be used to check if the code is running on Forge vs Fabric, or to ask the modloader if another
-    // mod is loaded.
     public static final PlatformHelper PLATFORM = load(PlatformHelper.class);
+    public static final NetworkHelper NETWORK = load(NetworkHelper.class);
 
     // This code is used to load a service for the current environment. Your implementation of the service must be defined
     // manually by including a text file in META-INF/services named with the fully qualified class name of the service.

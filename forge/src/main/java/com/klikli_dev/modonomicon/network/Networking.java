@@ -39,6 +39,9 @@ public class Networking {
     }
 
     public static void registerMessages() {
+        //TODO: register common messages
+        //TODO: handle common messages!
+
         INSTANCE.registerMessage(nextID(),
                 SyncBookDataMessage.class,
                 SyncBookDataMessage::encode,
