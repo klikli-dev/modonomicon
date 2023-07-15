@@ -12,7 +12,6 @@ import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
 import dev.latvian.mods.kubejs.event.EventGroup;
 import dev.latvian.mods.kubejs.event.EventHandler;
-import dev.latvian.mods.kubejs.event.Extra;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -22,13 +21,13 @@ public class ModonomiconKubeJSPlugin extends dev.latvian.mods.kubejs.KubeJSPlugi
 
     public static final EventGroup EVENT_GROUP = EventGroup.of("ModonomiconEvents");
 
-    public static final EventHandler UPDATE_UNLOCKED_CONTENT = EVENT_GROUP.server("updateUnlockedContent", () -> UpdateUnlockedContentEventJS.class).extra(Extra.STRING);
+    public static final EventHandler UPDATE_UNLOCKED_CONTENT = EVENT_GROUP.server("updateUnlockedContent", () -> UpdateUnlockedContentEventJS.class);
 
-    public static final EventHandler CATEGORY_UNLOCKED = EVENT_GROUP.server("categoryUnlocked", () -> CategoryUnlockedEventJS.class).extra(Extra.STRING);
+    public static final EventHandler CATEGORY_UNLOCKED = EVENT_GROUP.server("categoryUnlocked", () -> CategoryUnlockedEventJS.class);
 
-    public static final EventHandler ENTRY_UNOCKED = EVENT_GROUP.server("entryUnlocked", () -> EntryUnlockedEventJS.class).extra(Extra.STRING);
+    public static final EventHandler ENTRY_UNLOCKED = EVENT_GROUP.server("entryUnlocked", () -> EntryUnlockedEventJS.class);
 
-    public static final EventHandler ENTRY_READ = EVENT_GROUP.server("entryRead", () -> EntryReadEventJS.class).extra(Extra.STRING);
+    public static final EventHandler ENTRY_READ = EVENT_GROUP.server("entryRead", () -> EntryReadEventJS.class);
 
     public static void postNewContentUnlockedEvent(ServerPlayer player, Set<BookConditionContext> newlyUnlockedContent) {
         if(newlyUnlockedContent.isEmpty())
@@ -42,7 +41,7 @@ public class ModonomiconKubeJSPlugin extends dev.latvian.mods.kubejs.KubeJSPlugi
             if (context instanceof BookConditionCategoryContext category) {
                 CATEGORY_UNLOCKED.post(ScriptType.SERVER, new CategoryUnlockedEventJS(player, category));
             } else if (context instanceof BookConditionEntryContext entry) {
-                ENTRY_UNOCKED.post(ScriptType.SERVER, new EntryUnlockedEventJS(player, entry));
+                ENTRY_UNLOCKED.post(ScriptType.SERVER, new EntryUnlockedEventJS(player, entry));
             }
         }
     }
