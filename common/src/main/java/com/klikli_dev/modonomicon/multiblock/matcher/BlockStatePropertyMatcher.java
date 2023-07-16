@@ -15,7 +15,6 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -24,7 +23,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -77,7 +75,7 @@ public class BlockStatePropertyMatcher implements StateMatcher {
             if (buffer.readBoolean())
                 displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), new StringReader(buffer.readUtf()), false).blockState();
 
-            var block = ForgeRegistries.BLOCKS.getValue(buffer.readResourceLocation());
+            var block = BuiltInRegistries.BLOCK.get(buffer.readResourceLocation());
             var props = buffer.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readUtf);
 
             return new BlockStatePropertyMatcher(displayState, block, Suppliers.memoize(() -> props));

@@ -44,9 +44,8 @@ public class SimulateResultImpl implements Multiblock.SimulateResult {
 
     @Override
     public boolean test(Level world, Rotation rotation) {
-        //{@link BlockState#rotate(LevelAccessor, BlockPos, Rotation)} */
         var pos = this.getWorldPosition();
-        BlockState state = world.getBlockState(pos).rotate(world, pos, AbstractMultiblock.fixHorizontal(rotation));
+        BlockState state = world.getBlockState(pos).rotate(AbstractMultiblock.fixHorizontal(rotation));
         return this.getStateMatcher().getStatePredicate().test(world, pos, state);
     }
 }

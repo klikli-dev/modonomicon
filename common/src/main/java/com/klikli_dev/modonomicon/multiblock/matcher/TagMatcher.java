@@ -16,8 +16,8 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -27,7 +27,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -45,11 +44,11 @@ public class TagMatcher implements StateMatcher {
     private final Supplier<Map<String, String>> props;
     private final TriPredicate<BlockGetter, BlockPos, BlockState> predicate;
 
-    protected TagMatcher( Supplier<TagKey<Block>> tag,  Supplier<Map<String, String>> props) {
+    protected TagMatcher(Supplier<TagKey<Block>> tag, Supplier<Map<String, String>> props) {
         this(null, tag, props);
     }
 
-    protected TagMatcher(BlockState displayState,  Supplier<TagKey<Block>> tag, Supplier<Map<String, String>> props) {
+    protected TagMatcher(BlockState displayState, Supplier<TagKey<Block>> tag, Supplier<Map<String, String>> props) {
         this.displayState = displayState;
         this.tag = tag;
         this.props = props;
@@ -67,34 +66,34 @@ public class TagMatcher implements StateMatcher {
         }
 
 
-            //testing=true enables tag parsing
-            //last param = allowNBT
-            var tagString = GsonHelper.getAsString(json, "tag");
-            if(!tagString.startsWith("#")) {
-                tagString = "#" + tagString;
+        //testing=true enables tag parsing
+        //last param = allowNBT
+        var tagString = GsonHelper.getAsString(json, "tag");
+        if (!tagString.startsWith("#")) {
+            tagString = "#" + tagString;
+        }
+
+
+        String finalTagString = tagString;
+        Supplier<TagKey<Block>> tagSupplier = Suppliers.memoize(() -> {
+            try {
+                var parserResult = BlockStateParser.parseForTesting(BuiltInRegistries.BLOCK.asLookup(), new StringReader(finalTagString), true).right().orElseThrow();
+                return parserResult.tag().unwrap().left().orElseThrow();
+            } catch (CommandSyntaxException e) {
+                throw new IllegalArgumentException("Failed to parse Tag and BlockState properties from json member \"tag\" for TagMatcher.", e);
             }
+        });
 
+        Supplier<Map<String, String>> propsSupplier = Suppliers.memoize(() -> {
+            try {
+                var parserResult = BlockStateParser.parseForTesting(BuiltInRegistries.BLOCK.asLookup(), new StringReader(finalTagString), true).right().orElseThrow();
+                return parserResult.vagueProperties();
+            } catch (CommandSyntaxException e) {
+                throw new IllegalArgumentException("Failed to parse Tag and BlockState properties from json member \"tag\" for TagMatcher.", e);
+            }
+        });
 
-            String finalTagString = tagString;
-            Supplier<TagKey<Block>> tagSupplier = Suppliers.memoize(() -> {
-                try {
-                    var parserResult = BlockStateParser.parseForTesting(BuiltInRegistries.BLOCK.asLookup(), new StringReader(finalTagString), true).right().orElseThrow();
-                   return parserResult.tag().unwrap().left().orElseThrow();
-                } catch (CommandSyntaxException e) {
-                    throw new IllegalArgumentException("Failed to parse Tag and BlockState properties from json member \"tag\" for TagMatcher.", e);
-                }
-            });
-
-            Supplier<Map<String, String>> propsSupplier = Suppliers.memoize(() -> {
-                try {
-                    var parserResult = BlockStateParser.parseForTesting(BuiltInRegistries.BLOCK.asLookup(), new StringReader(finalTagString), true).right().orElseThrow();
-                    return parserResult.vagueProperties();
-                } catch (CommandSyntaxException e) {
-                    throw new IllegalArgumentException("Failed to parse Tag and BlockState properties from json member \"tag\" for TagMatcher.", e);
-                }
-            });
-
-            return new TagMatcher(displayState, tagSupplier, propsSupplier);
+        return new TagMatcher(displayState, tagSupplier, propsSupplier);
 
     }
 
@@ -105,7 +104,7 @@ public class TagMatcher implements StateMatcher {
                 displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), new StringReader(buffer.readUtf()), false).blockState();
             }
 
-            var tag = TagKey.create(ForgeRegistries.BLOCKS.getRegistryKey(), buffer.readResourceLocation());
+            var tag = TagKey.create(Registries.BLOCK, buffer.readResourceLocation());
             var props = buffer.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readUtf);
 
             return new TagMatcher(displayState, () -> tag, () -> props);
@@ -143,12 +142,12 @@ public class TagMatcher implements StateMatcher {
         if (this.displayState != null) {
             return this.displayState;
         } else {
-            var all = ImmutableList.copyOf(ForgeRegistries.BLOCKS.tags().getTag(this.tag.get()));
+            var all = ImmutableList.copyOf(BuiltInRegistries.BLOCK.getTagOrEmpty(this.tag.get()));
             if (all.isEmpty()) {
                 return Blocks.BEDROCK.defaultBlockState(); // show something impossible
             } else {
                 int idx = (int) ((ticks / 20) % all.size());
-                return all.get(idx).defaultBlockState();
+                return all.get(idx).value().defaultBlockState();
             }
         }
     }

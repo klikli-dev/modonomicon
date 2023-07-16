@@ -7,9 +7,7 @@
 package com.klikli_dev.modonomicon.command;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Command;
-import com.klikli_dev.modonomicon.capability.BookUnlockStateManager.get();
-import com.klikli_dev.modonomicon.network.Networking;
-import com.klikli_dev.modonomicon.network.messages.SendUnlockCodeToClientMessage;
+import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;

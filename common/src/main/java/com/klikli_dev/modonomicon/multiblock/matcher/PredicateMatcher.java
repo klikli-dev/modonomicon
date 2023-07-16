@@ -6,6 +6,8 @@
 
 package com.klikli_dev.modonomicon.multiblock.matcher;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
@@ -15,15 +17,12 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.Lazy;
 
 import java.util.Objects;
 
@@ -37,16 +36,12 @@ public class PredicateMatcher implements StateMatcher {
 
     private final BlockState displayState;
     private final ResourceLocation predicateId;
-    private final Lazy<TriPredicate<BlockGetter, BlockPos, BlockState>> predicate;
+    private final Supplier<TriPredicate<BlockGetter, BlockPos, BlockState>> predicate;
 
     protected PredicateMatcher(BlockState displayState, ResourceLocation predicateId) {
         this.displayState = displayState;
         this.predicateId = predicateId;
-        this.predicate = Lazy.of(() -> LoaderRegistry.getPredicate(this.predicateId));
-    }
-
-    public ResourceLocation getPredicateId() {
-        return this.predicateId;
+        this.predicate = Suppliers.memoize(() -> LoaderRegistry.getPredicate(this.predicateId));
     }
 
     public static PredicateMatcher fromJson(JsonObject json) {
@@ -67,6 +62,10 @@ public class PredicateMatcher implements StateMatcher {
         } catch (CommandSyntaxException e) {
             throw new IllegalArgumentException("Failed to parse PredicateMatcher from network.", e);
         }
+    }
+
+    public ResourceLocation getPredicateId() {
+        return this.predicateId;
     }
 
     @Override
