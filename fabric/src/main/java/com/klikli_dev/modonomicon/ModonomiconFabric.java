@@ -23,5 +23,7 @@ public class ModonomiconFabric implements ModInitializer {
         //TODO: Fabric: Datagen
         //TODO: Fabric: Config
         //TODO: Fabric: on join world (see Forge)
+        //TODO: Fabric: on recipes packet -> can mixin? its about client receive of this
+        //TODO: Fabric: OnDataPackSyncEvent -> maybe placeNewPlayer + reloadResources of PlayerList
     }
 }

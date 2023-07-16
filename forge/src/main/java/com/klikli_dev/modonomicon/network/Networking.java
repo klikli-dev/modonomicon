@@ -7,8 +7,7 @@
 package com.klikli_dev.modonomicon.network;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
-import com.klikli_dev.modonomicon.networking.SyncBookVisualStatesMessage;
+import com.klikli_dev.modonomicon.networking.*;
 import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
@@ -37,8 +36,23 @@ public class Networking {
     }
 
     public static void registerMessages() {
-        //TODO: register common messages
-        //TODO: handle common messages!
+        INSTANCE.registerMessage(nextID(),
+                SendUnlockCodeToClientMessage.class,
+                SendUnlockCodeToClientMessage::encode,
+                SendUnlockCodeToClientMessage::new,
+                MessageHandler::handle);
+
+        INSTANCE.registerMessage(nextID(),
+                SendUnlockCodeToServerMessage.class,
+                SendUnlockCodeToServerMessage::encode,
+                SendUnlockCodeToServerMessage::new,
+                MessageHandler::handle);
+
+        INSTANCE.registerMessage(nextID(),
+                SyncBookDataMessage.class,
+                SyncBookDataMessage::encode,
+                SyncBookDataMessage::new,
+                MessageHandler::handle);
 
         INSTANCE.registerMessage(nextID(),
                 SyncBookUnlockStatesMessage.class,
@@ -51,6 +65,13 @@ public class Networking {
                 SyncBookVisualStatesMessage::encode,
                 SyncBookVisualStatesMessage::new,
                 MessageHandler::handle);
+
+        INSTANCE.registerMessage(nextID(),
+                SyncMultiblockDataMessage.class,
+                SyncMultiblockDataMessage::encode,
+                SyncMultiblockDataMessage::new,
+                MessageHandler::handle);
+
     }
 
     public static <T> void sendToSplit(ServerPlayer player, T message) {

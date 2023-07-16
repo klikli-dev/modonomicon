@@ -21,17 +21,14 @@ import com.klikli_dev.modonomicon.book.conditions.BookAndCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookEntryReadCondition;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
-import com.klikli_dev.modonomicon.network.Message;
-import com.klikli_dev.modonomicon.network.Networking;
-import com.klikli_dev.modonomicon.network.messages.SyncBookDataMessage;
 import com.klikli_dev.modonomicon.networking.Message;
+import com.klikli_dev.modonomicon.networking.SyncBookDataMessage;
+import com.klikli_dev.modonomicon.platform.Services;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraftforge.client.event.RecipesUpdatedEvent;
-import net.minecraftforge.event.OnDatapackSyncEvent;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -85,22 +82,17 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         this.onLoadingComplete();
     }
 
-    public void onDatapackSync(OnDatapackSyncEvent event) {
+    public void onDatapackSync(ServerPlayer player) {
 
         this.tryBuildBooks(); //lazily build books when first client connects
 
         Message syncMessage = this.getSyncMessage();
 
-        if (event.getPlayer() != null) {
-            Networking.sendToSplit(event.getPlayer(), syncMessage);
-        } else {
-            for (ServerPlayer player : event.getPlayerList().getPlayers()) {
-                Networking.sendToSplit(player, syncMessage);
-            }
-        }
+        Services.NETWORK.sendToSplit(player, syncMessage);
+        //TODO: Check if we need to send to player list here
     }
 
-    public void onRecipesUpdated(RecipesUpdatedEvent event) {
+    public void onRecipesUpdated() {
         this.tryBuildBooks();
         this.prerenderMarkdown();
     }

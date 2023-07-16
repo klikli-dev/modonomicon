@@ -3,14 +3,18 @@ package com.klikli_dev.modonomicon;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.config.ClientConfig;
+import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
-import com.klikli_dev.modonomicon.item.ModonomiconItem;
+import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
@@ -20,6 +24,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 @Mod(Modonomicon.MOD_ID)
 public class ModonomiconForge {
@@ -45,12 +50,22 @@ public class ModonomiconForge {
 
         MinecraftForge.EVENT_BUS.addListener((RegisterCommandsEvent e) -> CommandRegistry.registerCommands(e.getDispatcher()));
         MinecraftForge.EVENT_BUS.addListener((RegisterClientCommandsEvent e) -> CommandRegistry.registerClientCommands(e.getDispatcher()));
+        MinecraftForge.EVENT_BUS.addListener((OnDatapackSyncEvent e) -> {
+            if (e.getPlayer() != null){
+                BookDataManager.get().onDatapackSync(e.getPlayer());
+                MultiblockDataManager.get().onDatapackSync(e.getPlayer());
+            }
+        });
 
         //register event handlers for book state sync
         MinecraftForge.EVENT_BUS.addListener(this::onJoinWorld);
 
         //event handler for condition system
         MinecraftForge.EVENT_BUS.addListener((AdvancementEvent.AdvancementEarnEvent e) -> BookUnlockStateManager.get().onAdvancement((ServerPlayer) e.getEntity()));
+
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            MinecraftForge.EVENT_BUS.addListener((RecipesUpdatedEvent e) -> BookDataManager.get().onRecipesUpdated());
+        }
     }
 
     public void onCommonSetup(FMLCommonSetupEvent event) {
