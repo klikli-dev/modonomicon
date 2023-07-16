@@ -15,6 +15,7 @@ import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
 import java.util.Map;
@@ -109,12 +110,12 @@ public class BookCategory {
     /**
      * call after loading the book jsons to finalize.
      */
-    public void build(Book book) {
+    public void build(Level level, Book book) {
         this.book = book;
 
         for (var entry : this.entries.values()) {
             BookErrorManager.get().getContextHelper().entryId = entry.getId();
-            entry.build(this);
+            entry.build(level,this);
             BookErrorManager.get().getContextHelper().entryId = null;
         }
     }

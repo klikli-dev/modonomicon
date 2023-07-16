@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 
 public abstract class BookPage {
 
@@ -33,7 +34,7 @@ public abstract class BookPage {
     /**
      * call after loading the book jsons to finalize.
      */
-    public void build(BookEntry parentEntry, int pageNum) {
+    public void build(Level level, BookEntry parentEntry, int pageNum) {
         this.parentEntry = parentEntry;
         this.pageNumber = pageNum;
         this.book = this.parentEntry.getBook();

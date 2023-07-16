@@ -21,6 +21,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
 
 import java.util.Arrays;
 
@@ -74,8 +75,8 @@ public class BookSpotlightPage extends BookPage {
     }
 
     @Override
-    public void build(BookEntry parentEntry, int pageNum) {
-        super.build(parentEntry, pageNum);
+    public void build(Level level, BookEntry parentEntry, int pageNum) {
+        super.build(level, parentEntry, pageNum);
 
         if (this.title.isEmpty()) {
             //use ingredient name if we don't have a custom title

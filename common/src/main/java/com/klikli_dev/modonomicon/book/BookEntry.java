@@ -17,6 +17,7 @@ import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -179,7 +180,7 @@ public class BookEntry {
     /**
      * call after loading the book jsons to finalize.
      */
-    public void build(BookCategory category) {
+    public void build(Level level, BookCategory category) {
         this.category = category;
         this.book = category.getBook();
 
@@ -213,7 +214,7 @@ public class BookEntry {
         int pageNum = 0;
         for (var page : this.pages) {
             BookErrorManager.get().getContextHelper().pageNumber = pageNum;
-            page.build(this, pageNum);
+            page.build(level, this, pageNum);
             BookErrorManager.get().getContextHelper().pageNumber = -1;
             pageNum++;
         }

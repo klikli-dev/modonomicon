@@ -15,6 +15,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmithingRecipe;
+import net.minecraft.world.level.Level;
 
 public class BookSmithingRecipePage extends BookRecipePage<SmithingRecipe> {
     public BookSmithingRecipePage(BookTextHolder title1, ResourceLocation recipeId1, BookTextHolder title2, ResourceLocation recipeId2, BookTextHolder text, String anchor) {
@@ -39,12 +40,12 @@ public class BookSmithingRecipePage extends BookRecipePage<SmithingRecipe> {
     }
 
     @Override
-    protected ItemStack getRecipeOutput(SmithingRecipe recipe) {
+    protected ItemStack getRecipeOutput(Level level, SmithingRecipe recipe) {
         if (recipe == null) {
             return ItemStack.EMPTY;
         }
 
-        return recipe.getResultItem(this.getRegistryAccess());
+        return recipe.getResultItem(level.registryAccess());
     }
 
     @Override

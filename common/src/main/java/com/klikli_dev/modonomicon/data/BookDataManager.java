@@ -24,11 +24,13 @@ import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.networking.Message;
 import com.klikli_dev.modonomicon.networking.SyncBookDataMessage;
 import com.klikli_dev.modonomicon.platform.Services;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.level.Level;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -84,7 +86,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
     public void onDatapackSync(ServerPlayer player) {
 
-        this.tryBuildBooks(); //lazily build books when first client connects
+        this.tryBuildBooks(player.level()); //lazily build books when first client connects
 
         Message syncMessage = this.getSyncMessage();
 
@@ -93,7 +95,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     }
 
     public void onRecipesUpdated() {
-        this.tryBuildBooks();
+        this.tryBuildBooks(Minecraft.getInstance().level);
         this.prerenderMarkdown();
     }
 
@@ -104,12 +106,12 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         BookErrorManager.get().reset();
     }
 
-    public void buildBooks() {
+    public void buildBooks(Level level) {
         for (var book : this.books.values()) {
             BookErrorManager.get().getContextHelper().reset();
             BookErrorManager.get().setCurrentBookId(book.getId());
             try {
-                book.build();
+                book.build(level);
             } catch (Exception e) {
                 BookErrorManager.get().error("Failed to build book '" + book.getId() + "'", e);
             }
@@ -158,10 +160,10 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
      * On server, called on datapack sync (because we need the data before we send the datapack sync packet) On client,
      * called on recipes updated, because recipes are available to the client only after datapack sync is complete
      */
-    public boolean tryBuildBooks() {
+    public boolean tryBuildBooks(Level level) {
         if (!this.booksBuilt) {
             Modonomicon.LOG.info("Building books ...");
-            this.buildBooks();
+            this.buildBooks(level);
             this.booksBuilt = true;
             Modonomicon.LOG.info("Books built.");
 

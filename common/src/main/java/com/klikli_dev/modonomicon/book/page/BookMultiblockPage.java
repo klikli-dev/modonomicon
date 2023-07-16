@@ -21,6 +21,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.level.Level;
 
 public class BookMultiblockPage extends BookPage {
 
@@ -79,8 +80,8 @@ public class BookMultiblockPage extends BookPage {
     }
 
     @Override
-    public void build(BookEntry parentEntry, int pageNum) {
-        super.build(parentEntry, pageNum);
+    public void build(Level level, BookEntry parentEntry, int pageNum) {
+        super.build(level, parentEntry, pageNum);
 
         this.multiblock = MultiblockDataManager.get().getMultiblock(this.multiblockId);
 

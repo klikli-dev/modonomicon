@@ -19,6 +19,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
@@ -226,7 +227,7 @@ public class Book {
     /**
      * call after loading the book jsons to finalize.
      */
-    public void build() {
+    public void build(Level level) {
         //first "backlink" all our entries directly into the book
         for (var category : this.categories.values()) {
             for (var entry : category.getEntries().values()) {
@@ -237,7 +238,7 @@ public class Book {
         //then build categories, which will in turn build entries (which need the above backlinks to resolve parents)
         for (var category : this.categories.values()) {
             BookErrorManager.get().getContextHelper().categoryId = category.getId();
-            category.build(this);
+            category.build(level, this);
             BookErrorManager.get().getContextHelper().categoryId = null;
         }
 

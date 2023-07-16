@@ -13,8 +13,6 @@ import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -24,8 +22,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 
 public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
 
@@ -107,12 +105,12 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
         return this.text;
     }
 
-    protected T loadRecipe(BookEntry entry, ResourceLocation recipeId) {
+    protected T loadRecipe(Level level, BookEntry entry, ResourceLocation recipeId) {
         if (recipeId == null) {
             return null;
         }
 
-        var tempRecipe = this.getRecipe(recipeId);
+        var tempRecipe = this.getRecipe(level, recipeId);
 
 
         if (tempRecipe == null) {
@@ -122,30 +120,18 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
         return tempRecipe;
     }
 
-    protected abstract ItemStack getRecipeOutput(T recipe);
+    protected abstract ItemStack getRecipeOutput(Level level, T recipe);
 
-    private T getRecipe(ResourceLocation id) {
-        var server = ServerLifecycleHooks.getCurrentServer();
-        RecipeManager manager = server != null ? server.getRecipeManager() : Minecraft.getInstance().level.getRecipeManager();
-        return (T) manager.byKey(id).filter(recipe -> recipe.getType() == this.recipeType).orElse(null);
-    }
-
-    /**
-     * Get the registry access for the current server or client.
-     * Not very clean, but it works and prevents us from handing registry access around.
-     */
-    protected RegistryAccess getRegistryAccess() {
-        var server = ServerLifecycleHooks.getCurrentServer();
-        var access = server != null ? server.registryAccess() : Minecraft.getInstance().level.registryAccess();
-        return access;
+    private T getRecipe(Level level, ResourceLocation id) {
+        return (T) level.getRecipeManager().byKey(id).filter(recipe -> recipe.getType() == this.recipeType).orElse(null);
     }
 
     @Override
-    public void build(BookEntry parentEntry, int pageNum) {
-        super.build(parentEntry, pageNum);
+    public void build(Level level, BookEntry parentEntry, int pageNum) {
+        super.build(level, parentEntry, pageNum);
 
-        this.recipe1 = this.loadRecipe(parentEntry, this.recipeId1);
-        this.recipe2 = this.loadRecipe(parentEntry, this.recipeId2);
+        this.recipe1 = this.loadRecipe(level, parentEntry, this.recipeId1);
+        this.recipe2 = this.loadRecipe(level, parentEntry, this.recipeId2);
 
         if (this.recipe1 == null && this.recipe2 != null) {
             this.recipe1 = this.recipe2;
@@ -154,7 +140,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
 
         if (this.title1.isEmpty()) {
             //use recipe title if we don't have a custom one
-            this.title1 = new BookTextHolder(((MutableComponent) this.getRecipeOutput(this.recipe1).getHoverName())
+            this.title1 = new BookTextHolder(((MutableComponent) this.getRecipeOutput(level, this.recipe1).getHoverName())
                     .withStyle(Style.EMPTY
                             .withBold(true)
                             .withColor(this.getParentEntry().getBook().getDefaultTitleColor())
@@ -163,7 +149,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
 
         if (this.recipe2 != null && this.title2.isEmpty()) {
             //use recipe title if we don't have a custom one
-            this.title2 = new BookTextHolder(((MutableComponent) this.getRecipeOutput(this.recipe2).getHoverName())
+            this.title2 = new BookTextHolder(((MutableComponent) this.getRecipeOutput(level, this.recipe2).getHoverName())
                     .withStyle(Style.EMPTY
                             .withBold(true)
                             .withColor(this.getParentEntry().getBook().getDefaultTitleColor())
