@@ -12,8 +12,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 
 public class ItemRegistry {
-    //TODO: make mod loader agnostic
-
     public static final RegistrationProvider<Item> ITEMS = RegistrationProvider.get(Registries.ITEM, Modonomicon.MOD_ID);
 
     public static final RegistryObject<Item> MODONOMICON =
