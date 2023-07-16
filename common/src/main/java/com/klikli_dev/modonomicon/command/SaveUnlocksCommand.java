@@ -7,7 +7,7 @@
 package com.klikli_dev.modonomicon.command;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Command;
-import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
+import com.klikli_dev.modonomicon.capability.BookUnlockStateManager.get();
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.SendUnlockCodeToClientMessage;
 import com.mojang.brigadier.CommandDispatcher;
@@ -39,7 +39,7 @@ public class SaveUnlocksCommand implements com.mojang.brigadier.Command<CommandS
     public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var book = ResetBookUnlocksCommand.getBook(context, "book");
 
-        var code = BookUnlockCapability.getUnlockCodeFor(context.getSource().getPlayer(), book);
+        var code = BookUnlockStateManager.get().getUnlockCodeFor(context.getSource().getPlayer(), book);
 
         Networking.sendToSplit(context.getSource().getPlayer(), new SendUnlockCodeToClientMessage(code));
 

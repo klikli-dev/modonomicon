@@ -11,7 +11,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
-import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
+import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -61,9 +61,9 @@ public class BookEntryReadCondition extends BookCondition {
     public boolean test(BookConditionContext context, Player player) {
         var entry = context.getBook().getEntry(this.entryId);
         if (entry == null) {
-            throw new IllegalArgumentException("Entry with id " + this.entryId + " not found in book " + context.getBook().getId()+ "for BookEntryReadCondition. This happened while trying to unlock " + context);
+            throw new IllegalArgumentException("Entry with id " + this.entryId + " not found in book " + context.getBook().getId() + "for BookEntryReadCondition. This happened while trying to unlock " + context);
         }
-        return BookUnlockCapability.isReadFor(player, entry);
+        return BookUnlockStateManager.get().isReadFor(player, entry);
     }
 
     @Override

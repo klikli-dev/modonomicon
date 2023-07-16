@@ -12,7 +12,7 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
-import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
+import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.EntryListButton;
@@ -21,7 +21,6 @@ import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -230,7 +229,7 @@ public class BookSearchScreen extends Screen implements BookScreenWithButtons {
 
             //TODO: render separator at right location
             BookContentScreen.drawTitleSeparator(guiGraphics, this.parentScreen.getBook(),
-                    BookContentScreen.LEFT_PAGE_X  + BookContentScreen.PAGE_WIDTH / 2, BookContentScreen.TOP_PADDING + 12);
+                    BookContentScreen.LEFT_PAGE_X + BookContentScreen.PAGE_WIDTH / 2, BookContentScreen.TOP_PADDING + 12);
             BookContentScreen.drawTitleSeparator(guiGraphics, this.parentScreen.getBook(),
                     BookContentScreen.RIGHT_PAGE_X + BookContentScreen.PAGE_WIDTH / 2, BookContentScreen.TOP_PADDING + 12);
 
@@ -298,8 +297,8 @@ public class BookSearchScreen extends Screen implements BookScreenWithButtons {
 
         //we filter out entries that are locked or in locked categories
         this.allEntries = this.getEntries().stream().filter(e ->
-                BookUnlockCapability.isUnlockedFor(this.minecraft.player, e.getCategory()) &&
-                        BookUnlockCapability.isUnlockedFor(this.minecraft.player, e)
+                BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e.getCategory()) &&
+                        BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e)
         ).sorted(Comparator.comparing(a -> I18n.get(a.getName()))).toList();
 
         //TODO: should we NOT filter out locked but visible entries and display them with a lock?

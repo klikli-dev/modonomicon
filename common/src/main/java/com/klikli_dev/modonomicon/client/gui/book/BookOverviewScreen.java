@@ -11,8 +11,8 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookFrameOverlay;
-import com.klikli_dev.modonomicon.capability.BookStateCapability;
-import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
+import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ReadAllButton;
@@ -20,8 +20,8 @@ import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.ClickReadAllButtonMessage;
 import com.klikli_dev.modonomicon.network.messages.SaveBookStateMessage;
-import com.klikli_dev.modonomicon.network.messages.SyncBookUnlockCapabilityMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
+import com.klikli_dev.modonomicon.platform.Services;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -31,7 +31,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.gui.ScreenUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -45,8 +44,8 @@ public class BookOverviewScreen extends Screen {
     //TODO: make the frame thickness configurable in the book?
     private final int frameThicknessW = 14;
     private final int frameThicknessH = 14;
-    private int currentCategory = 0;
 
+    private int currentCategory = 0;
     private boolean hasUnreadEntries;
     private boolean hasUnreadUnlockedEntries;
 
@@ -62,6 +61,8 @@ public class BookOverviewScreen extends Screen {
         this.categoryScreens = this.categories.stream().map(c -> new BookCategoryScreen(this, c)).toList();
     }
 
+get()Message
+
     public void onDisplay() {
         this.loadBookState();
 
@@ -73,12 +74,12 @@ public class BookOverviewScreen extends Screen {
 
     protected void updateUnreadEntriesState() {
         //check if ANY entry is unread
-        this.hasUnreadEntries = this.book.getEntries().values().stream().anyMatch(e -> !BookUnlockCapability.isReadFor(this.minecraft.player, e));
+        this.hasUnreadEntries = this.book.getEntries().values().stream().anyMatch(e -> !BookUnlockStateManager.get().isReadFor(this.minecraft.player, e));
 
         //check if any currently unlocked entry is unread
         this.hasUnreadUnlockedEntries = this.book.getEntries().values().stream().anyMatch(e ->
-                BookUnlockCapability.isUnlockedFor(this.minecraft.player, e) &&
-                        !BookUnlockCapability.isReadFor(this.minecraft.player, e));
+                BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e) &&
+                        !BookUnlockStateManager.get().isReadFor(this.minecraft.player, e));
     }
 
     public BookCategoryScreen getCurrentCategoryScreen() {
@@ -184,7 +185,7 @@ public class BookOverviewScreen extends Screen {
         //the exact border size mostly does not matter because the center is empty anyway, but 50 gives a lot of flexiblity
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableBlend();
-        guiGraphics.blitWithBorder(this.book.getFrameTexture(), x, y, 0, 0, width, height,140, 140, 50, 50, 50, 50);
+        guiGraphics.blitWithBorder(this.book.getFrameTexture(), x, y, 0, 0, width, height, 140, 140, 50, 50, 50, 50);
 
         //now render overlays on top of that border to cover repeating elements
         this.renderFrameOverlay(guiGraphics, this.book.getTopFrameOverlay(), (x + (width / 2)), y);
@@ -203,7 +204,6 @@ public class BookOverviewScreen extends Screen {
         this.changeCategory(button.getCategoryIndex());
     }
 
-
     protected void onReadAllButtonClick(ReadAllButton button) {
         if (this.hasUnreadUnlockedEntries && !Screen.hasShiftDown()) {
             Networking.sendToServer(new ClickReadAllButtonMessage(this.book.getId(), false));
@@ -219,7 +219,7 @@ public class BookOverviewScreen extends Screen {
     }
 
     private void loadBookState() {
-        var state = BookStateCapability.getBookStateFor(this.minecraft.player, this.book);
+        var state = BookVisualStateManager.get().getBookStateFor(this.minecraft.player, this.book);
         if (state != null) {
             if (state.openCategory != null) {
                 var openCategory = this.book.getCategory(state.openCategory);
@@ -248,7 +248,7 @@ public class BookOverviewScreen extends Screen {
         return super.mouseScrolled(pMouseX, pMouseY, pDelta);
     }
 
-    @Override
+        @Override
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         RenderSystem.disableDepthTest(); //guard against depth test being enabled by other rendering code, that would cause ui elements to vanish
 
@@ -264,12 +264,12 @@ public class BookOverviewScreen extends Screen {
 
         //do super render last -> it does the widgets including especially the tooltips and we want those to go over the frame
         super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
-    }
+    }.
 
-    @Override
+        @Override
     public boolean shouldCloseOnEsc() {
         return true;
-    }
+    }(
 
     @Override
     public void onClose() {
@@ -281,7 +281,7 @@ public class BookOverviewScreen extends Screen {
         BookGuiManager.get().openOverviewScreen = null;
 
         super.onClose();
-    }
+    })
 
     @Override
     public boolean handleComponentClicked(@Nullable Style pStyle) {
@@ -293,6 +293,7 @@ public class BookOverviewScreen extends Screen {
         this.rebuildWidgets();
         this.updateUnreadEntriesState();
     }
+
 
     @Override
     protected void init() {
@@ -314,7 +315,7 @@ public class BookOverviewScreen extends Screen {
 
         int buttonCount = 0;
         for (int i = 0, size = this.categories.size(); i < size; i++) {
-            if (this.categories.get(i).showCategoryButton() && BookUnlockCapability.isUnlockedFor(this.minecraft.player, this.categories.get(i))) {
+            if (this.categories.get(i).showCategoryButton() && BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, this.categories.get(i))) {
                 var button = new CategoryButton(this, this.categories.get(i), i,
                         buttonX, buttonY + (buttonHeight + buttonSpacing) * buttonCount, buttonWidth, buttonHeight,
                         (b) -> this.onBookCategoryButtonClick((CategoryButton) b),
@@ -355,7 +356,7 @@ public class BookOverviewScreen extends Screen {
     }
 
     protected void onSearchButtonClick(SearchButton button) {
-        ForgeHooksClient.pushGuiLayer(this.getMinecraft(), new BookSearchScreen(this));
+        Services.GUI.pushGuiLayer(new BookSearchScreen(this));
     }
 
     @Override

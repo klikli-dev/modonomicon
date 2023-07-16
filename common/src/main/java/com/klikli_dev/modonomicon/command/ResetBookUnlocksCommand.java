@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.command;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Command;
 import com.klikli_dev.modonomicon.book.Book;
-import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
+import com.klikli_dev.modonomicon.capability.BookUnlockStateManager.get();
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
@@ -29,7 +29,7 @@ public class ResetBookUnlocksCommand implements com.mojang.brigadier.Command<Com
     });
 
     public static final SuggestionProvider<CommandSourceStack> SUGGEST_BOOK = (context, builder) -> {
-        var books = BookUnlockCapability.getBooksFor(context.getSource().getPlayer());
+        var books = BookUnlockStateManager.get().getBooksFor(context.getSource().getPlayer());
         return SharedSuggestionProvider.suggestResource(books, builder);
     };
     private static final ResetBookUnlocksCommand CMD = new ResetBookUnlocksCommand();
@@ -59,8 +59,8 @@ public class ResetBookUnlocksCommand implements com.mojang.brigadier.Command<Com
     @Override
     public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var book = getBook(context, "book");
-        BookUnlockCapability.resetFor(context.getSource().getPlayer(), book);
-        BookUnlockCapability.updateAndSyncFor(context.getSource().getPlayer());
+        BookUnlockStateManager.get().resetFor(context.getSource().getPlayer(), book);
+        BookUnlockStateManager.get().updateAndSyncFor(context.getSource().getPlayer());
         context.getSource().sendSuccess(() -> Component.translatable(Command.SUCCESS_RESET_BOOK, Component.translatable(book.getName())), true);
         return 1;
     }

@@ -10,8 +10,8 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.*;
 import com.klikli_dev.modonomicon.book.page.BookPage;
-import com.klikli_dev.modonomicon.capability.BookStateCapability;
-import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
+import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
@@ -28,6 +28,7 @@ import com.klikli_dev.modonomicon.integration.ModonomiconPatchouliIntegration;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.ClickCommandLinkMessage;
 import com.klikli_dev.modonomicon.network.messages.SaveEntryStateMessage;
+import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.util.ItemStackUtil;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -458,7 +459,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
     }
 
     private void loadEntryState() {
-        var state = BookStateCapability.getEntryStateFor(this.parentScreen.getMinecraft().player, this.entry);
+        var state = BookVisualStateManager.get().getEntryStateFor(this.parentScreen.getMinecraft().player, this.entry);
 
         BookGuiManager.get().currentEntry = this.entry;
         BookGuiManager.get().currentContentScreen = this;
@@ -550,7 +551,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
                             if (link.entryId != null) {
                                 var entry = book.getEntry(link.entryId);
 
-                                if (!BookUnlockCapability.isUnlockedFor(this.minecraft.player, entry)) {
+                                if (!BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, entry)) {
                                     //if locked, append lock warning
                                     //handleComponentClicked will prevent the actual click
 
@@ -577,13 +578,13 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
 
                                 var oldComponent = style.getHoverEvent().getValue(HoverEvent.Action.SHOW_TEXT);
 
-                                if (!BookUnlockCapability.canRunFor(this.minecraft.player, command)) {
+                                if (!BookUnlockStateManager.get().canRunFor(this.minecraft.player, command)) {
                                     var hoverComponent = Component.translatable(Gui.HOVER_COMMAND_LINK_UNAVAILABLE).withStyle(ChatFormatting.RED);
                                     newStyle = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent));
                                     oldComponent = hoverComponent;
                                 }
 
-                                if(hasShiftDown()){
+                                if (hasShiftDown()) {
                                     var newComponent = oldComponent.copy().append(Component.literal("\n")).append(
                                             Component.literal(command.getCommand()).withStyle(ChatFormatting.GRAY));
                                     newStyle = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newComponent));
@@ -685,7 +686,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
                         if (link.entryId != null) {
                             var entry = book.getEntry(link.entryId);
 
-                            if (!BookUnlockCapability.isUnlockedFor(this.minecraft.player, entry)) {
+                            if (!BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, entry)) {
                                 //renderComponentHoverEffect will render a warning that it is locked so it is fine to exit here
                                 return false;
                             }
@@ -736,7 +737,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
                             }
 
                             if (!ModonomiconJeiIntegration.isJEIRecipesGuiOpen()) {
-                                this.minecraft.pushGuiLayer(this);
+                                Services.GUI.pushGuiLayer(this);
                             }
 
                             //TODO: Consider adding logic to restore content screen after JEI gui close
@@ -756,12 +757,12 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
                         if (link.commandId != null) {
                             var command = book.getCommand(link.commandId);
 
-                            if (BookUnlockCapability.canRunFor(this.minecraft.player, command)) {
+                            if (BookUnlockStateManager.get().canRunFor(this.minecraft.player, command)) {
                                 Networking.sendToServer(new ClickCommandLinkMessage(link.bookId, link.commandId));
 
                                 //we immediately count up the usage client side -> to avoid spamming the server
                                 //if the server ends up not counting up the usage, it will sync the correct info back down to us
-                                BookUnlockCapability.setRunFor(this.minecraft.player, command);
+                                BookUnlockStateManager.get().setRunFor(this.minecraft.player, command);
                             }
 
                             return true;

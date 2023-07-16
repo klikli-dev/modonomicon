@@ -10,13 +10,14 @@ import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
-import com.klikli_dev.modonomicon.capability.BookStateCapability;
-import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
+import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.BookEntryReadMessage;
 import com.klikli_dev.modonomicon.network.messages.SaveCategoryStateMessage;
+import com.klikli_dev.modonomicon.platform.Services;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -131,7 +132,7 @@ public class BookCategoryScreen {
     }
 
     public BookContentScreen openEntry(BookEntry entry) {
-        if (!BookUnlockCapability.isReadFor(Minecraft.getInstance().player, entry)) {
+        if (!BookUnlockStateManager.get().isReadFor(Minecraft.getInstance().player, entry)) {
             Networking.sendToServer(new BookEntryReadMessage(entry.getBook().getId(), entry.getId()));
         }
 
@@ -143,7 +144,7 @@ public class BookCategoryScreen {
         this.openEntry = entry.getId();
 
         var bookContentScreen = new BookContentScreen(this.bookOverviewScreen, entry);
-        Minecraft.getInstance().pushGuiLayer(bookContentScreen);
+        Services.GUI.pushGuiLayer(bookContentScreen);
 
         return bookContentScreen;
     }
@@ -202,11 +203,11 @@ public class BookCategoryScreen {
     private EntryDisplayState getEntryDisplayState(BookEntry entry) {
         var player = this.bookOverviewScreen.getMinecraft().player;
 
-        var isEntryUnlocked = BookUnlockCapability.isUnlockedFor(player, entry);
+        var isEntryUnlocked = BookUnlockStateManager.get().isUnlockedFor(player, entry);
 
         var allParentsUnlocked = true;
         for (var parent : entry.getParents()) {
-            if (!BookUnlockCapability.isUnlockedFor(player, parent.getEntry())) {
+            if (!BookUnlockStateManager.get().isUnlockedFor(player, parent.getEntry())) {
                 allParentsUnlocked = false;
                 break;
             }
@@ -267,7 +268,7 @@ public class BookCategoryScreen {
             guiGraphics.pose().popPose();
 
             //render unread icon
-            if (displayState == EntryDisplayState.UNLOCKED && !BookUnlockCapability.isReadFor(this.bookOverviewScreen.getMinecraft().player, entry)) {
+            if (displayState == EntryDisplayState.UNLOCKED && !BookUnlockStateManager.get().isReadFor(this.bookOverviewScreen.getMinecraft().player, entry)) {
                 final int U = 350;
                 final int V = 19;
                 final int width = 11;
@@ -373,7 +374,7 @@ public class BookCategoryScreen {
     }
 
     private void loadCategoryState() {
-        var state = BookStateCapability.getCategoryStateFor(this.bookOverviewScreen.getMinecraft().player, this.category);
+        var state = BookVisualStateManager.get().getCategoryStateFor(this.bookOverviewScreen.getMinecraft().player, this.category);
         BookGuiManager.get().currentCategory = this.category;
         BookGuiManager.get().currentCategoryScreen = this;
         if (state != null) {

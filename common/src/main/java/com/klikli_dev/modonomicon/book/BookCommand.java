@@ -9,14 +9,12 @@ package com.klikli_dev.modonomicon.book;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
-import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
-import com.klikli_dev.modonomicon.registry.CapabilityRegistry;
+import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.GsonHelper;
 import org.jetbrains.annotations.Nullable;
@@ -119,25 +117,24 @@ public class BookCommand {
         return this.successMessage;
     }
 
-    public void execute(ServerPlayer player){
-        if(!BookUnlockCapability.canRunFor(player, this)){
+    public void execute(ServerPlayer player) {
+        if (!BookUnlockStateManager.get().canRunFor(player, this)) {
             var failureMessage = this.failureMessage == null ? ModonomiconConstants.I18n.Command.DEFAULT_FAILURE_MESSAGE : this.failureMessage;
 
             player.sendSystemMessage(Component.translatable(failureMessage).withStyle(ChatFormatting.RED));
             return;
         } else {
-            var commandSourceStack = new CommandSourceStack(player, player.position(),player.getRotationVector(), player.serverLevel(), this.permissionLevel, player.getName().getString(), player.getDisplayName(), player.server, player);
+            var commandSourceStack = new CommandSourceStack(player, player.position(), player.getRotationVector(), player.serverLevel(), this.permissionLevel, player.getName().getString(), player.getDisplayName(), player.server, player);
 
-            BookUnlockCapability.setRunFor(player, this);
+            BookUnlockStateManager.get().setRunFor(player, this);
 
-            try{
+            try {
                 player.server.getCommands().performPrefixedCommand(commandSourceStack, this.command);
 
-                if(this.successMessage != null){
+                if (this.successMessage != null) {
                     player.sendSystemMessage(Component.translatable(this.successMessage).withStyle(ChatFormatting.GREEN));
                 }
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 Modonomicon.LOG.error("Running command [" + this.id.toString() + "] failed: ", e);
             }
         }
@@ -145,6 +142,6 @@ public class BookCommand {
         //Even if the command fails we sync the capability.
         //This allows us to "Pretend" success clientside and disable the command source (button/link/etc) so the player cannot spam-click it.
         //spam-clicking would not allow abuse anyway, but would lead to error messages sent back to the player.
-        BookUnlockCapability.syncFor(player);
+        BookUnlockStateManager.get().syncFor(player);
     }
 }

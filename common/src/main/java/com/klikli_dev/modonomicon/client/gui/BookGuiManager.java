@@ -12,9 +12,9 @@ import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.*;
 import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.klikli_dev.modonomicon.platform.Services;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.ForgeHooksClient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Stack;
@@ -184,7 +184,7 @@ public class BookGuiManager {
             this.currentContentScreen = this.currentCategoryScreen.openEntry(entry);
         } else {
             //we are clearing the gui layers above, so we have to restore here if we do not call openentry
-            Minecraft.getInstance().pushGuiLayer(this.currentContentScreen);
+            Services.GUI.pushGuiLayer(this.currentContentScreen);
         }
 
         //we don't need to manually check for the current page because the content screen will do that for us

@@ -10,7 +10,7 @@ package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.BookEntry;
-import com.klikli_dev.modonomicon.capability.BookUnlockCapability;
+import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookSearchScreen;
@@ -56,7 +56,7 @@ public class EntryListButton extends Button {
 
             float time = Math.max(0, Math.min(ANIM_TIME, this.timeHovered + (this.isHovered() ? partialTicks : -partialTicks)));
             float widthFract = time / ANIM_TIME;
-            boolean locked = !BookUnlockCapability.isUnlockedFor(Minecraft.getInstance().player, this.entry);
+            boolean locked = !BookUnlockStateManager.get().isUnlockedFor(Minecraft.getInstance().player, this.entry);
 
             guiGraphics.pose().scale(0.5F, 0.5F, 0.5F);
             guiGraphics.fill(this.getX() * 2, this.getY() * 2, (this.getX() + (int) ((float) this.width * widthFract)) * 2, (this.getY() + this.height) * 2, 0x22000000);
