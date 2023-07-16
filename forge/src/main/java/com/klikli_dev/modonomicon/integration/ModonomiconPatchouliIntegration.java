@@ -9,7 +9,6 @@ package com.klikli_dev.modonomicon.integration;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.platform.Services;
 import net.minecraft.resources.ResourceLocation;
-import vazkii.patchouli.api.PatchouliAPI;
 
 public class ModonomiconPatchouliIntegration {
 
@@ -23,7 +22,8 @@ public class ModonomiconPatchouliIntegration {
 
     public static class PatchouliHelper {
         public static void openEntry(ResourceLocation book, ResourceLocation entry, int page) {
-            PatchouliAPI.get().openBookEntry(book, entry, page);
+            //TODO: Enable patchouli
+//            PatchouliAPI.get().openBookEntry(book, entry, page);
         }
     }
 }
