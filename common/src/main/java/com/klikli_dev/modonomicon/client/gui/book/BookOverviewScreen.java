@@ -21,6 +21,7 @@ import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.network.messages.ClickReadAllButtonMessage;
 import com.klikli_dev.modonomicon.network.messages.SaveBookStateMessage;
 import com.klikli_dev.modonomicon.network.messages.SyncBookUnlockCapabilityMessage;
+import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -287,7 +288,7 @@ public class BookOverviewScreen extends Screen {
         return super.handleComponentClicked(pStyle);
     }
 
-    public void onSyncBookUnlockCapabilityMessage(SyncBookUnlockCapabilityMessage message) {
+    public void onSyncBookUnlockCapabilityMessage(SyncBookUnlockStatesMessage message) {
         //this leads to re-init of the category buttons after a potential unlock
         this.rebuildWidgets();
         this.updateUnreadEntriesState();

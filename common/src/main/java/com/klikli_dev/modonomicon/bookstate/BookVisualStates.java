@@ -42,6 +42,10 @@ public class BookVisualStates {
         return this.getCategoryState(entry.getCategory()).entryStates.computeIfAbsent(entry.getId(), (id) -> new EntryVisualState());
     }
 
+    public void setBookState(Book book, BookVisualState state){
+        this.bookStates.put(book.getId(), state);
+    }
+
     public void setEntryState(BookEntry entry, EntryVisualState state){
         this.getCategoryState(entry.getCategory()).entryStates.put(entry.getId(), state);
     }

@@ -7,15 +7,13 @@
 package com.klikli_dev.modonomicon.network;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.network.messages.*;
+import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
+import com.klikli_dev.modonomicon.networking.SyncBookVisualStatesMessage;
 import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
@@ -43,75 +41,15 @@ public class Networking {
         //TODO: handle common messages!
 
         INSTANCE.registerMessage(nextID(),
-                SyncBookDataMessage.class,
-                SyncBookDataMessage::encode,
-                SyncBookDataMessage::new,
+                SyncBookUnlockStatesMessage.class,
+                SyncBookUnlockStatesMessage::encode,
+                SyncBookUnlockStatesMessage::new,
                 MessageHandler::handle);
 
         INSTANCE.registerMessage(nextID(),
-                SyncMultiblockDataMessage.class,
-                SyncMultiblockDataMessage::encode,
-                SyncMultiblockDataMessage::new,
-                MessageHandler::handle);
-
-        INSTANCE.registerMessage(nextID(),
-                SyncBookUnlockCapabilityMessage.class,
-                SyncBookUnlockCapabilityMessage::encode,
-                SyncBookUnlockCapabilityMessage::new,
-                MessageHandler::handle);
-
-        INSTANCE.registerMessage(nextID(),
-                BookEntryReadMessage.class,
-                BookEntryReadMessage::encode,
-                BookEntryReadMessage::new,
-                MessageHandler::handle);
-
-        INSTANCE.registerMessage(nextID(),
-                SendUnlockCodeToClientMessage.class,
-                SendUnlockCodeToClientMessage::encode,
-                SendUnlockCodeToClientMessage::new,
-                MessageHandler::handle);
-
-        INSTANCE.registerMessage(nextID(),
-                SendUnlockCodeToServerMessage.class,
-                SendUnlockCodeToServerMessage::encode,
-                SendUnlockCodeToServerMessage::new,
-                MessageHandler::handle);
-
-        INSTANCE.registerMessage(nextID(),
-                SyncBookStateCapabilityMessage.class,
-                SyncBookStateCapabilityMessage::encode,
-                SyncBookStateCapabilityMessage::new,
-                MessageHandler::handle);
-
-        INSTANCE.registerMessage(nextID(),
-                SaveEntryStateMessage.class,
-                SaveEntryStateMessage::encode,
-                SaveEntryStateMessage::new,
-                MessageHandler::handle);
-
-        INSTANCE.registerMessage(nextID(),
-                SaveCategoryStateMessage.class,
-                SaveCategoryStateMessage::encode,
-                SaveCategoryStateMessage::new,
-                MessageHandler::handle);
-
-        INSTANCE.registerMessage(nextID(),
-                SaveBookStateMessage.class,
-                SaveBookStateMessage::encode,
-                SaveBookStateMessage::new,
-                MessageHandler::handle);
-
-        INSTANCE.registerMessage(nextID(),
-                ClickReadAllButtonMessage.class,
-                ClickReadAllButtonMessage::encode,
-                ClickReadAllButtonMessage::new,
-                MessageHandler::handle);
-
-        INSTANCE.registerMessage(nextID(),
-                ClickCommandLinkMessage.class,
-                ClickCommandLinkMessage::encode,
-                ClickCommandLinkMessage::new,
+                SyncBookVisualStatesMessage.class,
+                SyncBookVisualStatesMessage::encode,
+                SyncBookVisualStatesMessage::new,
                 MessageHandler::handle);
     }
 
@@ -123,21 +61,13 @@ public class Networking {
     }
 
     public static <T> void sendTo(ServerPlayer player, T message) {
-        if(player.connection == null){
+        if (player.connection == null) {
             //workaround for https://github.com/klikli-dev/modonomicon/issues/46 / https://github.com/klikli-dev/modonomicon/issues/62
             //we should never get here unless some other mod interferes with networking
             Modonomicon.LOG.warn("Tried to send message of type {} to player without connection. Id: {}, Name: {}.", player.getStringUUID(), player.getName().getString(), message.getClass().getName());
             return;
         }
         INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
-    }
-
-    public static <T> void sendToTracking(Entity entity, T message) {
-        INSTANCE.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), message);
-    }
-
-    public static <T> void sendToDimension(ResourceKey<Level> dimensionKey, T message) {
-        INSTANCE.send(PacketDistributor.DIMENSION.with(() -> dimensionKey), message);
     }
 
     public static <T> void sendToServer(T message) {

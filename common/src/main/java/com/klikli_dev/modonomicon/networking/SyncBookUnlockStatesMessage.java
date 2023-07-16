@@ -6,10 +6,22 @@
 
 package com.klikli_dev.modonomicon.networking;
 
+import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.bookstate.BookStatesSaveData;
+import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStates;
+import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SyncBookUnlockStatesMessage implements Message {
+
+    public static final ResourceLocation ID = new ResourceLocation(Modonomicon.MOD_ID, "sync_book_unlock_states");
 
     public BookUnlockStates states;
 
@@ -28,6 +40,23 @@ public class SyncBookUnlockStatesMessage implements Message {
 
     @Override
     public void decode(FriendlyByteBuf buf) {
-        buf.readJsonWithCodec(BookUnlockStates.CODEC);
+        this.states = buf.readJsonWithCodec(BookUnlockStates.CODEC);
+    }
+
+    @Override
+    public ResourceLocation getId() {
+        return ID;
+    }
+
+    @Override
+    public void onClientReceived(Minecraft minecraft, Player player) {
+        BookUnlockStateManager.get().saveData = new BookStatesSaveData(
+                new ConcurrentHashMap<>(Map.of(player.getUUID(), this.states)),
+                new ConcurrentHashMap<>()
+        );
+
+        if (BookGuiManager.get().openOverviewScreen != null) {
+            BookGuiManager.get().openOverviewScreen.onSyncBookUnlockCapabilityMessage(this);
+        }
     }
 }

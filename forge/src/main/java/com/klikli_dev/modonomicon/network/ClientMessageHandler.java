@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.network;
 
+import com.klikli_dev.modonomicon.networking.Message;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -15,6 +16,6 @@ public class ClientMessageHandler {
 
     public static <T extends Message> void handleClient(T message, Supplier<NetworkEvent.Context> ctx) {
         Minecraft minecraft = Minecraft.getInstance();
-        message.onClientReceived(minecraft, minecraft.player, ctx.get());
+        message.onClientReceived(minecraft, minecraft.player);
     }
 }

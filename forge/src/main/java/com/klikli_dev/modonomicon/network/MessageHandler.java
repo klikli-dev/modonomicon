@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.network;
 
+import com.klikli_dev.modonomicon.networking.Message;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
@@ -31,6 +32,6 @@ public class MessageHandler {
 
     public static <T extends Message> void handleServer(T message, Supplier<NetworkEvent.Context> ctx) {
         MinecraftServer server = ctx.get().getSender().level().getServer();
-        message.onServerReceived(server, ctx.get().getSender(), ctx.get());
+        message.onServerReceived(server, ctx.get().getSender());
     }
 }

@@ -50,6 +50,7 @@ public class BookUnlockStateManager {
     public void updateAndSyncFor(ServerPlayer player) {
         if (BookDataManager.get().areBooksBuilt()) {
             this.getStateFor(player).update(player);
+            this.saveData.setDirty();
             this.syncFor(player);
         } else {
             //we have some edge cases where RecipesUpdatedEvent is fired after EntityJoinLevelEvent.
