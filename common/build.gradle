@@ -17,6 +17,7 @@ base {
 }
 
 loom {
+    accessWidenerPath = file("src/main/resources/modonomicon.accesswidener")
     mixin {
         useLegacyMixinAp = false
     }

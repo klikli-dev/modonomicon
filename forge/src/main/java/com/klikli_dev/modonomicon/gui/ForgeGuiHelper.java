@@ -1,0 +1,17 @@
+package com.klikli_dev.modonomicon.gui;
+
+import com.klikli_dev.modonomicon.platform.services.GuiHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+
+public class ForgeGuiHelper implements GuiHelper {
+    @Override
+    public void pushGuiLayer(Screen screen) {
+        Minecraft.getInstance().pushGuiLayer(screen);
+    }
+
+    @Override
+    public void popGuiLayer() {
+        Minecraft.getInstance().popGuiLayer();
+    }
+}
