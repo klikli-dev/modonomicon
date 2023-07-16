@@ -1,10 +1,7 @@
 package com.klikli_dev.modonomicon.platform;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.platform.services.ClientConfigHelper;
-import com.klikli_dev.modonomicon.platform.services.GuiHelper;
-import com.klikli_dev.modonomicon.platform.services.NetworkHelper;
-import com.klikli_dev.modonomicon.platform.services.PlatformHelper;
+import com.klikli_dev.modonomicon.platform.services.*;
 
 import java.util.ServiceLoader;
 
@@ -17,6 +14,7 @@ public class Services {
     public static final NetworkHelper NETWORK = load(NetworkHelper.class);
     public static final ClientConfigHelper CLIENT_CONFIG = load(ClientConfigHelper.class);
     public static final GuiHelper GUI = load(GuiHelper.class);
+    public static final FluidHelper FLUID = load(FluidHelper.class);
 
     // This code is used to load a service for the current environment. Your implementation of the service must be defined
     // manually by including a text file in META-INF/services named with the fully qualified class name of the service.

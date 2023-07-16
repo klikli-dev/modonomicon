@@ -6,16 +6,16 @@ import net.minecraft.server.level.ServerPlayer;
 public class ForgeNetworkHelper implements NetworkHelper {
     @Override
     public <T> void sendTo(ServerPlayer player, T message) {
-        Networking.sendTo(player, message);
+        Services.NETWORK.sendTo(player, message);
     }
 
     @Override
     public <T> void sendToSplit(ServerPlayer player, T message) {
-        Networking.sendToSplit(player, message);
+        Services.NETWORK.sendToSplit(player, message);
     }
 
     @Override
     public <T> void sendToServer(T message) {
-        Networking.sendToServer(message);
+        Services.NETWORK.sendToServer(message);
     }
 }

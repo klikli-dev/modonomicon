@@ -18,17 +18,16 @@ import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.BackButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ItemLinkRenderer;
-import com.klikli_dev.modonomicon.client.render.FluidRenderHelper;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
-import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.klikli_dev.modonomicon.fluid.FluidHolder;
 import com.klikli_dev.modonomicon.integration.ModonomiconJeiIntegration;
 import com.klikli_dev.modonomicon.integration.ModonomiconPatchouliIntegration;
-import com.klikli_dev.modonomicon.network.Networking;
-import com.klikli_dev.modonomicon.network.messages.ClickCommandLinkMessage;
-import com.klikli_dev.modonomicon.network.messages.SaveEntryStateMessage;
+import com.klikli_dev.modonomicon.networking.ClickCommandLinkMessage;
+import com.klikli_dev.modonomicon.networking.SaveEntryStateMessage;
 import com.klikli_dev.modonomicon.platform.Services;
+import com.klikli_dev.modonomicon.platform.services.FluidHelper;
 import com.klikli_dev.modonomicon.util.ItemStackUtil;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -41,6 +40,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -50,9 +50,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -97,7 +94,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
     private List<Component> tooltip;
 
     private ItemStack tooltipStack;
-    private FluidStack tooltipFluidStack;
+    private FluidHolder tooltipFluidStack;
     private boolean isHoveringItemLink;
 
     public BookContentScreen(BookOverviewScreen parentScreen, BookEntry entry) {
@@ -135,8 +132,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
 
     public static void playTurnPageSound(Book book) {
         if (ClientTicks.ticks - lastTurnPageSoundTime > 6) {
-            //TODO: make mod loader agnostic
-            var sound = ForgeRegistries.SOUND_EVENTS.getValue(book.getTurnPageSound());
+            var sound = BuiltInRegistries.SOUND_EVENT.get(book.getTurnPageSound());
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(sound, (float) (0.7 + Math.random() * 0.3)));
             lastTurnPageSoundTime = ClientTicks.ticks;
         }
@@ -148,6 +144,10 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         guiGraphics.blit(bookContentTexture, x, y, 0, 0, 272, 178, 512, 256);
+    }
+
+    public Minecraft getMinecraft() {
+        return this.minecraft;
     }
 
     public BookEntry getEntry() {
@@ -201,7 +201,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
         this.tooltipStack = stack;
     }
 
-    public void setTooltipStack(FluidStack stack) {
+    public void setTooltipStack(FluidHolder stack) {
         this.resetTooltip();
         this.tooltipFluidStack = stack;
     }
@@ -263,18 +263,18 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
         this.renderItemStacks(guiGraphics, x, y, mouseX, mouseY, Arrays.asList(ingr.getItems()), countOverride);
     }
 
-    public void renderFluidStack(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, FluidStack stack) {
-        this.renderFluidStack(guiGraphics, x, y, mouseX, mouseY, stack, FluidType.BUCKET_VOLUME);
+    public void renderFluidStack(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, FluidHolder stack) {
+        this.renderFluidStack(guiGraphics, x, y, mouseX, mouseY, stack, FluidHolder.BUCKET_VOLUME);
     }
 
-    public void renderFluidStack(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, FluidStack stack, int capacity) {
+    public void renderFluidStack(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, FluidHolder stack, int capacity) {
         if (stack.isEmpty() || !PageRendererRegistry.isRenderable(stack)) {
             return;
         }
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(x, y, 0);
-        FluidRenderHelper.drawFluid(guiGraphics, 18, 18, stack, capacity);
+        Services.FLUID.drawFluid(guiGraphics, 18, 18, stack, capacity);
         guiGraphics.pose().popPose();
 
         if (this.isMouseInRelativeRange(mouseX, mouseY, x, y, 18, 18)) {
@@ -282,11 +282,11 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
         }
     }
 
-    public void renderFluidStacks(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, Collection<FluidStack> stacks) {
-        this.renderFluidStacks(guiGraphics, x, y, mouseX, mouseY, stacks, FluidType.BUCKET_VOLUME);
+    public void renderFluidStacks(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, Collection<FluidHolder> stacks) {
+        this.renderFluidStacks(guiGraphics, x, y, mouseX, mouseY, stacks, FluidHolder.BUCKET_VOLUME);
     }
 
-    public void renderFluidStacks(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, Collection<FluidStack> stacks, int capacity) {
+    public void renderFluidStacks(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, Collection<FluidHolder> stacks, int capacity) {
         var filteredStacks = PageRendererRegistry.filterRenderableFluidStacks(stacks);
         if (filteredStacks.size() > 0) {
             this.renderFluidStack(guiGraphics, x, y, mouseX, mouseY, filteredStacks.get((this.ticksInBook / 20) % filteredStacks.size()), capacity);
@@ -508,15 +508,15 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
     public void onClose() {
 
         if (this.simulateEscClosing || InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_ESCAPE)) {
-            Networking.sendToServer(new SaveEntryStateMessage(this.entry, this.openPagesIndex));
+            Services.NETWORK.sendToServer(new SaveEntryStateMessage(this.entry, this.openPagesIndex));
 
             super.onClose();
             this.parentScreen.onClose();
 
             this.simulateEscClosing = false;
         } else {
-            Networking.sendToServer(new SaveEntryStateMessage(this.entry,
-                    ClientConfig.get().qolCategory.storeLastOpenPageWhenClosingEntry.get() ? this.openPagesIndex : 0));
+            Services.NETWORK.sendToServer(new SaveEntryStateMessage(this.entry,
+                    Services.CLIENT_CONFIG.storeLastOpenPageWhenClosingEntry() ? this.openPagesIndex : 0));
 
             this.parentScreen.getCurrentCategoryScreen().onCloseEntry(this);
             super.onClose();
@@ -655,8 +655,8 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
         return tooltip;
     }
 
-    public List<Component> getTooltipFromFluid(FluidStack fluidStack) {
-        var tooltip = FluidRenderHelper.getTooltip(fluidStack, FluidType.BUCKET_VOLUME, this.minecraft.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL, FluidRenderHelper.TooltipMode.SHOW_AMOUNT_AND_CAPACITY);
+    public List<Component> getTooltipFromFluid(FluidHolder fluidStack) {
+        var tooltip = Services.FLUID.getTooltip(fluidStack, FluidHolder.BUCKET_VOLUME, this.minecraft.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL, FluidHelper.TooltipMode.SHOW_AMOUNT_AND_CAPACITY);
 
         if (this.isHoveringItemLink) {
             tooltip.add(Component.literal(""));
@@ -758,7 +758,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
                             var command = book.getCommand(link.commandId);
 
                             if (BookUnlockStateManager.get().canRunFor(this.minecraft.player, command)) {
-                                Networking.sendToServer(new ClickCommandLinkMessage(link.bookId, link.commandId));
+                                Services.NETWORK.sendToServer(new ClickCommandLinkMessage(link.bookId, link.commandId));
 
                                 //we immediately count up the usage client side -> to avoid spamming the server
                                 //if the server ends up not counting up the usage, it will sync the correct info back down to us

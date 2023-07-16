@@ -8,11 +8,11 @@ package com.klikli_dev.modonomicon.client.render.page;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.book.page.*;
+import com.klikli_dev.modonomicon.fluid.FluidHolder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
 
 import java.util.*;
 
@@ -81,7 +81,7 @@ public class PageRendererRegistry {
      * Any fluids registered here, will not be rendered by the renderFluidStacks / renderFluidStack methods.
      * Can be called at any time.
      */
-    public static void registerFluidStackNotToRender(FluidStack stack) {
+    public static void registerFluidStackNotToRender(FluidHolder stack) {
         FLUIDS_NOT_TO_RENDER.add(stack.getFluid());
     }
 
@@ -95,7 +95,7 @@ public class PageRendererRegistry {
     /**
      * Returns false, if the given stack should not be rendered in the book, e.g. in recipes.
      */
-    public static boolean isRenderable(FluidStack stack) {
+    public static boolean isRenderable(FluidHolder stack) {
         return !FLUIDS_NOT_TO_RENDER.contains(stack.getFluid());
     }
 
@@ -109,7 +109,7 @@ public class PageRendererRegistry {
     /**
      * Returns only those stacks in the list, that should be rendered in the book, e.g. in recipes.
      */
-    public static List<FluidStack> filterRenderableFluidStacks(Collection<FluidStack> stacks) {
+    public static List<FluidHolder> filterRenderableFluidStacks(Collection<FluidHolder> stacks) {
         return stacks.stream().filter(stack -> !FLUIDS_NOT_TO_RENDER.contains(stack.getFluid())).toList();
     }
 }

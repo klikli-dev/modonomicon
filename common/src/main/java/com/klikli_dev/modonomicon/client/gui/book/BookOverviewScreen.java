@@ -17,11 +17,11 @@ import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ReadAllButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
-import com.klikli_dev.modonomicon.network.Networking;
-import com.klikli_dev.modonomicon.network.messages.ClickReadAllButtonMessage;
-import com.klikli_dev.modonomicon.network.messages.SaveBookStateMessage;
+import com.klikli_dev.modonomicon.networking.ClickReadAllButtonMessage;
+import com.klikli_dev.modonomicon.networking.SaveBookStateMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
 import com.klikli_dev.modonomicon.platform.Services;
+import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -30,7 +30,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.ForgeHooksClient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -61,7 +60,9 @@ public class BookOverviewScreen extends Screen {
         this.categoryScreens = this.categories.stream().map(c -> new BookCategoryScreen(this, c)).toList();
     }
 
-get()Message
+    public Minecraft getMinecraft() {
+        return this.minecraft;
+    }
 
     public void onDisplay() {
         this.loadBookState();
@@ -185,7 +186,7 @@ get()Message
         //the exact border size mostly does not matter because the center is empty anyway, but 50 gives a lot of flexiblity
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableBlend();
-        guiGraphics.blitWithBorder(this.book.getFrameTexture(), x, y, 0, 0, width, height, 140, 140, 50, 50, 50, 50);
+        GuiGraphicsExt.blitWithBorder(guiGraphics, this.book.getFrameTexture(), x, y, 0, 0, width, height, 140, 140, 50, 50, 50, 50);
 
         //now render overlays on top of that border to cover repeating elements
         this.renderFrameOverlay(guiGraphics, this.book.getTopFrameOverlay(), (x + (width / 2)), y);
@@ -206,10 +207,10 @@ get()Message
 
     protected void onReadAllButtonClick(ReadAllButton button) {
         if (this.hasUnreadUnlockedEntries && !Screen.hasShiftDown()) {
-            Networking.sendToServer(new ClickReadAllButtonMessage(this.book.getId(), false));
+            Services.NETWORK.sendToServer(new ClickReadAllButtonMessage(this.book.getId(), false));
             this.hasUnreadUnlockedEntries = false;
         } else if (this.hasUnreadEntries && Screen.hasShiftDown()) {
-            Networking.sendToServer(new ClickReadAllButtonMessage(this.book.getId(), true));
+            Services.NETWORK.sendToServer(new ClickReadAllButtonMessage(this.book.getId(), true));
             this.hasUnreadEntries = false;
         }
     }
@@ -248,7 +249,7 @@ get()Message
         return super.mouseScrolled(pMouseX, pMouseY, pDelta);
     }
 
-        @Override
+    @Override
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         RenderSystem.disableDepthTest(); //guard against depth test being enabled by other rendering code, that would cause ui elements to vanish
 
@@ -264,24 +265,24 @@ get()Message
 
         //do super render last -> it does the widgets including especially the tooltips and we want those to go over the frame
         super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
-    }.
+    }
 
-        @Override
+    @Override
     public boolean shouldCloseOnEsc() {
         return true;
-    }(
+    }
 
     @Override
     public void onClose() {
         this.getCurrentCategoryScreen().onClose();
-        Networking.sendToServer(new SaveBookStateMessage(this.book, this.getCurrentCategoryScreen().getCategory().getId()));
+        Services.NETWORK.sendToServer(new SaveBookStateMessage(this.book, this.getCurrentCategoryScreen().getCategory().getId()));
 
         BookGuiManager.get().resetHistory();
 
         BookGuiManager.get().openOverviewScreen = null;
 
         super.onClose();
-    })
+    }
 
     @Override
     public boolean handleComponentClicked(@Nullable Style pStyle) {

@@ -3,10 +3,11 @@
 //
 // SPDX-License-Identifier: MIT
 
-package com.klikli_dev.modonomicon.client.render;
+package com.klikli_dev.modonomicon.client.fluid;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import com.klikli_dev.modonomicon.platform.services.FluidHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -150,7 +151,7 @@ public class FluidRenderHelper {
         tessellator.end();
     }
 
-    public static List<Component> getTooltip(FluidStack fluidStack, int capacity, TooltipFlag tooltipFlag, TooltipMode tooltipMode) {
+    public static List<Component> getTooltip(FluidStack fluidStack, int capacity, TooltipFlag tooltipFlag, FluidHelper.TooltipMode tooltipMode) {
         Fluid fluidType = fluidStack.getFluid();
         try {
             if (fluidType.isSame(Fluids.EMPTY)) {
@@ -162,10 +163,10 @@ public class FluidRenderHelper {
             long amount = fluidStack.getAmount();
             long milliBuckets = (amount * 1000) / FluidType.BUCKET_VOLUME;
 
-            if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
+            if (tooltipMode == FluidHelper.TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
                 MutableComponent amountString = Component.translatable(ModonomiconConstants.I18n.Tooltips.FLUID_AMOUNT_AND_CAPACITY, milliBuckets, capacity);
                 tooltip.add(amountString.withStyle(ChatFormatting.GRAY));
-            } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
+            } else if (tooltipMode == FluidHelper.TooltipMode.SHOW_AMOUNT) {
                 MutableComponent amountString = Component.translatable(ModonomiconConstants.I18n.Tooltips.FLUID_AMOUNT, milliBuckets);
                 tooltip.add(amountString.withStyle(ChatFormatting.GRAY));
             }
@@ -200,9 +201,5 @@ public class FluidRenderHelper {
         return tooltip;
     }
 
-    public enum TooltipMode {
-        SHOW_AMOUNT,
-        SHOW_AMOUNT_AND_CAPACITY,
-        ITEM_LIST
-    }
+
 }

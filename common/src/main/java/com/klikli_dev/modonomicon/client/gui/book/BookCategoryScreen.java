@@ -13,6 +13,8 @@ import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryCont
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
+import com.klikli_dev.modonomicon.networking.BookEntryReadMessage;
+import com.klikli_dev.modonomicon.networking.SaveCategoryStateMessage;
 import com.klikli_dev.modonomicon.platform.Services;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
@@ -393,7 +395,7 @@ public class BookCategoryScreen {
     }
 
     public void onClose() {
-        Networking.sendToServer(new SaveCategoryStateMessage(this.category, this.scrollX, this.scrollY, this.currentZoom, this.openEntry));
+        Services.NETWORK.sendToServer(new SaveCategoryStateMessage(this.category, this.scrollX, this.scrollY, this.currentZoom, this.openEntry));
     }
 
     public void onCloseEntry(BookContentScreen screen) {

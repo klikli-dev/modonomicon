@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.MarkdownComponentRenderUtils;
+import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -152,11 +153,11 @@ public abstract class BookPageRenderer<T extends BookPage> {
     public abstract void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float ticks);
 
     public void drawCenteredStringNoShadow(GuiGraphics guiGraphics, FormattedCharSequence s, int x, int y, int color, float scale) {
-        guiGraphics.drawString(this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
+        GuiGraphicsExt.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
     }
 
     public void drawCenteredStringNoShadow(GuiGraphics guiGraphics, String s, int x, int y, int color, float scale) {
-        guiGraphics.drawString(this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
+        GuiGraphicsExt.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
     }
 
     public void drawWrappedStringNoShadow(GuiGraphics guiGraphics, Component s, int x, int y, int color, int width) {
