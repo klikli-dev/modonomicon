@@ -10,32 +10,31 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.command.LoadUnlocksCommand;
 import com.klikli_dev.modonomicon.command.ResetBookUnlocksCommand;
 import com.klikli_dev.modonomicon.command.SaveUnlocksCommand;
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraftforge.client.event.RegisterClientCommandsEvent;
-import net.minecraftforge.event.RegisterCommandsEvent;
 
 public class CommandRegistry {
 
-    public static void registerCommands(RegisterCommandsEvent event) {
-        LiteralCommandNode<CommandSourceStack> modonomiconCommand = event.getDispatcher().register(
+    public static void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
+        LiteralCommandNode<CommandSourceStack> modonomiconCommand = dispatcher.register(
                 Commands.literal(Modonomicon.MOD_ID)
-                        .then(ResetBookUnlocksCommand.register(event.getDispatcher()))
-                        .then(SaveUnlocksCommand.register(event.getDispatcher()))
+                        .then(ResetBookUnlocksCommand.register(dispatcher))
+                        .then(SaveUnlocksCommand.register(dispatcher))
         );
 
-        event.getDispatcher().register(Commands.literal("modonomicon").redirect(modonomiconCommand));
+        dispatcher.register(Commands.literal("modonomicon").redirect(modonomiconCommand));
     }
 
-    public static void registerClientCommands(RegisterClientCommandsEvent event) {
+    public static void registerClientCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
 
-        LiteralCommandNode<CommandSourceStack> modonomiconCommand = event.getDispatcher().register(
+        LiteralCommandNode<CommandSourceStack> modonomiconCommand = dispatcher.register(
                 Commands.literal(Modonomicon.MOD_ID)
-                        .then(LoadUnlocksCommand.register(event.getDispatcher()))
+                        .then(LoadUnlocksCommand.register(dispatcher))
         );
 
-        event.getDispatcher().register(Commands.literal("modonomicon").redirect(modonomiconCommand));
+        dispatcher.register(Commands.literal("modonomicon").redirect(modonomiconCommand));
     }
 
 }

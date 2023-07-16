@@ -2,6 +2,8 @@ package com.klikli_dev.modonomicon;
 
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.platform.Services;
+import com.klikli_dev.modonomicon.registry.ItemRegistry;
+import com.klikli_dev.modonomicon.registry.SoundRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
@@ -25,7 +27,8 @@ public class Modonomicon {
     // write the majority of your code here and load it from your loader specific projects. This example has some
     // code that gets invoked by the entry point of the loader specific projects.
     public static void init() {
-
+        ItemRegistry.load();
+        SoundRegistry.load();
     }
 
     public static ResourceLocation loc(String path) {

@@ -54,30 +54,6 @@ public class ModonomiconItem extends Item {
         return ResourceLocation.tryParse(bookStr);
     }
 
-    public static void onCreativeModeTabBuildContents(BuildCreativeModeTabContentsEvent event) {
-        var tabName = CreativeModeTabRegistry.getName(event.getTab());
-        if(tabName == null)
-            return;
-
-        BookDataManager.get().getBooks().values().forEach(b -> {
-            if (event.getTabKey() == CreativeModeTabs.SEARCH || b.getCreativeTab().equals(tabName.toString())) {
-                if (b.generateBookItem()) {
-                    ItemStack stack = new ItemStack(ItemRegistry.MODONOMICON.get());
-
-                    CompoundTag cmp = new CompoundTag();
-                    cmp.putString(Nbt.ITEM_BOOK_ID_TAG, b.getId().toString());
-                    stack.setTag(cmp);
-
-                    if (event.getTab().getDisplayItems().stream().noneMatch(s -> s.hasTag()
-                            && s.getTag().contains(Nbt.ITEM_BOOK_ID_TAG)
-                            && s.getTag().getString(Nbt.ITEM_BOOK_ID_TAG).equals(b.getId().toString()))) {
-                        event.accept(stack);
-                    }
-                }
-            }
-        });
-    }
-
     @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
         var itemInHand = pPlayer.getItemInHand(pUsedHand);

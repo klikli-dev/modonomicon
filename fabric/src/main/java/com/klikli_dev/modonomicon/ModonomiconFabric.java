@@ -15,6 +15,13 @@ public class ModonomiconFabric implements ModInitializer {
         Modonomicon.LOG.info("Hello Fabric world!");
         Modonomicon.init();
 
-        //TODO: Listen for advancement events and call it on BookUnlockStateManager
+        //TODO: Fabric: Listen for advancement events and call it on BookUnlockStateManager
+
+        //TODO: Fabric: Register commands
+        //TODO: Fabric: Register Creative Tabs + Contents
+        //TODO: Fabric: Register Network Messages
+        //TODO: Fabric: Datagen
+        //TODO: Fabric: Config
+        //TODO: Fabric: on join world (see Forge)
     }
 }

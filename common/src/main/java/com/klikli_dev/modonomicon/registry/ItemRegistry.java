@@ -8,15 +8,13 @@ package com.klikli_dev.modonomicon.registry;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.item.ModonomiconItem;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 
 public class ItemRegistry {
     //TODO: make mod loader agnostic
 
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Modonomicon.MOD_ID);
+    public static final RegistrationProvider<Item> ITEMS = RegistrationProvider.get(Registries.ITEM, Modonomicon.MOD_ID);
 
     public static final RegistryObject<Item> MODONOMICON =
             ITEMS.register("modonomicon", () -> new ModonomiconItem(new Item.Properties()));
@@ -30,4 +28,7 @@ public class ItemRegistry {
             ITEMS.register("modonomicon_purple", () -> new ModonomiconItem(new Item.Properties()));
     public static final RegistryObject<Item> MODONOMICON_RED =
             ITEMS.register("modonomicon_red", () -> new ModonomiconItem(new Item.Properties()));
+
+    // Called in the mod initializer / constructor in order to make sure that items are registered
+    public static void load() {}
 }
