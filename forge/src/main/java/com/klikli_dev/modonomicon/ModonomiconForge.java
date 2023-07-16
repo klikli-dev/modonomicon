@@ -3,7 +3,6 @@ package com.klikli_dev.modonomicon;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.client.BookModelLoader;
-import com.klikli_dev.modonomicon.client.ClientSetupEventHandler;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
@@ -75,7 +74,8 @@ public class ModonomiconForge {
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
             modEventBus.addListener(Client::onClientSetup);
-
+            modEventBus.addListener(Client::onRegisterGeometryLoaders);
+            modEventBus.addListener(Client::onRegisterGuiOverlays);
             MinecraftForge.EVENT_BUS.addListener((RecipesUpdatedEvent e) -> BookDataManager.get().onRecipesUpdated());
 
         }
