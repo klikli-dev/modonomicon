@@ -48,8 +48,6 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
-import net.minecraftforge.client.event.RenderLevelStageEvent.Stage;
 import org.joml.Matrix4f;
 
 import java.awt.*;
@@ -123,7 +121,7 @@ public class MultiblockPreviewRenderer {
                 String s = I18n.get(ModonomiconConstants.I18n.Multiblock.COMPLETE);
                 guiGraphics.pose().pushPose();
                 guiGraphics.pose().translate(0, Math.min(height + 5, animTime), 0);
-                guiGraphics.drawString(mc.font, s, x - mc.font.width(s) / 2.0F, top + height - 10, 0x00FF00, false);
+                guiGraphics.drawString(mc.font, s, (int) (x - mc.font.width(s) / 2.0F), top + height - 10, 0x00FF00, false);
                 guiGraphics.pose().popPose();
             }
 
@@ -138,7 +136,7 @@ public class MultiblockPreviewRenderer {
 
             if (!isAnchored) {
                 String s = I18n.get(ModonomiconConstants.I18n.Multiblock.NOT_ANCHORED);
-                guiGraphics.drawString(mc.font, s, x - mc.font.width(s) / 2.0F, top + height + 8, 0xFFFFFF, false);
+                guiGraphics.drawString(mc.font, s, (int) (x - mc.font.width(s) / 2.0F), top + height + 8, 0xFFFFFF, false);
             } else {
                 if (lookingState != null) {
                     // try-catch around here because the state isn't necessarily present in the world in this instance,
@@ -171,7 +169,7 @@ public class MultiblockPreviewRenderer {
                         posy += 2;
                     }
 
-                    guiGraphics.drawString(mc.font, progress, posx - mc.font.width(progress) / mult, posy, color, true);
+                    guiGraphics.drawString(mc.font, progress, (int) (posx - mc.font.width(progress) / mult), posy, color, true);
                 }
             }
 
@@ -179,11 +177,9 @@ public class MultiblockPreviewRenderer {
         }
     }
 
-    public static void onRenderLevelLastEvent(RenderLevelStageEvent event) {
-        if (event.getStage() == Stage.AFTER_TRIPWIRE_BLOCKS) { //After translucent causes block entities to error out on render in preview
-            if (hasMultiblock && multiblock != null) {
-                renderMultiblock(Minecraft.getInstance().level, event.getPoseStack());
-            }
+    public static void onRenderLevelLastEvent(PoseStack poseStack) {
+        if (hasMultiblock && multiblock != null) {
+            renderMultiblock(Minecraft.getInstance().level, poseStack);
         }
     }
 

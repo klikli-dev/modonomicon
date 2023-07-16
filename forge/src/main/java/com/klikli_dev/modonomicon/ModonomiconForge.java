@@ -2,6 +2,11 @@ package com.klikli_dev.modonomicon;
 
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
+import com.klikli_dev.modonomicon.client.BookModelLoader;
+import com.klikli_dev.modonomicon.client.ClientSetupEventHandler;
+import com.klikli_dev.modonomicon.client.ClientTicks;
+import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
+import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
@@ -9,19 +14,24 @@ import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RecipesUpdatedEvent;
-import net.minecraftforge.client.event.RegisterClientCommandsEvent;
+import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -64,7 +74,10 @@ public class ModonomiconForge {
         MinecraftForge.EVENT_BUS.addListener((AdvancementEvent.AdvancementEarnEvent e) -> BookUnlockStateManager.get().onAdvancement((ServerPlayer) e.getEntity()));
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
+            modEventBus.addListener(Client::onClientSetup);
+
             MinecraftForge.EVENT_BUS.addListener((RecipesUpdatedEvent e) -> BookDataManager.get().onRecipesUpdated());
+
         }
     }
 
@@ -78,6 +91,59 @@ public class ModonomiconForge {
         if (event.getEntity() instanceof ServerPlayer player) {
             BookUnlockStateManager.get().updateAndSyncFor(player);
             BookVisualStateManager.get().syncFor(player);
+        }
+    }
+
+    public static class Client {
+        public static void onClientSetup(FMLClientSetupEvent event) {
+            PageRendererRegistry.registerPageRenderers();
+
+            MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent e) -> {
+                if (e.phase == TickEvent.Phase.END) {
+                    ClientTicks.endClientTick(Minecraft.getInstance());
+                }
+            });
+            MinecraftForge.EVENT_BUS.addListener((TickEvent.RenderTickEvent e) -> {
+                if (e.phase == TickEvent.Phase.START) {
+                    ClientTicks.renderTickStart(e.renderTickTime);
+                } else {
+                    ClientTicks.renderTickEnd();
+                }
+            });
+
+            //let multiblock preview renderer handle right clicks for anchoring
+            MinecraftForge.EVENT_BUS.addListener((PlayerInteractEvent.RightClickBlock e) -> {
+                InteractionResult result = MultiblockPreviewRenderer.onPlayerInteract(e.getEntity(), e.getLevel(), e.getHand(), e.getHitVec());
+                if (result.consumesAction()) {
+                    e.setCanceled(true);
+                    e.setCancellationResult(result);
+                }
+            });
+
+            //Tick multiblock preview
+            MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent e) -> {
+                if (e.phase == TickEvent.Phase.END) {
+                    MultiblockPreviewRenderer.onClientTick(Minecraft.getInstance());
+                }
+            });
+
+            //Render multiblock preview
+            MinecraftForge.EVENT_BUS.addListener((RenderLevelStageEvent e) -> {
+                if (e.getStage() == RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS) { //After translucent causes block entities to error out on render in preview
+                    MultiblockPreviewRenderer.onRenderLevelLastEvent(e.getPoseStack());
+                }
+            } );
+        }
+
+        public static void onRegisterGeometryLoaders(ModelEvent.RegisterGeometryLoaders event)
+        {
+            event.register("book_model_loader", new BookModelLoader());
+        }
+
+        public static void onRegisterGuiOverlays(RegisterGuiOverlaysEvent event){
+            event.registerBelow(VanillaGuiOverlay.BOSS_EVENT_PROGRESS.id(),"multiblock_hud", (gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
+                MultiblockPreviewRenderer.onRenderHUD(guiGraphics, partialTick);
+            });
         }
     }
 }
