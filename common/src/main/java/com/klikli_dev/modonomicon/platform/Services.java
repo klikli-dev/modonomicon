@@ -15,6 +15,7 @@ public class Services {
     public static final ClientConfigHelper CLIENT_CONFIG = load(ClientConfigHelper.class);
     public static final GuiHelper GUI = load(GuiHelper.class);
     public static final FluidHelper FLUID = load(FluidHelper.class);
+    public static final PatchouliHelper PATCHOULI = load(PatchouliHelper.class);
 
     // This code is used to load a service for the current environment. Your implementation of the service must be defined
     // manually by including a text file in META-INF/services named with the fully qualified class name of the service.

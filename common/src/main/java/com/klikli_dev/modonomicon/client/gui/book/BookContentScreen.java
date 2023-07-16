@@ -23,7 +23,6 @@ import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.fluid.FluidHolder;
 import com.klikli_dev.modonomicon.integration.ModonomiconJeiIntegration;
-import com.klikli_dev.modonomicon.integration.ModonomiconPatchouliIntegration;
 import com.klikli_dev.modonomicon.networking.ClickCommandLinkMessage;
 import com.klikli_dev.modonomicon.networking.SaveEntryStateMessage;
 import com.klikli_dev.modonomicon.platform.Services;
@@ -717,7 +716,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
                             this.simulateEscClosing = true;
                             //this.onClose();
 
-                            ModonomiconPatchouliIntegration.openEntry(link.bookId, link.entryId, link.pageNumber);
+                            Services.PATCHOULI.openEntry(link.bookId, link.entryId, link.pageNumber);
                             return true;
                         }
                     }
