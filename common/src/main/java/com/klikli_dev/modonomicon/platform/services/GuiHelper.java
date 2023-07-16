@@ -14,5 +14,5 @@ public interface GuiHelper {
     /**
      * Pops a GUI layer from the screen.
      */
-     void popGuiLayer();
+    void popGuiLayer();
 }

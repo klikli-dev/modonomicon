@@ -17,7 +17,6 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -159,7 +158,7 @@ public class BookUnlockStates {
         this.readEntries.computeIfAbsent(entry.getBook().getId(), k -> new HashSet<>()).add(entry.getId());
 
         var command = entry.getCommandToRunOnFirstRead();
-        if(command != null) {
+        if (command != null) {
             command.execute(player);
         }
 

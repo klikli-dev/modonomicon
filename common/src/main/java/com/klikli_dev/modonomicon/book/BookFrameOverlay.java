@@ -26,22 +26,22 @@ public class BookFrameOverlay {
                     return overlay.texture;
                 }),
                 Codec.SHORT.fieldOf("texture_width").forGetter((overlay) -> {
-                    return (short)overlay.textureWidth;
+                    return (short) overlay.textureWidth;
                 }),
                 Codec.SHORT.fieldOf("texture_height").forGetter((overlay) -> {
-                    return (short)overlay.textureHeight;
+                    return (short) overlay.textureHeight;
                 }),
                 Codec.SHORT.fieldOf("frame_width").forGetter((overlay) -> {
-                    return (short)overlay.frameWidth;
+                    return (short) overlay.frameWidth;
                 }),
                 Codec.SHORT.fieldOf("frame_height").forGetter((overlay) -> {
-                    return (short)overlay.frameHeight;
+                    return (short) overlay.frameHeight;
                 }),
                 Codec.SHORT.fieldOf("frame_x_offset").forGetter((overlay) -> {
-                    return (short)overlay.frameXOffset;
+                    return (short) overlay.frameXOffset;
                 }),
                 Codec.SHORT.fieldOf("frame_y_offset").forGetter((overlay) -> {
-                    return (short)overlay.frameYOffset;
+                    return (short) overlay.frameYOffset;
                 })
         ).apply(builder, BookFrameOverlay::new);
     });
@@ -72,7 +72,7 @@ public class BookFrameOverlay {
     }
 
     public void toNetwork(FriendlyByteBuf buffer) {
-        buffer.writeWithCodec(NbtOps.INSTANCE,BookFrameOverlay.CODEC, this);
+        buffer.writeWithCodec(NbtOps.INSTANCE, BookFrameOverlay.CODEC, this);
     }
 
     public int getFrameU() {

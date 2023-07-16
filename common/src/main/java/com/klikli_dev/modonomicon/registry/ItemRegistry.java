@@ -30,5 +30,6 @@ public class ItemRegistry {
             ITEMS.register("modonomicon_red", () -> new ModonomiconItem(new Item.Properties()));
 
     // Called in the mod initializer / constructor in order to make sure that items are registered
-    public static void load() {}
+    public static void load() {
+    }
 }

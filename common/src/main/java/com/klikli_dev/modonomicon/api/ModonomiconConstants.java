@@ -142,9 +142,9 @@ public class ModonomiconConstants {
             public static final String SEARCH_NO_RESULTS = PREFIX + "search.no_results";
             public static final String SEARCH_NO_RESULTS_SAD = PREFIX + "search.sad";
             public static final String SEARCH_INFO_TEXT = PREFIX + "search.info";
-            public static final String SEARCH_ENTRY_LIST_TITLE= PREFIX + "search.entry_list_title";
+            public static final String SEARCH_ENTRY_LIST_TITLE = PREFIX + "search.entry_list_title";
 
-            public static final String OPEN_SEARCH= PREFIX + "open_search";
+            public static final String OPEN_SEARCH = PREFIX + "open_search";
 
             public static final String RECIPE_PAGE_RECIPE_MISSING = PREFIX + "recipe_page.recipe_missing";
         }
@@ -163,17 +163,14 @@ public class ModonomiconConstants {
 
         public static class Tooltips {
             public static final String PREFIX = "tooltip." + ModonomiconAPI.ID + ".";
-            public static final String CONDITION_PREFIX =PREFIX + ".condition.";
-            public static final String RECIPE_PREFIX =PREFIX + ".recipe.";
+            public static final String CONDITION_PREFIX = PREFIX + ".condition.";
             public static final String CONDITION_ADVANCEMENT = CONDITION_PREFIX + "advancement";
-
             public static final String CONDITION_MOD_LOADED = CONDITION_PREFIX + "mod_loaded";
             public static final String CONDITION_ENTRY_UNLOCKED = CONDITION_PREFIX + "entry_unlocked";
             public static final String CONDITION_ENTRY_READ = CONDITION_PREFIX + "entry_read";
-
-            public static final String ITEM_NO_BOOK_FOUND_FOR_STACK = PREFIX + "no_book_found_for_stack";
+            public static final String RECIPE_PREFIX = PREFIX + ".recipe.";
             public static final String RECIPE_CRAFTING_SHAPELESS = RECIPE_PREFIX + "crafting_shapeless";
-
+            public static final String ITEM_NO_BOOK_FOUND_FOR_STACK = PREFIX + "no_book_found_for_stack";
             public static final String FLUID_AMOUNT = PREFIX + "fluid.amount";
             public static final String FLUID_AMOUNT_AND_CAPACITY = PREFIX + "fluid.amount_and_capacity";
 
@@ -183,10 +180,10 @@ public class ModonomiconConstants {
             public static final String PREFIX = ModonomiconAPI.ID + ".command.";
 
             public static final String ERROR_PREFIX = PREFIX + "error.";
-            public static final String SUCCESS_PREFIX = PREFIX + "success.";
             public static final String ERROR_UNKNOWN_BOOK = ERROR_PREFIX + "unknown_book";
             public static final String ERROR_LOAD_PROGRESS = ERROR_PREFIX + "load_progress";
             public static final String ERROR_LOAD_PROGRESS_CLIENT = ERROR_PREFIX + "load_progress_client";
+            public static final String SUCCESS_PREFIX = PREFIX + "success.";
             public static final String SUCCESS_RESET_BOOK = SUCCESS_PREFIX + "reset_book";
             public static final String SUCCESS_SAVE_PROGRESS = SUCCESS_PREFIX + "save_progress";
             public static final String SUCCESS_LOAD_PROGRESS = SUCCESS_PREFIX + "load_progress";

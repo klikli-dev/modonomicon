@@ -51,11 +51,11 @@ public abstract class BookRecipePageModel extends BookPageModel {
     public JsonObject toJson() {
         var json = super.toJson();
         json.add("title1", this.title1.toJson());
-        if(this.recipeId1 != null && !this.recipeId1.isEmpty()) {
+        if (this.recipeId1 != null && !this.recipeId1.isEmpty()) {
             json.addProperty("recipe_id_1", this.recipeId1);
         }
         json.add("title2", this.title2.toJson());
-        if(this.recipeId2 != null && !this.recipeId2.isEmpty()) {
+        if (this.recipeId2 != null && !this.recipeId2.isEmpty()) {
             json.addProperty("recipe_id_2", this.recipeId2);
         }
         json.add("text", this.text.toJson());
@@ -65,10 +65,10 @@ public abstract class BookRecipePageModel extends BookPageModel {
 
     public static abstract class Builder<T extends Builder<T>> {
         protected BookTextHolderModel title1 = new BookTextHolderModel("");
-        protected String recipeId1= "";
+        protected String recipeId1 = "";
 
         protected BookTextHolderModel title2 = new BookTextHolderModel("");
-        protected String recipeId2= "";
+        protected String recipeId2 = "";
 
         protected BookTextHolderModel text = new BookTextHolderModel("");
 

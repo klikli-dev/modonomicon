@@ -104,6 +104,7 @@ public class BookModel {
     public List<BookCategoryModel> getCategories() {
         return this.categories;
     }
+
     public List<BookCommandModel> getCommands() {
         return this.commands;
     }

@@ -21,28 +21,28 @@
       "type": "modonomicon:blockstate",
       "block": "minecraft:oak_stairs[facing=north]"
     },
-    "S":  {
+    "S": {
       "type": "modonomicon:blockstate",
       "block": "minecraft:oak_stairs[facing=south]"
     },
-    "W":  {
+    "W": {
       "type": "modonomicon:blockstate",
       "block": "minecraft:oak_stairs[facing=west]"
     },
-    "E":  {
+    "E": {
       "type": "modonomicon:blockstate",
       "block": "minecraft:oak_stairs[facing=east]"
     },
-    "G":  {
+    "G": {
       "type": "modonomicon:tag",
       "tag": "minecraft:candles",
       "display": "minecraft:white_candle"
     },
-    "D":  {
+    "D": {
       "type": "modonomicon:display",
       "display": "minecraft:stone"
     },
-    "0":  {
+    "0": {
       "type": "modonomicon:block",
       "block": "minecraft:skeleton_skull"
     }

@@ -10,7 +10,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
-import com.klikli_dev.modonomicon.book.conditions.BookTrueCondition;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
@@ -62,7 +61,7 @@ public class BookEntry {
     protected ResourceLocation commandToRunOnFirstReadId;
     protected BookCommand commandToRunOnFirstRead;
 
-    public BookEntry(ResourceLocation id, ResourceLocation categoryId, String name, String description, BookIcon icon, int x, int y, int entryBackgroundUIndex, int entryBackgroundVIndex, boolean hideWhileLocked, BookCondition condition, List<BookEntryParent> parents, List<BookPage> pages, ResourceLocation categoryToOpenId,ResourceLocation commandToRunOnFirstReadId) {
+    public BookEntry(ResourceLocation id, ResourceLocation categoryId, String name, String description, BookIcon icon, int x, int y, int entryBackgroundUIndex, int entryBackgroundVIndex, boolean hideWhileLocked, BookCondition condition, List<BookEntryParent> parents, List<BookPage> pages, ResourceLocation categoryToOpenId, ResourceLocation commandToRunOnFirstReadId) {
         this.id = id;
         this.categoryId = categoryId;
         this.name = name;
@@ -195,7 +194,7 @@ public class BookEntry {
         if (this.categoryToOpenId != null) {
             this.categoryToOpen = this.book.getCategory(this.categoryToOpenId);
 
-            if(this.categoryToOpen == null){
+            if (this.categoryToOpen == null) {
                 BookErrorManager.get().error("Category to open \"" + this.categoryToOpenId + "\" does not exist in this book. Set to null.");
                 this.categoryToOpenId = null;
             }
@@ -204,7 +203,7 @@ public class BookEntry {
         if (this.commandToRunOnFirstReadId != null) {
             this.commandToRunOnFirstRead = this.book.getCommand(this.commandToRunOnFirstReadId);
 
-            if(this.commandToRunOnFirstRead == null){
+            if (this.commandToRunOnFirstRead == null) {
                 BookErrorManager.get().error("Command to run on first read \"" + this.commandToRunOnFirstReadId + "\" does not exist in this book. Set to null.");
                 this.commandToRunOnFirstReadId = null;
             }

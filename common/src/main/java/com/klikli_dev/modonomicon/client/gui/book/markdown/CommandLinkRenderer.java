@@ -7,7 +7,6 @@
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
-import com.klikli_dev.modonomicon.book.BookLink;
 import com.klikli_dev.modonomicon.book.CommandLink;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import net.minecraft.ChatFormatting;

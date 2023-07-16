@@ -24,7 +24,7 @@ public class CategoryEntryMap {
 
     protected Vec2 offset;
 
-    public CategoryEntryMap(){
+    public CategoryEntryMap() {
 
     }
 
@@ -58,7 +58,7 @@ public class CategoryEntryMap {
                 } else if (c == ')') {
                     inBracket = false;
                     x++;
-                } else if(!inBracket){
+                } else if (!inBracket) {
                     x++;
                 }
             }
@@ -95,9 +95,9 @@ public class CategoryEntryMap {
                     }
                     x++;
                     currentSymbol = "";
-                } else if(inBracket){
+                } else if (inBracket) {
                     currentSymbol += c;
-                } else{
+                } else {
                     x++;
                 }
             }

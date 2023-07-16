@@ -30,27 +30,27 @@ public class BookVisualStates {
         this.bookStates = bookStates;
     }
 
-    public BookVisualState getBookState(Book book){
+    public BookVisualState getBookState(Book book) {
         return this.bookStates.computeIfAbsent(book.getId(), (id) -> new BookVisualState());
     }
 
-    public CategoryVisualState getCategoryState(BookCategory category){
+    public CategoryVisualState getCategoryState(BookCategory category) {
         return this.getBookState(category.getBook()).categoryStates.computeIfAbsent(category.getId(), (id) -> new CategoryVisualState());
     }
 
-    public EntryVisualState getEntryState(BookEntry entry){
+    public EntryVisualState getEntryState(BookEntry entry) {
         return this.getCategoryState(entry.getCategory()).entryStates.computeIfAbsent(entry.getId(), (id) -> new EntryVisualState());
     }
 
-    public void setBookState(Book book, BookVisualState state){
+    public void setBookState(Book book, BookVisualState state) {
         this.bookStates.put(book.getId(), state);
     }
 
-    public void setEntryState(BookEntry entry, EntryVisualState state){
+    public void setEntryState(BookEntry entry, EntryVisualState state) {
         this.getCategoryState(entry.getCategory()).entryStates.put(entry.getId(), state);
     }
 
-    public void setCategoryState(BookCategory category, CategoryVisualState state){
+    public void setCategoryState(BookCategory category, CategoryVisualState state) {
         this.getBookState(category.getBook()).categoryStates.put(category.getId(), state);
     }
 }

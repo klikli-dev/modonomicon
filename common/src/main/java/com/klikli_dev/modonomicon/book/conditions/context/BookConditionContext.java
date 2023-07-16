@@ -17,6 +17,14 @@ public abstract class BookConditionContext {
         this.book = book;
     }
 
+    public static BookConditionContext of(Book book, BookCategory category) {
+        return new BookConditionCategoryContext(book, category);
+    }
+
+    public static BookConditionContext of(Book book, BookEntry entry) {
+        return new BookConditionEntryContext(book, entry);
+    }
+
     public Book getBook() {
         return this.book;
     }
@@ -26,13 +34,5 @@ public abstract class BookConditionContext {
         return "BookConditionContext{" +
                 "book=" + this.book +
                 '}';
-    }
-
-    public static BookConditionContext of(Book book, BookCategory category) {
-        return new BookConditionCategoryContext(book, category);
-    }
-
-    public static BookConditionContext of(Book book, BookEntry entry) {
-        return new BookConditionEntryContext(book, entry);
     }
 }

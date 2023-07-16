@@ -19,6 +19,7 @@ public class ClientTicks {
         total = ticks + partialTicks;
         delta = total - oldTotal;
     }
+
     public static void renderTickStart(float pt) {
         partialTicks = pt;
     }

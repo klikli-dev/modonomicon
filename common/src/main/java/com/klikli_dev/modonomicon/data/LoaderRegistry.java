@@ -113,7 +113,7 @@ public class LoaderRegistry {
      * Call from common setup
      */
     public static void registerConditionLoader(ResourceLocation id, JsonLoader<? extends BookCondition> jsonLoader,
-                                          NetworkLoader<? extends BookCondition> networkLoader) {
+                                               NetworkLoader<? extends BookCondition> networkLoader) {
         conditionJsonLoaders.put(id, jsonLoader);
         conditionNetworkLoaders.put(id, networkLoader);
     }

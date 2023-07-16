@@ -172,6 +172,7 @@ public class BookEntryModel {
         /**
          * Sets the entry ID (= file name).
          * The ID must be unique within the book, so it is recommended to prepend the category: "<mod_id>:<cat_id>/<entry_id>".
+         *
          * @param id the entry ID, e.g. "modonomicon:features/image"
          */
         public Builder withId(ResourceLocation id) {
@@ -393,7 +394,6 @@ public class BookEntryModel {
             this.commandToRunOnFirstRead = bookCommandModel;
             return this;
         }
-
 
 
         public ResourceLocation getId() {

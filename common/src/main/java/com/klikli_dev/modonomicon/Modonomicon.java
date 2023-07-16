@@ -1,15 +1,9 @@
 package com.klikli_dev.modonomicon;
 
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
-import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import com.klikli_dev.modonomicon.registry.SoundRegistry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Items;
-import org.commonmark.node.Node;
-import org.commonmark.parser.Parser;
-import org.commonmark.renderer.html.HtmlRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

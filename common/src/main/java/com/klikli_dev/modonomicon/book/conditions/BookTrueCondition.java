@@ -42,7 +42,7 @@ public class BookTrueCondition extends BookCondition {
     @Override
     public void toNetwork(FriendlyByteBuf buffer) {
         buffer.writeBoolean(this.tooltip != null);
-        if(this.tooltip != null){
+        if (this.tooltip != null) {
             buffer.writeComponent(this.tooltip);
         }
     }

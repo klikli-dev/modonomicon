@@ -14,9 +14,6 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.HoverEvent.Action;
 import net.minecraft.network.chat.HoverEvent.ItemStackInfo;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.commonmark.node.Link;
 import org.commonmark.node.Node;
 import org.commonmark.node.Text;
@@ -28,8 +25,11 @@ public class ItemLinkRenderer implements LinkRenderer {
     public static final String PROTOCOL_ITEM = "item://";
     public static final int PROTOCOL_ITEM_LENGTH = PROTOCOL_ITEM.length();
 
-    public static final TextColor ITEM_LINK_COLOR =  TextColor.fromRgb(0x03fc90); //light green
+    public static final TextColor ITEM_LINK_COLOR = TextColor.fromRgb(0x03fc90); //light green
 
+    public static boolean isItemLink(String linkText) {
+        return linkText.toLowerCase().startsWith(PROTOCOL_ITEM);
+    }
 
     @Override
     public boolean visit(Link link, Consumer<Node> visitChildren, ComponentNodeRendererContext context) {
@@ -37,7 +37,7 @@ public class ItemLinkRenderer implements LinkRenderer {
         //[](item://minecraft:diamond)
         //[TestText](item://minecraft:emerald)
 
-        if(link.getDestination().startsWith(PROTOCOL_ITEM)){
+        if (link.getDestination().startsWith(PROTOCOL_ITEM)) {
 
             BookErrorManager.get().setContext("Item Link: {}, \n{}",
                     link.getDestination(),
@@ -59,7 +59,7 @@ public class ItemLinkRenderer implements LinkRenderer {
 
             //TODO: show usage infos -> shift to show usage, click to show recipe
 
-            if(link.getLastChild() == null){
+            if (link.getLastChild() == null) {
                 //if no children, render item name
                 link.appendChild(new Text(Component.translatable(itemStack.getItem().getDescriptionId()).getString()));
             }
@@ -78,9 +78,5 @@ public class ItemLinkRenderer implements LinkRenderer {
             return true;
         }
         return false;
-    }
-
-    public static boolean isItemLink(String linkText) {
-        return linkText.toLowerCase().startsWith(PROTOCOL_ITEM);
     }
 }

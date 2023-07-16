@@ -10,8 +10,6 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.helpers.MessageFormatter;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 

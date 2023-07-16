@@ -45,7 +45,7 @@ public class BookLink {
         linkText = linkText.substring(PROTOCOL_CATEGORY.length());
         var bookLink = new BookLink();
 
-        if(linkText.contains(":")){
+        if (linkText.contains(":")) {
             //with book id
             var parts = linkText.split("/", 2);
             bookLink.bookId = ResourceLocation.tryParse(parts[0]);
@@ -90,10 +90,10 @@ public class BookLink {
         Book book = null;
         String[] parts = null;
 
-        if(linkText.contains(":")) {
-             parts = linkText.split("/", 2);
+        if (linkText.contains(":")) {
+            parts = linkText.split("/", 2);
             bookLink.bookId = ResourceLocation.tryParse(parts[0]);
-             book = BookDataManager.get().getBook(bookLink.bookId);
+            book = BookDataManager.get().getBook(bookLink.bookId);
             if (book == null) {
                 throw new IllegalArgumentException("Invalid entry link, book not found: " + linkText);
             }
@@ -107,55 +107,55 @@ public class BookLink {
         }
 
 
-            var entryId = parts[1];
+        var entryId = parts[1];
 
-            //anchors are indicated by @
-            int lastAtIndex = entryId.lastIndexOf("@");
-            if (lastAtIndex >= 0) {
-                var postAt = entryId.substring(lastAtIndex + 1);
-                var path = StringUtils.removeEnd(entryId.substring(0, lastAtIndex), "/"); //remove trailing /
-                bookLink.entryId = new ResourceLocation(book.getId().getNamespace(), path);
-                var entry = book.getEntry(bookLink.entryId);
-                if (entry == null) {
-                    throw new IllegalArgumentException("Invalid entry link, entry not found in book: " + linkText);
-                }
-
-                bookLink.pageAnchor = postAt;
-                if (entry.getPageNumberForAnchor(bookLink.pageAnchor) == -1) {
-                    throw new IllegalArgumentException("Invalid entry link, anchor not found in entry: " + linkText);
-                }
-
-                return bookLink;
+        //anchors are indicated by @
+        int lastAtIndex = entryId.lastIndexOf("@");
+        if (lastAtIndex >= 0) {
+            var postAt = entryId.substring(lastAtIndex + 1);
+            var path = StringUtils.removeEnd(entryId.substring(0, lastAtIndex), "/"); //remove trailing /
+            bookLink.entryId = new ResourceLocation(book.getId().getNamespace(), path);
+            var entry = book.getEntry(bookLink.entryId);
+            if (entry == null) {
+                throw new IllegalArgumentException("Invalid entry link, entry not found in book: " + linkText);
             }
 
-            int lastHashIndex = entryId.lastIndexOf("#");
-            if (lastHashIndex >= 0) {
-                //handle page index after #
-                var postHash = entryId.substring(lastHashIndex);
-                var path = StringUtils.removeEnd(entryId.substring(0, lastHashIndex), "/"); //remove trailing /
-                bookLink.entryId = new ResourceLocation(book.getId().getNamespace(), path);
-                if (book.getEntry(bookLink.entryId) == null) {
-                    throw new IllegalArgumentException("Invalid entry link, entry not found in book: " + linkText);
-                }
-                try {
-                    bookLink.pageNumber = Integer.parseInt(postHash);
-                    //check if page number is valid
-                    if (bookLink.pageNumber < 0 || bookLink.pageNumber >= book.getEntry(bookLink.entryId).getPages().size()) {
-                        throw new IllegalArgumentException("Invalid entry link, page number not found in entry: " + linkText);
-                    }
-                } catch (NumberFormatException e) {
-                    BookErrorManager.get().error("Invalid page number in entry link: " + linkText, e);
-                }
-
-                return bookLink;
+            bookLink.pageAnchor = postAt;
+            if (entry.getPageNumberForAnchor(bookLink.pageAnchor) == -1) {
+                throw new IllegalArgumentException("Invalid entry link, anchor not found in entry: " + linkText);
             }
 
-            //handle no page number/anchor
-            bookLink.entryId = new ResourceLocation(book.getId().getNamespace(), entryId);
+            return bookLink;
+        }
+
+        int lastHashIndex = entryId.lastIndexOf("#");
+        if (lastHashIndex >= 0) {
+            //handle page index after #
+            var postHash = entryId.substring(lastHashIndex);
+            var path = StringUtils.removeEnd(entryId.substring(0, lastHashIndex), "/"); //remove trailing /
+            bookLink.entryId = new ResourceLocation(book.getId().getNamespace(), path);
             if (book.getEntry(bookLink.entryId) == null) {
                 throw new IllegalArgumentException("Invalid entry link, entry not found in book: " + linkText);
             }
+            try {
+                bookLink.pageNumber = Integer.parseInt(postHash);
+                //check if page number is valid
+                if (bookLink.pageNumber < 0 || bookLink.pageNumber >= book.getEntry(bookLink.entryId).getPages().size()) {
+                    throw new IllegalArgumentException("Invalid entry link, page number not found in entry: " + linkText);
+                }
+            } catch (NumberFormatException e) {
+                BookErrorManager.get().error("Invalid page number in entry link: " + linkText, e);
+            }
+
             return bookLink;
+        }
+
+        //handle no page number/anchor
+        bookLink.entryId = new ResourceLocation(book.getId().getNamespace(), entryId);
+        if (book.getEntry(bookLink.entryId) == null) {
+            throw new IllegalArgumentException("Invalid entry link, entry not found in book: " + linkText);
+        }
+        return bookLink;
 
     }
 

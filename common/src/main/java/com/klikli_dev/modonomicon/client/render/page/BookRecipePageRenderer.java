@@ -9,7 +9,6 @@ package com.klikli_dev.modonomicon.client.render.page;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.book.page.BookRecipePage;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -49,7 +48,7 @@ public abstract class BookRecipePageRenderer<R extends Recipe<?>, T extends Book
         }
 
         if (this.page.getRecipe2() == null) //only render if no second recipe availble
-            this.renderBookTextHolder(guiGraphics, this.getPage().getText(),0, this.getTextY(), BookContentScreen.PAGE_WIDTH);
+            this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, this.getTextY(), BookContentScreen.PAGE_WIDTH);
 
         var style = this.getClickedComponentStyleAt(mouseX, mouseY);
         if (style != null)

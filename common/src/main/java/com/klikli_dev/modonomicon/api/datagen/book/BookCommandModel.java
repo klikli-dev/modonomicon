@@ -47,9 +47,9 @@ public class BookCommandModel {
         json.addProperty("command", this.command);
         json.addProperty("permission_level", this.permissionLevel);
         json.addProperty("max_uses", this.maxUses);
-        if(this.failureMessage != null)
+        if (this.failureMessage != null)
             json.addProperty("failure_message", this.failureMessage);
-        if(this.successMessage != null)
+        if (this.successMessage != null)
             json.addProperty("success_message", this.successMessage);
         return json;
     }

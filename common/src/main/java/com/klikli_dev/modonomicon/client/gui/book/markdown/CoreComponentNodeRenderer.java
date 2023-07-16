@@ -7,8 +7,11 @@
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.ClickEvent.Action;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
 import org.commonmark.internal.renderer.text.BulletListHolder;
 import org.commonmark.internal.renderer.text.OrderedListHolder;
 import org.commonmark.node.*;
@@ -131,7 +134,7 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
         if (listHolder != null && listHolder instanceof OrderedListHolder orderedListHolder) {
             //List bullets/numbers will not be affected by current style
             this.context.getCurrentComponent().append(Component.translatable(
-                    orderedListHolder.getIndent() + orderedListHolder.getCounter() + orderedListHolder.getDelimiter() + " ")
+                            orderedListHolder.getIndent() + orderedListHolder.getCounter() + orderedListHolder.getDelimiter() + " ")
                     .withStyle(Style.EMPTY));
 
             this.visitChildren(listItem);
@@ -139,7 +142,7 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
         } else if (listHolder != null && listHolder instanceof BulletListHolder bulletListHolder) {
             //List bullets/numbers will not be affected by current style
             this.context.getCurrentComponent().append(Component.translatable(
-                    bulletListHolder.getIndent() + bulletListHolder.getMarker() + " ")
+                            bulletListHolder.getIndent() + bulletListHolder.getMarker() + " ")
                     .withStyle(Style.EMPTY));
             this.visitChildren(listItem);
         }
