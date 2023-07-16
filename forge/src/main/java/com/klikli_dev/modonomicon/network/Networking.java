@@ -37,6 +37,42 @@ public class Networking {
 
     public static void registerMessages() {
         INSTANCE.registerMessage(nextID(),
+                BookEntryReadMessage.class,
+                BookEntryReadMessage::encode,
+                BookEntryReadMessage::new,
+                MessageHandler::handle);
+
+        INSTANCE.registerMessage(nextID(),
+                ClickCommandLinkMessage.class,
+                ClickCommandLinkMessage::encode,
+                ClickCommandLinkMessage::new,
+                MessageHandler::handle);
+
+        INSTANCE.registerMessage(nextID(),
+                ClickReadAllButtonMessage.class,
+                ClickReadAllButtonMessage::encode,
+                ClickReadAllButtonMessage::new,
+                MessageHandler::handle);
+
+        INSTANCE.registerMessage(nextID(),
+                SaveBookStateMessage.class,
+                SaveBookStateMessage::encode,
+                SaveBookStateMessage::new,
+                MessageHandler::handle);
+
+        INSTANCE.registerMessage(nextID(),
+                SaveCategoryStateMessage.class,
+                SaveCategoryStateMessage::encode,
+                SaveCategoryStateMessage::new,
+                MessageHandler::handle);
+
+        INSTANCE.registerMessage(nextID(),
+                SaveEntryStateMessage.class,
+                SaveEntryStateMessage::encode,
+                SaveEntryStateMessage::new,
+                MessageHandler::handle);
+
+        INSTANCE.registerMessage(nextID(),
                 SendUnlockCodeToClientMessage.class,
                 SendUnlockCodeToClientMessage::encode,
                 SendUnlockCodeToClientMessage::new,

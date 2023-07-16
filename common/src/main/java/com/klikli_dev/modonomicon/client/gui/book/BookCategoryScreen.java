@@ -13,10 +13,6 @@ import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryCont
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
-import com.klikli_dev.modonomicon.config.ClientConfig;
-import com.klikli_dev.modonomicon.network.Networking;
-import com.klikli_dev.modonomicon.network.messages.BookEntryReadMessage;
-import com.klikli_dev.modonomicon.network.messages.SaveCategoryStateMessage;
 import com.klikli_dev.modonomicon.platform.Services;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
@@ -74,7 +70,7 @@ public class BookCategoryScreen {
     }
 
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        if (ClientConfig.get().qolCategory.enableSmoothZoom.get()) {
+        if (Services.CLIENT_CONFIG.enableSmoothZoom()) {
             float diff = this.targetZoom - this.currentZoom;
             this.currentZoom = this.currentZoom + Math.min(pPartialTick * (2 / 3f), 1) * diff;
         } else
@@ -133,7 +129,7 @@ public class BookCategoryScreen {
 
     public BookContentScreen openEntry(BookEntry entry) {
         if (!BookUnlockStateManager.get().isReadFor(Minecraft.getInstance().player, entry)) {
-            Networking.sendToServer(new BookEntryReadMessage(entry.getBook().getId(), entry.getId()));
+            Services.NETWORK.sendToServer(new BookEntryReadMessage(entry.getBook().getId(), entry.getId()));
         }
 
         if (entry.getCategoryToOpen() != null) {

@@ -152,15 +152,15 @@ public class BookUnlockStates {
     /**
      * @return true if entry is now read, false if it was already read before.
      */
-    public boolean read(BookEntry entry, Player player) {
+    public boolean read(BookEntry entry, ServerPlayer player) {
         if (this.isRead(entry))
             return false;
 
         this.readEntries.computeIfAbsent(entry.getBook().getId(), k -> new HashSet<>()).add(entry.getId());
 
         var command = entry.getCommandToRunOnFirstRead();
-        if(command != null && player instanceof ServerPlayer serverPlayer) {
-            command.execute(serverPlayer);
+        if(command != null) {
+            command.execute(player);
         }
 
         return true;

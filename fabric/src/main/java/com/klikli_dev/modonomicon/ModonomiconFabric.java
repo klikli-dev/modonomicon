@@ -30,5 +30,6 @@ public class ModonomiconFabric implements ModInitializer {
         //TODO: Fabric: Multiblock onRenderLevelLastEvent
         //TODO: Fabric: GuiOverlay
         //TODO: Fabric: Geometry loader (book model)
+        //TODO: Fabric: packet split
     }
 }

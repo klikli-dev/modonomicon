@@ -104,6 +104,13 @@ public class BookUnlockStateManager {
         this.getStateFor(player).setRun(command);
     }
 
+    /**
+     * Modifies state, but does not call syncFor, needs to be done by the caller side if needed.
+     */
+    public boolean readFor(ServerPlayer player, BookEntry entry) {
+        return this.getStateFor(player).read(entry, player);
+    }
+
     public void onAdvancement(ServerPlayer player) {
         this.updateAndSyncFor(player);
     }
