@@ -10,6 +10,11 @@ public class ForgeNetworkHelper implements NetworkHelper {
     }
 
     @Override
+    public <T> void sendToSplit(ServerPlayer player, T message) {
+        Networking.sendToSplit(player, message);
+    }
+
+    @Override
     public <T> void sendToServer(T message) {
         Networking.sendToServer(message);
     }

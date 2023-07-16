@@ -8,6 +8,8 @@ package com.klikli_dev.modonomicon.command;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Command;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.networking.SendUnlockCodeToClientMessage;
+import com.klikli_dev.modonomicon.platform.Services;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -39,7 +41,7 @@ public class SaveUnlocksCommand implements com.mojang.brigadier.Command<CommandS
 
         var code = BookUnlockStateManager.get().getUnlockCodeFor(context.getSource().getPlayer(), book);
 
-        Networking.sendToSplit(context.getSource().getPlayer(), new SendUnlockCodeToClientMessage(code));
+        Services.NETWORK.sendToSplit(context.getSource().getPlayer(), new SendUnlockCodeToClientMessage(code));
 
         context.getSource().sendSuccess(() -> Component.translatable(Command.SUCCESS_SAVE_PROGRESS, Component.translatable(book.getName())), true);
         return 1;

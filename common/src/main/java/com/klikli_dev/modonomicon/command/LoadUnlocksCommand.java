@@ -7,8 +7,8 @@
 package com.klikli_dev.modonomicon.command;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Command;
-import com.klikli_dev.modonomicon.network.Networking;
-import com.klikli_dev.modonomicon.network.messages.SendUnlockCodeToServerMessage;
+import com.klikli_dev.modonomicon.networking.SendUnlockCodeToServerMessage;
+import com.klikli_dev.modonomicon.platform.Services;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -37,15 +37,15 @@ public class LoadUnlocksCommand implements com.mojang.brigadier.Command<CommandS
         var code = Minecraft.getInstance().keyboardHandler.getClipboard();
 
         try {
-            if(code.isEmpty())
+            if (code.isEmpty())
                 throw new IllegalArgumentException("No code in clipboard.");
 
             var decoded = Base64.getDecoder().decode(code);
 
-            if(decoded.length == 0)
+            if (decoded.length == 0)
                 throw new IllegalArgumentException("Decoded code is zero-length.");
 
-            Networking.sendToServer(new SendUnlockCodeToServerMessage(code));
+            Services.NETWORK.sendToServer(new SendUnlockCodeToServerMessage(code));
 
             return 1;
         } catch (Exception e) {
