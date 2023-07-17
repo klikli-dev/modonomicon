@@ -27,7 +27,7 @@ public class BookUnlockStateManager {
 
     private BookUnlockStates getStateFor(Player player) {
         this.getSaveDataIfNecessary(player);
-        return this.saveData.unlockStates.get(player.getUUID());
+        return this.saveData.getUnlockStates(player.getUUID());
     }
 
     public String getUnlockCodeFor(Player player, Book book) {

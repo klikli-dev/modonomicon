@@ -23,7 +23,7 @@ public class BookVisualStateManager {
 
     private BookVisualStates getStateFor(Player player) {
         this.getSaveDataIfNecessary(player);
-        return this.saveData.visualStates.get(player.getUUID());
+        return this.saveData.getVisualStates(player.getUUID());
     }
 
     public BookVisualState getBookStateFor(Player player, Book book) {

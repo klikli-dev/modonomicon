@@ -34,7 +34,21 @@ public class BookStatesSaveData extends SavedData {
     }
 
     public static BookStatesSaveData load(CompoundTag pCompoundTag) {
-        return CODEC.parse(NbtOps.INSTANCE, pCompoundTag).result().orElseThrow();
+        return CODEC.parse(NbtOps.INSTANCE, pCompoundTag.get("bookStates")).result().orElseThrow();
+    }
+
+    public BookUnlockStates getUnlockStates(UUID playerUUID) {
+        return this.unlockStates.computeIfAbsent(playerUUID, (uuid) -> {
+            this.setDirty();
+            return new BookUnlockStates();
+        });
+    }
+
+    public BookVisualStates getVisualStates(UUID playerUUID) {
+        return this.visualStates.computeIfAbsent(playerUUID, (uuid) -> {
+            this.setDirty();
+            return new BookVisualStates();
+        });
     }
 
     @Override
