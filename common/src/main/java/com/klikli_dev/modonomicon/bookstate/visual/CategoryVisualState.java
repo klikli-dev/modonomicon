@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.bookstate.visual;
 
+import com.klikli_dev.modonomicon.util.Codecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +18,7 @@ import java.util.Optional;
 public class CategoryVisualState {
 
     public static final Codec<CategoryVisualState> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
-            Codec.unboundedMap(ResourceLocation.CODEC, EntryVisualState.CODEC).fieldOf("entryStates").forGetter((state) -> state.entryStates),
+            Codecs.mutableMap(ResourceLocation.CODEC, EntryVisualState.CODEC).fieldOf("entryStates").forGetter((state) -> state.entryStates),
             Codec.FLOAT.fieldOf("scrollX").forGetter((state) -> state.scrollX),
             Codec.FLOAT.fieldOf("scrollY").forGetter((state) -> state.scrollY),
             Codec.FLOAT.fieldOf("targetZoom").forGetter((state) -> state.targetZoom),

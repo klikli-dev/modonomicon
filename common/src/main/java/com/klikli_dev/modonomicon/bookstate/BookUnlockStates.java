@@ -27,7 +27,7 @@ public class BookUnlockStates {
             Codecs.concurrentMap(ResourceLocation.CODEC, Codecs.set(ResourceLocation.CODEC)).fieldOf("readEntries").forGetter((s) -> s.readEntries),
             Codecs.concurrentMap(ResourceLocation.CODEC, Codecs.set(ResourceLocation.CODEC)).fieldOf("unlockedEntries").forGetter((s) -> s.unlockedEntries),
             Codecs.concurrentMap(ResourceLocation.CODEC, Codecs.set(ResourceLocation.CODEC)).fieldOf("unlockedCategories").forGetter((s) -> s.unlockedCategories),
-            Codecs.concurrentMap(ResourceLocation.CODEC, Codec.unboundedMap(ResourceLocation.CODEC, Codec.INT)).fieldOf("usedCommands").forGetter((s) -> s.usedCommands)
+            Codecs.concurrentMap(ResourceLocation.CODEC, Codecs.mutableMap(ResourceLocation.CODEC, Codec.INT)).fieldOf("usedCommands").forGetter((s) -> s.usedCommands)
     ).apply(instance, BookUnlockStates::new));
 
 
