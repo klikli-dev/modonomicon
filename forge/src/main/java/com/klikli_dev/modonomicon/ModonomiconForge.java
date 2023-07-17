@@ -59,14 +59,23 @@ public class ModonomiconForge {
         modEventBus.addListener(this::onCommonSetup);
         modEventBus.addListener(CreativeModeTabRegistry::onCreativeModeTabBuildContents);
 
+        //register data managers as reload listeners
         MinecraftForge.EVENT_BUS.addListener((AddReloadListenerEvent e) -> {
             e.addListener(BookDataManager.get());
             e.addListener(MultiblockDataManager.get());
         });
-        MinecraftForge.EVENT_BUS.addListener((RegisterCommandsEvent e) -> CommandRegistry.registerCommands(e.getDispatcher()));
-        MinecraftForge.EVENT_BUS.addListener((RegisterClientCommandsEvent e) -> CommandRegistry.registerClientCommands(e.getDispatcher()));
+
+        //register commands
+        MinecraftForge.EVENT_BUS.addListener((RegisterCommandsEvent e) ->
+                CommandRegistry.registerCommands(e.getDispatcher())
+        );
+        MinecraftForge.EVENT_BUS.addListener((RegisterClientCommandsEvent e) ->
+                CommandRegistry.registerClientCommands(e.getDispatcher())
+        );
+
+        //datapack sync = build books and sync to client
         MinecraftForge.EVENT_BUS.addListener((OnDatapackSyncEvent e) -> {
-            if (e.getPlayer() != null){
+            if (e.getPlayer() != null) {
                 BookDataManager.get().onDatapackSync(e.getPlayer());
                 MultiblockDataManager.get().onDatapackSync(e.getPlayer());
             }
@@ -141,16 +150,15 @@ public class ModonomiconForge {
                 if (e.getStage() == RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS) { //After translucent causes block entities to error out on render in preview
                     MultiblockPreviewRenderer.onRenderLevelLastEvent(e.getPoseStack());
                 }
-            } );
+            });
         }
 
-        public static void onRegisterGeometryLoaders(ModelEvent.RegisterGeometryLoaders event)
-        {
+        public static void onRegisterGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
             event.register("book_model_loader", new BookModelLoader());
         }
 
-        public static void onRegisterGuiOverlays(RegisterGuiOverlaysEvent event){
-            event.registerBelow(VanillaGuiOverlay.BOSS_EVENT_PROGRESS.id(),"multiblock_hud", (gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
+        public static void onRegisterGuiOverlays(RegisterGuiOverlaysEvent event) {
+            event.registerBelow(VanillaGuiOverlay.BOSS_EVENT_PROGRESS.id(), "multiblock_hud", (gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
                 MultiblockPreviewRenderer.onRenderHUD(guiGraphics, partialTick);
             });
         }
