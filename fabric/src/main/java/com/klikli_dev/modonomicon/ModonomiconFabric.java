@@ -1,7 +1,12 @@
 package com.klikli_dev.modonomicon;
 
+import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.config.ClientConfig;
+import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
+import com.klikli_dev.modonomicon.data.MultiblockDataManager;
+import com.klikli_dev.modonomicon.data.ReloadListenerWrapper;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
@@ -9,9 +14,16 @@ import com.klikli_dev.modonomicon.registry.FabricClientCommandRegistry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.PackType;
+import org.cef.network.CefRequest;
 
 public class ModonomiconFabric implements ModInitializer {
 
@@ -36,6 +48,14 @@ public class ModonomiconFabric implements ModInitializer {
         LoaderRegistry.registerLoaders();
 
         //register data managers as reload listeners
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new ReloadListenerWrapper(
+                Modonomicon.loc( "book_data_manager"),
+                BookDataManager.get()
+        ));
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new ReloadListenerWrapper(
+                Modonomicon.loc( "multiblock_data_manager"),
+                MultiblockDataManager.get()
+        ));
 
         //register commands
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
@@ -45,9 +65,16 @@ public class ModonomiconFabric implements ModInitializer {
                 FabricClientCommandRegistry.registerClientCommands(dispatcher)
         );
 
+        //datapack sync = build books and sync to client
+        //ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS
+
+        //sync book state on player join
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+                BookUnlockStateManager.get().updateAndSyncFor(handler.getPlayer());
+                BookVisualStateManager.get().syncFor(handler.getPlayer());
+        });
 
         //TODO: Fabric: Datagen
-        //TODO: Fabric: on join world (see Forge)
         //TODO: Fabric: on recipes packet -> can mixin? its about client receive of this
         //TODO: Fabric: OnDataPackSyncEvent -> maybe placeNewPlayer + reloadResources of PlayerList
         //TODO: Fabric: clientticks events

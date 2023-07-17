@@ -81,8 +81,13 @@ public class ModonomiconForge {
             }
         });
 
-        //register event handlers for book state sync
-        MinecraftForge.EVENT_BUS.addListener(this::onJoinWorld);
+        //sync book state on player join
+        MinecraftForge.EVENT_BUS.addListener((EntityJoinLevelEvent e) -> {
+            if (e.getEntity() instanceof ServerPlayer player) {
+                BookUnlockStateManager.get().updateAndSyncFor(player);
+                BookVisualStateManager.get().syncFor(player);
+            }
+        });
 
         //event handler for condition system
         MinecraftForge.EVENT_BUS.addListener((AdvancementEvent.AdvancementEarnEvent e) -> BookUnlockStateManager.get().onAdvancement((ServerPlayer) e.getEntity()));
@@ -103,13 +108,6 @@ public class ModonomiconForge {
         Networking.registerMessages();
 
         LoaderRegistry.registerLoaders();
-    }
-
-    public void onJoinWorld(final EntityJoinLevelEvent event) {
-        if (event.getEntity() instanceof ServerPlayer player) {
-            BookUnlockStateManager.get().updateAndSyncFor(player);
-            BookVisualStateManager.get().syncFor(player);
-        }
     }
 
     public static class Client {
