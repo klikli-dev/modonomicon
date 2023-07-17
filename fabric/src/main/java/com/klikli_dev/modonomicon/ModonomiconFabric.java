@@ -1,6 +1,10 @@
 package com.klikli_dev.modonomicon;
 
+import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public class ModonomiconFabric implements ModInitializer {
     
@@ -12,13 +16,14 @@ public class ModonomiconFabric implements ModInitializer {
         // project.
 
         // Use Fabric to bootstrap the Common mod.
-        Modonomicon.LOG.info("Hello Fabric world!");
         Modonomicon.init();
 
-        //TODO: Fabric: Listen for advancement events and call it on BookUnlockStateManager
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, CreativeModeTabRegistry.MODONOMICON_TAB_KEY, CreativeModeTabRegistry.MODONOMICON);
+
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabRegistry.MODONOMICON_TAB_KEY).register(CreativeModeTabRegistry::onModifyEntries);
+
 
         //TODO: Fabric: Register commands
-        //TODO: Fabric: Register Creative Tabs + Contents
         //TODO: Fabric: Register Network Messages
         //TODO: Fabric: Datagen
         //TODO: Fabric: Config
