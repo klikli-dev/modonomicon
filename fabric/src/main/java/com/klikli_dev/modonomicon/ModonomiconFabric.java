@@ -35,5 +35,6 @@ public class ModonomiconFabric implements ModInitializer {
         //TODO: Fabric: FluidRenderHelper/Tooltip
         //TODO: Fabric: Patchouli
         //TODO: Fabric: reload listeners
+        //TODO: Fabric: advancement
     }
 }
