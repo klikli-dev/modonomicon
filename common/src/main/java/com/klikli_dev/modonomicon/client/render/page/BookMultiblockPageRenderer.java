@@ -49,51 +49,7 @@ import org.joml.Vector4f;
 import java.util.*;
 
 public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockPage> implements PageWithTextRenderer {
-
-    public static final BlockAndTintGetter BLOCK_AND_TINT_GETTER = new BlockAndTintGetter() {
-        @Override
-        public float getShade(Direction pDirection, boolean pShade) {
-            return 1.0f;
-        }
-
-        @Override
-        public LevelLightEngine getLightEngine() {
-            return null;
-        }
-
-        @Override
-        public int getBlockTint(BlockPos pBlockPos, ColorResolver pColorResolver) {
-            var plains = Minecraft.getInstance().player.level().registryAccess().registryOrThrow(Registries.BIOME)
-                    .getOrThrow(Biomes.PLAINS);
-            return pColorResolver.getColor(plains, pBlockPos.getX(), pBlockPos.getZ());
-        }
-
-        @javax.annotation.Nullable
-        @Override
-        public BlockEntity getBlockEntity(BlockPos pPos) {
-            return null;
-        }
-
-        @Override
-        public BlockState getBlockState(BlockPos p_45571_) {
-            return null;
-        }
-
-        @Override
-        public FluidState getFluidState(BlockPos pPos) {
-            return Fluids.EMPTY.defaultFluidState();
-        }
-
-        @Override
-        public int getHeight() {
-            return 255;
-        }
-
-        @Override
-        public int getMinBuildHeight() {
-            return 0;
-        }
-    };
+    
     private final Map<BlockPos, BlockEntity> blockEntityCache = new HashMap<>();
     private final Set<BlockEntity> erroredBlockEntities = Collections.newSetFromMap(new WeakHashMap<>());
 
