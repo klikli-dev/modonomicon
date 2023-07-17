@@ -1,12 +1,13 @@
 package com.klikli_dev.modonomicon.platform.services;
 
+import com.klikli_dev.modonomicon.networking.Message;
 import net.minecraft.server.level.ServerPlayer;
 
 public interface NetworkHelper {
-    <T> void sendTo(ServerPlayer player, T message);
+    <T extends Message> void sendTo(ServerPlayer player, T message);
 
-    <T> void sendToSplit(ServerPlayer player, T message);
+    <T extends Message> void sendToSplit(ServerPlayer player, T message);
 
 
-    <T> void sendToServer(T message);
+    <T extends Message> void sendToServer(T message);
 }

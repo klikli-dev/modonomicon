@@ -43,7 +43,6 @@ public class ModonomiconFabric implements ModInitializer {
         );
 
 
-        //TODO: Fabric: Register Network Messages
         //TODO: Fabric: Datagen
         //TODO: Fabric: Config
         //TODO: Fabric: on join world (see Forge)
