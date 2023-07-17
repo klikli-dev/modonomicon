@@ -41,6 +41,10 @@ dependencies {
     include "org.commonmark:commonmark:${commonmark_version}"
     include "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
     include "org.commonmark:commonmark-ext-ins:${commonmark_version}"
+
+    //Fiber Config
+    implementation "me.zeroeightsix:fiber:${fiber_version}"
+    include "me.zeroeightsix:fiber:${fiber_version}"
 }
 
 loom {

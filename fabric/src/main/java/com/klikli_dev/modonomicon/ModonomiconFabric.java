@@ -1,5 +1,6 @@
 package com.klikli_dev.modonomicon;
 
+import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
@@ -24,6 +25,8 @@ public class ModonomiconFabric implements ModInitializer {
         // Use Fabric to bootstrap the Common mod.
         Modonomicon.init();
 
+        ClientConfig.init();
+
         //Most registries are handled by common, but creative tabs are easier per loader
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, CreativeModeTabRegistry.MODONOMICON_TAB_KEY, CreativeModeTabRegistry.MODONOMICON);
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabRegistry.MODONOMICON_TAB_KEY).register(CreativeModeTabRegistry::onModifyEntries);
@@ -44,7 +47,6 @@ public class ModonomiconFabric implements ModInitializer {
 
 
         //TODO: Fabric: Datagen
-        //TODO: Fabric: Config
         //TODO: Fabric: on join world (see Forge)
         //TODO: Fabric: on recipes packet -> can mixin? its about client receive of this
         //TODO: Fabric: OnDataPackSyncEvent -> maybe placeNewPlayer + reloadResources of PlayerList

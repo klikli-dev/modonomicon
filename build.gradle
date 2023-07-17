@@ -53,6 +53,13 @@ subprojects {
             }
         }
         maven {
+            name = "Fiber Config (Fabric) maven"
+            url = "https://maven.modmuss50.me/"
+            content {
+                includeGroup "me.zeroeightsix"
+            }
+        }
+        maven {
             name = "Curse Maven"
             url = "https://www.cursemaven.com"
             content {
