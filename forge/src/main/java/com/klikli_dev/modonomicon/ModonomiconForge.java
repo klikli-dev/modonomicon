@@ -21,6 +21,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
@@ -58,6 +59,10 @@ public class ModonomiconForge {
         modEventBus.addListener(this::onCommonSetup);
         modEventBus.addListener(CreativeModeTabRegistry::onCreativeModeTabBuildContents);
 
+        MinecraftForge.EVENT_BUS.addListener((AddReloadListenerEvent e) -> {
+            e.addListener(BookDataManager.get());
+            e.addListener(MultiblockDataManager.get());
+        });
         MinecraftForge.EVENT_BUS.addListener((RegisterCommandsEvent e) -> CommandRegistry.registerCommands(e.getDispatcher()));
         MinecraftForge.EVENT_BUS.addListener((RegisterClientCommandsEvent e) -> CommandRegistry.registerClientCommands(e.getDispatcher()));
         MinecraftForge.EVENT_BUS.addListener((OnDatapackSyncEvent e) -> {
