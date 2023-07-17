@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
+import com.klikli_dev.modonomicon.datagen.DataGenerators;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
@@ -71,6 +72,9 @@ public class ModonomiconForge {
 
         //event handler for condition system
         MinecraftForge.EVENT_BUS.addListener((AdvancementEvent.AdvancementEarnEvent e) -> BookUnlockStateManager.get().onAdvancement((ServerPlayer) e.getEntity()));
+
+        //Datagen
+        modEventBus.addListener(DataGenerators::gatherData);
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
             modEventBus.addListener(Client::onClientSetup);
