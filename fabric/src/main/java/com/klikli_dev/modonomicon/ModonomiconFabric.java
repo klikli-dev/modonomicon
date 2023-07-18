@@ -79,7 +79,5 @@ public class ModonomiconFabric implements ModInitializer {
 
         //TODO: Fabric: Datagen
         //TODO: Fabric: packet split
-        //TODO: Fabric: FluidHolder
-        //TODO: Fabric: Patchouli
     }
 }
