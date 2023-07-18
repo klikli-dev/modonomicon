@@ -70,6 +70,8 @@ loom {
     }
 }
 
+sourceSets.main.resources.srcDir 'src/generated/resources'
+
 tasks.withType(JavaCompile).configureEach {
     source(project(":common").sourceSets.main.allSource)
 }
