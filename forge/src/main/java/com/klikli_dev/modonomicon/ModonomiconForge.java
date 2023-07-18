@@ -89,16 +89,19 @@ public class ModonomiconForge {
             }
         });
 
-        //event handler for condition system
+        //Advancement event handling for condition/unlock system
         MinecraftForge.EVENT_BUS.addListener((AdvancementEvent.AdvancementEarnEvent e) -> BookUnlockStateManager.get().onAdvancement((ServerPlayer) e.getEntity()));
 
         //Datagen
         modEventBus.addListener(DataGenerators::gatherData);
 
+        //Client stuff
         if (FMLEnvironment.dist == Dist.CLIENT) {
             modEventBus.addListener(Client::onClientSetup);
             modEventBus.addListener(Client::onRegisterGeometryLoaders);
             modEventBus.addListener(Client::onRegisterGuiOverlays);
+
+            //build books and render markdown when client receives recipes
             MinecraftForge.EVENT_BUS.addListener((RecipesUpdatedEvent e) -> BookDataManager.get().onRecipesUpdated());
 
         }

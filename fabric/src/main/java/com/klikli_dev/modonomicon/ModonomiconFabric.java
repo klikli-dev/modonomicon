@@ -20,10 +20,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
-import org.cef.network.CefRequest;
 
 public class ModonomiconFabric implements ModInitializer {
 
@@ -49,11 +46,11 @@ public class ModonomiconFabric implements ModInitializer {
 
         //register data managers as reload listeners
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new ReloadListenerWrapper(
-                Modonomicon.loc( "book_data_manager"),
+                Modonomicon.loc("book_data_manager"),
                 BookDataManager.get()
         ));
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new ReloadListenerWrapper(
-                Modonomicon.loc( "multiblock_data_manager"),
+                Modonomicon.loc("multiblock_data_manager"),
                 MultiblockDataManager.get()
         ));
 
@@ -66,27 +63,23 @@ public class ModonomiconFabric implements ModInitializer {
         );
 
         //datapack sync = build books and sync to client
-        //ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS
+        ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {
+            BookDataManager.get().onDatapackSync(player);
+            MultiblockDataManager.get().onDatapackSync(player);
+        });
 
         //sync book state on player join
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-                BookUnlockStateManager.get().updateAndSyncFor(handler.getPlayer());
-                BookVisualStateManager.get().syncFor(handler.getPlayer());
+            BookUnlockStateManager.get().updateAndSyncFor(handler.getPlayer());
+            BookVisualStateManager.get().syncFor(handler.getPlayer());
         });
 
+        //Advancement event handling for condition/unlock system
+        //done in MixinPlayerAdvancements, because we have no event in Fabric
+
         //TODO: Fabric: Datagen
-        //TODO: Fabric: on recipes packet -> can mixin? its about client receive of this
-        //TODO: Fabric: OnDataPackSyncEvent -> maybe placeNewPlayer + reloadResources of PlayerList
-        //TODO: Fabric: clientticks events
-        //TODO: Fabric: Multiblock onRenderHUD
-        //TODO: Fabric: Multiblock onRenderLevelLastEvent
-        //TODO: Fabric: GuiOverlay
-        //TODO: Fabric: Geometry loader (book model)
         //TODO: Fabric: packet split
         //TODO: Fabric: FluidHolder
-        //TODO: Fabric: FluidRenderHelper/Tooltip
         //TODO: Fabric: Patchouli
-        //TODO: Fabric: reload listeners
-        //TODO: Fabric: advancement
     }
 }
