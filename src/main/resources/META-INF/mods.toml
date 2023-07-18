@@ -39,6 +39,6 @@ description='''Data-driven minecraft in-game documentation with progress visuali
 [[dependencies.modonomicon]]
 modId = "kubejs"
 mandatory = false
-versionRange = "[1902.6.0-build.107,)"
+versionRange = "[1902.6.1-build.278,)"
 ordering = "AFTER"
 side = "BOTH"
