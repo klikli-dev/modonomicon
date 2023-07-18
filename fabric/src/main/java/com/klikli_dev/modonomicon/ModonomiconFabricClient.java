@@ -3,13 +3,10 @@ package com.klikli_dev.modonomicon;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
-import com.klikli_dev.modonomicon.data.BookDataManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 
 public class ModonomiconFabricClient implements ClientModInitializer {
 
@@ -39,8 +36,5 @@ public class ModonomiconFabricClient implements ClientModInitializer {
 
         //book geometry loader
         //done in MixinModelManager, because we have no event in Fabric
-
-        //TODO: Fabric: FluidRenderHelper/Tooltip
-        //gui helper
     }
 }

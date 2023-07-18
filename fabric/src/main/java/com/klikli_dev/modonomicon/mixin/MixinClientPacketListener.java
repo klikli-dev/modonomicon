@@ -11,10 +11,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 
 @Mixin(ClientPacketListener.class)
 public abstract class MixinClientPacketListener {
-
-    @Accessor
-    abstract ServerPlayer getPlayer();
-
     @Inject(at = @At("TAIL"), method = "handleUpdateRecipes(Lnet/minecraft/network/protocol/game/ClientboundUpdateRecipesPacket;)V")
     private void handleUpdateRecipes(ClientboundUpdateRecipesPacket pPacket) {
         BookDataManager.get().onRecipesUpdated();
