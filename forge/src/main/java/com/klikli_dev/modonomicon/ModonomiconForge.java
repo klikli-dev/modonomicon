@@ -102,7 +102,8 @@ public class ModonomiconForge {
             modEventBus.addListener(Client::onRegisterGuiOverlays);
 
             //build books and render markdown when client receives recipes
-            MinecraftForge.EVENT_BUS.addListener((RecipesUpdatedEvent e) -> BookDataManager.get().onRecipesUpdated());
+            MinecraftForge.EVENT_BUS.addListener((RecipesUpdatedEvent e) ->
+                    BookDataManager.get().onRecipesUpdated(Minecraft.getInstance().level));
 
         }
     }

@@ -94,8 +94,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         //TODO: Check if we need to send to player list here
     }
 
-    public void onRecipesUpdated() {
-        this.tryBuildBooks(Minecraft.getInstance().level);
+    public void onRecipesUpdated(Level level) {
+        this.tryBuildBooks(level);
         this.prerenderMarkdown();
     }
 
