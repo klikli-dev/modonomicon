@@ -136,8 +136,7 @@ publishing {
         mavenJava(MavenPublication) {
             artifactId base.archivesName.get()
 
-            from components.java
-            fg.component(it)
+            artifact tasks.jarJar
 
             pom {
                 name = mod_name
