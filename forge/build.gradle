@@ -32,6 +32,8 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
+            args += "--username=Modonomicon"
+
             ideaModule "${rootProject.name}.${project.name}.main"
             taskName 'Client'
             property 'mixin.env.remapRefMap', 'true'
