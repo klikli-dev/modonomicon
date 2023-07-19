@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.38.0] - 2023-07-19
+### :sparkles: New Features
+- [`0aec62f`](https://github.com/klikli-dev/modonomicon/commit/0aec62f15439d635d12d06b42bc52eb5c1060694) - Multiloader setup (= Forge + Fabric Version available) *(PR [#138](https://github.com/klikli-dev/modonomicon/pull/138) by [@klikli-dev](https://github.com/klikli-dev))*
+  - :arrow_lower_right: *addresses issue [#127](undefined) opened by [@klikli-dev](https://github.com/klikli-dev)*
+
+
 ## [release/v1.20.1-1.37.0] - 2023-06-30
 ### :sparkles: New Features
 - [`e668701`](https://github.com/klikli-dev/modonomicon/commit/e668701ed88316776fe365e31a963603cdf2b5aa) - simplify api, improve category provider helpers *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -381,3 +387,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.36.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.36.2...release/v1.20.1-1.36.3
 [release/v1.20.1-1.36.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.36.3...release/v1.20.1-1.36.4
 [release/v1.20.1-1.37.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.36.4...release/v1.20.1-1.37.0
+[release/v1.20.1-1.38.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.37.0...release/v1.20.1-1.38.0
