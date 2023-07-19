@@ -43,10 +43,17 @@ dependencies {
     implementation "org.commonmark:commonmark-ext-ins:${commonmark_version}"
 }
 
+import net.fabricmc.loom.task.AbstractRemapJarTask
+tasks.withType(AbstractRemapJarTask).each {
+    it.targetNamespace = "named"
+}
+
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
             artifactId base.archivesName.get()
+
             from components.java
 
             pom {
