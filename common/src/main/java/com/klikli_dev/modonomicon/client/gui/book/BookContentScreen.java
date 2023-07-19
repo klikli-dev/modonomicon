@@ -764,7 +764,10 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
 
                                 //we immediately count up the usage client side -> to avoid spamming the server
                                 //if the server ends up not counting up the usage, it will sync the correct info back down to us
-                                BookUnlockStateManager.get().setRunFor(this.minecraft.player, command);
+                                //We should only do that on the client connected to a dedicated server, because on the integrated server we would count usage twice
+                                //that means, for singleplayer clients OR clients that share to lan we dont call the setRunFor
+                                if (this.minecraft.getSingleplayerServer() == null)
+                                    BookUnlockStateManager.get().setRunFor(this.minecraft.player, command);
                             }
 
                             return true;

@@ -1,7 +1,10 @@
 package com.klikli_dev.modonomicon.platform;
 
 import com.klikli_dev.modonomicon.platform.services.PlatformHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLLoader;
 
 public class ForgePlatformHelper implements PlatformHelper {
@@ -19,5 +22,10 @@ public class ForgePlatformHelper implements PlatformHelper {
     @Override
     public boolean isDevelopmentEnvironment() {
         return !FMLLoader.isProduction();
+    }
+
+    @Override
+    public PhysicalSide getPhysicalSide() {
+        return FMLEnvironment.dist == Dist.CLIENT ? PhysicalSide.CLIENT : PhysicalSide.DEDICATED_SERVER;
     }
 }

@@ -33,4 +33,11 @@ public interface PlatformHelper {
 
         return isDevelopmentEnvironment() ? "development" : "production";
     }
+
+    PhysicalSide getPhysicalSide();
+
+    enum PhysicalSide {
+        CLIENT,
+        DEDICATED_SERVER
+    }
 }
