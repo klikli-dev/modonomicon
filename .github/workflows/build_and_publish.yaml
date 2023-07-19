@@ -123,7 +123,7 @@ jobs:
             fabric/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-fabric-${{ steps.get_version.outputs.result }}.jar
             fabric/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-fabric-${{ steps.get_version.outputs.result }}-sources.jar
 
-          name: modonomicon-${{ steps.get_mc_version.outputs.result }}-forge-${{ steps.get_version.outputs.result }}.jar
+          name: modonomicon-${{ steps.get_mc_version.outputs.result }}-fabric-${{ steps.get_version.outputs.result }}.jar
           version: ${{ steps.get_mc_version.outputs.result }}-${{ steps.get_version.outputs.result }}
           version-type: ${{ steps.get_release_type.outputs.result }}
           game-versions: |
