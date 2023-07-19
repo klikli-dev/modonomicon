@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2023 klikli-dev
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 package com.klikli_dev.modonomicon.config;
 
 import com.klikli_dev.modonomicon.platform.services.ClientConfigHelper;

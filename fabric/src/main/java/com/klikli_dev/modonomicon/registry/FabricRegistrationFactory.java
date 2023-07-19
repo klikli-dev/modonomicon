@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2023 klikli-dev
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 package com.klikli_dev.modonomicon.registry;
 
 import net.minecraft.core.Holder;

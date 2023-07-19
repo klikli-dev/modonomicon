@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2023 klikli-dev
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 package com.klikli_dev.modonomicon.fluid;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
