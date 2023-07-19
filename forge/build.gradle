@@ -100,6 +100,11 @@ dependencies {
     jarJar(group: 'org.commonmark', name: 'commonmark-ext-ins', version: "[${commonmark_version},)")
 }
 
+//Disable test compilation as a) we are not using tests and b) it fails due to not being able to access jei in common
+compileTestJava {
+    enabled = false
+}
+
 tasks.withType(JavaCompile).configureEach {
     source(project(":common").sourceSets.main.allSource)
 }
