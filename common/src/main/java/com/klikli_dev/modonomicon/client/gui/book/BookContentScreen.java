@@ -518,7 +518,10 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
                     Services.CLIENT_CONFIG.storeLastOpenPageWhenClosingEntry() ? this.openPagesIndex : 0));
 
             this.parentScreen.getCurrentCategoryScreen().onCloseEntry(this);
-            super.onClose();
+
+            Services.GUI.popGuiLayer(); //instead of super.onClose() to restore our parent screen
+
+
         }
     }
 
