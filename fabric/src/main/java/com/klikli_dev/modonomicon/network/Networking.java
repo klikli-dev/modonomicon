@@ -20,11 +20,6 @@ public class Networking {
         ServerPlayNetworking.registerGlobalReceiver(SaveBookStateMessage.ID, new ServerMessageHandler<>(SaveBookStateMessage::new));
         ServerPlayNetworking.registerGlobalReceiver(SaveCategoryStateMessage.ID, new ServerMessageHandler<>(SaveCategoryStateMessage::new));
         ServerPlayNetworking.registerGlobalReceiver(SaveEntryStateMessage.ID, new ServerMessageHandler<>(SaveEntryStateMessage::new));
-        ClientPlayNetworking.registerGlobalReceiver(SendUnlockCodeToClientMessage.ID, new ClientMessageHandler<>(SendUnlockCodeToClientMessage::new));
         ServerPlayNetworking.registerGlobalReceiver(SendUnlockCodeToServerMessage.ID, new ServerMessageHandler<>(SendUnlockCodeToServerMessage::new));
-        ClientPlayNetworking.registerGlobalReceiver(SyncBookDataMessage.ID, new ClientMessageHandler<>(SyncBookDataMessage::new));
-        ClientPlayNetworking.registerGlobalReceiver(SyncBookUnlockStatesMessage.ID, new ClientMessageHandler<>(SyncBookUnlockStatesMessage::new));
-        ClientPlayNetworking.registerGlobalReceiver(SyncBookVisualStatesMessage.ID, new ClientMessageHandler<>(SyncBookVisualStatesMessage::new));
-        ClientPlayNetworking.registerGlobalReceiver(SyncMultiblockDataMessage.ID, new ClientMessageHandler<>(SyncMultiblockDataMessage::new));
     }
 }

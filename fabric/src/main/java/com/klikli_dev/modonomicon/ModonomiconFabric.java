@@ -40,8 +40,6 @@ public class ModonomiconFabric implements ModInitializer {
         // Use Fabric to bootstrap the Common mod.
         Modonomicon.init();
 
-        ClientConfig.init();
-
         //Most registries are handled by common, but creative tabs are easier per loader
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, CreativeModeTabRegistry.MODONOMICON_TAB_KEY, CreativeModeTabRegistry.MODONOMICON);
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabRegistry.MODONOMICON_TAB_KEY).register(CreativeModeTabRegistry::onModifyEntries);
@@ -64,9 +62,7 @@ public class ModonomiconFabric implements ModInitializer {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
                 CommandRegistry.registerCommands(dispatcher)
         );
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
-                FabricClientCommandRegistry.registerClientCommands(dispatcher)
-        );
+
 
         //datapack sync = build books and sync to client
         ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {
