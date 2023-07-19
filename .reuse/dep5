@@ -3,11 +3,27 @@ Upstream-Name: modonomicon
 Upstream-Contact: klikli-dev
 Source: https://github.com/klikli-dev/modonomicon
 
-Files: src/main/resources/*
+Files: common/src/main/resources/*
 Copyright: 2022 klikli-dev
 License: CC-BY-4.0
 
-Files: src/generated/resources/*
+Files: common/src/generated/resources/*
+Copyright: 2022 klikli-dev
+License: CC-BY-4.0
+
+Files: fabric/src/main/resources/*
+Copyright: 2022 klikli-dev
+License: CC-BY-4.0
+
+Files: fabric/src/generated/resources/*
+Copyright: 2022 klikli-dev
+License: CC-BY-4.0
+
+Files: forge/src/main/resources/*
+Copyright: 2022 klikli-dev
+License: CC-BY-4.0
+
+Files: forge/src/generated/resources/*
 Copyright: 2022 klikli-dev
 License: CC-BY-4.0
 
@@ -28,6 +44,18 @@ Copyright: 2022 klikli-dev
 License: CC0-1.0
 
 Files: build.gradle
+Copyright: 2022 klikli-dev
+License: CC0-1.0
+
+Files: common/build.gradle
+Copyright: 2022 klikli-dev
+License: CC0-1.0
+
+Files: fabric/build.gradle
+Copyright: 2022 klikli-dev
+License: CC0-1.0
+
+Files: forge/build.gradle
 Copyright: 2022 klikli-dev
 License: CC0-1.0
 

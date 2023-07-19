@@ -1,0 +1,50 @@
+{
+  "type": "modonomicon:dense",
+  "pattern": [
+    [
+      " WWW ",
+      "N G S",
+      "NG0GS",
+      "N G S",
+      " EEE "
+    ],
+    [
+      "DDDDD",
+      "DDDDD",
+      "DDDDD",
+      "DDDDD",
+      "DDDDD"
+    ]
+  ],
+  "mapping": {
+    "N": {
+      "type": "modonomicon:blockstate",
+      "block": "minecraft:oak_stairs[facing=north]"
+    },
+    "S": {
+      "type": "modonomicon:blockstate",
+      "block": "minecraft:oak_stairs[facing=south]"
+    },
+    "W": {
+      "type": "modonomicon:blockstate",
+      "block": "minecraft:oak_stairs[facing=west]"
+    },
+    "E": {
+      "type": "modonomicon:blockstate",
+      "block": "minecraft:oak_stairs[facing=east]"
+    },
+    "G": {
+      "type": "modonomicon:tag",
+      "tag": "minecraft:candles",
+      "display": "minecraft:white_candle"
+    },
+    "D": {
+      "type": "modonomicon:display",
+      "display": "minecraft:stone"
+    },
+    "0": {
+      "type": "modonomicon:block",
+      "block": "minecraft:skeleton_skull"
+    }
+  }
+}

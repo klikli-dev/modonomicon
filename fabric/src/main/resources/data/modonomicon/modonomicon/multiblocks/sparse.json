@@ -1,0 +1,91 @@
+{
+  "type": "modonomicon:sparse",
+  "pattern": {
+    "N": [
+      [
+        -1,
+        0,
+        -2
+      ],
+      [
+        0,
+        0,
+        -2
+      ],
+      [
+        1,
+        0,
+        -2
+      ]
+    ],
+    "S": [
+      [
+        -1,
+        0,
+        2
+      ],
+      [
+        0,
+        0,
+        2
+      ],
+      [
+        1,
+        0,
+        2
+      ]
+    ],
+    "W": [
+      [
+        -2,
+        0,
+        -1
+      ],
+      [
+        -2,
+        0,
+        0
+      ],
+      [
+        -2,
+        0,
+        1
+      ]
+    ],
+    "E": [
+      [
+        2,
+        0,
+        -1
+      ],
+      [
+        2,
+        0,
+        0
+      ],
+      [
+        2,
+        0,
+        1
+      ]
+    ]
+  },
+  "mapping": {
+    "N": {
+      "type": "modonomicon:blockstate",
+      "block": "minecraft:oak_stairs[facing=north]"
+    },
+    "S": {
+      "type": "modonomicon:blockstate",
+      "block": "minecraft:oak_stairs[facing=south]"
+    },
+    "W": {
+      "type": "modonomicon:blockstate",
+      "block": "minecraft:oak_stairs[facing=west]"
+    },
+    "E": {
+      "type": "modonomicon:blockstate",
+      "block": "minecraft:oak_stairs[facing=east]"
+    }
+  }
+}

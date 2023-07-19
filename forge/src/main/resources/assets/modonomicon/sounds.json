@@ -1,0 +1,9 @@
+{
+  "turn_page": {
+    "category": "player",
+    "sounds": [
+      "modonomicon:turn_page"
+    ],
+    "subtitle": "modonomicon.subtitle.turn_page"
+  }
+}
