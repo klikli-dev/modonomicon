@@ -1,16 +1,9 @@
-/*
- * SPDX-FileCopyrightText: 2023 klikli-dev
- *
- * SPDX-License-Identifier: MIT
- */
-
 package com.klikli_dev.modonomicon.datagen.book;
 
 import com.klikli_dev.modonomicon.api.datagen.BookProvider;
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
-import com.klikli_dev.modonomicon.api.datagen.book.BookEntryParentModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryReadConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryUnlockedConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.*;
@@ -43,52 +36,43 @@ public class FeaturesCategoryProvider extends CategoryProvider {
     }
 
     @Override
-    protected BookCategoryModel generateCategory() {
-        var multiblockEntry = this.makeMultiblockEntry("multiblock");
+    protected void generateEntries() {
+        var multiblockEntry = this.add(this.makeMultiblockEntry("multiblock"));
 
-        var conditionEntries = this.makeConditionEntries('r', '1', '2');
+        var conditionEntries = this.add(this.makeConditionEntries('r', '1', '2'));
 
-        var recipeEntry = this.makeRecipeEntry('c');
+        var recipeEntry = this.add(this.makeRecipeEntry('c'));
 
-        var spotlightEntry = this.makeSpotlightEntry('s');
-        spotlightEntry.withParent(BookEntryParentModel.builder().withEntryId(recipeEntry.getId()).build());
+        var spotlightEntry = this.add(this.makeSpotlightEntry('s'));
+        spotlightEntry.withParent(this.parent(recipeEntry));
 
-        var emptyEntry = this.makeEmptyPageEntry('e');
-        emptyEntry.withParent(BookEntryParentModel.builder().withEntryId(spotlightEntry.id).build());
+        var emptyEntry = this.add(this.makeEmptyPageEntry('e'));
+        emptyEntry.withParent(this.parent(spotlightEntry));
 
-        var commandEntry = this.makeCommandEntry('f');
+        var commandEntry = this.add(this.makeCommandEntry('f'));
         commandEntry.withParent(emptyEntry);
         commandEntry.withCommandToRunOnFirstRead(this.modLoc("test_command"));
 
+        var entityEntry = this.add(this.makeEntityEntry('d'));
 
-        var entityEntry = this.makeEntityEntry('d');
+        var imageEntry = this.add(this.makeImageEntry('i'));
+        imageEntry.withParent(this.parent(emptyEntry));
 
-        var imageEntry = this.makeImageEntry('i');
-        imageEntry.withParent(BookEntryParentModel.builder().withEntryId(emptyEntry.id).build());
+        var redirectEntry = this.add(this.makeRedirectEntry('5'));
+    }
 
-        var redirectEntry = this.makeRedirectEntry('5');
-
+    @Override
+    protected BookCategoryModel generateCategory() {
         return BookCategoryModel.create(this.modLoc(this.context().categoryId()), this.context().categoryName())
                 .withIcon("minecraft:nether_star")
                 .withBackgroundParallaxLayers(
                         new BookCategoryBackgroundParallaxLayer(this.modLoc("textures/gui/parallax/flow/base.png"), 0.7f, -1),
                         new BookCategoryBackgroundParallaxLayer(this.modLoc("textures/gui/parallax/flow/1.png"), 1f, -1),
                         new BookCategoryBackgroundParallaxLayer(this.modLoc("textures/gui/parallax/flow/2.png"), 1.4f, -1)
-                )
-                .withEntries(conditionEntries.stream().map(e -> e.build()).toArray(BookEntryModel[]::new))
-                .withEntries(
-                        multiblockEntry.build(),
-                        recipeEntry.build(),
-                        spotlightEntry.build(),
-                        emptyEntry.build(),
-                        entityEntry.build(),
-                        imageEntry.build(),
-                        redirectEntry.build(),
-                        commandEntry.build()
                 );
     }
 
-    private BookEntryModel.Builder makeMultiblockEntry(String location) {
+    private BookEntryModel makeMultiblockEntry(String location) {
         this.context().entry("multiblock");
 
         this.context().page("intro");
@@ -109,17 +93,14 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .withMultiblockId(this.modLoc("tag"))
                 .build();
 
-        return BookEntryModel.builder()
-                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
-                .withName(this.context().entryName())
-                .withDescription(this.context().entryDescription())
+        return this.entry(location)
                 .withIcon("minecraft:furnace")
                 .withLocation(this.entryMap().get(location))
                 .withPages(multiBlockIntroPage, multiblockPreviewPage, multiblockPreviewPage2);
     }
 
-    private List<BookEntryModel.Builder> makeConditionEntries(char rootLocation, char level1Location, char level2Location) {
-        var result = new ArrayList<BookEntryModel.Builder>();
+    private List<BookEntryModel> makeConditionEntries(char rootLocation, char level1Location, char level2Location) {
+        var result = new ArrayList<BookEntryModel>();
 
         this.context().entry("condition_root");
         this.context().page("info");
@@ -127,12 +108,8 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .withText(this.context().pageText())
                 .withTitle(this.context().pageTitle())
                 .build();
-        var conditionRootEntry = BookEntryModel.builder()
-                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
-                .withName(this.context().entryName())
-                .withDescription(this.context().entryDescription())
+        var conditionRootEntry = this.entry(rootLocation)
                 .withIcon("minecraft:redstone_torch")
-                .withLocation(this.entryMap().get(rootLocation))
                 .withEntryBackground(1, 0)
                 .withPages(conditionRootEntryInfoPage);
         result.add(conditionRootEntry);
@@ -146,15 +123,11 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         var conditionLevel1EntryCondition = BookEntryReadConditionModel.builder()
                 .withEntry(conditionRootEntry.getId())
                 .build();
-        var conditionLevel1Entry = BookEntryModel.builder()
-                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
-                .withName(this.context().entryName())
-                .withDescription(this.context().entryDescription())
+        var conditionLevel1Entry = this.entry(level1Location)
                 .withIcon("minecraft:lever")
-                .withLocation(this.entryMap().get(level1Location))
                 .withPages(conditionLevel1EntryInfoPage)
                 .withCondition(conditionLevel1EntryCondition)
-                .withParent(BookEntryParentModel.builder().withEntryId(conditionRootEntry.getId()).build());
+                .withParent(this.parent(conditionRootEntry));
         result.add(conditionLevel1Entry);
 
         this.context().entry("condition_level_2");
@@ -166,21 +139,17 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         var conditionLevel2EntryCondition = BookEntryUnlockedConditionModel.builder()
                 .withEntry(conditionLevel1Entry.getId())
                 .build();
-        var conditionLevel2Entry = BookEntryModel.builder()
-                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
-                .withName(this.context().entryName())
-                .withDescription(this.context().entryDescription())
+        var conditionLevel2Entry = this.entry(level2Location)
                 .withIcon("minecraft:torch")
-                .withLocation(this.entryMap().get(level2Location))
                 .withPages(conditionLevel2EntryInfoPage)
                 .withCondition(conditionLevel2EntryCondition)
-                .withParent(BookEntryParentModel.builder().withEntryId(conditionLevel1Entry.getId()).build());
+                .withParent(this.parent(conditionLevel1Entry));
         result.add(conditionLevel2Entry);
 
         return result;
     }
 
-    private BookEntryModel.Builder makeRecipeEntry(char location) {
+    private BookEntryModel makeRecipeEntry(char location) {
         this.context().entry("recipe");
 
         this.context().page("intro");
@@ -238,16 +207,13 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .withRecipeId1("minecraft:netherite_axe_smithing_does_not_exist")
                 .build();
 
-        return BookEntryModel.builder()
-                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
-                .withName(this.context().entryName())
-                .withDescription(this.context().entryDescription())
+        return this.entry(location)
                 .withIcon("minecraft:crafting_table")
                 .withLocation(this.entryMap().get(location))
                 .withPages(introPage, crafting, smelting, smoking, blasting, campfireCooking, stonecutting, smithing, missing);
     }
 
-    private BookEntryModel.Builder makeSpotlightEntry(char location) {
+    private BookEntryModel makeSpotlightEntry(char location) {
         this.context().entry("spotlight");
 
         this.context().page("intro");
@@ -269,16 +235,13 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .withItem(Ingredient.of(Items.DIAMOND))
                 .build();
 
-        return BookEntryModel.builder()
-                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
-                .withName(this.context().entryName())
-                .withDescription(this.context().entryDescription())
+        return this.entry(location)
                 .withIcon("minecraft:beacon")
                 .withLocation(this.entryMap().get(location))
                 .withPages(introPage, spotlight1, spotlight2);
     }
 
-    private BookEntryModel.Builder makeEmptyPageEntry(char location) {
+    private BookEntryModel makeEmptyPageEntry(char location) {
         this.context().entry("empty");
 
         this.context().page("intro");
@@ -295,16 +258,13 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         var empty2 = BookEmptyPageModel.builder()
                 .build();
 
-        return BookEntryModel.builder()
-                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
-                .withName(this.context().entryName())
-                .withDescription(this.context().entryDescription())
+        return this.entry(location)
                 .withIcon("minecraft:obsidian")
                 .withLocation(this.entryMap().get(location))
                 .withPages(introPage, empty, empty2);
     }
 
-    private BookEntryModel.Builder makeCommandEntry(char location) {
+    private BookEntryModel makeCommandEntry(char location) {
         this.context().entry("command");
 
         this.add(this.context().entryName(), "Entry Read Commands");
@@ -328,17 +288,14 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         this.add(this.context().pageTitle(), "Command Link");
         this.add(this.context().pageText(), "{0}", this.commandLink("Click me to run the command!", "test_command2"));
 
-        return BookEntryModel.builder()
-                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
-                .withName(this.context().entryName())
-                .withDescription(this.context().entryDescription())
+        return this.entry(location)
                 .withIcon("minecraft:oak_sign")
                 .withLocation(this.entryMap().get(location))
                 .withPages(introPage, commandLink);
     }
 
 
-    private BookEntryModel.Builder makeEntityEntry(char location) {
+    private BookEntryModel makeEntityEntry(char location) {
         this.context().entry("entity");
 
         this.context().page("intro");
@@ -361,16 +318,13 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .withScale(1f)
                 .build();
 
-        return BookEntryModel.builder()
-                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
-                .withName(this.context().entryName())
-                .withDescription(this.context().entryDescription())
+        return this.entry(location)
                 .withIcon("minecraft:spider_eye")
                 .withLocation(this.entryMap().get(location))
                 .withPages(introPage, entity1, entity2);
     }
 
-    private BookEntryModel.Builder makeImageEntry(char location) {
+    private BookEntryModel makeImageEntry(char location) {
         this.context().entry("image");
 
         this.context().page("intro");
@@ -406,22 +360,16 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 )
                 .build();
 
-        return BookEntryModel.builder()
-                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
-                .withName(this.context().entryName())
-                .withDescription(this.context().entryDescription())
+        return this.entry(location)
                 .withIcon("minecraft:item_frame")
                 .withLocation(this.entryMap().get(location))
                 .withPages(introPage, imagePage, testSpotlight, testImage);
     }
 
-    private BookEntryModel.Builder makeRedirectEntry(char location) {
+    private BookEntryModel makeRedirectEntry(char location) {
         this.context().entry("redirect");
 
-        return BookEntryModel.builder()
-                .withId(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()))
-                .withName(this.context().entryName())
-                .withDescription(this.context().entryDescription())
+        return this.entry(location)
                 .withIcon("minecraft:ender_pearl")
                 .withLocation(this.entryMap().get(location))
                 .withCategoryToOpen(new ResourceLocation("modonomicon:hidden"));

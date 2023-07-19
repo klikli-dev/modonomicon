@@ -15,8 +15,12 @@ public class BookEntryParentModel {
     protected boolean lineEnabled = true;
     protected boolean lineReversed = false;
 
-    public static Builder builder() {
-        return new Builder();
+    protected BookEntryParentModel(ResourceLocation entryId) {
+        this.entryId = entryId;
+    }
+
+    public static BookEntryParentModel create(ResourceLocation entryId) {
+        return new BookEntryParentModel(entryId);
     }
 
     public JsonObject toJson() {
@@ -44,62 +48,23 @@ public class BookEntryParentModel {
         return this.lineReversed;
     }
 
-    public static final class Builder {
-        private ResourceLocation entryId;
-        private boolean drawArrow = true;
-        private boolean lineEnabled = true;
-        private boolean lineReversed = false;
+    public BookEntryParentModel withEntryId(ResourceLocation entryId) {
+        this.entryId = entryId;
+        return this;
+    }
 
-        private Builder() {
-        }
+    public BookEntryParentModel withDrawArrow(boolean drawArrow) {
+        this.drawArrow = drawArrow;
+        return this;
+    }
 
-        public static Builder aBookEntryParentModel() {
-            return new Builder();
-        }
+    public BookEntryParentModel withLineEnabled(boolean lineEnabled) {
+        this.lineEnabled = lineEnabled;
+        return this;
+    }
 
-        public Builder withEntryId(ResourceLocation entryId) {
-            this.entryId = entryId;
-            return this;
-        }
-
-        public Builder withDrawArrow(boolean drawArrow) {
-            this.drawArrow = drawArrow;
-            return this;
-        }
-
-        public Builder withLineEnabled(boolean lineEnabled) {
-            this.lineEnabled = lineEnabled;
-            return this;
-        }
-
-        public Builder withLineReversed(boolean lineReversed) {
-            this.lineReversed = lineReversed;
-            return this;
-        }
-
-        public BookEntryParentModel build() {
-            BookEntryParentModel bookEntryParentModel = new BookEntryParentModel();
-            bookEntryParentModel.entryId = this.entryId;
-            bookEntryParentModel.drawArrow = this.drawArrow;
-            bookEntryParentModel.lineEnabled = this.lineEnabled;
-            bookEntryParentModel.lineReversed = this.lineReversed;
-            return bookEntryParentModel;
-        }
-
-        public ResourceLocation getEntryId() {
-            return this.entryId;
-        }
-
-        public boolean isDrawArrow() {
-            return this.drawArrow;
-        }
-
-        public boolean isLineEnabled() {
-            return this.lineEnabled;
-        }
-
-        public boolean isLineReversed() {
-            return this.lineReversed;
-        }
+    public BookEntryParentModel withLineReversed(boolean lineReversed) {
+        this.lineReversed = lineReversed;
+        return this;
     }
 }

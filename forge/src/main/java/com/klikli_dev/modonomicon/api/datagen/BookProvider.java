@@ -39,6 +39,8 @@ public abstract class BookProvider implements DataProvider {
 
     protected Map<String, String> defaultMacros;
 
+    protected ConditionHelper conditionHelper;
+
     /**
      * @param defaultLang The LanguageProvider to fill with this book provider. IMPORTANT: the Languag Provider needs to be added to the DataGenerator AFTER the BookProvider.
      */
@@ -52,6 +54,7 @@ public abstract class BookProvider implements DataProvider {
         this.bookId = bookId;
         this.context = new BookContextHelper(this.modid);
         this.defaultMacros = new HashMap<>();
+        this.conditionHelper = new ConditionHelper();
     }
 
     protected LanguageProvider lang() {
@@ -68,6 +71,10 @@ public abstract class BookProvider implements DataProvider {
 
     protected BookContextHelper context() {
         return this.context;
+    }
+
+    protected ConditionHelper condition() {
+        return this.conditionHelper;
     }
 
     /**
