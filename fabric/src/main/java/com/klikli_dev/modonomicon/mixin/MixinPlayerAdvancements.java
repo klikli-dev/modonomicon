@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerAdvancements.class)
 public abstract class MixinPlayerAdvancements {
@@ -23,7 +24,7 @@ public abstract class MixinPlayerAdvancements {
     abstract ServerPlayer getPlayer();
 
     @Inject(at = @At("TAIL"), method = "award(Lnet/minecraft/advancements/Advancement;Ljava/lang/String;)Z")
-    private void award(Advancement pAdvancement, String pCriterionKey, CallbackInfo info) {
+    private void award(Advancement pAdvancement, String pCriterionKey, CallbackInfoReturnable<?> info) {
         BookUnlockStateManager.get().onAdvancement(this.getPlayer());
     }
 }
