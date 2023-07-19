@@ -115,7 +115,7 @@ public class BookCategory {
 
         for (var entry : this.entries.values()) {
             BookErrorManager.get().getContextHelper().entryId = entry.getId();
-            entry.build(level,this);
+            entry.build(level, this);
             BookErrorManager.get().getContextHelper().entryId = null;
         }
     }

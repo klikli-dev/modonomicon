@@ -49,10 +49,10 @@ public class BookSpotlightPageModel extends BookPageModel {
 
 
     public static final class Builder {
-        protected String anchor = "";
-        protected BookTextHolderModel title = new BookTextHolderModel("");
-        protected Ingredient item = Ingredient.EMPTY;
-        protected BookTextHolderModel text = new BookTextHolderModel("");
+        private String anchor = "";
+        private BookTextHolderModel title = new BookTextHolderModel("");
+        private Ingredient item = Ingredient.EMPTY;
+        private BookTextHolderModel text = new BookTextHolderModel("");
 
         private Builder() {
         }

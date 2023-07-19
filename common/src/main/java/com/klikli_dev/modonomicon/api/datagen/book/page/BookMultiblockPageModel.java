@@ -55,11 +55,11 @@ public class BookMultiblockPageModel extends BookPageModel {
 
 
     public static final class Builder {
-        protected String anchor = "";
-        protected BookTextHolderModel multiblockName = new BookTextHolderModel("");
-        protected String multiblockId = "";
-        protected BookTextHolderModel text = new BookTextHolderModel("");
-        protected boolean showVisualizeButton = true;
+        private String anchor = "";
+        private BookTextHolderModel multiblockName = new BookTextHolderModel("");
+        private String multiblockId = "";
+        private BookTextHolderModel text = new BookTextHolderModel("");
+        private boolean showVisualizeButton = true;
 
         private Builder() {
         }

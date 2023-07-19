@@ -63,11 +63,11 @@ public class BookImagePageModel extends BookPageModel {
 
 
     public static final class Builder {
-        protected String anchor = "";
-        protected BookTextHolderModel title = new BookTextHolderModel("");
-        protected BookTextHolderModel text = new BookTextHolderModel("");
-        protected ResourceLocation[] images = new ResourceLocation[0];
-        protected boolean border = true;
+        private String anchor = "";
+        private BookTextHolderModel title = new BookTextHolderModel("");
+        private BookTextHolderModel text = new BookTextHolderModel("");
+        private ResourceLocation[] images = new ResourceLocation[0];
+        private boolean border = true;
 
         private Builder() {
         }

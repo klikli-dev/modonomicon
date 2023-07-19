@@ -1,11 +1,8 @@
 package com.klikli_dev.modonomicon.registry;
 
-import net.fabricmc.fabric.mixin.registry.sync.RegistriesAccessor;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.core.WritableRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 

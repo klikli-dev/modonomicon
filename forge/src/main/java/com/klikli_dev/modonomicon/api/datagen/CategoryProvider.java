@@ -5,7 +5,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.data.LanguageProvider;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -25,7 +24,7 @@ public abstract class CategoryProvider {
         this.macros = new HashMap<>();
     }
 
-    public String categoryId(){
+    public String categoryId() {
         return this.categoryId;
     }
 

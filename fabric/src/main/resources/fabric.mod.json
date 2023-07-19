@@ -1,37 +1,37 @@
 {
-    "schemaVersion": 1,
-    "id": "${mod_id}",
-    "version": "${version}",
-    "name": "${mod_name}",
-    "description": "${mod_description}",
-    "authors": [
-        "${mod_authors}"
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "authors": [
+    "${mod_authors}"
+  ],
+  "accessWidener": "modonomicon.accesswidener",
+  "contact": {
+    "homepage": "https://klikli-dev.github.io/modonomicon/",
+    "sources": "https://github.com/klikli-dev/modonomicon"
+  },
+  "license": "${mod_license}",
+  "icon": "modonomicon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.klikli_dev.modonomicon.ModonomiconFabric"
     ],
-    "accessWidener" : "modonomicon.accesswidener",
-    "contact": {
-        "homepage": "https://klikli-dev.github.io/modonomicon/",
-        "sources": "https://github.com/klikli-dev/modonomicon"
-    },
-    "license": "${mod_license}",
-    "icon": "modonomicon.png",
-    "environment": "*",
-    "entrypoints": {
-        "main": [
-            "com.klikli_dev.modonomicon.ModonomiconFabric"
-        ],
-        "client": [
-            "com.klikli_dev.modonomicon.ModonomiconFabricClient"
-        ]
-    },
-    "mixins": [
-        "modonomicon.mixins.json",
-        "modonomicon.fabric.mixins.json"
-    ],
-    "depends": {
-        "fabricloader": ">=0.14",
-        "fabric-api": "*",
-        "minecraft": ">=1.20",
-        "java": ">=17"
-    }
+    "client": [
+      "com.klikli_dev.modonomicon.ModonomiconFabricClient"
+    ]
+  },
+  "mixins": [
+    "modonomicon.mixins.json",
+    "modonomicon.fabric.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14",
+    "fabric-api": "*",
+    "minecraft": ">=1.20",
+    "java": ">=17"
+  }
 }
   

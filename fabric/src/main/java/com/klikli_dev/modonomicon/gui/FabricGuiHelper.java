@@ -3,9 +3,7 @@ package com.klikli_dev.modonomicon.gui;
 import com.klikli_dev.modonomicon.platform.services.GuiHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.util.profiling.jfr.Environment;
 
-import java.util.Objects;
 import java.util.Stack;
 
 public class FabricGuiHelper implements GuiHelper {
@@ -23,8 +21,7 @@ public class FabricGuiHelper implements GuiHelper {
     @Override
     public void popGuiLayer() {
         var minecraft = Minecraft.getInstance();
-        if (guiLayers.size() == 0)
-        {
+        if (guiLayers.size() == 0) {
             minecraft.setScreen(null);
             return;
         }

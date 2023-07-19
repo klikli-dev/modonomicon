@@ -31,7 +31,7 @@ public abstract class LangGenerator extends LanguageProvider {
         return "item." + Modonomicon.MOD_ID + "." + id;
     }
 
-    public static final class Russian extends LangGenerator{
+    public static final class Russian extends LangGenerator {
         public Russian(PackOutput packOutput) {
             super(packOutput, "ru_ru");
         }

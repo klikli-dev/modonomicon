@@ -24,7 +24,6 @@ import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.networking.Message;
 import com.klikli_dev.modonomicon.networking.SyncBookDataMessage;
 import com.klikli_dev.modonomicon.platform.Services;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;

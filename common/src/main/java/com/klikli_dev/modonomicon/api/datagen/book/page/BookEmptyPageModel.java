@@ -29,7 +29,7 @@ public class BookEmptyPageModel extends BookPageModel {
 
 
     public static final class Builder {
-        protected String anchor = "";
+        private String anchor = "";
 
         private Builder() {
         }

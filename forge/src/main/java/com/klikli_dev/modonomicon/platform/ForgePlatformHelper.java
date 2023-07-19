@@ -2,7 +2,6 @@ package com.klikli_dev.modonomicon.platform;
 
 import com.klikli_dev.modonomicon.platform.services.PlatformHelper;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLLoader;

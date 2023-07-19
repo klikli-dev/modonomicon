@@ -31,7 +31,7 @@ public interface PlatformHelper {
      */
     default String getEnvironmentName() {
 
-        return isDevelopmentEnvironment() ? "development" : "production";
+        return this.isDevelopmentEnvironment() ? "development" : "production";
     }
 
     PhysicalSide getPhysicalSide();

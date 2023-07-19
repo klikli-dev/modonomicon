@@ -54,11 +54,11 @@ public class BookTextPageModel extends BookPageModel {
 
 
     public static final class Builder {
-        protected String anchor = "";
-        protected BookTextHolderModel title = new BookTextHolderModel("");
-        protected boolean useMarkdownInTitle = false;
-        protected boolean showTitleSeparator = true;
-        protected BookTextHolderModel text = new BookTextHolderModel("");
+        private String anchor = "";
+        private BookTextHolderModel title = new BookTextHolderModel("");
+        private boolean useMarkdownInTitle = false;
+        private boolean showTitleSeparator = true;
+        private BookTextHolderModel text = new BookTextHolderModel("");
 
         private Builder() {
         }

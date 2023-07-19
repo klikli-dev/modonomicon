@@ -73,14 +73,14 @@ public class BookEntityPageModel extends BookPageModel {
 
 
     public static final class Builder {
-        protected String anchor = "";
-        protected BookTextHolderModel entityName = new BookTextHolderModel("");
-        protected BookTextHolderModel text = new BookTextHolderModel("");
-        protected String entityId;
-        protected float scale = 1.0f;
-        protected float offset = 0f;
-        protected boolean rotate = true;
-        protected float defaultRotation = -45f;
+        private String anchor = "";
+        private BookTextHolderModel entityName = new BookTextHolderModel("");
+        private BookTextHolderModel text = new BookTextHolderModel("");
+        private String entityId;
+        private float scale = 1.0f;
+        private float offset = 0f;
+        private boolean rotate = true;
+        private float defaultRotation = -45f;
 
         private Builder() {
         }
