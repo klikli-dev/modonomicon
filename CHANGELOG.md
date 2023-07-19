@@ -4,6 +4,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.37.0] - 2023-06-30
+### :sparkles: New Features
+- [`e668701`](https://github.com/klikli-dev/modonomicon/commit/e668701ed88316776fe365e31a963603cdf2b5aa) - simplify api, improve category provider helpers *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v1.20.1-1.36.4] - 2023-06-30
+### :sparkles: New Features
+- [`25bb7d7`](https://github.com/klikli-dev/modonomicon/commit/25bb7d709a5a974f9b4d850da54a58aa910acf34) - add some more helper shortcuts to category provider *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`cb5ebd3`](https://github.com/klikli-dev/modonomicon/commit/cb5ebd33e2cd549fef97e24e62829293831687e1) - increase mod version *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v1.20.1-1.36.3] - 2023-06-28
+### :sparkles: New Features
+- [`bea5360`](https://github.com/klikli-dev/modonomicon/commit/bea5360317b65db9bfcf09c48b98fdbec59f23a4) - add category link helper *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`bd17f77`](https://github.com/klikli-dev/modonomicon/commit/bd17f7701e80b56f373a2bd7fbf94e1e1c4c0fbd) - update mod version *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`6dc0282`](https://github.com/klikli-dev/modonomicon/commit/6dc028236c29a38ad5ebc2d36b33f78e4e07a282) - update to 1.20.1 parchment mappings *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v1.20.1-1.36.2] - 2023-06-25
+### :bug: Bug Fixes
+- [`87f83a2`](https://github.com/klikli-dev/modonomicon/commit/87f83a20f4934c20b78dff0f6b3939df6fd6ae6c) - make advancement condition take resource location as id *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v1.20.1-1.36.1] - 2023-06-25
+### :bug: Bug Fixes
+- [`7123c9c`](https://github.com/klikli-dev/modonomicon/commit/7123c9cee7396128191cd904fd9ef01fe2263cad) - multi-item ingredient not supported, only tag *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.36.0] - 2023-06-16
 ### :sparkles: New Features
 - [`df63b9a`](https://github.com/klikli-dev/modonomicon/commit/df63b9a5a310b7c4d61911d778dafd6507f82b1c) - improve new provider API *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -344,3 +376,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.34.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.33.1...release/v1.20.1-1.34.0
 [release/v1.20.1-1.35.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.34.0...release/v1.20.1-1.35.0
 [release/v1.20.1-1.36.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.35.0...release/v1.20.1-1.36.0
+[release/v1.20.1-1.36.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.36.0...release/v1.20.1-1.36.1
+[release/v1.20.1-1.36.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.36.1...release/v1.20.1-1.36.2
+[release/v1.20.1-1.36.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.36.2...release/v1.20.1-1.36.3
+[release/v1.20.1-1.36.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.36.3...release/v1.20.1-1.36.4
+[release/v1.20.1-1.37.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.36.4...release/v1.20.1-1.37.0
