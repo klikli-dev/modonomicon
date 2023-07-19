@@ -17,6 +17,7 @@ import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
@@ -100,11 +101,8 @@ public class ModonomiconForge {
             modEventBus.addListener(Client::onClientSetup);
             modEventBus.addListener(Client::onRegisterGeometryLoaders);
             modEventBus.addListener(Client::onRegisterGuiOverlays);
-
             //build books and render markdown when client receives recipes
-            MinecraftForge.EVENT_BUS.addListener((RecipesUpdatedEvent e) ->
-                    BookDataManager.get().onRecipesUpdated(Minecraft.getInstance().level));
-
+            MinecraftForge.EVENT_BUS.addListener(Client::onRecipesUpdated);
         }
     }
 
@@ -153,6 +151,13 @@ public class ModonomiconForge {
                     MultiblockPreviewRenderer.onRenderLevelLastEvent(e.getPoseStack());
                 }
             });
+        }
+
+        /**
+         * Needs to be in the client inner class to not load clientlevel on server
+         */
+        public static void onRecipesUpdated(RecipesUpdatedEvent event) {
+            BookDataManager.get().onRecipesUpdated(Minecraft.getInstance().level);
         }
 
         public static void onRegisterGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
