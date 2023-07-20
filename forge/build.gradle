@@ -130,6 +130,7 @@ processResources {
 }
 
 jar.finalizedBy('reobfJar')
+reobf { jarJar { } }
 
 publishing {
     publications {
