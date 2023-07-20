@@ -146,8 +146,8 @@ publishing {
                 url = 'https://github.com/klikli-dev/modonomicon'
                 licenses {
                     license {
-                        name = 'MIT License'
-                        url = 'https://raw.githubusercontent.com/klikli-dev/modonomicon/version/1.19/LICENSES/MIT.txt'
+                        name = 'MIT AND CC-BY-4.0'
+                        url = 'https://github.com/klikli-dev/modonomicon#licensing'
                     }
                 }
                 scm {
