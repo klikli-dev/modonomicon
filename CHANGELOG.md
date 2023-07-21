@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.38.3] - 2023-07-21
+### :bug: Bug Fixes
+- [`6d912af`](https://github.com/klikli-dev/modonomicon/commit/6d912af8aa2a74e19c73ddbf674115bcfb60d65a) - **ci/cd**: artefact upload to github release *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.38.2] - 2023-07-21
 ### :sparkles: New Features
 - [`31411ec`](https://github.com/klikli-dev/modonomicon/commit/31411ec6834e3d34bcc4fa15a19ee4c047349986) - update licensing links for maven *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -405,3 +410,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.38.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.37.0...release/v1.20.1-1.38.0
 [release/v1.20.1-1.38.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.38.0...release/v1.20.1-1.38.1
 [release/v1.20.1-1.38.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.38.1...release/v1.20.1-1.38.2
+[release/v1.20.1-1.38.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.38.2...release/v1.20.1-1.38.3
