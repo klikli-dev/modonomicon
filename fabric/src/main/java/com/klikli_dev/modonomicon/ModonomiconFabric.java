@@ -42,7 +42,7 @@ public class ModonomiconFabric implements ModInitializer {
 
         //Most registries are handled by common, but creative tabs are easier per loader
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, CreativeModeTabRegistry.MODONOMICON_TAB_KEY, CreativeModeTabRegistry.MODONOMICON);
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabRegistry.MODONOMICON_TAB_KEY).register(CreativeModeTabRegistry::onModifyEntries);
+        ItemGroupEvents.MODIFY_ENTRIES_ALL.register(CreativeModeTabRegistry::onModifyEntries);
 
         //Equivalent to Common setup
         Networking.registerMessages();
