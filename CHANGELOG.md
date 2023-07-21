@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.38.4] - 2023-07-21
+### :bug: Bug Fixes
+- [`6e7214a`](https://github.com/klikli-dev/modonomicon/commit/6e7214a716854c93a8dd3d6c6608f0142d7c0022) - **ci/cd**: publish creates non-obfed jarjar *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`d7e4c94`](https://github.com/klikli-dev/modonomicon/commit/d7e4c94b85f6fc3b84eb5a2ba63025b5d42e9191) - **ci/cd**: enable cache cleanup *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.38.3] - 2023-07-21
 ### :bug: Bug Fixes
 - [`6d912af`](https://github.com/klikli-dev/modonomicon/commit/6d912af8aa2a74e19c73ddbf674115bcfb60d65a) - **ci/cd**: artefact upload to github release *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -411,3 +419,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.38.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.38.0...release/v1.20.1-1.38.1
 [release/v1.20.1-1.38.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.38.1...release/v1.20.1-1.38.2
 [release/v1.20.1-1.38.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.38.2...release/v1.20.1-1.38.3
+[release/v1.20.1-1.38.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.38.3...release/v1.20.1-1.38.4
