@@ -77,14 +77,7 @@ jobs:
           body: ${{ steps.changelog.outputs.changes }}
           token: ${{ github.token }}
           tag: ${{ github.ref }}
-          artifacts:
-            forge/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-forge-${{ steps.get_version.outputs.result }}.jar
-            forge/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-forge-${{ steps.get_version.outputs.result }}-sources.jar
-            fabric/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-fabric-${{ steps.get_version.outputs.result }}.jar
-            fabric/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-fabric-${{ steps.get_version.outputs.result }}-sources.jar
-            common/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-common-${{ steps.get_version.outputs.result }}.jar
-            common/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-common-${{ steps.get_version.outputs.result }}-sources.jar
-            
+          artifacts: forge/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-forge-${{ steps.get_version.outputs.result }}.jar,forge/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-forge-${{ steps.get_version.outputs.result }}-sources.jar,fabric/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-fabric-${{ steps.get_version.outputs.result }}.jar,fabric/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-fabric-${{ steps.get_version.outputs.result }}-sources.jar,common/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-common-${{ steps.get_version.outputs.result }}.jar,common/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-common-${{ steps.get_version.outputs.result }}-sources.jar
           artifactContentType: application/java-archive
       - name: Commit CHANGELOG.md
         uses: stefanzweifel/git-auto-commit-action@v4
