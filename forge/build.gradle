@@ -119,18 +119,17 @@ tasks.named("sourcesJar", Jar) {
 
 tasks.named('jar') {
     archiveClassifier = "slim"
+    finalizedBy('reobfJar')
 }
 
 tasks.named('jarJar') {
     archiveClassifier = ""
+    finalizedBy('reobfJar')
 }
 
 processResources {
     from project(":common").sourceSets.main.resources
 }
-
-jar.finalizedBy('reobfJar')
-reobf { jarJar { } }
 
 publishing {
     publications {
