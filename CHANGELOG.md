@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.38.2] - 2023-07-21
+### :sparkles: New Features
+- [`31411ec`](https://github.com/klikli-dev/modonomicon/commit/31411ec6834e3d34bcc4fa15a19ee4c047349986) - update licensing links for maven *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`4c78b5e`](https://github.com/klikli-dev/modonomicon/commit/4c78b5e29ab02a551e97459e91d6cf86e4ca6f79) - artefact upload to github release *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`90f13f4`](https://github.com/klikli-dev/modonomicon/commit/90f13f43f23a401526fbe2c9fa09d98e82b651bd) - **fabric**: book not showing up in the right creative tab *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.38.1] - 2023-07-20
 ### :bug: Bug Fixes
 - [`356aa0b`](https://github.com/klikli-dev/modonomicon/commit/356aa0b1a2025ffda63a60f391ae2258efd7352f) - fabric version file name *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -395,3 +404,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.37.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.36.4...release/v1.20.1-1.37.0
 [release/v1.20.1-1.38.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.37.0...release/v1.20.1-1.38.0
 [release/v1.20.1-1.38.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.38.0...release/v1.20.1-1.38.1
+[release/v1.20.1-1.38.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.38.1...release/v1.20.1-1.38.2
