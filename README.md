@@ -16,7 +16,7 @@ https://www.curseforge.com/minecraft/mc-mods/modonomicon
 
 ## Maven
 
-See https://cloudsmith.io/~klikli-dev/repos/mods/packages/ for available versions.
+See https://cloudsmith.io/~klikli-dev/repos/mods/groups/ for available versions.
 
 ```gradle
 repositories {
