@@ -14,11 +14,45 @@ Data-driven minecraft in-game documentation with progress visualization.
 
 https://www.curseforge.com/minecraft/mc-mods/modonomicon
 
+## Maven
+
+See https://cloudsmith.io/~klikli-dev/repos/mods/packages/ for available versions.
+
+```gradle
+repositories {
+
+  ...
+
+  maven {
+    url "https://dl.cloudsmith.io/public/klikli-dev/mods/maven/"
+    content {
+        includeGroup "com.klikli_dev"
+    }
+  }
+  
+  ...
+  
+}
+```
+
+```gradle
+dependencies {
+ 
+    ...
+    
+    compileOnly fg.deobf("com.klikli_dev:modonomicon-${minecraft_version}-common:${modonomicon_version}")
+    implementation fg.deobf("com.klikli_dev:modonomicon-${minecraft_version}-forge:${modonomicon_version}")
+    
+    ...
+    
+}
+```
+
 ## Thanks 
 
 [![Hosted By: Cloudsmith](https://img.shields.io/badge/OSS%20hosting%20by-cloudsmith-blue?logo=cloudsmith&style=for-the-badge)](https://cloudsmith.com)
 
-Package repository hosting is graciously provided by  [Cloudsmith](https://cloudsmith.com).
+Package repository hosting is graciously provided by [Cloudsmith](https://cloudsmith.com).
 Cloudsmith is the only fully hosted, cloud-native, universal package management solution, that
 enables your organization to create, store and share packages in any format, to any place, with total
 confidence.

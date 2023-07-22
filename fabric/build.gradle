@@ -113,7 +113,11 @@ publishing {
     }
     repositories {
         maven {
-            url "https://repo.repsy.io/mvn/klikli-dev/mods"
+            name = "cloudsmith"
+            url = "https://maven.cloudsmith.io/klikli-dev/mods/"
+            def releasesRepoUrl = "https://maven.cloudsmith.io/klikli-dev/mods/"
+            def snapshotsRepoUrl = "https://maven.cloudsmith.io/klikli-dev/mods/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             credentials {
                 username = System.getenv('MAVEN_USER')
                 password = System.getenv('MAVEN_PASS')
