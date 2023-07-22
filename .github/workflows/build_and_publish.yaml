@@ -50,7 +50,6 @@ jobs:
           gradle-home-cache-cleanup: true
         env:
           MOD_VERSION: ${{ steps.get_version.outputs.result }}
-          MINECRAFT_VERSION: ${{ steps.get_mc_version.outputs.result }}
       - name: Update CHANGELOG
         id: changelog
         uses: klikli-dev/changelog-action@main
@@ -140,4 +139,3 @@ jobs:
           MAVEN_USER: ${{ secrets.MAVEN_USER }}
           MAVEN_PASS: ${{ secrets.MAVEN_PASS }}
           MOD_VERSION: ${{ steps.get_version.outputs.result }}
-          MINECRAFT_VERSION: ${{ steps.get_mc_version.outputs.result }}
