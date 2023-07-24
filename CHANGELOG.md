@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.38.6] - 2023-07-24
+### :bug: Bug Fixes
+- [`37bb030`](https://github.com/klikli-dev/modonomicon/commit/37bb0303e583d021beb83270a6ed92e872233e75) - book state not saved in SP *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`b242bbf`](https://github.com/klikli-dev/modonomicon/commit/b242bbfeb04f55c6a766e3d889adea3031617790) - cleanup book state on world unload *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`7704287`](https://github.com/klikli-dev/modonomicon/commit/7704287a21b334ba06f667bbdc372478621f209e) - cleanup github action *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.38.5] - 2023-07-22
 ### :sparkles: New Features
 - [`ced72fa`](https://github.com/klikli-dev/modonomicon/commit/ced72fa5b4e5d34fe84a13d92bcf07611803107a) - switch to cloudsmith maven *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -429,3 +438,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.38.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.38.2...release/v1.20.1-1.38.3
 [release/v1.20.1-1.38.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.38.3...release/v1.20.1-1.38.4
 [release/v1.20.1-1.38.5]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.38.4...release/v1.20.1-1.38.5
+[release/v1.20.1-1.38.6]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.38.5...release/v1.20.1-1.38.6
