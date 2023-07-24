@@ -49,9 +49,12 @@ public class SyncBookVisualStatesMessage implements Message {
 
     @Override
     public void onClientReceived(Minecraft minecraft, Player player) {
-        BookVisualStateManager.get().saveData = new BookStatesSaveData(
-                new ConcurrentHashMap<>(),
-                new ConcurrentHashMap<>(Map.of(player.getUUID(), this.states))
-        );
+        //we are not allowed to overwrite the save data if we are in singleplayer or if we are the lan host, otherwise we would overwrite the server side save data!
+        if (minecraft.getSingleplayerServer() == null) {
+            BookVisualStateManager.get().saveData = new BookStatesSaveData(
+                    new ConcurrentHashMap<>(),
+                    new ConcurrentHashMap<>(Map.of(player.getUUID(), this.states))
+            );
+        }
     }
 }

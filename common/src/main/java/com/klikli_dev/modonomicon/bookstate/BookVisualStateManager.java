@@ -65,7 +65,7 @@ public class BookVisualStateManager {
 
     private void getSaveDataIfNecessary(Player player) {
         if (this.saveData == null && player instanceof ServerPlayer serverPlayer) {
-            this.saveData = serverPlayer.getServer().getLevel(Level.OVERWORLD).getDataStorage().computeIfAbsent(
+            this.saveData = serverPlayer.getServer().overworld().getDataStorage().computeIfAbsent(
                     BookStatesSaveData::load,
                     BookStatesSaveData::new, BookStatesSaveData.ID);
         }

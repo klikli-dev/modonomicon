@@ -50,11 +50,15 @@ public class SyncBookUnlockStatesMessage implements Message {
 
     @Override
     public void onClientReceived(Minecraft minecraft, Player player) {
-        BookUnlockStateManager.get().saveData = new BookStatesSaveData(
-                new ConcurrentHashMap<>(Map.of(player.getUUID(), this.states)),
-                new ConcurrentHashMap<>()
-        );
+        //we are not allowed to overwrite the save data if we are in singleplayer or if we are the lan host, otherwise we would overwrite the server side save data!
+        if (minecraft.getSingleplayerServer() == null){
+            BookUnlockStateManager.get().saveData = new BookStatesSaveData(
+                    new ConcurrentHashMap<>(Map.of(player.getUUID(), this.states)),
+                    new ConcurrentHashMap<>()
+            );
+        }
 
+        //but firing the update event is fine :)
         if (BookGuiManager.get().openOverviewScreen != null) {
             BookGuiManager.get().openOverviewScreen.onSyncBookUnlockCapabilityMessage(this);
         }
