@@ -21,12 +21,14 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.world.level.Level;
 
 public class ModonomiconFabric implements ModInitializer {
 
@@ -74,6 +76,16 @@ public class ModonomiconFabric implements ModInitializer {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             BookUnlockStateManager.get().updateAndSyncFor(handler.getPlayer());
             BookVisualStateManager.get().syncFor(handler.getPlayer());
+        });
+
+        //on overworld unload clear the save data reference in the state manager
+        // this ensures that if another world is loaded the save data is taken from file
+        // instead of bleeding in from the previous level
+        ServerWorldEvents.UNLOAD.register((server, level) -> {
+            if(level.dimension() == Level.OVERWORLD) {
+                BookUnlockStateManager.get().saveData = null;
+                BookVisualStateManager.get().saveData = null;
+            }
         });
 
         //Advancement event handling for condition/unlock system

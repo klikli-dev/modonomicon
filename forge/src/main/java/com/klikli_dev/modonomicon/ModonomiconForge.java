@@ -23,6 +23,7 @@ import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
@@ -34,6 +35,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -94,6 +96,17 @@ public class ModonomiconForge {
                 BookVisualStateManager.get().syncFor(player);
             }
         });
+
+        //on overworld unload clear the save data reference in the state manager
+        // this ensures that if another world is loaded the save data is taken from file
+        // instead of bleeding in from the previous level
+        MinecraftForge.EVENT_BUS.addListener((LevelEvent.Unload e) -> {
+            if (e.getLevel() instanceof Level level && level.dimension() == Level.OVERWORLD) {
+                BookUnlockStateManager.get().saveData = null;
+                BookVisualStateManager.get().saveData = null;
+            }
+        });
+
 
         //Advancement event handling for condition/unlock system
         MinecraftForge.EVENT_BUS.addListener((AdvancementEvent.AdvancementEarnEvent e) -> BookUnlockStateManager.get().onAdvancement((ServerPlayer) e.getEntity()));
