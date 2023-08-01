@@ -19,6 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
@@ -79,7 +80,8 @@ public class TagMatcher implements StateMatcher {
                     var parserResult = BlockStateParser.parseForTesting(Registry.BLOCK, new StringReader(finalTagString), true).right().orElseThrow();
                    return parserResult.tag().unwrap().left().orElseThrow();
                 } catch (CommandSyntaxException e) {
-                    throw new IllegalArgumentException("Failed to parse Tag and BlockState properties from json member \"tag\" for TagMatcher.", e);
+                    Modonomicon.LOGGER.error("Failed to parse Tag and BlockState properties from json member \"tag\" for TagMatcher: {0}. Will use \"modonomicon:bedrock\" as fallback, Exception: {1}", finalTagString,  e);
+                    return TagKey.create(Registry.BLOCK_REGISTRY, Modonomicon.loc("bedrock"));
                 }
             });
 
@@ -88,7 +90,8 @@ public class TagMatcher implements StateMatcher {
                     var parserResult = BlockStateParser.parseForTesting(Registry.BLOCK, new StringReader(finalTagString), true).right().orElseThrow();
                     return parserResult.vagueProperties();
                 } catch (CommandSyntaxException e) {
-                    throw new IllegalArgumentException("Failed to parse Tag and BlockState properties from json member \"tag\" for TagMatcher.", e);
+                    Modonomicon.LOGGER.error("Failed to parse Tag and BlockState properties from json member \"tag\" for TagMatcher: {0}. Will use empty property map as fallback, Exception: {1}", finalTagString,  e);
+                    return Map.of();
                 }
             });
 
