@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.19.2-1.34.0] - 2023-08-01
+### :sparkles: New Features
+- [`65b6f4f`](https://github.com/klikli-dev/modonomicon/commit/65b6f4f1aedfc49e6aee2476eb1d86a62be282fc) - Update KubeJS integration to KubeJS 6.1 *(PR [#136](https://github.com/klikli-dev/modonomicon/pull/136) by [@MaxNeedsSnacks](https://github.com/MaxNeedsSnacks))*
+- [`34024bf`](https://github.com/klikli-dev/modonomicon/commit/34024bf4aabf62a6902d9ffa02017342ddfc6137) - set min kubejs version to 6.1 as it has breaking changes *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`98fc47d`](https://github.com/klikli-dev/modonomicon/commit/98fc47de7d0b9c235aa41eb71c28bf8b6be592f2) - switch to cloudsmith maven *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`06908e9`](https://github.com/klikli-dev/modonomicon/commit/06908e952e25a03ca140e131d4f71b6b9761ed44) - make tag matcher log error instead of throwing exception if tag unavailable *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.19.2-1.33.1] - 2023-07-13
 ### :sparkles: New Features
 - [`5704a05`](https://github.com/klikli-dev/modonomicon/commit/5704a0509f0421917dc956f9a11d534859854244) - Include Modrinth uploads *(PR [#132](https://github.com/klikli-dev/modonomicon/pull/132) by [@ColonelGerdauf](https://github.com/ColonelGerdauf))*
@@ -190,3 +198,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.19.2-1.30.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.30.1...release/v1.19.2-1.30.2
 [release/v1.19.2-1.33.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.30.2...release/v1.19.2-1.33.0
 [release/v1.19.2-1.33.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.33.0...release/v1.19.2-1.33.1
+[release/v1.19.2-1.34.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.19.2-1.33.1...release/v1.19.2-1.34.0
