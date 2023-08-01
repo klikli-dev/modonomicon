@@ -13,13 +13,10 @@ plugins {
 if (System.getenv('MOD_VERSION') != null) {
     mod_version = System.getenv('MOD_VERSION')
 }
-if (System.getenv('MINECRAFT_VERSION') != null) {
-    mc_version = System.getenv('MINECRAFT_VERSION')
-}
-version = "${mc_version}-${mod_version}"
+version = mod_version
 
 group = "com.klikli_dev"
-archivesBaseName = "modonomicon"
+archivesBaseName =  "modonomicon-" + mc_version
 
 configurations {
     library
@@ -193,7 +190,7 @@ jar {
                 "Specification-Vendor": "Kli Kli",
                 "Specification-Version": "1", // We are version 1 of ourselves
                 "Implementation-Title": project.name,
-                "Implementation-Version": "${version}",
+                "Implementation-Version": mod_version,
                 "Implementation-Vendor" :"Kli Kli",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
@@ -222,7 +219,7 @@ jar.finalizedBy('reobfJar')
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = 'modonomicon'
+            artifactId base.archivesName.get()
 
             //artifact jar //no need for slim jar
             artifact shadowJar
@@ -234,8 +231,8 @@ publishing {
                 url = 'https://github.com/klikli-dev/modonomicon'
                 licenses {
                     license {
-                        name = 'MIT License'
-                        url = 'https://raw.githubusercontent.com/klikli-dev/modonomicon/version/1.19/LICENSES/MIT.txt'
+                        name = 'MIT AND CC-BY-4.0'
+                        url = 'https://github.com/klikli-dev/modonomicon#licensing'
                     }
                 }
                 scm {
@@ -247,7 +244,11 @@ publishing {
     }
     repositories {
         maven {
-            url "https://repo.repsy.io/mvn/klikli-dev/mods"
+            name = "cloudsmith"
+            url = "https://maven.cloudsmith.io/klikli-dev/mods/"
+            def releasesRepoUrl = "https://maven.cloudsmith.io/klikli-dev/mods/"
+            def snapshotsRepoUrl = "https://maven.cloudsmith.io/klikli-dev/mods/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             credentials {
                 username = System.getenv('MAVEN_USER')
                 password = System.getenv('MAVEN_PASS')
