@@ -4,10 +4,12 @@ import com.klikli_dev.modonomicon.api.datagen.BookProvider;
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookAdvancementConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryReadConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryUnlockedConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.*;
 import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
+import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -26,7 +28,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         return new String[]{
                 "___           _____5____________",
                 "__(multiblock)______________d___",
-                "___           _______r__________",
+                "___           _______r__a_______",
                 "__c           __________________",
                 "___           _______2___3___i__",
                 "__s           _____e____________",
@@ -39,7 +41,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
     protected void generateEntries() {
         var multiblockEntry = this.add(this.makeMultiblockEntry("multiblock"));
 
-        var conditionEntries = this.add(this.makeConditionEntries('r', '1', '2'));
+        var conditionEntries = this.add(this.makeConditionEntries('r', 'a', '1', '2'));
 
         var recipeEntry = this.add(this.makeRecipeEntry('c'));
 
@@ -99,7 +101,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .withPages(multiBlockIntroPage, multiblockPreviewPage, multiblockPreviewPage2);
     }
 
-    private List<BookEntryModel> makeConditionEntries(char rootLocation, char level1Location, char level2Location) {
+    private List<BookEntryModel> makeConditionEntries(char rootLocation, char advancementLocation, char level1Location, char level2Location) {
         var result = new ArrayList<BookEntryModel>();
 
         this.context().entry("condition_root");
@@ -113,6 +115,31 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .withEntryBackground(1, 0)
                 .withPages(conditionRootEntryInfoPage);
         result.add(conditionRootEntry);
+
+        this.context().entry("condition_advancement");
+        this.context().page("info");
+        var advancementConditionPage = BookTextPageModel.builder()
+                .withText(this.context().pageText())
+                .withTitle(this.context().pageTitle())
+                .build();
+        this.lang().add(this.context().pageTitle(), "Advancement Condition");
+        this.lang().add(this.context().pageText(), "Advancement Conditions unlock, as the name implies, if a player has an advancement.");
+
+        var advancementCondition = BookAdvancementConditionModel.builder()
+                .withAdvancementId(new ResourceLocation("minecraft:husbandry/ride_a_boat_with_a_goat"))
+                .build();
+
+        this.lang().add(
+                Util.makeDescriptionId("advancement", advancementCondition.getAdvancementId()) + ".title",
+                "Ride a Boat with a Goat"
+        );
+
+        var advancementConditionEntry = this.entry(advancementLocation)
+                .withIcon("minecraft:nether_star")
+                .withEntryBackground(1, 0)
+                .withCondition(advancementCondition)
+                .withPages(advancementConditionPage);
+        result.add(advancementConditionEntry);
 
         this.context().entry("condition_level_1");
         this.context().page("info");

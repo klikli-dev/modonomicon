@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
+import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -29,9 +30,10 @@ public class BookAdvancementCondition extends BookCondition {
     public static BookAdvancementCondition fromJson(JsonObject json) {
         var advancementId = new ResourceLocation(GsonHelper.getAsString(json, "advancement_id"));
 
+
         //default tooltip
         var tooltip = Component.translatable(Tooltips.CONDITION_ADVANCEMENT,
-                "advancements." + advancementId.toString().replace(":", ".") + ".title");
+                Component.translatable(Util.makeDescriptionId("advancement", advancementId) + ".title"));
 
         if (json.has("tooltip")) {
             tooltip = tooltipFromJson(json);

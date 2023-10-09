@@ -6,17 +6,17 @@
     "type": "modonomicon:advancement",
     "advancement_id": "minecraft:husbandry/ride_a_boat_with_a_goat"
   },
-  "description": "book.modonomicon.demo.features.condition_root.description",
+  "description": "book.modonomicon.demo.features.condition_advancement.description",
   "hide_while_locked": false,
   "icon": "minecraft:nether_star",
-  "name": "book.modonomicon.demo.features.condition_root.name",
+  "name": "book.modonomicon.demo.features.condition_advancement.name",
   "pages": [
     {
       "type": "modonomicon:text",
       "anchor": "",
       "show_title_separator": true,
-      "text": "book.modonomicon.demo.features.condition_root.info.text",
-      "title": "book.modonomicon.demo.features.condition_root.info.title",
+      "text": "book.modonomicon.demo.features.condition_advancement.info.text",
+      "title": "book.modonomicon.demo.features.condition_advancement.info.title",
       "use_markdown_in_title": false
     }
   ],

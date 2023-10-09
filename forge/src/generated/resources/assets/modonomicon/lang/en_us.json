@@ -1,10 +1,13 @@
 {
+  "advancement.minecraft.husbandry.ride_a_boat_with_a_goat.title": "Ride a Boat with a Goat",
   "book.modonomicon.demo.features.command.command_link.text": "[Click me to run the command!](command://test_command2)",
   "book.modonomicon.demo.features.command.command_link.title": "Command Link",
   "book.modonomicon.demo.features.command.description": "This entry runs a command when you first read it.",
   "book.modonomicon.demo.features.command.intro.text": "This entry just ran a command when you first read it. Look into your chat!",
   "book.modonomicon.demo.features.command.intro.title": "Entry Read Commands",
   "book.modonomicon.demo.features.command.name": "Entry Read Commands",
+  "book.modonomicon.demo.features.condition_advancement.info.text": "Advancement Conditions unlock, as the name implies, if a player has an advancement.",
+  "book.modonomicon.demo.features.condition_advancement.info.title": "Advancement Condition",
   "book.modonomicon.demo.features.condition_level_1.description": "Depends on Condition Root being read.",
   "book.modonomicon.demo.features.condition_level_1.info.text": "This entry depends on Condition Root being read.",
   "book.modonomicon.demo.features.condition_level_1.info.title": "Condition Level 1",
