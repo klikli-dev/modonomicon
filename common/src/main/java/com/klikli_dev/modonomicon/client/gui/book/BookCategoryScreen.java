@@ -6,6 +6,8 @@
  */
 package com.klikli_dev.modonomicon.client.gui.book;
 
+import com.klikli_dev.modonomicon.api.events.EntryClickedEvent;
+import com.klikli_dev.modonomicon.api.events.ModonomiconEvent;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
 import com.klikli_dev.modonomicon.book.BookEntry;
@@ -13,6 +15,7 @@ import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryCont
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
+import com.klikli_dev.modonomicon.events.ModonomiconEvents;
 import com.klikli_dev.modonomicon.networking.BookEntryReadMessage;
 import com.klikli_dev.modonomicon.networking.SaveCategoryStateMessage;
 import com.klikli_dev.modonomicon.platform.Services;
@@ -118,8 +121,17 @@ public class BookCategoryScreen {
         float yOffset = this.getYOffset();
         for (var entry : this.category.getEntries().values()) {
             var displayStyle = this.getEntryDisplayState(entry);
-            if (displayStyle == EntryDisplayState.UNLOCKED) {
-                if (this.isEntryHovered(entry, xOffset, yOffset, (int) pMouseX, (int) pMouseY)) {
+
+            if (this.isEntryHovered(entry, xOffset, yOffset, (int) pMouseX, (int) pMouseY)) {
+
+                var event = new EntryClickedEvent(this.category.getBook().getId(), entry.getId(), pMouseX, pMouseY, pButton, displayStyle);
+                //if event is canceled -> click was handled and we do not open the entry.
+                if(ModonomiconEvents.client().entryClicked(event)){
+                    return true;
+                }
+
+                //only if the entry is unlocked we open it
+                if (displayStyle == EntryDisplayState.UNLOCKED) {
                     this.openEntry(entry);
                     return true;
                 }
