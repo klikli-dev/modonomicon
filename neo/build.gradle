@@ -1,10 +1,13 @@
 plugins {
+    id 'java-library'
     id 'idea'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
-    id 'org.spongepowered.mixin'
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'net.neoforged.gradle.userdev' version '7.0.5'
+    id 'net.neoforged.gradle.mixin' version '[7.0.5,)'
+//    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
+
+//apply from: 'https://gist.githubusercontent.com/Technici4n/facbcdf18ce1a556b76e6027180c32ce/raw/1e0a2fbd8ecb708294ef50c16a20aed468d948e1/classremapper.gradle'
 
 if (System.getenv('MOD_VERSION') != null) {
     mod_version = System.getenv('MOD_VERSION')
@@ -15,79 +18,48 @@ base {
     archivesName = "${mod_id}-${minecraft_version}-forge"
 }
 
-mixin {
-    add(sourceSets.main, "${mod_id}.refmap.json")
-
-    config("${mod_id}.mixins.json")
-    config("${mod_id}.forge.mixins.json")
-}
-
 jarJar.enable()
 
-minecraft {
-    mappings channel: mapping_channel, version: mapping_version
+runs {
+    configureEach {
+        systemProperty 'forge.logging.markers', 'REGISTRIES'
+        systemProperty 'forge.logging.console.level', 'debug'
 
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+        modSource project.sourceSets.main
+        modSource project(":common").sourceSets.main
+    }
 
-    runs {
-        client {
-            workingDirectory project.file('run')
-            args += "--username=Modonomicon"
+    client {
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+        programArgument "--username=Modonomicon"
+    }
 
-            ideaModule "${rootProject.name}.${project.name}.main"
-            taskName 'Client'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-            mods {
-                modClientRun {
-                    source sourceSets.main
-                    source project(":common").sourceSets.main
-                }
-            }
-        }
+    server {
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+        programArgument '--nogui'
+    }
 
-        server {
-            workingDirectory project.file('run')
-            ideaModule "${rootProject.name}.${project.name}.main"
-            taskName 'Server'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-            mods {
-                modServerRun {
-                    source sourceSets.main
-                    source project(":common").sourceSets.main
-                }
-            }
-        }
-
-        data {
-            workingDirectory project.file('run')
-            ideaModule "${rootProject.name}.${project.name}.main"
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-            taskName 'Data'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-            mods {
-                modDataRun {
-                    source sourceSets.main
-                    source project(":common").sourceSets.main
-                }
-            }
-        }
+    data {
+        programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
     }
 }
+
+
+//mappings channel: mapping_channel, version: mapping_version
+
+//minecraft.accessTransformers.file rootProject.file('src/main/resources/META-INF/accesstransformer.cfg')
 
 sourceSets.main.resources.srcDir 'src/generated/resources'
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${forge_version}"
+    implementation "net.neoforged:neoforge:${neo_version}"
     compileOnly project(":common")
     annotationProcessor("org.spongepowered:mixin:${mixin_version}:processor")
 
     //Jei
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+    compileOnly "mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"
+    runtimeOnly "mezz.jei:jei-${minecraft_version}-forge:${jei_version}"
 
 //    implementation "vazkii.patchouli:Patchouli:${minecraft_version}-${patchouli_version}-FORGE"
 
@@ -122,6 +94,7 @@ tasks.named('jar') {
     finalizedBy('reobfJar')
 }
 
+tasks.named('build').configure { dependsOn('jarJar') }
 tasks.named('jarJar') {
     archiveClassifier = ""
     finalizedBy('reobfJar')

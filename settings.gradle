@@ -2,11 +2,7 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         maven {
-            url = 'https://maven.minecraftforge.net/'
-            content {
-                includeGroup "net.minecraftforge.gradle"
-                includeGroup "net.minecraftforge"
-            }
+            url = 'https://maven.neoforged.net/releases/'
         }
         maven {
             url = 'https://maven.fabricmc.net/'
@@ -28,4 +24,4 @@ plugins {
 rootProject.name = 'Modonomicon'
 include("common")
 include("fabric")
-include("forge")
+include("neo")
