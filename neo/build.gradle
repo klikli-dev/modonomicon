@@ -1,9 +1,10 @@
 plugins {
-    id 'java-library'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.5'
-    id 'net.neoforged.gradle.mixin' version '[7.0.5,)'
+    id 'net.neoforged.gradle.userdev' version '7.0.41'
+    id 'java-library'
+
+//    id 'net.neoforged.gradle.mixin' version '[7.0.5,)'
 //    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
@@ -15,7 +16,11 @@ if (System.getenv('MOD_VERSION') != null) {
 version = mod_version
 
 base {
-    archivesName = "${mod_id}-${minecraft_version}-forge"
+    archivesName = "${mod_id}-${minecraft_version}-neoforge"
+}
+
+if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
+    minecraft.accessTransformers.file file('src/main/resources/META-INF/accesstransformer.cfg')
 }
 
 jarJar.enable()
@@ -24,9 +29,7 @@ runs {
     configureEach {
         systemProperty 'forge.logging.markers', 'REGISTRIES'
         systemProperty 'forge.logging.console.level', 'debug'
-
         modSource project.sourceSets.main
-        modSource project(":common").sourceSets.main
     }
 
     client {
@@ -46,14 +49,11 @@ runs {
 
 //mappings channel: mapping_channel, version: mapping_version
 
-minecraft.accessTransformers.file rootProject.file('src/main/resources/META-INF/accesstransformer.cfg')
-
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
     compileOnly project(":common")
-    annotationProcessor("org.spongepowered:mixin:${mixin_version}:processor")
 
     //Jei
     compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
@@ -64,9 +64,9 @@ dependencies {
 
     //commonmark
     //mark it for forge to add to the classpath
-    minecraftLibrary "org.commonmark:commonmark:${commonmark_version}"
-    minecraftLibrary "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
-    minecraftLibrary "org.commonmark:commonmark-ext-ins:${commonmark_version}"
+    implementation "org.commonmark:commonmark:${commonmark_version}"
+    implementation "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
+    implementation "org.commonmark:commonmark-ext-ins:${commonmark_version}"
     //and include it in the jar
     jarJar(group: 'org.commonmark', name: 'commonmark', version: "[${commonmark_version},)")
     jarJar(group: 'org.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: "[${commonmark_version},)")
@@ -78,15 +78,23 @@ compileTestJava {
     enabled = false
 }
 
-tasks.withType(JavaCompile).configureEach {
+// NeoGradle compiles the game, but we don't want to add our common code to the game's code
+TaskCollection.metaClass.excludingNeoTasks = { ->
+    delegate.matching { !it.name.startsWith("neo") }
+}
+
+tasks.withType(JavaCompile).excludingNeoTasks().configureEach {
     source(project(":common").sourceSets.main.allSource)
 }
-tasks.withType(Javadoc).configureEach {
+
+tasks.withType(Javadoc).excludingNeoTasks().configureEach {
     source(project(":common").sourceSets.main.allJava)
 }
+
 tasks.named("sourcesJar", Jar) {
     from(project(":common").sourceSets.main.allSource)
 }
+
 
 tasks.named('jar') {
     archiveClassifier = "slim"
@@ -99,7 +107,7 @@ tasks.named('jarJar') {
     finalizedBy('reobfJar')
 }
 
-processResources {
+tasks.withType(ProcessResources).excludingNeoTasks().configureEach {
     from project(":common").sourceSets.main.resources
 }
 
