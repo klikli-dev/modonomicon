@@ -243,17 +243,19 @@ public class BookOverviewScreen extends Screen {
         return this.getCurrentCategoryScreen().mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
     }
 
+
     @Override
-    public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
-        this.getCurrentCategoryScreen().zoom(pDelta);
-        return super.mouseScrolled(pMouseX, pMouseY, pDelta);
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        this.getCurrentCategoryScreen().zoom(scrollY);
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
+
 
     @Override
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         RenderSystem.disableDepthTest(); //guard against depth test being enabled by other rendering code, that would cause ui elements to vanish
 
-        this.renderBackground(guiGraphics);
+        this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
         this.getCurrentCategoryScreen().renderBackground(guiGraphics);
 

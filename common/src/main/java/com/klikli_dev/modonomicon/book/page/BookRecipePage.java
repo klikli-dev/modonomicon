@@ -22,6 +22,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
@@ -105,7 +106,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
         return this.text;
     }
 
-    protected T loadRecipe(Level level, BookEntry entry, ResourceLocation recipeId) {
+    protected RecipeHolder<T> loadRecipe(Level level, BookEntry entry, ResourceLocation recipeId) {
         if (recipeId == null) {
             return null;
         }
@@ -122,16 +123,16 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
 
     protected abstract ItemStack getRecipeOutput(Level level, T recipe);
 
-    private T getRecipe(Level level, ResourceLocation id) {
-        return (T) level.getRecipeManager().byKey(id).filter(recipe -> recipe.getType() == this.recipeType).orElse(null);
+    private RecipeHolder<T> getRecipe(Level level, ResourceLocation id) {
+        return (RecipeHolder<T>) level.getRecipeManager().byKey(id).filter(recipe -> recipe.value().getType() == this.recipeType).orElse(null);
     }
 
     @Override
     public void build(Level level, BookEntry parentEntry, int pageNum) {
         super.build(level, parentEntry, pageNum);
 
-        this.recipe1 = this.loadRecipe(level, parentEntry, this.recipeId1);
-        this.recipe2 = this.loadRecipe(level, parentEntry, this.recipeId2);
+        this.recipe1 = this.loadRecipe(level, parentEntry, this.recipeId1).value();
+        this.recipe2 = this.loadRecipe(level, parentEntry, this.recipeId2).value();
 
         if (this.recipe1 == null && this.recipe2 != null) {
             this.recipe1 = this.recipe2;

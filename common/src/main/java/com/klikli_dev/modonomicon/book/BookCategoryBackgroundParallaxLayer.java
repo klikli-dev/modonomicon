@@ -66,11 +66,11 @@ public class BookCategoryBackgroundParallaxLayer {
 
 
     public static BookCategoryBackgroundParallaxLayer fromNetwork(FriendlyByteBuf buffer) {
-        return buffer.readWithCodec(NbtOps.INSTANCE, BookCategoryBackgroundParallaxLayer.CODEC);
+        return buffer.readJsonWithCodec(BookCategoryBackgroundParallaxLayer.CODEC);
     }
 
     public void toNetwork(FriendlyByteBuf buffer) {
-        buffer.writeWithCodec(NbtOps.INSTANCE, BookCategoryBackgroundParallaxLayer.CODEC, this);
+        buffer.writeJsonWithCodec(BookCategoryBackgroundParallaxLayer.CODEC, this);
     }
 
     public ResourceLocation getBackground() {

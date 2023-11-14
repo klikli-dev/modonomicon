@@ -477,7 +477,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
         //we need to modify blit offset (now: z pose) to not draw over toasts
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, -1300);  //magic number arrived by testing until toasts show, but BookOverviewScreen does not
-        this.renderBackground(guiGraphics);
+        this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
         guiGraphics.pose().popPose();
 
         guiGraphics.pose().pushPose();
