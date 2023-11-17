@@ -11,10 +11,10 @@ import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
-public class ItemModelProvider extends net.minecraftforge.client.model.generators.ItemModelProvider {
+public class ItemModelProvider extends net.neoforged.neoforge.client.model.generators.ItemModelProvider {
     public ItemModelProvider(PackOutput packOutput, ExistingFileHelper existingFileHelper) {
         super(packOutput, Modonomicon.MOD_ID, existingFileHelper);
     }

@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.network;
 
 import com.klikli_dev.modonomicon.networking.Message;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 

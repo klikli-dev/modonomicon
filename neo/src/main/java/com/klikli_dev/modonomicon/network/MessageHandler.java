@@ -8,8 +8,8 @@ package com.klikli_dev.modonomicon.network;
 
 import com.klikli_dev.modonomicon.networking.Message;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.fml.LogicalSide;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 

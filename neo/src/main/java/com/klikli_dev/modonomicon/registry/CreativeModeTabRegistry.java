@@ -15,16 +15,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
-import var;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class CreativeModeTabRegistry {
 
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Modonomicon.MOD_ID);
 
-    public static final com.klikli_dev.modonomicon.registry.RegistryObject<CreativeModeTab> MODONOMICON = CREATIVE_MODE_TABS.register(Modonomicon.MOD_ID, () -> CreativeModeTab.builder()
+    public static final net.neoforged.neoforge.registries.RegistryObject <CreativeModeTab> MODONOMICON = CREATIVE_MODE_TABS.register(Modonomicon.MOD_ID, () -> CreativeModeTab.builder()
             .withTabsBefore(CreativeModeTabs.COMBAT)
             .icon(() -> ItemRegistry.MODONOMICON_PURPLE.get().getDefaultInstance())
             .title(Component.translatable(ModonomiconConstants.I18n.ITEM_GROUP))
@@ -32,7 +30,7 @@ public class CreativeModeTabRegistry {
 
 
     public static void onCreativeModeTabBuildContents(BuildCreativeModeTabContentsEvent event) {
-        var tabName = net.minecraftforge.common.CreativeModeTabRegistry.getName(event.getTab());
+        var tabName = net.neoforged.neoforge.common.CreativeModeTabRegistry.getName(event.getTab());
         if (tabName == null)
             return;
 

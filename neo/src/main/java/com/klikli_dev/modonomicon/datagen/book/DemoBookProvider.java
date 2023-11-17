@@ -17,8 +17,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryReadCondit
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookFalseConditionModel;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.data.LanguageProvider;
-import var;
+import net.neoforged.neoforge.common.data.LanguageProvider;
 
 public class DemoBookProvider extends BookProvider {
 

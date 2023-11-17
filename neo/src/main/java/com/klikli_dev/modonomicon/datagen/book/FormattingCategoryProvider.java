@@ -6,7 +6,6 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookFalseConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
-import var;
 
 public class FormattingCategoryProvider extends CategoryProvider {
     public FormattingCategoryProvider(BookProvider parent) {

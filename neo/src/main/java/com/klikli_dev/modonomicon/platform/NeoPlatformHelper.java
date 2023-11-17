@@ -7,16 +7,16 @@
 package com.klikli_dev.modonomicon.platform;
 
 import com.klikli_dev.modonomicon.platform.services.PlatformHelper;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.fml.loading.FMLLoader;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.fml.loading.FMLLoader;
 
-public class ForgePlatformHelper implements PlatformHelper {
+public class NeoPlatformHelper implements PlatformHelper {
 
     @Override
     public String getPlatformName() {
-        return "Forge";
+        return "Neoforge";
     }
 
     @Override
