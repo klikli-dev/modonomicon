@@ -8,7 +8,7 @@ plugins {
 //    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
-//apply from: 'https://gist.githubusercontent.com/Technici4n/facbcdf18ce1a556b76e6027180c32ce/raw/1e0a2fbd8ecb708294ef50c16a20aed468d948e1/classremapper.gradle'
+apply from: 'https://gist.githubusercontent.com/Technici4n/facbcdf18ce1a556b76e6027180c32ce/raw/1e0a2fbd8ecb708294ef50c16a20aed468d948e1/classremapper.gradle'
 
 if (System.getenv('MOD_VERSION') != null) {
     mod_version = System.getenv('MOD_VERSION')
@@ -98,13 +98,13 @@ tasks.named("sourcesJar", Jar) {
 
 tasks.named('jar') {
     archiveClassifier = "slim"
-    finalizedBy('reobfJar')
+//    finalizedBy('reobfJar')
 }
 
 tasks.named('build').configure { dependsOn('jarJar') }
 tasks.named('jarJar') {
     archiveClassifier = ""
-    finalizedBy('reobfJar')
+//    finalizedBy('reobfJar')
 }
 
 tasks.withType(ProcessResources).excludingNeoTasks().configureEach {
