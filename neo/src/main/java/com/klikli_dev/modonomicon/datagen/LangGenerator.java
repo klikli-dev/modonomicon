@@ -15,7 +15,7 @@ import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.data.LanguageProvider;
-
+import var;
 import java.util.function.Supplier;
 
 public abstract class LangGenerator extends LanguageProvider {

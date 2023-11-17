@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.datagen.book.DemoBookProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
+import var;
 
 public class DataGenerators {
 

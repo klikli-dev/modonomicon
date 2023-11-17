@@ -18,6 +18,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookFalseConditionM
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.data.LanguageProvider;
+import var;
 
 public class DemoBookProvider extends BookProvider {
 
