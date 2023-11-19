@@ -646,7 +646,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
 
         if (this.isHoveringItemLink) {
             tooltip.add(Component.literal(""));
-            if (ModonomiconJeiIntegration.isJeiLoaded()) {
+            if (ModonomiconJeiIntegration.get().isJeiLoaded()) {
                 tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GREEN)));
                 tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO_LINE2).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GRAY)));
             } else {
@@ -662,7 +662,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
 
         if (this.isHoveringItemLink) {
             tooltip.add(Component.literal(""));
-            if (ModonomiconJeiIntegration.isJeiLoaded()) {
+            if (ModonomiconJeiIntegration.get().isJeiLoaded()) {
                 tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GREEN)));
                 tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO_LINE2).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GRAY)));
             } else {
@@ -726,19 +726,19 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
 
                     if (ItemLinkRenderer.isItemLink(event.getValue())) {
 
-                        if (ModonomiconJeiIntegration.isJeiLoaded()) {
+                        if (ModonomiconJeiIntegration.get().isJeiLoaded()) {
                             var itemId = event.getValue().substring(ItemLinkRenderer.PROTOCOL_ITEM_LENGTH);
                             var itemStack = ItemStackUtil.loadFromParsed(ItemStackUtil.parseItemStackString(itemId));
 
                             this.onClose(); //we have to do this before showing JEI, because super.onClose() clears Gui Layers, and thus would kill JEIs freshly spawned gui
 
                             if (Screen.hasShiftDown()) {
-                                ModonomiconJeiIntegration.showUses(itemStack);
+                                ModonomiconJeiIntegration.get().showUses(itemStack);
                             } else {
-                                ModonomiconJeiIntegration.showRecipe(itemStack);
+                                ModonomiconJeiIntegration.get().showRecipe(itemStack);
                             }
 
-                            if (!ModonomiconJeiIntegration.isJEIRecipesGuiOpen()) {
+                            if (!ModonomiconJeiIntegration.get().isJEIRecipesGuiOpen()) {
                                 Services.GUI.pushGuiLayer(this);
                             }
 
