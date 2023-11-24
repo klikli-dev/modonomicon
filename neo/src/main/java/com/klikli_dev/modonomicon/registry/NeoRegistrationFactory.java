@@ -61,7 +61,7 @@ public class NeoRegistrationFactory implements RegistrationProvider.Factory {
 
                 @Override
                 public ResourceKey<I> getResourceKey() {
-                    return obj.getKey();
+                    return (ResourceKey<I>) obj.getKey();
                 }
 
                 @Override
@@ -76,7 +76,7 @@ public class NeoRegistrationFactory implements RegistrationProvider.Factory {
 
                 @Override
                 public Holder<I> asHolder() {
-                    return obj.getHolder().orElseThrow();
+                    return (Holder<I>)registry.getRegistry().get().getHolder(obj.getKey()).get();
                 }
             };
             this.entries.add((RegistryObject<T>) ro);

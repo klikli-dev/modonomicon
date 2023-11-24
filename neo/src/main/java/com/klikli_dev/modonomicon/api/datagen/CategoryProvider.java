@@ -12,10 +12,10 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookEntryParentModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookAndConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookOrConditionModel;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.data.LanguageProvider;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -130,7 +130,7 @@ public abstract class CategoryProvider {
      * Create an item link with a custom text (instead of item name)
      */
     protected String itemLink(String text, ItemLike item) {
-        var rl = ForgeRegistries.ITEMS.getKey(item.asItem());
+        var rl = BuiltInRegistries.ITEM.getKey(item.asItem());
         return this.format("[{0}](item://{1})", text, rl);
     }
 
