@@ -22,6 +22,13 @@ if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
 }
 
 jarJar.enable()
+//TODO: remove minecraft library workaround
+configurations {
+    minecraftLibrary
+    minecraftRuntime
+    implementation.extendsFrom minecraftLibrary
+    minecraftRuntime.extendsFrom minecraftLibrary
+}
 
 runs {
     configureEach {
@@ -62,14 +69,21 @@ dependencies {
 
     //commonmark
     //mark it for forge to add to the classpath
-    implementation "org.commonmark:commonmark:${commonmark_version}"
-    implementation "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
-    implementation "org.commonmark:commonmark-ext-ins:${commonmark_version}"
+    minecraftLibrary "org.commonmark:commonmark:${commonmark_version}"
+    minecraftLibrary "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
+    minecraftLibrary "org.commonmark:commonmark-ext-ins:${commonmark_version}"
     //and include it in the jar
     jarJar(group: 'org.commonmark', name: 'commonmark', version: "[${commonmark_version},)")
     jarJar(group: 'org.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: "[${commonmark_version},)")
     jarJar(group: 'org.commonmark', name: 'commonmark-ext-ins', version: "[${commonmark_version},)")
 }
+
+//TODO: remove minecraft library workaround
+import net.neoforged.gradle.userdev.runtime.tasks.ClasspathSerializer
+tasks.withType(ClasspathSerializer).configureEach {
+    it.inputFiles.from(configurations.minecraftRuntime)
+}
+
 
 //Disable test compilation as a) we are not using tests and b) it fails due to not being able to access jei in common
 compileTestJava {
