@@ -32,11 +32,11 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
 
     protected BookTextHolder title1;
     protected ResourceLocation recipeId1;
-    protected T recipe1;
+    protected RecipeHolder<T> recipe1;
 
     protected BookTextHolder title2;
     protected ResourceLocation recipeId2;
-    protected T recipe2;
+    protected RecipeHolder<T> recipe2;
 
     protected BookTextHolder text;
 
@@ -86,7 +86,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
         return this.recipeId1;
     }
 
-    public T getRecipe1() {
+    public RecipeHolder<T> getRecipe1() {
         return this.recipe1;
     }
 
@@ -98,7 +98,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
         return this.recipeId2;
     }
 
-    public T getRecipe2() {
+    public RecipeHolder<T> getRecipe2() {
         return this.recipe2;
     }
 
@@ -121,7 +121,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
         return tempRecipe;
     }
 
-    protected abstract ItemStack getRecipeOutput(Level level, T recipe);
+    protected abstract ItemStack getRecipeOutput(Level level, RecipeHolder<T> recipe);
 
     private RecipeHolder<T> getRecipe(Level level, ResourceLocation id) {
         return (RecipeHolder<T>) level.getRecipeManager().byKey(id).filter(recipe -> recipe.value().getType() == this.recipeType).orElse(null);
@@ -131,8 +131,8 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
     public void build(Level level, BookEntry parentEntry, int pageNum) {
         super.build(level, parentEntry, pageNum);
 
-        this.recipe1 = this.loadRecipe(level, parentEntry, this.recipeId1).value();
-        this.recipe2 = this.loadRecipe(level, parentEntry, this.recipeId2).value();
+        this.recipe1 = this.loadRecipe(level, parentEntry, this.recipeId1);
+        this.recipe2 = this.loadRecipe(level, parentEntry, this.recipeId2);
 
         if (this.recipe1 == null && this.recipe2 != null) {
             this.recipe1 = this.recipe2;

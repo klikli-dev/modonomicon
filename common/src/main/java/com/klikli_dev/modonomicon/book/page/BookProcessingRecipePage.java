@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.book.BookTextHolder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
@@ -19,11 +20,11 @@ public abstract class BookProcessingRecipePage<T extends Recipe<?>> extends Book
     }
 
     @Override
-    protected ItemStack getRecipeOutput(Level level, T recipe) {
+    protected ItemStack getRecipeOutput(Level level, RecipeHolder<T> recipe) {
         if (recipe == null) {
             return ItemStack.EMPTY;
         }
 
-        return recipe.getResultItem(level.registryAccess());
+        return recipe.value().getResultItem(level.registryAccess());
     }
 }

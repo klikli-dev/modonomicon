@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 public abstract class BookProcessingRecipePageRenderer<T extends Recipe<?>> extends BookRecipePageRenderer<T, BookProcessingRecipePage<T>> {
     public BookProcessingRecipePageRenderer(BookProcessingRecipePage<T> page) {
@@ -23,7 +24,7 @@ public abstract class BookProcessingRecipePageRenderer<T extends Recipe<?>> exte
     }
 
     @Override
-    protected void drawRecipe(GuiGraphics guiGraphics, T recipe, int recipeX, int recipeY, int mouseX, int mouseY, boolean second) {
+    protected void drawRecipe(GuiGraphics guiGraphics, RecipeHolder<T> recipe, int recipeX, int recipeY, int mouseX, int mouseY, boolean second) {
 
         recipeY += 10;
 
@@ -41,8 +42,8 @@ public abstract class BookProcessingRecipePageRenderer<T extends Recipe<?>> exte
         RenderSystem.enableBlend();
         guiGraphics.blit(this.page.getBook().getCraftingTexture(), recipeX, recipeY, 11, 71, 96, 24, 128, 256);
 
-        this.parentScreen.renderIngredient(guiGraphics, recipeX + 4, recipeY + 4, mouseX, mouseY, recipe.getIngredients().get(0));
-        this.parentScreen.renderItemStack(guiGraphics, recipeX + 40, recipeY + 4, mouseX, mouseY, recipe.getToastSymbol());
-        this.parentScreen.renderItemStack(guiGraphics, recipeX + 76, recipeY + 4, mouseX, mouseY, recipe.getResultItem(this.parentScreen.getMinecraft().level.registryAccess()));
+        this.parentScreen.renderIngredient(guiGraphics, recipeX + 4, recipeY + 4, mouseX, mouseY, recipe.value().getIngredients().get(0));
+        this.parentScreen.renderItemStack(guiGraphics, recipeX + 40, recipeY + 4, mouseX, mouseY, recipe.value().getToastSymbol());
+        this.parentScreen.renderItemStack(guiGraphics, recipeX + 76, recipeY + 4, mouseX, mouseY, recipe.value().getResultItem(this.parentScreen.getMinecraft().level.registryAccess()));
     }
 }
