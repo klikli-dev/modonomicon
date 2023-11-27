@@ -265,8 +265,10 @@ public class BookOverviewScreen extends Screen {
 
         this.getCurrentCategoryScreen().renderEntryTooltips(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
-        //do super render last -> it does the widgets including especially the tooltips and we want those to go over the frame
-        super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+        //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
+        for(var renderable : this.renderables){
+            renderable.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+        }
     }
 
     @Override
