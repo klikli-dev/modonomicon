@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.41.0] - 2023-12-01
+### :sparkles: New Features
+- [`1d20df8`](https://github.com/klikli-dev/modonomicon/commit/1d20df8d4bad8835c1267d98fc8f05885b76b94e) - set version as part of project name *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`a1557d7`](https://github.com/klikli-dev/modonomicon/commit/a1557d74ccd7e317ae879818cbea4c7ab5add128) - make datagen available for fabric *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`31d90e8`](https://github.com/klikli-dev/modonomicon/commit/31d90e8dc327a7e5c52ed1451a4227f3dc788df3) - make field final *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`ca86e3f`](https://github.com/klikli-dev/modonomicon/commit/ca86e3fd6372469d9010749b687b11ae9e3537e8) - refactor *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`dc016ba`](https://github.com/klikli-dev/modonomicon/commit/dc016baf79d16b9a0de5f9d0195a500d157dabcf) - update mod version *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.40.0] - 2023-10-12
 ### :sparkles: New Features
 - [`fa874b9`](https://github.com/klikli-dev/modonomicon/commit/fa874b9ae044e2a2f2028b1913cdd767ea29e2fd) - add on entry clicked event *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -461,3 +472,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.39.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.38.6...release/v1.20.1-1.39.0
 [release/v1.20.1-1.39.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.39.0...release/v1.20.1-1.39.1
 [release/v1.20.1-1.40.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.39.1...release/v1.20.1-1.40.0
+[release/v1.20.1-1.41.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.40.0...release/v1.20.1-1.41.0
