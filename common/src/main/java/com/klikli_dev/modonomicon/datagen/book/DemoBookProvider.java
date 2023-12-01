@@ -6,9 +6,7 @@
 
 package com.klikli_dev.modonomicon.datagen.book;
 
-import com.klikli_dev.modonomicon.api.datagen.BookContextHelper;
-import com.klikli_dev.modonomicon.api.datagen.BookProvider;
-import com.klikli_dev.modonomicon.api.datagen.CategoryEntryMap;
+import com.klikli_dev.modonomicon.api.datagen.*;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCommandModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
@@ -17,11 +15,10 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryReadCondit
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookFalseConditionModel;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.common.data.LanguageProvider;
 
 public class DemoBookProvider extends BookProvider {
 
-    public DemoBookProvider(PackOutput packOutput, String modid, LanguageProvider lang, LanguageProvider... translations) {
+    public DemoBookProvider(PackOutput packOutput, String modid, ModonomiconLanguageProvider lang, ModonomiconLanguageProvider... translations) {
         super("demo", packOutput, modid, lang, translations);
     }
 
@@ -30,8 +27,9 @@ public class DemoBookProvider extends BookProvider {
         this.lang().add(this.context().bookName(), "Demo Book");
         this.lang().add(this.context().bookTooltip(), "A book to showcase & test Modonomicon features.");
 
-        this.lang("ru_ru").add(this.context().bookName(), "Демонстрационная книга");
-        this.lang("ru_ru").add(this.context().bookTooltip(), "Книга для демонстрации и тестирования функций \"Модономикона\".");
+        //if we want to handle a second language in here we can access it like this:
+        //this.lang("ru_ru").add(this.context().bookName(), "Демонстрационная книга");
+        //this.lang("ru_ru").add(this.context().bookTooltip(), "Книга для демонстрации и тестирования функций \"Модономикона\".");
 
         //for the two big categories we use the category provider
         var featuresCategory = new FeaturesCategoryProvider(this).generate();

@@ -15,7 +15,6 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookOrConditionMode
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.data.LanguageProvider;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -46,11 +45,11 @@ public abstract class CategoryProvider {
         return this.categoryId;
     }
 
-    protected LanguageProvider lang() {
+    protected ModonomiconLanguageProvider lang() {
         return this.parent.lang();
     }
 
-    protected LanguageProvider lang(String locale) {
+    protected ModonomiconLanguageProvider lang(String locale) {
         return this.parent.lang();
     }
 

@@ -21,6 +21,9 @@
     ],
     "client": [
       "com.klikli_dev.modonomicon.ModonomiconFabricClient"
+    ],
+    "fabric-datagen": [
+      "com.klikli_dev.modonomicon.datagen.DataGenerators"
     ]
   },
   "mixins": [

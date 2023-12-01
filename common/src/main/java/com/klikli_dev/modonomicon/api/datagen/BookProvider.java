@@ -17,7 +17,6 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.common.data.LanguageProvider;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
@@ -30,8 +29,8 @@ public abstract class BookProvider implements DataProvider {
     protected static final Logger LOGGER = LogUtils.getLogger();
 
     protected final PackOutput packOutput;
-    protected final LanguageProvider lang;
-    protected final Map<String, LanguageProvider> translations;
+    protected final ModonomiconLanguageProvider lang;
+    protected final Map<String, ModonomiconLanguageProvider> translations;
     protected final Map<ResourceLocation, BookModel> bookModels;
     protected final String modid;
     protected String bookId;
@@ -44,12 +43,12 @@ public abstract class BookProvider implements DataProvider {
     /**
      * @param defaultLang The LanguageProvider to fill with this book provider. IMPORTANT: the Languag Provider needs to be added to the DataGenerator AFTER the BookProvider.
      */
-    public BookProvider(String bookId, PackOutput packOutput, String modid, LanguageProvider defaultLang, LanguageProvider... translations) {
+    public BookProvider(String bookId, PackOutput packOutput, String modid, ModonomiconLanguageProvider defaultLang, ModonomiconLanguageProvider... translations) {
         this.modid = modid;
         this.packOutput = packOutput;
         this.lang = defaultLang;
         this.bookModels = new HashMap<>();
-        this.translations = Stream.concat(Arrays.stream(translations), Stream.of(defaultLang)).map(l -> new AbstractMap.SimpleEntry<>(l.getName().split(": ")[1], l)).collect(HashMap::new, (m, v) -> m.put(v.getKey(), v.getValue()), HashMap::putAll);
+        this.translations = Stream.concat(Arrays.stream(translations), Stream.of(defaultLang)).map(l -> new AbstractMap.SimpleEntry<>(l.locale(), l)).collect(HashMap::new, (m, v) -> m.put(v.getKey(), v.getValue()), HashMap::putAll);
 
         this.bookId = bookId;
         this.context = new BookContextHelper(this.modid);
@@ -57,11 +56,11 @@ public abstract class BookProvider implements DataProvider {
         this.conditionHelper = new ConditionHelper();
     }
 
-    protected LanguageProvider lang() {
+    protected ModonomiconLanguageProvider lang() {
         return this.lang;
     }
 
-    protected LanguageProvider lang(String locale) {
+    protected ModonomiconLanguageProvider lang(String locale) {
         return this.translations.get(locale);
     }
 
