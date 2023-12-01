@@ -17,7 +17,7 @@ import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
-public abstract class LanguageProvider implements ModonomiconLanguageProvider, DataProvider {
+public abstract class AbstractModonomiconLanguageProvider implements ModonomiconLanguageProvider, DataProvider {
     private final Map<String, String> data = new TreeMap<>();
     private final PackOutput output;
     private final String modid;
@@ -32,14 +32,14 @@ public abstract class LanguageProvider implements ModonomiconLanguageProvider, D
      * @param locale the locale this provider should generate.
      * @param cachedProvider the cached provider - its contents will be written into this provider.
      */
-    public LanguageProvider(PackOutput output, String modid, String locale, ModonomiconLanguageProvider cachedProvider) {
+    public AbstractModonomiconLanguageProvider(PackOutput output, String modid, String locale, ModonomiconLanguageProvider cachedProvider) {
         this.output = output;
         this.modid = modid;
         this.locale = locale;
         this.cachedProvider = cachedProvider;
     }
 
-    public LanguageProvider(PackOutput output, String modid, String locale) {
+    public AbstractModonomiconLanguageProvider(PackOutput output, String modid, String locale) {
         this(output, modid, locale, null);
     }
 

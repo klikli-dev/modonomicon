@@ -11,12 +11,12 @@ import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.*;
 import com.klikli_dev.modonomicon.api.datagen.BookContextHelper;
-import com.klikli_dev.modonomicon.api.datagen.LanguageProvider;
+import com.klikli_dev.modonomicon.api.datagen.AbstractModonomiconLanguageProvider;
 import com.klikli_dev.modonomicon.api.datagen.ModonomiconLanguageProvider;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.data.PackOutput;
 
-public class EnUsProvider extends LanguageProvider {
+public class EnUsProvider extends AbstractModonomiconLanguageProvider {
     public EnUsProvider(PackOutput packOutput, ModonomiconLanguageProvider cachedProvider) {
         super(packOutput, Modonomicon.MOD_ID, "en_us", cachedProvider);
     }
