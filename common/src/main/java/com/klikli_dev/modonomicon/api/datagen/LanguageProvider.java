@@ -23,7 +23,7 @@ public abstract class LanguageProvider implements ModonomiconLanguageProvider, D
     private final String modid;
     private final String locale;
 
-    private ModonomiconLanguageProvider cachedProvider;
+    private final ModonomiconLanguageProvider cachedProvider;
 
     /**
      * Creates a new language provider.
