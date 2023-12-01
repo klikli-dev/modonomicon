@@ -15,8 +15,10 @@ import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
 import com.klikli_dev.modonomicon.platform.Services;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.saveddata.SavedData;
 
 import java.util.List;
 import java.util.Timer;
@@ -128,8 +130,9 @@ public class BookUnlockStateManager {
     private void getSaveDataIfNecessary(Player player) {
         if (this.saveData == null && player instanceof ServerPlayer serverPlayer) {
             this.saveData = serverPlayer.getServer().overworld().getDataStorage().computeIfAbsent(
-                    BookStatesSaveData::load,
-                    BookStatesSaveData::new, BookStatesSaveData.ID);
+                    new SavedData.Factory<>(BookStatesSaveData::new, BookStatesSaveData::load, DataFixTypes.PLAYER),
+                    BookStatesSaveData.ID
+            );
         }
     }
 

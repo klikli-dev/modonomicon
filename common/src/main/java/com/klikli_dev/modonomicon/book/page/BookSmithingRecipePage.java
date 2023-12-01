@@ -13,6 +13,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.level.Level;
@@ -40,12 +42,12 @@ public class BookSmithingRecipePage extends BookRecipePage<SmithingRecipe> {
     }
 
     @Override
-    protected ItemStack getRecipeOutput(Level level, SmithingRecipe recipe) {
+    protected ItemStack getRecipeOutput(Level level, RecipeHolder<SmithingRecipe> recipe) {
         if (recipe == null) {
             return ItemStack.EMPTY;
         }
 
-        return recipe.getResultItem(level.registryAccess());
+        return recipe.value().getResultItem(level.registryAccess());
     }
 
     @Override

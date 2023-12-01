@@ -13,6 +13,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class BookRecipePageRenderer<R extends Recipe<?>, T extends BookRecipePage<R>> extends BookPageRenderer<T> implements PageWithTextRenderer {
@@ -77,5 +78,5 @@ public abstract class BookRecipePageRenderer<R extends Recipe<?>, T extends Book
 
     protected abstract int getRecipeHeight();
 
-    protected abstract void drawRecipe(GuiGraphics guiGraphics, R recipe, int recipeX, int recipeY, int mouseX, int mouseY, boolean second);
+    protected abstract void drawRecipe(GuiGraphics guiGraphics, RecipeHolder<R> recipe, int recipeX, int recipeY, int mouseX, int mouseY, boolean second);
 }

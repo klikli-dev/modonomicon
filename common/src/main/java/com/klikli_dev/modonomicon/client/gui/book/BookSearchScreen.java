@@ -210,7 +210,7 @@ public class BookSearchScreen extends Screen implements BookScreenWithButtons {
         //we need to modify blit offset (now: z pose) to not draw over toasts
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, -1300);  //magic number arrived by testing until toasts show, but BookOverviewScreen does not
-        this.renderBackground(guiGraphics);
+        this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
         guiGraphics.pose().popPose();
 
         guiGraphics.pose().pushPose();
@@ -259,7 +259,11 @@ public class BookSearchScreen extends Screen implements BookScreenWithButtons {
         }
         guiGraphics.pose().popPose();
 
-        super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+        //do not translate super (= widget rendering) -> otherwise our buttons are messed up
+        //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
+        for(var renderable : this.renderables){
+            renderable.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+        }
 
         this.drawTooltip(guiGraphics, pMouseX, pMouseY);
     }

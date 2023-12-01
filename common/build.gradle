@@ -23,6 +23,14 @@ loom {
     }
 }
 
+sourceSets {
+    main {
+        java {
+            exclude '**/ModonomiconJeiIntegrationImpl.java'
+        }
+    }
+}
+
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings loom.layered() {
@@ -34,7 +42,7 @@ dependencies {
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: "${jsr305_version}"
 
     //Jei
-    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+//    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
 
     //commonmark
     //here we just need to add it to the classpaths, forge/fabric will put it in the jar for distribution

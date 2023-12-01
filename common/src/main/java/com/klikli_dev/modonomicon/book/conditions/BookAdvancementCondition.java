@@ -65,7 +65,7 @@ public class BookAdvancementCondition extends BookCondition {
     @Override
     public boolean test(BookConditionContext context, Player player) {
         if (player instanceof ServerPlayer serverPlayer) {
-            var advancement = serverPlayer.getServer().getAdvancements().getAdvancement(this.advancementId);
+            var advancement = serverPlayer.getServer().getAdvancements().get(this.advancementId);
             return advancement != null && serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone();
         }
         return false;

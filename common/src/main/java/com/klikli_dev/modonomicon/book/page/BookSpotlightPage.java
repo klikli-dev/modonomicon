@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -39,7 +40,7 @@ public class BookSpotlightPage extends BookPage {
 
     public static BookSpotlightPage fromJson(JsonObject json) {
         var title = BookGsonHelper.getAsBookTextHolder(json, "title", BookTextHolder.EMPTY);
-        var item = Ingredient.fromJson(json.get("item"));
+        var item = Ingredient.CODEC.parse(JsonOps.INSTANCE, json.get("item")).result().get();
         var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY);
         var anchor = GsonHelper.getAsString(json, "anchor", "");
         return new BookSpotlightPage(title, text, item, anchor);

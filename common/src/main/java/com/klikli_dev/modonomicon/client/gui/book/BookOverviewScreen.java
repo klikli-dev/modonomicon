@@ -243,17 +243,19 @@ public class BookOverviewScreen extends Screen {
         return this.getCurrentCategoryScreen().mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
     }
 
+
     @Override
-    public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
-        this.getCurrentCategoryScreen().zoom(pDelta);
-        return super.mouseScrolled(pMouseX, pMouseY, pDelta);
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        this.getCurrentCategoryScreen().zoom(scrollY);
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
+
 
     @Override
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         RenderSystem.disableDepthTest(); //guard against depth test being enabled by other rendering code, that would cause ui elements to vanish
 
-        this.renderBackground(guiGraphics);
+        this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
         this.getCurrentCategoryScreen().renderBackground(guiGraphics);
 
@@ -263,8 +265,10 @@ public class BookOverviewScreen extends Screen {
 
         this.getCurrentCategoryScreen().renderEntryTooltips(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
-        //do super render last -> it does the widgets including especially the tooltips and we want those to go over the frame
-        super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+        //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
+        for(var renderable : this.renderables){
+            renderable.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+        }
     }
 
     @Override

@@ -15,6 +15,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
 public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recipe<?>, BookCraftingRecipePage> {
@@ -28,7 +29,7 @@ public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recip
     }
 
     @Override
-    protected void drawRecipe(GuiGraphics guiGraphics, Recipe<?> recipe, int recipeX, int recipeY, int mouseX, int mouseY, boolean second) {
+    protected void drawRecipe(GuiGraphics guiGraphics, RecipeHolder<Recipe<?>> recipe, int recipeX, int recipeY, int mouseX, int mouseY, boolean second) {
 
         if (!second) {
             if (!this.page.getTitle1().isEmpty()) {
@@ -44,7 +45,7 @@ public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recip
         RenderSystem.enableBlend();
         guiGraphics.blit(this.page.getBook().getCraftingTexture(), recipeX - 2, recipeY - 2, 0, 0, 100, 62, 128, 256);
 
-        boolean shaped = recipe instanceof ShapedRecipe;
+        boolean shaped = recipe.value() instanceof ShapedRecipe;
         if (!shaped) {
             int iconX = recipeX + 62;
             int iconY = recipeY + 2;
@@ -54,18 +55,18 @@ public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recip
             }
         }
 
-        this.parentScreen.renderItemStack(guiGraphics, recipeX + 79, recipeY + 22, mouseX, mouseY, recipe.getResultItem(this.parentScreen.getMinecraft().level.registryAccess()));
+        this.parentScreen.renderItemStack(guiGraphics, recipeX + 79, recipeY + 22, mouseX, mouseY, recipe.value().getResultItem(this.parentScreen.getMinecraft().level.registryAccess()));
 
-        NonNullList<Ingredient> ingredients = recipe.getIngredients();
+        NonNullList<Ingredient> ingredients = recipe.value().getIngredients();
         int wrap = 3;
         if (shaped) {
-            wrap = ((ShapedRecipe) recipe).getWidth();
+            wrap = ((ShapedRecipe) recipe.value()).getWidth();
         }
 
         for (int i = 0; i < ingredients.size(); i++) {
             this.parentScreen.renderIngredient(guiGraphics, recipeX + (i % wrap) * 19 + 3, recipeY + (i / wrap) * 19 + 3, mouseX, mouseY, ingredients.get(i));
         }
 
-        this.parentScreen.renderItemStack(guiGraphics, recipeX + 79, recipeY + 41, mouseX, mouseY, recipe.getToastSymbol());
+        this.parentScreen.renderItemStack(guiGraphics, recipeX + 79, recipeY + 41, mouseX, mouseY, recipe.value().getToastSymbol());
     }
 }

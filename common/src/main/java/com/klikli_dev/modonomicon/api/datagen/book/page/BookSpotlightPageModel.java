@@ -42,7 +42,7 @@ public class BookSpotlightPageModel extends BookPageModel {
     public JsonObject toJson() {
         var json = super.toJson();
         json.add("title", this.title.toJson());
-        json.add("item", this.item.toJson());
+        json.add("item", this.item.toJson(true));
         json.add("text", this.text.toJson());
         return json;
     }

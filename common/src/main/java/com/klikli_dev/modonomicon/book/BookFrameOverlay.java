@@ -68,11 +68,11 @@ public class BookFrameOverlay {
     }
 
     public static BookFrameOverlay fromNetwork(FriendlyByteBuf buffer) {
-        return buffer.readWithCodec(NbtOps.INSTANCE, BookFrameOverlay.CODEC);
+        return buffer.readJsonWithCodec(BookFrameOverlay.CODEC);
     }
 
     public void toNetwork(FriendlyByteBuf buffer) {
-        buffer.writeWithCodec(NbtOps.INSTANCE, BookFrameOverlay.CODEC, this);
+        buffer.writeJsonWithCodec(BookFrameOverlay.CODEC, this);
     }
 
     public int getFrameU() {
