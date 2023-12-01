@@ -214,7 +214,7 @@ public abstract class CategoryProvider {
      * <p>
      * Sample usage: this.add(this.lang("ru_ru"), "category", "Text");
      */
-    protected void add(LanguageProvider translation, String key, String value) {
+    protected void add(AbstractModonomiconLanguageProvider translation, String key, String value) {
         translation.add(key, this.macro(value));
     }
 
@@ -232,7 +232,7 @@ public abstract class CategoryProvider {
      * <p>
      * Sample usage: this.add(this.lang("ru_ru"), "category", "pattern", "arg1");
      */
-    protected void add(LanguageProvider translation, String key, String pattern, Object... args) {
+    protected void add(AbstractModonomiconLanguageProvider translation, String key, String pattern, Object... args) {
         this.add(translation, key, this.format(pattern, args));
     }
 
