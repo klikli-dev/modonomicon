@@ -15,8 +15,6 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookOrConditionMode
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.data.LanguageProvider;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -47,11 +45,11 @@ public abstract class CategoryProvider {
         return this.categoryId;
     }
 
-    protected LanguageProvider lang() {
+    protected ModonomiconLanguageProvider lang() {
         return this.parent.lang();
     }
 
-    protected LanguageProvider lang(String locale) {
+    protected ModonomiconLanguageProvider lang(String locale) {
         return this.parent.lang();
     }
 
@@ -131,7 +129,7 @@ public abstract class CategoryProvider {
      * Create an item link with a custom text (instead of item name)
      */
     protected String itemLink(String text, ItemLike item) {
-        var rl = ForgeRegistries.ITEMS.getKey(item.asItem());
+        var rl = BuiltInRegistries.ITEM.getKey(item.asItem());
         return this.format("[{0}](item://{1})", text, rl);
     }
 
