@@ -79,6 +79,12 @@ For now this file is mostly empty - that's OK!
 This is the language code for the English language, meaning in this file we will generate English texts. 
 
 
+:::warning
+
+Please note that EnUsProvider depends on `AbstractModonomiconLanguageProvider` , not the Forge one! The Modonomicon version is multi platform and allows to "consume" another language provider. You can also use a child class of a platform specific language providers and simply implement the `ModonomiconLanguageProvider` interface.
+
+:::
+
 #### Optional: Additional Languages
 
 The Demo Book comes with a language provider for Spanish (although only small parts of the demo book are translated to Spanish!).
@@ -88,8 +94,8 @@ In Java the "class" name and file name must correspond. Thus, a hypothethical fi
 
 ```java 
 public class FrFrProvider extends LanguageProvider {
-   public FrFrProvider(DataGenerator generator, String modid) {
-        super(generator, modid, "fr_fr");
+   public FrFrProvider(DataGenerator generator, String modid, ModonomiconLanguageProvider cachedProvider) {
+        super(generator, modid, "fr_fr", cachedProvider);
     }
 }
 ```
@@ -101,20 +107,23 @@ If you do create an additional language - make sure to register it in the DataGe
 e.g. for frFr Provider modify it to look like this:
 ```java
 
-var enUsProvider = new EnUsProvider(generator.getPackOutput(), ModonomiconDemoBook.MODID);
-var esEsProvider = new EsEsProvider(generator.getPackOutput(), ModonomiconDemoBook.MODID);
-var frFrProvider = new EsEsProvider(generator.getPackOutput(), ModonomiconDemoBook.MODID);
+//we create language provider caches where our book provider can store texts in.
+var enUsCache = new LanguageProviderCache("en_us");
+var esEsCache = new LanguageProviderCache("es_es");;
+var frFrCache = new LanguageProviderCache("fr_fr");;
+
 
 generator.addProvider(event.includeServer(), new DemoBookProvider(generator.getPackOutput(), ModonomiconDemoBook.MODID,
-        enUsProvider, //first add the default language, will be accessed via .lang()
-        esEsProvider, //then all other languages, will be accessed via .lang("<lang code>"), for example .lang("es_es")
-        frFrProvider
+        enUsCache, //first add the default language, will be accessed via .lang()
+        esEsCache, //then all other languages, will be accessed via .lang("<lang code>"), for example .lang("es_es")
+        frFrCache
 ));
 
 //Important: Lang providers need to be added after the book provider to process the texts added by the book provider
-generator.addProvider(event.includeClient(), enUsProvider);
-generator.addProvider(event.includeClient(), esEsProvider);
-generator.addProvider(event.includeClient(), frFrProvider);
+//           Additionally, we need to hand over our caches to the actual language provider, so the book texts are added.
+generator.addProvider(event.includeClient(), new EnUsProvider(generator.getPackOutput(), ModonomiconDemoBook.MODID, enUsCache));
+generator.addProvider(event.includeClient(), new EsEsProvider(generator.getPackOutput(), ModonomiconDemoBook.MODID, esEsCache));
+generator.addProvider(event.includeClient(), new FrFrProvider(generator.getPackOutput(), ModonomiconDemoBook.MODID, frFrCache));
 
 ```
 
