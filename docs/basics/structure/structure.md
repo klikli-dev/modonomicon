@@ -12,7 +12,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 <Tabs>
-  <TabItem value="hierarchy" label="Hierarchy" default>
+<TabItem value="hierarchy" label="Hierarchy" default>
 
 - `data/<mod_id>/modonomicon/books/<book_id>/`
   - `book.json`
@@ -30,16 +30,15 @@ import TabItem from '@theme/TabItem';
       - `<entry_id4>.json`
       - ...
 
+</TabItem>
 
-  </TabItem>
-
-  <TabItem value="screenshot" label="Example Screenshot">
+<TabItem value="screenshot" label="Example Screenshot">
 
 A book with the book id `demo` and the mod id `modonomicon` would look like this:
 
 ![File Structure](/img/docs/basics/structure/files.png)
 
-  </TabItem>
+</TabItem>
 </Tabs>
 
 ## Book.json
