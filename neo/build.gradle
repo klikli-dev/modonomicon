@@ -34,6 +34,7 @@ runs {
     configureEach {
         systemProperty 'forge.logging.markers', 'REGISTRIES'
         systemProperty 'forge.logging.console.level', 'debug'
+        jvmArguments.addAll('-XX:+AllowEnhancedClassRedefinition', '-XX:+IgnoreUnrecognizedVMOptions')
         modSource project.sourceSets.main
     }
 
