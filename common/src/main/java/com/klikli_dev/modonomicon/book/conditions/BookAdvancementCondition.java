@@ -33,7 +33,10 @@ public class BookAdvancementCondition extends BookCondition {
 
         //default tooltip
         var tooltip = Component.translatable(Tooltips.CONDITION_ADVANCEMENT,
-                Component.translatable(Util.makeDescriptionId("advancement", advancementId) + ".title"));
+                Component.translatable(
+                        Util.makeDescriptionId("advancements", advancementId)
+                                .replace(".minecraft", "") //minecraft does not include the namespace in the id
+                                + ".title"));
 
         if (json.has("tooltip")) {
             tooltip = tooltipFromJson(json);
