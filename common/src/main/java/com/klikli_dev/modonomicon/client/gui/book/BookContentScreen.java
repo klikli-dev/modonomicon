@@ -492,7 +492,10 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
         guiGraphics.pose().popPose();
 
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
-        super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+        //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
+        for(var renderable : this.renderables){
+            renderable.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+        }
 
         //do not translate tooltip, would mess up location
         this.drawTooltip(guiGraphics, pMouseX, pMouseY);
