@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.2-1.41.2] - 2023-12-04
+### :sparkles: New Features
+- [`a98bb85`](https://github.com/klikli-dev/modonomicon/commit/a98bb858191f3d148664ef53bc00f5fe3caaad25) - proper mc classpath setup *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`38bc0fb`](https://github.com/klikli-dev/modonomicon/commit/38bc0fbf5b8aa9cef6667efae0a23a7050b00d65) - tooltip says eye icon is left but it is right *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.2-1.41.1] - 2023-12-01
 ### :bug: Bug Fixes
 - [`486c785`](https://github.com/klikli-dev/modonomicon/commit/486c785fb56309d26a00f4c25dc3534a833e2243) - advancement condition tooltip bug *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -470,3 +478,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.39.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.39.0...release/v1.20.1-1.39.1
 [release/v1.20.1-1.40.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.39.1...release/v1.20.1-1.40.0
 [release/v1.20.2-1.41.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.2-1.41.0...release/v1.20.2-1.41.1
+[release/v1.20.2-1.41.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.2-1.41.1...release/v1.20.2-1.41.2
