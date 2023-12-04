@@ -68,7 +68,7 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         //Tooltip
         this.add(Tooltips.CONDITION_ADVANCEMENT, "Requires Advancement: %s");
         this.add(Tooltips.CONDITION_ENTRY_UNLOCKED, "Requires unlocked Entry: %s");
-        this.add(Tooltips.CONDITION_ENTRY_READ, "Requires read Entry: %s\nHint: Mark all entries as read with the \"eye\" button at the top left.");
+        this.add(Tooltips.CONDITION_ENTRY_READ, "Requires read Entry: %s\nHint: Mark all entries as read with the \"eye\" button at the top right.");
         this.add(Tooltips.ITEM_NO_BOOK_FOUND_FOR_STACK, "No book found for this item in the modonomicon book database! Nbt: %s");
         this.add(Tooltips.RECIPE_CRAFTING_SHAPELESS, "Shapeless");
         this.add(Tooltips.FLUID_AMOUNT, "%s mb");
