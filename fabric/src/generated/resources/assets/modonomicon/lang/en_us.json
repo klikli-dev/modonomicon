@@ -150,7 +150,7 @@
   "patchouli.occultism.dictionary_of_spirits.misc.books_of_calling.name": "Books of Calling",
   "test.test.test": "Book of Binding: Afrit (Bound)",
   "tooltip.modonomicon..condition.advancement": "Requires Advancement: %s",
-  "tooltip.modonomicon..condition.entry_read": "Requires read Entry: %s\nHint: Mark all entries as read with the \"eye\" button at the top left.",
+  "tooltip.modonomicon..condition.entry_read": "Requires read Entry: %s\nHint: Mark all entries as read with the \"eye\" button at the top right.",
   "tooltip.modonomicon..condition.entry_unlocked": "Requires unlocked Entry: %s",
   "tooltip.modonomicon..recipe.crafting_shapeless": "Shapeless",
   "tooltip.modonomicon.fluid.amount": "%s mb",
