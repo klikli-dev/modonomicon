@@ -22,12 +22,11 @@ if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
 }
 
 jarJar.enable()
-//TODO: remove minecraft library workaround
+
+//this replaces the old minecraftlibraries stuff for adding JiJ stuff to the mc classpath
 configurations {
-    minecraftLibrary
-    minecraftRuntime
-    implementation.extendsFrom minecraftLibrary
-    minecraftRuntime.extendsFrom minecraftLibrary
+    libraries {}
+    implementation.extendsFrom libraries
 }
 
 runs {
@@ -36,6 +35,10 @@ runs {
         systemProperty 'forge.logging.console.level', 'debug'
         jvmArguments.addAll('-XX:+AllowEnhancedClassRedefinition', '-XX:+IgnoreUnrecognizedVMOptions')
         modSource project.sourceSets.main
+
+        dependencies {
+            runtime configuration(project.configurations.libraries)
+        }
     }
 
     client {
@@ -70,21 +73,14 @@ dependencies {
 
     //commonmark
     //mark it for forge to add to the classpath
-    minecraftLibrary "org.commonmark:commonmark:${commonmark_version}"
-    minecraftLibrary "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
-    minecraftLibrary "org.commonmark:commonmark-ext-ins:${commonmark_version}"
+    libraries "org.commonmark:commonmark:${commonmark_version}"
+    libraries "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
+    libraries "org.commonmark:commonmark-ext-ins:${commonmark_version}"
     //and include it in the jar
     jarJar(group: 'org.commonmark', name: 'commonmark', version: "[${commonmark_version},)")
     jarJar(group: 'org.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: "[${commonmark_version},)")
     jarJar(group: 'org.commonmark', name: 'commonmark-ext-ins', version: "[${commonmark_version},)")
 }
-
-//TODO: remove minecraft library workaround
-import net.neoforged.gradle.userdev.runtime.tasks.ClasspathSerializer
-tasks.withType(ClasspathSerializer).configureEach {
-    it.inputFiles.from(configurations.minecraftRuntime)
-}
-
 
 //Disable test compilation as a) we are not using tests and b) it fails due to not being able to access jei in common
 compileTestJava {
