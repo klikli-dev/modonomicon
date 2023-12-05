@@ -21,8 +21,6 @@ if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
     minecraft.accessTransformers.file file('src/main/resources/META-INF/accesstransformer.cfg')
 }
 
-jarJar.enable()
-
 //this replaces the old minecraftlibraries stuff for adding JiJ stuff to the mc classpath
 configurations {
     libraries {}
