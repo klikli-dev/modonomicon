@@ -27,6 +27,8 @@ jarJar.enable()
 minecraft {
     mappings channel: mapping_channel, version: mapping_version
 
+    copyIdeResources = true
+
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
@@ -128,6 +130,8 @@ tasks.named('jarJar') {
 }
 
 processResources {
+    //for some reason we need item textures in forge too for dev runtime, so we have to set a strategy
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from project(":common").sourceSets.main.resources
 }
 
