@@ -4,7 +4,11 @@
   "background_parallax_layers": [],
   "background_width": 512,
   "entry_textures": "modonomicon:textures/gui/entry_textures.png",
-  "icon": "minecraft:textures/item/book.png",
+  "icon": {
+    "height": 16,
+    "texture": "minecraft:textures/item/book.png",
+    "width": 16
+  },
   "name": "book.modonomicon.demo.formatting.name",
   "show_category_button": true,
   "sort_number": -1

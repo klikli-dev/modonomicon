@@ -6,6 +6,8 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookFalseConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
 
 public class FormattingCategoryProvider extends CategoryProvider {
     public FormattingCategoryProvider(BookProvider parent) {
@@ -40,7 +42,7 @@ public class FormattingCategoryProvider extends CategoryProvider {
     protected BookCategoryModel generateCategory() {
 
         return BookCategoryModel.create(this.modLoc(this.context().categoryId()), this.context().categoryName())
-                .withIcon("minecraft:textures/item/book.png");
+                .withIcon(new ResourceLocation("minecraft:textures/item/book.png"));
     }
 
     private BookEntryModel makeBasicFormattingEntry(char location) {
@@ -59,7 +61,7 @@ public class FormattingCategoryProvider extends CategoryProvider {
                 .build(); //strikethrough, color
 
         var formattingEntry = this.entry(location)
-                .withIcon("minecraft:textures/item/paper.png")
+                .withIcon(new ResourceLocation("minecraft:textures/item/paper.png"))
                 .withPage(page1)
                 .withPage(page2);
 
@@ -87,7 +89,7 @@ public class FormattingCategoryProvider extends CategoryProvider {
                 .build(); //lists
 
         var formattingEntry = this.entry(location)
-                .withIcon("minecraft:feather")
+                .withIcon(Items.FEATHER)
                 .withEntryBackground(0, 1)
                 .withPage(page1)
                 .withPage(page2)
@@ -117,7 +119,7 @@ public class FormattingCategoryProvider extends CategoryProvider {
                 .build(); //patchouli link
 
         return this.entry(location)
-                .withIcon("minecraft:writable_book")
+                .withIcon(Items.WRITABLE_BOOK)
                 .withEntryBackground(0, 2)
                 .withPages(page1, page2, page3);
     }
@@ -126,7 +128,7 @@ public class FormattingCategoryProvider extends CategoryProvider {
         this.context().entry("always_locked");
 
         var entry = this.entry(location)
-                .withIcon("minecraft:nether_star")
+                .withIcon(Items.NETHER_STAR)
                 .withLocation(this.entryMap().get(location))
                 .withEntryBackground(0, 1);
 

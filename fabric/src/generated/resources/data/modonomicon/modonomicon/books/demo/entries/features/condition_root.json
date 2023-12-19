@@ -4,7 +4,9 @@
   "category": "modonomicon:features",
   "description": "book.modonomicon.demo.features.condition_root.description",
   "hide_while_locked": false,
-  "icon": "minecraft:redstone_torch",
+  "icon": {
+    "item": "minecraft:redstone_torch"
+  },
   "name": "book.modonomicon.demo.features.condition_root.name",
   "pages": [
     {

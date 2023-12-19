@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Category;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
+import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +26,7 @@ public class BookCategoryModel {
 
     protected ResourceLocation id;
     protected String name;
-    protected ResourceLocation icon = new ResourceLocation(Category.DEFAULT_ICON);
+    protected BookIconModel icon = BookIconModel.create(ItemRegistry.MODONOMICON_PURPLE.get());
     protected int sortNumber = -1;
     protected ResourceLocation background = new ResourceLocation(Category.DEFAULT_BACKGROUND);
     protected int backgroundWidth = Category.DEFAULT_BACKGROUND_WIDTH;
@@ -71,7 +72,7 @@ public class BookCategoryModel {
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("name", this.name);
-        json.addProperty("icon", this.icon.toString());
+        json.add("icon", this.icon.toJson());
         json.addProperty("sort_number", this.sortNumber);
         json.addProperty("background", this.background.toString());
         json.addProperty("background_width", this.backgroundWidth);
@@ -96,7 +97,7 @@ public class BookCategoryModel {
         return this.name;
     }
 
-    public ResourceLocation getIcon() {
+    public BookIconModel getIcon() {
         return this.icon;
     }
 
@@ -127,29 +128,35 @@ public class BookCategoryModel {
     /**
      * Sets the category's icon.
      *
-     * @param icon Either an item ResourceLocation (e.g.: "minecraft:stone") or a texture ResourceLocation (e.g. "minecraft:textures/block/stone.png" - note the ".png" at the end)
      */
-    public BookCategoryModel withIcon(ResourceLocation icon) {
+    public BookCategoryModel withIcon(BookIconModel icon) {
         this.icon = icon;
         return this;
     }
 
     /**
-     * Sets the category's icon.
-     *
-     * @param icon Either an item ResourceLocation (e.g.: "minecraft:stone") or a texture ResourceLocation (e.g. "minecraft:textures/block/stone.png" - note the ".png" at the end)
+     * Sets the category's icon as the given texture resource location
      */
-    public BookCategoryModel withIcon(String icon) {
-        return this.withIcon(new ResourceLocation(icon));
+    public BookCategoryModel withIcon(ResourceLocation texture) {
+        this.icon = BookIconModel.create(texture);
+        return this;
+    }
+
+    /**
+     * Sets the category's icon as the given texture resource location with the given size
+     */
+    public BookCategoryModel withIcon(ResourceLocation texture, int width, int height) {
+        this.icon = BookIconModel.create(texture, width, height);
+        return this;
     }
 
     /**
      * Sets the category's icon to the texture of the given item
      */
     public BookCategoryModel withIcon(ItemLike item) {
-        return this.withIcon(BuiltInRegistries.ITEM.getKey(item.asItem()));
+        this.icon = BookIconModel.create(item);
+        return this;
     }
-
 
     /**
      * Sets the category's sort number.

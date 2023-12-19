@@ -8,7 +8,9 @@
   },
   "description": "book.modonomicon.demo.features.condition_level_2.description",
   "hide_while_locked": false,
-  "icon": "minecraft:torch",
+  "icon": {
+    "item": "minecraft:torch"
+  },
   "name": "book.modonomicon.demo.features.condition_level_2.name",
   "pages": [
     {

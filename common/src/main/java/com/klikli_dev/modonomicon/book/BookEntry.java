@@ -85,7 +85,7 @@ public class BookEntry {
         var categoryId = new ResourceLocation(GsonHelper.getAsString(json, "category"));
         var name = GsonHelper.getAsString(json, "name");
         var description = GsonHelper.getAsString(json, "description", "");
-        var icon = BookIcon.fromString(new ResourceLocation(GsonHelper.getAsString(json, "icon")));
+        var icon = BookIcon.fromJson(json.get("icon"));
         var x = GsonHelper.getAsInt(json, "x");
         var y = GsonHelper.getAsInt(json, "y");
         var entryBackgroundUIndex = GsonHelper.getAsInt(json, "background_u_index", 0);

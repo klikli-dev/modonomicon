@@ -4,7 +4,9 @@
   "category": "modonomicon:features",
   "description": "book.modonomicon.demo.features.entity.description",
   "hide_while_locked": false,
-  "icon": "minecraft:spider_eye",
+  "icon": {
+    "item": "minecraft:spider_eye"
+  },
   "name": "book.modonomicon.demo.features.entity.name",
   "pages": [
     {

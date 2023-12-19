@@ -156,16 +156,24 @@ public abstract class CategoryProvider {
         return this.format("[{0}]()", text, category);
     }
 
-    protected BookEntryModel entry(String location, String icon) {
-        return this.entry(location).withIcon(icon);
+    protected BookEntryModel entry(String location, ResourceLocation texture) {
+        return this.entry(location).withIcon(texture);
+    }
+
+    protected BookEntryModel entry(String location, ResourceLocation texture, int width, int height) {
+        return this.entry(location).withIcon(texture, width, height);
     }
 
     protected BookEntryModel entry(String location, ItemLike icon) {
         return this.entry(location).withIcon(icon);
     }
 
-    protected BookEntryModel entry(char location, String icon) {
-        return this.entry(location).withIcon(icon);
+    protected BookEntryModel entry(char location, ResourceLocation texture) {
+        return this.entry(location).withIcon(texture);
+    }
+
+    protected BookEntryModel entry(char location, ResourceLocation texture, int width, int height) {
+        return this.entry(location).withIcon(texture, width, height);
     }
 
     protected BookEntryModel entry(char location, ItemLike icon) {

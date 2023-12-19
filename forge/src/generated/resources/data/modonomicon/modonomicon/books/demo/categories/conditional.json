@@ -8,7 +8,9 @@
     "entry_id": "modonomicon:features/condition_root"
   },
   "entry_textures": "modonomicon:textures/gui/entry_textures.png",
-  "icon": "minecraft:chest",
+  "icon": {
+    "item": "minecraft:chest"
+  },
   "name": "book.modonomicon.demo.conditional.name",
   "show_category_button": true,
   "sort_number": -1

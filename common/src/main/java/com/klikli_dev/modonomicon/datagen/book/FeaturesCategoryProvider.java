@@ -32,7 +32,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 "__c           __________________",
                 "___           _______2___3___i__",
                 "__s           _____e____________",
-                "___           __________________",
+                "___           _______________g__",
                 "___           _____f____________"
         };
     }
@@ -61,12 +61,15 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         imageEntry.withParent(this.parent(emptyEntry));
 
         var redirectEntry = this.add(this.makeRedirectEntry('5'));
+
+        var customIconEntry = this.add(this.makeCustomIconEntry('g'));
+        customIconEntry.withParent(this.parent(imageEntry));
     }
 
     @Override
     protected BookCategoryModel generateCategory() {
         return BookCategoryModel.create(this.modLoc(this.context().categoryId()), this.context().categoryName())
-                .withIcon("minecraft:nether_star")
+                .withIcon(Items.NETHER_STAR)
                 .withBackgroundParallaxLayers(
                         new BookCategoryBackgroundParallaxLayer(this.modLoc("textures/gui/parallax/flow/base.png"), 0.7f, -1),
                         new BookCategoryBackgroundParallaxLayer(this.modLoc("textures/gui/parallax/flow/1.png"), 1f, -1),
@@ -96,7 +99,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .build();
 
         return this.entry(location)
-                .withIcon("minecraft:furnace")
+                .withIcon(Items.FURNACE)
                 .withLocation(this.entryMap().get(location))
                 .withPages(multiBlockIntroPage, multiblockPreviewPage, multiblockPreviewPage2);
     }
@@ -111,7 +114,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .withTitle(this.context().pageTitle())
                 .build();
         var conditionRootEntry = this.entry(rootLocation)
-                .withIcon("minecraft:redstone_torch")
+                .withIcon(Items.REDSTONE_TORCH)
                 .withEntryBackground(1, 0)
                 .withPages(conditionRootEntryInfoPage);
         result.add(conditionRootEntry);
@@ -135,7 +138,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         );
 
         var advancementConditionEntry = this.entry(advancementLocation)
-                .withIcon("minecraft:nether_star")
+                .withIcon(Items.NETHER_STAR)
                 .withEntryBackground(1, 0)
                 .withCondition(advancementCondition)
                 .withPages(advancementConditionPage);
@@ -151,7 +154,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .withEntry(conditionRootEntry.getId())
                 .build();
         var conditionLevel1Entry = this.entry(level1Location)
-                .withIcon("minecraft:lever")
+                .withIcon(Items.LEVER)
                 .withPages(conditionLevel1EntryInfoPage)
                 .withCondition(conditionLevel1EntryCondition)
                 .withParent(this.parent(conditionRootEntry));
@@ -167,7 +170,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .withEntry(conditionLevel1Entry.getId())
                 .build();
         var conditionLevel2Entry = this.entry(level2Location)
-                .withIcon("minecraft:torch")
+                .withIcon(Items.TORCH)
                 .withPages(conditionLevel2EntryInfoPage)
                 .withCondition(conditionLevel2EntryCondition)
                 .withParent(this.parent(conditionLevel1Entry));
@@ -235,7 +238,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .build();
 
         return this.entry(location)
-                .withIcon("minecraft:crafting_table")
+                .withIcon(Items.CRAFTING_TABLE)
                 .withLocation(this.entryMap().get(location))
                 .withPages(introPage, crafting, smelting, smoking, blasting, campfireCooking, stonecutting, smithing, missing);
     }
@@ -263,7 +266,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .build();
 
         return this.entry(location)
-                .withIcon("minecraft:beacon")
+                .withIcon(Items.BEACON)
                 .withLocation(this.entryMap().get(location))
                 .withPages(introPage, spotlight1, spotlight2);
     }
@@ -286,7 +289,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .build();
 
         return this.entry(location)
-                .withIcon("minecraft:obsidian")
+                .withIcon(Items.OBSIDIAN)
                 .withLocation(this.entryMap().get(location))
                 .withPages(introPage, empty, empty2);
     }
@@ -316,7 +319,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         this.add(this.context().pageText(), "{0}", this.commandLink("Click me to run the command!", "test_command2"));
 
         return this.entry(location)
-                .withIcon("minecraft:oak_sign")
+                .withIcon(Items.OAK_SIGN)
                 .withLocation(this.entryMap().get(location))
                 .withPages(introPage, commandLink);
     }
@@ -346,7 +349,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .build();
 
         return this.entry(location)
-                .withIcon("minecraft:spider_eye")
+                .withIcon(Items.SPIDER_EYE)
                 .withLocation(this.entryMap().get(location))
                 .withPages(introPage, entity1, entity2);
     }
@@ -388,16 +391,36 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .build();
 
         return this.entry(location)
-                .withIcon("minecraft:item_frame")
+                .withIcon(Items.ITEM_FRAME)
                 .withLocation(this.entryMap().get(location))
                 .withPages(introPage, imagePage, testSpotlight, testImage);
+    }
+
+    private BookEntryModel makeCustomIconEntry(char location) {
+        this.context().entry("custom_icon");
+        this.lang().add(this.context().entryName(), "Custom Icon");
+        this.lang().add(this.context().entryDescription(), "This entry has a custom texture with size 32x32 as icon!");
+
+        this.context().page("intro");
+        var introPage = BookTextPageModel.builder()
+                .withText(this.context().pageText())
+                .withTitle(this.context().pageTitle())
+                .build();
+
+        this.lang().add(this.context().pageTitle(), "Custom Icon");
+        this.lang().add(this.context().pageText(), "This entry has a custom texture with size 32x32 as icon!");
+
+        return this.entry(location)
+                .withIcon(this.modLoc("textures/gui/big_test_icon.png"), 32, 32)
+                .withLocation(this.entryMap().get(location))
+                .withPages(introPage);
     }
 
     private BookEntryModel makeRedirectEntry(char location) {
         this.context().entry("redirect");
 
         return this.entry(location)
-                .withIcon("minecraft:ender_pearl")
+                .withIcon(Items.ENDER_PEARL)
                 .withLocation(this.entryMap().get(location))
                 .withCategoryToOpen(new ResourceLocation("modonomicon:hidden"));
     }

@@ -15,6 +15,8 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryReadCondit
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookFalseConditionModel;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 
 public class DemoBookProvider extends BookProvider {
 
@@ -85,13 +87,13 @@ public class DemoBookProvider extends BookProvider {
 
         var entry = BookEntryModel.create(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()), this.context().entryName())
                 .withDescription(this.context().entryDescription())
-                .withIcon("minecraft:nether_star")
+                .withIcon(Items.NETHER_STAR)
                 .withLocation(entryHelper.get('l'))
                 .withEntryBackground(0, 1)
                 .withCondition(BookFalseConditionModel.builder().build());
 
         return BookCategoryModel.create(this.modLoc(this.context().categoryId()), this.context().categoryName())
-                .withIcon("minecraft:book")
+                .withIcon(Items.BOOK)
                 .withShowCategoryButton(false)
                 .withEntry(entry);
     }
@@ -112,13 +114,13 @@ public class DemoBookProvider extends BookProvider {
 
         var entry = BookEntryModel.create(this.modLoc(this.context().categoryId() + "/" + this.context().entryId()), this.context().entryName())
                 .withDescription(this.context().entryDescription())
-                .withIcon("minecraft:nether_star")
+                .withIcon(Items.NETHER_STAR)
                 .withLocation(entryHelper.get('l'))
                 .withEntryBackground(0, 1)
                 .withCondition(BookFalseConditionModel.builder().build());
 
         return BookCategoryModel.create(this.modLoc(this.context().categoryId()), this.context().categoryName())
-                .withIcon("minecraft:chest")
+                .withIcon(Blocks.CHEST)
                 .withEntry(entry);
     }
 }

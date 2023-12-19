@@ -4,7 +4,9 @@
   "category": "modonomicon:features",
   "description": "book.modonomicon.demo.features.spotlight.description",
   "hide_while_locked": false,
-  "icon": "minecraft:beacon",
+  "icon": {
+    "item": "minecraft:beacon"
+  },
   "name": "book.modonomicon.demo.features.spotlight.name",
   "pages": [
     {
