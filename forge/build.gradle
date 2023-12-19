@@ -116,6 +116,8 @@ tasks.withType(Javadoc).configureEach {
     source(project(":common").sourceSets.main.allJava)
 }
 tasks.named("sourcesJar", Jar) {
+    //for some reason we need item textures in forge too for dev runtime, so we have to set a strategy
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from(project(":common").sourceSets.main.allSource)
 }
 
