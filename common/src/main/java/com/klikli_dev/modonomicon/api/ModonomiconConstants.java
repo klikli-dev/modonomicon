@@ -52,6 +52,11 @@ public class ModonomiconConstants {
             public static final String DEFAULT_ENTRY_TEXTURES = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/entry_textures.png").toString();
         }
 
+        public static class Icon {
+            public static final int DEFAULT_WIDTH = 16;
+            public static final int DEFAULT_HEIGHT = 16;
+        }
+
         public static class Command {
             public static final int DEFAULT_MAX_USES = 1;
             public static final int DEFAULT_PERMISSION_LEVEL = 0;

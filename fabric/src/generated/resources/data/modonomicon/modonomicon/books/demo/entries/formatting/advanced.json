@@ -4,7 +4,9 @@
   "category": "modonomicon:formatting",
   "description": "book.modonomicon.demo.formatting.advanced.description",
   "hide_while_locked": false,
-  "icon": "minecraft:feather",
+  "icon": {
+    "item": "minecraft:feather"
+  },
   "name": "book.modonomicon.demo.formatting.advanced.name",
   "pages": [
     {

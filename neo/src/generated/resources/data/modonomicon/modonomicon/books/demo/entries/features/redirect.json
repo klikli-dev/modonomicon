@@ -5,7 +5,9 @@
   "category_to_open": "modonomicon:hidden",
   "description": "book.modonomicon.demo.features.redirect.description",
   "hide_while_locked": false,
-  "icon": "minecraft:ender_pearl",
+  "icon": {
+    "item": "minecraft:ender_pearl"
+  },
   "name": "book.modonomicon.demo.features.redirect.name",
   "x": -8,
   "y": -4

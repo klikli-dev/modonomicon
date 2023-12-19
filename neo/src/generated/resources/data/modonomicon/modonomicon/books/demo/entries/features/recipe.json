@@ -4,7 +4,9 @@
   "category": "modonomicon:features",
   "description": "book.modonomicon.demo.features.recipe.description",
   "hide_while_locked": false,
-  "icon": "minecraft:crafting_table",
+  "icon": {
+    "item": "minecraft:crafting_table"
+  },
   "name": "book.modonomicon.demo.features.recipe.name",
   "pages": [
     {

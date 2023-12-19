@@ -26,7 +26,7 @@ public class BookEntryModel {
     protected List<BookEntryParentModel> parents = new ArrayList<>();
     protected String name;
     protected String description = "";
-    protected String icon;
+    protected BookIconModel icon;
     protected int x;
     protected int y;
     protected int entryBackgroundUIndex = 0;
@@ -56,7 +56,7 @@ public class BookEntryModel {
         json.addProperty("category", this.category.id.toString());
         json.addProperty("name", this.name);
         json.addProperty("description", this.description);
-        json.addProperty("icon", this.icon);
+        json.add("icon", this.icon.toJson());
         json.addProperty("x", this.x);
         json.addProperty("y", this.y);
         json.addProperty("background_u_index", this.entryBackgroundUIndex);
@@ -138,7 +138,7 @@ public class BookEntryModel {
         return this.description;
     }
 
-    public String getIcon() {
+    public BookIconModel getIcon() {
         return this.icon;
     }
 
@@ -232,20 +232,25 @@ public class BookEntryModel {
     /**
      * Sets the entry's icon.
      *
-     * @param icon Either an item ResourceLocation (e.g.: "minecraft:stone") or a texture ResourceLocation (e.g. "minecraft:textures/block/stone.png" - note the ".png" at the end)
      */
-    public BookEntryModel withIcon(String icon) {
+    public BookEntryModel withIcon(BookIconModel icon) {
         this.icon = icon;
         return this;
     }
 
     /**
-     * Sets the entry's icon.
-     *
-     * @param icon Either an item ResourceLocation (e.g.: "minecraft:stone") or a texture ResourceLocation (e.g. "minecraft:textures/block/stone.png" - note the ".png" at the end)
+     * Sets the entry's icon as the given texture resource location
      */
-    public BookEntryModel withIcon(ResourceLocation icon) {
-        this.icon = icon.toString();
+    public BookEntryModel withIcon(ResourceLocation texture) {
+        this.icon = BookIconModel.create(texture);
+        return this;
+    }
+
+    /**
+     * Sets the entry's icon as the given texture resource location with the given size
+     */
+    public BookEntryModel withIcon(ResourceLocation texture, int width, int height) {
+        this.icon = BookIconModel.create(texture, width, height);
         return this;
     }
 
@@ -253,7 +258,7 @@ public class BookEntryModel {
      * Sets the entry's icon to the texture of the given item
      */
     public BookEntryModel withIcon(ItemLike item) {
-        this.icon = BuiltInRegistries.ITEM.getKey(item.asItem()).toString();
+        this.icon = BookIconModel.create(item);
         return this;
     }
 

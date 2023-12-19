@@ -7,7 +7,9 @@
   },
   "description": "book.modonomicon.demo.conditional.always_locked.description",
   "hide_while_locked": false,
-  "icon": "minecraft:nether_star",
+  "icon": {
+    "item": "minecraft:nether_star"
+  },
   "name": "book.modonomicon.demo.conditional.always_locked.name",
   "x": 0,
   "y": 0

@@ -4,7 +4,9 @@
   "category": "modonomicon:formatting",
   "description": "book.modonomicon.demo.formatting.link.description",
   "hide_while_locked": false,
-  "icon": "minecraft:writable_book",
+  "icon": {
+    "item": "minecraft:writable_book"
+  },
   "name": "book.modonomicon.demo.formatting.link.name",
   "pages": [
     {

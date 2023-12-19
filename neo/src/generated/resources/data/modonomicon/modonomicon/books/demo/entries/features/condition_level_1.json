@@ -8,7 +8,9 @@
   },
   "description": "book.modonomicon.demo.features.condition_level_1.description",
   "hide_while_locked": false,
-  "icon": "minecraft:lever",
+  "icon": {
+    "item": "minecraft:lever"
+  },
   "name": "book.modonomicon.demo.features.condition_level_1.name",
   "pages": [
     {

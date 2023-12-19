@@ -4,7 +4,9 @@
   "category": "modonomicon:features",
   "description": "book.modonomicon.demo.features.empty.description",
   "hide_while_locked": false,
-  "icon": "minecraft:obsidian",
+  "icon": {
+    "item": "minecraft:obsidian"
+  },
   "name": "book.modonomicon.demo.features.empty.name",
   "pages": [
     {
