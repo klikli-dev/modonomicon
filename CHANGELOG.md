@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.42.0] - 2023-12-19
+### :sparkles: New Features
+- [`776116a`](https://github.com/klikli-dev/modonomicon/commit/776116ac1081dd62ab18e72a05f3c1306f4315ea) - allow custom texture size for book icons *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`7307cd0`](https://github.com/klikli-dev/modonomicon/commit/7307cd01ae98aa4dde0aa221ee3c023ec63f6ff8) - tooltip says eye icon is left but it is right *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`9c9dcb0`](https://github.com/klikli-dev/modonomicon/commit/9c9dcb0057be53d0e706698768a1fff859803aa1) - duplicate strategy for forge sources jar *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`2d6e379`](https://github.com/klikli-dev/modonomicon/commit/2d6e379b3c2f1161b5f53744199ec485097ac99c) - move most resources to common *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.41.1] - 2023-12-01
 ### :bug: Bug Fixes
 - [`5b364a8`](https://github.com/klikli-dev/modonomicon/commit/5b364a8d5895ee42c5e54dd9bbb86fc422a2f823) - advancement condition tooltip bug *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -479,3 +491,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.40.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.39.1...release/v1.20.1-1.40.0
 [release/v1.20.1-1.41.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.40.0...release/v1.20.1-1.41.0
 [release/v1.20.1-1.41.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.41.0...release/v1.20.1-1.41.1
+[release/v1.20.1-1.42.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.41.1...release/v1.20.1-1.42.0
