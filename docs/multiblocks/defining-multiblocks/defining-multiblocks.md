@@ -20,7 +20,7 @@ The type is defined via the `type` field in the multiblock definition JSON file:
 
 ```json
 {
-  "type": "<modonomicon:dense>|<modonomicon:spare>",
+  "type": "<modonomicon:dense>|<modonomicon:sparse>",
   "pattern": [
      //...
   ],
