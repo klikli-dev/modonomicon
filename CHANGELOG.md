@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.2-1.42.0] - 2023-12-19
+### :sparkles: New Features
+- [`ffad9b2`](https://github.com/klikli-dev/modonomicon/commit/ffad9b263ce510eaba44b594e4807252bab14605) - allow custom texture size for book icons *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`dd7469b`](https://github.com/klikli-dev/modonomicon/commit/dd7469b2bca1ae72533f433036327c95c6b33f89) - duplicate strategy for neo sources jar *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`d240404`](https://github.com/klikli-dev/modonomicon/commit/d240404e37fafc9baa3cf7b15a7c0977a516ab96) - remove unused build instruction *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`2a96010`](https://github.com/klikli-dev/modonomicon/commit/2a96010473dd34ef1f335c149a03a6f8fddc0f14) - move most resources to common *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.2-1.41.2] - 2023-12-04
 ### :sparkles: New Features
 - [`a98bb85`](https://github.com/klikli-dev/modonomicon/commit/a98bb858191f3d148664ef53bc00f5fe3caaad25) - proper mc classpath setup *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -479,3 +491,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.40.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.39.1...release/v1.20.1-1.40.0
 [release/v1.20.2-1.41.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.2-1.41.0...release/v1.20.2-1.41.1
 [release/v1.20.2-1.41.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.2-1.41.1...release/v1.20.2-1.41.2
+[release/v1.20.2-1.42.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.2-1.41.2...release/v1.20.2-1.42.0
