@@ -25,7 +25,9 @@ public class ColorLinkRenderer implements LinkRenderer {
             } else {
                 //we use TextColor.parseColor because it fails gracefully as a color reset.
                 context.setCurrentStyle(context.getCurrentStyle()
-                        .withColor(TextColor.parseColor("#" + link.getDestination())));
+                        .withColor(TextColor.parseColor("#" + link.getDestination()).getOrThrow(false, s -> {
+                            throw new IllegalStateException("Could not parse color " + link.getDestination());
+                        })));
             }
             //we do not call visit children, because color "links" should not be rendered
             return true;

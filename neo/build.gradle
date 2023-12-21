@@ -1,7 +1,7 @@
 plugins {
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.55'
+    id 'net.neoforged.gradle.userdev' version '7.0.71'
     id 'java-library'
 
 //    id 'net.neoforged.gradle.mixin' version '[7.0.5,)'
@@ -35,7 +35,8 @@ runs {
         modSource project.sourceSets.main
 
         dependencies {
-            runtime configuration(project.configurations.libraries)
+            //ensure that all "libraries" deps are added to the runtime classpath in dev
+            runtime project.configurations.libraries
         }
     }
 

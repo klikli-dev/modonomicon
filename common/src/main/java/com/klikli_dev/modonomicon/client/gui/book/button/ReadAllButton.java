@@ -15,6 +15,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -112,7 +113,7 @@ public class ReadAllButton extends Button {
 
             Screen screen = Minecraft.getInstance().screen;
             if (screen != null) {
-                screen.setTooltipForNextRenderPass(Tooltip.create(tooltip), this.createTooltipPositioner(), this.isHovered());
+                screen.setTooltipForNextRenderPass(Tooltip.create(tooltip), DefaultTooltipPositioner.INSTANCE, this.isHovered());
             }
         }
 

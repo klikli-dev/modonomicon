@@ -31,7 +31,6 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
@@ -48,7 +47,7 @@ import net.neoforged.neoforge.event.level.LevelEvent;
 @Mod(Modonomicon.MOD_ID)
 public class ModonomiconNeo {
 
-    public ModonomiconNeo() {
+    public ModonomiconNeo(IEventBus modEventBus) {
         // This method is invoked by the Forge mod loader when it is ready
         // to load your mod. You can access Forge and Common code in this
         // project.
@@ -57,8 +56,6 @@ public class ModonomiconNeo {
         Modonomicon.init();
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfig.get().spec);
-
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         //Most registries are handled by common, but creative tabs are easier per loader
         CreativeModeTabRegistry.CREATIVE_MODE_TABS.register(modEventBus);
@@ -179,11 +176,11 @@ public class ModonomiconNeo {
         }
 
         public static void onRegisterGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
-            event.register("book_model_loader", new BookModelLoader());
+            event.register(Modonomicon.loc("book_model_loader"), new BookModelLoader());
         }
 
         public static void onRegisterGuiOverlays(RegisterGuiOverlaysEvent event) {
-            event.registerBelow(VanillaGuiOverlay.BOSS_EVENT_PROGRESS.id(), "multiblock_hud", (gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
+            event.registerBelow(VanillaGuiOverlay.BOSS_EVENT_PROGRESS.id(), Modonomicon.loc("multiblock_hud"), (gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
                 MultiblockPreviewRenderer.onRenderHUD(guiGraphics, partialTick);
             });
         }
