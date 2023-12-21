@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.4-1.42.0] - 2023-12-21
+### :sparkles: New Features
+- [`61fb319`](https://github.com/klikli-dev/modonomicon/commit/61fb319be1e09d3aa9a5b5826172a2698dfe4d02) - upgrade to 1.20.4 *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.2-1.42.0] - 2023-12-19
 ### :sparkles: New Features
 - [`ffad9b2`](https://github.com/klikli-dev/modonomicon/commit/ffad9b263ce510eaba44b594e4807252bab14605) - allow custom texture size for book icons *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -492,3 +497,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.2-1.41.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.2-1.41.0...release/v1.20.2-1.41.1
 [release/v1.20.2-1.41.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.2-1.41.1...release/v1.20.2-1.41.2
 [release/v1.20.2-1.42.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.2-1.41.2...release/v1.20.2-1.42.0
+[release/v1.20.4-1.42.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4.0.0.0...release/v1.20.4-1.42.0
