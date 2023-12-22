@@ -21,7 +21,7 @@ plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '0.5.0'
 }
 
-rootProject.name = 'Modonomicon 1.20.2'
+rootProject.name = 'Modonomicon ' + minecraft_version
 
 include("common")
 include("fabric")
