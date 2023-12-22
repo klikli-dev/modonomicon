@@ -26,8 +26,24 @@ public class DemoMultiblockProvider extends MultiblockProvider {
                 .blockstate('S', () -> Blocks.OAK_STAIRS, "[facing=south]")
                 .blockstate('W', () -> Blocks.OAK_STAIRS, "[facing=west]")
                 .blockstate('E', () -> Blocks.OAK_STAIRS, "[facing=east]")
+        );
 
-
+        //purpose of this is to test the ground layer padding generation on non-square blocks
+        this.add(this.modLoc("test_non_square"),
+                new DenseMultiblockBuilder()
+                        .layer(
+                                "       s   ",
+                                "           ",
+                                "ce  0     r",
+                                "           ",
+                                "       s   "
+                        )
+                        .block('c', () -> Blocks.BAMBOO)
+                        .block('e', () ->  Blocks.GRANITE)
+                        .block('s', () -> Blocks.SAND)
+                        .block('r', () -> Blocks.ACACIA_WOOD)
+                        .block('0', () -> Blocks.BELL)
+                        .build()
         );
     }
 }
