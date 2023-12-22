@@ -368,7 +368,7 @@ public abstract class MultiblockProvider implements DataProvider {
                     }
 
                     //add empty rows / "_" any match rows to the beginning and the end of the layer to account for the padding
-                    var emptyRow = "_".repeat(length + groundLayerPadding * 2);
+                    var emptyRow = "_".repeat(width + groundLayerPadding * 2);
                     var updatedLayer = new JsonArray();
                     for (int j = 0; j < groundLayerPadding; j++) {
                         updatedLayer.add(new JsonPrimitive(emptyRow));
