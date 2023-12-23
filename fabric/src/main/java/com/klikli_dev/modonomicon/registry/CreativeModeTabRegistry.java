@@ -16,6 +16,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
@@ -29,11 +30,10 @@ public class CreativeModeTabRegistry {
             .build();
 
     public static void onModifyEntries(CreativeModeTab group, FabricItemGroupEntries entries) {
-        var tabName = BuiltInRegistries.CREATIVE_MODE_TAB.getKey(group);
         var tabKey = BuiltInRegistries.CREATIVE_MODE_TAB.getResourceKey(group).get();
         BookDataManager.get().getBooks().values().forEach(b -> {
-
-            if (tabKey == CreativeModeTabs.SEARCH || b.getCreativeTab().equals(tabName.toString())) {
+            if (tabKey == CreativeModeTabs.SEARCH ||
+                    BuiltInRegistries.CREATIVE_MODE_TAB.get(new ResourceLocation(b.getCreativeTab())) == group) {
                 if (b.generateBookItem()) {
                     ItemStack stack = new ItemStack(ItemRegistry.MODONOMICON.get());
 
@@ -41,11 +41,7 @@ public class CreativeModeTabRegistry {
                     cmp.putString(ModonomiconConstants.Nbt.ITEM_BOOK_ID_TAG, b.getId().toString());
                     stack.setTag(cmp);
 
-                    if (entries.getDisplayStacks().stream().noneMatch(s -> s.hasTag()
-                            && s.getTag().contains(ModonomiconConstants.Nbt.ITEM_BOOK_ID_TAG)
-                            && s.getTag().getString(ModonomiconConstants.Nbt.ITEM_BOOK_ID_TAG).equals(b.getId().toString()))) {
-                        entries.accept(stack);
-                    }
+                    entries.accept(stack);
                 }
             }
         });
