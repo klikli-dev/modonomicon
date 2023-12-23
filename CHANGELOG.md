@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.4-1.43.2] - 2023-12-23
+### :bug: Bug Fixes
+- [`eeb900e`](https://github.com/klikli-dev/modonomicon/commit/eeb900e68809ee04c2870f3387b08b757af0469b) - modonomicons not showing in creative tab until reload *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`4c3c669`](https://github.com/klikli-dev/modonomicon/commit/4c3c66992fa2af2fd29ebba2861b12721062ab0a) - creative tabs for fabric *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`5cd7dc8`](https://github.com/klikli-dev/modonomicon/commit/5cd7dc81eb480a64ff9d5e978f4a7885aba3ec9e) - neo creative tab registry access *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.4-1.43.0] - 2023-12-23
 ### :sparkles: New Features
 - [`ef40091`](https://github.com/klikli-dev/modonomicon/commit/ef40091d91139d75d88b7b7c554ec18138e41d14) - allow predicate state matchers to not count towards block total count of multiblock *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -513,3 +520,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.4-1.42.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4.0.0.0...release/v1.20.4-1.42.0
 [release/v1.20.4-1.42.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.42.0...release/v1.20.4-1.42.1
 [release/v1.20.4-1.43.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.42.1...release/v1.20.4-1.43.0
+[release/v1.20.4-1.43.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.43.0...release/v1.20.4-1.43.2
