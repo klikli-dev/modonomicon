@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.registry;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.data.BookDataManager;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -37,7 +38,7 @@ public class CreativeModeTabRegistry {
             return;
 
         BookDataManager.get().getBooks().values().forEach(b -> {
-            if (event.getTabKey() == CreativeModeTabs.SEARCH || net.minecraftforge.common.CreativeModeTabRegistry.getTab(new ResourceLocation(b.getCreativeTab())) == event.getTab()) {
+            if (event.getTabKey() == CreativeModeTabs.SEARCH || BuiltInRegistries.CREATIVE_MODE_TAB.get(new ResourceLocation(b.getCreativeTab())) == event.getTab()) {
                 if (b.generateBookItem()) {
                     ItemStack stack = new ItemStack(ItemRegistry.MODONOMICON.get());
 
