@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.43.0] - 2023-12-23
+### :sparkles: New Features
+- [`0fd35d6`](https://github.com/klikli-dev/modonomicon/commit/0fd35d6a32edc230a57ef4a6f29bb59e757e2f51) - allow predicate state matchers to not count towards block total count of multiblock *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.42.1] - 2023-12-22
 ### :bug: Bug Fixes
 - [`c36bfd9`](https://github.com/klikli-dev/modonomicon/commit/c36bfd9c8fc26e6d1e51c24116c4fdebbfa9cb0b) - ground layer padding extra rows too short *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -498,3 +503,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.41.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.41.0...release/v1.20.1-1.41.1
 [release/v1.20.1-1.42.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.41.1...release/v1.20.1-1.42.0
 [release/v1.20.1-1.42.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.42.0...release/v1.20.1-1.42.1
+[release/v1.20.1-1.43.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.42.1...release/v1.20.1-1.43.0
