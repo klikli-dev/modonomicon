@@ -46,4 +46,8 @@ public final class StubMatcher implements StateMatcher {
 
     }
 
+    @Override
+    public boolean countsTowardsTotalBlocks() {
+        return true;
+    }
 }

@@ -10,6 +10,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -150,6 +151,41 @@ public abstract class MultiblockProvider implements DataProvider {
 
             return this.map(String.valueOf(c), json);
         }
+
+        /**
+         * Creates a block matcher that will match the predicate with the given id.
+         * Predicates are registered via {@link com.klikli_dev.modonomicon.data.LoaderRegistry#registerPredicate(ResourceLocation, TriPredicate)}
+         *
+         * @param c the character
+         * @param predicateId the id of the predicate to match
+         * @param countsTowardsTotalBlocks whether this block counts towards the total number of blocks in the multiblock, if false behaves like the air matcher.
+         * @param display the block to display in previews
+         */
+        public DenseMultiblockBuilder predicate(char c, ResourceLocation predicateId, boolean countsTowardsTotalBlocks, Supplier<? extends Block> display) {
+            return this.predicate(c, predicateId, countsTowardsTotalBlocks, display, "");
+        }
+
+        /**
+         * Creates a block matcher that will match the predicate with the given id.
+         * Predicates are registered via {@link com.klikli_dev.modonomicon.data.LoaderRegistry#registerPredicate(ResourceLocation, TriPredicate)}
+         *
+         * @param c the character
+         * @param predicateId the id of the predicate to match
+         * @param countsTowardsTotalBlocks whether this block counts towards the total number of blocks in the multiblock, if false behaves like the air matcher.
+         * @param display the block to display in previews
+         * @param displayState a state string in the minecraft format, e.g. [facing=north]. "" will display the default state.
+         */
+        public DenseMultiblockBuilder predicate(char c, ResourceLocation predicateId, boolean countsTowardsTotalBlocks, Supplier<? extends Block> display, String displayState) {
+            JsonObject json = new JsonObject();
+
+            json.addProperty("type", "modonomicon:predicate");
+            json.addProperty("predicate", predicateId.toString());
+            json.addProperty("counts_towards_total_blocks", countsTowardsTotalBlocks);
+            json.addProperty("display", BuiltInRegistries.BLOCK.getKey(display.get()) + displayState);
+
+            return this.map(String.valueOf(c), json);
+        }
+
 
         /**
          * Creates a block matcher that will match the given block.

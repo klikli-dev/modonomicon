@@ -38,17 +38,21 @@ public class PredicateMatcher implements StateMatcher {
     private final ResourceLocation predicateId;
     private final Supplier<TriPredicate<BlockGetter, BlockPos, BlockState>> predicate;
 
-    protected PredicateMatcher(BlockState displayState, ResourceLocation predicateId) {
+    private final boolean countsTowardsTotalBlocks;
+
+    protected PredicateMatcher(BlockState displayState, ResourceLocation predicateId, boolean countsTowardsTotalBlocks) {
         this.displayState = displayState;
         this.predicateId = predicateId;
         this.predicate = Suppliers.memoize(() -> LoaderRegistry.getPredicate(this.predicateId));
+        this.countsTowardsTotalBlocks = countsTowardsTotalBlocks;
     }
 
     public static PredicateMatcher fromJson(JsonObject json) {
         try {
             var displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), new StringReader(GsonHelper.getAsString(json, "display")), false).blockState();
             var predicateId = new ResourceLocation(GsonHelper.getAsString(json, "predicate"));
-            return new PredicateMatcher(displayState, predicateId);
+            var countsTowardsTotalBlocks = GsonHelper.getAsBoolean(json, "counts_towards_total_blocks", true);
+            return new PredicateMatcher(displayState, predicateId, countsTowardsTotalBlocks);
         } catch (CommandSyntaxException e) {
             throw new IllegalArgumentException("Failed to parse BlockState from json member \"display\" for PredicateMatcher.", e);
         }
@@ -58,7 +62,8 @@ public class PredicateMatcher implements StateMatcher {
         try {
             var displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), new StringReader(buffer.readUtf()), false).blockState();
             var predicateId = buffer.readResourceLocation();
-            return new PredicateMatcher(displayState, predicateId);
+            var countsTowardsTotalBlocks = buffer.readBoolean();
+            return new PredicateMatcher(displayState, predicateId, countsTowardsTotalBlocks);
         } catch (CommandSyntaxException e) {
             throw new IllegalArgumentException("Failed to parse PredicateMatcher from network.", e);
         }
@@ -87,6 +92,12 @@ public class PredicateMatcher implements StateMatcher {
     public void toNetwork(FriendlyByteBuf buffer) {
         buffer.writeUtf(BlockStateParser.serialize(this.displayState));
         buffer.writeUtf(this.predicateId.toString());
+        buffer.writeBoolean(this.countsTowardsTotalBlocks);
+    }
+
+    @Override
+    public boolean countsTowardsTotalBlocks() {
+        return this.countsTowardsTotalBlocks;
     }
 
     @Override

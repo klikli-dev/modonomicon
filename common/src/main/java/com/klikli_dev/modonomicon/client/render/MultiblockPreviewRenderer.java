@@ -257,14 +257,14 @@ public class MultiblockPreviewRenderer {
             }
 
             if (!r.getStateMatcher().equals(Matchers.ANY) && r.getStateMatcher().getType() != DisplayOnlyMatcher.TYPE) {
-                boolean air = r.getStateMatcher().equals(Matchers.AIR);
+                boolean air = !r.getStateMatcher().countsTowardsTotalBlocks();
                 if (!air) {
                     blocks++;
                 }
 
                 if (!r.test(world, facingRotation)) {
                     BlockState renderState = r.getStateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
-                    renderBlock(world, renderState, r.getWorldPosition(), alpha, ms);
+                    renderBlock(world, renderState, r.getWorldPosition(), air, alpha, ms);
 
                     if (renderState.getBlock() instanceof EntityBlock eb) {
                         var be = blockEntityCache.computeIfAbsent(r.getWorldPosition().immutable(), p -> eb.newBlockEntity(p, renderState));
@@ -308,7 +308,7 @@ public class MultiblockPreviewRenderer {
         }
     }
 
-    public static void renderBlock(Level world, BlockState state, BlockPos pos, float alpha, PoseStack ms) {
+    public static void renderBlock(Level world, BlockState state, BlockPos pos, boolean isAir, float alpha, PoseStack ms) {
         if (pos != null) {
             ms.pushPose();
             ms.translate(pos.getX(), pos.getY(), pos.getZ());
