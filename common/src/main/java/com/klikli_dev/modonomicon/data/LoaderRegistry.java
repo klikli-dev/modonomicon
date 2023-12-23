@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.data;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
@@ -97,6 +98,7 @@ public class LoaderRegistry {
 
     private static void registerDefaultPredicates() {
         registerPredicate(Matchers.AIR.getPredicateId(), (getter, pos, state) -> state.isAir());
+        registerPredicate(Modonomicon.loc("non_solid"), (getter, pos, state) -> !state.isSolid());
     }
 
 

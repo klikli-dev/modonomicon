@@ -171,6 +171,11 @@ public class TagMatcher implements StateMatcher {
     }
 
     @Override
+    public boolean countsTowardsTotalBlocks() {
+        return true;
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(this.tag, this.props, this.displayState);
     }

@@ -122,6 +122,11 @@ public class BlockStatePropertyMatcher implements StateMatcher {
     }
 
     @Override
+    public boolean countsTowardsTotalBlocks() {
+        return true;
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(this.block, this.displayState, this.props);
     }

@@ -106,6 +106,11 @@ public class BlockMatcher implements StateMatcher {
     }
 
     @Override
+    public boolean countsTowardsTotalBlocks() {
+        return true;
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(this.block, this.displayState);
     }

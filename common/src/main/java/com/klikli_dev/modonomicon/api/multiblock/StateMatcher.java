@@ -41,4 +41,10 @@ public interface StateMatcher {
      */
     void toNetwork(FriendlyByteBuf buffer);
 
+    /**
+     * If true this state matcher counts towards the total blocks in the multiblock preview display.
+     * If false it behaves like air.
+     */
+    boolean countsTowardsTotalBlocks();
+
 }

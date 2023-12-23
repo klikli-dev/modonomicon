@@ -77,6 +77,11 @@ public class DisplayOnlyMatcher implements StateMatcher {
     }
 
     @Override
+    public boolean countsTowardsTotalBlocks() {
+        return false;
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(this.displayState);
     }

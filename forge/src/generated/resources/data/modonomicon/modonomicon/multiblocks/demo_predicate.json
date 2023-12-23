@@ -1,0 +1,55 @@
+{
+  "type": "modonomicon:dense",
+  "mapping": {
+    "*": {
+      "type": "modonomicon:display",
+      "display": "minecraft:basalt"
+    },
+    "+": {
+      "type": "modonomicon:display",
+      "display": "minecraft:stone"
+    },
+    "0": {
+      "type": "modonomicon:block",
+      "block": "minecraft:dirt"
+    },
+    "a": {
+      "type": "modonomicon:predicate",
+      "counts_towards_total_blocks": true,
+      "display": "minecraft:air",
+      "predicate": "modonomicon:non_solid"
+    },
+    "s": {
+      "type": "modonomicon:predicate",
+      "counts_towards_total_blocks": true,
+      "display": "minecraft:grass",
+      "predicate": "modonomicon:non_solid"
+    },
+    "t": {
+      "type": "modonomicon:predicate",
+      "counts_towards_total_blocks": false,
+      "display": "minecraft:torch",
+      "predicate": "modonomicon:non_solid"
+    }
+  },
+  "pattern": [
+    [
+      "_______",
+      "__ttt__",
+      "_t_a_t_",
+      "_ta0as_",
+      "_s_a_s_",
+      "__sss__",
+      "_______"
+    ],
+    [
+      "*+*+*+*",
+      "+*+*+*+",
+      "*+*+*+*",
+      "+*+*+*+",
+      "*+*+*+*",
+      "+*+*+*+",
+      "*+*+*+*"
+    ]
+  ]
+}

@@ -12,6 +12,6 @@ import net.minecraft.world.level.block.Blocks;
 public class Matchers {
     public static final AnyMatcher ANY = new AnyMatcher();
 
-    public static final PredicateMatcher AIR = new PredicateMatcher(Blocks.AIR.defaultBlockState(), Modonomicon.loc("air"));
+    public static final PredicateMatcher AIR = new PredicateMatcher(Blocks.AIR.defaultBlockState(), Modonomicon.loc("air"), false);
 
 }

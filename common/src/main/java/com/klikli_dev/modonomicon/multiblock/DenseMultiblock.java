@@ -119,7 +119,7 @@ public class DenseMultiblock extends AbstractMultiblock {
                     expectedLenZ = s.length();
                 }
                 if (s.length() != expectedLenZ) {
-                    throw new IllegalArgumentException("Inconsistent array length. Expected" + expectedLenX + ", got " + arr.length);
+                    throw new IllegalArgumentException("Inconsistent array length. Expected" + expectedLenX + ", got " + s.length());
                 }
             }
         }
