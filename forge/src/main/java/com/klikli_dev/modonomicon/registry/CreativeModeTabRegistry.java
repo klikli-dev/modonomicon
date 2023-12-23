@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.data.BookDataManager;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
@@ -36,7 +37,7 @@ public class CreativeModeTabRegistry {
             return;
 
         BookDataManager.get().getBooks().values().forEach(b -> {
-            if (event.getTabKey() == CreativeModeTabs.SEARCH || b.getCreativeTab().equals(tabName.toString())) {
+            if (event.getTabKey() == CreativeModeTabs.SEARCH || net.minecraftforge.common.CreativeModeTabRegistry.getTab(new ResourceLocation(b.getCreativeTab())) == event.getTab()) {
                 if (b.generateBookItem()) {
                     ItemStack stack = new ItemStack(ItemRegistry.MODONOMICON.get());
 
@@ -44,11 +45,7 @@ public class CreativeModeTabRegistry {
                     cmp.putString(ModonomiconConstants.Nbt.ITEM_BOOK_ID_TAG, b.getId().toString());
                     stack.setTag(cmp);
 
-                    if (event.getTab().getDisplayItems().stream().noneMatch(s -> s.hasTag()
-                            && s.getTag().contains(ModonomiconConstants.Nbt.ITEM_BOOK_ID_TAG)
-                            && s.getTag().getString(ModonomiconConstants.Nbt.ITEM_BOOK_ID_TAG).equals(b.getId().toString()))) {
-                        event.accept(stack);
-                    }
+                    event.accept(stack);
                 }
             }
         });
