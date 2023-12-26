@@ -102,10 +102,21 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .withMultiblockId(this.modLoc("demo_predicate"))
                 .build();
 
+//        this.context().page("crash_test");
+//        var crashTest = BookMultiblockPageModel.builder()
+//                .withMultiblockId(this.modLoc("crash_test"))
+//                .build();
+
         return this.entry(location)
                 .withIcon(Items.FURNACE)
                 .withLocation(this.entryMap().get(location))
-                .withPages(multiBlockIntroPage, multiblockPreviewPage, multiblockPreviewPage2, demoPredicate);
+                .withPages(
+                        multiBlockIntroPage,
+                        multiblockPreviewPage,
+                        multiblockPreviewPage2,
+                        demoPredicate
+//                        crashTest
+                );
     }
 
     private List<BookEntryModel> makeConditionEntries(char rootLocation, char advancementLocation, char level1Location, char level2Location) {

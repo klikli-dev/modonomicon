@@ -119,18 +119,25 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     }
 
     public void prerenderMarkdown() {
-        //TODO: allow modders to configure this renderer
-
         Modonomicon.LOG.info("Pre-rendering markdown ...");
         for (var book : this.books.values()) {
-            var textRenderer = new BookTextRenderer(book);
+
             BookErrorManager.get().getContextHelper().reset();
             BookErrorManager.get().setCurrentBookId(book.getId());
-            try {
-                book.prerenderMarkdown(textRenderer);
-            } catch (Exception e) {
-                BookErrorManager.get().error("Failed to render markdown for book '" + book.getId() + "'", e);
+
+            //TODO: allow modders to configure this renderer
+            var textRenderer = new BookTextRenderer(book);
+
+            if (!BookErrorManager.get().hasErrors(book.getId())) {
+                try {
+                    book.prerenderMarkdown(textRenderer);
+                } catch (Exception e) {
+                    BookErrorManager.get().error("Failed to render markdown for book '" + book.getId() + "'", e);
+                }
+            } else {
+                BookErrorManager.get().error("Cannot render markdown for book '" + book.getId() + " because of errors during book build'");
             }
+
             BookErrorManager.get().setCurrentBookId(null);
         }
         Modonomicon.LOG.info("Finished pre-rendering markdown.");
