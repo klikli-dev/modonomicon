@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.44.0] - 2023-12-27
+### :sparkles: New Features
+- [`38652dd`](https://github.com/klikli-dev/modonomicon/commit/38652ddf682861f8ee11d19f969304a2034a3c27) - add fluid rendering to multiblocks *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.43.3] - 2023-12-26
 ### :bug: Bug Fixes
 - [`f0536b1`](https://github.com/klikli-dev/modonomicon/commit/f0536b1575589cbc8b8409748e74311c544d91fd) - make book preprender abort if build failed to allow smoother error handling when opening book *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -522,3 +527,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.43.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.43.0...release/v1.20.1-1.43.1
 [release/v1.20.1-1.43.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.43.1...release/v1.20.1-1.43.2
 [release/v1.20.1-1.43.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.43.2...release/v1.20.1-1.43.3
+[release/v1.20.1-1.44.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.43.3...release/v1.20.1-1.44.0
