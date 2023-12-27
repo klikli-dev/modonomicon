@@ -102,6 +102,11 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .withMultiblockId(this.modLoc("demo_predicate"))
                 .build();
 
+        this.context().page("demo_fluid");
+        var demoFluid = BookMultiblockPageModel.builder()
+                .withMultiblockId(this.modLoc("demo_fluid"))
+                .build();
+
 //        this.context().page("crash_test");
 //        var crashTest = BookMultiblockPageModel.builder()
 //                .withMultiblockId(this.modLoc("crash_test"))
@@ -114,7 +119,8 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                         multiBlockIntroPage,
                         multiblockPreviewPage,
                         multiblockPreviewPage2,
-                        demoPredicate
+                        demoPredicate,
+                        demoFluid
 //                        crashTest
                 );
     }

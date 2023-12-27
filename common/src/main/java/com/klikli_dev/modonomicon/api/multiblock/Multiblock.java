@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
 import org.jetbrains.annotations.Nullable;
@@ -26,7 +27,7 @@ import java.util.Collection;
  * do not create your own implementation of this, as it'll not be compatible with
  * all the features in the mod.
  */
-public interface Multiblock {
+public interface Multiblock extends BlockAndTintGetter {
 
     // ================================================================================================
     // Builder methods
@@ -74,6 +75,11 @@ public interface Multiblock {
      * The multiblock type id for serialization.
      */
     ResourceLocation getType();
+
+    /**
+     * Sets the level the multiblock should use for e.g registry access
+     */
+    void setLevel(Level level);
 
     /**
      * Places the multiblock at the given position with the given rotation.

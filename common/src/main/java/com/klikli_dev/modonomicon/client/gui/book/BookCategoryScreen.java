@@ -18,6 +18,7 @@ import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.events.ModonomiconEvents;
 import com.klikli_dev.modonomicon.networking.BookEntryReadMessage;
 import com.klikli_dev.modonomicon.networking.SaveCategoryStateMessage;
+import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
@@ -75,7 +76,7 @@ public class BookCategoryScreen {
     }
 
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        if (Services.CLIENT_CONFIG.enableSmoothZoom()) {
+        if (ClientServices.CLIENT_CONFIG.enableSmoothZoom()) {
             float diff = this.targetZoom - this.currentZoom;
             this.currentZoom = this.currentZoom + Math.min(pPartialTick * (2 / 3f), 1) * diff;
         } else
@@ -154,7 +155,7 @@ public class BookCategoryScreen {
         this.openEntry = entry.getId();
 
         var bookContentScreen = new BookContentScreen(this.bookOverviewScreen, entry);
-        Services.GUI.pushGuiLayer(bookContentScreen);
+        ClientServices.GUI.pushGuiLayer(bookContentScreen);
 
         return bookContentScreen;
     }

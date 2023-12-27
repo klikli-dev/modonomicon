@@ -14,11 +14,14 @@ import java.util.ServiceLoader;
 // Service loaders are a built-in Java feature that allow us to locate implementations of an interface that vary from one
 // environment to another. In the context of MultiLoader we use this feature to access a mock API in the common code that
 // is swapped out for the platform specific implementation at runtime.
-public class Services {
+public class ClientServices {
+    public static final MultiblockHelper MULTIBLOCK = load(MultiblockHelper.class);
 
-    public static final PlatformHelper PLATFORM = load(PlatformHelper.class);
-    public static final NetworkHelper NETWORK = load(NetworkHelper.class);
-    public static final PatchouliHelper PATCHOULI = load(PatchouliHelper.class);
+    public static final GuiHelper GUI = load(GuiHelper.class);
+
+    public static final ClientConfigHelper CLIENT_CONFIG = load(ClientConfigHelper.class);
+    public static final FluidHelper FLUID = Services.load(FluidHelper.class);
+
 
     // This code is used to load a service for the current environment. Your implementation of the service must be defined
     // manually by including a text file in META-INF/services named with the fully qualified class name of the service.

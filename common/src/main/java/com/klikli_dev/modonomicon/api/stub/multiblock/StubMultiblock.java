@@ -9,11 +9,18 @@ import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ColorResolver;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.lighting.LevelLightEngine;
+import net.minecraft.world.level.material.FluidState;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -30,6 +37,11 @@ public class StubMultiblock implements Multiblock {
     @Override
     public ResourceLocation getType() {
         return TYPE;
+    }
+
+    @Override
+    public void setLevel(Level level) {
+
     }
 
     @Override
@@ -107,4 +119,44 @@ public class StubMultiblock implements Multiblock {
 
     }
 
+    @Override
+    public float getShade(Direction direction, boolean shade) {
+        return 0;
+    }
+
+    @Override
+    public LevelLightEngine getLightEngine() {
+        return null;
+    }
+
+    @Override
+    public int getBlockTint(BlockPos blockPos, ColorResolver colorResolver) {
+        return 0;
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity getBlockEntity(BlockPos pos) {
+        return null;
+    }
+
+    @Override
+    public BlockState getBlockState(BlockPos pos) {
+        return null;
+    }
+
+    @Override
+    public FluidState getFluidState(BlockPos pos) {
+        return null;
+    }
+
+    @Override
+    public int getHeight() {
+        return 0;
+    }
+
+    @Override
+    public int getMinBuildHeight() {
+        return 0;
+    }
 }
