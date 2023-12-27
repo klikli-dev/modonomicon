@@ -16,12 +16,19 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.*;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.lighting.LevelLightEngine;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,11 +37,12 @@ import java.util.Map.Entry;
 
 public abstract class AbstractMultiblock implements Multiblock {
 
+    private final Map<BlockPos, BlockEntity> blockEntityCache = new HashMap<>();
     public ResourceLocation id;
     protected int offX, offY, offZ;
     protected int viewOffX, viewOffY, viewOffZ;
     protected boolean symmetrical;
-    Level world;
+    Level level;
 
     public static Map<Character, StateMatcher> mappingFromJson(JsonObject jsonMapping) {
         var mapping = new HashMap<Character, StateMatcher>();
@@ -97,8 +105,8 @@ public abstract class AbstractMultiblock implements Multiblock {
         return this;
     }
 
-    public void setWorld(Level world) {
-        this.world = world;
+    public void setLevel(Level level) {
+        this.level = level;
     }
 
     @Override
@@ -135,7 +143,7 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     @Override
     public void place(Level world, BlockPos pos, Rotation rotation) {
-        this.setWorld(world);
+        this.setLevel(world);
         this.simulate(world, pos, rotation, false, false).getSecond().forEach(r -> {
             BlockPos placePos = r.getWorldPosition();
             BlockState targetState = r.getStateMatcher().getDisplayedState(world.getGameTime()).rotate(rotation);
@@ -162,7 +170,7 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     @Override
     public boolean validate(Level world, BlockPos pos, Rotation rotation) {
-        this.setWorld(world);
+        this.setLevel(world);
         Pair<BlockPos, Collection<SimulateResult>> sim = this.simulate(world, pos, rotation, false, false);
 
         return sim.getSecond().stream().allMatch(r -> {
@@ -207,5 +215,58 @@ public abstract class AbstractMultiblock implements Multiblock {
         }
         var that = (AbstractMultiblock) o;
         return this.id.equals(that.id);
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity getBlockEntity(BlockPos pos) {
+        BlockState state = this.getBlockState(pos);
+        if (state.getBlock() instanceof EntityBlock eb) {
+            return this.blockEntityCache.computeIfAbsent(pos.immutable(), p -> eb.newBlockEntity(p, state));
+        }
+        return null;
+    }
+
+    @Override
+    public FluidState getFluidState(BlockPos pos) {
+        return Fluids.EMPTY.defaultFluidState();
+    }
+
+    @Override
+    public float getShade(Direction direction, boolean shaded) {
+        return 1.0F;
+    }
+
+    @Override
+    public LevelLightEngine getLightEngine() {
+        return null;
+    }
+
+    @Override
+    public int getBlockTint(BlockPos pos, ColorResolver color) {
+        var plains = this.level.registryAccess().registryOrThrow(Registries.BIOME)
+                .getOrThrow(Biomes.PLAINS);
+        return color.getColor(plains, pos.getX(), pos.getZ());
+    }
+
+    @Override
+    public int getBrightness(LightLayer type, BlockPos pos) {
+        return 15;
+    }
+
+    @Override
+    public int getRawBrightness(BlockPos pos, int ambientDarkening) {
+        return 15 - ambientDarkening;
+    }
+
+    // These heights were assumed based being derivative of old behavior, but it may be ideal to change
+    @Override
+    public int getHeight() {
+        return 255;
+    }
+
+    @Override
+    public int getMinBuildHeight() {
+        return 0;
     }
 }

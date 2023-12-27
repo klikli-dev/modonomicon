@@ -155,7 +155,7 @@ public class SparseMultiblock extends AbstractMultiblock {
 
     @Override
     public boolean test(Level world, BlockPos start, int x, int y, int z, Rotation rotation) {
-        this.setWorld(world);
+        this.setLevel(world);
         BlockPos checkPos = start.offset(new BlockPos(x, y, z).rotate(rotation));
         BlockState state = world.getBlockState(checkPos).rotate(AbstractMultiblock.fixHorizontal(rotation));
         StateMatcher matcher = this.stateMatchers.getOrDefault(new BlockPos(x, y, z), Matchers.ANY);
@@ -178,5 +178,11 @@ public class SparseMultiblock extends AbstractMultiblock {
             buffer.writeResourceLocation(entry.getValue().getType());
             entry.getValue().toNetwork(buffer);
         }
+    }
+
+    @Override
+    public BlockState getBlockState(BlockPos pos) {
+        long ticks = this.level != null ? this.level.getGameTime() : 0L;
+        return this.stateMatchers.getOrDefault(pos, Matchers.AIR).getDisplayedState(ticks);
     }
 }

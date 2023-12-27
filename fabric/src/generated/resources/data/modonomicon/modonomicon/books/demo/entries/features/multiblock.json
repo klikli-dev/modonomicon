@@ -40,6 +40,14 @@
       "multiblock_name": "",
       "show_visualize_button": true,
       "text": ""
+    },
+    {
+      "type": "modonomicon:multiblock",
+      "anchor": "",
+      "multiblock_id": "modonomicon:demo_fluid",
+      "multiblock_name": "",
+      "show_visualize_button": true,
+      "text": ""
     }
   ],
   "x": -14,

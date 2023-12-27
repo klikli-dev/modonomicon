@@ -15,6 +15,8 @@ import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.multiblock.AbstractMultiblock;
 import com.klikli_dev.modonomicon.multiblock.matcher.DisplayOnlyMatcher;
 import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
+import com.klikli_dev.modonomicon.platform.ClientServices;
+import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -210,7 +212,7 @@ public class MultiblockPreviewRenderer {
         }
     }
 
-    public static void renderMultiblock(Level world, PoseStack ms) {
+    public static void renderMultiblock(Level level, PoseStack ms) {
         Minecraft mc = Minecraft.getInstance();
         if (!isAnchored) {
             facingRotation = getRotation(mc.player);
@@ -227,6 +229,8 @@ public class MultiblockPreviewRenderer {
         if (multiblock.isSymmetrical()) {
             facingRotation = Rotation.NONE;
         }
+
+        multiblock.setLevel(level);
 
         EntityRenderDispatcher erd = mc.getEntityRenderDispatcher();
         double renderPosX = erd.camera.getPosition().x();
@@ -248,7 +252,7 @@ public class MultiblockPreviewRenderer {
         lookingState = null;
         lookingPos = checkPos;
 
-        Pair<BlockPos, Collection<Multiblock.SimulateResult>> sim = multiblock.simulate(world, getStartPos(), getFacingRotation(), true, false);
+        Pair<BlockPos, Collection<Multiblock.SimulateResult>> sim = multiblock.simulate(level, getStartPos(), getFacingRotation(), true, false);
         for (Multiblock.SimulateResult r : sim.getSecond()) {
             float alpha = 0.3F;
             if (r.getWorldPosition().equals(checkPos)) {
@@ -262,9 +266,9 @@ public class MultiblockPreviewRenderer {
                     blocks++;
                 }
 
-                if (!r.test(world, facingRotation)) {
+                if (!r.test(level, facingRotation)) {
                     BlockState renderState = r.getStateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
-                    renderBlock(world, renderState, r.getWorldPosition(), air, alpha, ms);
+                    renderBlock(level, renderState, r.getWorldPosition(), multiblock, air, alpha, ms);
 
                     if (renderState.getBlock() instanceof EntityBlock eb) {
                         var be = blockEntityCache.computeIfAbsent(r.getWorldPosition().immutable(), p -> eb.newBlockEntity(p, renderState));
@@ -308,7 +312,7 @@ public class MultiblockPreviewRenderer {
         }
     }
 
-    public static void renderBlock(Level world, BlockState state, BlockPos pos, boolean isAir, float alpha, PoseStack ms) {
+    public static void renderBlock(Level world, BlockState state, BlockPos pos, Multiblock multiblock, boolean isAir, float alpha, PoseStack ms) {
         if (pos != null) {
             ms.pushPose();
             ms.translate(pos.getX(), pos.getY(), pos.getZ());
@@ -322,7 +326,9 @@ public class MultiblockPreviewRenderer {
                 state = Blocks.RED_CONCRETE.defaultBlockState();
             }
 
-            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
+            ClientServices.MULTIBLOCK.renderBlock(state, pos, multiblock, ms, buffers, world.getRandom());
+
+//            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
 
             ms.popPose();
         }

@@ -23,6 +23,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -168,7 +169,7 @@ public class DenseMultiblock extends AbstractMultiblock {
     }
 
     @Override
-    public Pair<BlockPos, Collection<SimulateResult>> simulate(Level world, BlockPos anchor, Rotation rotation, boolean forView, boolean disableOffset) {
+    public Pair<BlockPos, Collection<SimulateResult>> simulate(Level level, BlockPos anchor, Rotation rotation, boolean forView, boolean disableOffset) {
         BlockPos disp = forView
                 ? new BlockPos(-this.viewOffX, -this.viewOffY + 1, -this.viewOffZ).rotate(rotation)
                 : new BlockPos(-this.offX, -this.offY, -this.offZ).rotate(rotation);
@@ -192,16 +193,16 @@ public class DenseMultiblock extends AbstractMultiblock {
     }
 
     @Override
-    public boolean test(Level world, BlockPos start, int x, int y, int z, Rotation rotation) {
-        this.setWorld(world);
+    public boolean test(Level level, BlockPos start, int x, int y, int z, Rotation rotation) {
+        this.setLevel(level);
         if (x < 0 || y < 0 || z < 0 || x >= this.size.getX() || y >= this.size.getY() || z >= this.size.getZ()) {
             return false;
         }
         BlockPos checkPos = start.offset(new BlockPos(x, y, z).rotate(AbstractMultiblock.fixHorizontal(rotation)));
         TriPredicate<BlockGetter, BlockPos, BlockState> pred = this.stateMatchers[x][y][z].getStatePredicate();
-        BlockState state = world.getBlockState(checkPos).rotate(rotation);
+        BlockState state = level.getBlockState(checkPos).rotate(rotation);
 
-        return pred.test(world, checkPos, state);
+        return pred.test(level, checkPos, state);
     }
 
     @Override
@@ -235,4 +236,15 @@ public class DenseMultiblock extends AbstractMultiblock {
         return this.size;
     }
 
+    @Override
+    public BlockState getBlockState(BlockPos pos) {
+        int x = pos.getX();
+        int y = pos.getY();
+        int z = pos.getZ();
+        if (x < 0 || y < 0 || z < 0 || x >= size.getX() || y >= size.getY() || z >= size.getZ()) {
+            return Blocks.AIR.defaultBlockState();
+        }
+        long ticks = level != null ? level.getGameTime() : 0L;
+        return stateMatchers[x][y][z].getDisplayedState(ticks);
+    }
 }

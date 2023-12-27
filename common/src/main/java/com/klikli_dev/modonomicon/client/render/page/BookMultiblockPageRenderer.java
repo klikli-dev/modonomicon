@@ -14,6 +14,9 @@ import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.VisualizeButton;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
+import com.klikli_dev.modonomicon.multiblock.AbstractMultiblock;
+import com.klikli_dev.modonomicon.platform.ClientServices;
+import com.klikli_dev.modonomicon.platform.Services;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
@@ -29,6 +32,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Style;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -42,6 +46,7 @@ import java.util.*;
 
 public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockPage> implements PageWithTextRenderer {
 
+    private static final RandomSource randomSource = RandomSource.createNewThreadLocalInstance();
     private final Map<BlockPos, BlockEntity> blockEntityCache = new HashMap<>();
     private final Set<BlockEntity> erroredBlockEntities = Collections.newSetFromMap(new WeakHashMap<>());
 
@@ -69,6 +74,8 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
 
         var pos = BlockPos.ZERO;
         var facingRotation = Rotation.NONE;
+
+        this.page.getMultiblock().setLevel(level);
 
         if (this.page.getMultiblock().isSymmetrical()) {
             facingRotation = Rotation.NONE;
@@ -180,7 +187,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
             ps.pushPose();
             ps.translate(pos.getX(), pos.getY(), pos.getZ());
 
-            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, ps, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
+            ClientServices.MULTIBLOCK.renderBlock(state, pos, this.page.getMultiblock(), ps, buffers, randomSource);
 
             ps.popPose();
         }

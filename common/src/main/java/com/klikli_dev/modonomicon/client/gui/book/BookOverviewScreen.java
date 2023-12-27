@@ -20,6 +20,7 @@ import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
 import com.klikli_dev.modonomicon.networking.ClickReadAllButtonMessage;
 import com.klikli_dev.modonomicon.networking.SaveBookStateMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
+import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -357,7 +358,7 @@ public class BookOverviewScreen extends Screen {
     }
 
     protected void onSearchButtonClick(SearchButton button) {
-        Services.GUI.pushGuiLayer(new BookSearchScreen(this));
+        ClientServices.GUI.pushGuiLayer(new BookSearchScreen(this));
     }
 
     @Override

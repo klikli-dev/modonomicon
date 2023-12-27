@@ -63,5 +63,17 @@ public class DemoMultiblockProvider extends MultiblockProvider {
                         .block('0', () -> Blocks.BELL)
                         .build()
         );
+
+        this.add(this.modLoc("demo_fluid"), new DenseMultiblockBuilder()
+                .layer(
+                        " LLL ",
+                        "W   W",
+                        "W 0 W",
+                        "W   W",
+                        " LLL "
+                )
+                .block('L', () -> Blocks.LAVA)
+                .block('W', () -> Blocks.WATER)
+        );
     }
 }

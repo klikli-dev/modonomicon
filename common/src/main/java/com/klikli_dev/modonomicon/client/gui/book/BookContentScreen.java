@@ -25,6 +25,7 @@ import com.klikli_dev.modonomicon.fluid.FluidHolder;
 import com.klikli_dev.modonomicon.integration.ModonomiconJeiIntegration;
 import com.klikli_dev.modonomicon.networking.ClickCommandLinkMessage;
 import com.klikli_dev.modonomicon.networking.SaveEntryStateMessage;
+import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.platform.services.FluidHelper;
 import com.klikli_dev.modonomicon.util.ItemStackUtil;
@@ -273,7 +274,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(x, y, 0);
-        Services.FLUID.drawFluid(guiGraphics, 18, 18, stack, capacity);
+        ClientServices.FLUID.drawFluid(guiGraphics, 18, 18, stack, capacity);
         guiGraphics.pose().popPose();
 
         if (this.isMouseInRelativeRange(mouseX, mouseY, x, y, 18, 18)) {
@@ -515,13 +516,11 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
             this.simulateEscClosing = false;
         } else {
             Services.NETWORK.sendToServer(new SaveEntryStateMessage(this.entry,
-                    Services.CLIENT_CONFIG.storeLastOpenPageWhenClosingEntry() ? this.openPagesIndex : 0));
+                    ClientServices.CLIENT_CONFIG.storeLastOpenPageWhenClosingEntry() ? this.openPagesIndex : 0));
 
             this.parentScreen.getCurrentCategoryScreen().onCloseEntry(this);
 
-            Services.GUI.popGuiLayer(); //instead of super.onClose() to restore our parent screen
-
-
+            ClientServices.GUI.popGuiLayer(); //instead of super.onClose() to restore our parent screen
         }
     }
 
@@ -658,7 +657,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
     }
 
     public List<Component> getTooltipFromFluid(FluidHolder fluidStack) {
-        var tooltip = Services.FLUID.getTooltip(fluidStack, FluidHolder.BUCKET_VOLUME, this.minecraft.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL, FluidHelper.TooltipMode.SHOW_AMOUNT_AND_CAPACITY);
+        var tooltip = ClientServices.FLUID.getTooltip(fluidStack, FluidHolder.BUCKET_VOLUME, this.minecraft.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL, FluidHelper.TooltipMode.SHOW_AMOUNT_AND_CAPACITY);
 
         if (this.isHoveringItemLink) {
             tooltip.add(Component.literal(""));
@@ -739,7 +738,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
                             }
 
                             if (!ModonomiconJeiIntegration.isJEIRecipesGuiOpen()) {
-                                Services.GUI.pushGuiLayer(this);
+                                ClientServices.GUI.pushGuiLayer(this);
                             }
 
                             //TODO: Consider adding logic to restore content screen after JEI gui close
