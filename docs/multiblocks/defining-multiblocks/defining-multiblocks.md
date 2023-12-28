@@ -30,6 +30,10 @@ The type is defined via the `type` field in the multiblock definition JSON file:
 }
 ```
 
+:::caution
+Every multiblock needs one `0` in the pattern. See also [Multiblock Center](#multiblock-center-0).
+:::
+
 ## Mapping
 
 The mapping is defined in the `mapping` field of the multiblock definition. It is a JSON object that consists of key-value pairs. They key is a character that will be used in the pattern to represent the block, and the value is a [Block Matcher](../state-matchers/) that defines how the block is matched.
@@ -83,6 +87,10 @@ If you want the center of the multiblock to be any other block, simply create yo
 ```
 
 In this case a Skeleton Skull would become our center.
+
+:::tip
+Your center does not need to be special. If you e.g. have a bottom layer that is 3x3 stone, you can just define `s` as stone, and then `0` as stone too and use `0` in the middle.
+:::
 
 ### Air: <code>&nbsp;</code> (space character)
 
