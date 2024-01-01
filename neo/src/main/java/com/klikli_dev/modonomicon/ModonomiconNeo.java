@@ -62,6 +62,7 @@ public class ModonomiconNeo {
 
         //directly register event handlers
         modEventBus.addListener(this::onCommonSetup);
+        modEventBus.addListener(Networking::register);
         modEventBus.addListener(CreativeModeTabRegistry::onCreativeModeTabBuildContents);
 
         //register data managers as reload listeners
@@ -122,8 +123,6 @@ public class ModonomiconNeo {
     }
 
     public void onCommonSetup(FMLCommonSetupEvent event) {
-        Networking.registerMessages();
-
         LoaderRegistry.registerLoaders();
     }
 

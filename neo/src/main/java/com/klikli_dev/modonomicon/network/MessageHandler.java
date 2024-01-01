@@ -6,32 +6,29 @@
 
 package com.klikli_dev.modonomicon.network;
 
-import com.klikli_dev.modonomicon.networking.Message;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.fml.LogicalSide;
-import net.neoforged.neoforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 public class MessageHandler {
 
-    public static <T extends Message> void handle(T message, NetworkEvent.Context ctx) {
-        if (ctx.getDirection().getReceptionSide() == LogicalSide.SERVER) {
-            ctx.enqueueWork(() -> {
+    public static <T extends NeoMessageWrapper> void handle(T message, PlayPayloadContext ctx) {
+        if (ctx.flow().getReceptionSide() == LogicalSide.SERVER) {
+            ctx.workHandler().submitAsync(() -> {
                 handleServer(message, ctx);
             });
         } else {
-            ctx.enqueueWork(() -> {
+            ctx.workHandler().submitAsync(() -> {
                 //separate class to avoid loading client code on server.
                 //Using OnlyIn on a method in this class would work too, but is discouraged
                 ClientMessageHandler.handleClient(message, ctx);
             });
         }
-        ctx.setPacketHandled(true);
     }
 
-    public static <T extends Message> void handleServer(T message, NetworkEvent.Context ctx) {
-        MinecraftServer server = ctx.getSender().level().getServer();
-        message.onServerReceived(server, ctx.getSender());
+    public static <T extends NeoMessageWrapper> void handleServer(T message, PlayPayloadContext ctx) {
+        MinecraftServer server = ctx.level().get().getServer();
+        message.message().onServerReceived(server, (ServerPlayer) ctx.player().get());
     }
 }
