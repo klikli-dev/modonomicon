@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.4-1.45.0] - 2024-01-01
+### :boom: BREAKING CHANGES
+- due to [`8207870`](https://github.com/klikli-dev/modonomicon/commit/82078708496a96bfcd88779009e860dd29b6c603) - update to the new neo network system *(commit by [@klikli-dev](https://github.com/klikli-dev))*:
+
+  update to the new neo network system
+
+
+### :sparkles: New Features
+- [`8207870`](https://github.com/klikli-dev/modonomicon/commit/82078708496a96bfcd88779009e860dd29b6c603) - update to the new neo network system *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`4d0ccd9`](https://github.com/klikli-dev/modonomicon/commit/4d0ccd97ddb75b5bf0fa199e5d44690b2dba46e7) - enable parchment *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.4-1.44.0] - 2023-12-27
 ### :sparkles: New Features
 - [`6ae19a8`](https://github.com/klikli-dev/modonomicon/commit/6ae19a8cbcd4cbb443184941001e88f4d846aae4) - add fluid rendering to multiblocks *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -533,3 +547,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.4-1.43.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.43.0...release/v1.20.4-1.43.2
 [release/v1.20.4-1.43.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.43.2...release/v1.20.4-1.43.3
 [release/v1.20.4-1.44.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.43.3...release/v1.20.4-1.44.0
+[release/v1.20.4-1.45.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.44.0...release/v1.20.4-1.45.0
