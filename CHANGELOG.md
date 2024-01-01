@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.4-1.46.0] - 2024-01-01
+### :sparkles: New Features
+- [`c527e26`](https://github.com/klikli-dev/modonomicon/commit/c527e26bdd4b1cf6fb5fdb3f61e011185ea3812a) - add helper for constructing entry pages more conveniently *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`54e2b8b`](https://github.com/klikli-dev/modonomicon/commit/54e2b8bb800cabe5087d4d3903055fbeb8247ca6) - update to latest fabric *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.4-1.45.0] - 2024-01-01
 ### :boom: BREAKING CHANGES
 - due to [`8207870`](https://github.com/klikli-dev/modonomicon/commit/82078708496a96bfcd88779009e860dd29b6c603) - update to the new neo network system *(commit by [@klikli-dev](https://github.com/klikli-dev))*:
@@ -548,3 +556,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.4-1.43.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.43.2...release/v1.20.4-1.43.3
 [release/v1.20.4-1.44.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.43.3...release/v1.20.4-1.44.0
 [release/v1.20.4-1.45.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.44.0...release/v1.20.4-1.45.0
+[release/v1.20.4-1.46.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.45.0...release/v1.20.4-1.46.0
