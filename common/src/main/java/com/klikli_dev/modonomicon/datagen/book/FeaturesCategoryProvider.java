@@ -80,49 +80,43 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         this.context().entry("multiblock");
 
         this.context().page("intro");
-        var multiBlockIntroPage = BookTextPageModel.builder()
+        this.page(BookTextPageModel.builder()
                 .withText(this.context().pageText())
                 .withTitle(this.context().pageTitle())
-                .build();
+                .build());
 
         this.context().page("preview");
-        var multiblockPreviewPage = BookMultiblockPageModel.builder()
+        this.page(BookMultiblockPageModel.builder()
                 .withMultiblockId(this.modLoc("blockentity"))
                 .withMultiblockName("multiblocks.modonomicon.blockentity")
                 .withText(this.context().pageText())
-                .build();
+                .build());
 
-        this.context().page("preview2");
-        var multiblockPreviewPage2 = BookMultiblockPageModel.builder()
+        this.page("preview2", () -> BookMultiblockPageModel.builder()
                 .withMultiblockId(this.modLoc("tag"))
-                .build();
+                .withText(this.context().pageText())
+                .build());
+
+        this.lang().add(this.context().pageText(), "A multiblock with tag!");
 
         this.context().page("demo_predicate");
-        var demoPredicate = BookMultiblockPageModel.builder()
+        this.page(BookMultiblockPageModel.builder()
                 .withMultiblockId(this.modLoc("demo_predicate"))
-                .build();
+                .build());
 
         this.context().page("demo_fluid");
-        var demoFluid = BookMultiblockPageModel.builder()
+        this.page(BookMultiblockPageModel.builder()
                 .withMultiblockId(this.modLoc("demo_fluid"))
-                .build();
+                .build());
 
 //        this.context().page("crash_test");
-//        var crashTest = BookMultiblockPageModel.builder()
+//        this.page(BookMultiblockPageModel.builder()
 //                .withMultiblockId(this.modLoc("crash_test"))
-//                .build();
+//                .build());
 
         return this.entry(location)
                 .withIcon(Items.FURNACE)
-                .withLocation(this.entryMap().get(location))
-                .withPages(
-                        multiBlockIntroPage,
-                        multiblockPreviewPage,
-                        multiblockPreviewPage2,
-                        demoPredicate,
-                        demoFluid
-//                        crashTest
-                );
+                .withLocation(this.entryMap().get(location));
     }
 
     private List<BookEntryModel> makeConditionEntries(char rootLocation, char advancementLocation, char level1Location, char level2Location) {

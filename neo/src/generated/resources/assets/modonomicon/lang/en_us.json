@@ -45,6 +45,7 @@
   "book.modonomicon.demo.features.multiblock.intro.title": "Multiblock Page",
   "book.modonomicon.demo.features.multiblock.name": "Multiblock Entry",
   "book.modonomicon.demo.features.multiblock.preview.text": "A sample multiblock.",
+  "book.modonomicon.demo.features.multiblock.preview2.text": "A multiblock with tag!",
   "book.modonomicon.demo.features.name": "Features Category",
   "book.modonomicon.demo.features.recipe.crafting.text": "A sample recipe page.",
   "book.modonomicon.demo.features.recipe.description": "An entry showcasing recipe pages.",

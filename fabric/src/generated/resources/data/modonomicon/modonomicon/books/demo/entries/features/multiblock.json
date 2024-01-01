@@ -31,7 +31,7 @@
       "multiblock_id": "modonomicon:tag",
       "multiblock_name": "",
       "show_visualize_button": true,
-      "text": ""
+      "text": "book.modonomicon.demo.features.multiblock.preview2.text"
     },
     {
       "type": "modonomicon:multiblock",
