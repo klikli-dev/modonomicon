@@ -42,6 +42,7 @@ public class BookMultiblockPageModel extends BookPageModel {
     public boolean showVisualizeButton() {
         return this.showVisualizeButton;
     }
+    
 
     @Override
     public JsonObject toJson() {

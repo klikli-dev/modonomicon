@@ -12,14 +12,17 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookEntryParentModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookAndConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookOrConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public abstract class CategoryProvider {
 
@@ -189,11 +192,45 @@ public abstract class CategoryProvider {
     }
 
     protected BookEntryModel entry() {
-        return BookEntryModel.create(
+        var entry = BookEntryModel.create(
                         this.modLoc(this.context().categoryId() + "/" + this.context().entryId()),
                         this.context().entryName()
                 )
                 .withDescription(this.context().entryDescription());
+        if(this.cachedPages.containsKey(this.context().entry())){
+            entry.withPages(this.cachedPages.get(this.context().entry()));
+            this.cachedPages.remove(this.context().entry());
+        }
+        return entry;
+    }
+
+    protected Map<String, List<BookPageModel>> cachedPages = new HashMap<>();
+
+    /**
+     * Adds a page to the cached pages of this category provider.
+     * Make sure to call this.context().page(<pageId>) before calling this method!
+     * The page will be added to the next entry created with this.entry(...)
+     * Needs to be called after this.context().entry(<entryId>)
+     * @param model the page model
+     */
+    protected <T extends BookPageModel> T page(T model){
+        this.cachedPages.computeIfAbsent(this.context().entry(), k -> new ArrayList<>()).add(model);
+        return model;
+    }
+
+    /**
+     * Registers the page with the current context and adds it to the cached pages of this category provider.
+     * No need to call this.context().page(<pageId>). This method will do that for you.
+     * The page will be added to the next entry created with this.entry(...)
+     * Needs to be called after this.context().entry(<entryId>)
+     * @param modelSupplier A supplier that provides a page model. It is a supplier, because that way you can use this.context() within the supplier and it will correctly use the given page as part of the context.
+     *
+     */
+    protected <T extends BookPageModel> T page(String page, Supplier<T> modelSupplier){
+        this.context().page(page);
+        var model = modelSupplier.get();
+        this.cachedPages.computeIfAbsent(this.context().entry(), k -> new ArrayList<>()).add(model);
+        return model;
     }
 
     protected BookEntryParentModel parent(BookEntryModel parentEntry) {
