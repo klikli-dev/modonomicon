@@ -119,8 +119,15 @@ public abstract class EntryProvider {
     /**
      * Adds a page text for the current context to the underlying language provider.
      */
-    protected void pageText(String title) {
-        this.add(this.context().pageText(), title);
+    protected void pageText(String text) {
+        this.add(this.context().pageText(), text);
+    }
+
+    /**
+     * Adds a page text for the current context to the underlying language provider.
+     */
+    protected void pageText(String text, Object... args){
+        this.add(this.context().pageText(), text, args);
     }
 
     /**
