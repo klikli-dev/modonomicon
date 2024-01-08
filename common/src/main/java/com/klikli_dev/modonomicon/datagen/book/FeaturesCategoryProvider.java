@@ -9,6 +9,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryReadCondit
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryUnlockedConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.*;
 import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
+import com.klikli_dev.modonomicon.datagen.book.features.ImageEntryProvider;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
@@ -56,7 +57,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
 
         var entityEntry = this.add(this.makeEntityEntry('d'));
 
-        var imageEntry = this.add(this.makeImageEntry('i'));
+        var imageEntry = new ImageEntryProvider(this).generate('i');
         imageEntry.withParent(this.parent(emptyEntry));
 
         var redirectEntry = this.add(this.makeRedirectEntry('5'));
@@ -367,48 +368,6 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .withIcon(Items.SPIDER_EYE)
                 .withLocation(this.entryMap().get(location))
                 .withPages(introPage, entity1, entity2);
-    }
-
-    private BookEntryModel makeImageEntry(char location) {
-        this.context().entry("image");
-
-        this.context().page("intro");
-        var introPage = BookTextPageModel.builder()
-                .withText(this.context().pageText())
-                .withTitle(this.context().pageTitle())
-                .build();
-
-        this.context().page("image");
-        var imagePage = BookImagePageModel.builder()
-                .withText(this.context().pageText())
-                .withTitle(this.context().pageTitle())
-                .withImages(
-                        new ResourceLocation("modonomicon:textures/gui/default_background.png"),
-                        new ResourceLocation("modonomicon:textures/gui/dark_slate_seamless.png")
-                )
-                .build();
-
-        //now test if  tooltips render correctly over the image
-        this.context().page("test_spotlight");
-        var testSpotlight = BookSpotlightPageModel.builder()
-                .withText(this.context().pageText())
-                .withItem(Ingredient.of(Blocks.SPAWNER))
-                .build();
-
-        this.context().page("test_image");
-        var testImage = BookImagePageModel.builder()
-                .withText(this.context().pageText())
-                .withTitle(this.context().pageTitle())
-                .withImages(
-                        new ResourceLocation("modonomicon:textures/gui/default_background.png"),
-                        new ResourceLocation("modonomicon:textures/gui/dark_slate_seamless.png")
-                )
-                .build();
-
-        return this.entry(location)
-                .withIcon(Items.ITEM_FRAME)
-                .withLocation(this.entryMap().get(location))
-                .withPages(introPage, imagePage, testSpotlight, testImage);
     }
 
     private BookEntryModel makeCustomIconEntry(char location) {
