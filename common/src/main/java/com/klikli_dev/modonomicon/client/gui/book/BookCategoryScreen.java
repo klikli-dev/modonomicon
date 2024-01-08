@@ -180,6 +180,7 @@ public class BookCategoryScreen {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
+        //note we cannot translate -z here because even -1 immediately pushes us behind the scene -> not visible
         if (!this.category.getBackgroundParallaxLayers().isEmpty()) {
             this.category.getBackgroundParallaxLayers().forEach(layer -> {
                 this.renderBackgroundParallaxLayer(guiGraphics, layer, innerX, innerY, innerWidth, innerHeight, this.scrollX, this.scrollY, scale, xOffset, yOffset, this.currentZoom);
@@ -243,6 +244,7 @@ public class BookCategoryScreen {
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().scale(this.currentZoom, this.currentZoom, 1.0f);
+
         for (var entry : this.category.getEntries().values()) {
             var displayState = this.getEntryDisplayState(entry);
             var isHovered = this.isEntryHovered(entry, xOffset, yOffset, mouseX, mouseY);
@@ -256,6 +258,10 @@ public class BookCategoryScreen {
             guiGraphics.pose().pushPose();
             //we translate instead of applying the offset to the entry x/y to avoid jittering when moving
             guiGraphics.pose().translate(xOffset, yOffset, 0);
+
+
+            //we apply a z offset to push the entries before the connection arrows
+            guiGraphics.pose().translate(0 ,0, 10);
 
             //As of 1.20 this is not necessary, in fact it causes the entry to render behind the bg
             //guiGraphics.pose().translate(0, 0, -10); //push the whole entry behind the frame
@@ -294,7 +300,7 @@ public class BookCategoryScreen {
 
                 //testing
                 guiGraphics.pose().pushPose();
-                guiGraphics.pose().translate(0, 0, 11); //and push the unread icon in front of the icon
+                guiGraphics.pose().translate(0, 0, 11); //and push the unread icon in front of the background and icon (they are at Z 10)
                 //if focused we go to the right of our normal button (instead of down, like mc buttons do)
                 BookContentScreen.drawFromTexture(guiGraphics, this.bookOverviewScreen.getBook(),
                         entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 16 + 2,
@@ -368,7 +374,7 @@ public class BookCategoryScreen {
 
         for (var parent : entry.getParents()) {
 
-            int blitOffset = 0;
+            int blitOffset = 0; //note: any negative blit offset will move it behind our category background
             this.connectionRenderer.setBlitOffset(blitOffset);
             guiGraphics.pose().pushPose();
             guiGraphics.pose().translate(xOffset, yOffset, 0);
