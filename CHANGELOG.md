@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.48.1] - 2024-01-08
+### :bug: Bug Fixes
+- [`bafdaf3`](https://github.com/klikli-dev/modonomicon/commit/bafdaf32cb06970b3ef5723d757360eb1ff4eb54) - connection arrow sometimes renders in front of entry *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.48.0] - 2024-01-08
 ### :sparkles: New Features
 - [`0b2f0de`](https://github.com/klikli-dev/modonomicon/commit/0b2f0dea5a86cdb4d112d6e6908a80877ccc2179) - add text helper to entry provider *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -546,3 +551,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.46.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.44.0...release/v1.20.1-1.46.0
 [release/v1.20.1-1.47.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.46.0...release/v1.20.1-1.47.0
 [release/v1.20.1-1.48.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.47.0...release/v1.20.1-1.48.0
+[release/v1.20.1-1.48.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.48.0...release/v1.20.1-1.48.1
