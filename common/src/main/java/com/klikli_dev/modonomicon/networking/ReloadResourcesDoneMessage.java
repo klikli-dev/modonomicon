@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.networking;
 
 import com.google.common.collect.Lists;
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.FriendlyByteBuf;
@@ -80,6 +81,7 @@ public class ReloadResourcesDoneMessage implements Message {
             player.sendSystemMessage(Component.translatable("commands.reload.failure").withStyle(ChatFormatting.RED));
             return null;
         }).thenRun(() -> {
+            BookUnlockStateManager.get().updateAndSyncFor(player);
             player.sendSystemMessage(Component.translatable(RELOAD_SUCCESS).withStyle(ChatFormatting.GREEN));
         });
     }
