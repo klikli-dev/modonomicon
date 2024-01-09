@@ -85,6 +85,18 @@ Default value: `modonomicon:textures/gui/book_overview.png`.
 The file for the category, search and read all button textures.   
 The texture must be a **256x256** png file.   
 
+### **font** (ResourceLocation, _optional_)
+
+Default value: `modonomicon:default`.   
+The font to use in the book. 
+Must be a valid and loaded minecraft font.
+
+:::tip
+
+The default font is https://github.com/latvian-dev/slightly-improved-font which is more readable than `minecraft:default`
+
+::: 
+
 ### **frame_texture** (ResourceLocation, _optional_)
 
 Default value: `modonomicon:textures/gui/book_frame.png`.   
