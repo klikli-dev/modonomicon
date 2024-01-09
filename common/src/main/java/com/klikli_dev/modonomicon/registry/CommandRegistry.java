@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.registry;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.command.LoadUnlocksCommand;
+import com.klikli_dev.modonomicon.command.ReloadBooksCommand;
 import com.klikli_dev.modonomicon.command.ResetBookUnlocksCommand;
 import com.klikli_dev.modonomicon.command.SaveUnlocksCommand;
 import com.mojang.brigadier.CommandDispatcher;
@@ -22,9 +23,10 @@ public class CommandRegistry {
                 Commands.literal(Modonomicon.MOD_ID)
                         .then(ResetBookUnlocksCommand.register(dispatcher))
                         .then(SaveUnlocksCommand.register(dispatcher))
+                        .then(ReloadBooksCommand.register(dispatcher))
         );
 
-        dispatcher.register(Commands.literal("modonomicon").redirect(modonomiconCommand));
+        dispatcher.register(Commands.literal(Modonomicon.MOD_ID).redirect(modonomiconCommand));
     }
 
     public static void registerClientCommands(CommandDispatcher<CommandSourceStack> dispatcher) {

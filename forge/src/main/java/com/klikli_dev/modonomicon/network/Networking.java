@@ -108,6 +108,17 @@ public class Networking {
                 SyncMultiblockDataMessage::new,
                 MessageHandler::handle);
 
+        INSTANCE.registerMessage(nextID(),
+                ReloadResourcesOnClientMessage.class,
+                ReloadResourcesOnClientMessage::encode,
+                ReloadResourcesOnClientMessage::new,
+                MessageHandler::handle);
+
+        INSTANCE.registerMessage(nextID(),
+                ReloadResourcesDoneMessage.class,
+                ReloadResourcesDoneMessage::encode,
+                ReloadResourcesDoneMessage::new,
+                MessageHandler::handle);
     }
 
     public static <T> void sendToSplit(ServerPlayer player, T message) {

@@ -1,8 +1,8 @@
-// 1.20.1	2024-01-08T09:19:58.146027	Modonomicon/Books: modonomicon
+// 1.20.1	2024-01-09T11:06:30.7029862	Modonomicon/Books: modonomicon
 149f724b78931be9fa643e1c9288933cc73a75c4 data\modonomicon\modonomicon\books\demo\entries\formatting\basic.json
 b9ad32b76e2efc9f44c8b76d56670f9dc63f2a94 data\modonomicon\modonomicon\books\demo\commands\test_command2.json
-da6b6a832a9392085f982ba05f34e606d64fa13b data\modonomicon\modonomicon\books\demo\entries\formatting\always_locked.json
 7cb4c581142b83471177183ec136e5db0f8a1540 data\modonomicon\modonomicon\books\demo\entries\features\multiblock.json
+da6b6a832a9392085f982ba05f34e606d64fa13b data\modonomicon\modonomicon\books\demo\entries\formatting\always_locked.json
 b82c0b99b596152481f8281592d77c822fd7590e data\modonomicon\modonomicon\books\demo\categories\conditional.json
 09d31cc11836a50dad4c92daa1695475a6c4fc1f data\modonomicon\modonomicon\books\demo\entries\conditional\always_locked.json
 a0b01243aa86122c9894a419e5f6998e2d1a2ca3 data\modonomicon\modonomicon\books\demo\entries\features\recipe.json
