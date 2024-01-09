@@ -79,6 +79,8 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Command.SUCCESS_RESET_BOOK, "Successfully reset book: %s");
         this.add(Command.SUCCESS_SAVE_PROGRESS, "Saved progress for book: %s. The unlock code has been copied to your clipboard.");
         this.add(Command.SUCCESS_LOAD_PROGRESS, "Successfully loaded progress for book: %s.");
+        this.add(Command.RELOAD_REQUESTED, "Requested reload of resource- and datapacks.");
+        this.add(Command.RELOAD_SUCCESS, "Successfully reloaded resource- and datapacks.");
         this.add(Command.ERROR_LOAD_PROGRESS, "Invalid unlock code!");
         this.add(Command.ERROR_LOAD_PROGRESS_CLIENT, "Failed to decode unlock code. Make sure to have a valid unlock code in your clipboard! Current Clipboard content: \"%s\"");
 

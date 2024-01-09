@@ -18,5 +18,6 @@ public class ClientNetworking {
         ClientPlayNetworking.registerGlobalReceiver(SyncBookUnlockStatesMessage.ID, new ClientMessageHandler<>(SyncBookUnlockStatesMessage::new));
         ClientPlayNetworking.registerGlobalReceiver(SyncBookVisualStatesMessage.ID, new ClientMessageHandler<>(SyncBookVisualStatesMessage::new));
         ClientPlayNetworking.registerGlobalReceiver(SyncMultiblockDataMessage.ID, new ClientMessageHandler<>(SyncMultiblockDataMessage::new));
+        ClientPlayNetworking.registerGlobalReceiver(ReloadResourcesOnClientMessage.ID, new ClientMessageHandler<>(ReloadResourcesOnClientMessage::new));
     }
 }
