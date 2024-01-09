@@ -4,6 +4,15 @@ sidebar_position: 5
 
 # Getting Started
 
+:::tip
+
+Modonomicon uses both resources (translation files) and data (page definitions). If you want to live-reload your changes run `/modonomicon reload` to reload both resource- and datapacks.
+
+This of course requires the changed files to be in the correct data/resource pack locations for minecraft to load.
+
+:::
+
+
 The easiest way to get started is to follow the step by step guide **[Step by Step with Datagen](./step-by-step-with-datagen/)**. This guide uses datagen - a forge feature - which means as part of the process you will learn how to set up a simple mod development environment. 
 
 :::tip
