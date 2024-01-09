@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.4-1.50.0] - 2024-01-09
+### :sparkles: New Features
+- [`fd38e97`](https://github.com/klikli-dev/modonomicon/commit/fd38e97f42820fa84d3de472bd228e14cf7d2aa8) - better default font and allow changing font per book *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`6659794`](https://github.com/klikli-dev/modonomicon/commit/66597948f1131982b97029a3c66eaab547c4ffbf) - set mod version *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.4-1.49.1] - 2024-01-09
 ### :bug: Bug Fixes
 - [`8acd6d3`](https://github.com/klikli-dev/modonomicon/commit/8acd6d3e3b2b0da56b8d039aa8ddb20a362fd9a5) - force book update and sync after reload command *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -587,3 +595,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.4-1.48.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.48.0...release/v1.20.4-1.48.1
 [release/v1.20.4-1.49.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.48.1...release/v1.20.4-1.49.0
 [release/v1.20.4-1.49.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.49.0...release/v1.20.4-1.49.1
+[release/v1.20.4-1.50.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.49.1...release/v1.20.4-1.50.0
