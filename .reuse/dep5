@@ -3,6 +3,11 @@ Upstream-Name: modonomicon
 Upstream-Contact: klikli-dev
 Source: https://github.com/klikli-dev/modonomicon
 
+Files: common/src/main/resources/assets/modonomicon/textures/font/*
+Copyright: 2022 Kristiāns Micītis
+License: MIT
+Comment: https://github.com/latvian-dev/slightly-improved-font
+
 Files: common/src/main/resources/*
 Copyright: 2022 klikli-dev
 License: CC-BY-4.0

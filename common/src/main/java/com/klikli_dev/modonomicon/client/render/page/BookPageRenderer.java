@@ -132,7 +132,9 @@ public abstract class BookPageRenderer<T extends BookPage> {
 
             this.drawCenteredStringNoShadow(guiGraphics, formattedCharSequence, x, y, 0, scale);
         } else {
+            //non-markdown title we just render as usual
 
+            var titleComponent = Component.empty().append(title.getComponent()).withStyle(s -> s.withFont(this.page.getBook().getFont()));
             //if title is larger than allowed, scaled to fit
             var scale = Math.min(1.0f, (float) BookContentScreen.MAX_TITLE_WIDTH / (float) this.font.width(title.getComponent().getVisualOrderText()));
             if (scale < 1) {
