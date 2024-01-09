@@ -1,7 +1,2 @@
-<<<<<<< HEAD:neo/src/generated/resources/.cache/c622617f6fabf890a00b9275cd5f643584a8a2c8
-// 1.20.4	2024-01-08T09:25:59.6842232	Languages: en_us
-c02a2188ed3f6ed7de335e505e38a4d6cf90d9e1 assets/modonomicon/lang/en_us.json
-=======
-// 1.20.1	2024-01-09T10:59:40.9721648	Languages: en_us
+// 1.20.4	2024-01-09T12:55:43.995141	Languages: en_us
 619af0dd17a726e34764055a425bf703af4821e6 assets/modonomicon/lang/en_us.json
->>>>>>> 82a18ce3 (feat: add command to reload resource+ datapacks):forge/src/generated/resources/.cache/c622617f6fabf890a00b9275cd5f643584a8a2c8

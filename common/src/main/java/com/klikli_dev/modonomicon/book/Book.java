@@ -58,6 +58,8 @@ public class Book {
     @Nullable
     protected ResourceLocation customBookItem;
 
+    protected ResourceLocation font;
+
     /**
      * When rendering book text holders, add this offset to the x position (basically, create a left margin).
      * Will be automatically subtracted from the width to avoid overflow.
@@ -94,7 +96,7 @@ public class Book {
     });
 
     public Book(ResourceLocation id, String name, String tooltip, ResourceLocation model, boolean generateBookItem,
-                ResourceLocation customBookItem, String creativeTab, ResourceLocation bookOverviewTexture, ResourceLocation frameTexture,
+                ResourceLocation customBookItem, String creativeTab, ResourceLocation font, ResourceLocation bookOverviewTexture, ResourceLocation frameTexture,
                 BookFrameOverlay topFrameOverlay, BookFrameOverlay bottomFrameOverlay, BookFrameOverlay leftFrameOverlay, BookFrameOverlay rightFrameOverlay,
                 ResourceLocation bookContentTexture, ResourceLocation craftingTexture, ResourceLocation turnPageSound,
                 int defaultTitleColor, float categoryButtonIconScale, boolean autoAddReadConditions, int bookTextOffsetX, int bookTextOffsetY, int bookTextOffsetWidth,
@@ -108,6 +110,7 @@ public class Book {
         this.customBookItem = customBookItem;
         this.creativeTab = creativeTab;
         this.bookOverviewTexture = bookOverviewTexture;
+        this.font = font;
         this.frameTexture = frameTexture;
         this.topFrameOverlay = topFrameOverlay;
         this.bottomFrameOverlay = bottomFrameOverlay;
@@ -161,6 +164,8 @@ public class Book {
                 BookFrameOverlay.fromJson(json.get("right_frame_overlay").getAsJsonObject()) :
                 Data.Book.DEFAULT_RIGHT_FRAME_OVERLAY;
 
+        var font = new ResourceLocation(GsonHelper.getAsString(json, "font", Data.Book.DEFAULT_FONT));
+
         var bookContentTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_content_texture", Data.Book.DEFAULT_CONTENT_TEXTURE));
         var craftingTexture = new ResourceLocation(GsonHelper.getAsString(json, "crafting_texture", Data.Book.DEFAULT_CRAFTING_TEXTURE));
         var turnPageSound = new ResourceLocation(GsonHelper.getAsString(json, "turn_page_sound", Data.Book.DEFAULT_PAGE_TURN_SOUND));
@@ -178,7 +183,7 @@ public class Book {
         var searchButtonYOffset = GsonHelper.getAsInt(json, "search_button_y_offset", 0);
         var readAllButtonYOffset = GsonHelper.getAsInt(json, "read_all_button_y_offset", 0);
 
-        return new Book(id, name, tooltip, model, generateBookItem, customBookItem, creativeTab, bookOverviewTexture,
+        return new Book(id, name, tooltip, model, generateBookItem, customBookItem, creativeTab, font, bookOverviewTexture,
                 frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
                 bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, categoryButtonXOffset, categoryButtonYOffset,
                 searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset);
@@ -193,6 +198,9 @@ public class Book {
         var generateBookItem = buffer.readBoolean();
         var customBookItem = buffer.readBoolean() ? buffer.readResourceLocation() : null;
         var creativeTab = buffer.readUtf();
+
+        var font = buffer.readResourceLocation();
+
         var bookOverviewTexture = buffer.readResourceLocation();
 
         var frameTexture = buffer.readResourceLocation();
@@ -218,7 +226,7 @@ public class Book {
         var searchButtonYOffset = (int) buffer.readShort();
         var readAllButtonYOffset = (int) buffer.readShort();
 
-        return new Book(id, name, tooltip, model, generateBookItem, customBookItem, creativeTab, bookOverviewTexture,
+        return new Book(id, name, tooltip, model, generateBookItem, customBookItem, creativeTab, font, bookOverviewTexture,
                 frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
                 bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, categoryButtonXOffset, categoryButtonYOffset,
                 searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset);
@@ -269,6 +277,9 @@ public class Book {
             buffer.writeResourceLocation(this.customBookItem);
         }
         buffer.writeUtf(this.creativeTab);
+
+        buffer.writeResourceLocation(this.font);
+
         buffer.writeResourceLocation(this.bookOverviewTexture);
         buffer.writeResourceLocation(this.frameTexture);
 
@@ -373,6 +384,10 @@ public class Book {
 
     public ResourceLocation getBookOverviewTexture() {
         return this.bookOverviewTexture;
+    }
+
+    public ResourceLocation getFont() {
+        return this.font;
     }
 
     public ResourceLocation getFrameTexture() {

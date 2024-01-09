@@ -26,6 +26,7 @@ public class BookModel {
 
     protected ResourceLocation model = new ResourceLocation(Book.DEFAULT_MODEL);
     protected ResourceLocation bookOverviewTexture = new ResourceLocation(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
+    protected ResourceLocation font = new ResourceLocation(Book.DEFAULT_FONT);
 
     protected ResourceLocation frameTexture = new ResourceLocation(Book.DEFAULT_FRAME_TEXTURE);
     protected BookFrameOverlay topFrameOverlay = Data.Book.DEFAULT_TOP_FRAME_OVERLAY;
@@ -133,6 +134,10 @@ public class BookModel {
         return this.bookOverviewTexture;
     }
 
+    public ResourceLocation getFont() {
+        return this.font;
+    }
+
     public ResourceLocation getFrameTexture() {
         return this.frameTexture;
     }
@@ -168,6 +173,7 @@ public class BookModel {
         json.addProperty("model", this.model.toString());
         json.addProperty("creative_tab", this.creativeTab.toString());
         json.addProperty("book_overview_texture", this.bookOverviewTexture.toString());
+        json.addProperty("font", this.font.toString());
         json.addProperty("frame_texture", this.frameTexture.toString());
         json.add("top_frame_overlay", BookFrameOverlay.CODEC.encodeStart(JsonOps.INSTANCE, this.topFrameOverlay).get().orThrow());
         json.add("bottom_frame_overlay", BookFrameOverlay.CODEC.encodeStart(JsonOps.INSTANCE, this.bottomFrameOverlay).get().orThrow());
