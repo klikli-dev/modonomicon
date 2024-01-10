@@ -22,5 +22,6 @@ public class Networking {
         ServerPlayNetworking.registerGlobalReceiver(SaveEntryStateMessage.ID, new ServerMessageHandler<>(SaveEntryStateMessage::new));
         ServerPlayNetworking.registerGlobalReceiver(SendUnlockCodeToServerMessage.ID, new ServerMessageHandler<>(SendUnlockCodeToServerMessage::new));
         ServerPlayNetworking.registerGlobalReceiver(ReloadResourcesDoneMessage.ID, new ServerMessageHandler<>(ReloadResourcesDoneMessage::new));
+        ServerPlayNetworking.registerGlobalReceiver(RequestSyncBookStatesMessage.ID, new ServerMessageHandler<>(RequestSyncBookStatesMessage::new));
     }
 }

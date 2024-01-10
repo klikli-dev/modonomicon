@@ -119,6 +119,12 @@ public class Networking {
                 ReloadResourcesDoneMessage::encode,
                 ReloadResourcesDoneMessage::new,
                 MessageHandler::handle);
+
+        INSTANCE.registerMessage(nextID(),
+                RequestSyncBookStatesMessage.class,
+                RequestSyncBookStatesMessage::encode,
+                RequestSyncBookStatesMessage::new,
+                MessageHandler::handle);
     }
 
     public static <T> void sendToSplit(ServerPlayer player, T message) {

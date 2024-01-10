@@ -6,17 +6,18 @@
 
 package com.klikli_dev.modonomicon.bookstate;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCommand;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.klikli_dev.modonomicon.networking.RequestSyncBookStatesMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
 import com.klikli_dev.modonomicon.platform.Services;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 
 import java.util.List;
 import java.util.Timer;
@@ -126,12 +127,18 @@ public class BookUnlockStateManager {
      * Won't do anything on the client, clients get their save data set by the server via packet.
      */
     private void getSaveDataIfNecessary(Player player) {
-        if (this.saveData == null && player instanceof ServerPlayer serverPlayer) {
-            this.saveData = serverPlayer.getServer().overworld().getDataStorage().computeIfAbsent(
-                    BookStatesSaveData::load,
-                    BookStatesSaveData::new, BookStatesSaveData.ID);
+        if (this.saveData == null) {
+            if (player instanceof ServerPlayer serverPlayer) {
+                this.saveData = serverPlayer.getServer().overworld().getDataStorage().computeIfAbsent(
+                        BookStatesSaveData::load,
+                        BookStatesSaveData::new, BookStatesSaveData.ID);
+            } else {
+                //this should not happen, we set an empty object to prevent a crash
+                this.saveData = new BookStatesSaveData();
+                //and we request a sync
+                Services.NETWORK.sendToServer(new RequestSyncBookStatesMessage());
+                Modonomicon.LOG.error("Tried to get Modonomicon save data for player on client side, but was not set. This should not happen. Requesting a sync from the server. Please re-open the book in a few seconds to see your progress.");
+            }
         }
     }
-
-
 }
