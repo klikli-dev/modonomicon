@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.51.0] - 2024-01-10
+### :sparkles: New Features
+- [`35e4900`](https://github.com/klikli-dev/modonomicon/commit/35e4900197acc184cdf836e471fe54a271ab177f) - re-establish reuse compliance *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`391ca39`](https://github.com/klikli-dev/modonomicon/commit/391ca39f01ab5bb87597145bbce0ecdaff7e88d2) - add category hint to links to locked entries *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.50.0] - 2024-01-09
 ### :sparkles: New Features
 - [`9495dc9`](https://github.com/klikli-dev/modonomicon/commit/9495dc989cd47575a8d4f5510d7e5a286b23cbd4) - better default font and allow changing font per book *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -573,3 +579,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.49.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.48.1...release/v1.20.1-1.49.0
 [release/v1.20.1-1.49.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.49.0...release/v1.20.1-1.49.1
 [release/v1.20.1-1.50.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.49.1...release/v1.20.1-1.50.0
+[release/v1.20.1-1.51.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.50.0...release/v1.20.1-1.51.0
