@@ -134,6 +134,7 @@ public class ModonomiconConstants {
             public static final String HOVER_BOOK_LINK = PREFIX + "hover.book_link";
             public static final String HOVER_BOOK_LINK_LOCKED = PREFIX + "hover.book_link_locked";
             public static final String HOVER_BOOK_LINK_LOCKED_INFO = PREFIX + "hover.book_link_locked_info";
+            public static final String HOVER_BOOK_LINK_LOCKED_INFO_HINT = PREFIX + "hover.book_link_locked_info.hint";
             public static final String HOVER_HTTP_LINK = PREFIX + "hover.http_link";
             public static final String HOVER_ITEM_LINK_INFO = PREFIX + "hover.item_link_info";
             public static final String HOVER_ITEM_LINK_INFO_LINE2 = PREFIX + "hover.item_link_info_line2";

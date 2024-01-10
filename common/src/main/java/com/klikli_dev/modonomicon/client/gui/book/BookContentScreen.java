@@ -45,7 +45,6 @@ import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -562,7 +561,16 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
                                             Gui.HOVER_BOOK_LINK_LOCKED,
                                             oldComponent,
                                             Component.translatable(Gui.HOVER_BOOK_LINK_LOCKED_INFO)
-                                                    .withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xff0015)).withBold(true)));
+                                                    .withStyle(s -> s.withColor(0xff0015).withBold(true))
+                                                    .append("\n")
+                                                    .append(
+                                                            Component.translatable(
+                                                                    Gui.HOVER_BOOK_LINK_LOCKED_INFO_HINT,
+                                                                    Component.translatable(entry.getCategory().getName())
+                                                                            .withStyle(s -> s.withColor(ChatFormatting.GRAY).withItalic(true))
+                                                            ).withStyle(s -> s.withBold(false).withColor(ChatFormatting.WHITE))
+                                                    )
+                                    );
 
                                     newStyle = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newComponent));
                                 }
