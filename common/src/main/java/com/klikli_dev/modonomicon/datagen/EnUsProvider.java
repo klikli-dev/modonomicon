@@ -42,6 +42,7 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Gui.HOVER_BOOK_LINK, "Go to: %s");
         this.add(Gui.HOVER_BOOK_LINK_LOCKED, "%s.\n%s");
         this.add(Gui.HOVER_BOOK_LINK_LOCKED_INFO, "You need to unlock this entry before you can open the link!");
+        this.add(Gui.HOVER_BOOK_LINK_LOCKED_INFO_HINT, "Hint: The entry is in the Category: %s");
         this.add(Gui.HOVER_HTTP_LINK, "Visit: %s");
         this.add(Gui.HOVER_ITEM_LINK_INFO, "Click to show recipe in JEI, Shift-Click to show usage.");
         this.add(Gui.HOVER_ITEM_LINK_INFO_LINE2, "Will not do anything, if no recipe/usage is found.");
