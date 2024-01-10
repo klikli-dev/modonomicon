@@ -31,6 +31,7 @@ public class Networking {
         registrar.play(SyncMultiblockDataMessage.ID, (b) -> new NeoMessageWrapper(b, SyncMultiblockDataMessage::new), MessageHandler::handle);
         registrar.play(ReloadResourcesOnClientMessage.ID, (b) -> new NeoMessageWrapper(b, ReloadResourcesOnClientMessage::new), MessageHandler::handle);
         registrar.play(ReloadResourcesDoneMessage.ID, (b) -> new NeoMessageWrapper(b, ReloadResourcesDoneMessage::new), MessageHandler::handle);
+        registrar.play(RequestSyncBookStatesMessage.ID, (b) -> new NeoMessageWrapper(b, ReloadResourcesDoneMessage::new), MessageHandler::handle);
     }
 
     public static <T extends Message> void sendToSplit(ServerPlayer player, T message) {
