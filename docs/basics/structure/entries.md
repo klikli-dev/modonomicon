@@ -56,6 +56,19 @@ Usually the default value is what you want. Regardless of this setting, locked e
 
 ::: 
 
+### **show_when_any_parent_unlocked** (Boolean, _optional_)
+
+Default value: `false`.  
+If true, the entry will show (locked) as soon as any **one** parent is unlocked.
+If false, the entry will only show (locked) as soon as **all** parents are unlocked.
+
+:::tip
+
+If you want this true or false depends on how "discoverable" you want your book to be. If `true` the entry will be visible to the player earlier, and the tooltip will indicate that they will need another entry to unlock it.  
+If `false` the entry will only show once all parents of it are unlocked, effectively making the player aware much later.
+
+::: 
+
 ### **background_u_index** (Integer, _optional_)
 
 Default value: `0`. Use this to select a different entry background from the `entry_textures` texture configured in the [Category](./categories#attributes). `u` represents the Y Axis (vertical). The index is zero-based, so the first entry background is `0`, the second is `1`, etc.
