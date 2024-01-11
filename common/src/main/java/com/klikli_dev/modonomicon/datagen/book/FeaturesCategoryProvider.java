@@ -33,7 +33,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 "___           _____5____________",
                 "__(multiblock)______________d___",
                 "___           _______r__a_______",
-                "__c           __________________",
+                "__c           ____t_____________",
                 "___           _______2___3___i__",
                 "__s           _____e____________",
                 "___           _______________g__",
@@ -46,6 +46,16 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         var multiblockEntry = this.add(this.makeMultiblockEntry("multiblock"));
 
         var conditionEntries = this.add(this.makeConditionEntries('r', 'a', '1', '2'));
+
+        var twoParentsEntry = this.add(this.makeEntryWithTwoParents('t'));
+        twoParentsEntry.showWhenAnyParentUnlocked(true);
+        var parent1 = conditionEntries.stream().filter(e -> e.getId().getPath().contains("condition_root")).findFirst().get();
+        var parent2 = conditionEntries.stream().filter(e -> e.getId().getPath().contains("condition_level_2")).findFirst().get();
+        twoParentsEntry.withParents(this.parent(parent1), this.parent(parent2));
+        twoParentsEntry.withCondition(this.condition().and(
+                this.condition().entryRead(parent1),
+                this.condition().entryRead(parent2)
+        ));
 
         var recipeEntry = this.add(this.makeRecipeEntry('c'));
 
@@ -123,6 +133,26 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .withIcon(Items.FURNACE)
                 .withLocation(this.entryMap().get(location));
     }
+
+    private BookEntryModel makeEntryWithTwoParents(char location) {
+        this.context().entry("two_parents");
+        this.add(this.context().entryName(), "Entry with two parents");
+        this.add(this.context().entryDescription(), "Yup, two parents!");
+
+        this.context().page("intro");
+        this.page(BookTextPageModel.builder()
+                .withText(this.context().pageText())
+                .withTitle(this.context().pageTitle())
+                .build());
+
+        this.add(this.context().pageTitle(), "Entry with two parents");
+        this.add(this.context().pageText(), "It has two parents ..");
+
+        return this.entry(location)
+                .withIcon(Items.AMETHYST_CLUSTER)
+                .withLocation(this.entryMap().get(location));
+    }
+
 
     private List<BookEntryModel> makeConditionEntries(char rootLocation, char advancementLocation, char level1Location, char level2Location) {
         var result = new ArrayList<BookEntryModel>();

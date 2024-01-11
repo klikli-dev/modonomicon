@@ -85,6 +85,7 @@
       "title2": ""
     }
   ],
+  "show_when_any_parent_unlocked": false,
   "x": -14,
   "y": -1
 }

@@ -11,6 +11,7 @@
     "item": "minecraft:nether_star"
   },
   "name": "book.modonomicon.demo.conditional.always_locked.name",
+  "show_when_any_parent_unlocked": false,
   "x": 0,
   "y": 0
 }
