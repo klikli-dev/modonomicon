@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.4-1.52.0] - 2024-01-11
+### :sparkles: New Features
+- [`96efa61`](https://github.com/klikli-dev/modonomicon/commit/96efa61c880c27279190ff7c7a6358f9e242c2f1) - add showWhenAnyParentUnlocked to entry *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.4-1.51.1] - 2024-01-10
 ### :bug: Bug Fixes
 - [`067a5e1`](https://github.com/klikli-dev/modonomicon/commit/067a5e171b403023b2b0dffe79fb6c1da2b00976) - add workaround for client not receiving book save state *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -609,3 +614,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.4-1.50.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.49.1...release/v1.20.4-1.50.0
 [release/v1.20.4-1.51.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.50.0...release/v1.20.4-1.51.0
 [release/v1.20.4-1.51.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.51.0...release/v1.20.4-1.51.1
+[release/v1.20.4-1.52.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.51.1...release/v1.20.4-1.52.0
