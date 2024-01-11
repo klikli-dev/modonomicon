@@ -33,6 +33,7 @@ public class BookEntryModel {
     protected int entryBackgroundVIndex = 0;
 
     protected boolean hideWhileLocked;
+    protected boolean showWhenAnyParentUnlocked;
     protected List<BookPageModel> pages = new ArrayList<>();
     protected BookConditionModel condition;
     protected ResourceLocation categoryToOpen;
@@ -62,6 +63,7 @@ public class BookEntryModel {
         json.addProperty("background_u_index", this.entryBackgroundUIndex);
         json.addProperty("background_v_index", this.entryBackgroundVIndex);
         json.addProperty("hide_while_locked", this.hideWhileLocked);
+        json.addProperty("show_when_any_parent_unlocked", this.showWhenAnyParentUnlocked);
 
         if (!this.parents.isEmpty()) {
             var parentsArray = new JsonArray();
@@ -150,8 +152,12 @@ public class BookEntryModel {
         return this.y;
     }
 
-    public boolean isHideWhileLocked() {
+    public boolean hideWhileLocked() {
         return this.hideWhileLocked;
+    }
+
+    public boolean showWhenAnyParentUnlocked() {
+        return this.showWhenAnyParentUnlocked;
     }
 
     public List<BookPageModel> getPages() {
@@ -327,6 +333,15 @@ public class BookEntryModel {
      */
     public BookEntryModel hideWhileLocked(boolean hideWhileLocked) {
         this.hideWhileLocked = hideWhileLocked;
+        return this;
+    }
+
+    /**
+     * If true, the entry will show (locked) as soon as any parent is unlocked.
+     * If false, the entry will only show (locked) as soon as all parents are unlocked.
+     */
+    public BookEntryModel showWhenAnyParentUnlocked(boolean showWhenAnyParentUnlocked) {
+        this.showWhenAnyParentUnlocked = showWhenAnyParentUnlocked;
         return this;
     }
 

@@ -217,15 +217,20 @@ public class BookCategoryScreen {
 
         var isEntryUnlocked = BookUnlockStateManager.get().isUnlockedFor(player, entry);
 
+        var anyParentsUnlocked = false;
         var allParentsUnlocked = true;
         for (var parent : entry.getParents()) {
             if (!BookUnlockStateManager.get().isUnlockedFor(player, parent.getEntry())) {
                 allParentsUnlocked = false;
-                break;
+            } else {
+                anyParentsUnlocked = true;
             }
         }
 
-        if (!allParentsUnlocked)
+        if(entry.showWhenAnyParentUnlocked() && !anyParentsUnlocked)
+            return EntryDisplayState.HIDDEN;
+
+        if (!entry.showWhenAnyParentUnlocked() && !allParentsUnlocked)
             return EntryDisplayState.HIDDEN;
 
         if (!isEntryUnlocked)
@@ -373,6 +378,9 @@ public class BookCategoryScreen {
         RenderSystem.enableBlend();
 
         for (var parent : entry.getParents()) {
+            var parentDisplayState = this.getEntryDisplayState(parent.getEntry());
+            if(parentDisplayState == EntryDisplayState.HIDDEN)
+                continue;
 
             int blitOffset = 0; //note: any negative blit offset will move it behind our category background
             this.connectionRenderer.setBlitOffset(blitOffset);

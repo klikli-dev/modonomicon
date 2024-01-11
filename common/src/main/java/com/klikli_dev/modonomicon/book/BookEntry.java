@@ -47,6 +47,11 @@ public class BookEntry {
     protected int entryBackgroundVIndex;
 
     protected boolean hideWhileLocked;
+    /**
+     * If true, the entry will show (locked) as soon as any parent is unlocked.
+     * If false, the entry will only show (locked) as soon as all parents are unlocked.
+     */
+    protected boolean showWhenAnyParentUnlocked;
     protected List<BookPage> pages;
     protected BookCondition condition;
 
@@ -62,7 +67,7 @@ public class BookEntry {
     protected ResourceLocation commandToRunOnFirstReadId;
     protected BookCommand commandToRunOnFirstRead;
 
-    public BookEntry(ResourceLocation id, ResourceLocation categoryId, String name, String description, BookIcon icon, int x, int y, int entryBackgroundUIndex, int entryBackgroundVIndex, boolean hideWhileLocked, BookCondition condition, List<BookEntryParent> parents, List<BookPage> pages, ResourceLocation categoryToOpenId, ResourceLocation commandToRunOnFirstReadId) {
+    public BookEntry(ResourceLocation id, ResourceLocation categoryId, String name, String description, BookIcon icon, int x, int y, int entryBackgroundUIndex, int entryBackgroundVIndex, boolean hideWhileLocked, boolean showWhenAnyParentUnlocked, BookCondition condition, List<BookEntryParent> parents, List<BookPage> pages, ResourceLocation categoryToOpenId, ResourceLocation commandToRunOnFirstReadId) {
         this.id = id;
         this.categoryId = categoryId;
         this.name = name;
@@ -76,6 +81,7 @@ public class BookEntry {
         this.pages = pages;
         this.condition = condition;
         this.hideWhileLocked = hideWhileLocked;
+        this.showWhenAnyParentUnlocked = showWhenAnyParentUnlocked;
 
         this.categoryToOpenId = categoryToOpenId;
         this.commandToRunOnFirstReadId = commandToRunOnFirstReadId;
@@ -91,6 +97,7 @@ public class BookEntry {
         var entryBackgroundUIndex = GsonHelper.getAsInt(json, "background_u_index", 0);
         var entryBackgroundVIndex = GsonHelper.getAsInt(json, "background_v_index", 0);
         var hideWhileLocked = GsonHelper.getAsBoolean(json, "hide_while_locked", false);
+        var showWhenAnyParentUnlocked = GsonHelper.getAsBoolean(json, "show_when_any_parent_unlocked", false);
 
         var parentEntries = new ArrayList<BookEntryParent>();
 
@@ -130,7 +137,7 @@ public class BookEntry {
         }
 
         return new BookEntry(id, categoryId, name, description, icon, x, y, entryBackgroundUIndex,
-                entryBackgroundVIndex, hideWhileLocked, condition, parentEntries, pages, categoryToOpen, commandToRunOnFirstRead);
+                entryBackgroundVIndex, hideWhileLocked, showWhenAnyParentUnlocked, condition, parentEntries, pages, categoryToOpen, commandToRunOnFirstRead);
     }
 
     public static BookEntry fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
@@ -143,6 +150,7 @@ public class BookEntry {
         var entryBackgroundUIndex = buffer.readVarInt();
         var entryBackgroundVIndex = buffer.readVarInt();
         var hideWhileLocked = buffer.readBoolean();
+        var showWhenAnyParentUnlocked = buffer.readBoolean();
 
         var parentEntries = new ArrayList<BookEntryParent>();
 
@@ -166,7 +174,7 @@ public class BookEntry {
         ResourceLocation commandToRunOnFirstRead = buffer.readNullable(FriendlyByteBuf::readResourceLocation);
 
         return new BookEntry(id, categoryId, name, description, icon, x, y, entryBackgroundUIndex,
-                entryBackgroundVIndex, hideWhileLocked, condition, parentEntries, pages, categoryToOpen, commandToRunOnFirstRead);
+                entryBackgroundVIndex, hideWhileLocked, showWhenAnyParentUnlocked, condition, parentEntries, pages, categoryToOpen, commandToRunOnFirstRead);
     }
 
     public BookCategory getCategoryToOpen() {
@@ -241,6 +249,7 @@ public class BookEntry {
         buffer.writeVarInt(this.entryBackgroundUIndex);
         buffer.writeVarInt(this.entryBackgroundVIndex);
         buffer.writeBoolean(this.hideWhileLocked);
+        buffer.writeBoolean(this.showWhenAnyParentUnlocked);
 
         buffer.writeVarInt(this.parents.size());
         for (var parent : this.parents) {
@@ -269,6 +278,10 @@ public class BookEntry {
 
     public boolean hideWhileLocked() {
         return this.hideWhileLocked;
+    }
+
+    public boolean showWhenAnyParentUnlocked() {
+        return this.showWhenAnyParentUnlocked;
     }
 
     public ResourceLocation getId() {
