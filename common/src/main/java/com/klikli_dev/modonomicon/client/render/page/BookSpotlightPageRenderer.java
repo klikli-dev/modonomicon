@@ -42,7 +42,6 @@ public class BookSpotlightPageRenderer extends BookPageRenderer<BookSpotlightPag
 
         this.parentScreen.renderIngredient(guiGraphics, ITEM_X, ITEM_Y, mouseX, mouseY, this.page.getItem());
 
-
         var style = this.getClickedComponentStyleAt(mouseX, mouseY);
         if (style != null)
             this.parentScreen.renderComponentHoverEffect(guiGraphics, style, mouseX, mouseY);
@@ -64,24 +63,7 @@ public class BookSpotlightPageRenderer extends BookPageRenderer<BookSpotlightPag
                 return textStyle;
             }
 
-            //BookContentScreen.PAGE_WIDTH / 2 - 8, 15
-            if (pMouseX >= ITEM_X && pMouseX <= ITEM_X + 16 && pMouseY >= ITEM_Y && pMouseY <= ITEM_Y + 16) {
-
-                var stacks = this.page.getItem().getItems();
-                if (stacks.length > 0) {
-                    var stack = stacks[(this.parentScreen.ticksInBook / 20) % stacks.length];
-                    var itemLink = "item://" + BuiltInRegistries.ITEM.getKey(stack.getItem());
-                    if (stack.hasTag()) {
-                        itemLink += stack.getTag().toString();
-                    }
-                    var spotlightItemStyle = Style.EMPTY
-                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM, new HoverEvent.ItemStackInfo(stack)))
-                            .withClickEvent(new ClickEvent(ClickEvent.Action.CHANGE_PAGE, itemLink));
-
-                    return spotlightItemStyle;
-                }
-
-            }
+            //should not do item hover - that is handled by render ingredient, which also makes sure the tooltip does not go beyond the screen.
         }
         return super.getClickedComponentStyleAt(pMouseX, pMouseY);
     }
