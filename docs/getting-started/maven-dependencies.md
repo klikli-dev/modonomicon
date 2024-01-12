@@ -59,7 +59,6 @@ The `dependencies` section of your `build.gradle` should look like this:
 ```groovy
 dependencies {
     ... //other dependencies
-    compileOnly fg.deobf("com.klikli_dev:modonomicon-${minecraft_version}-common:${modonomicon_version}")
     implementation fg.deobf("com.klikli_dev:modonomicon-${minecraft_version}-forge:${modonomicon_version}") 
 }
 ```
@@ -75,7 +74,6 @@ You may need to add `{transitive=false}` at the end of the `implementation ...` 
 ```groovy
 dependencies {
     ... //other dependencies
-    modCompileOnly "com.klikli_dev:modonomicon-${minecraft_version}-common:${modonomicon_version}"
     modImplementation "com.klikli_dev:modonomicon-${minecraft_version}-fabric:${modonomicon_version}"
 }
 ```
