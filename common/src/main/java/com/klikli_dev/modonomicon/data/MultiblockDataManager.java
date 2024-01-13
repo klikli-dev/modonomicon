@@ -56,7 +56,8 @@ public class MultiblockDataManager extends SimpleJsonResourceReloadListener {
     }
 
     public Message getSyncMessage() {
-        return new SyncMultiblockDataMessage(this.multiblocks);
+        //we hand over a copy of the map, because otherwise in SP scenarios if we clear this.multiblocks to prepare for receiving the message, we also clear the books in the message
+        return new SyncMultiblockDataMessage(new ConcurrentHashMap<>(this.multiblocks));
     }
 
     public void onDatapackSyncPacket(SyncMultiblockDataMessage message) {
