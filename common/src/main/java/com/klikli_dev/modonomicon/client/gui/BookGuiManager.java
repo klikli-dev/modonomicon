@@ -13,7 +13,6 @@ import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.*;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.platform.ClientServices;
-import com.klikli_dev.modonomicon.platform.Services;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -185,11 +184,17 @@ public class BookGuiManager {
             this.currentContentScreen = this.currentCategoryScreen.openEntry(entry);
         } else {
             //we are clearing the gui layers above, so we have to restore here if we do not call openentry
-            ClientServices.GUI.pushGuiLayer(this.currentContentScreen);
+            //we check if the content screen was already added, e.g. by the book category screen
+            if (!this.isEntryAlreadyDisplayed(entry))
+                ClientServices.GUI.pushGuiLayer(this.currentContentScreen);
         }
 
         //we don't need to manually check for the current page because the content screen will do that for us
         this.currentContentScreen.goToPage(page, false);
         //TODO: play sound here? could just make this a client config
+    }
+
+    public boolean isEntryAlreadyDisplayed(BookEntry entry) {
+        return this.currentContentScreen != null && this.currentContentScreen.getEntry().equals(entry);
     }
 }

@@ -154,6 +154,10 @@ public class BookCategoryScreen {
 
         this.openEntry = entry.getId();
 
+        //we check if the content screen was already added, e.g. by the book gui manager
+        if(BookGuiManager.get().isEntryAlreadyDisplayed(entry))
+            return (BookContentScreen) Minecraft.getInstance().screen;
+
         var bookContentScreen = new BookContentScreen(this.bookOverviewScreen, entry);
         ClientServices.GUI.pushGuiLayer(bookContentScreen);
 
