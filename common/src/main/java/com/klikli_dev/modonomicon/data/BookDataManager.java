@@ -70,7 +70,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     }
 
     public Message getSyncMessage() {
-        return new SyncBookDataMessage(this.books);
+        //we hand over a copy of the map, because otherwise in SP scenarios if we clear this.books to prepare for receiving the message, we also clear the books in the message
+        return new SyncBookDataMessage(new ConcurrentHashMap<>(this.books));
     }
 
     public boolean areBooksBuilt() {
