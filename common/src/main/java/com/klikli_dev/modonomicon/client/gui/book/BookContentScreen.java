@@ -685,6 +685,8 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
 
     @Override
     public boolean handleComponentClicked(@Nullable Style pStyle) {
+
+        //TODO: Refactor: this needs to be at least separate methods per action, or even some sort of handler class with a dispatcher
         if (pStyle != null) {
             var event = pStyle.getClickEvent();
             if (event != null) {
