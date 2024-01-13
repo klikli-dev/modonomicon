@@ -823,6 +823,11 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
             }
         }
 
+        if (pButton == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+            this.onClose();
+            return true;
+        }
+
         var clickPage = this.clickPage(this.leftPageRenderer, pMouseX, pMouseY, pButton)
                 || this.clickPage(this.rightPageRenderer, pMouseX, pMouseY, pButton);
 
@@ -832,5 +837,16 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
         }
 
         return clickPage || super.mouseClicked(pMouseX, pMouseY, pButton);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        if (delta < 0) {
+            this.flipPage(false, true);
+        } else if (delta > 0) {
+            this.flipPage(true, true);
+        }
+
+        return true;
     }
 }
