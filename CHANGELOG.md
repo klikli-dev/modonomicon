@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.4-1.54.2] - 2024-01-13
+### :bug: Bug Fixes
+- [`8d8f890`](https://github.com/klikli-dev/modonomicon/commit/8d8f89000a865a1530373188b5ccba5f059df3b2) - crash due to missing instanceof check *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.4-1.54.1] - 2024-01-13
 ### :bug: Bug Fixes
 - [`3d3f520`](https://github.com/klikli-dev/modonomicon/commit/3d3f52019c2fb3cfead10b2bc0ea7869323524a7) - in SP multiblocks and books get cleared on simulated network sync *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -637,3 +642,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.4-1.52.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.52.0...release/v1.20.4-1.52.1
 [release/v1.20.4-1.54.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.53.0...release/v1.20.4-1.54.0
 [release/v1.20.4-1.54.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.54.0...release/v1.20.4-1.54.1
+[release/v1.20.4-1.54.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.54.1...release/v1.20.4-1.54.2
