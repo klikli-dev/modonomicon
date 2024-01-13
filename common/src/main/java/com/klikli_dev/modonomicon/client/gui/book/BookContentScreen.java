@@ -844,10 +844,10 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        if (delta < 0) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (scrollX < 0) {
             this.flipPage(false, true);
-        } else if (delta > 0) {
+        } else if (scrollX > 0) {
             this.flipPage(true, true);
         }
 
