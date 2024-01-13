@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.54.0] - 2024-01-13
+### :sparkles: New Features
+- [`a2a877d`](https://github.com/klikli-dev/modonomicon/commit/a2a877deb294d25fde50710f007e15fe7446b028) - add backspace as hotkey for "back" *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`0c75818`](https://github.com/klikli-dev/modonomicon/commit/0c7581895e354e9783fd91f78321de2654b390b8) - switching between book entries sometimes creates two content screens on top of each other *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.53.0] - 2024-01-13
 ### :sparkles: New Features
 - [`aa3ddc7`](https://github.com/klikli-dev/modonomicon/commit/aa3ddc7b0988ba112bcd525d43d85c89362dc3a8) - add mouse navigation *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -604,3 +612,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.52.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.51.1...release/v1.20.1-1.52.0
 [release/v1.20.1-1.52.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.52.0...release/v1.20.1-1.52.1
 [release/v1.20.1-1.53.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.52.1...release/v1.20.1-1.53.0
+[release/v1.20.1-1.54.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.53.0...release/v1.20.1-1.54.0
