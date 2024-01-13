@@ -174,12 +174,14 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
     }
 
     public void handleBackButton(Button button) {
+        this.back();
+    }
+
+    public void back() {
         if (BookGuiManager.get().getHistorySize() > 0) {
             var lastPage = BookGuiManager.get().popHistory();
             BookGuiManager.get().openEntry(lastPage.bookId, lastPage.categoryId, lastPage.entryId, lastPage.page);
         }
-
-        //TODO: SFX?
     }
 
     public void handleExitButton(Button button) {
@@ -845,5 +847,15 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
         }
 
         return true;
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == GLFW.GLFW_KEY_BACKSPACE) {
+            this.back();
+            return true;
+        }
+
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 }
