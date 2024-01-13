@@ -195,6 +195,6 @@ public class BookGuiManager {
     }
 
     public boolean isEntryAlreadyDisplayed(BookEntry entry) {
-        return this.currentContentScreen != null && this.currentContentScreen.getEntry().equals(entry);
+        return Minecraft.getInstance().screen instanceof BookContentScreen bookContentScreen && bookContentScreen.getEntry().equals(entry);
     }
 }
