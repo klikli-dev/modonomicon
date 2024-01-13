@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.4-1.54.0] - 2024-01-13
+### :sparkles: New Features
+- [`e0e92d0`](https://github.com/klikli-dev/modonomicon/commit/e0e92d0f74d9f1568fcb435f3e8287e74a5a41a9) - add backspace as hotkey for "back" *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`1141dce`](https://github.com/klikli-dev/modonomicon/commit/1141dceb2fef5c505d39b221e26827e2a2f5d227) - switching between book entries sometimes creates two content screens on top of each other *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`a73e4cc`](https://github.com/klikli-dev/modonomicon/commit/a73e4cc64a733cd4e359b4efaa896c7a13b3912e) - method signature changed in 1.20.4 *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.4-1.52.1] - 2024-01-12
 ### :bug: Bug Fixes
 - [`54a4407`](https://github.com/klikli-dev/modonomicon/commit/54a4407faef0f5e61869ee82ecd0795288d3bc68) - Spotlight page shows tooltip twice if on the right side *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -621,3 +630,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.4-1.51.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.51.0...release/v1.20.4-1.51.1
 [release/v1.20.4-1.52.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.51.1...release/v1.20.4-1.52.0
 [release/v1.20.4-1.52.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.52.0...release/v1.20.4-1.52.1
+[release/v1.20.4-1.54.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.53.0...release/v1.20.4-1.54.0
