@@ -135,7 +135,10 @@ Default value: `true`. If false, there will be no connecting line. This is usefu
 
 #### **line_reversed** (Boolean, _optional_)
 
-Default value: `false`. If true, the line will be drawn from this entry to the parent entry and the arrow will point to the parent, instead of the other way around.
+Default value: `false`.  
+If true, the line will be drawn in reverse, which means the curve is mirrored. This allows you to determine if the curve goes left or right / up or down to get nice symmetrical graphs.
+This has no effect on straight lines.   
+This does not affect the direction of the arrow.
 
 ## Usage Examples
 
