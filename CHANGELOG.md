@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.54.4] - 2024-01-14
+### :wrench: Chores
+- [`75577a9`](https://github.com/klikli-dev/modonomicon/commit/75577a9bf939d4521c5a2a61fc56e17e639e7bb4) - increase mod version *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`cf9602b`](https://github.com/klikli-dev/modonomicon/commit/cf9602bafb7271261b895f031743c63408227e06) - change item link default color *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.54.3] - 2024-01-14
 ### :bug: Bug Fixes
 - [`c698b0d`](https://github.com/klikli-dev/modonomicon/commit/c698b0d9335438c03fb365c8de597000def1982f) - line_reversed for parents *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -634,3 +640,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.54.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.54.0...release/v1.20.1-1.54.1
 [release/v1.20.1-1.54.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.54.1...release/v1.20.1-1.54.2
 [release/v1.20.1-1.54.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.54.2...release/v1.20.1-1.54.3
+[release/v1.20.1-1.54.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.54.3...release/v1.20.1-1.54.4
