@@ -9,9 +9,12 @@ package com.klikli_dev.modonomicon.book;
 public class ResolvedBookEntryParent extends BookEntryParent {
     protected BookEntry entry;
 
-    public ResolvedBookEntryParent(BookEntry entry) {
+    public ResolvedBookEntryParent(BookEntryParent unresolved, BookEntry entry) {
         super(entry.getId());
         this.entry = entry;
+        this.drawArrow = unresolved.drawArrow;
+        this.lineEnabled = unresolved.lineEnabled;
+        this.lineReversed = unresolved.lineReversed;
     }
 
     @Override

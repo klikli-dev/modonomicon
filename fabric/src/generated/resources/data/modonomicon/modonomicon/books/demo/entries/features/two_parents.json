@@ -36,7 +36,7 @@
       "draw_arrow": true,
       "entry": "modonomicon:features/condition_root",
       "line_enabled": true,
-      "line_reversed": false
+      "line_reversed": true
     },
     {
       "draw_arrow": true,
@@ -46,6 +46,6 @@
     }
   ],
   "show_when_any_parent_unlocked": true,
-  "x": -9,
-  "y": -1
+  "x": -7,
+  "y": -3
 }

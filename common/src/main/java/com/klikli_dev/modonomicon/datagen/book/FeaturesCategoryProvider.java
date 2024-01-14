@@ -30,11 +30,11 @@ public class FeaturesCategoryProvider extends CategoryProvider {
     @Override
     protected String[] generateEntryMap() {
         return new String[]{
-                "___           _____5____________",
-                "__(multiblock)______________d___",
-                "___           _______r__a_______",
-                "__c           ____t_____________",
-                "___           _______2___3___i__",
+                "___           ____5_____a_______",
+                "__(multiblock)______t_______d___",
+                "___           _______r__________",
+                "__c           __________________",
+                "___           _______2____1__i__",
                 "__s           _____e____________",
                 "___           _______________g__",
                 "___           _____f____________"
@@ -51,7 +51,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         twoParentsEntry.showWhenAnyParentUnlocked(true);
         var parent1 = conditionEntries.stream().filter(e -> e.getId().getPath().contains("condition_root")).findFirst().get();
         var parent2 = conditionEntries.stream().filter(e -> e.getId().getPath().contains("condition_level_2")).findFirst().get();
-        twoParentsEntry.withParents(this.parent(parent1), this.parent(parent2));
+        twoParentsEntry.withParents(this.parent(parent1).withLineReversed(true), this.parent(parent2));
         twoParentsEntry.withCondition(this.condition().and(
                 this.condition().entryRead(parent1),
                 this.condition().entryRead(parent2)
@@ -60,7 +60,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         var recipeEntry = this.add(this.makeRecipeEntry('c'));
 
         var spotlightEntry = this.add(this.makeSpotlightEntry('s'));
-        spotlightEntry.withParent(this.parent(recipeEntry));
+        spotlightEntry.withParent(this.parent(recipeEntry).withLineReversed(true));
 
         var emptyEntry = this.add(this.makeEmptyPageEntry('e'));
         emptyEntry.withParent(this.parent(spotlightEntry));
@@ -207,7 +207,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 .withIcon(Items.LEVER)
                 .withPages(conditionLevel1EntryInfoPage)
                 .withCondition(conditionLevel1EntryCondition)
-                .withParent(this.parent(conditionRootEntry));
+                .withParent(this.parent(conditionRootEntry).withLineReversed(true));
         result.add(conditionLevel1Entry);
 
         this.context().entry("condition_level_2");
