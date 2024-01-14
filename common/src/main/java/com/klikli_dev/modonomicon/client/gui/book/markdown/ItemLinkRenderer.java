@@ -25,7 +25,7 @@ public class ItemLinkRenderer implements LinkRenderer {
     public static final String PROTOCOL_ITEM = "item://";
     public static final int PROTOCOL_ITEM_LENGTH = PROTOCOL_ITEM.length();
 
-    public static final TextColor ITEM_LINK_COLOR = TextColor.fromRgb(0x03fc90); //light green
+    public static final TextColor ITEM_LINK_COLOR = TextColor.fromRgb(0x029e5a); //light green
 
     public static boolean isItemLink(String linkText) {
         return linkText.toLowerCase().startsWith(PROTOCOL_ITEM);
