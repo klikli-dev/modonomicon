@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.54.3] - 2024-01-14
+### :bug: Bug Fixes
+- [`c698b0d`](https://github.com/klikli-dev/modonomicon/commit/c698b0d9335438c03fb365c8de597000def1982f) - line_reversed for parents *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`fb62432`](https://github.com/klikli-dev/modonomicon/commit/fb624320a7688f2f3371de8806eedf18764036a5) - remove modloader from dependencies, is handled via loader config *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.54.2] - 2024-01-13
 ### :bug: Bug Fixes
 - [`1b924fa`](https://github.com/klikli-dev/modonomicon/commit/1b924faa8b1ae2f31bdc0ea43afed14a4718059b) - crash due to missing instanceof check *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -625,3 +633,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.54.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.53.0...release/v1.20.1-1.54.0
 [release/v1.20.1-1.54.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.54.0...release/v1.20.1-1.54.1
 [release/v1.20.1-1.54.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.54.1...release/v1.20.1-1.54.2
+[release/v1.20.1-1.54.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.54.2...release/v1.20.1-1.54.3
