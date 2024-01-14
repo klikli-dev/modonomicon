@@ -87,7 +87,7 @@ public class EntryConnectionRenderer {
             }
         } else {
             if (entry.getY() > parentEntry.getY()) {
-                this.drawSmallCurveLeftUp(guiGraphics, entry.getX() + 1, entry.getY());
+                this.drawSmallCurveLeftUp(guiGraphics, parentEntry.getX(), parentEntry.getY() + 1);
                 if (parent.drawArrow())
                     this.drawLeftArrow(guiGraphics, entry.getX() + 1, entry.getY());
             } else {
@@ -136,9 +136,9 @@ public class EntryConnectionRenderer {
                 this.drawRightArrow(guiGraphics, entry.getX() - 1, entry.getY());
         } else {
             if (entry.getY() > parentEntry.getY())
-                this.drawLargeCurveLeftUp(guiGraphics, entry.getX() + 1, entry.getY() - 1);
+                this.drawLargeCurveLeftUp(guiGraphics, parentEntry.getX() - 1, parentEntry.getY() + 1);
             else
-                this.drawLargeCurveLeftDown(guiGraphics, entry.getX() + 1, entry.getY());
+                this.drawLargeCurveLeftDown(guiGraphics, parentEntry.getX() - 1, entry.getY());
             if (parent.drawArrow())
                 this.drawLeftArrow(guiGraphics, entry.getX() + 1, entry.getY());
         }

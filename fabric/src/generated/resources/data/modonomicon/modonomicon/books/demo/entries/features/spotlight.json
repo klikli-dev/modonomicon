@@ -41,7 +41,7 @@
       "draw_arrow": true,
       "entry": "modonomicon:features/recipe",
       "line_enabled": true,
-      "line_reversed": false
+      "line_reversed": true
     }
   ],
   "show_when_any_parent_unlocked": false,

@@ -27,10 +27,10 @@
       "draw_arrow": true,
       "entry": "modonomicon:features/condition_root",
       "line_enabled": true,
-      "line_reversed": false
+      "line_reversed": true
     }
   ],
   "show_when_any_parent_unlocked": false,
-  "x": 0,
+  "x": -1,
   "y": 0
 }

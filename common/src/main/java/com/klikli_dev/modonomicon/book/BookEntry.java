@@ -196,7 +196,7 @@ public class BookEntry {
         var newParents = new ArrayList<BookEntryParent>();
         for (var parent : this.getParents()) {
             var parentEntry = this.book.getEntry(parent.getEntryId());
-            newParents.add(new ResolvedBookEntryParent(parentEntry));
+            newParents.add(new ResolvedBookEntryParent(parent, parentEntry));
         }
         this.parents = newParents;
 
