@@ -8,7 +8,6 @@ package com.klikli_dev.modonomicon.config;
 
 
 import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.neoforge.common.NeoForgeConfig;
 
 public class ClientConfig {
 

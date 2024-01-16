@@ -14,14 +14,14 @@ import net.minecraft.world.item.TooltipFlag;
 
 import java.util.List;
 
-public class ForgeFluidHelper implements FluidHelper {
+public class NeoFluidHelper implements FluidHelper {
     @Override
     public void drawFluid(GuiGraphics guiGraphics, int width, int height, FluidHolder fluidHolder, int capacity) {
-        FluidRenderHelper.drawFluid(guiGraphics, width, height, ForgeFluidHolder.toStack(fluidHolder), capacity);
+        FluidRenderHelper.drawFluid(guiGraphics, width, height, NeoFluidHolder.toStack(fluidHolder), capacity);
     }
 
     @Override
     public List<Component> getTooltip(FluidHolder fluidHolder, int capacity, TooltipFlag tooltipFlag, TooltipMode tooltipMode) {
-        return FluidRenderHelper.getTooltip(ForgeFluidHolder.toStack(fluidHolder), capacity, tooltipFlag, tooltipMode);
+        return FluidRenderHelper.getTooltip(NeoFluidHolder.toStack(fluidHolder), capacity, tooltipFlag, tooltipMode);
     }
 }

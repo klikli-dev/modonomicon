@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
-public class ForgeMultiblockHelper implements MultiblockHelper {
+public class NeoMultiblockHelper implements MultiblockHelper {
     @Override
     public void renderBlock(BlockState state, BlockPos pos, Multiblock multiblock, PoseStack ps, MultiBufferSource buffers, RandomSource rand) {
         var blockRenderer = Minecraft.getInstance().getBlockRenderer();
