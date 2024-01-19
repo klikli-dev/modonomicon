@@ -75,6 +75,14 @@ The height of the background texture. Applies both to the `background` property 
 Default value: `512`   
 The width of the background texture. Applies both to the `background` property as well as the `background_parallax_layers` property.
 
+### **background_texture_zoom_multiplier** (Float, _optional_)
+
+Default value: `1.0`
+Allows to modify how "zoomed in" the background texture is rendered.    
+A lower value means the texture is zoomed OUT more -> it is sharper / less blurry.    
+This is especially useful for textures larger than 512x512px, as they might end up looking blurry otherwise.   
+Make sure to use seamless textures as the texture may be repeated (especially horizontally) to fill the screen.
+
 ### **entry_textures** (ResourceLocation, _optional_)
 
 Defaults to `modonomicon:textures/gui/entry_textures.png`.   
