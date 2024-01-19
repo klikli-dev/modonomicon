@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.4-1.54.5] - 2024-01-19
+### :sparkles: New Features
+- [`c9c83d4`](https://github.com/klikli-dev/modonomicon/commit/c9c83d4e9c69ab0d9ac7c3e74f5390726647c7e3) - update past neo breaking changes *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`ccb2410`](https://github.com/klikli-dev/modonomicon/commit/ccb2410e54af66e5564cc43db5104af980033232) - missing builder methods for frame textures on the book model *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`6e2fb80`](https://github.com/klikli-dev/modonomicon/commit/6e2fb80381f95d208af20b3f9544135b7347ef77) - update publish action *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`140465f`](https://github.com/klikli-dev/modonomicon/commit/140465f8950670197b7884fcf2e04eeaed7f70a3) - update classnames to reflect they are associated with Neo, not Forge *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.4-1.54.4] - 2024-01-14
 ### :wrench: Chores
 - [`7dd4d96`](https://github.com/klikli-dev/modonomicon/commit/7dd4d96ab905348167a31d001e624c331ad8a7e3) - change item link default color *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -658,3 +670,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.4-1.54.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.54.1...release/v1.20.4-1.54.2
 [release/v1.20.4-1.54.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.54.2...release/v1.20.4-1.54.3
 [release/v1.20.4-1.54.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.54.3...release/v1.20.4-1.54.4
+[release/v1.20.4-1.54.5]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.54.4...release/v1.20.4-1.54.5
