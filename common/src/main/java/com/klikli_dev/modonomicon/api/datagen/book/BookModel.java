@@ -215,8 +215,54 @@ public class BookModel {
         return this;
     }
 
+    /**
+     * Sets the image to use as a frame texture.
+     * Please note that the center of each side will be repeated/stretched to fit the screen size.
+     * Default is {@link Data.Book#DEFAULT_FRAME_TEXTURE}.
+     * See {@link BookModel#withBottomFrameOverride}, {@link BookModel#withTopFrameOverride}, {@link BookModel#withLeftFrameOverride} and  {@link BookModel#withRightFrameOverride} on how to set a non-repeating center part.
+     */
     public BookModel withFrameTexture(ResourceLocation frameTexture) {
         this.frameTexture = frameTexture;
+        return this;
+    }
+
+    /**
+     * Sets the image to use as an overlay for the bottom frame.
+     * This can either be just a copy of the same portion of the frame texture, or a different texture to show some unique details that are not repeated.
+     * Default is {@link Data.Book#DEFAULT_BOTTOM_FRAME_OVERLAY}.
+     */
+    public BookModel withBottomFrameOverride(BookFrameOverlay overlay) {
+        this.bottomFrameOverlay = overlay;
+        return this;
+    }
+
+    /**
+     * Sets the image to use as an overlay for the top frame.
+     * This can either be just a copy of the same portion of the frame texture, or a different texture to show some unique details that are not repeated.
+     * Default is {@link Data.Book#DEFAULT_TOP_FRAME_OVERLAY}.
+     */
+    public BookModel withTopFrameOverride(BookFrameOverlay overlay) {
+        this.topFrameOverlay = overlay;
+        return this;
+    }
+
+    /**
+     * Sets the image to use as an overlay for the left frame.
+     * This can either be just a copy of the same portion of the frame texture, or a different texture to show some unique details that are not repeated.
+     * Default is {@link Data.Book#DEFAULT_LEFT_FRAME_OVERLAY}.
+     */
+    public BookModel withLeftFrameOverride(BookFrameOverlay overlay) {
+        this.leftFrameOverlay = overlay;
+        return this;
+    }
+
+    /**
+     * Sets the image to use as an overlay for the right frame.
+     * This can either be just a copy of the same portion of the frame texture, or a different texture to show some unique details that are not repeated.
+     * Default is {@link Data.Book#DEFAULT_RIGHT_FRAME_OVERLAY}.
+     */
+    public BookModel withRightFrameOverride(BookFrameOverlay overlay) {
+        this.rightFrameOverlay = overlay;
         return this;
     }
 
