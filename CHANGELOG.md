@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.55.0] - 2024-01-19
+### :sparkles: New Features
+- [`0afb852`](https://github.com/klikli-dev/modonomicon/commit/0afb8527a962535fb30d9cf1e453aabc76523d33) - add a configurable zoom factor to category backgrounds *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`9e11b55`](https://github.com/klikli-dev/modonomicon/commit/9e11b5567ebc4dfea1a2beaae8a0bb5cb36c2a4a) - missing builder methods for frame textures on the book model *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`cf890e4`](https://github.com/klikli-dev/modonomicon/commit/cf890e478cb7a40ae6ee38397fc6ca5ef955a1b7) - increase mod version *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`a926552`](https://github.com/klikli-dev/modonomicon/commit/a926552b114f21918062fc4867dc4e7f1a6efe87) - update publish action *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.54.4] - 2024-01-14
 ### :wrench: Chores
 - [`75577a9`](https://github.com/klikli-dev/modonomicon/commit/75577a9bf939d4521c5a2a61fc56e17e639e7bb4) - increase mod version *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -641,3 +653,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.54.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.54.1...release/v1.20.1-1.54.2
 [release/v1.20.1-1.54.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.54.2...release/v1.20.1-1.54.3
 [release/v1.20.1-1.54.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.54.3...release/v1.20.1-1.54.4
+[release/v1.20.1-1.55.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.54.4...release/v1.20.1-1.55.0
