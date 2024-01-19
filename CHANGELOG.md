@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.4-1.55.0] - 2024-01-19
+### :sparkles: New Features
+- [`c282c9a`](https://github.com/klikli-dev/modonomicon/commit/c282c9a55cfa21ef83582ec9b2cc69a61f40e66b) - add a configurable zoom factor to category backgrounds *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.4-1.54.5] - 2024-01-19
 ### :sparkles: New Features
 - [`c9c83d4`](https://github.com/klikli-dev/modonomicon/commit/c9c83d4e9c69ab0d9ac7c3e74f5390726647c7e3) - update past neo breaking changes *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -671,3 +676,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.4-1.54.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.54.2...release/v1.20.4-1.54.3
 [release/v1.20.4-1.54.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.54.3...release/v1.20.4-1.54.4
 [release/v1.20.4-1.54.5]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.54.4...release/v1.20.4-1.54.5
+[release/v1.20.4-1.55.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.54.5...release/v1.20.4-1.55.0
