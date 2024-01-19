@@ -31,6 +31,11 @@ public class BookCategoryModel {
     protected ResourceLocation background = new ResourceLocation(Category.DEFAULT_BACKGROUND);
     protected int backgroundWidth = Category.DEFAULT_BACKGROUND_WIDTH;
     protected int backgroundHeight = Category.DEFAULT_BACKGROUND_HEIGHT;
+    /**
+     * Allows to modify how "zoomed in" the background texture is rendered.
+     * A lower value means the texture is zoomed OUT more -> it is sharper / less blurry.
+     */
+    protected float backgroundTextureZoomMultiplier = Category.DEFAULT_BACKGROUND_TEXTURE_ZOOM_MULTIPLIER;
     protected List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers = new ArrayList<>();
     protected ResourceLocation entryTextures = new ResourceLocation(Category.DEFAULT_ENTRY_TEXTURES);
     protected List<BookEntryModel> entries = new ArrayList<>();
@@ -77,6 +82,7 @@ public class BookCategoryModel {
         json.addProperty("background", this.background.toString());
         json.addProperty("background_width", this.backgroundWidth);
         json.addProperty("background_height", this.backgroundHeight);
+        json.addProperty("background_texture_zoom_multiplier", this.backgroundTextureZoomMultiplier);
         json.add("background_parallax_layers",
                 this.backgroundParallaxLayers.stream()
                         .map(layer -> BookCategoryBackgroundParallaxLayer.CODEC.encodeStart(JsonOps.INSTANCE, layer).get().orThrow())
@@ -185,6 +191,16 @@ public class BookCategoryModel {
     public BookCategoryModel withBackgroundSize(int width, int height) {
         this.backgroundWidth = width;
         this.backgroundHeight = height;
+        return this;
+    }
+
+    /**
+     * Sets the category's background texture zoom multiplier.
+     * A lower value means the texture is zoomed OUT more -> it is sharper / less blurry.
+     * Default value is {@link Category#DEFAULT_BACKGROUND_TEXTURE_ZOOM_MULTIPLIER}.
+     */
+    public BookCategoryModel withBackgroundTextureZoomMultiplier(float backgroundTextureZoomMultiplier) {
+        this.backgroundTextureZoomMultiplier = backgroundTextureZoomMultiplier;
         return this;
     }
 

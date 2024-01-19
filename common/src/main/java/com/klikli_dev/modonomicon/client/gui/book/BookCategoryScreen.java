@@ -7,7 +7,6 @@
 package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.api.events.EntryClickedEvent;
-import com.klikli_dev.modonomicon.api.events.ModonomiconEvent;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
 import com.klikli_dev.modonomicon.book.BookEntry;
@@ -127,7 +126,7 @@ public class BookCategoryScreen {
 
                 var event = new EntryClickedEvent(this.category.getBook().getId(), entry.getId(), pMouseX, pMouseY, pButton, displayStyle);
                 //if event is canceled -> click was handled and we do not open the entry.
-                if(ModonomiconEvents.client().entryClicked(event)){
+                if (ModonomiconEvents.client().entryClicked(event)) {
                     return true;
                 }
 
@@ -155,7 +154,7 @@ public class BookCategoryScreen {
         this.openEntry = entry.getId();
 
         //we check if the content screen was already added, e.g. by the book gui manager
-        if(BookGuiManager.get().isEntryAlreadyDisplayed(entry))
+        if (BookGuiManager.get().isEntryAlreadyDisplayed(entry))
             return (BookContentScreen) Minecraft.getInstance().screen;
 
         var bookContentScreen = new BookContentScreen(this.bookOverviewScreen, entry);
@@ -173,8 +172,14 @@ public class BookCategoryScreen {
         int innerWidth = this.bookOverviewScreen.getInnerWidth();
         int innerHeight = this.bookOverviewScreen.getInnerHeight();
 
-        //based on arcana's render research background
-        //does not correctly work for non-automatic gui scale, but that only leads to background repeat -> no problem
+        //we do not use our static max_scroll here because it makes some issues, so we use the tex instead.
+        int backgroundWidth = this.category.getBackgroundWidth();
+        int backgroundHeight = this.category.getBackgroundHeight();
+        final int MAX_SCROLL = Math.max(backgroundWidth, backgroundHeight);
+        float backgroundTextureZoomMultiplier = this.category.getBackgroundTextureZoomMultiplier();
+
+
+        // Adjust scale calculations to take into account actual texture size
         float xScale = MAX_SCROLL * 2.0f / ((float) MAX_SCROLL + this.bookOverviewScreen.getFrameThicknessW() - this.bookOverviewScreen.getFrameWidth());
         float yScale = MAX_SCROLL * 2.0f / ((float) MAX_SCROLL + this.bookOverviewScreen.getFrameThicknessH() - this.bookOverviewScreen.getFrameHeight());
         float scale = Math.max(xScale, yScale);
@@ -187,21 +192,20 @@ public class BookCategoryScreen {
         //note we cannot translate -z here because even -1 immediately pushes us behind the scene -> not visible
         if (!this.category.getBackgroundParallaxLayers().isEmpty()) {
             this.category.getBackgroundParallaxLayers().forEach(layer -> {
-                this.renderBackgroundParallaxLayer(guiGraphics, layer, innerX, innerY, innerWidth, innerHeight, this.scrollX, this.scrollY, scale, xOffset, yOffset, this.currentZoom);
+                this.renderBackgroundParallaxLayer(guiGraphics, layer, innerX, innerY, innerWidth, innerHeight, this.scrollX, this.scrollY, scale, xOffset, yOffset, this.currentZoom, backgroundWidth, backgroundHeight, backgroundTextureZoomMultiplier);
             });
         } else {
             //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
             //force offset to int here to reduce difference to entry rendering which is pos based and thus int precision only
-
             guiGraphics.blit(this.category.getBackground(), innerX, innerY,
                     (this.scrollX + MAX_SCROLL) / scale + xOffset,
                     (this.scrollY + MAX_SCROLL) / scale + yOffset,
-                    innerWidth, innerHeight, this.category.getBackgroundHeight(), this.category.getBackgroundWidth());
+                    innerWidth, innerHeight, (int)(backgroundHeight * backgroundTextureZoomMultiplier), (int)(backgroundWidth * backgroundTextureZoomMultiplier));
 
         }
     }
 
-    public void renderBackgroundParallaxLayer(GuiGraphics guiGraphics, BookCategoryBackgroundParallaxLayer layer, int x, int y, int width, int height, float scrollX, float scrollY, float parallax, float xOffset, float yOffset, float zoom) {
+    public void renderBackgroundParallaxLayer(GuiGraphics guiGraphics, BookCategoryBackgroundParallaxLayer layer, int x, int y, int width, int height, float scrollX, float scrollY, float parallax, float xOffset, float yOffset, float zoom, int backgroundWidth, int backgroundHeight, float backgroundTextureZoomMultiplier) {
         float parallax1 = parallax / layer.getSpeed();
         RenderSystem.setShaderTexture(0, layer.getBackground());
 
@@ -210,7 +214,7 @@ public class BookCategoryScreen {
             guiGraphics.blit(layer.getBackground(), x, y,
                     (scrollX + MAX_SCROLL) / parallax1 + xOffset,
                     (scrollY + MAX_SCROLL) / parallax1 + yOffset,
-                    width, height, this.category.getBackgroundHeight(), this.category.getBackgroundWidth());
+                    width, height,(int)(backgroundHeight * backgroundTextureZoomMultiplier), (int)(backgroundWidth * backgroundTextureZoomMultiplier));
         }
 
     }
@@ -231,7 +235,7 @@ public class BookCategoryScreen {
             }
         }
 
-        if(entry.showWhenAnyParentUnlocked() && !anyParentsUnlocked)
+        if (entry.showWhenAnyParentUnlocked() && !anyParentsUnlocked)
             return EntryDisplayState.HIDDEN;
 
         if (!entry.showWhenAnyParentUnlocked() && !allParentsUnlocked)
@@ -270,7 +274,7 @@ public class BookCategoryScreen {
 
 
             //we apply a z offset to push the entries before the connection arrows
-            guiGraphics.pose().translate(0 ,0, 10);
+            guiGraphics.pose().translate(0, 0, 10);
 
             //As of 1.20 this is not necessary, in fact it causes the entry to render behind the bg
             //guiGraphics.pose().translate(0, 0, -10); //push the whole entry behind the frame
@@ -383,7 +387,7 @@ public class BookCategoryScreen {
 
         for (var parent : entry.getParents()) {
             var parentDisplayState = this.getEntryDisplayState(parent.getEntry());
-            if(parentDisplayState == EntryDisplayState.HIDDEN)
+            if (parentDisplayState == EntryDisplayState.HIDDEN)
                 continue;
 
             int blitOffset = 0; //note: any negative blit offset will move it behind our category background
