@@ -50,6 +50,7 @@ public class ModonomiconConstants {
             public static final String DEFAULT_BACKGROUND = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/dark_slate_seamless.png").toString();
             public static final int DEFAULT_BACKGROUND_WIDTH = 512;
             public static final int DEFAULT_BACKGROUND_HEIGHT = 512;
+            public static final float DEFAULT_BACKGROUND_TEXTURE_ZOOM_MULTIPLIER = 1f;
             public static final String DEFAULT_ENTRY_TEXTURES = new ResourceLocation(ModonomiconAPI.ID, "textures/gui/entry_textures.png").toString();
         }
 
