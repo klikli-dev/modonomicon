@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.client.render.page;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
+import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.MarkdownComponentRenderUtils;
@@ -131,19 +132,27 @@ public abstract class BookPageRenderer<T extends BookPage> {
             }
 
             this.drawCenteredStringNoShadow(guiGraphics, formattedCharSequence, x, y, 0, scale);
-        } else {
+        } else if(title.hasComponent()) {
             //non-markdown title we just render as usual
 
             var titleComponent = Component.empty().append(title.getComponent()).withStyle(s -> s.withFont(this.page.getBook().getFont()));
             //if title is larger than allowed, scaled to fit
-            var scale = Math.min(1.0f, (float) BookContentScreen.MAX_TITLE_WIDTH / (float) this.font.width(title.getComponent().getVisualOrderText()));
+            var scale = Math.min(1.0f, (float) BookContentScreen.MAX_TITLE_WIDTH / (float) this.font.width(titleComponent.getVisualOrderText()));
             if (scale < 1) {
                 guiGraphics.pose().translate(0, y - y * scale, 0);
                 guiGraphics.pose().scale(scale, scale, scale);
             }
 
             //otherwise we use the component - that is either provided by the user, or created from the default title style.
-            this.drawCenteredStringNoShadow(guiGraphics, title.getComponent().getVisualOrderText(), x, y, 0, scale);
+            this.drawCenteredStringNoShadow(guiGraphics, titleComponent.getVisualOrderText(), x, y, 0, scale);
+        } else {
+            //this means a non-markdown title has no component -> this should not be possible, it indicates that either:
+            // - a page did not set up its (non markdown) book text holder correctly in preprender markdown
+            // - or a markdown title failed to render and remained a non-rendered book text holder
+            BookErrorManager.get().setTo(this.page);
+            BookErrorManager.get().error("Non-markdown title has no component.");
+            BookErrorManager.get().getContextHelper().reset();
+            BookErrorManager.get().setCurrentBookId(null);
         }
 
         guiGraphics.pose().popPose();
