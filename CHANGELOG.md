@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.4-1.56.0] - 2024-01-21
+### :sparkles: New Features
+- [`966d497`](https://github.com/klikli-dev/modonomicon/commit/966d49710d668762be7e355bffb21d0ebae9e74a) - refactor builder pattern for remaining model classes *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.4-1.55.1] - 2024-01-20
 ### :sparkles: New Features
 - [`0668799`](https://github.com/klikli-dev/modonomicon/commit/0668799c0190bdf6692c45c324cc4c6e3891c548) - enable jei integration *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -683,3 +688,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.4-1.54.5]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.54.4...release/v1.20.4-1.54.5
 [release/v1.20.4-1.55.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.54.5...release/v1.20.4-1.55.0
 [release/v1.20.4-1.55.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.55.0...release/v1.20.4-1.55.1
+[release/v1.20.4-1.56.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.55.1...release/v1.20.4-1.56.0
