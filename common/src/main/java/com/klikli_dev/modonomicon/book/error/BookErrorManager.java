@@ -7,6 +7,8 @@
 package com.klikli_dev.modonomicon.book.error;
 
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.book.BookEntry;
+import com.klikli_dev.modonomicon.book.page.BookPage;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.helpers.MessageFormatter;
 
@@ -99,6 +101,18 @@ public class BookErrorManager {
      */
     public void setCurrentBookId(ResourceLocation id) {
         this.currentBookId = id;
+    }
+
+    public void setTo(BookPage page) {
+        this.setTo(page.getParentEntry());
+        BookErrorManager.get().getContextHelper().pageNumber = page.getPageNumber();
+    }
+
+    public void setTo(BookEntry entry) {
+        BookErrorManager.get().setCurrentBookId(entry.getBook().getId());
+        BookErrorManager.get().getContextHelper().reset();
+        BookErrorManager.get().getContextHelper().categoryId = entry.getCategoryId();
+        BookErrorManager.get().getContextHelper().entryId = entry.getId();
     }
 
     /**
