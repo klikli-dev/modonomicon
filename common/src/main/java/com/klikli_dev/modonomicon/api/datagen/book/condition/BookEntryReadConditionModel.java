@@ -13,16 +13,15 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class BookEntryReadConditionModel extends BookConditionModel {
+public class BookEntryReadConditionModel extends BookConditionModel<BookEntryReadConditionModel> {
     protected String entryId;
 
-    protected BookEntryReadConditionModel(String entryId, Component tooltip, String tooltipString) {
-        super(Condition.ENTRY_READ, tooltip, tooltipString);
-        this.entryId = entryId;
+    protected BookEntryReadConditionModel() {
+        super(Condition.ENTRY_READ);
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public static BookEntryReadConditionModel create() {
+        return new BookEntryReadConditionModel();
     }
 
     @Override
@@ -36,57 +35,13 @@ public class BookEntryReadConditionModel extends BookConditionModel {
         return this.entryId;
     }
 
-    public static final class Builder {
-        private String entryId;
-        private Component tooltip;
-        private String tooltipString;
+    public BookEntryReadConditionModel withEntry(ResourceLocation entryId) {
+        this.entryId = entryId.toString();
+        return this;
+    }
 
-        private Builder() {
-        }
-
-        public static Builder aBookAdvancementConditionModel() {
-            return new Builder();
-        }
-
-        public String getEntryId() {
-            return this.entryId;
-        }
-
-        public Component getTooltip() {
-            return this.tooltip;
-        }
-
-        public String getTooltipString() {
-            return this.tooltipString;
-        }
-
-        public Builder withEntry(ResourceLocation entryId) {
-            this.entryId = entryId.toString();
-            return this;
-        }
-
-        public Builder withEntry(String entryId) {
-            this.entryId = entryId;
-            return this;
-        }
-
-        public Builder withTooltip(Component tooltip) {
-            this.tooltip = tooltip;
-            return this;
-        }
-
-        /**
-         * Will overwrite withTooltip
-         */
-        public Builder withTooltipString(String tooltipString) {
-            this.tooltipString = tooltipString;
-            return this;
-        }
-
-
-        public BookEntryReadConditionModel build() {
-            BookEntryReadConditionModel model = new BookEntryReadConditionModel(this.entryId, this.tooltip, this.tooltipString);
-            return model;
-        }
+    public BookEntryReadConditionModel withEntry(String entryId) {
+        this.entryId = entryId;
+        return this;
     }
 }

@@ -36,7 +36,7 @@ public class FormattingCategoryProvider extends CategoryProvider {
         var advancedFormattingEntry = this.add(this.makeAdvancedFormattingEntry('a'));
         var linkFormattingEntry = this.add(this.makeLinkFormattingEntry('l'));
         var alwaysLockedEntry = this.add(this.makeAlwaysLockedEntry('x'));
-        alwaysLockedEntry.withCondition(BookFalseConditionModel.builder().build());
+        alwaysLockedEntry.withCondition(BookFalseConditionModel.create());
 
         linkFormattingEntry.withParent(this.parent(advancedFormattingEntry));
         advancedFormattingEntry.withParent(this.parent(basicFormattingEntry));
@@ -53,16 +53,15 @@ public class FormattingCategoryProvider extends CategoryProvider {
 
         this.context().entry("basic");
         this.context().page("page1");
-        var page1 = BookTextPageModel.builder()
+        var page1 = BookTextPageModel.create()
                 .withText(this.context().pageText())
-                .withTitle(this.context().pageTitle())
-                .build(); //bold, italics, underlines,
+                .withTitle(this.context().pageTitle()); //bold, italics, underlines,
 
         this.context().page("page2");
-        var page2 = BookTextPageModel.builder()
+        var page2 = BookTextPageModel.create()
                 .withText(this.context().pageText())
                 //.withTitle(context().pageTitle())
-                .build(); //strikethrough, color
+                ; //strikethrough, color
 
         var formattingEntry = this.entry(location)
                 .withIcon(new ResourceLocation("minecraft:textures/item/paper.png"))
@@ -75,22 +74,20 @@ public class FormattingCategoryProvider extends CategoryProvider {
     private BookEntryModel makeAdvancedFormattingEntry(char location) {
         this.context().entry("advanced");
         this.context().page("page1");
-        var page1 = BookTextPageModel.builder()
+        var page1 = BookTextPageModel.create()
                 .withText(this.context().pageText())
-                .withTitle(this.context().pageTitle())
-                .build(); //translatable texts, mixed formatting
+                .withTitle(this.context().pageTitle()); //translatable texts, mixed formatting
 
         this.context().page("page2");
-        var page2 = BookTextPageModel.builder()
+        var page2 = BookTextPageModel.create()
                 .withText(this.context().pageText())
                 //.withTitle(context().pageTitle())
-                .build(); //lists
+                ; //lists
 
         this.context().page("page3");
-        var page3 = BookTextPageModel.builder()
+        var page3 = BookTextPageModel.create()
                 .withText(this.context().pageText())
-                .withTitle(this.context().pageTitle())
-                .build(); //lists
+                .withTitle(this.context().pageTitle()); //lists
 
         var formattingEntry = this.entry(location)
                 .withIcon(Items.FEATHER)
@@ -105,22 +102,19 @@ public class FormattingCategoryProvider extends CategoryProvider {
     private BookEntryModel makeLinkFormattingEntry(char location) {
         this.context().entry("link");
         this.context().page("page1");
-        var page1 = BookTextPageModel.builder()
+        var page1 = BookTextPageModel.create()
                 .withText(this.context().pageText())
-                .withTitle(this.context().pageTitle())
-                .build(); //http links
+                .withTitle(this.context().pageTitle()); //http links
 
         this.context().page("page2");
-        var page2 = BookTextPageModel.builder()
+        var page2 = BookTextPageModel.create()
                 .withText(this.context().pageText())
-                .withTitle(this.context().pageTitle())
-                .build(); //book entry links
+                .withTitle(this.context().pageTitle()); //book entry links
 
         this.context().page("page3");
-        var page3 = BookTextPageModel.builder()
+        var page3 = BookTextPageModel.create()
                 .withText(this.context().pageText())
-                .withTitle(this.context().pageTitle())
-                .build(); //patchouli link
+                .withTitle(this.context().pageTitle()); //patchouli link
 
         return this.entry(location)
                 .withIcon(Items.WRITABLE_BOOK)

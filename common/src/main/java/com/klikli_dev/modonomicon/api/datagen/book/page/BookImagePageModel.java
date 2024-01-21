@@ -14,19 +14,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class BookImagePageModel extends BookPageModel {
+public class BookImagePageModel extends BookPageModel<BookImagePageModel> {
     protected BookTextHolderModel title = new BookTextHolderModel("");
     protected BookTextHolderModel text = new BookTextHolderModel("");
 
     protected ResourceLocation[] images = new ResourceLocation[0];
     protected boolean border = true;
 
-    protected BookImagePageModel(@NotNull String anchor) {
-        super(Page.IMAGE, anchor);
+    protected BookImagePageModel() {
+        super(Page.IMAGE);
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public static BookImagePageModel create() {
+        return new BookImagePageModel();
     }
 
     public BookTextHolderModel getTitle() {
@@ -61,64 +61,34 @@ public class BookImagePageModel extends BookPageModel {
         return json;
     }
 
-
-    public static final class Builder {
-        private String anchor = "";
-        private BookTextHolderModel title = new BookTextHolderModel("");
-        private BookTextHolderModel text = new BookTextHolderModel("");
-        private ResourceLocation[] images = new ResourceLocation[0];
-        private boolean border = true;
-
-        private Builder() {
-        }
-
-        public static Builder aBookTextPageModel() {
-            return new Builder();
-        }
-
-
-        public Builder withAnchor(String anchor) {
-            this.anchor = anchor;
-            return this;
-        }
-
-        public Builder withTitle(String title) {
-            this.title = new BookTextHolderModel(title);
-            return this;
-        }
-
-        public Builder withTitle(Component title) {
-            this.title = new BookTextHolderModel(title);
-            return this;
-        }
-
-        public Builder withBorder(boolean border) {
-            this.border = border;
-            return this;
-        }
-
-        public Builder withImages(ResourceLocation... images) {
-            this.images = images;
-            return this;
-        }
-
-        public Builder withText(String text) {
-            this.text = new BookTextHolderModel(text);
-            return this;
-        }
-
-        public Builder withText(Component text) {
-            this.text = new BookTextHolderModel(text);
-            return this;
-        }
-
-        public BookImagePageModel build() {
-            BookImagePageModel model = new BookImagePageModel(this.anchor);
-            model.title = this.title;
-            model.text = this.text;
-            model.images = this.images;
-            model.border = this.border;
-            return model;
-        }
+    public BookImagePageModel withTitle(String title) {
+        this.title = new BookTextHolderModel(title);
+        return this;
     }
+
+    public BookImagePageModel withTitle(Component title) {
+        this.title = new BookTextHolderModel(title);
+        return this;
+    }
+
+    public BookImagePageModel withBorder(boolean border) {
+        this.border = border;
+        return this;
+    }
+
+    public BookImagePageModel withImages(ResourceLocation... images) {
+        this.images = images;
+        return this;
+    }
+
+    public BookImagePageModel withText(String text) {
+        this.text = new BookTextHolderModel(text);
+        return this;
+    }
+
+    public BookImagePageModel withText(Component text) {
+        this.text = new BookTextHolderModel(text);
+        return this;
+    }
+
 }

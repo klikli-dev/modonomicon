@@ -13,18 +13,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class BookMultiblockPageModel extends BookPageModel {
+public class BookMultiblockPageModel extends BookPageModel<BookMultiblockPageModel> {
     protected BookTextHolderModel multiblockName = new BookTextHolderModel("");
     protected BookTextHolderModel text = new BookTextHolderModel("");
-    protected String multiblockId;
+    protected String multiblockId = "";
     protected boolean showVisualizeButton = true;
 
-    protected BookMultiblockPageModel(@NotNull String anchor) {
-        super(Page.MULTIBLOCK, anchor);
+    protected BookMultiblockPageModel() {
+        super(Page.MULTIBLOCK);
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public static BookMultiblockPageModel create() {
+        return new BookMultiblockPageModel();
     }
 
     public BookTextHolderModel getMultiblockName() {
@@ -54,69 +54,38 @@ public class BookMultiblockPageModel extends BookPageModel {
         return json;
     }
 
+    public BookMultiblockPageModel withMultiblockName(String title) {
+        this.multiblockName = new BookTextHolderModel(title);
+        return this;
+    }
 
-    public static final class Builder {
-        private String anchor = "";
-        private BookTextHolderModel multiblockName = new BookTextHolderModel("");
-        private String multiblockId = "";
-        private BookTextHolderModel text = new BookTextHolderModel("");
-        private boolean showVisualizeButton = true;
+    public BookMultiblockPageModel withMultiblockName(Component title) {
+        this.multiblockName = new BookTextHolderModel(title);
+        return this;
+    }
 
-        private Builder() {
-        }
+    public BookMultiblockPageModel withMultiblockId(String multiblockId) {
+        this.multiblockId = multiblockId;
+        return this;
+    }
 
-        public static Builder aBookTextPageModel() {
-            return new Builder();
-        }
+    public BookMultiblockPageModel withMultiblockId(ResourceLocation multiblockId) {
+        this.multiblockId = multiblockId.toString();
+        return this;
+    }
 
+    public BookMultiblockPageModel withText(String text) {
+        this.text = new BookTextHolderModel(text);
+        return this;
+    }
 
-        public Builder withAnchor(String anchor) {
-            this.anchor = anchor;
-            return this;
-        }
+    public BookMultiblockPageModel withText(Component text) {
+        this.text = new BookTextHolderModel(text);
+        return this;
+    }
 
-        public Builder withMultiblockName(String title) {
-            this.multiblockName = new BookTextHolderModel(title);
-            return this;
-        }
-
-        public Builder withMultiblockName(Component title) {
-            this.multiblockName = new BookTextHolderModel(title);
-            return this;
-        }
-
-        public Builder withMultiblockId(String multiblockId) {
-            this.multiblockId = multiblockId;
-            return this;
-        }
-
-        public Builder withMultiblockId(ResourceLocation multiblockId) {
-            this.multiblockId = multiblockId.toString();
-            return this;
-        }
-
-        public Builder withText(String text) {
-            this.text = new BookTextHolderModel(text);
-            return this;
-        }
-
-        public Builder withText(Component text) {
-            this.text = new BookTextHolderModel(text);
-            return this;
-        }
-
-        public Builder withVisualizeButton(boolean showVisualizeButton) {
-            this.showVisualizeButton = showVisualizeButton;
-            return this;
-        }
-
-        public BookMultiblockPageModel build() {
-            BookMultiblockPageModel bookTextPageModel = new BookMultiblockPageModel(this.anchor);
-            bookTextPageModel.multiblockId = this.multiblockId;
-            bookTextPageModel.multiblockName = this.multiblockName;
-            bookTextPageModel.text = this.text;
-            bookTextPageModel.showVisualizeButton = this.showVisualizeButton;
-            return bookTextPageModel;
-        }
+    public BookMultiblockPageModel withVisualizeButton(boolean showVisualizeButton) {
+        this.showVisualizeButton = showVisualizeButton;
+        return this;
     }
 }

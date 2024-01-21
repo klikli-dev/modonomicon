@@ -10,20 +10,19 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.api.datagen.book.BookTextHolderModel;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.NotNull;
 
-public class BookTextPageModel extends BookPageModel {
+public class BookTextPageModel extends BookPageModel<BookTextPageModel> {
     protected BookTextHolderModel title = new BookTextHolderModel("");
     protected boolean useMarkdownInTitle = false;
     protected boolean showTitleSeparator = true;
     protected BookTextHolderModel text = new BookTextHolderModel("");
 
-    protected BookTextPageModel(@NotNull String anchor) {
-        super(Page.TEXT, anchor);
+    protected BookTextPageModel() {
+        super(Page.TEXT);
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public static BookTextPageModel create() {
+        return new BookTextPageModel();
     }
 
     public BookTextHolderModel getTitle() {
@@ -52,64 +51,33 @@ public class BookTextPageModel extends BookPageModel {
         return json;
     }
 
+    public BookTextPageModel withTitle(String title) {
+        this.title = new BookTextHolderModel(title);
+        return this;
+    }
 
-    public static final class Builder {
-        private String anchor = "";
-        private BookTextHolderModel title = new BookTextHolderModel("");
-        private boolean useMarkdownInTitle = false;
-        private boolean showTitleSeparator = true;
-        private BookTextHolderModel text = new BookTextHolderModel("");
+    public BookTextPageModel withTitle(Component title) {
+        this.title = new BookTextHolderModel(title);
+        return this;
+    }
 
-        private Builder() {
-        }
+    public BookTextPageModel withUseMarkdownInTitle(boolean useMarkdownInTitle) {
+        this.useMarkdownInTitle = useMarkdownInTitle;
+        return this;
+    }
 
-        public static Builder aBookTextPageModel() {
-            return new Builder();
-        }
+    public BookTextPageModel withShowTitleSeparator(boolean showTitleSeparator) {
+        this.showTitleSeparator = showTitleSeparator;
+        return this;
+    }
 
+    public BookTextPageModel withText(String text) {
+        this.text = new BookTextHolderModel(text);
+        return this;
+    }
 
-        public Builder withAnchor(String anchor) {
-            this.anchor = anchor;
-            return this;
-        }
-
-        public Builder withTitle(String title) {
-            this.title = new BookTextHolderModel(title);
-            return this;
-        }
-
-        public Builder withTitle(Component title) {
-            this.title = new BookTextHolderModel(title);
-            return this;
-        }
-
-        public Builder withUseMarkdownInTitle(boolean useMarkdownInTitle) {
-            this.useMarkdownInTitle = useMarkdownInTitle;
-            return this;
-        }
-
-        public Builder withShowTitleSeparator(boolean showTitleSeparator) {
-            this.showTitleSeparator = showTitleSeparator;
-            return this;
-        }
-
-        public Builder withText(String text) {
-            this.text = new BookTextHolderModel(text);
-            return this;
-        }
-
-        public Builder withText(Component text) {
-            this.text = new BookTextHolderModel(text);
-            return this;
-        }
-
-        public BookTextPageModel build() {
-            BookTextPageModel bookTextPageModel = new BookTextPageModel(this.anchor);
-            bookTextPageModel.showTitleSeparator = this.showTitleSeparator;
-            bookTextPageModel.useMarkdownInTitle = this.useMarkdownInTitle;
-            bookTextPageModel.title = this.title;
-            bookTextPageModel.text = this.text;
-            return bookTextPageModel;
-        }
+    public BookTextPageModel withText(Component text) {
+        this.text = new BookTextHolderModel(text);
+        return this;
     }
 }

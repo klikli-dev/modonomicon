@@ -25,44 +25,40 @@ public class ImageEntryProvider extends EntryProvider {
     @Override
     protected void generatePages() {
         this.page("intro", () ->
-                BookTextPageModel.builder()
+                BookTextPageModel.create()
                         .withText(this.context().pageText())
                         .withTitle(this.context().pageTitle())
-                        .build()
         );
         this.pageTitle("Image Page Entry");
         this.pageText("Image pages allow to show images.");
 
         this.page("image", () ->
-                BookImagePageModel.builder()
+                BookImagePageModel.create()
                         .withText(this.context().pageText())
                         .withTitle(this.context().pageTitle())
                         .withImages(
                                 new ResourceLocation("modonomicon:textures/gui/default_background.png"),
                                 new ResourceLocation("modonomicon:textures/gui/dark_slate_seamless.png")
                         )
-                        .build()
         );
         this.pageTitle("Sample image!");
         this.pageText("A  sample text for the sample image.");
 
 
         this.page("test_spotlight", () ->
-                BookSpotlightPageModel.builder()
+                BookSpotlightPageModel.create()
                         .withText(this.context().pageText())
                         .withItem(Ingredient.of(Blocks.SPAWNER))
-                        .build()
         );
 
         this.page("test_image", () ->
-                BookImagePageModel.builder()
+                BookImagePageModel.create()
                         .withText(this.context().pageText())
                         .withTitle(this.context().pageTitle())
                         .withImages(
                                 new ResourceLocation("modonomicon:textures/gui/default_background.png"),
                                 new ResourceLocation("modonomicon:textures/gui/dark_slate_seamless.png")
                         )
-                        .build()
         );
     }
 

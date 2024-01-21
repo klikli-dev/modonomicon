@@ -12,7 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class BookRecipePageModel extends BookPageModel {
+public abstract class BookRecipePageModel<T extends BookRecipePageModel<T>> extends BookPageModel<T> {
 
     protected BookTextHolderModel title1 = new BookTextHolderModel("");
     protected String recipeId1 = "";
@@ -23,8 +23,8 @@ public abstract class BookRecipePageModel extends BookPageModel {
     protected BookTextHolderModel text = new BookTextHolderModel("");
 
 
-    protected BookRecipePageModel(ResourceLocation type, @NotNull String anchor) {
-        super(type, anchor);
+    protected BookRecipePageModel(ResourceLocation type) {
+        super(type);
     }
 
     public BookTextHolderModel getTitle1() {
@@ -62,76 +62,63 @@ public abstract class BookRecipePageModel extends BookPageModel {
         return json;
     }
 
+    public T withTitle1(String title) {
+        this.title1 = new BookTextHolderModel(title);
+        //noinspection unchecked
+        return (T) this;
+    }
 
-    public static abstract class Builder<T extends Builder<T>> {
-        protected BookTextHolderModel title1 = new BookTextHolderModel("");
-        protected String recipeId1 = "";
+    public T withTitle1(Component title) {
+        this.title1 = new BookTextHolderModel(title);
+        //noinspection unchecked
+        return (T) this;
+    }
 
-        protected BookTextHolderModel title2 = new BookTextHolderModel("");
-        protected String recipeId2 = "";
+    public T withTitle2(String title) {
+        this.title2 = new BookTextHolderModel(title);
+        //noinspection unchecked
+        return (T) this;
+    }
 
-        protected BookTextHolderModel text = new BookTextHolderModel("");
+    public T withTitle2(Component title) {
+        this.title2 = new BookTextHolderModel(title);
+        //noinspection unchecked
+        return (T) this;
+    }
 
-        protected String anchor = "";
+    public T withText(String text) {
+        this.text = new BookTextHolderModel(text);
+        //noinspection unchecked
+        return (T) this;
+    }
 
-        protected Builder() {
-        }
+    public T withText(Component text) {
+        this.text = new BookTextHolderModel(text);
+        //noinspection unchecked
+        return (T) this;
+    }
 
-        public abstract T getThis();
+    public T withRecipeId1(String recipeId) {
+        this.recipeId1 = recipeId;
+        //noinspection unchecked
+        return (T) this;
+    }
 
-        public T withAnchor(String anchor) {
-            this.anchor = anchor;
-            return this.getThis();
-        }
+    public T withRecipeId1(ResourceLocation recipeId) {
+        this.recipeId1 = recipeId.toString();
+        //noinspection unchecked
+        return (T) this;
+    }
 
-        public T withTitle1(String title) {
-            this.title1 = new BookTextHolderModel(title);
-            return this.getThis();
-        }
+    public T withRecipeId2(String recipeId) {
+        this.recipeId2 = recipeId;
+        //noinspection unchecked
+        return (T) this;
+    }
 
-        public T withTitle1(Component title) {
-            this.title1 = new BookTextHolderModel(title);
-            return this.getThis();
-        }
-
-        public T withTitle2(String title) {
-            this.title2 = new BookTextHolderModel(title);
-            return this.getThis();
-        }
-
-        public T withTitle2(Component title) {
-            this.title2 = new BookTextHolderModel(title);
-            return this.getThis();
-        }
-
-        public T withText(String text) {
-            this.text = new BookTextHolderModel(text);
-            return this.getThis();
-        }
-
-        public T withText(Component text) {
-            this.text = new BookTextHolderModel(text);
-            return this.getThis();
-        }
-
-        public T withRecipeId1(String recipeId) {
-            this.recipeId1 = recipeId;
-            return this.getThis();
-        }
-
-        public T withRecipeId1(ResourceLocation recipeId) {
-            this.recipeId1 = recipeId.toString();
-            return this.getThis();
-        }
-
-        public T withRecipeId2(String recipeId) {
-            this.recipeId2 = recipeId;
-            return this.getThis();
-        }
-
-        public T withRecipeId2(ResourceLocation recipeId) {
-            this.recipeId2 = recipeId.toString();
-            return this.getThis();
-        }
+    public T withRecipeId2(ResourceLocation recipeId) {
+        this.recipeId2 = recipeId.toString();
+        //noinspection unchecked
+        return (T) this;
     }
 }

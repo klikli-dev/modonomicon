@@ -10,14 +10,13 @@ import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class BookPageModel {
+public class BookPageModel<T extends BookPageModel<T>> {
 
     protected ResourceLocation type;
-    protected String anchor;
+    protected String anchor = "";
 
-    protected BookPageModel(ResourceLocation type, @NotNull String anchor) {
+    protected BookPageModel(ResourceLocation type) {
         this.type = type;
-        this.anchor = anchor;
     }
 
     public ResourceLocation getType() {
@@ -33,5 +32,11 @@ public class BookPageModel {
         json.addProperty("type", this.type.toString());
         json.addProperty("anchor", this.anchor);
         return json;
+    }
+
+    public T withAnchor(@NotNull String anchor) {
+        this.anchor = anchor;
+        //noinspection unchecked
+        return (T)this;
     }
 }

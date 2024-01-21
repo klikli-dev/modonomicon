@@ -6,47 +6,15 @@
 
 package com.klikli_dev.modonomicon.api.datagen.book.page;
 
-import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
-import org.jetbrains.annotations.NotNull;
 
-public class BookEmptyPageModel extends BookPageModel {
+public class BookEmptyPageModel extends BookPageModel<BookEmptyPageModel> {
 
-    protected BookEmptyPageModel(@NotNull String anchor) {
-        super(Page.EMPTY, anchor);
+    protected BookEmptyPageModel() {
+        super(Page.EMPTY);
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
-
-    @Override
-    public JsonObject toJson() {
-        var json = super.toJson();
-        return json;
-    }
-
-
-    public static final class Builder {
-        private String anchor = "";
-
-        private Builder() {
-        }
-
-        public static Builder aBookTextPageModel() {
-            return new Builder();
-        }
-
-
-        public Builder withAnchor(String anchor) {
-            this.anchor = anchor;
-            return this;
-        }
-
-        public BookEmptyPageModel build() {
-            BookEmptyPageModel bookTextPageModel = new BookEmptyPageModel(this.anchor);
-            return bookTextPageModel;
-        }
+    public static BookEmptyPageModel create() {
+        return new BookEmptyPageModel();
     }
 }

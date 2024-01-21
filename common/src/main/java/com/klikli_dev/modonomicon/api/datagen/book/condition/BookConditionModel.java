@@ -12,16 +12,18 @@ import com.google.gson.JsonObject;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class BookConditionModel {
-    protected Component tooltip;
-    protected String tooltipString;
+public class BookConditionModel<T extends BookConditionModel<T>> {
+    protected Component tooltip = null;
+    protected String tooltipString = null;
 
     protected ResourceLocation type;
 
-    protected BookConditionModel(ResourceLocation type, Component tooltip, String tooltipString) {
+    protected BookConditionModel(ResourceLocation type) {
         this.type = type;
-        this.tooltip = tooltip;
-        this.tooltipString = tooltipString;
+    }
+
+    public ResourceLocation getType() {
+        return this.type;
     }
 
     public Component getTooltip() {
@@ -42,7 +44,18 @@ public class BookConditionModel {
         return json;
     }
 
-    public ResourceLocation getType() {
-        return this.type;
+    public T withTooltip(Component tooltip) {
+        this.tooltip = tooltip;
+        //noinspection unchecked
+        return (T) this;
+    }
+
+    /**
+     * Will overwrite withTooltip
+     */
+    public T withTooltipString(String tooltipString) {
+        this.tooltipString = tooltipString;
+        //noinspection unchecked
+        return (T) this;
     }
 }

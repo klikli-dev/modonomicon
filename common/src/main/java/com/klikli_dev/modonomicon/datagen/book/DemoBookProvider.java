@@ -39,7 +39,7 @@ public class DemoBookProvider extends BookProvider {
 
         var hiddenCategory = this.makeHiddenCategory(this.context());
         var conditionalCategory = this.makeConditionalCategory(this.context());
-        conditionalCategory.withCondition(BookEntryReadConditionModel.builder().withEntry(this.modLoc("features/condition_root")).build());
+        conditionalCategory.withCondition(BookEntryReadConditionModel.create().withEntry(this.modLoc("features/condition_root")));
 
 
         var commandEntryCommand = BookCommandModel.create(this.modLoc("test_command"), "/give @s minecraft:apple 1")
@@ -90,7 +90,7 @@ public class DemoBookProvider extends BookProvider {
                 .withIcon(Items.NETHER_STAR)
                 .withLocation(entryHelper.get('l'))
                 .withEntryBackground(0, 1)
-                .withCondition(BookFalseConditionModel.builder().build());
+                .withCondition(BookFalseConditionModel.create());
 
         return BookCategoryModel.create(this.modLoc(this.context().categoryId()), this.context().categoryName())
                 .withIcon(Items.BOOK)
@@ -117,7 +117,7 @@ public class DemoBookProvider extends BookProvider {
                 .withIcon(Items.NETHER_STAR)
                 .withLocation(entryHelper.get('l'))
                 .withEntryBackground(0, 1)
-                .withCondition(BookFalseConditionModel.builder().build());
+                .withCondition(BookFalseConditionModel.create());
 
         return BookCategoryModel.create(this.modLoc(this.context().categoryId()), this.context().categoryName())
                 .withIcon(Blocks.CHEST)

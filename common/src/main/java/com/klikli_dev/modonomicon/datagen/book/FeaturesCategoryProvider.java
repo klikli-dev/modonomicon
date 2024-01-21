@@ -18,7 +18,7 @@ import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.Blocks;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,39 +95,39 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         this.context().entry("multiblock");
 
         this.context().page("intro");
-        this.page(BookTextPageModel.builder()
+        this.page(BookTextPageModel.create()
                 .withText(this.context().pageText())
                 .withTitle(this.context().pageTitle())
-                .build());
+                );
 
         this.context().page("preview");
-        this.page(BookMultiblockPageModel.builder()
+        this.page(BookMultiblockPageModel.create()
                 .withMultiblockId(this.modLoc("blockentity"))
                 .withMultiblockName("multiblocks.modonomicon.blockentity")
                 .withText(this.context().pageText())
-                .build());
+                );
 
-        this.page("preview2", () -> BookMultiblockPageModel.builder()
+        this.page("preview2", () -> BookMultiblockPageModel.create()
                 .withMultiblockId(this.modLoc("tag"))
                 .withText(this.context().pageText())
-                .build());
+                );
 
         this.lang().add(this.context().pageText(), "A multiblock with tag!");
 
         this.context().page("demo_predicate");
-        this.page(BookMultiblockPageModel.builder()
+        this.page(BookMultiblockPageModel.create()
                 .withMultiblockId(this.modLoc("demo_predicate"))
-                .build());
+                );
 
         this.context().page("demo_fluid");
-        this.page(BookMultiblockPageModel.builder()
+        this.page(BookMultiblockPageModel.create()
                 .withMultiblockId(this.modLoc("demo_fluid"))
-                .build());
+                );
 
 //        this.context().page("crash_test");
-//        this.page(BookMultiblockPageModel.builder()
+//        this.page(BookMultiblockPageModel.create()
 //                .withMultiblockId(this.modLoc("crash_test"))
-//                .build());
+//                );
 
         return this.entry(location)
                 .withIcon(Items.FURNACE)
@@ -140,10 +140,10 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         this.add(this.context().entryDescription(), "Yup, two parents!");
 
         this.context().page("intro");
-        this.page(BookTextPageModel.builder()
+        this.page(BookTextPageModel.create()
                 .withText(this.context().pageText())
                 .withTitle(this.context().pageTitle())
-                .build());
+                );
 
         this.add(this.context().pageTitle(), "Entry with two parents");
         this.add(this.context().pageText(), "It has two parents ..");
@@ -159,10 +159,10 @@ public class FeaturesCategoryProvider extends CategoryProvider {
 
         this.context().entry("condition_root");
         this.context().page("info");
-        var conditionRootEntryInfoPage = BookTextPageModel.builder()
+        var conditionRootEntryInfoPage = BookTextPageModel.create()
                 .withText(this.context().pageText())
                 .withTitle(this.context().pageTitle())
-                .build();
+                ;
         var conditionRootEntry = this.entry(rootLocation)
                 .withIcon(Items.REDSTONE_TORCH)
                 .withEntryBackground(1, 0)
@@ -171,16 +171,16 @@ public class FeaturesCategoryProvider extends CategoryProvider {
 
         this.context().entry("condition_advancement");
         this.context().page("info");
-        var advancementConditionPage = BookTextPageModel.builder()
+        var advancementConditionPage = BookTextPageModel.create()
                 .withText(this.context().pageText())
                 .withTitle(this.context().pageTitle())
-                .build();
+                ;
         this.lang().add(this.context().pageTitle(), "Advancement Condition");
         this.lang().add(this.context().pageText(), "Advancement Conditions unlock, as the name implies, if a player has an advancement.");
 
-        var advancementCondition = BookAdvancementConditionModel.builder()
+        var advancementCondition = BookAdvancementConditionModel.create()
                 .withAdvancementId(new ResourceLocation("minecraft:husbandry/ride_a_boat_with_a_goat"))
-                .build();
+                ;
 
         this.lang().add(
                 Util.makeDescriptionId("advancement", advancementCondition.getAdvancementId()) + ".title",
@@ -196,13 +196,13 @@ public class FeaturesCategoryProvider extends CategoryProvider {
 
         this.context().entry("condition_level_1");
         this.context().page("info");
-        var conditionLevel1EntryInfoPage = BookTextPageModel.builder()
+        var conditionLevel1EntryInfoPage = BookTextPageModel.create()
                 .withText(this.context().pageText())
                 .withTitle(this.context().pageTitle())
-                .build();
-        var conditionLevel1EntryCondition = BookEntryReadConditionModel.builder()
+                ;
+        var conditionLevel1EntryCondition = BookEntryReadConditionModel.create()
                 .withEntry(conditionRootEntry.getId())
-                .build();
+                ;
         var conditionLevel1Entry = this.entry(level1Location)
                 .withIcon(Items.LEVER)
                 .withPages(conditionLevel1EntryInfoPage)
@@ -212,13 +212,13 @@ public class FeaturesCategoryProvider extends CategoryProvider {
 
         this.context().entry("condition_level_2");
         this.context().page("info");
-        var conditionLevel2EntryInfoPage = BookTextPageModel.builder()
+        var conditionLevel2EntryInfoPage = BookTextPageModel.create()
                 .withText(this.context().pageText())
                 .withTitle(this.context().pageTitle())
-                .build();
-        var conditionLevel2EntryCondition = BookEntryUnlockedConditionModel.builder()
+                ;
+        var conditionLevel2EntryCondition = BookEntryUnlockedConditionModel.create()
                 .withEntry(conditionLevel1Entry.getId())
-                .build();
+                ;
         var conditionLevel2Entry = this.entry(level2Location)
                 .withIcon(Items.TORCH)
                 .withPages(conditionLevel2EntryInfoPage)
@@ -233,59 +233,59 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         this.context().entry("recipe");
 
         this.context().page("intro");
-        var introPage = BookTextPageModel.builder()
+        var introPage = BookTextPageModel.create()
                 .withText(this.context().pageText())
                 .withTitle(this.context().pageTitle())
-                .build();
+                ;
 
         this.context().page("crafting");
-        var crafting = BookCraftingRecipePageModel.builder()
+        var crafting = BookCraftingRecipePageModel.create()
                 .withRecipeId1("minecraft:crafting_table")
                 .withRecipeId2("minecraft:oak_planks")
                 .withText(this.context().pageText())
                 .withTitle2("test.test.test")
-                .build();
+                ;
 
         this.context().page("smelting");
-        var smelting = BookSmeltingRecipePageModel.builder()
+        var smelting = BookSmeltingRecipePageModel.create()
                 .withRecipeId1("minecraft:charcoal")
                 .withRecipeId2("minecraft:cooked_beef")
-                .build();
+                ;
 
         this.context().page("smoking");
-        var smoking = BookSmokingRecipePageModel.builder()
+        var smoking = BookSmokingRecipePageModel.create()
                 .withRecipeId1("minecraft:cooked_beef_from_smoking")
                 .withText(this.context().pageText())
-                .build();
+                ;
 
         this.context().page("blasting");
-        var blasting = BookBlastingRecipePageModel.builder()
+        var blasting = BookBlastingRecipePageModel.create()
                 .withRecipeId2("minecraft:iron_ingot_from_blasting_iron_ore")
-                .build();
+                ;
 
         this.context().page("campfire_cooking");
-        var campfireCooking = BookCampfireCookingRecipePageModel.builder()
+        var campfireCooking = BookCampfireCookingRecipePageModel.create()
                 .withRecipeId1("minecraft:cooked_beef_from_campfire_cooking")
-                .build();
+                ;
 
         this.context().page("stonecutting");
-        var stonecutting = BookStonecuttingRecipePageModel.builder()
+        var stonecutting = BookStonecuttingRecipePageModel.create()
                 .withRecipeId1("minecraft:andesite_slab_from_andesite_stonecutting")
-                .build();
+                ;
 
         this.context().page("smithing");
-        var smithing = BookSmithingRecipePageModel.builder()
+        var smithing = BookSmithingRecipePageModel.create()
                 .withRecipeId1("minecraft:netherite_axe_smithing")
                 .withTitle1(this.context().pageTitle())
                 .withRecipeId2("minecraft:netherite_chestplate_smithing")
-                .build();
+                ;
         this.add(this.context().pageTitle(), "1.20+ Smithing Recipe");
 
 
         this.context().page("missing");
-        var missing = BookSmithingRecipePageModel.builder()
+        var missing = BookSmithingRecipePageModel.create()
                 .withRecipeId1("minecraft:netherite_axe_smithing_does_not_exist")
-                .build();
+                ;
 
         return this.entry(location)
                 .withIcon(Items.CRAFTING_TABLE)
@@ -297,23 +297,23 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         this.context().entry("spotlight");
 
         this.context().page("intro");
-        var introPage = BookTextPageModel.builder()
+        var introPage = BookTextPageModel.create()
                 .withText(this.context().pageText())
                 .withTitle(this.context().pageTitle())
-                .build();
+                ;
 
         this.context().page("spotlight1");
-        var spotlight1 = BookSpotlightPageModel.builder()
+        var spotlight1 = BookSpotlightPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText())
                 .withItem(Ingredient.of(Items.APPLE))
-                .build();
+                ;
 
         this.context().page("spotlight2");
-        var spotlight2 = BookSpotlightPageModel.builder()
+        var spotlight2 = BookSpotlightPageModel.create()
                 .withText(this.context().pageText())
                 .withItem(Ingredient.of(Items.DIAMOND))
-                .build();
+                ;
 
         return this.entry(location)
                 .withIcon(Items.BEACON)
@@ -325,18 +325,18 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         this.context().entry("empty");
 
         this.context().page("intro");
-        var introPage = BookTextPageModel.builder()
+        var introPage = BookTextPageModel.create()
                 .withText(this.context().pageText())
                 .withTitle(this.context().pageTitle())
-                .build();
+                ;
 
         this.context().page("empty");
-        var empty = BookEmptyPageModel.builder()
-                .build();
+        var empty = BookEmptyPageModel.create()
+                ;
 
         this.context().page("empty2");
-        var empty2 = BookEmptyPageModel.builder()
-                .build();
+        var empty2 = BookEmptyPageModel.create()
+                ;
 
         return this.entry(location)
                 .withIcon(Items.OBSIDIAN)
@@ -351,19 +351,19 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         this.add(this.context().entryDescription(), "This entry runs a command when you first read it.");
 
         this.context().page("intro");
-        var introPage = BookTextPageModel.builder()
+        var introPage = BookTextPageModel.create()
                 .withText(this.context().pageText())
                 .withTitle(this.context().pageTitle())
-                .build();
+                ;
 
         this.add(this.context().pageTitle(), "Entry Read Commands");
         this.add(this.context().pageText(), "This entry just ran a command when you first read it. Look into your chat!");
 
         this.context().page("command_link");
-        var commandLink = BookTextPageModel.builder()
+        var commandLink = BookTextPageModel.create()
                 .withText(this.context().pageText())
                 .withTitle(this.context().pageTitle())
-                .build();
+                ;
 
         this.add(this.context().pageTitle(), "Command Link");
         this.add(this.context().pageText(), "{0}", this.commandLink("Click me to run the command!", "test_command2"));
@@ -379,24 +379,24 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         this.context().entry("entity");
 
         this.context().page("intro");
-        var introPage = BookTextPageModel.builder()
+        var introPage = BookTextPageModel.create()
                 .withText(this.context().pageText())
                 .withTitle(this.context().pageTitle())
-                .build();
+                ;
 
         this.context().page("entity1");
-        var entity1 = BookEntityPageModel.builder()
+        var entity1 = BookEntityPageModel.create()
                 .withEntityName(this.context().pageTitle())
                 .withEntityId("minecraft:ender_dragon")
                 .withScale(0.5f)
-                .build();
+                ;
 
         this.context().page("entity2");
-        var entity2 = BookEntityPageModel.builder()
+        var entity2 = BookEntityPageModel.create()
                 .withText(this.context().pageText())
                 .withEntityId("minecraft:spider")
                 .withScale(1f)
-                .build();
+                ;
 
         return this.entry(location)
                 .withIcon(Items.SPIDER_EYE)
@@ -410,10 +410,10 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         this.lang().add(this.context().entryDescription(), "This entry has a custom texture with size 32x32 as icon!");
 
         this.context().page("intro");
-        var introPage = BookTextPageModel.builder()
+        var introPage = BookTextPageModel.create()
                 .withText(this.context().pageText())
                 .withTitle(this.context().pageTitle())
-                .build();
+                ;
 
         this.lang().add(this.context().pageTitle(), "Custom Icon");
         this.lang().add(this.context().pageText(), "This entry has a custom texture with size 32x32 as icon!");

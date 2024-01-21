@@ -10,9 +10,8 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.api.datagen.book.BookTextHolderModel;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.NotNull;
 
-public class BookEntityPageModel extends BookPageModel {
+public class BookEntityPageModel extends BookPageModel<BookEntityPageModel> {
     protected BookTextHolderModel entityName = new BookTextHolderModel("");
     protected BookTextHolderModel text = new BookTextHolderModel("");
     protected String entityId;
@@ -21,12 +20,12 @@ public class BookEntityPageModel extends BookPageModel {
     protected boolean rotate = true;
     protected float defaultRotation = -45f;
 
-    protected BookEntityPageModel(@NotNull String anchor) {
-        super(Page.ENTITY, anchor);
+    protected BookEntityPageModel() {
+        super(Page.ENTITY);
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public static BookEntityPageModel create() {
+        return new BookEntityPageModel();
     }
 
     public BookTextHolderModel getEntityName() {
@@ -71,86 +70,48 @@ public class BookEntityPageModel extends BookPageModel {
         return json;
     }
 
+    public BookEntityPageModel withEntityName(String name) {
+        this.entityName = new BookTextHolderModel(name);
+        return this;
+    }
 
-    public static final class Builder {
-        private String anchor = "";
-        private BookTextHolderModel entityName = new BookTextHolderModel("");
-        private BookTextHolderModel text = new BookTextHolderModel("");
-        private String entityId;
-        private float scale = 1.0f;
-        private float offset = 0f;
-        private boolean rotate = true;
-        private float defaultRotation = -45f;
+    public BookEntityPageModel withEntityName(Component name) {
+        this.entityName = new BookTextHolderModel(name);
+        return this;
+    }
 
-        private Builder() {
-        }
+    public BookEntityPageModel withEntityId(String entityId) {
+        this.entityId = entityId;
+        return this;
+    }
 
-        public static Builder aBookTextPageModel() {
-            return new Builder();
-        }
+    public BookEntityPageModel withText(String text) {
+        this.text = new BookTextHolderModel(text);
+        return this;
+    }
 
+    public BookEntityPageModel withText(Component text) {
+        this.text = new BookTextHolderModel(text);
+        return this;
+    }
 
-        public Builder withAnchor(String anchor) {
-            this.anchor = anchor;
-            return this;
-        }
+    public BookEntityPageModel withScale(float scale) {
+        this.scale = scale;
+        return this;
+    }
 
-        public Builder withEntityName(String name) {
-            this.entityName = new BookTextHolderModel(name);
-            return this;
-        }
+    public BookEntityPageModel withOffset(float offset) {
+        this.offset = offset;
+        return this;
+    }
 
-        public Builder withEntityName(Component name) {
-            this.entityName = new BookTextHolderModel(name);
-            return this;
-        }
+    public BookEntityPageModel withRotate(boolean rotate) {
+        this.rotate = rotate;
+        return this;
+    }
 
-        public Builder withEntityId(String entityId) {
-            this.entityId = entityId;
-            return this;
-        }
-
-        public Builder withText(String text) {
-            this.text = new BookTextHolderModel(text);
-            return this;
-        }
-
-        public Builder withText(Component text) {
-            this.text = new BookTextHolderModel(text);
-            return this;
-        }
-
-        public Builder withScale(float scale) {
-            this.scale = scale;
-            return this;
-        }
-
-        public Builder withOffset(float offset) {
-            this.offset = offset;
-            return this;
-        }
-
-        public Builder withRotate(boolean rotate) {
-            this.rotate = rotate;
-            return this;
-        }
-
-        public Builder withDefaultRotation(float defaultRotation) {
-            this.defaultRotation = defaultRotation;
-            return this;
-        }
-
-
-        public BookEntityPageModel build() {
-            BookEntityPageModel model = new BookEntityPageModel(this.anchor);
-            model.text = this.text;
-            model.entityName = this.entityName;
-            model.entityId = this.entityId;
-            model.scale = this.scale;
-            model.offset = this.offset;
-            model.rotate = this.rotate;
-            model.defaultRotation = this.defaultRotation;
-            return model;
-        }
+    public BookEntityPageModel withDefaultRotation(float defaultRotation) {
+        this.defaultRotation = defaultRotation;
+        return this;
     }
 }

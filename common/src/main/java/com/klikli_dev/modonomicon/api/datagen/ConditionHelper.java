@@ -12,41 +12,41 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ConditionHelper {
     public BookAdvancementConditionModel advancement(ResourceLocation advancementId) {
-        return BookAdvancementConditionModel.builder().withAdvancementId(advancementId).build();
+        return BookAdvancementConditionModel.create().withAdvancementId(advancementId);
     }
 
-    public BookAdvancementConditionModel.Builder advancementBuilder(ResourceLocation advancementId) {
-        return BookAdvancementConditionModel.builder().withAdvancementId(advancementId);
+    public BookAdvancementConditionModel advancementBuilder(ResourceLocation advancementId) {
+        return BookAdvancementConditionModel.create().withAdvancementId(advancementId);
     }
 
     public BookEntryReadConditionModel entryRead(ResourceLocation entryId) {
-        return BookEntryReadConditionModel.builder().withEntry(entryId).build();
+        return BookEntryReadConditionModel.create().withEntry(entryId);
     }
 
-    public BookEntryReadConditionModel.Builder entryReadBuilder(ResourceLocation entryId) {
-        return BookEntryReadConditionModel.builder().withEntry(entryId);
+    public BookEntryReadConditionModel entryReadBuilder(ResourceLocation entryId) {
+        return BookEntryReadConditionModel.create().withEntry(entryId);
     }
 
     public BookEntryReadConditionModel entryRead(BookEntryModel entry) {
-        return BookEntryReadConditionModel.builder().withEntry(entry.getId()).build();
+        return BookEntryReadConditionModel.create().withEntry(entry.getId());
     }
-    public BookEntryReadConditionModel.Builder entryReadBuilder(BookEntryModel entry) {
-        return BookEntryReadConditionModel.builder().withEntry(entry.getId());
+    public BookEntryReadConditionModel entryReadBuilder(BookEntryModel entry) {
+        return BookEntryReadConditionModel.create().withEntry(entry.getId());
     }
 
     public BookAndConditionModel and(BookConditionModel... children) {
-        return BookAndConditionModel.builder().withChildren(children).build();
+        return BookAndConditionModel.create().withChildren(children);
     }
 
-    public BookAndConditionModel.Builder andBuilder(BookConditionModel... children) {
-        return BookAndConditionModel.builder().withChildren(children);
+    public BookAndConditionModel andBuilder(BookConditionModel... children) {
+        return BookAndConditionModel.create().withChildren(children);
     }
 
     public BookOrConditionModel or(BookConditionModel... children) {
-        return BookOrConditionModel.builder().withChildren(children).build();
+        return BookOrConditionModel.create().withChildren(children);
     }
 
-    public BookOrConditionModel.Builder orBuilder(BookConditionModel... children) {
-        return BookOrConditionModel.builder().withChildren(children);
+    public BookOrConditionModel orBuilder(BookConditionModel... children) {
+        return BookOrConditionModel.create().withChildren(children);
     }
 }

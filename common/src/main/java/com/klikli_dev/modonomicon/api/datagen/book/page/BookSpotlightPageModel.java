@@ -12,19 +12,18 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookTextHolderModel;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.Ingredient;
-import org.jetbrains.annotations.NotNull;
 
-public class BookSpotlightPageModel extends BookPageModel {
+public class BookSpotlightPageModel extends BookPageModel<BookSpotlightPageModel> {
     protected Ingredient item = Ingredient.EMPTY;
     protected BookTextHolderModel title = new BookTextHolderModel("");
     protected BookTextHolderModel text = new BookTextHolderModel("");
 
-    protected BookSpotlightPageModel(@NotNull String anchor) {
-        super(Page.SPOTLIGHT, anchor);
+    protected BookSpotlightPageModel() {
+        super(Page.SPOTLIGHT);
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public static BookSpotlightPageModel create() {
+        return new BookSpotlightPageModel();
     }
 
     public BookTextHolderModel getTitle() {
@@ -44,62 +43,35 @@ public class BookSpotlightPageModel extends BookPageModel {
         var json = super.toJson();
         json.add("title", this.title.toJson());
         json.add("item", Ingredient.CODEC.encodeStart(JsonOps.INSTANCE,
-                this.item).getOrThrow(false, s -> {throw new IllegalStateException("Could not encode ingredient");}));
+                this.item).getOrThrow(false, s -> {
+            throw new IllegalStateException("Could not encode ingredient");
+        }));
         json.add("text", this.text.toJson());
         return json;
     }
 
+    public BookSpotlightPageModel withTitle(String title) {
+        this.title = new BookTextHolderModel(title);
+        return this;
+    }
 
-    public static final class Builder {
-        private String anchor = "";
-        private BookTextHolderModel title = new BookTextHolderModel("");
-        private Ingredient item = Ingredient.EMPTY;
-        private BookTextHolderModel text = new BookTextHolderModel("");
+    public BookSpotlightPageModel withTitle(Component title) {
+        this.title = new BookTextHolderModel(title);
+        return this;
+    }
 
-        private Builder() {
-        }
+    public BookSpotlightPageModel withItem(Ingredient item) {
+        this.item = item;
+        return this;
+    }
 
-        public static Builder aBookTextPageModel() {
-            return new Builder();
-        }
+    public BookSpotlightPageModel withText(String text) {
+        this.text = new BookTextHolderModel(text);
+        return this;
+    }
 
-
-        public Builder withAnchor(String anchor) {
-            this.anchor = anchor;
-            return this;
-        }
-
-        public Builder withTitle(String title) {
-            this.title = new BookTextHolderModel(title);
-            return this;
-        }
-
-        public Builder withTitle(Component title) {
-            this.title = new BookTextHolderModel(title);
-            return this;
-        }
-
-        public Builder withItem(Ingredient item) {
-            this.item = item;
-            return this;
-        }
-
-        public Builder withText(String text) {
-            this.text = new BookTextHolderModel(text);
-            return this;
-        }
-
-        public Builder withText(Component text) {
-            this.text = new BookTextHolderModel(text);
-            return this;
-        }
-
-        public BookSpotlightPageModel build() {
-            BookSpotlightPageModel model = new BookSpotlightPageModel(this.anchor);
-            model.item = this.item;
-            model.title = this.title;
-            model.text = this.text;
-            return model;
-        }
+    public BookSpotlightPageModel withText(Component text) {
+        this.text = new BookTextHolderModel(text);
+        return this;
     }
 }
