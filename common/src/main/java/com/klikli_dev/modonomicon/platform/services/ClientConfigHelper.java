@@ -6,8 +6,12 @@
 
 package com.klikli_dev.modonomicon.platform.services;
 
+import java.util.List;
+
 public interface ClientConfigHelper {
     boolean enableSmoothZoom();
 
     boolean storeLastOpenPageWhenClosingEntry();
+
+    List<String> fontFallbackLocales();
 }

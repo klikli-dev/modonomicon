@@ -8,6 +8,8 @@ package com.klikli_dev.modonomicon.config;
 
 import com.klikli_dev.modonomicon.platform.services.ClientConfigHelper;
 
+import java.util.List;
+
 public class FabricClientConfigHelper implements ClientConfigHelper {
     @Override
     public boolean enableSmoothZoom() {
@@ -17,5 +19,10 @@ public class FabricClientConfigHelper implements ClientConfigHelper {
     @Override
     public boolean storeLastOpenPageWhenClosingEntry() {
         return ClientConfig.storeLastOpenPageWhenClosingEntry.getValue();
+    }
+
+    @Override
+    public List<String> fontFallbackLocales() {
+        return ClientConfig.fontFallbackLocales.getValue();
     }
 }

@@ -20,11 +20,13 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.List;
 
 public class ClientConfig {
 
     public static PropertyMirror<Boolean> enableSmoothZoom = PropertyMirror.create(ConfigTypes.BOOLEAN);
     public static PropertyMirror<Boolean> storeLastOpenPageWhenClosingEntry = PropertyMirror.create(ConfigTypes.BOOLEAN);
+    public static PropertyMirror<List<String>> fontFallbackLocales = PropertyMirror.create(ConfigTypes.makeList(ConfigTypes.STRING));
 
     private static final ConfigTree CONFIG = ConfigTree.builder()
             .fork("qol")
@@ -36,6 +38,9 @@ public class ClientConfig {
             .withComment("Enable keeping the last open page stored when closing an entry. " +
                     "Regardless of this setting it will be stored when closing the entire book with Esc.")
             .finishValue(storeLastOpenPageWhenClosingEntry::mirror)
+            .beginValue("fontFallbackLocales", ConfigTypes.makeList(ConfigTypes.STRING), List.of("zh_cn", "ja_jp", "ko_kr"))
+            .withComment("If your locale is not supported by the default Modonomicon font, indicated by the book just rendering blocky shapes instead of characters, add your locale to this list to fall back to the builtin Minecraft font.")
+            .finishValue(fontFallbackLocales::mirror)
             .finishBranch()
             .build();
 
