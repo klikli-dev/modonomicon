@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.57.0] - 2024-01-25
+### :bug: Bug Fixes
+- [`cc5dfa8`](https://github.com/klikli-dev/modonomicon/commit/cc5dfa8659cf801ebadc1afee86471bd94244c6b) - CJK character render issues *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.55.1] - 2024-01-21
 ### :bug: Bug Fixes
 - [`9082147`](https://github.com/klikli-dev/modonomicon/commit/9082147d2f5dbd28565d2b31a59533e157b9aed7) - add error handling for unexpected booktextholder render issues *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -660,3 +665,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.54.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.54.3...release/v1.20.1-1.54.4
 [release/v1.20.1-1.55.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.54.4...release/v1.20.1-1.55.0
 [release/v1.20.1-1.55.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.55.0...release/v1.20.1-1.55.1
+[release/v1.20.1-1.57.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.55.1...release/v1.20.1-1.57.0
