@@ -23,7 +23,11 @@ import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.networking.Message;
 import com.klikli_dev.modonomicon.networking.SyncBookDataMessage;
+import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.locale.Language;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -329,5 +333,33 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
         BookErrorManager.get().setContext(null); //set to null so we start using context helper internally
         this.onLoadingComplete();
+    }
+
+    public static class Client {
+        private static final Client instance = new Client();
+
+        private static ResourceLocation fallbackFont = new ResourceLocation("minecraft", "default");
+
+        private boolean isFallbackLocale;
+        private boolean isInitialized;
+
+        public static Client get() {
+            return instance;
+        }
+
+        public boolean useFallbackFont(){
+            if(!this.isInitialized){
+                this.isInitialized = true;
+
+                var locale = Minecraft.getInstance().getLanguageManager().getSelected();
+                this.isFallbackLocale = ClientServices.CLIENT_CONFIG.fontFallbackLocales().stream().anyMatch(l -> l.equals(locale));
+            }
+
+            return this.isFallbackLocale;
+        }
+
+        public ResourceLocation safeFont(ResourceLocation requested){
+             return this.useFallbackFont() ? fallbackFont : requested;
+        }
     }
 }

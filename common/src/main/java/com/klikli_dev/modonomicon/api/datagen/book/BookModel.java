@@ -215,6 +215,11 @@ public class BookModel {
         return this;
     }
 
+    public BookModel withFont(ResourceLocation font) {
+        this.font = font;
+        return this;
+    }
+
     /**
      * Sets the image to use as a frame texture.
      * Please note that the center of each side will be repeated/stretched to fit the screen size.

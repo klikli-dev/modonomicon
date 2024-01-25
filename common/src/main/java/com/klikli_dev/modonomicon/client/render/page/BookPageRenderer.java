@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.MarkdownComponentRenderUtils;
+import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -135,7 +136,9 @@ public abstract class BookPageRenderer<T extends BookPage> {
         } else if(title.hasComponent()) {
             //non-markdown title we just render as usual
 
-            var titleComponent = Component.empty().append(title.getComponent()).withStyle(s -> s.withFont(this.page.getBook().getFont()));
+            var font = BookDataManager.Client.get().safeFont(this.page.getBook().getFont());
+
+            var titleComponent = Component.empty().append(title.getComponent()).withStyle(s -> s.withFont(font));
             //if title is larger than allowed, scaled to fit
             var scale = Math.min(1.0f, (float) BookContentScreen.MAX_TITLE_WIDTH / (float) this.font.width(titleComponent.getVisualOrderText()));
             if (scale < 1) {
