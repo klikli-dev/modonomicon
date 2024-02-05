@@ -59,6 +59,10 @@ public class BookOrCondition extends BookCondition {
         return Condition.OR;
     }
 
+    public BookCondition[] children() {
+        return this.children;
+    }
+
     @Override
     public void toNetwork(FriendlyByteBuf buffer) {
         buffer.writeBoolean(this.tooltip != null);
