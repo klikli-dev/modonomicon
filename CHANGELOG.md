@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.4-1.58.0] - 2024-02-05
+### :sparkles: New Features
+- [`b09637b`](https://github.com/klikli-dev/modonomicon/commit/b09637b8d280b8bd0869228c6f17a3b985033d08) - make condition children available *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.4-1.57.0] - 2024-01-25
 ### :bug: Bug Fixes
 - [`36e047d`](https://github.com/klikli-dev/modonomicon/commit/36e047d552040148deebbba69c5cb821228068bc) - CJK character render issues *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -704,3 +709,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.4-1.56.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.55.1...release/v1.20.4-1.56.0
 [release/v1.20.4-1.56.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.56.0...release/v1.20.4-1.56.1
 [release/v1.20.4-1.57.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.56.1...release/v1.20.4-1.57.0
+[release/v1.20.4-1.58.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.57.0...release/v1.20.4-1.58.0
