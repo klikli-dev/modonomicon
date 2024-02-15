@@ -41,6 +41,8 @@ public class DemoBookProvider extends BookProvider {
         var conditionalCategory = this.makeConditionalCategory(this.context());
         conditionalCategory.withCondition(BookEntryReadConditionModel.builder().withEntry(this.modLoc("features/condition_root")).build());
 
+        var otherCategory = new OtherCategoryProvider(this).generate();
+
 
         var commandEntryCommand = BookCommandModel.create(this.modLoc("test_command"), "/give @s minecraft:apple 1")
                 .withPermissionLevel(2)
@@ -61,6 +63,7 @@ public class DemoBookProvider extends BookProvider {
                 .withCategory(formattingCategory)
                 .withCategory(hiddenCategory)
                 .withCategory(conditionalCategory)
+                .withCategory(otherCategory)
                 .withCommand(commandEntryCommand)
                 .withCommand(commandEntryLinkCommand);
         return demoBook;
