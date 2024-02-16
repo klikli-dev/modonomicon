@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.59.0] - 2024-02-16
+### :bug: Bug Fixes
+- [`c4c0108`](https://github.com/klikli-dev/modonomicon/commit/c4c0108ae3c6a0d0c5e50e5a40ffdc7198e5d905) - convert entry unlocked condition handling into generic multipass handling *(PR [#174](https://github.com/klikli-dev/modonomicon/pull/174) by [@klikli-dev](https://github.com/klikli-dev))*
+  - :arrow_lower_right: *fixes issue [#173](undefined) opened by [@Cmdpro](https://github.com/Cmdpro)*
+
+
 ## [release/v1.20.1-1.58.0] - 2024-02-05
 ### :sparkles: New Features
 - [`573d578`](https://github.com/klikli-dev/modonomicon/commit/573d57819ca666a74d5cacca8de23701a2da1268) - make condition children available *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -672,3 +678,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.55.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.55.0...release/v1.20.1-1.55.1
 [release/v1.20.1-1.57.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.55.1...release/v1.20.1-1.57.0
 [release/v1.20.1-1.58.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.57.0...release/v1.20.1-1.58.0
+[release/v1.20.1-1.59.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.58.0...release/v1.20.1-1.59.0
