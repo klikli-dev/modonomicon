@@ -63,6 +63,16 @@ public abstract class BookCondition {
 
     public abstract boolean test(BookConditionContext context, Player player);
 
+    /**
+     * If true then this condition needs to be tested multiple times during BookUnlockStates#update
+     * This should be true if the condition depends on ANOTHER unlock condition.
+     * Usually that is the case for BookEntryUnlockedCondition, BookAndCondition and BookOrCondition.
+     * The latter two because they may contain the former.
+     */
+    public boolean requiresMultiPassUnlockTest(){
+        return false;
+    }
+
     public List<Component> getTooltip(BookConditionContext context) {
         return this.tooltip != null ? List.of(this.tooltip) : List.of();
     }
