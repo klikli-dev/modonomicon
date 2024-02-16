@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCommand;
 import com.klikli_dev.modonomicon.book.BookEntry;
+import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookEntryUnlockedCondition;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionCategoryContext;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
@@ -72,9 +73,10 @@ public class BookUnlockStates {
     }
 
     public void update(ServerPlayer owner) {
-
         //loop through available books and update unlocked pages and categories
-        List<Map.Entry<BookEntryUnlockedCondition, BookConditionContext>> unlockedConditions = new ArrayList<>();
+
+        //store conditions that are not unlocked when first checked, but may be unlocked due to changes later in the first pass.
+        List<Map.Entry<BookCondition, BookConditionContext>> conditionsThatRequireMultipass = new ArrayList<>();
 
         for (var book : BookDataManager.get().getBooks().values()) {
             BookErrorManager.get().reset();
@@ -87,8 +89,10 @@ public class BookUnlockStates {
                     var categoryContext = BookConditionContext.of(book, category);
                     if (category.getCondition().test(categoryContext, owner))
                         this.unlockedCategories.computeIfAbsent(book.getId(), k -> new HashSet<>()).add(category.getId());
-                    else if (category.getCondition() instanceof BookEntryUnlockedCondition bookEntryUnlockedCondition)
-                        unlockedConditions.add(Map.entry(bookEntryUnlockedCondition, categoryContext));
+                    else if (category.getCondition().requiresMultiPassUnlockTest())
+                        //if the condition is not met AND it requires a multi pass unlock test we store it to test again later
+                        //this is because if the condition depends on an unlock that may happen later in the first pass it should unlock this condition alongside
+                        conditionsThatRequireMultipass.add(Map.entry(category.getCondition(), categoryContext));
                 } catch (Exception e) {
                     BookErrorManager.get().error("Error while testing category condition", e);
                 }
@@ -103,8 +107,10 @@ public class BookUnlockStates {
                         var entryContext = BookConditionContext.of(book, entry);
                         if (entry.getCondition().test(entryContext, owner))
                             this.unlockedEntries.computeIfAbsent(book.getId(), k -> new HashSet<>()).add(entry.getId());
-                        else if (entry.getCondition() instanceof BookEntryUnlockedCondition bookEntryUnlockedCondition)
-                            unlockedConditions.add(Map.entry(bookEntryUnlockedCondition, entryContext));
+                        else if (entry.getCondition().requiresMultiPassUnlockTest())
+                            //if the condition is not met AND it requires a multi pass unlock test we store it to test again later
+                            //this is because if the condition depends on an unlock that may happen later in the first pass it should unlock this condition alongside
+                            conditionsThatRequireMultipass.add(Map.entry(entry.getCondition(), entryContext));
                     } catch (Exception e) {
                         BookErrorManager.get().error("Error while testing entry condition", e);
                     }
@@ -117,7 +123,7 @@ public class BookUnlockStates {
         boolean unlockedAny = false;
         do {
             unlockedAny = false;
-            var iter = unlockedConditions.iterator();
+            var iter = conditionsThatRequireMultipass.iterator();
             while (iter.hasNext()) {
                 var condition = iter.next();
                 BookErrorManager.get().setCurrentBookId(condition.getValue().getBook().getId());

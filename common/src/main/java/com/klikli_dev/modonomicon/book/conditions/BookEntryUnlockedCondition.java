@@ -49,6 +49,11 @@ public class BookEntryUnlockedCondition extends BookCondition {
     }
 
     @Override
+    public boolean requiresMultiPassUnlockTest() {
+        return true;
+    }
+
+    @Override
     public void toNetwork(FriendlyByteBuf buffer) {
         buffer.writeBoolean(this.tooltip != null);
         if (this.tooltip != null) {

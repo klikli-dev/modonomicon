@@ -4,6 +4,7 @@ a30aec89de938ebb9f5e704d5262ad6f43865afd data/modonomicon/modonomicon/books/demo
 beb829bd9c24d3855aba996e5e08ffd8c5e41ccc data/modonomicon/modonomicon/books/demo/categories/features.json
 5bee6456d3434ccb00d57ce279bc4b384b95fe42 data/modonomicon/modonomicon/books/demo/categories/formatting.json
 99b4f77feb6cfcff5f822c398513ea5013587c61 data/modonomicon/modonomicon/books/demo/categories/hidden.json
+2d4e9bc39733221848cfc39e2e17a43eb79f29da data/modonomicon/modonomicon/books/demo/categories/other.json
 91921129e14250f4f9403e2ee1b4614da61f702a data/modonomicon/modonomicon/books/demo/commands/test_command.json
 b9ad32b76e2efc9f44c8b76d56670f9dc63f2a94 data/modonomicon/modonomicon/books/demo/commands/test_command2.json
 927643166c4e76606aa33bf3576453ca33418400 data/modonomicon/modonomicon/books/demo/entries/conditional/always_locked.json
@@ -26,3 +27,6 @@ e31c574dcfc0d471cf5f24e056b5b8d7de730882 data/modonomicon/modonomicon/books/demo
 401f4f3f00ce4efb15c111371ba089b47498aaab data/modonomicon/modonomicon/books/demo/entries/formatting/basic.json
 55dade7a22bb2786dce2ea67704dea28ea10050f data/modonomicon/modonomicon/books/demo/entries/formatting/link.json
 4a0f243b77e13c86c07e8a81ccdac5d62ae54605 data/modonomicon/modonomicon/books/demo/entries/hidden/always_locked.json
+5562affab9d5c0be317bd247e2abb7a238e5f24a data/modonomicon/modonomicon/books/demo/entries/other/a.json
+29554dbfe0297070cf77802f73b6d4a738a3d719 data/modonomicon/modonomicon/books/demo/entries/other/b.json
+2387bf53b222885c3a8ceea8e95271f5fcc5bf9f data/modonomicon/modonomicon/books/demo/entries/other/root.json

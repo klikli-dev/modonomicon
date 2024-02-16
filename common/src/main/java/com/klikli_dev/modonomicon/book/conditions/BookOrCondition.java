@@ -17,6 +17,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BookOrCondition extends BookCondition {
@@ -57,6 +58,11 @@ public class BookOrCondition extends BookCondition {
     @Override
     public ResourceLocation getType() {
         return Condition.OR;
+    }
+
+    @Override
+    public boolean requiresMultiPassUnlockTest() {
+        return Arrays.stream(this.children).anyMatch(BookCondition::requiresMultiPassUnlockTest);
     }
 
     public BookCondition[] children() {
