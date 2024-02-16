@@ -22,6 +22,14 @@
       "use_markdown_in_title": false
     }
   ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "modonomicon:other/root",
+      "line_enabled": true,
+      "line_reversed": false
+    }
+  ],
   "show_when_any_parent_unlocked": false,
   "x": -8,
   "y": -1

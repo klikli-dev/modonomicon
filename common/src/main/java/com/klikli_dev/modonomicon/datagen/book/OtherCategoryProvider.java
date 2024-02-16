@@ -33,8 +33,10 @@ public class OtherCategoryProvider extends CategoryProvider {
         var rootEntry = new RootEntry(this).generate('r');
         var aEntry = new AEntry(this).generate('a');
         var bEntry = new BEntry(this).generate('b');
+        bEntry.withParent(rootEntry);
         bEntry.withCondition(this.condition().entryRead(rootEntry));
 
+        aEntry.withParent(bEntry);
         aEntry.withCondition(
                 this.condition().and(
                         BookEntryUnlockedConditionModel.builder().withEntry(bEntry.getId()).build(),
