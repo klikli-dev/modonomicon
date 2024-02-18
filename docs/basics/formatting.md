@@ -133,12 +133,16 @@ Open another book on it's default page.
 Syntax: 
 - `[display text](book://<book-id>)` 
 
+:::tip
+The `<book-id>` must include the namespace, e.g. `occultism:dictionary_of_spirits`
+:::
+
 #### Category Link
 
 Open a category (in the same book, or in another book).
 Syntax: 
-- `[display text](book://<book-id>/<category-id>)`
-- `[display text](book://<category-id>)` 
+- `[display text](category://<book-id>/<category-id>)`
+- `[display text](category://<category-id>)` 
 
 :::tip 
 
@@ -150,12 +154,13 @@ If `<book-id>` is ommitted the current book is assumed.
 
 Opens an entry (in the same book, or in another book), optionally at either a given page number or page anchor.
 Syntax: 
-- `[display text](book://<book-id>/<entry-id>[#page-number][@page-anchor])`.
-- `[display text](book://<entry-id>[#page-number][@page-anchor])`.
+- `[display text](entry://<book-id>/<entry-id>[#page-number][@page-anchor])`.
+- `[display text](entry://<entry-id>[#page-number][@page-anchor])`.
 
 :::tip 
 
-If `<book-id>` is ommitted the current book is assumed.
+If `<book-id>` is ommitted the current book is assumed.   
+This is the recommended way to link to entries.   
 
 ::: 
 
