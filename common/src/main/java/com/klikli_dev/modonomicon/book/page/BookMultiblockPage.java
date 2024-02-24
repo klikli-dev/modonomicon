@@ -13,6 +13,8 @@ import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
+import com.klikli_dev.modonomicon.book.conditions.BookCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
@@ -32,8 +34,8 @@ public class BookMultiblockPage extends BookPage {
 
     protected Multiblock multiblock;
 
-    public BookMultiblockPage(BookTextHolder multiblockName, BookTextHolder text, ResourceLocation multiblockId, boolean showVisualizeButton, String anchor) {
-        super(anchor);
+    public BookMultiblockPage(BookTextHolder multiblockName, BookTextHolder text, ResourceLocation multiblockId, boolean showVisualizeButton, String anchor, BookCondition condition) {
+        super(anchor, condition);
         this.multiblockName = multiblockName;
         this.text = text;
         this.multiblockId = multiblockId;
@@ -46,7 +48,10 @@ public class BookMultiblockPage extends BookPage {
         var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY);
         var showVisualizeButton = GsonHelper.getAsBoolean(json, "show_visualize_button", true);
         var anchor = GsonHelper.getAsString(json, "anchor", "");
-        return new BookMultiblockPage(multiblockName, text, multiblockId, showVisualizeButton, anchor);
+        var condition = json.has("condition")
+                ? BookCondition.fromJson(json.getAsJsonObject("condition"))
+                : new BookNoneCondition();
+        return new BookMultiblockPage(multiblockName, text, multiblockId, showVisualizeButton, anchor, condition);
     }
 
     public static BookMultiblockPage fromNetwork(FriendlyByteBuf buffer) {
@@ -55,7 +60,8 @@ public class BookMultiblockPage extends BookPage {
         var text = BookTextHolder.fromNetwork(buffer);
         var showVisualizeButton = buffer.readBoolean();
         var anchor = buffer.readUtf();
-        return new BookMultiblockPage(multiblockName, text, multiblockId, showVisualizeButton, anchor);
+        var condition = BookCondition.fromNetwork(buffer);
+        return new BookMultiblockPage(multiblockName, text, multiblockId, showVisualizeButton, anchor, condition);
     }
 
     public boolean showVisualizeButton() {
@@ -111,7 +117,7 @@ public class BookMultiblockPage extends BookPage {
         buffer.writeResourceLocation(this.multiblockId);
         this.text.toNetwork(buffer);
         buffer.writeBoolean(this.showVisualizeButton);
-        buffer.writeUtf(this.anchor);
+        super.toNetwork(buffer);
     }
 
     @Override

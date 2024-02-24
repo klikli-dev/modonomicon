@@ -9,6 +9,10 @@ package com.klikli_dev.modonomicon.api.datagen.book.page;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.api.datagen.book.BookTextHolderModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookNoneConditionModel;
+import com.klikli_dev.modonomicon.book.conditions.BookCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,8 +25,8 @@ public class BookEntityPageModel extends BookPageModel {
     protected boolean rotate = true;
     protected float defaultRotation = -45f;
 
-    protected BookEntityPageModel(@NotNull String anchor) {
-        super(Page.ENTITY, anchor);
+    protected BookEntityPageModel(@NotNull String anchor, @NotNull BookConditionModel condition) {
+        super(Page.ENTITY, anchor, condition);
     }
 
     public static Builder builder() {
@@ -74,6 +78,7 @@ public class BookEntityPageModel extends BookPageModel {
 
     public static final class Builder {
         private String anchor = "";
+        private BookConditionModel condition = new BookNoneConditionModel();
         private BookTextHolderModel entityName = new BookTextHolderModel("");
         private BookTextHolderModel text = new BookTextHolderModel("");
         private String entityId;
@@ -92,6 +97,11 @@ public class BookEntityPageModel extends BookPageModel {
 
         public Builder withAnchor(String anchor) {
             this.anchor = anchor;
+            return this;
+        }
+
+        public Builder withCondition(BookConditionModel condition) {
+            this.condition = condition;
             return this;
         }
 
@@ -142,7 +152,7 @@ public class BookEntityPageModel extends BookPageModel {
 
 
         public BookEntityPageModel build() {
-            BookEntityPageModel model = new BookEntityPageModel(this.anchor);
+            BookEntityPageModel model = new BookEntityPageModel(this.anchor, this.condition);
             model.text = this.text;
             model.entityName = this.entityName;
             model.entityId = this.entityId;

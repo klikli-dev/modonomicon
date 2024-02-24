@@ -11,6 +11,8 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
+import com.klikli_dev.modonomicon.book.conditions.BookCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import com.klikli_dev.modonomicon.util.EntityUtil;
@@ -34,8 +36,8 @@ public class BookEntityPage extends BookPage {
     protected float defaultRotation = -45f;
 
 
-    public BookEntityPage(BookTextHolder entityName, BookTextHolder text, String entityId, float scale, float offset, boolean rotate, float defaultRotation, String anchor) {
-        super(anchor);
+    public BookEntityPage(BookTextHolder entityName, BookTextHolder text, String entityId, float scale, float offset, boolean rotate, float defaultRotation, String anchor, BookCondition condition) {
+        super(anchor, condition);
         this.entityName = entityName;
         this.text = text;
         this.entityId = entityId;
@@ -55,7 +57,10 @@ public class BookEntityPage extends BookPage {
         var defaultRotation = GsonHelper.getAsFloat(json, "default_rotation", -45.0f);
 
         var anchor = GsonHelper.getAsString(json, "anchor", "");
-        return new BookEntityPage(entityName, text, entityId, scale, offset, rotate, defaultRotation, anchor);
+        var condition = json.has("condition")
+                ? BookCondition.fromJson(json.getAsJsonObject("condition"))
+                : new BookNoneCondition();
+        return new BookEntityPage(entityName, text, entityId, scale, offset, rotate, defaultRotation, anchor, condition);
     }
 
     public static BookEntityPage fromNetwork(FriendlyByteBuf buffer) {
@@ -67,7 +72,8 @@ public class BookEntityPage extends BookPage {
         var rotate = buffer.readBoolean();
         var defaultRotation = buffer.readFloat();
         var anchor = buffer.readUtf();
-        return new BookEntityPage(entityName, text, entityId, scale, offset, rotate, defaultRotation, anchor);
+        var condition = BookCondition.fromNetwork(buffer);
+        return new BookEntityPage(entityName, text, entityId, scale, offset, rotate, defaultRotation, anchor, condition);
     }
 
     public String getEntityId() {
@@ -141,7 +147,7 @@ public class BookEntityPage extends BookPage {
         buffer.writeFloat(this.offset);
         buffer.writeBoolean(this.rotate);
         buffer.writeFloat(this.defaultRotation);
-        buffer.writeUtf(this.anchor);
+        super.toNetwork(buffer);
     }
 
     @Override

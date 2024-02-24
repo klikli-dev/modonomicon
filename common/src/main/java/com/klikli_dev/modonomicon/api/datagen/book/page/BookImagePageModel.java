@@ -10,6 +10,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.api.datagen.book.BookTextHolderModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookNoneConditionModel;
+import com.klikli_dev.modonomicon.book.conditions.BookCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -21,8 +25,8 @@ public class BookImagePageModel extends BookPageModel {
     protected ResourceLocation[] images = new ResourceLocation[0];
     protected boolean border = true;
 
-    protected BookImagePageModel(@NotNull String anchor) {
-        super(Page.IMAGE, anchor);
+    protected BookImagePageModel(@NotNull String anchor, @NotNull BookConditionModel condition) {
+        super(Page.IMAGE, anchor, condition);
     }
 
     public static Builder builder() {
@@ -64,6 +68,7 @@ public class BookImagePageModel extends BookPageModel {
 
     public static final class Builder {
         private String anchor = "";
+        private BookConditionModel condition = new BookNoneConditionModel();
         private BookTextHolderModel title = new BookTextHolderModel("");
         private BookTextHolderModel text = new BookTextHolderModel("");
         private ResourceLocation[] images = new ResourceLocation[0];
@@ -79,6 +84,11 @@ public class BookImagePageModel extends BookPageModel {
 
         public Builder withAnchor(String anchor) {
             this.anchor = anchor;
+            return this;
+        }
+
+        public Builder withCondition(BookConditionModel condition) {
+            this.condition = condition;
             return this;
         }
 
@@ -113,7 +123,7 @@ public class BookImagePageModel extends BookPageModel {
         }
 
         public BookImagePageModel build() {
-            BookImagePageModel model = new BookImagePageModel(this.anchor);
+            BookImagePageModel model = new BookImagePageModel(this.anchor, this.condition);
             model.title = this.title;
             model.text = this.text;
             model.images = this.images;

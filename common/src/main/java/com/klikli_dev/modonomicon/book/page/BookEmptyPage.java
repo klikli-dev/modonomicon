@@ -8,34 +8,35 @@ package com.klikli_dev.modonomicon.book.page;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
+import com.klikli_dev.modonomicon.book.conditions.BookCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 
 public class BookEmptyPage extends BookPage {
 
-    public BookEmptyPage(String anchor) {
-        super(anchor);
+    public BookEmptyPage(String anchor, BookCondition condition) {
+        super(anchor, condition);
     }
 
     public static BookEmptyPage fromJson(JsonObject json) {
         var anchor = GsonHelper.getAsString(json, "anchor", "");
-        return new BookEmptyPage(anchor);
+        var condition = json.has("condition")
+                ? BookCondition.fromJson(json.getAsJsonObject("condition"))
+                : new BookNoneCondition();
+        return new BookEmptyPage(anchor, condition);
     }
 
     public static BookEmptyPage fromNetwork(FriendlyByteBuf buffer) {
         var anchor = buffer.readUtf();
-        return new BookEmptyPage(anchor);
+        var condition = BookCondition.fromNetwork(buffer);
+        return new BookEmptyPage(anchor, condition);
     }
 
     @Override
     public ResourceLocation getType() {
         return Page.EMPTY;
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buffer) {
-        buffer.writeUtf(this.anchor);
     }
 
     @Override
