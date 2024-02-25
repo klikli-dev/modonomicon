@@ -158,7 +158,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
     }
 
     public boolean canSeeArrowButton(boolean left) {
-        return left ? this.openPagesIndex > 0 : (this.openPagesIndex + 1) < this.unlockedPages.size();
+        return left ? this.openPagesIndex > 0 : (this.openPagesIndex + 2) < this.unlockedPages.size();
     }
 
     public boolean canSeeBackButton() {

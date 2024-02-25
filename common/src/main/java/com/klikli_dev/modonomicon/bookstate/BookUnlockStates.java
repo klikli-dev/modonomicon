@@ -132,14 +132,18 @@ public class BookUnlockStates {
                         try {
                             var pageContext = BookConditionContext.of(book, page);
                             var pageCondition = page.getCondition();
-                            if (pageCondition.test(pageContext, owner))
-                                this.unlockedPages.computeIfAbsent(book.getId(), k -> new HashMap<>())
-                                        .computeIfAbsent(entry.getId(), k -> new HashSet<>())
-                                        .add(page.getPageNumber());
-                            else if (pageCondition.requiresMultiPassUnlockTest())
+                            if (pageCondition.test(pageContext, owner)) {
+                                var pages = this.unlockedPages.computeIfAbsent(book.getId(), k -> new HashMap<>())
+                                        .computeIfAbsent(entry.getId(), k -> new HashSet<>());
+                                if (!pages.contains(page.getPageNumber())) {
+                                     pages.add(page.getPageNumber());
+                                    this.readEntries.computeIfAbsent(book.getId(), k -> new HashSet<>()).remove(entry.getId());
+                                }
+                            } else if (pageCondition.requiresMultiPassUnlockTest()) {
                                 //if the condition is not met AND it requires a multi pass unlock test we store it to test again later
                                 //this is because if the condition depends on an unlock that may happen later in the first pass it should unlock this condition alongside
                                 conditionsThatRequireMultipass.add(Map.entry(pageCondition, pageContext));
+                            }
                         } catch (Exception e) {
                             BookErrorManager.get().error("Error while testing page condition", e);
                         }
@@ -166,9 +170,12 @@ public class BookUnlockStates {
                     try {
                         //then store the unlock result
                         if (condition.getValue() instanceof BookConditionPageContext pageContext) {
-                            this.unlockedPages.computeIfAbsent(pageContext.getBook().getId(), k -> new HashMap<>())
-                                    .computeIfAbsent(pageContext.getEntry().getId(), k -> new HashSet<>())
-                                    .add(pageContext.getPage().getPageNumber());
+                            var pages = this.unlockedPages.computeIfAbsent(pageContext.getBook().getId(), k -> new HashMap<>())
+                                    .computeIfAbsent(pageContext.getEntry().getId(), k -> new HashSet<>());
+                            if (!pages.contains(pageContext.getPage().getPageNumber())) {
+                                pages.add(pageContext.getPage().getPageNumber());
+                                this.readEntries.computeIfAbsent(pageContext.getBook().getId(), k -> new HashSet<>()).remove(pageContext.getEntry().getId());
+                            }
                         } else if (condition.getValue() instanceof BookConditionEntryContext entryContext) {
                             this.unlockedEntries.computeIfAbsent(entryContext.getBook().getId(), k -> new HashSet<>()).add(entryContext.getEntry().getId());
                         } else if (condition.getValue() instanceof BookConditionCategoryContext categoryContext) {
