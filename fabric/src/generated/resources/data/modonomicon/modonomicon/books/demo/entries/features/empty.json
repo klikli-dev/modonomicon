@@ -12,6 +12,9 @@
     {
       "type": "modonomicon:text",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.features.empty.intro.text",
       "title": "book.modonomicon.demo.features.empty.intro.title",
@@ -19,11 +22,17 @@
     },
     {
       "type": "modonomicon:empty",
-      "anchor": ""
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      }
     },
     {
       "type": "modonomicon:empty",
-      "anchor": ""
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      }
     }
   ],
   "parents": [
