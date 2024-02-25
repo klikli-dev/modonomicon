@@ -14,6 +14,7 @@ import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionCategoryContext;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
+import com.klikli_dev.modonomicon.book.conditions.context.BookConditionPageContext;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.data.BookDataManager;
@@ -32,6 +33,7 @@ import java.util.concurrent.ConcurrentMap;
 public class BookUnlockStates {
     public static final Codec<BookUnlockStates> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codecs.concurrentMap(ResourceLocation.CODEC, Codecs.set(ResourceLocation.CODEC)).fieldOf("readEntries").forGetter((s) -> s.readEntries),
+            Codecs.concurrentMap(ResourceLocation.CODEC, Codecs.mutableMap(ResourceLocation.CODEC, Codecs.set(Codec.INT))).fieldOf("unlockedPages").forGetter((s) -> s.unlockedPages),
             Codecs.concurrentMap(ResourceLocation.CODEC, Codecs.set(ResourceLocation.CODEC)).fieldOf("unlockedEntries").forGetter((s) -> s.unlockedEntries),
             Codecs.concurrentMap(ResourceLocation.CODEC, Codecs.set(ResourceLocation.CODEC)).fieldOf("unlockedCategories").forGetter((s) -> s.unlockedCategories),
             Codecs.concurrentMap(ResourceLocation.CODEC, Codecs.mutableMap(ResourceLocation.CODEC, Codec.INT)).fieldOf("usedCommands").forGetter((s) -> s.usedCommands)
@@ -42,6 +44,11 @@ public class BookUnlockStates {
      * Map Book ID to read entry IDs
      */
     public ConcurrentMap<ResourceLocation, Set<ResourceLocation>> readEntries;
+
+    /**
+     * Map Book ID to entry IDs to lists of unlocked pages
+     */
+    public ConcurrentMap<ResourceLocation, Map<ResourceLocation, Set<Integer>>> unlockedPages;
 
     /**
      * Map Book ID to unlocked entry IDs
@@ -59,14 +66,16 @@ public class BookUnlockStates {
     public ConcurrentMap<ResourceLocation, Map<ResourceLocation, Integer>> usedCommands;
 
     public BookUnlockStates() {
-        this(new ConcurrentHashMap<>(), new ConcurrentHashMap<>(), new ConcurrentHashMap<>(), new ConcurrentHashMap<>());
+        this(new ConcurrentHashMap<>(), new ConcurrentHashMap<>(), new ConcurrentHashMap<>(), new ConcurrentHashMap<>(), new ConcurrentHashMap<>());
     }
 
     public BookUnlockStates(ConcurrentMap<ResourceLocation, Set<ResourceLocation>> readEntries,
+                            ConcurrentMap<ResourceLocation, Map<ResourceLocation, Set<Integer>>> unlockedPages,
                             ConcurrentMap<ResourceLocation, Set<ResourceLocation>> unlockedEntries,
                             ConcurrentMap<ResourceLocation, Set<ResourceLocation>> unlockedCategories,
                             ConcurrentMap<ResourceLocation, Map<ResourceLocation, Integer>> usedCommands) {
         this.readEntries = readEntries;
+        this.unlockedPages = unlockedPages;
         this.unlockedEntries = unlockedEntries;
         this.unlockedCategories = unlockedCategories;
         this.usedCommands = usedCommands;
@@ -114,6 +123,27 @@ public class BookUnlockStates {
                     } catch (Exception e) {
                         BookErrorManager.get().error("Error while testing entry condition", e);
                     }
+
+                    for (var page : entry.getPages()) {
+                        BookErrorManager.get().setContext("Page to perform condition test on: {}",
+                                page.getPageNumber()
+                        );
+
+                        try {
+                            var pageContext = BookConditionContext.of(book, page);
+                            var pageCondition = page.getCondition();
+                            if (pageCondition.test(pageContext, owner))
+                                this.unlockedPages.computeIfAbsent(book.getId(), k -> new HashMap<>())
+                                        .computeIfAbsent(entry.getId(), k -> new HashSet<>())
+                                        .add(page.getPageNumber());
+                            else if (pageCondition.requiresMultiPassUnlockTest())
+                                //if the condition is not met AND it requires a multi pass unlock test we store it to test again later
+                                //this is because if the condition depends on an unlock that may happen later in the first pass it should unlock this condition alongside
+                                conditionsThatRequireMultipass.add(Map.entry(pageCondition, pageContext));
+                        } catch (Exception e) {
+                            BookErrorManager.get().error("Error while testing page condition", e);
+                        }
+                    }
                 }
             }
         }
@@ -135,7 +165,11 @@ public class BookUnlockStates {
                 if (condition.getKey().test(condition.getValue(), owner)) {
                     try {
                         //then store the unlock result
-                        if (condition.getValue() instanceof BookConditionEntryContext entryContext) {
+                        if (condition.getValue() instanceof BookConditionPageContext pageContext) {
+                            this.unlockedPages.computeIfAbsent(pageContext.getBook().getId(), k -> new HashMap<>())
+                                    .computeIfAbsent(pageContext.getEntry().getId(), k -> new HashSet<>())
+                                    .add(pageContext.getPage().getPageNumber());
+                        } else if (condition.getValue() instanceof BookConditionEntryContext entryContext) {
                             this.unlockedEntries.computeIfAbsent(entryContext.getBook().getId(), k -> new HashSet<>()).add(entryContext.getEntry().getId());
                         } else if (condition.getValue() instanceof BookConditionCategoryContext categoryContext) {
                             this.unlockedCategories.computeIfAbsent(categoryContext.getBook().getId(), k -> new HashSet<>()).add(categoryContext.getCategory().getId());
@@ -148,7 +182,7 @@ public class BookUnlockStates {
                         iter.remove();
 
                     } catch (Exception e) {
-                        BookErrorManager.get().error("Error while testing entry condition", e);
+                        BookErrorManager.get().error("Error while testing condition", e);
                     }
                 }
             }
@@ -202,13 +236,17 @@ public class BookUnlockStates {
     }
 
     public List<BookPage> getUnlockedPagesIn(BookEntry entry) {
-        return entry.getPages();
+        var unlockedPageNumbers = this.unlockedPages.getOrDefault(entry.getBook().getId(), new HashMap<>())
+                .getOrDefault(entry.getId(), new HashSet<>());
+        return entry.getPages().stream().filter(page -> unlockedPageNumbers.contains(page.getPageNumber())).toList();
     }
 
     public boolean isUnlocked(BookPage page) {
         if (page.getBook() == null)
             return false;
-        return true;
+        return this.unlockedPages.getOrDefault(page.getBook().getId(), new HashMap<>())
+                .getOrDefault(page.getParentEntry().getId(), new HashSet<>())
+                .contains(page.getPageNumber());
     }
 
     public boolean isUnlocked(BookEntry entry) {
@@ -225,6 +263,7 @@ public class BookUnlockStates {
 
     public void reset(Book book) {
         this.readEntries.remove(book.getId());
+        this.unlockedPages.remove(book.getId());
         this.unlockedEntries.remove(book.getId());
         this.unlockedCategories.remove(book.getId());
         //Do not reset the commands!
@@ -233,6 +272,7 @@ public class BookUnlockStates {
     public List<ResourceLocation> getBooks() {
         var books = new HashSet<ResourceLocation>();
         books.addAll(this.readEntries.keySet());
+        books.addAll(this.unlockedPages.keySet());
         books.addAll(this.unlockedEntries.keySet());
         books.addAll(this.unlockedCategories.keySet());
         return books.stream().toList();
@@ -249,6 +289,14 @@ public class BookUnlockStates {
         var unlockedEntries = this.unlockedEntries.getOrDefault(book.getId(), Set.of());
         buf.writeVarInt(unlockedEntries.size());
         unlockedEntries.forEach(buf::writeResourceLocation);
+
+        var unlockedPages = this.unlockedPages.getOrDefault(book.getId(), Map.of());
+        buf.writeVarInt(unlockedPages.size());
+        unlockedPages.forEach((entry, pages) -> {
+            buf.writeResourceLocation(entry);
+            buf.writeVarInt(pages.size());
+            pages.forEach(buf::writeVarInt);
+        });
 
         var readEntries = this.readEntries.getOrDefault(book.getId(), Set.of());
         buf.writeVarInt(readEntries.size());
@@ -272,7 +320,9 @@ public class BookUnlockStates {
 
             var unlockedCategories = new HashSet<ResourceLocation>();
             var unlockedEntries = new HashSet<ResourceLocation>();
+            var unlockedPages = new HashMap<ResourceLocation, Set<Integer>>();
             var readEntries = new HashSet<ResourceLocation>();
+
             var unlockedCategoriesSize = buf.readVarInt();
             for (var i = 0; i < unlockedCategoriesSize; i++) {
                 unlockedCategories.add(buf.readResourceLocation());
@@ -283,6 +333,18 @@ public class BookUnlockStates {
                 unlockedEntries.add(buf.readResourceLocation());
             }
 
+            var unlockedPagesSize = buf.readVarInt();
+            for (var i = 0; i < unlockedPagesSize; i++) {
+                var entryId = buf.readResourceLocation();
+                var unlockedPagesForEntry = new HashSet<Integer>();
+                unlockedPages.put(entryId, unlockedPagesForEntry);
+
+                var pagesSize = buf.readVarInt();
+                for (var j = 0; j < pagesSize; j++) {
+                    unlockedPagesForEntry.add(buf.readVarInt());
+                }
+            }
+
             var readEntriesSize = buf.readVarInt();
             for (var i = 0; i < readEntriesSize; i++) {
                 readEntries.add(buf.readResourceLocation());
@@ -290,6 +352,7 @@ public class BookUnlockStates {
 
             this.unlockedCategories.put(bookId, unlockedCategories);
             this.unlockedEntries.put(bookId, unlockedEntries);
+            this.unlockedPages.put(bookId, unlockedPages);
             this.readEntries.put(bookId, readEntries);
 
             return book;
