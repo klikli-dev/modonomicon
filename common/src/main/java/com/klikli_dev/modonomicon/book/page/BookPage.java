@@ -61,7 +61,7 @@ public abstract class BookPage {
 
     public void toNetwork(FriendlyByteBuf buffer) {
         buffer.writeUtf(this.anchor);
-        this.condition.toNetwork(buffer);
+        BookCondition.toNetwork(this.condition, buffer);
     }
 
     public BookEntry getParentEntry() {

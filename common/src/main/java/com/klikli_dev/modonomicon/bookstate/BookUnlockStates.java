@@ -11,11 +11,11 @@ import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCommand;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
-import com.klikli_dev.modonomicon.book.conditions.BookEntryUnlockedCondition;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionCategoryContext;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
+import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.util.Codecs;
 import com.mojang.serialization.Codec;
@@ -199,6 +199,16 @@ public class BookUnlockStates {
         if (entry.getBook() == null)
             return false;
         return this.readEntries.getOrDefault(entry.getBook().getId(), new HashSet<>()).contains(entry.getId());
+    }
+
+    public List<BookPage> getUnlockedPagesIn(BookEntry entry) {
+        return entry.getPages();
+    }
+
+    public boolean isUnlocked(BookPage page) {
+        if (page.getBook() == null)
+            return false;
+        return true;
     }
 
     public boolean isUnlocked(BookEntry entry) {

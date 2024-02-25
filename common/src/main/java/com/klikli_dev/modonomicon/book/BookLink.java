@@ -19,7 +19,7 @@ public class BookLink {
     public ResourceLocation bookId;
     public ResourceLocation categoryId;
     public ResourceLocation entryId;
-    public int pageNumber;
+    public Integer pageNumber;
     public String pageAnchor;
 
     private BookLink() {

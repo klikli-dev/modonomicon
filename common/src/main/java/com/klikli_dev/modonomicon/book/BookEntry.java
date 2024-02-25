@@ -12,11 +12,13 @@ import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
+import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
@@ -314,6 +316,11 @@ public class BookEntry {
 
     public List<BookPage> getPages() {
         return this.pages;
+    }
+
+    public List<BookPage> getUnlockedPagesFor(Player player) {
+        BookUnlockStateManager unlockManager = BookUnlockStateManager.get();
+        return unlockManager.getUnlockedPagesFor(player, this);
     }
 
     public Book getBook() {
