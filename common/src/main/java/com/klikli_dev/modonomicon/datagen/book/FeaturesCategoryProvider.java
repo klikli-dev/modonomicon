@@ -187,11 +187,24 @@ public class FeaturesCategoryProvider extends CategoryProvider {
                 "Ride a Boat with a Goat"
         );
 
+        var pageCondition = BookAdvancementConditionModel.create()
+                .withAdvancementId(new ResourceLocation("minecraft:story/mine_stone"))
+                ;
+
+        this.context().page("conditional_page");
+        var actualConditionPage = BookTextPageModel.create()
+                .withText(this.context().pageText())
+                .withTitle(this.context().pageTitle())
+                .withCondition(pageCondition)
+                ;
+        this.lang().add(this.context().pageTitle(), "Conditional Pages");
+        this.lang().add(this.context().pageText(), "Conditional pages unlock if a player has satisfied their condition.");
+
         var advancementConditionEntry = this.entry(advancementLocation)
                 .withIcon(Items.NETHER_STAR)
                 .withEntryBackground(1, 0)
                 .withCondition(advancementCondition)
-                .withPages(advancementConditionPage);
+                .withPages(advancementConditionPage, actualConditionPage);
         result.add(advancementConditionEntry);
 
         this.context().entry("condition_level_1");

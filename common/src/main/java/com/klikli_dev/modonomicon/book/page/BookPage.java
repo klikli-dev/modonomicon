@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.book.page;
 
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookEntry;
+import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -20,13 +21,19 @@ public abstract class BookPage {
     protected int pageNumber;
 
     protected String anchor;
+    protected BookCondition condition;
 
-    public BookPage(String anchor) {
+    public BookPage(String anchor, BookCondition condition) {
         this.anchor = anchor;
+        this.condition = condition;
     }
 
     public String getAnchor() {
         return this.anchor;
+    }
+
+    public BookCondition getCondition() {
+        return this.condition;
     }
 
     public abstract ResourceLocation getType();
@@ -51,8 +58,10 @@ public abstract class BookPage {
         return this.book;
     }
 
-    public abstract void toNetwork(FriendlyByteBuf buffer);
-
+    public void toNetwork(FriendlyByteBuf buffer) {
+        buffer.writeUtf(this.anchor);
+        BookCondition.toNetwork(this.condition, buffer);
+    }
 
     public BookEntry getParentEntry() {
         return this.parentEntry;
