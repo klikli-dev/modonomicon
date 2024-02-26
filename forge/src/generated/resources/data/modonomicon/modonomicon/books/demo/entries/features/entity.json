@@ -12,6 +12,9 @@
     {
       "type": "modonomicon:text",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.features.entity.intro.text",
       "title": "book.modonomicon.demo.features.entity.intro.title",
@@ -20,6 +23,9 @@
     {
       "type": "modonomicon:entity",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "default_rotation": -45.0,
       "entity_id": "minecraft:ender_dragon",
       "name": "book.modonomicon.demo.features.entity.entity1.title",
@@ -31,6 +37,9 @@
     {
       "type": "modonomicon:entity",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "default_rotation": -45.0,
       "entity_id": "minecraft:spider",
       "name": "",

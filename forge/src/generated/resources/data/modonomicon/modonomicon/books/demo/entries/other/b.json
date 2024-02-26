@@ -16,6 +16,9 @@
     {
       "type": "modonomicon:text",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.other.b.intro.text",
       "title": "book.modonomicon.demo.other.b.intro.title",

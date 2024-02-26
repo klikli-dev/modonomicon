@@ -12,6 +12,9 @@
     {
       "type": "modonomicon:text",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.features.multiblock.intro.text",
       "title": "book.modonomicon.demo.features.multiblock.intro.title",
@@ -20,6 +23,9 @@
     {
       "type": "modonomicon:multiblock",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "multiblock_id": "modonomicon:blockentity",
       "multiblock_name": "multiblocks.modonomicon.blockentity",
       "show_visualize_button": true,
@@ -28,6 +34,9 @@
     {
       "type": "modonomicon:multiblock",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "multiblock_id": "modonomicon:tag",
       "multiblock_name": "",
       "show_visualize_button": true,
@@ -36,6 +45,9 @@
     {
       "type": "modonomicon:multiblock",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "multiblock_id": "modonomicon:demo_predicate",
       "multiblock_name": "",
       "show_visualize_button": true,
@@ -44,6 +56,9 @@
     {
       "type": "modonomicon:multiblock",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "multiblock_id": "modonomicon:demo_fluid",
       "multiblock_name": "",
       "show_visualize_button": true,

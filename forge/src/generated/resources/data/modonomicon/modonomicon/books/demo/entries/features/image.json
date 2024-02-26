@@ -12,6 +12,9 @@
     {
       "type": "modonomicon:text",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.features.image.intro.text",
       "title": "book.modonomicon.demo.features.image.intro.title",
@@ -21,6 +24,9 @@
       "type": "modonomicon:image",
       "anchor": "",
       "border": true,
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "images": [
         "modonomicon:textures/gui/default_background.png",
         "modonomicon:textures/gui/dark_slate_seamless.png"
@@ -31,6 +37,9 @@
     {
       "type": "modonomicon:spotlight",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "item": {
         "item": "minecraft:spawner"
       },
@@ -41,6 +50,9 @@
       "type": "modonomicon:image",
       "anchor": "",
       "border": true,
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "images": [
         "modonomicon:textures/gui/default_background.png",
         "modonomicon:textures/gui/dark_slate_seamless.png"
