@@ -582,7 +582,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
                                 //if locked, append lock warning
                                 //handleComponentClicked will prevent the actual click
 
-                                if (page != null && !BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, entry.getPages().get(page))) {
+                                if (!BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, entry)) {
                                     var oldComponent = style.getHoverEvent().getValue(HoverEvent.Action.SHOW_TEXT);
 
                                     var newComponent = Component.translatable(
@@ -601,7 +601,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
                                     );
 
                                     newStyle = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newComponent));
-                                } else if (!BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, entry)) {
+                                } else if (page != null && !BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, entry.getPages().get(page))) {
                                     var oldComponent = style.getHoverEvent().getValue(HoverEvent.Action.SHOW_TEXT);
 
                                     var newComponent = Component.translatable(

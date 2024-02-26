@@ -235,7 +235,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
     @Nullable
     protected Style getClickedComponentStyleAtForTextHolder(BookTextHolder text, int x, int y, int width, double pMouseX, double pMouseY) {
         if (text.hasComponent()) {
-            //we don't do math to geht the current line, we just split and iterate.
+            //we don't do math to get the current line, we just split and iterate.
             //why? Because performance should not matter (significantly enough to bother)
             for (FormattedCharSequence formattedcharsequence : this.font.split(text.getComponent(), width)) {
                 if (pMouseY > y && pMouseY < y + this.font.lineHeight) {
