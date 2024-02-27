@@ -4,9 +4,9 @@ sidebar_position: 30
 
 # Unlock Conditions
 
-Conditions can be used to keep entries or whole categories hidden until the condition is met. This is useful to give players a sense of progression.
+Conditions can be used to keep pages, entries or whole categories hidden until the condition is met. This is useful to give players a sense of progression.
 
-Conditions are JSON Objects that can be set as value for the "condition" field on entry or category JSONs as follows:
+Conditions are JSON Objects that can be set as value for the "condition" field on page, entry or category JSONs as follows:
 
 ```json
 "condition": {
