@@ -12,6 +12,9 @@
     {
       "type": "modonomicon:text",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.features.recipe.intro.text",
       "title": "book.modonomicon.demo.features.recipe.intro.title",
@@ -20,6 +23,9 @@
     {
       "type": "modonomicon:crafting_recipe",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "recipe_id_1": "minecraft:crafting_table",
       "recipe_id_2": "minecraft:oak_planks",
       "text": "book.modonomicon.demo.features.recipe.crafting.text",
@@ -29,6 +35,9 @@
     {
       "type": "modonomicon:smelting_recipe",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "recipe_id_1": "minecraft:charcoal",
       "recipe_id_2": "minecraft:cooked_beef",
       "text": "",
@@ -38,6 +47,9 @@
     {
       "type": "modonomicon:smoking_recipe",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "recipe_id_1": "minecraft:cooked_beef_from_smoking",
       "text": "book.modonomicon.demo.features.recipe.smoking.text",
       "title1": "",
@@ -46,6 +58,9 @@
     {
       "type": "modonomicon:blasting_recipe",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "recipe_id_2": "minecraft:iron_ingot_from_blasting_iron_ore",
       "text": "",
       "title1": "",
@@ -54,6 +69,9 @@
     {
       "type": "modonomicon:campfire_cooking_recipe",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "recipe_id_1": "minecraft:cooked_beef_from_campfire_cooking",
       "text": "",
       "title1": "",
@@ -62,6 +80,9 @@
     {
       "type": "modonomicon:stonecutting_recipe",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "recipe_id_1": "minecraft:andesite_slab_from_andesite_stonecutting",
       "text": "",
       "title1": "",
@@ -70,6 +91,9 @@
     {
       "type": "modonomicon:smithing_recipe",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "recipe_id_1": "minecraft:netherite_axe_smithing",
       "recipe_id_2": "minecraft:netherite_chestplate_smithing",
       "text": "",
@@ -79,6 +103,9 @@
     {
       "type": "modonomicon:smithing_recipe",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "recipe_id_1": "minecraft:netherite_axe_smithing_does_not_exist",
       "text": "",
       "title1": "",

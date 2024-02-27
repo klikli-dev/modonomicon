@@ -12,6 +12,9 @@
     {
       "type": "modonomicon:text",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.formatting.advanced.page1.text",
       "title": "book.modonomicon.demo.formatting.advanced.page1.title",
@@ -20,6 +23,9 @@
     {
       "type": "modonomicon:text",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.formatting.advanced.page2.text",
       "title": "",
@@ -28,6 +34,9 @@
     {
       "type": "modonomicon:text",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.formatting.advanced.page3.text",
       "title": "book.modonomicon.demo.formatting.advanced.page3.title",

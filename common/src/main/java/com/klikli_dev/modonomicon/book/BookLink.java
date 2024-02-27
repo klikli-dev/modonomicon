@@ -19,7 +19,7 @@ public class BookLink {
     public ResourceLocation bookId;
     public ResourceLocation categoryId;
     public ResourceLocation entryId;
-    public int pageNumber;
+    public Integer pageNumber;
     public String pageAnchor;
 
     private BookLink() {
@@ -131,7 +131,7 @@ public class BookLink {
         int lastHashIndex = entryId.lastIndexOf("#");
         if (lastHashIndex >= 0) {
             //handle page index after #
-            var postHash = entryId.substring(lastHashIndex);
+            var postHash = entryId.substring(lastHashIndex + 1);
             var path = StringUtils.removeEnd(entryId.substring(0, lastHashIndex), "/"); //remove trailing /
             bookLink.entryId = new ResourceLocation(book.getId().getNamespace(), path);
             if (book.getEntry(bookLink.entryId) == null) {
