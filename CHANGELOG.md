@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.60.0] - 2024-02-27
+### :sparkles: New Features
+- [`199915d`](https://github.com/klikli-dev/modonomicon/commit/199915d8f7cd2d7077d908c9d8f5f3a6d35e566a) - Add conditions to individual pages ([#175](https://github.com/klikli-dev/modonomicon/pull/175)) - thanks @Electro593 *(commit by [@Electro593](https://github.com/Electro593))*
+
+### :wrench: Chores
+- [`bdf639c`](https://github.com/klikli-dev/modonomicon/commit/bdf639c835908393198f695999c70f2ac53e154c) - run datagen for fabric *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.59.0] - 2024-02-16
 ### :bug: Bug Fixes
 - [`c4c0108`](https://github.com/klikli-dev/modonomicon/commit/c4c0108ae3c6a0d0c5e50e5a40ffdc7198e5d905) - convert entry unlocked condition handling into generic multipass handling *(PR [#174](https://github.com/klikli-dev/modonomicon/pull/174) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -679,3 +687,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.57.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.55.1...release/v1.20.1-1.57.0
 [release/v1.20.1-1.58.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.57.0...release/v1.20.1-1.58.0
 [release/v1.20.1-1.59.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.58.0...release/v1.20.1-1.59.0
+[release/v1.20.1-1.60.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.59.0...release/v1.20.1-1.60.0
