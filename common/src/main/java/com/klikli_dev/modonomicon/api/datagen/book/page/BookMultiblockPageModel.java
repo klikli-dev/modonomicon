@@ -9,6 +9,10 @@ package com.klikli_dev.modonomicon.api.datagen.book.page;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.api.datagen.book.BookTextHolderModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookNoneConditionModel;
+import com.klikli_dev.modonomicon.book.conditions.BookCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -19,8 +23,8 @@ public class BookMultiblockPageModel extends BookPageModel {
     protected String multiblockId;
     protected boolean showVisualizeButton = true;
 
-    protected BookMultiblockPageModel(@NotNull String anchor) {
-        super(Page.MULTIBLOCK, anchor);
+    protected BookMultiblockPageModel(@NotNull String anchor, @NotNull BookConditionModel condition) {
+        super(Page.MULTIBLOCK, anchor, condition);
     }
 
     public static Builder builder() {
@@ -57,6 +61,7 @@ public class BookMultiblockPageModel extends BookPageModel {
 
     public static final class Builder {
         private String anchor = "";
+        private BookConditionModel condition = new BookNoneConditionModel();
         private BookTextHolderModel multiblockName = new BookTextHolderModel("");
         private String multiblockId = "";
         private BookTextHolderModel text = new BookTextHolderModel("");
@@ -72,6 +77,11 @@ public class BookMultiblockPageModel extends BookPageModel {
 
         public Builder withAnchor(String anchor) {
             this.anchor = anchor;
+            return this;
+        }
+
+        public Builder withCondition(BookConditionModel condition) {
+            this.condition = condition;
             return this;
         }
 
@@ -111,7 +121,7 @@ public class BookMultiblockPageModel extends BookPageModel {
         }
 
         public BookMultiblockPageModel build() {
-            BookMultiblockPageModel bookTextPageModel = new BookMultiblockPageModel(this.anchor);
+            BookMultiblockPageModel bookTextPageModel = new BookMultiblockPageModel(this.anchor, this.condition);
             bookTextPageModel.multiblockId = this.multiblockId;
             bookTextPageModel.multiblockName = this.multiblockName;
             bookTextPageModel.text = this.text;

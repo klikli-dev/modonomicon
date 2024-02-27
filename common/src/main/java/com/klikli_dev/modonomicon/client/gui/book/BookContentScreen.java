@@ -79,6 +79,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
     private final ResourceLocation bookContentTexture;
     public int ticksInBook;
     public boolean simulateEscClosing;
+    private List<BookPage> unlockedPages;
     private BookPage leftPage;
     private BookPage rightPage;
     private BookPageRenderer<?> leftPageRenderer;
@@ -86,10 +87,9 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
     private int bookLeft;
     private int bookTop;
     /**
-     * The index of the two pages being displayed. 0 means Pages 0 and 1, 1 means Pages 2 and 3, etc.
+     * The index of the leftmost unlocked page being displayed.
      */
     private int openPagesIndex;
-    private int maxOpenPagesIndex;
     private List<Component> tooltip;
 
     private ItemStack tooltipStack;
@@ -158,7 +158,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
     }
 
     public boolean canSeeArrowButton(boolean left) {
-        return left ? this.openPagesIndex > 0 : (this.openPagesIndex + 1) < this.maxOpenPagesIndex;
+        return left ? this.openPagesIndex > 0 : (this.openPagesIndex + 2) < this.unlockedPages.size();
     }
 
     public boolean canSeeBackButton() {
@@ -294,12 +294,26 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
         }
     }
 
+    private int getOpenPagesIndexForPage(int pageIndex) {
+        for (var i = 0; i < this.unlockedPages.size(); i++) {
+            var pageNumber = this.unlockedPages.get(i).getPageNumber();
+            if (pageNumber == pageIndex) {
+                return i & -2; // Rounds down to even
+            }
+            if (pageNumber > pageIndex) {
+                // pageNumber will only increase, so we can stop here
+                break;
+            }
+        }
+        return 0;
+    }
+
     /**
      * Will change to the specified page, if not open already
      */
     public void goToPage(int pageIndex, boolean playSound) {
-        int openPagesIndex = pageIndex / 2; //will floor, which is what we want
-        if (openPagesIndex >= 0 && openPagesIndex < this.maxOpenPagesIndex) {
+        int openPagesIndex = this.getOpenPagesIndexForPage(pageIndex);
+        if (openPagesIndex >= 0 && openPagesIndex < this.unlockedPages.size()) {
             if (this.openPagesIndex != openPagesIndex) {
                 this.openPagesIndex = openPagesIndex;
 
@@ -310,7 +324,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
             }
         } else {
             Modonomicon.LOG.warn("Tried to change to page index {} corresponding with " +
-                    "openPagesIndex {} but max open pages index is {}.", pageIndex, openPagesIndex, this.maxOpenPagesIndex);
+                    "openPagesIndex {} but max open pages index is {}.", pageIndex, openPagesIndex, this.unlockedPages.size());
         }
     }
 
@@ -347,29 +361,38 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
         this.narratables.removeIf(n -> n instanceof Renderable && renderables.contains(n));
     }
 
+    private int getCurrentPageIndex() {
+        return this.leftPage != null ? this.leftPage.getPageNumber()
+                : this.rightPage != null ? this.rightPage.getPageNumber()
+                : 0;
+    }
+
     protected void flipPage(boolean left, boolean playSound) {
         if (this.canSeeArrowButton(left)) {
 
-            var oldOpenPagesIndex = this.openPagesIndex;
+            var currentPageIndex = this.unlockedPages.get(this.openPagesIndex).getPageNumber();
+
             if (left) {
-                this.openPagesIndex--;
+                this.openPagesIndex -= 2;
             } else {
-                this.openPagesIndex++;
+                this.openPagesIndex += 2;
             }
+
+            var newPageIndex = this.unlockedPages.get(this.openPagesIndex).getPageNumber();
 
             if (BookGuiManager.get().getHistorySize() > 0) {
                 var lastPage = BookGuiManager.get().peekHistory();
-                if (lastPage.bookId == this.entry.getBook().getId() && lastPage.entryId == this.entry.getId() && lastPage.page == this.openPagesIndex * 2) {
+                if (lastPage.bookId == this.entry.getBook().getId() && lastPage.entryId == this.entry.getId() && lastPage.page == newPageIndex) {
                     //if we're flipping back to the last page in the history, don't add a new history entry,
                     // and remove the old one to avoid weird back-and-forth jumps when using the back button
                     BookGuiManager.get().popHistory();
                 } else {
                     //if we flip to a new page, add a new history entry for the page we were on before flipping
-                    BookGuiManager.get().pushHistory(this.entry.getBook().getId(), this.entry.getCategory().getId(), this.entry.getId(), oldOpenPagesIndex * 2);
+                    BookGuiManager.get().pushHistory(this.entry.getBook().getId(), this.entry.getCategory().getId(), this.entry.getId(), currentPageIndex);
                 }
             } else {
                 //if we don't have any history, add a new history entry for the page we were on before flipping
-                BookGuiManager.get().pushHistory(this.entry.getBook().getId(), this.entry.getCategory().getId(), this.entry.getId(), oldOpenPagesIndex * 2);
+                BookGuiManager.get().pushHistory(this.entry.getBook().getId(), this.entry.getCategory().getId(), this.entry.getId(), currentPageIndex);
             }
 
             this.onPageChanged();
@@ -420,12 +443,11 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
         }
 
         //get new pages
-        var pages = this.entry.getPages();
-        int leftPageIndex = this.openPagesIndex * 2;
+        int leftPageIndex = this.openPagesIndex;
         int rightPageIndex = leftPageIndex + 1;
 
-        this.leftPage = leftPageIndex < pages.size() ? pages.get(leftPageIndex) : null;
-        this.rightPage = rightPageIndex < pages.size() ? pages.get(rightPageIndex) : null;
+        this.leftPage = leftPageIndex < this.unlockedPages.size() ? this.unlockedPages.get(leftPageIndex) : null;
+        this.rightPage = rightPageIndex < this.unlockedPages.size() ? this.unlockedPages.get(rightPageIndex) : null;
 
         //allow pages to prepare for being displayed
         if (this.leftPage != null) {
@@ -507,7 +529,6 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
 
     @Override
     public void onClose() {
-
         if (this.simulateEscClosing || InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_ESCAPE)) {
             Services.NETWORK.sendToServer(new SaveEntryStateMessage(this.entry, this.openPagesIndex));
 
@@ -553,21 +574,47 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
                             if (link.entryId != null) {
                                 var entry = book.getEntry(link.entryId);
 
-                                if (!BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, entry)) {
-                                    //if locked, append lock warning
-                                    //handleComponentClicked will prevent the actual click
+                                Integer page = link.pageNumber;
+                                if (link.pageAnchor != null) {
+                                    page = entry.getPageNumberForAnchor(link.pageAnchor);
+                                }
 
+                                //if locked, append lock warning
+                                //handleComponentClicked will prevent the actual click
+
+                                if (!BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, entry)) {
                                     var oldComponent = style.getHoverEvent().getValue(HoverEvent.Action.SHOW_TEXT);
 
                                     var newComponent = Component.translatable(
                                             Gui.HOVER_BOOK_LINK_LOCKED,
                                             oldComponent,
-                                            Component.translatable(Gui.HOVER_BOOK_LINK_LOCKED_INFO)
+                                            Component.translatable(Gui.HOVER_BOOK_ENTRY_LINK_LOCKED_INFO)
                                                     .withStyle(s -> s.withColor(0xff0015).withBold(true))
                                                     .append("\n")
                                                     .append(
                                                             Component.translatable(
-                                                                    Gui.HOVER_BOOK_LINK_LOCKED_INFO_HINT,
+                                                                    Gui.HOVER_BOOK_ENTRY_LINK_LOCKED_INFO_HINT,
+                                                                    Component.translatable(entry.getCategory().getName())
+                                                                            .withStyle(s -> s.withColor(ChatFormatting.GRAY).withItalic(true))
+                                                            ).withStyle(s -> s.withBold(false).withColor(ChatFormatting.WHITE))
+                                                    )
+                                    );
+
+                                    newStyle = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newComponent));
+                                } else if (page != null && !BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, entry.getPages().get(page))) {
+                                    var oldComponent = style.getHoverEvent().getValue(HoverEvent.Action.SHOW_TEXT);
+
+                                    var newComponent = Component.translatable(
+                                            Gui.HOVER_BOOK_LINK_LOCKED,
+                                            oldComponent,
+                                            Component.translatable(Gui.HOVER_BOOK_PAGE_LINK_LOCKED_INFO)
+                                                    .withStyle(s -> s.withColor(0xff0015).withBold(true))
+                                                    .append("\n")
+                                                    .append(
+                                                            Component.translatable(
+                                                                    Gui.HOVER_BOOK_PAGE_LINK_LOCKED_INFO_HINT,
+                                                                    Component.translatable(entry.getName())
+                                                                            .withStyle(s -> s.withColor(ChatFormatting.GRAY).withItalic(true)),
                                                                     Component.translatable(entry.getCategory().getName())
                                                                             .withStyle(s -> s.withColor(ChatFormatting.GRAY).withItalic(true))
                                                             ).withStyle(s -> s.withBold(false).withColor(ChatFormatting.WHITE))
@@ -704,13 +751,20 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
                                 return false;
                             }
 
-                            int page = link.pageNumber;
+                            Integer page = link.pageNumber;
                             if (link.pageAnchor != null) {
                                 page = entry.getPageNumberForAnchor(link.pageAnchor);
                             }
 
+                            if (page != null && !BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, entry.getPages().get(page))) {
+                                return false;
+                            } else if (page == null) {
+                                page = 0;
+                            }
+
                             //we push the page we are currently on to the history
-                            BookGuiManager.get().pushHistory(this.entry.getBook().getId(), this.entry.getCategory().getId(), this.entry.getId(), this.openPagesIndex * 2);
+                            var currentPageIndex = this.unlockedPages.get(this.openPagesIndex).getPageNumber();
+                            BookGuiManager.get().pushHistory(this.entry.getBook().getId(), this.entry.getCategory().getId(), this.entry.getId(), currentPageIndex);
                             BookGuiManager.get().openEntry(link.bookId, link.entryId, page);
                         } else if (link.categoryId != null) {
                             BookGuiManager.get().openEntry(link.bookId, link.categoryId, null, 0);
@@ -797,7 +851,7 @@ public class BookContentScreen extends Screen implements BookScreenWithButtons {
         this.bookLeft = (this.width - BOOK_BACKGROUND_WIDTH) / 2;
         this.bookTop = (this.height - BOOK_BACKGROUND_HEIGHT) / 2;
 
-        this.maxOpenPagesIndex = (int) Math.ceil((float) this.entry.getPages().size() / 2);
+        this.unlockedPages = this.entry.getUnlockedPagesFor(this.minecraft.player);
         this.beginDisplayPages();
 
         this.addRenderableWidget(new BackButton(this, this.width / 2 - BackButton.WIDTH / 2, this.bookTop + FULL_HEIGHT - BackButton.HEIGHT / 2));

@@ -9,6 +9,10 @@ package com.klikli_dev.modonomicon.api.datagen.book.page;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.api.datagen.book.BookTextHolderModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookNoneConditionModel;
+import com.klikli_dev.modonomicon.book.conditions.BookCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,8 +22,8 @@ public class BookTextPageModel extends BookPageModel {
     protected boolean showTitleSeparator = true;
     protected BookTextHolderModel text = new BookTextHolderModel("");
 
-    protected BookTextPageModel(@NotNull String anchor) {
-        super(Page.TEXT, anchor);
+    protected BookTextPageModel(@NotNull String anchor, @NotNull BookConditionModel condition) {
+        super(Page.TEXT, anchor, condition);
     }
 
     public static Builder builder() {
@@ -55,6 +59,7 @@ public class BookTextPageModel extends BookPageModel {
 
     public static final class Builder {
         private String anchor = "";
+        private BookConditionModel condition = new BookNoneConditionModel();
         private BookTextHolderModel title = new BookTextHolderModel("");
         private boolean useMarkdownInTitle = false;
         private boolean showTitleSeparator = true;
@@ -70,6 +75,11 @@ public class BookTextPageModel extends BookPageModel {
 
         public Builder withAnchor(String anchor) {
             this.anchor = anchor;
+            return this;
+        }
+
+        public Builder withCondition(BookConditionModel condition) {
+            this.condition = condition;
             return this;
         }
 
@@ -104,7 +114,7 @@ public class BookTextPageModel extends BookPageModel {
         }
 
         public BookTextPageModel build() {
-            BookTextPageModel bookTextPageModel = new BookTextPageModel(this.anchor);
+            BookTextPageModel bookTextPageModel = new BookTextPageModel(this.anchor, this.condition);
             bookTextPageModel.showTitleSeparator = this.showTitleSeparator;
             bookTextPageModel.useMarkdownInTitle = this.useMarkdownInTitle;
             bookTextPageModel.title = this.title;

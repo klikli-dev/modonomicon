@@ -16,9 +16,24 @@
     {
       "type": "modonomicon:text",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.features.condition_advancement.info.text",
       "title": "book.modonomicon.demo.features.condition_advancement.info.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:advancement",
+        "advancement_id": "minecraft:story/mine_stone"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.condition_advancement.conditional_page.text",
+      "title": "book.modonomicon.demo.features.condition_advancement.conditional_page.title",
       "use_markdown_in_title": false
     }
   ],

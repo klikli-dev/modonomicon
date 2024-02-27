@@ -41,7 +41,11 @@ public class BookTextPageRenderer extends BookPageRenderer<BookTextPage> impleme
                 }
             }
 
-            var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), 0, this.getTextY(), BookContentScreen.PAGE_WIDTH, pMouseX, pMouseY);
+            var x = this.parentScreen.getBook().getBookTextOffsetX();
+            var y = this.getTextY() + this.parentScreen.getBook().getBookTextOffsetY();
+            var width = BookContentScreen.PAGE_WIDTH + this.parentScreen.getBook().getBookTextOffsetWidth() - x; //always remove the offset x from the width to avoid overflow
+
+            var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), x, y, width, pMouseX, pMouseY);
             if (textStyle != null) {
                 return textStyle;
             }

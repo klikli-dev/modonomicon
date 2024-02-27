@@ -7,11 +7,13 @@
 package com.klikli_dev.modonomicon.api.datagen.book.page;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
+import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import org.jetbrains.annotations.NotNull;
 
 public class BookCampfireCookingRecipePageModel extends BookRecipePageModel {
-    protected BookCampfireCookingRecipePageModel(@NotNull String anchor) {
-        super(Page.CAMPFIRE_COOKING_RECIPE, anchor);
+    protected BookCampfireCookingRecipePageModel(@NotNull String anchor, @NotNull BookConditionModel condition) {
+        super(Page.CAMPFIRE_COOKING_RECIPE, anchor, condition);
     }
 
     public static Builder builder() {
@@ -24,7 +26,7 @@ public class BookCampfireCookingRecipePageModel extends BookRecipePageModel {
         }
 
         public BookCampfireCookingRecipePageModel build() {
-            BookCampfireCookingRecipePageModel model = new BookCampfireCookingRecipePageModel(this.anchor);
+            BookCampfireCookingRecipePageModel model = new BookCampfireCookingRecipePageModel(this.anchor, this.condition);
             model.title1 = this.title1;
             model.recipeId1 = this.recipeId1;
             model.title2 = this.title2;

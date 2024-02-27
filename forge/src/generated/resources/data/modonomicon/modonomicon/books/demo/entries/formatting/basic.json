@@ -14,6 +14,9 @@
     {
       "type": "modonomicon:text",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.formatting.basic.page1.text",
       "title": "book.modonomicon.demo.formatting.basic.page1.title",
@@ -22,6 +25,9 @@
     {
       "type": "modonomicon:text",
       "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.formatting.basic.page2.text",
       "title": "",

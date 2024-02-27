@@ -8,6 +8,10 @@ package com.klikli_dev.modonomicon.api.datagen.book.page;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.datagen.book.BookTextHolderModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookNoneConditionModel;
+import com.klikli_dev.modonomicon.book.conditions.BookCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -23,8 +27,8 @@ public abstract class BookRecipePageModel extends BookPageModel {
     protected BookTextHolderModel text = new BookTextHolderModel("");
 
 
-    protected BookRecipePageModel(ResourceLocation type, @NotNull String anchor) {
-        super(type, anchor);
+    protected BookRecipePageModel(ResourceLocation type, @NotNull String anchor, @NotNull BookConditionModel condition) {
+        super(type, anchor, condition);
     }
 
     public BookTextHolderModel getTitle1() {
@@ -73,6 +77,7 @@ public abstract class BookRecipePageModel extends BookPageModel {
         protected BookTextHolderModel text = new BookTextHolderModel("");
 
         protected String anchor = "";
+        protected BookConditionModel condition = new BookNoneConditionModel();
 
         protected Builder() {
         }
@@ -81,6 +86,11 @@ public abstract class BookRecipePageModel extends BookPageModel {
 
         public T withAnchor(String anchor) {
             this.anchor = anchor;
+            return this.getThis();
+        }
+
+        public T withCondition(BookConditionModel condition) {
+            this.condition = condition;
             return this.getThis();
         }
 

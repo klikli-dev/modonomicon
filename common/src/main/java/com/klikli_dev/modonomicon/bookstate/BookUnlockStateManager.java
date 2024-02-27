@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCommand;
 import com.klikli_dev.modonomicon.book.BookEntry;
+import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.networking.RequestSyncBookStatesMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
@@ -92,6 +93,14 @@ public class BookUnlockStateManager {
 
     public boolean isUnlockedFor(Player player, BookEntry entry) {
         return this.getStateFor(player).isUnlocked(entry);
+    }
+
+    public boolean isUnlockedFor(Player player, BookPage page) {
+        return this.getStateFor(player).isUnlocked(page);
+    }
+
+    public List<BookPage> getUnlockedPagesFor(Player player, BookEntry entry) {
+        return this.getStateFor(player).getUnlockedPagesIn(entry);
     }
 
     public boolean isReadFor(Player player, BookEntry entry) {

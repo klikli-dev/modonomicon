@@ -11,6 +11,8 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
+import com.klikli_dev.modonomicon.book.conditions.BookCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import net.minecraft.client.resources.language.I18n;
@@ -30,8 +32,8 @@ public class BookSpotlightPage extends BookPage {
     protected BookTextHolder text;
     protected Ingredient item;
 
-    public BookSpotlightPage(BookTextHolder title, BookTextHolder text, Ingredient item, String anchor) {
-        super(anchor);
+    public BookSpotlightPage(BookTextHolder title, BookTextHolder text, Ingredient item, String anchor, BookCondition condition) {
+        super(anchor, condition);
         this.title = title;
         this.text = text;
         this.item = item;
@@ -42,7 +44,10 @@ public class BookSpotlightPage extends BookPage {
         var item = Ingredient.fromJson(json.get("item"));
         var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY);
         var anchor = GsonHelper.getAsString(json, "anchor", "");
-        return new BookSpotlightPage(title, text, item, anchor);
+        var condition = json.has("condition")
+                ? BookCondition.fromJson(json.getAsJsonObject("condition"))
+                : new BookNoneCondition();
+        return new BookSpotlightPage(title, text, item, anchor, condition);
     }
 
     public static BookSpotlightPage fromNetwork(FriendlyByteBuf buffer) {
@@ -50,7 +55,8 @@ public class BookSpotlightPage extends BookPage {
         var item = Ingredient.fromNetwork(buffer);
         var text = BookTextHolder.fromNetwork(buffer);
         var anchor = buffer.readUtf();
-        return new BookSpotlightPage(title, text, item, anchor);
+        var condition = BookCondition.fromNetwork(buffer);
+        return new BookSpotlightPage(title, text, item, anchor, condition);
     }
 
     public Ingredient getItem() {
@@ -108,7 +114,7 @@ public class BookSpotlightPage extends BookPage {
         this.title.toNetwork(buffer);
         this.item.toNetwork(buffer);
         this.text.toNetwork(buffer);
-        buffer.writeUtf(this.anchor);
+        super.toNetwork(buffer);
     }
 
     @Override

@@ -10,6 +10,8 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
+import com.klikli_dev.modonomicon.book.conditions.BookCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import net.minecraft.network.FriendlyByteBuf;
@@ -24,8 +26,8 @@ public class BookImagePage extends BookPage {
     protected ResourceLocation[] images;
     protected boolean border;
 
-    public BookImagePage(BookTextHolder title, BookTextHolder text, ResourceLocation[] images, boolean border, String anchor) {
-        super(anchor);
+    public BookImagePage(BookTextHolder title, BookTextHolder text, ResourceLocation[] images, boolean border, String anchor, BookCondition condition) {
+        super(anchor, condition);
         this.title = title;
         this.text = text;
         this.images = images;
@@ -45,7 +47,10 @@ public class BookImagePage extends BookPage {
         var border = GsonHelper.getAsBoolean(json, "border", true);
 
         var anchor = GsonHelper.getAsString(json, "anchor", "");
-        return new BookImagePage(title, text, images, border, anchor);
+        var condition = json.has("condition")
+                ? BookCondition.fromJson(json.getAsJsonObject("condition"))
+                : new BookNoneCondition();
+        return new BookImagePage(title, text, images, border, anchor, condition);
     }
 
     public static BookImagePage fromNetwork(FriendlyByteBuf buffer) {
@@ -61,7 +66,8 @@ public class BookImagePage extends BookPage {
         var border = buffer.readBoolean();
 
         var anchor = buffer.readUtf();
-        return new BookImagePage(title, text, images, border, anchor);
+        var condition = BookCondition.fromNetwork(buffer);
+        return new BookImagePage(title, text, images, border, anchor, condition);
     }
 
     public ResourceLocation[] getImages() {
@@ -115,7 +121,7 @@ public class BookImagePage extends BookPage {
         }
 
         buffer.writeBoolean(this.border);
-        buffer.writeUtf(this.anchor);
+        super.toNetwork(buffer);
     }
 
     @Override

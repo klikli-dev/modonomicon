@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
+import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -39,8 +40,8 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
 
     protected BookTextHolder text;
 
-    public BookRecipePage(RecipeType<? extends T> recipeType, BookTextHolder title1, ResourceLocation recipeId1, BookTextHolder title2, ResourceLocation recipeId2, BookTextHolder text, String anchor) {
-        super(anchor);
+    public BookRecipePage(RecipeType<? extends T> recipeType, BookTextHolder title1, ResourceLocation recipeId1, BookTextHolder title2, ResourceLocation recipeId2, BookTextHolder text, String anchor, BookCondition condition) {
+        super(anchor, condition);
         this.recipeType = recipeType;
         this.title1 = title1;
         this.recipeId1 = recipeId1;
@@ -198,6 +199,8 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
         }
 
         this.text.toNetwork(buffer);
+
+        super.toNetwork(buffer);
     }
 
     @Override
