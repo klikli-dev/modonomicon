@@ -91,6 +91,15 @@ public class BookOrCondition extends BookCondition {
     }
 
     @Override
+    public boolean testOnLoad() {
+        for (var child : this.children) {
+            if (child.testOnLoad())
+                return true;
+        }
+        return false;
+    }
+
+    @Override
     public List<Component> getTooltip(BookConditionContext context) {
         if (this.tooltips == null) {
             this.tooltips = new ArrayList<>();

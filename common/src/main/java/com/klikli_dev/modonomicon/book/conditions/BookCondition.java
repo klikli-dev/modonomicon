@@ -61,7 +61,21 @@ public abstract class BookCondition {
      */
     public abstract void toNetwork(FriendlyByteBuf buffer);
 
+    /**
+     * Use this to test the condition for the given player at runtime
+     */
     public abstract boolean test(BookConditionContext context, Player player);
+
+    /**
+     * Use this to test the condition at load time.
+     * If this returns false, the locked content will not be loaded at all.
+     * Most conditions should not override this - it was added primarily for the ModLoadedCondition, because
+     * content locked behind it may not be present at all if the condition is false and loading would cause errors.
+     *
+     */
+    public boolean testOnLoad() {
+        return true;
+    }
 
     /**
      * If true then this condition needs to be tested multiple times during BookUnlockStates#update
