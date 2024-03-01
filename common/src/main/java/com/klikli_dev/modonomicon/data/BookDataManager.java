@@ -18,7 +18,9 @@ import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCommand;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.conditions.BookAndCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookEntryReadCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.networking.Message;
@@ -206,6 +208,21 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         return BookCommand.fromJson(key, value);
     }
 
+    /**
+     * Loads only the condition on the given category, entry or page and runs testOnLoad.
+     * @param key the resource location of the content
+     * @param bookObject the json object representing the content
+     * @return false if the condition is not met and the content should not be loaded.
+     */
+    private boolean testConditionOnLoad(ResourceLocation key, JsonObject bookObject) {
+        if (!bookObject.has("condition")) {
+            return true; //no condition -> always load
+        }
+
+        return BookCondition.fromJson(bookObject.getAsJsonObject("condition")).testOnLoad();
+    }
+
+
     private void categorizeContent(Map<ResourceLocation, JsonElement> content,
                                    HashMap<ResourceLocation, JsonObject> bookJsons,
                                    HashMap<ResourceLocation, JsonObject> categoryJsons,
@@ -252,19 +269,20 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         var commandJsons = new HashMap<ResourceLocation, JsonObject>();
         this.categorizeContent(content, bookJsons, categoryJsons, entryJsons, commandJsons);
 
-        BookErrorManager.get().setContext(""); //set to empty string to avoid using context helper internally
         //load books
         for (var entry : bookJsons.entrySet()) {
             try {
                 var pathParts = entry.getKey().getPath().split("/");
                 var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
                 BookErrorManager.get().setCurrentBookId(bookId);
+                BookErrorManager.get().setContext("Loading Book JSON");
                 var book = this.loadBook(bookId, entry.getValue());
                 this.books.put(book.getId(), book);
+                BookErrorManager.get().reset();
             } catch (Exception e) {
                 BookErrorManager.get().error("Failed to load book '" + entry.getKey() + "'", e);
+                BookErrorManager.get().reset();
             }
-            BookErrorManager.get().setCurrentBookId(null);
         }
 
         //load categories
@@ -277,15 +295,24 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
                 //category id skips the book id and the category directory
                 var categoryId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
+
+                BookErrorManager.get().getContextHelper().categoryId = categoryId;
+                //test if we should load the category at all
+                if(!this.testConditionOnLoad(categoryId, entry.getValue())){
+                    continue;
+                }
+
                 var category = this.loadCategory(categoryId, entry.getValue());
 
                 //link category and book
                 var book = this.books.get(bookId);
                 book.addCategory(category);
+
+                BookErrorManager.get().reset();
             } catch (Exception e) {
                 BookErrorManager.get().error("Failed to load category '" + entry.getKey() + "'", e);
+                BookErrorManager.get().reset();
             }
-            BookErrorManager.get().setCurrentBookId(null);
         }
 
         //load entries
@@ -298,16 +325,25 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
                 //entry id skips the book id and the entries directory, but keeps category so it is unique
                 var entryId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
+
+                BookErrorManager.get().getContextHelper().entryId = entryId;
+                //test if we should load the category at all
+                if(!this.testConditionOnLoad(entryId, entry.getValue())){
+                    continue;
+                }
+
                 var bookEntry = this.loadEntry(entryId, entry.getValue());
 
                 //link entry and category
                 var book = this.books.get(bookId);
                 var category = book.getCategory(bookEntry.getCategoryId());
                 category.addEntry(bookEntry);
+
+                BookErrorManager.get().reset();
             } catch (Exception e) {
                 BookErrorManager.get().error("Failed to load entry '" + entry.getKey() + "'", e);
+                BookErrorManager.get().reset();
             }
-            BookErrorManager.get().setCurrentBookId(null);
         }
 
         //load commands
@@ -318,20 +354,26 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                 var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
                 BookErrorManager.get().setCurrentBookId(bookId);
 
+                BookErrorManager.get().setContext("Loading Command JSON");
+
                 //commands id skips the book id and the commands directory
                 var commandId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
+
+                BookErrorManager.get().setContext("Loading Command JSON: " + commandId);
                 var command = this.loadCommand(commandId, entry.getValue());
 
                 //link command and book
                 var book = this.books.get(bookId);
                 book.addCommand(command);
+                BookErrorManager.get().reset();
             } catch (Exception e) {
                 BookErrorManager.get().error("Failed to load command '" + entry.getKey() + "'", e);
+                BookErrorManager.get().reset();
             }
-            BookErrorManager.get().setCurrentBookId(null);
         }
 
-        BookErrorManager.get().setContext(null); //set to null so we start using context helper internally
+        BookErrorManager.get().reset();
+
         this.onLoadingComplete();
     }
 

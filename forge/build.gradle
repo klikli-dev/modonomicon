@@ -102,6 +102,8 @@ dependencies {
     jarJar(group: 'org.commonmark', name: 'commonmark', version: "[${commonmark_version},)")
     jarJar(group: 'org.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: "[${commonmark_version},)")
     jarJar(group: 'org.commonmark', name: 'commonmark-ext-ins', version: "[${commonmark_version},)")
+
+
 }
 
 //Disable test compilation as a) we are not using tests and b) it fails due to not being able to access jei in common

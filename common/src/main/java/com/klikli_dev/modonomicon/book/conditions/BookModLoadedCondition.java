@@ -14,6 +14,7 @@ import com.klikli_dev.modonomicon.platform.Services;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 
@@ -62,6 +63,11 @@ public class BookModLoadedCondition extends BookCondition {
 
     @Override
     public boolean test(BookConditionContext context, Player player) {
+        return Services.PLATFORM.isModLoaded(this.modId);
+    }
+
+    @Override
+    public boolean testOnLoad() {
         return Services.PLATFORM.isModLoaded(this.modId);
     }
 }
