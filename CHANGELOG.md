@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.4-1.61.0] - 2024-03-01
+### :sparkles: New Features
+- [`189eab2`](https://github.com/klikli-dev/modonomicon/commit/189eab21fc58b1a3ff893d8c8ebaa43a91a49307) - allow conditions to prevent loading of content entirely *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.4-1.60.0] - 2024-02-27
 ### :sparkles: New Features
 - [`3f117ba`](https://github.com/klikli-dev/modonomicon/commit/3f117baa18e9b1b2afc77f55c2ed8ed83f8596d6) - Add conditions to individual pages - Port to 1.20.4 ([#176](https://github.com/klikli-dev/modonomicon/pull/176)) - thanks @Electro593 *(commit by [@Electro593](https://github.com/Electro593))*
@@ -723,3 +728,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.4-1.58.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.57.0...release/v1.20.4-1.58.0
 [release/v1.20.4-1.59.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.58.0...release/v1.20.4-1.59.0
 [release/v1.20.4-1.60.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.59.0...release/v1.20.4-1.60.0
+[release/v1.20.4-1.61.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.60.0...release/v1.20.4-1.61.0
