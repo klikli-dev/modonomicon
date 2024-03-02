@@ -22,6 +22,9 @@ import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
@@ -44,6 +47,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 @Mod(Modonomicon.MOD_ID)
 public class ModonomiconForge {
@@ -121,6 +127,11 @@ public class ModonomiconForge {
             modEventBus.addListener(Client::onRegisterGuiOverlays);
             //build books and render markdown when client receives recipes
             MinecraftForge.EVENT_BUS.addListener(Client::onRecipesUpdated);
+
+            //register client side reload listener that will reset the fallback font to handle locale changes on the fly
+            modEventBus.addListener((RegisterClientReloadListenersEvent e) -> {
+                e.registerReloadListener(BookDataManager.Client.get());
+            });
         }
     }
 

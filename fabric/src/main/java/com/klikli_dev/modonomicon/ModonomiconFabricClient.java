@@ -6,10 +6,13 @@
 
 package com.klikli_dev.modonomicon;
 
+import com.google.gson.JsonElement;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.config.ClientConfig;
+import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.klikli_dev.modonomicon.data.ReloadListenerWrapper;
 import com.klikli_dev.modonomicon.network.ClientNetworking;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.FabricClientCommandRegistry;
@@ -18,6 +21,16 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.util.profiling.ProfilerFiller;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class ModonomiconFabricClient implements ClientModInitializer {
 
@@ -53,6 +66,12 @@ public class ModonomiconFabricClient implements ClientModInitializer {
 
         //render multiblock hud
         HudRenderCallback.EVENT.register(MultiblockPreviewRenderer::onRenderHUD);
+
+        //register client side reload listener that will reset the fallback font to handle locale changes on the fly
+        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new ReloadListenerWrapper(
+                Modonomicon.loc("book_data_manager_client"),
+                BookDataManager.Client.get()
+        ));
 
         //book geometry loader
         //done in MixinModelManager, because we have no event in Fabric
