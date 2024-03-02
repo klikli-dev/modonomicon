@@ -91,7 +91,6 @@ public class ModonomiconFabric implements ModInitializer {
         //Advancement event handling for condition/unlock system
         //done in MixinPlayerAdvancements, because we have no event in Fabric
 
-        //TODO: Fabric: Datagen
         //TODO: Fabric: packet split
     }
 }

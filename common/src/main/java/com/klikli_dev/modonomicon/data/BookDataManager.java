@@ -100,6 +100,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     }
 
     public void onRecipesUpdated(Level level) {
+        Client.get().resetUseFallbackFont();
         this.tryBuildBooks(level);
         this.prerenderMarkdown();
     }
@@ -376,7 +377,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         this.onLoadingComplete();
     }
 
-    public static class Client {
+    public static class Client extends SimpleJsonResourceReloadListener{
+
         private static final Client instance = new Client();
 
         private static ResourceLocation fallbackFont = new ResourceLocation("minecraft", "default");
@@ -384,8 +386,16 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         private boolean isFallbackLocale;
         private boolean isInitialized;
 
+        public Client() {
+            super(GSON, FOLDER);
+        }
+
         public static Client get() {
             return instance;
+        }
+
+        public void resetUseFallbackFont(){
+            this.isInitialized = false;
         }
 
         public boolean useFallbackFont(){
@@ -401,6 +411,11 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
         public ResourceLocation safeFont(ResourceLocation requested){
              return this.useFallbackFont() ? fallbackFont : requested;
+        }
+
+        @Override
+        protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profiler) {
+            this.resetUseFallbackFont();
         }
     }
 }
