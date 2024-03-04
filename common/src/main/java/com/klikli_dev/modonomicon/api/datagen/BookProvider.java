@@ -122,7 +122,7 @@ public abstract class BookProvider implements DataProvider {
         return bookModel;
     }
 
-    private Path getPath(Path dataFolder, BookModel bookModel) {
+    protected Path getPath(Path dataFolder, BookModel bookModel) {
         ResourceLocation id = bookModel.getId();
         return dataFolder
                 .resolve(id.getNamespace())
@@ -130,7 +130,7 @@ public abstract class BookProvider implements DataProvider {
                 .resolve(id.getPath() + "/book.json");
     }
 
-    private Path getPath(Path dataFolder, BookCategoryModel bookCategoryModel) {
+    protected Path getPath(Path dataFolder, BookCategoryModel bookCategoryModel) {
         ResourceLocation id = bookCategoryModel.getId();
         return dataFolder
                 .resolve(id.getNamespace())
@@ -140,7 +140,7 @@ public abstract class BookProvider implements DataProvider {
                 .resolve(id.getPath() + ".json");
     }
 
-    private Path getPath(Path dataFolder, BookCommandModel bookCommandModel) {
+    protected Path getPath(Path dataFolder, BookCommandModel bookCommandModel) {
         ResourceLocation id = bookCommandModel.getId();
         return dataFolder
                 .resolve(id.getNamespace())
@@ -150,7 +150,7 @@ public abstract class BookProvider implements DataProvider {
                 .resolve(id.getPath() + ".json");
     }
 
-    private Path getPath(Path dataFolder, BookEntryModel bookEntryModel) {
+    protected Path getPath(Path dataFolder, BookEntryModel bookEntryModel) {
         ResourceLocation id = bookEntryModel.getId();
         return dataFolder
                 .resolve(id.getNamespace())
