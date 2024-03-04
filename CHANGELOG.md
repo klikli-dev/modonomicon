@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.62.0] - 2024-03-04
+### :sparkles: New Features
+- [`90fe4c5`](https://github.com/klikli-dev/modonomicon/commit/90fe4c590bd8ea03b51f758893204802d9b7cec2) - change getPath on BookProvider.java to protected *(PR [#182](https://github.com/klikli-dev/modonomicon/pull/182) by [@GaeaKat](https://github.com/GaeaKat))*
+
+
 ## [release/v1.20.1-1.61.1] - 2024-03-02
 ### :bug: Bug Fixes
 - [`ea2f27b`](https://github.com/klikli-dev/modonomicon/commit/ea2f27b3d1fc415f508fda5762b006c706841c6f) - fontFallbackLocales not used on language change *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -700,3 +705,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.60.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.59.0...release/v1.20.1-1.60.0
 [release/v1.20.1-1.61.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.60.0...release/v1.20.1-1.61.0
 [release/v1.20.1-1.61.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.61.0...release/v1.20.1-1.61.1
+[release/v1.20.1-1.62.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.61.1...release/v1.20.1-1.62.0
