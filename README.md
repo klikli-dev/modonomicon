@@ -14,39 +14,11 @@ Data-driven minecraft in-game documentation with progress visualization.
 
 https://www.curseforge.com/minecraft/mc-mods/modonomicon
 
-## Maven
+## Maven / Gradle
 
 See https://cloudsmith.io/~klikli-dev/repos/mods/groups/ for available versions.
 
-```gradle
-repositories {
-
-  ...
-
-  maven {
-    url "https://dl.cloudsmith.io/public/klikli-dev/mods/maven/"
-    content {
-        includeGroup "com.klikli_dev"
-    }
-  }
-  
-  ...
-  
-}
-```
-
-```gradle
-dependencies {
- 
-    ...
-    
-    compileOnly fg.deobf("com.klikli_dev:modonomicon-${minecraft_version}-common:${modonomicon_version}")
-    implementation fg.deobf("com.klikli_dev:modonomicon-${minecraft_version}-forge:${modonomicon_version}")
-    
-    ...
-    
-}
-```
+See https://klikli-dev.github.io/modonomicon/docs/getting-started/maven-dependencies for maven/gradle setup instructions.
 
 ## Thanks 
 
