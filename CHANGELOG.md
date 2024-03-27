@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.63.0] - 2024-03-27
+### :bug: Bug Fixes
+- [`d68441f`](https://github.com/klikli-dev/modonomicon/commit/d68441fec32f1b606cdc0f7f6937d4cf72283563) - switch to nbt codec instead of json for book state network sync *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.62.0] - 2024-03-04
 ### :sparkles: New Features
 - [`90fe4c5`](https://github.com/klikli-dev/modonomicon/commit/90fe4c590bd8ea03b51f758893204802d9b7cec2) - change getPath on BookProvider.java to protected *(PR [#182](https://github.com/klikli-dev/modonomicon/pull/182) by [@GaeaKat](https://github.com/GaeaKat))*
@@ -706,3 +711,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.61.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.60.0...release/v1.20.1-1.61.0
 [release/v1.20.1-1.61.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.61.0...release/v1.20.1-1.61.1
 [release/v1.20.1-1.62.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.61.1...release/v1.20.1-1.62.0
+[release/v1.20.1-1.63.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.62.0...release/v1.20.1-1.63.0
