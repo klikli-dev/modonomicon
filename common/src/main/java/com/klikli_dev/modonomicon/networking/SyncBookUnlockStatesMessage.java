@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStates;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -35,12 +36,12 @@ public class SyncBookUnlockStatesMessage implements Message {
 
     @Override
     public void encode(FriendlyByteBuf buf) {
-        buf.writeJsonWithCodec(BookUnlockStates.CODEC, this.states);
+        buf.writeWithCodec(NbtOps.INSTANCE, BookUnlockStates.CODEC, this.states);
     }
 
     @Override
     public void decode(FriendlyByteBuf buf) {
-        this.states = buf.readJsonWithCodec(BookUnlockStates.CODEC);
+        this.states = buf.readWithCodecTrusted(NbtOps.INSTANCE, BookUnlockStates.CODEC);
     }
 
     @Override

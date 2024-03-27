@@ -8,9 +8,11 @@ package com.klikli_dev.modonomicon.networking;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.bookstate.BookStatesSaveData;
+import com.klikli_dev.modonomicon.bookstate.BookUnlockStates;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStates;
 import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -34,12 +36,12 @@ public class SyncBookVisualStatesMessage implements Message {
 
     @Override
     public void encode(FriendlyByteBuf buf) {
-        buf.writeJsonWithCodec(BookVisualStates.CODEC, this.states);
+        buf.writeWithCodec(NbtOps.INSTANCE, BookVisualStates.CODEC, this.states);
     }
 
     @Override
     public void decode(FriendlyByteBuf buf) {
-        this.states = buf.readJsonWithCodec(BookVisualStates.CODEC);
+        this.states = buf.readWithCodecTrusted(NbtOps.INSTANCE, BookVisualStates.CODEC);
     }
 
     @Override
