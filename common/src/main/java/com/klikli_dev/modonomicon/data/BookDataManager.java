@@ -20,16 +20,14 @@ import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.conditions.BookAndCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookEntryReadCondition;
-import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.networking.Message;
 import com.klikli_dev.modonomicon.networking.SyncBookDataMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.language.I18n;
-import net.minecraft.locale.Language;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -385,7 +383,12 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         private static ResourceLocation fallbackFont = new ResourceLocation("minecraft", "default");
 
         private boolean isFallbackLocale;
-        private boolean isInitialized;
+        private boolean isFontInitialized;
+
+        /**
+         * Our local advancement cache, because we cannot just store random advancement in ClientAdvancements -> they get rejected
+         */
+        private ConcurrentMap<ResourceLocation, Advancement> advancements = new ConcurrentHashMap<>();
 
         public Client() {
             super(GSON, FOLDER);
@@ -396,12 +399,12 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         }
 
         public void resetUseFallbackFont(){
-            this.isInitialized = false;
+            this.isFontInitialized = false;
         }
 
         public boolean useFallbackFont(){
-            if(!this.isInitialized){
-                this.isInitialized = true;
+            if(!this.isFontInitialized){
+                this.isFontInitialized = true;
 
                 var locale = Minecraft.getInstance().getLanguageManager().getSelected();
                 this.isFallbackLocale = ClientServices.CLIENT_CONFIG.fontFallbackLocales().stream().anyMatch(l -> l.equals(locale));
@@ -414,10 +417,19 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
              return this.useFallbackFont() ? fallbackFont : requested;
         }
 
+        public Advancement getAdvancement(ResourceLocation id){
+            return this.advancements.get(id);
+        }
+
+        public void addAdvancement(Advancement advancement){
+            this.advancements.put(advancement.getId(), advancement);
+        }
+
         @Override
         protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profiler) {
             //reset on reload
             this.resetUseFallbackFont();
+            this.advancements.clear();
         }
     }
 }

@@ -10,8 +10,8 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
+import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.networking.RequestAdvancementMessage;
-import com.klikli_dev.modonomicon.networking.SendAdvancementToClientMessage;
 import com.klikli_dev.modonomicon.platform.Services;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
@@ -92,10 +92,13 @@ public class BookAdvancementCondition extends BookCondition {
                 //Problem: Advancements are not syncted to the client by vanilla if they are visible - and actively removed if they are not.
                 var adv = localPlayer.connection.getAdvancements().getAdvancements().get(advancementId);
 
-                //if not available locally, request from server
-                if (adv == null) {
-                    //TODO Packet
+                //if not known by the player, check our local cache
+                if (adv == null)
+                    adv = BookDataManager.Client.get().getAdvancement(advancementId);
 
+
+                //if not available locally, request from server for our local cache
+                if (adv == null) {
                     Services.NETWORK.sendToServer(new RequestAdvancementMessage(advancementId));
                     return Component.translatable(Tooltips.CONDITION_ADVANCEMENT_LOADING);
                 }

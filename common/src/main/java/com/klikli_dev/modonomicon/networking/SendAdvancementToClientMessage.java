@@ -7,14 +7,12 @@
 package com.klikli_dev.modonomicon.networking;
 
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.data.BookDataManager;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-
-import java.util.Map;
 
 public class SendAdvancementToClientMessage implements Message {
 
@@ -35,7 +33,7 @@ public class SendAdvancementToClientMessage implements Message {
     @Override
     public void encode(FriendlyByteBuf buf) {
         buf.writeResourceLocation(this.advancementId);
-       this.advancement.serializeToNetwork(buf);
+        this.advancement.serializeToNetwork(buf);
     }
 
     @Override
@@ -51,8 +49,7 @@ public class SendAdvancementToClientMessage implements Message {
 
     @Override
     public void onClientReceived(Minecraft minecraft, Player player) {
-        if(player instanceof LocalPlayer localPlayer){
-            localPlayer.connection.getAdvancements().getAdvancements().add(Map.of(this.advancementId, this.advancement));
-        }
+        this.advancement.parent((ResourceLocation) null);
+        BookDataManager.Client.get().addAdvancement(this.advancement.build(this.advancementId));
     }
 }
