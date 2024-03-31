@@ -72,10 +72,10 @@ public class BookEntryUnlockedCondition extends BookCondition {
     }
 
     @Override
-    public List<Component> getTooltip(BookConditionContext context) {
+    public List<Component> getTooltip(Player player, BookConditionContext context) {
         if (this.tooltip == null && context instanceof BookConditionEntryContext entryContext) {
             this.tooltip = Component.translatable(Tooltips.CONDITION_ENTRY_UNLOCKED, Component.translatable(entryContext.getBook().getEntry(this.entryId).getName()));
         }
-        return super.getTooltip(context);
+        return super.getTooltip(player, context);
     }
 }

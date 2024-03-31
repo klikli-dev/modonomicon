@@ -416,6 +416,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
         @Override
         protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profiler) {
+            //reset on reload
             this.resetUseFallbackFont();
         }
     }

@@ -87,7 +87,7 @@ public abstract class BookCondition {
         return false;
     }
 
-    public List<Component> getTooltip(BookConditionContext context) {
+    public List<Component> getTooltip(Player player, BookConditionContext context) {
         return this.tooltip != null ? List.of(this.tooltip) : List.of();
     }
 }

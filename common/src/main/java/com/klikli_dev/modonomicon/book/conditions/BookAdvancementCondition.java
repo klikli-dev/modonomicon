@@ -10,13 +10,18 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
-import net.minecraft.Util;
+import com.klikli_dev.modonomicon.networking.RequestAdvancementMessage;
+import com.klikli_dev.modonomicon.networking.SendAdvancementToClientMessage;
+import com.klikli_dev.modonomicon.platform.Services;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
+
+import java.util.List;
 
 public class BookAdvancementCondition extends BookCondition {
 
@@ -31,12 +36,8 @@ public class BookAdvancementCondition extends BookCondition {
         var advancementId = new ResourceLocation(GsonHelper.getAsString(json, "advancement_id"));
 
 
-        //default tooltip
-        var tooltip = Component.translatable(Tooltips.CONDITION_ADVANCEMENT,
-                Component.translatable(
-                        Util.makeDescriptionId("advancements", advancementId)
-                                .replace(".minecraft", "") //minecraft does not include the namespace in the id
-                                + ".title"));
+        //default tooltip is null because we construct it on the fly from the advancement id
+        Component tooltip = null;
 
         if (json.has("tooltip")) {
             tooltip = tooltipFromJson(json);
@@ -72,5 +73,40 @@ public class BookAdvancementCondition extends BookCondition {
             return advancement != null && serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone();
         }
         return false;
+    }
+
+    @Override
+    public List<Component> getTooltip(Player player, BookConditionContext context) {
+        if (this.tooltip != null) {
+            return List.of(this.tooltip);
+        }
+
+        var tooltip = Component.translatable(Tooltips.CONDITION_ADVANCEMENT, DistHelper.getAdvancementTitle(player, this.advancementId));
+
+        return List.of(tooltip);
+    }
+
+    public static class DistHelper {
+        public static Component getAdvancementTitle(Player player, ResourceLocation advancementId) {
+            if (player instanceof LocalPlayer localPlayer) {
+                //Problem: Advancements are not syncted to the client by vanilla if they are visible - and actively removed if they are not.
+                var adv = localPlayer.connection.getAdvancements().getAdvancements().get(advancementId);
+
+                //if not available locally, request from server
+                if (adv == null) {
+                    //TODO Packet
+
+                    Services.NETWORK.sendToServer(new RequestAdvancementMessage(advancementId));
+                    return Component.translatable(Tooltips.CONDITION_ADVANCEMENT_LOADING);
+                }
+
+                if (adv.getDisplay() == null) //if advancement has no display we cannot show anything
+                    return Component.translatable(Tooltips.CONDITION_ADVANCEMENT_HIDDEN);
+
+                return adv.getDisplay().getTitle();
+            }
+
+            return Component.literal("Unknown"); //this should never happen -> player always must be local player
+        }
     }
 }

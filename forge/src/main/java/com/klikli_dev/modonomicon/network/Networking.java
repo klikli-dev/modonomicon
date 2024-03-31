@@ -85,6 +85,12 @@ public class Networking {
                 MessageHandler::handle);
 
         INSTANCE.registerMessage(nextID(),
+                RequestAdvancementMessage.class,
+                RequestAdvancementMessage::encode,
+                RequestAdvancementMessage::new,
+                MessageHandler::handle);
+
+        INSTANCE.registerMessage(nextID(),
                 SyncBookDataMessage.class,
                 SyncBookDataMessage::encode,
                 SyncBookDataMessage::new,
@@ -112,6 +118,12 @@ public class Networking {
                 ReloadResourcesOnClientMessage.class,
                 ReloadResourcesOnClientMessage::encode,
                 ReloadResourcesOnClientMessage::new,
+                MessageHandler::handle);
+
+        INSTANCE.registerMessage(nextID(),
+                SendAdvancementToClientMessage.class,
+                SendAdvancementToClientMessage::encode,
+                SendAdvancementToClientMessage::new,
                 MessageHandler::handle);
 
         INSTANCE.registerMessage(nextID(),

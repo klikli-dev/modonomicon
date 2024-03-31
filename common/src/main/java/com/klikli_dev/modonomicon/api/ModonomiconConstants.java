@@ -175,6 +175,8 @@ public class ModonomiconConstants {
             public static final String PREFIX = "tooltip." + ModonomiconAPI.ID + ".";
             public static final String CONDITION_PREFIX = PREFIX + ".condition.";
             public static final String CONDITION_ADVANCEMENT = CONDITION_PREFIX + "advancement";
+            public static final String CONDITION_ADVANCEMENT_LOADING = CONDITION_ADVANCEMENT + ".loading";
+            public static final String CONDITION_ADVANCEMENT_HIDDEN = CONDITION_ADVANCEMENT + ".hidden";
             public static final String CONDITION_MOD_LOADED = CONDITION_PREFIX + "mod_loaded";
             public static final String CONDITION_ENTRY_UNLOCKED = CONDITION_PREFIX + "entry_unlocked";
             public static final String CONDITION_ENTRY_READ = CONDITION_PREFIX + "entry_read";

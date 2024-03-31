@@ -365,7 +365,7 @@ public class BookCategoryScreen {
             var tooltip = new ArrayList<Component>();
 
             if (displayState == EntryDisplayState.LOCKED) {
-                tooltip.addAll(entry.getCondition().getTooltip(BookConditionEntryContext.of(this.bookOverviewScreen.getBook(), entry)));
+                tooltip.addAll(entry.getCondition().getTooltip(this.bookOverviewScreen.getMinecraft().player, BookConditionEntryContext.of(this.bookOverviewScreen.getBook(), entry)));
             } else if (displayState == EntryDisplayState.UNLOCKED) {
                 //add name in bold
                 tooltip.add(Component.translatable(entry.getName()).withStyle(ChatFormatting.BOLD));

@@ -99,13 +99,13 @@ public class BookAndCondition extends BookCondition {
     }
 
     @Override
-    public List<Component> getTooltip(BookConditionContext context) {
+    public List<Component> getTooltip(Player player, BookConditionContext context) {
         if (this.tooltips == null) {
             this.tooltips = new ArrayList<>();
             if (this.tooltip != null)
                 this.tooltips.add(this.tooltip);
             for (var child : this.children) {
-                this.tooltips.addAll(child.getTooltip(context));
+                this.tooltips.addAll(child.getTooltip(player, context));
             }
         }
 
