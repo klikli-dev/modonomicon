@@ -98,6 +98,7 @@ public class LoaderRegistry {
 
     private static void registerDefaultPredicates() {
         registerPredicate(Matchers.AIR.getPredicateId(), (getter, pos, state) -> state.isAir());
+        //noinspection deprecation
         registerPredicate(Modonomicon.loc("non_solid"), (getter, pos, state) -> !state.isSolid());
     }
 
