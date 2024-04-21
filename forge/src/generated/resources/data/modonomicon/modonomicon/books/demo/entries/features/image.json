@@ -1,0 +1,75 @@
+{
+  "background_u_index": 0,
+  "background_v_index": 0,
+  "category": "modonomicon:features",
+  "description": "book.modonomicon.demo.features.image.description",
+  "hide_while_locked": false,
+  "icon": {
+    "item": "minecraft:item_frame"
+  },
+  "name": "book.modonomicon.demo.features.image.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.image.intro.text",
+      "title": "book.modonomicon.demo.features.image.intro.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:image",
+      "anchor": "",
+      "border": true,
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "images": [
+        "modonomicon:textures/gui/default_background.png",
+        "modonomicon:textures/gui/dark_slate_seamless.png"
+      ],
+      "text": "book.modonomicon.demo.features.image.image.text",
+      "title": "book.modonomicon.demo.features.image.image.title"
+    },
+    {
+      "type": "modonomicon:spotlight",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "item": {
+        "item": "minecraft:spawner"
+      },
+      "text": "book.modonomicon.demo.features.image.test_spotlight.text",
+      "title": ""
+    },
+    {
+      "type": "modonomicon:image",
+      "anchor": "",
+      "border": true,
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "images": [
+        "modonomicon:textures/gui/default_background.png",
+        "modonomicon:textures/gui/dark_slate_seamless.png"
+      ],
+      "text": "book.modonomicon.demo.features.image.test_image.text",
+      "title": "book.modonomicon.demo.features.image.test_image.title"
+    }
+  ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "modonomicon:features/empty",
+      "line_enabled": true,
+      "line_reversed": false
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "x": 2,
+  "y": 0
+}

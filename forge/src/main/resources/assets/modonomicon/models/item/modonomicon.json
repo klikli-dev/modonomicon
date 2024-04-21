@@ -1,0 +1,9 @@
+{
+  "loader": "modonomicon:book_model_loader",
+  "base_model": {
+    "parent": "minecraft:item/generated",
+    "textures": {
+      "layer0": "modonomicon:item/modonomicon_purple"
+    }
+  }
+}

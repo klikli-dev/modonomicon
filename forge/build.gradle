@@ -1,0 +1,178 @@
+plugins {
+    id 'idea'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
+    id 'java-library'
+}
+
+if (System.getenv('MOD_VERSION') != null) {
+    mod_version = System.getenv('MOD_VERSION')
+}
+version = mod_version
+
+base {
+    archivesName = "${mod_id}-${minecraft_version}-forge"
+}
+
+if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
+    minecraft.accessTransformers.file file('src/main/resources/META-INF/accesstransformer.cfg')
+}
+
+//this replaces the old minecraftlibraries stuff for adding JiJ stuff to the mc classpath
+configurations {
+    libraries {}
+    implementation.extendsFrom libraries
+}
+
+minecraft {
+    mappings channel: forge_mapping_channel, version: forge_mapping_version
+
+    // When true, this property will have all Eclipse/IntelliJ IDEA run configurations run the "prepareX" task for the given run configuration before launching the game.
+    // In most cases, it is not necessary to enable.
+    // enableEclipsePrepareRuns = true
+    // enableIdeaPrepareRuns = true
+
+    copyIdeResources = true
+
+    runs {
+        // applies to all the run configs below
+        configureEach {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+
+            jvmArguments.addAll('-XX:+AllowEnhancedClassRedefinition', '-XX:+IgnoreUnrecognizedVMOptions')
+            modSource project.sourceSets.main
+
+            dependencies {
+                //ensure that all "libraries" deps are added to the runtime classpath in dev
+                runtime project.configurations.libraries
+            }
+        }
+
+        client {
+            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+            property 'forge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        server {
+            property 'forge.enabledGameTestNamespaces', project.mod_id
+            args '--nogui'
+        }
+
+        data {
+            // example of overriding the workingDirectory set in configureEach above
+            workingDirectory project.file('run-data')
+
+            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
+            args '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+        }
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    compileOnly project(":common")
+
+    //Jei
+    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+    compileOnly "mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"
+    runtimeOnly "mezz.jei:jei-${minecraft_version}-forge:${jei_version}"
+
+//    implementation "vazkii.patchouli:Patchouli:${minecraft_version}-${patchouli_version}-FORGE"
+
+    //commonmark
+    //mark it for forge to add to the classpath
+    libraries "org.commonmark:commonmark:${commonmark_version}"
+    libraries "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
+    libraries "org.commonmark:commonmark-ext-ins:${commonmark_version}"
+    //and include it in the jar
+    jarJar(group: 'org.commonmark', name: 'commonmark', version: "[${commonmark_version},)")
+    jarJar(group: 'org.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: "[${commonmark_version},)")
+    jarJar(group: 'org.commonmark', name: 'commonmark-ext-ins', version: "[${commonmark_version},)")
+}
+
+//Disable test compilation as a) we are not using tests and b) it fails due to not being able to access jei in common
+compileTestJava {
+    enabled = false
+}
+
+// NeoGradle compiles the game, but we don't want to add our common code to the game's code
+TaskCollection.metaClass.excludingForgeTasks = { ->
+    delegate.matching { !it.name.startsWith("forge") }
+}
+
+tasks.withType(JavaCompile).excludingForgeTasks().configureEach {
+    source(project(":common").sourceSets.main.allSource)
+}
+
+tasks.withType(Javadoc).excludingForgeTasks().configureEach {
+    source(project(":common").sourceSets.main.allJava)
+}
+
+tasks.named("sourcesJar", Jar) {
+    //for some reason we need item textures in forge too for dev runtime, so we have to set a strategy
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from(project(":common").sourceSets.main.allSource)
+}
+
+
+tasks.named('jar') {
+    archiveClassifier = "slim"
+//    finalizedBy('reobfJar')
+}
+
+tasks.named('build').configure { dependsOn('jarJar') }
+tasks.named('jarJar') {
+    archiveClassifier = ""
+//    finalizedBy('reobfJar')
+}
+
+tasks.withType(ProcessResources).excludingForgeTasks().configureEach {
+    //for some reason we need item textures in forge too for dev runtime, so we have to set a strategy
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from project(":common").sourceSets.main.resources
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId base.archivesName.get()
+
+            from components.java
+            jarJar.component(it)
+
+            pom {
+                name = mod_name
+                description = 'Data-driven minecraft in-game documentation with progress visualization.'
+                url = 'https://github.com/klikli-dev/modonomicon'
+                licenses {
+                    license {
+                        name = 'MIT AND CC-BY-4.0'
+                        url = 'https://github.com/klikli-dev/modonomicon#licensing'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:ssh:git@github.com:klikli-dev/modonomicon.git'
+                    url = 'https://github.com/klikli-dev/modonomicon'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = "cloudsmith"
+            url = "https://maven.cloudsmith.io/klikli-dev/mods/"
+            def releasesRepoUrl = "https://maven.cloudsmith.io/klikli-dev/mods/"
+            def snapshotsRepoUrl = "https://maven.cloudsmith.io/klikli-dev/mods/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username = System.getenv('MAVEN_USER')
+                password = System.getenv('MAVEN_PASS')
+            }
+        }
+    }
+}

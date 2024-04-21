@@ -1,0 +1,27 @@
+{
+  "background_u_index": 0,
+  "background_v_index": 0,
+  "category": "modonomicon:other",
+  "description": "book.modonomicon.demo.other.root.description",
+  "hide_while_locked": false,
+  "icon": {
+    "item": "minecraft:sugar"
+  },
+  "name": "book.modonomicon.demo.other.root.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.other.root.intro.text",
+      "title": "book.modonomicon.demo.other.root.intro.title",
+      "use_markdown_in_title": false
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "x": 0,
+  "y": 0
+}

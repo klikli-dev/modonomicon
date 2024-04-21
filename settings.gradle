@@ -8,6 +8,10 @@ pluginManagement {
             url = 'https://maven.fabricmc.net/'
         }
         maven {
+            name = 'MinecraftForge'
+            url = 'https://maven.minecraftforge.net/'
+        }
+        maven {
             name = 'Sponge Snapshots'
             url = 'https://repo.spongepowered.org/repository/maven-public/'
         }
@@ -26,3 +30,4 @@ rootProject.name = 'Modonomicon ' + minecraft_version
 include("common")
 include("fabric")
 include("neo")
+include("forge")

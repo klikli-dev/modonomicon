@@ -1,0 +1,6 @@
+{
+  "command": "/give @s minecraft:apple 1",
+  "max_uses": 1,
+  "permission_level": 2,
+  "success_message": "modonomicon.command.test_command.success"
+}

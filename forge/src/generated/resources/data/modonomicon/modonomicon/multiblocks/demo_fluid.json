@@ -1,0 +1,41 @@
+{
+  "type": "modonomicon:dense",
+  "mapping": {
+    "*": {
+      "type": "modonomicon:display",
+      "display": "minecraft:basalt"
+    },
+    "+": {
+      "type": "modonomicon:display",
+      "display": "minecraft:stone"
+    },
+    "L": {
+      "type": "modonomicon:block",
+      "block": "minecraft:lava"
+    },
+    "W": {
+      "type": "modonomicon:block",
+      "block": "minecraft:water"
+    }
+  },
+  "pattern": [
+    [
+      "_______",
+      "__LLL__",
+      "_W___W_",
+      "_W_0_W_",
+      "_W___W_",
+      "__LLL__",
+      "_______"
+    ],
+    [
+      "*+*+*+*",
+      "+*+*+*+",
+      "*+*+*+*",
+      "+*+*+*+",
+      "*+*+*+*",
+      "+*+*+*+",
+      "*+*+*+*"
+    ]
+  ]
+}

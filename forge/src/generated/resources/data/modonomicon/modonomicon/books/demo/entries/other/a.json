@@ -1,0 +1,47 @@
+{
+  "background_u_index": 0,
+  "background_v_index": 0,
+  "category": "modonomicon:other",
+  "condition": {
+    "type": "modonomicon:and",
+    "children": [
+      {
+        "type": "modonomicon:entry_unlocked",
+        "entry_id": "modonomicon:other/b"
+      },
+      {
+        "type": "modonomicon:true"
+      }
+    ]
+  },
+  "description": "book.modonomicon.demo.other.a.description",
+  "hide_while_locked": false,
+  "icon": {
+    "item": "minecraft:apple"
+  },
+  "name": "book.modonomicon.demo.other.a.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.other.a.intro.text",
+      "title": "book.modonomicon.demo.other.a.intro.title",
+      "use_markdown_in_title": false
+    }
+  ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "modonomicon:other/b",
+      "line_enabled": true,
+      "line_reversed": false
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "x": -4,
+  "y": -1
+}

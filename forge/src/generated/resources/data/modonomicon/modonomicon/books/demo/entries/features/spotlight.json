@@ -1,0 +1,59 @@
+{
+  "background_u_index": 0,
+  "background_v_index": 0,
+  "category": "modonomicon:features",
+  "description": "book.modonomicon.demo.features.spotlight.description",
+  "hide_while_locked": false,
+  "icon": {
+    "item": "minecraft:beacon"
+  },
+  "name": "book.modonomicon.demo.features.spotlight.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.spotlight.intro.text",
+      "title": "book.modonomicon.demo.features.spotlight.intro.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:spotlight",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "item": {
+        "item": "minecraft:apple"
+      },
+      "text": "book.modonomicon.demo.features.spotlight.spotlight1.text",
+      "title": "book.modonomicon.demo.features.spotlight.spotlight1.title"
+    },
+    {
+      "type": "modonomicon:spotlight",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "item": {
+        "item": "minecraft:diamond"
+      },
+      "text": "book.modonomicon.demo.features.spotlight.spotlight2.text",
+      "title": ""
+    }
+  ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "modonomicon:features/recipe",
+      "line_enabled": true,
+      "line_reversed": true
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "x": -14,
+  "y": 1
+}

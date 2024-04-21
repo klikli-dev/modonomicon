@@ -1,0 +1,53 @@
+{
+  "type": "modonomicon:dense",
+  "mapping": {
+    "*": {
+      "type": "modonomicon:display",
+      "display": "minecraft:basalt"
+    },
+    "+": {
+      "type": "modonomicon:display",
+      "display": "minecraft:stone"
+    },
+    "0": {
+      "type": "modonomicon:block",
+      "block": "minecraft:bell"
+    },
+    "c": {
+      "type": "modonomicon:block",
+      "block": "minecraft:bamboo"
+    },
+    "e": {
+      "type": "modonomicon:block",
+      "block": "minecraft:granite"
+    },
+    "r": {
+      "type": "modonomicon:block",
+      "block": "minecraft:acacia_wood"
+    },
+    "s": {
+      "type": "modonomicon:block",
+      "block": "minecraft:sand"
+    }
+  },
+  "pattern": [
+    [
+      "_____________",
+      "________s____",
+      "_____________",
+      "_ce__0_____r_",
+      "_____________",
+      "________s____",
+      "_____________"
+    ],
+    [
+      "*+*+*+*+*+*+*",
+      "+*+*+*+*+*+*+",
+      "*+*+*+*+*+*+*",
+      "+*+*+*+*+*+*+",
+      "*+*+*+*+*+*+*",
+      "+*+*+*+*+*+*+",
+      "*+*+*+*+*+*+*"
+    ]
+  ]
+}
