@@ -69,6 +69,23 @@ You may need to add `{transitive=false}` at the end of the `implementation ...` 
 
 :::
 
+
+### Neoforge
+
+`build.gradle`:
+```groovy
+dependencies {
+    ... //other dependencies
+    implementation "com.klikli_dev:modonomicon-${minecraft_version}-neoforge:${modonomicon_version}" 
+}
+```
+
+:::info
+
+You may need to add `{transitive=false}` at the end of the `implementation ...` line.
+
+:::
+
 ### Fabric
 
 ```groovy
@@ -86,3 +103,9 @@ dependencies {
     compileOnly "com.klikli_dev:modonomicon-${minecraft_version}-common:${modonomicon_version}"
 }
 ```
+
+:::tip
+
+You will only need this if you have a multiloader setup with a "common" sub-project.
+
+:::
