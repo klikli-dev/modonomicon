@@ -26,3 +26,5 @@ runs
 forge*changelog.txt
 
 src/generated/resources/.cache/
+
+forge/run-data/
