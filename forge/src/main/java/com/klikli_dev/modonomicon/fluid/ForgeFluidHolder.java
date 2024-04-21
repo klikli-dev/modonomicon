@@ -8,20 +8,20 @@ package com.klikli_dev.modonomicon.fluid;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidStack;
 
-public class NeoFluidHolder implements FluidHolder {
+public class ForgeFluidHolder implements FluidHolder {
     protected FluidStack fluidStack;
 
-    public NeoFluidHolder(FluidStack stack) {
+    public ForgeFluidHolder(FluidStack stack) {
         this.fluidStack = stack.copy();
     }
 
-    public NeoFluidHolder(FluidHolder fluid) {
+    public ForgeFluidHolder(FluidHolder fluid) {
         this(fluid.getFluid(), fluid.getAmount(), fluid.getTag());
     }
 
-    public NeoFluidHolder(Fluid fluid, int amount, CompoundTag tag) {
+    public ForgeFluidHolder(Fluid fluid, int amount, CompoundTag tag) {
         this.fluidStack = new FluidStack(fluid, amount, tag);
     }
 
@@ -29,8 +29,8 @@ public class NeoFluidHolder implements FluidHolder {
         return new FluidStack(fluidHolder.getFluid(), fluidHolder.getAmount(), fluidHolder.getTag());
     }
 
-    public static NeoFluidHolder empty() {
-        return new NeoFluidHolder(FluidStack.EMPTY);
+    public static ForgeFluidHolder empty() {
+        return new ForgeFluidHolder(FluidStack.EMPTY);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class NeoFluidHolder implements FluidHolder {
 
     @Override
     public FluidHolder copy() {
-        return new NeoFluidHolder(this.getFluid(), this.getAmount(), this.getTag());
+        return new ForgeFluidHolder(this.getFluid(), this.getAmount(), this.getTag());
     }
 
     public FluidStack toStack() {

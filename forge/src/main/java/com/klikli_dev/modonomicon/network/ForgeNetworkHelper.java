@@ -10,7 +10,7 @@ import com.klikli_dev.modonomicon.networking.Message;
 import com.klikli_dev.modonomicon.platform.services.NetworkHelper;
 import net.minecraft.server.level.ServerPlayer;
 
-public class NeoNetworkHelper implements NetworkHelper {
+public class ForgeNetworkHelper implements NetworkHelper {
     @Override
     public <T extends Message> void sendTo(ServerPlayer player, T message) {
         Networking.sendTo(player, message);

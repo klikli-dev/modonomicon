@@ -19,7 +19,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -27,10 +26,10 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.joml.Matrix4f;
 
 import java.util.ArrayList;
@@ -191,7 +190,7 @@ public class FluidRenderHelper {
         tooltip.add(displayName);
 
         if (tooltipFlag.isAdvanced()) {
-            ResourceLocation resourceLocation = BuiltInRegistries.FLUID.getKey(fluid);
+            ResourceLocation resourceLocation = ForgeRegistries.FLUIDS.getKey(fluid);
             if (resourceLocation != null) {
                 MutableComponent advancedId = Component.literal(resourceLocation.toString())
                         .withStyle(ChatFormatting.DARK_GRAY);

@@ -10,7 +10,7 @@ import com.klikli_dev.modonomicon.platform.services.ClientConfigHelper;
 
 import java.util.List;
 
-public class NeoClientConfigHelper implements ClientConfigHelper {
+public class ForgeClientConfigHelper implements ClientConfigHelper {
     @Override
     public boolean enableSmoothZoom() {
         return ClientConfig.get().qolCategory.enableSmoothZoom.get();

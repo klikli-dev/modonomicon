@@ -6,8 +6,8 @@
 
 package com.klikli_dev.modonomicon.config;
 
-
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +17,10 @@ public class ClientConfig {
     private static final ClientConfig instance = new ClientConfig();
 
     public final QoLCategory qolCategory;
-    public final ModConfigSpec spec;
+    public final ForgeConfigSpec spec;
 
     private ClientConfig() {
-        var builder = new ModConfigSpec.Builder();
+        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         this.qolCategory = new QoLCategory(builder);
         this.spec = builder.build();
     }
@@ -30,12 +30,12 @@ public class ClientConfig {
     }
 
     public static class QoLCategory {
-        public final ModConfigSpec.BooleanValue enableSmoothZoom;
-        public final ModConfigSpec.BooleanValue storeLastOpenPageWhenClosingEntry;
+        public final BooleanValue enableSmoothZoom;
+        public final BooleanValue storeLastOpenPageWhenClosingEntry;
 
-        public final ModConfigSpec.ConfigValue<List<String>> fontFallbackLocales;
+        public final ForgeConfigSpec.ConfigValue<List<String>> fontFallbackLocales;
 
-        public QoLCategory(ModConfigSpec.Builder builder) {
+        public QoLCategory(ForgeConfigSpec.Builder builder) {
             builder.comment("Quality of Life Settings").push("qol");
             this.enableSmoothZoom = builder.comment("Enable smooth zoom in book categories")
                     .define("enableSmoothZoom", true);

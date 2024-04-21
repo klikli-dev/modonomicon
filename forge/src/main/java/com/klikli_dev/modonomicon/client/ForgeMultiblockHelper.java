@@ -15,9 +15,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
-public class NeoMultiblockHelper implements MultiblockHelper {
+public class ForgeMultiblockHelper implements MultiblockHelper {
     @Override
     public void renderBlock(BlockState state, BlockPos pos, Multiblock multiblock, PoseStack ps, MultiBufferSource buffers, RandomSource rand) {
         var blockRenderer = Minecraft.getInstance().getBlockRenderer();
@@ -35,6 +35,7 @@ public class NeoMultiblockHelper implements MultiblockHelper {
                 var buffer = buffers.getBuffer(layer);
                 blockRenderer.renderBatched(state, pos, multiblock, ps, buffer, false, rand, ModelData.EMPTY, layer);
             }
+
         }
     }
 }

@@ -27,33 +27,34 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.client.event.*;
-import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
-import net.neoforged.neoforge.event.OnDatapackSyncEvent;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.TickEvent;
-import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
-import net.neoforged.neoforge.event.entity.player.AdvancementEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.event.level.LevelEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.OnDatapackSyncEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.player.AdvancementEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 @Mod(Modonomicon.MOD_ID)
-public class ModonomiconNeo {
+public class ModonomiconForge {
 
-    public ModonomiconNeo(IEventBus modEventBus) {
+    public ModonomiconForge() {
         // This method is invoked by the Forge mod loader when it is ready
         // to load your mod. You can access Forge and Common code in this
         // project.
@@ -63,30 +64,31 @@ public class ModonomiconNeo {
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfig.get().spec);
 
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
         //Most registries are handled by common, but creative tabs are easier per loader
         CreativeModeTabRegistry.CREATIVE_MODE_TABS.register(modEventBus);
 
         //directly register event handlers
         modEventBus.addListener(this::onCommonSetup);
-        modEventBus.addListener(Networking::register);
         modEventBus.addListener(CreativeModeTabRegistry::onCreativeModeTabBuildContents);
 
         //register data managers as reload listeners
-        NeoForge.EVENT_BUS.addListener((AddReloadListenerEvent e) -> {
+        MinecraftForge.EVENT_BUS.addListener((AddReloadListenerEvent e) -> {
             e.addListener(BookDataManager.get());
             e.addListener(MultiblockDataManager.get());
         });
 
         //register commands
-        NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent e) ->
+        MinecraftForge.EVENT_BUS.addListener((RegisterCommandsEvent e) ->
                 CommandRegistry.registerCommands(e.getDispatcher())
         );
-        NeoForge.EVENT_BUS.addListener((RegisterClientCommandsEvent e) ->
+        MinecraftForge.EVENT_BUS.addListener((RegisterClientCommandsEvent e) ->
                 CommandRegistry.registerClientCommands(e.getDispatcher())
         );
 
         //datapack sync = build books and sync to client
-        NeoForge.EVENT_BUS.addListener((OnDatapackSyncEvent e) -> {
+        MinecraftForge.EVENT_BUS.addListener((OnDatapackSyncEvent e) -> {
             if (e.getPlayer() != null) {
                 BookDataManager.get().onDatapackSync(e.getPlayer());
                 MultiblockDataManager.get().onDatapackSync(e.getPlayer());
@@ -94,7 +96,7 @@ public class ModonomiconNeo {
         });
 
         //sync book state on player join
-        NeoForge.EVENT_BUS.addListener((EntityJoinLevelEvent e) -> {
+        MinecraftForge.EVENT_BUS.addListener((EntityJoinLevelEvent e) -> {
             if (e.getEntity() instanceof ServerPlayer player) {
                 BookUnlockStateManager.get().updateAndSyncFor(player);
                 BookVisualStateManager.get().syncFor(player);
@@ -104,7 +106,7 @@ public class ModonomiconNeo {
         //on overworld unload clear the save data reference in the state manager
         // this ensures that if another world is loaded the save data is taken from file
         // instead of bleeding in from the previous level
-        NeoForge.EVENT_BUS.addListener((LevelEvent.Unload e) -> {
+        MinecraftForge.EVENT_BUS.addListener((LevelEvent.Unload e) -> {
             if (e.getLevel() instanceof Level level && level.dimension() == Level.OVERWORLD) {
                 BookUnlockStateManager.get().saveData = null;
                 BookVisualStateManager.get().saveData = null;
@@ -113,7 +115,7 @@ public class ModonomiconNeo {
 
 
         //Advancement event handling for condition/unlock system
-        NeoForge.EVENT_BUS.addListener((AdvancementEvent.AdvancementEarnEvent e) -> BookUnlockStateManager.get().onAdvancement((ServerPlayer) e.getEntity()));
+        MinecraftForge.EVENT_BUS.addListener((AdvancementEvent.AdvancementEarnEvent e) -> BookUnlockStateManager.get().onAdvancement((ServerPlayer) e.getEntity()));
 
         //Datagen
         modEventBus.addListener(DataGenerators::gatherData);
@@ -124,7 +126,7 @@ public class ModonomiconNeo {
             modEventBus.addListener(Client::onRegisterGeometryLoaders);
             modEventBus.addListener(Client::onRegisterGuiOverlays);
             //build books and render markdown when client receives recipes
-            NeoForge.EVENT_BUS.addListener(Client::onRecipesUpdated);
+            MinecraftForge.EVENT_BUS.addListener(Client::onRecipesUpdated);
 
             //register client side reload listener that will reset the fallback font to handle locale changes on the fly
             modEventBus.addListener((RegisterClientReloadListenersEvent e) -> {
@@ -134,6 +136,8 @@ public class ModonomiconNeo {
     }
 
     public void onCommonSetup(FMLCommonSetupEvent event) {
+        Networking.registerMessages();
+
         LoaderRegistry.registerLoaders();
     }
 
@@ -141,12 +145,12 @@ public class ModonomiconNeo {
         public static void onClientSetup(FMLClientSetupEvent event) {
             PageRendererRegistry.registerPageRenderers();
 
-            NeoForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent e) -> {
+            MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent e) -> {
                 if (e.phase == TickEvent.Phase.END) {
                     ClientTicks.endClientTick(Minecraft.getInstance());
                 }
             });
-            NeoForge.EVENT_BUS.addListener((TickEvent.RenderTickEvent e) -> {
+            MinecraftForge.EVENT_BUS.addListener((TickEvent.RenderTickEvent e) -> {
                 if (e.phase == TickEvent.Phase.START) {
                     ClientTicks.renderTickStart(e.renderTickTime);
                 } else {
@@ -155,7 +159,7 @@ public class ModonomiconNeo {
             });
 
             //let multiblock preview renderer handle right clicks for anchoring
-            NeoForge.EVENT_BUS.addListener((PlayerInteractEvent.RightClickBlock e) -> {
+            MinecraftForge.EVENT_BUS.addListener((PlayerInteractEvent.RightClickBlock e) -> {
                 InteractionResult result = MultiblockPreviewRenderer.onPlayerInteract(e.getEntity(), e.getLevel(), e.getHand(), e.getHitVec());
                 if (result.consumesAction()) {
                     e.setCanceled(true);
@@ -164,14 +168,14 @@ public class ModonomiconNeo {
             });
 
             //Tick multiblock preview
-            NeoForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent e) -> {
+            MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent e) -> {
                 if (e.phase == TickEvent.Phase.END) {
                     MultiblockPreviewRenderer.onClientTick(Minecraft.getInstance());
                 }
             });
 
             //Render multiblock preview
-            NeoForge.EVENT_BUS.addListener((RenderLevelStageEvent e) -> {
+            MinecraftForge.EVENT_BUS.addListener((RenderLevelStageEvent e) -> {
                 if (e.getStage() == RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS) { //After translucent causes block entities to error out on render in preview
                     MultiblockPreviewRenderer.onRenderLevelLastEvent(e.getPoseStack());
                 }
@@ -186,11 +190,11 @@ public class ModonomiconNeo {
         }
 
         public static void onRegisterGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
-            event.register(Modonomicon.loc("book_model_loader"), new BookModelLoader());
+            event.register("book_model_loader", new BookModelLoader());
         }
 
         public static void onRegisterGuiOverlays(RegisterGuiOverlaysEvent event) {
-            event.registerBelow(VanillaGuiOverlay.BOSS_EVENT_PROGRESS.id(), Modonomicon.loc("multiblock_hud"), (gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
+            event.registerBelow(VanillaGuiOverlay.BOSS_EVENT_PROGRESS.id(), "multiblock_hud", (gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
                 MultiblockPreviewRenderer.onRenderHUD(guiGraphics, partialTick);
             });
         }
