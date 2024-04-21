@@ -10,7 +10,7 @@ import com.klikli_dev.modonomicon.platform.services.GuiHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 
-public class ForgeGuiHelper implements GuiHelper {
+public class NeoGuiHelper implements GuiHelper {
     @Override
     public void pushGuiLayer(Screen screen) {
         Minecraft.getInstance().pushGuiLayer(screen);
