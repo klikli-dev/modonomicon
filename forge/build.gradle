@@ -34,8 +34,7 @@ minecraft {
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
 
-//            jvmArguments += '-XX:+AllowEnhancedClassRedefinition'
-//            jvmArguments += '-XX:+IgnoreUnrecognizedVMOptions'
+            jvmArgs '-XX:+AllowEnhancedClassRedefinition', '-XX:+IgnoreUnrecognizedVMOptions'
 
             source project(":common").sourceSets.main
         }
