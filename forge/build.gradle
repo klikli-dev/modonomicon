@@ -14,16 +14,6 @@ base {
     archivesName = "${mod_id}-${minecraft_version}-forge"
 }
 
-if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
-    minecraft.accessTransformers.file file('src/main/resources/META-INF/accesstransformer.cfg')
-}
-
-//this replaces the old minecraftlibraries stuff for adding JiJ stuff to the mc classpath
-configurations {
-    libraries {}
-    implementation.extendsFrom libraries
-}
-
 minecraft {
     mappings channel: forge_mapping_channel, version: forge_mapping_version
 
@@ -34,6 +24,8 @@ minecraft {
 
     copyIdeResources = true
 
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
     runs {
         // applies to all the run configs below
         configureEach {
@@ -42,13 +34,10 @@ minecraft {
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
 
-            jvmArguments.addAll('-XX:+AllowEnhancedClassRedefinition', '-XX:+IgnoreUnrecognizedVMOptions')
-            modSource project.sourceSets.main
+//            jvmArguments += '-XX:+AllowEnhancedClassRedefinition'
+//            jvmArguments += '-XX:+IgnoreUnrecognizedVMOptions'
 
-            dependencies {
-                //ensure that all "libraries" deps are added to the runtime classpath in dev
-                runtime project.configurations.libraries
-            }
+            source project(":common").sourceSets.main
         }
 
         client {
@@ -86,9 +75,9 @@ dependencies {
 
     //commonmark
     //mark it for forge to add to the classpath
-    libraries "org.commonmark:commonmark:${commonmark_version}"
-    libraries "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
-    libraries "org.commonmark:commonmark-ext-ins:${commonmark_version}"
+//    libraries "org.commonmark:commonmark:${commonmark_version}"
+//    libraries "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
+//    libraries "org.commonmark:commonmark-ext-ins:${commonmark_version}"
     //and include it in the jar
     jarJar(group: 'org.commonmark', name: 'commonmark', version: "[${commonmark_version},)")
     jarJar(group: 'org.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: "[${commonmark_version},)")
@@ -100,16 +89,11 @@ compileTestJava {
     enabled = false
 }
 
-// NeoGradle compiles the game, but we don't want to add our common code to the game's code
-TaskCollection.metaClass.excludingForgeTasks = { ->
-    delegate.matching { !it.name.startsWith("forge") }
-}
-
-tasks.withType(JavaCompile).excludingForgeTasks().configureEach {
+tasks.withType(JavaCompile).configureEach {
     source(project(":common").sourceSets.main.allSource)
 }
 
-tasks.withType(Javadoc).excludingForgeTasks().configureEach {
+tasks.withType(Javadoc).configureEach {
     source(project(":common").sourceSets.main.allJava)
 }
 
@@ -122,16 +106,17 @@ tasks.named("sourcesJar", Jar) {
 
 tasks.named('jar') {
     archiveClassifier = "slim"
-//    finalizedBy('reobfJar')
+    finalizedBy('reobfJar')
 }
 
 tasks.named('build').configure { dependsOn('jarJar') }
+jarJar.enable()
 tasks.named('jarJar') {
     archiveClassifier = ""
-//    finalizedBy('reobfJar')
+    finalizedBy('reobfJar')
 }
 
-tasks.withType(ProcessResources).excludingForgeTasks().configureEach {
+tasks.withType(ProcessResources).configureEach {
     //for some reason we need item textures in forge too for dev runtime, so we have to set a strategy
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from project(":common").sourceSets.main.resources
@@ -175,4 +160,10 @@ publishing {
             }
         }
     }
+}
+
+sourceSets.each {
+    def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
+    it.output.resourcesDir = dir
+    it.java.destinationDirectory = dir
 }
