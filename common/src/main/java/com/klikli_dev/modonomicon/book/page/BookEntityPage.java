@@ -63,7 +63,7 @@ public class BookEntityPage extends BookPage {
         return new BookEntityPage(entityName, text, entityId, scale, offset, rotate, defaultRotation, anchor, condition);
     }
 
-    public static BookEntityPage fromNetwork(FriendlyByteBuf buffer) {
+    public static BookEntityPage fromNetwork(RegistryFriendlyByteBuf buffer){
         var entityName = BookTextHolder.fromNetwork(buffer);
         var text = BookTextHolder.fromNetwork(buffer);
         var entityId = buffer.readUtf();
@@ -139,7 +139,7 @@ public class BookEntityPage extends BookPage {
     }
 
     @Override
-    public void toNetwork(FriendlyByteBuf buffer) {
+    public void toNetwork(RegistryFriendlyByteBuf buffer) {
         this.entityName.toNetwork(buffer);
         this.text.toNetwork(buffer);
         buffer.writeUtf(this.entityId);

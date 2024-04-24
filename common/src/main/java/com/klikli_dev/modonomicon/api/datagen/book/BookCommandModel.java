@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.api.datagen.book;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,7 +43,7 @@ public class BookCommandModel {
         return this.book;
     }
 
-    public JsonObject toJson() {
+    public JsonObject toJson(HolderLookup.Provider provider) {
         JsonObject json = new JsonObject();
         json.addProperty("command", this.command);
         json.addProperty("permission_level", this.permissionLevel);

@@ -186,7 +186,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
     }
 
     @Override
-    public void toNetwork(FriendlyByteBuf buffer) {
+    public void toNetwork(RegistryFriendlyByteBuf buffer) {
         this.title1.toNetwork(buffer);
         buffer.writeBoolean(this.recipeId1 != null);
         if (this.recipeId1 != null) {

@@ -23,8 +23,8 @@ public class BookModLoadedConditionModel extends BookConditionModel<BookModLoade
     }
 
     @Override
-    public JsonObject toJson() {
-        var json = super.toJson();
+    public JsonObject toJson(HolderLookup.Provider provider) {
+        var json = super.toJson(provider);
         json.addProperty("mod_id", this.modId);
         return json;
     }

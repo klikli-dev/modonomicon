@@ -53,7 +53,7 @@ public class BookImagePage extends BookPage {
         return new BookImagePage(title, text, images, border, anchor, condition);
     }
 
-    public static BookImagePage fromNetwork(FriendlyByteBuf buffer) {
+    public static BookImagePage fromNetwork(RegistryFriendlyByteBuf buffer){
         var title = BookTextHolder.fromNetwork(buffer);
         var text = BookTextHolder.fromNetwork(buffer);
 
@@ -111,7 +111,7 @@ public class BookImagePage extends BookPage {
     }
 
     @Override
-    public void toNetwork(FriendlyByteBuf buffer) {
+    public void toNetwork(RegistryFriendlyByteBuf buffer) {
         this.title.toNetwork(buffer);
         this.text.toNetwork(buffer);
 

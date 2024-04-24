@@ -29,11 +29,11 @@ public class BookAndConditionModel extends BookConditionModel<BookAndConditionMo
     }
 
     @Override
-    public JsonObject toJson() {
-        var json = super.toJson();
+    public JsonObject toJson(HolderLookup.Provider provider) {
+        var json = super.toJson(provider);
         var children = new JsonArray();
         for (var child : this.children) {
-            children.add(child.toJson());
+            children.add(child.toJson(provider));
         }
         json.add("children", children);
         return json;

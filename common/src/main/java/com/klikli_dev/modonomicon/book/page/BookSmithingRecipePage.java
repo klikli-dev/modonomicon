@@ -34,7 +34,7 @@ public class BookSmithingRecipePage extends BookRecipePage<SmithingRecipe> {
         return new BookSmithingRecipePage(common.title1(), common.recipeId1(), common.title2(), common.recipeId2(), common.text(), anchor, condition);
     }
 
-    public static BookSmithingRecipePage fromNetwork(FriendlyByteBuf buffer) {
+    public static BookSmithingRecipePage fromNetwork(RegistryFriendlyByteBuf buffer){
         var common = BookRecipePage.commonFromNetwork(buffer);
         var anchor = buffer.readUtf();
         var condition = BookCondition.fromNetwork(buffer);

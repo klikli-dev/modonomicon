@@ -74,10 +74,10 @@ public class BookCategoryModel {
         return this.book;
     }
 
-    public JsonObject toJson() {
+    public JsonObject toJson(HolderLookup.Provider provider) {
         JsonObject json = new JsonObject();
         json.addProperty("name", this.name);
-        json.add("icon", this.icon.toJson());
+        json.add("icon", this.icon.toJson(provider));
         json.addProperty("sort_number", this.sortNumber);
         json.addProperty("background", this.background.toString());
         json.addProperty("background_width", this.backgroundWidth);
@@ -85,11 +85,12 @@ public class BookCategoryModel {
         json.addProperty("background_texture_zoom_multiplier", this.backgroundTextureZoomMultiplier);
         json.add("background_parallax_layers",
                 this.backgroundParallaxLayers.stream()
-                        .map(layer -> BookCategoryBackgroundParallaxLayer.CODEC.encodeStart(JsonOps.INSTANCE, layer).get().orThrow())
+                        .map(layer -> BookCategoryBackgroundParallaxLayer.CODEC.encodeStart(JsonOps.INSTANCE, layer)
+                                .getOrThrow())
                         .collect(JsonArray::new, JsonArray::add, JsonArray::addAll));
         json.addProperty("entry_textures", this.entryTextures.toString());
         if (this.condition != null) {
-            json.add("condition", this.condition.toJson());
+            json.add("condition", this.condition.toJson(provider));
         }
         json.addProperty("show_category_button", this.showCategoryButton);
         return json;

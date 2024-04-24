@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -29,16 +30,16 @@ public class BookEntryReadCondition extends BookCondition {
         this.entryId = entryId;
     }
 
-    public static BookEntryReadCondition fromJson(JsonObject json) {
+    public static BookEntryReadCondition fromJson(JsonObject json, HolderLookup.Provider provider) {
         var entryId = new ResourceLocation(GsonHelper.getAsString(json, "entry_id"));
 
-        var tooltip = tooltipFromJson(json);
+        var tooltip = tooltipFromJson(json, provider);
 
         return new BookEntryReadCondition(tooltip, entryId);
     }
 
-    public static BookEntryReadCondition fromNetwork(FriendlyByteBuf buffer) {
-        var tooltip = buffer.readBoolean() ? buffer.readComponent() : null;
+    public static BookEntryReadCondition fromNetwork(RegistryFriendlyByteBuf buffer) {
+        var tooltip = buffer.readBoolean() ? ComponentSerialization.STREAM_CODEC.decode(buffer) : null;
         var entryId = buffer.readResourceLocation();
         return new BookEntryReadCondition(tooltip, entryId);
     }
@@ -49,10 +50,10 @@ public class BookEntryReadCondition extends BookCondition {
     }
 
     @Override
-    public void toNetwork(FriendlyByteBuf buffer) {
+    public void toNetwork(RegistryFriendlyByteBuf buffer) {
         buffer.writeBoolean(this.tooltip != null);
         if (this.tooltip != null) {
-            buffer.writeComponent(this.tooltip);
+            ComponentSerialization.STREAM_CODEC.encode(buffer, this.tooltip);
         }
         buffer.writeResourceLocation(this.entryId);
     }

@@ -10,8 +10,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
@@ -34,19 +37,19 @@ public class BookOrCondition extends BookCondition {
         this.children = children;
     }
 
-    public static BookOrCondition fromJson(JsonObject json) {
+    public static BookOrCondition fromJson(JsonObject json, HolderLookup.Provider provider) {
         var children = new ArrayList<BookCondition>();
         for (var j : GsonHelper.getAsJsonArray(json, "children")) {
             if (!j.isJsonObject())
                 throw new JsonSyntaxException("Condition children must be an array of JsonObjects.");
             children.add(BookCondition.fromJson(j.getAsJsonObject()));
         }
-        var tooltip = tooltipFromJson(json);
+        var tooltip = tooltipFromJson(json, provider);
         return new BookOrCondition(tooltip, children.toArray(new BookCondition[children.size()]));
     }
 
-    public static BookOrCondition fromNetwork(FriendlyByteBuf buffer) {
-        var tooltip = buffer.readBoolean() ? buffer.readComponent() : null;
+    public static BookOrCondition fromNetwork(RegistryFriendlyByteBuf buffer) {
+        var tooltip = buffer.readBoolean() ? ComponentSerialization.STREAM_CODEC.decode(buffer) : null;
         var childCount = buffer.readVarInt();
         var children = new BookCondition[childCount];
         for (var i = 0; i < childCount; i++) {
@@ -70,10 +73,10 @@ public class BookOrCondition extends BookCondition {
     }
 
     @Override
-    public void toNetwork(FriendlyByteBuf buffer) {
+    public void toNetwork(RegistryFriendlyByteBuf buffer) {
         buffer.writeBoolean(this.tooltip != null);
         if (this.tooltip != null) {
-            buffer.writeComponent(this.tooltip);
+            ComponentSerialization.STREAM_CODEC.encode(buffer, this.tooltip);
         }
         buffer.writeVarInt(this.children.length);
         for (var child : this.children) {

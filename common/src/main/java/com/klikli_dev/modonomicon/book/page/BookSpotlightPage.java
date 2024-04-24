@@ -50,7 +50,7 @@ public class BookSpotlightPage extends BookPage {
         return new BookSpotlightPage(title, text, item, anchor, condition);
     }
 
-    public static BookSpotlightPage fromNetwork(FriendlyByteBuf buffer) {
+    public static BookSpotlightPage fromNetwork(RegistryFriendlyByteBuf buffer){
         var title = BookTextHolder.fromNetwork(buffer);
         var item = Ingredient.fromNetwork(buffer);
         var text = BookTextHolder.fromNetwork(buffer);
@@ -110,7 +110,7 @@ public class BookSpotlightPage extends BookPage {
     }
 
     @Override
-    public void toNetwork(FriendlyByteBuf buffer) {
+    public void toNetwork(RegistryFriendlyByteBuf buffer) {
         this.title.toNetwork(buffer);
         this.item.toNetwork(buffer);
         this.text.toNetwork(buffer);

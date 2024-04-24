@@ -27,16 +27,16 @@ public class BookCategoryHasEntriesCondition extends BookCondition {
         return new BookCategoryHasEntriesCondition(tooltip, categoryId);
     }
     @Override
-    public void toNetwork(FriendlyByteBuf buffer) {
+    public void toNetwork(RegistryFriendlyByteBuf buffer) {
         buffer.writeBoolean(this.tooltip != null);
         if (this.tooltip != null) {
-            buffer.writeComponent(this.tooltip);
+            ComponentSerialization.STREAM_CODEC.encode(buffer, this.tooltip);
         }
         buffer.writeResourceLocation(this.categoryId);
     }
     
-    public static BookCategoryHasEntriesCondition fromNetwork(FriendlyByteBuf buffer) {
-        var tooltip = buffer.readBoolean() ? buffer.readComponent() : null;
+    public static BookCategoryHasEntriesCondition fromNetwork(RegistryFriendlyByteBuf buffer) {
+        var tooltip = buffer.readBoolean() ? ComponentSerialization.STREAM_CODEC.decode(buffer) : null;
         var entryId = buffer.readResourceLocation();
         return new BookCategoryHasEntriesCondition(tooltip, entryId);
     }

@@ -26,8 +26,8 @@ public class BookCategoryHasEntriesConditionModel extends BookConditionModel<Boo
 
 
     @Override
-    public JsonObject toJson() {
-        var json = super.toJson();
+    public JsonObject toJson(HolderLookup.Provider provider) {
+        var json = super.toJson(provider);
         json.addProperty("category_id", this.categoryId);
         return json;
     }

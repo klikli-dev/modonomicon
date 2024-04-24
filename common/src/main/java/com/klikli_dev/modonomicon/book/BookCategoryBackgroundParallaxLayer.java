@@ -54,7 +54,7 @@ public class BookCategoryBackgroundParallaxLayer {
     }
 
     public static BookCategoryBackgroundParallaxLayer fromJson(JsonObject json) {
-        return BookCategoryBackgroundParallaxLayer.CODEC.parse(JsonOps.INSTANCE, json).get().orThrow();
+        return BookCategoryBackgroundParallaxLayer.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow();
     }
 
     public static List<BookCategoryBackgroundParallaxLayer> fromJson(JsonArray json) {

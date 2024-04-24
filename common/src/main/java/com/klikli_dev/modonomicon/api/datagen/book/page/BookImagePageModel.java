@@ -46,10 +46,10 @@ public class BookImagePageModel extends BookPageModel<BookImagePageModel> {
     }
 
     @Override
-    public JsonObject toJson() {
-        var json = super.toJson();
-        json.add("title", this.title.toJson());
-        json.add("text", this.text.toJson());
+    public JsonObject toJson(HolderLookup.Provider provider) {
+        var json = super.toJson(provider);
+        json.add("title", this.title.toJson(provider));
+        json.add("text", this.text.toJson(provider));
         json.addProperty("border", this.border);
 
         var imagesArray = new JsonArray();

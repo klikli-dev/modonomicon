@@ -166,7 +166,7 @@ public class BookModel {
         return this.bookTextOffsetWidth;
     }
 
-    public JsonObject toJson() {
+    public JsonObject toJson(HolderLookup.Provider provider) {
         JsonObject json = new JsonObject();
         json.addProperty("name", this.name);
         json.addProperty("tooltip", this.tooltip);
@@ -175,10 +175,10 @@ public class BookModel {
         json.addProperty("book_overview_texture", this.bookOverviewTexture.toString());
         json.addProperty("font", this.font.toString());
         json.addProperty("frame_texture", this.frameTexture.toString());
-        json.add("top_frame_overlay", BookFrameOverlay.CODEC.encodeStart(JsonOps.INSTANCE, this.topFrameOverlay).get().orThrow());
-        json.add("bottom_frame_overlay", BookFrameOverlay.CODEC.encodeStart(JsonOps.INSTANCE, this.bottomFrameOverlay).get().orThrow());
-        json.add("left_frame_overlay", BookFrameOverlay.CODEC.encodeStart(JsonOps.INSTANCE, this.leftFrameOverlay).get().orThrow());
-        json.add("right_frame_overlay", BookFrameOverlay.CODEC.encodeStart(JsonOps.INSTANCE, this.rightFrameOverlay).get().orThrow());
+        json.add("top_frame_overlay", BookFrameOverlay.CODEC.encodeStart(JsonOps.INSTANCE, this.topFrameOverlay).getOrThrow());
+        json.add("bottom_frame_overlay", BookFrameOverlay.CODEC.encodeStart(JsonOps.INSTANCE, this.bottomFrameOverlay).getOrThrow());
+        json.add("left_frame_overlay", BookFrameOverlay.CODEC.encodeStart(JsonOps.INSTANCE, this.leftFrameOverlay).getOrThrow());
+        json.add("right_frame_overlay", BookFrameOverlay.CODEC.encodeStart(JsonOps.INSTANCE, this.rightFrameOverlay).getOrThrow());
         json.addProperty("book_content_texture", this.bookContentTexture.toString());
         json.addProperty("crafting_texture", this.craftingTexture.toString());
         json.addProperty("default_title_color", this.defaultTitleColor);

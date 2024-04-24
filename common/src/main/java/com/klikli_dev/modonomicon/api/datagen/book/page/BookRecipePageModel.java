@@ -48,17 +48,17 @@ public abstract class BookRecipePageModel<T extends BookRecipePageModel<T>> exte
     }
 
     @Override
-    public JsonObject toJson() {
-        var json = super.toJson();
-        json.add("title1", this.title1.toJson());
+    public JsonObject toJson(HolderLookup.Provider provider) {
+        var json = super.toJson(provider);
+        json.add("title1", this.title1.toJson(provider));
         if (this.recipeId1 != null && !this.recipeId1.isEmpty()) {
             json.addProperty("recipe_id_1", this.recipeId1);
         }
-        json.add("title2", this.title2.toJson());
+        json.add("title2", this.title2.toJson(provider));
         if (this.recipeId2 != null && !this.recipeId2.isEmpty()) {
             json.addProperty("recipe_id_2", this.recipeId2);
         }
-        json.add("text", this.text.toJson());
+        json.add("text", this.text.toJson(provider));
         return json;
     }
 

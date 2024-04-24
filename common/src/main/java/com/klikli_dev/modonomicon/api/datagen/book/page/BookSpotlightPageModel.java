@@ -39,14 +39,14 @@ public class BookSpotlightPageModel extends BookPageModel<BookSpotlightPageModel
     }
 
     @Override
-    public JsonObject toJson() {
-        var json = super.toJson();
-        json.add("title", this.title.toJson());
+    public JsonObject toJson(HolderLookup.Provider provider) {
+        var json = super.toJson(provider);
+        json.add("title", this.title.toJson(provider));
         json.add("item", Ingredient.CODEC.encodeStart(JsonOps.INSTANCE,
                 this.item).getOrThrow(false, s -> {
             throw new IllegalStateException("Could not encode ingredient");
         }));
-        json.add("text", this.text.toJson());
+        json.add("text", this.text.toJson(provider));
         return json;
     }
 

@@ -25,8 +25,8 @@ public class BookAdvancementConditionModel extends BookConditionModel<BookAdvanc
     }
 
     @Override
-    public JsonObject toJson() {
-        var json = super.toJson();
+    public JsonObject toJson(HolderLookup.Provider provider) {
+        var json = super.toJson(provider);
         json.addProperty("advancement_id", this.advancementId.toString());
         return json;
     }

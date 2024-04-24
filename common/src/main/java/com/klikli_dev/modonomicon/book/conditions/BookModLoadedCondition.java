@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.platform.Services;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -27,21 +28,21 @@ public class BookModLoadedCondition extends BookCondition {
         this.modId = modId;
     }
 
-    public static BookModLoadedCondition fromJson(JsonObject json) {
+    public static BookModLoadedCondition fromJson(JsonObject json, HolderLookup.Provider provider) {
         var modId = GsonHelper.getAsString(json, "mod_id");
 
         //default tooltip
         var tooltip = Component.translatable(Tooltips.CONDITION_MOD_LOADED, modId);
 
         if (json.has("tooltip")) {
-            tooltip = tooltipFromJson(json);
+            tooltip = tooltipFromJson(json, provider);
         }
 
         return new BookModLoadedCondition(tooltip, modId);
     }
 
-    public static BookModLoadedCondition fromNetwork(FriendlyByteBuf buffer) {
-        var tooltip = buffer.readBoolean() ? buffer.readComponent() : null;
+    public static BookModLoadedCondition fromNetwork(RegistryFriendlyByteBuf buffer) {
+        var tooltip = buffer.readBoolean() ? ComponentSerialization.STREAM_CODEC.decode(buffer) : null;
         var modId = buffer.readUtf();
         return new BookModLoadedCondition(tooltip, modId);
     }
@@ -52,10 +53,10 @@ public class BookModLoadedCondition extends BookCondition {
     }
 
     @Override
-    public void toNetwork(FriendlyByteBuf buffer) {
+    public void toNetwork(RegistryFriendlyByteBuf buffer) {
         buffer.writeBoolean(this.tooltip != null);
         if (this.tooltip != null) {
-            buffer.writeComponent(this.tooltip);
+            ComponentSerialization.STREAM_CODEC.encode(buffer, this.tooltip);
         }
         buffer.writeUtf(this.modId);
     }

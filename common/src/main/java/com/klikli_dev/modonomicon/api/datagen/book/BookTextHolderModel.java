@@ -7,8 +7,13 @@
 package com.klikli_dev.modonomicon.api.datagen.book;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
+import com.mojang.serialization.JsonOps;
+import net.minecraft.Util;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import org.jetbrains.annotations.NotNull;
 
 public class BookTextHolderModel {
@@ -27,9 +32,10 @@ public class BookTextHolderModel {
         return this.component != null;
     }
 
-    public JsonElement toJson() {
+    public JsonElement toJson(HolderLookup.Provider provider) {
         if (this.hasComponent()) {
-            return Component.Serializer.toJsonTree(this.component);
+            //From Component.Serializer.serialize as it is private
+            return ComponentSerialization.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), this.component).getOrThrow(JsonParseException::new);
         }
         return new JsonPrimitive(this.string);
     }

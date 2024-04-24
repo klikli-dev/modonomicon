@@ -19,6 +19,7 @@ import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
@@ -54,7 +55,7 @@ public class BookMultiblockPage extends BookPage {
         return new BookMultiblockPage(multiblockName, text, multiblockId, showVisualizeButton, anchor, condition);
     }
 
-    public static BookMultiblockPage fromNetwork(FriendlyByteBuf buffer) {
+    public static BookMultiblockPage fromNetwork(RegistryFriendlyByteBuf buffer){
         var multiblockName = BookTextHolder.fromNetwork(buffer);
         var multiblockId = buffer.readResourceLocation();
         var text = BookTextHolder.fromNetwork(buffer);
@@ -112,7 +113,7 @@ public class BookMultiblockPage extends BookPage {
     }
 
     @Override
-    public void toNetwork(FriendlyByteBuf buffer) {
+    public void toNetwork(RegistryFriendlyByteBuf buffer) {
         this.multiblockName.toNetwork(buffer);
         buffer.writeResourceLocation(this.multiblockId);
         this.text.toNetwork(buffer);

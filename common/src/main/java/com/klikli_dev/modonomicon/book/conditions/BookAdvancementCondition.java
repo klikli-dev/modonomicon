@@ -14,8 +14,11 @@ import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.networking.RequestAdvancementMessage;
 import com.klikli_dev.modonomicon.platform.Services;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.GsonHelper;
@@ -32,7 +35,7 @@ public class BookAdvancementCondition extends BookCondition {
         this.advancementId = advancementId;
     }
 
-    public static BookAdvancementCondition fromJson(JsonObject json) {
+    public static BookAdvancementCondition fromJson(JsonObject json, HolderLookup.Provider provider) {
         var advancementId = new ResourceLocation(GsonHelper.getAsString(json, "advancement_id"));
 
 
@@ -40,14 +43,14 @@ public class BookAdvancementCondition extends BookCondition {
         Component tooltip = null;
 
         if (json.has("tooltip")) {
-            tooltip = tooltipFromJson(json);
+            tooltip = tooltipFromJson(json, provider);
         }
 
         return new BookAdvancementCondition(tooltip, advancementId);
     }
 
-    public static BookAdvancementCondition fromNetwork(FriendlyByteBuf buffer) {
-        var tooltip = buffer.readBoolean() ? buffer.readComponent() : null;
+    public static BookAdvancementCondition fromNetwork(RegistryFriendlyByteBuf buffer) {
+        var tooltip = buffer.readBoolean() ? ComponentSerialization.STREAM_CODEC.decode(buffer) : null;
         var advancementId = buffer.readResourceLocation();
         return new BookAdvancementCondition(tooltip, advancementId);
     }
@@ -58,10 +61,10 @@ public class BookAdvancementCondition extends BookCondition {
     }
 
     @Override
-    public void toNetwork(FriendlyByteBuf buffer) {
+    public void toNetwork(RegistryFriendlyByteBuf buffer) {
         buffer.writeBoolean(this.tooltip != null);
         if (this.tooltip != null) {
-            buffer.writeComponent(this.tooltip);
+            ComponentSerialization.STREAM_CODEC.encode(buffer, this.tooltip);
         }
         buffer.writeResourceLocation(this.advancementId);
     }

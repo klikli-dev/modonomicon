@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.api.datagen.book;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -50,7 +51,7 @@ public class BookIconModel {
         return new BookIconModel(texture, width, height);
     }
 
-    public JsonObject toJson() {
+    public JsonObject toJson(HolderLookup.Provider provider) {
         if (this.texture != null) {
             JsonObject json = new JsonObject();
             json.addProperty("texture", this.texture.toString());

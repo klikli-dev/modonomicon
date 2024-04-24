@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.api.datagen.CategoryEntryMap;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
@@ -52,12 +53,12 @@ public class BookEntryModel {
         return new BookEntryModel(id, name);
     }
 
-    public JsonObject toJson() {
+    public JsonObject toJson(HolderLookup.Provider provider) {
         JsonObject json = new JsonObject();
         json.addProperty("category", this.category.id.toString());
         json.addProperty("name", this.name);
         json.addProperty("description", this.description);
-        json.add("icon", this.icon.toJson());
+        json.add("icon", this.icon.toJson(provider));
         json.addProperty("x", this.x);
         json.addProperty("y", this.y);
         json.addProperty("background_u_index", this.entryBackgroundUIndex);
@@ -68,7 +69,7 @@ public class BookEntryModel {
         if (!this.parents.isEmpty()) {
             var parentsArray = new JsonArray();
             for (var parent : this.parents) {
-                parentsArray.add(parent.toJson());
+                parentsArray.add(parent.toJson(provider));
             }
             json.add("parents", parentsArray);
         }
@@ -76,14 +77,14 @@ public class BookEntryModel {
         if (!this.pages.isEmpty()) {
             var pagesArray = new JsonArray();
             for (var page : this.pages) {
-                pagesArray.add(page.toJson());
+                pagesArray.add(page.toJson(provider));
             }
             json.add("pages", pagesArray);
         }
 
 
         if (this.condition != null) {
-            json.add("condition", this.condition.toJson());
+            json.add("condition", this.condition.toJson(provider));
         }
 
         if (this.categoryToOpen != null) {

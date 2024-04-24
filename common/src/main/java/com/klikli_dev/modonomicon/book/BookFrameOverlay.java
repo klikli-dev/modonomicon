@@ -64,7 +64,7 @@ public class BookFrameOverlay {
     }
 
     public static BookFrameOverlay fromJson(JsonObject json) {
-        return BookFrameOverlay.CODEC.parse(JsonOps.INSTANCE, json).get().orThrow();
+        return BookFrameOverlay.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow();
     }
 
     public static BookFrameOverlay fromNetwork(FriendlyByteBuf buffer) {

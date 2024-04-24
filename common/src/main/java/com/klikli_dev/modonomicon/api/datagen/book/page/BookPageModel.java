@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.api.datagen.book.page;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookNoneConditionModel;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,11 +31,11 @@ public class BookPageModel<T extends BookPageModel<T>> {
         return this.anchor;
     }
 
-    public JsonObject toJson() {
+    public JsonObject toJson(HolderLookup.Provider provider) {
         JsonObject json = new JsonObject();
         json.addProperty("type", this.type.toString());
         json.addProperty("anchor", this.anchor);
-        json.add("condition", this.condition.toJson());
+        json.add("condition", this.condition.toJson(provider));
         return json;
     }
 

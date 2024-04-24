@@ -28,7 +28,7 @@ public class BookEmptyPage extends BookPage {
         return new BookEmptyPage(anchor, condition);
     }
 
-    public static BookEmptyPage fromNetwork(FriendlyByteBuf buffer) {
+    public static BookEmptyPage fromNetwork(RegistryFriendlyByteBuf buffer){
         var anchor = buffer.readUtf();
         var condition = BookCondition.fromNetwork(buffer);
         return new BookEmptyPage(anchor, condition);

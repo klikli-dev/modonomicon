@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.api.datagen.book;
 
 import com.google.gson.JsonObject;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 
 public class BookEntryParentModel {
@@ -23,7 +24,7 @@ public class BookEntryParentModel {
         return new BookEntryParentModel(entryId);
     }
 
-    public JsonObject toJson() {
+    public JsonObject toJson(HolderLookup.Provider provider) {
         JsonObject json = new JsonObject();
         json.addProperty("entry", this.entryId.toString());
         json.addProperty("draw_arrow", this.drawArrow);

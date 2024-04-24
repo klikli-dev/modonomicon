@@ -31,7 +31,7 @@ public class BookSmeltingRecipePage extends BookProcessingRecipePage<SmeltingRec
         return new BookSmeltingRecipePage(common.title1(), common.recipeId1(), common.title2(), common.recipeId2(), common.text(), anchor, condition);
     }
 
-    public static BookSmeltingRecipePage fromNetwork(FriendlyByteBuf buffer) {
+    public static BookSmeltingRecipePage fromNetwork(RegistryFriendlyByteBuf buffer){
         var common = BookRecipePage.commonFromNetwork(buffer);
         var anchor = buffer.readUtf();
         var condition = BookCondition.fromNetwork(buffer);

@@ -45,11 +45,11 @@ public class BookMultiblockPageModel extends BookPageModel<BookMultiblockPageMod
     
 
     @Override
-    public JsonObject toJson() {
-        var json = super.toJson();
-        json.add("multiblock_name", this.multiblockName.toJson());
+    public JsonObject toJson(HolderLookup.Provider provider) {
+        var json = super.toJson(provider);
+        json.add("multiblock_name", this.multiblockName.toJson(provider));
         json.addProperty("multiblock_id", this.multiblockId);
-        json.add("text", this.text.toJson());
+        json.add("text", this.text.toJson(provider));
         json.addProperty("show_visualize_button", this.showVisualizeButton);
         return json;
     }

@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.BlastingRecipe;
@@ -31,7 +32,7 @@ public class BookBlastingRecipePage extends BookProcessingRecipePage<BlastingRec
         return new BookBlastingRecipePage(common.title1(), common.recipeId1(), common.title2(), common.recipeId2(), common.text(), anchor, condition);
     }
 
-    public static BookBlastingRecipePage fromNetwork(FriendlyByteBuf buffer) {
+    public static BookBlastingRecipePage fromNetwork(RegistryFriendlyByteBuf buffer){
         var common = BookRecipePage.commonFromNetwork(buffer);
         var anchor = buffer.readUtf();
         var condition = BookCondition.fromNetwork(buffer);

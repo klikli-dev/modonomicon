@@ -9,7 +9,11 @@
 package com.klikli_dev.modonomicon.api.datagen.book.condition;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.mojang.serialization.JsonOps;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceLocation;
 
 public class BookConditionModel<T extends BookConditionModel<T>> {
@@ -34,13 +38,14 @@ public class BookConditionModel<T extends BookConditionModel<T>> {
         return this.tooltipString;
     }
 
-    public JsonObject toJson() {
+    public JsonObject toJson(HolderLookup.Provider provider) {
         JsonObject json = new JsonObject();
         json.addProperty("type", this.getType().toString());
         if (this.tooltipString != null)
             json.addProperty("tooltip", this.tooltipString);
         if (this.tooltip != null)
-            json.addProperty("tooltip", Component.Serializer.toJson(this.tooltip));
+            json.add("tooltip",
+                    ComponentSerialization.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), this.tooltip).getOrThrow(JsonParseException::new));
         return json;
     }
 
