@@ -15,7 +15,6 @@ import com.klikli_dev.modonomicon.networking.RequestAdvancementMessage;
 import com.klikli_dev.modonomicon.platform.Services;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;

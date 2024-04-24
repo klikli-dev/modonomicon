@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.bookstate;
 import com.klikli_dev.modonomicon.util.Codecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -39,7 +40,7 @@ public class BookStatesSaveData extends SavedData {
         this.setDirty();
     }
 
-    public static BookStatesSaveData load(CompoundTag pCompoundTag) {
+    public static BookStatesSaveData load(CompoundTag pCompoundTag, HolderLookup.Provider pHolderProvider) {
         return CODEC.parse(NbtOps.INSTANCE, pCompoundTag.get("bookStates")).result().orElseThrow();
     }
 
@@ -58,7 +59,7 @@ public class BookStatesSaveData extends SavedData {
     }
 
     @Override
-    public CompoundTag save(CompoundTag compoundTag) {
+    public CompoundTag save(CompoundTag compoundTag, HolderLookup.Provider pHolderProvider) {
         compoundTag.put("bookStates", CODEC.encodeStart(NbtOps.INSTANCE, this).result().orElseThrow());
         return compoundTag;
     }

@@ -13,7 +13,7 @@ import com.klikli_dev.modonomicon.book.BookCommand;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
@@ -28,12 +28,12 @@ public class SyncBookDataMessage implements Message {
         this.books = books;
     }
 
-    public SyncBookDataMessage(FriendlyByteBuf buf) {
+    public SyncBookDataMessage(RegistryFriendlyByteBuf buf) {
         this.decode(buf);
     }
 
     @Override
-    public void encode(FriendlyByteBuf buf) {
+    public void encode(RegistryFriendlyByteBuf buf) {
         buf.writeVarInt(this.books.size());
         for (var book : this.books.values()) {
             buf.writeResourceLocation(book.getId());
@@ -60,7 +60,7 @@ public class SyncBookDataMessage implements Message {
     }
 
     @Override
-    public void decode(FriendlyByteBuf buf) {
+    public void decode(RegistryFriendlyByteBuf buf) {
         //build books
         int bookCount = buf.readVarInt();
         for (int i = 0; i < bookCount; i++) {

@@ -3,13 +3,11 @@ package com.klikli_dev.modonomicon.datagen.book;
 import com.klikli_dev.modonomicon.api.datagen.BookProvider;
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
-import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryReadConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryUnlockedConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookTrueConditionModel;
 import com.klikli_dev.modonomicon.datagen.book.other.AEntry;
 import com.klikli_dev.modonomicon.datagen.book.other.BEntry;
 import com.klikli_dev.modonomicon.datagen.book.other.RootEntry;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 
 public class OtherCategoryProvider extends CategoryProvider {

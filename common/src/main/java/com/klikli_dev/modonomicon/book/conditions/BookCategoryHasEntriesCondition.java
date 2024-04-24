@@ -1,16 +1,18 @@
 package com.klikli_dev.modonomicon.book.conditions;
 
-import com.google.gson.*;
-import com.klikli_dev.modonomicon.api.*;
-import com.klikli_dev.modonomicon.book.*;
-import com.klikli_dev.modonomicon.book.conditions.context.*;
-import net.minecraft.network.*;
-import net.minecraft.network.chat.*;
-import net.minecraft.resources.*;
-import net.minecraft.util.*;
-import net.minecraft.world.entity.player.*;
+import com.google.gson.JsonObject;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
+import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.entity.player.Player;
 
-import java.util.*;
+import java.util.List;
 
 public class BookCategoryHasEntriesCondition extends BookCondition {
     

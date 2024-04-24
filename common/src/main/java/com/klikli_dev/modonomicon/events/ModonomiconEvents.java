@@ -6,8 +6,6 @@ package com.klikli_dev.modonomicon.events;
 
 import com.klikli_dev.modonomicon.api.events.EntryClickedEvent;
 import com.klikli_dev.modonomicon.api.events.EventPriority;
-import com.klikli_dev.modonomicon.bookstate.BookStatesSaveData;
-import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.mojang.datafixers.util.Pair;
 
 import java.util.ArrayList;

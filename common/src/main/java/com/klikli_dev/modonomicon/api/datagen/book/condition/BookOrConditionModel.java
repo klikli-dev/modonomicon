@@ -11,6 +11,7 @@ package com.klikli_dev.modonomicon.api.datagen.book.condition;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
+import net.minecraft.core.HolderLookup;
 
 public class BookOrConditionModel extends BookConditionModel<BookOrConditionModel> {
 

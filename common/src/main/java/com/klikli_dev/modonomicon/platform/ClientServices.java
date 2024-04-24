@@ -7,7 +7,10 @@
 package com.klikli_dev.modonomicon.platform;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.platform.services.*;
+import com.klikli_dev.modonomicon.platform.services.ClientConfigHelper;
+import com.klikli_dev.modonomicon.platform.services.FluidHelper;
+import com.klikli_dev.modonomicon.platform.services.GuiHelper;
+import com.klikli_dev.modonomicon.platform.services.MultiblockHelper;
 
 import java.util.ServiceLoader;
 

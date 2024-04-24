@@ -12,7 +12,7 @@ import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
@@ -83,7 +83,7 @@ public class BookCategory {
         return new BookCategory(id, name, sortNumber, condition, showCategoryButton, icon, background, backgroundWidth, backgroundHeight, backgroundTextureZoomMultiplier, backgroundParallaxLayers, entryTextures);
     }
 
-    public static BookCategory fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
+    public static BookCategory fromNetwork(ResourceLocation id, RegistryFriendlyByteBuf buffer) {
         var name = buffer.readUtf();
         var sortNumber = buffer.readInt();
         var icon = BookIcon.fromNetwork(buffer);
@@ -99,7 +99,7 @@ public class BookCategory {
                 backgroundTextureZoomMultiplier, backgroundParallaxLayers, entryTextures);
     }
 
-    public void toNetwork(FriendlyByteBuf buffer) {
+    public void toNetwork(RegistryFriendlyByteBuf buffer) {
         buffer.writeUtf(this.name);
         buffer.writeInt(this.sortNumber);
         this.icon.toNetwork(buffer);

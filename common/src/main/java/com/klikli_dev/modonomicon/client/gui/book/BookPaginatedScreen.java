@@ -1,11 +1,12 @@
 package com.klikli_dev.modonomicon.client.gui.book;
 
-import com.klikli_dev.modonomicon.client.gui.*;
-import com.klikli_dev.modonomicon.client.gui.book.button.*;
-import net.minecraft.client.gui.components.*;
-import net.minecraft.client.gui.screens.*;
-import net.minecraft.network.chat.*;
-import org.lwjgl.glfw.*;
+import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
+import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
+import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import org.lwjgl.glfw.GLFW;
 
 public abstract class BookPaginatedScreen extends Screen implements BookScreenWithButtons {
 	

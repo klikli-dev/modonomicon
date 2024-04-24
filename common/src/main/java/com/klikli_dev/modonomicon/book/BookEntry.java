@@ -6,7 +6,8 @@
 
 package com.klikli_dev.modonomicon.book;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
@@ -15,6 +16,7 @@ import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
@@ -141,7 +143,7 @@ public class BookEntry {
                 entryBackgroundVIndex, hideWhileLocked, showWhenAnyParentUnlocked, condition, parentEntries, pages, categoryToOpen, commandToRunOnFirstRead);
     }
 
-    public static BookEntry fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
+    public static BookEntry fromNetwork(ResourceLocation id, RegistryFriendlyByteBuf buffer) {
         var categoryId = buffer.readResourceLocation();
         var name = buffer.readUtf();
         var description = buffer.readUtf();
@@ -244,7 +246,7 @@ public class BookEntry {
         }
     }
 
-    public void toNetwork(FriendlyByteBuf buffer) {
+    public void toNetwork(RegistryFriendlyByteBuf buffer) {
         buffer.writeResourceLocation(this.categoryId);
         buffer.writeUtf(this.name);
         buffer.writeUtf(this.description);

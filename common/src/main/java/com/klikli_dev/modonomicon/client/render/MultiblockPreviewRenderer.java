@@ -16,7 +16,6 @@ import com.klikli_dev.modonomicon.multiblock.AbstractMultiblock;
 import com.klikli_dev.modonomicon.multiblock.matcher.DisplayOnlyMatcher;
 import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
 import com.klikli_dev.modonomicon.platform.ClientServices;
-import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;

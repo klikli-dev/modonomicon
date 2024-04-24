@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Book;
 import com.klikli_dev.modonomicon.book.BookFrameOverlay;
 import com.mojang.serialization.JsonOps;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 

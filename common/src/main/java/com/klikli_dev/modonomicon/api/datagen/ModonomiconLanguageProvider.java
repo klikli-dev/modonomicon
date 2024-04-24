@@ -4,7 +4,6 @@
 
 package com.klikli_dev.modonomicon.api.datagen;
 
-import net.minecraft.data.DataProvider;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;

@@ -6,7 +6,7 @@
 
 package com.klikli_dev.modonomicon.book;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -47,7 +47,7 @@ public class RenderedBookTextHolder extends BookTextHolder {
     }
 
     @Override
-    public void toNetwork(FriendlyByteBuf buffer) {
+    public void toNetwork(RegistryFriendlyByteBuf buffer) {
         this.original.toNetwork(buffer);
     }
 }

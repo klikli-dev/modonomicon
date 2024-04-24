@@ -8,7 +8,6 @@ package com.klikli_dev.modonomicon.networking;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.bookstate.BookStatesSaveData;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStates;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStates;
 import net.minecraft.client.Minecraft;

@@ -7,8 +7,9 @@
 package com.klikli_dev.modonomicon.book;
 
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,9 +31,9 @@ public class BookTextHolder {
         this.string = string;
     }
 
-    public static BookTextHolder fromNetwork(FriendlyByteBuf buffer) {
+    public static BookTextHolder fromNetwork(RegistryFriendlyByteBuf buffer) {
         if (buffer.readBoolean()) {
-            return new BookTextHolder(buffer.readComponent());
+            return new BookTextHolder(ComponentSerialization.STREAM_CODEC.decode(buffer));
         } else {
             return new BookTextHolder(buffer.readUtf());
         }
@@ -65,10 +66,10 @@ public class BookTextHolder {
         return (this.hasComponent() ? this.component.getString() : this.string).isEmpty();
     }
 
-    public void toNetwork(FriendlyByteBuf buffer) {
+    public void toNetwork(RegistryFriendlyByteBuf buffer) {
         buffer.writeBoolean(this.hasComponent());
         if (this.hasComponent()) {
-            buffer.writeComponent(this.component);
+            ComponentSerialization.STREAM_CODEC.encode(buffer, this.component);
         } else {
             buffer.writeUtf(this.string);
         }

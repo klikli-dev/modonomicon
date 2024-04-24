@@ -7,7 +7,9 @@
 package com.klikli_dev.modonomicon.platform;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.platform.services.*;
+import com.klikli_dev.modonomicon.platform.services.NetworkHelper;
+import com.klikli_dev.modonomicon.platform.services.PatchouliHelper;
+import com.klikli_dev.modonomicon.platform.services.PlatformHelper;
 
 import java.util.ServiceLoader;
 

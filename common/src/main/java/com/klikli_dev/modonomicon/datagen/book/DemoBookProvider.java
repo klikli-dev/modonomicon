@@ -6,7 +6,10 @@
 
 package com.klikli_dev.modonomicon.datagen.book;
 
-import com.klikli_dev.modonomicon.api.datagen.*;
+import com.klikli_dev.modonomicon.api.datagen.BookContextHelper;
+import com.klikli_dev.modonomicon.api.datagen.BookProvider;
+import com.klikli_dev.modonomicon.api.datagen.CategoryEntryMap;
+import com.klikli_dev.modonomicon.api.datagen.ModonomiconLanguageProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCommandModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;

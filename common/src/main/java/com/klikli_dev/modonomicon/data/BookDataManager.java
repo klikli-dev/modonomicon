@@ -26,7 +26,6 @@ import com.klikli_dev.modonomicon.networking.Message;
 import com.klikli_dev.modonomicon.networking.SyncBookDataMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;

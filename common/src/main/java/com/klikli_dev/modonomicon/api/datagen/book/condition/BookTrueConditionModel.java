@@ -9,7 +9,6 @@
 package com.klikli_dev.modonomicon.api.datagen.book.condition;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
-import net.minecraft.network.chat.Component;
 
 public class BookTrueConditionModel extends BookConditionModel<BookTrueConditionModel> {
     protected BookTrueConditionModel() {
