@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -40,7 +41,7 @@ public class SaveCategoryStateMessage implements Message {
     }
 
     @Override
-    public void encode(FriendlyByteBuf buf) {
+    public void encode(RegistryFriendlyByteBuf buf) {
         buf.writeResourceLocation(this.category.getBook().getId());
         buf.writeResourceLocation(this.category.getId());
         buf.writeFloat(this.scrollX);
@@ -53,7 +54,7 @@ public class SaveCategoryStateMessage implements Message {
     }
 
     @Override
-    public void decode(FriendlyByteBuf buf) {
+    public void decode(RegistryFriendlyByteBuf buf) {
         this.category = BookDataManager.get().getBook(buf.readResourceLocation()).getCategory(buf.readResourceLocation());
         this.scrollX = buf.readFloat();
         this.scrollY = buf.readFloat();

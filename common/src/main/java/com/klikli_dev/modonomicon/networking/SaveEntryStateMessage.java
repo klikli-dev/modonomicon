@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -32,14 +33,14 @@ public class SaveEntryStateMessage implements Message {
     }
 
     @Override
-    public void encode(FriendlyByteBuf buf) {
+    public void encode(RegistryFriendlyByteBuf buf) {
         buf.writeResourceLocation(this.entry.getBook().getId());
         buf.writeResourceLocation(this.entry.getId());
         buf.writeVarInt(this.openPagesIndex);
     }
 
     @Override
-    public void decode(FriendlyByteBuf buf) {
+    public void decode(RegistryFriendlyByteBuf buf) {
         this.entry = BookDataManager.get().getBook(buf.readResourceLocation()).getEntry(buf.readResourceLocation());
         this.openPagesIndex = buf.readVarInt();
     }

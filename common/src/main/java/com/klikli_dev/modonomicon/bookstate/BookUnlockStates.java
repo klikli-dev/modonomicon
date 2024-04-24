@@ -23,6 +23,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -38,6 +41,8 @@ public class BookUnlockStates {
             Codecs.concurrentMap(ResourceLocation.CODEC, Codecs.set(ResourceLocation.CODEC)).fieldOf("unlockedCategories").forGetter((s) -> s.unlockedCategories),
             Codecs.concurrentMap(ResourceLocation.CODEC, Codecs.mutableMap(ResourceLocation.CODEC, Codec.INT)).fieldOf("usedCommands").forGetter((s) -> s.usedCommands)
     ).apply(instance, BookUnlockStates::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, BookUnlockStates> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC);
 
 
     /**

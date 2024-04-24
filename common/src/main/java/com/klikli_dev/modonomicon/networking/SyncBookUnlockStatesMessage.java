@@ -12,8 +12,7 @@ import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStates;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
@@ -30,18 +29,18 @@ public class SyncBookUnlockStatesMessage implements Message {
         this.states = states;
     }
 
-    public SyncBookUnlockStatesMessage(FriendlyByteBuf buf) {
+    public SyncBookUnlockStatesMessage(RegistryFriendlyByteBuf buf) {
         this.decode(buf);
     }
 
     @Override
-    public void encode(FriendlyByteBuf buf) {
-        buf.writeWithCodec(NbtOps.INSTANCE, BookUnlockStates.CODEC, this.states);
+    public void encode(RegistryFriendlyByteBuf buf) {
+        BookUnlockStates.STREAM_CODEC.encode(buf, this.states);
     }
 
     @Override
-    public void decode(FriendlyByteBuf buf) {
-        this.states = buf.readWithCodecTrusted(NbtOps.INSTANCE, BookUnlockStates.CODEC);
+    public void decode(RegistryFriendlyByteBuf buf) {
+        this.states = BookUnlockStates.STREAM_CODEC.decode(buf);
     }
 
     @Override
@@ -52,7 +51,7 @@ public class SyncBookUnlockStatesMessage implements Message {
     @Override
     public void onClientReceived(Minecraft minecraft, Player player) {
         //we are not allowed to overwrite the save data if we are in singleplayer or if we are the lan host, otherwise we would overwrite the server side save data!
-        if (minecraft.getSingleplayerServer() == null){
+        if (minecraft.getSingleplayerServer() == null) {
             BookUnlockStateManager.get().saveData = new BookStatesSaveData(
                     new ConcurrentHashMap<>(Map.of(player.getUUID(), this.states)),
                     new ConcurrentHashMap<>()

@@ -12,8 +12,10 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Nbt;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
+import com.klikli_dev.modonomicon.registry.DataComponentRegistry;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import com.klikli_dev.modonomicon.util.ItemStackUtil;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -91,7 +93,8 @@ public class Book {
         var stack = new ItemStack(ItemRegistry.MODONOMICON.get());
         var tag = new CompoundTag();
         tag.putString(Nbt.ITEM_BOOK_ID_TAG, this.id.toString());
-        stack.setTag(tag);
+
+        stack.set(DataComponentRegistry.BOOK_ID.get(), this.id);
         return stack;
     });
 

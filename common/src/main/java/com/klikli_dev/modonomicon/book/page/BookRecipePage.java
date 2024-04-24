@@ -64,7 +64,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
         return new DataHolder(title1, recipeId1, title2, recipeId2, text);
     }
 
-    public static DataHolder commonFromNetwork(FriendlyByteBuf buffer) {
+    public static DataHolder commonFromNetwork(RegistryFriendlyByteBuf buffer) {
         var title1 = BookTextHolder.fromNetwork(buffer);
         var recipeId1 = buffer.readBoolean() ? buffer.readResourceLocation() : null;
 

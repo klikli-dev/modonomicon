@@ -43,10 +43,11 @@ public class BookSpotlightPageModel extends BookPageModel<BookSpotlightPageModel
     public JsonObject toJson(HolderLookup.Provider provider) {
         var json = super.toJson(provider);
         json.add("title", this.title.toJson(provider));
-        json.add("item", Ingredient.CODEC.encodeStart(JsonOps.INSTANCE,
-                this.item).getOrThrow(false, s -> {
-            throw new IllegalStateException("Could not encode ingredient");
-        }));
+        json.add("item", Ingredient.CODEC
+                .encodeStart(JsonOps.INSTANCE, this.item)
+                .getOrThrow(s ->
+                        new IllegalStateException("Could not encode ingredient"))
+        );
         json.add("text", this.text.toJson(provider));
         return json;
     }

@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
@@ -31,7 +32,7 @@ public class SyncMultiblockDataMessage implements Message {
     }
 
     @Override
-    public void encode(FriendlyByteBuf buf) {
+    public void encode(RegistryFriendlyByteBuf buf) {
         buf.writeVarInt(this.multiblocks.size());
         for (var multiblock : this.multiblocks.values()) {
             buf.writeResourceLocation(multiblock.getType());
@@ -41,7 +42,7 @@ public class SyncMultiblockDataMessage implements Message {
     }
 
     @Override
-    public void decode(FriendlyByteBuf buf) {
+    public void decode(RegistryFriendlyByteBuf buf) {
         int multiblockCount = buf.readVarInt();
         for (int i = 0; i < multiblockCount; i++) {
             var type = buf.readResourceLocation();

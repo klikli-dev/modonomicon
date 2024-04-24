@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.bookstate.BookVisualStates;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
@@ -34,12 +35,12 @@ public class SyncBookVisualStatesMessage implements Message {
     }
 
     @Override
-    public void encode(FriendlyByteBuf buf) {
+    public void encode(RegistryFriendlyByteBuf buf) {
         buf.writeWithCodec(NbtOps.INSTANCE, BookVisualStates.CODEC, this.states);
     }
 
     @Override
-    public void decode(FriendlyByteBuf buf) {
+    public void decode(RegistryFriendlyByteBuf buf) {
         this.states = buf.readWithCodecTrusted(NbtOps.INSTANCE, BookVisualStates.CODEC);
     }
 

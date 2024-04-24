@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.networking;
 import com.klikli_dev.modonomicon.Modonomicon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
@@ -26,12 +27,12 @@ public class SendUnlockCodeToClientMessage implements Message {
     }
 
     @Override
-    public void encode(FriendlyByteBuf buf) {
+    public void encode(RegistryFriendlyByteBuf buf) {
         buf.writeUtf(this.unlockCode);
     }
 
     @Override
-    public void decode(FriendlyByteBuf buf) {
+    public void decode(RegistryFriendlyByteBuf buf) {
         this.unlockCode = buf.readUtf();
     }
 
