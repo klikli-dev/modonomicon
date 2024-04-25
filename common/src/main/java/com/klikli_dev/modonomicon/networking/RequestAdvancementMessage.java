@@ -24,7 +24,7 @@ public class RequestAdvancementMessage implements Message {
         this.advancementId = advancementId;
     }
 
-    public RequestAdvancementMessage(FriendlyByteBuf buf) {
+    public RequestAdvancementMessage(RegistryFriendlyByteBuf buf) {
         this.decode(buf);
     }
 

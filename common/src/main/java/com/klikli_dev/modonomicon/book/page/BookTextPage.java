@@ -14,6 +14,7 @@ import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -34,11 +35,11 @@ public class BookTextPage extends BookPage {
         this.showTitleSeparator = showTitleSeparator;
     }
 
-    public static BookTextPage fromJson(JsonObject json) {
-        var title = BookGsonHelper.getAsBookTextHolder(json, "title", BookTextHolder.EMPTY);
+    public static BookTextPage fromJson(JsonObject json, HolderLookup.Provider provider) {
+        var title = BookGsonHelper.getAsBookTextHolder(json, "title", BookTextHolder.EMPTY, provider);
         var useMarkdownInTitle = GsonHelper.getAsBoolean(json, "use_markdown_title", false);
         var showTitleSeparator = GsonHelper.getAsBoolean(json, "show_title_separator", true);
-        var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY);
+        var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY, provider);
         var anchor = GsonHelper.getAsString(json, "anchor", "");
         var condition = json.has("condition")
                 ? BookCondition.fromJson(json.getAsJsonObject("condition"))

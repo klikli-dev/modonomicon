@@ -16,6 +16,7 @@ import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import com.klikli_dev.modonomicon.util.EntityUtil;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -47,9 +48,9 @@ public class BookEntityPage extends BookPage {
         this.defaultRotation = defaultRotation;
     }
 
-    public static BookEntityPage fromJson(JsonObject json) {
-        var entityName = BookGsonHelper.getAsBookTextHolder(json, "name", BookTextHolder.EMPTY);
-        var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY);
+    public static BookEntityPage fromJson(JsonObject json, HolderLookup.Provider provider) {
+        var entityName = BookGsonHelper.getAsBookTextHolder(json, "name", BookTextHolder.EMPTY, provider);
+        var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY, provider);
         var entityId = GsonHelper.getAsString(json, "entity_id");
         var scale = GsonHelper.getAsFloat(json, "scale", 1.0f);
         var offset = GsonHelper.getAsFloat(json, "offset", 0.0f);

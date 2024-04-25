@@ -36,7 +36,7 @@ public class SaveCategoryStateMessage implements Message {
         this.openEntry = openEntry;
     }
 
-    public SaveCategoryStateMessage(FriendlyByteBuf buf) {
+    public SaveCategoryStateMessage(RegistryFriendlyByteBuf buf) {
         this.decode(buf);
     }
 

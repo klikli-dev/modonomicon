@@ -27,7 +27,7 @@ public class BookEntryReadMessage implements Message {
         this.entryId = entryId;
     }
 
-    public BookEntryReadMessage(FriendlyByteBuf buf) {
+    public BookEntryReadMessage(RegistryFriendlyByteBuf buf) {
         this.decode(buf);
     }
 

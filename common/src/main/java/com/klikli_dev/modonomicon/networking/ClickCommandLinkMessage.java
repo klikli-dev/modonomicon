@@ -26,7 +26,7 @@ public class ClickCommandLinkMessage implements Message {
         this.commandId = commandId;
     }
 
-    public ClickCommandLinkMessage(FriendlyByteBuf buf) {
+    public ClickCommandLinkMessage(RegistryFriendlyByteBuf buf) {
         this.decode(buf);
     }
 

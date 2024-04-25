@@ -14,6 +14,7 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -38,7 +39,7 @@ public class DisplayOnlyMatcher implements StateMatcher {
         this.predicate = (blockGetter, blockPos, blockState) -> true;
     }
 
-    public static DisplayOnlyMatcher fromJson(JsonObject json) {
+    public static DisplayOnlyMatcher fromJson(JsonObject json, HolderLookup.Provider provider) {
         try {
             var displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), new StringReader(GsonHelper.getAsString(json, "display")), false).blockState();
             return new DisplayOnlyMatcher(displayState);

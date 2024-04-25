@@ -27,7 +27,7 @@ public class SyncMultiblockDataMessage implements Message {
         this.multiblocks = multiblocks;
     }
 
-    public SyncMultiblockDataMessage(FriendlyByteBuf buf) {
+    public SyncMultiblockDataMessage(RegistryFriendlyByteBuf buf) {
         this.decode(buf);
     }
 

@@ -26,7 +26,7 @@ public class SendUnlockCodeToServerMessage implements Message {
         this.unlockCode = unlockCode;
     }
 
-    public SendUnlockCodeToServerMessage(FriendlyByteBuf buf) {
+    public SendUnlockCodeToServerMessage(RegistryFriendlyByteBuf buf) {
         this.decode(buf);
     }
 

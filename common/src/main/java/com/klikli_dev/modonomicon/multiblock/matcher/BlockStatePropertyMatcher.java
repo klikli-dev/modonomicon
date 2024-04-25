@@ -15,6 +15,7 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -48,7 +49,7 @@ public class BlockStatePropertyMatcher implements StateMatcher {
         this.predicate = (blockGetter, blockPos, blockState) -> blockState.getBlock() == block && TagMatcher.checkProps(blockState, this.props);
     }
 
-    public static BlockStatePropertyMatcher fromJson(JsonObject json) {
+    public static BlockStatePropertyMatcher fromJson(JsonObject json, HolderLookup.Provider provider) {
         BlockState displayState = null;
         if (json.has("display")) {
             try {

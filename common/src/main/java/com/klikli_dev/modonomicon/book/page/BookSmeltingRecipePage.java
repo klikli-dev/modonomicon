@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -22,7 +23,7 @@ public class BookSmeltingRecipePage extends BookProcessingRecipePage<SmeltingRec
         super(RecipeType.SMELTING, title1, recipeId1, title2, recipeId2, text, anchor, condition);
     }
 
-    public static BookSmeltingRecipePage fromJson(JsonObject json) {
+    public static BookSmeltingRecipePage fromJson(JsonObject json, HolderLookup.Provider provider) {
         var common = BookRecipePage.commonFromJson(json);
         var anchor = GsonHelper.getAsString(json, "anchor", "");
         var condition = json.has("condition")

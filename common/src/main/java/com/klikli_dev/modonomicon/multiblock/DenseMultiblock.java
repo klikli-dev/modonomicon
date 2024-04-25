@@ -17,8 +17,10 @@ import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
@@ -60,7 +62,7 @@ public class DenseMultiblock extends AbstractMultiblock {
         this.size = this.build(targets, getPatternDimensions(pattern));
     }
 
-    public static DenseMultiblock fromNetwork(FriendlyByteBuf buffer) {
+    public static DenseMultiblock fromNetwork(RegistryFriendlyByteBuf buffer) {
         var symmetrical = buffer.readBoolean();
         var offX = buffer.readVarInt();
         var offY = buffer.readVarInt();
@@ -94,7 +96,7 @@ public class DenseMultiblock extends AbstractMultiblock {
         return multiblock;
     }
 
-    public static DenseMultiblock fromJson(JsonObject json) {
+    public static DenseMultiblock fromJson(JsonObject json, HolderLookup.Provider provider) {
         var pattern = GSON.fromJson(json.get("pattern"), String[][].class);
 
         var jsonMapping = GsonHelper.getAsJsonObject(json, "mapping");

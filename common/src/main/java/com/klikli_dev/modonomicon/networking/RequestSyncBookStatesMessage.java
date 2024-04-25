@@ -22,7 +22,7 @@ public class RequestSyncBookStatesMessage implements Message {
     public RequestSyncBookStatesMessage() {
     }
 
-    public RequestSyncBookStatesMessage(FriendlyByteBuf buf) {
+    public RequestSyncBookStatesMessage(RegistryFriendlyByteBuf buf) {
         this.decode(buf);
     }
 

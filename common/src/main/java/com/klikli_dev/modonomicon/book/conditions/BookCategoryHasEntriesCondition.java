@@ -5,6 +5,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
@@ -23,7 +24,7 @@ public class BookCategoryHasEntriesCondition extends BookCondition {
         this.categoryId = categoryId;
     }
     
-    public static BookCategoryHasEntriesCondition fromJson(JsonObject json) {
+    public static BookCategoryHasEntriesCondition fromJson(JsonObject json, HolderLookup.Provider provider) {
         ResourceLocation categoryId = new ResourceLocation(GsonHelper.getAsString(json, "category_id"));
         Component tooltip = Component.translatable(ModonomiconConstants.I18n.Tooltips.CONDITION_CATEGORY_HAS_ENTRIES, categoryId);
         return new BookCategoryHasEntriesCondition(tooltip, categoryId);

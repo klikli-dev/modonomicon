@@ -28,7 +28,7 @@ public class SaveEntryStateMessage implements Message {
         this.openPagesIndex = openPagesIndex;
     }
 
-    public SaveEntryStateMessage(FriendlyByteBuf buf) {
+    public SaveEntryStateMessage(RegistryFriendlyByteBuf buf) {
         this.decode(buf);
     }
 

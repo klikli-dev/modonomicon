@@ -29,7 +29,7 @@ public class SaveBookStateMessage implements Message {
         this.openCategory = openCategory;
     }
 
-    public SaveBookStateMessage(FriendlyByteBuf buf) {
+    public SaveBookStateMessage(RegistryFriendlyByteBuf buf) {
         this.decode(buf);
     }
 

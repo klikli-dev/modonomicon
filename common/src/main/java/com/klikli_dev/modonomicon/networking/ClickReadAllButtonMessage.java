@@ -27,7 +27,7 @@ public class ClickReadAllButtonMessage implements Message {
         this.readAll = readAll;
     }
 
-    public ClickReadAllButtonMessage(FriendlyByteBuf buf) {
+    public ClickReadAllButtonMessage(RegistryFriendlyByteBuf buf) {
         this.decode(buf);
     }
 

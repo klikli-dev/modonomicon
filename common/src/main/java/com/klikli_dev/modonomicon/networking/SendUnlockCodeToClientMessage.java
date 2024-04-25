@@ -22,7 +22,7 @@ public class SendUnlockCodeToClientMessage implements Message {
         this.unlockCode = unlockCode;
     }
 
-    public SendUnlockCodeToClientMessage(FriendlyByteBuf buf) {
+    public SendUnlockCodeToClientMessage(RegistryFriendlyByteBuf buf) {
         this.decode(buf);
     }
 

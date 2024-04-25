@@ -30,7 +30,7 @@ public class SyncBookVisualStatesMessage implements Message {
         this.states = states;
     }
 
-    public SyncBookVisualStatesMessage(FriendlyByteBuf buf) {
+    public SyncBookVisualStatesMessage(RegistryFriendlyByteBuf buf) {
         this.decode(buf);
     }
 

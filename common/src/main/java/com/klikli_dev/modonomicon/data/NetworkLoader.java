@@ -6,8 +6,8 @@
 
 package com.klikli_dev.modonomicon.data;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 public interface NetworkLoader<T> {
-    T fromNetwork(FriendlyByteBuf buff);
+    T fromNetwork(RegistryFriendlyByteBuf buff);
 }

@@ -21,7 +21,7 @@ public class ReloadResourcesOnClientMessage implements Message {
     public ReloadResourcesOnClientMessage() {
     }
 
-    public ReloadResourcesOnClientMessage(FriendlyByteBuf buf) {
+    public ReloadResourcesOnClientMessage(RegistryFriendlyByteBuf buf) {
         this.decode(buf);
     }
 

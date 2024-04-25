@@ -25,18 +25,18 @@ public class SendAdvancementToClientMessage implements Message {
         this.advancement = advancement;
     }
 
-    public SendAdvancementToClientMessage(FriendlyByteBuf buf) {
+    public SendAdvancementToClientMessage(RegistryFriendlyByteBuf buf) {
         this.decode(buf);
     }
 
     @Override
     public void encode(RegistryFriendlyByteBuf buf) {
-        this.advancement.write(buf);
+        AdvancementHolder.STREAM_CODEC.encode(buf, this.advancement);
     }
 
     @Override
     public void decode(RegistryFriendlyByteBuf buf) {
-        this.advancement = AdvancementHolder.read(buf);
+        this.advancement = AdvancementHolder.STREAM_CODEC.decode(buf);
     }
 
     @Override

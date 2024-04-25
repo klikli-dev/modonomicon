@@ -12,8 +12,14 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.Nbt;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.klikli_dev.modonomicon.registry.DataComponentRegistry;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -40,12 +46,7 @@ public class ModonomiconItem extends Item {
     }
 
     private static ResourceLocation getBookId(ItemStack stack) {
-        if (!stack.hasTag() || !stack.getTag().contains(Nbt.ITEM_BOOK_ID_TAG)) {
-            return null;
-        }
-
-        String bookStr = stack.getTag().getString(Nbt.ITEM_BOOK_ID_TAG);
-        return ResourceLocation.tryParse(bookStr);
+        return stack.get(DataComponentRegistry.BOOK_ID.get());
     }
 
     @Override
@@ -53,8 +54,7 @@ public class ModonomiconItem extends Item {
         var itemInHand = pPlayer.getItemInHand(pUsedHand);
 
         if (pLevel.isClientSide) {
-
-            if (itemInHand.hasTag()) {
+            if (itemInHand.get(DataComponentRegistry.BOOK_ID.get()) != null) {
                 var book = getBook(itemInHand);
                 BookGuiManager.get().openBook(book.getId());
             } else {
@@ -76,23 +76,31 @@ public class ModonomiconItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, List<Component> list, TooltipFlag tooltipFlag) {
+        super.appendHoverText(itemStack, tooltipContext, list, tooltipFlag);
 
-        Book book = getBook(stack);
+        Book book = getBook(itemStack);
         if (book != null) {
-            if (flagIn.isAdvanced()) {
-                tooltip.add(Component.literal("Book ID: ").withStyle(ChatFormatting.DARK_GRAY)
+            if (tooltipFlag.isAdvanced()) {
+                list.add(Component.literal("Book ID: ").withStyle(ChatFormatting.DARK_GRAY)
                         .append(Component.literal(book.getId().toString()).withStyle(ChatFormatting.RED)));
             }
 
             if (!book.getTooltip().isBlank()) {
-                tooltip.add(Component.translatable(book.getTooltip()).withStyle(ChatFormatting.GRAY));
+                list.add(Component.translatable(book.getTooltip()).withStyle(ChatFormatting.GRAY));
             }
         } else {
-            tooltip.add(Component.translatable(Tooltips.ITEM_NO_BOOK_FOUND_FOR_STACK,
-                            !stack.hasTag() ? Component.literal("{}") : NbtUtils.toPrettyComponent(stack.getTag()))
+            var compound = new CompoundTag();
+            for (var entry : itemStack.getComponents()) {
+                var tag = entry.encodeValue(NbtOps.INSTANCE).getOrThrow();
+                var key = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(entry.type());
+
+                compound.put(key.toString(), tag);
+            }
+
+            list.add(Component.translatable(Tooltips.ITEM_NO_BOOK_FOUND_FOR_STACK, NbtUtils.toPrettyComponent(compound))
                     .withStyle(ChatFormatting.DARK_GRAY));
         }
     }
+
 }

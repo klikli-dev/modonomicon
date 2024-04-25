@@ -30,7 +30,7 @@ public class ReloadResourcesDoneMessage implements Message {
     public ReloadResourcesDoneMessage() {
     }
 
-    public ReloadResourcesDoneMessage(FriendlyByteBuf buf) {
+    public ReloadResourcesDoneMessage(RegistryFriendlyByteBuf buf) {
         this.decode(buf);
     }
 

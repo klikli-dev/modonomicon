@@ -8,15 +8,12 @@ package com.klikli_dev.modonomicon.network;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.networking.*;
-import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import net.neoforged.bus.api.Event;
 
 public class Networking {
 
-    public static void register(final RegisterPayloadHandlerEvent event) {
-        final IPayloadRegistrar registrar = event.registrar(Modonomicon.MOD_ID);
+    public static void register(final RegisterPayloadHandlersEvent event) {
+        var registrar = event.registrar(Modonomicon.MOD_ID);
 
         registrar.play(BookEntryReadMessage.ID, (b) -> new NeoMessageWrapper(b, BookEntryReadMessage::new), MessageHandler::handle);
         registrar.play(ClickCommandLinkMessage.ID, (b) -> new NeoMessageWrapper(b, ClickCommandLinkMessage::new), MessageHandler::handle);
