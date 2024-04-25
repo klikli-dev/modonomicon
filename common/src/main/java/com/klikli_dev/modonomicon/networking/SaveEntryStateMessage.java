@@ -10,15 +10,19 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.data.BookDataManager;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 public class SaveEntryStateMessage implements Message {
 
-    public static final ResourceLocation ID = new ResourceLocation(Modonomicon.MOD_ID, "save_entry_state");
+    public static final Type<SaveEntryStateMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "save_entry_state"));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, SaveEntryStateMessage> STREAM_CODEC = CustomPacketPayload.codec(SaveEntryStateMessage::encode, SaveEntryStateMessage::new);
+
 
     public BookEntry entry;
     public int openPagesIndex;
@@ -32,22 +36,20 @@ public class SaveEntryStateMessage implements Message {
         this.decode(buf);
     }
 
-    @Override
-    public void encode(RegistryFriendlyByteBuf buf) {
+    private void encode(RegistryFriendlyByteBuf buf) {
         buf.writeResourceLocation(this.entry.getBook().getId());
         buf.writeResourceLocation(this.entry.getId());
         buf.writeVarInt(this.openPagesIndex);
     }
 
-    @Override
-    public void decode(RegistryFriendlyByteBuf buf) {
+    private void decode(RegistryFriendlyByteBuf buf) {
         this.entry = BookDataManager.get().getBook(buf.readResourceLocation()).getEntry(buf.readResourceLocation());
         this.openPagesIndex = buf.readVarInt();
     }
 
     @Override
-    public ResourceLocation getId() {
-        return ID;
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
     @Override

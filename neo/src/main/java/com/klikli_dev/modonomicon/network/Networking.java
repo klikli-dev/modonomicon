@@ -9,7 +9,7 @@ package com.klikli_dev.modonomicon.network;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.networking.*;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.bus.api.Event;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 public class Networking {
@@ -17,33 +17,34 @@ public class Networking {
     public static void register(final RegisterPayloadHandlersEvent event) {
         var registrar = event.registrar(Modonomicon.MOD_ID);
 
-        registrar.playToServer(BookEntryReadMessage.ID, (b) -> new NeoMessageWrapper(b, BookEntryReadMessage::new), MessageHandler::handle);
-        registrar.play(ClickCommandLinkMessage.ID, (b) -> new NeoMessageWrapper(b, ClickCommandLinkMessage::new), MessageHandler::handle);
-        registrar.play(ClickReadAllButtonMessage.ID, (b) -> new NeoMessageWrapper(b, ClickReadAllButtonMessage::new), MessageHandler::handle);
-        registrar.play(SaveBookStateMessage.ID, (b) -> new NeoMessageWrapper(b, SaveBookStateMessage::new), MessageHandler::handle);
-        registrar.play(SaveCategoryStateMessage.ID, (b) -> new NeoMessageWrapper(b, SaveCategoryStateMessage::new), MessageHandler::handle);
-        registrar.play(SaveEntryStateMessage.ID, (b) -> new NeoMessageWrapper(b, SaveEntryStateMessage::new), MessageHandler::handle);
-        registrar.play(SendUnlockCodeToClientMessage.ID, (b) -> new NeoMessageWrapper(b, SendUnlockCodeToClientMessage::new), MessageHandler::handle);
-        registrar.play(SendAdvancementToClientMessage.ID, (b) -> new NeoMessageWrapper(b, SendAdvancementToClientMessage::new), MessageHandler::handle);
-        registrar.play(SyncBookDataMessage.ID, (b) -> new NeoMessageWrapper(b, SyncBookDataMessage::new), MessageHandler::handle);
-        registrar.play(SyncBookUnlockStatesMessage.ID, (b) -> new NeoMessageWrapper(b, SyncBookUnlockStatesMessage::new), MessageHandler::handle);
-        registrar.play(SyncBookVisualStatesMessage.ID, (b) -> new NeoMessageWrapper(b, SyncBookVisualStatesMessage::new), MessageHandler::handle);
-        registrar.play(SyncMultiblockDataMessage.ID, (b) -> new NeoMessageWrapper(b, SyncMultiblockDataMessage::new), MessageHandler::handle);
-        registrar.play(ReloadResourcesOnClientMessage.ID, (b) -> new NeoMessageWrapper(b, ReloadResourcesOnClientMessage::new), MessageHandler::handle);
-        registrar.play(ReloadResourcesDoneMessage.ID, (b) -> new NeoMessageWrapper(b, ReloadResourcesDoneMessage::new), MessageHandler::handle);
-        registrar.play(RequestSyncBookStatesMessage.ID, (b) -> new NeoMessageWrapper(b, ReloadResourcesDoneMessage::new), MessageHandler::handle);
-        registrar.play(RequestAdvancementMessage.ID, (b) -> new NeoMessageWrapper(b, RequestAdvancementMessage::new), MessageHandler::handle);
+        registrar.playToServer(BookEntryReadMessage.TYPE, BookEntryReadMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToServer(ClickCommandLinkMessage.TYPE, ClickCommandLinkMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToServer(ClickReadAllButtonMessage.TYPE, ClickReadAllButtonMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToServer(SaveBookStateMessage.TYPE, SaveBookStateMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToServer(SaveCategoryStateMessage.TYPE, SaveCategoryStateMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToServer(SaveEntryStateMessage.TYPE, SaveEntryStateMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToServer(ReloadResourcesDoneMessage.TYPE, ReloadResourcesDoneMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToServer(RequestSyncBookStatesMessage.TYPE, RequestSyncBookStatesMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToServer(RequestAdvancementMessage.TYPE, RequestAdvancementMessage.STREAM_CODEC, MessageHandler::handle);
+
+        registrar.playToClient(SendUnlockCodeToClientMessage.TYPE, SendUnlockCodeToClientMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToClient(SendAdvancementToClientMessage.TYPE, SendAdvancementToClientMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToClient(SyncBookDataMessage.TYPE, SyncBookDataMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToClient(SyncBookUnlockStatesMessage.TYPE, SyncBookUnlockStatesMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToClient(SyncBookVisualStatesMessage.TYPE, SyncBookVisualStatesMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToClient(SyncMultiblockDataMessage.TYPE, SyncMultiblockDataMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToClient(ReloadResourcesOnClientMessage.TYPE, ReloadResourcesOnClientMessage.STREAM_CODEC, MessageHandler::handle);
     }
 
     public static <T extends Message> void sendToSplit(ServerPlayer player, T message) {
-        PacketDistributor.PLAYER.with(player).send(new NeoMessageWrapper(message));
+        PacketDistributor.sendToPlayer(player, message);
     }
 
     public static <T extends Message> void sendTo(ServerPlayer player, T message) {
-        PacketDistributor.PLAYER.with(player).send(new NeoMessageWrapper(message));
+        PacketDistributor.sendToPlayer(player, message);
     }
 
     public static <T extends Message> void sendToServer(T message) {
-        PacketDistributor.SERVER.noArg().send(new NeoMessageWrapper(message));
+        PacketDistributor.sendToServer(message);
     }
 }

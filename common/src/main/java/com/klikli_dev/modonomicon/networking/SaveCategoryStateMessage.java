@@ -10,15 +10,17 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.data.BookDataManager;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 public class SaveCategoryStateMessage implements Message {
 
-    public static final ResourceLocation ID = new ResourceLocation(Modonomicon.MOD_ID, "save_category_state");
+    public static final Type<SaveCategoryStateMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "save_category_state"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, SaveCategoryStateMessage> STREAM_CODEC = CustomPacketPayload.codec(SaveCategoryStateMessage::encode, SaveCategoryStateMessage::new);
 
     public BookCategory category;
 
@@ -40,8 +42,7 @@ public class SaveCategoryStateMessage implements Message {
         this.decode(buf);
     }
 
-    @Override
-    public void encode(RegistryFriendlyByteBuf buf) {
+    private void encode(RegistryFriendlyByteBuf buf) {
         buf.writeResourceLocation(this.category.getBook().getId());
         buf.writeResourceLocation(this.category.getId());
         buf.writeFloat(this.scrollX);
@@ -53,8 +54,7 @@ public class SaveCategoryStateMessage implements Message {
         }
     }
 
-    @Override
-    public void decode(RegistryFriendlyByteBuf buf) {
+    private void decode(RegistryFriendlyByteBuf buf) {
         this.category = BookDataManager.get().getBook(buf.readResourceLocation()).getCategory(buf.readResourceLocation());
         this.scrollX = buf.readFloat();
         this.scrollY = buf.readFloat();
@@ -65,8 +65,8 @@ public class SaveCategoryStateMessage implements Message {
     }
 
     @Override
-    public ResourceLocation getId() {
-        return ID;
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
     @Override

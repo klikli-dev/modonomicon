@@ -13,6 +13,8 @@ import com.klikli_dev.modonomicon.bookstate.BookUnlockStates;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
@@ -21,7 +23,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SyncBookUnlockStatesMessage implements Message {
 
-    public static final ResourceLocation ID = new ResourceLocation(Modonomicon.MOD_ID, "sync_book_unlock_states");
+    public static final Type<SyncBookUnlockStatesMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "sync_book_unlock_states"));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncBookUnlockStatesMessage> STREAM_CODEC = StreamCodec.composite(
+            BookUnlockStates.STREAM_CODEC,
+            (m) -> m.states,
+            SyncBookUnlockStatesMessage::new
+    );
 
     public BookUnlockStates states;
 
@@ -29,23 +37,9 @@ public class SyncBookUnlockStatesMessage implements Message {
         this.states = states;
     }
 
-    public SyncBookUnlockStatesMessage(RegistryFriendlyByteBuf buf) {
-        this.decode(buf);
-    }
-
     @Override
-    public void encode(RegistryFriendlyByteBuf buf) {
-        BookUnlockStates.STREAM_CODEC.encode(buf, this.states);
-    }
-
-    @Override
-    public void decode(RegistryFriendlyByteBuf buf) {
-        this.states = BookUnlockStates.STREAM_CODEC.decode(buf);
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return ID;
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
     @Override

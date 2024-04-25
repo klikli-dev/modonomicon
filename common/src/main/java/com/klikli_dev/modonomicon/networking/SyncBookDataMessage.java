@@ -14,6 +14,8 @@ import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
@@ -21,7 +23,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class SyncBookDataMessage implements Message {
-    public static final ResourceLocation ID = new ResourceLocation(Modonomicon.MOD_ID, "sync_book_data");
+
+
+    public static final Type<SyncBookDataMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "sync_book_data"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncBookDataMessage> STREAM_CODEC = CustomPacketPayload.codec(SyncBookDataMessage::encode, SyncBookDataMessage::new);
+
     public ConcurrentMap<ResourceLocation, Book> books = new ConcurrentHashMap<>();
 
     public SyncBookDataMessage(ConcurrentMap<ResourceLocation, Book> books) {
@@ -32,8 +38,7 @@ public class SyncBookDataMessage implements Message {
         this.decode(buf);
     }
 
-    @Override
-    public void encode(RegistryFriendlyByteBuf buf) {
+    private void encode(RegistryFriendlyByteBuf buf) {
         buf.writeVarInt(this.books.size());
         for (var book : this.books.values()) {
             buf.writeResourceLocation(book.getId());
@@ -59,8 +64,7 @@ public class SyncBookDataMessage implements Message {
         }
     }
 
-    @Override
-    public void decode(RegistryFriendlyByteBuf buf) {
+    private void decode(RegistryFriendlyByteBuf buf) {
         //build books
         int bookCount = buf.readVarInt();
         for (int i = 0; i < bookCount; i++) {
@@ -98,10 +102,9 @@ public class SyncBookDataMessage implements Message {
     }
 
     @Override
-    public ResourceLocation getId() {
-        return ID;
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
-
 
     @Override
     public void onClientReceived(Minecraft minecraft, Player player) {

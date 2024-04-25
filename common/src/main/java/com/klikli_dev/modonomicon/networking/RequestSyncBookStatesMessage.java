@@ -9,34 +9,26 @@ package com.klikli_dev.modonomicon.networking;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 public class RequestSyncBookStatesMessage implements Message {
 
-    public static final ResourceLocation ID = new ResourceLocation(Modonomicon.MOD_ID, "request_sync_book_states");
+    public static final Type<RequestSyncBookStatesMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "request_sync_book_states"));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, RequestSyncBookStatesMessage> STREAM_CODEC = StreamCodec.unit(new RequestSyncBookStatesMessage());
+
 
     public RequestSyncBookStatesMessage() {
     }
 
-    public RequestSyncBookStatesMessage(RegistryFriendlyByteBuf buf) {
-        this.decode(buf);
-    }
-
     @Override
-    public void encode(RegistryFriendlyByteBuf buf) {
-    }
-
-    @Override
-    public void decode(RegistryFriendlyByteBuf buf) {
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return ID;
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
     @Override

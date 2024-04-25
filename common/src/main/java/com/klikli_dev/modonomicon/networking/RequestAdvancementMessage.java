@@ -8,15 +8,22 @@ package com.klikli_dev.modonomicon.networking;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.platform.Services;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 public class RequestAdvancementMessage implements Message {
 
-    public static final ResourceLocation ID = new ResourceLocation(Modonomicon.MOD_ID, "request_advancement");
+    public static final Type<RequestAdvancementMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "request_advancement"));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, RequestAdvancementMessage> STREAM_CODEC = StreamCodec.composite(
+            ResourceLocation.STREAM_CODEC,
+            (m) -> m.advancementId,
+            RequestAdvancementMessage::new
+    );
 
     public ResourceLocation advancementId;
 
@@ -24,24 +31,9 @@ public class RequestAdvancementMessage implements Message {
         this.advancementId = advancementId;
     }
 
-    public RequestAdvancementMessage(RegistryFriendlyByteBuf buf) {
-        this.decode(buf);
-    }
-
     @Override
-    public void encode(RegistryFriendlyByteBuf buf) {
-        buf.writeResourceLocation(this.advancementId);
-    }
-
-    @Override
-    public void decode(RegistryFriendlyByteBuf buf) {
-        this.advancementId = buf.readResourceLocation();
-    }
-
-
-    @Override
-    public ResourceLocation getId() {
-        return ID;
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
     @Override

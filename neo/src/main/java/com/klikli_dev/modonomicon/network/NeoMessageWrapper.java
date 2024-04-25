@@ -37,6 +37,6 @@ public class NeoMessageWrapper implements CustomPacketPayload {
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
-        return this.message.getId();
+        return this.message.type();
     }
 }

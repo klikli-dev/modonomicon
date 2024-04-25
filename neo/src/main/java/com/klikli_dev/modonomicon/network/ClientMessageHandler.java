@@ -8,15 +8,12 @@ package com.klikli_dev.modonomicon.network;
 
 import com.klikli_dev.modonomicon.networking.Message;
 import net.minecraft.client.Minecraft;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
-
-import java.util.function.Supplier;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class ClientMessageHandler {
 
-    public static <T extends NeoMessageWrapper> void handleClient(T message, PlayPayloadContext ctx) {
+    public static <T extends Message> void handleClient(T message, IPayloadContext ctx) {
         var minecraft = Minecraft.getInstance();
-        message.message().onClientReceived(minecraft, minecraft.player);
+        message.onClientReceived(minecraft, minecraft.player);
     }
 }

@@ -10,15 +10,18 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.data.BookDataManager;
-import net.minecraft.network.FriendlyByteBuf;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 public class SaveBookStateMessage implements Message {
 
-    public static final ResourceLocation ID = new ResourceLocation(Modonomicon.MOD_ID, "save_book_state");
+    public static final Type<SaveBookStateMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "save_book_state"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, SaveBookStateMessage> STREAM_CODEC = CustomPacketPayload.codec(SaveBookStateMessage::encode, SaveBookStateMessage::new);
 
     public Book book;
 
@@ -33,8 +36,7 @@ public class SaveBookStateMessage implements Message {
         this.decode(buf);
     }
 
-    @Override
-    public void encode(RegistryFriendlyByteBuf buf) {
+    private void encode(RegistryFriendlyByteBuf buf) {
         buf.writeResourceLocation(this.book.getId());
         buf.writeBoolean(this.openCategory != null);
         if (this.openCategory != null) {
@@ -42,8 +44,7 @@ public class SaveBookStateMessage implements Message {
         }
     }
 
-    @Override
-    public void decode(RegistryFriendlyByteBuf buf) {
+    private void decode(RegistryFriendlyByteBuf buf) {
         this.book = BookDataManager.get().getBook(buf.readResourceLocation());
         if (buf.readBoolean()) {
             this.openCategory = buf.readResourceLocation();
@@ -51,8 +52,8 @@ public class SaveBookStateMessage implements Message {
     }
 
     @Override
-    public ResourceLocation getId() {
-        return ID;
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
     @Override

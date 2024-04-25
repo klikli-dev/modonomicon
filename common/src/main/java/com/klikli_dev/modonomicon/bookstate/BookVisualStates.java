@@ -15,6 +15,9 @@ import com.klikli_dev.modonomicon.bookstate.visual.EntryVisualState;
 import com.klikli_dev.modonomicon.util.Codecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,6 +27,8 @@ public class BookVisualStates {
     public static final Codec<BookVisualStates> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codecs.concurrentMap(ResourceLocation.CODEC, BookVisualState.CODEC).fieldOf("bookStates").forGetter((s) -> s.bookStates)
     ).apply(instance, BookVisualStates::new));
+
+    public static final StreamCodec<ByteBuf, BookVisualStates> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 
 
     public ConcurrentMap<ResourceLocation, BookVisualState> bookStates;

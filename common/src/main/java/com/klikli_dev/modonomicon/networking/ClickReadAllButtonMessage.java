@@ -9,15 +9,26 @@ package com.klikli_dev.modonomicon.networking;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.data.BookDataManager;
-import net.minecraft.network.FriendlyByteBuf;
+import com.mojang.serialization.Codec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 public class ClickReadAllButtonMessage implements Message {
 
-    public static final ResourceLocation ID = new ResourceLocation(Modonomicon.MOD_ID, "click_read_all_button");
+    public static final Type<ClickReadAllButtonMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "click_read_all_button"));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClickReadAllButtonMessage> STREAM_CODEC = StreamCodec.composite(
+            ResourceLocation.STREAM_CODEC,
+            ( m) -> m.bookId,
+            ByteBufCodecs.BOOL,
+            (m) -> m.readAll,
+            ClickReadAllButtonMessage::new
+    );
 
     public ResourceLocation bookId;
     public boolean readAll; //true to not only read unlocked but even the locked ones
@@ -25,27 +36,6 @@ public class ClickReadAllButtonMessage implements Message {
     public ClickReadAllButtonMessage(ResourceLocation bookId, boolean readAll) {
         this.bookId = bookId;
         this.readAll = readAll;
-    }
-
-    public ClickReadAllButtonMessage(RegistryFriendlyByteBuf buf) {
-        this.decode(buf);
-    }
-
-    @Override
-    public void encode(RegistryFriendlyByteBuf buf) {
-        buf.writeResourceLocation(this.bookId);
-        buf.writeBoolean(this.readAll);
-    }
-
-    @Override
-    public void decode(RegistryFriendlyByteBuf buf) {
-        this.bookId = buf.readResourceLocation();
-        this.readAll = buf.readBoolean();
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return ID;
     }
 
     @Override
@@ -64,5 +54,10 @@ public class ClickReadAllButtonMessage implements Message {
                 BookUnlockStateManager.get().updateAndSyncFor(player);
             }
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

@@ -9,33 +9,25 @@ package com.klikli_dev.modonomicon.networking;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.platform.Services;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 public class ReloadResourcesOnClientMessage implements Message {
 
-    public static final ResourceLocation ID = new ResourceLocation(Modonomicon.MOD_ID, "reload_resources_on_client");
+
+    public static final Type<ReloadResourcesOnClientMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "reload_resources_on_client"));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, ReloadResourcesOnClientMessage> STREAM_CODEC = StreamCodec.unit(new ReloadResourcesOnClientMessage());
 
     public ReloadResourcesOnClientMessage() {
     }
 
-    public ReloadResourcesOnClientMessage(RegistryFriendlyByteBuf buf) {
-        this.decode(buf);
-    }
-
     @Override
-    public void encode(RegistryFriendlyByteBuf buf) {
-    }
-
-    @Override
-    public void decode(RegistryFriendlyByteBuf buf) {
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return ID;
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
     @Override

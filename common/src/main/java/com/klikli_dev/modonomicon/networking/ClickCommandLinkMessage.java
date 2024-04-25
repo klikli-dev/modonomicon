@@ -8,15 +8,25 @@ package com.klikli_dev.modonomicon.networking;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.data.BookDataManager;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 public class ClickCommandLinkMessage implements Message {
 
-    public static final ResourceLocation ID = new ResourceLocation(Modonomicon.MOD_ID, "click_command_link");
+    public static final CustomPacketPayload.Type<ClickCommandLinkMessage> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Modonomicon.MOD_ID, "click_command_link"));
+
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClickCommandLinkMessage> STREAM_CODEC = StreamCodec.composite(
+            ResourceLocation.STREAM_CODEC,
+            (m) -> m.bookId,
+            ResourceLocation.STREAM_CODEC,
+            (m) -> m.commandId,
+            ClickCommandLinkMessage::new
+    );
 
     public ResourceLocation bookId;
     public ResourceLocation commandId;
@@ -26,25 +36,9 @@ public class ClickCommandLinkMessage implements Message {
         this.commandId = commandId;
     }
 
-    public ClickCommandLinkMessage(RegistryFriendlyByteBuf buf) {
-        this.decode(buf);
-    }
-
     @Override
-    public void encode(RegistryFriendlyByteBuf buf) {
-        buf.writeResourceLocation(this.bookId);
-        buf.writeResourceLocation(this.commandId);
-    }
-
-    @Override
-    public void decode(RegistryFriendlyByteBuf buf) {
-        this.bookId = buf.readResourceLocation();
-        this.commandId = buf.readResourceLocation();
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return ID;
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
     @Override

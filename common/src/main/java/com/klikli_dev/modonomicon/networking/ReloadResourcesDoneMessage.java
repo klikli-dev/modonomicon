@@ -10,9 +10,10 @@ import com.google.common.collect.Lists;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,40 +26,11 @@ import static com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Command.R
 
 public class ReloadResourcesDoneMessage implements Message {
 
-    public static final ResourceLocation ID = new ResourceLocation(Modonomicon.MOD_ID, "reload_resources_done");
+    public static final Type<ReloadResourcesDoneMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "reload_resources_done"));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, ReloadResourcesDoneMessage> STREAM_CODEC = StreamCodec.unit(new ReloadResourcesDoneMessage());
 
     public ReloadResourcesDoneMessage() {
-    }
-
-    public ReloadResourcesDoneMessage(RegistryFriendlyByteBuf buf) {
-        this.decode(buf);
-    }
-
-    @Override
-    public void encode(RegistryFriendlyByteBuf buf) {
-    }
-
-    @Override
-    public void decode(RegistryFriendlyByteBuf buf) {
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return ID;
-    }
-
-    @Override
-    public void onServerReceived(MinecraftServer minecraftServer, ServerPlayer player) {
-
-        if (!player.hasPermissions(2)) //same leve las the reload command
-            return;
-
-        //below is copied from ReloadCommand, modified not to need a command source and to only post messages after reload is complete
-        PackRepository packrepository = minecraftServer.getPackRepository();
-        WorldData worlddata = minecraftServer.getWorldData();
-        Collection<String> selectedIds = packrepository.getSelectedIds();
-        Collection<String> packs = discoverNewPacks(packrepository, worlddata, selectedIds);
-        reloadPacks(packs, player, minecraftServer);
     }
 
     private static Collection<String> discoverNewPacks(PackRepository pPackRepository, WorldData pWorldData, Collection<String> pSelectedIds) {
@@ -66,7 +38,7 @@ public class ReloadResourcesDoneMessage implements Message {
         Collection<String> collection = Lists.newArrayList(pSelectedIds);
         Collection<String> collection1 = pWorldData.getDataConfiguration().dataPacks().getDisabled();
 
-        for(String s : pPackRepository.getAvailableIds()) {
+        for (String s : pPackRepository.getAvailableIds()) {
             if (!collection1.contains(s) && !collection.contains(s)) {
                 collection.add(s);
             }
@@ -84,5 +56,24 @@ public class ReloadResourcesDoneMessage implements Message {
             BookUnlockStateManager.get().updateAndSyncFor(player);
             player.sendSystemMessage(Component.translatable(RELOAD_SUCCESS).withStyle(ChatFormatting.GREEN));
         });
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+
+    @Override
+    public void onServerReceived(MinecraftServer minecraftServer, ServerPlayer player) {
+
+        if (!player.hasPermissions(2)) //same leve las the reload command
+            return;
+
+        //below is copied from ReloadCommand, modified not to need a command source and to only post messages after reload is complete
+        PackRepository packrepository = minecraftServer.getPackRepository();
+        WorldData worlddata = minecraftServer.getWorldData();
+        Collection<String> selectedIds = packrepository.getSelectedIds();
+        Collection<String> packs = discoverNewPacks(packrepository, worlddata, selectedIds);
+        reloadPacks(packs, player, minecraftServer);
     }
 }

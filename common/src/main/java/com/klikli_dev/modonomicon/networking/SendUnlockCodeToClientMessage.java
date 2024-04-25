@@ -8,37 +8,32 @@ package com.klikli_dev.modonomicon.networking;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 public class SendUnlockCodeToClientMessage implements Message {
 
-    public static final ResourceLocation ID = new ResourceLocation(Modonomicon.MOD_ID, "send_unlock_code_to_client");
+    public static final Type<SendUnlockCodeToClientMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "send_unlock_code_to_client"));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, SendUnlockCodeToClientMessage> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8,
+            (m) -> m.unlockCode,
+            SendUnlockCodeToClientMessage::new
+    );
+
     public String unlockCode;
 
     public SendUnlockCodeToClientMessage(String unlockCode) {
         this.unlockCode = unlockCode;
     }
 
-    public SendUnlockCodeToClientMessage(RegistryFriendlyByteBuf buf) {
-        this.decode(buf);
-    }
-
     @Override
-    public void encode(RegistryFriendlyByteBuf buf) {
-        buf.writeUtf(this.unlockCode);
-    }
-
-    @Override
-    public void decode(RegistryFriendlyByteBuf buf) {
-        this.unlockCode = buf.readUtf();
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return ID;
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
     @Override

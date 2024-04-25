@@ -11,9 +11,9 @@ import com.klikli_dev.modonomicon.bookstate.BookStatesSaveData;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStates;
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
@@ -22,7 +22,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SyncBookVisualStatesMessage implements Message {
 
-    public static final ResourceLocation ID = new ResourceLocation(Modonomicon.MOD_ID, "sync_book_visual_states");
+    public static final Type<SyncBookVisualStatesMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "sync_book_visual_states"));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncBookVisualStatesMessage> STREAM_CODEC = StreamCodec.composite(
+            BookVisualStates.STREAM_CODEC,
+            (m) -> m.states,
+            SyncBookVisualStatesMessage::new
+    );
 
     public BookVisualStates states;
 
@@ -30,23 +36,9 @@ public class SyncBookVisualStatesMessage implements Message {
         this.states = states;
     }
 
-    public SyncBookVisualStatesMessage(RegistryFriendlyByteBuf buf) {
-        this.decode(buf);
-    }
-
     @Override
-    public void encode(RegistryFriendlyByteBuf buf) {
-        buf.writeWithCodec(NbtOps.INSTANCE, BookVisualStates.CODEC, this.states);
-    }
-
-    @Override
-    public void decode(RegistryFriendlyByteBuf buf) {
-        this.states = buf.readWithCodecTrusted(NbtOps.INSTANCE, BookVisualStates.CODEC);
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return ID;
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
     @Override
