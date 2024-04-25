@@ -124,7 +124,6 @@ publishing {
             artifactId base.archivesName.get()
 
             from components.java
-            jarJar.component(it)
 
             pom {
                 name = mod_name
@@ -155,5 +154,12 @@ publishing {
                 password = System.getenv('MAVEN_PASS')
             }
         }
+    }
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
     }
 }
