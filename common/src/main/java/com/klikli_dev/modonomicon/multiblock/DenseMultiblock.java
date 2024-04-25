@@ -100,7 +100,7 @@ public class DenseMultiblock extends AbstractMultiblock {
         var pattern = GSON.fromJson(json.get("pattern"), String[][].class);
 
         var jsonMapping = GsonHelper.getAsJsonObject(json, "mapping");
-        var mapping = mappingFromJson(jsonMapping);
+        var mapping = mappingFromJson(jsonMapping, provider);
 
         var multiblock = new DenseMultiblock(pattern, mapping);
         return additionalPropertiesFromJson(multiblock, json);

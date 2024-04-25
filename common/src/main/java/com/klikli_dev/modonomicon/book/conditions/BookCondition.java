@@ -38,10 +38,11 @@ public abstract class BookCondition {
         return null;
     }
 
-    public static BookCondition fromJson(JsonObject json) {
+
+    public static BookCondition fromJson(JsonObject json, HolderLookup.Provider provider) {
         var type = new ResourceLocation(GsonHelper.getAsString(json, "type"));
         var loader = LoaderRegistry.getConditionJsonLoader(type);
-        return loader.fromJson(json);
+        return loader.fromJson(json, provider);
     }
 
     public static BookCondition fromNetwork(RegistryFriendlyByteBuf buf) {

@@ -28,6 +28,7 @@ import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -52,6 +53,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     private ConcurrentMap<ResourceLocation, Book> books = new ConcurrentHashMap<>();
     private boolean loaded;
     private boolean booksBuilt;
+    private HolderLookup.Provider registries;
 
     private BookDataManager() {
         super(GSON, FOLDER);
@@ -59,6 +61,10 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
     public static BookDataManager get() {
         return instance;
+    }
+
+    public void registries(HolderLookup.Provider registries) {
+        this.registries = registries;
     }
 
     public boolean isLoaded() {
@@ -190,16 +196,16 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         this.loaded = true;
     }
 
-    private Book loadBook(ResourceLocation key, JsonObject value) {
-        return Book.fromJson(key, value);
+    private Book loadBook(ResourceLocation key, JsonObject value, HolderLookup.Provider provider) {
+        return Book.fromJson(key, value, provider);
     }
 
-    private BookCategory loadCategory(ResourceLocation key, JsonObject value) {
-        return BookCategory.fromJson(key, value);
+    private BookCategory loadCategory(ResourceLocation key, JsonObject value, HolderLookup.Provider provider) {
+        return BookCategory.fromJson(key, value, provider);
     }
 
-    private BookEntry loadEntry(ResourceLocation key, JsonObject value) {
-        return BookEntry.fromJson(key, value);
+    private BookEntry loadEntry(ResourceLocation key, JsonObject value, HolderLookup.Provider provider) {
+        return BookEntry.fromJson(key, value, provider);
     }
 
     private BookCommand loadCommand(ResourceLocation key, JsonObject value) {
@@ -208,7 +214,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
     /**
      * Loads only the condition on the given category, entry or page and runs testOnLoad.
-     * @param key the resource location of the content
+     *
+     * @param key        the resource location of the content
      * @param bookObject the json object representing the content
      * @return false if the condition is not met and the content should not be loaded.
      */
@@ -274,7 +281,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                 var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
                 BookErrorManager.get().setCurrentBookId(bookId);
                 BookErrorManager.get().setContext("Loading Book JSON");
-                var book = this.loadBook(bookId, entry.getValue());
+                var book = this.loadBook(bookId, entry.getValue(), this.registries);
                 this.books.put(book.getId(), book);
                 BookErrorManager.get().reset();
             } catch (Exception e) {
@@ -296,11 +303,11 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
                 BookErrorManager.get().getContextHelper().categoryId = categoryId;
                 //test if we should load the category at all
-                if(!this.testConditionOnLoad(categoryId, entry.getValue())){
+                if (!this.testConditionOnLoad(categoryId, entry.getValue())) {
                     continue;
                 }
 
-                var category = this.loadCategory(categoryId, entry.getValue());
+                var category = this.loadCategory(categoryId, entry.getValue(), this.registries);
 
                 //link category and book
                 var book = this.books.get(bookId);
@@ -326,11 +333,11 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
                 BookErrorManager.get().getContextHelper().entryId = entryId;
                 //test if we should load the category at all
-                if(!this.testConditionOnLoad(entryId, entry.getValue())){
+                if (!this.testConditionOnLoad(entryId, entry.getValue())) {
                     continue;
                 }
 
-                var bookEntry = this.loadEntry(entryId, entry.getValue());
+                var bookEntry = this.loadEntry(entryId, entry.getValue(), this.registries);
 
                 //link entry and category
                 var book = this.books.get(bookId);
@@ -375,11 +382,11 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         this.onLoadingComplete();
     }
 
-    public static class Client extends SimpleJsonResourceReloadListener{
+    public static class Client extends SimpleJsonResourceReloadListener {
 
         private static final Client instance = new Client();
 
-        private static ResourceLocation fallbackFont = new ResourceLocation("minecraft", "default");
+        private static final ResourceLocation fallbackFont = new ResourceLocation("minecraft", "default");
 
         private boolean isFallbackLocale;
         private boolean isFontInitialized;
@@ -387,7 +394,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         /**
          * Our local advancement cache, because we cannot just store random advancement in ClientAdvancements -> they get rejected
          */
-        private ConcurrentMap<ResourceLocation, AdvancementHolder> advancements = new ConcurrentHashMap<>();
+        private final ConcurrentMap<ResourceLocation, AdvancementHolder> advancements = new ConcurrentHashMap<>();
 
         public Client() {
             super(GSON, FOLDER);
@@ -397,12 +404,12 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             return instance;
         }
 
-        public void resetUseFallbackFont(){
+        public void resetUseFallbackFont() {
             this.isFontInitialized = false;
         }
 
-        public boolean useFallbackFont(){
-            if(!this.isFontInitialized){
+        public boolean useFallbackFont() {
+            if (!this.isFontInitialized) {
                 this.isFontInitialized = true;
 
                 var locale = Minecraft.getInstance().getLanguageManager().getSelected();
@@ -412,15 +419,15 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             return this.isFallbackLocale;
         }
 
-        public ResourceLocation safeFont(ResourceLocation requested){
-             return this.useFallbackFont() ? fallbackFont : requested;
+        public ResourceLocation safeFont(ResourceLocation requested) {
+            return this.useFallbackFont() ? fallbackFont : requested;
         }
 
-        public AdvancementHolder getAdvancement(ResourceLocation id){
+        public AdvancementHolder getAdvancement(ResourceLocation id) {
             return this.advancements.get(id);
         }
 
-        public void addAdvancement(AdvancementHolder advancement){
+        public void addAdvancement(AdvancementHolder advancement) {
             this.advancements.put(advancement.id(), advancement);
         }
 

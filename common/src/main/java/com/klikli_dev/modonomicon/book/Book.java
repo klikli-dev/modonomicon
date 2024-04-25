@@ -15,6 +15,7 @@ import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.registry.DataComponentRegistry;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import com.klikli_dev.modonomicon.util.ItemStackUtil;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -139,7 +140,7 @@ public class Book {
         this.readAllButtonYOffset = readAllButtonYOffset;
     }
 
-    public static Book fromJson(ResourceLocation id, JsonObject json) {
+    public static Book fromJson(ResourceLocation id, JsonObject json, HolderLookup.Provider provider) {
         var name = GsonHelper.getAsString(json, "name");
         var tooltip = GsonHelper.getAsString(json, "tooltip", "");
         var model = new ResourceLocation(GsonHelper.getAsString(json, "model", Data.Book.DEFAULT_MODEL));

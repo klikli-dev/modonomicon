@@ -14,6 +14,7 @@ import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.networking.Message;
 import com.klikli_dev.modonomicon.networking.SyncMultiblockDataMessage;
 import com.klikli_dev.modonomicon.platform.Services;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -34,6 +35,7 @@ public class MultiblockDataManager extends SimpleJsonResourceReloadListener {
 
     private ConcurrentMap<ResourceLocation, Multiblock> multiblocks = new ConcurrentHashMap<>();
     private boolean loaded;
+    private HolderLookup.Provider registries;
 
     private MultiblockDataManager() {
         super(GSON, FOLDER);
@@ -41,6 +43,10 @@ public class MultiblockDataManager extends SimpleJsonResourceReloadListener {
 
     public static MultiblockDataManager get() {
         return instance;
+    }
+
+    public void registries(HolderLookup.Provider registries) {
+        this.registries = registries;
     }
 
     public boolean isLoaded() {
@@ -89,7 +95,7 @@ public class MultiblockDataManager extends SimpleJsonResourceReloadListener {
         for (var entry : content.entrySet()) {
             var json = GsonHelper.convertToJsonObject(entry.getValue(), "multiblock json file");
             var type = ResourceLocation.tryParse(GsonHelper.getAsString(json, "type"));
-            var multiblock = LoaderRegistry.getMultiblockJsonLoader(type).fromJson(json);
+            var multiblock = LoaderRegistry.getMultiblockJsonLoader(type).fromJson(json, this.registries);
             multiblock.setId(entry.getKey());
             this.multiblocks.put(multiblock.getId(), multiblock);
         }

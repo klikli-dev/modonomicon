@@ -15,6 +15,7 @@ import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -90,7 +91,7 @@ public class BookEntry {
         this.commandToRunOnFirstReadId = commandToRunOnFirstReadId;
     }
 
-    public static BookEntry fromJson(ResourceLocation id, JsonObject json) {
+    public static BookEntry fromJson(ResourceLocation id, JsonObject json, HolderLookup.Provider provider) {
         var categoryId = new ResourceLocation(GsonHelper.getAsString(json, "category"));
         var name = GsonHelper.getAsString(json, "name");
         var description = GsonHelper.getAsString(json, "description", "");
@@ -119,7 +120,7 @@ public class BookEntry {
                 var pageJson = GsonHelper.convertToJsonObject(pageElem, "page");
                 var type = new ResourceLocation(GsonHelper.getAsString(pageJson, "type"));
                 var loader = LoaderRegistry.getPageJsonLoader(type);
-                var page = loader.fromJson(pageJson);
+                var page = loader.fromJson(pageJson, provider);
                 pages.add(page);
             }
         }

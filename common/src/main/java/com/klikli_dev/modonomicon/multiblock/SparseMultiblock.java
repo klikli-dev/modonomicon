@@ -48,7 +48,7 @@ public class SparseMultiblock extends AbstractMultiblock {
 
     public static SparseMultiblock fromJson(JsonObject json, HolderLookup.Provider provider) {
         var jsonMapping = GsonHelper.getAsJsonObject(json, "mapping");
-        var mapping = mappingFromJson(jsonMapping);
+        var mapping = mappingFromJson(jsonMapping, provider);
 
         //        "pattern": {
 //            "N": [

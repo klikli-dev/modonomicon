@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookCommandModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
 import com.mojang.logging.LogUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -27,6 +28,8 @@ import java.util.stream.Stream;
 public abstract class BookProvider implements DataProvider {
 
     protected static final Logger LOGGER = LogUtils.getLogger();
+
+    protected final CompletableFuture<HolderLookup.Provider> registries;
 
     protected final PackOutput packOutput;
     protected final ModonomiconLanguageProvider lang;
@@ -43,9 +46,10 @@ public abstract class BookProvider implements DataProvider {
     /**
      * @param defaultLang The LanguageProvider to fill with this book provider. IMPORTANT: the Languag Provider needs to be added to the DataGenerator AFTER the BookProvider.
      */
-    public BookProvider(String bookId, PackOutput packOutput, String modid, ModonomiconLanguageProvider defaultLang, ModonomiconLanguageProvider... translations) {
+    public BookProvider(String bookId, PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries, String modid, ModonomiconLanguageProvider defaultLang, ModonomiconLanguageProvider... translations) {
         this.modid = modid;
         this.packOutput = packOutput;
+        this.registries = registries;
         this.lang = defaultLang;
         this.bookModels = new HashMap<>();
         this.translations = Stream.concat(Arrays.stream(translations), Stream.of(defaultLang)).map(l -> new AbstractMap.SimpleEntry<>(l.locale(), l)).collect(HashMap::new, (m, v) -> m.put(v.getKey(), v.getValue()), HashMap::putAll);
@@ -162,35 +166,36 @@ public abstract class BookProvider implements DataProvider {
 
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {
+        return this.registries.thenCompose(registries -> {
+            List<CompletableFuture<?>> futures = new ArrayList<>();
 
-        List<CompletableFuture<?>> futures = new ArrayList<>();
+            Path dataFolder = this.packOutput.getOutputFolder(PackOutput.Target.DATA_PACK);
 
-        Path dataFolder = this.packOutput.getOutputFolder(PackOutput.Target.DATA_PACK);
+            this.registerDefaultMacros();
+            this.generate();
 
-        this.registerDefaultMacros();
-        this.generate();
+            for (var bookModel : this.bookModels.values()) {
+                Path bookPath = this.getPath(dataFolder, bookModel);
+                futures.add(DataProvider.saveStable(cache, bookModel.toJson(registries), bookPath));
 
-        for (var bookModel : this.bookModels.values()) {
-            Path bookPath = this.getPath(dataFolder, bookModel);
-            futures.add(DataProvider.saveStable(cache, bookModel.toJson(), bookPath));
+                for (var bookCategoryModel : bookModel.getCategories()) {
+                    Path bookCategoryPath = this.getPath(dataFolder, bookCategoryModel);
+                    futures.add(DataProvider.saveStable(cache, bookCategoryModel.toJson(registries), bookCategoryPath));
 
-            for (var bookCategoryModel : bookModel.getCategories()) {
-                Path bookCategoryPath = this.getPath(dataFolder, bookCategoryModel);
-                futures.add(DataProvider.saveStable(cache, bookCategoryModel.toJson(), bookCategoryPath));
+                    for (var bookEntryModel : bookCategoryModel.getEntries()) {
+                        Path bookEntryPath = this.getPath(dataFolder, bookEntryModel);
+                        futures.add(DataProvider.saveStable(cache, bookEntryModel.toJson(registries), bookEntryPath));
+                    }
+                }
 
-                for (var bookEntryModel : bookCategoryModel.getEntries()) {
-                    Path bookEntryPath = this.getPath(dataFolder, bookEntryModel);
-                    futures.add(DataProvider.saveStable(cache, bookEntryModel.toJson(), bookEntryPath));
+                for (var bookCommandModel : bookModel.getCommands()) {
+                    Path bookCommandPath = this.getPath(dataFolder, bookCommandModel);
+                    futures.add(DataProvider.saveStable(cache, bookCommandModel.toJson(registries), bookCommandPath));
                 }
             }
 
-            for (var bookCommandModel : bookModel.getCommands()) {
-                Path bookCommandPath = this.getPath(dataFolder, bookCommandModel);
-                futures.add(DataProvider.saveStable(cache, bookCommandModel.toJson(), bookCommandPath));
-            }
-        }
-
-        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
+            return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
+        });
     }
 
     @Override

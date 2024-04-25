@@ -63,6 +63,7 @@ public class ItemStackUtil {
         ItemStack stack = new ItemStack(item, count);
 
         if (nbt != null) {
+            ItemStack.parse()
             stack.setTag(nbt);
         }
         return stack;

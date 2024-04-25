@@ -43,7 +43,7 @@ public record FluidBlockVertexConsumer(VertexConsumer prior, PoseStack pose, Blo
 
     @Override
     public VertexConsumer normal(float x, float y, float z) {
-        return this.prior.normal(this.pose.last().normal(), x, y, z);
+        return this.prior.normal(this.pose.last(), x, y, z);
     }
 
     @Override

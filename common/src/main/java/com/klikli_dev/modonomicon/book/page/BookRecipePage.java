@@ -14,6 +14,7 @@ import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -52,14 +53,14 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
         this.text = text;
     }
 
-    public static DataHolder commonFromJson(JsonObject json) {
-        var title1 = BookGsonHelper.getAsBookTextHolder(json, "title1", BookTextHolder.EMPTY);
+    public static DataHolder commonFromJson(JsonObject json, HolderLookup.Provider provider) {
+        var title1 = BookGsonHelper.getAsBookTextHolder(json, "title1", BookTextHolder.EMPTY, provider);
         ResourceLocation recipeId1 = json.has("recipe_id_1") ? ResourceLocation.tryParse(GsonHelper.getAsString(json, "recipe_id_1")) : null;
 
-        var title2 = BookGsonHelper.getAsBookTextHolder(json, "title2", BookTextHolder.EMPTY);
+        var title2 = BookGsonHelper.getAsBookTextHolder(json, "title2", BookTextHolder.EMPTY, provider);
         ResourceLocation recipeId2 = json.has("recipe_id_2") ? ResourceLocation.tryParse(GsonHelper.getAsString(json, "recipe_id_2")) : null;
 
-        var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY);
+        var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY, provider);
 
         return new DataHolder(title1, recipeId1, title2, recipeId2, text);
     }
