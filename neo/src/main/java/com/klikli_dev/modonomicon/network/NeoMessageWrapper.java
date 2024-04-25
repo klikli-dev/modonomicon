@@ -6,6 +6,7 @@ package com.klikli_dev.modonomicon.network;
 
 import com.klikli_dev.modonomicon.networking.Message;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
@@ -19,21 +20,23 @@ public class NeoMessageWrapper implements CustomPacketPayload {
         this.message = message;
     }
 
-    public NeoMessageWrapper(FriendlyByteBuf buffer, Function<FriendlyByteBuf, Message> messageFactory) {
+    public NeoMessageWrapper(RegistryFriendlyByteBuf buffer, Function<RegistryFriendlyByteBuf, Message> messageFactory) {
         this(messageFactory.apply(buffer));
     }
 
-    @Override
-    public void write(FriendlyByteBuf pBuffer) {
-        this.message.encode(pBuffer);
-    }
+
 
     @Override
-    public ResourceLocation id() {
-        return this.message.getId();
+    public void write(RegistryFriendlyByteBuf pBuffer) {
+        this.message.encode(pBuffer);
     }
 
     public Message message(){
         return this.message;
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return this.message.getId();
     }
 }
