@@ -10,39 +10,34 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Command;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 public class SendUnlockCodeToServerMessage implements Message {
 
-    public static final ResourceLocation ID = new ResourceLocation(Modonomicon.MOD_ID, "send_unlock_code_to_server");
+    public static final Type<SendUnlockCodeToServerMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "send_unlock_code_to_server"));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, SendUnlockCodeToServerMessage> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8,
+            (m) -> m.unlockCode,
+            SendUnlockCodeToServerMessage::new
+    );
+
     public String unlockCode;
 
     public SendUnlockCodeToServerMessage(String unlockCode) {
         this.unlockCode = unlockCode;
     }
 
-    public SendUnlockCodeToServerMessage(RegistryFriendlyByteBuf buf) {
-        this.decode(buf);
-    }
-
     @Override
-    public void encode(RegistryFriendlyByteBuf buf) {
-        buf.writeUtf(this.unlockCode);
-    }
-
-    @Override
-    public void decode(RegistryFriendlyByteBuf buf) {
-        this.unlockCode = buf.readUtf();
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return ID;
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
     @Override
