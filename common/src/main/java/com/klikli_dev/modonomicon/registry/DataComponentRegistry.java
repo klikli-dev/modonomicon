@@ -32,7 +32,6 @@ public class DataComponentRegistry {
     }
 
     private static <T> RegistryObject<DataComponentType<T>> register(String name, UnaryOperator<DataComponentType.Builder<T>> unaryOperator) {
-        //noinspection unchecked
-        return DATA_COMPONENTS.register(name, () -> (DataComponentType<T>) Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, name, ((DataComponentType.Builder<?>)unaryOperator.apply(DataComponentType.builder())).build()));
+        return DATA_COMPONENTS.register(name, () -> unaryOperator.apply(DataComponentType.builder()).build());
     }
 }

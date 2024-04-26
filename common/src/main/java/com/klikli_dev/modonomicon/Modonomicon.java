@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon;
 
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
+import com.klikli_dev.modonomicon.registry.DataComponentRegistry;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import com.klikli_dev.modonomicon.registry.SoundRegistry;
 import net.minecraft.resources.ResourceLocation;
@@ -28,6 +29,7 @@ public class Modonomicon {
     // code that gets invoked by the entry point of the loader specific projects.
     public static void init() {
         ItemRegistry.load();
+        DataComponentRegistry.load();
         SoundRegistry.load();
     }
 
