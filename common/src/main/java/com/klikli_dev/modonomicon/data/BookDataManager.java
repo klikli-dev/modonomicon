@@ -106,7 +106,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     public void onRecipesUpdated(Level level) {
         Client.get().resetUseFallbackFont();
         this.tryBuildBooks(level);
-        this.prerenderMarkdown();
+        this.prerenderMarkdown(level.registryAccess());
     }
 
     public void preLoad() {
@@ -219,12 +219,12 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
      * @param bookObject the json object representing the content
      * @return false if the condition is not met and the content should not be loaded.
      */
-    private boolean testConditionOnLoad(ResourceLocation key, JsonObject bookObject) {
+    private boolean testConditionOnLoad(ResourceLocation key, JsonObject bookObject, HolderLookup.Provider provider) {
         if (!bookObject.has("condition")) {
             return true; //no condition -> always load
         }
 
-        return BookCondition.fromJson(bookObject.getAsJsonObject("condition")).testOnLoad();
+        return BookCondition.fromJson(bookObject.getAsJsonObject("condition"), provider).testOnLoad();
     }
 
 
@@ -303,7 +303,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
                 BookErrorManager.get().getContextHelper().categoryId = categoryId;
                 //test if we should load the category at all
-                if (!this.testConditionOnLoad(categoryId, entry.getValue())) {
+                if (!this.testConditionOnLoad(categoryId, entry.getValue(), this.registries)) {
                     continue;
                 }
 
@@ -333,7 +333,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
                 BookErrorManager.get().getContextHelper().entryId = entryId;
                 //test if we should load the category at all
-                if (!this.testConditionOnLoad(entryId, entry.getValue())) {
+                if (!this.testConditionOnLoad(entryId, entry.getValue(), this.registries)) {
                     continue;
                 }
 
