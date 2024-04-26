@@ -86,7 +86,7 @@ public class PageRendererRegistry {
      * Can be called at any time.
      */
     public static void registerFluidStackNotToRender(FluidHolder stack) {
-        FLUIDS_NOT_TO_RENDER.add(stack.getFluid());
+        FLUIDS_NOT_TO_RENDER.add(stack.getFluid().value());
     }
 
     /**

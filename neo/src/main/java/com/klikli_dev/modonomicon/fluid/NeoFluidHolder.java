@@ -6,6 +6,9 @@
 
 package com.klikli_dev.modonomicon.fluid;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -18,15 +21,15 @@ public class NeoFluidHolder implements FluidHolder {
     }
 
     public NeoFluidHolder(FluidHolder fluid) {
-        this(fluid.getFluid(), fluid.getAmount(), fluid.getTag());
+        this(fluid.getFluid(), fluid.getAmount(), fluid.getComponents().asPatch());
     }
 
-    public NeoFluidHolder(Fluid fluid, int amount, CompoundTag tag) {
-        this.fluidStack = new FluidStack(fluid, amount, tag);
+    public NeoFluidHolder(Holder<Fluid> fluid, int amount, DataComponentPatch patch) {
+        this.fluidStack = new FluidStack(fluid, amount, patch);
     }
 
     public static FluidStack toStack(FluidHolder fluidHolder) {
-        return new FluidStack(fluidHolder.getFluid(), fluidHolder.getAmount(), fluidHolder.getTag());
+        return new FluidStack(fluidHolder.getFluid(), fluidHolder.getAmount(), fluidHolder.getComponents().asPatch());
     }
 
     public static NeoFluidHolder empty() {
@@ -34,8 +37,8 @@ public class NeoFluidHolder implements FluidHolder {
     }
 
     @Override
-    public Fluid getFluid() {
-        return this.fluidStack.getFluid();
+    public Holder<Fluid> getFluid() {
+        return this.fluidStack.getFluidHolder();
     }
 
     @Override
@@ -54,26 +57,16 @@ public class NeoFluidHolder implements FluidHolder {
     }
 
     @Override
-    public boolean hasTag() {
-        return this.fluidStack.hasTag();
-    }
-
-    @Override
-    public CompoundTag getTag() {
-        return this.fluidStack.getTag();
-    }
-
-    @Override
-    public void setTag(CompoundTag tag) {
-        this.fluidStack.setTag(tag);
+    public PatchedDataComponentMap getComponents() {
+        return this.fluidStack.getComponents();
     }
 
     @Override
     public FluidHolder copy() {
-        return new NeoFluidHolder(this.getFluid(), this.getAmount(), this.getTag());
+        return new NeoFluidHolder(this.getFluid(), this.getAmount(), this.getComponents().asPatch());
     }
 
     public FluidStack toStack() {
-        return new FluidStack(this.getFluid(), this.getAmount(), this.getTag());
+        return new FluidStack(this.getFluid(), this.getAmount(), this.getComponents().asPatch());
     }
 }
