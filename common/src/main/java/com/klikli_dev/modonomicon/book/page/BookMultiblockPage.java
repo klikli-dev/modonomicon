@@ -50,7 +50,7 @@ public class BookMultiblockPage extends BookPage {
         var showVisualizeButton = GsonHelper.getAsBoolean(json, "show_visualize_button", true);
         var anchor = GsonHelper.getAsString(json, "anchor", "");
         var condition = json.has("condition")
-                ? BookCondition.fromJson(json.getAsJsonObject("condition"))
+                ? BookCondition.fromJson(json.getAsJsonObject("condition"), provider)
                 : new BookNoneCondition();
         return new BookMultiblockPage(multiblockName, text, multiblockId, showVisualizeButton, anchor, condition);
     }

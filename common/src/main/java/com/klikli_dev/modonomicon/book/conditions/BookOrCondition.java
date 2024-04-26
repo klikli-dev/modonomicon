@@ -41,7 +41,7 @@ public class BookOrCondition extends BookCondition {
         for (var j : GsonHelper.getAsJsonArray(json, "children")) {
             if (!j.isJsonObject())
                 throw new JsonSyntaxException("Condition children must be an array of JsonObjects.");
-            children.add(BookCondition.fromJson(j.getAsJsonObject()));
+            children.add(BookCondition.fromJson(j.getAsJsonObject(), provider));
         }
         var tooltip = tooltipFromJson(json, provider);
         return new BookOrCondition(tooltip, children.toArray(new BookCondition[children.size()]));

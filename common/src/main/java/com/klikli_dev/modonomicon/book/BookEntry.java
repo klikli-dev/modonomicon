@@ -127,7 +127,7 @@ public class BookEntry {
 
         BookCondition condition = new BookNoneCondition(); //default to unlocked
         if (json.has("condition")) {
-            condition = BookCondition.fromJson(json.getAsJsonObject("condition"));
+            condition = BookCondition.fromJson(json.getAsJsonObject("condition"), provider);
         }
 
         ResourceLocation categoryToOpen = null;

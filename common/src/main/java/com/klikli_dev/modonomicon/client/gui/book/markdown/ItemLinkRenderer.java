@@ -6,9 +6,7 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
-import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
-import com.klikli_dev.modonomicon.util.ItemStackUtil;
 import com.mojang.brigadier.StringReader;
 import net.minecraft.commands.arguments.item.ItemInput;
 import net.minecraft.commands.arguments.item.ItemParser;
@@ -54,10 +52,10 @@ public class ItemLinkRenderer implements LinkRenderer {
 
             var itemParser = new ItemParser(context.getProvider());
             var itemStack = ItemStack.EMPTY;
-            try{
+            try {
                 var itemId = link.getDestination().substring(PROTOCOL_ITEM_LENGTH);
                 var reader = new StringReader(itemId);
-                var itemResult= itemParser.parse(reader);
+                var itemResult = itemParser.parse(reader);
                 var itemInput = new ItemInput(itemResult.item(), itemResult.components());
                 itemStack = itemInput.createItemStack(1, false);
             } catch (Exception e) {

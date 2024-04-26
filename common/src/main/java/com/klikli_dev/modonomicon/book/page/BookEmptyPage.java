@@ -24,7 +24,7 @@ public class BookEmptyPage extends BookPage {
     public static BookEmptyPage fromJson(JsonObject json, HolderLookup.Provider provider) {
         var anchor = GsonHelper.getAsString(json, "anchor", "");
         var condition = json.has("condition")
-                ? BookCondition.fromJson(json.getAsJsonObject("condition"))
+                ? BookCondition.fromJson(json.getAsJsonObject("condition"), provider)
                 : new BookNoneCondition();
         return new BookEmptyPage(anchor, condition);
     }
