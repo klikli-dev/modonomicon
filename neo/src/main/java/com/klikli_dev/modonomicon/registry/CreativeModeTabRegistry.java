@@ -42,9 +42,7 @@ public class CreativeModeTabRegistry {
                 if (b.generateBookItem()) {
                     ItemStack stack = new ItemStack(ItemRegistry.MODONOMICON.get());
 
-                    CompoundTag cmp = new CompoundTag();
-                    cmp.putString(ModonomiconConstants.Nbt.ITEM_BOOK_ID_TAG, b.getId().toString());
-                    stack.setTag(cmp);
+                    stack.set(DataComponentRegistry.BOOK_ID.get(), b.getId());
 
                     event.accept(stack);
                 }
