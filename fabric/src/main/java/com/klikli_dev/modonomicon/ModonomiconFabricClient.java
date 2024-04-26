@@ -38,7 +38,7 @@ public class ModonomiconFabricClient implements ClientModInitializer {
     public void onInitializeClient() {
 
         ClientConfig.init();
-        ClientNetworking.registerMessages();
+        ClientNetworking.registerReceivers();
 
         PageRendererRegistry.registerPageRenderers();
 

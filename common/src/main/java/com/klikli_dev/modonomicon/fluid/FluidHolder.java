@@ -24,7 +24,7 @@ public interface FluidHolder {
 
     void setAmount(int amount);
 
-    public PatchedDataComponentMap getComponents();
+    public DataComponentPatch getComponents();
 
     FluidHolder copy();
 }

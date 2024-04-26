@@ -12,13 +12,13 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 public class ClientNetworking {
 
-    public static void registerMessages() {
-        ClientPlayNetworking.registerGlobalReceiver(SendUnlockCodeToClientMessage.ID, new ClientMessageHandler<>(SendUnlockCodeToClientMessage::new));
-        ClientPlayNetworking.registerGlobalReceiver(SyncBookDataMessage.ID, new ClientMessageHandler<>(SyncBookDataMessage::new));
-        ClientPlayNetworking.registerGlobalReceiver(SyncBookUnlockStatesMessage.ID, new ClientMessageHandler<>(SyncBookUnlockStatesMessage::new));
-        ClientPlayNetworking.registerGlobalReceiver(SyncBookVisualStatesMessage.ID, new ClientMessageHandler<>(SyncBookVisualStatesMessage::new));
-        ClientPlayNetworking.registerGlobalReceiver(SyncMultiblockDataMessage.ID, new ClientMessageHandler<>(SyncMultiblockDataMessage::new));
-        ClientPlayNetworking.registerGlobalReceiver(ReloadResourcesOnClientMessage.ID, new ClientMessageHandler<>(ReloadResourcesOnClientMessage::new));
-        ClientPlayNetworking.registerGlobalReceiver(SendAdvancementToClientMessage.ID, new ClientMessageHandler<>(SendAdvancementToClientMessage::new));
+    public static void registerReceivers() {
+        ClientPlayNetworking.registerGlobalReceiver(SendUnlockCodeToClientMessage.TYPE, new ClientMessageHandler<>());
+        ClientPlayNetworking.registerGlobalReceiver(SyncBookDataMessage.TYPE, new ClientMessageHandler<>());
+        ClientPlayNetworking.registerGlobalReceiver(SyncBookUnlockStatesMessage.TYPE, new ClientMessageHandler<>());
+        ClientPlayNetworking.registerGlobalReceiver(SyncBookVisualStatesMessage.TYPE, new ClientMessageHandler<>());
+        ClientPlayNetworking.registerGlobalReceiver(SyncMultiblockDataMessage.TYPE, new ClientMessageHandler<>());
+        ClientPlayNetworking.registerGlobalReceiver(ReloadResourcesOnClientMessage.TYPE, new ClientMessageHandler<>());
+        ClientPlayNetworking.registerGlobalReceiver(SendAdvancementToClientMessage.TYPE, new ClientMessageHandler<>());
     }
 }

@@ -48,6 +48,8 @@ public class ModonomiconFabric implements ModInitializer {
 
         //Equivalent to Common setup
         Networking.registerMessages();
+        Networking.registerReceivers();
+
         LoaderRegistry.registerLoaders();
 
         //register data managers as reload listeners

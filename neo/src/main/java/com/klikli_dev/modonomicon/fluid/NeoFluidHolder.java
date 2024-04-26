@@ -21,7 +21,7 @@ public class NeoFluidHolder implements FluidHolder {
     }
 
     public NeoFluidHolder(FluidHolder fluid) {
-        this(fluid.getFluid(), fluid.getAmount(), fluid.getComponents().asPatch());
+        this(fluid.getFluid(), fluid.getAmount(), fluid.getComponents());
     }
 
     public NeoFluidHolder(Holder<Fluid> fluid, int amount, DataComponentPatch patch) {
@@ -29,7 +29,7 @@ public class NeoFluidHolder implements FluidHolder {
     }
 
     public static FluidStack toStack(FluidHolder fluidHolder) {
-        return new FluidStack(fluidHolder.getFluid(), fluidHolder.getAmount(), fluidHolder.getComponents().asPatch());
+        return new FluidStack(fluidHolder.getFluid(), fluidHolder.getAmount(), fluidHolder.getComponents());
     }
 
     public static NeoFluidHolder empty() {
@@ -57,16 +57,16 @@ public class NeoFluidHolder implements FluidHolder {
     }
 
     @Override
-    public PatchedDataComponentMap getComponents() {
-        return this.fluidStack.getComponents();
+    public DataComponentPatch getComponents() {
+        return this.fluidStack.getComponentsPatch();
     }
 
     @Override
     public FluidHolder copy() {
-        return new NeoFluidHolder(this.getFluid(), this.getAmount(), this.getComponents().asPatch());
+        return new NeoFluidHolder(this.getFluid(), this.getAmount(), this.getComponents());
     }
 
     public FluidStack toStack() {
-        return new FluidStack(this.getFluid(), this.getAmount(), this.getComponents().asPatch());
+        return new FluidStack(this.getFluid(), this.getAmount(), this.getComponents());
     }
 }

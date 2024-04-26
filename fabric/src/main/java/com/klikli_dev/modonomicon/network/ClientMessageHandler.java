@@ -15,20 +15,16 @@ import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.function.Function;
 
-public class ClientMessageHandler<T extends Message> implements ClientPlayNetworking.PlayChannelHandler {
+public class ClientMessageHandler<T extends Message> implements ClientPlayNetworking.PlayPayloadHandler<T> {
 
-    private final Function<FriendlyByteBuf, T> decoder;
 
-    public ClientMessageHandler(Function<FriendlyByteBuf, T> decoder) {
-        this.decoder = decoder;
+    public ClientMessageHandler() {
     }
 
     @Override
-    public void receive(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender responseSender) {
-        var packet = this.decoder.apply(buf);
-
-        client.execute(() -> {
-            packet.onClientReceived(client, client.player);
+    public void receive(T payload, ClientPlayNetworking.Context context) {
+        context.client().execute(() -> {
+            payload.onClientReceived(context.client(), context.player());
         });
     }
 }

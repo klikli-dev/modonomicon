@@ -50,7 +50,7 @@ public class FluidRenderHelper {
      */
     public static void drawFluid(GuiGraphics guiGraphics, final int width, final int height, FabricFluidHolder fluidHolder, int capacity) {
         var fluidVariant = fluidHolder.toVariant();
-        Fluid fluid = fluidHolder.getFluid();
+        Fluid fluid = fluidHolder.getFluid().value();
         if (fluid.isSame(Fluids.EMPTY)) {
             return;
         }
@@ -144,7 +144,7 @@ public class FluidRenderHelper {
 
     public static List<Component> getTooltip(FabricFluidHolder fluidHolder, int capacity, TooltipFlag tooltipFlag, FluidHelper.TooltipMode tooltipMode) {
         var variant = fluidHolder.toVariant();
-        Fluid fluidType = fluidHolder.getFluid();
+        Fluid fluidType = fluidHolder.getFluid().value();
         try {
             if (fluidType.isSame(Fluids.EMPTY)) {
                 return new ArrayList<>();

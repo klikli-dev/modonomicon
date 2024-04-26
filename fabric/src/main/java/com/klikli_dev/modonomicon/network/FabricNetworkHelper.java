@@ -16,23 +16,17 @@ import net.minecraft.server.level.ServerPlayer;
 public class FabricNetworkHelper implements NetworkHelper {
     @Override
     public <T extends Message> void sendTo(ServerPlayer player, T message) {
-        var buf = PacketByteBufs.create();
-        message.encode(buf);
-        ServerPlayNetworking.send(player, message.getId(), buf);
+        ServerPlayNetworking.send(player, message);
     }
 
     @Override
     public <T extends Message> void sendToSplit(ServerPlayer player, T message) {
         //TODO: Fabric: Implement split packets if needed
-        var buf = PacketByteBufs.create();
-        message.encode(buf);
-        ServerPlayNetworking.send(player, message.getId(), buf);
+        ServerPlayNetworking.send(player, message);
     }
 
     @Override
     public <T extends Message> void sendToServer(T message) {
-        var buf = PacketByteBufs.create();
-        message.encode(buf);
-        ClientPlayNetworking.send(message.getId(), buf);
+        ClientPlayNetworking.send(message);
     }
 }
