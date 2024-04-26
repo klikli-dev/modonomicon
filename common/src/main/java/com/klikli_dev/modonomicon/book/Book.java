@@ -86,19 +86,6 @@ public class Book {
     protected int searchButtonYOffset;
     protected int readAllButtonYOffset;
 
-    protected Supplier<ItemStack> bookItem = Suppliers.memoize(() -> {
-        if (this.customBookItem != null) {
-            var parsed = ItemStackUtil.parseItemStackString(this.customBookItem.toString());
-            return ItemStackUtil.loadFromParsed(parsed);
-        }
-        var stack = new ItemStack(ItemRegistry.MODONOMICON.get());
-        var tag = new CompoundTag();
-        tag.putString(Nbt.ITEM_BOOK_ID_TAG, this.id.toString());
-
-        stack.set(DataComponentRegistry.BOOK_ID.get(), this.id);
-        return stack;
-    });
-
     public Book(ResourceLocation id, String name, String tooltip, ResourceLocation model, boolean generateBookItem,
                 ResourceLocation customBookItem, String creativeTab, ResourceLocation font, ResourceLocation bookOverviewTexture, ResourceLocation frameTexture,
                 BookFrameOverlay topFrameOverlay, BookFrameOverlay bottomFrameOverlay, BookFrameOverlay leftFrameOverlay, BookFrameOverlay rightFrameOverlay,
@@ -308,10 +295,6 @@ public class Book {
         buffer.writeShort(this.searchButtonXOffset);
         buffer.writeShort(this.searchButtonYOffset);
         buffer.writeShort(this.readAllButtonYOffset);
-    }
-
-    public ItemStack getBookItem() {
-        return this.bookItem.get();
     }
 
     public boolean autoAddReadConditions() {

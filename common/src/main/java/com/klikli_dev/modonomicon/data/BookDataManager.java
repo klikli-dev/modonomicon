@@ -129,7 +129,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         }
     }
 
-    public void prerenderMarkdown() {
+    public void prerenderMarkdown(HolderLookup.Provider provider) {
         Modonomicon.LOG.info("Pre-rendering markdown ...");
         for (var book : this.books.values()) {
 
@@ -137,7 +137,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             BookErrorManager.get().setCurrentBookId(book.getId());
 
             //TODO: allow modders to configure this renderer
-            var textRenderer = new BookTextRenderer(book);
+            var textRenderer = new BookTextRenderer(book, provider);
 
             if (!BookErrorManager.get().hasErrors(book.getId())) {
                 try {

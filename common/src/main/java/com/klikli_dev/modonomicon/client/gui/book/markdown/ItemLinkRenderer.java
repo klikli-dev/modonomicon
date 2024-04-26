@@ -6,14 +6,19 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.util.ItemStackUtil;
+import com.mojang.brigadier.StringReader;
+import net.minecraft.commands.arguments.item.ItemInput;
+import net.minecraft.commands.arguments.item.ItemParser;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.HoverEvent.Action;
 import net.minecraft.network.chat.HoverEvent.ItemStackInfo;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.item.ItemStack;
 import org.commonmark.node.Link;
 import org.commonmark.node.Node;
 import org.commonmark.node.Text;
@@ -47,8 +52,17 @@ public class ItemLinkRenderer implements LinkRenderer {
             var currentColor = context.getCurrentStyle().getColor();
 
 
-            var itemId = link.getDestination().substring(PROTOCOL_ITEM_LENGTH);
-            var itemStack = ItemStackUtil.loadFromParsed(ItemStackUtil.parseItemStackString(itemId));
+            var itemParser = new ItemParser(context.getProvider());
+            var itemStack = ItemStack.EMPTY;
+            try{
+                var itemId = link.getDestination().substring(PROTOCOL_ITEM_LENGTH);
+                var reader = new StringReader(itemId);
+                var itemResult= itemParser.parse(reader);
+                var itemInput = new ItemInput(itemResult.item(), itemResult.components());
+                itemStack = itemInput.createItemStack(1, false);
+            } catch (Exception e) {
+                BookErrorManager.get().error("Failed to parse item link.", e);
+            }
 
             //if we have a color we use it, otherwise we use item link default.
             context.setCurrentStyle(context.getCurrentStyle()

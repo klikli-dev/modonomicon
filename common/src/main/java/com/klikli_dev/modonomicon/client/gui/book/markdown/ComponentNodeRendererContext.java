@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
 import com.klikli_dev.modonomicon.book.Book;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -108,4 +109,9 @@ public interface ComponentNodeRendererContext {
      * Gets the book we are rendering.
      */
     Book getBook();
+
+    /**
+     * The Holder Lookup provider that may be used in e.g. item parsing.
+     */
+    HolderLookup.Provider getProvider();
 }

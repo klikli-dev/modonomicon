@@ -280,7 +280,7 @@ public class BookSearchScreen extends BookPaginatedScreen {
     public void init() {
         super.init();
 
-        var textRenderer = new BookTextRenderer(this.getBook());
+        var textRenderer = new BookTextRenderer(this.getBook(), this.minecraft.level.registryAccess());
         this.prerenderMarkdown(textRenderer);
 
         //we filter out entries that are locked or in locked categories

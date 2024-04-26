@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ext.ComponentStrikethroughExtension;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ext.ComponentUnderlineExtension;
 import com.klikli_dev.modonomicon.data.BookDataManager;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -26,13 +27,16 @@ public class BookTextRenderer {
 
     private final Book book;
 
-    public BookTextRenderer(Book book) {
+    private final HolderLookup.Provider provider;
+
+    public BookTextRenderer(Book book, HolderLookup.Provider provider) {
         //TODO: make parser configurable for modders
         this.extensions = List.of(ComponentStrikethroughExtension.create(), ComponentUnderlineExtension.create());
         this.markdownParser = Parser.builder()
                 .extensions(this.extensions)
                 .build();
         this.book = book;
+        this.provider = provider;
     }
 
     public List<MutableComponent> render(String markdown) {
@@ -54,6 +58,6 @@ public class BookTextRenderer {
 
         var document = this.markdownParser.parse(markdown);
 
-        return renderer.render(document, this.book);
+        return renderer.render(document, this.book, this.provider);
     }
 }
