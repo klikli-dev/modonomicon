@@ -173,7 +173,7 @@ public class FluidRenderHelper {
             }
             return tooltip;
         } catch (RuntimeException e) {
-            Component displayName = fluidStack.getDisplayName();
+            Component displayName = fluidStack.getHoverName();
             Modonomicon.LOG.error("Failed to get tooltip for fluid: " + displayName, e);
         }
 
@@ -187,7 +187,7 @@ public class FluidRenderHelper {
             return tooltip;
         }
 
-        Component displayName = fluidStack.getDisplayName();
+        Component displayName = fluidStack.getHoverName();
         tooltip.add(displayName);
 
         if (tooltipFlag.isAdvanced()) {
