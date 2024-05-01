@@ -7,9 +7,8 @@
 package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.api.events.EntryClickedEvent;
-import com.klikli_dev.modonomicon.book.BookCategory;
-import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
-import com.klikli_dev.modonomicon.book.BookEntry;
+import com.klikli_dev.modonomicon.book.*;
+import com.klikli_dev.modonomicon.book.entries.*;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
@@ -27,6 +26,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.*;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -141,25 +141,22 @@ public class BookCategoryScreen {
         return false;
     }
 
-    public BookContentScreen openEntry(BookEntry entry) {
+    public @Nullable BookContentScreen openEntry(BookEntry entry) {
         if (!BookUnlockStateManager.get().isReadFor(Minecraft.getInstance().player, entry)) {
             Services.NETWORK.sendToServer(new BookEntryReadMessage(entry.getBook().getId(), entry.getId()));
         }
+        
+        return entry.openEntry(this);
+    }
 
-        if (entry.getCategoryToOpen() != null) {
-            this.bookOverviewScreen.changeCategory(entry.getCategoryToOpen());
-            return null;
-        }
-
-        this.openEntry = entry.getId();
-
+    public @Nullable BookContentScreen openContentEntry(ContentBookEntry entry) {
         //we check if the content screen was already added, e.g. by the book gui manager
         if (BookGuiManager.get().isEntryAlreadyDisplayed(entry))
             return (BookContentScreen) Minecraft.getInstance().screen;
-
-        var bookContentScreen = new BookContentScreen(this.bookOverviewScreen, entry);
+        
+        var bookContentScreen = new BookContentScreen(this.bookOverviewScreen.getCurrentCategoryScreen().bookOverviewScreen, entry);
         ClientServices.GUI.pushGuiLayer(bookContentScreen);
-
+        
         return bookContentScreen;
     }
 
@@ -436,4 +433,9 @@ public class BookCategoryScreen {
     public void onCloseEntry(BookContentScreen screen) {
         this.openEntry = null;
     }
+    
+    public BookOverviewScreen getBookOverviewScreen() {
+        return this.bookOverviewScreen;
+    }
+    
 }

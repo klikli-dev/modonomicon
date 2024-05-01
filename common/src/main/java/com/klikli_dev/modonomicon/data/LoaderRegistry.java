@@ -7,12 +7,14 @@
 package com.klikli_dev.modonomicon.data;
 
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.api.*;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
 import com.klikli_dev.modonomicon.book.conditions.*;
+import com.klikli_dev.modonomicon.book.entries.*;
 import com.klikli_dev.modonomicon.book.page.*;
 import com.klikli_dev.modonomicon.multiblock.DenseMultiblock;
 import com.klikli_dev.modonomicon.multiblock.SparseMultiblock;
@@ -26,6 +28,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class LoaderRegistry {
+    
+    private static final Map<ResourceLocation, BookEntryJsonLoader<? extends BookEntry>> entryTypeJsonLoaders = new ConcurrentHashMap<>();
+    private static final Map<ResourceLocation, NetworkLoader<? extends BookEntry>> entryTypeNetworkLoaders = new ConcurrentHashMap<>();
 
     private static final Map<ResourceLocation, JsonLoader<? extends BookPage>> pageJsonLoaders = new ConcurrentHashMap<>();
     private static final Map<ResourceLocation, NetworkLoader<? extends BookPage>> pageNetworkLoaders = new ConcurrentHashMap<>();
@@ -46,11 +51,17 @@ public class LoaderRegistry {
      * Call from common setup
      */
     public static void registerLoaders() {
+        registerDefaultBookEntryTypes();
         registerDefaultPageLoaders();
         registerDefaultConditionLoaders();
         registerDefaultPredicates();
         registerDefaultStateMatcherLoaders();
         registerDefaultMultiblockLoaders();
+    }
+    
+    private static void registerDefaultBookEntryTypes() {
+        registerEntryType(ModonomiconConstants.Data.EntryType.CONTENT, ContentBookEntry::fromJson, ContentBookEntry::fromNetwork);
+        registerEntryType(ModonomiconConstants.Data.EntryType.CATEGORY_LINK, CategoryLinkBookEntry::fromJson, CategoryLinkBookEntry::fromNetwork);
     }
 
     private static void registerDefaultPageLoaders() {
@@ -102,7 +113,16 @@ public class LoaderRegistry {
         //noinspection deprecation
         registerPredicate(Modonomicon.loc("non_solid"), (getter, pos, state) -> !state.isSolid());
     }
-
+    
+    
+    /**
+     * Call from client setup
+     */
+    public static void registerEntryType(ResourceLocation id, BookEntryJsonLoader<? extends BookEntry> jsonLoader,
+                                         NetworkLoader<? extends BookEntry> networkLoader) {
+        entryTypeJsonLoaders.put(id, jsonLoader);
+        entryTypeNetworkLoaders.put(id, networkLoader);
+    }
 
     /**
      * Call from common setup
@@ -146,7 +166,23 @@ public class LoaderRegistry {
     public static void registerPredicate(ResourceLocation id, TriPredicate<BlockGetter, BlockPos, BlockState> predicate) {
         predicates.put(id, predicate);
     }
-
+    
+    public static BookEntryJsonLoader<? extends BookEntry> getEntryJsonLoader(ResourceLocation id) {
+        var loader = entryTypeJsonLoaders.get(id);
+        if (loader == null) {
+            throw new IllegalArgumentException("No json loader registered for entry type " + id);
+        }
+        return loader;
+    }
+    
+    public static NetworkLoader<? extends BookEntry> getEntryNetworkLoader(ResourceLocation id) {
+        var loader = entryTypeNetworkLoaders.get(id);
+        if (loader == null) {
+            throw new IllegalArgumentException("No network loader registered for entry type " + id);
+        }
+        return loader;
+    }
+    
     public static JsonLoader<? extends StateMatcher> getStateMatcherJsonLoader(ResourceLocation id) {
         var loader = stateMatcherJsonLoaders.get(id);
         if (loader == null) {

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // 1.20.5	2024-04-26T13:12:00.5281039	Modonomicon/Books: modonomicon
+=======
+// 1.20.6	2024-05-01T11:54:18.9331027	Modonomicon/Books: modonomicon
+>>>>>>> 6a472c31 (feat: Dynamic BookEntries (#202))
 beb829bd9c24d3855aba996e5e08ffd8c5e41ccc data\modonomicon\modonomicon\books\demo\categories\features.json
 99b4f77feb6cfcff5f822c398513ea5013587c61 data\modonomicon\modonomicon\books\demo\categories\hidden.json
 4479286b949d181d91acb81168151581792ef7f2 data\modonomicon\modonomicon\books\demo\entries\features\condition_level_1.json

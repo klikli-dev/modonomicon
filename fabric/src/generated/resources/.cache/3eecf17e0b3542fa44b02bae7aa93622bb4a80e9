@@ -1,2 +1,6 @@
+<<<<<<< HEAD
 // 1.20.5	2024-04-26T13:12:00.5311058	Modonomicon/Languages: en_us
+=======
+// 1.20.6	2024-05-01T11:54:18.9371068	Modonomicon/Languages: en_us
+>>>>>>> 6a472c31 (feat: Dynamic BookEntries (#202))
 83072fd92a529dfbdb45fa79d1cbf8358395ee89 assets\modonomicon\lang\en_us.json

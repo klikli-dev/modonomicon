@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.client.gui.book;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.*;
+import com.klikli_dev.modonomicon.book.entries.*;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
@@ -69,7 +70,7 @@ public class BookContentScreen extends BookPaginatedScreen {
     public static final int CLICK_SAFETY_MARGIN = 20;
 
     private static long lastTurnPageSoundTime;
-    private final BookEntry entry;
+    private final ContentBookEntry entry;
     private final ResourceLocation bookContentTexture;
     private final ItemParser itemParser;
     public int ticksInBook;
@@ -88,7 +89,7 @@ public class BookContentScreen extends BookPaginatedScreen {
     private FluidHolder tooltipFluidStack;
     private boolean isHoveringItemLink;
 
-    public BookContentScreen(BookOverviewScreen parentScreen, BookEntry entry) {
+    public BookContentScreen(BookOverviewScreen parentScreen, ContentBookEntry entry) {
         super(Component.literal(""), parentScreen);
 
         this.minecraft = Minecraft.getInstance();
@@ -141,7 +142,7 @@ public class BookContentScreen extends BookPaginatedScreen {
         return this.minecraft;
     }
 
-    public BookEntry getEntry() {
+    public ContentBookEntry getEntry() {
         return this.entry;
     }
 

@@ -7,7 +7,7 @@
 package com.klikli_dev.modonomicon.book.conditions.context;
 
 import com.klikli_dev.modonomicon.book.Book;
-import com.klikli_dev.modonomicon.book.BookEntry;
+import com.klikli_dev.modonomicon.book.entries.BookEntry;
 
 public class BookConditionEntryContext extends BookConditionContext {
     public final BookEntry entry;

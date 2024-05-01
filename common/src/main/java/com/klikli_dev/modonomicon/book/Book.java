@@ -8,6 +8,8 @@ package com.klikli_dev.modonomicon.book;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.Nbt;
+import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import net.minecraft.core.HolderLookup;
@@ -325,7 +327,7 @@ public class Book {
     }
 
     public void addEntry(BookEntry entry) {
-        this.entries.putIfAbsent(entry.id, entry);
+        this.entries.putIfAbsent(entry.getId(), entry);
     }
 
     public BookEntry getEntry(ResourceLocation id) {

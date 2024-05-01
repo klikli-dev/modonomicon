@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.book;
 
 import com.google.gson.JsonObject;
+import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;

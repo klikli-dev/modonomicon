@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.book.page;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.book.BookEntry;
+import com.klikli_dev.modonomicon.book.entries.ContentBookEntry;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
@@ -109,7 +109,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
         return this.text;
     }
 
-    protected RecipeHolder<T> loadRecipe(Level level, BookEntry entry, ResourceLocation recipeId) {
+    protected RecipeHolder<T> loadRecipe(Level level, ContentBookEntry entry, ResourceLocation recipeId) {
         if (recipeId == null) {
             return null;
         }
@@ -127,11 +127,12 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
     protected abstract ItemStack getRecipeOutput(Level level, RecipeHolder<T> recipe);
 
     private RecipeHolder<T> getRecipe(Level level, ResourceLocation id) {
+        //noinspection unchecked
         return (RecipeHolder<T>) level.getRecipeManager().byKey(id).filter(recipe -> recipe.value().getType() == this.recipeType).orElse(null);
     }
 
     @Override
-    public void build(Level level, BookEntry parentEntry, int pageNum) {
+    public void build(Level level, ContentBookEntry parentEntry, int pageNum) {
         super.build(level, parentEntry, pageNum);
 
         this.recipe1 = this.loadRecipe(level, parentEntry, this.recipeId1);

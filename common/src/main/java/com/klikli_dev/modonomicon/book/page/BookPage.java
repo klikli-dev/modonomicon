@@ -7,7 +7,7 @@
 package com.klikli_dev.modonomicon.book.page;
 
 import com.klikli_dev.modonomicon.book.Book;
-import com.klikli_dev.modonomicon.book.BookEntry;
+import com.klikli_dev.modonomicon.book.entries.ContentBookEntry;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -17,7 +17,7 @@ import net.minecraft.world.level.Level;
 public abstract class BookPage {
 
     protected Book book;
-    protected BookEntry parentEntry;
+    protected ContentBookEntry parentEntry;
     protected int pageNumber;
 
     protected String anchor;
@@ -41,7 +41,7 @@ public abstract class BookPage {
     /**
      * call after loading the book jsons to finalize.
      */
-    public void build(Level level, BookEntry parentEntry, int pageNum) {
+    public void build(Level level, ContentBookEntry parentEntry, int pageNum) {
         this.parentEntry = parentEntry;
         this.pageNumber = pageNum;
         this.book = this.parentEntry.getBook();
@@ -63,11 +63,11 @@ public abstract class BookPage {
         BookCondition.toNetwork(this.condition, buffer);
     }
 
-    public BookEntry getParentEntry() {
+    public ContentBookEntry getParentEntry() {
         return this.parentEntry;
     }
 
-    public void setParentEntry(BookEntry parentEntry) {
+    public void setParentEntry(ContentBookEntry parentEntry) {
         this.parentEntry = parentEntry;
     }
 
