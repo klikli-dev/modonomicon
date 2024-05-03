@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.4-1.71.0] - 2024-05-03
+### :sparkles: New Features
+- [`ddae8d4`](https://github.com/klikli-dev/modonomicon/commit/ddae8d4290de616c2f4d317f21f8f76617c09595) - Dynamic BookEntries *(PR [#202](https://github.com/klikli-dev/modonomicon/pull/202) by [@klikli-dev](https://github.com/klikli-dev))*
+- [`e08c574`](https://github.com/klikli-dev/modonomicon/commit/e08c5745cda6d2affcd459a8936a4907e80bd649) - Catch errors on entry rendering sooner ([#205](https://github.com/klikli-dev/modonomicon/pull/205)) - thanks @DaFuqs *(commit by [@DaFuqs](https://github.com/DaFuqs))*
+
+### :wrench: Chores
+- [`757f399`](https://github.com/klikli-dev/modonomicon/commit/757f399b85e74d3406f8cd4db63dc3da1024412b) - re-establish reuse compliance *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.4-1.69.1] - 2024-04-21
 ### :sparkles: New Features
 - [`29e124e`](https://github.com/klikli-dev/modonomicon/commit/29e124ed866d60f9f46bd0c9513069400e9681a4) - forge support for 1.20.4 *(PR [#203](https://github.com/klikli-dev/modonomicon/pull/203) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -813,3 +822,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.4-1.68.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.67.1...release/v1.20.4-1.68.0
 [release/v1.20.4-1.69.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.68.0...release/v1.20.4-1.69.0
 [release/v1.20.4-1.69.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.69.0...release/v1.20.4-1.69.1
+[release/v1.20.4-1.71.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.69.1...release/v1.20.4-1.71.0
