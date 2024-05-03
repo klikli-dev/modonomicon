@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2024 DaFuqs
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.client.gui.*;

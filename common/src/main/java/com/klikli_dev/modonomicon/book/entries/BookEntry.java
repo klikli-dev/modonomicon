@@ -1,3 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: 2022 klikli-dev
+ * SPDX-FileCopyrightText: 2024 DaFuqs
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 package com.klikli_dev.modonomicon.book.entries;
 
 import com.google.gson.JsonArray;

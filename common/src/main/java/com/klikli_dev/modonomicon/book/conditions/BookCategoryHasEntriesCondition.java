@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2024 DaFuqs
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 package com.klikli_dev.modonomicon.book.conditions;
 
 import com.google.gson.*;

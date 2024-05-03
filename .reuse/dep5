@@ -32,6 +32,14 @@ Files: neo/src/generated/resources/*
 Copyright: 2022 klikli-dev
 License: CC-BY-4.0
 
+Files: forge/src/main/resources/*
+Copyright: 2022 klikli-dev
+License: CC-BY-4.0
+
+Files: forge/src/generated/resources/*
+Copyright: 2022 klikli-dev
+License: CC-BY-4.0
+
 Files: .github/*
 Copyright: 2022 klikli-dev
 License: CC0-1.0
@@ -61,6 +69,10 @@ Copyright: 2022 klikli-dev
 License: CC0-1.0
 
 Files: neo/build.gradle
+Copyright: 2022 klikli-dev
+License: CC0-1.0
+
+Files: forge/build.gradle
 Copyright: 2022 klikli-dev
 License: CC0-1.0
 
