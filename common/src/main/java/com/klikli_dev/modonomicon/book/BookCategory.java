@@ -137,7 +137,12 @@ public class BookCategory {
     public void prerenderMarkdown(BookTextRenderer textRenderer) {
         for (var entry : this.entries.values()) {
             BookErrorManager.get().getContextHelper().entryId = entry.getId();
-            entry.prerenderMarkdown(textRenderer);
+            try {
+                entry.prerenderMarkdown(textRenderer);
+            } catch (Exception e) {
+                BookErrorManager.get().error("Failed to render markdown in book '" + book.getId() + "' for entry '" + entry.getId() + "'", e);
+            }
+
             BookErrorManager.get().getContextHelper().entryId = null;
         }
     }
