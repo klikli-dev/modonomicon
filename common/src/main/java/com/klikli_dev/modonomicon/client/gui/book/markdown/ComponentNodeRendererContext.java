@@ -11,7 +11,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import org.commonmark.internal.renderer.text.ListHolder;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.internal.renderer.ListHolder;
 import org.commonmark.node.Node;
 
 import java.util.List;

@@ -12,8 +12,8 @@ import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
-import org.commonmark.internal.renderer.text.BulletListHolder;
-import org.commonmark.internal.renderer.text.OrderedListHolder;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.internal.renderer.BulletListHolder;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.internal.renderer.OrderedListHolder;
 import org.commonmark.node.*;
 import org.commonmark.renderer.NodeRenderer;
 

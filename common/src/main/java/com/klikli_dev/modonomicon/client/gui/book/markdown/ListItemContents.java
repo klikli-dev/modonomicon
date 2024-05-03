@@ -7,7 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
 import net.minecraft.network.chat.contents.TranslatableContents;
-import org.commonmark.internal.renderer.text.ListHolder;
+import com.klikli_dev.modonomicon.client.gui.book.markdown.internal.renderer.ListHolder;
 
 public class ListItemContents extends TranslatableContents {
 
