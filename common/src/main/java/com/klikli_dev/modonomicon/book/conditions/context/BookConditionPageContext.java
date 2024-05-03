@@ -1,7 +1,7 @@
 package com.klikli_dev.modonomicon.book.conditions.context;
 
 import com.klikli_dev.modonomicon.book.Book;
-import com.klikli_dev.modonomicon.book.BookEntry;
+import com.klikli_dev.modonomicon.book.entries.ContentBookEntry;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 
 public class BookConditionPageContext extends BookConditionContext {
@@ -21,7 +21,7 @@ public class BookConditionPageContext extends BookConditionContext {
                 '}';
     }
 
-    public BookEntry getEntry() {
+    public ContentBookEntry getEntry() {
         return this.page.getParentEntry();
     }
 

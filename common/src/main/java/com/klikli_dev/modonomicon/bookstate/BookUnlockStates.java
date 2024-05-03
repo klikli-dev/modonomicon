@@ -9,12 +9,12 @@ package com.klikli_dev.modonomicon.bookstate;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCommand;
-import com.klikli_dev.modonomicon.book.BookEntry;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionCategoryContext;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionPageContext;
+import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.data.BookDataManager;
@@ -108,8 +108,7 @@ public class BookUnlockStates {
 
 
                 for (var entry : category.getEntries().values()) {
-                    BookErrorManager.get().setContext("Entry to perform condition test on: {}",
-                            entry.getId().toString()
+                    BookErrorManager.get().setContext("Entry to perform condition test on: {}", entry.getId().toString()
                     );
 
                     try {

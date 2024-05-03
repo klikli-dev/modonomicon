@@ -7,11 +7,9 @@
 package com.klikli_dev.modonomicon.networking;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.book.Book;
-import com.klikli_dev.modonomicon.book.BookCategory;
-import com.klikli_dev.modonomicon.book.BookCommand;
-import com.klikli_dev.modonomicon.book.BookEntry;
-import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.klikli_dev.modonomicon.book.*;
+import com.klikli_dev.modonomicon.book.entries.*;
+import com.klikli_dev.modonomicon.data.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -46,7 +44,7 @@ public class SyncBookDataMessage implements Message {
 
                 buf.writeVarInt(category.getEntries().size());
                 for (var entry : category.getEntries().values()) {
-                    buf.writeResourceLocation(entry.getId());
+                    buf.writeResourceLocation(entry.getType());
                     entry.toNetwork(buf);
                 }
             }
@@ -78,11 +76,11 @@ public class SyncBookDataMessage implements Message {
 
                 int entryCount = buf.readVarInt();
                 for (int k = 0; k < entryCount; k++) {
-                    ResourceLocation entryId = buf.readResourceLocation();
-                    BookEntry bookEntry = BookEntry.fromNetwork(entryId, buf);
+                    ResourceLocation entryTypeId = buf.readResourceLocation();
+                    BookEntry entry = LoaderRegistry.getEntryNetworkLoader(entryTypeId).fromNetwork(buf);
 
                     //link entry and category
-                    category.addEntry(bookEntry);
+                    category.addEntry(entry);
                 }
             }
 

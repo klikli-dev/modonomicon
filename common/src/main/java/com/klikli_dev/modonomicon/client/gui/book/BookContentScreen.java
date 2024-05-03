@@ -9,14 +9,13 @@ package com.klikli_dev.modonomicon.client.gui.book;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.*;
+import com.klikli_dev.modonomicon.book.entries.*;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
-import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.BackButton;
-import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ItemLinkRenderer;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
@@ -34,7 +33,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
@@ -69,7 +67,7 @@ public class BookContentScreen extends BookPaginatedScreen {
     public static final int CLICK_SAFETY_MARGIN = 20;
 
     private static long lastTurnPageSoundTime;
-    private final BookEntry entry;
+    private final ContentBookEntry entry;
     private final ResourceLocation bookContentTexture;
     public int ticksInBook;
     public boolean simulateEscClosing;
@@ -88,7 +86,7 @@ public class BookContentScreen extends BookPaginatedScreen {
     private FluidHolder tooltipFluidStack;
     private boolean isHoveringItemLink;
 
-    public BookContentScreen(BookOverviewScreen parentScreen, BookEntry entry) {
+    public BookContentScreen(BookOverviewScreen parentScreen, ContentBookEntry entry) {
         super(Component.literal(""), parentScreen);
 
         this.minecraft = Minecraft.getInstance();
@@ -140,7 +138,7 @@ public class BookContentScreen extends BookPaginatedScreen {
         return this.minecraft;
     }
 
-    public BookEntry getEntry() {
+    public ContentBookEntry getEntry() {
         return this.entry;
     }
 

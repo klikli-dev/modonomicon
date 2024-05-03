@@ -137,6 +137,10 @@ public class BookOverviewScreen extends Screen {
     }
 
     public void changeCategory(BookCategory category) {
+        if(category == null) {
+            Modonomicon.LOG.warn("Tried to change to a null category in this book ({}).", this.book.getId());
+        }
+        
         int index = this.categories.indexOf(category);
         if (index != -1) {
             this.changeCategory(index);

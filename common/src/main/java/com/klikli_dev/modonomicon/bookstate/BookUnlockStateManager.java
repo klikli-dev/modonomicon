@@ -10,7 +10,7 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCommand;
-import com.klikli_dev.modonomicon.book.BookEntry;
+import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.networking.RequestSyncBookStatesMessage;

@@ -10,7 +10,7 @@ package com.klikli_dev.modonomicon.book.page;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
-import com.klikli_dev.modonomicon.book.BookEntry;
+import com.klikli_dev.modonomicon.book.entries.ContentBookEntry;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
@@ -86,7 +86,7 @@ public class BookMultiblockPage extends BookPage {
     }
 
     @Override
-    public void build(Level level, BookEntry parentEntry, int pageNum) {
+    public void build(Level level, ContentBookEntry parentEntry, int pageNum) {
         super.build(level, parentEntry, pageNum);
 
         this.multiblock = MultiblockDataManager.get().getMultiblock(this.multiblockId);

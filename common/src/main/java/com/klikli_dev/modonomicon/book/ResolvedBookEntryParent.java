@@ -6,6 +6,8 @@
 
 package com.klikli_dev.modonomicon.book;
 
+import com.klikli_dev.modonomicon.book.entries.BookEntry;
+
 public class ResolvedBookEntryParent extends BookEntryParent {
     protected BookEntry entry;
 

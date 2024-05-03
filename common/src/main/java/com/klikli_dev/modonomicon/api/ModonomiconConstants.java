@@ -63,6 +63,11 @@ public class ModonomiconConstants {
             public static final int DEFAULT_MAX_USES = 1;
             public static final int DEFAULT_PERMISSION_LEVEL = 0;
         }
+        
+        public static class EntryType {
+            public static final ResourceLocation CONTENT = new ResourceLocation(ModonomiconAPI.ID, "content");
+            public static final ResourceLocation CATEGORY_LINK = new ResourceLocation(ModonomiconAPI.ID, "category_link");
+        }
 
         public static class Page {
             public static final ResourceLocation TEXT = new ResourceLocation(ModonomiconAPI.ID, "text");

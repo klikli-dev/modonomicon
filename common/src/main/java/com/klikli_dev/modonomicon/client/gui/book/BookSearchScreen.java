@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.*;
+import com.klikli_dev.modonomicon.book.entries.*;
 import com.klikli_dev.modonomicon.bookstate.*;
 import com.klikli_dev.modonomicon.client.gui.*;
 import com.klikli_dev.modonomicon.client.gui.book.button.*;
