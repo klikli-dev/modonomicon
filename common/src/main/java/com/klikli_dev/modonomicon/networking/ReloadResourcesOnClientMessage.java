@@ -17,12 +17,13 @@ import net.minecraft.world.entity.player.Player;
 
 public class ReloadResourcesOnClientMessage implements Message {
 
+    public static final ReloadResourcesOnClientMessage INSTANCE = new ReloadResourcesOnClientMessage();
 
     public static final Type<ReloadResourcesOnClientMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "reload_resources_on_client"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, ReloadResourcesOnClientMessage> STREAM_CODEC = StreamCodec.unit(new ReloadResourcesOnClientMessage());
+    public static final StreamCodec<RegistryFriendlyByteBuf, ReloadResourcesOnClientMessage> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
-    public ReloadResourcesOnClientMessage() {
+    private ReloadResourcesOnClientMessage() {
     }
 
     @Override
@@ -33,7 +34,7 @@ public class ReloadResourcesOnClientMessage implements Message {
     @Override
     public void onClientReceived(Minecraft minecraft, Player player) {
         minecraft.reloadResourcePacks().thenRun(() -> {
-            Services.NETWORK.sendToServer(new ReloadResourcesDoneMessage());
+            Services.NETWORK.sendToServer(ReloadResourcesDoneMessage.INSTANCE);
         });
     }
 }

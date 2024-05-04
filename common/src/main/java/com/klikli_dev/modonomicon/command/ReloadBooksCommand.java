@@ -31,7 +31,7 @@ public class ReloadBooksCommand implements com.mojang.brigadier.Command<CommandS
 
     @Override
     public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        Services.NETWORK.sendTo(context.getSource().getPlayer(), new ReloadResourcesOnClientMessage());
+        Services.NETWORK.sendTo(context.getSource().getPlayer(), ReloadResourcesOnClientMessage.INSTANCE);
         context.getSource().sendSuccess(() -> Component.translatable(ModonomiconConstants.I18n.Command.RELOAD_REQUESTED), true);
         return 1;
     }

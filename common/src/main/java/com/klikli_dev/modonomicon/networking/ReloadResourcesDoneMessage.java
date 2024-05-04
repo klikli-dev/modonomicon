@@ -26,11 +26,13 @@ import static com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Command.R
 
 public class ReloadResourcesDoneMessage implements Message {
 
+    public static final ReloadResourcesDoneMessage INSTANCE = new ReloadResourcesDoneMessage();
+
     public static final Type<ReloadResourcesDoneMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "reload_resources_done"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, ReloadResourcesDoneMessage> STREAM_CODEC = StreamCodec.unit(new ReloadResourcesDoneMessage());
+    public static final StreamCodec<RegistryFriendlyByteBuf, ReloadResourcesDoneMessage> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
-    public ReloadResourcesDoneMessage() {
+    private ReloadResourcesDoneMessage() {
     }
 
     private static Collection<String> discoverNewPacks(PackRepository pPackRepository, WorldData pWorldData, Collection<String> pSelectedIds) {

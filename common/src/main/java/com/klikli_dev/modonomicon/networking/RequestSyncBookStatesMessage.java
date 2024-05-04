@@ -18,12 +18,14 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class RequestSyncBookStatesMessage implements Message {
 
+    public static final RequestSyncBookStatesMessage INSTANCE = new RequestSyncBookStatesMessage();
+
     public static final Type<RequestSyncBookStatesMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "request_sync_book_states"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, RequestSyncBookStatesMessage> STREAM_CODEC = StreamCodec.unit(new RequestSyncBookStatesMessage());
+    public static final StreamCodec<RegistryFriendlyByteBuf, RequestSyncBookStatesMessage> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
 
-    public RequestSyncBookStatesMessage() {
+    private RequestSyncBookStatesMessage() {
     }
 
     @Override

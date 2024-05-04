@@ -80,7 +80,7 @@ public class BookVisualStateManager {
                 //this should not happen, we set an empty object to prevent a crash
                 this.saveData = new BookStatesSaveData();
                 //and we request a sync
-                Services.NETWORK.sendToServer(new RequestSyncBookStatesMessage());
+                Services.NETWORK.sendToServer(RequestSyncBookStatesMessage.INSTANCE);
                 Modonomicon.LOG.error("Tried to get Modonomicon save data for player on client side, but was not set. This should not happen. Requesting a sync from the server. Please re-open the book in a few seconds to see your progress.");
             }
         }
