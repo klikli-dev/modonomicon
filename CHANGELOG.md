@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.5-1.71.1] - 2024-05-04
+### :sparkles: New Features
+- [`661ee97`](https://github.com/klikli-dev/modonomicon/commit/661ee976b01e666fd8c15123f651a97300c59885) - Dynamic BookEntries *(PR [#202](https://github.com/klikli-dev/modonomicon/pull/202) by [@klikli-dev](https://github.com/klikli-dev))*
+- [`c5ea4c4`](https://github.com/klikli-dev/modonomicon/commit/c5ea4c4e389d5295762bea95b6ec07964a2e2da5) - Catch errors on entry rendering sooner ([#205](https://github.com/klikli-dev/modonomicon/pull/205)) - thanks @DaFuqs *(commit by [@DaFuqs](https://github.com/DaFuqs))*
+
+### :bug: Bug Fixes
+- [`3e6c0d7`](https://github.com/klikli-dev/modonomicon/commit/3e6c0d715df8d58536d97c45cd0024a78ac31e24) - workaround for use of internal commonmark modules in extensions *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`eda2256`](https://github.com/klikli-dev/modonomicon/commit/eda225638417482a78211b89c23e217d5ddd14bf) - copy remaining internal commonmark classes to modonomicon *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`3e53f00`](https://github.com/klikli-dev/modonomicon/commit/3e53f0047f35d0bf4139c714863344639f49a848) - use of StreamCodec.unit requires singeltons *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`78b1526`](https://github.com/klikli-dev/modonomicon/commit/78b1526bb5ec13c387e9d3d732879648a655dca1) - re-establish reuse compliance *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`5a193ba`](https://github.com/klikli-dev/modonomicon/commit/5a193ba929c2fb963453a110bfd2dfc4151ba50e) - run datagen post-cherrypick *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.5-1.69.2] - 2024-04-26
 ### :sparkles: New Features
 - [`cb83152`](https://github.com/klikli-dev/modonomicon/commit/cb83152f762691f8af2656df691c073e0fa1aaa3) - upgrade to 1.20.5 *(PR [#204](https://github.com/klikli-dev/modonomicon/pull/204) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -823,3 +838,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.4-1.69.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.68.0...release/v1.20.4-1.69.0
 [release/v1.20.4-1.69.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.69.0...release/v1.20.4-1.69.1
 [release/v1.20.5-1.69.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.5-0.0.0...release/v1.20.5-1.69.2
+[release/v1.20.5-1.71.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.5-1.69.2...release/v1.20.5-1.71.1
