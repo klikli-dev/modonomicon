@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-// 1.20.5	2024-04-26T13:12:00.5291069	Modonomicon/Multiblocks: modonomicon
-=======
-// 1.20.6	2024-05-01T11:54:18.9351077	Modonomicon/Multiblocks: modonomicon
->>>>>>> 6a472c31 (feat: Dynamic BookEntries (#202))
+// 1.20.5	2024-05-04T16:48:22.6844961	Modonomicon/Multiblocks: modonomicon
 9dc306d79a39ee2085be7e1384d8e39640d79e49 data\modonomicon\modonomicon\multiblocks\demo_dense.json
 89b499dd4f3850c8099ad26ae3c286e95ac8cf99 data\modonomicon\modonomicon\multiblocks\demo_fluid.json
 6af533f5fa171fb2cf2d27b166e16ec54b2c5c06 data\modonomicon\modonomicon\multiblocks\test_non_square.json
