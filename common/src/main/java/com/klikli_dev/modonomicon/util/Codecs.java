@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.util;
 
 import com.mojang.serialization.Codec;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,7 +37,7 @@ public class Codecs {
     }
 
     public static <V> Codec<Set<V>> setFromList(Codec<List<V>> listCodec) {
-        return listCodec.xmap(HashSet::new, ArrayList::new);
+        return listCodec.xmap(ObjectOpenHashSet::new, ArrayList::new);
     }
 
 }
