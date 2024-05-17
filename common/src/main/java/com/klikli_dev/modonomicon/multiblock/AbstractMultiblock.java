@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -37,7 +38,7 @@ import java.util.Map.Entry;
 
 public abstract class AbstractMultiblock implements Multiblock {
 
-    private final Map<BlockPos, BlockEntity> blockEntityCache = new HashMap<>();
+    private final Map<BlockPos, BlockEntity> blockEntityCache = new Object2ObjectOpenHashMap<>();
     public ResourceLocation id;
     protected int offX, offY, offZ;
     protected int viewOffX, viewOffY, viewOffZ;

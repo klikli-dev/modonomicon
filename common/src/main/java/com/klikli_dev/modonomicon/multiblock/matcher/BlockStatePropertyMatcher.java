@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -24,7 +25,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -85,7 +85,7 @@ public class BlockStatePropertyMatcher implements StateMatcher {
     }
 
     private static Map<String, String> convertProps(Map<Property<?>, Comparable<?>> props) {
-        Map<String, String> newProps = new HashMap<>();
+        Map<String, String> newProps = new Object2ObjectOpenHashMap<>();
         for (var entry : props.entrySet()) {
 
             appendProperty(newProps, entry.getKey(), entry.getValue());

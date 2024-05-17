@@ -16,6 +16,7 @@ import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
 import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
@@ -78,7 +79,7 @@ public class DenseMultiblock extends AbstractMultiblock {
             }
         }
 
-        var targets = new HashMap<Character, StateMatcher>();
+        var targets = new Object2ObjectOpenHashMap<Character, StateMatcher>();
         var targetCount = buffer.readVarInt();
         for (int i = 0; i < targetCount; i++) {
             var key = buffer.readChar();

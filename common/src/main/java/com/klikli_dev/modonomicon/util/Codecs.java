@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.util;
 
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,7 +22,7 @@ public class Codecs {
     }
 
     public static <K, V> Codec<Map<K, V>> mutableMapFromMap(Codec<Map<K, V>> mapCodec) {
-        return mapCodec.xmap(HashMap::new, HashMap::new);
+        return mapCodec.xmap(Object2ObjectOpenHashMap::new, Object2ObjectOpenHashMap::new);
     }
 
     public static <K, V> Codec<ConcurrentMap<K, V>> concurrentMap(final Codec<K> keyCodec, final Codec<V> elementCodec) {
