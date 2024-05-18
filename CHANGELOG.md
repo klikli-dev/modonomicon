@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.5-1.72.0] - 2024-05-18
+### :sparkles: New Features
+- [`54d0383`](https://github.com/klikli-dev/modonomicon/commit/54d038358e4332a03ad144e6416762580bebbe7b) - Use FastUtil instead of regular Java collections *(PR [#206](https://github.com/klikli-dev/modonomicon/pull/206) by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.5-1.71.1] - 2024-05-04
 ### :sparkles: New Features
 - [`661ee97`](https://github.com/klikli-dev/modonomicon/commit/661ee976b01e666fd8c15123f651a97300c59885) - Dynamic BookEntries *(PR [#202](https://github.com/klikli-dev/modonomicon/pull/202) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -839,3 +844,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.4-1.69.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.69.0...release/v1.20.4-1.69.1
 [release/v1.20.5-1.69.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.5-0.0.0...release/v1.20.5-1.69.2
 [release/v1.20.5-1.71.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.5-1.69.2...release/v1.20.5-1.71.1
+[release/v1.20.5-1.72.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.5-1.71.1...release/v1.20.5-1.72.0
