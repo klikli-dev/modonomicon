@@ -9,9 +9,9 @@ package com.klikli_dev.modonomicon.bookstate.visual;
 import com.klikli_dev.modonomicon.util.Codecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -34,7 +34,7 @@ public class CategoryVisualState {
     public ResourceLocation openEntry;
 
     public CategoryVisualState() {
-        this(new HashMap<>(), 0, 0, 0.7f, Optional.empty());
+        this(new Object2ObjectOpenHashMap<>(), 0, 0, 0.7f, Optional.empty());
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")

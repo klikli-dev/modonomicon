@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.registry;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -15,7 +16,6 @@ import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.registries.DeferredRegister;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -40,7 +40,7 @@ public class ForgeRegistrationFactory implements RegistrationProvider.Factory {
         private final String modId;
         private final DeferredRegister<T> registry;
 
-        private final Set<RegistryObject<T>> entries = new HashSet<>();
+        private final Set<RegistryObject<T>> entries = new ObjectOpenHashSet<>();
         private final Set<RegistryObject<T>> entriesView = Collections.unmodifiableSet(this.entries);
 
         private Provider(String modId, DeferredRegister<T> registry) {
