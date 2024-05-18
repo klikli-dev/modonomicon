@@ -4,6 +4,7 @@
 
 package com.klikli_dev.modonomicon.api.datagen;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -11,14 +12,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
 public class LanguageProviderCache implements ModonomiconLanguageProvider {
 
     private final String locale;
-    private final Map<String, String> data = new HashMap<>();
+    private final Map<String, String> data = new Object2ObjectOpenHashMap<>();
 
     public LanguageProviderCache(String locale) {
         this.locale = locale;

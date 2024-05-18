@@ -9,9 +9,10 @@ package com.klikli_dev.modonomicon.bookstate.visual;
 import com.klikli_dev.modonomicon.util.Codecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -25,12 +26,12 @@ public class BookVisualState {
     public ResourceLocation openCategory;
 
     public BookVisualState() {
-        this(new HashMap<>(), Optional.empty());
+        this(Object2ObjectMaps.emptyMap(), Optional.empty());
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public BookVisualState(Map<ResourceLocation, CategoryVisualState> categoryStates, Optional<ResourceLocation> openCategory) {
-        this.categoryStates = new HashMap<>(categoryStates);
+        this.categoryStates = new Object2ObjectOpenHashMap<>(categoryStates);
         this.openCategory = openCategory.orElse(null);
     }
 }

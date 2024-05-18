@@ -24,6 +24,7 @@ import com.mojang.blaze3d.vertex.*;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -60,7 +61,7 @@ public class MultiblockPreviewRenderer {
 
     public static boolean hasMultiblock;
 
-    private static Map<BlockPos, BlockEntity> blockEntityCache = new HashMap<>();
+    private static Map<BlockPos, BlockEntity> blockEntityCache = new Object2ObjectOpenHashMap<>();
     private static Set<BlockEntity> erroredBlockEntities = Collections.newSetFromMap(new WeakHashMap<>());
     private static Multiblock multiblock;
     private static Component name;

@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookCommandModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
 import com.mojang.logging.LogUtils;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -22,11 +23,21 @@ import org.slf4j.Logger;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collector;
+import java.util.stream.Collector.Characteristics;
 import java.util.stream.Stream;
 
 public abstract class BookProvider implements DataProvider {
 
     protected static final Logger LOGGER = LogUtils.getLogger();
+    
+    public static final Collector<ModonomiconLanguageProvider, ?, Object2ObjectOpenHashMap<String, ModonomiconLanguageProvider>> mapMaker
+            = Collector.<ModonomiconLanguageProvider, Object2ObjectOpenHashMap<String, ModonomiconLanguageProvider>, Object2ObjectOpenHashMap<String, ModonomiconLanguageProvider>>of(
+                    Object2ObjectOpenHashMap::new,
+                    (map, l) -> map.put(l.locale(), l),
+                    (m1, m2) -> { m1.putAll(m2); return m1; },
+                    (map) -> { map.trim(); return map; },
+                    Characteristics.UNORDERED);
 
     protected final PackOutput packOutput;
     protected final ModonomiconLanguageProvider lang;
@@ -47,12 +58,13 @@ public abstract class BookProvider implements DataProvider {
         this.modid = modid;
         this.packOutput = packOutput;
         this.lang = defaultLang;
-        this.bookModels = new HashMap<>();
-        this.translations = Stream.concat(Arrays.stream(translations), Stream.of(defaultLang)).map(l -> new AbstractMap.SimpleEntry<>(l.locale(), l)).collect(HashMap::new, (m, v) -> m.put(v.getKey(), v.getValue()), HashMap::putAll);
+        this.bookModels = new Object2ObjectOpenHashMap<>();
+        this.translations = Stream.concat(Arrays.stream(translations), Stream.of(defaultLang))
+                                  .collect(mapMaker);
 
         this.bookId = bookId;
         this.context = new BookContextHelper(this.modid);
-        this.defaultMacros = new HashMap<>();
+        this.defaultMacros = new Object2ObjectOpenHashMap<>();
         this.conditionHelper = new ConditionHelper();
     }
 

@@ -21,6 +21,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Axis;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -47,7 +48,7 @@ import java.util.*;
 public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockPage> implements PageWithTextRenderer {
 
     private static final RandomSource randomSource = RandomSource.createNewThreadLocalInstance();
-    private final Map<BlockPos, BlockEntity> blockEntityCache = new HashMap<>();
+    private final Map<BlockPos, BlockEntity> blockEntityCache = new Object2ObjectOpenHashMap<>();
     private final Set<BlockEntity> erroredBlockEntities = Collections.newSetFromMap(new WeakHashMap<>());
 
     protected Pair<BlockPos, Collection<SimulateResult>> multiblockSimulation;

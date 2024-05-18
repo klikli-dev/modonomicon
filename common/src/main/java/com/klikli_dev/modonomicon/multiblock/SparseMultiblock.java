@@ -17,6 +17,7 @@ import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
 import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
@@ -65,7 +66,7 @@ public class SparseMultiblock extends AbstractMultiblock {
 
         var jsonPattern = GsonHelper.getAsJsonObject(json, "pattern");
 
-        Map<BlockPos, StateMatcher> stateMatchers = new HashMap<>();
+        Map<BlockPos, StateMatcher> stateMatchers = new Object2ObjectOpenHashMap<>();
         for (Entry<String, JsonElement> entry : jsonPattern.entrySet()) {
             if (entry.getKey().length() != 1)
                 throw new JsonSyntaxException("Pattern key needs to be only 1 character");
@@ -99,7 +100,7 @@ public class SparseMultiblock extends AbstractMultiblock {
         var viewOffZ = buffer.readVarInt();
 
         var size = buffer.readVarInt();
-        var stateMatchers = new HashMap<BlockPos, StateMatcher>();
+        var stateMatchers = new Object2ObjectOpenHashMap<BlockPos, StateMatcher>();
         for (int i = 0; i < size; i++) {
             var pos = buffer.readBlockPos();
             var type = buffer.readResourceLocation();

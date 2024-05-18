@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
@@ -18,7 +19,6 @@ import org.commonmark.node.*;
 import org.commonmark.renderer.NodeRenderer;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRenderer {
@@ -32,7 +32,7 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
     @Override
     public Set<Class<? extends Node>> getNodeTypes() {
         //we need to return nodes here even if we don't do special handling, otherwise they will be skipped.
-        return new HashSet<>(Arrays.asList(
+        ObjectOpenHashSet<Class<? extends Node>> classes = new ObjectOpenHashSet<>(Arrays.asList(
                 Document.class,
                 Heading.class,
                 Paragraph.class,
@@ -44,8 +44,9 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
                 StrongEmphasis.class,
                 Text.class,
                 SoftLineBreak.class,
-                HardLineBreak.class
-        ));
+                HardLineBreak.class));
+        classes.trim();
+        return classes;
     }
 
     public void render(Node node) {

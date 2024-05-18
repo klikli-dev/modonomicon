@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.registry;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -14,7 +15,6 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -34,7 +34,7 @@ public class FabricRegistrationFactory implements RegistrationProvider.Factory {
         private final String modId;
         private final Registry<T> registry;
 
-        private final Set<RegistryObject<T>> entries = new HashSet<>();
+        private final Set<RegistryObject<T>> entries = new ObjectOpenHashSet<>();
         private final Set<RegistryObject<T>> entriesView = Collections.unmodifiableSet(this.entries);
 
         @SuppressWarnings({"unchecked"})

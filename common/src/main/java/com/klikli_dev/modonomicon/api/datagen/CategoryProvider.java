@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookAndConditionMod
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookOrConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
@@ -39,7 +40,7 @@ public abstract class CategoryProvider {
         this.parent = parent;
         this.categoryId = categoryId;
         this.entryMap = new CategoryEntryMap();
-        this.macros = new HashMap<>();
+        this.macros = new Object2ObjectOpenHashMap<>();
         this.conditionHelper = new ConditionHelper();
         this.category = null;
     }
@@ -204,7 +205,7 @@ public abstract class CategoryProvider {
         return entry;
     }
 
-    protected Map<String, List<BookPageModel>> cachedPages = new HashMap<>();
+    protected Map<String, List<BookPageModel>> cachedPages = new Object2ObjectOpenHashMap<>();
 
     /**
      * Adds a page to the cached pages of this category provider.
