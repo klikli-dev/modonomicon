@@ -14,6 +14,10 @@ subprojects {
         from(rootProject.file("LICENSE")) {
             rename { "${it}_${mod_name}" }
         }
+
+        exclude "**/data/modonomicon/modonomicon/books/**"
+        exclude "**/data/modonomicon/modonomicon/multiblocks/**"
+
         manifest {
             attributes([
                 'Specification-Title'     : mod_name,
