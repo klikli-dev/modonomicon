@@ -1,8 +1,0 @@
-{
-  "name": "test",
-  "description": "modonomicon.test.entries.test_category.planks_entry.description",
-  "icon": "minecraft:oak_planks",
-  "x": 7,
-  "y": 10,
-  "category": "modonomicon:test_category"
-}
