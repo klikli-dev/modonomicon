@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.4-1.72.1] - 2024-06-07
+### :wrench: Chores
+- [`56e9297`](https://github.com/klikli-dev/modonomicon/commit/56e92977a95c366f5e5226fd6d756226e90b63b4) - remove unused test data *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`bebc07f`](https://github.com/klikli-dev/modonomicon/commit/bebc07f491efa776ce7080302a9b13040d59dee6) - remove test content from game-ready jar *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.4-1.72.0] - 2024-05-18
 ### :sparkles: New Features
 - [`86b38c6`](https://github.com/klikli-dev/modonomicon/commit/86b38c6302c7a05cec3f8957b497b304dcab13d1) - Use FastUtil instead of regular Java collections *(PR [#206](https://github.com/klikli-dev/modonomicon/pull/206) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -829,3 +835,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.4-1.69.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.69.0...release/v1.20.4-1.69.1
 [release/v1.20.4-1.71.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.69.1...release/v1.20.4-1.71.0
 [release/v1.20.4-1.72.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.71.0...release/v1.20.4-1.72.0
+[release/v1.20.4-1.72.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.72.0...release/v1.20.4-1.72.1
