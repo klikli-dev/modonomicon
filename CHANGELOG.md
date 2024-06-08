@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.4-1.72.2] - 2024-06-08
+### :bug: Bug Fixes
+- [`91b9b64`](https://github.com/klikli-dev/modonomicon/commit/91b9b64d31c4bc7cfb42c5000e107f27502f89e2) - book closes entirely in some cases instead of closing the open entry *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.4-1.72.1] - 2024-06-07
 ### :wrench: Chores
 - [`56e9297`](https://github.com/klikli-dev/modonomicon/commit/56e92977a95c366f5e5226fd6d756226e90b63b4) - remove unused test data *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -836,3 +841,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.4-1.71.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.69.1...release/v1.20.4-1.71.0
 [release/v1.20.4-1.72.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.71.0...release/v1.20.4-1.72.0
 [release/v1.20.4-1.72.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.72.0...release/v1.20.4-1.72.1
+[release/v1.20.4-1.72.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.72.1...release/v1.20.4-1.72.2
