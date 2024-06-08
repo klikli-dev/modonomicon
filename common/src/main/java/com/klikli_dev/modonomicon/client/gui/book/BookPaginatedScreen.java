@@ -98,6 +98,7 @@ public abstract class BookPaginatedScreen extends Screen implements BookScreenWi
 	public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
 		if (this.isClickOutsideEntry(pMouseX, pMouseY)) {
 			this.onClose();
+			return true; //need to return, otherwise a right click outside the entry causes a double-close (the whole book, due to calling .back() below)
 		}
 		
 		if (pButton == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
