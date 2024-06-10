@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentMap;
 public class SyncMultiblockDataMessage implements Message {
 
 
-    public static final Type<SyncMultiblockDataMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "sync_multiblock_data"));
+    public static final Type<SyncMultiblockDataMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "sync_multiblock_data"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncMultiblockDataMessage> STREAM_CODEC = CustomPacketPayload.codec(SyncMultiblockDataMessage::encode, SyncMultiblockDataMessage::new);
 
     public ConcurrentMap<ResourceLocation, Multiblock> multiblocks = new ConcurrentHashMap<>();

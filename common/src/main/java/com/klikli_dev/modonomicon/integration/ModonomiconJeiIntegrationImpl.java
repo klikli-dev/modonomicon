@@ -70,7 +70,7 @@ public class ModonomiconJeiIntegrationImpl implements ModonomiconJeiIntegration 
 
     @JeiPlugin
     public static class ModonomiconJeiPlugin implements IModPlugin {
-        private static final ResourceLocation UID = new ResourceLocation(ModonomiconAPI.ID, ModonomiconAPI.ID);
+        private static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, ModonomiconAPI.ID);
 
         private static IJeiRuntime jeiRuntime;
 

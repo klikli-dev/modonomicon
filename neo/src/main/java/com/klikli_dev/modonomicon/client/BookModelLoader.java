@@ -42,8 +42,8 @@ public class BookModelLoader implements IGeometryLoader<BookModelLoader.BookGeom
         }
 
         @Override
-        public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
-            var bakedHandle = this.handleModel.bake(baker, this.handleModel, spriteGetter, modelState, modelLocation, false);
+        public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides) {
+            var bakedHandle = this.handleModel.bake(baker, this.handleModel, spriteGetter, modelState, false);
             return new BookOverrideModel(bakedHandle, baker);
         }
     }

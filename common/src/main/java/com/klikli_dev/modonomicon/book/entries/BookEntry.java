@@ -185,7 +185,7 @@ public abstract class BookEntry {
                                 BookCondition condition, boolean hideWhileLocked, boolean showWhenAnyParentUnlocked) {
 
         public static BookEntryData fromJson(JsonObject json, boolean autoAddReadConditions, HolderLookup.Provider provider) {
-            var categoryId = new ResourceLocation(GsonHelper.getAsString(json, "category"));
+            var categoryId = ResourceLocation.parse(GsonHelper.getAsString(json, "category"));
             var x = GsonHelper.getAsInt(json, "x");
             var y = GsonHelper.getAsInt(json, "y");
 
@@ -201,7 +201,7 @@ public abstract class BookEntry {
                 for (var pageElem : GsonHelper.getAsJsonArray(json, "pages")) {
                     BookErrorManager.get().setContext("Page Index: {}", pages.size());
                     var pageJson = GsonHelper.convertToJsonObject(pageElem, "page");
-                    var type = new ResourceLocation(GsonHelper.getAsString(pageJson, "type"));
+                    var type = ResourceLocation.parse(GsonHelper.getAsString(pageJson, "type"));
                     var loader = LoaderRegistry.getPageJsonLoader(type);
                     var page = loader.fromJson(pageJson, provider);
                     pages.add(page);

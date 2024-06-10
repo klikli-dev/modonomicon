@@ -42,7 +42,7 @@ public class BookImagePage extends BookPage {
         var imagesArray = GsonHelper.getAsJsonArray(json, "images");
         var images = new ResourceLocation[imagesArray.size()];
         for (int i = 0; i < imagesArray.size(); i++) {
-            images[i] = new ResourceLocation(GsonHelper.convertToString(imagesArray.get(i), "images[" + i + "]"));
+            images[i] = ResourceLocation.parse(GsonHelper.convertToString(imagesArray.get(i), "images[" + i + "]"));
         }
 
         var border = GsonHelper.getAsBoolean(json, "border", true);
@@ -61,7 +61,7 @@ public class BookImagePage extends BookPage {
         var count = buffer.readVarInt();
         var images = new ResourceLocation[count];
         for (int i = 0; i < count; i++) {
-            images[i] = new ResourceLocation(buffer.readUtf());
+            images[i] = ResourceLocation.parse(buffer.readUtf());
         }
 
         var border = buffer.readBoolean();

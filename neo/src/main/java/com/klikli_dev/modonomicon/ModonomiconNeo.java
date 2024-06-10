@@ -21,6 +21,7 @@ import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
@@ -142,7 +143,7 @@ public class ModonomiconNeo {
                 MultiblockPreviewRenderer.onClientTick(Minecraft.getInstance());
             });
             NeoForge.EVENT_BUS.addListener((RenderFrameEvent.Pre e) -> {
-                ClientTicks.renderTickStart(e.getPartialTick());
+                ClientTicks.renderTickStart(e.getPartialTick().getGameTimeDeltaPartialTick(true));
             });
             NeoForge.EVENT_BUS.addListener((RenderFrameEvent.Post e) -> {
                 ClientTicks.renderTickEnd();
@@ -177,7 +178,7 @@ public class ModonomiconNeo {
         }
 
         public static void onRegisterGuiOverlays(RegisterGuiLayersEvent event) {
-            event.registerBelow(VanillaGuiLayers.BOSS_OVERLAY, Modonomicon.loc("multiblock_hud"), MultiblockPreviewRenderer::onRenderHUD);
+            event.registerBelow(VanillaGuiLayers.BOSS_OVERLAY, Modonomicon.loc("multiblock_hud"), (guiGraphics, partialTicks) -> MultiblockPreviewRenderer.onRenderHUD(guiGraphics, partialTicks.getGameTimeDeltaPartialTick(true)));
         }
     }
 }

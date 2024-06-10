@@ -24,7 +24,7 @@ public class SoundRegistry {
      * @return the sound event.
      */
     private static SoundEvent loadSoundEvent(String name) {
-        ResourceLocation location = new ResourceLocation(Modonomicon.MOD_ID, name);
+        ResourceLocation location = ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, name);
         return SoundEvent.createVariableRangeEvent(location);
     }
 

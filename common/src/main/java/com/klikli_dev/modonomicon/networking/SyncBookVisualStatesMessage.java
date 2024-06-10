@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SyncBookVisualStatesMessage implements Message {
 
-    public static final Type<SyncBookVisualStatesMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "sync_book_visual_states"));
+    public static final Type<SyncBookVisualStatesMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "sync_book_visual_states"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncBookVisualStatesMessage> STREAM_CODEC = StreamCodec.composite(
             BookVisualStates.STREAM_CODEC,

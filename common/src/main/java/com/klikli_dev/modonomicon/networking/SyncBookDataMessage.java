@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentMap;
 public class SyncBookDataMessage implements Message {
 
 
-    public static final Type<SyncBookDataMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "sync_book_data"));
+    public static final Type<SyncBookDataMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "sync_book_data"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncBookDataMessage> STREAM_CODEC = CustomPacketPayload.codec(SyncBookDataMessage::encode, SyncBookDataMessage::new);
 
     public ConcurrentMap<ResourceLocation, Book> books = new ConcurrentHashMap<>();

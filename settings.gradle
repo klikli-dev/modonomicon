@@ -29,6 +29,6 @@ plugins {
 rootProject.name = 'Modonomicon ' + minecraft_version
 
 include("common")
-include("fabric")
+//include("fabric")
 include("neo")
-include("forge")
+//include("forge")

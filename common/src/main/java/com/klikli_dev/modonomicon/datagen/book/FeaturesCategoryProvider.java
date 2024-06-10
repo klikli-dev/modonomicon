@@ -179,7 +179,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         this.lang().add(this.context().pageText(), "Advancement Conditions unlock, as the name implies, if a player has an advancement.");
 
         var advancementCondition = BookAdvancementConditionModel.create()
-                .withAdvancementId(new ResourceLocation("minecraft:husbandry/ride_a_boat_with_a_goat"))
+                .withAdvancementId(ResourceLocation.parse("minecraft:husbandry/ride_a_boat_with_a_goat"))
                 ;
 
         this.lang().add(
@@ -188,7 +188,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         );
 
         var pageCondition = BookAdvancementConditionModel.create()
-                .withAdvancementId(new ResourceLocation("minecraft:story/mine_stone"))
+                .withAdvancementId(ResourceLocation.parse("minecraft:story/mine_stone"))
                 ;
 
         this.context().page("conditional_page");
@@ -443,7 +443,7 @@ public class FeaturesCategoryProvider extends CategoryProvider {
         return this.entry(location)
                 .withIcon(Items.ENDER_PEARL)
                 .withLocation(this.entryMap().get(location))
-                .withCategoryToOpen(new ResourceLocation("modonomicon:hidden"));
+                .withCategoryToOpen(ResourceLocation.parse("modonomicon:hidden"));
     }
 
 }

@@ -17,7 +17,7 @@ import net.minecraft.world.entity.player.Player;
 
 public class SendUnlockCodeToClientMessage implements Message {
 
-    public static final Type<SendUnlockCodeToClientMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "send_unlock_code_to_client"));
+    public static final Type<SendUnlockCodeToClientMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "send_unlock_code_to_client"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SendUnlockCodeToClientMessage> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8,

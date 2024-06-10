@@ -58,7 +58,7 @@ public class BookLink {
                 throw new IllegalArgumentException("Invalid category link, does not contain any category id: " + linkText);
 
             parts = parts[1].split("/", 2); //discard everything after /, our category id ends at the end of string or at the first /
-            bookLink.categoryId = new ResourceLocation(bookLink.bookId.getNamespace(), parts[0]);
+            bookLink.categoryId = ResourceLocation.fromNamespaceAndPath(bookLink.bookId.getNamespace(), parts[0]);
             var category = book.getCategory(bookLink.categoryId);
             if (category == null) {
                 throw new IllegalArgumentException("Invalid category link, category not found in book: " + linkText);
@@ -72,7 +72,7 @@ public class BookLink {
                 throw new IllegalArgumentException("Invalid category link, does not contain any category id, because it is empty: " + linkText);
 
             var parts = linkText.split("/", 2); //discard everything after /, our category id ends at the end of string or at the first /
-            bookLink.categoryId = new ResourceLocation(bookLink.bookId.getNamespace(), parts[0]);
+            bookLink.categoryId = ResourceLocation.fromNamespaceAndPath(bookLink.bookId.getNamespace(), parts[0]);
             var category = fromBook.getCategory(bookLink.categoryId);
             if (category == null) {
                 throw new IllegalArgumentException("Invalid category link, category not found in book: " + linkText);
@@ -114,7 +114,7 @@ public class BookLink {
         if (lastAtIndex >= 0) {
             var postAt = entryId.substring(lastAtIndex + 1);
             var path = StringUtils.removeEnd(entryId.substring(0, lastAtIndex), "/"); //remove trailing /
-            bookLink.entryId = new ResourceLocation(book.getId().getNamespace(), path);
+            bookLink.entryId = ResourceLocation.fromNamespaceAndPath(book.getId().getNamespace(), path);
             var entry = book.getEntry(bookLink.entryId);
             if (entry == null) {
                 throw new IllegalArgumentException("Invalid entry link, entry not found in book: " + linkText);
@@ -133,7 +133,7 @@ public class BookLink {
             //handle page index after #
             var postHash = entryId.substring(lastHashIndex + 1);
             var path = StringUtils.removeEnd(entryId.substring(0, lastHashIndex), "/"); //remove trailing /
-            bookLink.entryId = new ResourceLocation(book.getId().getNamespace(), path);
+            bookLink.entryId = ResourceLocation.fromNamespaceAndPath(book.getId().getNamespace(), path);
             if (book.getEntry(bookLink.entryId) == null) {
                 throw new IllegalArgumentException("Invalid entry link, entry not found in book: " + linkText);
             }
@@ -151,7 +151,7 @@ public class BookLink {
         }
 
         //handle no page number/anchor
-        bookLink.entryId = new ResourceLocation(book.getId().getNamespace(), entryId);
+        bookLink.entryId = ResourceLocation.fromNamespaceAndPath(book.getId().getNamespace(), entryId);
         if (book.getEntry(bookLink.entryId) == null) {
             throw new IllegalArgumentException("Invalid entry link, entry not found in book: " + linkText);
         }

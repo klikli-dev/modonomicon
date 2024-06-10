@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SyncBookUnlockStatesMessage implements Message {
 
-    public static final Type<SyncBookUnlockStatesMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "sync_book_unlock_states"));
+    public static final Type<SyncBookUnlockStatesMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "sync_book_unlock_states"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncBookUnlockStatesMessage> STREAM_CODEC = StreamCodec.composite(
             BookUnlockStates.STREAM_CODEC,

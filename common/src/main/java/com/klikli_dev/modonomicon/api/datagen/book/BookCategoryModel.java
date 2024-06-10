@@ -28,7 +28,7 @@ public class BookCategoryModel {
     protected String name;
     protected BookIconModel icon = BookIconModel.create(ItemRegistry.MODONOMICON_PURPLE.get());
     protected int sortNumber = -1;
-    protected ResourceLocation background = new ResourceLocation(Category.DEFAULT_BACKGROUND);
+    protected ResourceLocation background = ResourceLocation.parse(Category.DEFAULT_BACKGROUND);
     protected int backgroundWidth = Category.DEFAULT_BACKGROUND_WIDTH;
     protected int backgroundHeight = Category.DEFAULT_BACKGROUND_HEIGHT;
     /**
@@ -37,7 +37,7 @@ public class BookCategoryModel {
      */
     protected float backgroundTextureZoomMultiplier = Category.DEFAULT_BACKGROUND_TEXTURE_ZOOM_MULTIPLIER;
     protected List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers = new ArrayList<>();
-    protected ResourceLocation entryTextures = new ResourceLocation(Category.DEFAULT_ENTRY_TEXTURES);
+    protected ResourceLocation entryTextures = ResourceLocation.parse(Category.DEFAULT_ENTRY_TEXTURES);
     protected List<BookEntryModel> entries = new ArrayList<>();
 
     @Nullable
@@ -258,7 +258,7 @@ public class BookCategoryModel {
     protected BookEntryModel linkEntry(BookEntryModel entry) {
         entry.category = this;
         if (!entry.id.getPath().startsWith(this.id.getPath())) {
-            entry.id = new ResourceLocation(entry.id.getNamespace(), this.id.getPath() + "/" + entry.id.getPath());
+            entry.id = ResourceLocation.fromNamespaceAndPath(entry.id.getNamespace(), this.id.getPath() + "/" + entry.id.getPath());
         }
         return entry;
     }

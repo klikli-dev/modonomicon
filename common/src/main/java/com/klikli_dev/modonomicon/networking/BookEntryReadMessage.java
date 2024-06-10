@@ -19,7 +19,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class BookEntryReadMessage implements Message {
 
-    public static final Type<BookEntryReadMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "book_entry_read"));
+    public static final Type<BookEntryReadMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "book_entry_read"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BookEntryReadMessage> STREAM_CODEC = StreamCodec.composite(
             ResourceLocation.STREAM_CODEC,

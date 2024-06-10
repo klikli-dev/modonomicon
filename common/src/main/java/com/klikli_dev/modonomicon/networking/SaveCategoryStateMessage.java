@@ -19,7 +19,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class SaveCategoryStateMessage implements Message {
 
-    public static final Type<SaveCategoryStateMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "save_category_state"));
+    public static final Type<SaveCategoryStateMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "save_category_state"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SaveCategoryStateMessage> STREAM_CODEC = CustomPacketPayload.codec(SaveCategoryStateMessage::encode, SaveCategoryStateMessage::new);
 
     public BookCategory category;

@@ -61,7 +61,7 @@ public class DemoBookProvider extends BookProvider {
 
         var demoBook = BookModel.create(this.modLoc("demo"), this.context().bookName())
                 .withTooltip(this.context().bookTooltip())
-                .withModel(new ResourceLocation("modonomicon:modonomicon_green"))
+                .withModel(ResourceLocation.parse("modonomicon:modonomicon_green"))
                 .withBookTextOffsetX(5)
                 .withBookTextOffsetY(0) //no top offset
                 .withBookTextOffsetWidth(-5)

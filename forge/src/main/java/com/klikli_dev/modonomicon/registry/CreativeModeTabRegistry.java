@@ -43,7 +43,7 @@ public class CreativeModeTabRegistry {
         final var searchDupes = new ObjectLinkedOpenCustomHashSet<ItemStack>(ItemStackLinkedSet.TYPE_AND_TAG);
 
         BookDataManager.get().getBooks().values().forEach(b -> {
-            if (event.getTabKey() == CreativeModeTabs.SEARCH || net.minecraftforge.common.CreativeModeTabRegistry.getTab(new ResourceLocation(b.getCreativeTab())) == event.getTab()) {
+            if (event.getTabKey() == CreativeModeTabs.SEARCH || net.minecraftforge.common.CreativeModeTabRegistry.getTab(ResourceLocation.parse(b.getCreativeTab())) == event.getTab()) {
                 if (b.generateBookItem()) {
                     ItemStack stack = new ItemStack(ItemRegistry.MODONOMICON.get());
 

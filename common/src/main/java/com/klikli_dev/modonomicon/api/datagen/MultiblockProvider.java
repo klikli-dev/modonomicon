@@ -40,7 +40,7 @@ public abstract class MultiblockProvider implements DataProvider {
     }
 
     protected ResourceLocation modLoc(String name) {
-        return new ResourceLocation(this.modid, name);
+        return ResourceLocation.fromNamespaceAndPath(this.modid, name);
     }
 
     @Override

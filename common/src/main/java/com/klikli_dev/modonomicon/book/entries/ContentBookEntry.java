@@ -41,7 +41,7 @@ public class ContentBookEntry extends BookEntry {
 
         ResourceLocation commandToRunOnFirstReadId = null;
         if (json.has("command_to_run_on_first_read")) {
-            commandToRunOnFirstReadId = new ResourceLocation(GsonHelper.getAsString(json, "command_to_run_on_first_read"));
+            commandToRunOnFirstReadId = ResourceLocation.parse(GsonHelper.getAsString(json, "command_to_run_on_first_read"));
         }
 
         var pages = new ArrayList<BookPage>();
@@ -50,7 +50,7 @@ public class ContentBookEntry extends BookEntry {
             for (var pageElem : jsonPages) {
                 BookErrorManager.get().setContext("Page Index: {}", pages.size());
                 var pageJson = GsonHelper.convertToJsonObject(pageElem, "page");
-                var type = new ResourceLocation(GsonHelper.getAsString(pageJson, "type"));
+                var type = ResourceLocation.parse(GsonHelper.getAsString(pageJson, "type"));
                 var loader = LoaderRegistry.getPageJsonLoader(type);
                 var page = loader.fromJson(pageJson, provider);
                 pages.add(page);

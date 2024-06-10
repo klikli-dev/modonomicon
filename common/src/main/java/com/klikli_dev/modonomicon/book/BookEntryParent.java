@@ -23,7 +23,7 @@ public class BookEntryParent {
     }
 
     public static BookEntryParent fromJson(JsonObject json) {
-        var entry = new ResourceLocation(GsonHelper.getAsString(json, "entry"));
+        var entry = ResourceLocation.parse(GsonHelper.getAsString(json, "entry"));
         var parent = new BookEntryParent(entry);
         parent.drawArrow = GsonHelper.getAsBoolean(json, "draw_arrow", parent.drawArrow);
         parent.lineEnabled = GsonHelper.getAsBoolean(json, "line_enabled", parent.lineEnabled);

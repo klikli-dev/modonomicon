@@ -20,7 +20,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class SaveBookStateMessage implements Message {
 
-    public static final Type<SaveBookStateMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "save_book_state"));
+    public static final Type<SaveBookStateMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "save_book_state"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SaveBookStateMessage> STREAM_CODEC = CustomPacketPayload.codec(SaveBookStateMessage::encode, SaveBookStateMessage::new);
 
     public Book book;

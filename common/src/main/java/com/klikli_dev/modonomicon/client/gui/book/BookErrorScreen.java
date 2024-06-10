@@ -22,7 +22,7 @@ public class BookErrorScreen extends Screen {
 
     public static final int BOOK_BACKGROUND_WIDTH = 272;
     public static final int BOOK_BACKGROUND_HEIGHT = 178;
-    private static final ResourceLocation BOOK_CONTENT_TEXTURE = new ResourceLocation(Modonomicon.MOD_ID, "textures/gui/book_content.png");
+    private static final ResourceLocation BOOK_CONTENT_TEXTURE = ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "textures/gui/book_content.png");
     private final Book book;
     private int bookLeft;
     private int bookTop;

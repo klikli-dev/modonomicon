@@ -66,11 +66,11 @@ public class BookCategory {
         var name = GsonHelper.getAsString(json, "name");
         var sortNumber = GsonHelper.getAsInt(json, "sort_number", -1);
         var icon = BookIcon.fromJson(json.get("icon"));
-        var background = new ResourceLocation(GsonHelper.getAsString(json, "background", Category.DEFAULT_BACKGROUND));
+        var background = ResourceLocation.parse(GsonHelper.getAsString(json, "background", Category.DEFAULT_BACKGROUND));
         var backgroundWidth = GsonHelper.getAsInt(json, "background_width", Category.DEFAULT_BACKGROUND_WIDTH);
         var backgroundHeight = GsonHelper.getAsInt(json, "background_height", Category.DEFAULT_BACKGROUND_HEIGHT);
         var backgroundTextureZoomMultiplier = GsonHelper.getAsFloat(json, "background_texture_zoom_multiplier", Category.DEFAULT_BACKGROUND_HEIGHT);
-        var entryTextures = new ResourceLocation(GsonHelper.getAsString(json, "entry_textures", Category.DEFAULT_ENTRY_TEXTURES));
+        var entryTextures = ResourceLocation.parse(GsonHelper.getAsString(json, "entry_textures", Category.DEFAULT_ENTRY_TEXTURES));
         var showCategoryButton = GsonHelper.getAsBoolean(json, "show_category_button", true);
 
         BookCondition condition = new BookNoneCondition(); //default to unlocked

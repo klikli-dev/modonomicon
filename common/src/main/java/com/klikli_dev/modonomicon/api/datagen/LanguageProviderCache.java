@@ -5,6 +5,7 @@
 package com.klikli_dev.modonomicon.api.datagen;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -62,7 +63,11 @@ public class LanguageProviderCache implements ModonomiconLanguageProvider {
     }
 
     public void add(Enchantment key, String name) {
-        this.add(key.getDescriptionId(), name);
+        if (key.description() != null && key.description().getContents() instanceof TranslatableContents translatableContents) {
+            this.add(translatableContents.getKey(), name);
+        } else {
+            throw new IllegalArgumentException("Enchantment " + key + " does not have a description that is a component with translatable contents - cannot get translation key.");
+        }
     }
 
     public void addEffect(Supplier<? extends MobEffect> key, String name) {

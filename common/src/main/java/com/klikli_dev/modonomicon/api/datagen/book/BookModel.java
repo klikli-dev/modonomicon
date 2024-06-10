@@ -23,20 +23,20 @@ public class BookModel {
     protected ResourceLocation id;
     protected String name;
     protected String tooltip = "";
-    protected ResourceLocation creativeTab = new ResourceLocation("modonomicon:modonomicon");
+    protected ResourceLocation creativeTab = ResourceLocation.parse("modonomicon:modonomicon");
 
-    protected ResourceLocation model = new ResourceLocation(Book.DEFAULT_MODEL);
-    protected ResourceLocation bookOverviewTexture = new ResourceLocation(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
-    protected ResourceLocation font = new ResourceLocation(Book.DEFAULT_FONT);
+    protected ResourceLocation model = ResourceLocation.parse(Book.DEFAULT_MODEL);
+    protected ResourceLocation bookOverviewTexture = ResourceLocation.parse(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
+    protected ResourceLocation font = ResourceLocation.parse(Book.DEFAULT_FONT);
 
-    protected ResourceLocation frameTexture = new ResourceLocation(Book.DEFAULT_FRAME_TEXTURE);
+    protected ResourceLocation frameTexture = ResourceLocation.parse(Book.DEFAULT_FRAME_TEXTURE);
     protected BookFrameOverlay topFrameOverlay = Data.Book.DEFAULT_TOP_FRAME_OVERLAY;
     protected BookFrameOverlay bottomFrameOverlay = Data.Book.DEFAULT_BOTTOM_FRAME_OVERLAY;
     protected BookFrameOverlay leftFrameOverlay = Data.Book.DEFAULT_LEFT_FRAME_OVERLAY;
     protected BookFrameOverlay rightFrameOverlay = Data.Book.DEFAULT_RIGHT_FRAME_OVERLAY;
-    protected ResourceLocation bookContentTexture = new ResourceLocation(Data.Book.DEFAULT_CONTENT_TEXTURE);
+    protected ResourceLocation bookContentTexture = ResourceLocation.parse(Data.Book.DEFAULT_CONTENT_TEXTURE);
 
-    protected ResourceLocation craftingTexture = new ResourceLocation(Book.DEFAULT_CRAFTING_TEXTURE);
+    protected ResourceLocation craftingTexture = ResourceLocation.parse(Book.DEFAULT_CRAFTING_TEXTURE);
     protected int defaultTitleColor = 0x00000;
     protected float categoryButtonIconScale = 1.0f;
 

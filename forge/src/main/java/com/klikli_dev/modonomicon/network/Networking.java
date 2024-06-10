@@ -28,7 +28,7 @@ import java.util.function.Function;
 
 public class Networking {
     public static final SimpleChannel INSTANCE = ChannelBuilder
-            .named(new ResourceLocation(Modonomicon.MOD_ID, "main"))
+            .named(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "main"))
             .clientAcceptedVersions((a, b) -> true)
             .serverAcceptedVersions((a, b) -> true)
             .networkProtocolVersion(1)

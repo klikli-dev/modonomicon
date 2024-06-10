@@ -1,6 +1,6 @@
 accessWidener	v1	named
-accessible field net/minecraft/client/renderer/MultiBufferSource$BufferSource builder Lcom/mojang/blaze3d/vertex/BufferBuilder;
-accessible field net/minecraft/client/renderer/MultiBufferSource$BufferSource fixedBuffers Ljava/util/Map;
+accessible field net/minecraft/client/renderer/MultiBufferSource$BufferSource sharedBuffer Lcom/mojang/blaze3d/vertex/ByteBufferBuilder;
+accessible field net/minecraft/client/renderer/MultiBufferSource$BufferSource fixedBuffers Ljava/util/SequencedMap;
 accessible field net/minecraft/client/gui/screens/Screen narratables Ljava/util/List;
 accessible field net/minecraft/client/gui/screens/Screen renderables Ljava/util/List;
 accessible field net/minecraft/client/multiplayer/ClientAdvancements progress Ljava/util/Map;

@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -31,9 +32,10 @@ public abstract class AbstractModonomiconLanguageProvider implements Modonomicon
 
     /**
      * Creates a new language provider.
-     * @param output the pack output to write to.
-     * @param modid the mod id.
-     * @param locale the locale this provider should generate.
+     *
+     * @param output         the pack output to write to.
+     * @param modid          the mod id.
+     * @param locale         the locale this provider should generate.
      * @param cachedProvider the cached provider - its contents will be written into this provider.
      */
     public AbstractModonomiconLanguageProvider(PackOutput output, String modid, String locale, ModonomiconLanguageProvider cachedProvider) {
@@ -63,7 +65,7 @@ public abstract class AbstractModonomiconLanguageProvider implements Modonomicon
     public CompletableFuture<?> run(CachedOutput cache) {
         this.addTranslations();
 
-        if(this.cachedProvider != null && !this.cachedProvider.data().isEmpty())
+        if (this.cachedProvider != null && !this.cachedProvider.data().isEmpty())
             this.data.putAll(this.cachedProvider.data());
 
         if (!this.data.isEmpty())
@@ -113,7 +115,11 @@ public abstract class AbstractModonomiconLanguageProvider implements Modonomicon
     }
 
     public void add(Enchantment key, String name) {
-        this.add(key.getDescriptionId(), name);
+        if (key.description() != null && key.description().getContents() instanceof TranslatableContents translatableContents) {
+            this.add(translatableContents.getKey(), name);
+        } else {
+            throw new IllegalArgumentException("Enchantment " + key + " does not have a description that is a component with translatable contents - cannot get translation key.");
+        }
     }
 
     public void addEffect(Supplier<? extends MobEffect> key, String name) {

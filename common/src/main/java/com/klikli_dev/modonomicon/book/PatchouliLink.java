@@ -52,7 +52,7 @@ public class PatchouliLink {
             var postHash = entryId.substring(lastHashIndex);
             var path = StringUtils.removeEnd(entryId.substring(0, lastHashIndex), "/"); //remove trailing /
 
-            bookLink.entryId = path.contains(":") ? ResourceLocation.tryParse(path) : new ResourceLocation(bookLink.bookId.getNamespace(), path);
+            bookLink.entryId = path.contains(":") ? ResourceLocation.tryParse(path) : ResourceLocation.fromNamespaceAndPath(bookLink.bookId.getNamespace(), path);
 
             //We're not verifying patchouli link entry ids either
 
@@ -68,7 +68,7 @@ public class PatchouliLink {
 
         //handle no page number/anchor
         //We're not verifying patchouli link entry ids here either
-        bookLink.entryId = entryId.contains(":") ? ResourceLocation.tryParse(entryId) : new ResourceLocation(bookLink.bookId.getNamespace(), entryId);
+        bookLink.entryId = entryId.contains(":") ? ResourceLocation.tryParse(entryId) : ResourceLocation.fromNamespaceAndPath(bookLink.bookId.getNamespace(), entryId);
 
         return bookLink;
     }

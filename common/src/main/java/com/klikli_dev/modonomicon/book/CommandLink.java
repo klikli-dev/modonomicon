@@ -35,7 +35,7 @@ public class CommandLink {
             if (parts.length == 1) //we only got a book id
                 throw new IllegalArgumentException("Invalid command link, does not contain any command id: " + linkText);
 
-            commandLink.commandId = new ResourceLocation(commandLink.bookId.getNamespace(), parts[1]);
+            commandLink.commandId = ResourceLocation.fromNamespaceAndPath(commandLink.bookId.getNamespace(), parts[1]);
             var command = book.getCommand(commandLink.commandId);
             if (command == null) {
                 throw new IllegalArgumentException("Invalid command link, command not found in book: " + linkText);
@@ -48,7 +48,7 @@ public class CommandLink {
             if (linkText.isEmpty())
                 throw new IllegalArgumentException("Invalid command link, does not contain any command id, because it is empty: " + linkText);
 
-            commandLink.commandId = new ResourceLocation(commandLink.bookId.getNamespace(), linkText);
+            commandLink.commandId = ResourceLocation.fromNamespaceAndPath(commandLink.bookId.getNamespace(), linkText);
             var command = fromBook.getCommand(commandLink.commandId);
             if (command == null) {
                 throw new IllegalArgumentException("Invalid command link, command not found in book: " + linkText);

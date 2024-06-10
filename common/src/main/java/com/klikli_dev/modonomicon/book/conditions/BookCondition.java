@@ -40,7 +40,7 @@ public abstract class BookCondition {
 
 
     public static BookCondition fromJson(JsonObject json, HolderLookup.Provider provider) {
-        var type = new ResourceLocation(GsonHelper.getAsString(json, "type"));
+        var type = ResourceLocation.parse(GsonHelper.getAsString(json, "type"));
         var loader = LoaderRegistry.getConditionJsonLoader(type);
         return loader.fromJson(json, provider);
     }

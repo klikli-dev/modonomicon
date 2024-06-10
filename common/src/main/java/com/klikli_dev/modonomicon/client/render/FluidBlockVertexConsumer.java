@@ -14,50 +14,35 @@ import net.minecraft.core.BlockPos;
 public record FluidBlockVertexConsumer(VertexConsumer prior, PoseStack pose, BlockPos pos) implements VertexConsumer {
 
     @Override
-    public VertexConsumer vertex(double x, double y, double z) {
+    public VertexConsumer addVertex(float x, float y, float z) {
         final float dx = this.pos.getX() & 15;
         final float dy = this.pos.getY() & 15;
         final float dz = this.pos.getZ() & 15;
-        return this.prior.vertex(this.pose.last().pose(), (float) x - dx, (float) y - dy, (float) z - dz);
+        return this.prior.addVertex(this.pose.last().pose(), (float) x - dx, (float) y - dy, (float) z - dz);
     }
 
     @Override
-    public VertexConsumer color(int r, int g, int b, int a) {
-        return this.prior.color(r, g, b, a);
+    public VertexConsumer setColor(int i, int j, int k, int l) {
+        return this.prior.setColor(i, j, k, l);
     }
 
     @Override
-    public VertexConsumer uv(float u, float v) {
-        return this.prior.uv(u, v);
+    public VertexConsumer setUv(float f, float g) {
+        return this.prior.setUv(f, g);
     }
 
     @Override
-    public VertexConsumer overlayCoords(int u, int v) {
-        return this.prior.overlayCoords(u, v);
+    public VertexConsumer setUv1(int i, int j) {
+        return this.prior.setUv1(i, j);
     }
 
     @Override
-    public VertexConsumer uv2(int u, int v) {
-        return this.prior.uv2(u, v);
+    public VertexConsumer setUv2(int i, int j) {
+        return this.prior.setUv2(i, j);
     }
 
     @Override
-    public VertexConsumer normal(float x, float y, float z) {
-        return this.prior.normal(this.pose.last(), x, y, z);
-    }
-
-    @Override
-    public void endVertex() {
-        this.prior.endVertex();
-    }
-
-    @Override
-    public void defaultColor(int r, int g, int b, int a) {
-        this.prior.defaultColor(r, g, b, a);
-    }
-
-    @Override
-    public void unsetDefaultColor() {
-        this.prior.unsetDefaultColor();
+    public VertexConsumer setNormal(float f, float g, float h) {
+        return this.prior.setNormal(f, g, h);
     }
 }

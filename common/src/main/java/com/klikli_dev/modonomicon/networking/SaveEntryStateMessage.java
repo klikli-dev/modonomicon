@@ -19,7 +19,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class SaveEntryStateMessage implements Message {
 
-    public static final Type<SaveEntryStateMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "save_entry_state"));
+    public static final Type<SaveEntryStateMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "save_entry_state"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SaveEntryStateMessage> STREAM_CODEC = CustomPacketPayload.codec(SaveEntryStateMessage::encode, SaveEntryStateMessage::new);
 

@@ -19,7 +19,7 @@ public class ReloadResourcesOnClientMessage implements Message {
 
     public static final ReloadResourcesOnClientMessage INSTANCE = new ReloadResourcesOnClientMessage();
 
-    public static final Type<ReloadResourcesOnClientMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "reload_resources_on_client"));
+    public static final Type<ReloadResourcesOnClientMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "reload_resources_on_client"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ReloadResourcesOnClientMessage> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 

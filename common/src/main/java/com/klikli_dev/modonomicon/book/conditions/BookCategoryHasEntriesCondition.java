@@ -31,7 +31,7 @@ public class BookCategoryHasEntriesCondition extends BookCondition {
     }
     
     public static BookCategoryHasEntriesCondition fromJson(JsonObject json, HolderLookup.Provider provider) {
-        ResourceLocation categoryId = new ResourceLocation(GsonHelper.getAsString(json, "category_id"));
+        ResourceLocation categoryId = ResourceLocation.parse(GsonHelper.getAsString(json, "category_id"));
         Component tooltip = Component.translatable(ModonomiconConstants.I18n.Tooltips.CONDITION_CATEGORY_HAS_ENTRIES, categoryId);
         return new BookCategoryHasEntriesCondition(tooltip, categoryId);
     }

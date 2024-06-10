@@ -17,7 +17,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class ClickCommandLinkMessage implements Message {
 
-    public static final CustomPacketPayload.Type<ClickCommandLinkMessage> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Modonomicon.MOD_ID, "click_command_link"));
+    public static final CustomPacketPayload.Type<ClickCommandLinkMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "click_command_link"));
 
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ClickCommandLinkMessage> STREAM_CODEC = StreamCodec.composite(

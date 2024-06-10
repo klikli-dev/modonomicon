@@ -17,7 +17,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class RequestAdvancementMessage implements Message {
 
-    public static final Type<RequestAdvancementMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "request_advancement"));
+    public static final Type<RequestAdvancementMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "request_advancement"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestAdvancementMessage> STREAM_CODEC = StreamCodec.composite(
             ResourceLocation.STREAM_CODEC,

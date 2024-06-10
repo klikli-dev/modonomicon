@@ -34,6 +34,6 @@ public class Modonomicon {
     }
 
     public static ResourceLocation loc(String path) {
-        return new ResourceLocation(MOD_ID, path);
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 }

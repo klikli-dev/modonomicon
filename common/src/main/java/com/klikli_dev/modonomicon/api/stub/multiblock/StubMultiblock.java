@@ -27,7 +27,7 @@ import java.util.Collections;
 
 public class StubMultiblock implements Multiblock {
 
-    public static final ResourceLocation TYPE = new ResourceLocation(ModonomiconAPI.ID + ":stub");
+    public static final ResourceLocation TYPE = ResourceLocation.parse(ModonomiconAPI.ID + ":stub");
 
     public static final StubMultiblock INSTANCE = new StubMultiblock();
 
@@ -71,7 +71,7 @@ public class StubMultiblock implements Multiblock {
 
     @Override
     public ResourceLocation getId() {
-        return new ResourceLocation(ModonomiconAPI.ID, "stub");
+        return ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "stub");
     }
 
     @Override

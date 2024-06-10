@@ -21,7 +21,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class SendUnlockCodeToServerMessage implements Message {
 
-    public static final Type<SendUnlockCodeToServerMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "send_unlock_code_to_server"));
+    public static final Type<SendUnlockCodeToServerMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "send_unlock_code_to_server"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SendUnlockCodeToServerMessage> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8,

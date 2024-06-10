@@ -123,14 +123,14 @@ public class Book {
     public static Book fromJson(ResourceLocation id, JsonObject json, HolderLookup.Provider provider) {
         var name = GsonHelper.getAsString(json, "name");
         var tooltip = GsonHelper.getAsString(json, "tooltip", "");
-        var model = new ResourceLocation(GsonHelper.getAsString(json, "model", Data.Book.DEFAULT_MODEL));
+        var model = ResourceLocation.parse(GsonHelper.getAsString(json, "model", Data.Book.DEFAULT_MODEL));
         var generateBookItem = GsonHelper.getAsBoolean(json, "generate_book_item", true);
         var customBookItem = json.has("custom_book_item") ?
-                new ResourceLocation(GsonHelper.getAsString(json, "custom_book_item")) :
+                ResourceLocation.parse(GsonHelper.getAsString(json, "custom_book_item")) :
                 null;
         var creativeTab = GsonHelper.getAsString(json, "creative_tab", "misc");
-        var bookOverviewTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_overview_texture", Data.Book.DEFAULT_OVERVIEW_TEXTURE));
-        var frameTexture = new ResourceLocation(GsonHelper.getAsString(json, "frame_texture", Data.Book.DEFAULT_FRAME_TEXTURE));
+        var bookOverviewTexture = ResourceLocation.parse(GsonHelper.getAsString(json, "book_overview_texture", Data.Book.DEFAULT_OVERVIEW_TEXTURE));
+        var frameTexture = ResourceLocation.parse(GsonHelper.getAsString(json, "frame_texture", Data.Book.DEFAULT_FRAME_TEXTURE));
 
         var topFrameOverlay = json.has("top_frame_overlay") ?
                 BookFrameOverlay.fromJson(json.get("top_frame_overlay").getAsJsonObject()) :
@@ -148,11 +148,11 @@ public class Book {
                 BookFrameOverlay.fromJson(json.get("right_frame_overlay").getAsJsonObject()) :
                 Data.Book.DEFAULT_RIGHT_FRAME_OVERLAY;
 
-        var font = new ResourceLocation(GsonHelper.getAsString(json, "font", Data.Book.DEFAULT_FONT));
+        var font = ResourceLocation.parse(GsonHelper.getAsString(json, "font", Data.Book.DEFAULT_FONT));
 
-        var bookContentTexture = new ResourceLocation(GsonHelper.getAsString(json, "book_content_texture", Data.Book.DEFAULT_CONTENT_TEXTURE));
-        var craftingTexture = new ResourceLocation(GsonHelper.getAsString(json, "crafting_texture", Data.Book.DEFAULT_CRAFTING_TEXTURE));
-        var turnPageSound = new ResourceLocation(GsonHelper.getAsString(json, "turn_page_sound", Data.Book.DEFAULT_PAGE_TURN_SOUND));
+        var bookContentTexture = ResourceLocation.parse(GsonHelper.getAsString(json, "book_content_texture", Data.Book.DEFAULT_CONTENT_TEXTURE));
+        var craftingTexture = ResourceLocation.parse(GsonHelper.getAsString(json, "crafting_texture", Data.Book.DEFAULT_CRAFTING_TEXTURE));
+        var turnPageSound = ResourceLocation.parse(GsonHelper.getAsString(json, "turn_page_sound", Data.Book.DEFAULT_PAGE_TURN_SOUND));
         var defaultTitleColor = GsonHelper.getAsInt(json, "default_title_color", 0x00000);
         var categoryButtonIconScale = GsonHelper.getAsFloat(json, "category_button_icon_scale", 1.0f);
         var autoAddReadConditions = GsonHelper.getAsBoolean(json, "auto_add_read_conditions", false);

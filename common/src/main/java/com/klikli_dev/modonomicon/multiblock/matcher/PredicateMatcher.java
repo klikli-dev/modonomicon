@@ -51,7 +51,7 @@ public class PredicateMatcher implements StateMatcher {
     public static PredicateMatcher fromJson(JsonObject json, HolderLookup.Provider provider) {
         try {
             var displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), new StringReader(GsonHelper.getAsString(json, "display")), false).blockState();
-            var predicateId = new ResourceLocation(GsonHelper.getAsString(json, "predicate"));
+            var predicateId = ResourceLocation.parse(GsonHelper.getAsString(json, "predicate"));
             var countsTowardsTotalBlocks = GsonHelper.getAsBoolean(json, "counts_towards_total_blocks", true);
             return new PredicateMatcher(displayState, predicateId, countsTowardsTotalBlocks);
         } catch (CommandSyntaxException e) {

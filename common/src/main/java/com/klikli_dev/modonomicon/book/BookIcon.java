@@ -43,17 +43,17 @@ public class BookIcon {
         //if string -> use from string
         //if json object -> parse from json
         if (jsonElement.isJsonPrimitive()) {
-            return fromString(new ResourceLocation(jsonElement.getAsString()));
+            return fromString(ResourceLocation.parse(jsonElement.getAsString()));
         }
 
         var jsonObject = jsonElement.getAsJsonObject();
         if (jsonObject.has("item")) {
-            Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(GsonHelper.getAsString(jsonObject, "item")));
+            Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(GsonHelper.getAsString(jsonObject, "item")));
             return new BookIcon(new ItemStack(item));
         } else if (jsonObject.has("texture")) {
             var width = GsonHelper.getAsInt(jsonObject, "width", ModonomiconConstants.Data.Icon.DEFAULT_WIDTH);
             var height = GsonHelper.getAsInt(jsonObject, "height", ModonomiconConstants.Data.Icon.DEFAULT_HEIGHT);
-            var texture = new ResourceLocation(GsonHelper.getAsString(jsonObject, "texture"));
+            var texture = ResourceLocation.parse(GsonHelper.getAsString(jsonObject, "texture"));
             return new BookIcon(texture, width, height);
         } else {
             throw new JsonParseException("BookIcon must have either item or texture defined." + jsonElement);

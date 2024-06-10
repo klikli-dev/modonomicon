@@ -20,7 +20,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class ClickReadAllButtonMessage implements Message {
 
-    public static final Type<ClickReadAllButtonMessage> TYPE = new Type<>(new ResourceLocation(Modonomicon.MOD_ID, "click_read_all_button"));
+    public static final Type<ClickReadAllButtonMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "click_read_all_button"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ClickReadAllButtonMessage> STREAM_CODEC = StreamCodec.composite(
             ResourceLocation.STREAM_CODEC,

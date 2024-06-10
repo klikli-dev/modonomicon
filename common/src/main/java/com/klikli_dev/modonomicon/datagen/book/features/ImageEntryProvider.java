@@ -37,8 +37,8 @@ public class ImageEntryProvider extends EntryProvider {
                         .withText(this.context().pageText())
                         .withTitle(this.context().pageTitle())
                         .withImages(
-                                new ResourceLocation("modonomicon:textures/gui/default_background.png"),
-                                new ResourceLocation("modonomicon:textures/gui/dark_slate_seamless.png")
+                                ResourceLocation.parse("modonomicon:textures/gui/default_background.png"),
+                                ResourceLocation.parse("modonomicon:textures/gui/dark_slate_seamless.png")
                         )
         );
         this.pageTitle("Sample image!");
@@ -56,8 +56,8 @@ public class ImageEntryProvider extends EntryProvider {
                         .withText(this.context().pageText())
                         .withTitle(this.context().pageTitle())
                         .withImages(
-                                new ResourceLocation("modonomicon:textures/gui/default_background.png"),
-                                new ResourceLocation("modonomicon:textures/gui/dark_slate_seamless.png")
+                                ResourceLocation.parse("modonomicon:textures/gui/default_background.png"),
+                                ResourceLocation.parse("modonomicon:textures/gui/dark_slate_seamless.png")
                         )
         );
     }

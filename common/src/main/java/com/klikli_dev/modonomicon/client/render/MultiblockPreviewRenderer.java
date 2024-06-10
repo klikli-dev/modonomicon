@@ -361,15 +361,13 @@ public class MultiblockPreviewRenderer {
         float f7 = (float) (endColor & 255) / 255.0F;
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuilder();
-        bufferbuilder.begin(Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        BufferBuilder bufferbuilder = Tesselator.getInstance().begin(Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         Matrix4f mat = guiGraphics.pose().last().pose();
-        bufferbuilder.vertex(mat, right, top, 0).color(f1, f2, f3, f).endVertex();
-        bufferbuilder.vertex(mat, left, top, 0).color(f1, f2, f3, f).endVertex();
-        bufferbuilder.vertex(mat, left, bottom, 0).color(f5, f6, f7, f4).endVertex();
-        bufferbuilder.vertex(mat, right, bottom, 0).color(f5, f6, f7, f4).endVertex();
-        tessellator.end();
+        bufferbuilder.addVertex(mat, right, top, 0).setColor(f1, f2, f3, f);
+        bufferbuilder.addVertex(mat, left, top, 0).setColor(f1, f2, f3, f);
+        bufferbuilder.addVertex(mat, left, bottom, 0).setColor(f5, f6, f7, f4);
+        bufferbuilder.addVertex(mat, right, bottom, 0).setColor(f5, f6, f7, f4);
+        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
         RenderSystem.disableBlend();
     }
 
@@ -381,17 +379,17 @@ public class MultiblockPreviewRenderer {
     }
 
     private static MultiBufferSource.BufferSource initBuffers(MultiBufferSource.BufferSource original) {
-        BufferBuilder fallback = original.builder;
-        Map<RenderType, BufferBuilder> layerBuffers = original.fixedBuffers;
-        Map<RenderType, BufferBuilder> remapped = new Object2ObjectLinkedOpenHashMap<>();
-        for (Map.Entry<RenderType, BufferBuilder> e : layerBuffers.entrySet()) {
+        var fallback = original.sharedBuffer;
+        var layerBuffers = original.fixedBuffers;
+        SequencedMap<RenderType, ByteBufferBuilder> remapped = new Object2ObjectLinkedOpenHashMap<>();
+        for (Map.Entry<RenderType, ByteBufferBuilder> e : layerBuffers.entrySet()) {
             remapped.put(GhostRenderLayer.remap(e.getKey()), e.getValue());
         }
         return new GhostBuffers(fallback, remapped);
     }
 
     private static class GhostBuffers extends MultiBufferSource.BufferSource {
-        protected GhostBuffers(BufferBuilder fallback, Map<RenderType, BufferBuilder> layerBuffers) {
+        protected GhostBuffers(ByteBufferBuilder fallback, SequencedMap<RenderType, ByteBufferBuilder> layerBuffers) {
             super(fallback, layerBuffers);
         }
 

@@ -42,7 +42,7 @@ public class BookAdvancementConditionModel extends BookConditionModel<BookAdvanc
     }
 
     public BookAdvancementConditionModel withAdvancementId(String advancementId) {
-        this.advancementId = new ResourceLocation(advancementId);
+        this.advancementId = ResourceLocation.parse(advancementId);
         return this;
     }
 

@@ -224,7 +224,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         for (var entry : content.entrySet()) {
             var pathParts = entry.getKey().getPath().split("/");
 
-            var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
+            var bookId = ResourceLocation.fromNamespaceAndPath(entry.getKey().getNamespace(), pathParts[0]);
             switch (pathParts[1]) {
                 case "book" -> {
                     bookJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
@@ -265,7 +265,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         for (var entry : bookJsons.entrySet()) {
             try {
                 var pathParts = entry.getKey().getPath().split("/");
-                var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
+                var bookId = ResourceLocation.fromNamespaceAndPath(entry.getKey().getNamespace(), pathParts[0]);
                 BookErrorManager.get().setCurrentBookId(bookId);
                 BookErrorManager.get().setContext("Loading Book JSON");
                 var book = this.loadBook(bookId, entry.getValue(), this.registries);
@@ -282,11 +282,11 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             try {
                 //load categories and link to book
                 var pathParts = entry.getKey().getPath().split("/");
-                var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
+                var bookId = ResourceLocation.fromNamespaceAndPath(entry.getKey().getNamespace(), pathParts[0]);
                 BookErrorManager.get().setCurrentBookId(bookId);
 
                 //category id skips the book id and the category directory
-                var categoryId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
+                var categoryId = ResourceLocation.fromNamespaceAndPath(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
 
                 BookErrorManager.get().getContextHelper().categoryId = categoryId;
                 //test if we should load the category at all
@@ -312,11 +312,11 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             try {
                 //load entries and link to category
                 var pathParts = entry.getKey().getPath().split("/");
-                var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
+                var bookId = ResourceLocation.fromNamespaceAndPath(entry.getKey().getNamespace(), pathParts[0]);
                 BookErrorManager.get().setCurrentBookId(bookId);
 
                 //entry id skips the book id and the entries directory, but keeps category so it is unique
-                var entryId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
+                var entryId = ResourceLocation.fromNamespaceAndPath(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
 
                 BookErrorManager.get().getContextHelper().entryId = entryId;
                 //test if we should load the category at all
@@ -343,13 +343,13 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             try {
                 //load commands and link to book
                 var pathParts = entry.getKey().getPath().split("/");
-                var bookId = new ResourceLocation(entry.getKey().getNamespace(), pathParts[0]);
+                var bookId = ResourceLocation.fromNamespaceAndPath(entry.getKey().getNamespace(), pathParts[0]);
                 BookErrorManager.get().setCurrentBookId(bookId);
 
                 BookErrorManager.get().setContext("Loading Command JSON");
 
                 //commands id skips the book id and the commands directory
-                var commandId = new ResourceLocation(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
+                var commandId = ResourceLocation.fromNamespaceAndPath(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
 
                 BookErrorManager.get().setContext("Loading Command JSON: " + commandId);
                 var command = this.loadCommand(commandId, entry.getValue());
@@ -373,7 +373,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
         private static final Client instance = new Client();
 
-        private static final ResourceLocation fallbackFont = new ResourceLocation("minecraft", "default");
+        private static final ResourceLocation fallbackFont = ResourceLocation.fromNamespaceAndPath("minecraft", "default");
 
         private boolean isFallbackLocale;
         private boolean isFontInitialized;

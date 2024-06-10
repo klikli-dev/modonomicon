@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public final class StubMatcher implements StateMatcher {
 
-    public static final ResourceLocation TYPE = new ResourceLocation(ModonomiconAPI.ID + ":stub");
+    public static final ResourceLocation TYPE = ResourceLocation.parse(ModonomiconAPI.ID + ":stub");
 
     public static final StubMatcher INSTANCE = new StubMatcher();
 

@@ -46,7 +46,7 @@ public class FormattingCategoryProvider extends CategoryProvider {
     protected BookCategoryModel generateCategory() {
 
         return BookCategoryModel.create(this.modLoc(this.context().categoryId()), this.context().categoryName())
-                .withIcon(new ResourceLocation("minecraft:textures/item/book.png"));
+                .withIcon(ResourceLocation.parse("minecraft:textures/item/book.png"));
     }
 
     private BookEntryModel makeBasicFormattingEntry(char location) {
@@ -64,7 +64,7 @@ public class FormattingCategoryProvider extends CategoryProvider {
                 ; //strikethrough, color
 
         var formattingEntry = this.entry(location)
-                .withIcon(new ResourceLocation("minecraft:textures/item/paper.png"))
+                .withIcon(ResourceLocation.parse("minecraft:textures/item/paper.png"))
                 .withPage(page1)
                 .withPage(page2);
 

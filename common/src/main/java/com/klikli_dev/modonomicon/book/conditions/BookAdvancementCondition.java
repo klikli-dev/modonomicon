@@ -35,7 +35,7 @@ public class BookAdvancementCondition extends BookCondition {
     }
 
     public static BookAdvancementCondition fromJson(JsonObject json, HolderLookup.Provider provider) {
-        var advancementId = new ResourceLocation(GsonHelper.getAsString(json, "advancement_id"));
+        var advancementId = ResourceLocation.parse(GsonHelper.getAsString(json, "advancement_id"));
 
 
         //default tooltip is null because we construct it on the fly from the advancement id
