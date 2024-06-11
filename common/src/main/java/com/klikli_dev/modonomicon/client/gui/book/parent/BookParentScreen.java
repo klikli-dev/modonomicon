@@ -5,7 +5,6 @@
 package com.klikli_dev.modonomicon.client.gui.book.parent;
 
 import com.klikli_dev.modonomicon.book.BookProvider;
-import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryNodeScreen;
 import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryScreen;
 
 /**
@@ -14,6 +13,7 @@ import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryScreen;
 public interface BookParentScreen extends BookProvider {
 
     BookCategoryScreen getCurrentCategoryScreen();
+
     /**
      * This is provided by any vanilla screen, and usually overridden by Modonomicon screens.
      * Making it available in this interface allows various book child screens to close the entire book.

@@ -224,6 +224,7 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
 
     @Override
     public void onClose() {
+        //TODO mirror behaviour of category node screen
         if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_ESCAPE)) {
             super.onClose();
             this.parentScreen.onClose();
