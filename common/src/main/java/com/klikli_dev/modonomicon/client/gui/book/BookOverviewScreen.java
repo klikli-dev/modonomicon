@@ -150,6 +150,10 @@ public class BookOverviewScreen extends Screen {
     }
 
     public void changeCategory(int categoryIndex) {
+        if(this.currentCategory == categoryIndex) {
+            return; //this is an easy fix for #179, otherwise we have to rethink state tracking
+        }
+
         var oldIndex = this.currentCategory;
         this.currentCategory = categoryIndex;
         this.onCategoryChanged(oldIndex, this.currentCategory);
