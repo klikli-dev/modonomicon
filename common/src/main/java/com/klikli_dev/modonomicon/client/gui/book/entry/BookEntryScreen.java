@@ -154,10 +154,12 @@ public class BookEntryScreen extends BookPaginatedScreen {
         return this.entry;
     }
 
+    @Override
     public Book getBook() {
         return this.entry.getBook();
     }
 
+    @Override
     public boolean canSeeArrowButton(boolean left) {
         return left ? this.openPagesIndex > 0 : (this.openPagesIndex + 2) < this.unlockedPages.size();
     }
@@ -166,6 +168,7 @@ public class BookEntryScreen extends BookPaginatedScreen {
         this.setTooltip(List.of(strings));
     }
 
+    @Override
     public void setTooltip(List<Component> tooltip) {
         this.resetTooltip();
         this.tooltip = tooltip;
