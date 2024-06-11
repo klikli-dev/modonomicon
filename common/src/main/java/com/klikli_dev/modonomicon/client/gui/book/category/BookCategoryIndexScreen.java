@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class BookIndexBookCategoryScreen extends BookPaginatedScreen implements BookCategoryScreen {
+public class BookCategoryIndexScreen extends BookPaginatedScreen implements BookCategoryScreen {
     public static final int ENTRIES_PER_PAGE = 13;
     public static final int ENTRIES_IN_FIRST_PAGE = 11;
     protected final List<Button> entryButtons = new ArrayList<>();
@@ -51,7 +51,7 @@ public class BookIndexBookCategoryScreen extends BookPaginatedScreen implements 
     private BookTextHolder infoText;
     private List<Component> tooltip;
 
-    public BookIndexBookCategoryScreen(BookParentScreen parentScreen, BookCategory category) {
+    public BookCategoryIndexScreen(BookParentScreen parentScreen, BookCategory category) {
         super(Component.translatable(category.getName()));
         this.parentScreen = parentScreen;
         this.category = category;

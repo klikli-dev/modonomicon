@@ -16,7 +16,7 @@ import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryListButton;
-import com.klikli_dev.modonomicon.client.gui.book.category.BookIndexBookCategoryScreen;
+import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryIndexScreen;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
@@ -66,7 +66,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
     public void handleButtonEntry(Button button) {
         if(button instanceof CategoryListButton categoryListButton){
             //TODO: properly Open category index screen
-            ClientServices.GUI.pushGuiLayer(new BookIndexBookCategoryScreen(this, categoryListButton.getCategory()));
+            ClientServices.GUI.pushGuiLayer(new BookCategoryIndexScreen(this, categoryListButton.getCategory()));
         }
     }
 
