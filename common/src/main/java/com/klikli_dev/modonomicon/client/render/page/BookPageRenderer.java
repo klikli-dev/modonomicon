@@ -11,7 +11,7 @@ import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
-import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.MarkdownComponentRenderUtils;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
@@ -31,7 +31,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
     public int left;
     public int top;
     protected T page;
-    protected BookContentScreen parentScreen;
+    protected BookEntryScreen parentScreen;
     protected Minecraft mc;
     protected Font font;
 
@@ -71,7 +71,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
     /**
      * Call when the page is being set up to be displayed (when book content screen opens, or pages are changed)
      */
-    public void onBeginDisplayPage(BookContentScreen parentScreen, int left, int top) {
+    public void onBeginDisplayPage(BookEntryScreen parentScreen, int left, int top) {
         this.parentScreen = parentScreen;
 
         this.mc = parentScreen.getMinecraft();
@@ -89,7 +89,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
     /**
      * Call when the page is will no longer be displayed (when book content screen opens, or pages are changed)
      */
-    public void onEndDisplayPage(BookContentScreen parentScreen) {
+    public void onEndDisplayPage(BookEntryScreen parentScreen) {
         parentScreen.removeRenderableWidgets(this.buttons);
     }
 
@@ -126,7 +126,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
                     renderedTitle.getRenderedText().stream().map(Component::getVisualOrderText).toList());
 
             //if title is larger than allowed, scaled to fit
-            var scale = Math.min(1.0f, (float) BookContentScreen.MAX_TITLE_WIDTH / (float) this.font.width(formattedCharSequence));
+            var scale = Math.min(1.0f, (float) BookEntryScreen.MAX_TITLE_WIDTH / (float) this.font.width(formattedCharSequence));
             if (scale < 1) {
                 guiGraphics.pose().translate(0, y - y * scale, 0);
                 guiGraphics.pose().scale(scale, scale, scale);
@@ -140,7 +140,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
 
             var titleComponent = Component.empty().append(title.getComponent()).withStyle(s -> s.withFont(font));
             //if title is larger than allowed, scaled to fit
-            var scale = Math.min(1.0f, (float) BookContentScreen.MAX_TITLE_WIDTH / (float) this.font.width(titleComponent.getVisualOrderText()));
+            var scale = Math.min(1.0f, (float) BookEntryScreen.MAX_TITLE_WIDTH / (float) this.font.width(titleComponent.getVisualOrderText()));
             if (scale < 1) {
                 guiGraphics.pose().translate(0, y - y * scale, 0);
                 guiGraphics.pose().scale(scale, scale, scale);
@@ -161,7 +161,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
         guiGraphics.pose().popPose();
 
         if (showTitleSeparator)
-            BookContentScreen.drawTitleSeparator(guiGraphics, this.page.getBook(), x, y + 12);
+            BookEntryScreen.drawTitleSeparator(guiGraphics, this.page.getBook(), x, y + 12);
     }
 
     public abstract void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float ticks);

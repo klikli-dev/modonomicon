@@ -12,7 +12,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.client.ClientTicks;
-import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -20,7 +20,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.server.MinecraftServer;
 
 public class CategoryListButton extends Button {
 
@@ -30,7 +29,7 @@ public class CategoryListButton extends Button {
     private float timeHovered;
 
     public CategoryListButton(BookCategory category, int pX, int pY, OnPress pOnPress) {
-        super(pX, pY, BookContentScreen.PAGE_WIDTH, 10, Component.translatable(category.getName()), pOnPress, Button.DEFAULT_NARRATION);
+        super(pX, pY, BookEntryScreen.PAGE_WIDTH, 10, Component.translatable(category.getName()), pOnPress, Button.DEFAULT_NARRATION);
 
         this.category = category;
     }
@@ -62,7 +61,7 @@ public class CategoryListButton extends Button {
 
             if (locked) {
                 RenderSystem.setShaderColor(1F, 1F, 1F, 0.7F);
-                BookContentScreen.drawLock(guiGraphics, this.category.getBook(), this.getX() * 2 + 2, this.getY() * 2 + 2);
+                BookEntryScreen.drawLock(guiGraphics, this.category.getBook(), this.getX() * 2 + 2, this.getY() * 2 + 2);
             } else {
                 this.category.getIcon().render(guiGraphics, this.getX() * 2 + 2, this.getY() * 2 + 2);
             }

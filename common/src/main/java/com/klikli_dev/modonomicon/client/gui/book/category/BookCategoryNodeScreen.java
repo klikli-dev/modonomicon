@@ -4,7 +4,7 @@
  *
  * SPDX-License-Identifier: MIT
  */
-package com.klikli_dev.modonomicon.client.gui.book;
+package com.klikli_dev.modonomicon.client.gui.book.category;
 
 import com.klikli_dev.modonomicon.api.events.EntryClickedEvent;
 import com.klikli_dev.modonomicon.book.*;
@@ -13,6 +13,10 @@ import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryCont
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
+import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentNodeScreen;
+import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
+import com.klikli_dev.modonomicon.client.gui.book.entry.EntryConnectionRenderer;
+import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
 import com.klikli_dev.modonomicon.events.ModonomiconEvents;
 import com.klikli_dev.modonomicon.networking.BookEntryReadMessage;
 import com.klikli_dev.modonomicon.networking.SaveCategoryStateMessage;
@@ -32,7 +36,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 
-public class BookCategoryScreen {
+public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     public static final int ENTRY_GRID_SCALE = 30;
     public static final int ENTRY_GAP = 2;
@@ -41,7 +45,7 @@ public class BookCategoryScreen {
     public static final int ENTRY_HEIGHT = 26;
     public static final int ENTRY_WIDTH = 26;
 
-    private final BookOverviewScreen bookOverviewScreen;
+    private final BookParentNodeScreen bookOverviewScreen;
     private final BookCategory category;
     private final EntryConnectionRenderer connectionRenderer;
     private float scrollX = 0;
@@ -52,7 +56,7 @@ public class BookCategoryScreen {
 
     private ResourceLocation openEntry;
 
-    public BookCategoryScreen(BookOverviewScreen bookOverviewScreen, BookCategory category) {
+    public BookCategoryNodeScreen(BookParentNodeScreen bookOverviewScreen, BookCategory category) {
         this.bookOverviewScreen = bookOverviewScreen;
         this.category = category;
 
@@ -141,7 +145,7 @@ public class BookCategoryScreen {
         return false;
     }
 
-    public @Nullable BookContentScreen openEntry(BookEntry entry) {
+    public @Nullable BookEntryScreen openEntry(BookEntry entry) {
         if (!BookUnlockStateManager.get().isReadFor(Minecraft.getInstance().player, entry)) {
             Services.NETWORK.sendToServer(new BookEntryReadMessage(entry.getBook().getId(), entry.getId()));
         }
@@ -152,12 +156,12 @@ public class BookCategoryScreen {
         return entry.openEntry(this);
     }
 
-    public @Nullable BookContentScreen openContentEntry(ContentBookEntry entry) {
+    public @Nullable BookEntryScreen openContentEntry(ContentBookEntry entry) {
         //we check if the content screen was already added, e.g. by the book gui manager
         if (BookGuiManager.get().isEntryAlreadyDisplayed(entry))
-            return (BookContentScreen) Minecraft.getInstance().screen;
+            return (BookEntryScreen) Minecraft.getInstance().screen;
         
-        var bookContentScreen = new BookContentScreen(this.bookOverviewScreen.getCurrentCategoryScreen().bookOverviewScreen, entry);
+        var bookContentScreen = new BookEntryScreen(this.bookOverviewScreen.getCurrentCategoryScreen().bookOverviewScreen, entry);
         ClientServices.GUI.pushGuiLayer(bookContentScreen);
 
         this.openEntry = entry.getId();
@@ -317,7 +321,7 @@ public class BookCategoryScreen {
                 guiGraphics.pose().pushPose();
                 guiGraphics.pose().translate(0, 0, 11); //and push the unread icon in front of the background and icon (they are at Z 10)
                 //if focused we go to the right of our normal button (instead of down, like mc buttons do)
-                BookContentScreen.drawFromTexture(guiGraphics, this.bookOverviewScreen.getBook(),
+                BookEntryScreen.drawFromTexture(guiGraphics, this.bookOverviewScreen.getBook(),
                         entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 16 + 2,
                         entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP - 2, U + (isHovered ? width : 0), V, width, height);
                 guiGraphics.pose().popPose();
@@ -442,15 +446,17 @@ public class BookCategoryScreen {
         }
     }
 
+    @Override
     public void onClose() {
         Services.NETWORK.sendToServer(new SaveCategoryStateMessage(this.category, this.scrollX, this.scrollY, this.currentZoom, this.openEntry));
     }
 
-    public void onCloseEntry(BookContentScreen screen) {
+    @Override
+    public void onCloseEntry(BookEntryScreen screen) {
         this.openEntry = null;
     }
     
-    public BookOverviewScreen getBookOverviewScreen() {
+    public BookParentNodeScreen getBookOverviewScreen() {
         return this.bookOverviewScreen;
     }
 

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.client.gui.book;
+package com.klikli_dev.modonomicon.client.gui.book.entry;
 
 public enum EntryDisplayState {
     HIDDEN,

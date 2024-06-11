@@ -10,7 +10,7 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.page.BookEntityPage;
 import com.klikli_dev.modonomicon.client.ClientTicks;
-import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.util.EntityUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Axis;
@@ -71,7 +71,7 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
     }
 
     @Override
-    public void onBeginDisplayPage(BookContentScreen parentScreen, int left, int top) {
+    public void onBeginDisplayPage(BookEntryScreen parentScreen, int left, int top) {
         super.onBeginDisplayPage(parentScreen, left, top);
 
         this.loadEntity(parentScreen.getMinecraft().level);
@@ -80,16 +80,16 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float ticks) {
         if (!this.page.getEntityName().isEmpty()) {
-            this.renderTitle(guiGraphics, this.page.getEntityName(), false, BookContentScreen.PAGE_WIDTH / 2, 0);
+            this.renderTitle(guiGraphics, this.page.getEntityName(), false, BookEntryScreen.PAGE_WIDTH / 2, 0);
         }
 
-        this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, this.getTextY(), BookContentScreen.PAGE_WIDTH);
+        this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, this.getTextY(), BookEntryScreen.PAGE_WIDTH);
 
-        int x = BookContentScreen.PAGE_WIDTH / 2 - 53;
+        int x = BookEntryScreen.PAGE_WIDTH / 2 - 53;
         int y = 7;
         RenderSystem.enableBlend();
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        BookContentScreen.drawFromTexture(guiGraphics, this.getPage().getBook(), x, y, 405, 149, 106, 106);
+        BookEntryScreen.drawFromTexture(guiGraphics, this.getPage().getBook(), x, y, 405, 149, 106, 106);
 
         if (this.errored) {
             guiGraphics.drawString(this.font, Component.translatable(Gui.PAGE_ENTITY_LOADING_ERROR), 58, 60, 0xFF0000, true);
@@ -110,13 +110,13 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
     public Style getClickedComponentStyleAt(double pMouseX, double pMouseY) {
         if (pMouseX > 0 && pMouseY > 0) {
             if (!this.page.getEntityName().isEmpty()) {
-                var titleStyle = this.getClickedComponentStyleAtForTitle(this.page.getEntityName(), BookContentScreen.PAGE_WIDTH / 2, 0, pMouseX, pMouseY);
+                var titleStyle = this.getClickedComponentStyleAtForTitle(this.page.getEntityName(), BookEntryScreen.PAGE_WIDTH / 2, 0, pMouseX, pMouseY);
                 if (titleStyle != null) {
                     return titleStyle;
                 }
             }
 
-            var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), 0, this.getTextY(), BookContentScreen.PAGE_WIDTH, pMouseX, pMouseY);
+            var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), 0, this.getTextY(), BookEntryScreen.PAGE_WIDTH, pMouseX, pMouseY);
             if (textStyle != null) {
                 return textStyle;
             }

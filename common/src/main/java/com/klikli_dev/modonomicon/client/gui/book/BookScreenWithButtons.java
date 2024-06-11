@@ -4,7 +4,6 @@
 
 package com.klikli_dev.modonomicon.client.gui.book;
 
-import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookProvider;
 import net.minecraft.network.chat.Component;
 

@@ -7,7 +7,7 @@
 package com.klikli_dev.modonomicon.client.render.page;
 
 import com.klikli_dev.modonomicon.book.page.BookImagePage;
-import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.SmallArrowButton;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
@@ -33,7 +33,7 @@ public class BookImagePageRenderer extends BookPageRenderer<BookImagePage> imple
     }
 
     @Override
-    public void onBeginDisplayPage(BookContentScreen parentScreen, int left, int top) {
+    public void onBeginDisplayPage(BookEntryScreen parentScreen, int left, int top) {
         super.onBeginDisplayPage(parentScreen, left, top);
 
         int x = 94;
@@ -46,12 +46,12 @@ public class BookImagePageRenderer extends BookPageRenderer<BookImagePage> imple
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float ticks) {
         if (this.page.hasTitle()) {
-            this.renderTitle(guiGraphics, this.page.getTitle(), false, BookContentScreen.PAGE_WIDTH / 2, 0);
+            this.renderTitle(guiGraphics, this.page.getTitle(), false, BookEntryScreen.PAGE_WIDTH / 2, 0);
         }
 
-        this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, this.getTextY(), BookContentScreen.PAGE_WIDTH);
+        this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, this.getTextY(), BookEntryScreen.PAGE_WIDTH);
 
-        int x = BookContentScreen.PAGE_WIDTH / 2 - 53;
+        int x = BookEntryScreen.PAGE_WIDTH / 2 - 53;
         int y = 7;
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.enableBlend();
@@ -62,7 +62,7 @@ public class BookImagePageRenderer extends BookPageRenderer<BookImagePage> imple
         guiGraphics.pose().popPose();
 
         if (this.page.hasBorder()) {
-            BookContentScreen.drawFromTexture(guiGraphics, this.getPage().getBook(), x, y, 405, 149, 106, 106);
+            BookEntryScreen.drawFromTexture(guiGraphics, this.getPage().getBook(), x, y, 405, 149, 106, 106);
         }
 
         if (this.page.getImages().length > 1 && this.page.hasBorder()) {
@@ -83,13 +83,13 @@ public class BookImagePageRenderer extends BookPageRenderer<BookImagePage> imple
     public Style getClickedComponentStyleAt(double pMouseX, double pMouseY) {
         if (pMouseX > 0 && pMouseY > 0) {
             if (this.page.hasTitle()) {
-                var titleStyle = this.getClickedComponentStyleAtForTitle(this.page.getTitle(), BookContentScreen.PAGE_WIDTH / 2, 0, pMouseX, pMouseY);
+                var titleStyle = this.getClickedComponentStyleAtForTitle(this.page.getTitle(), BookEntryScreen.PAGE_WIDTH / 2, 0, pMouseX, pMouseY);
                 if (titleStyle != null) {
                     return titleStyle;
                 }
             }
 
-            var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), 0, this.getTextY(), BookContentScreen.PAGE_WIDTH, pMouseX, pMouseY);
+            var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), 0, this.getTextY(), BookEntryScreen.PAGE_WIDTH, pMouseX, pMouseY);
             if (textStyle != null) {
                 return textStyle;
             }

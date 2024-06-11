@@ -9,13 +9,10 @@ package com.klikli_dev.modonomicon.client.gui.book;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.ExtraCodecs;
-import net.minecraft.world.item.crafting.Ingredient;
 import org.lwjgl.glfw.GLFW;
 
 public abstract class BookPaginatedScreen extends Screen implements BookScreenWithButtons {
@@ -62,10 +59,10 @@ public abstract class BookPaginatedScreen extends Screen implements BookScreenWi
 	protected abstract void flipPage(boolean left, boolean playSound);
 	
 	protected boolean isClickOutsideEntry(double pMouseX, double pMouseY) {
-		return pMouseX < this.bookLeft - BookContentScreen.CLICK_SAFETY_MARGIN
-				|| pMouseX > this.bookLeft + BookContentScreen.FULL_WIDTH + BookContentScreen.CLICK_SAFETY_MARGIN
-				|| pMouseY < this.bookTop - BookContentScreen.CLICK_SAFETY_MARGIN
-				|| pMouseY > this.bookTop + BookContentScreen.FULL_HEIGHT + BookContentScreen.CLICK_SAFETY_MARGIN;
+		return pMouseX < this.bookLeft - BookEntryScreen.CLICK_SAFETY_MARGIN
+				|| pMouseX > this.bookLeft + BookEntryScreen.FULL_WIDTH + BookEntryScreen.CLICK_SAFETY_MARGIN
+				|| pMouseY < this.bookTop - BookEntryScreen.CLICK_SAFETY_MARGIN
+				|| pMouseY > this.bookTop + BookEntryScreen.FULL_HEIGHT + BookEntryScreen.CLICK_SAFETY_MARGIN;
 	}
 	
 	@Override

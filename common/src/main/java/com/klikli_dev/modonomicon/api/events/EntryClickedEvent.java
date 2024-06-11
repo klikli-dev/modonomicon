@@ -4,7 +4,7 @@
 
 package com.klikli_dev.modonomicon.api.events;
 
-import com.klikli_dev.modonomicon.client.gui.book.EntryDisplayState;
+import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
 import net.minecraft.resources.ResourceLocation;
 
 public class EntryClickedEvent extends ModonomiconEvent {

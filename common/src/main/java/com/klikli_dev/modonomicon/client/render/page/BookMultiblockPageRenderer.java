@@ -11,7 +11,7 @@ import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock.SimulateResult;
 import com.klikli_dev.modonomicon.book.page.BookMultiblockPage;
 import com.klikli_dev.modonomicon.client.ClientTicks;
-import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.VisualizeButton;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.platform.ClientServices;
@@ -91,7 +91,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
         float scaleY = maxY / sizeY;
         float scale = -Math.min(scaleX, scaleY);
 
-        int xPos = BookContentScreen.PAGE_WIDTH / 2;
+        int xPos = BookEntryScreen.PAGE_WIDTH / 2;
         int yPos = 60;
 
         guiGraphics.pose().pushPose();
@@ -199,7 +199,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
     }
 
     @Override
-    public void onBeginDisplayPage(BookContentScreen parentScreen, int left, int top) {
+    public void onBeginDisplayPage(BookEntryScreen parentScreen, int left, int top) {
         super.onBeginDisplayPage(parentScreen, left, top);
 
         this.multiblockSimulation = this.page.getMultiblock().simulate(null, BlockPos.ZERO, Rotation.NONE, true, true);
@@ -213,20 +213,20 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float ticks) {
 
         //render a frame for the multiblock render area
-        int x = BookContentScreen.PAGE_WIDTH / 2 - 53;
+        int x = BookEntryScreen.PAGE_WIDTH / 2 - 53;
         int y = 7;
         RenderSystem.enableBlend();
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        BookContentScreen.drawFromTexture(guiGraphics, this.page.getBook(), x, y, 405, 149, 106, 106);
+        BookEntryScreen.drawFromTexture(guiGraphics, this.page.getBook(), x, y, 405, 149, 106, 106);
 
         //render multiblock name in place of title
         if (!this.page.getMultiblockName().isEmpty()) {
-            this.renderTitle(guiGraphics, this.page.getMultiblockName(), false, BookContentScreen.PAGE_WIDTH / 2, 0);
+            this.renderTitle(guiGraphics, this.page.getMultiblockName(), false, BookEntryScreen.PAGE_WIDTH / 2, 0);
         }
 
         this.renderMultiblock(guiGraphics);
 
-        this.renderBookTextHolder(guiGraphics, this.page.getText(), 0, this.getTextY(), BookContentScreen.PAGE_WIDTH);
+        this.renderBookTextHolder(guiGraphics, this.page.getText(), 0, this.getTextY(), BookEntryScreen.PAGE_WIDTH);
 
         //TODO: render button to show multiblock in world
         //            //TODO: show multiblock preview on button click
@@ -242,12 +242,12 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
     @Override
     public Style getClickedComponentStyleAt(double pMouseX, double pMouseY) {
         if (pMouseX > 0 && pMouseY > 0) {
-            var multiblockNameStyle = this.getClickedComponentStyleAtForTitle(this.page.getMultiblockName(), BookContentScreen.PAGE_WIDTH / 2, 0, pMouseX, pMouseY);
+            var multiblockNameStyle = this.getClickedComponentStyleAtForTitle(this.page.getMultiblockName(), BookEntryScreen.PAGE_WIDTH / 2, 0, pMouseX, pMouseY);
             if (multiblockNameStyle != null) {
                 return multiblockNameStyle;
             }
 
-            var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), 0, this.getTextY(), BookContentScreen.PAGE_WIDTH, pMouseX, pMouseY);
+            var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), 0, this.getTextY(), BookEntryScreen.PAGE_WIDTH, pMouseX, pMouseY);
             if (textStyle != null) {
                 return textStyle;
             }

@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.client.render.page;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.book.page.BookRecipePage;
-import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class BookRecipePageRenderer<R extends Recipe<?>, T extends BookRecipePage<R>> extends BookPageRenderer<T> implements PageWithTextRenderer {
 
     public static int Y = 4;
-    public static int X = BookContentScreen.PAGE_WIDTH / 2 - 49;
+    public static int X = BookEntryScreen.PAGE_WIDTH / 2 - 49;
 
     public BookRecipePageRenderer(T page) {
         super(page);
@@ -45,11 +45,11 @@ public abstract class BookRecipePageRenderer<R extends Recipe<?>, T extends Book
         } else {
             this.drawWrappedStringNoShadow(guiGraphics,
                     Component.translatable(ModonomiconConstants.I18n.Gui.RECIPE_PAGE_RECIPE_MISSING, this.page.getRecipeId1()),
-                    recipeX - 13, recipeY - 15, 0xFF0000, BookContentScreen.PAGE_WIDTH);
+                    recipeX - 13, recipeY - 15, 0xFF0000, BookEntryScreen.PAGE_WIDTH);
         }
 
         if (this.page.getRecipe2() == null) //only render if no second recipe availble
-            this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, this.getTextY(), BookContentScreen.PAGE_WIDTH);
+            this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, this.getTextY(), BookEntryScreen.PAGE_WIDTH);
 
         var style = this.getClickedComponentStyleAt(mouseX, mouseY);
         if (style != null)
@@ -63,7 +63,7 @@ public abstract class BookRecipePageRenderer<R extends Recipe<?>, T extends Book
 
             //titles are not markdown enabled here, so no links
 
-            var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), 0, this.getTextY(), BookContentScreen.PAGE_WIDTH, pMouseX, pMouseY);
+            var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), 0, this.getTextY(), BookEntryScreen.PAGE_WIDTH, pMouseX, pMouseY);
             if (textStyle != null) {
                 return textStyle;
             }

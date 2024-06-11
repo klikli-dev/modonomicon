@@ -5,10 +5,11 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.client.gui.book;
+package com.klikli_dev.modonomicon.client.gui.book.entry;
 
 import com.klikli_dev.modonomicon.book.*;
 import com.klikli_dev.modonomicon.book.entries.*;
+import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryNodeScreen;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 
@@ -173,7 +174,7 @@ public class EntryConnectionRenderer {
         }
     }
 
-    protected void setBlitOffset(int blitOffset) {
+    public void setBlitOffset(int blitOffset) {
         this.blitOffset = blitOffset;
     }
 
@@ -181,14 +182,14 @@ public class EntryConnectionRenderer {
      * Scales from grid coordinates (1, 2, 3, ... ) to screen coordinates (30, 60, 90)
      */
     protected int screenX(int x) {
-        return x * BookCategoryScreen.ENTRY_GRID_SCALE;
+        return x * BookCategoryNodeScreen.ENTRY_GRID_SCALE;
     }
 
     /**
      * Scales from grid coordinates (1, 2, 3, ... ) to screen coordinates (30, 60, 90)
      */
     protected int screenY(int y) {
-        return y * BookCategoryScreen.ENTRY_GRID_SCALE;
+        return y * BookCategoryNodeScreen.ENTRY_GRID_SCALE;
     }
 
     protected void blit(GuiGraphics guiGraphics, int pX, int pY, float pUOffset, float pVOffset, int pUWidth, int pVHeight) {

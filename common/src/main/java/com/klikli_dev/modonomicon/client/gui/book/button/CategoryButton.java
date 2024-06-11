@@ -7,7 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.book.BookCategory;
-import com.klikli_dev.modonomicon.client.gui.book.BookOverviewScreen;
+import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentNodeScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -16,11 +16,11 @@ import net.minecraft.network.chat.Component;
 
 public class CategoryButton extends Button {
 
-    private final BookOverviewScreen parent;
+    private final BookParentNodeScreen parent;
     private final BookCategory category;
     private final int categoryIndex;
 
-    public CategoryButton(BookOverviewScreen parent, BookCategory category, int categoryIndex, int pX, int pY, int width, int height, OnPress pOnPress, Tooltip tooltip) {
+    public CategoryButton(BookParentNodeScreen parent, BookCategory category, int categoryIndex, int pX, int pY, int width, int height, OnPress pOnPress, Tooltip tooltip) {
         super(pX, pY, width, height, Component.literal(""), pOnPress, Button.DEFAULT_NARRATION);
         this.setTooltip(tooltip);
         this.parent = parent;

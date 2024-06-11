@@ -12,8 +12,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.client.ClientTicks;
-import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
-import com.klikli_dev.modonomicon.client.gui.book.BookSearchScreen;
+import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -30,7 +29,7 @@ public class EntryListButton extends Button {
     private float timeHovered;
 
     public EntryListButton(BookEntry entry, int pX, int pY, OnPress pOnPress) {
-        super(pX, pY, BookContentScreen.PAGE_WIDTH, 10, Component.translatable(entry.getName()), pOnPress, Button.DEFAULT_NARRATION);
+        super(pX, pY, BookEntryScreen.PAGE_WIDTH, 10, Component.translatable(entry.getName()), pOnPress, Button.DEFAULT_NARRATION);
 
         this.entry = entry;
     }
@@ -62,7 +61,7 @@ public class EntryListButton extends Button {
 
             if (locked) {
                 RenderSystem.setShaderColor(1F, 1F, 1F, 0.7F);
-                BookContentScreen.drawLock(guiGraphics, this.entry.getBook(), this.getX() * 2 + 2, this.getY() * 2 + 2);
+                BookEntryScreen.drawLock(guiGraphics, this.entry.getBook(), this.getX() * 2 + 2, this.getY() * 2 + 2);
             } else {
                 this.entry.getIcon().render(guiGraphics, this.getX() * 2 + 2, this.getY() * 2 + 2);
             }

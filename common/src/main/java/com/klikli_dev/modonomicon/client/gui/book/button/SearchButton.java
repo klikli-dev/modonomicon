@@ -6,7 +6,7 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.button;
 
-import com.klikli_dev.modonomicon.client.gui.book.BookOverviewScreen;
+import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentNodeScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -15,10 +15,10 @@ import net.minecraft.network.chat.Component;
 
 public class SearchButton extends Button {
 
-    private final BookOverviewScreen parent;
+    private final BookParentNodeScreen parent;
     private final int scissorX;
 
-    public SearchButton(BookOverviewScreen parent, int pX, int pY, int scissorX, int width, int height, OnPress pOnPress, Tooltip tooltip) {
+    public SearchButton(BookParentNodeScreen parent, int pX, int pY, int scissorX, int width, int height, OnPress pOnPress, Tooltip tooltip) {
         super(pX, pY, width, height, Component.literal(""), pOnPress, Button.DEFAULT_NARRATION);
         this.setTooltip(tooltip);
         this.scissorX = scissorX;

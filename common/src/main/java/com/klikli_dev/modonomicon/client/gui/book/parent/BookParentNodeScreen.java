@@ -4,7 +4,7 @@
  *
  * SPDX-License-Identifier: MIT
  */
-package com.klikli_dev.modonomicon.client.gui.book;
+package com.klikli_dev.modonomicon.client.gui.book.parent;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
@@ -17,6 +17,9 @@ import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ReadAllButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
+import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryNodeScreen;
+import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryScreen;
+import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
 import com.klikli_dev.modonomicon.networking.ClickReadAllButtonMessage;
 import com.klikli_dev.modonomicon.networking.SaveBookStateMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
@@ -35,11 +38,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class BookOverviewScreen extends Screen implements BookParentScreen {
+public class BookParentNodeScreen extends Screen implements BookParentScreen {
 
     private final Book book;
     private final List<BookCategory> categories;
-    private final List<BookCategoryScreen> categoryScreens;
+    private final List<BookCategoryNodeScreen> categoryScreens;
 
     //TODO: make the frame thickness configurable in the book?
     private final int frameThicknessW = 14;
@@ -49,7 +52,7 @@ public class BookOverviewScreen extends Screen implements BookParentScreen {
     private boolean hasUnreadEntries;
     private boolean hasUnreadUnlockedEntries;
 
-    public BookOverviewScreen(Book book) {
+    public BookParentNodeScreen(Book book) {
         super(Component.literal(""));
 
         //somehow there are render calls before init(), leaving minecraft null
@@ -58,7 +61,7 @@ public class BookOverviewScreen extends Screen implements BookParentScreen {
         this.book = book;
 
         this.categories = book.getCategoriesSorted(); //we no longer handle category locking here, is done on init to be able to refresh on unlock
-        this.categoryScreens = this.categories.stream().map(c -> new BookCategoryScreen(this, c)).toList();
+        this.categoryScreens = this.categories.stream().map(c -> new BookCategoryNodeScreen(this, c)).toList();
     }
 
     public Minecraft getMinecraft() {
@@ -84,7 +87,8 @@ public class BookOverviewScreen extends Screen implements BookParentScreen {
                         !BookUnlockStateManager.get().isReadFor(this.minecraft.player, e));
     }
 
-    public BookCategoryScreen getCurrentCategoryScreen() {
+    @Override
+    public BookCategoryNodeScreen getCurrentCategoryScreen() {
         return this.categoryScreens.get(this.currentCategory);
     }
 
@@ -92,6 +96,7 @@ public class BookOverviewScreen extends Screen implements BookParentScreen {
         return this.currentCategory;
     }
 
+    @Override
     public Book getBook() {
         return this.book;
     }
@@ -172,7 +177,7 @@ public class BookOverviewScreen extends Screen implements BookParentScreen {
     /**
      * Gets the outer width of the book frame
      */
-    protected int getFrameWidth() {
+    public int getFrameWidth() {
         //TODO: enable config frame width
         return this.width - 60;
     }
@@ -180,7 +185,7 @@ public class BookOverviewScreen extends Screen implements BookParentScreen {
     /**
      * Gets the outer height of the book frame
      */
-    protected int getFrameHeight() {
+    public int getFrameHeight() {
         //TODO: enable config frame height
         return this.height - 20;
     }

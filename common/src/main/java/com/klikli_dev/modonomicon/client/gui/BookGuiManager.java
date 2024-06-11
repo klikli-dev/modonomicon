@@ -10,6 +10,9 @@ import com.klikli_dev.modonomicon.book.*;
 import com.klikli_dev.modonomicon.book.entries.*;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.*;
+import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryNodeScreen;
+import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
+import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentNodeScreen;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import net.minecraft.client.Minecraft;
@@ -28,11 +31,11 @@ public class BookGuiManager {
     public BookCategory currentCategory;
     public BookEntry currentEntry;
 
-    public BookOverviewScreen currentOverviewScreen;
-    public BookCategoryScreen currentCategoryScreen;
-    public BookContentScreen currentContentScreen;
+    public BookParentNodeScreen currentOverviewScreen;
+    public BookCategoryNodeScreen currentCategoryScreen;
+    public BookEntryScreen currentContentScreen;
 
-    public BookOverviewScreen openOverviewScreen;
+    public BookParentNodeScreen openOverviewScreen;
 
     private BookGuiManager() {
 
@@ -76,7 +79,7 @@ public class BookGuiManager {
             this.currentOverviewScreen.onDisplay();
         } else {
             this.currentBook = book;
-            this.currentOverviewScreen = new BookOverviewScreen(this.currentBook);
+            this.currentOverviewScreen = new BookParentNodeScreen(this.currentBook);
             Minecraft.getInstance().setScreen(this.currentOverviewScreen);
             this.currentOverviewScreen.onDisplay();
         }
@@ -149,7 +152,7 @@ public class BookGuiManager {
         }
 
         if (this.currentOverviewScreen == null || this.currentOverviewScreen.getBook() != book) {
-            this.currentOverviewScreen = new BookOverviewScreen(book);
+            this.currentOverviewScreen = new BookParentNodeScreen(book);
         }
 
         Minecraft.getInstance().setScreen(this.currentOverviewScreen);
@@ -201,6 +204,6 @@ public class BookGuiManager {
     }
 
     public boolean isEntryAlreadyDisplayed(BookEntry entry) {
-        return Minecraft.getInstance().screen instanceof BookContentScreen bookContentScreen && bookContentScreen.getEntry().equals(entry);
+        return Minecraft.getInstance().screen instanceof BookEntryScreen bookEntryScreen && bookEntryScreen.getEntry().equals(entry);
     }
 }

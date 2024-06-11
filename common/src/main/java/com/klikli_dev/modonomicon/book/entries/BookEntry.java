@@ -15,8 +15,8 @@ import com.klikli_dev.modonomicon.book.conditions.BookEntryReadCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
-import com.klikli_dev.modonomicon.client.gui.book.BookCategoryScreen;
-import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryNodeScreen;
+import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import net.minecraft.core.HolderLookup;
@@ -60,7 +60,7 @@ public abstract class BookEntry {
 
     public abstract ResourceLocation getType();
 
-    public abstract BookContentScreen openEntry(BookCategoryScreen categoryScreen);
+    public abstract BookEntryScreen openEntry(BookCategoryNodeScreen categoryScreen);
 
     /**
      * Called after build() (after loading the book jsons) to render markdown and store any errors

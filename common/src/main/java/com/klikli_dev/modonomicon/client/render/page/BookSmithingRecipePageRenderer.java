@@ -7,7 +7,7 @@
 package com.klikli_dev.modonomicon.client.render.page;
 
 import com.klikli_dev.modonomicon.book.page.BookSmithingRecipePage;
-import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.crafting.*;
@@ -30,11 +30,11 @@ public class BookSmithingRecipePageRenderer extends BookRecipePageRenderer<Smith
 
         if (!second) {
             if (!this.page.getTitle1().isEmpty()) {
-                this.renderTitle(guiGraphics, this.page.getTitle1(), false, BookContentScreen.PAGE_WIDTH / 2, 0);
+                this.renderTitle(guiGraphics, this.page.getTitle1(), false, BookEntryScreen.PAGE_WIDTH / 2, 0);
             }
         } else {
             if (!this.page.getTitle2().isEmpty()) {
-                this.renderTitle(guiGraphics, this.page.getTitle2(), false, BookContentScreen.PAGE_WIDTH / 2,
+                this.renderTitle(guiGraphics, this.page.getTitle2(), false, BookEntryScreen.PAGE_WIDTH / 2,
                         recipeY - (this.page.getTitle2().getString().isEmpty() ? 10 : 0) - 10);
             }
         }

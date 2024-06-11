@@ -12,8 +12,8 @@ import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
-import com.klikli_dev.modonomicon.client.gui.book.BookCategoryScreen;
-import com.klikli_dev.modonomicon.client.gui.book.BookContentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryNodeScreen;
+import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import net.minecraft.core.HolderLookup;
@@ -160,7 +160,7 @@ public class ContentBookEntry extends BookEntry {
         return false;
     }
 
-    public BookContentScreen openEntry(BookCategoryScreen categoryScreen) {
+    public BookEntryScreen openEntry(BookCategoryNodeScreen categoryScreen) {
         return categoryScreen.openContentEntry(this);
     }
 }

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.client.gui.book;
+package com.klikli_dev.modonomicon.client.gui.book.entry;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
@@ -18,8 +18,10 @@ import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
+import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.BackButton;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ItemLinkRenderer;
+import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentScreen;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.data.BookDataManager;
@@ -60,7 +62,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public class BookContentScreen extends BookPaginatedScreen {
+public class BookEntryScreen extends BookPaginatedScreen {
 
     public static final int TOP_PADDING = 15;
     public static final int LEFT_PAGE_X = 12;
@@ -73,7 +75,7 @@ public class BookContentScreen extends BookPaginatedScreen {
     public static final int CLICK_SAFETY_MARGIN = 20;
 
     private static long lastTurnPageSoundTime;
-    protected final BookOverviewScreen parentScreen;
+    protected final BookParentScreen parentScreen;
     private final ContentBookEntry entry;
     private final ResourceLocation bookContentTexture;
     private final ItemParser itemParser;
@@ -93,7 +95,7 @@ public class BookContentScreen extends BookPaginatedScreen {
     private FluidHolder tooltipFluidStack;
     private boolean isHoveringItemLink;
 
-    public BookContentScreen(BookOverviewScreen parentScreen, ContentBookEntry entry) {
+    public BookEntryScreen(BookParentScreen parentScreen, ContentBookEntry entry) {
         super(Component.literal(""));
 
         this.parentScreen = parentScreen;
@@ -420,7 +422,7 @@ public class BookContentScreen extends BookPaginatedScreen {
     }
 
     private void loadEntryState() {
-        var state = BookVisualStateManager.get().getEntryStateFor(this.parentScreen.getMinecraft().player, this.entry);
+        var state = BookVisualStateManager.get().getEntryStateFor(Minecraft.getInstance().player, this.entry);
 
         BookGuiManager.get().currentEntry = this.entry;
         BookGuiManager.get().currentContentScreen = this;
