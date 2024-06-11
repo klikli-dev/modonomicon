@@ -102,6 +102,15 @@ This is intended to be used with an entry that links to this category to effecti
 
 :::
 
+### **entry_to_open** (ResourceLocation, _optional_)
+
+The entry to directly open when this category is opened. If not set, no entry will be opened.
+
+### **open_entry_to_open_only_once** (Boolean, _optional_)
+Defaults to `true`.
+
+If true, the entry_to_open will only be opened the first time the category is opened. If false, the entry_to_open will be opened every time the category is opened.
+
 
 ## Usage Examples
 
