@@ -161,6 +161,10 @@ public class ModonomiconConstants {
             public static final String SEARCH_INFO_TEXT = PREFIX + "search.info";
             public static final String SEARCH_ENTRY_LIST_TITLE = PREFIX + "search.entry_list_title";
 
+            public static final String BOOK_INDEX_LIST_TITLE = PREFIX + "book.index_list_title";
+            public static final String CATEGORY_INDEX_LIST_TITLE = PREFIX + "category.index_list_title";
+
+
             public static final String OPEN_SEARCH = PREFIX + "open_search";
 
             public static final String RECIPE_PAGE_RECIPE_MISSING = PREFIX + "recipe_page.recipe_missing";

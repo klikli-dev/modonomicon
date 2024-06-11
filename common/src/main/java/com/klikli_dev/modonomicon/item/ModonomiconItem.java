@@ -11,9 +11,12 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Nbt;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
+import com.klikli_dev.modonomicon.client.gui.book.BookIndexParentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.BookOverviewScreen;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.registry.DataComponentRegistry;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -56,7 +59,12 @@ public class ModonomiconItem extends Item {
         if (pLevel.isClientSide) {
             if (itemInHand.get(DataComponentRegistry.BOOK_ID.get()) != null) {
                 var book = getBook(itemInHand);
-                BookGuiManager.get().openBook(book.getId());
+
+//                BookGuiManager.get().openBook(book.getId());
+
+                var parentScreen = new BookIndexParentScreen(book);
+                Minecraft.getInstance().setScreen(parentScreen);
+
             } else {
                 Modonomicon.LOG.error("ModonomiconItem: ItemStack has no tag!");
             }

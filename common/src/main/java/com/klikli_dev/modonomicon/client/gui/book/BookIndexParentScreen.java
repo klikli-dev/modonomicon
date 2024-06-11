@@ -53,7 +53,7 @@ public class BookIndexParentScreen extends BookPaginatedScreen implements BookPa
 
     protected final Book book;
 
-    protected BookIndexParentScreen(Book book) {
+    public BookIndexParentScreen(Book book) {
         super(Component.translatable(book.getName()));
 
         this.book = book;
@@ -62,8 +62,10 @@ public class BookIndexParentScreen extends BookPaginatedScreen implements BookPa
     }
 
     public void handleButtonEntry(Button button) {
-        var entry = ((EntryListButton) button).getEntry();
-        BookGuiManager.get().openEntry(entry.getBook().getId(), entry.getId(), 0);
+        if(button instanceof CategoryListButton categoryListButton){
+            //TODO: properly Open category index screen
+            ClientServices.GUI.pushGuiLayer(new BookIndexCategoryScreen(this, categoryListButton.getCategory()));
+        }
     }
 
     public void prerenderMarkdown(BookTextRenderer textRenderer) {
@@ -127,7 +129,8 @@ public class BookIndexParentScreen extends BookPaginatedScreen implements BookPa
         this.entryButtons.clear();
         this.visibleEntries.clear();
 
-        this.allEntries.stream().forEach(this.visibleEntries::add);
+        //here we could do some filtering like on the search screen
+        this.visibleEntries.addAll(this.allEntries);
 
         this.maxOpenPagesIndex = 1;
         int count = this.visibleEntries.size();
@@ -195,7 +198,7 @@ public class BookIndexParentScreen extends BookPaginatedScreen implements BookPa
             this.drawCenteredStringNoShadow(guiGraphics, this.getTitle(),
                     BookContentScreen.LEFT_PAGE_X + BookContentScreen.PAGE_WIDTH / 2, BookContentScreen.TOP_PADDING,
                     this.getBook().getDefaultTitleColor());
-            this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.SEARCH_ENTRY_LIST_TITLE),
+            this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.BOOK_INDEX_LIST_TITLE),
                     BookContentScreen.RIGHT_PAGE_X + BookContentScreen.PAGE_WIDTH / 2, BookContentScreen.TOP_PADDING,
                     this.getBook().getDefaultTitleColor());
 

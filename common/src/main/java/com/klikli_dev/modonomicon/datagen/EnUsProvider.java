@@ -66,6 +66,9 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Gui.OPEN_SEARCH, "Open Search");
 
 
+        this.add(Gui.BOOK_INDEX_LIST_TITLE, "Categories");
+        this.add(Gui.CATEGORY_INDEX_LIST_TITLE, "Entries");
+
         this.add(Gui.RECIPE_PAGE_RECIPE_MISSING, "Recipe %s was not found! This may be an issue with the mod, or the modpack may have disabled it.");
 
         //Tooltip
