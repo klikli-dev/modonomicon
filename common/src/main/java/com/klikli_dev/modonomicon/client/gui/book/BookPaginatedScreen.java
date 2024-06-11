@@ -9,9 +9,13 @@ package com.klikli_dev.modonomicon.client.gui.book;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.item.crafting.Ingredient;
 import org.lwjgl.glfw.GLFW;
 
 public abstract class BookPaginatedScreen extends Screen implements BookScreenWithButtons {
@@ -21,16 +25,12 @@ public abstract class BookPaginatedScreen extends Screen implements BookScreenWi
 	
 	public static final int BOOK_BACKGROUND_WIDTH = 272;
 	public static final int BOOK_BACKGROUND_HEIGHT = 178;
-	
-	protected final BookOverviewScreen parentScreen;
-	
+
 	protected int bookLeft;
 	protected int bookTop;
 	
-	public BookPaginatedScreen(Component component, BookOverviewScreen parentScreen) {
+	public BookPaginatedScreen(Component component) {
 		super(component);
-		
-		this.parentScreen = parentScreen;
 	}
 	
 	@Override
@@ -101,7 +101,7 @@ public abstract class BookPaginatedScreen extends Screen implements BookScreenWi
 			this.onClose();
 			return true; //need to return, otherwise a right click outside the entry causes a double-close (the whole book, due to calling .back() below)
 		}
-		
+
 		if (pButton == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
 			this.back();
 			return true;

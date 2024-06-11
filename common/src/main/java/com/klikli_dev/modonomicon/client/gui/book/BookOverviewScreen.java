@@ -35,7 +35,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class BookOverviewScreen extends Screen {
+public class BookOverviewScreen extends Screen implements BookParentScreen {
 
     private final Book book;
     private final List<BookCategory> categories;

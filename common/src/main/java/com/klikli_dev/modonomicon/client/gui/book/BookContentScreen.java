@@ -8,8 +8,11 @@ package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
-import com.klikli_dev.modonomicon.book.*;
-import com.klikli_dev.modonomicon.book.entries.*;
+import com.klikli_dev.modonomicon.book.Book;
+import com.klikli_dev.modonomicon.book.BookLink;
+import com.klikli_dev.modonomicon.book.CommandLink;
+import com.klikli_dev.modonomicon.book.PatchouliLink;
+import com.klikli_dev.modonomicon.book.entries.ContentBookEntry;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
@@ -70,6 +73,7 @@ public class BookContentScreen extends BookPaginatedScreen {
     public static final int CLICK_SAFETY_MARGIN = 20;
 
     private static long lastTurnPageSoundTime;
+    protected final BookOverviewScreen parentScreen;
     private final ContentBookEntry entry;
     private final ResourceLocation bookContentTexture;
     private final ItemParser itemParser;
@@ -90,7 +94,9 @@ public class BookContentScreen extends BookPaginatedScreen {
     private boolean isHoveringItemLink;
 
     public BookContentScreen(BookOverviewScreen parentScreen, ContentBookEntry entry) {
-        super(Component.literal(""), parentScreen);
+        super(Component.literal(""));
+
+        this.parentScreen = parentScreen;
 
         this.minecraft = Minecraft.getInstance();
         this.itemParser = new ItemParser(this.minecraft.level.registryAccess());
