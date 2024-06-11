@@ -183,6 +183,25 @@ A horizontal offset is currently not supported as it does not need to fit evenly
 
 Default value: `minecraft:turn_page`. The sound to play when turning a page. The sound must be a **loaded sound event** specified in `/assets/<mod_id>/sounds.json`.
 
+
+### **book_text_offset_x** (Integer, _optional_)
+
+Default value: `0`.   
+When rendering book text holders, add this offset to the x position (basically, create a left margin/padding).    
+Will be automatically subtracted from the width to avoid overflow.
+
+### **book_text_offset_y** (Integer, _optional_)
+
+Default value: `0`.   
+When rendering book text holders, add this offset to the y position (basically, create a top margin/padding).
+
+### **book_text_offset_width** (Integer, _optional_)
+
+Default value: `0`.   
+When rendering book text holders, add this offset to the width (allows to create a right margin/padding).   
+To make the line end move to the left (as it would for a margin setting in eg css), use a negative value.
+
+
 ## Usage Examples
 
 `/data/<mod_id>/modonomicon/books/<book_id>/book.json`:
