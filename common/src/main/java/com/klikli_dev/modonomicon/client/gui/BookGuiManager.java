@@ -186,6 +186,10 @@ public class BookGuiManager {
             //we check if the content screen was already added, e.g. by the book category screen
             if (!this.isEntryAlreadyDisplayed(entry))
                 ClientServices.GUI.pushGuiLayer(this.currentContentScreen);
+
+            //to ensure the current open entry is tracked on the category, we manually set it
+            //this is necessary to ensure state is tracked and saved when closing again. Fixes #196
+            this.currentCategoryScreen.setOpenEntry(entry.getId());
         }
 
         //we need to check for null, because this.currentCategoryScreen.openEntry(entry); returns null for "redirect" entries that open categories - because there is no content to show.

@@ -145,6 +145,7 @@ public class BookCategoryScreen {
         if (!BookUnlockStateManager.get().isReadFor(Minecraft.getInstance().player, entry)) {
             Services.NETWORK.sendToServer(new BookEntryReadMessage(entry.getBook().getId(), entry.getId()));
         }
+        this.openEntry = entry.getId();
         
         return entry.openEntry(this);
     }
@@ -156,6 +157,8 @@ public class BookCategoryScreen {
         
         var bookContentScreen = new BookContentScreen(this.bookOverviewScreen.getCurrentCategoryScreen().bookOverviewScreen, entry);
         ClientServices.GUI.pushGuiLayer(bookContentScreen);
+
+        this.openEntry = entry.getId();
         
         return bookContentScreen;
     }
@@ -437,5 +440,8 @@ public class BookCategoryScreen {
     public BookOverviewScreen getBookOverviewScreen() {
         return this.bookOverviewScreen;
     }
-    
+
+    public void setOpenEntry(ResourceLocation openEntry) {
+        this.openEntry = openEntry;
+    }
 }
