@@ -145,7 +145,9 @@ public class BookCategoryScreen {
         if (!BookUnlockStateManager.get().isReadFor(Minecraft.getInstance().player, entry)) {
             Services.NETWORK.sendToServer(new BookEntryReadMessage(entry.getBook().getId(), entry.getId()));
         }
-        this.openEntry = entry.getId();
+
+        if(!(entry instanceof CategoryLinkBookEntry))
+            this.openEntry = entry.getId(); //do not store link entries in history, otherwise we always jump to its target when opening categories
         
         return entry.openEntry(this);
     }
@@ -417,7 +419,8 @@ public class BookCategoryScreen {
             this.currentZoom = state.targetZoom;
             if (state.openEntry != null) {
                 var openEntry = this.category.getEntry(state.openEntry);
-                if (openEntry != null) {
+                //also check for link entries here if they pollute old history -> they are not allowed to be stored, otherwise opening one category auto-jumps to the next
+                if (openEntry != null && !(openEntry instanceof CategoryLinkBookEntry)) {
                     //no need to load history here, will be handled by book content screen
                     this.openEntry(openEntry);
                 }
