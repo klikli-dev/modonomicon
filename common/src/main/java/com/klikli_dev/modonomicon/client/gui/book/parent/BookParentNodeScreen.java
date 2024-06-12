@@ -43,7 +43,6 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
     private final int frameThicknessW = 14;
     private final int frameThicknessH = 14;
     private BookCategoryNodeScreen currentCategoryNodeScreen;
-    private int currentCategory = 0;
     private boolean hasUnreadEntries;
     private boolean hasUnreadUnlockedEntries;
 
@@ -83,10 +82,6 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
 
     public void setCurrentCategoryScreen(BookCategoryNodeScreen currentCategoryNodeScreen) {
         this.currentCategoryNodeScreen = currentCategoryNodeScreen;
-    }
-
-    public void setCurrentCategory(BookCategory currentCategory) {
-        this.currentCategory = this.categories.indexOf(currentCategory);
     }
 
     @Override

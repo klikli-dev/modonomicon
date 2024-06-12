@@ -179,9 +179,6 @@ public class BookGuiManager {
             throw new IllegalStateException("Cannot open category in node mode if book is not in node mode.");
         }
 
-        //on a node parent screen, we need to set the current category so it can track internally
-        bookParentNodeScreen.setCurrentCategory(category);
-
         var openBookCategoryScreen = new BookCategoryNodeScreen(bookParentNodeScreen, category);
         this.openBookCategoryScreen = openBookCategoryScreen;
 
@@ -408,9 +405,6 @@ public class BookGuiManager {
         Services.NETWORK.sendToServer(new SaveBookStateMessage(screen.getBook(), state));
 
         this.resetHistory();
-
-        //TODO: Open Category saving - if we do a full closure!
-        //TODO: call on close of open category? -> to save its state
     }
 
     public void closeScreenStack(BookParentScreen screen) {

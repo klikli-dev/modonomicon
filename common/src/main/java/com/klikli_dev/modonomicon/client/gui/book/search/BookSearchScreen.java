@@ -250,12 +250,13 @@ public class BookSearchScreen extends BookPaginatedScreen {
 
     @Override
     public void onClose() {
-        if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_ESCAPE)) {
-            super.onClose();
-            this.parentScreen.onClose();
-        } else {
-            ClientServices.GUI.popGuiLayer(); //instead of super.onClose() to restore our parent screen
-        }
+        //TODO: Search screen close handling
+//        if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_ESCAPE)) {
+//            super.onClose();
+//            this.parentScreen.onClose();
+//        } else {
+//            ClientServices.GUI.popGuiLayer(); //instead of super.onClose() to restore our parent screen
+//        }
     }
 
     @Override

@@ -473,19 +473,9 @@ public class BookEntryScreen extends BookPaginatedScreen {
 
     @Override
     public void onClose() {
-        if (this.simulateEscClosing || InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_ESCAPE)) {
-            Services.NETWORK.sendToServer(new SaveEntryStateMessage(this.entry, this.openPagesIndex));
-
-            super.onClose();
-            this.parentScreen.onClose();
-
-            this.simulateEscClosing = false;
-        } else {
-            Services.NETWORK.sendToServer(new SaveEntryStateMessage(this.entry,
-                    ClientServices.CLIENT_CONFIG.storeLastOpenPageWhenClosingEntry() ? this.openPagesIndex : 0));
-
-            ClientServices.GUI.popGuiLayer(); //instead of super.onClose() to restore our parent screen
-        }
+        //do not call super, as it would close the screen stack
+        //In most cases closeEntryScreen should be called directly, but if our parent BookPaginatedScreen wants us to close we need to handle that
+        BookGuiManager.get().closeEntryScreen(this);
     }
 
     /**
@@ -746,7 +736,6 @@ public class BookEntryScreen extends BookPaginatedScreen {
                             }
 
                             BookGuiManager.get().closeScreenStack(this); //will cause the book to close entirely, and save the open page
-                            this.onClose(); //we have to do this before showing JEI, because super.onClose() clears Gui Layers, and thus would kill JEIs freshly spawned gui
 
                             if (Screen.hasShiftDown()) {
                                 ModonomiconJeiIntegration.get().showUses(itemStack);
