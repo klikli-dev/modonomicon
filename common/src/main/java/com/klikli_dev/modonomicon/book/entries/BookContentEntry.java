@@ -161,7 +161,8 @@ public class BookContentEntry extends BookEntry {
         return false;
     }
 
-    public void openEntry(Player player) {
-        BookGuiManager.get().openContentEntry(this, player);
+    @Override
+    public void openEntry() {
+        BookGuiManager.get().openContentEntry(this);
     }
 }

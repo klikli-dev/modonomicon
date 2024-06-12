@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentNodeScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
@@ -18,22 +19,16 @@ public class CategoryButton extends Button {
 
     private final BookParentNodeScreen parent;
     private final BookCategory category;
-    private final int categoryIndex;
 
-    public CategoryButton(BookParentNodeScreen parent, BookCategory category, int categoryIndex, int pX, int pY, int width, int height, OnPress pOnPress, Tooltip tooltip) {
+    public CategoryButton(BookParentNodeScreen parent, BookCategory category, int pX, int pY, int width, int height, OnPress pOnPress, Tooltip tooltip) {
         super(pX, pY, width, height, Component.literal(""), pOnPress, Button.DEFAULT_NARRATION);
         this.setTooltip(tooltip);
         this.parent = parent;
         this.category = category;
-        this.categoryIndex = categoryIndex;
     }
 
     public BookCategory getCategory() {
         return this.category;
-    }
-
-    public int getCategoryIndex() {
-        return this.categoryIndex;
     }
 
     @Override
@@ -49,7 +44,7 @@ public class CategoryButton extends Button {
             int renderX = this.getX();
             int renderWidth = this.width;
 
-            if (this.categoryIndex == this.parent.getCurrentCategory()) {
+            if (this.category == BookGuiManager.get().openBookCategoryScreen.getCategory()) {
                 renderX -= 3;
                 renderWidth += 3;
             } else if (this.isHovered()) {

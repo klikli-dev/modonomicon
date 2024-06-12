@@ -90,8 +90,9 @@ public class CategoryLinkBookEntry extends BookEntry {
         return this.categoryToOpen;
     }
 
-    public void openEntry(Player player) {
-        BookGuiManager.get().openCategoryLinkEntry(this, player);
+    @Override
+    public void openEntry() {
+        BookGuiManager.get().openCategoryLinkEntry(this);
     }
 
 }

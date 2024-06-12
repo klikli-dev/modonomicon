@@ -76,7 +76,7 @@ public class BookGuiManager {
         }
     }
 
-    public void openBook(ResourceLocation bookId, Player player) {
+    public void openBook(ResourceLocation bookId) {
         this.safeguardBooksBuilt();
 
         if (this.showErrorScreen(bookId)) {
@@ -87,34 +87,34 @@ public class BookGuiManager {
 
         var displayMode = book.getDisplayMode();
         if (displayMode == BookDisplayMode.INDEX) {
-            this.openBookInIndexMode(book, player);
+            this.openBookInIndexMode(book);
         } else if (displayMode == BookDisplayMode.NODE) {
-            this.openBookInNodeMode(book, player);
+            this.openBookInNodeMode(book);
         }
     }
 
-    protected void openBookInIndexMode(Book book, Player player) {
+    protected void openBookInIndexMode(Book book) {
         //TODO: here categories are always opened in index mode
         //TODO: Careful, here we only should get a category to open IF there is one saved. Don't auto open the first!
     }
 
-    protected BookCategory getSavedCategory(Book book, Player player) {
-        var state = BookVisualStateManager.get().getBookStateFor(player, book);
+    protected BookCategory getSavedCategory(Book book) {
+        var state = BookVisualStateManager.get().getBookStateFor(this.player(), book);
         if (state != null && state.openCategory != null) {
             return book.getCategory(state.openCategory);
         }
         return null;
     }
 
-    protected BookCategory getSavedCategoryOrDefault(Book book, Player player) {
-        var savedCategory = this.getSavedCategory(book, player);
+    protected BookCategory getSavedCategoryOrDefault(Book book) {
+        var savedCategory = this.getSavedCategory(book);
         if (savedCategory == null) {
             return book.getCategoriesSorted().getFirst();
         }
         return savedCategory;
     }
 
-    protected void openBookInNodeMode(Book book, Player player) {
+    protected void openBookInNodeMode(Book book) {
         var openBookParentScreen = new BookParentNodeScreen(book);
         this.openBookParentScreen = openBookParentScreen;
         Minecraft.getInstance().setScreen(openBookParentScreen);
@@ -122,18 +122,13 @@ public class BookGuiManager {
         //run additional init logic (e.g. unlock state determination)
         openBookParentScreen.onDisplay();
 
-        var openCategory = this.getSavedCategoryOrDefault(book, player);
-        var displayMode = openCategory.getDisplayMode();
-        if (displayMode == BookDisplayMode.INDEX) {
-            this.openCategoryInIndexMode(openCategory, player);
-        } else if (displayMode == BookDisplayMode.NODE) {
-            this.openCategoryInNodeMode(openCategory, player);
-        }
+        var openCategory = this.getSavedCategoryOrDefault(book);
+        this.openCategory(openCategory);
     }
 
 
-    protected BookEntry getSavedEntry(BookCategory category, Player player) {
-        var state = BookVisualStateManager.get().getCategoryStateFor(player, category);
+    protected BookEntry getSavedEntry(BookCategory category) {
+        var state = BookVisualStateManager.get().getCategoryStateFor(this.player(), category);
         if (state != null && state.openEntry != null) {
             var openEntry = category.getEntry(state.openEntry);
             //we skip link entries, they would lead to categories not being opened because it instantly jumps to the linked one
@@ -146,8 +141,8 @@ public class BookGuiManager {
         return null;
     }
 
-    protected BookEntry getSavedEntryOrDefault(BookCategory category, Player player) {
-        var savedEntry = this.getSavedEntry(category, player);
+    protected BookEntry getSavedEntryOrDefault(BookCategory category) {
+        var savedEntry = this.getSavedEntry(category);
         //If we do not have a saved entry, check if we have an entry to open specified in the category definition
         if (savedEntry == null && category.getEntryToOpen() != null) {
             var entryToOpen = category.getEntry(category.getEntryToOpen());
@@ -158,7 +153,21 @@ public class BookGuiManager {
         return savedEntry;
     }
 
-    protected void openCategoryInNodeMode(BookCategory category, Player player) {
+    @ApiStatus.Internal
+    public void openCategory(BookCategory category) {
+        if(this.openBookCategoryScreen != null){
+            this.openBookCategoryScreen.onClose();
+        }
+
+        var displayMode = category.getDisplayMode();
+        if (displayMode == BookDisplayMode.INDEX) {
+            this.openCategoryInIndexMode(category);
+        } else if (displayMode == BookDisplayMode.NODE) {
+            this.openCategoryInNodeMode(category);
+        }
+    }
+
+    protected void openCategoryInNodeMode(BookCategory category) {
         //this is only possible if the book is in node mode
         if (!(this.openBookParentScreen instanceof BookParentNodeScreen bookParentNodeScreen)) {
             throw new IllegalStateException("Cannot open category in node mode if book is not in node mode.");
@@ -170,7 +179,7 @@ public class BookGuiManager {
         var openBookCategoryScreen = new BookCategoryNodeScreen(bookParentNodeScreen, category);
         this.openBookCategoryScreen = openBookCategoryScreen;
 
-        var state = BookVisualStateManager.get().getCategoryStateFor(player, category);
+        var state = BookVisualStateManager.get().getCategoryStateFor(this.player(), category);
         if (state != null) {
             openBookCategoryScreen.loadState(state);
         }
@@ -179,14 +188,14 @@ public class BookGuiManager {
         bookParentNodeScreen.setCurrentCategoryScreen(openBookCategoryScreen);
         openBookCategoryScreen.onDisplay();
 
-        var openEntry = this.getSavedEntryOrDefault(category, player);
+        var openEntry = this.getSavedEntryOrDefault(category);
         if (openEntry == null)
             return;
 
-        this.openEntry(openEntry, player);
+        this.openEntry(openEntry);
     }
 
-    protected void openCategoryInIndexMode(BookCategory category, Player player) {
+    protected void openCategoryInIndexMode(BookCategory category) {
         //TODO: implement
         //this is possible if the book is in node or in index mode, and we need different behaviour for each
         //node mode needs an additional "default" screen on the book screen, that we display the category over
@@ -196,12 +205,12 @@ public class BookGuiManager {
      * Should only be called from BookEntry#openEntry()
      */
     @ApiStatus.Internal
-    public void openContentEntry(BookContentEntry entry, Player player) {
+    public void openContentEntry(BookContentEntry entry) {
         var openBookEntryScreen = new BookEntryScreen(this.openBookParentScreen, entry);
         this.openBookEntryScreen = openBookEntryScreen;
         ClientServices.GUI.pushGuiLayer(openBookEntryScreen);
 
-        var state = BookVisualStateManager.get().getEntryStateFor(player, entry);
+        var state = BookVisualStateManager.get().getEntryStateFor(this.player(), entry);
         if (state != null) {
             openBookEntryScreen.loadState(state);
         }
@@ -211,17 +220,17 @@ public class BookGuiManager {
      * Should only be called from BookEntry#openEntry()
      */
     @ApiStatus.Internal
-    public void openCategoryLinkEntry(CategoryLinkBookEntry entry, Player player) {
+    public void openCategoryLinkEntry(CategoryLinkBookEntry entry) {
         var category = entry.getCategoryToOpen();
         //TODO: Change category logic
     }
 
-    protected void openEntry(BookEntry entry, Player player) {
-        if (!BookUnlockStateManager.get().isReadFor(Minecraft.getInstance().player, entry)) {
+    protected void openEntry(BookEntry entry) {
+        if (!BookUnlockStateManager.get().isReadFor(this.player(), entry)) {
             Services.NETWORK.sendToServer(new BookEntryReadMessage(entry.getBook().getId(), entry.getId()));
         }
 
-        entry.openEntry(player); //visitor pattern that will call openContentEntry or openCategoryLinkEntry
+        entry.openEntry(); //visitor pattern that will call openContentEntry or openCategoryLinkEntry
     }
 
     public void openEntry(ResourceLocation bookId, ResourceLocation entryId, int page) {
@@ -341,6 +350,10 @@ public class BookGuiManager {
     }
 
     public void onCloseCategoryScreen(BookCategoryScreen screen){
+        if(this.openBookCategoryScreen == screen){
+            this.openBookCategoryScreen = null;
+        }
+
         var state = BookVisualStateManager.get().getCategoryStateFor(player(), screen.getCategory());
         screen.saveState(state);
         Services.NETWORK.sendToServer(new SaveCategoryStateMessage(screen.getCategory(), state));

@@ -6,7 +6,6 @@
  */
 package com.klikli_dev.modonomicon.client.gui.book.parent;
 
-import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
@@ -83,20 +82,12 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
         return this.currentCategoryNodeScreen;
     }
 
-    public int getCurrentCategory() {
-        return this.currentCategory;
-    }
-
-    public void setCurrentCategory(int currentCategory) {
-        this.currentCategory = currentCategory;
+    public void setCurrentCategoryScreen(BookCategoryNodeScreen currentCategoryNodeScreen) {
+        this.currentCategoryNodeScreen = currentCategoryNodeScreen;
     }
 
     public void setCurrentCategory(BookCategory currentCategory) {
         this.currentCategory = this.categories.indexOf(currentCategory);
-    }
-
-    public void setCurrentCategoryScreen(BookCategoryNodeScreen currentCategoryNodeScreen) {
-        this.currentCategoryNodeScreen = currentCategoryNodeScreen;
     }
 
     @Override
@@ -144,39 +135,6 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
         return this.frameThicknessH;
     }
 
-    public void changeCategory(BookCategory category) {
-        if (category == null) {
-            Modonomicon.LOG.warn("Tried to change to a null category in this book ({}).", this.book.getId());
-        }
-
-        int index = this.categories.indexOf(category);
-        if (index != -1) {
-            this.changeCategory(index);
-        } else {
-            Modonomicon.LOG.warn("Tried to change to a category ({}) that does not exist in this book ({}).", this.book.getId(), category.getId());
-        }
-    }
-
-    public void changeCategory(int categoryIndex) {
-        if (this.currentCategory == categoryIndex) {
-            return; //this is an easy fix for #179, otherwise we have to rethink state tracking
-        }
-
-        var oldIndex = this.currentCategory;
-        this.currentCategory = categoryIndex;
-        this.onCategoryChanged(oldIndex, this.currentCategory);
-    }
-
-    public void onCategoryChanged(int oldIndex, int newIndex) {
-        //TODO: handle category change via gui manager?
-//        var oldScreen = this.currentCategoryNodeScreen.get(oldIndex);
-//        oldScreen.onClose();
-//
-//        var newScreen = this.currentCategoryNodeScreen.get(newIndex);
-//        newScreen.onDisplay();
-
-        //TODO: SFX for category change?
-    }
 
     /**
      * Gets the outer width of the book frame
@@ -220,7 +178,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
     }
 
     protected void onBookCategoryButtonClick(CategoryButton button) {
-        this.changeCategory(button.getCategoryIndex());
+        BookGuiManager.get().openCategory(button.getCategory());
     }
 
     protected void onReadAllButtonClick(ReadAllButton button) {
@@ -235,18 +193,6 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
 
     protected boolean canSeeReadAllButton() {
         return this.hasUnreadEntries || this.hasUnreadUnlockedEntries;
-    }
-
-    private void loadBookState() {
-        var state = BookVisualStateManager.get().getBookStateFor(this.minecraft.player, this.book);
-        if (state != null) {
-            if (state.openCategory != null) {
-                var openCategory = this.book.getCategory(state.openCategory);
-                if (openCategory != null) {
-                    this.currentCategory = this.categories.indexOf(openCategory);
-                }
-            }
-        }
     }
 
     @Override
@@ -338,7 +284,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
         int buttonCount = 0;
         for (int i = 0, size = this.categories.size(); i < size; i++) {
             if (this.categories.get(i).showCategoryButton() && BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, this.categories.get(i))) {
-                var button = new CategoryButton(this, this.categories.get(i), i,
+                var button = new CategoryButton(this, this.categories.get(i),
                         buttonX, buttonY + (buttonHeight + buttonSpacing) * buttonCount, buttonWidth, buttonHeight,
                         (b) -> this.onBookCategoryButtonClick((CategoryButton) b),
                         Tooltip.create(Component.translatable(this.categories.get(i).getName())));

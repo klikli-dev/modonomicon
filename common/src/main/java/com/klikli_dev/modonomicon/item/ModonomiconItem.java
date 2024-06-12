@@ -56,7 +56,7 @@ public class ModonomiconItem extends Item {
             if (itemInHand.get(DataComponentRegistry.BOOK_ID.get()) != null) {
                 var book = getBook(itemInHand);
 
-                BookGuiManager.get().openBook(book.getId(), pPlayer);
+                BookGuiManager.get().openBook(book.getId());
             } else {
                 Modonomicon.LOG.error("ModonomiconItem: ItemStack has no tag!");
             }
