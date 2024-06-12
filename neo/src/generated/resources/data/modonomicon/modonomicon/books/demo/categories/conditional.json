@@ -8,6 +8,7 @@
     "type": "modonomicon:entry_read",
     "entry_id": "modonomicon:features/condition_root"
   },
+  "display_mode": "node",
   "entry_textures": "modonomicon:textures/gui/entry_textures.png",
   "icon": {
     "item": "minecraft:chest"
