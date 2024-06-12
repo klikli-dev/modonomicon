@@ -49,7 +49,7 @@ const config = {
         appId: 'KH03690QIY',
   
         // Public API key: it is safe to commit it
-        apiKey: '92c8daefd11f531826805655d9c8219e',
+        apiKey: 'f965b080e003dd0054a092238c14f577',
   
         indexName: 'crawler_Modonomicon Docs',
   
