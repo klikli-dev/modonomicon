@@ -24,7 +24,9 @@ import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentNodeScreen;
 import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentScreen;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.networking.BookEntryReadMessage;
+import com.klikli_dev.modonomicon.networking.SaveBookStateMessage;
 import com.klikli_dev.modonomicon.networking.SaveCategoryStateMessage;
+import com.klikli_dev.modonomicon.networking.SaveEntryStateMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
 import net.minecraft.client.Minecraft;
@@ -155,8 +157,12 @@ public class BookGuiManager {
 
     @ApiStatus.Internal
     public void openCategory(BookCategory category) {
-        if(this.openBookCategoryScreen != null){
-            this.openBookCategoryScreen.onClose();
+        if (this.openBookCategoryScreen != null) {
+            //skip if the category is already open
+            if (this.openBookCategoryScreen.getCategory() == category)
+                return;
+
+            BookGuiManager.get().closeCategoryScreen(this.openBookCategoryScreen);
         }
 
         var displayMode = category.getDisplayMode();
@@ -284,11 +290,10 @@ public class BookGuiManager {
         }
 
         if (this.showErrorScreen(bookId)) {
-            return;
         }
 
-        return; //TODO Implement
-//
+        //TODO Implement
+        //
 //        //TODO: handle category link entries!
 //        var book = BookDataManager.get().getBook(bookId);
 //        if (this.lastBook != book) {
@@ -344,25 +349,95 @@ public class BookGuiManager {
 //        //TODO: play sound here? could just make this a client config
     }
 
-    public void onCloseEntryScreen(BookEntryScreen screen) {
-//        var state = BookVisualStateManager.get().getEntryStateFor(player(), screen.getEntry());
-//        screen.saveState(state);
-//        Services.NETWORK.sendToServer(new SaveCategoryStateMessage(screen.getEntry().getCategory(), state));
-        //TODO:
+    //TODO: Handle category "jumps" via book links. that should LIKELY store open entry for that cat?
+    //TODO: Handle entry jumps via book links or "back" function
+
+    /**
+     * Call this when you want to close *just* the entry screen, but not the category and parent.
+     * E.g. from the "close"/"x" button.
+     */
+    public void closeEntryScreen(BookEntryScreen screen) {
+        this.closeEntryScreen(screen, false);
     }
 
-    public void onCloseCategoryScreen(BookCategoryScreen screen){
-        if(this.openBookCategoryScreen == screen){
-            this.openBookCategoryScreen = null;
-        }
+    /**
+     * Call this when you want to close *just* the entry screen, but not the category and parent.
+     * E.g. from the "close"/"x" button.
+     */
+    public void closeEntryScreen(BookEntryScreen screen, boolean overrideStoreLastOpenPageWhenClosingEntry) {
+        //close the entry screen
+        if (Minecraft.getInstance().screen == screen)
+            ClientServices.GUI.popGuiLayer();
+        this.openBookEntryScreen = null;
 
-        var state = BookVisualStateManager.get().getCategoryStateFor(player(), screen.getCategory());
+        var state = BookVisualStateManager.get().getEntryStateFor(this.player(), screen.getEntry());
+        //if we close "normally" without Esc we respect the config setting
+        //for ESC closing we always save the page (see below #onEsc())
+        screen.saveState(state, overrideStoreLastOpenPageWhenClosingEntry || ClientServices.CLIENT_CONFIG.storeLastOpenPageWhenClosingEntry());
+        Services.NETWORK.sendToServer(new SaveEntryStateMessage(screen.getEntry(), state));
+    }
+
+    /**
+     * Call this when you want to close *just* the category screen, but not the parent.
+     * E.g. from the "close"/"x" button.
+     */
+    public void closeCategoryScreen(BookCategoryScreen screen) {
+        //TODO: Handle if an entry is currently open (see todo for switching categories via cat link, etc), esc is already handled
+
+        //close the category screen
+        //this check handles the case of node categories that are not real screens
+        //thus no gui layer can be popped -> otherwise we already remove our parent screen!
+        if (Minecraft.getInstance().screen == screen)
+            ClientServices.GUI.popGuiLayer();
+        this.openBookCategoryScreen = null;
+
+        var state = BookVisualStateManager.get().getCategoryStateFor(this.player(), screen.getCategory());
         screen.saveState(state);
         Services.NETWORK.sendToServer(new SaveCategoryStateMessage(screen.getCategory(), state));
-        //TODO: Open Entry saving - if we do a full closure!
     }
 
-    protected Player player(){
+    /**
+     * Call this when you want to close the parent screen naturally, without esc.
+     * E.g. from the "close"/"x" button.
+     */
+    public void closeParentScreen(BookParentScreen screen) {
+        Minecraft.getInstance().setScreen(null);
+        this.openBookParentScreen = null;
+
+        var state = BookVisualStateManager.get().getBookStateFor(this.player(), screen.getBook());
+        Services.NETWORK.sendToServer(new SaveBookStateMessage(screen.getBook(), state));
+
+        this.resetHistory();
+
+        //TODO: Open Category saving - if we do a full closure!
+        //TODO: call on close of open category? -> to save its state
+    }
+
+    public void onEsc(BookParentScreen screen) {
+        //We don't need to do any additional state saving here, the other onEsc overloads already handle that for us
+        this.closeParentScreen(screen);
+    }
+
+    public void onEsc(BookCategoryScreen screen) {
+        this.closeCategoryScreen(screen);
+
+        //set the open category on the book state, so that closeParentScreen sends it along.
+        var bookState = BookVisualStateManager.get().getBookStateFor(this.player(), screen.getCategory().getBook());
+        bookState.openCategory = screen.getCategory().getId();
+        this.onEsc(this.openBookParentScreen);
+    }
+
+    public void onEsc(BookEntryScreen screen) {
+        //close entry screen with forced saving of last page
+        this.closeEntryScreen(screen, true);
+
+        //set the open entry on the category state, so that closeCategoryScreen sends it along.
+        var categoryState = BookVisualStateManager.get().getCategoryStateFor(this.player(), this.openBookCategoryScreen.getCategory());
+        categoryState.openEntry = screen.getEntry().getId();
+        this.onEsc(this.openBookCategoryScreen); //will then bubble down to close the parent screen
+    }
+
+    protected Player player() {
         return Minecraft.getInstance().player;
     }
 }

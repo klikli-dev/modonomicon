@@ -32,11 +32,7 @@ public class SaveCategoryStateMessage implements Message {
     public ResourceLocation openEntry = null;
 
     public SaveCategoryStateMessage(BookCategory category, CategoryVisualState state) {
-        this.category = category;
-        this.scrollX = state.scrollX;
-        this.scrollY = state.scrollY;
-        this.targetZoom = state.targetZoom;
-        this.openEntry = state.openEntry;
+        this(category, state.scrollX, state.scrollY, state.targetZoom, state.openEntry);
     }
 
     public SaveCategoryStateMessage(BookCategory category, float scrollX, float scrollY, float targetZoom, ResourceLocation openEntry) {

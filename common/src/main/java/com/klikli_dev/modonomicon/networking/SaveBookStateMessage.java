@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.networking;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
+import com.klikli_dev.modonomicon.bookstate.visual.BookVisualState;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -26,6 +27,10 @@ public class SaveBookStateMessage implements Message {
     public Book book;
 
     ResourceLocation openCategory = null;
+
+    public SaveBookStateMessage(Book book, BookVisualState state) {
+        this(book, state.openCategory);
+    }
 
     public SaveBookStateMessage(Book book, ResourceLocation openCategory) {
         this.book = book;

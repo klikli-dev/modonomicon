@@ -230,13 +230,7 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
 
     @Override
     public void onClose() {
-        //TODO mirror behaviour of category node screen
-        if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_ESCAPE)) {
-            super.onClose();
-            this.parentScreen.onClose();
-        } else {
-            ClientServices.GUI.popGuiLayer(); //instead of super.onClose() to restore our parent screen
-        }
+        //do not call super - gui manager should handle gui removal
     }
 
     @Override
@@ -263,6 +257,11 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
                 BookGuiManager.get().openEntry(entry.getBook().getId(), entry.getId(), 0);
                 return true;
             }
+        }
+
+        if (key == GLFW.GLFW_KEY_ESCAPE) {
+            BookGuiManager.get().onEsc(this);
+            return true;
         }
         return super.keyPressed(key, scanCode, modifiers);
     }

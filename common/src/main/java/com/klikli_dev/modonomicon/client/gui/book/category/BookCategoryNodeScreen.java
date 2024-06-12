@@ -27,6 +27,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -405,6 +406,15 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     @Override
     public void onClose() {
-        BookGuiManager.get().onCloseCategoryScreen(this);
+        //do not call super - gui manager should handle gui removal
+        //Note: As this is not a vanilla screen child we don't even have a super :)
+    }
+
+    public boolean keyPressed(int key, int scanCode, int modifiers) {
+        if (key == GLFW.GLFW_KEY_ESCAPE) {
+            BookGuiManager.get().onEsc(this);
+            return true;
+        }
+        return false;
     }
 }

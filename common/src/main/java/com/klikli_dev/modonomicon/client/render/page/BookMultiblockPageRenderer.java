@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock.SimulateResult;
 import com.klikli_dev.modonomicon.book.page.BookMultiblockPage;
 import com.klikli_dev.modonomicon.client.ClientTicks;
+import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.VisualizeButton;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
@@ -58,8 +59,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
 
     public void handleButtonVisualize(Button button) {
         MultiblockPreviewRenderer.setMultiblock(this.page.getMultiblock(), this.page.getMultiblockName().getComponent(), true);
-        this.parentScreen.simulateEscClosing = true; //will cause the book to close entirely, and safe open page
-        this.parentScreen.onClose();
+        BookGuiManager.get().onEsc(this.parentScreen); //will cause the book to close entirely, and save the open page
 
         //TODO: visualizer bookmark to go back to this page quickly?
         //String entryKey =  this.parentEntry.getId().toString(); will be used for bookmark for multiblock

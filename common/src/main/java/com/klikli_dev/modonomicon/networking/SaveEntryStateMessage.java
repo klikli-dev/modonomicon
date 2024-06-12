@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.networking;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.entries.*;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
+import com.klikli_dev.modonomicon.bookstate.visual.EntryVisualState;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -27,7 +28,11 @@ public class SaveEntryStateMessage implements Message {
     public BookEntry entry;
     public int openPagesIndex;
 
-    public SaveEntryStateMessage(BookContentEntry entry, int openPagesIndex) {
+    public SaveEntryStateMessage(BookEntry entry, EntryVisualState state) {
+        this(entry, state.openPagesIndex);
+    }
+
+    public SaveEntryStateMessage(BookEntry entry, int openPagesIndex) {
         this.entry = entry;
         this.openPagesIndex = openPagesIndex;
     }

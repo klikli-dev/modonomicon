@@ -80,7 +80,6 @@ public class BookEntryScreen extends BookPaginatedScreen {
     private final ResourceLocation bookContentTexture;
     private final ItemParser itemParser;
     public int ticksInBook;
-    public boolean simulateEscClosing;
     private List<BookPage> unlockedPages;
     private BookPage leftPage;
     private BookPage rightPage;
@@ -426,6 +425,10 @@ public class BookEntryScreen extends BookPaginatedScreen {
         this.openPagesIndex = state.openPagesIndex;
     }
 
+    public void saveState(EntryVisualState state, boolean savePage) {
+        state.openPagesIndex = savePage ? this.openPagesIndex : 0;
+    }
+
     @Override
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         RenderSystem.disableDepthTest(); //guard against depth test being enabled by other rendering code, that would cause ui elements to vanish
@@ -457,6 +460,15 @@ public class BookEntryScreen extends BookPaginatedScreen {
 
         //do not translate tooltip, would mess up location
         this.drawTooltip(guiGraphics, pMouseX, pMouseY);
+    }
+
+    @Override
+    public boolean keyPressed(int key, int scanCode, int modifiers) {
+        if (key == GLFW.GLFW_KEY_ESCAPE) {
+            BookGuiManager.get().onEsc(this);
+            return true;
+        }
+        return super.keyPressed(key, scanCode, modifiers);
     }
 
     @Override
@@ -710,10 +722,8 @@ public class BookEntryScreen extends BookPaginatedScreen {
                     if (PatchouliLink.isPatchouliLink(event.getValue())) {
                         var link = PatchouliLink.from(event.getValue());
                         if (link.bookId != null) {
+                            BookGuiManager.get().onEsc(this.parentScreen); //will cause the book to close entirely, and save the open page
                             //the integration class handles class loading guards if patchouli is not present
-                            this.simulateEscClosing = true;
-                            //this.onClose();
-
                             Services.PATCHOULI.openEntry(link.bookId, link.entryId, link.pageNumber);
                             return true;
                         }
@@ -735,16 +745,13 @@ public class BookEntryScreen extends BookPaginatedScreen {
                                 return true;
                             }
 
+                            BookGuiManager.get().onEsc(this); //will cause the book to close entirely, and save the open page
                             this.onClose(); //we have to do this before showing JEI, because super.onClose() clears Gui Layers, and thus would kill JEIs freshly spawned gui
 
                             if (Screen.hasShiftDown()) {
                                 ModonomiconJeiIntegration.get().showUses(itemStack);
                             } else {
                                 ModonomiconJeiIntegration.get().showRecipe(itemStack);
-                            }
-
-                            if (!ModonomiconJeiIntegration.get().isJEIRecipesGuiOpen()) {
-                                ClientServices.GUI.pushGuiLayer(this);
                             }
 
                             //TODO: Consider adding logic to restore content screen after JEI gui close

@@ -11,7 +11,6 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookFrameOverlay;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
-import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ReadAllButton;
@@ -19,7 +18,6 @@ import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
 import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryNodeScreen;
 import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
 import com.klikli_dev.modonomicon.networking.ClickReadAllButtonMessage;
-import com.klikli_dev.modonomicon.networking.SaveBookStateMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
@@ -33,6 +31,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
@@ -236,20 +235,24 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
     }
 
     @Override
-    public boolean shouldCloseOnEsc() {
-        return true;
+    public boolean keyPressed(int key, int scanCode, int modifiers) {
+        //delegate key handling to the open category
+        //this ensures the open category is saved by calling the right overload of onEsc
+        if(this.getCurrentCategoryScreen().keyPressed(key, scanCode, modifiers)){
+            return true;
+        }
+
+        //This is unlikely to be reached as the category screen will already handle esc
+        if (key == GLFW.GLFW_KEY_ESCAPE) {
+            BookGuiManager.get().onEsc(this);
+            return true;
+        }
+        return super.keyPressed(key, scanCode, modifiers);
     }
 
     @Override
     public void onClose() {
-        this.getCurrentCategoryScreen().onClose();
-        Services.NETWORK.sendToServer(new SaveBookStateMessage(this.book, this.getCurrentCategoryScreen().getCategory().getId()));
-
-        BookGuiManager.get().resetHistory();
-
-        BookGuiManager.get().openBookParentScreen = null;
-
-        super.onClose();
+        //do not call super - gui manager should handle gui removal
     }
 
     @Override
