@@ -59,7 +59,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
 
     public void handleButtonVisualize(Button button) {
         MultiblockPreviewRenderer.setMultiblock(this.page.getMultiblock(), this.page.getMultiblockName().getComponent(), true);
-        BookGuiManager.get().onEsc(this.parentScreen); //will cause the book to close entirely, and save the open page
+        BookGuiManager.get().closeScreenStack(this.parentScreen); //will cause the book to close entirely, and save the open page
 
         //TODO: visualizer bookmark to go back to this page quickly?
         //String entryKey =  this.parentEntry.getId().toString(); will be used for bookmark for multiblock

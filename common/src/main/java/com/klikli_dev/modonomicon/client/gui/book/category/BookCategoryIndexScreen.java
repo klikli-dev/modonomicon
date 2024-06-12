@@ -22,10 +22,7 @@ import com.klikli_dev.modonomicon.client.gui.book.button.EntryListButton;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
-import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
-import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.language.I18n;
@@ -260,7 +257,7 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
         }
 
         if (key == GLFW.GLFW_KEY_ESCAPE) {
-            BookGuiManager.get().onEsc(this);
+            BookGuiManager.get().closeScreenStack(this);
             return true;
         }
         return super.keyPressed(key, scanCode, modifiers);

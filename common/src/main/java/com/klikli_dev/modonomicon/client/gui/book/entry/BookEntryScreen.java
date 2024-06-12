@@ -465,7 +465,7 @@ public class BookEntryScreen extends BookPaginatedScreen {
     @Override
     public boolean keyPressed(int key, int scanCode, int modifiers) {
         if (key == GLFW.GLFW_KEY_ESCAPE) {
-            BookGuiManager.get().onEsc(this);
+            BookGuiManager.get().closeScreenStack(this);
             return true;
         }
         return super.keyPressed(key, scanCode, modifiers);
@@ -722,7 +722,7 @@ public class BookEntryScreen extends BookPaginatedScreen {
                     if (PatchouliLink.isPatchouliLink(event.getValue())) {
                         var link = PatchouliLink.from(event.getValue());
                         if (link.bookId != null) {
-                            BookGuiManager.get().onEsc(this.parentScreen); //will cause the book to close entirely, and save the open page
+                            BookGuiManager.get().closeScreenStack(this.parentScreen); //will cause the book to close entirely, and save the open page
                             //the integration class handles class loading guards if patchouli is not present
                             Services.PATCHOULI.openEntry(link.bookId, link.entryId, link.pageNumber);
                             return true;
@@ -745,7 +745,7 @@ public class BookEntryScreen extends BookPaginatedScreen {
                                 return true;
                             }
 
-                            BookGuiManager.get().onEsc(this); //will cause the book to close entirely, and save the open page
+                            BookGuiManager.get().closeScreenStack(this); //will cause the book to close entirely, and save the open page
                             this.onClose(); //we have to do this before showing JEI, because super.onClose() clears Gui Layers, and thus would kill JEIs freshly spawned gui
 
                             if (Screen.hasShiftDown()) {

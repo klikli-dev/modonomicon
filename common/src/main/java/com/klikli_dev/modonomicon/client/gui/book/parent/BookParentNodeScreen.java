@@ -244,7 +244,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
 
         //This is unlikely to be reached as the category screen will already handle esc
         if (key == GLFW.GLFW_KEY_ESCAPE) {
-            BookGuiManager.get().onEsc(this);
+            BookGuiManager.get().closeScreenStack(this);
             return true;
         }
         return super.keyPressed(key, scanCode, modifiers);

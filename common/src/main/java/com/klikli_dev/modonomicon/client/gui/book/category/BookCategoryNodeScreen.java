@@ -412,7 +412,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     public boolean keyPressed(int key, int scanCode, int modifiers) {
         if (key == GLFW.GLFW_KEY_ESCAPE) {
-            BookGuiManager.get().onEsc(this);
+            BookGuiManager.get().closeScreenStack(this);
             return true;
         }
         return false;

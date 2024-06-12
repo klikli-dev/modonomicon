@@ -413,28 +413,28 @@ public class BookGuiManager {
         //TODO: call on close of open category? -> to save its state
     }
 
-    public void onEsc(BookParentScreen screen) {
-        //We don't need to do any additional state saving here, the other onEsc overloads already handle that for us
+    public void closeScreenStack(BookParentScreen screen) {
+        //We don't need to do any additional state saving here, the other closeScreenStack overloads already handle that for us
         this.closeParentScreen(screen);
     }
 
-    public void onEsc(BookCategoryScreen screen) {
+    public void closeScreenStack(BookCategoryScreen screen) {
         this.closeCategoryScreen(screen);
 
         //set the open category on the book state, so that closeParentScreen sends it along.
         var bookState = BookVisualStateManager.get().getBookStateFor(this.player(), screen.getCategory().getBook());
         bookState.openCategory = screen.getCategory().getId();
-        this.onEsc(this.openBookParentScreen);
+        this.closeScreenStack(this.openBookParentScreen);
     }
 
-    public void onEsc(BookEntryScreen screen) {
+    public void closeScreenStack(BookEntryScreen screen) {
         //close entry screen with forced saving of last page
         this.closeEntryScreen(screen, true);
 
         //set the open entry on the category state, so that closeCategoryScreen sends it along.
         var categoryState = BookVisualStateManager.get().getCategoryStateFor(this.player(), this.openBookCategoryScreen.getCategory());
         categoryState.openEntry = screen.getEntry().getId();
-        this.onEsc(this.openBookCategoryScreen); //will then bubble down to close the parent screen
+        this.closeScreenStack(this.openBookCategoryScreen); //will then bubble down to close the parent screen
     }
 
     protected Player player() {
