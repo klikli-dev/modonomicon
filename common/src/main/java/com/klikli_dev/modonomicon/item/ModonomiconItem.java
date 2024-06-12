@@ -57,10 +57,6 @@ public class ModonomiconItem extends Item {
                 var book = getBook(itemInHand);
 
                 BookGuiManager.get().openBook(book.getId(), pPlayer);
-
-                var parentScreen = new BookParentIndexScreen(book);
-                Minecraft.getInstance().setScreen(parentScreen);
-
             } else {
                 Modonomicon.LOG.error("ModonomiconItem: ItemStack has no tag!");
             }
