@@ -171,6 +171,12 @@ public class BookGuiManager {
         } else if (displayMode == BookDisplayMode.NODE) {
             this.openCategoryInNodeMode(category);
         }
+
+        //We now need to clear the open category in the book state, so that the closing handling can work properly
+        //Closing handling struggles with setting it to null (without lots of extra logic)
+        //So we reset it here, and on close just set it when needed
+        var bookState = BookVisualStateManager.get().getBookStateFor(this.player(), this.openBookParentScreen.getBook());
+        bookState.openCategory = null;
     }
 
     protected void openCategoryInNodeMode(BookCategory category) {
@@ -217,6 +223,12 @@ public class BookGuiManager {
         if (state != null) {
             openBookEntryScreen.loadState(state);
         }
+
+        //We now need to clear the open entry in the category state, so that the closing handling can work properly
+        //Closing handling struggles with setting it to null (without lots of extra logic)
+        //So we reset it here, and on close just set it when needed
+        var categoryState = BookVisualStateManager.get().getCategoryStateFor(this.player(), this.openBookCategoryScreen.getCategory());
+        categoryState.openEntry = null;
     }
 
     /**
@@ -408,6 +420,8 @@ public class BookGuiManager {
     }
 
     public void closeScreenStack(BookParentScreen screen) {
+        //TODO: currently we have the problem that when using "x" to close an entry it does not set the current entry to null on the state
+        //TODO: We will have the same issue with categories on the index category page x button
         //We don't need to do any additional state saving here, the other closeScreenStack overloads already handle that for us
         this.closeParentScreen(screen);
     }
