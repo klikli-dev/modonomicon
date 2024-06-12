@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
+                       xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+  <ShortName>Modonomicon</ShortName>
+  <Description>Search Modonomicon</Description>
+  <InputEncoding>UTF-8</InputEncoding>
+  <Image width="16" height="16" type="image/x-icon">https://klikli-dev.github.io/modonomicon/img/favicon.ico</Image>
+  <Url type="text/html" method="get" template="https://klikli-dev.github.io/modonomicon/search?q={searchTerms}"/>
+  <Url type="application/opensearchdescription+xml" rel="self" template="https://klikli-dev.github.io/modonomicon/opensearch.xml" />
+  <moz:SearchForm>https://klikli-dev.github.io/modonomicon/</moz:SearchForm>
+</OpenSearchDescription>
