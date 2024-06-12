@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
+import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryNodeScreen;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import net.minecraft.core.HolderLookup;
@@ -17,6 +18,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 public class CategoryLinkBookEntry extends BookEntry {
@@ -88,9 +90,8 @@ public class CategoryLinkBookEntry extends BookEntry {
         return this.categoryToOpen;
     }
 
-    public BookEntryScreen openEntry(BookCategoryNodeScreen categoryScreen) {
-        categoryScreen.getBookOverviewScreen().changeCategory(this.getCategoryToOpen());
-        return null;
+    public void openEntry(Player player) {
+        BookGuiManager.get().openCategoryLinkEntry(this, player);
     }
 
 }

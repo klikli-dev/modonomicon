@@ -11,6 +11,8 @@ import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
  */
 public interface BookCategoryScreen {
 
+    void onDisplay();
+
     void onClose();
 
     void onCloseEntry(BookEntryScreen screen);

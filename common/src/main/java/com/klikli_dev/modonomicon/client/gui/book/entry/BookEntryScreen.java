@@ -12,7 +12,7 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookLink;
 import com.klikli_dev.modonomicon.book.CommandLink;
 import com.klikli_dev.modonomicon.book.PatchouliLink;
-import com.klikli_dev.modonomicon.book.entries.ContentBookEntry;
+import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
@@ -76,7 +76,7 @@ public class BookEntryScreen extends BookPaginatedScreen {
 
     private static long lastTurnPageSoundTime;
     protected final BookParentScreen parentScreen;
-    private final ContentBookEntry entry;
+    private final BookContentEntry entry;
     private final ResourceLocation bookContentTexture;
     private final ItemParser itemParser;
     public int ticksInBook;
@@ -95,7 +95,7 @@ public class BookEntryScreen extends BookPaginatedScreen {
     private FluidHolder tooltipFluidStack;
     private boolean isHoveringItemLink;
 
-    public BookEntryScreen(BookParentScreen parentScreen, ContentBookEntry entry) {
+    public BookEntryScreen(BookParentScreen parentScreen, BookContentEntry entry) {
         super(Component.literal(""));
 
         this.parentScreen = parentScreen;
@@ -150,7 +150,7 @@ public class BookEntryScreen extends BookPaginatedScreen {
         return this.minecraft;
     }
 
-    public ContentBookEntry getEntry() {
+    public BookContentEntry getEntry() {
         return this.entry;
     }
 
@@ -427,8 +427,8 @@ public class BookEntryScreen extends BookPaginatedScreen {
     private void loadEntryState() {
         var state = BookVisualStateManager.get().getEntryStateFor(Minecraft.getInstance().player, this.entry);
 
-        BookGuiManager.get().currentEntry = this.entry;
-        BookGuiManager.get().currentContentScreen = this;
+        BookGuiManager.get().lastEntry = this.entry;
+        BookGuiManager.get().lastBookEntryScreen = this;
 
         if (state != null) {
             this.openPagesIndex = state.openPagesIndex;

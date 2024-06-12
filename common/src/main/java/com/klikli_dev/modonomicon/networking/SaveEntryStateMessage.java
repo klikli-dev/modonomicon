@@ -27,7 +27,7 @@ public class SaveEntryStateMessage implements Message {
     public BookEntry entry;
     public int openPagesIndex;
 
-    public SaveEntryStateMessage(ContentBookEntry entry, int openPagesIndex) {
+    public SaveEntryStateMessage(BookContentEntry entry, int openPagesIndex) {
         this.entry = entry;
         this.openPagesIndex = openPagesIndex;
     }

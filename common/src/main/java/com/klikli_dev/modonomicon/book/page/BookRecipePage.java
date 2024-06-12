@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.book.page;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.book.entries.ContentBookEntry;
+import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
@@ -16,7 +16,6 @@ import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -109,7 +108,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
         return this.text;
     }
 
-    protected RecipeHolder<T> loadRecipe(Level level, ContentBookEntry entry, ResourceLocation recipeId) {
+    protected RecipeHolder<T> loadRecipe(Level level, BookContentEntry entry, ResourceLocation recipeId) {
         if (recipeId == null) {
             return null;
         }
@@ -132,7 +131,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
     }
 
     @Override
-    public void build(Level level, ContentBookEntry parentEntry, int pageNum) {
+    public void build(Level level, BookContentEntry parentEntry, int pageNum) {
         super.build(level, parentEntry, pageNum);
 
         this.recipe1 = this.loadRecipe(level, parentEntry, this.recipeId1);

@@ -12,12 +12,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
 import com.klikli_dev.modonomicon.book.*;
 import com.klikli_dev.modonomicon.book.entries.*;
-import com.klikli_dev.modonomicon.book.conditions.BookAndCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
-import com.klikli_dev.modonomicon.book.conditions.BookEntryReadCondition;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.networking.Message;
@@ -192,7 +189,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         if(value.has("category_to_open")) {
             return CategoryLinkBookEntry.fromJson(id, value, autoAddReadConditions, provider);
         }
-        return ContentBookEntry.fromJson(id, value, autoAddReadConditions, provider);
+        return BookContentEntry.fromJson(id, value, autoAddReadConditions, provider);
     }
 
     private BookCommand loadCommand(ResourceLocation key, JsonObject value) {

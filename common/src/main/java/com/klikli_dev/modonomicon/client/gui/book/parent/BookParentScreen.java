@@ -14,6 +14,8 @@ public interface BookParentScreen extends BookProvider {
 
     BookCategoryScreen getCurrentCategoryScreen();
 
+    void onDisplay();
+
     /**
      * This is provided by any vanilla screen, and usually overridden by Modonomicon screens.
      * Making it available in this interface allows various book child screens to close the entire book.

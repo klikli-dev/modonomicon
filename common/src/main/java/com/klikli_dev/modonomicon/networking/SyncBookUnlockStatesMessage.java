@@ -53,8 +53,8 @@ public class SyncBookUnlockStatesMessage implements Message {
         }
 
         //but firing the update event is fine :)
-        if (BookGuiManager.get().openOverviewScreen != null) {
-            BookGuiManager.get().openOverviewScreen.onSyncBookUnlockCapabilityMessage(this);
+        if (BookGuiManager.get().openBookParentScreen != null) {
+            BookGuiManager.get().openBookParentScreen.onSyncBookUnlockCapabilityMessage(this);
         }
     }
 }

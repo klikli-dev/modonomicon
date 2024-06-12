@@ -60,7 +60,7 @@ public class LoaderRegistry {
     }
     
     private static void registerDefaultBookEntryTypes() {
-        registerEntryType(ModonomiconConstants.Data.EntryType.CONTENT, ContentBookEntry::fromJson, ContentBookEntry::fromNetwork);
+        registerEntryType(ModonomiconConstants.Data.EntryType.CONTENT, BookContentEntry::fromJson, BookContentEntry::fromNetwork);
         registerEntryType(ModonomiconConstants.Data.EntryType.CATEGORY_LINK, CategoryLinkBookEntry::fromJson, CategoryLinkBookEntry::fromNetwork);
     }
 

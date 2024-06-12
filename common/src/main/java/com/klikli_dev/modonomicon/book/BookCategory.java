@@ -32,12 +32,10 @@ public class BookCategory {
     protected Book book;
     protected String name;
     protected BookIcon icon;
-
     /**
      * The display mode - node based (thaumonomicon style) or index based (lexica botania / patchouli style)
      */
     protected BookDisplayMode displayMode;
-
     protected int sortNumber;
     protected ResourceLocation background;
     protected int backgroundWidth;
@@ -50,10 +48,8 @@ public class BookCategory {
     protected List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers;
     protected ResourceLocation entryTextures;
     protected ConcurrentMap<ResourceLocation, BookEntry> entries;
-
     protected BookCondition condition;
     protected boolean showCategoryButton;
-
     /**
      * The entry to open when this category is opened.
      * If null, no entry will be opened.
@@ -64,7 +60,6 @@ public class BookCategory {
      * If false, the entryToOpen will be opened every time the category is opened.
      */
     protected boolean openEntryToOpenOnlyOnce;
-
     public BookCategory(ResourceLocation id, String name, int sortNumber, BookCondition condition, boolean showCategoryButton, BookIcon icon, BookDisplayMode displayMode, ResourceLocation background, int backgroundWidth, int backgroundHeight, float backgroundTextureZoomMultiplier, List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers, ResourceLocation entryTextures, ResourceLocation entryToOpen, boolean openEntryOnlyOnce) {
         this.id = id;
         this.name = name;
@@ -132,7 +127,6 @@ public class BookCategory {
         return new BookCategory(id, name, sortNumber, condition, showCategoryButton, icon, displayMode, background, backgroundWidth, backgroundHeight,
                 backgroundTextureZoomMultiplier, backgroundParallaxLayers, entryTextures, entryToOpen, openEntryOnlyOnce);
     }
-
 
     public void toNetwork(RegistryFriendlyByteBuf buffer) {
         buffer.writeUtf(this.name);
@@ -205,6 +199,10 @@ public class BookCategory {
 
     public BookIcon getIcon() {
         return this.icon;
+    }
+
+    public BookDisplayMode getDisplayMode() {
+        return this.displayMode;
     }
 
     public ResourceLocation getBackground() {

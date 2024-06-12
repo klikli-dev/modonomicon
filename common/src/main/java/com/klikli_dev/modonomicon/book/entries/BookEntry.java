@@ -60,7 +60,7 @@ public abstract class BookEntry {
 
     public abstract ResourceLocation getType();
 
-    public abstract BookEntryScreen openEntry(BookCategoryNodeScreen categoryScreen);
+    public abstract void openEntry(Player player);
 
     /**
      * Called after build() (after loading the book jsons) to render markdown and store any errors

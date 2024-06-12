@@ -18,7 +18,6 @@ import com.klikli_dev.modonomicon.client.gui.book.button.CategoryButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ReadAllButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
 import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryNodeScreen;
-import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
 import com.klikli_dev.modonomicon.networking.ClickReadAllButtonMessage;
 import com.klikli_dev.modonomicon.networking.SaveBookStateMessage;
@@ -42,12 +41,10 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
 
     private final Book book;
     private final List<BookCategory> categories;
-    private final List<BookCategoryNodeScreen> categoryScreens;
-
     //TODO: make the frame thickness configurable in the book?
     private final int frameThicknessW = 14;
     private final int frameThicknessH = 14;
-
+    private BookCategoryNodeScreen currentCategoryNodeScreen;
     private int currentCategory = 0;
     private boolean hasUnreadEntries;
     private boolean hasUnreadUnlockedEntries;
@@ -61,20 +58,15 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
         this.book = book;
 
         this.categories = book.getCategoriesSorted(); //we no longer handle category locking here, is done on init to be able to refresh on unlock
-        this.categoryScreens = this.categories.stream().map(c -> new BookCategoryNodeScreen(this, c)).toList();
     }
 
     public Minecraft getMinecraft() {
         return this.minecraft;
     }
 
+    @Override
     public void onDisplay() {
-        this.loadBookState();
-
         this.updateUnreadEntriesState();
-
-        var currentScreen = this.categoryScreens.get(this.currentCategory);
-        currentScreen.onDisplay();
     }
 
     protected void updateUnreadEntriesState() {
@@ -89,11 +81,23 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
 
     @Override
     public BookCategoryNodeScreen getCurrentCategoryScreen() {
-        return this.categoryScreens.get(this.currentCategory);
+        return this.currentCategoryNodeScreen;
     }
 
     public int getCurrentCategory() {
         return this.currentCategory;
+    }
+
+    public void setCurrentCategory(int currentCategory) {
+        this.currentCategory = currentCategory;
+    }
+
+    public void setCurrentCategory(BookCategory currentCategory) {
+        this.currentCategory = this.categories.indexOf(currentCategory);
+    }
+
+    public void setCurrentCategoryScreen(BookCategoryNodeScreen currentCategoryNodeScreen) {
+        this.currentCategoryNodeScreen = currentCategoryNodeScreen;
     }
 
     @Override
@@ -142,10 +146,10 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
     }
 
     public void changeCategory(BookCategory category) {
-        if(category == null) {
+        if (category == null) {
             Modonomicon.LOG.warn("Tried to change to a null category in this book ({}).", this.book.getId());
         }
-        
+
         int index = this.categories.indexOf(category);
         if (index != -1) {
             this.changeCategory(index);
@@ -155,7 +159,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
     }
 
     public void changeCategory(int categoryIndex) {
-        if(this.currentCategory == categoryIndex) {
+        if (this.currentCategory == categoryIndex) {
             return; //this is an easy fix for #179, otherwise we have to rethink state tracking
         }
 
@@ -165,10 +169,11 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
     }
 
     public void onCategoryChanged(int oldIndex, int newIndex) {
-        var oldScreen = this.categoryScreens.get(oldIndex);
+        //TODO: handle category change via gui manager?
+        var oldScreen = this.currentCategoryNodeScreen.get(oldIndex);
         oldScreen.onClose();
 
-        var newScreen = this.categoryScreens.get(newIndex);
+        var newScreen = this.currentCategoryNodeScreen.get(newIndex);
         newScreen.onDisplay();
 
         //TODO: SFX for category change?
@@ -280,7 +285,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
         this.getCurrentCategoryScreen().renderEntryTooltips(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
-        for(var renderable : this.renderables){
+        for (var renderable : this.renderables) {
             renderable.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
         }
     }
@@ -297,7 +302,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
 
         BookGuiManager.get().resetHistory();
 
-        BookGuiManager.get().openOverviewScreen = null;
+        BookGuiManager.get().openBookParentScreen = null;
 
         super.onClose();
     }
@@ -317,8 +322,6 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
     @Override
     protected void init() {
         super.init();
-
-        BookGuiManager.get().openOverviewScreen = this;
 
         int buttonXOffset = -11;
 

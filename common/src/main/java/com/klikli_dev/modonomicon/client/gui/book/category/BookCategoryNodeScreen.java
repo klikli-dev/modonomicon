@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.book.entries.*;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
+import com.klikli_dev.modonomicon.bookstate.visual.CategoryVisualState;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentNodeScreen;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
@@ -45,7 +46,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
     public static final int ENTRY_HEIGHT = 26;
     public static final int ENTRY_WIDTH = 26;
 
-    private final BookParentNodeScreen bookOverviewScreen;
+    private final BookParentNodeScreen bookParentScreen;
     private final BookCategory category;
     private final EntryConnectionRenderer connectionRenderer;
     private float scrollX = 0;
@@ -54,10 +55,8 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
     private float targetZoom;
     private float currentZoom;
 
-    private ResourceLocation openEntry;
-
     public BookCategoryNodeScreen(BookParentNodeScreen bookOverviewScreen, BookCategory category) {
-        this.bookOverviewScreen = bookOverviewScreen;
+        this.bookParentScreen = bookOverviewScreen;
         this.category = category;
 
         this.connectionRenderer = new EntryConnectionRenderer(category.getEntryTextures());
@@ -71,11 +70,11 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
     }
 
     public float getXOffset() {
-        return ((this.bookOverviewScreen.getInnerWidth() / 2f) * (1 / this.currentZoom)) - this.scrollX / 2;
+        return ((this.bookParentScreen.getInnerWidth() / 2f) * (1 / this.currentZoom)) - this.scrollX / 2;
     }
 
     public float getYOffset() {
-        return ((this.bookOverviewScreen.getInnerHeight() / 2f) * (1 / this.currentZoom)) - this.scrollY / 2;
+        return ((this.bookParentScreen.getInnerHeight() / 2f) * (1 / this.currentZoom)) - this.scrollY / 2;
     }
 
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
@@ -86,10 +85,10 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             this.currentZoom = this.targetZoom;
 
         //GL Scissors to the inner frame area so entries do not stick out
-        int innerX = this.bookOverviewScreen.getInnerX();
-        int innerY = this.bookOverviewScreen.getInnerY();
-        int innerWidth = this.bookOverviewScreen.getInnerWidth();
-        int innerHeight = this.bookOverviewScreen.getInnerHeight();
+        int innerX = this.bookParentScreen.getInnerX();
+        int innerY = this.bookParentScreen.getInnerY();
+        int innerWidth = this.bookParentScreen.getInnerWidth();
+        int innerHeight = this.bookParentScreen.getInnerHeight();
         //the -1 are magic numbers to avoid an overflow of 1px.
         guiGraphics.enableScissor(innerX, innerY, innerX + innerWidth - 1, innerY + innerHeight - 1);
         this.renderEntries(guiGraphics, pMouseX, pMouseY);
@@ -136,6 +135,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
                 //only if the entry is unlocked we open it
                 if (displayStyle == EntryDisplayState.UNLOCKED) {
+                    //TODO: delegate to Gui Manager
                     this.openEntry(entry);
                     return true;
                 }
@@ -145,38 +145,14 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         return false;
     }
 
-    public @Nullable BookEntryScreen openEntry(BookEntry entry) {
-        if (!BookUnlockStateManager.get().isReadFor(Minecraft.getInstance().player, entry)) {
-            Services.NETWORK.sendToServer(new BookEntryReadMessage(entry.getBook().getId(), entry.getId()));
-        }
-
-        if(!(entry instanceof CategoryLinkBookEntry))
-            this.openEntry = entry.getId(); //do not store link entries in history, otherwise we always jump to its target when opening categories
-        
-        return entry.openEntry(this);
-    }
-
-    public @Nullable BookEntryScreen openContentEntry(ContentBookEntry entry) {
-        //we check if the content screen was already added, e.g. by the book gui manager
-        if (BookGuiManager.get().isEntryAlreadyDisplayed(entry))
-            return (BookEntryScreen) Minecraft.getInstance().screen;
-        
-        var bookContentScreen = new BookEntryScreen(this.bookOverviewScreen.getCurrentCategoryScreen().bookOverviewScreen, entry);
-        ClientServices.GUI.pushGuiLayer(bookContentScreen);
-
-        this.openEntry = entry.getId();
-        
-        return bookContentScreen;
-    }
-
     public void renderBackground(GuiGraphics guiGraphics) {
         //based on the frame's total width and its thickness, calculate where the inner area starts
-        int innerX = this.bookOverviewScreen.getInnerX();
-        int innerY = this.bookOverviewScreen.getInnerY();
+        int innerX = this.bookParentScreen.getInnerX();
+        int innerY = this.bookParentScreen.getInnerY();
 
         //then calculate the corresponding inner area width/height so we don't draw out of the frame
-        int innerWidth = this.bookOverviewScreen.getInnerWidth();
-        int innerHeight = this.bookOverviewScreen.getInnerHeight();
+        int innerWidth = this.bookParentScreen.getInnerWidth();
+        int innerHeight = this.bookParentScreen.getInnerHeight();
 
         //we do not use our static max_scroll here because it makes some issues, so we use the tex instead.
         int backgroundWidth = this.category.getBackgroundWidth();
@@ -186,8 +162,8 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
 
         // Adjust scale calculations to take into account actual texture size
-        float xScale = MAX_SCROLL * 2.0f / ((float) MAX_SCROLL + this.bookOverviewScreen.getFrameThicknessW() - this.bookOverviewScreen.getFrameWidth());
-        float yScale = MAX_SCROLL * 2.0f / ((float) MAX_SCROLL + this.bookOverviewScreen.getFrameThicknessH() - this.bookOverviewScreen.getFrameHeight());
+        float xScale = MAX_SCROLL * 2.0f / ((float) MAX_SCROLL + this.bookParentScreen.getFrameThicknessW() - this.bookParentScreen.getFrameWidth());
+        float yScale = MAX_SCROLL * 2.0f / ((float) MAX_SCROLL + this.bookParentScreen.getFrameThicknessH() - this.bookParentScreen.getFrameHeight());
         float scale = Math.max(xScale, yScale);
         float xOffset = xScale == scale ? 0 : (MAX_SCROLL - (innerWidth + MAX_SCROLL * 2.0f / scale)) / 2;
         float yOffset = yScale == scale ? 0 : (MAX_SCROLL - (innerHeight + MAX_SCROLL * 2.0f / scale)) / 2;
@@ -227,7 +203,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
 
     private EntryDisplayState getEntryDisplayState(BookEntry entry) {
-        var player = this.bookOverviewScreen.getMinecraft().player;
+        var player = this.bookParentScreen.getMinecraft().player;
 
         var isEntryUnlocked = BookUnlockStateManager.get().isUnlockedFor(player, entry);
 
@@ -304,7 +280,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             guiGraphics.pose().popPose();
 
             //render unread icon
-            if (displayState == EntryDisplayState.UNLOCKED && !BookUnlockStateManager.get().isReadFor(this.bookOverviewScreen.getMinecraft().player, entry)) {
+            if (displayState == EntryDisplayState.UNLOCKED && !BookUnlockStateManager.get().isReadFor(this.bookParentScreen.getMinecraft().player, entry)) {
                 final int U = 350;
                 final int V = 19;
                 final int width = 11;
@@ -321,7 +297,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                 guiGraphics.pose().pushPose();
                 guiGraphics.pose().translate(0, 0, 11); //and push the unread icon in front of the background and icon (they are at Z 10)
                 //if focused we go to the right of our normal button (instead of down, like mc buttons do)
-                BookEntryScreen.drawFromTexture(guiGraphics, this.bookOverviewScreen.getBook(),
+                BookEntryScreen.drawFromTexture(guiGraphics, this.bookParentScreen.getBook(),
                         entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 16 + 2,
                         entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP - 2, U + (isHovered ? width : 0), V, width, height);
                 guiGraphics.pose().popPose();
@@ -354,10 +330,10 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
     private boolean isEntryHovered(BookEntry entry, float xOffset, float yOffset, int mouseX, int mouseY) {
         int x = (int) ((entry.getX() * ENTRY_GRID_SCALE + xOffset + 2) * this.currentZoom);
         int y = (int) ((entry.getY() * ENTRY_GRID_SCALE + yOffset + 2) * this.currentZoom);
-        int innerX = this.bookOverviewScreen.getInnerX();
-        int innerY = this.bookOverviewScreen.getInnerY();
-        int innerWidth = this.bookOverviewScreen.getInnerWidth();
-        int innerHeight = this.bookOverviewScreen.getInnerHeight();
+        int innerX = this.bookParentScreen.getInnerX();
+        int innerY = this.bookParentScreen.getInnerY();
+        int innerWidth = this.bookParentScreen.getInnerWidth();
+        int innerHeight = this.bookParentScreen.getInnerHeight();
         return mouseX >= x && mouseX <= x + (ENTRY_WIDTH * this.currentZoom)
                 && mouseY >= y && mouseY <= y + (ENTRY_HEIGHT * this.currentZoom)
                 && mouseX >= innerX && mouseX <= innerX + innerWidth
@@ -371,7 +347,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             var tooltip = new ArrayList<Component>();
 
             if (displayState == EntryDisplayState.LOCKED) {
-                tooltip.addAll(entry.getCondition().getTooltip(this.bookOverviewScreen.getMinecraft().player, BookConditionEntryContext.of(this.bookOverviewScreen.getBook(), entry)));
+                tooltip.addAll(entry.getCondition().getTooltip(this.bookParentScreen.getMinecraft().player, BookConditionEntryContext.of(this.bookParentScreen.getBook(), entry)));
             } else if (displayState == EntryDisplayState.UNLOCKED) {
                 //add name in bold
                 tooltip.add(Component.translatable(entry.getName()).withStyle(ChatFormatting.BOLD));
@@ -412,38 +388,19 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         this.scrollY = (float) Mth.clamp(this.scrollY - pDragY, -MAX_SCROLL, MAX_SCROLL);
     }
 
-    private void loadCategoryState() {
-        var state = BookVisualStateManager.get().getCategoryStateFor(this.bookOverviewScreen.getMinecraft().player, this.category);
-        BookGuiManager.get().currentCategory = this.category;
-        BookGuiManager.get().currentCategoryScreen = this;
-        if (state != null) {
-            this.scrollX = state.scrollX;
-            this.scrollY = state.scrollY;
-            this.targetZoom = state.targetZoom;
-            this.currentZoom = state.targetZoom;
-            if (state.openEntry != null) {
-                var openEntry = this.category.getEntry(state.openEntry);
-                //also check for link entries here if they pollute old history -> they are not allowed to be stored, otherwise opening one category auto-jumps to the next
-                if (openEntry != null && !(openEntry instanceof CategoryLinkBookEntry)) {
-                    //no need to load history here, will be handled by book content screen
-                    this.openEntry(openEntry);
-                }
-            }
-        }
+    /**
+     * Sets the visual elements of the state, but not the open entry (handled by Gui Manager)
+     * @param state
+     */
+    public void setState(CategoryVisualState state){
+        this.scrollX = state.scrollX;
+        this.scrollY = state.scrollY;
+        this.targetZoom = state.targetZoom;
+        this.currentZoom = state.targetZoom;
     }
 
     public void onDisplay() {
-        this.loadCategoryState();
 
-        //handle the entryToOpen
-        if(this.openEntry == null && this.category.getEntryToOpen() != null){
-            var entryToOpen = this.category.getEntry(this.category.getEntryToOpen());
-            //the entry is by default only opened if it was not read yet.
-            //however, the book author can override this with openEntryToOpenOnlyOnce = false
-            if(!this.category.openEntryToOpenOnlyOnce() || !BookUnlockStateManager.get().isReadFor(Minecraft.getInstance().player, entryToOpen)){
-                this.openEntry(entryToOpen);
-            }
-        }
     }
 
     @Override
@@ -454,13 +411,5 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
     @Override
     public void onCloseEntry(BookEntryScreen screen) {
         this.openEntry = null;
-    }
-    
-    public BookParentNodeScreen getBookOverviewScreen() {
-        return this.bookOverviewScreen;
-    }
-
-    public void setOpenEntry(ResourceLocation openEntry) {
-        this.openEntry = openEntry;
     }
 }

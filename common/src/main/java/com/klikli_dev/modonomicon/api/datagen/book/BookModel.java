@@ -32,7 +32,8 @@ public class BookModel {
 
     /**
      * The display mode - node based (thaumonomicon style) or index based (lexica botania / patchouli style)
-     * If in index mode, the frame textures will be ignored, instead bookContentTexture will be used
+     * If the book is in index mode then all categories will also be shown in index mode. If the book is in node mode, then individual categories can be in index mode.
+     * If in index mode, the frame textures will be ignored, instead bookContentTexture will be used.
      */
     protected BookDisplayMode displayMode = BookDisplayMode.NODE;
 
