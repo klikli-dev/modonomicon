@@ -79,7 +79,6 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
                         !BookUnlockStateManager.get().isReadFor(this.minecraft.player, e));
     }
 
-    @Override
     public BookCategoryNodeScreen getCurrentCategoryScreen() {
         return this.currentCategoryNodeScreen;
     }
@@ -170,11 +169,11 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
 
     public void onCategoryChanged(int oldIndex, int newIndex) {
         //TODO: handle category change via gui manager?
-        var oldScreen = this.currentCategoryNodeScreen.get(oldIndex);
-        oldScreen.onClose();
-
-        var newScreen = this.currentCategoryNodeScreen.get(newIndex);
-        newScreen.onDisplay();
+//        var oldScreen = this.currentCategoryNodeScreen.get(oldIndex);
+//        oldScreen.onClose();
+//
+//        var newScreen = this.currentCategoryNodeScreen.get(newIndex);
+//        newScreen.onDisplay();
 
         //TODO: SFX for category change?
     }
@@ -312,6 +311,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
         return super.handleComponentClicked(pStyle);
     }
 
+    @Override
     public void onSyncBookUnlockCapabilityMessage(SyncBookUnlockStatesMessage message) {
         //this leads to re-init of the category buttons after a potential unlock
         this.rebuildWidgets();

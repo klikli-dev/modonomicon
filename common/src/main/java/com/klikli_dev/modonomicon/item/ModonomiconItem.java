@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.item;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.book.Book;
+import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentIndexScreen;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.registry.DataComponentRegistry;
@@ -55,7 +56,7 @@ public class ModonomiconItem extends Item {
             if (itemInHand.get(DataComponentRegistry.BOOK_ID.get()) != null) {
                 var book = getBook(itemInHand);
 
-//                BookGuiManager.get().openBook(book.getId());
+                BookGuiManager.get().openBook(book.getId(), pPlayer);
 
                 var parentScreen = new BookParentIndexScreen(book);
                 Minecraft.getInstance().setScreen(parentScreen);

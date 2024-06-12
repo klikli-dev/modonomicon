@@ -24,6 +24,7 @@ import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentNodeScreen;
 import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentScreen;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.networking.BookEntryReadMessage;
+import com.klikli_dev.modonomicon.networking.SaveCategoryStateMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
 import net.minecraft.client.Minecraft;
@@ -147,8 +148,8 @@ public class BookGuiManager {
 
     protected BookEntry getSavedEntryOrDefault(BookCategory category, Player player) {
         var savedEntry = this.getSavedEntry(category, player);
-        if (savedEntry == null) {
-            //If we do not have a saved entry, check if we have an entry to open specified in the category definition
+        //If we do not have a saved entry, check if we have an entry to open specified in the category definition
+        if (savedEntry == null && category.getEntryToOpen() != null) {
             var entryToOpen = category.getEntry(category.getEntryToOpen());
             if (!category.openEntryToOpenOnlyOnce() || !BookUnlockStateManager.get().isReadFor(Minecraft.getInstance().player, entryToOpen)) {
                 return entryToOpen;
@@ -171,7 +172,7 @@ public class BookGuiManager {
 
         var state = BookVisualStateManager.get().getCategoryStateFor(player, category);
         if (state != null) {
-            openBookCategoryScreen.setState(state);
+            openBookCategoryScreen.loadState(state);
         }
 
         //if the parent screen is a node screen, we can need to set the category on it as it needs this for rendering
@@ -199,6 +200,11 @@ public class BookGuiManager {
         var openBookEntryScreen = new BookEntryScreen(this.openBookParentScreen, entry);
         this.openBookEntryScreen = openBookEntryScreen;
         ClientServices.GUI.pushGuiLayer(openBookEntryScreen);
+
+        var state = BookVisualStateManager.get().getEntryStateFor(player, entry);
+        if (state != null) {
+            openBookEntryScreen.loadState(state);
+        }
     }
 
     /**
@@ -270,73 +276,78 @@ public class BookGuiManager {
             return;
         }
 
-        //TODO: shouldn't saveguard do that?
-        if (!BookDataManager.get().areBooksBuilt()) {
-            //This is a workaround/fallback for cases like https://github.com/klikli-dev/modonomicon/issues/48
-            //Generally it should never happen, because client builds books on UpdateRecipesPacket
-            //If that packet for some reason is not handled clientside, we build books here and hope for the best :)
-            //Why don't we generally do it lazily like that? Because then markdown prerender errors only show in log if a book is actually opened
-            boolean b = BookDataManager.get().tryBuildBooks(Minecraft.getInstance().level);
-            BookDataManager.get().prerenderMarkdown(Minecraft.getInstance().level.registryAccess());
-        }
-
-
-        //TODO: handle category link entries!
-        var book = BookDataManager.get().getBook(bookId);
-        if (this.lastBook != book) {
-            this.lastBook = book;
-        }
-
-        if (this.lastBookParentScreen == null || this.lastBookParentScreen.getBook() != book) {
-            this.lastBookParentScreen = new BookParentNodeScreen(book);
-        }
-
-        Minecraft.getInstance().setScreen(this.lastBookParentScreen);
-
-        if (categoryId == null) {
-            //if no category is provided, just open the book and exit.
-            return;
-        }
-
-        var category = book.getCategory(categoryId);
-
-        if (this.lastBookCategoryScreen == null || this.lastBookCategoryScreen.getCategory() != category) {
-            this.lastBookParentScreen.changeCategory(category);
-            this.lastBookCategoryScreen = this.lastBookParentScreen.getCurrentCategoryScreen();
-        }
-
-        if (entryId == null) {
-            //if no entry is provided, just open the book and category and exit.
-            return;
-        }
-
-        var entry = book.getEntry(entryId);
-        if (this.lastEntry != entry) {
-            this.lastEntry = entry;
-        }
-
-        if (this.lastBookEntryScreen == null || this.lastBookEntryScreen.getEntry() != entry) {
-            this.lastBookEntryScreen = this.lastBookCategoryScreen.openEntry(entry);
-        } else {
-            //we are clearing the gui layers above, so we have to restore here if we do not call openentry
-            //we check if the content screen was already added, e.g. by the book category screen
-            if (!this.isEntryAlreadyDisplayed(entry))
-                ClientServices.GUI.pushGuiLayer(this.lastBookEntryScreen);
-
-            //to ensure the current open entry is tracked on the category, we manually set it
-            //this is necessary to ensure state is tracked and saved when closing again. Fixes #196
-            this.lastBookCategoryScreen.setOpenEntry(entry.getId());
-        }
-
-        //we need to check for null, because this.currentCategoryScreen.openEntry(entry); returns null for "redirect" entries that open categories - because there is no content to show.
-        if (this.lastBookEntryScreen != null) {
-            //we don't need to manually check for the current page because the content screen will do that for us
-            this.lastBookEntryScreen.goToPage(page, false);
-        }
-        //TODO: play sound here? could just make this a client config
+        return; //TODO Implement
+//
+//        //TODO: handle category link entries!
+//        var book = BookDataManager.get().getBook(bookId);
+//        if (this.lastBook != book) {
+//            this.lastBook = book;
+//        }
+//
+//        if (this.lastBookParentScreen == null || this.lastBookParentScreen.getBook() != book) {
+//            this.lastBookParentScreen = new BookParentNodeScreen(book);
+//        }
+//
+//        Minecraft.getInstance().setScreen(this.lastBookParentScreen);
+//
+//        if (categoryId == null) {
+//            //if no category is provided, just open the book and exit.
+//            return;
+//        }
+//
+//        var category = book.getCategory(categoryId);
+//
+//        if (this.lastBookCategoryScreen == null || this.lastBookCategoryScreen.getCategory() != category) {
+//            this.lastBookParentScreen.changeCategory(category);
+//            this.lastBookCategoryScreen = this.lastBookParentScreen.getCurrentCategoryScreen();
+//        }
+//
+//        if (entryId == null) {
+//            //if no entry is provided, just open the book and category and exit.
+//            return;
+//        }
+//
+//        var entry = book.getEntry(entryId);
+//        if (this.lastEntry != entry) {
+//            this.lastEntry = entry;
+//        }
+//
+//        if (this.lastBookEntryScreen == null || this.lastBookEntryScreen.getEntry() != entry) {
+//            this.lastBookEntryScreen = this.lastBookCategoryScreen.openEntry(entry);
+//        } else {
+//            //we are clearing the gui layers above, so we have to restore here if we do not call openentry
+//            //we check if the content screen was already added, e.g. by the book category screen
+//            if (!this.isEntryAlreadyDisplayed(entry))
+//                ClientServices.GUI.pushGuiLayer(this.lastBookEntryScreen);
+//
+//            //to ensure the current open entry is tracked on the category, we manually set it
+//            //this is necessary to ensure state is tracked and saved when closing again. Fixes #196
+//            this.lastBookCategoryScreen.setOpenEntry(entry.getId());
+//        }
+//
+//        //we need to check for null, because this.currentCategoryScreen.openEntry(entry); returns null for "redirect" entries that open categories - because there is no content to show.
+//        if (this.lastBookEntryScreen != null) {
+//            //we don't need to manually check for the current page because the content screen will do that for us
+//            this.lastBookEntryScreen.goToPage(page, false);
+//        }
+//        //TODO: play sound here? could just make this a client config
     }
 
-    public boolean isEntryAlreadyDisplayed(BookEntry entry) {
-        return Minecraft.getInstance().screen instanceof BookEntryScreen bookEntryScreen && bookEntryScreen.getEntry().equals(entry);
+    public void onCloseEntryScreen(BookEntryScreen screen) {
+//        var state = BookVisualStateManager.get().getEntryStateFor(player(), screen.getEntry());
+//        screen.saveState(state);
+//        Services.NETWORK.sendToServer(new SaveCategoryStateMessage(screen.getEntry().getCategory(), state));
+        //TODO:
+    }
+
+    public void onCloseCategoryScreen(BookCategoryScreen screen){
+        var state = BookVisualStateManager.get().getCategoryStateFor(player(), screen.getCategory());
+        screen.saveState(state);
+        Services.NETWORK.sendToServer(new SaveCategoryStateMessage(screen.getCategory(), state));
+        //TODO: Open Entry saving - if we do a full closure!
+    }
+
+    protected Player player(){
+        return Minecraft.getInstance().player;
     }
 }

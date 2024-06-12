@@ -15,7 +15,7 @@ import com.klikli_dev.modonomicon.book.PatchouliLink;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
-import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
+import com.klikli_dev.modonomicon.bookstate.visual.EntryVisualState;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedScreen;
@@ -106,8 +106,6 @@ public class BookEntryScreen extends BookPaginatedScreen {
         this.entry = entry;
 
         this.bookContentTexture = this.parentScreen.getBook().getBookContentTexture();
-
-        this.loadEntryState();
     }
 
     public static void drawFromTexture(GuiGraphics guiGraphics, Book book, int x, int y, int u, int v, int w, int h) {
@@ -424,15 +422,8 @@ public class BookEntryScreen extends BookPaginatedScreen {
         this.tooltipFluidStack = null;
     }
 
-    private void loadEntryState() {
-        var state = BookVisualStateManager.get().getEntryStateFor(Minecraft.getInstance().player, this.entry);
-
-        BookGuiManager.get().lastEntry = this.entry;
-        BookGuiManager.get().lastBookEntryScreen = this;
-
-        if (state != null) {
-            this.openPagesIndex = state.openPagesIndex;
-        }
+    public void loadState(EntryVisualState state) {
+        this.openPagesIndex = state.openPagesIndex;
     }
 
     @Override
@@ -480,8 +471,6 @@ public class BookEntryScreen extends BookPaginatedScreen {
         } else {
             Services.NETWORK.sendToServer(new SaveEntryStateMessage(this.entry,
                     ClientServices.CLIENT_CONFIG.storeLastOpenPageWhenClosingEntry() ? this.openPagesIndex : 0));
-
-            this.parentScreen.getCurrentCategoryScreen().onCloseEntry(this);
 
             ClientServices.GUI.popGuiLayer(); //instead of super.onClose() to restore our parent screen
         }

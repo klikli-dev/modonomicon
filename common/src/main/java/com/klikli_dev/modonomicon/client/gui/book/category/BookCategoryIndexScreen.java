@@ -14,6 +14,7 @@ import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.visual.CategoryVisualState;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentScreen;
@@ -223,6 +224,11 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
 
 
     @Override
+    public void onDisplay() {
+
+    }
+
+    @Override
     public void onClose() {
         //TODO mirror behaviour of category node screen
         if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_ESCAPE)) {
@@ -234,8 +240,19 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
     }
 
     @Override
-    public void onCloseEntry(BookEntryScreen screen) {
-        //TODO: set current entry to null if we need to do state tracking here
+    public void loadState(CategoryVisualState state) {
+        //Index has no state to load
+        //we could load the page, but that is not very interesting ..
+    }
+
+    @Override
+    public void saveState(CategoryVisualState state) {
+        //Index has no state
+    }
+
+    @Override
+    public BookCategory getCategory() {
+        return this.category;
     }
 
     @Override

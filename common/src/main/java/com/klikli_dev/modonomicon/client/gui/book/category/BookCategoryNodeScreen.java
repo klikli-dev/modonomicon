@@ -7,31 +7,26 @@
 package com.klikli_dev.modonomicon.client.gui.book.category;
 
 import com.klikli_dev.modonomicon.api.events.EntryClickedEvent;
-import com.klikli_dev.modonomicon.book.*;
-import com.klikli_dev.modonomicon.book.entries.*;
+import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
+import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
-import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.bookstate.visual.CategoryVisualState;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
-import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentNodeScreen;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
+import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentNodeScreen;
 import com.klikli_dev.modonomicon.events.ModonomiconEvents;
-import com.klikli_dev.modonomicon.networking.BookEntryReadMessage;
-import com.klikli_dev.modonomicon.networking.SaveCategoryStateMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
-import com.klikli_dev.modonomicon.platform.Services;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.*;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -65,6 +60,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         this.currentZoom = this.targetZoom;
     }
 
+    @Override
     public BookCategory getCategory() {
         return this.category;
     }
@@ -135,8 +131,8 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
                 //only if the entry is unlocked we open it
                 if (displayStyle == EntryDisplayState.UNLOCKED) {
-                    //TODO: delegate to Gui Manager
-                    this.openEntry(entry);
+                    //TODO: delegate entry opening to Gui Manager
+                   // this.openEntry(entry);
                     return true;
                 }
             }
@@ -182,7 +178,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             guiGraphics.blit(this.category.getBackground(), innerX, innerY,
                     (this.scrollX + MAX_SCROLL) / scale + xOffset,
                     (this.scrollY + MAX_SCROLL) / scale + yOffset,
-                    innerWidth, innerHeight, (int)(backgroundHeight * backgroundTextureZoomMultiplier), (int)(backgroundWidth * backgroundTextureZoomMultiplier));
+                    innerWidth, innerHeight, (int) (backgroundHeight * backgroundTextureZoomMultiplier), (int) (backgroundWidth * backgroundTextureZoomMultiplier));
 
         }
     }
@@ -196,7 +192,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             guiGraphics.blit(layer.getBackground(), x, y,
                     (scrollX + MAX_SCROLL) / parallax1 + xOffset,
                     (scrollY + MAX_SCROLL) / parallax1 + yOffset,
-                    width, height,(int)(backgroundHeight * backgroundTextureZoomMultiplier), (int)(backgroundWidth * backgroundTextureZoomMultiplier));
+                    width, height, (int) (backgroundHeight * backgroundTextureZoomMultiplier), (int) (backgroundWidth * backgroundTextureZoomMultiplier));
         }
 
     }
@@ -390,13 +386,20 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     /**
      * Sets the visual elements of the state, but not the open entry (handled by Gui Manager)
+     *
      * @param state
      */
-    public void setState(CategoryVisualState state){
+    public void loadState(CategoryVisualState state) {
         this.scrollX = state.scrollX;
         this.scrollY = state.scrollY;
         this.targetZoom = state.targetZoom;
         this.currentZoom = state.targetZoom;
+    }
+
+    public void saveState(CategoryVisualState state) {
+        state.scrollX = this.scrollX;
+        state.scrollY = this.scrollY;
+        state.targetZoom = this.targetZoom;
     }
 
     public void onDisplay() {
@@ -405,11 +408,6 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     @Override
     public void onClose() {
-        Services.NETWORK.sendToServer(new SaveCategoryStateMessage(this.category, this.scrollX, this.scrollY, this.currentZoom, this.openEntry));
-    }
-
-    @Override
-    public void onCloseEntry(BookEntryScreen screen) {
-        this.openEntry = null;
+        BookGuiManager.get().onCloseCategoryScreen(this);
     }
 }

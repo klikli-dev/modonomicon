@@ -17,9 +17,11 @@ import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryListButton;
 import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryIndexScreen;
+import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
+import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -223,8 +225,12 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
         this.drawTooltip(guiGraphics, pMouseX, pMouseY);
     }
-    
-    
+
+    @Override
+    public void onDisplay() {
+        //TODO: DO we need to do anything?
+    }
+
     @Override
     public void onClose() {
         if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_ESCAPE)) {
@@ -233,6 +239,11 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         } else {
             ClientServices.GUI.popGuiLayer(); //instead of super.onClose() to restore our parent screen
         }
+    }
+
+    @Override
+    public void onSyncBookUnlockCapabilityMessage(SyncBookUnlockStatesMessage message) {
+
     }
 
     @Override
