@@ -131,8 +131,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
                 //only if the entry is unlocked we open it
                 if (displayStyle == EntryDisplayState.UNLOCKED) {
-                    //TODO: delegate entry opening to Gui Manager
-                   // this.openEntry(entry);
+                    BookGuiManager.get().openEntry(entry);
                     return true;
                 }
             }
@@ -386,8 +385,6 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     /**
      * Sets the visual elements of the state, but not the open entry (handled by Gui Manager)
-     *
-     * @param state
      */
     public void loadState(CategoryVisualState state) {
         this.scrollX = state.scrollX;

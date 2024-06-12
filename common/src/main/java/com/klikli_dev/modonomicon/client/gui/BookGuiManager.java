@@ -222,10 +222,12 @@ public class BookGuiManager {
     @ApiStatus.Internal
     public void openCategoryLinkEntry(CategoryLinkBookEntry entry) {
         var category = entry.getCategoryToOpen();
-        //TODO: Change category logic
+
+        this.openCategory(category);
     }
 
-    protected void openEntry(BookEntry entry) {
+    @ApiStatus.Internal
+    public void openEntry(BookEntry entry) {
         if (!BookUnlockStateManager.get().isReadFor(this.player(), entry)) {
             Services.NETWORK.sendToServer(new BookEntryReadMessage(entry.getBook().getId(), entry.getId()));
         }
