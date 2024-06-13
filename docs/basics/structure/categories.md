@@ -12,6 +12,20 @@ Categories are defined in json files placed in the `/data/<mod_id>/modonomicons/
 
 The category name. Will not parse markdown.
 
+### **description** (DescriptionId or Component JSON, _optional_)
+
+The category description. Can be styled using markdown.
+Will be displayed on the first page when opening the category if it is in index mode.
+
+### **display_mode** (String, _optional_)
+
+Default value: `node`. The display mode of the category. Can be `node` or `index`.
+Index mode ("patchouli-style") will display all entries in a list. 
+Node mode ("thaumonomicon-style") will display a "tree/quest/progress" view of the entries.  
+
+The category can be in "index" mode, despite the book being in "node" mode if you have contents that are better suited for a list.   
+In this case the styling attributes, such as the background (see below) are still applied, but only to provide a consistent look for the book rendered behind the category view.
+
 ### **icon** (ResourceLocation, _mandatory_)
 
 **Either** an item/block ResourceLocation that should be used as icon. E.g.:  `minecraft:nether_star` or `minecraft:chest`.  
@@ -27,6 +41,9 @@ To use a texture make sure the ResourceLocation includes the file endinge `.png`
 
 Defaults to `-1`.   
 Category "Bookmark"-Buttos on the left side of the Book will be sorted by this number.
+Similarly, in index mode, the categories will be sorted in the list by this number.
+
+When using datagen and no sort nubmer is provided, the BookProvider will automatically assign a sort number based on the order the categories are added when using `.add()`.
 
 ### **condition** (Condition, _optional_)
 

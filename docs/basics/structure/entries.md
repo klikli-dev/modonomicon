@@ -46,6 +46,12 @@ The x coordinate (horizontal) of the entry in the category.
 
 The y coordinate (vertical) of the entry in the category.
 
+### **sort_number** (Integer, _optional_)
+Defaults to `-1`.
+
+If the category of this entry is in "index" mode, then the sort number will be used to order the entries (instead of using x/y to place the entry on the 2d node grid).   
+When using datagen and no sort nubmer is provided, the CategorProvider will automatically assign a sort number based on the order the entries are added when using `.add()`.
+
 ### **hide_while_locked** (Boolean, _optional_)
 
 Default value: `false`. If true, this entry will not be shown as greyed out while it is locked, instead it will be entirely hidden.

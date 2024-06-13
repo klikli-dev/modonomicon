@@ -12,6 +12,17 @@ sidebar_position: 20
 
 The book name. Will not parse markdown.
 
+### **description** (DescriptionId or Component JSON, _optional_)
+
+The book description. Can be styled using markdown.
+Will be displayed on the first page when opening the book if it is in index mode.
+
+### **display_mode** (String, _optional_)
+
+Default value: `node`. The display mode of the book. Can be `node` or `index`.
+Index mode ("patchouli-style") will display all categories in a list. A book in index mode will also display all categories in index mode.   
+Node mode ("thaumonomicon-style") will display a "tree/quest/progress" view of the book. A book in node mode can have categories in index mode.  
+
 ### **tooltip** (DescriptionId, _optional_)
 
 The book tooltip, shown when the item is hovered. Will not parse markdown.
