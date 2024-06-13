@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
+import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.node.BookParentNodeScreen;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -33,7 +34,7 @@ public class ReadAllButton extends Button {
     public static final int HEIGHT = 14;
 
 
-    private final BookParentNodeScreen parent;
+    private final BookParentScreen parent;
 
     private final MutableComponent tooltipReadUnlocked;
     private final MutableComponent tooltipReadAll;
@@ -48,7 +49,7 @@ public class ReadAllButton extends Button {
     private long hoveredStartTime;
 
 
-    public ReadAllButton(BookParentNodeScreen parent, int x, int y, Supplier<Boolean> hasUnreadUnlockedEntries, Supplier<Boolean> displayCondition, OnPress onPress) {
+    public ReadAllButton(BookParentScreen parent, int x, int y, Supplier<Boolean> hasUnreadUnlockedEntries, Supplier<Boolean> displayCondition, OnPress onPress) {
         super(x, y, WIDTH, HEIGHT,
                 Component.translatable(Gui.BUTTON_READ_ALL),
                 onPress, Button.DEFAULT_NARRATION

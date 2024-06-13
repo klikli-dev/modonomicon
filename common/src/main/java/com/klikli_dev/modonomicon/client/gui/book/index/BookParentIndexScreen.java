@@ -21,12 +21,15 @@ import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
+import com.klikli_dev.modonomicon.networking.ClickReadAllButtonMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
+import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
@@ -53,10 +56,23 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
     private List<BookCategory> allEntries;
     private List<Component> tooltip;
 
+    private boolean hasUnreadEntries;
+    private boolean hasUnreadUnlockedEntries;
+
     public BookParentIndexScreen(Book book) {
         super(Component.translatable(book.getName()));
 
         this.book = book;
+    }
+
+    protected void updateUnreadEntriesState() {
+        //check if ANY entry is unread
+        this.hasUnreadEntries = this.book.getEntries().values().stream().anyMatch(e -> !BookUnlockStateManager.get().isReadFor(this.minecraft.player, e));
+
+        //check if any currently unlocked entry is unread
+        this.hasUnreadUnlockedEntries = this.book.getEntries().values().stream().anyMatch(e ->
+                BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e) &&
+                        !BookUnlockStateManager.get().isReadFor(this.minecraft.player, e));
     }
 
     public void handleButtonEntry(Button button) {
@@ -232,6 +248,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
     @Override
     public void onDisplay() {
+        this.updateUnreadEntriesState();
     }
 
     @Override
@@ -257,7 +274,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         this.rebuildWidgets();
 
         //TODO enable for the read all button
-        // this.updateUnreadEntriesState();
+        this.updateUnreadEntriesState();
     }
 
     @Override
@@ -278,6 +295,21 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         return super.keyPressed(key, scanCode, modifiers);
     }
 
+    protected boolean canSeeReadAllButton() {
+        return this.hasUnreadEntries || this.hasUnreadUnlockedEntries;
+    }
+
+
+    protected void onReadAllButtonClick(ReadAllButton button) {
+        if (this.hasUnreadUnlockedEntries && !Screen.hasShiftDown()) {
+            Services.NETWORK.sendToServer(new ClickReadAllButtonMessage(this.book.getId(), false));
+            this.hasUnreadUnlockedEntries = false;
+        } else if (this.hasUnreadEntries && Screen.hasShiftDown()) {
+            Services.NETWORK.sendToServer(new ClickReadAllButtonMessage(this.book.getId(), true));
+            this.hasUnreadEntries = false;
+        }
+    }
+
     @Override
     public void init() {
         super.init();
@@ -291,6 +323,17 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
                 .toList();
 
         this.createEntryList();
+
+
+        int readAllButtonX = this.bookLeft + FULL_WIDTH - ReadAllButton.WIDTH / 2;
+        int readAllButtonY =  this.bookTop + ReadAllButton.HEIGHT + 15;
+
+        var readAllButton = new ReadAllButton(this, readAllButtonX, readAllButtonY,
+                () -> this.hasUnreadUnlockedEntries, //if we have unlocked entries that are not read -> blue
+                this::canSeeReadAllButton, //display condition -> if we have any unlocked entries -> grey
+                (b) -> this.onReadAllButtonClick((ReadAllButton) b));
+
+        this.addRenderableWidget(readAllButton);
 
         int buttonHeight = 20;
         int searchButtonX = this.bookLeft + FULL_WIDTH - 5;
