@@ -363,9 +363,6 @@ public class BookGuiManager {
      * E.g. from the "close"/"x" button.
      */
     public void closeCategoryScreen(BookCategoryScreen screen) {
-        //TODO: Handle if an entry is currently open, e.g. when using a cat or entry link that leads to a switch
-        //      just like with esc handling that needs to store the entry
-
         //close the category screen
         //this check handles the case of node categories that are not real screens
         //thus no gui layer can be popped -> otherwise we already remove our parent screen!
