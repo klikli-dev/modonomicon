@@ -30,5 +30,5 @@ rootProject.name = 'Modonomicon ' + minecraft_version
 
 include("common")
 include("fabric")
-include("neo")
+//include("neo")
 //include("forge")
