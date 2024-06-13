@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
+import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryNodeScreen;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
@@ -162,7 +163,7 @@ public class BookContentEntry extends BookEntry {
     }
 
     @Override
-    public void openEntry() {
-        BookGuiManager.get().openContentEntry(this);
+    public void openEntry(BookAddress address) {
+        BookGuiManager.get().openContentEntry(this, address);
     }
 }

@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookFrameOverlay;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
+import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ReadAllButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
@@ -172,7 +173,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
     }
 
     protected void onBookCategoryButtonClick(CategoryButton button) {
-        BookGuiManager.get().openCategory(button.getCategory());
+        BookGuiManager.get().openCategory(button.getCategory(), BookAddress.defaultFor(button.getCategory().getBook()));
     }
 
     protected void onReadAllButtonClick(ReadAllButton button) {

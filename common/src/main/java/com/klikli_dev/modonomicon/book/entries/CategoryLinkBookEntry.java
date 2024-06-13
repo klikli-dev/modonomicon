@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
+import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryNodeScreen;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import net.minecraft.core.HolderLookup;
@@ -91,7 +92,8 @@ public class CategoryLinkBookEntry extends BookEntry {
     }
 
     @Override
-    public void openEntry() {
+    public void openEntry(BookAddress address) {
+        //we don't have any use for the address here
         BookGuiManager.get().openCategoryLinkEntry(this);
     }
 

@@ -241,6 +241,8 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         }
     }
 
+    //TODO: Save page in save state
+
     @Override
     public void onSyncBookUnlockCapabilityMessage(SyncBookUnlockStatesMessage message) {
 

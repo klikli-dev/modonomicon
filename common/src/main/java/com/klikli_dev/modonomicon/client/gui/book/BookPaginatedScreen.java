@@ -86,7 +86,7 @@ public abstract class BookPaginatedScreen extends Screen implements BookScreenWi
 	public void back() {
 		if (BookGuiManager.get().getHistorySize() > 0) {
 			var lastPage = BookGuiManager.get().popHistory();
-			BookGuiManager.get().openEntry(lastPage.bookId, lastPage.categoryId, lastPage.entryId, lastPage.page);
+			BookGuiManager.get().openEntry(lastPage.bookId(), lastPage.categoryId(), lastPage.entryId(), lastPage.page());
 		} else {
 			this.onClose();
 		}

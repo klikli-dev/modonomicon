@@ -14,6 +14,7 @@ import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.visual.CategoryVisualState;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
+import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
@@ -132,7 +133,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
                 //only if the entry is unlocked we open it
                 if (displayStyle == EntryDisplayState.UNLOCKED) {
-                    BookGuiManager.get().openEntry(entry);
+                    BookGuiManager.get().openEntry(entry, BookAddress.defaultFor(entry));
                     return true;
                 }
             }

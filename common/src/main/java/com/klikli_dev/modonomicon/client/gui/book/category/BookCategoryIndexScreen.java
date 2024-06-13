@@ -232,13 +232,12 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
 
     @Override
     public void loadState(CategoryVisualState state) {
-        //Index has no state to load
-        //we could load the page, but that is not very interesting ..
+        //TODO: Save page
     }
 
     @Override
     public void saveState(CategoryVisualState state) {
-        //Index has no state
+        //TODO: Load page
     }
 
     @Override

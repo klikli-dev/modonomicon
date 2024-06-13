@@ -282,6 +282,10 @@ public class BookEntryScreen extends BookPaginatedScreen {
         return 0;
     }
 
+    public void setOpenPagesIndex(int openPagesIndex) {
+        this.openPagesIndex = openPagesIndex;
+    }
+
     /**
      * Will change to the specified page, if not open already
      */

@@ -16,7 +16,7 @@ import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookErrorScreen;
-import com.klikli_dev.modonomicon.client.gui.book.BookHistoryEntry;
+import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryNodeScreen;
 import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
@@ -41,7 +41,7 @@ public class BookGuiManager {
 
     private static final BookGuiManager instance = new BookGuiManager();
 
-    private final Stack<BookHistoryEntry> history = new Stack<>();
+    private final Stack<BookAddress> history = new Stack<>();
 
     /**
      * The currently open screen. Used for unlock state sync to immediately update the open screen.
@@ -78,24 +78,24 @@ public class BookGuiManager {
         }
     }
 
-    public void openBook(ResourceLocation bookId) {
+    public void openBook(BookAddress address) {
         this.safeguardBooksBuilt();
 
-        if (this.showErrorScreen(bookId)) {
+        if (this.showErrorScreen(address.bookId())) {
             return;
         }
 
-        var book = BookDataManager.get().getBook(bookId);
+        var book = BookDataManager.get().getBook(address.bookId());
 
         var displayMode = book.getDisplayMode();
         if (displayMode == BookDisplayMode.INDEX) {
-            this.openBookInIndexMode(book);
+            this.openBookInIndexMode(book, address);
         } else if (displayMode == BookDisplayMode.NODE) {
-            this.openBookInNodeMode(book);
+            this.openBookInNodeMode(book, address);
         }
     }
 
-    protected void openBookInIndexMode(Book book) {
+    protected void openBookInIndexMode(Book book, BookAddress address) {
         //TODO: here categories are always opened in index mode
         //TODO: Careful, here we only should get a category to open IF there is one saved. Don't auto open the first!
     }
@@ -108,15 +108,18 @@ public class BookGuiManager {
         return null;
     }
 
-    protected BookCategory getSavedCategoryOrDefault(Book book) {
+    protected BookCategory getSavedCategoryOrDefault(Book book, BookAddress address) {
+        if(address.categoryId() != null)
+            return book.getCategory(address.categoryId());
+
         var savedCategory = this.getSavedCategory(book);
-        if (savedCategory == null) {
+        if (savedCategory == null || address.ignoreSavedCategory()) {
             return book.getCategoriesSorted().getFirst();
         }
         return savedCategory;
     }
 
-    protected void openBookInNodeMode(Book book) {
+    protected void openBookInNodeMode(Book book, BookAddress address) {
         var openBookParentScreen = new BookParentNodeScreen(book);
         this.openBookParentScreen = openBookParentScreen;
         Minecraft.getInstance().setScreen(openBookParentScreen);
@@ -124,8 +127,8 @@ public class BookGuiManager {
         //run additional init logic (e.g. unlock state determination)
         openBookParentScreen.onDisplay();
 
-        var openCategory = this.getSavedCategoryOrDefault(book);
-        this.openCategory(openCategory);
+        var openCategory = this.getSavedCategoryOrDefault(book, address);
+        this.openCategory(openCategory, address);
     }
 
 
@@ -134,7 +137,7 @@ public class BookGuiManager {
         if (state != null && state.openEntry != null) {
             var openEntry = category.getEntry(state.openEntry);
             //we skip link entries, they would lead to categories not being opened because it instantly jumps to the linked one
-            //they should not be in the history in the first place, but but just to be sure
+            //they should not be in the history in the first place, but just to be sure
             if (openEntry != null && !(openEntry instanceof CategoryLinkBookEntry)) {
                 //no need to load history here, will be handled by book content screen
                 return openEntry;
@@ -143,7 +146,10 @@ public class BookGuiManager {
         return null;
     }
 
-    protected BookEntry getSavedEntryOrDefault(BookCategory category) {
+    protected BookEntry getSavedEntryOrDefault(BookCategory category, BookAddress address) {
+        if(address.entryId() != null)
+            return category.getEntry(address.entryId());
+
         var savedEntry = this.getSavedEntry(category);
         //If we do not have a saved entry, check if we have an entry to open specified in the category definition
         if (savedEntry == null && category.getEntryToOpen() != null) {
@@ -152,11 +158,14 @@ public class BookGuiManager {
                 return entryToOpen;
             }
         }
+        if(address.ignoreSavedEntry())
+            return null;
+
         return savedEntry;
     }
 
     @ApiStatus.Internal
-    public void openCategory(BookCategory category) {
+    public void openCategory(BookCategory category, BookAddress address) {
         if (this.openBookCategoryScreen != null) {
             //skip if the category is already open
             if (this.openBookCategoryScreen.getCategory() == category)
@@ -167,9 +176,9 @@ public class BookGuiManager {
 
         var displayMode = category.getDisplayMode();
         if (displayMode == BookDisplayMode.INDEX) {
-            this.openCategoryInIndexMode(category);
+            this.openCategoryInIndexMode(category, address);
         } else if (displayMode == BookDisplayMode.NODE) {
-            this.openCategoryInNodeMode(category);
+            this.openCategoryInNodeMode(category, address);
         }
 
         //We now need to clear the open category in the book state, so that the closing handling can work properly
@@ -179,7 +188,7 @@ public class BookGuiManager {
         bookState.openCategory = null;
     }
 
-    protected void openCategoryInNodeMode(BookCategory category) {
+    protected void openCategoryInNodeMode(BookCategory category, BookAddress address) {
         //this is only possible if the book is in node mode
         if (!(this.openBookParentScreen instanceof BookParentNodeScreen bookParentNodeScreen)) {
             throw new IllegalStateException("Cannot open category in node mode if book is not in node mode.");
@@ -197,14 +206,14 @@ public class BookGuiManager {
         bookParentNodeScreen.setCurrentCategoryScreen(openBookCategoryScreen);
         openBookCategoryScreen.onDisplay();
 
-        var openEntry = this.getSavedEntryOrDefault(category);
+        var openEntry = this.getSavedEntryOrDefault(category, address);
         if (openEntry == null)
             return;
 
-        this.openEntry(openEntry);
+        this.openEntry(openEntry, address);
     }
 
-    protected void openCategoryInIndexMode(BookCategory category) {
+    protected void openCategoryInIndexMode(BookCategory category, BookAddress address) {
         //TODO: implement
         //this is possible if the book is in node or in index mode, and we need different behaviour for each
         //node mode needs an additional "default" screen on the book screen, that we display the category over
@@ -214,15 +223,24 @@ public class BookGuiManager {
      * Should only be called from BookEntry#openEntry()
      */
     @ApiStatus.Internal
-    public void openContentEntry(BookContentEntry entry) {
+    public void openContentEntry(BookContentEntry entry, BookAddress address) {
         var openBookEntryScreen = new BookEntryScreen(this.openBookParentScreen, entry);
         this.openBookEntryScreen = openBookEntryScreen;
-        ClientServices.GUI.pushGuiLayer(openBookEntryScreen);
 
-        var state = BookVisualStateManager.get().getEntryStateFor(this.player(), entry);
-        if (state != null) {
-            openBookEntryScreen.loadState(state);
+
+        if(address.page() != -1)
+            openBookEntryScreen.goToPage(address.page(), false);
+        else {
+            var state = BookVisualStateManager.get().getEntryStateFor(this.player(), entry);
+            if (state != null) {
+                openBookEntryScreen.loadState(state);
+                if(address.ignoreSavedPage())
+                    openBookEntryScreen.setOpenPagesIndex(0);
+            }
         }
+
+        //do this after the page setup, because init() sets up the rendering for the correct page
+        ClientServices.GUI.pushGuiLayer(openBookEntryScreen);
 
         //We now need to clear the open entry in the category state, so that the closing handling can work properly
         //Closing handling struggles with setting it to null (without lots of extra logic)
@@ -238,16 +256,18 @@ public class BookGuiManager {
     public void openCategoryLinkEntry(CategoryLinkBookEntry entry) {
         var category = entry.getCategoryToOpen();
 
-        this.openCategory(category);
+        //When using a category link entry, we cannot have an entry open, so need not save open entry in the category.
+
+        this.openCategory(category, BookAddress.defaultFor(category.getBook()));
     }
 
     @ApiStatus.Internal
-    public void openEntry(BookEntry entry) {
+    public void openEntry(BookEntry entry, BookAddress address) {
         if (!BookUnlockStateManager.get().isReadFor(this.player(), entry)) {
             Services.NETWORK.sendToServer(new BookEntryReadMessage(entry.getBook().getId(), entry.getId()));
         }
 
-        entry.openEntry(); //visitor pattern that will call openContentEntry or openCategoryLinkEntry
+        entry.openEntry(address); //visitor pattern that will call openContentEntry or openCategoryLinkEntry
     }
 
     public void openEntry(ResourceLocation bookId, ResourceLocation entryId, int page) {
@@ -259,23 +279,23 @@ public class BookGuiManager {
     public void pushHistory(ResourceLocation bookId, @Nullable ResourceLocation entryId, int page) {
         var book = BookDataManager.get().getBook(bookId);
         var entry = book.getEntry(entryId);
-        this.history.push(new BookHistoryEntry(bookId, entry.getCategoryId(), entryId, page));
+        this.history.push(BookAddress.of(bookId, entry.getCategoryId(), entryId, page));
     }
 
     public void pushHistory(ResourceLocation bookId, @Nullable ResourceLocation categoryId, @Nullable ResourceLocation entryId, int page) {
-        this.history.push(new BookHistoryEntry(bookId, categoryId, entryId, page));
+        this.history.push(BookAddress.of(bookId, categoryId, entryId, page));
     }
 
 
-    public void pushHistory(BookHistoryEntry entry) {
+    public void pushHistory(BookAddress entry) {
         this.history.push(entry);
     }
 
-    public BookHistoryEntry popHistory() {
+    public BookAddress popHistory() {
         return this.history.pop();
     }
 
-    public BookHistoryEntry peekHistory() {
+    public BookAddress peekHistory() {
         return this.history.peek();
     }
 
@@ -301,65 +321,17 @@ public class BookGuiManager {
         if (this.showErrorScreen(bookId)) {
         }
 
-        //TODO Implement
-        //
-//        //TODO: handle category link entries!
-//        var book = BookDataManager.get().getBook(bookId);
-//        if (this.lastBook != book) {
-//            this.lastBook = book;
-//        }
-//
-//        if (this.lastBookParentScreen == null || this.lastBookParentScreen.getBook() != book) {
-//            this.lastBookParentScreen = new BookParentNodeScreen(book);
-//        }
-//
-//        Minecraft.getInstance().setScreen(this.lastBookParentScreen);
-//
-//        if (categoryId == null) {
-//            //if no category is provided, just open the book and exit.
-//            return;
-//        }
-//
-//        var category = book.getCategory(categoryId);
-//
-//        if (this.lastBookCategoryScreen == null || this.lastBookCategoryScreen.getCategory() != category) {
-//            this.lastBookParentScreen.changeCategory(category);
-//            this.lastBookCategoryScreen = this.lastBookParentScreen.getCurrentCategoryScreen();
-//        }
-//
-//        if (entryId == null) {
-//            //if no entry is provided, just open the book and category and exit.
-//            return;
-//        }
-//
-//        var entry = book.getEntry(entryId);
-//        if (this.lastEntry != entry) {
-//            this.lastEntry = entry;
-//        }
-//
-//        if (this.lastBookEntryScreen == null || this.lastBookEntryScreen.getEntry() != entry) {
-//            this.lastBookEntryScreen = this.lastBookCategoryScreen.openEntry(entry);
-//        } else {
-//            //we are clearing the gui layers above, so we have to restore here if we do not call openentry
-//            //we check if the content screen was already added, e.g. by the book category screen
-//            if (!this.isEntryAlreadyDisplayed(entry))
-//                ClientServices.GUI.pushGuiLayer(this.lastBookEntryScreen);
-//
-//            //to ensure the current open entry is tracked on the category, we manually set it
-//            //this is necessary to ensure state is tracked and saved when closing again. Fixes #196
-//            this.lastBookCategoryScreen.setOpenEntry(entry.getId());
-//        }
-//
-//        //we need to check for null, because this.currentCategoryScreen.openEntry(entry); returns null for "redirect" entries that open categories - because there is no content to show.
-//        if (this.lastBookEntryScreen != null) {
-//            //we don't need to manually check for the current page because the content screen will do that for us
-//            this.lastBookEntryScreen.goToPage(page, false);
-//        }
-//        //TODO: play sound here? could just make this a client config
-    }
+        //First close the current book and preserve -state
+        if(this.openBookEntryScreen != null)
+            this.closeScreenStack(this.openBookEntryScreen);
+        else if (this.openBookCategoryScreen != null)
+            this.closeScreenStack(this.openBookCategoryScreen);
+        else if (this.openBookParentScreen != null)
+            this.closeScreenStack(this.openBookParentScreen);
 
-    //TODO: Handle category "jumps" via book links. that should LIKELY store open entry for that cat?
-    //TODO: Handle entry jumps via book links or "back" function
+        //then open the given address
+        this.openBook(BookAddress.ignoreSaved(bookId, categoryId, entryId, page));
+    }
 
     /**
      * Call this when you want to close *just* the entry screen, but not the category and parent.
@@ -391,7 +363,8 @@ public class BookGuiManager {
      * E.g. from the "close"/"x" button.
      */
     public void closeCategoryScreen(BookCategoryScreen screen) {
-        //TODO: Handle if an entry is currently open (see todo for switching categories via cat link, etc), esc is already handled
+        //TODO: Handle if an entry is currently open, e.g. when using a cat or entry link that leads to a switch
+        //      just like with esc handling that needs to store the entry
 
         //close the category screen
         //this check handles the case of node categories that are not real screens
@@ -420,8 +393,6 @@ public class BookGuiManager {
     }
 
     public void closeScreenStack(BookParentScreen screen) {
-        //TODO: currently we have the problem that when using "x" to close an entry it does not set the current entry to null on the state
-        //TODO: We will have the same issue with categories on the index category page x button
         //We don't need to do any additional state saving here, the other closeScreenStack overloads already handle that for us
         this.closeParentScreen(screen);
     }
