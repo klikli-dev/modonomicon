@@ -6,19 +6,21 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.button;
 
+import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.node.BookParentNodeScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 public class SearchButton extends Button {
 
-    private final BookParentNodeScreen parent;
+    private final BookParentScreen parent;
     private final int scissorX;
 
-    public SearchButton(BookParentNodeScreen parent, int pX, int pY, int scissorX, int width, int height, OnPress pOnPress, Tooltip tooltip) {
+    public SearchButton(BookParentScreen parent, int pX, int pY, int scissorX, int width, int height, OnPress pOnPress, Tooltip tooltip) {
         super(pX, pY, width, height, Component.literal(""), pOnPress, Button.DEFAULT_NARRATION);
         this.setTooltip(tooltip);
         this.scissorX = scissorX;
@@ -38,7 +40,7 @@ public class SearchButton extends Button {
 
             int renderX = this.getX();
             int scissorWidth = this.width + (this.getX() - this.scissorX);
-            int scissorY = (this.parent.height - this.getY() - this.height - 1); //from the bottom up
+            int scissorY = (((Screen)this.parent).height - this.getY() - this.height - 1); //from the bottom up
 
             if (this.isHovered()) {
                 renderX += 1;
@@ -52,7 +54,7 @@ public class SearchButton extends Button {
             guiGraphics.enableScissor(scissorX, scissorY, scissorX + scissorWidth, scissorY + 1000);
 
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            guiGraphics.blit(this.parent.getBookOverviewTexture(), renderX, this.getY(), texX, texY, this.width, this.height, 256, 256);
+            guiGraphics.blit(this.parent.getBook().getBookOverviewTexture(), renderX, this.getY(), texX, texY, this.width, this.height, 256, 256);
 
             guiGraphics.disableScissor();
 

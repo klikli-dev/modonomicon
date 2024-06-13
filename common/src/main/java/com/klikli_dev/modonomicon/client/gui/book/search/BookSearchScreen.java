@@ -20,6 +20,7 @@ import com.klikli_dev.modonomicon.client.gui.book.button.EntryListButton;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
+import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
@@ -58,6 +59,7 @@ public class BookSearchScreen extends BookPaginatedScreen {
 
     public void handleButtonEntry(Button button) {
         var entry = ((EntryListButton) button).getEntry();
+        this.onClose();
         BookGuiManager.get().openEntry(entry.getBook().getId(), entry.getId(), 0);
     }
 
@@ -247,13 +249,8 @@ public class BookSearchScreen extends BookPaginatedScreen {
 
     @Override
     public void onClose() {
-        //TODO: Search screen close handling
-//        if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_ESCAPE)) {
-//            super.onClose();
-//            this.parentScreen.onClose();
-//        } else {
-//            ClientServices.GUI.popGuiLayer(); //instead of super.onClose() to restore our parent screen
-//        }
+        //Search screen is not supposed to close everything on Esc, so we just pop a layer.
+        ClientServices.GUI.popGuiLayer();
     }
 
     @Override

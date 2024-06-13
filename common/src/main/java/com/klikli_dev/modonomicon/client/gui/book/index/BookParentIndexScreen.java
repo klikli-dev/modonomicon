@@ -7,6 +7,7 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.index;
 
+import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
@@ -15,14 +16,17 @@ import com.klikli_dev.modonomicon.bookstate.visual.BookVisualState;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedScreen;
-import com.klikli_dev.modonomicon.client.gui.book.button.CategoryListButton;
+import com.klikli_dev.modonomicon.client.gui.book.button.*;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
+import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
@@ -287,13 +291,40 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
                 .toList();
 
         this.createEntryList();
+
+        int buttonHeight = 20;
+        int searchButtonX = this.bookLeft + FULL_WIDTH - 5;
+        int searchButtonY = this.bookTop + FULL_HEIGHT - 30;
+        int searchButtonWidth = 44; //width in png
+        int scissorX = this.bookLeft + FULL_WIDTH;//this is the render location of our frame so our search button never overlaps
+
+        var searchButton = new SearchButton(this, searchButtonX, searchButtonY,
+                scissorX,
+                searchButtonWidth, buttonHeight,
+                (b) -> this.onSearchButtonClick((SearchButton) b),
+                Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_SEARCH)));
+
+        this.addRenderableWidget(searchButton);
     }
 
-    void addEntryButtons(int x, int y, int start, int count) {
+    protected void onSearchButtonClick(SearchButton button) {
+        ClientServices.GUI.pushGuiLayer(new BookSearchScreen(this));
+    }
+
+    protected void addEntryButtons(int x, int y, int start, int count) {
         for (int i = 0; i < count && (i + start) < this.visibleEntries.size(); i++) {
             Button button = new CategoryListButton(this.visibleEntries.get(start + i), this.bookLeft + x, this.bookTop + y + i * 11, this::handleButtonEntry);
             this.addRenderableWidget(button);
             this.entryButtons.add(button);
         }
+    }
+
+    @Override
+    protected boolean isClickOutsideEntry(double pMouseX, double pMouseY) {
+        //extend the right safety margin a bit to account for search button there
+        return pMouseX < this.bookLeft - BookEntryScreen.CLICK_SAFETY_MARGIN
+                || pMouseX > this.bookLeft + BookEntryScreen.FULL_WIDTH + BookEntryScreen.CLICK_SAFETY_MARGIN + 20
+                || pMouseY < this.bookTop - BookEntryScreen.CLICK_SAFETY_MARGIN
+                || pMouseY > this.bookTop + BookEntryScreen.FULL_HEIGHT + BookEntryScreen.CLICK_SAFETY_MARGIN;
     }
 }
