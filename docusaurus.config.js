@@ -49,7 +49,7 @@ const config = {
         appId: 'HARYGHSL7I',
   
         // Public API key: it is safe to commit it
-        apiKey: 'b7cb5f0817332a501b022a6f0d4527ff',
+        apiKey: '46397651f888076243bd99575a933cf0',
   
         indexName: 'klikli-devio',
   
