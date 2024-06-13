@@ -147,7 +147,7 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(helper.pageText(), "Multiblock pages allow to preview multiblocks both in the book and in the world.");
 
         helper.page("preview");
-        this.add("multiblocks.modonomicon.blockentity", "Blockentity Multiblock."); //TODO: should probably move into another part of langgen
+        this.add("multiblocks.modonomicon.blockentity", "Blockentity Multiblock.");
         this.add(helper.pageText(), "A sample multiblock.");
 
         this.add(helper.entryName(), "Multiblock Entry");

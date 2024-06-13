@@ -75,7 +75,6 @@ public class EntryListButton extends Button {
                 name = Component.translatable(this.entry.getName());
             }
 
-            //TODO: if we ever add a font style setting to the book, use it here
             guiGraphics.drawString(Minecraft.getInstance().font, name, this.getX() + 12, this.getY(), this.getEntryColor(), false);
         }
     }

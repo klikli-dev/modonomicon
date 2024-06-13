@@ -76,7 +76,6 @@ public class MultiblockDataManager extends SimpleJsonResourceReloadListener {
         Message syncMessage = this.getSyncMessage();
 
         Services.NETWORK.sendToSplit(player, syncMessage);
-        //TODO: Check if we need to send to player list here
     }
 
     public void preLoad() {

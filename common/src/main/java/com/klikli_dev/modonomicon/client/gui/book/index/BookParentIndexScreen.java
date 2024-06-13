@@ -273,7 +273,6 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         //this leads to re-init of the category buttons after a potential unlock
         this.rebuildWidgets();
 
-        //TODO enable for the read all button
         this.updateUnreadEntriesState();
     }
 
