@@ -17,10 +17,7 @@ import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.BookErrorScreen;
-import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryIndexScreen;
-import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryNodeScreen;
-import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryScreen;
-import com.klikli_dev.modonomicon.client.gui.book.category.DummyBookCategoryNodeScreen;
+import com.klikli_dev.modonomicon.client.gui.book.category.*;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentIndexScreen;
 import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentNodeScreen;
@@ -254,14 +251,16 @@ public class BookGuiManager {
         //this is possible if the book is in node or in index mode, and we need different behaviour for each
         //node mode needs an additional "default" screen on the book screen, that we display the category over
 
+        var openBookCategoryScreen = new BookCategoryIndexScreen(this.openBookParentScreen, category);
+
         if (category.getBook().getDisplayMode() == BookDisplayMode.NODE && this.openBookParentScreen instanceof BookParentNodeScreen bookParentNodeScreen) {
+            //place a default screen on the parent node screen so we have a background to render
             bookParentNodeScreen.setCurrentCategoryScreen(new DummyBookCategoryNodeScreen(bookParentNodeScreen, category));
-            //TODO we also need to allow the category to "click through" to parent bookmarks and make it not blur the background, etc
-            //TODO maybe a child screen class that does that
-            //TODO we also need to intercept right click handling to prevent closing the category screen without also closing the underlying parent screen
+
+            //then use a special category index screen
+            openBookCategoryScreen = new BookCategoryIndexOnNodeScreen(bookParentNodeScreen, category);
         }
 
-        var openBookCategoryScreen = new BookCategoryIndexScreen(this.openBookParentScreen, category);
         this.openBookCategoryScreen = openBookCategoryScreen;
 
         var state = BookVisualStateManager.get().getCategoryStateFor(this.player(), category);

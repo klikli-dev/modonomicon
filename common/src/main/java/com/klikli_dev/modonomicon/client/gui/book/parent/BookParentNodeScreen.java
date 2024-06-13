@@ -6,6 +6,7 @@
  */
 package com.klikli_dev.modonomicon.client.gui.book.parent;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
@@ -47,6 +48,10 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
     private BookCategoryNodeScreen currentCategoryNodeScreen;
     private boolean hasUnreadEntries;
     private boolean hasUnreadUnlockedEntries;
+
+    //This allows the BookCategoryIndexOnNodeScreen to give us mouseX and Y coordinates when this screen is rendered on a lower layer and does not get  x/y coordinates.
+    public int renderMouseXOverride = -1;
+    public int renderMouseYOverride = -1;
 
     public BookParentNodeScreen(Book book) {
         super(Component.literal(""));
@@ -213,6 +218,11 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        if(this.renderMouseXOverride != -1 && this.renderMouseYOverride != -1){
+            pMouseX = this.renderMouseXOverride;
+            pMouseY = this.renderMouseYOverride;
+        }
+
         RenderSystem.disableDepthTest(); //guard against depth test being enabled by other rendering code, that would cause ui elements to vanish
 
         this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
@@ -225,10 +235,14 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
 
         this.getCurrentCategoryScreen().renderEntryTooltips(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
+        Modonomicon.LOG.info("X: {0}, Y: {1}", pMouseX, pMouseY);
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
         for (var renderable : this.renderables) {
             renderable.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
         }
+
+        this.renderMouseXOverride = -1;
+        this.renderMouseYOverride = -1;
     }
 
     @Override

@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.client.gui.book;
 
+import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
@@ -25,9 +26,17 @@ public abstract class BookPaginatedScreen extends Screen implements BookScreenWi
 
 	protected int bookLeft;
 	protected int bookTop;
-	
+
+	protected boolean addExitButton;
+
 	public BookPaginatedScreen(Component component) {
+		this(component, true);
+	}
+
+	public BookPaginatedScreen(Component component, boolean addExitButton) {
 		super(component);
+
+		this.addExitButton = addExitButton;
 	}
 	
 	@Override
@@ -39,7 +48,9 @@ public abstract class BookPaginatedScreen extends Screen implements BookScreenWi
 
 		this.addRenderableWidget(new ArrowButton(this, this.bookLeft - 4, this.bookTop + FULL_HEIGHT - 6, true, () -> this.canSeeArrowButton(true), this::handleArrowButton));
 		this.addRenderableWidget(new ArrowButton(this, this.bookLeft + FULL_WIDTH - 14, this.bookTop + FULL_HEIGHT - 6, false, () -> this.canSeeArrowButton(false), this::handleArrowButton));
-		this.addRenderableWidget(new ExitButton(this, this.bookLeft + FULL_WIDTH - 10, this.bookTop - 2, this::handleExitButton));
+		if(this.addExitButton){
+			this.addRenderableWidget(new ExitButton(this, this.bookLeft + FULL_WIDTH - 10, this.bookTop - 2, this::handleExitButton));
+		}
 	}
 	
 	public void handleExitButton(Button button) {

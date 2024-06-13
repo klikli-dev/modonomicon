@@ -49,8 +49,12 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
     private BookTextHolder infoText;
     private List<Component> tooltip;
 
-    public BookCategoryIndexScreen(BookParentScreen parentScreen, BookCategory category) {
-        super(Component.translatable(category.getName()));
+    public BookCategoryIndexScreen(BookParentScreen parentScreen, BookCategory category){
+        this(parentScreen, category, true);
+    }
+
+    public BookCategoryIndexScreen(BookParentScreen parentScreen, BookCategory category, boolean addExitButton) {
+        super(Component.translatable(category.getName()), addExitButton);
         this.parentScreen = parentScreen;
         this.category = category;
 
