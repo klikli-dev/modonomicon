@@ -39,6 +39,8 @@ public class BookEntryModel {
     protected ResourceLocation categoryToOpen;
     protected ResourceLocation commandToRunOnFirstRead;
 
+    protected int sortNumber = -1;
+
     protected BookEntryModel(ResourceLocation id, String name) {
         this.id = id;
         this.name = name;
@@ -92,6 +94,8 @@ public class BookEntryModel {
         if (this.commandToRunOnFirstRead != null) {
             json.addProperty("command_to_run_on_first_read", this.commandToRunOnFirstRead.toString());
         }
+
+        json.addProperty("sort_number", this.sortNumber);
 
         return json;
     }
@@ -158,6 +162,10 @@ public class BookEntryModel {
 
     public boolean showWhenAnyParentUnlocked() {
         return this.showWhenAnyParentUnlocked;
+    }
+
+    public int getSortNumber() {
+        return this.sortNumber;
     }
 
     public List<BookPageModel> getPages() {
@@ -342,6 +350,15 @@ public class BookEntryModel {
      */
     public BookEntryModel showWhenAnyParentUnlocked(boolean showWhenAnyParentUnlocked) {
         this.showWhenAnyParentUnlocked = showWhenAnyParentUnlocked;
+        return this;
+    }
+
+    /**
+     * Sets the entry's sort number. Only used if the parent category is in index mode.
+     * Entries with a lower sort number will be displayed first in the index list.
+     */
+    public BookEntryModel withSortNumber(int sortNumber) {
+        this.sortNumber = sortNumber;
         return this;
     }
 

@@ -17,10 +17,10 @@ import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.visual.CategoryVisualState;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedScreen;
-import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.EntryListButton;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
+import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentScreen;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import net.minecraft.client.gui.GuiGraphics;
@@ -54,6 +54,7 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
         this.parentScreen = parentScreen;
         this.category = category;
 
+        //TODO: query info text from category in "index" mode
         this.infoText = new BookTextHolder(Gui.SEARCH_INFO_TEXT);
     }
 
@@ -176,6 +177,8 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
 
     @Override
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        if(BookGuiManager.get().openBookEntryScreen != null) //do not render self while an entry screen is open to avoid double render effects
+            return;
 
         this.resetTooltip();
 
@@ -227,17 +230,19 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
 
     @Override
     public void onClose() {
-        //do not call super - gui manager should handle gui removal
+        //do not call super, as it would close the screen stack
+        //In most cases closeEntryScreen should be called directly, but if our parent BookPaginatedScreen wants us to close we need to handle that
+        BookGuiManager.get().closeCategoryScreen(this);
     }
 
     @Override
     public void loadState(CategoryVisualState state) {
-        //TODO: Save page
+        this.openPagesIndex = state.openPagesIndex;
     }
 
     @Override
     public void saveState(CategoryVisualState state) {
-        //TODO: Load page
+        state.openPagesIndex = this.openPagesIndex;
     }
 
     @Override
@@ -247,6 +252,11 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
 
     @Override
     public boolean keyPressed(int key, int scanCode, int modifiers) {
+        if (key == GLFW.GLFW_KEY_ESCAPE) {
+            BookGuiManager.get().closeScreenStack(this);
+            return true;
+        }
+
         if (key == GLFW.GLFW_KEY_ENTER) {
             if (this.visibleEntries.size() == 1) {
                 var entry = this.visibleEntries.get(0);
@@ -255,10 +265,6 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
             }
         }
 
-        if (key == GLFW.GLFW_KEY_ESCAPE) {
-            BookGuiManager.get().closeScreenStack(this);
-            return true;
-        }
         return super.keyPressed(key, scanCode, modifiers);
     }
 
@@ -271,11 +277,14 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
 
         //we filter out entries that are locked or in locked categories
         this.allEntries = this.getEntries().stream().filter(e ->
-                BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e.getCategory()) &&
-                        BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e)
-        ).sorted(Comparator.comparing(a -> I18n.get(a.getName()))).toList();
+                        BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e.getCategory()) &&
+                                BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e)
+                ).sorted(Comparator.comparingInt(BookEntry::getSortNumber)
+                        .thenComparing(a -> I18n.get(a.getName())))
+                .toList();
 
-        //TODO: should we NOT filter out locked but visible entries and display them with a lock?
+        //TODO: should we NOT filter out locked but visible entries and display them with a lock or greyed out?
+        // + tooltip?
 
         this.createEntryList();
     }

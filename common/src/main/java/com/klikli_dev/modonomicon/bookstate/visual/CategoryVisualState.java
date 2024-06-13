@@ -22,7 +22,8 @@ public class CategoryVisualState {
             Codec.FLOAT.fieldOf("scrollX").forGetter((state) -> state.scrollX),
             Codec.FLOAT.fieldOf("scrollY").forGetter((state) -> state.scrollY),
             Codec.FLOAT.fieldOf("targetZoom").forGetter((state) -> state.targetZoom),
-            ResourceLocation.CODEC.optionalFieldOf("openEntry").forGetter((state) -> Optional.ofNullable(state.openEntry))
+            ResourceLocation.CODEC.optionalFieldOf("openEntry").forGetter((state) -> Optional.ofNullable(state.openEntry)),
+            Codec.INT.fieldOf("openPagesIndex").forGetter((state) -> state.openPagesIndex)
     ).apply(instance, CategoryVisualState::new));
 
     public Map<ResourceLocation, EntryVisualState> entryStates;
@@ -33,12 +34,17 @@ public class CategoryVisualState {
 
     public ResourceLocation openEntry;
 
+    /**
+     * For categories in index mode
+     */
+    public int openPagesIndex;
+
     public CategoryVisualState() {
-        this(new Object2ObjectOpenHashMap<>(), 0, 0, 0.7f, Optional.empty());
+        this(new Object2ObjectOpenHashMap<>(), 0, 0, 0.7f, Optional.empty(), 0);
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public CategoryVisualState(Map<ResourceLocation, EntryVisualState> entryStates, float scrollX, float scrollY, float targetZoom, Optional<ResourceLocation> openEntry) {
+    public CategoryVisualState(Map<ResourceLocation, EntryVisualState> entryStates, float scrollX, float scrollY, float targetZoom, Optional<ResourceLocation> openEntry, int openPagesIndex) {
         this.entryStates = entryStates;
         this.scrollX = scrollX;
         this.scrollY = scrollY;

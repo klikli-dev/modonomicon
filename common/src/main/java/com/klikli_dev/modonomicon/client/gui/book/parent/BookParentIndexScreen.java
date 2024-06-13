@@ -181,6 +181,8 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
     @Override
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        if(BookGuiManager.get().openBookCategoryScreen != null) //do not render self while a category screen is open to avoid double render effects
+            return;
 
         this.resetTooltip();
 
@@ -231,7 +233,9 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
     @Override
     public void onClose() {
-        //do not call super - gui manager should handle gui removal
+        //do not call super, as it would close the screen stack
+        //In most cases closeEntryScreen should be called directly, but if our parent BookPaginatedScreen wants us to close we need to handle that
+        BookGuiManager.get().closeParentScreen(this);
     }
 
     @Override

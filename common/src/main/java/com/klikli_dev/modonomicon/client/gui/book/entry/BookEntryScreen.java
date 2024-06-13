@@ -105,6 +105,9 @@ public class BookEntryScreen extends BookPaginatedScreen {
         this.entry = entry;
 
         this.bookContentTexture = this.parentScreen.getBook().getBookContentTexture();
+
+        //We're doing that here to ensure unlockedPages is available for state modification during loading
+        this.unlockedPages = this.entry.getUnlockedPagesFor(this.minecraft.player);
     }
 
     public static void drawFromTexture(GuiGraphics guiGraphics, Book book, int x, int y, int u, int v, int w, int h) {

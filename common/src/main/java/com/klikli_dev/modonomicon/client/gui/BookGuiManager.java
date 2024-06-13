@@ -192,6 +192,9 @@ public class BookGuiManager {
 
         //Index mode does NOT use default categories, so we only get saved/address
         var openCategory = this.getSavedOrAddressedCategory(book, address);
+        if(openCategory == null)
+            return;
+
         this.openCategory(openCategory, address);
     }
 
@@ -264,6 +267,7 @@ public class BookGuiManager {
             openBookCategoryScreen.loadState(state);
         }
 
+        //call after restoring state, to ensure the correct page etc display right away
         ClientServices.GUI.pushGuiLayer(openBookCategoryScreen);
 
         openBookCategoryScreen.onDisplay();
@@ -282,7 +286,6 @@ public class BookGuiManager {
     public void openContentEntry(BookContentEntry entry, BookAddress address) {
         var openBookEntryScreen = new BookEntryScreen(this.openBookParentScreen, entry);
         this.openBookEntryScreen = openBookEntryScreen;
-
 
         if (address.page() != -1)
             openBookEntryScreen.goToPage(address.page(), false);
