@@ -55,6 +55,10 @@ public class BookContextHelper {
         return this.book() + ".name";
     }
 
+    public String bookDescription() {
+        return this.book() + ".description";
+    }
+
     public String bookTooltip() {
         return this.book() + ".tooltip";
     }
@@ -85,6 +89,10 @@ public class BookContextHelper {
 
     public String categoryName() {
         return this.category() + ".name";
+    }
+
+    public String categoryDescription() {
+        return this.category() + ".description";
     }
 
     public String categoryCondition(String conditionName) {

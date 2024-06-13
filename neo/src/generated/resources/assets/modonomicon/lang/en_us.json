@@ -28,6 +28,7 @@
   "book.modonomicon.demo.features.custom_icon.intro.text": "This entry has a custom texture with size 32x32 as icon!",
   "book.modonomicon.demo.features.custom_icon.intro.title": "Custom Icon",
   "book.modonomicon.demo.features.custom_icon.name": "Custom Icon",
+  "book.modonomicon.demo.features.description": "A category showcasing various **features** of Modonomicon.",
   "book.modonomicon.demo.features.empty.description": "An entry showcasing empty pages.",
   "book.modonomicon.demo.features.empty.intro.text": "Empty pages allow to add .. empty pages.",
   "book.modonomicon.demo.features.empty.intro.title": "Empty Page Entry",

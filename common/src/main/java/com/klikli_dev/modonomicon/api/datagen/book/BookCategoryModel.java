@@ -10,11 +10,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Category;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
 import com.klikli_dev.modonomicon.book.BookDisplayMode;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
@@ -27,6 +29,10 @@ public class BookCategoryModel {
 
     protected ResourceLocation id;
     protected String name;
+    /**
+     * The description to (optionally) display on the first page of the category.
+     */
+    protected BookTextHolderModel description = new BookTextHolderModel("");
     protected BookIconModel icon = BookIconModel.create(ItemRegistry.MODONOMICON_PURPLE.get());
 
     /**
@@ -96,6 +102,7 @@ public class BookCategoryModel {
     public JsonObject toJson(HolderLookup.Provider provider) {
         JsonObject json = new JsonObject();
         json.addProperty("name", this.name);
+        json.add("description", this.description.toJson(provider));
         json.add("icon", this.icon.toJson(provider));
         json.addProperty("display_mode", this.displayMode.getSerializedName());
         json.addProperty("sort_number", this.sortNumber);
@@ -128,6 +135,10 @@ public class BookCategoryModel {
         return this.name;
     }
 
+    public BookTextHolderModel getDescription() {
+        return this.description;
+    }
+
     public BookIconModel getIcon() {
         return this.icon;
     }
@@ -158,6 +169,22 @@ public class BookCategoryModel {
 
     public ResourceLocation getEntryTextures() {
         return this.entryTextures;
+    }
+
+    /**
+     * The description to (optionally) display on the first page of the category.
+     */
+    public BookCategoryModel withDescription(String title) {
+        this.description = new BookTextHolderModel(title);
+        return this;
+    }
+
+    /**
+     * The description to (optionally) display on the first page of the category.
+     */
+    public BookCategoryModel withDescription(Component title) {
+        this.description = new BookTextHolderModel(title);
+        return this;
     }
 
     /**

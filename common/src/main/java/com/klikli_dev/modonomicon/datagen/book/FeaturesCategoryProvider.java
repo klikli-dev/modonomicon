@@ -83,8 +83,11 @@ public class FeaturesCategoryProvider extends CategoryProvider {
 
     @Override
     protected BookCategoryModel generateCategory() {
+        this.add(this.context().categoryDescription(), "A category showcasing various **features** of Modonomicon.");
+
         return BookCategoryModel.create(this.modLoc(this.context().categoryId()), this.context().categoryName())
                 .withIcon(Items.NETHER_STAR)
+                .withDescription(this.context().categoryDescription())
                 .withBackgroundParallaxLayers(
                         new BookCategoryBackgroundParallaxLayer(this.modLoc("textures/gui/parallax/flow/base.png"), 0.7f, -1),
                         new BookCategoryBackgroundParallaxLayer(this.modLoc("textures/gui/parallax/flow/1.png"), 1f, -1),

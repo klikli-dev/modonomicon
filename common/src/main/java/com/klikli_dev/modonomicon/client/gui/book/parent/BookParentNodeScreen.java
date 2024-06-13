@@ -235,7 +235,6 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
 
         this.getCurrentCategoryScreen().renderEntryTooltips(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
-        Modonomicon.LOG.info("X: {0}, Y: {1}", pMouseX, pMouseY);
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
         for (var renderable : this.renderables) {
             renderable.render(guiGraphics, pMouseX, pMouseY, pPartialTick);

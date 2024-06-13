@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
+import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -32,6 +33,7 @@ public class BookCategory {
     protected Book book;
     protected String name;
     protected BookIcon icon;
+    protected BookTextHolder description;
     /**
      * The display mode - node based (thaumonomicon style) or index based (lexica botania / patchouli style)
      */
@@ -60,9 +62,10 @@ public class BookCategory {
      * If false, the entryToOpen will be opened every time the category is opened.
      */
     protected boolean openEntryToOpenOnlyOnce;
-    public BookCategory(ResourceLocation id, String name, int sortNumber, BookCondition condition, boolean showCategoryButton, BookIcon icon, BookDisplayMode displayMode, ResourceLocation background, int backgroundWidth, int backgroundHeight, float backgroundTextureZoomMultiplier, List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers, ResourceLocation entryTextures, ResourceLocation entryToOpen, boolean openEntryOnlyOnce) {
+    public BookCategory(ResourceLocation id, String name, BookTextHolder description, int sortNumber, BookCondition condition, boolean showCategoryButton, BookIcon icon, BookDisplayMode displayMode, ResourceLocation background, int backgroundWidth, int backgroundHeight, float backgroundTextureZoomMultiplier, List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers, ResourceLocation entryTextures, ResourceLocation entryToOpen, boolean openEntryOnlyOnce) {
         this.id = id;
         this.name = name;
+        this.description = description;
         this.sortNumber = sortNumber;
         this.condition = condition;
         this.showCategoryButton = showCategoryButton;
@@ -81,6 +84,7 @@ public class BookCategory {
 
     public static BookCategory fromJson(ResourceLocation id, JsonObject json, HolderLookup.Provider provider) {
         var name = GsonHelper.getAsString(json, "name");
+        var description = BookGsonHelper.getAsBookTextHolder(json, "description", BookTextHolder.EMPTY, provider);
         var sortNumber = GsonHelper.getAsInt(json, "sort_number", -1);
         var icon = BookIcon.fromJson(json.get("icon"));
         var displayMode = BookDisplayMode.byName(GsonHelper.getAsString(json, "display_mode", BookDisplayMode.NODE.getSerializedName()));
@@ -106,11 +110,12 @@ public class BookCategory {
         }
         boolean openEntryOnlyOnce = GsonHelper.getAsBoolean(json, "open_entry_to_open_only_once", true);
 
-        return new BookCategory(id, name, sortNumber, condition, showCategoryButton, icon, displayMode, background, backgroundWidth, backgroundHeight, backgroundTextureZoomMultiplier, backgroundParallaxLayers, entryTextures, entryToOpen, openEntryOnlyOnce);
+        return new BookCategory(id, name, description, sortNumber, condition, showCategoryButton, icon, displayMode, background, backgroundWidth, backgroundHeight, backgroundTextureZoomMultiplier, backgroundParallaxLayers, entryTextures, entryToOpen, openEntryOnlyOnce);
     }
 
     public static BookCategory fromNetwork(ResourceLocation id, RegistryFriendlyByteBuf buffer) {
         var name = buffer.readUtf();
+        var description = BookTextHolder.fromNetwork(buffer);
         var sortNumber = buffer.readInt();
         var icon = BookIcon.fromNetwork(buffer);
         var displayMode = BookDisplayMode.byId(buffer.readByte());
@@ -124,12 +129,13 @@ public class BookCategory {
         var showCategoryButton = buffer.readBoolean();
         var entryToOpen = buffer.readNullable(FriendlyByteBuf::readResourceLocation);
         var openEntryOnlyOnce = buffer.readBoolean();
-        return new BookCategory(id, name, sortNumber, condition, showCategoryButton, icon, displayMode, background, backgroundWidth, backgroundHeight,
+        return new BookCategory(id, name, description, sortNumber, condition, showCategoryButton, icon, displayMode, background, backgroundWidth, backgroundHeight,
                 backgroundTextureZoomMultiplier, backgroundParallaxLayers, entryTextures, entryToOpen, openEntryOnlyOnce);
     }
 
     public void toNetwork(RegistryFriendlyByteBuf buffer) {
         buffer.writeUtf(this.name);
+        this.description.toNetwork(buffer);
         buffer.writeInt(this.sortNumber);
         this.icon.toNetwork(buffer);
         buffer.writeByte(this.displayMode.ordinal());
@@ -169,6 +175,10 @@ public class BookCategory {
      * Called after build() (after loading the book jsons) to render markdown and store any errors
      */
     public void prerenderMarkdown(BookTextRenderer textRenderer) {
+        if (!this.description.hasComponent()) {
+            this.description = new RenderedBookTextHolder(this.description, textRenderer.render(this.description.getString()));
+        }
+
         for (var entry : this.entries.values()) {
             BookErrorManager.get().getContextHelper().entryId = entry.getId();
             try {
@@ -191,6 +201,10 @@ public class BookCategory {
 
     public String getName() {
         return this.name;
+    }
+
+    public BookTextHolder getDescription() {
+        return this.description;
     }
 
     public int getSortNumber() {

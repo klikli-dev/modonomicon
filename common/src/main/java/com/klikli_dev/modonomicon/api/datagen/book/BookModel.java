@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.book.BookDisplayMode;
 import com.klikli_dev.modonomicon.book.BookFrameOverlay;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,6 +24,10 @@ public class BookModel {
 
     protected ResourceLocation id;
     protected String name;
+    /**
+     * The description to (optionally) display on the first page of the category.
+     */
+    protected BookTextHolderModel description = new BookTextHolderModel("");
     protected String tooltip = "";
     protected ResourceLocation creativeTab = ResourceLocation.parse("modonomicon:modonomicon");
 
@@ -127,6 +132,10 @@ public class BookModel {
         return this.name;
     }
 
+    public BookTextHolderModel getDescription() {
+        return this.description;
+    }
+
     public String getTooltip() {
         return this.tooltip;
     }
@@ -182,6 +191,7 @@ public class BookModel {
     public JsonObject toJson(HolderLookup.Provider provider) {
         JsonObject json = new JsonObject();
         json.addProperty("name", this.name);
+        json.add("description", this.description.toJson(provider));
         json.addProperty("tooltip", this.tooltip);
         json.addProperty("model", this.model.toString());
         json.addProperty("display_mode", this.displayMode.getSerializedName());
@@ -212,6 +222,22 @@ public class BookModel {
             json.addProperty("custom_book_item", this.customBookItem.toString());
         }
         return json;
+    }
+
+    /**
+     * The description to (optionally) display on the first page of the category.
+     */
+    public BookModel withDescription(String title) {
+        this.description = new BookTextHolderModel(title);
+        return this;
+    }
+
+    /**
+     * The description to (optionally) display on the first page of the category.
+     */
+    public BookModel withDescription(Component title) {
+        this.description = new BookTextHolderModel(title);
+        return this;
     }
 
     public BookModel withTooltip(String tooltip) {
