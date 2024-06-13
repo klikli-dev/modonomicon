@@ -5,12 +5,12 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.client.gui.book.category;
+package com.klikli_dev.modonomicon.client.gui.book.index;
 
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
-import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentNodeScreen;
-import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.node.BookParentNodeScreen;
+import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import net.minecraft.client.gui.GuiGraphics;
 
 /**

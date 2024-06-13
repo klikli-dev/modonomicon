@@ -2,12 +2,10 @@
 //
 // SPDX-License-Identifier: MIT
 
-package com.klikli_dev.modonomicon.client.gui.book.parent;
+package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.book.BookProvider;
 import com.klikli_dev.modonomicon.bookstate.visual.BookVisualState;
-import com.klikli_dev.modonomicon.bookstate.visual.CategoryVisualState;
-import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryScreen;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
 
 /**

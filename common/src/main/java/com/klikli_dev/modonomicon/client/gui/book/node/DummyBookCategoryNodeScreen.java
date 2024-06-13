@@ -1,7 +1,6 @@
-package com.klikli_dev.modonomicon.client.gui.book.category;
+package com.klikli_dev.modonomicon.client.gui.book.node;
 
 import com.klikli_dev.modonomicon.book.BookCategory;
-import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentNodeScreen;
 import net.minecraft.client.gui.GuiGraphics;
 
 public class DummyBookCategoryNodeScreen extends BookCategoryNodeScreen{

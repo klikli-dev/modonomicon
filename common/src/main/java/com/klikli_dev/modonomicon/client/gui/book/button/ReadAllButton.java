@@ -7,7 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
-import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentNodeScreen;
+import com.klikli_dev.modonomicon.client.gui.book.node.BookParentNodeScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
