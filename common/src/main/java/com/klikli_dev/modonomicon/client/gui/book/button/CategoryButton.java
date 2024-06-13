@@ -44,7 +44,7 @@ public class CategoryButton extends Button {
             int renderX = this.getX();
             int renderWidth = this.width;
 
-            if (this.category == BookGuiManager.get().openBookCategoryScreen.getCategory()) {
+            if (BookGuiManager.get().openBookCategoryScreen != null && this.category == BookGuiManager.get().openBookCategoryScreen.getCategory()) {
                 renderX -= 3;
                 renderWidth += 3;
             } else if (this.isHovered()) {

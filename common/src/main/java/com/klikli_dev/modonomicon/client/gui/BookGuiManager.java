@@ -20,6 +20,7 @@ import com.klikli_dev.modonomicon.client.gui.book.BookErrorScreen;
 import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryIndexScreen;
 import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryNodeScreen;
 import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryScreen;
+import com.klikli_dev.modonomicon.client.gui.book.category.DummyBookCategoryNodeScreen;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentIndexScreen;
 import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentNodeScreen;
@@ -254,9 +255,10 @@ public class BookGuiManager {
         //node mode needs an additional "default" screen on the book screen, that we display the category over
 
         if (category.getBook().getDisplayMode() == BookDisplayMode.NODE && this.openBookParentScreen instanceof BookParentNodeScreen bookParentNodeScreen) {
-            //TODO we need to add a default screen on the book
+            bookParentNodeScreen.setCurrentCategoryScreen(new DummyBookCategoryNodeScreen(bookParentNodeScreen, category));
             //TODO we also need to allow the category to "click through" to parent bookmarks and make it not blur the background, etc
             //TODO maybe a child screen class that does that
+            //TODO we also need to intercept right click handling to prevent closing the category screen without also closing the underlying parent screen
         }
 
         var openBookCategoryScreen = new BookCategoryIndexScreen(this.openBookParentScreen, category);
