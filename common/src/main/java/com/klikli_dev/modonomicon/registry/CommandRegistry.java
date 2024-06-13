@@ -36,7 +36,7 @@ public class CommandRegistry {
                         .then(LoadUnlocksCommand.register(dispatcher))
         );
 
-        dispatcher.register(Commands.literal("modonomicon").redirect(modonomiconCommand));
+        dispatcher.register(Commands.literal(Modonomicon.MOD_ID).redirect(modonomiconCommand));
     }
 
 }

@@ -17,11 +17,11 @@ public class FabricClientCommandRegistry {
     public static void registerClientCommands(CommandDispatcher<FabricClientCommandSource> dispatcher) {
 
         var modonomiconCommand = dispatcher.register(
-                ClientCommandManager.literal(Modonomicon.MOD_ID)
+                ClientCommandManager.literal(Modonomicon.MOD_ID+"-client")
                         .then(FabricLoadUnlocksCommand.register(dispatcher))
         );
 
-        dispatcher.register(ClientCommandManager.literal("modonomicon").redirect(modonomiconCommand));
+        dispatcher.register(ClientCommandManager.literal(Modonomicon.MOD_ID+"-client").redirect(modonomiconCommand));
     }
 
 }
