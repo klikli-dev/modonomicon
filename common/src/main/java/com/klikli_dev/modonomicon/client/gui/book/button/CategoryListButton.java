@@ -86,6 +86,4 @@ public class CategoryListButton extends Button {
             //TODO: play flip sound
         }
     }
-
-
 }

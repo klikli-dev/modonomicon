@@ -228,7 +228,6 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
     @Override
     public void onDisplay() {
-        //TODO: DO we need to do anything?
     }
 
     @Override

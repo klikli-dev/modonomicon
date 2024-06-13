@@ -12,11 +12,6 @@ import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentNodeScreen;
 import com.klikli_dev.modonomicon.client.gui.book.parent.BookParentScreen;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.events.ContainerEventHandler;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import org.lwjgl.glfw.GLFW;
-
-import java.awt.event.ContainerEvent;
 
 /**
  * A special version of the BookCategoryIndexScreen that is intended to be rendered on top of a parent node screen (instead of a parent index screen)
@@ -31,7 +26,7 @@ public class BookCategoryIndexOnNodeScreen extends BookCategoryIndexScreen {
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
-        if(BookGuiManager.get().openBookParentScreen instanceof BookParentNodeScreen parentScreen){
+        if (BookGuiManager.get().openBookParentScreen instanceof BookParentNodeScreen parentScreen) {
             parentScreen.renderMouseXOverride = pMouseX;
             parentScreen.renderMouseYOverride = pMouseY;
         }
@@ -49,13 +44,11 @@ public class BookCategoryIndexOnNodeScreen extends BookCategoryIndexScreen {
         //so we simply don't do anything here.
     }
 
-
-
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         //if we click outside, we don't close like the parent would, instead we let the click unhandled so the parent can handle it
         if (this.isClickOutsideEntry(pMouseX, pMouseY)) {
-            if(BookGuiManager.get().openBookParentScreen instanceof BookParentNodeScreen parentScreen){
+            if (BookGuiManager.get().openBookParentScreen instanceof BookParentNodeScreen parentScreen) {
                 return parentScreen.mouseClicked(pMouseX, pMouseY, pButton);
             }
 
