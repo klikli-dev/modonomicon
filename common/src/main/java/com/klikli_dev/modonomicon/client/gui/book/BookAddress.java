@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.book.Book;
+import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +21,9 @@ public record BookAddress(@NotNull ResourceLocation bookId,
                           ResourceLocation entryId, boolean ignoreSavedEntry,
                           int page, boolean ignoreSavedPage
 ) {
-
+    public static BookAddress defaultFor(@NotNull BookCategory category) {
+        return of(category.getBook().getId(), category.getId(), null, -1);
+    }
 
     public static BookAddress defaultFor(@NotNull BookEntry entry) {
         return of(entry.getBook().getId(), entry.getCategory().getId(), entry.getId(), -1);

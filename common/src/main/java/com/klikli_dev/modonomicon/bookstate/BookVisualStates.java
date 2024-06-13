@@ -27,6 +27,7 @@ public class BookVisualStates {
             Codecs.concurrentMap(ResourceLocation.CODEC, BookVisualState.CODEC).fieldOf("bookStates").forGetter((s) -> s.bookStates)
     ).apply(instance, BookVisualStates::new));
 
+    //TODO: make proper stream codec
     public static final StreamCodec<ByteBuf, BookVisualStates> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 
 

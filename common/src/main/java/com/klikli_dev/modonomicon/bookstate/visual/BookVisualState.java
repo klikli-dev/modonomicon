@@ -18,20 +18,28 @@ import java.util.Optional;
 
 public class BookVisualState {
     public static final Codec<BookVisualState> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
-            Codecs.mutableMap(ResourceLocation.CODEC, CategoryVisualState.CODEC).fieldOf("categoryStates").forGetter((state) -> state.categoryStates),
-            ResourceLocation.CODEC.optionalFieldOf("openCategory").forGetter((state) -> Optional.ofNullable(state.openCategory))).apply(instance, BookVisualState::new));
+                    Codecs.mutableMap(ResourceLocation.CODEC, CategoryVisualState.CODEC).fieldOf("categoryStates").forGetter((state) -> state.categoryStates),
+                    ResourceLocation.CODEC.optionalFieldOf("openCategory").forGetter((state) -> Optional.ofNullable(state.openCategory)),
+                    Codec.INT.fieldOf("openPagesIndex").forGetter((state) -> state.openPagesIndex)
+            ).apply(instance, BookVisualState::new));
 
     public Map<ResourceLocation, CategoryVisualState> categoryStates;
 
     public ResourceLocation openCategory;
 
+    /**
+     * For books in index mode
+     */
+    public int openPagesIndex;
+
     public BookVisualState() {
-        this(Object2ObjectMaps.emptyMap(), Optional.empty());
+        this(Object2ObjectMaps.emptyMap(), Optional.empty(), 0);
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public BookVisualState(Map<ResourceLocation, CategoryVisualState> categoryStates, Optional<ResourceLocation> openCategory) {
+    public BookVisualState(Map<ResourceLocation, CategoryVisualState> categoryStates, Optional<ResourceLocation> openCategory, int openPagesIndex) {
         this.categoryStates = new Object2ObjectOpenHashMap<>(categoryStates);
         this.openCategory = openCategory.orElse(null);
+        this.openPagesIndex = openPagesIndex;
     }
 }

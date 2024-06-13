@@ -13,7 +13,9 @@ import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.visual.BookVisualState;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
+import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryListButton;
 import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryIndexScreen;
@@ -67,13 +69,11 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
     public void handleButtonEntry(Button button) {
         if(button instanceof CategoryListButton categoryListButton){
-            //TODO: properly Open category index screen
-            ClientServices.GUI.pushGuiLayer(new BookCategoryIndexScreen(this, categoryListButton.getCategory()));
+            BookGuiManager.get().openCategory(categoryListButton.getCategory(), BookAddress.defaultFor(categoryListButton.getCategory()));
         }
     }
 
     public void prerenderMarkdown(BookTextRenderer textRenderer) {
-
         if (!this.infoText.hasComponent()) {
             this.infoText = new RenderedBookTextHolder(this.infoText, textRenderer.render(this.infoText.getString()));
         }
@@ -107,7 +107,6 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         }
     }
 
-
     protected void drawTooltip(GuiGraphics guiGraphics, int pMouseX, int pMouseY) {
         if (this.tooltip != null && !this.tooltip.isEmpty()) {
             guiGraphics.renderComponentTooltip(this.font, this.tooltip, pMouseX, pMouseY);
@@ -121,7 +120,6 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
     protected void resetTooltip() {
         this.tooltip = null;
     }
-
 
     private void createEntryList() {
         this.entryButtons.forEach(b -> {
@@ -233,24 +231,35 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
     @Override
     public void onClose() {
-        if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_ESCAPE)) {
-            super.onClose();
-            //TODO: Mirror general handling logic of book content screen -> extract into common parent
-        } else {
-            ClientServices.GUI.popGuiLayer(); //instead of super.onClose() to restore our parent screen
-        }
+        //do not call super - gui manager should handle gui removal
     }
 
-    //TODO: Save page in save state
+    @Override
+    public void loadState(BookVisualState state) {
+        this.openPagesIndex = state.openPagesIndex;
+    }
+
+    @Override
+    public void saveState(BookVisualState state) {
+        state.openPagesIndex = this.openPagesIndex;
+    }
 
     @Override
     public void onSyncBookUnlockCapabilityMessage(SyncBookUnlockStatesMessage message) {
+        //this leads to re-init of the category buttons after a potential unlock
+        this.rebuildWidgets();
 
+        //TODO enable for the read all button
+        // this.updateUnreadEntriesState();
     }
 
     @Override
     public boolean keyPressed(int key, int scanCode, int modifiers) {
-        //TODO
+        if (key == GLFW.GLFW_KEY_ESCAPE) {
+            BookGuiManager.get().closeScreenStack(this);
+            return true;
+        }
+
         if (key == GLFW.GLFW_KEY_ENTER) {
             if (this.visibleEntries.size() == 1) {
                 var entry = this.visibleEntries.get(0);
@@ -273,7 +282,9 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         this.allEntries = this.getEntries().stream().filter(e ->
                 BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e) &&
                         BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e)
-        ).sorted(Comparator.comparing(a -> I18n.get(a.getName()))).toList();
+        ).sorted(Comparator.comparingInt(BookCategory::getSortNumber)
+                        .thenComparing(a -> I18n.get(a.getName())))
+                .toList();
 
         this.createEntryList();
     }

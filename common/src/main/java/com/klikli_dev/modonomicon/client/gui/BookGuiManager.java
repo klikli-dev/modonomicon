@@ -159,6 +159,13 @@ public class BookGuiManager {
     protected void openBookInNodeMode(Book book, BookAddress address) {
         var openBookParentScreen = new BookParentNodeScreen(book);
         this.openBookParentScreen = openBookParentScreen;
+
+        var state = BookVisualStateManager.get().getBookStateFor(this.player(), book);
+        if (state != null) {
+            openBookParentScreen.loadState(state);
+        }
+
+        //Call after restoring state, to ensure the correct page etc display right away
         Minecraft.getInstance().setScreen(openBookParentScreen);
 
         //run additional init logic (e.g. unlock state determination)
@@ -171,6 +178,13 @@ public class BookGuiManager {
     protected void openBookInIndexMode(Book book, BookAddress address) {
         var openBookParentScreen = new BookParentIndexScreen(book);
         this.openBookParentScreen = openBookParentScreen;
+
+        var state = BookVisualStateManager.get().getBookStateFor(this.player(), book);
+        if (state != null) {
+            openBookParentScreen.loadState(state);
+        }
+
+        //Call after restoring state, to ensure the correct page etc display right away
         Minecraft.getInstance().setScreen(openBookParentScreen);
 
         //run additional init logic (e.g. unlock state determination)
@@ -192,7 +206,8 @@ public class BookGuiManager {
         }
 
         var displayMode = category.getDisplayMode();
-        if (displayMode == BookDisplayMode.INDEX) {
+        //if the book is in index mode, force all categories into index mode too!
+        if (displayMode == BookDisplayMode.INDEX || category.getBook().getDisplayMode() == BookDisplayMode.INDEX) {
             this.openCategoryInIndexMode(category, address);
         } else if (displayMode == BookDisplayMode.NODE) {
             this.openCategoryInNodeMode(category, address);
@@ -428,6 +443,7 @@ public class BookGuiManager {
         this.openBookParentScreen = null;
 
         var state = BookVisualStateManager.get().getBookStateFor(this.player(), screen.getBook());
+        screen.saveState(state);
         Services.NETWORK.sendToServer(new SaveBookStateMessage(screen.getBook(), state));
 
         this.resetHistory();

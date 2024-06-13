@@ -5,6 +5,8 @@
 package com.klikli_dev.modonomicon.client.gui.book.parent;
 
 import com.klikli_dev.modonomicon.book.BookProvider;
+import com.klikli_dev.modonomicon.bookstate.visual.BookVisualState;
+import com.klikli_dev.modonomicon.bookstate.visual.CategoryVisualState;
 import com.klikli_dev.modonomicon.client.gui.book.category.BookCategoryScreen;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
 
@@ -20,6 +22,10 @@ public interface BookParentScreen extends BookProvider {
      * Making it available in this interface allows various book child screens to close the entire book.
      */
     void onClose();
+
+    void loadState(BookVisualState state);
+
+    void saveState(BookVisualState state);
 
     void onSyncBookUnlockCapabilityMessage(SyncBookUnlockStatesMessage message);
 }

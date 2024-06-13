@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookFrameOverlay;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.visual.BookVisualState;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryButton;
@@ -249,6 +250,16 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
     @Override
     public void onClose() {
         //do not call super - gui manager should handle gui removal
+    }
+
+    @Override
+    public void loadState(BookVisualState state) {
+        //currently nothing to save - open category is handled by gui manager
+    }
+
+    @Override
+    public void saveState(BookVisualState state) {
+        //currently nothing to save - open category is handled by gui manager
     }
 
     @Override
