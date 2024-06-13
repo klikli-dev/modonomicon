@@ -35,6 +35,8 @@ public abstract class CategoryProvider {
     protected ConditionHelper conditionHelper;
 
     protected BookCategoryModel category;
+    protected int currentSortIndex;
+
 
     public CategoryProvider(BookProvider parent, String categoryId) {
         this.parent = parent;
@@ -43,6 +45,7 @@ public abstract class CategoryProvider {
         this.macros = new Object2ObjectOpenHashMap<>();
         this.conditionHelper = new ConditionHelper();
         this.category = null;
+        this.currentSortIndex = 0;
     }
 
     public String categoryId() {
@@ -260,7 +263,7 @@ public abstract class CategoryProvider {
      * <p>
      * Sample usage: this.add(this.lang("ru_ru"), "category", "Text");
      */
-    protected void add(AbstractModonomiconLanguageProvider translation, String key, String value) {
+    protected void add(ModonomiconLanguageProvider translation, String key, String value) {
         translation.add(key, this.macro(value));
     }
 
@@ -278,16 +281,24 @@ public abstract class CategoryProvider {
      * <p>
      * Sample usage: this.add(this.lang("ru_ru"), "category", "pattern", "arg1");
      */
-    protected void add(AbstractModonomiconLanguageProvider translation, String key, String pattern, Object... args) {
+    protected void add(ModonomiconLanguageProvider translation, String key, String pattern, Object... args) {
         this.add(translation, key, this.format(pattern, args));
     }
 
     protected BookEntryModel add(BookEntryModel entry) {
+        if(entry.getSortNumber() == -1){
+            entry.withSortNumber(this.currentSortIndex++);
+        }
         this.category.withEntry(entry);
         return entry;
     }
 
     protected List<BookEntryModel> add(List<BookEntryModel> entries) {
+        for (var entry : entries) {
+            if(entry.getSortNumber() == -1){
+                entry.withSortNumber(this.currentSortIndex++);
+            }
+        }
         this.category.withEntries(entries);
         return entries;
     }

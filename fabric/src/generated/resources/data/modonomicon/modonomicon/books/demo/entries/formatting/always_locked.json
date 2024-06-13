@@ -12,7 +12,7 @@
   },
   "name": "book.modonomicon.demo.formatting.always_locked.name",
   "show_when_any_parent_unlocked": false,
-  "sort_number": -1,
+  "sort_number": 3,
   "x": 6,
   "y": 0
 }

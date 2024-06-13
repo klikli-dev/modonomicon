@@ -32,47 +32,44 @@ public class DemoBookProvider extends BookProvider {
 
     @Override
     protected BookModel generateBook() {
-        this.lang().add(this.context().bookName(), "Demo Book");
-        this.lang().add(this.context().bookTooltip(), "A book to showcase & test Modonomicon features.");
+        this.add(this.context().bookName(), "Demo Book");
+        this.add(this.context().bookTooltip(), "A book to showcase & test Modonomicon features.");
 
         //if we want to handle a second language in here we can access it like this:
-        //this.lang("ru_ru").add(this.context().bookName(), "Демонстрационная книга");
-        //this.lang("ru_ru").add(this.context().bookTooltip(), "Книга для демонстрации и тестирования функций \"Модономикона\".");
-
-        //for the two big categories we use the category provider
-        var featuresCategory = new FeaturesCategoryProvider(this).generate();
-        var formattingCategory = new FormattingCategoryProvider(this).generate();
-
-        var hiddenCategory = this.makeHiddenCategory(this.context());
-        var conditionalCategory = this.makeConditionalCategory(this.context());
-        conditionalCategory.withCondition(BookEntryReadConditionModel.create().withEntry(this.modLoc("features/condition_root")));
-
-        var otherCategory = new OtherCategoryProvider(this).generate();
-
+//        this.add(this.lang("ru_ru"), this.context().bookName(), "Демонстрационная книга");
+//        this.add(lang("ru_ru"), this.context().bookTooltip(), "Книга для демонстрации и тестирования функций \"Модономикона\".");
 
         var commandEntryCommand = BookCommandModel.create(this.modLoc("test_command"), "/give @s minecraft:apple 1")
                 .withPermissionLevel(2)
                 .withSuccessMessage("modonomicon.command.test_command.success");
-        this.lang.add(commandEntryCommand.getSuccessMessage(), "You got an apple, because reading is cool!");
+        this.add(commandEntryCommand.getSuccessMessage(), "You got an apple, because reading is cool!");
         var commandEntryLinkCommand = BookCommandModel.create(this.modLoc("test_command2"), "/give @s minecraft:wheat 1")
                 .withPermissionLevel(2)
                 .withSuccessMessage("modonomicon.command.test_command2.success");
-        this.lang.add(commandEntryLinkCommand.getSuccessMessage(), "You got wheat, because clicking is cool!");
+        this.add(commandEntryLinkCommand.getSuccessMessage(), "You got wheat, because clicking is cool!");
 
-        var demoBook = BookModel.create(this.modLoc("demo"), this.context().bookName())
+        return BookModel.create(this.modLoc("demo"), this.context().bookName())
                 .withTooltip(this.context().bookTooltip())
                 .withModel(ResourceLocation.parse("modonomicon:modonomicon_green"))
                 .withBookTextOffsetX(5)
                 .withBookTextOffsetY(0) //no top offset
                 .withBookTextOffsetWidth(-5)
-                .withCategory(featuresCategory)
-                .withCategory(formattingCategory)
-                .withCategory(hiddenCategory)
-                .withCategory(conditionalCategory)
-                .withCategory(otherCategory)
                 .withCommand(commandEntryCommand)
                 .withCommand(commandEntryLinkCommand);
-        return demoBook;
+    }
+
+    @Override
+    protected void generateCategories() {
+        //for the two big categories we use the category provider
+        var featuresCategory = this.add(new FeaturesCategoryProvider(this).generate());
+        var formattingCategory = this.add(new FormattingCategoryProvider(this).generate());
+
+        var hiddenCategory = this.add(this.makeHiddenCategory(this.context()));
+        var conditionalCategory = this.add(this.makeConditionalCategory(this.context()));
+        conditionalCategory.withCondition(BookEntryReadConditionModel.create().withEntry(this.modLoc("features/condition_root")));
+
+        var otherCategory = this.add(new OtherCategoryProvider(this).generate());
+
     }
 
     @Override

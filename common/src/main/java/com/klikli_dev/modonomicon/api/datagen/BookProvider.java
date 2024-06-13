@@ -22,6 +22,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collector;
@@ -30,8 +31,6 @@ import java.util.stream.Stream;
 
 public abstract class BookProvider implements DataProvider {
 
-    protected static final Logger LOGGER = LogUtils.getLogger();
-    
     public static final Collector<ModonomiconLanguageProvider, ?, Object2ObjectOpenHashMap<String, ModonomiconLanguageProvider>> mapMaker
             = Collector.<ModonomiconLanguageProvider, Object2ObjectOpenHashMap<String, ModonomiconLanguageProvider>, Object2ObjectOpenHashMap<String, ModonomiconLanguageProvider>>of(
                     Object2ObjectOpenHashMap::new,
@@ -46,6 +45,7 @@ public abstract class BookProvider implements DataProvider {
     protected final ModonomiconLanguageProvider lang;
     protected final Map<String, ModonomiconLanguageProvider> translations;
     protected final Map<ResourceLocation, BookModel> bookModels;
+    protected BookModel bookModel;
     protected final String modid;
     protected String bookId;
     protected BookContextHelper context;
@@ -53,9 +53,10 @@ public abstract class BookProvider implements DataProvider {
     protected Map<String, String> defaultMacros;
 
     protected ConditionHelper conditionHelper;
+    protected int currentSortIndex;
 
     /**
-     * @param defaultLang The LanguageProvider to fill with this book provider. IMPORTANT: the Languag Provider needs to be added to the DataGenerator AFTER the BookProvider.
+     * @param defaultLang The LanguageProvider to fill with this book provider. IMPORTANT: the Language Provider needs to be added to the DataGenerator AFTER the BookProvider.
      */
     public BookProvider(String bookId, PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries, String modid, ModonomiconLanguageProvider defaultLang, ModonomiconLanguageProvider... translations) {
         this.modid = modid;
@@ -63,6 +64,7 @@ public abstract class BookProvider implements DataProvider {
         this.registries = registries;
         this.lang = defaultLang;
         this.bookModels = new Object2ObjectOpenHashMap<>();
+        this.bookModel = null;
         this.translations = Stream.concat(Arrays.stream(translations), Stream.of(defaultLang))
                                   .collect(mapMaker);
 
@@ -70,6 +72,7 @@ public abstract class BookProvider implements DataProvider {
         this.context = new BookContextHelper(this.modid);
         this.defaultMacros = new Object2ObjectOpenHashMap<>();
         this.conditionHelper = new ConditionHelper();
+        this.currentSortIndex = 0;
     }
 
     protected ModonomiconLanguageProvider lang() {
@@ -93,18 +96,6 @@ public abstract class BookProvider implements DataProvider {
     }
 
     /**
-     * Call registerMacro() here to make macros (= simple string.replace() of macro -> value) available to all category providers of this book.
-     */
-    protected abstract void registerDefaultMacros();
-
-    /**
-     * Override this to generate your book.
-     * Each BookProvider should generate only one book.
-     * Context already is set to the book id provided in the constructor.
-     */
-    protected abstract BookModel generateBook();
-
-    /**
      * Register a macro (= simple string.replace() of macro -> value) to be used in all category providers of this book.
      */
     protected void registerDefaultMacro(String macro, String value) {
@@ -122,13 +113,23 @@ public abstract class BookProvider implements DataProvider {
      * Only override if you know what you are doing.
      * Generally you should not.
      */
-    protected void generate() {
-        this.context.book(this.bookId);
-        this.add(this.generateBook());
+    public void generate() {
+        this.context().book(this.bookId);
+        this.bookModel = this.generateBook();
+        this.generateCategories();
+        this.add(this.bookModel);
     }
 
     protected ResourceLocation modLoc(String name) {
         return ResourceLocation.fromNamespaceAndPath(this.modid, name);
+    }
+
+    protected BookCategoryModel add(BookCategoryModel category) {
+        if(category.getSortNumber() == -1){
+            category.withSortNumber(this.currentSortIndex++);
+        }
+        this.bookModel.withCategory(category);
+        return category;
     }
 
     protected BookModel add(BookModel bookModel) {
@@ -176,6 +177,59 @@ public abstract class BookProvider implements DataProvider {
                 .resolve(id.getPath() + ".json");
     }
 
+    /**
+     * Add translation to the default translation provider.
+     * This will apply all macros registered in this category provider and its parent book provider.
+     */
+    protected void add(String key, String value) {
+        this.lang().add(key, this.macro(value));
+    }
+
+    /**
+     * Adds translation to the default translation provider with a pattern and arguments, internally using MessageFormat to format the pattern.
+     * This will apply all macros registered in this category provider and its parent book provider.
+     */
+    protected void add(String key, String pattern, Object... args) {
+        this.add(key, this.format(pattern, args));
+    }
+
+    /**
+     * Add translation to the given translation provider.
+     * This will apply all macros registered in this category provider and its parent book provider.
+     * <p>
+     * Sample usage: this.add(this.lang("ru_ru"), "category", "Text");
+     */
+    protected void add(ModonomiconLanguageProvider translation, String key, String value) {
+        translation.add(key, this.macro(value));
+    }
+
+    /**
+     * Adds translation to the given translation provider with a pattern and arguments, internally using MessageFormat to format the pattern.
+     * This will apply all macros registered in this category provider and its parent book provider.
+     * <p>
+     * Sample usage: this.add(this.lang("ru_ru"), "category", "pattern", "arg1");
+     */
+    protected void add(ModonomiconLanguageProvider translation, String key, String pattern, Object... args) {
+        this.add(translation, key, this.format(pattern, args));
+    }
+
+    /**
+     * Apply all macros of this book provider to the input string.
+     */
+    protected String macro(String input) {
+        for (var entry : this.defaultMacros().entrySet()) {
+            input = input.replace(entry.getKey(), entry.getValue());
+        }
+        return input;
+    }
+
+    /**
+     * Format a string with the given arguments using MessageFormat.format()
+     */
+    protected String format(String pattern, Object... arguments) {
+        return MessageFormat.format(pattern, arguments);
+    }
+
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {
         return this.registries.thenCompose(registries -> {
@@ -214,5 +268,23 @@ public abstract class BookProvider implements DataProvider {
     public String getName() {
         return "Books: " + this.modid;
     }
+
+    /**
+     * Call registerMacro() here to make macros (= simple string.replace() of macro -> value) available to all category providers of this book.
+     */
+    protected abstract void registerDefaultMacros();
+
+    /**
+     * Implement this and return your book.
+     * Categories should not be added here, instead call .add() in generateCategories().
+     * Context already is set to this book.
+     */
+    protected abstract BookModel generateBook();
+
+    /**
+     * Implement this and in it generate and .add() your categories.
+     * Context already is set to this book.
+     */
+    protected abstract void generateCategories();
 
 }
