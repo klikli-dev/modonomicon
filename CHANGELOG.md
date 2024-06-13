@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21-1.73.3] - 2024-06-13
+### :sparkles: New Features
+- [`49ba482`](https://github.com/klikli-dev/modonomicon/commit/49ba482866eb317a1496d7c66853144dc12c3618) - update neo to 1.21 *(PR [#208](https://github.com/klikli-dev/modonomicon/pull/208) by [@klikli-dev](https://github.com/klikli-dev))*
+- [`9202a66`](https://github.com/klikli-dev/modonomicon/commit/9202a668355d909eda4ad26069db1b4d9e2ea965) - update neo to 1.21-rc1 and add fabric support *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`876edd8`](https://github.com/klikli-dev/modonomicon/commit/876edd8df9097b5ba46204250ceb215b3311676e) - add auto-open entries *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`0311384`](https://github.com/klikli-dev/modonomicon/commit/03113845b197b9915e7c3fb2fc1a1324091b8fe0) - release-ready for fabric 1.21 *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`340bccb`](https://github.com/klikli-dev/modonomicon/commit/340bccb0659d5dae14e7aab0364840a850a024db) - default zoom multiplier wrong by a factor 512 *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`679d4d7`](https://github.com/klikli-dev/modonomicon/commit/679d4d78377e7408e97b73a6bcf63f5030c6f887) - store open entry in category properly *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`a24fb60`](https://github.com/klikli-dev/modonomicon/commit/a24fb601887c59790e620f262c8a291d33605261) - redirect entry in history prevents opening category *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`88cca46`](https://github.com/klikli-dev/modonomicon/commit/88cca463f815442f4351ffa096266cd2c2da4713) - Clicking a category opens up an entry *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`0513f08`](https://github.com/klikli-dev/modonomicon/commit/0513f084d8dda187610303978d316a4afbf5eec5) - run datagen *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`b500ca0`](https://github.com/klikli-dev/modonomicon/commit/b500ca04afd8c29e5341e345e1c269ec3e27efec) - increase min compat level for mixin to match MC 1.21 *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.6-1.73.3] - 2024-06-10
 ### :bug: Bug Fixes
 - [`5765bc5`](https://github.com/klikli-dev/modonomicon/commit/5765bc5967724f4c942d18e2fb6da7b96e3083bb) - creative tab crash related to search tab *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -919,3 +937,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.6-1.73.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.6-1.73.0...release/v1.20.6-1.73.1
 [release/v1.20.6-1.73.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.6-1.73.1...release/v1.20.6-1.73.2
 [release/v1.20.6-1.73.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.6-1.73.2...release/v1.20.6-1.73.3
+[release/v1.21-1.73.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21-0.0.0...release/v1.21-1.73.3
