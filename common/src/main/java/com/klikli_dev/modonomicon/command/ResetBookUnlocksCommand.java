@@ -36,7 +36,6 @@ public class ResetBookUnlocksCommand implements com.mojang.brigadier.Command<Com
 
 
     public static ArgumentBuilder<CommandSourceStack, ?> register(CommandDispatcher<CommandSourceStack> dispatcher) {
-
         return Commands.literal("reset")
                 .requires(cs -> cs.hasPermission(1))
                 .then(Commands.argument("book", ResourceLocationArgument.id())

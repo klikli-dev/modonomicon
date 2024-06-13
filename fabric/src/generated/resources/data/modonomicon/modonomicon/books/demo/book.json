@@ -20,6 +20,8 @@
   "crafting_texture": "modonomicon:textures/gui/crafting_textures.png",
   "creative_tab": "modonomicon:modonomicon",
   "default_title_color": 0,
+  "description": "",
+  "display_mode": "index",
   "font": "modonomicon:default",
   "frame_texture": "modonomicon:textures/gui/book_frame.png",
   "generate_book_item": true,

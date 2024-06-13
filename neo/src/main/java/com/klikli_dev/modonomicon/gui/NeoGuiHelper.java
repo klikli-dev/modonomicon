@@ -20,4 +20,9 @@ public class NeoGuiHelper implements GuiHelper {
     public void popGuiLayer() {
         Minecraft.getInstance().popGuiLayer();
     }
+
+    @Override
+    public Screen getCurrentScreen() {
+        return Minecraft.getInstance().screen;
+    }
 }

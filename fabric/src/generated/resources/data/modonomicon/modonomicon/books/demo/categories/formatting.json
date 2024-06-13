@@ -4,13 +4,17 @@
   "background_parallax_layers": [],
   "background_texture_zoom_multiplier": 1.0,
   "background_width": 512,
+  "description": "",
+  "display_mode": "node",
   "entry_textures": "modonomicon:textures/gui/entry_textures.png",
+  "entry_to_open": "modonomicon:formatting/basic",
   "icon": {
     "height": 16,
     "texture": "minecraft:textures/item/book.png",
     "width": 16
   },
   "name": "book.modonomicon.demo.formatting.name",
+  "open_entry_to_open_only_once": true,
   "show_category_button": true,
   "sort_number": -1
 }

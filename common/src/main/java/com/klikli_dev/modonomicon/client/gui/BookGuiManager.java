@@ -414,7 +414,7 @@ public class BookGuiManager {
      */
     public void closeEntryScreen(BookEntryScreen screen, boolean overrideStoreLastOpenPageWhenClosingEntry) {
         //close the entry screen
-        if (Minecraft.getInstance().screen == screen)
+        if (ClientServices.GUI.getCurrentScreen() == screen)
             ClientServices.GUI.popGuiLayer();
         this.openBookEntryScreen = null;
 
@@ -433,7 +433,7 @@ public class BookGuiManager {
         //close the category screen
         //this check handles the case of node categories that are not real screens
         //thus no gui layer can be popped -> otherwise we already remove our parent screen!
-        if (Minecraft.getInstance().screen == screen)
+        if (ClientServices.GUI.getCurrentScreen() == screen)
             ClientServices.GUI.popGuiLayer();
         this.openBookCategoryScreen = null;
 

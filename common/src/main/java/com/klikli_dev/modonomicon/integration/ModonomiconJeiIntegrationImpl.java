@@ -7,6 +7,7 @@ package com.klikli_dev.modonomicon.integration;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import mezz.jei.api.IModPlugin;
@@ -64,7 +65,7 @@ public class ModonomiconJeiIntegrationImpl implements ModonomiconJeiIntegration 
         }
 
         public static boolean isJEIRecipesGuiOpen() {
-            return Minecraft.getInstance().screen instanceof IRecipesGui;
+            return ClientServices.GUI.getCurrentScreen() instanceof IRecipesGui;
         }
     }
 
