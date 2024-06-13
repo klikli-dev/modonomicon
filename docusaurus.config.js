@@ -46,12 +46,12 @@ const config = {
     ({
       algolia: {
         // The application ID provided by Algolia
-        appId: 'KH03690QIY',
+        appId: 'HARYGHSL7I',
   
         // Public API key: it is safe to commit it
-        apiKey: '5a37863be8698f4a213365813c482ae2',
+        apiKey: 'b7cb5f0817332a501b022a6f0d4527ff',
   
-        indexName: 'crawler_Modonomicon Docs',
+        indexName: 'klikli-devio',
   
         // Optional: see doc section below
         contextualSearch: true,
