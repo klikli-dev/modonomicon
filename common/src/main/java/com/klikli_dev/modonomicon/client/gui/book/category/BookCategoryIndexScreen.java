@@ -162,7 +162,7 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
     }
 
     private List<BookEntry> getEntries() {
-        return this.parentScreen.getBook().getEntries().values().stream().toList();
+        return this.category.getEntries().values().stream().toList();
     }
 
     @Override

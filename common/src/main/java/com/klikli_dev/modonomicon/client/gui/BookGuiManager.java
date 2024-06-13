@@ -315,9 +315,9 @@ public class BookGuiManager {
     public void openCategoryLinkEntry(CategoryLinkBookEntry entry) {
         var category = entry.getCategoryToOpen();
 
-        //When using a category link entry, we cannot have an entry open, so need not save open entry in the category.
 
-        this.openCategory(category, BookAddress.defaultFor(category.getBook()));
+        //Opening a category link means we already opened a book, and a category. These all need tob e closed before reopening, so we just use our default opening method
+        this.openBook(BookAddress.defaultFor(category));
     }
 
     @ApiStatus.Internal
