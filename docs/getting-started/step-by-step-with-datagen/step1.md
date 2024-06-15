@@ -70,7 +70,7 @@ Not sure how to open the terminal in the folder?
 ### Running Minecraft
 
 1. Open Terminal in the folder you downloaded the Project to.
-2. Run `./gradlew runClient`.
+2. Run `./gradlew neo:runClient`.
 3. After a few seconds (possibly minutes) Minecraft should open and show the main menu.   
 4. Success!
 

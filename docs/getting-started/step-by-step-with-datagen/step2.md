@@ -51,7 +51,9 @@ First, take a minute to look at the folder structure relevant for demo book, eit
 - `/neo/src/java/.../datagen/DataGenerators.java` shows how the book provider is registered. Your mod loader documentation should tell you how to make sure the events used in the DataGenerators classes are registered.
   - **Modpack Creators**: You need not concern yourself with this file.
   - **Mod Developers**: This file shows how to register the book provider and how to hook it up with the language providers. The other mod loader folders (forge, fabric) contain similar files in the same path. You can copy the lines related to the book provider into your own datagen setup.
-- `/generated/` contains the generated files.
+- `/neo/src/generated/resources/data/.../demo/...` contains the generated files book definition files.
+- `/neo/src/generated/resources/assets/.../lang/en_us.json` contains the book texts. 
+  - **Modpack Creators**: Please note that this file will also contain a few texts related to modonomicon functionality. It is best to remove them before publishing the book as a data/resource pack.
 
 ## A closer look at the existing files
 

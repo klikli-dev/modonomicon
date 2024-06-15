@@ -2,133 +2,79 @@
 sidebar_position: 30
 ---
 
+# Step 3: Creating your Book
 
-# Step 3: Creating the Book
+A book consists of Categories, each Category of Entries, and each Entry of Pages. 
 
-Now it is time to add code to generate our book, a first category and an entry with a page.
-We will focus on the structure and layout of the book in this step, and add the texts in the next step.
+Any information that is closely related usually is grouped together as pages within an entry. For example if you introduce a new furnace you might have an entry for that furnace with a text page providing some information on how it works, a recipe page that shows how to craft the furnace, and an image page that shows how the furnace looks like.
 
-Depending on how familiar you are with java you can either just take a look at the [full code for this step](https://github.com/klikli-dev/modonomicon-demo-book/tree/guide/step3) and make changes on your own, or download the complete new step into a new folder.
+Related entries are usually grouped in a category. Categories can be be (and are by default) displayed in "node mode" or "node view", which is the thaumonomicon inspired display mode where each entry is a node on a 2D screen that you can connect with arrows to child and parent entries to guide the player through the book.
 
-You can view the final code for this step in the branch for step 3: https://github.com/klikli-dev/modonomicon-demo-book/tree/guide/step3 
+To understand all the offered features and how to create such a book structure you should modify the demo book to your needs.   
+The recommended process is to first read through all the code files in the demo book and get a basic understanding of what is possible.   
+Then, create a new category and copy entries and pages that match your need into the category and start linking them together.    
+Finally when things start taking shape you can delete the remaining demo content.  
 
-Using the green "Code" Button and "Download ZIP" you can download the code for this step as a zip file to compare to your code.
+## Datagen Structure
 
-:::info
+While datagen can be freely modified it is recommended to stick to the structure the demo book uses, and to also use the helper classes provided by modonomicon.
 
-There is no branch for step 2, because that was only reviewing the files you downloaded in step 1!
+Let's take a closer look once again:
 
-::: 
-
-## Changes to DemoBookProvider.java
-
-Let's take a look at how our existing class changed: **[See Diff](https://github.com/klikli-dev/modonomicon-demo-book/compare/guide/step1..guide/step3?diff=split#diff-bae90ab237cc5e78b10e53c7ad47160887a6536b0f8cb361732336cf3f986782)** (on the left we see the old version, on the right, the new)
-
-First we create our features category (we'll get to what `FeaturesCategoryProvider` is in the next step!) with the id "features".
-```java
-var featuresCategory = new FeaturesCategoryProvider(this, "features").generate();
+```
+book
+  demo
+    features
+      CommandEntry.java
+      ...
+      ImageEntry.java
+      ...
+    formatting
+      ...
+      BasicFormattingEntry.java
+      ...
+    indexmode
+      ...
+    FeaturesCategory.java
+    FormattingCategory.java
+    IndexmModeCategory.java
+  DemoBook.java 
 ```
 
-Then we add it to the book model:
-```java
-.withCategories(
-        featuresCategory
-);
-```
+- `DemoBook.java` is the main entry point for the book. It is a subclass of the type SingleBookSubProvider which sets up the book and links its categories. 
+  - Categories are set up in `generateCategories()`. Just call `this.add(new <...>)` as shown in the existing file to link a category to the book.
+- `FeaturesCategory.java`, `FormattingCategory.java`, `IndexModeCategory.java` are category providers. They work the same way as the DemoBook.java, except that they set up data for categories, and allow to add entries.
+  - Entries are added in generateEntries(). Just call `this.add(new <...>)` as shown in the existing file to link an entry to the category.
+- `CommandEntry.java`, `ImageEntry.java`, `BasicFormattingEntry.java` (and all the other java files in the category subdirectories) are entry providers. They work the same way as the category providers, except that they set up data for entries, and allow to add pages.
+  - Pages are added in `generatePages()`. 
+  - Pages are a bit more complicated than simply calling `this.add()`, it is best to take a look at some of the entries to understand how they work. Very simply put, you always need a page definition that you can set with `this.page(...)`, followed by the texts you want to display on that page.
 
-## New Class File: FeaturesCategoryProvider
+## Make some modifications
 
-Additionally we can see that a new file was created containing the class `FeaturesCategoryProvider`.
-In Modonomicon CategoryProviders are helper classes that make it easier to create category content (that is, entries and pages). 
+1. Start by copying and renaming the FormattingCategory into e.g. "MyTestCategory.java" and adding a directory/package "mytestcategory".  
+2. Add a new entry (e.g. copy the "BasicFormattingEntry.java" to "/mytestcategory/MyTestEntry.java") with a few pages into that new directory.
+3. Remove the references in your MyTestCategory to the entries of FormattingCategory and instead place `this.add(new MyTestEntry().generate('l'))`.
+4. Modify the placement of the entry in the 2D string array in generateEntryMap() to place your entry where you would like it to be in the node view.
 
-When looking at **[the Diff](https://github.com/klikli-dev/modonomicon-demo-book/compare/guide/step1..guide/step3?diff=split#diff-35d687e007c80093b71ad3400be6e689d5641e8f772b6881d0ccf08642f04598)** we see nothing on the left, indicating that the entire file is new. 
+## Test your changes
 
-Let's go briefly over the relevant methods we find in there:
+This will generate an updated book for us. Let's test how that works!
 
-### [generateEntryMap()](https://github.com/klikli-dev/modonomicon-demo-book/compare/guide/step1..guide/step3?diff=split#diff-35d687e007c80093b71ad3400be6e689d5641e8f772b6881d0ccf08642f04598R16)
-
-The EntryMap is a helper that allows us to visualize where entries will be placed in the category view of the book. We use `_` to represent an empty slot, and any other character (numbers, letters and other unicode characters) to represent an entry. 
-
-:::tip
-
-Uppercase and lowercase letters are considered separate characters - if you have both `m` and `M` in the map these can be used to designate two different entry locations!
-
-:::
-
-Later you will see that we then hand a character to each entry, which will allow the entry to look up it's coordinates in the in-game-view.
-
-### [generateEntries()](https://github.com/klikli-dev/modonomicon-demo-book/compare/guide/step1..guide/step3?diff=split#diff-35d687e007c80093b71ad3400be6e689d5641e8f772b6881d0ccf08642f04598R28)
-
-In this method we are supposed to create our BookEntry objects, and call this.add() to store them in the category.
-
-Currently we have:
-
-```java
-var multiblockEntry = this.add(this.makeMultiblockEntry('m'));
-```
-
-Which creates an entry showcasing a multiblock (as we will see below), at the location of the `m` character in our entry map.
-
-
-### [generateCategory()](https://github.com/klikli-dev/modonomicon-demo-book/compare/guide/step1..guide/step3?diff=split#diff-35d687e007c80093b71ad3400be6e689d5641e8f772b6881d0ccf08642f04598R36)
-
-Here we create our category - currently that is very basic, we simply provide a resource location as ID and a string as translation key for the category name (Don't worry about the name yet - the in game texts will be supplied in the next step), and an icon (the nether star).
-
-:::caution
-
-BookCategories support .withEntries() to add entries, however you are not supposed to do that here - the CategoryProvider does that for you.
-
-::: 
-
-### [makeMultiblockEntry()](https://github.com/klikli-dev/modonomicon-demo-book/compare/guide/step1..guide/step3?diff=split#diff-35d687e007c80093b71ad3400be6e689d5641e8f772b6881d0ccf08642f04598R46)
-
-This method does the heavy lifting by creating an entry with pages. 
-
-:::tip
-
-To create your own additional entries, all you have to do is copy & adjust this method, and then update `generateEntries()` to also call your new method and hand over the return value to `this.add(...)` as seen above for makeMultiblockEntry().
-
-::: 
-
-:::tip
-
-Note the use of `this.context()`. We will use it a lot - whenever we work on a new piece of the book we update the context, which then allows us to retrieve context information (such as the translation key to set the text of a specific page) easily.
-
-::: 
-
-At the bottom, after creating the pages, it creates the entry with the given location character, which will be looked up in the entry map.
-Finally it adds the pages to the entry. 
-
-:::info
-
-For now let's not worry about multiblocks - we're using a demo one that comes with modonomicon. Later you can define your own multiblocks.
-
-<!-- Link to multiblock guide -->
-
-:::
-
-
-This will generate a book for us. Let's test how that works!
-
-1. In the terminal, run `./gradlew runData` to generate the json file(s).
-2. After it is complete, run `./gradlew runClient` to start Minecraft.
+1. In the terminal, run `./gradlew neo:runData` to generate the json file(s).
+2. After it is complete, run `./gradlew neo:runClient` to start Minecraft.
 3. Create or join a world with cheats enabled.
 4. Switch to creative mode with `/gamemode creative`.
 5. Open the inventory and look for the "Modonomicon" creative tab or the search tab.
-6. There will be two purple books - the builtin modonomicon demos - and one red book, the one we just generated.
-7. Take it into your hotbar and take a look at it
-   1. You will notice a weird text for the name and tooltip: `book.modonomicon_demo_book.demo.name` and `book.modonomicon_demo_book.demo.tooltip` This is because we haven't added any translations yet.
-8. Right click with the book in hand.
-9. Crash! That's ok - if we do not add any categories the book does not know what to display. Let's fix that!
+6. Find your additional category and click your new entry.
+7. Et voila! 
 
-## Generate our updated book
 
-Let's take a look at our entry!
+## Next Steps
 
-1. In the terminal, run `./gradlew runData` to generate the json file(s).
-2. After it is complete, run `./gradlew runClient` to start Minecraft.
-3. Re-join our old world.
-4. Right click with the book in hand.
-5. Find and click the entry in the book (you may have to zoom/pan to find it)
-   ![Entry](/img/docs/getting-started/step3-create-entry.png)
-6. We don't have texts yet, but we see a multiblock, so that's pretty good, right?
+You now have a working and already modified book that you can extend to your liking:
+- Add additional category providers for more categories.
+- Add more entries and pages to the existing category provider.
+- Remove demo content.
+
+For an overview of the possible page types and other content settings, you can view once again the demo book content, or take a look at the [Basics](/docs/basics) and [Advanced](/docs/advanced) documentation. The documentation documents the JSON format, however if you compare it to the demo book you will notice corresponding java methods, usually prefixed with "with".
+Another good resource is: https://github.com/klikli-dev/theurgy/tree/HEAD/src/main/java/com/klikli_dev/theurgy/datagen/book as theurgy extensively uses Modonomicon for its in-game documentation.

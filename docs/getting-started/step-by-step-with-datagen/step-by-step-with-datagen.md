@@ -4,7 +4,8 @@ sidebar_position: 10
 
 # Step by Step Guide for Book Datagen
 
-This page will guide you through the recommended and most convenient way to create a book. 
+This page will guide you through the recommended and most convenient way to create a book.  
+It uses the Demo Book modonomicon provides as a starting point. 
 
 :::tip
 
