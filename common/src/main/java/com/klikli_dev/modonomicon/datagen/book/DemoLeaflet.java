@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.api.datagen.LeafletSubProvider;
 import com.klikli_dev.modonomicon.api.datagen.ModonomiconLanguageProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
+import com.klikli_dev.modonomicon.book.PageDisplayMode;
 
 public class DemoLeaflet extends LeafletSubProvider {
     public static final String ID = "demo_leaflet";
@@ -39,6 +40,24 @@ public class DemoLeaflet extends LeafletSubProvider {
                         3. No categories, no books, no mess.
                         4. Fun! (If you like leaflets)
                         """);
+
+                this.page("page2", () -> BookTextPageModel.create()
+                        .withTitle(this.context().pageTitle())
+                        .withText(this.context().pageText())
+                );
+                this.pageTitle("A second page");
+                this.pageText("""
+                        Despite being a leaflet, it can have as many pages as you like!
+                        """);
+
+                this.page("page3", () -> BookTextPageModel.create()
+                        .withTitle(this.context().pageTitle())
+                        .withText(this.context().pageText())
+                );
+                this.pageTitle("A third page");
+                this.pageText("""
+                        Now just imagine a few more pages.
+                        """);
             }
         };
     }
@@ -47,7 +66,8 @@ public class DemoLeaflet extends LeafletSubProvider {
     protected BookModel additionalLeafletSetup(BookModel book) {
         //e.g. set creative tab using .withCreativeTab(<ResourceLocation>)
         return book.withBookTextOffsetWidth(-5)
-                .withBookTextOffsetX(5);
+                .withBookTextOffsetX(5)
+                .withPageDisplayMode(PageDisplayMode.SINGLE_PAGE);
     }
 
     @Override

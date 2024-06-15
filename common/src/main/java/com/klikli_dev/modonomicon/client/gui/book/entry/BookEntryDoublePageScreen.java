@@ -37,6 +37,27 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
         return 0;
     }
 
+    @Override
+    public boolean canSeeArrowButton(boolean left) {
+        return left ? this.openPagesIndex > 0 : (this.openPagesIndex + 2) < this.unlockedPages.size();
+    }
+
+    @Override
+    protected void flipPage(boolean left, boolean playSound) {
+        if (this.canSeeArrowButton(left)) {
+            if (left) {
+                this.openPagesIndex -= 2;
+            } else {
+                this.openPagesIndex += 2;
+            }
+
+            this.onPageChanged();
+            if (playSound) {
+                playTurnPageSound(this.getBook());
+            }
+        }
+    }
+
 
     @Override
     @Nullable

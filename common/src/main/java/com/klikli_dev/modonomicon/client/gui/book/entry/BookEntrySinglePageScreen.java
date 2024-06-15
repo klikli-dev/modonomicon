@@ -9,12 +9,16 @@ import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 public class BookEntrySinglePageScreen extends BookEntryScreen {
+
+    public static final int SINGLE_PAGE_BOOK_BACKGROUND_WIDTH = 145;
+    public static final int SINGLE_PAGE_BOOK_BACKGROUND_HEIGHT = 178;
 
     private BookPage page;
 
@@ -30,19 +34,45 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
 
     @Override
     protected void initNavigationButtons() {
+        this.bookLeft = (this.width - SINGLE_PAGE_BOOK_BACKGROUND_WIDTH) / 2;
+        this.bookTop = (this.height - SINGLE_PAGE_BOOK_BACKGROUND_HEIGHT) / 2;
+
         //paginated screen assumes a double page layout, so we have to override the init here and place our buttons as we like.
 
-        this.addRenderableWidget(new ArrowButton(this, this.bookLeft - 4, this.bookTop + FULL_HEIGHT - 6, true, () -> this.canSeeArrowButton(true), this::handleArrowButton));
-        this.addRenderableWidget(new ArrowButton(this, this.bookLeft + FULL_WIDTH - 14, this.bookTop + FULL_HEIGHT - 6, false, () -> this.canSeeArrowButton(false), this::handleArrowButton));
+        //TODO: this can probably be optimized to instead hand over the height/width stuff to the parent screen
+        //      maybe with configurable offsets
+        this.addRenderableWidget(new ArrowButton(this, this.bookLeft - 4, this.bookTop + SINGLE_PAGE_BOOK_BACKGROUND_HEIGHT - 6, true, () -> this.canSeeArrowButton(true), this::handleArrowButton));
+        this.addRenderableWidget(new ArrowButton(this, this.bookLeft + SINGLE_PAGE_BOOK_BACKGROUND_WIDTH - 14, this.bookTop + SINGLE_PAGE_BOOK_BACKGROUND_HEIGHT - 6, false, () -> this.canSeeArrowButton(false), this::handleArrowButton));
         if (this.addExitButton) {
-            this.addRenderableWidget(new ExitButton(this, this.bookLeft + FULL_WIDTH - 10, this.bookTop - 2, this::handleExitButton));
+            this.addRenderableWidget(new ExitButton(this, this.bookLeft + SINGLE_PAGE_BOOK_BACKGROUND_WIDTH - 10, this.bookTop - 2, this::handleExitButton));
         }
-        this.addRenderableWidget(new BackButton(this, this.width / 2 - BackButton.WIDTH / 2, this.bookTop + FULL_HEIGHT - BackButton.HEIGHT / 2));
+        this.addRenderableWidget(new BackButton(this, this.width / 2 - BackButton.WIDTH / 2, this.bookTop + SINGLE_PAGE_BOOK_BACKGROUND_HEIGHT - BackButton.HEIGHT / 2));
     }
 
     @Override
     protected int getOpenPagesIndexForPage(int pageIndex) {
         return pageIndex; //for single page screens the index is equivalent to the page number
+    }
+
+    @Override
+    public boolean canSeeArrowButton(boolean left) {
+        return left ? this.openPagesIndex > 0 : (this.openPagesIndex + 1) < this.unlockedPages.size();
+    }
+
+    @Override
+    protected void flipPage(boolean left, boolean playSound) {
+        if (this.canSeeArrowButton(left)) {
+            if (left) {
+                this.openPagesIndex -= 1;
+            } else {
+                this.openPagesIndex += 1;
+            }
+
+            this.onPageChanged();
+            if (playSound) {
+                playTurnPageSound(this.getBook());
+            }
+        }
     }
 
     @Override

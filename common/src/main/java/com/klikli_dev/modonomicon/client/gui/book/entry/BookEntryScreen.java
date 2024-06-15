@@ -65,7 +65,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen {
     public static final int TOP_PADDING = 15;
     public static final int LEFT_PAGE_X = 12;
     public static final int RIGHT_PAGE_X = 141;
-    public static final int SINGLE_PAGE_X = 77;
+    public static final int SINGLE_PAGE_X = LEFT_PAGE_X;
     public static final int PAGE_WIDTH = 124;
     public static final int PAGE_HEIGHT = 128; //TODO: Adjust to what is real
 
@@ -153,11 +153,6 @@ public abstract class BookEntryScreen extends BookPaginatedScreen {
     @Override
     public Book getBook() {
         return this.entry.getBook();
-    }
-
-    @Override
-    public boolean canSeeArrowButton(boolean left) {
-        return left ? this.openPagesIndex > 0 : (this.openPagesIndex + 2) < this.unlockedPages.size();
     }
 
     public void setTooltip(Component... strings) {
@@ -311,22 +306,6 @@ public abstract class BookEntryScreen extends BookPaginatedScreen {
         this.renderables.removeIf(renderables::contains);
         this.children().removeIf(c -> c instanceof Renderable && renderables.contains(c));
         this.narratables.removeIf(n -> n instanceof Renderable && renderables.contains(n));
-    }
-
-    protected void flipPage(boolean left, boolean playSound) {
-        if (this.canSeeArrowButton(left)) {
-
-            if (left) {
-                this.openPagesIndex -= 2;
-            } else {
-                this.openPagesIndex += 2;
-            }
-
-            this.onPageChanged();
-            if (playSound) {
-                playTurnPageSound(this.getBook());
-            }
-        }
     }
 
     protected void drawTooltip(GuiGraphics guiGraphics, int pMouseX, int pMouseY) {
