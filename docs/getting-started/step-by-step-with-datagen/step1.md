@@ -2,17 +2,24 @@
 sidebar_position: 10
 ---
 
-# Step 1: Setting up the Demo Project
+# Step 1: [Modpack Creators Only] Setting up a Datagen Environment
 
-## Installing OpenJDK 
+:::info
 
-The Demo Project uses the Forge Mod loader, which requires OpenJDK 17 installed on your system.
-Start by installing OpenJDK 17 from https://adoptium.net/temurin/releases/?version=17.
+Mod developers presumably already have a development environment set up.
+If not, please refer to the MDK setup guide of your modloader of choice. It is not a good idea to use modonomicon as a template for your own mod, unless you plan to make another book mod :) 
+
+:::
+
+##  Installing OpenJDK 
+
+Modonomicon uses the Forge, Neoforge and Fabric modloaders, which require OpenJDK 21 installed on your system.
+Start by installing OpenJDK 21 from https://adoptium.net/temurin/releases/?version=21.
 
 :::tip
 
 Make sure to select your correct operating system, and a 64 bit version of the JDK.  
-32 bit is not fully supported by Forge.
+32 bit is not fully supported by all modloaders.
 
 ::: 
 
@@ -22,22 +29,13 @@ If the installer asks to "Add Java to PATH" and or "Set JAVA_HOME" please accept
 
 ::: 
 
-## Downloading the Demo Project
+## Downloading Modonomicon Source Code
 
-For the purposes of this Guide we will start with an empty version of the Demo Project.
-
-:::info
-
-The demo project is on 1.19.2. However, the generated book should work on both 1.18.2 and 1.192. If not please create a github issue at https://github.com/klikli-dev/modonomicon.
-
-:::
-
-### via Git (Mod Developers)
+### via Git
 
 1. Open terminal
 2. Go to a folder of your choice that you want to work in 
-3. Run `git clone git@github.com:klikli-dev/modonomicon-demo-book.git` 
-4. Run `git branch guide/step1`
+3. Run `git clone git@github.com:klikli-dev/modonomicon.git` 
 
 :::tip
 
@@ -45,20 +43,13 @@ If you know what you are doing you can also skip ahead by skipping step 4, as st
 
 ::: 
 
+### via ZIP File 
 
-### via ZIP File (Modpack Creators)
-
-1. Go to https://github.com/klikli-dev/modonomicon-demo-book/tree/guide/step1 
+1. Go to https://github.com/klikli-dev/modonomicon
 2. Click the green "Code" button
 3. Click "Download Zip"   
    ![Download Zip](/img/docs/getting-started/step1-download-zip.png)
 4. Extract the downloaded zip file to a folder of your choice.
-
-:::tip
-
-If you know what you are doing you can also skip ahead and download the "main" branch from https://github.com/klikli-dev/modonomicon-demo-book/tree/main and directly edit the provided files.
-
-::: 
 
 ## First Test Run
 
@@ -76,31 +67,9 @@ Not sure how to open the terminal in the folder?
 
 ::: 
 
-### IDE Setup 
-
-:::info
-
-If you are not using an IDE you can skip this step.
-
-:::
-
-1. Open Terminal in the folder you downloaded and extracted the Demo Project to
-2. Generate run configurations:
-   - For IntelliJ Users: Run `./gradlew genIntellijRuns` 
-   - For Eclipse Users: Run `./gradlew genEclipseRuns`
-   - For VSCode Users: Run `./gradlew genVSCodeRuns`
-
-In future steps you can use the provided run configurations to run the datagen and minecraft, instead of the commands this guide will use.
-
-:::tip 
-
-**Windows Users:** If you are getting a message along the lines of `command . not found` try running `gradlew.bat <...>` instead of `./gradlew <...>`
-
-:::
-
 ### Running Minecraft
 
-1. Open Terminal in the folder you downloaded the Demo Project to.
+1. Open Terminal in the folder you downloaded the Project to.
 2. Run `./gradlew runClient`.
 3. After a few seconds (possibly minutes) Minecraft should open and show the main menu.   
 4. Success!
@@ -110,11 +79,3 @@ In future steps you can use the provided run configurations to run the datagen a
 **Windows Users:** If you are getting a message along the lines of `command . not found` try running `gradlew.bat <...>` instead of `./gradlew <...>`
 
 :::
-
-## Important: Improvements & Convenience 
-
-Sometimes the Demo Project does not use the cutting edge of available Modonomicon datagen features.
-A good reference for Modonomicon Datagen features are:
-- the [Demo Book](https://github.com/klikli-dev/modonomicon/tree/version/1.20.1/src/main/java/com/klikli_dev/modonomicon/datagen/book) - especially the CategoryProviders are interesting. Play around with them - they have support for macros, formatting helpers, shortcuts for creating links, ...
-- [Theurgy](https://github.com/klikli-dev/theurgy) and sometimes it's [develop Branch](https://github.com/klikli-dev/theurgy/tree/develop) 
-- [Occultism](https://github.com/klikli-dev/occultism) usually has outdated Modonomicon Datagen features, but comes with huge modonomicon book, so a lot of examples.

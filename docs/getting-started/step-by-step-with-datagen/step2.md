@@ -2,78 +2,90 @@
 sidebar_position: 20
 ---
 
-# Step 2: A first look at the Demo Project
+# Step 2: A first look at the Demo Book
 
-## Demo Project File Structure
+##File Structure
 
-First, take a minute to look at the folder structure of the test project. 
-The most intersting parts are in the `/src/` folder, you can ignore the other folders and files for now.
-
+First, take a minute to look at the folder structure relevant for demo book, either locally if you downloaded it in the previous step, or on [GitHub](https://github.com/klikli-dev/modonomicon/tree/version/HEAD/common/src/main/java/com/klikli_dev/modonomicon/datagen/book).
 ```
-src
-+---generated
-|   \---resources
-+---main
-|   +---java
-|   |   \---com
-|   |       \---klikli_dev
-|   |           \---modonomicon_demo_book
-|   |               |   ModonomiconDemoBook.java
-|   |               |
-|   |               \---datagen
-|   |                   |   DataGenerators.java
-|   |                   |   DemoBookProvider.java
-|   |                   |
-|   |                   \---lang
-|   |                           EnUsProvider.java
-|   |
-|   \---resources
-|       |   modonomicon.png
-|       |   pack.mcmeta
-|       |
-|       \---META-INF
-|               mods.toml
+.
+└── modonomicon/
+    ├── common/
+    │   └── src/
+    │       └── main/
+    │           └── java/
+    │               └── com/
+    │                   └── klikli_dev/
+    │                       └── modonomicon/
+    │                           └── datagen/
+    │                               └── book/
+    │                                   ├── demo/
+    │                                   │   ├── ConditionalCategory.java
+    │                                   │   └── ...
+    │                                   └── DemoBook.java
+    └── neo/
+        └── src/
+            └── generated/
+                ├── resources/
+                │   ├── assets/
+                │   │   └── modonomicon/
+                │   │       └── lang/
+                │   │           └── en_us.json
+                │   └── data/
+                │       └── modonomicon/
+                │           └── books/
+                │               └── demo/
+                │                   └── book.json
+                └── main/
+                    └── java/
+                        └── com/
+                            └── klikli_dev/
+                                └── modonomicon/
+                                    └── datagen/
+                                        └── DataGenerators.java
 ```
 
-- `/main/java/` contains the source code files used to generate the book.
+- `/common/src/java/.../datagen/book` contains the source code files used to generate the book. 
+  - **Mod Developers**: This code is mod-loader independent and works on all mod loaders. That means, you can simply copy that entire folder into your own datagen folder. If you use a multiloader setup it should also go into common. 
+  - **Modpack Creators**: These are the files you will be modifying to create your own book.
+- `/neo/src/java/.../datagen/DataGenerators.java` shows how the book provider is registered. Your mod loader documentation should tell you how to make sure the events used in the DataGenerators classes are registered.
+  - **Modpack Creators**: You need not concern yourself with this file.
+  - **Mod Developers**: This file shows how to register the book provider and how to hook it up with the language providers. The other mod loader folders (forge, fabric) contain similar files in the same path. You can copy the lines related to the book provider into your own datagen setup.
 - `/generated/` contains the generated files.
 
-## Interlude for Mod developers: Copying relevant files 
-
-At this point it might be a good idea to copy the `/datagen/` folder and all contents into your mod. 
-You should skip ModonomiconDemoBook.java, it is the main mod class for the demo project, you should have your own main mod class.
-
 ## A closer look at the existing files
-
-### ModonomiconDemoBook.java
-
-:::tip
-
-Modpack creators can and should skip this step.
-
-::: 
-
-Interesting is only the line `modEventBus.addListener(DataGenerators::gatherData);`: It registers our DataGenerator to run in Forge's GatherData event. Make sure to include it in your main mod class.
 
 ### DataGenerators.java
 
 :::tip
 
-Modpack creators can and should skip this step.
+Modpack creators can and should skip this step and move the "DemoBook.java".
 
 ::: 
 
-This file registers the two Data Generators from the Demo Project - one that will generate the book, and one that will create the corresponding `/lang/*.json` file. You may want to add more generators for other mod content here in the future. 
+The data generator registration happens in three steps. 
+1. First a Language Provider Cache is created. This allows you to write texts directly in the book (sub) provider, and have them added to the language provider.
+2. Then the DemoBook is registered using the BookProvider. Note that it is handed over the language provider cache we created in the first step.
+3. Finally, the language provider is registered, notice how it also receives the cache as parameter.
+   1. It is important that your main mod langauge provider takes all contents of the cache and adds them to its output.
+   2. To simplify this, make your langauge provider extend `AbstractModonomiconLanguageProvider`, like Modonomicon's [EnUsProvider](https://github.com/klikli-dev/modonomicon/blob/version/1.21/common/src/main/java/com/klikli_dev/modonomicon/datagen/EnUsProvider.java) does. Then you can just leave your provider as-is.
+4. Modonomicon Datagen then also registers a datagen for multiblocks which you can look into if you want to generate multiblock definitions for your book.
+5. Further an ItemModelProvider is registered, which you can ignore, unless you want to add additional item models.
 
-### DemoBookProvider.java
+If you copied the demo book datagen classes you can just copy-paste most of the event method and let your IDE handle imports.
 
-In this file we will add instructions that will generate our book content, such as calls to category providers, which in turn will create entries and pages.
-Additionally it holds a reference to the language providers to also easily add the actual book texts.
+### DemoBook.java
 
-For now this file is mostly empty - that's OK!
-
+This file contains code that generates metadata for the book and that calls the code that generates categories. 
+We'll take a closer look at that soon.
 
 ### EnUsProvider.java
+
+:::tip
+
+Modpack creators can and should ignore this file.
+
+::: 
 
 "EnUS" corresponds to the "en_us" in the line `super(generator, modid, "en_us");` in the upper region of the file. 
 This is the language code for the English language, meaning in this file we will generate English texts. 
@@ -81,50 +93,16 @@ This is the language code for the English language, meaning in this file we will
 
 :::warning
 
-Please note that EnUsProvider depends on `AbstractModonomiconLanguageProvider` , not the Forge one! The Modonomicon version is multi platform and allows to "consume" another language provider. You can also use a child class of a platform specific language providers and simply implement the `ModonomiconLanguageProvider` interface.
+Please note that EnUsProvider depends on `AbstractModonomiconLanguageProvider` , not the Forge/Neo one! The Modonomicon version is multi platform and allows to "consume" another language provider as mentioned above regarding the cache. You can also use a child class of a platform specific language providers and simply implement the `ModonomiconLanguageProvider` interface.
 
 :::
 
 #### Optional: Additional Languages
 
-The Demo Book comes with a language provider for Spanish (although only small parts of the demo book are translated to Spanish!).
-If you want to provide translations for other languages, you can copy and rename the file, and change the language code to e.g. "fr_fr" for French.
+It is recommended to do translations only in JSON files and use e.g. crowdin. 
 
-In Java the "class" name and file name must correspond. Thus, a hypothethical file FrFrProvider would have to look something like this:
+If you want to translate in DataGen you can create additional language provider caches, and hand them over to the book sub provider ("DemoBook.java"). Then simply make your additional language providers also extend `AbstractModonomiconLanguageProvider` and hand over the fitting cache to them. 
 
-```java 
-public class FrFrProvider extends LanguageProvider {
-   public FrFrProvider(DataGenerator generator, String modid, ModonomiconLanguageProvider cachedProvider) {
-        super(generator, modid, "fr_fr", cachedProvider);
-    }
-}
-```
+You can then access the the other language providers in the book/category/entry providers with e.g. `this.add(this.lang("<LANG>"), "<KEY>", "<VALUE>");` where lang could be e.g. `ru_ru` or `fr_fr`, etc. This call allows you to access the modonomicon formatting helpers. 
 
-:::tip
-
-If you do create an additional language - make sure to register it in the DataGenerators.java file as well!
-
-e.g. for frFr Provider modify it to look like this:
-```java
-
-//we create language provider caches where our book provider can store texts in.
-var enUsCache = new LanguageProviderCache("en_us");
-var esEsCache = new LanguageProviderCache("es_es");;
-var frFrCache = new LanguageProviderCache("fr_fr");;
-
-
-generator.addProvider(event.includeServer(), new DemoBookProvider(generator.getPackOutput(), ModonomiconDemoBook.MODID,
-        enUsCache, //first add the default language, will be accessed via .lang()
-        esEsCache, //then all other languages, will be accessed via .lang("<lang code>"), for example .lang("es_es")
-        frFrCache
-));
-
-//Important: Lang providers need to be added after the book provider to process the texts added by the book provider
-//           Additionally, we need to hand over our caches to the actual language provider, so the book texts are added.
-generator.addProvider(event.includeClient(), new EnUsProvider(generator.getPackOutput(), ModonomiconDemoBook.MODID, enUsCache));
-generator.addProvider(event.includeClient(), new EsEsProvider(generator.getPackOutput(), ModonomiconDemoBook.MODID, esEsCache));
-generator.addProvider(event.includeClient(), new FrFrProvider(generator.getPackOutput(), ModonomiconDemoBook.MODID, frFrCache));
-
-```
-
-:::
+To access language provider functions directly instead, you can also use `this.lang("<LANG>").add("<KEY>", "<VALUE>");`.

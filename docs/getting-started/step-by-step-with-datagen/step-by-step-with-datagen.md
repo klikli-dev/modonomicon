@@ -14,14 +14,14 @@ If you run into any issues or have any questions, join our Discord: **https://ds
 
 ## Book Creation Demo Project
 
-To show how to create a book with datagen, we have created a demo project that you can use as a starting point for your own book. 
+To show how to create a book with datagen, we have created a demo book that showcases the most commonly used modonomicon features and you can use as a starting point for your own book. 
 
-You can find the files at **https://github.com/klikli-dev/modonomicon-demo-book**
+You can find the files at *[*https://github.com/klikli-dev/modonomicon-demo-book](https://github.com/klikli-dev/modonomicon/tree/HEAD/common/src/main/java/com/klikli_dev/modonomicon/datagen/book)**
 
 ### For Mod Developers
 
-You can copy and paste code from the Demo Project into your own mod. 
-Please also see [Maven Dependencies](../maven-dependencies) for information on how to set up the Modonomicon dependency (alternatively, look into the `build.gradle` and `gradle.properties` files of the demo project).
+You can copy and paste code from the Demo Book into your own mod. 
+Please also see [Maven Dependencies](../maven-dependencies) for information on how to set up the Modonomicon dependency.
 
 :::caution
 
@@ -32,29 +32,25 @@ However, it is best practice to datagen all your lang files anyway.
 
 ###  For Modpack Creators
 
-You can use the Demo Project to generate JSON files that you can copy into your modpack's datapack/resourcepack.
+You can use the Modonomicon development setup to generate JSON files that you can copy into your modpack's datapack/resourcepack. The following sections will assume that you use the "neo" (=neoforge) subproject to generate the data. You can use the generated files for any mod loader.
 
-The generated files for the book will end up in `/src/generated/resources/data/modonomicon_demo_book/`, while the generated language files can be found in `/src/generated/resources/assets/modonomicon_demo_book/lang/`.
+The generated files for the book will end up in `/neo/src/generated/resources/data/modonomicon/modonomicon/books/demo`, while the generated language files can be found in `/neo/src/generated/resources/assets/modonomicon/lang/en_us.json`.
 
 Follow this guide to learn how to generate your own files.
 
 :::info
 
-No Java or other programming knowledge is needed to use the Demo Project, but programming knowledge will be helpful if you want to automate the creation of the book to a higher degree.
+Java programming knowledge will be helpful to get the most out of modonomicon datagen, but is not strictly necessary. You can also copy, paste and modify the demo book code to your liking.
 
 :::
 
-## Understanding the Demo Project Repository
+## Understanding the Datagen Setup
 
-The Demo Project will offer one git branch for each major step in this guide. A list of branches can be found here: https://github.com/klikli-dev/modonomicon-demo-book/branches
+Modonomicon provides a "BookProvider", which works much like the Loot Table provider. It generates book JSON files for a given book definition (book model). Neither mod developers nor pack developers needto change or subclass the book provider. Instead, it takes "Subproviders" that define the content of the book, and which it will convert into JSON files.
 
-The branch "main", which you also see when opening https://github.com/klikli-dev/modonomicon-demo-book, contains the final result of the guide, including the generated files.
+Modonomicon comes with "SingleBookSubProvider", which is a datagen helper class that comes with convenience methods for setting up a book.   
+The example modonomicon provides, https://github.com/klikli-dev/modonomicon/blob/HEAD/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/DemoBook.java, uses this class to set up the demo book. It is recommended to simply copy this file (or modify it directly).
 
-:::tip
-
-If you do not know what a "git branch" is - worry not. Think of it as one snapshot of the demo project that you can download that corresponds to the current step in this guide.
-
-::: 
 
 ## Step 0: The Editor of your Choice 
 

@@ -13,7 +13,7 @@ This of course requires the changed files to be in the correct data/resource pac
 :::
 
 
-The easiest way to get started is to follow the step by step guide **[Step by Step with Datagen](./step-by-step-with-datagen/)**. This guide uses datagen - a forge feature - which means as part of the process you will learn how to set up a simple mod development environment. 
+The easiest way to get started is to follow the step by step guide **[Step by Step with Datagen](./step-by-step-with-datagen/)**. This guide uses datagen, a minecraft development feature, so it assumes that you know how to set up a mod project in either forge, neoforge or fabric.
 
 :::tip
 
@@ -23,6 +23,12 @@ Even for modpack creators it is recommended to follow this process. Datagen is a
 
 ## Manually creating books 
 
-If you instead want to manually create a book by editign JSON files directly there is currently no step-by-step guide, however you can look at the generated results of the above guide **[here](https://github.com/klikli-dev/modonomicon-demo-book/tree/main/src/generated/resources)**.
+:::warn
+
+It is not recommended to manually create books. It is much more convenient and error-free to use datagen.
+
+:::
+
+If you instead want to manually create a book by editign JSON files directly there is currently no guide, however you can look at the generated results of the demo book **[here](https://github.com/klikli-dev/modonomicon/tree/HEAD/neo/src/generated/resources/data/modonomicon/modonomicon/books)**.
 
 Further, you can reference the [Structure](../basics/structure/) section to learn about the file structures.
