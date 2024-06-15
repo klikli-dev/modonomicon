@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.client.gui;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookDisplayMode;
+import com.klikli_dev.modonomicon.book.PageDisplayMode;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.entries.CategoryLinkBookEntry;
@@ -19,7 +20,9 @@ import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.BookCategoryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookErrorScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryDoublePageScreen;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
+import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntrySinglePageScreen;
 import com.klikli_dev.modonomicon.client.gui.book.index.BookCategoryIndexOnNodeScreen;
 import com.klikli_dev.modonomicon.client.gui.book.index.BookCategoryIndexScreen;
 import com.klikli_dev.modonomicon.client.gui.book.index.BookParentIndexScreen;
@@ -151,7 +154,7 @@ public class BookGuiManager {
         var book = BookDataManager.get().getBook(address.bookId());
 
         //if the book is a leaflet, ensure we have an address that directly opens the leaflet entry.
-        if(book.isLeaflet()){
+        if (book.isLeaflet()) {
             //if the address contains a specific page, preserve that. The leaflet might theoretically link within itself!
             address = address.page() > -1 ? book.getLeafletAddress().withPage(address.page()) : book.getLeafletAddress();
         }
@@ -295,7 +298,8 @@ public class BookGuiManager {
      */
     @ApiStatus.Internal
     public void openContentEntry(BookContentEntry entry, BookAddress address) {
-        var openBookEntryScreen = new BookEntryScreen(this.openBookParentScreen, entry);
+        var openBookEntryScreen = entry.getBook().getPageDisplayMode() == PageDisplayMode.DOUBLE_PAGE ? new BookEntryDoublePageScreen(this.openBookParentScreen, entry) : new BookEntrySinglePageScreen(this.openBookParentScreen, entry);
+
         this.openBookEntryScreen = openBookEntryScreen;
 
         if (address.page() != -1)
@@ -432,7 +436,7 @@ public class BookGuiManager {
 
         //leaflets should never show the category or book screen
         //So we just hand the close down to the parent screen, with the instruction to close the remaining stack.
-        if(screen.getBook().isLeaflet()){
+        if (screen.getBook().isLeaflet()) {
             this.closeScreenStack(this.openBookCategoryScreen);
         }
     }
@@ -479,7 +483,7 @@ public class BookGuiManager {
 
         //if previous screen alreadly cleaned up, we exit early
         //this should not actually happen.
-        if(this.openBookParentScreen == null)
+        if (this.openBookParentScreen == null)
             return;
 
 
@@ -495,7 +499,7 @@ public class BookGuiManager {
 
         //if previous screen alreadly cleaned up, we exit early
         // -> this is the case for leaflets. That is also why it is safe to lose the "OpenEntry" state
-        if(this.openBookCategoryScreen == null)
+        if (this.openBookCategoryScreen == null)
             return;
 
         //set the open entry on the category state, so that closeCategoryScreen sends it along.

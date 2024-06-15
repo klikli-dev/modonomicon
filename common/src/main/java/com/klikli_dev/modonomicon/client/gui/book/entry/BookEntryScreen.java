@@ -60,11 +60,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public class BookEntryScreen extends BookPaginatedScreen {
+public abstract class BookEntryScreen extends BookPaginatedScreen {
 
     public static final int TOP_PADDING = 15;
     public static final int LEFT_PAGE_X = 12;
     public static final int RIGHT_PAGE_X = 141;
+    public static final int SINGLE_PAGE_X = 77;
     public static final int PAGE_WIDTH = 124;
     public static final int PAGE_HEIGHT = 128; //TODO: Adjust to what is real
 
@@ -74,19 +75,16 @@ public class BookEntryScreen extends BookPaginatedScreen {
 
     private static long lastTurnPageSoundTime;
     protected final BookParentScreen parentScreen;
-    private final BookContentEntry entry;
-    private final ResourceLocation bookContentTexture;
+    protected final BookContentEntry entry;
+    protected final ResourceLocation bookContentTexture;
     private final ItemParser itemParser;
     public int ticksInBook;
-    private List<BookPage> unlockedPages;
-    private BookPage leftPage;
-    private BookPage rightPage;
-    private BookPageRenderer<?> leftPageRenderer;
-    private BookPageRenderer<?> rightPageRenderer;
+    protected List<BookPage> unlockedPages;
+
     /**
      * The index of the leftmost unlocked page being displayed.
      */
-    private int openPagesIndex;
+    protected int openPagesIndex;
     private List<Component> tooltip;
     private ItemStack tooltipStack;
     private FluidHolder tooltipFluidStack;
@@ -269,20 +267,6 @@ public class BookEntryScreen extends BookPaginatedScreen {
         }
     }
 
-    private int getOpenPagesIndexForPage(int pageIndex) {
-        for (var i = 0; i < this.unlockedPages.size(); i++) {
-            var pageNumber = this.unlockedPages.get(i).getPageNumber();
-            if (pageNumber == pageIndex) {
-                return i & -2; // Rounds down to even
-            }
-            if (pageNumber > pageIndex) {
-                // pageNumber will only increase, so we can stop here
-                break;
-            }
-        }
-        return 0;
-    }
-
     public void setOpenPagesIndex(int openPagesIndex) {
         this.openPagesIndex = openPagesIndex;
     }
@@ -307,21 +291,12 @@ public class BookEntryScreen extends BookPaginatedScreen {
         }
     }
 
-    public Style getClickedComponentStyleAtForPage(BookPageRenderer<?> page, double pMouseX, double pMouseY) {
+    protected Style getClickedComponentStyleAtForPage(BookPageRenderer<?> page, double pMouseX, double pMouseY) {
         if (page != null) {
             return page.getClickedComponentStyleAt(pMouseX - this.bookLeft - page.left, pMouseY - this.bookTop - page.top);
         }
 
         return null;
-    }
-
-    @Nullable
-    public Style getClickedComponentStyleAt(double pMouseX, double pMouseY) {
-        var leftPageClickedStyle = this.getClickedComponentStyleAtForPage(this.leftPageRenderer, pMouseX, pMouseY);
-        if (leftPageClickedStyle != null) {
-            return leftPageClickedStyle;
-        }
-        return this.getClickedComponentStyleAtForPage(this.rightPageRenderer, pMouseX, pMouseY);
     }
 
     public int getBookLeft() {
@@ -385,36 +360,6 @@ public class BookEntryScreen extends BookPaginatedScreen {
         guiGraphics.pose().popPose();
     }
 
-    protected void beginDisplayPages() {
-        //allow pages to clean up
-        if (this.leftPageRenderer != null) {
-            this.leftPageRenderer.onEndDisplayPage(this);
-        }
-        if (this.rightPageRenderer != null) {
-            this.rightPageRenderer.onEndDisplayPage(this);
-        }
-
-        //get new pages
-        int leftPageIndex = this.openPagesIndex;
-        int rightPageIndex = leftPageIndex + 1;
-
-        this.leftPage = leftPageIndex < this.unlockedPages.size() ? this.unlockedPages.get(leftPageIndex) : null;
-        this.rightPage = rightPageIndex < this.unlockedPages.size() ? this.unlockedPages.get(rightPageIndex) : null;
-
-        //allow pages to prepare for being displayed
-        if (this.leftPage != null) {
-            this.leftPageRenderer = PageRendererRegistry.getPageRenderer(this.leftPage.getType()).create(this.leftPage);
-            this.leftPageRenderer.onBeginDisplayPage(this, LEFT_PAGE_X, TOP_PADDING);
-        } else {
-            this.leftPageRenderer = null;
-        }
-        if (this.rightPage != null) {
-            this.rightPageRenderer = PageRendererRegistry.getPageRenderer(this.rightPage.getType()).create(this.rightPage);
-            this.rightPageRenderer.onBeginDisplayPage(this, RIGHT_PAGE_X, TOP_PADDING);
-        } else {
-            this.rightPageRenderer = null;
-        }
-    }
 
     protected void onPageChanged() {
         this.beginDisplayPages();
@@ -432,39 +377,6 @@ public class BookEntryScreen extends BookPaginatedScreen {
 
     public void saveState(EntryVisualState state, boolean savePage) {
         state.openPagesIndex = savePage ? this.openPagesIndex : 0;
-    }
-
-    @Override
-    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        RenderSystem.disableDepthTest(); //guard against depth test being enabled by other rendering code, that would cause ui elements to vanish
-
-        this.resetTooltip();
-
-        //we need to modify blit offset (now: z pose) to not draw over toasts
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, -1300);  //magic number arrived by testing until toasts show, but BookOverviewScreen does not
-        this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
-        guiGraphics.pose().popPose();
-
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(this.bookLeft, this.bookTop, 0);
-        renderBookBackground(guiGraphics, this.bookContentTexture);
-        guiGraphics.pose().popPose();
-
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(this.bookLeft, this.bookTop, 0);
-        this.renderPage(guiGraphics, this.leftPageRenderer, pMouseX, pMouseY, pPartialTick);
-        this.renderPage(guiGraphics, this.rightPageRenderer, pMouseX, pMouseY, pPartialTick);
-        guiGraphics.pose().popPose();
-
-        //do not translate super (= widget rendering) -> otherwise our buttons are messed up
-        //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
-        for (var renderable : this.renderables) {
-            renderable.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
-        }
-
-        //do not translate tooltip, would mess up location
-        this.drawTooltip(guiGraphics, pMouseX, pMouseY);
     }
 
     @Override
@@ -791,6 +703,11 @@ public class BookEntryScreen extends BookPaginatedScreen {
 
         this.unlockedPages = this.entry.getUnlockedPagesFor(this.minecraft.player);
         this.beginDisplayPages();
+    }
+
+    @Override
+    protected void initNavigationButtons() {
+        super.initNavigationButtons();
 
         this.addRenderableWidget(new BackButton(this, this.width / 2 - BackButton.WIDTH / 2, this.bookTop + FULL_HEIGHT - BackButton.HEIGHT / 2));
     }
@@ -817,9 +734,18 @@ public class BookEntryScreen extends BookPaginatedScreen {
             return true;
         }
 
-        var clickPage = this.clickPage(this.leftPageRenderer, pMouseX, pMouseY, pButton)
-                || this.clickPage(this.rightPageRenderer, pMouseX, pMouseY, pButton);
-
-        return clickPage || super.mouseClicked(pMouseX, pMouseY, pButton);
+        return this.mouseClickedPage(pMouseX, pMouseY, pButton);
     }
+
+
+    protected abstract int getOpenPagesIndexForPage(int pageIndex);
+
+    @Nullable
+    protected abstract Style getClickedComponentStyleAt(double pMouseX, double pMouseY);
+
+    protected abstract boolean mouseClickedPage(double pMouseX, double pMouseY, int pButton);
+
+    protected abstract void beginDisplayPages();
+
+
 }
