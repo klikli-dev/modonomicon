@@ -419,12 +419,6 @@ public class BookGuiManager {
      * E.g. from the "close"/"x" button.
      */
     public void closeEntryScreen(BookEntryScreen screen, boolean overrideStoreLastOpenPageWhenClosingEntry) {
-        //leaflets should never show the category or book screen, so we just exit out all the way.
-        if(screen.getBook().isLeaflet()){
-            this.closeScreenStack(screen);
-            return;
-        }
-
         //close the entry screen
         if (ClientServices.GUI.getCurrentScreen() == screen)
             ClientServices.GUI.popGuiLayer();
@@ -435,6 +429,12 @@ public class BookGuiManager {
         //for ESC closing we always save the page (see below #onEsc())
         screen.saveState(state, overrideStoreLastOpenPageWhenClosingEntry || ClientServices.CLIENT_CONFIG.storeLastOpenPageWhenClosingEntry());
         Services.NETWORK.sendToServer(new SaveEntryStateMessage(screen.getEntry(), state));
+
+        //leaflets should never show the category or book screen
+        //So we just hand the close down to the parent screen, with the instruction to close the remaining stack.
+        if(screen.getBook().isLeaflet()){
+            this.closeScreenStack(this.openBookCategoryScreen);
+        }
     }
 
     /**
@@ -491,5 +491,9 @@ public class BookGuiManager {
         var categoryState = BookVisualStateManager.get().getCategoryStateFor(this.player(), this.openBookCategoryScreen.getCategory());
         categoryState.openEntry = screen.getEntry().getId();
         this.closeScreenStack(this.openBookCategoryScreen); //will then bubble down to close the parent screen
+    }
+
+    public void closeLeaflet(BookParentScreen screen) {
+
     }
 }
