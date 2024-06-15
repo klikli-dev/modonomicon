@@ -8,6 +8,7 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.datagen.BookProvider;
 import com.klikli_dev.modonomicon.api.datagen.LanguageProviderCache;
 import com.klikli_dev.modonomicon.datagen.book.DemoBook;
+import com.klikli_dev.modonomicon.datagen.book.DemoLeaflet;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -26,7 +27,8 @@ public class DataGenerators implements DataGeneratorEntrypoint {
         pack.addProvider((FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) ->
                 new BookProvider(output, registriesFuture, Modonomicon.MOD_ID, List.of(
                         //Add our demo book provider to the book provider
-                        new DemoBook(Modonomicon.MOD_ID, enUsCache)
+                        new DemoBook(Modonomicon.MOD_ID, enUsCache),
+                        new DemoLeaflet(Modonomicon.MOD_ID, enUsCache)
                 ))
         );
         //Important: lang provider needs to be added after the book provider, so it can read the texts added by the book provider out of the cache
