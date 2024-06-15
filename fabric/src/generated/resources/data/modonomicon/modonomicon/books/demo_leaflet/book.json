@@ -37,6 +37,7 @@
   },
   "model": "modonomicon:leaflet",
   "name": "book.modonomicon.demo_leaflet.name",
+  "page_display_mode": "single_page",
   "read_all_button_y_offset": 0,
   "right_frame_overlay": {
     "frame_height": 70,
@@ -49,6 +50,7 @@
   },
   "search_button_x_offset": 0,
   "search_button_y_offset": 0,
+  "single_page_texture": "modonomicon:textures/gui/single_page_entry.png",
   "tooltip": "",
   "top_frame_overlay": {
     "frame_height": 7,
