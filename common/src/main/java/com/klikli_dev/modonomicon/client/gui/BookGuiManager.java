@@ -477,6 +477,12 @@ public class BookGuiManager {
     public void closeScreenStack(BookCategoryScreen screen) {
         this.closeCategoryScreen(screen);
 
+        //if previous screen alreadly cleaned up, we exit early
+        //this should not actually happen.
+        if(this.openBookParentScreen == null)
+            return;
+
+
         //set the open category on the book state, so that closeParentScreen sends it along.
         var bookState = BookVisualStateManager.get().getBookStateFor(this.player(), screen.getCategory().getBook());
         bookState.openCategory = screen.getCategory().getId();
@@ -487,13 +493,14 @@ public class BookGuiManager {
         //close entry screen with forced saving of last page
         this.closeEntryScreen(screen, true);
 
+        //if previous screen alreadly cleaned up, we exit early
+        // -> this is the case for leaflets. That is also why it is safe to lose the "OpenEntry" state
+        if(this.openBookCategoryScreen == null)
+            return;
+
         //set the open entry on the category state, so that closeCategoryScreen sends it along.
         var categoryState = BookVisualStateManager.get().getCategoryStateFor(this.player(), this.openBookCategoryScreen.getCategory());
         categoryState.openEntry = screen.getEntry().getId();
         this.closeScreenStack(this.openBookCategoryScreen); //will then bubble down to close the parent screen
-    }
-
-    public void closeLeaflet(BookParentScreen screen) {
-
     }
 }
