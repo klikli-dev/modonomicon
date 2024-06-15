@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Book;
 import com.klikli_dev.modonomicon.book.BookDisplayMode;
 import com.klikli_dev.modonomicon.book.BookFrameOverlay;
+import com.klikli_dev.modonomicon.book.PageDisplayMode;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
@@ -85,9 +86,12 @@ public class BookModel {
 
     /**
      * Contains textures for the entry view, as well as index views (book or category in index mode, as well as search screen).
-     * This includes the book "page" background and various navigation buttons.
+     * This includes the book "page" background for double page view and various navigation buttons.
      */
     protected ResourceLocation bookContentTexture = ResourceLocation.parse(Data.Book.DEFAULT_CONTENT_TEXTURE);
+
+    protected PageDisplayMode pageDisplayMode = PageDisplayMode.DOUBLE_PAGE;
+    protected ResourceLocation singlePageTexture = ResourceLocation.parse(Data.Book.DEFAULT_SINGLE_PAGE_TEXTURE);
 
     /**
      * Contains textures for the crafting pages, such as crafting grids and result arrows.
@@ -236,6 +240,14 @@ public class BookModel {
         return this.displayMode;
     }
 
+    public PageDisplayMode getPageDisplayMode() {
+        return this.pageDisplayMode;
+    }
+
+    public ResourceLocation getSinglePageTexture() {
+        return this.singlePageTexture;
+    }
+
     public @Nullable ResourceLocation getLeafletEntry() {
         return this.leafletEntry;
     }
@@ -277,6 +289,9 @@ public class BookModel {
         if (this.leafletEntry != null) {
             json.addProperty("leaflet_entry", this.leafletEntry.toString());
         }
+
+        json.addProperty("page_display_mode", this.pageDisplayMode.getSerializedName());
+        json.addProperty("single_page_texture", this.singlePageTexture.toString());
 
         return json;
     }
@@ -506,6 +521,16 @@ public class BookModel {
      */
     public BookModel withLeafletEntry(ResourceLocation leafletEntry) {
         this.leafletEntry = leafletEntry;
+        return this;
+    }
+
+    public BookModel withPageDisplayMode(PageDisplayMode pageDisplayMode) {
+        this.pageDisplayMode = pageDisplayMode;
+        return this;
+    }
+
+    public BookModel withSinglePageTexture(ResourceLocation singlePageTexture) {
+        this.singlePageTexture = singlePageTexture;
         return this;
     }
 }

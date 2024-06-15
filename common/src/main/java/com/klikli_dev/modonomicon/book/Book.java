@@ -92,13 +92,17 @@ public class Book {
 
     protected ResourceLocation leafletEntry;
 
+    protected PageDisplayMode pageDisplayMode = PageDisplayMode.DOUBLE_PAGE;
+    protected ResourceLocation singlePageTexture = ResourceLocation.parse(Data.Book.DEFAULT_SINGLE_PAGE_TEXTURE);
+
+
     public Book(ResourceLocation id, String name, BookTextHolder description, String tooltip, ResourceLocation model, BookDisplayMode displayMode, boolean generateBookItem,
                 ResourceLocation customBookItem, String creativeTab, ResourceLocation font, ResourceLocation bookOverviewTexture, ResourceLocation frameTexture,
                 BookFrameOverlay topFrameOverlay, BookFrameOverlay bottomFrameOverlay, BookFrameOverlay leftFrameOverlay, BookFrameOverlay rightFrameOverlay,
                 ResourceLocation bookContentTexture, ResourceLocation craftingTexture, ResourceLocation turnPageSound,
                 int defaultTitleColor, float categoryButtonIconScale, boolean autoAddReadConditions, int bookTextOffsetX, int bookTextOffsetY, int bookTextOffsetWidth,
-                int categoryButtonXOffset, int categoryButtonYOffset, int searchButtonXOffset, int searchButtonYOffset, int readAllButtonYOffset, ResourceLocation leafletEntry
-    ) {
+                int categoryButtonXOffset, int categoryButtonYOffset, int searchButtonXOffset, int searchButtonYOffset, int readAllButtonYOffset, ResourceLocation leafletEntry,
+                PageDisplayMode pageDisplayMode, ResourceLocation singlePageTexture) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -133,7 +137,11 @@ public class Book {
         this.searchButtonXOffset = searchButtonXOffset;
         this.searchButtonYOffset = searchButtonYOffset;
         this.readAllButtonYOffset = readAllButtonYOffset;
+
         this.leafletEntry = leafletEntry;
+
+        this.pageDisplayMode = pageDisplayMode;
+        this.singlePageTexture = singlePageTexture;
     }
 
     public static Book fromJson(ResourceLocation id, JsonObject json, HolderLookup.Provider provider) {
@@ -189,10 +197,13 @@ public class Book {
                 ResourceLocation.parse(GsonHelper.getAsString(json, "leaflet_entry")) :
                 null;
 
+        var pageDisplayMode = PageDisplayMode.byName(GsonHelper.getAsString(json, "page_display_mode", PageDisplayMode.DOUBLE_PAGE.getSerializedName()));
+        var singlePageTexture = ResourceLocation.parse(GsonHelper.getAsString(json, "single_page_texture", Data.Book.DEFAULT_SINGLE_PAGE_TEXTURE));
+
         return new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font, bookOverviewTexture,
                 frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
                 bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, categoryButtonXOffset, categoryButtonYOffset,
-                searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset, leafletEntry);
+                searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset, leafletEntry, pageDisplayMode, singlePageTexture);
     }
 
 
@@ -237,10 +248,13 @@ public class Book {
 
         var leafletEntry = buffer.readNullable(FriendlyByteBuf::readResourceLocation);
 
+        var pageDisplayMode = PageDisplayMode.byId(buffer.readByte());
+        var singlePageTexture = buffer.readResourceLocation();
+
         return new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font, bookOverviewTexture,
                 frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
                 bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, categoryButtonXOffset, categoryButtonYOffset,
-                searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset, leafletEntry);
+                searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset, leafletEntry, pageDisplayMode, singlePageTexture);
     }
 
     /**
@@ -323,6 +337,9 @@ public class Book {
         buffer.writeShort(this.readAllButtonYOffset);
 
         buffer.writeNullable(this.leafletEntry, FriendlyByteBuf::writeResourceLocation);
+
+        buffer.writeByte(this.pageDisplayMode.ordinal());
+        buffer.writeResourceLocation(this.singlePageTexture);
     }
 
     public boolean autoAddReadConditions() {
@@ -500,5 +517,13 @@ public class Book {
     public BookAddress getLeafletAddress() {
         var leafletEntry = this.getEntry(this.leafletEntry);
         return BookAddress.ignoreSavedAndOpen(leafletEntry);
+    }
+
+    public PageDisplayMode getPageDisplayMode() {
+        return this.pageDisplayMode;
+    }
+
+    public ResourceLocation getSinglePageTexture() {
+        return this.singlePageTexture;
     }
 }

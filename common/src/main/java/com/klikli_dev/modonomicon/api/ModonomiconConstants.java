@@ -37,6 +37,7 @@ public class ModonomiconConstants {
                     256, 256, 8, 70, -4, 0);
 
             public static final String DEFAULT_CONTENT_TEXTURE = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/book_content.png").toString();
+            public static final String DEFAULT_SINGLE_PAGE_TEXTURE = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/single_page_entry.png").toString();
             public static final String DEFAULT_FONT = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "default").toString();
             public static final String DEFAULT_CRAFTING_TEXTURE = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/crafting_textures.png").toString();
             public static final String DEFAULT_PAGE_TURN_SOUND = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "turn_page").toString();
