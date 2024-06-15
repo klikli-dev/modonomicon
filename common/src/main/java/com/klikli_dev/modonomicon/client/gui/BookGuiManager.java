@@ -151,8 +151,10 @@ public class BookGuiManager {
         var book = BookDataManager.get().getBook(address.bookId());
 
         //if the book is a leaflet, ensure we have an address that directly opens the leaflet entry.
-        if(book.isLeaflet())
-            address = book.getLeafletAddress();
+        if(book.isLeaflet()){
+            //if the address contains a specific page, preserve that. The leaflet might theoretically link within itself!
+            address = address.page() > -1 ? book.getLeafletAddress().withPage(address.page()) : book.getLeafletAddress();
+        }
 
         var displayMode = book.getDisplayMode();
         if (displayMode == BookDisplayMode.INDEX) {

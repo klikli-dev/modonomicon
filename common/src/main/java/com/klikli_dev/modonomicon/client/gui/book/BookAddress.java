@@ -54,4 +54,8 @@ public record BookAddress(@NotNull ResourceLocation bookId,
                                           int page) {
         return new BookAddress(bookId, categoryId, true, entryId, true, page, true);
     }
+
+    public BookAddress withPage(int page) {
+        return new BookAddress(this.bookId, this.categoryId, this.ignoreSavedCategory, this.entryId, this.ignoreSavedEntry, page, this.ignoreSavedPage);
+    }
 }
