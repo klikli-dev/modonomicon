@@ -68,6 +68,7 @@ Modpack creators can and should skip this step and move the "DemoBook.java".
 The data generator registration happens in three steps. 
 1. First a Language Provider Cache is created. This allows you to write texts directly in the book (sub) provider, and have them added to the language provider.
 2. Then the DemoBook is registered using the BookProvider. Note that it is handed over the language provider cache we created in the first step.
+   1. Additionally a DemoLeaflet is registered. A leaflet is a special book with just one entry and no categories. You can remove this line in your setup, unless you want to create a leaflet.
 3. Finally, the language provider is registered, notice how it also receives the cache as parameter.
    1. It is important that your main mod langauge provider takes all contents of the cache and adds them to its output.
    2. To simplify this, make your langauge provider extend `AbstractModonomiconLanguageProvider`, like Modonomicon's [EnUsProvider](https://github.com/klikli-dev/modonomicon/blob/version/1.21/common/src/main/java/com/klikli_dev/modonomicon/datagen/EnUsProvider.java) does. Then you can just leave your provider as-is.

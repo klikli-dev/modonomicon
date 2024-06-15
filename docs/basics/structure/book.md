@@ -212,6 +212,13 @@ Default value: `0`.
 When rendering book text holders, add this offset to the width (allows to create a right margin/padding).   
 To make the line end move to the left (as it would for a margin setting in eg css), use a negative value.
 
+### **leaflet_entry** (ResourceLocation, _optional_)
+
+If this entry is set the book will ignore all other content and just display this entry.  
+Note that the entry still needs to be in a valid category, even if the category is not displayed. 
+The book will be treated as a book in index mode (that means, no big "node view" background will be shown behind the entry).
+
+See also [Leaflets](/docs/advanced/leaflets) for more information.
 
 ## Usage Examples
 
