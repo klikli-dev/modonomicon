@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2024 klikli-dev
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 package com.klikli_dev.modonomicon.gui;
 
 import net.minecraft.client.Minecraft;
