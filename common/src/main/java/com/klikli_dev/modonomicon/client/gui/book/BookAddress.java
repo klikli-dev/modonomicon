@@ -21,6 +21,10 @@ public record BookAddress(@NotNull ResourceLocation bookId,
                           ResourceLocation entryId, boolean ignoreSavedEntry,
                           int page, boolean ignoreSavedPage
 ) {
+    public static BookAddress ignoreSavedAndOpen(@NotNull BookEntry entry) {
+        return ignoreSaved(entry.getBook().getId(), entry.getCategory().getId(), entry.getId(), -1);
+    }
+
     public static BookAddress defaultFor(@NotNull BookCategory category) {
         return of(category.getBook().getId(), category.getId(), null, -1);
     }

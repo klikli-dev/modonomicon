@@ -150,6 +150,10 @@ public class BookGuiManager {
 
         var book = BookDataManager.get().getBook(address.bookId());
 
+        //if the book is a leaflet, ensure we have an address that directly opens the leaflet entry.
+        if(book.isLeaflet())
+            address = book.getLeafletAddress();
+
         var displayMode = book.getDisplayMode();
         if (displayMode == BookDisplayMode.INDEX) {
             this.openBookInIndexMode(book, address);
@@ -413,6 +417,12 @@ public class BookGuiManager {
      * E.g. from the "close"/"x" button.
      */
     public void closeEntryScreen(BookEntryScreen screen, boolean overrideStoreLastOpenPageWhenClosingEntry) {
+        //leaflets should never show the category or book screen, so we just exit out all the way.
+        if(screen.getBook().isLeaflet()){
+            this.closeScreenStack(screen);
+            return;
+        }
+
         //close the entry screen
         if (ClientServices.GUI.getCurrentScreen() == screen)
             ClientServices.GUI.popGuiLayer();

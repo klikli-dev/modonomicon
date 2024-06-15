@@ -22,18 +22,22 @@ import java.util.List;
 
 public class BookModel {
 
+    /**
+     * The book ID, e.g. "modonomicon:demo". The ID must be unique (usually that is guaranteed by the mod ID).
+     */
     protected ResourceLocation id;
+    /**
+     * The name of the book, should be a translation key/description id
+     */
     protected String name;
     /**
      * The description to (optionally) display on the first page of the category.
      */
     protected BookTextHolderModel description = new BookTextHolderModel("");
+    /**
+     * The tooltip to optionally display on the book item on hover.
+     */
     protected String tooltip = "";
-    protected ResourceLocation creativeTab = ResourceLocation.parse("modonomicon:modonomicon");
-
-    protected ResourceLocation model = ResourceLocation.parse(Book.DEFAULT_MODEL);
-    protected ResourceLocation bookOverviewTexture = ResourceLocation.parse(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
-    protected ResourceLocation font = ResourceLocation.parse(Book.DEFAULT_FONT);
 
     /**
      * The display mode - node based (thaumonomicon style) or index based (lexica botania / patchouli style)
@@ -42,13 +46,52 @@ public class BookModel {
      */
     protected BookDisplayMode displayMode = BookDisplayMode.NODE;
 
+    /**
+     * The creative tab to add the book to.
+     */
+    protected ResourceLocation creativeTab = ResourceLocation.parse("modonomicon:modonomicon");
+
+    /**
+     * If true, automatically generates an item for this book and registers it with the creative tab.
+     */
+    protected boolean generateBookItem = true;
+
+    /**
+     * The item model to use for the book. Only used if generateBookItem = true.
+     */
+    protected ResourceLocation model = ResourceLocation.parse(Book.DEFAULT_MODEL);
+
+    /**
+     * If set, uses this item for the book. That means you need to implement all functionality to open the book yourself.
+     */
+    @Nullable
+    protected ResourceLocation customBookItem = null;
+
+    /**
+     * This texture contains buttons for the "node view" of the book. E.g. search button, category buttons, "read all" button.
+     */
+    protected ResourceLocation bookOverviewTexture = ResourceLocation.parse(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
+
+    /**
+     * The font to use for the book text.
+     */
+    protected ResourceLocation font = ResourceLocation.parse(Book.DEFAULT_FONT);
+
     protected ResourceLocation frameTexture = ResourceLocation.parse(Book.DEFAULT_FRAME_TEXTURE);
     protected BookFrameOverlay topFrameOverlay = Data.Book.DEFAULT_TOP_FRAME_OVERLAY;
     protected BookFrameOverlay bottomFrameOverlay = Data.Book.DEFAULT_BOTTOM_FRAME_OVERLAY;
     protected BookFrameOverlay leftFrameOverlay = Data.Book.DEFAULT_LEFT_FRAME_OVERLAY;
     protected BookFrameOverlay rightFrameOverlay = Data.Book.DEFAULT_RIGHT_FRAME_OVERLAY;
+
+    /**
+     * Contains textures for the entry view, as well as index views (book or category in index mode, as well as search screen).
+     * This includes the book "page" background and various navigation buttons.
+     */
     protected ResourceLocation bookContentTexture = ResourceLocation.parse(Data.Book.DEFAULT_CONTENT_TEXTURE);
 
+    /**
+     * Contains textures for the crafting pages, such as crafting grids and result arrows.
+     */
     protected ResourceLocation craftingTexture = ResourceLocation.parse(Book.DEFAULT_CRAFTING_TEXTURE);
     protected int defaultTitleColor = 0x00000;
     protected float categoryButtonIconScale = 1.0f;
@@ -57,10 +100,7 @@ public class BookModel {
     protected List<BookCommandModel> commands = new ArrayList<>();
 
     protected boolean autoAddReadConditions = false;
-    protected boolean generateBookItem = true;
 
-    @Nullable
-    protected ResourceLocation customBookItem = null;
 
     /**
      * When rendering book text holders, add this offset to the x position (basically, create a left margin).
@@ -79,12 +119,20 @@ public class BookModel {
      */
     protected int bookTextOffsetWidth = 0;
 
-
     protected int categoryButtonXOffset = 0;
     protected int categoryButtonYOffset = 0;
     protected int searchButtonXOffset = 0;
     protected int searchButtonYOffset = 0;
     protected int readAllButtonYOffset = 0;
+
+    /**
+     * If this entry is set the book will ignore all other content and just display this entry.
+     * Note that the entry still needs to be in a valid category, even if the category is not displayed.
+     *
+     * The book will be treated as a book in index mode (that means, no big "node view" background will be shown behind the entry).
+     */
+    @Nullable
+    protected ResourceLocation leafletEntry;
 
     protected BookModel(ResourceLocation id, String name) {
         this.id = id;
@@ -188,6 +236,10 @@ public class BookModel {
         return this.displayMode;
     }
 
+    public @Nullable ResourceLocation getLeafletEntry() {
+        return this.leafletEntry;
+    }
+
     public JsonObject toJson(HolderLookup.Provider provider) {
         JsonObject json = new JsonObject();
         json.addProperty("name", this.name);
@@ -221,6 +273,11 @@ public class BookModel {
         if (this.customBookItem != null) {
             json.addProperty("custom_book_item", this.customBookItem.toString());
         }
+
+        if (this.leafletEntry != null) {
+            json.addProperty("leaflet_entry", this.leafletEntry.toString());
+        }
+
         return json;
     }
 
@@ -440,6 +497,15 @@ public class BookModel {
 
     public BookModel withReadAllButtonYOffset(int readAllButtonYOffset) {
         this.readAllButtonYOffset = readAllButtonYOffset;
+        return this;
+    }
+
+    /**
+     * If this entry is set the book will ignore all other content and just display this entry.
+     * Note that the entry still needs to be in a valid category, even if the category is not displayed.
+     */
+    public BookModel withLeafletEntry(ResourceLocation leafletEntry) {
+        this.leafletEntry = leafletEntry;
         return this;
     }
 }
