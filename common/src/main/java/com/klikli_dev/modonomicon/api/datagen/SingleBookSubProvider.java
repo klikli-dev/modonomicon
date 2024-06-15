@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 /**
- * An opinionated book provider with helper methods to generate a single book more easily.
+ * An opinionated book sub provider with helper methods to generate a single book more easily.
  */
 public abstract class SingleBookSubProvider extends ModonomiconProviderBase implements BookSubProvider {
     protected BookModel book;

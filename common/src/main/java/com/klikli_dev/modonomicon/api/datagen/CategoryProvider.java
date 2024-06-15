@@ -197,8 +197,7 @@ public abstract class CategoryProvider extends ModonomiconProviderBase {
         var category = BookCategoryModel.create(
                         this.modLoc(this.context().categoryId()),
                         this.context().categoryName()
-                )
-                .withIcon(this.categoryIcon());
+                );
 
         this.add(this.context().categoryName(), this.categoryName());
         var categoryDescription = this.categoryDescription();
