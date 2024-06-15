@@ -14,6 +14,7 @@ import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -204,7 +205,7 @@ public class Book {
         var displayMode = BookDisplayMode.byId(buffer.readByte());
 
         var generateBookItem = buffer.readBoolean();
-        var customBookItem = buffer.readBoolean() ? buffer.readResourceLocation() : null;
+        var customBookItem = buffer.readNullable(FriendlyByteBuf::readResourceLocation);
         var creativeTab = buffer.readUtf();
 
         var font = buffer.readResourceLocation();
@@ -234,7 +235,7 @@ public class Book {
         var searchButtonYOffset = (int) buffer.readShort();
         var readAllButtonYOffset = (int) buffer.readShort();
 
-        var leafletEntry = buffer.readResourceLocation();
+        var leafletEntry = buffer.readNullable(FriendlyByteBuf::readResourceLocation);
 
         return new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font, bookOverviewTexture,
                 frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
@@ -289,10 +290,9 @@ public class Book {
         buffer.writeByte(this.displayMode.ordinal());
 
         buffer.writeBoolean(this.generateBookItem);
-        buffer.writeBoolean(this.customBookItem != null);
-        if (this.customBookItem != null) {
-            buffer.writeResourceLocation(this.customBookItem);
-        }
+
+        buffer.writeNullable(this.customBookItem, FriendlyByteBuf::writeResourceLocation);
+
         buffer.writeUtf(this.creativeTab);
 
         buffer.writeResourceLocation(this.font);
@@ -322,7 +322,7 @@ public class Book {
         buffer.writeShort(this.searchButtonYOffset);
         buffer.writeShort(this.readAllButtonYOffset);
 
-        buffer.writeResourceLocation(this.leafletEntry);
+        buffer.writeNullable(this.leafletEntry, FriendlyByteBuf::writeResourceLocation);
     }
 
     public boolean autoAddReadConditions() {
