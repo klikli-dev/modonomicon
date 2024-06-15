@@ -48,5 +48,6 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         this.registerItemGenerated(this.name(ItemRegistry.MODONOMICON_GREEN.get()), "modonomicon_green");
         this.registerItemGenerated(this.name(ItemRegistry.MODONOMICON_PURPLE.get()), "modonomicon_purple");
         this.registerItemGenerated(this.name(ItemRegistry.MODONOMICON_RED.get()), "modonomicon_red");
+        this.registerItemGenerated(this.name(ItemRegistry.LEAFLET.get()), "leaflet");
     }
 }

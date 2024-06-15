@@ -39,5 +39,6 @@ public class ItemModelProvider extends FabricModelProvider {
         this.registerItemFlat(ItemRegistry.MODONOMICON_GREEN.get(), "modonomicon_green", itemModelGenerator);
         this.registerItemFlat(ItemRegistry.MODONOMICON_PURPLE.get(), "modonomicon_purple", itemModelGenerator);
         this.registerItemFlat(ItemRegistry.MODONOMICON_RED.get(), "modonomicon_red", itemModelGenerator);
+        this.registerItemFlat(ItemRegistry.LEAFLET.get(), "leaflet", itemModelGenerator);
     }
 }

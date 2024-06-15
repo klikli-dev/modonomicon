@@ -19,13 +19,15 @@ public class ItemRegistry {
 
     //Dummy items for default models
     public static final RegistryObject<Item> MODONOMICON_BLUE =
-            ITEMS.register("modonomicon_blue", () -> new ModonomiconItem(new Item.Properties()));
+            ITEMS.register("modonomicon_blue", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> MODONOMICON_GREEN =
-            ITEMS.register("modonomicon_green", () -> new ModonomiconItem(new Item.Properties()));
+            ITEMS.register("modonomicon_green", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> MODONOMICON_PURPLE =
-            ITEMS.register("modonomicon_purple", () -> new ModonomiconItem(new Item.Properties()));
+            ITEMS.register("modonomicon_purple", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> MODONOMICON_RED =
-            ITEMS.register("modonomicon_red", () -> new ModonomiconItem(new Item.Properties()));
+            ITEMS.register("modonomicon_red", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> LEAFLET =
+            ITEMS.register("leaflet", () -> new Item(new Item.Properties()));
 
     // Called in the mod initializer / constructor in order to make sure that items are registered
     public static void load() {
