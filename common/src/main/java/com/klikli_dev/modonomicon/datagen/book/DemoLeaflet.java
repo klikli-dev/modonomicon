@@ -27,12 +27,12 @@ public class DemoLeaflet extends LeafletSubProvider {
                 );
                 this.pageTitle("Demo Leaflet");
                 this.pageText("""
-                    This is a demo leaflet. It has some features:
-                    1. It's a leaflet. Yay.
-                    2. All page types modonomicon supports.
-                    3. No categories, no books, no mess.
-                    4. Fun! (If you like leaflets)
-                """);
+                        This is a demo leaflet. It has some features:
+                        1. It's a leaflet. Yay.
+                        2. All page types modonomicon supports.
+                        3. No categories, no books, no mess.
+                        4. Fun! (If you like leaflets)
+                        """);
             }
         };
     }
