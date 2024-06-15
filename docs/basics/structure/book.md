@@ -147,7 +147,18 @@ In that case you should still supply a a valid texture property (note that omitt
 ### **book_content_texture** (ResourceLocation, _optional_)
 
 Default value: `modonomicon:textures/gui/book_content.png`. The texture to use for rendering the pages in an entry, that is the book background, navigation buttons, title separator and image frames. 
-The texture must be a **512x256** png file.
+The texture must be a **512x256**px png file.
+
+### **page_display_mode** (String, _optional_)
+
+Default value: `double_page`.
+The display mode of the pages in the book. Can be `single_page` or `double_page`. As the name implies single page displays one page at a time, while double page displays two side-by-side.
+This only applies to how entries are rendered. Categories or books in index mode always use double page display.
+
+### **single_page_texture** (ResourceLocation, _optional_)
+Default value: `modonomicon:textures/gui/single_page_entry.png`.  
+The book background to use for rendering pages if the page display mode is single page (instead of the background in book_content_texture). 
+The texture must be a **256xc256**px png file. 
 
 ### **crafting_texture** (ResourceLocation, _optional_)
 
