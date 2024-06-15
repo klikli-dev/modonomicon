@@ -40,7 +40,8 @@ public class DemoLeaflet extends LeafletSubProvider {
     @Override
     protected BookModel additionalLeafletSetup(BookModel book) {
         //e.g. set creative tab using .withCreativeTab(<ResourceLocation>)
-        return book;
+        return book.withBookTextOffsetWidth(-5)
+                .withBookTextOffsetX(5);
     }
 
     @Override
