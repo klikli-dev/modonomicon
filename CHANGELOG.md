@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.4-1.73.0] - 2024-06-16
+### :sparkles: New Features
+- [`eefd9bf`](https://github.com/klikli-dev/modonomicon/commit/eefd9bf36a673efa47ee73af6a3a7a12f765a6ba) - add modonomicon to chiseled bookshelf tag *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`729d578`](https://github.com/klikli-dev/modonomicon/commit/729d578613ce524cbb7408abd68d3daa79001514) - default zoom multiplier wrong by a factor 512 *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`6fd298d`](https://github.com/klikli-dev/modonomicon/commit/6fd298de9f7f42a95bc42ace50e422e4483a780d) - store open entry in category properly *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`7781e91`](https://github.com/klikli-dev/modonomicon/commit/7781e91aafcb4621a9e75c1e2b82d3e36892d508) - redirect entry in history prevents opening category *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`2302086`](https://github.com/klikli-dev/modonomicon/commit/23020864a5ce439f49b314571abf2d6547bd38c2) - Clicking a category opens up an entry *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.4-1.72.2] - 2024-06-08
 ### :bug: Bug Fixes
 - [`91b9b64`](https://github.com/klikli-dev/modonomicon/commit/91b9b64d31c4bc7cfb42c5000e107f27502f89e2) - book closes entirely in some cases instead of closing the open entry *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -842,3 +853,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.4-1.72.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.71.0...release/v1.20.4-1.72.0
 [release/v1.20.4-1.72.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.72.0...release/v1.20.4-1.72.1
 [release/v1.20.4-1.72.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.72.1...release/v1.20.4-1.72.2
+[release/v1.20.4-1.73.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.72.2...release/v1.20.4-1.73.0
