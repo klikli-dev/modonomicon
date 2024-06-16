@@ -29,6 +29,8 @@ public class DataGenerators {
         //Important: lang provider needs to be added after the book provider, so it can read the texts added by the book provider out of the cache
         generator.addProvider(event.includeClient(), new EnUsProvider(generator.getPackOutput(), enUsCache));
 
-        generator.addProvider(event.includeClient(), new ItemModelProvider(generator.getPackOutput(), existingFileHelper));
+        var blockTagsProvider = new BlockTagsProvider(generator.getPackOutput(), event.getLookupProvider(), existingFileHelper);
+        generator.addProvider(event.includeClient(), blockTagsProvider);
+        generator.addProvider(event.includeClient(), new ItemTagsProvider(generator.getPackOutput(), event.getLookupProvider(), blockTagsProvider.contentsGetter(), existingFileHelper));
     }
 }

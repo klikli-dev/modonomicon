@@ -26,5 +26,6 @@ public class DataGenerators implements DataGeneratorEntrypoint {
         pack.addProvider((FabricDataOutput output) -> new EnUsProvider(output, enUsCache));
 
         pack.addProvider(ItemModelProvider::new);
+        pack.addProvider(ItemTagsProvider::new);
     }
 }

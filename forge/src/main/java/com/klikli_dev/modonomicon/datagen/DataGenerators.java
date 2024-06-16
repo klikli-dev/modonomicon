@@ -30,5 +30,9 @@ public class DataGenerators {
         generator.addProvider(event.includeClient(), new EnUsProvider(generator.getPackOutput(), enUsCache));
 
         generator.addProvider(event.includeClient(), new ItemModelProvider(generator.getPackOutput(), existingFileHelper));
+
+        var blockTagsProvider = new BlockTagsProvider(generator.getPackOutput(), event.getLookupProvider(), existingFileHelper);
+        generator.addProvider(event.includeClient(), blockTagsProvider);
+        generator.addProvider(event.includeClient(), new ItemTagsProvider(generator.getPackOutput(), event.getLookupProvider(), blockTagsProvider.contentsGetter(), existingFileHelper));
     }
 }
