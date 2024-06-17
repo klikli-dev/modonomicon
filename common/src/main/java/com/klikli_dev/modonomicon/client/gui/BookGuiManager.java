@@ -212,10 +212,6 @@ public class BookGuiManager {
     @ApiStatus.Internal
     public void openCategory(BookCategory category, BookAddress address) {
         if (this.openBookCategoryScreen != null) {
-            //skip if the category is already open
-            if (this.openBookCategoryScreen.getCategory() == category)
-                return;
-
             BookGuiManager.get().closeCategoryScreen(this.openBookCategoryScreen);
         }
 
