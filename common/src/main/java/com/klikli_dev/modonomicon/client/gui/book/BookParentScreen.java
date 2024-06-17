@@ -27,5 +27,5 @@ public interface BookParentScreen {
 
     void saveState(BookVisualState state);
 
-    void onSyncBookUnlockCapabilityMessage(SyncBookUnlockStatesMessage message);
+    void onSyncBookUnlockStatesMessage(SyncBookUnlockStatesMessage message);
 }

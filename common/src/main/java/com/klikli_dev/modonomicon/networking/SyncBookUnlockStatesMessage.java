@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.bookstate.BookStatesSaveData;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStates;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -19,7 +20,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class SyncBookUnlockStatesMessage implements Message {
 
@@ -47,14 +47,14 @@ public class SyncBookUnlockStatesMessage implements Message {
         //we are not allowed to overwrite the save data if we are in singleplayer or if we are the lan host, otherwise we would overwrite the server side save data!
         if (minecraft.getSingleplayerServer() == null) {
             BookUnlockStateManager.get().saveData = new BookStatesSaveData(
-                    new ConcurrentHashMap<>(Map.of(player.getUUID(), this.states)),
-                    new ConcurrentHashMap<>()
+                    Map.of(player.getUUID(), this.states),
+                    Object2ObjectMaps.emptyMap()
             );
         }
 
         //but firing the update event is fine :)
         if (BookGuiManager.get().openBookParentScreen != null) {
-            BookGuiManager.get().openBookParentScreen.onSyncBookUnlockCapabilityMessage(this);
+            BookGuiManager.get().openBookParentScreen.onSyncBookUnlockStatesMessage(this);
         }
     }
 }

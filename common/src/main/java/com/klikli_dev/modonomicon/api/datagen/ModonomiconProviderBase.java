@@ -43,7 +43,7 @@ public abstract class ModonomiconProviderBase {
     protected final Map<String, ModonomiconLanguageProvider> translations;
     protected final BookContextHelper context;
     protected final ConditionHelper conditionHelper;
-    private Map<String, String> macros = new Object2ObjectOpenHashMap<>();
+    private final Map<String, String> macros = new Object2ObjectOpenHashMap<>();
 
     protected ModonomiconProviderBase(String modId, ModonomiconLanguageProvider lang, Map<String, ModonomiconLanguageProvider> translations, BookContextHelper context, ConditionHelper conditionHelper) {
         this.modId = modId;

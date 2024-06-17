@@ -23,6 +23,8 @@ public class Networking {
         ServerPlayNetworking.registerGlobalReceiver(ReloadResourcesDoneMessage.TYPE, new ServerMessageHandler<>());
         ServerPlayNetworking.registerGlobalReceiver(RequestSyncBookStatesMessage.TYPE, new ServerMessageHandler<>());
         ServerPlayNetworking.registerGlobalReceiver(RequestAdvancementMessage.TYPE, new ServerMessageHandler<>());
+        ServerPlayNetworking.registerGlobalReceiver(AddBookmarkMessage.TYPE, new ServerMessageHandler<>());
+        ServerPlayNetworking.registerGlobalReceiver(RemoveBookmarkMessage.TYPE, new ServerMessageHandler<>());
     }
 
     public static void registerMessages() {
@@ -37,6 +39,8 @@ public class Networking {
         PayloadTypeRegistry.playC2S().register(ReloadResourcesDoneMessage.TYPE, ReloadResourcesDoneMessage.STREAM_CODEC);
         PayloadTypeRegistry.playC2S().register(RequestSyncBookStatesMessage.TYPE, RequestSyncBookStatesMessage.STREAM_CODEC);
         PayloadTypeRegistry.playC2S().register(RequestAdvancementMessage.TYPE, RequestAdvancementMessage.STREAM_CODEC);
+        PayloadTypeRegistry.playC2S().register(AddBookmarkMessage.TYPE, AddBookmarkMessage.STREAM_CODEC);
+        PayloadTypeRegistry.playC2S().register(RemoveBookmarkMessage.TYPE, RemoveBookmarkMessage.STREAM_CODEC);
 
         //to client
         PayloadTypeRegistry.playS2C().register(SendUnlockCodeToClientMessage.TYPE, SendUnlockCodeToClientMessage.STREAM_CODEC);

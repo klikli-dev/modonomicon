@@ -74,14 +74,15 @@ public class BookVisualStateManager {
         this.saveData.setDirty();
     }
 
-    public void addBookmarkFor(ServerPlayer player, Book book, BookAddress bookmark) {
+    public void addBookmarkFor(Player player, Book book, BookAddress bookmark) {
         this.getStateFor(player).addBookmark(book, bookmark);
         this.saveData.setDirty();
     }
 
-    public void removeBookmarkFor(ServerPlayer player, Book book, BookAddress bookmark) {
-        this.getStateFor(player).removeBookmark(book, bookmark);
+    public boolean removeBookmarkFor(Player player, Book book, BookAddress bookmark) {
+        var result = this.getStateFor(player).removeBookmark(book, bookmark);
         this.saveData.setDirty();
+        return result;
     }
 
     public void syncFor(ServerPlayer player) {

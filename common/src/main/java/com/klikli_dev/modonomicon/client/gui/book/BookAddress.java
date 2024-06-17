@@ -66,8 +66,13 @@ public record BookAddress(@NotNull ResourceLocation bookId,
         this(bookId, categoryId.orElse(null), ignoreSavedCategory, entryId.orElse(null), ignoreSavedEntry, page, ignoreSavedPage);
     }
 
-    public static BookAddress ignoreSavedAndOpen(@NotNull BookEntry entry) {
-        return ignoreSaved(entry.getBook().getId(), entry.getCategory().getId(), entry.getId(), -1);
+    public static BookAddress ignoreSaved(@NotNull BookEntry entry, int page) {
+        return ignoreSaved(entry.getBook().getId(), entry.getCategory().getId(), entry.getId(), page);
+    }
+
+
+    public static BookAddress ignoreSaved(@NotNull BookEntry entry) {
+        return ignoreSaved(entry, -1);
     }
 
     public static BookAddress defaultFor(@NotNull BookCategory category) {

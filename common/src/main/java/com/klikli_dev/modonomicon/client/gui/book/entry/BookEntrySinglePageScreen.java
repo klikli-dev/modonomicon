@@ -9,7 +9,6 @@ import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
@@ -47,11 +46,18 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
             this.addRenderableWidget(new ExitButton(this, this.bookLeft + SINGLE_PAGE_BOOK_BACKGROUND_WIDTH - 10, this.bookTop - 2, this::handleExitButton));
         }
         this.addRenderableWidget(new BackButton(this, this.width / 2 - BackButton.WIDTH / 2, this.bookTop + SINGLE_PAGE_BOOK_BACKGROUND_HEIGHT - BackButton.HEIGHT / 2));
+
+        this.updateBookmarksButton();
     }
 
     @Override
     protected int getOpenPagesIndexForPage(int pageIndex) {
         return pageIndex; //for single page screens the index is equivalent to the page number
+    }
+
+    @Override
+    protected int getPageForOpenPagesIndex(int openPagesIndex) {
+        return openPagesIndex;
     }
 
     @Override

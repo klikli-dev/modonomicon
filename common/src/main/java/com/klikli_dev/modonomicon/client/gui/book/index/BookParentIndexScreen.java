@@ -273,7 +273,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
     }
 
     @Override
-    public void onSyncBookUnlockCapabilityMessage(SyncBookUnlockStatesMessage message) {
+    public void onSyncBookUnlockStatesMessage(SyncBookUnlockStatesMessage message) {
         //this leads to re-init of the category buttons after a potential unlock
         this.rebuildWidgets();
 

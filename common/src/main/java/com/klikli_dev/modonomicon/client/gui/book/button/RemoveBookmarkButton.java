@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -16,10 +17,10 @@ import net.minecraft.network.chat.Component;
 
 public class RemoveBookmarkButton extends Button {
 
-    private final BookParentScreen parent;
+    private final BookEntryScreen parent;
     private final int scissorX;
 
-    public RemoveBookmarkButton(BookParentScreen parent, int pX, int pY, int scissorX, int width, int height, OnPress pOnPress, Tooltip tooltip) {
+    public RemoveBookmarkButton(BookEntryScreen parent, int pX, int pY, int scissorX, int width, int height, OnPress pOnPress, Tooltip tooltip) {
         super(pX, pY, width, height, Component.literal(""), pOnPress, Button.DEFAULT_NARRATION);
         this.setTooltip(tooltip);
         this.scissorX = scissorX;

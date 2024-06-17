@@ -90,8 +90,11 @@ public class BookUnlockStates {
             entryPagesMap.forEach((entryId, pages) -> innerMap.put(entryId, new ObjectOpenHashSet<>(pages)));
         });
 
-        this.unlockedEntries = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>(unlockedEntries));
-        this.unlockedCategories = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>(unlockedCategories));
+        this.unlockedEntries = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+        unlockedEntries.forEach((bookId, entries) -> this.unlockedEntries.put(bookId, new ObjectOpenHashSet<>(entries)));
+
+        this.unlockedCategories = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+        unlockedCategories.forEach((bookId, categories) -> this.unlockedCategories.put(bookId, new ObjectOpenHashSet<>(categories)));
 
         this.usedCommands = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
         usedCommands.forEach((bookId, commandUsesMap) -> {

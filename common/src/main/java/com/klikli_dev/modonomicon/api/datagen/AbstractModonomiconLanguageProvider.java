@@ -5,6 +5,7 @@
 package com.klikli_dev.modonomicon.api.datagen;
 
 import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -23,7 +24,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 public abstract class AbstractModonomiconLanguageProvider implements ModonomiconLanguageProvider, DataProvider {
-    private final Map<String, String> data = new TreeMap<>();
+    private final Map<String, String> data = new Object2ObjectOpenHashMap<>();
     private final PackOutput output;
     private final String modid;
     private final String locale;

@@ -21,33 +21,34 @@ import com.klikli_dev.modonomicon.book.page.*;
 import com.klikli_dev.modonomicon.multiblock.DenseMultiblock;
 import com.klikli_dev.modonomicon.multiblock.SparseMultiblock;
 import com.klikli_dev.modonomicon.multiblock.matcher.*;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class LoaderRegistry {
 
-    private static final Map<ResourceLocation, BookEntryJsonLoader<? extends BookEntry>> entryTypeJsonLoaders = new ConcurrentHashMap<>();
-    private static final Map<ResourceLocation, NetworkLoader<? extends BookEntry>> entryTypeNetworkLoaders = new ConcurrentHashMap<>();
+    private static final Map<ResourceLocation, BookEntryJsonLoader<? extends BookEntry>> entryTypeJsonLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+    private static final Map<ResourceLocation, NetworkLoader<? extends BookEntry>> entryTypeNetworkLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 
-    private static final Map<ResourceLocation, JsonLoader<? extends BookPage>> pageJsonLoaders = new ConcurrentHashMap<>();
-    private static final Map<ResourceLocation, NetworkLoader<? extends BookPage>> pageNetworkLoaders = new ConcurrentHashMap<>();
+    private static final Map<ResourceLocation, JsonLoader<? extends BookPage>> pageJsonLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+    private static final Map<ResourceLocation, NetworkLoader<? extends BookPage>> pageNetworkLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 
-    private static final Map<ResourceLocation, JsonLoader<? extends BookCondition>> conditionJsonLoaders = new ConcurrentHashMap<>();
+    private static final Map<ResourceLocation, JsonLoader<? extends BookCondition>> conditionJsonLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 
-    private static final Map<ResourceLocation, NetworkLoader<? extends BookCondition>> conditionNetworkLoaders = new ConcurrentHashMap<>();
-    private static final Map<ResourceLocation, JsonLoader<? extends Multiblock>> multiblockJsonLoaders = new ConcurrentHashMap<>();
-    private static final Map<ResourceLocation, NetworkLoader<? extends Multiblock>> multiblockNetworkLoaders = new ConcurrentHashMap<>();
+    private static final Map<ResourceLocation, NetworkLoader<? extends BookCondition>> conditionNetworkLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+    private static final Map<ResourceLocation, JsonLoader<? extends Multiblock>> multiblockJsonLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+    private static final Map<ResourceLocation, NetworkLoader<? extends Multiblock>> multiblockNetworkLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 
-    private static final Map<ResourceLocation, JsonLoader<? extends StateMatcher>> stateMatcherJsonLoaders = new ConcurrentHashMap<>();
-    private static final Map<ResourceLocation, NetworkLoader<? extends StateMatcher>> stateMatcherNetworkLoaders = new ConcurrentHashMap<>();
+    private static final Map<ResourceLocation, JsonLoader<? extends StateMatcher>> stateMatcherJsonLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+    private static final Map<ResourceLocation, NetworkLoader<? extends StateMatcher>> stateMatcherNetworkLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 
 
-    private static final Map<ResourceLocation, TriPredicate<BlockGetter, BlockPos, BlockState>> predicates = new ConcurrentHashMap<>();
+    private static final Map<ResourceLocation, TriPredicate<BlockGetter, BlockPos, BlockState>> predicates = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 
     /**
      * Call from common setup

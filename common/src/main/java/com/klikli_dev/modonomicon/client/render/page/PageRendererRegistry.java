@@ -9,6 +9,10 @@ package com.klikli_dev.modonomicon.client.render.page;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.book.page.*;
 import com.klikli_dev.modonomicon.fluid.FluidHolder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectSets;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -18,12 +22,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class PageRendererRegistry {
-    static final Set<Item> ITEMS_NOT_TO_RENDER = ConcurrentHashMap.newKeySet();
-    static final Set<Fluid> FLUIDS_NOT_TO_RENDER = ConcurrentHashMap.newKeySet();
-    private static final Map<ResourceLocation, PageRendererFactory> pageRenderers = new ConcurrentHashMap<>();
+    static final Set<Item> ITEMS_NOT_TO_RENDER = ObjectSets.synchronize(new ObjectOpenHashSet<>());
+    static final Set<Fluid> FLUIDS_NOT_TO_RENDER = ObjectSets.synchronize(new ObjectOpenHashSet<>());
+    private static final Map<ResourceLocation, PageRendererFactory> pageRenderers = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 
     /**
      * Call from client setup

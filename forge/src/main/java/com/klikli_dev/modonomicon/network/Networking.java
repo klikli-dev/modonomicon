@@ -166,6 +166,18 @@ public class Networking {
                 .decoder(decoder(RequestSyncBookStatesMessage.STREAM_CODEC))
                 .consumerNetworkThread((BiConsumer<RequestSyncBookStatesMessage, CustomPayloadEvent.Context>) MessageHandler::handle)
                 .add();
+
+        INSTANCE.messageBuilder(AddBookmarkMessage.class)
+                .encoder(encoder(AddBookmarkMessage.STREAM_CODEC))
+                .decoder(decoder(AddBookmarkMessage.STREAM_CODEC))
+                .consumerNetworkThread((BiConsumer<AddBookmarkMessage, CustomPayloadEvent.Context>) MessageHandler::handle)
+                .add();
+
+        INSTANCE.messageBuilder(RemoveBookmarkMessage.class)
+                .encoder(encoder(RemoveBookmarkMessage.STREAM_CODEC))
+                .decoder(decoder(RemoveBookmarkMessage.STREAM_CODEC))
+                .consumerNetworkThread((BiConsumer<RemoveBookmarkMessage, CustomPayloadEvent.Context>) MessageHandler::handle)
+                .add();
     }
 
     public static <T> void sendToSplit(ServerPlayer player, T message) {

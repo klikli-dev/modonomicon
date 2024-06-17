@@ -15,19 +15,26 @@ import com.klikli_dev.modonomicon.book.PatchouliLink;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.bookstate.visual.EntryVisualState;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
+import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.button.AddBookmarkButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.BackButton;
+import com.klikli_dev.modonomicon.client.gui.book.button.RemoveBookmarkButton;
+import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ItemLinkRenderer;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.fluid.FluidHolder;
 import com.klikli_dev.modonomicon.integration.ModonomiconJeiIntegration;
+import com.klikli_dev.modonomicon.networking.AddBookmarkMessage;
 import com.klikli_dev.modonomicon.networking.ClickCommandLinkMessage;
+import com.klikli_dev.modonomicon.networking.SyncBookVisualStatesMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.platform.services.FluidHelper;
@@ -37,6 +44,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
@@ -689,6 +697,63 @@ public abstract class BookEntryScreen extends BookPaginatedScreen {
         super.initNavigationButtons();
 
         this.addRenderableWidget(new BackButton(this, this.width / 2 - BackButton.WIDTH / 2, this.bookTop + FULL_HEIGHT - BackButton.HEIGHT / 2));
+
+        this.updateBookmarksButton();
+    }
+
+    protected boolean isBookmarked() {
+        return BookVisualStateManager.get().getBookmarksFor(this.minecraft.player, this.entry.getBook()).stream().anyMatch(b -> b.entryId().equals(this.entry.getId()));
+    }
+
+    protected void updateBookmarksButton() {
+        this.renderables.removeIf(b -> b instanceof AddBookmarkButton || b instanceof SearchButton);
+        this.children().removeIf(b -> b instanceof AddBookmarkButton || b instanceof SearchButton);
+        this.narratables.removeIf(b -> b instanceof AddBookmarkButton || b instanceof SearchButton);
+
+        int buttonHeight = 20;
+        int searchButtonX = this.bookLeft + FULL_WIDTH - 5;
+        int searchButtonY = this.bookTop + FULL_HEIGHT - 30;
+        int searchButtonWidth = 44; //width in png
+        int scissorX = this.bookLeft + FULL_WIDTH;//this is the render location of our frame so our search button never overlaps
+
+
+        if (this.isBookmarked()) {
+            var removeBookMarkButton = new RemoveBookmarkButton(this, searchButtonX, searchButtonY,
+                    scissorX,
+                    searchButtonWidth, buttonHeight,
+                    (b) -> this.onRemoveBookmarksButtonClick((RemoveBookmarkButton) b),
+                    Tooltip.create(Component.translatable(Gui.ADD_BOOKMARK)));
+            this.addRenderableWidget(removeBookMarkButton);
+        } else {
+            var addBookmarkButton = new AddBookmarkButton(this, searchButtonX, searchButtonY,
+                    scissorX,
+                    searchButtonWidth, buttonHeight,
+                    (b) -> this.onAddBookmarksButtonClick((AddBookmarkButton) b),
+                    Tooltip.create(Component.translatable(Gui.ADD_BOOKMARK)));
+            this.addRenderableWidget(addBookmarkButton);
+        }
+
+    }
+
+    protected void onAddBookmarksButtonClick(AddBookmarkButton button) {
+        if (!this.isBookmarked()) {
+            var bookmarkAddress = BookAddress.ignoreSaved(this.entry, this.getPageForOpenPagesIndex(this.openPagesIndex));
+            BookVisualStateManager.get().addBookmarkFor(this.minecraft.player, this.entry.getBook(), bookmarkAddress);
+
+            Services.NETWORK.sendToServer(new AddBookmarkMessage(bookmarkAddress));
+
+            this.updateBookmarksButton();
+        }
+    }
+
+    protected void onRemoveBookmarksButtonClick(RemoveBookmarkButton button) {
+        //no need to check for is bookmarked because we query the bookmark in question directly anyway
+        var bookmarkAddress = BookVisualStateManager.get().getBookmarksFor(this.minecraft.player, this.entry.getBook()).stream().filter(b -> b.entryId().equals(this.entry.getId())).findFirst().orElse(null);
+        if (bookmarkAddress != null) {
+            BookVisualStateManager.get().removeBookmarkFor(this.minecraft.player, this.entry.getBook(), bookmarkAddress);
+
+            this.updateBookmarksButton();
+        }
     }
 
     @Override
@@ -716,8 +781,16 @@ public abstract class BookEntryScreen extends BookPaginatedScreen {
         return this.mouseClickedPage(pMouseX, pMouseY, pButton);
     }
 
+    public void onSyncBookVisualStatesMessage(SyncBookVisualStatesMessage message) {
+        this.updateBookmarksButton();
+    }
 
     protected abstract int getOpenPagesIndexForPage(int pageIndex);
+
+    /**
+     * Gets the page index for the first page to display for the given open pages index.
+     */
+    protected abstract int getPageForOpenPagesIndex(int openPagesIndex);
 
     @Nullable
     protected abstract Style getClickedComponentStyleAt(double pMouseX, double pMouseY);

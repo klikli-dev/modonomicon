@@ -38,6 +38,11 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
     }
 
     @Override
+    protected int getPageForOpenPagesIndex(int openPagesIndex) {
+        return openPagesIndex / 2;
+    }
+
+    @Override
     public boolean canSeeArrowButton(boolean left) {
         return left ? this.openPagesIndex > 0 : (this.openPagesIndex + 2) < this.unlockedPages.size();
     }

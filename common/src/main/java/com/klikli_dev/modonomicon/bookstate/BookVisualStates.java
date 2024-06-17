@@ -18,6 +18,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
@@ -44,7 +45,8 @@ public class BookVisualStates {
 
     public BookVisualStates(Map<ResourceLocation, BookVisualState> bookStates, Map<ResourceLocation, List<BookAddress>> bookBookmarks) {
         this.bookStates = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>(bookStates));
-        this.bookBookmarks = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>(bookBookmarks));
+        this.bookBookmarks = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+        bookBookmarks.forEach((bookId, entries) -> this.bookBookmarks.put(bookId, new ArrayList<>(entries)));
     }
 
     public BookVisualState getBookState(Book book) {
@@ -83,7 +85,7 @@ public class BookVisualStates {
         this.getBookmarks(book).add(bookmark);
     }
 
-    public void removeBookmark(Book book, BookAddress bookmark) {
-        this.getBookmarks(book).remove(bookmark);
+    public boolean removeBookmark(Book book, BookAddress bookmark) {
+        return this.getBookmarks(book).remove(bookmark);
     }
 }

@@ -516,7 +516,7 @@ public class Book {
 
     public BookAddress getLeafletAddress() {
         var leafletEntry = this.getEntry(this.leafletEntry);
-        return BookAddress.ignoreSavedAndOpen(leafletEntry);
+        return BookAddress.ignoreSaved(leafletEntry);
     }
 
     public PageDisplayMode getPageDisplayMode() {
