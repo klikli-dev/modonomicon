@@ -22,6 +22,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -58,6 +59,10 @@ public class BookVisualStates {
         return this.getCategoryState(entry.getCategory()).entryStates.computeIfAbsent(entry.getId(), (id) -> new EntryVisualState());
     }
 
+    public List<BookAddress> getBookmarks(Book book) {
+        return this.bookBookmarks.computeIfAbsent(book.getId(), (id) -> new ArrayList<>());
+    }
+
     public void setBookState(Book book, BookVisualState state) {
         this.bookStates.put(book.getId(), state);
     }
@@ -68,5 +73,17 @@ public class BookVisualStates {
 
     public void setCategoryState(BookCategory category, CategoryVisualState state) {
         this.getBookState(category.getBook()).categoryStates.put(category.getId(), state);
+    }
+
+    public void setBookmarks(Book book, List<BookAddress> bookmarks) {
+        this.bookBookmarks.put(book.getId(), bookmarks);
+    }
+
+    public void addBookmark(Book book, BookAddress bookmark) {
+        this.getBookmarks(book).add(bookmark);
+    }
+
+    public void removeBookmark(Book book, BookAddress bookmark) {
+        this.getBookmarks(book).remove(bookmark);
     }
 }

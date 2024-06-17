@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.bookstate.visual.BookVisualState;
 import com.klikli_dev.modonomicon.bookstate.visual.CategoryVisualState;
 import com.klikli_dev.modonomicon.bookstate.visual.EntryVisualState;
+import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.networking.RequestSyncBookStatesMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookVisualStatesMessage;
 import com.klikli_dev.modonomicon.platform.Services;
@@ -20,6 +21,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.saveddata.SavedData;
+
+import java.util.List;
 
 public class BookVisualStateManager {
 
@@ -47,6 +50,10 @@ public class BookVisualStateManager {
         return this.getStateFor(player).getEntryState(entry);
     }
 
+    public List<BookAddress> getBookmarksFor(Player player, Book book) {
+        return this.getStateFor(player).getBookmarks(book);
+    }
+
     public void setEntryStateFor(ServerPlayer player, BookEntry entry, EntryVisualState state) {
         this.getStateFor(player).setEntryState(entry, state);
         this.saveData.setDirty();
@@ -59,6 +66,21 @@ public class BookVisualStateManager {
 
     public void setBookStateFor(ServerPlayer player, Book book, BookVisualState state) {
         this.getStateFor(player).setBookState(book, state);
+        this.saveData.setDirty();
+    }
+
+    public void setBookmarksFor(ServerPlayer player, Book book, List<BookAddress> bookmarks) {
+        this.getStateFor(player).setBookmarks(book, bookmarks);
+        this.saveData.setDirty();
+    }
+
+    public void addBookmarkFor(ServerPlayer player, Book book, BookAddress bookmark) {
+        this.getStateFor(player).addBookmark(book, bookmark);
+        this.saveData.setDirty();
+    }
+
+    public void removeBookmarkFor(ServerPlayer player, Book book, BookAddress bookmark) {
+        this.getStateFor(player).removeBookmark(book, bookmark);
         this.saveData.setDirty();
     }
 
