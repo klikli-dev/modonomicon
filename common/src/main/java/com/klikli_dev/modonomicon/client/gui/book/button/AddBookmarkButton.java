@@ -34,7 +34,7 @@ public class AddBookmarkButton extends Button {
             guiGraphics.pose().translate(xOffset, 0, 0);
 
             int scissorX = this.scissorX + xOffset;
-            int texX = 55;
+            int texX = 68;
             int texY = 145;
 
             int renderX = this.getX();

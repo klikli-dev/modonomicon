@@ -15,9 +15,11 @@ import com.klikli_dev.modonomicon.bookstate.visual.BookVisualState;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.bookmarks.BookBookmarksScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ReadAllButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
+import com.klikli_dev.modonomicon.client.gui.book.button.ShowBookmarksButton;
 import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
 import com.klikli_dev.modonomicon.networking.ClickReadAllButtonMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
@@ -340,12 +342,24 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
                 searchButtonWidth, buttonHeight,
                 (b) -> this.onSearchButtonClick((SearchButton) b),
                 Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_SEARCH)));
-
         this.addRenderableWidget(searchButton);
+
+        searchButtonY -= buttonHeight + 2;
+
+        var showBookmarksButton = new ShowBookmarksButton(this, searchButtonX, searchButtonY,
+                scissorX,
+                searchButtonWidth, buttonHeight,
+                (b) -> this.onShowBookmarksButtonClick((ShowBookmarksButton) b),
+                Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_BOOKMARKS)));
+        this.addRenderableWidget(showBookmarksButton);
     }
 
     protected void onSearchButtonClick(SearchButton button) {
         ClientServices.GUI.pushGuiLayer(new BookSearchScreen(this));
+    }
+
+    protected void onShowBookmarksButtonClick(ShowBookmarksButton button) {
+        ClientServices.GUI.pushGuiLayer(new BookBookmarksScreen(this));
     }
 
     @Override

@@ -17,9 +17,11 @@ import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.bookmarks.BookBookmarksScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryListButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ReadAllButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
+import com.klikli_dev.modonomicon.client.gui.book.button.ShowBookmarksButton;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
@@ -347,12 +349,24 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
                 searchButtonWidth, buttonHeight,
                 (b) -> this.onSearchButtonClick((SearchButton) b),
                 Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_SEARCH)));
-
         this.addRenderableWidget(searchButton);
+
+        searchButtonY -= buttonHeight + 2;
+
+        var showBookmarksButton = new ShowBookmarksButton(this, searchButtonX, searchButtonY,
+                scissorX,
+                searchButtonWidth, buttonHeight,
+                (b) -> this.onShowBookmarksButtonClick((ShowBookmarksButton) b),
+                Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_BOOKMARKS)));
+        this.addRenderableWidget(showBookmarksButton);
     }
 
     protected void onSearchButtonClick(SearchButton button) {
         ClientServices.GUI.pushGuiLayer(new BookSearchScreen(this));
+    }
+
+    protected void onShowBookmarksButtonClick(ShowBookmarksButton button) {
+        ClientServices.GUI.pushGuiLayer(new BookBookmarksScreen(this));
     }
 
     protected void addEntryButtons(int x, int y, int start, int count) {

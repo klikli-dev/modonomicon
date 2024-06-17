@@ -159,6 +159,9 @@ public class ModonomiconConstants {
             public static final String BOOKMARKS_NO_RESULTS = PREFIX + "bookmarks.no_results";
 
             public static final String OPEN_SEARCH = PREFIX + "open_search";
+            public static final String OPEN_BOOKMARKS = PREFIX + "open_bookmarks";
+            public static final String ADD_BOOKMARK = PREFIX + "add_bookmark";
+            public static final String REMOVE_BOOKMARK = PREFIX + "remove_bookmark";
 
             public static final String RECIPE_PAGE_RECIPE_MISSING = PREFIX + "recipe_page.recipe_missing";
         }
