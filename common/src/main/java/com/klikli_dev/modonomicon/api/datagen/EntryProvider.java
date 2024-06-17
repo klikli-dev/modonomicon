@@ -20,11 +20,11 @@ import java.util.stream.Stream;
 
 public abstract class EntryProvider extends ModonomiconProviderBase {
 
-    protected final CategoryProvider parent;
+    protected final CategoryProviderBase parent;
 
     protected BookEntryModel entry;
 
-    public EntryProvider(CategoryProvider parent) {
+    public EntryProvider(CategoryProviderBase parent) {
         super(parent.modId(), parent.lang(), parent.langs(), parent.context(), parent.condition());
         this.parent = parent;
         this.entry = null;

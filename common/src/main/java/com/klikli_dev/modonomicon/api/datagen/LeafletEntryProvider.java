@@ -11,7 +11,7 @@ import net.minecraft.world.item.Items;
 public abstract class LeafletEntryProvider extends EntryProvider {
     public static final String ID = "leaflet";
 
-    public LeafletEntryProvider(CategoryProvider parent) {
+    public LeafletEntryProvider(CategoryProviderBase parent) {
         super(parent);
     }
 

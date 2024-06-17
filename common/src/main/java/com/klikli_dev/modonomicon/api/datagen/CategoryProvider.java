@@ -23,22 +23,20 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class CategoryProvider extends ModonomiconProviderBase {
+public abstract class CategoryProvider extends CategoryProviderBase {
 
-    protected final ModonomiconProviderBase parent;
     protected CategoryEntryMap entryMap;
     protected BookCategoryModel category;
     protected int currentSortIndex;
 
     public CategoryProvider(ModonomiconProviderBase parent) {
-        super(parent.modId(), parent.lang(), parent.langs(), parent.context(), parent.condition());
-        this.parent = parent;
+        super(parent, parent.modId(), parent.lang(), parent.langs(), parent.context(), parent.condition());
         this.entryMap = new CategoryEntryMap();
         this.category = null;
         this.currentSortIndex = 0;
     }
 
-    protected CategoryEntryMap entryMap() {
+    public CategoryEntryMap entryMap() {
         return this.entryMap;
     }
 
@@ -52,7 +50,7 @@ public abstract class CategoryProvider extends ModonomiconProviderBase {
         return BookEntryParentModel.create(parentEntry.getId());
     }
 
-    protected BookEntryModel add(BookEntryModel entry) {
+    public BookEntryModel add(BookEntryModel entry) {
         if (entry.getSortNumber() == -1) {
             entry.withSortNumber(this.currentSortIndex++);
         }
@@ -60,7 +58,7 @@ public abstract class CategoryProvider extends ModonomiconProviderBase {
         return entry;
     }
 
-    protected List<BookEntryModel> add(List<BookEntryModel> entries) {
+    public List<BookEntryModel> add(List<BookEntryModel> entries) {
         for (var entry : entries) {
             if (entry.getSortNumber() == -1) {
                 entry.withSortNumber(this.currentSortIndex++);

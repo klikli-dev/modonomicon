@@ -26,9 +26,8 @@ import java.util.stream.Stream;
 /**
  * A category provider that is oriented on the legacy API for easier migration.
  */
-public abstract class LegacyCategoryProvider extends ModonomiconProviderBase {
+public abstract class LegacyCategoryProvider extends CategoryProviderBase {
 
-    protected final ModonomiconProviderBase parent;
     protected final Map<String, List<BookPageModel<?>>> cachedPages = new Object2ObjectOpenHashMap<>();
     protected CategoryEntryMap entryMap;
     protected BookCategoryModel category;
@@ -36,8 +35,7 @@ public abstract class LegacyCategoryProvider extends ModonomiconProviderBase {
     protected String categoryId;
 
     public LegacyCategoryProvider(ModonomiconProviderBase parent, String categoryId) {
-        super(parent.modId(), parent.lang(), parent.langs(), parent.context(), parent.condition());
-        this.parent = parent;
+        super(parent, parent.modId(), parent.lang(), parent.langs(), parent.context(), parent.condition());
         this.entryMap = new CategoryEntryMap();
         this.category = null;
         this.currentSortIndex = 0;
@@ -48,7 +46,7 @@ public abstract class LegacyCategoryProvider extends ModonomiconProviderBase {
         return this.categoryId;
     }
 
-    protected CategoryEntryMap entryMap() {
+    public CategoryEntryMap entryMap() {
         return this.entryMap;
     }
 
@@ -120,7 +118,7 @@ public abstract class LegacyCategoryProvider extends ModonomiconProviderBase {
         return BookEntryParentModel.create(parentEntry.getId());
     }
 
-    protected BookEntryModel add(BookEntryModel entry) {
+    public BookEntryModel add(BookEntryModel entry) {
         if (entry.getSortNumber() == -1) {
             entry.withSortNumber(this.currentSortIndex++);
         }
@@ -128,7 +126,7 @@ public abstract class LegacyCategoryProvider extends ModonomiconProviderBase {
         return entry;
     }
 
-    protected List<BookEntryModel> add(List<BookEntryModel> entries) {
+    public List<BookEntryModel> add(List<BookEntryModel> entries) {
         for (var entry : entries) {
             if (entry.getSortNumber() == -1) {
                 entry.withSortNumber(this.currentSortIndex++);

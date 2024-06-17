@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21-1.81.0] - 2024-06-17
+### :sparkles: New Features
+- [`726e81f`](https://github.com/klikli-dev/modonomicon/commit/726e81fe214f0c7aee6ff755ef0a129d272417ae) - add common base for category providers *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21-1.80.0] - 2024-06-17
 ### :sparkles: New Features
 - [`f9d9134`](https://github.com/klikli-dev/modonomicon/commit/f9d9134121e13f8097d6a94a9f7386e52364dc3d) - switch to Fastutil synchronized maps *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1040,3 +1045,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21-1.78.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21-1.78.2...release/v1.21-1.78.3
 [release/v1.21-1.79.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21-1.78.3...release/v1.21-1.79.0
 [release/v1.21-1.80.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21-1.79.0...release/v1.21-1.80.0
+[release/v1.21-1.81.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21-1.80.0...release/v1.21-1.81.0
