@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21-1.80.0] - 2024-06-17
+### :sparkles: New Features
+- [`f9d9134`](https://github.com/klikli-dev/modonomicon/commit/f9d9134121e13f8097d6a94a9f7386e52364dc3d) - switch to Fastutil synchronized maps *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`861befc`](https://github.com/klikli-dev/modonomicon/commit/861befcd682caf72391760ceee0cac9833592a90) - bump mod version *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21-1.79.0] - 2024-06-17
 ### :sparkles: New Features
 - [`2ee5907`](https://github.com/klikli-dev/modonomicon/commit/2ee590713c5faa6254c98252dcf0ce1d07a61b42) - add legacy datagen providers for easier migration and per-modloader sub provider registration helpers *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1031,3 +1039,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21-1.78.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21-1.78.1...release/v1.21-1.78.2
 [release/v1.21-1.78.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21-1.78.2...release/v1.21-1.78.3
 [release/v1.21-1.79.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21-1.78.3...release/v1.21-1.79.0
+[release/v1.21-1.80.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21-1.79.0...release/v1.21-1.80.0
