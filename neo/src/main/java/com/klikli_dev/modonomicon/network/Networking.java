@@ -26,9 +26,9 @@ public class Networking {
         registrar.playToServer(ReloadResourcesDoneMessage.TYPE, ReloadResourcesDoneMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToServer(RequestSyncBookStatesMessage.TYPE, RequestSyncBookStatesMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToServer(RequestAdvancementMessage.TYPE, RequestAdvancementMessage.STREAM_CODEC, MessageHandler::handle);
-        registrar.playToClient(SendUnlockCodeToServerMessage.TYPE, SendUnlockCodeToServerMessage.STREAM_CODEC, MessageHandler::handle);
-        registrar.playToClient(AddBookmarkMessage.TYPE, AddBookmarkMessage.STREAM_CODEC, MessageHandler::handle);
-        registrar.playToClient(RemoveBookmarkMessage.TYPE, RemoveBookmarkMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToServer(SendUnlockCodeToServerMessage.TYPE, SendUnlockCodeToServerMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToServer(AddBookmarkMessage.TYPE, AddBookmarkMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToServer(RemoveBookmarkMessage.TYPE, RemoveBookmarkMessage.STREAM_CODEC, MessageHandler::handle);
 
         registrar.playToClient(SendUnlockCodeToClientMessage.TYPE, SendUnlockCodeToClientMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToClient(SendAdvancementToClientMessage.TYPE, SendAdvancementToClientMessage.STREAM_CODEC, MessageHandler::handle);
