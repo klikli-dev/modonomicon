@@ -153,6 +153,10 @@ public class ModonomiconConstants {
             public static final String BOOK_INDEX_LIST_TITLE = PREFIX + "book.index_list_title";
             public static final String CATEGORY_INDEX_LIST_TITLE = PREFIX + "category.index_list_title";
 
+            public static final String BOOKMARKS_SCREEN_TITLE = PREFIX + "bookmarks.screen.title";
+            public static final String BOOKMARKS_INFO_TEXT = PREFIX + "bookmarks.info";
+            public static final String BOOKMARKS_ENTRY_LIST_TITLE = PREFIX + "bookmarks.entry_list_title";
+            public static final String BOOKMARKS_NO_RESULTS = PREFIX + "bookmarks.no_results";
 
             public static final String OPEN_SEARCH = PREFIX + "open_search";
 

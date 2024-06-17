@@ -67,6 +67,15 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Gui.BOOK_INDEX_LIST_TITLE, "Categories");
         this.add(Gui.CATEGORY_INDEX_LIST_TITLE, "Entries");
 
+        this.add(Gui.BOOKMARKS_SCREEN_TITLE, "Bookmarks");
+        this.add(Gui.BOOKMARKS_ENTRY_LIST_TITLE, "Bookmark Entries");
+        this.add(Gui.BOOKMARKS_NO_RESULTS, "You currently have no bookmarks");
+        this.add(Gui.BOOKMARKS_INFO_TEXT, """
+                To navigate to a bookmark, click on it in this list.\\
+                To add a bookmark, open an entry and click the "Add Bookmark" button on the bottom right.\\
+                To remove a bookmark, navigate to it and click the "Remove Bookmark" button on the bottom right.
+                """);
+
         this.add(Gui.RECIPE_PAGE_RECIPE_MISSING, "Recipe %s was not found! This may be an issue with the mod, or the modpack may have disabled it.");
 
         //Tooltip
