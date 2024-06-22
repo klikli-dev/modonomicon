@@ -10,7 +10,9 @@ Some of the most interesting features are:
 - Made to be extensible, mods can add new features, such as recipe pages for mod-specific crafting methods.
 - "Quest/Advancement"-style 2D view to navigate the content, as seen in the Thaumonomicon. 
   ![Quest View](/img/docs/intro/quest_view.png)
-- Easy styling of content with (extended) Markdown syntax.
+- "Index"-style view to navigate the content, as seen in Patchouli.
+  ![Index View](/img/docs/intro/index_view.png)
+- Easy styling of texts with (extended) Markdown syntax.
 - Various page types to display text, recipes, images, items and more.
 
 :::tip
