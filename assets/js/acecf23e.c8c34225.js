@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[7393],{1838:function(e){e.exports=JSON.parse('{"blogBasePath":"/modonomicon/blog","blogTitle":"Blog"}')}}]);
