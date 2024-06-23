@@ -20,6 +20,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ComponentRenderUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
@@ -47,6 +48,10 @@ public abstract class BookPageRenderer<T extends BookPage> {
      * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
      */
     public static void renderBookTextHolder(GuiGraphics guiGraphics, BookTextHolder text, Font font, int x, int y, int width) {
+        int height = BookEntryScreen.FULL_HEIGHT - 10 - 17 - 20;
+        //Fullheight - 10 seems to be the bottom of the page
+        // -17 will be replaced by the y offset that is moved by the presence of a title and title separator
+
         if (text.hasComponent()) {
             //if it is a component, we draw it directly
             for (FormattedCharSequence formattedcharsequence : font.split(text.getComponent(), width)) {
@@ -54,16 +59,45 @@ public abstract class BookPageRenderer<T extends BookPage> {
                 y += font.lineHeight;
             }
         } else if (text instanceof RenderedBookTextHolder renderedText) {
-            //if it is not a component it was sent through the markdown renderer
+            //TODO: we also need to use the scale to adjust component click detection!
+            //TODO: store the resulting scale to use it for click detection and to avoid re-calculating everytime.
             var components = renderedText.getRenderedText();
+            guiGraphics.hLine(x, x + width, y + height, 0xFF0000FF);
+            guiGraphics.hLine(x, x + width, y, 0xFF0000FF);
 
+            float scale = 1.1F;
+            float totalHeight = 0;
+             do {
+                 //it is important to iterate with a fine granularity, otherwise the text will be downscaled way too much
+                scale -= 0.01F;
+                totalHeight = 0;
+                for (var component : components) {
+                    var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, (int) (width / scale), (int) ((width - 10) / scale), font);
+                    totalHeight += wrapped.size() * font.lineHeight;
+                }
+                totalHeight = totalHeight * scale;
+            } while(totalHeight > height);
+
+            scale = Math.min(1.0f, scale);
+
+            guiGraphics.pose().pushPose();
+
+            if (scale < 1) {
+                guiGraphics.pose().translate(x - x * scale, y - y * scale, 0);
+                guiGraphics.pose().scale(scale, scale, scale);
+            }
+
+            float renderY = y;
             for (var component : components) {
-                var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, width, width - 10, font);
+                var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, (int) (width / scale), (int) ((width - 10) / scale), font);
                 for (FormattedCharSequence formattedcharsequence : wrapped) {
-                    guiGraphics.drawString(font, formattedcharsequence, x, y, 0, false);
-                    y += font.lineHeight;
+                    GuiGraphicsExt.drawString(guiGraphics, font, formattedcharsequence, x, renderY, 0, false);
+                    renderY += font.lineHeight;
                 }
             }
+
+            guiGraphics.pose().popPose();
+
         } else {
             Modonomicon.LOG.warn("BookTextHolder with String {} has no component, but is not rendered to markdown either.", text.getString());
         }
