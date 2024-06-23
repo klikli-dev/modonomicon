@@ -314,8 +314,6 @@ public abstract class BookPageRenderer<T extends BookPage> {
             }
         } else if (text instanceof RenderedBookTextHolder renderedText) {
             //TODO: take height as param
-            //TODO: we also need to use the scale to adjust component click detection!
-
             var height =  BookEntryScreen.FULL_HEIGHT - 10 - 17 - 20 + 30;
             var scale = getBookTextHolderScaleForRenderSize(text, this.font, width, height);
 
@@ -328,20 +326,10 @@ public abstract class BookPageRenderer<T extends BookPage> {
                     if (pMouseY > minY && pMouseY < maxY) {
                         //check if we are vertically over the title line
                         //horizontally over and right of the title is handled by font splitter
-                        //TODO: do we need to use scale here as well? probably need to scale mouse position somehow
-                        return this.font.getSplitter().componentStyleAtWidth(formattedcharsequence, (int) pMouseX - x);
+                        return this.font.getSplitter().componentStyleAtWidth(formattedcharsequence, (int) ((pMouseX - x) / scale));
                     }
                     y += this.font.lineHeight;
                 }
-//                var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, width, width - 10, this.font);
-//                for (FormattedCharSequence formattedcharsequence : wrapped) {
-//                    if (pMouseY > y && pMouseY < y + this.font.lineHeight) {
-//                        //check if we are vertically over the title line
-//                        //horizontally over and right of the title is handled by font splitter
-//                        return this.font.getSplitter().componentStyleAtWidth(formattedcharsequence, (int) pMouseX - x);
-//                    }
-//                    y += this.font.lineHeight;
-//                }
             }
         }
 
