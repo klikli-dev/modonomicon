@@ -64,6 +64,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     public static final int RIGHT_PAGE_X = 141;
     public static final int SINGLE_PAGE_X = LEFT_PAGE_X;
     public static final int PAGE_WIDTH = 124;
+    public static final int PAGE_HEIGHT = 155;
 
     public static final int MAX_TITLE_WIDTH = PAGE_WIDTH - 4;
 

@@ -84,6 +84,12 @@ public class Book {
      */
     protected int bookTextOffsetWidth;
 
+    /**
+     * When rendering book text holders, add this offset to the height (allows to create a bottom margin)
+     * To make the bottom end of the text move up (as it would for a margin setting in eg css), use a negative value.
+     */
+    protected int bookTextOffsetHeight;
+
     protected int categoryButtonXOffset;
     protected int categoryButtonYOffset;
     protected int searchButtonXOffset;
@@ -100,7 +106,7 @@ public class Book {
                 @Nullable ResourceLocation customBookItem, String creativeTab, ResourceLocation font, ResourceLocation bookOverviewTexture, ResourceLocation frameTexture,
                 BookFrameOverlay topFrameOverlay, BookFrameOverlay bottomFrameOverlay, BookFrameOverlay leftFrameOverlay, BookFrameOverlay rightFrameOverlay,
                 ResourceLocation bookContentTexture, ResourceLocation craftingTexture, ResourceLocation turnPageSound,
-                int defaultTitleColor, float categoryButtonIconScale, boolean autoAddReadConditions, int bookTextOffsetX, int bookTextOffsetY, int bookTextOffsetWidth,
+                int defaultTitleColor, float categoryButtonIconScale, boolean autoAddReadConditions, int bookTextOffsetX, int bookTextOffsetY, int bookTextOffsetWidth, int bookTextOffsetHeight,
                 int categoryButtonXOffset, int categoryButtonYOffset, int searchButtonXOffset, int searchButtonYOffset, int readAllButtonYOffset, ResourceLocation leafletEntry,
                 PageDisplayMode pageDisplayMode, ResourceLocation singlePageTexture) {
         this.id = id;
@@ -131,6 +137,7 @@ public class Book {
         this.bookTextOffsetX = bookTextOffsetX;
         this.bookTextOffsetY = bookTextOffsetY;
         this.bookTextOffsetWidth = bookTextOffsetWidth;
+        this.bookTextOffsetHeight = bookTextOffsetHeight;
 
         this.categoryButtonXOffset = categoryButtonXOffset;
         this.categoryButtonYOffset = categoryButtonYOffset;
@@ -186,6 +193,7 @@ public class Book {
         var bookTextOffsetX = GsonHelper.getAsInt(json, "book_text_offset_x", 0);
         var bookTextOffsetY = GsonHelper.getAsInt(json, "book_text_offset_y", 0);
         var bookTextOffsetWidth = GsonHelper.getAsInt(json, "book_text_offset_width", 0);
+        var bookTextOffsetHeight = GsonHelper.getAsInt(json, "book_text_offset_height", 0);
 
         var categoryButtonXOffset = GsonHelper.getAsInt(json, "category_button_x_offset", 0);
         var categoryButtonYOffset = GsonHelper.getAsInt(json, "category_button_y_offset", 0);
@@ -202,8 +210,8 @@ public class Book {
 
         return new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font, bookOverviewTexture,
                 frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
-                bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, categoryButtonXOffset, categoryButtonYOffset,
-                searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset, leafletEntry, pageDisplayMode, singlePageTexture);
+                bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, bookTextOffsetHeight,
+                categoryButtonXOffset, categoryButtonYOffset, searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset, leafletEntry, pageDisplayMode, singlePageTexture);
     }
 
 
@@ -239,6 +247,7 @@ public class Book {
         var bookTextOffsetX = (int) buffer.readShort();
         var bookTextOffsetY = (int) buffer.readShort();
         var bookTextOffsetWidth = (int) buffer.readShort();
+        var bookTextOffsetHeight = (int) buffer.readShort();
 
         var categoryButtonXOffset = (int) buffer.readShort();
         var categoryButtonYOffset = (int) buffer.readShort();
@@ -253,8 +262,8 @@ public class Book {
 
         return new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font, bookOverviewTexture,
                 frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
-                bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, categoryButtonXOffset, categoryButtonYOffset,
-                searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset, leafletEntry, pageDisplayMode, singlePageTexture);
+                bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, bookTextOffsetHeight,
+                categoryButtonXOffset, categoryButtonYOffset, searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset, leafletEntry, pageDisplayMode, singlePageTexture);
     }
 
     /**
@@ -329,6 +338,7 @@ public class Book {
         buffer.writeShort(this.bookTextOffsetX);
         buffer.writeShort(this.bookTextOffsetY);
         buffer.writeShort(this.bookTextOffsetWidth);
+        buffer.writeShort(this.bookTextOffsetHeight);
 
         buffer.writeShort(this.categoryButtonXOffset);
         buffer.writeShort(this.categoryButtonYOffset);
@@ -484,6 +494,10 @@ public class Book {
 
     public int getBookTextOffsetWidth() {
         return this.bookTextOffsetWidth;
+    }
+
+    public int getBookTextOffsetHeight() {
+        return this.bookTextOffsetHeight;
     }
 
     public int getCategoryButtonXOffset() {

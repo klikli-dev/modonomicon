@@ -219,7 +219,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
         int y = 7;
         RenderSystem.enableBlend();
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-       BookContentRenderer.drawFromContentTexture(guiGraphics, this.page.getBook(), x, y, 405, 149, 106, 106);
+        BookContentRenderer.drawFromContentTexture(guiGraphics, this.page.getBook(), x, y, 405, 149, 106, 106);
 
         //render multiblock name in place of title
         if (!this.page.getMultiblockName().isEmpty()) {
@@ -228,7 +228,8 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
 
         this.renderMultiblock(guiGraphics);
 
-        this.renderBookTextHolder(guiGraphics, this.page.getText(), 0, this.getTextY(), BookEntryScreen.PAGE_WIDTH);
+        var textY = this.getTextY();
+        this.renderBookTextHolder(guiGraphics, this.page.getText(), 0, textY, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - textY);
 
         //TODO: render button to show multiblock in world
         //            //TODO: show multiblock preview on button click
@@ -249,7 +250,8 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
                 return multiblockNameStyle;
             }
 
-            var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), 0, this.getTextY(), BookEntryScreen.PAGE_WIDTH, pMouseX, pMouseY);
+            var textY = this.getTextY();
+            var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), 0, textY, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - textY, pMouseX, pMouseY);
             if (textStyle != null) {
                 return textStyle;
             }

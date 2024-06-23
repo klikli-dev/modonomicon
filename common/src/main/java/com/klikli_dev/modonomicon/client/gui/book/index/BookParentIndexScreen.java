@@ -249,7 +249,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
                         BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING + 12);
 
                 BookPageRenderer.renderBookTextHolder(guiGraphics, this.book.getDescription(), this.font,
-                        BookEntryScreen.LEFT_PAGE_X, BookEntryScreen.TOP_PADDING + 22, BookEntryScreen.PAGE_WIDTH);
+                        BookEntryScreen.LEFT_PAGE_X, BookEntryScreen.TOP_PADDING + 22, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - (BookEntryScreen.TOP_PADDING + 22));
             }
         }
 

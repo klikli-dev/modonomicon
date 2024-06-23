@@ -62,6 +62,8 @@ public class ImageEntry extends EntryProvider {
                                 ResourceLocation.parse("modonomicon:textures/gui/dark_slate_seamless.png")
                         )
         );
+        this.pageTitle("Test image!");
+        this.pageText("A very long sample image text to test page scaling here. It is ridiculously long and I hope no one ever actually uses it like that because, please, people need to read this! What is this, a text for ants? Let's add some more text just to show that we can, because yes, we are just that good at creating text.");
     }
 
     @Override

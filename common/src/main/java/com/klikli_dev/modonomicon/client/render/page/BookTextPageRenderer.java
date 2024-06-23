@@ -23,7 +23,8 @@ public class BookTextPageRenderer extends BookPageRenderer<BookTextPage> impleme
             this.renderTitle(guiGraphics, this.page.getTitle(), this.page.showTitleSeparator(), BookEntryScreen.PAGE_WIDTH / 2, 0);
         }
 
-        this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, this.getTextY(), BookEntryScreen.PAGE_WIDTH);
+        var textY = this.getTextY();
+        this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, textY, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - textY);
 
         var style = this.getClickedComponentStyleAt(mouseX, mouseY);
         if (style != null)
@@ -44,8 +45,9 @@ public class BookTextPageRenderer extends BookPageRenderer<BookTextPage> impleme
             var x = this.parentScreen.getBook().getBookTextOffsetX();
             var y = this.getTextY() + this.parentScreen.getBook().getBookTextOffsetY();
             var width = BookEntryScreen.PAGE_WIDTH + this.parentScreen.getBook().getBookTextOffsetWidth() - x; //always remove the offset x from the width to avoid overflow
+            var height = BookEntryScreen.PAGE_HEIGHT + this.parentScreen.getBook().getBookTextOffsetHeight() - y; //always remove the offset y from the height to avoid overflow
 
-            var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), x, y, width, pMouseX, pMouseY);
+            var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), x, y, width, height, pMouseX, pMouseY);
             if (textStyle != null) {
                 return textStyle;
             }

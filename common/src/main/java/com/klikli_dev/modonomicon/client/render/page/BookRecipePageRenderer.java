@@ -48,8 +48,12 @@ public abstract class BookRecipePageRenderer<R extends Recipe<?>, T extends Book
                     recipeX - 13, recipeY - 15, 0xFF0000, BookEntryScreen.PAGE_WIDTH);
         }
 
-        if (this.page.getRecipe2() == null) //only render if no second recipe availble
-            this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, this.getTextY(), BookEntryScreen.PAGE_WIDTH);
+        //only render if no second recipe available
+        if (this.page.getRecipe2() == null) {
+            var textY = this.getTextY();
+            this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, textY, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - textY);
+        }
+
 
         var style = this.getClickedComponentStyleAt(mouseX, mouseY);
         if (style != null)
@@ -63,7 +67,8 @@ public abstract class BookRecipePageRenderer<R extends Recipe<?>, T extends Book
 
             //titles are not markdown enabled here, so no links
 
-            var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), 0, this.getTextY(), BookEntryScreen.PAGE_WIDTH, pMouseX, pMouseY);
+            var textY = this.getTextY();
+            var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), 0, textY, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - textY, pMouseX, pMouseY);
             if (textStyle != null) {
                 return textStyle;
             }

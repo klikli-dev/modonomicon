@@ -123,6 +123,12 @@ public class BookModel {
      */
     protected int bookTextOffsetWidth = 0;
 
+    /**
+     * When rendering book text holders, add this offset to the height (allows to create a bottom margin)
+     * To make the bottom end of the text move up (as it would for a margin setting in eg css), use a negative value.
+     */
+    protected int bookTextOffsetHeight = 0;
+
     protected int categoryButtonXOffset = 0;
     protected int categoryButtonYOffset = 0;
     protected int searchButtonXOffset = 0;
@@ -236,6 +242,10 @@ public class BookModel {
         return this.bookTextOffsetWidth;
     }
 
+    public int getBookTextOffsetHeight() {
+        return this.bookTextOffsetHeight;
+    }
+
     public BookDisplayMode getDisplayMode() {
         return this.displayMode;
     }
@@ -274,6 +284,7 @@ public class BookModel {
         json.addProperty("book_text_offset_x", this.bookTextOffsetX);
         json.addProperty("book_text_offset_y", this.bookTextOffsetY);
         json.addProperty("book_text_offset_width", this.bookTextOffsetWidth);
+        json.addProperty("book_text_offset_height", this.bookTextOffsetHeight);
         json.addProperty("category_button_x_offset", this.categoryButtonXOffset);
         json.addProperty("category_button_y_offset", this.categoryButtonYOffset);
         json.addProperty("search_button_x_offset", this.searchButtonXOffset);
@@ -487,6 +498,15 @@ public class BookModel {
      */
     public BookModel withBookTextOffsetWidth(int bookTextOffsetWidth) {
         this.bookTextOffsetWidth = bookTextOffsetWidth;
+        return this;
+    }
+
+    /**
+     * When rendering book text holders, add this offset to the height (allows to create a bottom margin)
+     * To make the bottom end of the text move up (as it would for a margin setting in eg css), use a negative value.
+     */
+    public BookModel withBookTextOffsetHeight(int bookTextOffsetHeight) {
+        this.bookTextOffsetHeight = bookTextOffsetHeight;
         return this;
     }
 

@@ -29,7 +29,8 @@ public class BookSpotlightPageRenderer extends BookPageRenderer<BookSpotlightPag
             this.renderTitle(guiGraphics, this.page.getTitle(), false, BookEntryScreen.PAGE_WIDTH / 2, 0);
         }
 
-        this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, this.getTextY(), BookEntryScreen.PAGE_WIDTH);
+        var textY = this.getTextY();
+        this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, textY, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - textY);
 
         int w = 66;
         int h = 26;
@@ -55,7 +56,8 @@ public class BookSpotlightPageRenderer extends BookPageRenderer<BookSpotlightPag
                 }
             }
 
-            var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), 0, this.getTextY(), BookEntryScreen.PAGE_WIDTH, pMouseX, pMouseY);
+            var textY = this.getTextY();
+            var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), 0, textY, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - textY, pMouseX, pMouseY);
             if (textStyle != null) {
                 return textStyle;
             }

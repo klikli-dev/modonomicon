@@ -91,12 +91,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
     /**
      * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
      */
-    public static void renderBookTextHolder(GuiGraphics guiGraphics, BookTextHolder text, Font font, int x, int y, int width) {
-        //TODO: take height as param
-        int height = BookEntryScreen.FULL_HEIGHT - 10 - 17 - 20 + 30;
-        //Fullheight - 10 seems to be the bottom of the page
-        // -17 will be replaced by the y offset that is moved by the presence of a title and title separator
-
+    public static void renderBookTextHolder(GuiGraphics guiGraphics, BookTextHolder text, Font font, int x, int y, int width, int height) {
         if (text.hasComponent()) {
             //if it is a component, we draw it directly
             for (FormattedCharSequence formattedcharsequence : font.split(text.getComponent(), width)) {
@@ -107,8 +102,8 @@ public abstract class BookPageRenderer<T extends BookPage> {
             var components = renderedText.getRenderedText();
 
             //DEBUG: draw the upper and lower boundary to see if our scaled text fits into it
-            guiGraphics.hLine(x, x + width, y + height, 0xFF0000FF);
-            guiGraphics.hLine(x, x + width, y, 0xFF0000FF);
+//            guiGraphics.hLine(x, x + width, y + height, 0xFF0000FF);
+//            guiGraphics.hLine(x, x + width, y, 0xFF0000FF);
 
             float scale = getBookTextHolderScaleForRenderSize(text, font, width, height);
 
@@ -170,14 +165,32 @@ public abstract class BookPageRenderer<T extends BookPage> {
 
     /**
      * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
+     * @deprecated use {@link #renderBookTextHolder(GuiGraphics, BookTextHolder, Font, int, int, int, int)} instead and provide the desired height.
+     * This exists only for backwards compatibility of custom pages and may estimate the wrong height.
      */
+    @Deprecated
     public void renderBookTextHolder(GuiGraphics guiGraphics, BookTextHolder text, int x, int y, int width) {
+        var textY = 0;
+        if(this instanceof PageWithTextRenderer pageWithTextRenderer)
+            textY = pageWithTextRenderer.getTextY();
+
+        renderBookTextHolder(guiGraphics, text, this.font, x, y, width, BookEntryScreen.PAGE_HEIGHT - textY);
+    }
+
+    /**
+     * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
+     */
+    public void renderBookTextHolder(GuiGraphics guiGraphics, BookTextHolder text, int x, int y, int width, int height) {
         x += this.parentScreen.getBook().getBookTextOffsetX();
         y += this.parentScreen.getBook().getBookTextOffsetY();
+
+        height += this.parentScreen.getBook().getBookTextOffsetHeight();
+        height -= this.parentScreen.getBook().getBookTextOffsetY(); //always remove the offset y from the height to avoid overflow
+
         width += this.parentScreen.getBook().getBookTextOffsetWidth();
         width -= this.parentScreen.getBook().getBookTextOffsetX(); //always remove the offset x from the width to avoid overflow
 
-        renderBookTextHolder(guiGraphics, text, this.font, x, y, width);
+        renderBookTextHolder(guiGraphics, text, this.font, x, y, width, height);
     }
 
     /**
@@ -299,8 +312,21 @@ public abstract class BookPageRenderer<T extends BookPage> {
         return null;
     }
 
+    /**
+     * @deprecated use {@link #getClickedComponentStyleAtForTextHolder(BookTextHolder, int, int, int, int, double, double)} and provide the desired height.
+     * This exists only for backwards compatibility of custom pages and may estimate the wrong height.
+     */
     @Nullable
+    @Deprecated
     protected Style getClickedComponentStyleAtForTextHolder(BookTextHolder text, int x, int y, int width, double pMouseX, double pMouseY) {
+        var textY = 0;
+        if(this instanceof PageWithTextRenderer pageWithTextRenderer)
+            textY = pageWithTextRenderer.getTextY();
+        return this.getClickedComponentStyleAtForTextHolder(text, x, y, width, BookEntryScreen.PAGE_HEIGHT - textY, pMouseX, pMouseY);
+    }
+
+    @Nullable
+    protected Style getClickedComponentStyleAtForTextHolder(BookTextHolder text, int x, int y, int width, int height, double pMouseX, double pMouseY) {
         if (text.hasComponent()) {
             //we don't do math to get the current line, we just split and iterate.
             //why? Because performance should not matter (significantly enough to bother)
@@ -313,8 +339,6 @@ public abstract class BookPageRenderer<T extends BookPage> {
                 y += this.font.lineHeight;
             }
         } else if (text instanceof RenderedBookTextHolder renderedText) {
-            //TODO: take height as param
-            var height =  BookEntryScreen.FULL_HEIGHT - 10 - 17 - 20 + 30;
             var scale = getBookTextHolderScaleForRenderSize(text, this.font, width, height);
 
             var components = renderedText.getRenderedText();
