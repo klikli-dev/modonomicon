@@ -220,8 +220,14 @@ When rendering book text holders, add this offset to the y position (basically, 
 ### **book_text_offset_width** (Integer, _optional_)
 
 Default value: `0`.   
-When rendering book text holders, add this offset to the width (allows to create a right margin/padding).   
+When rendering book text holders, add this offset to the width (allows to create a right margin/padding).    
 To make the line end move to the left (as it would for a margin setting in eg css), use a negative value.
+
+### **book_text_offset_height** (Integer, _optional_)
+
+Default value: `0`.   
+When rendering book text holders, add this offset to the height (allows to create a bottom margin/padding).   
+To make the bottom end of the text move up (as it would for a margin setting in eg css), use a negative value.   
 
 ### **leaflet_entry** (ResourceLocation, _optional_)
 
