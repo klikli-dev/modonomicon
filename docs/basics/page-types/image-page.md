@@ -20,7 +20,15 @@ See [Book.json](../structure/book) for details.
 ### **images** (ResourceLocation[], _mandatory_)
 
 Array of ResourceLocations of the textures to display.   
-The files should be 256px by 256px. The upper 200px by 200px will be rendered. 
+By default an image of any size can be used and will be rendered entirely. See `use_legacy_rendering` for more information.
+
+
+### **use_legacy_rendering** (Boolean, _optional_)
+Defaults to `false`. 
+
+If true, the image will be rendered using the legacy rendering setup that matches the behaviour in Patchouli.    
+The files should be 256px by 256px. The upper left 200px by 200px will be rendered.   
+Larger images work too but the top left box matching the relative size of the 200px by 200px box will be rendered.   
 
 ### **text** (DescriptionId or Component JSON, _optional_)
 
