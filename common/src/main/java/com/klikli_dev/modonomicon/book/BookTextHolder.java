@@ -97,7 +97,7 @@ public class BookTextHolder {
 
     @Override
     public int hashCode() {
-        return this.hasComponent() ? this.component.hashCode() : this.string.hashCode();
+        return this.hasComponent() ? this.component.hashCode() :  this.string == null ? 0 : this.string.hashCode();
     }
 
     public record ScaleCacheKey(BookTextHolder holder, int width, int height){
