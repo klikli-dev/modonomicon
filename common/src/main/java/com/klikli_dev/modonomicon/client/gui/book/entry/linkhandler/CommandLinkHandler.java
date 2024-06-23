@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 klikli-dev
+//
+// SPDX-License-Identifier: MIT
+
 package com.klikli_dev.modonomicon.client.gui.book.entry.linkhandler;
 
 import com.klikli_dev.modonomicon.book.CommandLink;

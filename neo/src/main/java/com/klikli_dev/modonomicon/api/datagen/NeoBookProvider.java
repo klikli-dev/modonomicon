@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 klikli-dev
+//
+// SPDX-License-Identifier: MIT
+
 package com.klikli_dev.modonomicon.api.datagen;
 
 import net.neoforged.neoforge.data.event.GatherDataEvent;
