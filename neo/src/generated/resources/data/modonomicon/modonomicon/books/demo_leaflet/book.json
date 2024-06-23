@@ -2,6 +2,7 @@
   "auto_add_read_conditions": false,
   "book_content_texture": "modonomicon:textures/gui/book_content.png",
   "book_overview_texture": "modonomicon:textures/gui/book_overview.png",
+  "book_text_offset_height": 0,
   "book_text_offset_width": -5,
   "book_text_offset_x": 5,
   "book_text_offset_y": 0,

@@ -32,7 +32,8 @@
         "modonomicon:textures/gui/dark_slate_seamless.png"
       ],
       "text": "book.modonomicon.demo.features.image.image.text",
-      "title": "book.modonomicon.demo.features.image.image.title"
+      "title": "book.modonomicon.demo.features.image.image.title",
+      "use_legacy_rendering": false
     },
     {
       "type": "modonomicon:spotlight",
@@ -58,7 +59,8 @@
         "modonomicon:textures/gui/dark_slate_seamless.png"
       ],
       "text": "book.modonomicon.demo.features.image.test_image.text",
-      "title": "book.modonomicon.demo.features.image.test_image.title"
+      "title": "book.modonomicon.demo.features.image.test_image.title",
+      "use_legacy_rendering": false
     }
   ],
   "parents": [
