@@ -9,6 +9,10 @@ import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
+import com.klikli_dev.modonomicon.datagen.book.demo.FeaturesCategory;
+import com.klikli_dev.modonomicon.datagen.book.demo.FormattingCategory;
+import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionLevel1Entry;
+import com.klikli_dev.modonomicon.datagen.book.demo.features.MultiblockEntry;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.item.Items;
 
@@ -61,6 +65,22 @@ public class AdvancedFormattingEntry extends EntryProvider {
         this.pageText("""
                 This page is to test title scaling!
                 """
+        );
+
+        this.page("page4", () -> BookTextPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText())
+        );
+        this.pageTitle("Scaled Page");
+        this.pageText("""
+                        This page features a very long text that will be scaled down to fit the page size.
+                        {0} to check if click detection works on scaled texts. It has {1} for the same reason.
+                        Finally it has a {2} because why not. From now on we just add some text with no particular function except to make the page longer. 
+                        Not extremely useful for the reader, but necessary for the poor Kli-Kli testing this.
+                        """,
+                this.entryLink("It has a Link", FeaturesCategory.ID, MultiblockEntry.ID),
+                this.entryLink("another Link", FormattingCategory.ID, BasicFormattingEntry.ID),
+                this.entryLink("third link", FormattingCategory.ID, AlwaysLockedEntry.ID)
         );
     }
 
