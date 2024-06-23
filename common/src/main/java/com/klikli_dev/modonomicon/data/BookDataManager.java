@@ -15,6 +15,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCommand;
+import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
@@ -25,6 +26,7 @@ import com.klikli_dev.modonomicon.networking.Message;
 import com.klikli_dev.modonomicon.networking.SyncBookDataMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
+import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.advancements.AdvancementHolder;
@@ -378,11 +380,13 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
          * Our local advancement cache, because we cannot just store random advancement in ClientAdvancements -> they get rejected
          */
         private final Map<ResourceLocation, AdvancementHolder> advancements = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+        private final Object2FloatOpenHashMap<BookTextHolder.ScaleCacheKey> bookTextHolderScaleCache = new Object2FloatOpenHashMap<>();
         private boolean isFallbackLocale;
         private boolean isFontInitialized;
 
         public Client() {
             super(GSON, FOLDER);
+            this.bookTextHolderScaleCache.defaultReturnValue(-1f);
         }
 
         public static Client get() {
@@ -412,6 +416,17 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             return this.advancements.get(id);
         }
 
+        public void putScale(BookTextHolder holder, int width, int height, float scale) {
+            this.bookTextHolderScaleCache.put(new BookTextHolder.ScaleCacheKey(holder, width, height), scale);
+        }
+
+        /**
+         * Returns -1 if no scale is found
+         */
+        public float getScale(BookTextHolder holder, int width, int height) {
+            return this.bookTextHolderScaleCache.getFloat(new BookTextHolder.ScaleCacheKey(holder, width, height));
+        }
+
         public void addAdvancement(AdvancementHolder advancement) {
             this.advancements.put(advancement.id(), advancement);
         }
@@ -421,6 +436,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             //reset on reload
             this.resetUseFallbackFont();
             this.advancements.clear();
+            this.bookTextHolderScaleCache.clear();
         }
     }
 }

@@ -16,6 +16,7 @@ import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.MarkdownComponentRenderUtils;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
+import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -27,7 +28,9 @@ import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class BookPageRenderer<T extends BookPage> {
     public int left;
@@ -44,11 +47,52 @@ public abstract class BookPageRenderer<T extends BookPage> {
         this.page = page;
     }
 
+
+
+    public static float getBookTextHolderScaleForRenderSize(BookTextHolder text, Font font, int width, int height) {
+        if (!(text instanceof RenderedBookTextHolder renderedText))
+            return 1.0f;
+
+        var cachedScale = BookDataManager.Client.get().getScale(text, width, height);
+        if(cachedScale > -1f)
+            return cachedScale;
+
+        var components = renderedText.getRenderedText();
+
+        float granularity = 0.01F;
+        float scale = 1.0F;
+        float totalHeight = 0;
+        do {
+            //calculate total height by simulating rendering with the current scale.
+            //this iterative approach is necessary because when scaling down we fit more words per line, resulting in less lines after wrapping.
+
+            //first scale the width and calculate how many lines we have at this scale
+            int totalLines = 0;
+            for (var component : components) {
+                var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, (int) (width / scale), (int) ((width - 10) / scale), font);
+                totalLines += wrapped.size();
+            }
+
+            //then calculate how high the amount of lines would be at this scale
+            totalHeight = totalLines * font.lineHeight * scale;
+
+            //now reduce scale for the next iteration
+            //it is important to iterate with a fine granularity, otherwise the text will be downscaled way too much
+            scale -= granularity;
+
+            //repeat until we have a scale that fits the height
+        } while(totalHeight > height);
+
+        BookDataManager.Client.get().putScale(text, width, height, scale);
+
+        return scale;
+    }
+
     /**
      * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
      */
     public static void renderBookTextHolder(GuiGraphics guiGraphics, BookTextHolder text, Font font, int x, int y, int width) {
-        int height = BookEntryScreen.FULL_HEIGHT - 10 - 17 - 20;
+        int height = BookEntryScreen.FULL_HEIGHT - 10 - 17 - 20 + 30;
         //Fullheight - 10 seems to be the bottom of the page
         // -17 will be replaced by the y offset that is moved by the presence of a title and title separator
 
@@ -60,25 +104,13 @@ public abstract class BookPageRenderer<T extends BookPage> {
             }
         } else if (text instanceof RenderedBookTextHolder renderedText) {
             //TODO: we also need to use the scale to adjust component click detection!
-            //TODO: store the resulting scale to use it for click detection and to avoid re-calculating everytime.
             var components = renderedText.getRenderedText();
-            guiGraphics.hLine(x, x + width, y + height, 0xFF0000FF);
-            guiGraphics.hLine(x, x + width, y, 0xFF0000FF);
 
-            float scale = 1.1F;
-            float totalHeight = 0;
-             do {
-                 //it is important to iterate with a fine granularity, otherwise the text will be downscaled way too much
-                scale -= 0.01F;
-                totalHeight = 0;
-                for (var component : components) {
-                    var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, (int) (width / scale), (int) ((width - 10) / scale), font);
-                    totalHeight += wrapped.size() * font.lineHeight;
-                }
-                totalHeight = totalHeight * scale;
-            } while(totalHeight > height);
+            //DEBUG: draw the upper and lower boundary to see if our scaled text fits into it
+//            guiGraphics.hLine(x, x + width, y + height, 0xFF0000FF);
+//            guiGraphics.hLine(x, x + width, y, 0xFF0000FF);
 
-            scale = Math.min(1.0f, scale);
+            float scale = getBookTextHolderScaleForRenderSize(text, font, width, height);
 
             guiGraphics.pose().pushPose();
 
