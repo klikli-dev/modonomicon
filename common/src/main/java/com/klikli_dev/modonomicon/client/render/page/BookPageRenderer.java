@@ -92,6 +92,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
      * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
      */
     public static void renderBookTextHolder(GuiGraphics guiGraphics, BookTextHolder text, Font font, int x, int y, int width) {
+        //TODO: take height as param
         int height = BookEntryScreen.FULL_HEIGHT - 10 - 17 - 20 + 30;
         //Fullheight - 10 seems to be the bottom of the page
         // -17 will be replaced by the y offset that is moved by the presence of a title and title separator
@@ -103,12 +104,11 @@ public abstract class BookPageRenderer<T extends BookPage> {
                 y += font.lineHeight;
             }
         } else if (text instanceof RenderedBookTextHolder renderedText) {
-            //TODO: we also need to use the scale to adjust component click detection!
             var components = renderedText.getRenderedText();
 
             //DEBUG: draw the upper and lower boundary to see if our scaled text fits into it
-//            guiGraphics.hLine(x, x + width, y + height, 0xFF0000FF);
-//            guiGraphics.hLine(x, x + width, y, 0xFF0000FF);
+            guiGraphics.hLine(x, x + width, y + height, 0xFF0000FF);
+            guiGraphics.hLine(x, x + width, y, 0xFF0000FF);
 
             float scale = getBookTextHolderScaleForRenderSize(text, font, width, height);
 
@@ -313,17 +313,35 @@ public abstract class BookPageRenderer<T extends BookPage> {
                 y += this.font.lineHeight;
             }
         } else if (text instanceof RenderedBookTextHolder renderedText) {
+            //TODO: take height as param
+            //TODO: we also need to use the scale to adjust component click detection!
+
+            var height =  BookEntryScreen.FULL_HEIGHT - 10 - 17 - 20 + 30;
+            var scale = getBookTextHolderScaleForRenderSize(text, this.font, width, height);
+
             var components = renderedText.getRenderedText();
             for (var component : components) {
-                var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, width, width - 10, this.font);
+                var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, (int) (width / scale), (int) ((width - 10) / scale), this.font);
                 for (FormattedCharSequence formattedcharsequence : wrapped) {
-                    if (pMouseY > y && pMouseY < y + this.font.lineHeight) {
+                    float minY =  y * scale;
+                    float maxY = (y + this.font.lineHeight) * scale;
+                    if (pMouseY > minY && pMouseY < maxY) {
                         //check if we are vertically over the title line
                         //horizontally over and right of the title is handled by font splitter
+                        //TODO: do we need to use scale here as well? probably need to scale mouse position somehow
                         return this.font.getSplitter().componentStyleAtWidth(formattedcharsequence, (int) pMouseX - x);
                     }
                     y += this.font.lineHeight;
                 }
+//                var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, width, width - 10, this.font);
+//                for (FormattedCharSequence formattedcharsequence : wrapped) {
+//                    if (pMouseY > y && pMouseY < y + this.font.lineHeight) {
+//                        //check if we are vertically over the title line
+//                        //horizontally over and right of the title is handled by font splitter
+//                        return this.font.getSplitter().componentStyleAtWidth(formattedcharsequence, (int) pMouseX - x);
+//                    }
+//                    y += this.font.lineHeight;
+//                }
             }
         }
 
