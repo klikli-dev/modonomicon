@@ -121,6 +121,11 @@ This can be used to e.g. give rewards to players for reaching a certain part of 
 
 ::: 
 
+### **entry_to_open** (ResourceLocation, _optional_)
+
+The resource location to the entry that should be opened when this entry is clicked. This allows to place one entry in multiple categories by referring to it multiple times.
+If this is set, the entry will never show it's pages, but instead open the target entry.
+
 ## Parents 
 
 Entry Parents define which entry comes visually before this entry in the book, as in, which entry points an arrow at this entry.
