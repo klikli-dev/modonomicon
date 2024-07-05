@@ -92,6 +92,17 @@ The height of the background texture. Applies both to the `background` property 
 Default value: `512`   
 The width of the background texture. Applies both to the `background` property as well as the `background_parallax_layers` property.
 
+
+### **max_scroll_x** (Integer, _optional_)
+
+Default value: `512`
+The maximum horizontal scroll distance in this category.
+
+### **max_scroll_Y** (Integer, _optional_)
+
+Default value: `512`
+The maximum vertical scroll distance in this category.
+
 ### **background_texture_zoom_multiplier** (Float, _optional_)
 
 Default value: `1.0`
