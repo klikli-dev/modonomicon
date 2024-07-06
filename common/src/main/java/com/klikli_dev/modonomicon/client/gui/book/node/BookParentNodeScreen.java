@@ -15,11 +15,9 @@ import com.klikli_dev.modonomicon.bookstate.visual.BookVisualState;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.BookScreenWithButtons;
 import com.klikli_dev.modonomicon.client.gui.book.bookmarks.BookBookmarksScreen;
-import com.klikli_dev.modonomicon.client.gui.book.button.CategoryButton;
-import com.klikli_dev.modonomicon.client.gui.book.button.ReadAllButton;
-import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
-import com.klikli_dev.modonomicon.client.gui.book.button.ShowBookmarksButton;
+import com.klikli_dev.modonomicon.client.gui.book.button.*;
 import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
 import com.klikli_dev.modonomicon.networking.ClickReadAllButtonMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
@@ -37,9 +35,12 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class BookParentNodeScreen extends Screen implements BookParentScreen {
+public class BookParentNodeScreen extends Screen implements BookParentScreen, BookScreenWithButtons {
+
+    public static final int MAX_CATEGORY_BUTTONS = 13;
 
     private final Book book;
     private final List<BookCategory> categories;
@@ -52,6 +53,8 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
     private BookCategoryNodeScreen currentCategoryNodeScreen;
     private boolean hasUnreadEntries;
     private boolean hasUnreadUnlockedEntries;
+
+    private int categoryButtonRenderOffset = 0;
 
     public BookParentNodeScreen(Book book) {
         super(Component.literal(""));
@@ -94,6 +97,12 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
     @Override
     public Book getBook() {
         return this.book;
+    }
+
+    @Override
+    public void setTooltip(List<Component> tooltip) {
+        //Just implemented for category scroll button, which will set its own tooltip
+        //So we do nothing
     }
 
     public ResourceLocation getBookOverviewTexture() {
@@ -287,16 +296,12 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
         this.updateUnreadEntriesState();
     }
 
-
     @Override
     protected void init() {
         super.init();
 
         int buttonXOffset = -11;
-
-
         int buttonYOffset = 30 + this.getBook().getCategoryButtonYOffset();
-
         int buttonX = (this.width - this.getFrameWidth()) / 2 - this.getFrameThicknessW() + buttonXOffset;
         int buttonY = (this.height - this.getFrameHeight()) / 2 - this.getFrameThicknessH() + buttonYOffset;
         //calculate button width so it aligns with the outer edge of the frame
@@ -304,18 +309,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
         int buttonHeight = 20;
         int buttonSpacing = 2;
 
-        int buttonCount = 0;
-        for (int i = 0, size = this.categories.size(); i < size; i++) {
-            if (this.categories.get(i).showCategoryButton() && BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, this.categories.get(i))) {
-                var button = new CategoryButton(this, this.categories.get(i),
-                        buttonX, buttonY + (buttonHeight + buttonSpacing) * buttonCount, buttonWidth, buttonHeight,
-                        (b) -> this.onBookCategoryButtonClick((CategoryButton) b),
-                        Tooltip.create(Component.translatable(this.categories.get(i).getName())));
-
-                this.addRenderableWidget(button);
-                buttonCount++;
-            }
-        }
+        this.updateCategoryButtons(buttonX, buttonY, buttonWidth, buttonHeight, buttonSpacing);
 
         int readAllButtonX = this.getFrameWidth() + this.getFrameThicknessW() + ReadAllButton.WIDTH / 2 - 3; //(this.width - this.getFrameWidth()); // / 2 - this.getFrameThicknessW() + buttonXOffset;
         int readAllButtonYOffset = 30 + this.getBook().getReadAllButtonYOffset();
@@ -352,6 +346,52 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen {
                 (b) -> this.onShowBookmarksButtonClick((ShowBookmarksButton) b),
                 Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_BOOKMARKS)));
         this.addRenderableWidget(showBookmarksButton);
+    }
+
+    protected void updateCategoryButtons(int buttonX, int buttonY, int buttonWidth, int buttonHeight, int buttonSpacing) {
+        int buttonCount = 0;
+        for (int i = this.categoryButtonRenderOffset, size = this.categories.size(); i < size; i++) {
+            if (buttonCount >= MAX_CATEGORY_BUTTONS) {
+                break; // Stop adding buttons once we reach the maximum
+            }
+            if (this.categories.get(i).showCategoryButton() && BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, this.categories.get(i))) {
+                var button = new CategoryButton(this, this.categories.get(i),
+                        buttonX, buttonY + (buttonHeight + buttonSpacing) * buttonCount, buttonWidth, buttonHeight,
+                        (b) -> this.onBookCategoryButtonClick((CategoryButton) b),
+                        Tooltip.create(Component.translatable(this.categories.get(i).getName())));
+
+                this.addRenderableWidget(button);
+                buttonCount++;
+            }
+        }
+
+        buttonX += 8;
+        // Add the top scroll button if there are categories before the current offset
+        if (this.categoryButtonRenderOffset > 0) {
+            int topScrollButtonY = (this.height - this.getFrameHeight()) / 2 - 5;
+
+            var topScrollButton = new CategoryScrollButton(this, buttonX, topScrollButtonY, false,
+                    () -> this.categoryButtonRenderOffset > 0,
+                    (b) -> {
+                        this.categoryButtonRenderOffset--;
+                        this.rebuildWidgets();
+                    });
+            this.addRenderableWidget(topScrollButton);
+        }
+
+
+        // Add the bottom scroll button if there are more categories than can be displayed
+        if (this.categories.size() > this.categoryButtonRenderOffset + MAX_CATEGORY_BUTTONS) {
+            int bottomScrollButtonY= this.getFrameHeight() + this.getFrameThicknessH() - ReadAllButton.HEIGHT / 2 - 3;
+
+            var bottomScrollButton = new CategoryScrollButton(this, buttonX, bottomScrollButtonY, true,
+                    () -> this.categories.size() > this.categoryButtonRenderOffset + MAX_CATEGORY_BUTTONS,
+                    (b) -> {
+                        this.categoryButtonRenderOffset++;
+                        this.rebuildWidgets();
+                    });
+            this.addRenderableWidget(bottomScrollButton);
+        }
     }
 
     protected void onSearchButtonClick(SearchButton button) {
