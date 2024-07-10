@@ -23,13 +23,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.saveddata.SavedData;
 
 import java.util.List;
-import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class BookUnlockStateManager {
 
     private static final BookUnlockStateManager instance = new BookUnlockStateManager();
     public BookStatesSaveData saveData;
+    protected ScheduledExecutorService updateAndSyncTimer;
 
     public static BookUnlockStateManager get() {
         return instance;
@@ -66,16 +69,30 @@ public class BookUnlockStateManager {
             //we have some edge cases where RecipesUpdatedEvent is fired after EntityJoinLevelEvent.
             //in SP this means that books are not built yet when updateAndSyncFor is called for the first time.
             //so we poll until it is available.
-            var timer = new Timer(true);
-            timer.schedule(new TimerTask() {
+
+            //if timer already shut down, set to null so a new one will be created
+            if (this.updateAndSyncTimer != null && this.updateAndSyncTimer.isShutdown()) {
+                this.updateAndSyncTimer = null;
+            }
+
+            //if we don't have a timer yet, create one
+            if (this.updateAndSyncTimer == null) {
+                this.updateAndSyncTimer = Executors.newSingleThreadScheduledExecutor();
+            }
+
+            final var currentTimer = this.updateAndSyncTimer;
+            //then schedule a task to run in 5 seconds
+            this.updateAndSyncTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     player.server.execute(() -> {
                         BookUnlockStateManager.this.updateAndSyncFor(player);
+
+                        //we also shut down the timer to free the thread, as this is only rarely used.
+                        currentTimer.shutdown();
                     });
                 }
-            }, 1000);
-
+            }, 5, TimeUnit.SECONDS);
         }
     }
 
