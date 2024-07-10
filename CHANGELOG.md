@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.4-1.73.2] - 2024-07-10
+### :bug: Bug Fixes
+- [`c446628`](https://github.com/klikli-dev/modonomicon/commit/c4466283b8c9be38da671bee23c18f0f8ef90cfc) - potential resource leak in updateAndSyncFor *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.4-1.73.1] - 2024-06-16
 ### :bug: Bug Fixes
 - [`893bd2e`](https://github.com/klikli-dev/modonomicon/commit/893bd2eea6e604fa244f27469939318ab124d564) - neo datagen *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -860,3 +865,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.4-1.72.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.72.1...release/v1.20.4-1.72.2
 [release/v1.20.4-1.73.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.72.2...release/v1.20.4-1.73.0
 [release/v1.20.4-1.73.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.73.0...release/v1.20.4-1.73.1
+[release/v1.20.4-1.73.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.4-1.73.1...release/v1.20.4-1.73.2
