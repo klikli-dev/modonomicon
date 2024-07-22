@@ -12,8 +12,8 @@ To craft your book, you need a recipe that outputs an item of the type `modonomi
 {
   ...
   "result": {
-    "item": "modonomicon:modonomicon",
-    "nbt": {
+    "id": "modonomicon:modonomicon",
+    "components": {
       "modonomicon:book_id": "<your_mod_id>:<your_book_id>"
     }
   }
@@ -23,7 +23,7 @@ To craft your book, you need a recipe that outputs an item of the type `modonomi
 
 ## Usage Examples
 
-**Example:** A shapeless recipe for Theurgy's "The Hermetica":
+**Example:** A shapeless recipe for Modonomicon's demo book
 
 ```json 
 {
@@ -33,16 +33,13 @@ To craft your book, you need a recipe that outputs an item of the type `modonomi
       "item": "minecraft:book"
     },
     {
-      "tag": "forge:sand"
-    },
-    {
-      "tag": "forge:sand"
+      "item": "minecraft:nether_star"
     }
   ],
   "result": {
-    "item": "modonomicon:modonomicon",
-    "nbt": {
-      "modonomicon:book_id": "theurgy:the_hermetica"
+    "id": "modonomicon:modonomicon",
+    "components": {
+      "modonomicon:book_id": "modonomicon:demo"
     }
   }
 }
