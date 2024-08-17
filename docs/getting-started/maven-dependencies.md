@@ -59,16 +59,9 @@ The `dependencies` section of your `build.gradle` should look like this:
 ```groovy
 dependencies {
     ... //other dependencies
-    implementation fg.deobf("com.klikli_dev:modonomicon-${minecraft_version}-forge:${modonomicon_version}") 
+    implementation fg.deobf("com.klikli_dev:modonomicon-${minecraft_version}-forge:${modonomicon_version}"){transitive=false}
 }
 ```
-
-:::info
-
-You may need to add `{transitive=false}` at the end of the `implementation ...` line.
-
-:::
-
 
 ### Neoforge
 
@@ -76,22 +69,16 @@ You may need to add `{transitive=false}` at the end of the `implementation ...` 
 ```groovy
 dependencies {
     ... //other dependencies
-    implementation "com.klikli_dev:modonomicon-${minecraft_version}-neoforge:${modonomicon_version}" 
+    implementation ("com.klikli_dev:modonomicon-${minecraft_version}-neoforge:${modonomicon_version}"){transitive=false}
 }
 ```
-
-:::info
-
-You may need to add `{transitive=false}` at the end of the `implementation ...` line.
-
-:::
 
 ### Fabric
 
 ```groovy
 dependencies {
     ... //other dependencies
-    modImplementation "com.klikli_dev:modonomicon-${minecraft_version}-fabric:${modonomicon_version}"
+    modImplementation ("com.klikli_dev:modonomicon-${minecraft_version}-fabric:${modonomicon_version}"){transitive=false}
 }
 ```
 
@@ -100,7 +87,7 @@ dependencies {
 ```groovy
 dependencies {
     ... //other dependencies
-    compileOnly "com.klikli_dev:modonomicon-${minecraft_version}-common:${modonomicon_version}"
+    compileOnly ("com.klikli_dev:modonomicon-${minecraft_version}-common:${modonomicon_version}"){transitive=false}
 }
 ```
 
