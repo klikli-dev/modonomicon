@@ -23,9 +23,11 @@ If ommited, the ingredients name will be used. If the ingredient is not an item,
 
 :::
 
-### **item** (Ingredient, _mandatory_)
+### **item** (Ingredient OR ItemStack, _mandatory_)
 
-The Ingredient to display. Uses the forge ingredient system, so any valid recipe ingredient JSON object can be used.
+The Ingredient to display. Uses the vanilla ingredient system, so any valid recipe ingredient JSON object can be used.   
+Alternatively, an ItemStack JSON can be used. Both `id` and `item` are valid keys for the item resource location.   
+If the display item uses components the ItemStack JSON should be used, as ingredients do not support components.   
 
 ### **text** (DescriptionId or Component JSON, _optional_)
 
@@ -44,6 +46,29 @@ The page text. Can be styled using markdown.
       "anchor": "",
       "item": {
         "item": "minecraft:apple"
+      },
+      "text": "book.modonomicon.demo.features.spotlight.spotlight1.text",
+      "title": "book.modonomicon.demo.features.spotlight.spotlight1.title"
+    }
+  ]
+}
+```
+
+```json
+{
+  ...
+  "pages": [
+     {
+      "type": "modonomicon:spotlight",
+      "anchor": "",
+      "item": {
+         "components": {
+          "minecraft:dyed_color": {
+            "rgb": 1481884,
+            "show_in_tooltip": false
+          }
+        },
+        "item": "minecraft:leather_helmet"
       },
       "text": "book.modonomicon.demo.features.spotlight.spotlight1.text",
       "title": "book.modonomicon.demo.features.spotlight.spotlight1.title"
