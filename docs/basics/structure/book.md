@@ -237,6 +237,14 @@ The book will be treated as a book in index mode (that means, no big "node view"
 
 See also [Leaflets](/docs/advanced/leaflets) for more information.
 
+### **allow_open_book_with_invalid_links** (Boolean, _optional_)
+
+Default value: `false`.
+
+If set to `true`, the book will not throw an error when trying to open a book with invalid book links. Instead, the link will be rendered in red with a tooltip explaining that the link is invalid.   
+
+The main use for this is for mods that have external translators for their books, where translations might be outdated after entries have been removed or moved.
+
 ## Usage Examples
 
 `/data/<mod_id>/modonomicon/books/<book_id>/book.json`:

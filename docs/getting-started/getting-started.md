@@ -23,12 +23,10 @@ Even for modpack creators it is recommended to follow this process. Datagen is a
 
 ## Manually creating books 
 
-:::warn
+:::warning
 
-It is not recommended to manually create books. It is much more convenient and error-free to use datagen.
+It is not recommended to manually create books. It is much more convenient and error-free to use datagen. JSON is not a great format for text editing, and can be annoying to properly format text.
 
 :::
 
-If you instead want to manually create a book by editign JSON files directly there is currently no guide, however you can look at the generated results of the demo book **[here](https://github.com/klikli-dev/modonomicon/tree/HEAD/neo/src/generated/resources/data/modonomicon/modonomicon/books)**.
-
-Further, you can reference the [Structure](../basics/structure/) section to learn about the file structures.
+If you instead want to manually create a book by creating and editing JSON files directly, follow **[Step by Step Guide for a Book via Datapack](./step-by-step-with-datapack/)**.
