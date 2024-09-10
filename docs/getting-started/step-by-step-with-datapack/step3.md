@@ -15,4 +15,4 @@ It is recommended to use the translation system, otherwise it is impossible for 
 :::
 
 **You can now edit the demo book to your liking to make your own book**.
-Reference the [Basics](../basics/) and [Advanced](../advanced/) sections to learn about the valid JSON keys and structures.
+Reference the [Basics](../../basics/) and [Advanced](../../advanced/) sections to learn about the valid JSON keys and structures.
