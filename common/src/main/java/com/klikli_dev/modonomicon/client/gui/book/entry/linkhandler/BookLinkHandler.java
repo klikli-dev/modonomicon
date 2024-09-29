@@ -53,7 +53,7 @@ public class BookLinkHandler extends LinkHandler {
 
             //we push the page we are currently on to the history
             var currentPageNumber = this.screen().getCurrentPageNumber();
-            BookGuiManager.get().pushHistory(this.book().getId(), this.entry().getId(), this.entry().getId(), currentPageNumber);
+            BookGuiManager.get().pushHistory(this.book().getId(), this.category().getId(), this.entry().getId(), currentPageNumber);
             BookGuiManager.get().openEntry(link.bookId, link.entryId, page);
         } else if (link.categoryId != null) {
             BookGuiManager.get().openEntry(link.bookId, link.categoryId, null, 0);
