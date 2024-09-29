@@ -472,10 +472,6 @@ public class BookGuiManager {
         Services.NETWORK.sendToServer(new SaveCategoryStateMessage(screen.getCategory(), state));
     }
 
-    /**
-     * Call this when you want to close the parent screen naturally, without esc.
-     * E.g. from the "close"/"x" button.
-     */
     public void closeParentScreen(BookParentScreen screen) {
         Minecraft.getInstance().setScreen(null);
         this.openBookParentScreen = null;
@@ -483,8 +479,6 @@ public class BookGuiManager {
         var state = BookVisualStateManager.get().getBookStateFor(this.player(), screen.getBook());
         screen.saveState(state);
         Services.NETWORK.sendToServer(new SaveBookStateMessage(screen.getBook(), state));
-
-        this.resetHistory();
     }
 
     public void closeScreenStack(BookParentScreen screen) {
