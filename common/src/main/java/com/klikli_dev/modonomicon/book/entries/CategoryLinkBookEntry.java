@@ -90,6 +90,8 @@ public class CategoryLinkBookEntry extends BookEntry {
 
     @Override
     public void openEntry(BookAddress address) {
+        //if we jump to a category, we push the current category to history to be able to return
+        BookGuiManager.get().pushHistory(BookAddress.defaultFor(this.getCategory()));
         //we don't have any use for the address here
         BookGuiManager.get().openCategoryLinkEntry(this);
     }

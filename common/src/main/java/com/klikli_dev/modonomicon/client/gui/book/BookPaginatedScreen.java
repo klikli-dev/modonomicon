@@ -88,7 +88,7 @@ public abstract class BookPaginatedScreen extends Screen implements BookScreenWi
     }
 
     public boolean canSeeBackButton() {
-        return BookGuiManager.get().getHistorySize() > 0;
+        return BookGuiManager.get().getHistorySize(this.getBook().getId()) > 0;
     }
 
     public void handleBackButton(Button button) {
@@ -96,8 +96,8 @@ public abstract class BookPaginatedScreen extends Screen implements BookScreenWi
     }
 
     public void back() {
-        if (BookGuiManager.get().getHistorySize() > 0) {
-            var lastPage = BookGuiManager.get().popHistory();
+        if (BookGuiManager.get().getHistorySize(this.getBook().getId()) > 0) {
+            var lastPage = BookGuiManager.get().popHistory(this.getBook().getId());
             BookGuiManager.get().openEntry(lastPage.bookId(), lastPage.categoryId(), lastPage.entryId(), lastPage.page());
         } else {
             this.onClose();
