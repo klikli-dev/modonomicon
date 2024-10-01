@@ -33,7 +33,7 @@ public abstract class EntryProvider {
     }
 
     protected ModonomiconLanguageProvider lang(String locale) {
-        return this.parent.lang();
+        return this.parent.lang(locale);
     }
 
     protected ResourceLocation modLoc(String name) {
