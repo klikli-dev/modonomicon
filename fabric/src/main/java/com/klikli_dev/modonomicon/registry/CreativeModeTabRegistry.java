@@ -31,8 +31,10 @@ public class CreativeModeTabRegistry {
 
     public static void onModifyEntries(CreativeModeTab group, FabricItemGroupEntries entries) {
         var tabKey = BuiltInRegistries.CREATIVE_MODE_TAB.getResourceKey(group).get();
+
         BookDataManager.get().getBooks().values().forEach(b -> {
             if (tabKey == CreativeModeTabs.SEARCH ||
+                    MODONOMICON == group ||
                     BuiltInRegistries.CREATIVE_MODE_TAB.get(new ResourceLocation(b.getCreativeTab())) == group) {
                 if (b.generateBookItem()) {
                     ItemStack stack = new ItemStack(ItemRegistry.MODONOMICON.get());

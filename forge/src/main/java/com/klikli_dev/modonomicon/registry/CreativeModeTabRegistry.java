@@ -35,8 +35,12 @@ public class CreativeModeTabRegistry {
         if (tabName == null)
             return;
 
+        var modonomiconTab = CreativeModeTabRegistry.MODONOMICON.get();
+
         BookDataManager.get().getBooks().values().forEach(b -> {
-            if (event.getTabKey() == CreativeModeTabs.SEARCH || net.minecraftforge.common.CreativeModeTabRegistry.getTab(new ResourceLocation(b.getCreativeTab())) == event.getTab()) {
+            if (event.getTabKey() == CreativeModeTabs.SEARCH ||
+                    modonomiconTab == event.getTab() ||
+                    net.minecraftforge.common.CreativeModeTabRegistry.getTab(new ResourceLocation(b.getCreativeTab())) == event.getTab()) {
                 if (b.generateBookItem()) {
                     ItemStack stack = new ItemStack(ItemRegistry.MODONOMICON.get());
 
