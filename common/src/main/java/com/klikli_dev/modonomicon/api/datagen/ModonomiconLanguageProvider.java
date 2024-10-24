@@ -43,7 +43,7 @@ public interface ModonomiconLanguageProvider extends BiConsumer<String, String> 
     }
 
     default void add(ItemStack key, String name) {
-        this.add(key.getDescriptionId(), name);
+        this.add(key.getItem().getDescriptionId(), name);
     }
 
     default void addEffect(Supplier<? extends MobEffect> key, String name) {

@@ -10,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 
 public interface ModonomiconJeiIntegration {
 
-    ModonomiconJeiIntegration instance = new ModonomiconJeiIntegrationImpl();
+    ModonomiconJeiIntegration instance = new ModonomiconJeiIntegrationDummy();
 
     static ModonomiconJeiIntegration get() {
         return instance;

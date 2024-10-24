@@ -21,7 +21,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
 public class BookSpotlightPageModel extends BookPageModel<BookSpotlightPageModel> {
-    protected Either<ItemStack, Ingredient> item = Either.right(Ingredient.EMPTY);
+    protected Either<ItemStack, Ingredient> item = Either.left(ItemStack.EMPTY);
     protected BookTextHolderModel title = new BookTextHolderModel("");
     protected BookTextHolderModel text = new BookTextHolderModel("");
 
