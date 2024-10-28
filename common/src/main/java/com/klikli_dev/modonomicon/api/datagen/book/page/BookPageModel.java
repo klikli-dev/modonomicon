@@ -36,23 +36,14 @@ public class BookPageModel<T extends BookPageModel<T>> {
      * Serializes the model to json.
      */
     public JsonObject toJson(ResourceLocation entryId, HolderLookup.Provider provider) {
-        JsonObject json = this.toJson(provider); //to keep backwards compat
+        JsonObject json = new JsonObject();
         json.addProperty("type", this.type.toString());
         json.addProperty("anchor", this.anchor);
         json.add("condition", this.condition.toJson(entryId, provider));
 
         return json;
     }
-
-    /**
-     * Serializes the model to json.
-     * @deprecated use {@link #toJson(ResourceLocation, HolderLookup.Provider)} instead.
-     */
-    @Deprecated(forRemoval = true, since="1.21.1-1.105.0")
-    public JsonObject toJson(HolderLookup.Provider provider) {
-        return new JsonObject();
-    }
-
+    
     public T withAnchor(@NotNull String anchor) {
         this.anchor = anchor;
         //noinspection unchecked
