@@ -127,7 +127,6 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
 
     private RecipeHolder<T> getRecipe(Level level, ResourceLocation id) {
         //noinspection unchecked
-        level.recipeAccess().propertySet()
         return (RecipeHolder<T>) level.getRecipeManager().byKey(id).filter(recipe -> recipe.value().getType() == this.recipeType).orElse(null);
     }
 

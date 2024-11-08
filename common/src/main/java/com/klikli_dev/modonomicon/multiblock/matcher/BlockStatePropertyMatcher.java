@@ -53,14 +53,14 @@ public class BlockStatePropertyMatcher implements StateMatcher {
         BlockState displayState = null;
         if (json.has("display")) {
             try {
-                displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), new StringReader(GsonHelper.getAsString(json, "display")), false).blockState();
+                displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(GsonHelper.getAsString(json, "display")), false).blockState();
             } catch (CommandSyntaxException e) {
                 throw new IllegalArgumentException("Failed to parse BlockState from json member \"display\" for BlockStatePropertyMatcher.", e);
             }
         }
 
         try {
-            var result = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), new StringReader(GsonHelper.getAsString(json, "block")), false);
+            var result = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(GsonHelper.getAsString(json, "block")), false);
 
             var props = convertProps(result.properties());
             return new BlockStatePropertyMatcher(displayState, result.blockState().getBlock(), Suppliers.memoize(() -> props));
@@ -74,9 +74,9 @@ public class BlockStatePropertyMatcher implements StateMatcher {
         try {
             BlockState displayState = null;
             if (buffer.readBoolean())
-                displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), new StringReader(buffer.readUtf()), false).blockState();
+                displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(buffer.readUtf()), false).blockState();
 
-            var block = BuiltInRegistries.BLOCK.get(buffer.readResourceLocation());
+            var block = BuiltInRegistries.BLOCK.getValue(buffer.readResourceLocation());
             var props = buffer.readMap((b) -> b.readUtf(), (b) -> b.readUtf());
 
 

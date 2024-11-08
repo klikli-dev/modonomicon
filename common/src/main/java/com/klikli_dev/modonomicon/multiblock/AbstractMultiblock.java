@@ -249,8 +249,8 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     @Override
     public int getBlockTint(BlockPos pos, ColorResolver color) {
-        var plains = this.level.registryAccess().registryOrThrow(Registries.BIOME)
-                .getOrThrow(Biomes.PLAINS);
+        var plains = this.level.registryAccess().lookupOrThrow(Registries.BIOME)
+                .getValueOrThrow(Biomes.PLAINS);
         return color.getColor(plains, pos.getX(), pos.getZ());
     }
 
@@ -271,7 +271,7 @@ public abstract class AbstractMultiblock implements Multiblock {
     }
 
     @Override
-    public int getMinBuildHeight() {
+    public int getMinY() {
         return 0;
     }
 }
