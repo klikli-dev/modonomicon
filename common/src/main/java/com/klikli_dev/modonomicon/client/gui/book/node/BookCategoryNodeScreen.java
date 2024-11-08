@@ -25,6 +25,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -166,7 +167,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         float yOffset = yScale == scale ? 0 : (MAX_SCROLL - (innerHeight + MAX_SCROLL * 2.0f / scale)) / 2;
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(CoreShaders.POSITION_TEX);
 
         //note we cannot translate -z here because even -1 immediately pushes us behind the scene -> not visible
         if (!this.category.getBackgroundParallaxLayers().isEmpty()) {
@@ -200,7 +201,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     private void renderEntries(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(CoreShaders.POSITION_TEX);
 
         //calculate the render offset
         float xOffset = this.getXOffset();
@@ -255,7 +256,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                 final int width = 11;
                 final int height = 11;
 
-                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                RenderSystem.setShader(CoreShaders.POSITION_TEX);
                 //RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
                 RenderSystem.enableBlend();
@@ -340,7 +341,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             var parentDisplayState = this.getEntryDisplayState(parent.getEntry());
             if (parentDisplayState == EntryDisplayState.HIDDEN)
                 continue;
-            
+
             guiGraphics.pose().pushPose();
             guiGraphics.pose().translate(xOffset, yOffset, 0);
             this.connectionRenderer.render(guiGraphics, entry, parent);
