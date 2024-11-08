@@ -340,9 +340,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             var parentDisplayState = this.getEntryDisplayState(parent.getEntry());
             if (parentDisplayState == EntryDisplayState.HIDDEN)
                 continue;
-
-            int blitOffset = 0; //note: any negative blit offset will move it behind our category background
-            this.connectionRenderer.setBlitOffset(blitOffset);
+            
             guiGraphics.pose().pushPose();
             guiGraphics.pose().translate(xOffset, yOffset, 0);
             this.connectionRenderer.render(guiGraphics, entry, parent);
