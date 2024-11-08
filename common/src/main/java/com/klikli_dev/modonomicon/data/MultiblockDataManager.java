@@ -27,7 +27,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import java.util.Map;
 
 
-public class MultiblockDataManager extends SimpleJsonResourceReloadListener {
+public class MultiblockDataManager extends LegacySimpleJsonResourceReloadListener {
     public static final String FOLDER = Data.MULTIBLOCK_DATA_PATH;
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 

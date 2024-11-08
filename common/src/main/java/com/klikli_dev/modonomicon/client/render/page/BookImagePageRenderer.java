@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Style;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,9 +61,9 @@ public class BookImagePageRenderer extends BookPageRenderer<BookImagePage> imple
         guiGraphics.pose().pushPose();
         guiGraphics.pose().scale(0.5F, 0.5F, 1);
         if (this.page.useLegacyRendering())
-            guiGraphics.blit(this.page.getImages()[this.index], x * 2 + 6, y * 2 + 6, 0, 0, 200, 200);
+            guiGraphics.blit(RenderType::guiTextured, this.page.getImages()[this.index], x * 2 + 6, y * 2 + 6, 0, 0, 200, 200, 256, 256);
         else
-            guiGraphics.blit(this.page.getImages()[this.index], x * 2 + 6, y * 2 + 6, 0, 0, 0, 200, 200, 200, 200);
+            guiGraphics.blit(RenderType::guiTextured, this.page.getImages()[this.index], x * 2 + 6, y * 2 + 6, 0, 0, 0, 200, 200, 200, 200);
         guiGraphics.pose().scale(2F, 2F, 1);
         guiGraphics.pose().popPose();
 

@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.crafting.*;
 
 public class BookSmithingRecipePageRenderer extends BookRecipePageRenderer<SmithingRecipe, BookSmithingRecipePage> {
@@ -41,7 +42,7 @@ public class BookSmithingRecipePageRenderer extends BookRecipePageRenderer<Smith
         }
 
         RenderSystem.enableBlend();
-        guiGraphics.blit(this.page.getBook().getCraftingTexture(), recipeX, recipeY, 11, 178, 96, 62, 128, 256);
+        guiGraphics.blit(RenderType::guiTextured, this.page.getBook().getCraftingTexture(), recipeX, recipeY, 11, 178, 96, 62, 128, 256);
 
         Ingredient base = Ingredient.EMPTY;
         Ingredient addition = Ingredient.EMPTY;

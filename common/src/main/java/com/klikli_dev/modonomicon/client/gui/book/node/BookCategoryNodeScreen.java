@@ -26,6 +26,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import org.lwjgl.glfw.GLFW;
@@ -175,7 +176,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         } else {
             //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
             //force offset to int here to reduce difference to entry rendering which is pos based and thus int precision only
-            guiGraphics.blit(this.category.getBackground(), innerX, innerY,
+            guiGraphics.blit(RenderType::guiTextured, this.category.getBackground(), innerX, innerY,
                     (this.scrollX + MAX_SCROLL) / scale + xOffset,
                     (this.scrollY + MAX_SCROLL) / scale + yOffset,
                     innerWidth, innerHeight, (int) (backgroundHeight * backgroundTextureZoomMultiplier), (int) (backgroundWidth * backgroundTextureZoomMultiplier));
@@ -189,7 +190,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
         if (layer.getVanishZoom() == -1 || layer.getVanishZoom() > zoom) {
             //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
-            guiGraphics.blit(layer.getBackground(), x, y,
+            guiGraphics.blit(RenderType::guiTextured, layer.getBackground(), x, y,
                     (scrollX + this.getCategory().getMaxScrollX()) / parallax1 + xOffset,
                     (scrollY + this.getCategory().getMaxScrollY()) / parallax1 + yOffset,
                     width, height, (int) (backgroundHeight * backgroundTextureZoomMultiplier), (int) (backgroundWidth * backgroundTextureZoomMultiplier));
@@ -238,7 +239,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                 RenderSystem.setShaderColor(0.8F, 0.8F, 0.8F, 1.0F);
             }
             //render entry background
-            guiGraphics.blit(this.category.getEntryTextures(), entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT);
+            guiGraphics.blit(RenderType::guiTextured, this.category.getEntryTextures(), entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT, 256, 256);
 
             guiGraphics.pose().pushPose();
 

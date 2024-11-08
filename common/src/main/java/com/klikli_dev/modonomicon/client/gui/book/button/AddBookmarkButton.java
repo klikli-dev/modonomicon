@@ -12,6 +12,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 
 public class AddBookmarkButton extends Button {
@@ -53,7 +54,7 @@ public class AddBookmarkButton extends Button {
             guiGraphics.enableScissor(scissorX, scissorY, scissorX + scissorWidth, scissorY + 1000);
 
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            guiGraphics.blit(this.parent.getBook().getBookOverviewTexture(), renderX, this.getY(), texX, texY, this.width, this.height, 256, 256);
+            guiGraphics.blit(RenderType::guiTextured, this.parent.getBook().getBookOverviewTexture(), renderX, this.getY(), texX, texY, this.width, this.height, 256, 256);
 
             guiGraphics.disableScissor();
 

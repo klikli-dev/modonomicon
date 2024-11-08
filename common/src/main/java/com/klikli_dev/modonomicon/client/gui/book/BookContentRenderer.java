@@ -9,6 +9,7 @@ import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -18,7 +19,7 @@ public class BookContentRenderer {
     private static long lastTurnPageSoundTime;
 
     public static void drawFromContentTexture(GuiGraphics guiGraphics, Book book, int x, int y, int u, int v, int w, int h) {
-        guiGraphics.blit(book.getBookContentTexture(), x, y, u, v, w, h, 512, 256);
+        guiGraphics.blit(RenderType::guiTextured, book.getBookContentTexture(), x, y, u, v, w, h, 512, 256);
     }
 
     public static void drawTitleSeparator(GuiGraphics guiGraphics, Book book, int x, int y) {
@@ -39,7 +40,7 @@ public class BookContentRenderer {
 
     public static void playTurnPageSound(Book book) {
         if (ClientTicks.ticks - lastTurnPageSoundTime > 6) {
-            var sound = BuiltInRegistries.SOUND_EVENT.get(book.getTurnPageSound());
+            var sound = BuiltInRegistries.SOUND_EVENT.getValue(book.getTurnPageSound());
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(sound, (float) (0.7 + Math.random() * 0.3)));
             lastTurnPageSoundTime = ClientTicks.ticks;
         }
@@ -50,7 +51,7 @@ public class BookContentRenderer {
         int y = 0; // (this.height - BOOK_BACKGROUND_HEIGHT) / 2;
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        guiGraphics.blit(bookContentTexture, x, y, 0, 0, 272, 178, 512, 256);
+        guiGraphics.blit(RenderType::guiTextured, bookContentTexture, x, y, 0, 0, 272, 178, 512, 256);
     }
 
 

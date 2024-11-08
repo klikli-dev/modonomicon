@@ -190,6 +190,6 @@ public class BookSpotlightPage extends BookPage {
     }
 
     protected boolean matchesQuery(ItemStack stack, String query) {
-        return I18n.get(stack.getDescriptionId()).toLowerCase().contains(query);
+        return I18n.get(stack.getItem().getDescriptionId()).toLowerCase().contains(query);
     }
 }
