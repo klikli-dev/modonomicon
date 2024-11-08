@@ -442,7 +442,11 @@ public class MultiblockPreviewRenderer {
             if (in instanceof GhostRenderLayer) {
                 return in;
             } else {
-                return remappedTypes.computeIfAbsent(in, GhostRenderLayer::new);
+                return remappedTypes.computeIfAbsent(in, (type) -> {
+                    if(type.name.contains("cutout")) //hack to address https://github.com/klikli-dev/modonomicon/issues/260, but it should work reasonably well
+                        type = RenderType.translucent();
+                    return new GhostRenderLayer(type);
+                });
             }
         }
     }

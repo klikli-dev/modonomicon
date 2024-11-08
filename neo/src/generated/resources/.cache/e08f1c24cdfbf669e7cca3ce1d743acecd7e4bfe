@@ -1,7 +1,8 @@
-// 1.21	2024-09-11T09:39:19.9789931	Multiblocks: modonomicon
+// 1.21	2024-10-31T11:10:42.8838888	Multiblocks: modonomicon
 d359278a8bc55267387b95977def04965a54dd17 data/modonomicon/modonomicon/multiblocks/demo_block_entity.json
 9dc306d79a39ee2085be7e1384d8e39640d79e49 data/modonomicon/modonomicon/multiblocks/demo_dense.json
 89b499dd4f3850c8099ad26ae3c286e95ac8cf99 data/modonomicon/modonomicon/multiblocks/demo_fluid.json
 fc1e7363336d456dd0d1583fcfdaa27a8c4bf23e data/modonomicon/modonomicon/multiblocks/demo_predicate.json
 fd00692e28c040e5100a022e97ea32e7e951945b data/modonomicon/modonomicon/multiblocks/demo_tag.json
+866630ccfeeea8b012ceab80396939c0e944f132 data/modonomicon/modonomicon/multiblocks/demo_transparency.json
 6af533f5fa171fb2cf2d27b166e16ec54b2c5c06 data/modonomicon/modonomicon/multiblocks/test_non_square.json

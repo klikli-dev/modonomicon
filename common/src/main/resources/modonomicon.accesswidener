@@ -15,3 +15,4 @@ extendable method net/minecraft/client/gui/components/AbstractWidget render (Lne
 accessible method net/minecraft/client/resources/model/ModelBakery getModel (Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/client/resources/model/UnbakedModel;
 extendable method net/minecraft/client/gui/screens/Screen renderWithTooltip (Lnet/minecraft/client/gui/GuiGraphics;IIF)V
 extendable method net/minecraft/client/gui/screens/Screen init (Lnet/minecraft/client/Minecraft;II)V
+accessible field net/minecraft/client/renderer/RenderStateShard name Ljava/lang/String;
