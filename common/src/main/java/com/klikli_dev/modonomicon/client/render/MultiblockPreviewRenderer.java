@@ -443,7 +443,9 @@ public class MultiblockPreviewRenderer {
                 return in;
             } else {
                 return remappedTypes.computeIfAbsent(in, (type) -> {
-                    if(type.name.contains("cutout")) //hack to address https://github.com/klikli-dev/modonomicon/issues/260, but it should work reasonably well
+                    //hack to address https://github.com/klikli-dev/modonomicon/issues/260, but it should work reasonably well
+                    //need to exclude entity, because otherwise entity cutout layers will render using the block atlas.
+                    if(type.name.contains("cutout") && !type.name.contains("entity"))
                         type = RenderType.translucent();
                     return new GhostRenderLayer(type);
                 });
