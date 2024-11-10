@@ -8,7 +8,6 @@ package com.klikli_dev.modonomicon;
 
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
-import com.klikli_dev.modonomicon.client.BookModelLoader;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
@@ -126,7 +125,6 @@ public class ModonomiconNeo {
         //Client stuff
         if (FMLEnvironment.dist == Dist.CLIENT) {
             modEventBus.addListener(Client::onClientSetup);
-            modEventBus.addListener(Client::onRegisterGeometryLoaders);
             modEventBus.addListener(Client::onRegisterGuiOverlays);
             //build books and render markdown when client receives recipes
 //            NeoForge.EVENT_BUS.addListener(Client::onRecipesUpdated); //TODO: replace recipesupdatedevent
@@ -195,10 +193,6 @@ public class ModonomiconNeo {
 //            //TODO: repalce recipesupdatedevent
 //            BookDataManager.get().onRecipesUpdated(Minecraft.getInstance().level);
 //        }
-
-        public static void onRegisterGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
-            event.register(Modonomicon.loc("book_model_loader"), new BookModelLoader());
-        }
 
         public static void onRegisterGuiOverlays(RegisterGuiLayersEvent event) {
             event.registerBelow(VanillaGuiLayers.BOSS_OVERLAY, Modonomicon.loc("multiblock_hud"), (guiGraphics, partialTicks) -> MultiblockPreviewRenderer.onRenderHUD(guiGraphics, partialTicks.getGameTimeDeltaPartialTick(true)));

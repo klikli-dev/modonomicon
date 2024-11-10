@@ -76,7 +76,7 @@ public class NeoRegistrationFactory implements RegistrationProvider.Factory {
 
                 @Override
                 public Holder<I> asHolder() {
-                    return (Holder<I>) registry.getRegistry().get().getHolder(obj.getKey()).get();
+                    return (Holder<I>) registry.getRegistry().get().get(obj.getKey()).get();
                 }
             };
             this.entries.add((RegistryObject<T>) ro);

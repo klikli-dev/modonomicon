@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 public class BookModel implements BakedModel {
     private final BakedModel original;
@@ -36,9 +37,29 @@ public class BookModel implements BakedModel {
         this.original = original;
 
         this.itemHandler = new BakedOverrides(new ModelBaker() {
+            //For IModelBakerExtension of Neo
+            public Function<Material, TextureAtlasSprite> getModelTextureGetter() {
+                return null;
+            }
+
+            //For IModelBakerExtension of Neo
             @Nullable
+            public UnbakedModel getTopLevelModel(ModelResourceLocation location){
+                return null;
+            }
+
+            //For IModelBakerExtension of Neo
+            public BakedModel bake(ResourceLocation location, ModelState state, Function<Material, TextureAtlasSprite> sprites){
+                return null;
+            }
+
+            //For IModelBakerExtension of Neo
+            public BakedModel bakeUncached(UnbakedModel model, ModelState state, Function<Material, TextureAtlasSprite> sprites) {
+                return null;
+            }
+
             @Override
-            public BakedModel bake(ResourceLocation resourceLocation, ModelState modelState) {
+            public @NotNull BakedModel bake(@NotNull ResourceLocation resourceLocation, @NotNull ModelState modelState) {
                 return null;
             }
         }, Collections.emptyList()) {
