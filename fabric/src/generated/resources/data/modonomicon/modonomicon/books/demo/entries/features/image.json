@@ -41,9 +41,7 @@
       "condition": {
         "type": "modonomicon:none"
       },
-      "item": {
-        "item": "minecraft:spawner"
-      },
+      "item": "minecraft:spawner",
       "text": "book.modonomicon.demo.features.image.test_spotlight.text",
       "title": ""
     },
