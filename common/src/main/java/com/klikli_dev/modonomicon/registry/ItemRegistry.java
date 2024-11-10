@@ -9,27 +9,40 @@ package com.klikli_dev.modonomicon.registry;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.item.ModonomiconItem;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class ItemRegistry {
     public static final RegistrationProvider<Item> ITEMS = RegistrationProvider.get(Registries.ITEM, Modonomicon.MOD_ID);
 
     public static final RegistryObject<Item> MODONOMICON =
-            ITEMS.register("modonomicon", () -> new ModonomiconItem(new Item.Properties().stacksTo(1)));
+            register("modonomicon", (properties) -> new ModonomiconItem(properties.stacksTo(1)));
 
     //Dummy items for default models
     public static final RegistryObject<Item> MODONOMICON_BLUE =
-            ITEMS.register("modonomicon_blue", () -> new Item(new Item.Properties()));
+            register("modonomicon_blue", Item::new);
     public static final RegistryObject<Item> MODONOMICON_GREEN =
-            ITEMS.register("modonomicon_green", () -> new Item(new Item.Properties()));
+            register("modonomicon_green", Item::new);
     public static final RegistryObject<Item> MODONOMICON_PURPLE =
-            ITEMS.register("modonomicon_purple", () -> new Item(new Item.Properties()));
+            register("modonomicon_purple", Item::new);
     public static final RegistryObject<Item> MODONOMICON_RED =
-            ITEMS.register("modonomicon_red", () -> new Item(new Item.Properties()));
+            register("modonomicon_red", Item::new);
     public static final RegistryObject<Item> LEAFLET =
-            ITEMS.register("leaflet", () -> new Item(new Item.Properties().stacksTo(1)));
+            register("leaflet", (properties) -> new Item(properties.stacksTo(1)));
 
     // Called in the mod initializer / constructor in order to make sure that items are registered
     public static void load() {
     }
+
+
+    public static <I extends Item> RegistryObject<I> register(final String name, final Function<Item.Properties, ? extends I> itemConstructor) {
+        return ITEMS.register(name, () -> itemConstructor.apply(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, name)))));
+    }
+
 }
