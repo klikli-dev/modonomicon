@@ -129,7 +129,7 @@ public class ModonomiconNeo {
             modEventBus.addListener(Client::onRegisterGeometryLoaders);
             modEventBus.addListener(Client::onRegisterGuiOverlays);
             //build books and render markdown when client receives recipes
-            NeoForge.EVENT_BUS.addListener(Client::onRecipesUpdated);
+//            NeoForge.EVENT_BUS.addListener(Client::onRecipesUpdated); //TODO: replace recipesupdatedevent
 
             //register client side reload listener that will reset the fallback font to handle locale changes on the fly
             modEventBus.addListener((RegisterClientReloadListenersEvent e) -> {
@@ -188,12 +188,13 @@ public class ModonomiconNeo {
             modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
         }
 
-        /**
-         * Needs to be in the client inner class to not load clientlevel on server
-         */
-        public static void onRecipesUpdated(RecipesUpdatedEvent event) {
-            BookDataManager.get().onRecipesUpdated(Minecraft.getInstance().level);
-        }
+//        /**
+//         * Needs to be in the client inner class to not load clientlevel on server
+//         */
+//        public static void onRecipesUpdated(RecipesUpdatedEvent event) {
+//            //TODO: repalce recipesupdatedevent
+//            BookDataManager.get().onRecipesUpdated(Minecraft.getInstance().level);
+//        }
 
         public static void onRegisterGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
             event.register(Modonomicon.loc("book_model_loader"), new BookModelLoader());

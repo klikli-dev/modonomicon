@@ -10,8 +10,8 @@ import com.klikli_dev.modonomicon.item.ModonomiconItem;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.block.model.BakedOverrides;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
@@ -27,40 +27,25 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 public class BookModel implements BakedModel {
     private final BakedModel original;
-    private final ItemOverrides itemHandler;
+    private final BakedOverrides itemHandler;
 
     private BookModel(BakedModel original, ModelBakery loader) {
         this.original = original;
-        BlockModel missing = (BlockModel) loader.getModel(ModelBakery.MISSING_MODEL_LOCATION);
 
-        this.itemHandler = new ItemOverrides(new ModelBaker() {
-            public Function<Material, TextureAtlasSprite> getModelTextureGetter() {
-                return null;
-            }
-
-            public BakedModel bake(ResourceLocation location, ModelState state, Function<Material, TextureAtlasSprite> sprites) {
-                return null;
-            }
-
-            @Override
-            public UnbakedModel getModel(ResourceLocation resourceLocation) {
-                return null;
-            }
-
+        this.itemHandler = new BakedOverrides(new ModelBaker() {
             @Nullable
             @Override
             public BakedModel bake(ResourceLocation resourceLocation, ModelState modelState) {
                 return null;
             }
-        }, missing, Collections.emptyList()) {
+        }, Collections.emptyList()) {
+            @Nullable
             @Override
-            public BakedModel resolve(@NotNull BakedModel original, @NotNull ItemStack stack,
-                                      @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
-                var book = ModonomiconItem.getBook(stack);
+            public BakedModel findOverride(ItemStack itemStack, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity, int i) {
+                var book = ModonomiconItem.getBook(itemStack);
                 if (book != null) {
                     ModelResourceLocation modelPath = new ModelResourceLocation(book.getModel(), "inventory");
                     return Minecraft.getInstance().getModelManager().getModel(modelPath);
@@ -77,7 +62,7 @@ public class BookModel implements BakedModel {
 
     @NotNull
     @Override
-    public ItemOverrides getOverrides() {
+    public BakedOverrides overrides() {
         return this.itemHandler;
     }
 

@@ -18,9 +18,9 @@ import java.util.concurrent.Executor;
 public class ReloadListenerWrapper implements IdentifiableResourceReloadListener {
 
     private final ResourceLocation id;
-    private final SimpleJsonResourceReloadListener listener;
+    private final LegacySimpleJsonResourceReloadListener listener;
 
-    public ReloadListenerWrapper(ResourceLocation id, SimpleJsonResourceReloadListener listener) {
+    public ReloadListenerWrapper(ResourceLocation id, LegacySimpleJsonResourceReloadListener listener) {
         this.id = id;
         this.listener = listener;
     }
@@ -31,7 +31,7 @@ public class ReloadListenerWrapper implements IdentifiableResourceReloadListener
     }
 
     @Override
-    public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager, ProfilerFiller preparationsProfiler, ProfilerFiller reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
-        return this.listener.reload(preparationBarrier, resourceManager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor);
+    public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager, Executor backgroundExecutor, Executor gameExecutor) {
+        return this.listener.reload(preparationBarrier, resourceManager, backgroundExecutor, gameExecutor);
     }
 }
