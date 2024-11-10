@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.1-1.108.3] - 2024-11-09
+### :bug: Bug Fixes
+- [`34416ba`](https://github.com/klikli-dev/modonomicon/commit/34416ba82466c4e9fa5650ffec45c616dcb9b352) - skeleton skulls render with block atlas *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.1-1.108.2] - 2024-10-31
 ### :bug: Bug Fixes
 - [`1348950`](https://github.com/klikli-dev/modonomicon/commit/134895024e704d0f65bac0eee4a5e9d03c480fa2) - stop caching and/or condition tooltips *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1747,3 +1752,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.1-1.108.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.108.0...release/v1.21.1-1.108.1
 [release/v1.20.1-1.77.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.77.3...release/v1.20.1-1.77.4
 [release/v1.21.1-1.108.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.108.1...release/v1.21.1-1.108.2
+[release/v1.21.1-1.108.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.108.2...release/v1.21.1-1.108.3
