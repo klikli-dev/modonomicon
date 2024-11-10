@@ -137,7 +137,7 @@ public abstract class BookEntry {
     /**
      * Returns true if this entry should show up in search for the given query.
      */
-    public boolean matchesQuery(String query) {
+    public boolean matchesQuery(String query, Level level) {
         return this.data.name().toLowerCase().contains(query);
     }
 

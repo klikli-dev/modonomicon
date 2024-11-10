@@ -25,6 +25,7 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -89,11 +90,11 @@ public interface ContentRenderingScreen {
     }
 
     default void renderIngredient(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, Ingredient ingr) {
-        this.renderItemStacks(guiGraphics, x, y, mouseX, mouseY, Arrays.asList(ingr.getItems()), -1);
+        this.renderItemStacks(guiGraphics, x, y, mouseX, mouseY, ingr.display().resolveForStacks(SlotDisplayContext.fromLevel(Minecraft.getInstance().level)), -1);
     }
 
     default void renderIngredient(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, Ingredient ingr, int countOverride) {
-        this.renderItemStacks(guiGraphics, x, y, mouseX, mouseY, Arrays.asList(ingr.getItems()), countOverride);
+        this.renderItemStacks(guiGraphics, x, y, mouseX, mouseY, ingr.display().resolveForStacks(SlotDisplayContext.fromLevel(Minecraft.getInstance().level)), countOverride);
     }
 
     default void renderFluidStack(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, FluidHolder stack) {

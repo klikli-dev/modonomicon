@@ -127,7 +127,9 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
 
     private RecipeHolder<T> getRecipe(Level level, ResourceLocation id) {
         //noinspection unchecked
-        return (RecipeHolder<T>) level.getRecipeManager().byKey(id).filter(recipe -> recipe.value().getType() == this.recipeType).orElse(null);
+        //TODO: get recipe display here probably
+        //return (RecipeHolder<T>) level.getRecipeManager().byKey(id).filter(recipe -> recipe.value().getType() == this.recipeType).orElse(null);
+        return null;
     }
 
     @Override
@@ -207,7 +209,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
     }
 
     @Override
-    public boolean matchesQuery(String query) {
+    public boolean matchesQuery(String query, Level level) {
         return this.title1.getString().toLowerCase().contains(query)
                 || this.title2.getString().toLowerCase().contains(query)
                 || this.text.getString().toLowerCase().contains(query);

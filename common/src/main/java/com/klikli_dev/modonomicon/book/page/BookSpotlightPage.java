@@ -19,6 +19,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentPatch;
@@ -29,8 +30,10 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +44,7 @@ public class BookSpotlightPage extends BookPage {
      * A custom codec that still uses the "item" field instead of "id" for backwards comp,
      */
     public static final Codec<ItemStack> CUSTOM_ITEM_STACK_CODEC = RecordCodecBuilder.create((builder) -> builder.group(
-            ItemStack.ITEM_NON_AIR_CODEC.fieldOf("item").forGetter(ItemStack::getItemHolder),
+            Item.CODEC.fieldOf("item").forGetter(ItemStack::getItemHolder),
             Codec.INT.optionalFieldOf("count", 1).forGetter(ItemStack::getCount),
             DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(ItemStack::getComponentsPatch)
     ).apply(builder, ItemStack::new));
@@ -140,7 +143,7 @@ public class BookSpotlightPage extends BookPage {
 
         if (this.title.isEmpty()) {
             //use ingredient name if we don't have a custom title
-            var item = this.item.map(i -> i , i -> i.getItems()[0]);
+            var item = this.item.map(i -> i , i -> i.display().resolveForFirstStack(SlotDisplayContext.fromLevel(level)));
 
             this.title = new BookTextHolder(((MutableComponent) item.getHoverName())
                     .withStyle(Style.EMPTY
@@ -174,10 +177,10 @@ public class BookSpotlightPage extends BookPage {
     }
 
     @Override
-    public boolean matchesQuery(String query) {
+    public boolean matchesQuery(String query, Level level) {
         return this.title.getString().toLowerCase().contains(query)
                 || this.itemStackMatchesQuery(query)
-                || this.ingredientMatchesQuery(query)
+                || this.ingredientMatchesQuery(query, level)
                 || this.text.getString().toLowerCase().contains(query);
     }
 
@@ -185,8 +188,8 @@ public class BookSpotlightPage extends BookPage {
         return this.item.mapLeft(l -> this.matchesQuery(l, query)).left().orElse(false);
     }
 
-    protected boolean ingredientMatchesQuery(String query) {
-        return this.item.mapRight(r -> Arrays.stream(r.getItems()).anyMatch(i -> this.matchesQuery(i, query))).right().orElse(false);
+    protected boolean ingredientMatchesQuery(String query, Level level) {
+        return this.item.mapRight(r -> r.display().resolveForStacks(SlotDisplayContext.fromLevel(level)).stream().anyMatch(i -> this.matchesQuery(i, query))).right().orElse(false);
     }
 
     protected boolean matchesQuery(ItemStack stack, String query) {

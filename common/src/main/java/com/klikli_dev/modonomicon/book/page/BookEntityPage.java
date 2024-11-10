@@ -152,7 +152,7 @@ public class BookEntityPage extends BookPage {
     }
 
     @Override
-    public boolean matchesQuery(String query) {
+    public boolean matchesQuery(String query, Level level) {
         return this.entityName.getString().toLowerCase().contains(query)
                 || this.text.getString().toLowerCase().contains(query);
     }

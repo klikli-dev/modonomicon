@@ -48,7 +48,9 @@ public class BookCraftingRecipePage extends BookRecipePage<Recipe<?>> {
             return ItemStack.EMPTY;
         }
 
-        return recipe.value().getResultItem(level.registryAccess());
+        //TODO: get recipe output here
+        return ItemStack.EMPTY;
+//        return recipe.value().getResultItem(level.registryAccess());
     }
 
     @Override

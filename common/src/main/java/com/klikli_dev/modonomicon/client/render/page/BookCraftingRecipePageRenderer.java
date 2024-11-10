@@ -57,18 +57,19 @@ public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recip
             }
         }
 
-        this.parentScreen.renderItemStack(guiGraphics, recipeX + 79, recipeY + 22, mouseX, mouseY, recipe.value().getResultItem(Minecraft.getInstance().level.registryAccess()));
-
-        NonNullList<Ingredient> ingredients = recipe.value().getIngredients();
-        int wrap = 3;
-        if (shaped) {
-            wrap = ((ShapedRecipe) recipe.value()).getWidth();
-        }
-
-        for (int i = 0; i < ingredients.size(); i++) {
-            this.parentScreen.renderIngredient(guiGraphics, recipeX + (i % wrap) * 19 + 3, recipeY + (i / wrap) * 19 + 3, mouseX, mouseY, ingredients.get(i));
-        }
-
-        this.parentScreen.renderItemStack(guiGraphics, recipeX + 79, recipeY + 41, mouseX, mouseY, recipe.value().getToastSymbol());
+        //TODO: enable recipe page rendering
+//        this.parentScreen.renderItemStack(guiGraphics, recipeX + 79, recipeY + 22, mouseX, mouseY, recipe.value().getResultItem(Minecraft.getInstance().level.registryAccess()));
+//
+//        NonNullList<Ingredient> ingredients = recipe.value().getIngredients();
+//        int wrap = 3;
+//        if (shaped) {
+//            wrap = ((ShapedRecipe) recipe.value()).getWidth();
+//        }
+//
+//        for (int i = 0; i < ingredients.size(); i++) {
+//            this.parentScreen.renderIngredient(guiGraphics, recipeX + (i % wrap) * 19 + 3, recipeY + (i / wrap) * 19 + 3, mouseX, mouseY, ingredients.get(i));
+//        }
+//
+//        this.parentScreen.renderItemStack(guiGraphics, recipeX + 79, recipeY + 41, mouseX, mouseY, recipe.value().getToastSymbol());
     }
 }

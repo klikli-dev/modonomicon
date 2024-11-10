@@ -44,24 +44,25 @@ public class BookSmithingRecipePageRenderer extends BookRecipePageRenderer<Smith
         RenderSystem.enableBlend();
         guiGraphics.blit(RenderType::guiTextured, this.page.getBook().getCraftingTexture(), recipeX, recipeY, 11, 178, 96, 62, 128, 256);
 
-        Ingredient base = Ingredient.EMPTY;
-        Ingredient addition = Ingredient.EMPTY;
-        Ingredient template = Ingredient.EMPTY;
-        if (recipe.value() instanceof SmithingTransformRecipe transformRecipe) {
-            base = transformRecipe.base;
-            addition = transformRecipe.addition;
-            template = transformRecipe.template;
-        }
-        if (recipe.value() instanceof SmithingTrimRecipe trimRecipe) {
-            base = trimRecipe.base;
-            addition = trimRecipe.addition;
-            template = trimRecipe.template;
-        }
-
-        this.parentScreen.renderIngredient(guiGraphics, recipeX + 4, recipeY + 4, mouseX, mouseY, template);
-        this.parentScreen.renderIngredient(guiGraphics, recipeX + 4, recipeY + 23, mouseX, mouseY, base);
-        this.parentScreen.renderIngredient(guiGraphics, recipeX + 4, recipeY + 42, mouseX, mouseY, addition);
-        this.parentScreen.renderItemStack(guiGraphics, recipeX + 40, recipeY + 23, mouseX, mouseY, recipe.value().getToastSymbol());
-        this.parentScreen.renderItemStack(guiGraphics, recipeX + 76, recipeY + 23, mouseX, mouseY, recipe.value().getResultItem(Minecraft.getInstance().level.registryAccess()));
+        //TODO: enable smithing recipe rendering
+//        Ingredient base = Ingredient.EMPTY;
+//        Ingredient addition = Ingredient.EMPTY;
+//        Ingredient template = Ingredient.EMPTY;
+//        if (recipe.value() instanceof SmithingTransformRecipe transformRecipe) {
+//            base = transformRecipe.base;
+//            addition = transformRecipe.addition;
+//            template = transformRecipe.template;
+//        }
+//        if (recipe.value() instanceof SmithingTrimRecipe trimRecipe) {
+//            base = trimRecipe.base;
+//            addition = trimRecipe.addition;
+//            template = trimRecipe.template;
+//        }
+//
+//        this.parentScreen.renderIngredient(guiGraphics, recipeX + 4, recipeY + 4, mouseX, mouseY, template);
+//        this.parentScreen.renderIngredient(guiGraphics, recipeX + 4, recipeY + 23, mouseX, mouseY, base);
+//        this.parentScreen.renderIngredient(guiGraphics, recipeX + 4, recipeY + 42, mouseX, mouseY, addition);
+//        this.parentScreen.renderItemStack(guiGraphics, recipeX + 40, recipeY + 23, mouseX, mouseY, recipe.value().getToastSymbol());
+//        this.parentScreen.renderItemStack(guiGraphics, recipeX + 76, recipeY + 23, mouseX, mouseY, recipe.value().getResultItem(Minecraft.getInstance().level.registryAccess()));
     }
 }
