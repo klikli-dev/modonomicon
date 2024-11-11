@@ -105,7 +105,15 @@ public class BookIcon {
 
     public void render(GuiGraphics guiGraphics, int x, int y) {
         if (this.texture != null) {
-            guiGraphics.blit(RenderType::guiTextured, this.texture, x, y, 16, 16, 0, 0, this.width, this.height, this.width, this.height);
+            //1.21.3+ parameter order taken from ImageWidget#renderWidget
+            guiGraphics.blit(
+                    RenderType::guiTextured,
+                    this.texture,
+                    x, y,
+                    0, 0,
+                    16, 16,
+                    this.width, this.height
+            );
         } else {
             guiGraphics.renderItem(this.itemStack, x, y);
         }
