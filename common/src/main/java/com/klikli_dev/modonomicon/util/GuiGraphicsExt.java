@@ -100,16 +100,16 @@ public class GuiGraphicsExt {
      * @param v             bound resource location image y offset
      * @param width         the desired box width
      * @param height        the desired box height
-     * @param textureWidth  the width of the box texture in the resource location image
-     * @param textureHeight the height of the box texture in the resource location image
+     * @param maxU          the width of the box texture in the resource location image
+     * @param maxV          the height of the box texture in the resource location image
      * @param topBorder     the size of the box's top border
      * @param bottomBorder  the size of the box's bottom border
      * @param leftBorder    the size of the box's left border
      * @param rightBorder   the size of the box's right border
      */
-    public static void blitWithBorder(GuiGraphics guiGraphics, Function<ResourceLocation, RenderType> function, ResourceLocation texture, int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight, int topBorder, int bottomBorder, int leftBorder, int rightBorder) {
-        int fillerWidth = textureWidth - leftBorder - rightBorder;
-        int fillerHeight = textureHeight - topBorder - bottomBorder;
+    public static void blitWithBorder(GuiGraphics guiGraphics, Function<ResourceLocation, RenderType> function, ResourceLocation texture, int x, int y, int u, int v, int width, int height, int maxU, int maxV, int topBorder, int bottomBorder, int leftBorder, int rightBorder) {
+        int fillerWidth = maxU - leftBorder - rightBorder;
+        int fillerHeight = maxV - topBorder - bottomBorder;
         int canvasWidth = width - leftBorder - rightBorder;
         int canvasHeight = height - topBorder - bottomBorder;
         int xPasses = canvasWidth / fillerWidth;
@@ -119,31 +119,31 @@ public class GuiGraphicsExt {
 
         // Draw Border
         // Top Left
-        guiGraphics.blit(function, texture, x, y, u, v, leftBorder, topBorder, textureWidth, textureHeight);
+        guiGraphics.blit(function, texture, x, y, u, v, leftBorder, topBorder, 256, 256);
         // Top Right
-        guiGraphics.blit(function, texture, x + leftBorder + canvasWidth, y, u + leftBorder + fillerWidth, v, rightBorder, topBorder, textureWidth, textureHeight);
+        guiGraphics.blit(function, texture, x + leftBorder + canvasWidth, y, u + leftBorder + fillerWidth, v, rightBorder, topBorder, 256, 256);
         // Bottom Left
-        guiGraphics.blit(function, texture, x, y + topBorder + canvasHeight, u, v + topBorder + fillerHeight, leftBorder, bottomBorder, textureWidth, textureHeight);
+        guiGraphics.blit(function, texture, x, y + topBorder + canvasHeight, u, v + topBorder + fillerHeight, leftBorder, bottomBorder, 256, 256);
         // Bottom Right
-        guiGraphics.blit(function, texture, x + leftBorder + canvasWidth, y + topBorder + canvasHeight, u + leftBorder + fillerWidth, v + topBorder + fillerHeight, rightBorder, bottomBorder, textureWidth, textureHeight);
+        guiGraphics.blit(function, texture, x + leftBorder + canvasWidth, y + topBorder + canvasHeight, u + leftBorder + fillerWidth, v + topBorder + fillerHeight, rightBorder, bottomBorder, 256, 256);
 
         for (int i = 0; i < xPasses + (remainderWidth > 0 ? 1 : 0); i++) {
             // Top Border
-            guiGraphics.blit(function, texture, x + leftBorder + (i * fillerWidth), y, u + leftBorder, v, (i == xPasses ? remainderWidth : fillerWidth), topBorder, textureWidth, textureHeight);
+            guiGraphics.blit(function, texture, x + leftBorder + (i * fillerWidth), y, u + leftBorder, v, (i == xPasses ? remainderWidth : fillerWidth), topBorder, 256, 256);
             // Bottom Border
-            guiGraphics.blit(function, texture, x + leftBorder + (i * fillerWidth), y + topBorder + canvasHeight, u + leftBorder, v + topBorder + fillerHeight, (i == xPasses ? remainderWidth : fillerWidth), bottomBorder, textureWidth, textureHeight);
+            guiGraphics.blit(function, texture, x + leftBorder + (i * fillerWidth), y + topBorder + canvasHeight, u + leftBorder, v + topBorder + fillerHeight, (i == xPasses ? remainderWidth : fillerWidth), bottomBorder, 256, 256);
 
             // Throw in some filler for good measure
             for (int j = 0; j < yPasses + (remainderHeight > 0 ? 1 : 0); j++)
-                guiGraphics.blit(function, texture, x + leftBorder + (i * fillerWidth), y + topBorder + (j * fillerHeight), u + leftBorder, v + topBorder, (i == xPasses ? remainderWidth : fillerWidth), (j == yPasses ? remainderHeight : fillerHeight), textureWidth, textureHeight);
+                guiGraphics.blit(function, texture, x + leftBorder + (i * fillerWidth), y + topBorder + (j * fillerHeight), u + leftBorder, v + topBorder, (i == xPasses ? remainderWidth : fillerWidth), (j == yPasses ? remainderHeight : fillerHeight), 256, 256);
         }
 
         // Side Borders
         for (int j = 0; j < yPasses + (remainderHeight > 0 ? 1 : 0); j++) {
             // Left Border
-            guiGraphics.blit(function, texture, x, y + topBorder + (j * fillerHeight), u, v + topBorder, leftBorder, (j == yPasses ? remainderHeight : fillerHeight), textureWidth, textureHeight);
+            guiGraphics.blit(function, texture, x, y + topBorder + (j * fillerHeight), u, v + topBorder, leftBorder, (j == yPasses ? remainderHeight : fillerHeight), 256, 256);
             // Right Border
-            guiGraphics.blit(function, texture, x + leftBorder + canvasWidth, y + topBorder + (j * fillerHeight), u + leftBorder + fillerWidth, v + topBorder, rightBorder, (j == yPasses ? remainderHeight : fillerHeight), textureWidth, textureHeight);
+            guiGraphics.blit(function, texture, x + leftBorder + canvasWidth, y + topBorder + (j * fillerHeight), u + leftBorder + fillerWidth, v + topBorder, rightBorder, (j == yPasses ? remainderHeight : fillerHeight), 256, 256);
         }
     }
 
