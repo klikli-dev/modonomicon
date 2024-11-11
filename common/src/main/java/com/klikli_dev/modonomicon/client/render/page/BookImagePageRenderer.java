@@ -63,7 +63,7 @@ public class BookImagePageRenderer extends BookPageRenderer<BookImagePage> imple
         if (this.page.useLegacyRendering())
             guiGraphics.blit(RenderType::guiTextured, this.page.getImages()[this.index], x * 2 + 6, y * 2 + 6, 0, 0, 200, 200, 256, 256);
         else
-            guiGraphics.blit(RenderType::guiTextured, this.page.getImages()[this.index], x * 2 + 6, y * 2 + 6, 0, 0, 0, 200, 200, 200, 200);
+            guiGraphics.blit(RenderType::guiTextured, this.page.getImages()[this.index], x * 2 + 6, y * 2 + 6, 0, 0, 200, 200, 200, 200, 200, 200); //TODO: look into this once parchment is up to date. Not sure why we have to add the height + width 3 times instead of 2.
         guiGraphics.pose().scale(2F, 2F, 1);
         guiGraphics.pose().popPose();
 
