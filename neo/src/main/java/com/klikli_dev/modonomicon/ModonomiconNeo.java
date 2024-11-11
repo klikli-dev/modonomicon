@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon;
 
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
+import com.klikli_dev.modonomicon.client.BookModel;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
@@ -21,6 +22,7 @@ import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
@@ -128,6 +130,7 @@ public class ModonomiconNeo {
             modEventBus.addListener(Client::onRegisterGuiOverlays);
             //build books and render markdown when client receives recipes
 //            NeoForge.EVENT_BUS.addListener(Client::onRecipesUpdated); //TODO: replace recipesupdatedevent
+            modEventBus.addListener(Client::onModifyBakingResult);
 
             //register client side reload listener that will reset the fallback font to handle locale changes on the fly
             modEventBus.addListener((RegisterClientReloadListenersEvent e) -> {
@@ -196,6 +199,10 @@ public class ModonomiconNeo {
 
         public static void onRegisterGuiOverlays(RegisterGuiLayersEvent event) {
             event.registerBelow(VanillaGuiLayers.BOSS_OVERLAY, Modonomicon.loc("multiblock_hud"), (guiGraphics, partialTicks) -> MultiblockPreviewRenderer.onRenderHUD(guiGraphics, partialTicks.getGameTimeDeltaPartialTick(true)));
+        }
+
+        public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
+            BookModel.replace(event.getModelBakery().getBakedTopLevelModels(), event.getModelBakery());
         }
     }
 }

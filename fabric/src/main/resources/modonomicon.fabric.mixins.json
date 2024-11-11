@@ -10,7 +10,8 @@
   "client": [
     "MixinClientPacketListener",
     "MixinGameRenderer",
-    "MixinLevelRenderer"
+    "MixinLevelRenderer",
+    "MixinModelManager"
   ],
   "server": [
   ],
