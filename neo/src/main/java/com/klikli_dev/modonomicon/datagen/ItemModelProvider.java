@@ -41,8 +41,7 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
 
     @Override
     protected void registerModels() {
-        //moved to manually created json, because we have a custom loader and only one instance
-        //this.registerItemGenerated(this.name(ItemRegistry.MODONOMICON.get()), "modonomicon_purple");
+        this.registerItemGenerated(this.name(ItemRegistry.MODONOMICON.get()), "modonomicon_purple");
 
         this.registerItemGenerated(this.name(ItemRegistry.MODONOMICON_BLUE.get()), "modonomicon_blue");
         this.registerItemGenerated(this.name(ItemRegistry.MODONOMICON_GREEN.get()), "modonomicon_green");
