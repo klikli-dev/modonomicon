@@ -75,11 +75,6 @@ public class ModonomiconFabricClient implements ClientModInitializer {
 
             pluginContext.modifyModelAfterBake().register(
                     (oldModel, ctx) -> {
-                        if (ctx.topLevelId() != null) {
-                            if (ctx.topLevelId().id().toString().contains("modonomicon")) {
-                                Modonomicon.LOG.info("ModonomiconFabricClient: Found model: " + ctx.topLevelId().toString());
-                            }
-                        }
                         if (ctx.topLevelId() != null &&
                                 //this is the item id of the item for which the model modification is made = modonomicon
                                 //I am not referencing the actual registry object because I think the model loader is called before the item is registered
