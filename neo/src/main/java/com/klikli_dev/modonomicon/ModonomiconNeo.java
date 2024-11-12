@@ -202,7 +202,7 @@ public class ModonomiconNeo {
         }
 
         public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
-            BookModel.replace(event.getModelBakery().getBakedTopLevelModels(), event.getModelBakery());
+            BookModel.replace(event.getModelBakery().getBakedTopLevelModels());
         }
     }
 }

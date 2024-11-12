@@ -33,7 +33,7 @@ public class BookModel implements BakedModel {
     private final BakedModel original;
     private final BakedOverrides itemHandler;
 
-    private BookModel(BakedModel original, ModelBakery loader) {
+    public BookModel(BakedModel original) {
         this.original = original;
 
         this.itemHandler = new BakedOverrides(new ModelBaker() {
@@ -76,9 +76,9 @@ public class BookModel implements BakedModel {
         };
     }
 
-    public static void replace(Map<ModelResourceLocation, BakedModel> models, ModelBakery bakery) {
+    public static void replace(Map<ModelResourceLocation, BakedModel> models) {
         ModelResourceLocation key = new ModelResourceLocation(ItemRegistry.MODONOMICON.getId(), "inventory");
-        models.computeIfPresent(key, (k, oldModel) -> new BookModel(oldModel, bakery));
+        models.computeIfPresent(key, (k, oldModel) -> new BookModel(oldModel));
     }
 
     @NotNull
