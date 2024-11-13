@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.3-1.109.0] - 2024-11-13
+### :sparkles: New Features
+- [`4fe2275`](https://github.com/klikli-dev/modonomicon/commit/4fe227539ff96a3be433558274d2397d97ebfbff) - upgrade neo and fabric to 1.21.3 *(PR [#265](https://github.com/klikli-dev/modonomicon/pull/265) by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`317ab24`](https://github.com/klikli-dev/modonomicon/commit/317ab2449a5e2e3287a95fce055dbef7728d405d) - force file change *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.1-1.108.3] - 2024-11-09
 ### :bug: Bug Fixes
 - [`34416ba`](https://github.com/klikli-dev/modonomicon/commit/34416ba82466c4e9fa5650ffec45c616dcb9b352) - skeleton skulls render with block atlas *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1753,3 +1761,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.77.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.77.3...release/v1.20.1-1.77.4
 [release/v1.21.1-1.108.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.108.1...release/v1.21.1-1.108.2
 [release/v1.21.1-1.108.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.108.2...release/v1.21.1-1.108.3
+[release/v1.21.3-1.109.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.3-0.0.0...release/v1.21.3-1.109.0
