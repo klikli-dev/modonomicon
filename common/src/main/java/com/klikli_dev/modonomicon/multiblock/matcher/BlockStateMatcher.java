@@ -52,14 +52,14 @@ public class BlockStateMatcher implements StateMatcher {
         BlockState displayState = null;
         if (json.has("display")) {
             try {
-                displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), new StringReader(GsonHelper.getAsString(json, "display")), false).blockState();
+                displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(GsonHelper.getAsString(json, "display")), false).blockState();
             } catch (CommandSyntaxException e) {
                 throw new IllegalArgumentException("Failed to parse BlockState from json member \"display\" for BlockStateMatcher.", e);
             }
         }
 
         try {
-            var blockState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), new StringReader(GsonHelper.getAsString(json, "block")), false).blockState();
+            var blockState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(GsonHelper.getAsString(json, "block")), false).blockState();
             return new BlockStateMatcher(displayState, blockState);
         } catch (CommandSyntaxException e) {
             throw new IllegalArgumentException("Failed to parse BlockState from json member \"block\" for BlockStateMatcher.", e);
@@ -71,9 +71,9 @@ public class BlockStateMatcher implements StateMatcher {
         try {
             BlockState displayState = null;
             if (buffer.readBoolean())
-                displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), new StringReader(buffer.readUtf()), false).blockState();
+                displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(buffer.readUtf()), false).blockState();
 
-            var blockState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), new StringReader(buffer.readUtf()), false).blockState();
+            var blockState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(buffer.readUtf()), false).blockState();
 
             return new BlockStateMatcher(displayState, blockState);
         } catch (CommandSyntaxException e) {

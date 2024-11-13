@@ -111,5 +111,18 @@ public class DemoMultiblockProvider extends MultiblockProvider {
                 .block('L', () -> Blocks.LAVA)
                 .block('W', () -> Blocks.WATER)
         );
+
+        this.add(this.modLoc("demo_transparency"), new DenseMultiblockBuilder()
+                .layer(
+                        "G F",
+                        " 0 ",
+                        "I C"
+                )
+                .block('G', () -> Blocks.GLASS_PANE)
+                .block('F', () -> Blocks.GRAY_STAINED_GLASS_PANE)
+                .block('I', () -> Blocks.IRON_BARS)
+                .block('C', () -> Blocks.CHAIN)
+        );
+
     }
 }

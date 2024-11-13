@@ -15,6 +15,7 @@ import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -38,7 +39,7 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
         int y = 0; // (this.height - BOOK_BACKGROUND_HEIGHT) / 2;
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        guiGraphics.blit(bookContentTexture, x, y, 0, 0, 145, 178, 256, 256);
+        guiGraphics.blit(RenderType::guiTextured, bookContentTexture, x, y, 0, 0, 145, 178, 256, 256);
     }
 
     @Override
@@ -57,7 +58,7 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
         }
         this.addRenderableWidget(new BackButton(this, this.width / 2 - BackButton.WIDTH / 2, this.bookTop + SINGLE_PAGE_BOOK_BACKGROUND_HEIGHT - BackButton.HEIGHT / 2));
 
-        this.updateBookmarksButton();
+//        this.updateBookmarksButton(); //no bookmarks on leaflets!
     }
 
     @Override

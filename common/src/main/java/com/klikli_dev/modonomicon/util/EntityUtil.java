@@ -13,6 +13,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -35,7 +36,7 @@ public class EntityUtil {
         Pair<String, String> nameAndNbt = splitNameAndNBT(entityId);
         var type = BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.parse(nameAndNbt.getLeft()));
 
-        return type.getDescriptionId();
+        return type.get().value().getDescriptionId();
     }
 
     public static Function<Level, Entity> getEntityLoader(String entityId) {
@@ -54,7 +55,7 @@ public class EntityUtil {
 
         ResourceLocation key = ResourceLocation.parse(entityId);
         var type = BuiltInRegistries.ENTITY_TYPE.get(key);
-        if (type == null) {
+        if (type.isEmpty()) {
             throw new RuntimeException("Unknown entity id: " + entityId);
         }
 
@@ -63,7 +64,7 @@ public class EntityUtil {
         return (world) -> {
             Entity entity;
             try {
-                entity = type.create(world);
+                entity = type.get().value().create(world, EntitySpawnReason.LOAD);
                 if (useNbt != null) {
                     entity.load(useNbt);
                 }

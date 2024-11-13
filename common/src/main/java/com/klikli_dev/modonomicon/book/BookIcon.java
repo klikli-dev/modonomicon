@@ -13,6 +13,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -29,7 +30,7 @@ public class BookIcon {
      * A custom codec that still uses the "item" field instead of "id" for backwards comp,
      */
     public static final Codec<ItemStack> CUSTOM_ITEM_STACK_CODEC = RecordCodecBuilder.create((builder) -> builder.group(
-            ItemStack.ITEM_NON_AIR_CODEC.fieldOf("item").forGetter(ItemStack::getItemHolder),
+            Item.CODEC.fieldOf("item").forGetter(ItemStack::getItemHolder),
             Codec.INT.optionalFieldOf("count", 1).forGetter(ItemStack::getCount),
             DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(ItemStack::getComponentsPatch)
     ).apply(builder, ItemStack::new));
@@ -85,7 +86,7 @@ public class BookIcon {
         if (value.getPath().endsWith(".png")) {
             return new BookIcon(value, ModonomiconConstants.Data.Icon.DEFAULT_WIDTH, ModonomiconConstants.Data.Icon.DEFAULT_HEIGHT);
         } else {
-            Item item = BuiltInRegistries.ITEM.get(value);
+            Item item = BuiltInRegistries.ITEM.getValue(value);
             return new BookIcon(new ItemStack(item));
         }
     }
@@ -104,7 +105,15 @@ public class BookIcon {
 
     public void render(GuiGraphics guiGraphics, int x, int y) {
         if (this.texture != null) {
-            guiGraphics.blit(this.texture, x, y, 16, 16, 0, 0, this.width, this.height, this.width, this.height);
+            //1.21.3+ parameter order taken from ImageWidget#renderWidget
+            guiGraphics.blit(
+                    RenderType::guiTextured,
+                    this.texture,
+                    x, y,
+                    0, 0,
+                    16, 16,
+                    this.width, this.height
+            );
         } else {
             guiGraphics.renderItem(this.itemStack, x, y);
         }

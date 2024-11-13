@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -44,30 +45,31 @@ public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recip
         }
 
         RenderSystem.enableBlend();
-        guiGraphics.blit(this.page.getBook().getCraftingTexture(), recipeX - 2, recipeY - 2, 0, 0, 100, 62, 128, 256);
+        guiGraphics.blit(RenderType::guiTextured, this.page.getBook().getCraftingTexture(), recipeX - 2, recipeY - 2, 0, 0, 100, 62, 128, 256);
 
         boolean shaped = recipe.value() instanceof ShapedRecipe;
         if (!shaped) {
             int iconX = recipeX + 62;
             int iconY = recipeY + 2;
-            guiGraphics.blit(this.page.getBook().getCraftingTexture(), iconX, iconY, 0, 64, 11, 11, 128, 256);
+            guiGraphics.blit(RenderType::guiTextured, this.page.getBook().getCraftingTexture(), iconX, iconY, 0, 64, 11, 11, 128, 256);
             if (this.parentScreen.isMouseInRange(mouseX, mouseY, iconX, iconY, 11, 11)) {
                 this.parentScreen.setTooltip(Component.translatable(Tooltips.RECIPE_CRAFTING_SHAPELESS));
             }
         }
 
-        this.parentScreen.renderItemStack(guiGraphics, recipeX + 79, recipeY + 22, mouseX, mouseY, recipe.value().getResultItem(Minecraft.getInstance().level.registryAccess()));
-
-        NonNullList<Ingredient> ingredients = recipe.value().getIngredients();
-        int wrap = 3;
-        if (shaped) {
-            wrap = ((ShapedRecipe) recipe.value()).getWidth();
-        }
-
-        for (int i = 0; i < ingredients.size(); i++) {
-            this.parentScreen.renderIngredient(guiGraphics, recipeX + (i % wrap) * 19 + 3, recipeY + (i / wrap) * 19 + 3, mouseX, mouseY, ingredients.get(i));
-        }
-
-        this.parentScreen.renderItemStack(guiGraphics, recipeX + 79, recipeY + 41, mouseX, mouseY, recipe.value().getToastSymbol());
+        //TODO: enable recipe page rendering
+//        this.parentScreen.renderItemStack(guiGraphics, recipeX + 79, recipeY + 22, mouseX, mouseY, recipe.value().getResultItem(Minecraft.getInstance().level.registryAccess()));
+//
+//        NonNullList<Ingredient> ingredients = recipe.value().getIngredients();
+//        int wrap = 3;
+//        if (shaped) {
+//            wrap = ((ShapedRecipe) recipe.value()).getWidth();
+//        }
+//
+//        for (int i = 0; i < ingredients.size(); i++) {
+//            this.parentScreen.renderIngredient(guiGraphics, recipeX + (i % wrap) * 19 + 3, recipeY + (i / wrap) * 19 + 3, mouseX, mouseY, ingredients.get(i));
+//        }
+//
+//        this.parentScreen.renderItemStack(guiGraphics, recipeX + 79, recipeY + 41, mouseX, mouseY, recipe.value().getToastSymbol());
     }
 }

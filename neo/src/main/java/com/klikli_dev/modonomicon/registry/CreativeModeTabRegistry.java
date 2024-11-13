@@ -40,7 +40,7 @@ public class CreativeModeTabRegistry {
         var modonomiconTab = CreativeModeTabRegistry.MODONOMICON.get();
 
         BookDataManager.get().getBooks().values().forEach(b -> {
-            var bookTab = BuiltInRegistries.CREATIVE_MODE_TAB.get(ResourceLocation.parse(b.getCreativeTab()));
+            var bookTab = BuiltInRegistries.CREATIVE_MODE_TAB.getValue(ResourceLocation.parse(b.getCreativeTab()));
 
             if (bookTab == event.getTab() || modonomiconTab == event.getTab()
             ) {

@@ -20,6 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.level.Level;
 
 public class BookTextPage extends BookPage {
     protected BookTextHolder title;
@@ -112,7 +113,7 @@ public class BookTextPage extends BookPage {
     }
 
     @Override
-    public boolean matchesQuery(String query) {
+    public boolean matchesQuery(String query, Level level) {
         return this.title.getString().toLowerCase().contains(query)
                 || this.text.getString().toLowerCase().contains(query);
     }

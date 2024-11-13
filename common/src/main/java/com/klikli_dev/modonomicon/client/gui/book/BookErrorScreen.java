@@ -14,6 +14,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -41,7 +42,7 @@ public class BookErrorScreen extends Screen {
         int y = 0;
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        guiGraphics.blit(BOOK_CONTENT_TEXTURE, x, y, 0, 0, 272, 178, 512, 256);
+        guiGraphics.blit(RenderType::guiTextured, BOOK_CONTENT_TEXTURE, x, y, 0, 0, 272, 178, 512, 256);
     }
 
     public void renderError(GuiGraphics guiGraphics, Component text, int x, int y, int width) {

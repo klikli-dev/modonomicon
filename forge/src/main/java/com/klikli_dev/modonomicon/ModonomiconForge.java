@@ -132,6 +132,7 @@ public class ModonomiconForge {
 //            modEventBus.addListener(Client::onRegisterGuiOverlays);
             //build books and render markdown when client receives recipes
             MinecraftForge.EVENT_BUS.addListener(Client::onRecipesUpdated);
+            modEventBus.addListener(Client::onModifyBakingResult);
 
             //register client side reload listener that will reset the fallback font to handle locale changes on the fly
             modEventBus.addListener((RegisterClientReloadListenersEvent e) -> {
@@ -207,6 +208,10 @@ public class ModonomiconForge {
 
         public static void onRegisterGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
             event.register("book_model_loader", new BookModelLoader());
+        }
+
+        public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
+            BookModel.replace(event.getModelBakery().getBakedTopLevelModels(), event.getModelBakery());
         }
 
         //Currently done in MixinGui because forge removed the event and LayeredDraw seems not up to the task yet

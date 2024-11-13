@@ -127,16 +127,23 @@ public class MultiblockPreviewRenderer {
                 guiGraphics.drawString(mc.font, s, (int) (x - mc.font.width(s) / 2.0F), top + height - 10, 0x00FF00, false);
                 guiGraphics.pose().popPose();
             }
+            guiGraphics.pose().pushPose();
 
+            //render a black square at the "bottom", 1px larger than the actual progress bar, so it acts as a border
             guiGraphics.fill(left - 1, top - 1, left + width + 1, top + height + 1, 0xFF000000);
-            drawGradientRect(guiGraphics, left, top, left + width, top + height, 0xFF666666, 0xFF555555);
+
+            //then, on top of that, render a gray gradient as "empty progress"
+            guiGraphics.fillGradient(left, top, left + width, top + height, 0xFF666666, 0xFF666666);
 
             float fract = (float) blocksDone / Math.max(1, blocks);
             int progressWidth = (int) ((float) width * fract);
             int color = Mth.hsvToRgb(fract / 3.0F, 1.0F, 1.0F) | 0xFF000000;
             int color2 = new Color(color).darker().getRGB();
-            drawGradientRect(guiGraphics, left, top, left + progressWidth, top + height, color, color2);
 
+            //finally, on top of that, render a colored gradient as "filled progress"
+            guiGraphics.fillGradient(left, top, left + progressWidth, top + height, color, color2);
+
+            guiGraphics.pose().popPose();
             if (!isAnchored) {
                 String s = I18n.get(ModonomiconConstants.I18n.Multiblock.NOT_ANCHORED);
                 guiGraphics.drawString(mc.font, s, (int) (x - mc.font.width(s) / 2.0F), top + height + 8, 0xFFFFFF, false);
@@ -370,27 +377,6 @@ public class MultiblockPreviewRenderer {
         return offsetApplier.apply(pos);
     }
 
-    private static void drawGradientRect(GuiGraphics guiGraphics, int left, int top, int right, int bottom, int startColor, int endColor) {
-        float f = (float) (startColor >> 24 & 255) / 255.0F;
-        float f1 = (float) (startColor >> 16 & 255) / 255.0F;
-        float f2 = (float) (startColor >> 8 & 255) / 255.0F;
-        float f3 = (float) (startColor & 255) / 255.0F;
-        float f4 = (float) (endColor >> 24 & 255) / 255.0F;
-        float f5 = (float) (endColor >> 16 & 255) / 255.0F;
-        float f6 = (float) (endColor >> 8 & 255) / 255.0F;
-        float f7 = (float) (endColor & 255) / 255.0F;
-        RenderSystem.enableBlend();
-        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        BufferBuilder bufferbuilder = Tesselator.getInstance().begin(Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        Matrix4f mat = guiGraphics.pose().last().pose();
-        bufferbuilder.addVertex(mat, right, top, 0).setColor(f1, f2, f3, f);
-        bufferbuilder.addVertex(mat, left, top, 0).setColor(f1, f2, f3, f);
-        bufferbuilder.addVertex(mat, left, bottom, 0).setColor(f5, f6, f7, f4);
-        bufferbuilder.addVertex(mat, right, bottom, 0).setColor(f5, f6, f7, f4);
-        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
-        RenderSystem.disableBlend();
-    }
-
     /**
      * Returns the Rotation of a multiblock structure based on the given entity's facing direction.
      */
@@ -442,7 +428,13 @@ public class MultiblockPreviewRenderer {
             if (in instanceof GhostRenderLayer) {
                 return in;
             } else {
-                return remappedTypes.computeIfAbsent(in, GhostRenderLayer::new);
+                return remappedTypes.computeIfAbsent(in, (type) -> {
+                    //hack to address https://github.com/klikli-dev/modonomicon/issues/260, but it should work reasonably well
+                    //need to exclude entity, because otherwise entity cutout layers will render using the block atlas.
+                    if(type.name.contains("cutout") && !type.name.contains("entity"))
+                        type = RenderType.translucent();
+                    return new GhostRenderLayer(type);
+                });
             }
         }
     }

@@ -26,9 +26,7 @@
       "condition": {
         "type": "modonomicon:none"
       },
-      "item": {
-        "item": "minecraft:apple"
-      },
+      "item": "minecraft:apple",
       "text": "book.modonomicon.demo.features.spotlight.spotlight1.text",
       "title": "book.modonomicon.demo.features.spotlight.spotlight1.title"
     },
@@ -38,9 +36,7 @@
       "condition": {
         "type": "modonomicon:none"
       },
-      "item": {
-        "item": "minecraft:diamond"
-      },
+      "item": "minecraft:diamond",
       "text": "book.modonomicon.demo.features.spotlight.spotlight2.text",
       "title": ""
     },

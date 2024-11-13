@@ -60,7 +60,7 @@ public class TagMatcher implements StateMatcher {
         BlockState displayState = null;
         if (json.has("display")) {
             try {
-                displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), new StringReader(GsonHelper.getAsString(json, "display")), false).blockState();
+                displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(GsonHelper.getAsString(json, "display")), false).blockState();
             } catch (CommandSyntaxException e) {
                 throw new IllegalArgumentException("Failed to parse BlockState from json member \"display\" for TagStateMatcher.", e);
             }
@@ -78,7 +78,7 @@ public class TagMatcher implements StateMatcher {
         String finalTagString = tagString;
         Supplier<TagKey<Block>> tagSupplier = Suppliers.memoize(() -> {
             try {
-                var parserResult = BlockStateParser.parseForTesting(BuiltInRegistries.BLOCK.asLookup(), new StringReader(finalTagString), true).right().orElseThrow();
+                var parserResult = BlockStateParser.parseForTesting(BuiltInRegistries.BLOCK, new StringReader(finalTagString), true).right().orElseThrow();
                 return parserResult.tag().unwrap().left().orElseThrow();
             } catch (CommandSyntaxException e) {
                 Modonomicon.LOG.error("Failed to parse Tag and BlockState properties from json member \"tag\" for TagMatcher: {0}. Will use \"modonomicon:bedrock\" as fallback, Exception: {1}", finalTagString, e);
@@ -88,7 +88,7 @@ public class TagMatcher implements StateMatcher {
 
         Supplier<Map<String, String>> propsSupplier = Suppliers.memoize(() -> {
             try {
-                var parserResult = BlockStateParser.parseForTesting(BuiltInRegistries.BLOCK.asLookup(), new StringReader(finalTagString), true).right().orElseThrow();
+                var parserResult = BlockStateParser.parseForTesting(BuiltInRegistries.BLOCK, new StringReader(finalTagString), true).right().orElseThrow();
                 return parserResult.vagueProperties();
             } catch (CommandSyntaxException e) {
                 Modonomicon.LOG.error("Failed to parse Tag and BlockState properties from json member \"tag\" for TagMatcher: {0}. Will use empty property map as fallback, Exception: {1}", finalTagString, e);
@@ -104,7 +104,7 @@ public class TagMatcher implements StateMatcher {
         try {
             BlockState displayState = null;
             if (buffer.readBoolean()) {
-                displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), new StringReader(buffer.readUtf()), false).blockState();
+                displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(buffer.readUtf()), false).blockState();
             }
 
             var tag = TagKey.create(Registries.BLOCK, buffer.readResourceLocation());

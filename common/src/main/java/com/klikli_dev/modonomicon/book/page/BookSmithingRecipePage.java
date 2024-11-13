@@ -53,6 +53,8 @@ public class BookSmithingRecipePage extends BookRecipePage<SmithingRecipe> {
             return ItemStack.EMPTY;
         }
 
-        return recipe.value().getResultItem(level.registryAccess());
+        //TODO: get recipe output here
+        return ItemStack.EMPTY;
+//        return recipe.value().getResultItem(level.registryAccess());
     }
 }

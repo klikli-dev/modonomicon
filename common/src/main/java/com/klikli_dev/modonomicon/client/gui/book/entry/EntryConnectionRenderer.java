@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.book.BookEntryParent;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.client.gui.book.node.BookCategoryNodeScreen;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
 import static java.lang.Math.*;
@@ -174,10 +175,6 @@ public class EntryConnectionRenderer {
         }
     }
 
-    public void setBlitOffset(int blitOffset) {
-        this.blitOffset = blitOffset;
-    }
-
     /**
      * Scales from grid coordinates (1, 2, 3, ... ) to screen coordinates (30, 60, 90)
      */
@@ -193,7 +190,7 @@ public class EntryConnectionRenderer {
     }
 
     protected void blit(GuiGraphics guiGraphics, int pX, int pY, float pUOffset, float pVOffset, int pUWidth, int pVHeight) {
-        guiGraphics.blit(this.entryTextures, pX, pY, this.blitOffset, pUOffset, pVOffset, pUWidth, pVHeight, 256, 256);
+        guiGraphics.blit(RenderType::guiTextured, this.entryTextures, pX, pY, pUOffset, pVOffset, pUWidth, pVHeight, 256, 256);
     }
 
     protected void drawSmallCurveLeftDown(GuiGraphics guiGraphics, int x, int y) {

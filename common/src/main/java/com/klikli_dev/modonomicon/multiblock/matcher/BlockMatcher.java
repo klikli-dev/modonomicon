@@ -54,7 +54,7 @@ public class BlockMatcher implements StateMatcher {
         BlockState displayState = null;
         if (json.has("display")) {
             try {
-                displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), new StringReader(GsonHelper.getAsString(json, "display")), false).blockState();
+                displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(GsonHelper.getAsString(json, "display")), false).blockState();
             } catch (CommandSyntaxException e) {
                 throw new IllegalArgumentException("Failed to parse BlockState from json member \"display\" for BlockMatcher.", e);
             }
@@ -62,7 +62,7 @@ public class BlockMatcher implements StateMatcher {
 
         try {
             var blockRL = ResourceLocation.tryParse(GsonHelper.getAsString(json, "block"));
-            var block = BuiltInRegistries.BLOCK.get(blockRL);
+            var block = BuiltInRegistries.BLOCK.getValue(blockRL);
 
             return new BlockMatcher(displayState, block);
         } catch (Exception e) {
@@ -74,9 +74,9 @@ public class BlockMatcher implements StateMatcher {
         try {
             BlockState displayState = null;
             if (buffer.readBoolean())
-                displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), new StringReader(buffer.readUtf()), false).blockState();
+                displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(buffer.readUtf()), false).blockState();
 
-            var block = BuiltInRegistries.BLOCK.get(buffer.readResourceLocation());
+            var block = BuiltInRegistries.BLOCK.getValue(buffer.readResourceLocation());
             return new BlockMatcher(displayState, block);
         } catch (CommandSyntaxException e) {
             throw new IllegalArgumentException("Failed to parse BlockMatcher from network.", e);

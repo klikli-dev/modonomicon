@@ -156,7 +156,7 @@ public class StubMultiblock implements Multiblock {
     }
 
     @Override
-    public int getMinBuildHeight() {
+    public int getMinY() {
         return 0;
     }
 }

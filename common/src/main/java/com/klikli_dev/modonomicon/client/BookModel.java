@@ -10,9 +10,8 @@ import com.klikli_dev.modonomicon.item.ModonomiconItem;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.block.model.BakedOverrides;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
@@ -32,36 +31,42 @@ import java.util.function.Function;
 
 public class BookModel implements BakedModel {
     private final BakedModel original;
-    private final ItemOverrides itemHandler;
+    private final BakedOverrides itemHandler;
 
-    private BookModel(BakedModel original, ModelBakery loader) {
+    public BookModel(BakedModel original) {
         this.original = original;
-        BlockModel missing = (BlockModel) loader.getModel(ModelBakery.MISSING_MODEL_LOCATION);
 
-        this.itemHandler = new ItemOverrides(new ModelBaker() {
+        this.itemHandler = new BakedOverrides(new ModelBaker() {
+            //For IModelBakerExtension of Neo
             public Function<Material, TextureAtlasSprite> getModelTextureGetter() {
                 return null;
             }
 
-            public BakedModel bake(ResourceLocation location, ModelState state, Function<Material, TextureAtlasSprite> sprites) {
+            //For IModelBakerExtension of Neo
+            @Nullable
+            public UnbakedModel getTopLevelModel(ModelResourceLocation location){
+                return null;
+            }
+
+            //For IModelBakerExtension of Neo
+            public BakedModel bake(ResourceLocation location, ModelState state, Function<Material, TextureAtlasSprite> sprites){
+                return null;
+            }
+
+            //For IModelBakerExtension of Neo
+            public BakedModel bakeUncached(UnbakedModel model, ModelState state, Function<Material, TextureAtlasSprite> sprites) {
                 return null;
             }
 
             @Override
-            public UnbakedModel getModel(ResourceLocation resourceLocation) {
+            public @NotNull BakedModel bake(@NotNull ResourceLocation resourceLocation, @NotNull ModelState modelState) {
                 return null;
             }
-
+        }, Collections.emptyList()) {
             @Nullable
             @Override
-            public BakedModel bake(ResourceLocation resourceLocation, ModelState modelState) {
-                return null;
-            }
-        }, missing, Collections.emptyList()) {
-            @Override
-            public BakedModel resolve(@NotNull BakedModel original, @NotNull ItemStack stack,
-                                      @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
-                var book = ModonomiconItem.getBook(stack);
+            public BakedModel findOverride(ItemStack itemStack, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity, int i) {
+                var book = ModonomiconItem.getBook(itemStack);
                 if (book != null) {
                     ModelResourceLocation modelPath = new ModelResourceLocation(book.getModel(), "inventory");
                     return Minecraft.getInstance().getModelManager().getModel(modelPath);
@@ -71,14 +76,14 @@ public class BookModel implements BakedModel {
         };
     }
 
-    public static void replace(Map<ModelResourceLocation, BakedModel> models, ModelBakery bakery) {
+    public static void replace(Map<ModelResourceLocation, BakedModel> models) {
         ModelResourceLocation key = new ModelResourceLocation(ItemRegistry.MODONOMICON.getId(), "inventory");
-        models.computeIfPresent(key, (k, oldModel) -> new BookModel(oldModel, bakery));
+        models.computeIfPresent(key, (k, oldModel) -> new BookModel(oldModel));
     }
 
     @NotNull
     @Override
-    public ItemOverrides getOverrides() {
+    public BakedOverrides overrides() {
         return this.itemHandler;
     }
 

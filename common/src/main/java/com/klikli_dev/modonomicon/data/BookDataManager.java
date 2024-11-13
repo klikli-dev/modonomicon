@@ -45,7 +45,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
-public class BookDataManager extends SimpleJsonResourceReloadListener {
+public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
     public static final String FOLDER = Data.MODONOMICON_DATA_PATH;
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
@@ -371,7 +371,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         this.onLoadingComplete();
     }
 
-    public static class Client extends SimpleJsonResourceReloadListener {
+    public static class Client extends LegacySimpleJsonResourceReloadListener {
 
         private static final Client instance = new Client();
 

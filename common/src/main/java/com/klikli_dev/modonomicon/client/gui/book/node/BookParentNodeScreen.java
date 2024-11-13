@@ -29,6 +29,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
@@ -172,7 +173,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
         //the exact border size mostly does not matter because the center is empty anyway, but 50 gives a lot of flexiblity
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableBlend();
-        GuiGraphicsExt.blitWithBorder(guiGraphics, this.book.getFrameTexture(), x, y, 0, 0, width, height, 140, 140, 50, 50, 50, 50);
+        GuiGraphicsExt.blitWithBorder(guiGraphics, RenderType::guiTextured, this.book.getFrameTexture(), x, y, 0, 0, width, height, 140, 140, 50, 50, 50, 50);
 
         //now render overlays on top of that border to cover repeating elements
         this.renderFrameOverlay(guiGraphics, this.book.getTopFrameOverlay(), (x + (width / 2)), y);
@@ -183,7 +184,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
     protected void renderFrameOverlay(GuiGraphics guiGraphics, BookFrameOverlay overlay, int x, int y) {
         if (overlay.getFrameWidth() > 0 && overlay.getFrameHeight() > 0) {
-            guiGraphics.blit(overlay.getTexture(), overlay.getFrameX(x), overlay.getFrameY(y), overlay.getFrameU(), overlay.getFrameV(), overlay.getFrameWidth(), overlay.getFrameHeight());
+            guiGraphics.blit(RenderType::guiTextured, overlay.getTexture(), overlay.getFrameX(x), overlay.getFrameY(y), overlay.getFrameU(), overlay.getFrameV(), overlay.getFrameWidth(), overlay.getFrameHeight(), 256, 256);
         }
     }
 

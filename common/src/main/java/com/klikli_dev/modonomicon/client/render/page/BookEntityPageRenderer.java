@@ -43,11 +43,9 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
         guiGraphics.pose().mulPose(Axis.ZP.rotationDegrees(180));
         guiGraphics.pose().mulPose(Axis.YP.rotationDegrees(rotation));
         EntityRenderDispatcher erd = Minecraft.getInstance().getEntityRenderDispatcher();
-        MultiBufferSource.BufferSource immediate = Minecraft.getInstance().renderBuffers().bufferSource();
         erd.setRenderShadow(false);
-        erd.render(entity, 0, 0, 0, 0, 1, guiGraphics.pose(), immediate, 0xF000F0);
+        guiGraphics.drawSpecial(bufferSource -> erd.render(entity, 0.0, 0.0, 0.0, 1.0F, guiGraphics.pose(), bufferSource, 0xF000F0));
         erd.setRenderShadow(true);
-        immediate.endBatch();
         guiGraphics.pose().popPose();
     }
 

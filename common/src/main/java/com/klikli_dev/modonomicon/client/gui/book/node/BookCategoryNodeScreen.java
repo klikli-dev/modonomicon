@@ -25,7 +25,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import org.lwjgl.glfw.GLFW;
@@ -165,7 +167,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         float yOffset = yScale == scale ? 0 : (MAX_SCROLL - (innerHeight + MAX_SCROLL * 2.0f / scale)) / 2;
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(CoreShaders.POSITION_TEX);
 
         //note we cannot translate -z here because even -1 immediately pushes us behind the scene -> not visible
         if (!this.category.getBackgroundParallaxLayers().isEmpty()) {
@@ -175,7 +177,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         } else {
             //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
             //force offset to int here to reduce difference to entry rendering which is pos based and thus int precision only
-            guiGraphics.blit(this.category.getBackground(), innerX, innerY,
+            guiGraphics.blit(RenderType::guiTextured, this.category.getBackground(), innerX, innerY,
                     (this.scrollX + MAX_SCROLL) / scale + xOffset,
                     (this.scrollY + MAX_SCROLL) / scale + yOffset,
                     innerWidth, innerHeight, (int) (backgroundHeight * backgroundTextureZoomMultiplier), (int) (backgroundWidth * backgroundTextureZoomMultiplier));
@@ -189,7 +191,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
         if (layer.getVanishZoom() == -1 || layer.getVanishZoom() > zoom) {
             //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
-            guiGraphics.blit(layer.getBackground(), x, y,
+            guiGraphics.blit(RenderType::guiTextured, layer.getBackground(), x, y,
                     (scrollX + this.getCategory().getMaxScrollX()) / parallax1 + xOffset,
                     (scrollY + this.getCategory().getMaxScrollY()) / parallax1 + yOffset,
                     width, height, (int) (backgroundHeight * backgroundTextureZoomMultiplier), (int) (backgroundWidth * backgroundTextureZoomMultiplier));
@@ -199,7 +201,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     private void renderEntries(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(CoreShaders.POSITION_TEX);
 
         //calculate the render offset
         float xOffset = this.getXOffset();
@@ -238,7 +240,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                 RenderSystem.setShaderColor(0.8F, 0.8F, 0.8F, 1.0F);
             }
             //render entry background
-            guiGraphics.blit(this.category.getEntryTextures(), entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT);
+            guiGraphics.blit(RenderType::guiTextured, this.category.getEntryTextures(), entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT, 256, 256);
 
             guiGraphics.pose().pushPose();
 
@@ -254,7 +256,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                 final int width = 11;
                 final int height = 11;
 
-                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                RenderSystem.setShader(CoreShaders.POSITION_TEX);
                 //RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
                 RenderSystem.enableBlend();
@@ -340,8 +342,6 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             if (parentDisplayState == EntryDisplayState.HIDDEN)
                 continue;
 
-            int blitOffset = 0; //note: any negative blit offset will move it behind our category background
-            this.connectionRenderer.setBlitOffset(blitOffset);
             guiGraphics.pose().pushPose();
             guiGraphics.pose().translate(xOffset, yOffset, 0);
             this.connectionRenderer.render(guiGraphics, entry, parent);

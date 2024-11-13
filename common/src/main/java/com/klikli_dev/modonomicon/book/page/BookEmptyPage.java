@@ -14,6 +14,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.level.Level;
 
 public class BookEmptyPage extends BookPage {
 
@@ -41,7 +42,7 @@ public class BookEmptyPage extends BookPage {
     }
 
     @Override
-    public boolean matchesQuery(String query) {
+    public boolean matchesQuery(String query, Level level) {
         return false;
     }
 }

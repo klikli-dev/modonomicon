@@ -63,6 +63,17 @@
       "multiblock_name": "",
       "show_visualize_button": true,
       "text": ""
+    },
+    {
+      "type": "modonomicon:multiblock",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "multiblock_id": "demo_transparency",
+      "multiblock_name": "",
+      "show_visualize_button": true,
+      "text": ""
     }
   ],
   "show_when_any_parent_unlocked": false,

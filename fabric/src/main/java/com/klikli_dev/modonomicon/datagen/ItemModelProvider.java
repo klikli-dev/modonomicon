@@ -35,6 +35,8 @@ public class ItemModelProvider extends FabricModelProvider {
 
     @Override
     public void generateItemModels(ItemModelGenerators itemModelGenerator) {
+        this.registerItemFlat(ItemRegistry.MODONOMICON.get(), "modonomicon_purple", itemModelGenerator);
+
         this.registerItemFlat(ItemRegistry.MODONOMICON_BLUE.get(), "modonomicon_blue", itemModelGenerator);
         this.registerItemFlat(ItemRegistry.MODONOMICON_GREEN.get(), "modonomicon_green", itemModelGenerator);
         this.registerItemFlat(ItemRegistry.MODONOMICON_PURPLE.get(), "modonomicon_purple", itemModelGenerator);

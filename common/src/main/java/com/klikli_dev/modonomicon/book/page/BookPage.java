@@ -79,5 +79,11 @@ public abstract class BookPage {
         this.pageNumber = pageNumber;
     }
 
-    public abstract boolean matchesQuery(String query);
+    /**
+     * Returns true if this page matches the given query
+     * @param query The query text the player entered.
+     * @param level The level as context for e.g. resolving ingredient displays.
+     * @return true if the page matches the query and should be shown to the searching player, false otherwise.
+     */
+    public abstract boolean matchesQuery(String query, Level level);
 }

@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.book.page.BookSpotlightPage;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Style;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +37,7 @@ public class BookSpotlightPageRenderer extends BookPageRenderer<BookSpotlightPag
         int h = 26;
 
         RenderSystem.enableBlend();
-        guiGraphics.blit(this.page.getBook().getCraftingTexture(), BookEntryScreen.PAGE_WIDTH / 2 - w / 2, 10, 0, 128 - h, w, h, 128, 256);
+        guiGraphics.blit(RenderType::guiTextured, this.page.getBook().getCraftingTexture(), BookEntryScreen.PAGE_WIDTH / 2 - w / 2, 10, 0, 128 - h, w, h, 128, 256);
 
         this.page.getItem().ifRight(
                 ingredient -> {

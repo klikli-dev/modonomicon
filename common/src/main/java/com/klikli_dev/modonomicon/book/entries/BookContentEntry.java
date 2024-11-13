@@ -157,13 +157,13 @@ public class BookContentEntry extends BookEntry {
     }
 
     @Override
-    public boolean matchesQuery(String query) {
-        if (super.matchesQuery(query)) {
+    public boolean matchesQuery(String query, Level level) {
+        if (super.matchesQuery(query, level)) {
             return true;
         }
 
         for (var page : this.getPages()) {
-            if (page.matchesQuery(query)) {
+            if (page.matchesQuery(query, level)) {
                 return true;
             }
         }

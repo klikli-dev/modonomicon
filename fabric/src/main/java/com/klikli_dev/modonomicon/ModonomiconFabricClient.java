@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon;
 
+import com.klikli_dev.modonomicon.client.BookModel;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
@@ -17,9 +18,11 @@ import com.klikli_dev.modonomicon.registry.FabricClientCommandRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 
 public class ModonomiconFabricClient implements ClientModInitializer {
@@ -63,6 +66,27 @@ public class ModonomiconFabricClient implements ClientModInitializer {
                 Modonomicon.loc("book_data_manager_client"),
                 BookDataManager.Client.get()
         ));
+
+        ModelLoadingPlugin.register(pluginContext -> {
+            //this makes the baker load the models, BUT books are not loaded yet so it does nothing
+//            for (var book : BookDataManager.get().getBooks().values()) {
+//                pluginContext.addModels(book.getModel());
+//            }
+
+            pluginContext.modifyModelAfterBake().register(
+                    (oldModel, ctx) -> {
+                        if (ctx.topLevelId() != null &&
+                                //this is the item id of the item for which the model modification is made = modonomicon
+                                //I am not referencing the actual registry object because I think the model loader is called before the item is registered
+                                ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, Modonomicon.MOD_ID).equals(ctx.topLevelId().id()) // checks namespace and path
+                                && ctx.topLevelId().getVariant().equals("inventory")
+                                && oldModel != null) {
+                            return new BookModel(oldModel);
+                        }
+                        return oldModel;
+                    }
+            );
+        });
 
         //book geometry loader
         //done in MixinModelManager, because we have no event in Fabric

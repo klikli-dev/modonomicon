@@ -138,7 +138,7 @@ public class BookSearchScreen extends BookPaginatedScreen {
         this.visibleEntries.clear();
 
         String query = this.searchField.getValue().toLowerCase();
-        this.allEntries.stream().filter((e) -> e.matchesQuery(query)).forEach(this.visibleEntries::add);
+        this.allEntries.stream().filter((e) -> e.matchesQuery(query, this.minecraft.level)).forEach(this.visibleEntries::add);
 
         this.maxOpenPagesIndex = 1;
         int count = this.visibleEntries.size();

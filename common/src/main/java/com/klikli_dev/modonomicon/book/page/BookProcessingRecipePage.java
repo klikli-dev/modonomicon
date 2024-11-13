@@ -25,7 +25,8 @@ public abstract class BookProcessingRecipePage<T extends Recipe<?>> extends Book
         if (recipe == null) {
             return ItemStack.EMPTY;
         }
-
-        return recipe.value().getResultItem(level.registryAccess());
+        //TODO: get recipe output here
+        return ItemStack.EMPTY;
+//        return recipe.value().getResultItem(level.registryAccess());
     }
 }

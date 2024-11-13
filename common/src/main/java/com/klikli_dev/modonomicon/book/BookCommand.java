@@ -124,7 +124,7 @@ public class BookCommand {
             player.sendSystemMessage(Component.translatable(failureMessage).withStyle(ChatFormatting.RED));
             return;
         } else {
-            var commandSourceStack = new CommandSourceStack(player, player.position(), player.getRotationVector(), player.serverLevel(), this.permissionLevel, player.getName().getString(), player.getDisplayName(), player.server, player);
+            var commandSourceStack = new CommandSourceStack(player.commandSource(), player.position(), player.getRotationVector(), player.serverLevel(), this.permissionLevel, player.getName().getString(), player.getDisplayName(), player.server, player);
 
             BookUnlockStateManager.get().setRunFor(player, this);
 
