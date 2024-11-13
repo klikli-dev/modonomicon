@@ -58,7 +58,7 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
         }
         this.addRenderableWidget(new BackButton(this, this.width / 2 - BackButton.WIDTH / 2, this.bookTop + SINGLE_PAGE_BOOK_BACKGROUND_HEIGHT - BackButton.HEIGHT / 2));
 
-        this.updateBookmarksButton();
+//        this.updateBookmarksButton(); //no bookmarks on leaflets!
     }
 
     @Override
