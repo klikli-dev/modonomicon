@@ -178,7 +178,9 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
     /**
      * Implement this and return the entry description in the main language.
      */
-    protected abstract String entryDescription();
+    protected String entryDescription() {
+        return "";
+    }
 
     /**
      * Implement this and return the U/V coordinates of the entry background. See also @link{BookEntryModel#withEntryBackground(int, int)}

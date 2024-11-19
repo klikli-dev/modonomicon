@@ -37,11 +37,6 @@ public class Demo1IndexEntry extends EntryProvider {
     }
 
     @Override
-    protected String entryDescription() {
-        return "Just Demo Stuff (tm)";
-    }
-
-    @Override
     protected Pair<Integer, Integer> entryBackground() {
         return EntryBackground.DEFAULT;
     }

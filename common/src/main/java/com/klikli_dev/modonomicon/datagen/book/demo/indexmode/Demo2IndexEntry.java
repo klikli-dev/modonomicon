@@ -38,7 +38,7 @@ public class Demo2IndexEntry extends EntryProvider {
 
     @Override
     protected String entryDescription() {
-        return "Just Demo Stuff (tm)";
+        return "Just Demo Stuff (tm). But with a very long entry description to see if tooltip rendering properly works!";
     }
 
     @Override

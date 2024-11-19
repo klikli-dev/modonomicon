@@ -27,6 +27,7 @@ import com.klikli_dev.modonomicon.events.ModonomiconEvents;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
@@ -243,6 +244,8 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
                 BookContentRenderer.drawTitleSeparator(guiGraphics, this.parentScreen.getBook(),
                         BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING + 12);
 
+
+
                 BookPageRenderer.renderBookTextHolder(guiGraphics, this.category.getDescription(), this.font,
                         BookEntryScreen.LEFT_PAGE_X, BookEntryScreen.TOP_PADDING + 22, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - (BookEntryScreen.TOP_PADDING + 22));
             }
@@ -330,7 +333,9 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
 
     void addEntryButtons(int x, int y, int start, int count) {
         for (int i = 0; i < count && (i + start) < this.visibleEntries.size(); i++) {
-            Button button = new EntryListButton(this.visibleEntries.get(start + i), this.bookLeft + x, this.bookTop + y + i * 11, this::handleEntryListButton);
+            var entry = this.visibleEntries.get(start + i);
+            var button = new EntryListButton(entry, this.bookLeft + x, this.bookTop + y + i * 11, this::handleEntryListButton);
+            button.setTooltip(Tooltip.create(Component.translatable(entry.getDescription())));
             this.addRenderableWidget(button);
             this.entryButtons.add(button);
         }
