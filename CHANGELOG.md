@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.3-1.109.2] - 2024-11-19
+### :bug: Bug Fixes
+- [`d8a8381`](https://github.com/klikli-dev/modonomicon/commit/d8a838149511c0209470b248ee4525bcee7ffcc8) - rendering book icons with resource locations *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`0990a0e`](https://github.com/klikli-dev/modonomicon/commit/0990a0e1829ddf8d5699605fa059b776fc35727a) - entry description display, and make them non-required in datagen *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`55b80c1`](https://github.com/klikli-dev/modonomicon/commit/55b80c1af3396c6cf417565a10ea355800b62763) - add comments *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.3-1.109.1] - 2024-11-14
 ### :bug: Bug Fixes
 - [`07c018d`](https://github.com/klikli-dev/modonomicon/commit/07c018d897b2b41ace14311ad1bd46823e50efcb) - publish pipeline *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1768,3 +1777,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.1-1.108.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.108.2...release/v1.21.1-1.108.3
 [release/v1.21.3-1.109.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.3-0.0.0...release/v1.21.3-1.109.0
 [release/v1.21.3-1.109.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.3-1.109.0...release/v1.21.3-1.109.1
+[release/v1.21.3-1.109.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.3-1.109.1...release/v1.21.3-1.109.2
