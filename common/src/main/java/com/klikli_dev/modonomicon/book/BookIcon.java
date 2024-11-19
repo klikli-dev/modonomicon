@@ -111,9 +111,12 @@ public class BookIcon {
                     this.texture,
                     x, y,
                     0, 0,
-                    16, 16,
+                   16, 16,
+                    this.width, this.height,
                     this.width, this.height
             );
+
+            //    guiGraphics.blit(RenderType::guiTextured, this.page.getImages()[this.index], x * 2 + 6, y * 2 + 6, 0, 0, 200, 200, 200, 200, 200, 200);
         } else {
             guiGraphics.renderItem(this.itemStack, x, y);
         }
