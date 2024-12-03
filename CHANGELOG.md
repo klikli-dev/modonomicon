@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.3-1.110.1] - 2024-12-03
+### :bug: Bug Fixes
+- [`bf6fdcd`](https://github.com/klikli-dev/modonomicon/commit/bf6fdcd8c1c12cb26b6be5720cf95c137dac6dec) - add special handling for SP/LAN to avoid issues with datagen registry holders *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`185bfcf`](https://github.com/klikli-dev/modonomicon/commit/185bfcf77a7456f096f20075d88c087410db86c0) - convert spotlight page codecs to lazy codecs to match itemstack *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.3-1.110.0] - 2024-12-03
 ### :sparkles: New Features
 - [`3662949`](https://github.com/klikli-dev/modonomicon/commit/36629498f4e80975c7b0870aa473511aa2f50278) - allow neo and forge book providers to take custom registry providers *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1784,3 +1792,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.3-1.109.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.3-1.109.0...release/v1.21.3-1.109.1
 [release/v1.21.3-1.109.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.3-1.109.1...release/v1.21.3-1.109.2
 [release/v1.21.3-1.110.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.3-1.109.2...release/v1.21.3-1.110.0
+[release/v1.21.3-1.110.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.3-1.110.0...release/v1.21.3-1.110.1
