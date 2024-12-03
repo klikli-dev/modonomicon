@@ -98,6 +98,11 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
     public void onDatapackSync(ServerPlayer player) {
 
         this.tryBuildBooks(player.level()); //lazily build books when first client connects
+
+        //If integrated server and host (= SP or lan host), don't send as we already have it
+        if(player.connection.connection.isMemoryConnection())
+            return;
+
         Message syncMessage = this.getSyncMessage();
 
         Services.NETWORK.sendToSplit(player, syncMessage);

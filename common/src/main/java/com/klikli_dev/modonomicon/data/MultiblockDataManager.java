@@ -73,6 +73,11 @@ public class MultiblockDataManager extends LegacySimpleJsonResourceReloadListene
     }
 
     public void onDatapackSync(ServerPlayer player) {
+        //If integrated server and host (= SP or lan host), don't send as we already have it
+        if(player.connection.connection.isMemoryConnection())
+            return;
+
+
         Message syncMessage = this.getSyncMessage();
 
         Services.NETWORK.sendToSplit(player, syncMessage);

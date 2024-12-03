@@ -14,3 +14,4 @@ extendable method net/minecraft/client/gui/components/AbstractWidget render (Lne
 extendable method net/minecraft/client/gui/screens/Screen renderWithTooltip (Lnet/minecraft/client/gui/GuiGraphics;IIF)V
 extendable method net/minecraft/client/gui/screens/Screen init (Lnet/minecraft/client/Minecraft;II)V
 accessible field net/minecraft/client/renderer/RenderStateShard name Ljava/lang/String;
+accessible field net/minecraft/server/network/ServerCommonPacketListenerImpl connection Lnet/minecraft/network/Connection;
