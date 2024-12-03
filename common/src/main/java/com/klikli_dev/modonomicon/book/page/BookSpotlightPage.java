@@ -19,7 +19,6 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentPatch;
@@ -29,6 +28,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -37,27 +37,27 @@ import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-
 public class BookSpotlightPage extends BookPage {
     /**
      * A custom codec that still uses the "item" field instead of "id" for backwards comp,
      */
-    public static final Codec<ItemStack> CUSTOM_ITEM_STACK_CODEC = RecordCodecBuilder.create((builder) -> builder.group(
-            Item.CODEC.fieldOf("item").forGetter(ItemStack::getItemHolder),
-            Codec.INT.optionalFieldOf("count", 1).forGetter(ItemStack::getCount),
-            DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(ItemStack::getComponentsPatch)
-    ).apply(builder, ItemStack::new));
-
+    public static final Codec<ItemStack> CUSTOM_ITEM_STACK_CODEC = Codec.lazyInitialized(
+            () -> RecordCodecBuilder.create((builder) -> builder.group(
+                    Item.CODEC.fieldOf("item").forGetter(ItemStack::getItemHolder),
+                    ExtraCodecs.intRange(1, 99).fieldOf("count").orElse(1).forGetter(ItemStack::getCount),
+                    DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(ItemStack::getComponentsPatch)
+            ).apply(builder, ItemStack::new))
+    );
+    
     /**
      * We allow both vanilla item stack syntax and our custom syntax.
      */
-    public static final Codec<ItemStack> ITEM_STACK_CODEC = Codec.withAlternative(CUSTOM_ITEM_STACK_CODEC, ItemStack.CODEC);
+    public static final Codec<ItemStack> ITEM_STACK_CODEC = Codec.lazyInitialized(() -> Codec.withAlternative(CUSTOM_ITEM_STACK_CODEC, ItemStack.CODEC));
 
     /**
      * We allow both ingredients and item stacks.
      */
-    public static final Codec<Either<ItemStack, Ingredient>> ITEM_CODEC = Codec.either(ITEM_STACK_CODEC, Ingredient.CODEC);
+    public static final Codec<Either<ItemStack, Ingredient>> ITEM_CODEC = Codec.lazyInitialized(() -> Codec.either(ITEM_STACK_CODEC, Ingredient.CODEC));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, Either<ItemStack, Ingredient>> ITEM_STREAM_CODEC = new StreamCodec<>() {
 
@@ -143,7 +143,7 @@ public class BookSpotlightPage extends BookPage {
 
         if (this.title.isEmpty()) {
             //use ingredient name if we don't have a custom title
-            var item = this.item.map(i -> i , i -> i.display().resolveForFirstStack(SlotDisplayContext.fromLevel(level)));
+            var item = this.item.map(i -> i, i -> i.display().resolveForFirstStack(SlotDisplayContext.fromLevel(level)));
 
             this.title = new BookTextHolder(((MutableComponent) item.getHoverName())
                     .withStyle(Style.EMPTY
