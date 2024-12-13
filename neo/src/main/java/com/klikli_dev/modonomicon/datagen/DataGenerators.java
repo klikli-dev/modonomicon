@@ -26,7 +26,7 @@ public class DataGenerators {
 
         //We use a language cache that the book provider can write into
         var enUsCache = new LanguageProviderCache("en_us");
-        generator.addProvider(event.includeServer(), NeoBookProvider.of(event,
+        generator.addProvider(NeoBookProvider.of(event,
                 //Add our demo book sub provider to the book provider
                 new DemoBook(Modonomicon.MOD_ID, enUsCache),
                 //Add our demo leaflet sub provider to the book provider
@@ -39,13 +39,13 @@ public class DataGenerators {
 //        ));
 
         //Important: lang provider needs to be added after the book provider, so it can read the texts added by the book provider out of the cache
-        generator.addProvider(event.includeClient(), new EnUsProvider(generator.getPackOutput(), enUsCache));
+        generator.addProvider(new EnUsProvider(generator.getPackOutput(), enUsCache));
 
-        generator.addProvider(event.includeServer(), new DemoMultiblockProvider(generator.getPackOutput(), Modonomicon.MOD_ID));
-        generator.addProvider(event.includeClient(), new ItemModelProvider(generator.getPackOutput(), event.getExistingFileHelper()));
+        generator.addProvider(new DemoMultiblockProvider(generator.getPackOutput(), Modonomicon.MOD_ID));
+        generator.addProvider(new ItemModelProvider(generator.getPackOutput(), event.getExistingFileHelper()));
 
         var blockTagsProvider = new BlockTagsProvider(generator.getPackOutput(), event.getLookupProvider(), event.getExistingFileHelper());
-        generator.addProvider(event.includeClient(), blockTagsProvider);
-        generator.addProvider(event.includeClient(), new ItemTagsProvider(generator.getPackOutput(), event.getLookupProvider(), blockTagsProvider.contentsGetter(), event.getExistingFileHelper()));
+        generator.addProvider(blockTagsProvider);
+        generator.addProvider(new ItemTagsProvider(generator.getPackOutput(), event.getLookupProvider(), blockTagsProvider.contentsGetter(), event.getExistingFileHelper()));
     }
 }
