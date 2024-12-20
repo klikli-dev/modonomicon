@@ -6,7 +6,7 @@ sidebar_position: 20
 
 ##File Structure
 
-First, take a minute to look at the folder structure relevant for demo book, either locally if you downloaded it in the previous step, or on [GitHub](https://github.com/klikli-dev/modonomicon/tree/version/HEAD/common/src/main/java/com/klikli_dev/modonomicon/datagen/book).
+First, take a minute to look at the folder structure relevant for demo book, either locally if you downloaded it in the previous step, or on [GitHub](https://github.com/klikli-dev/modonomicon/blob/HEAD/common/src/main/java/com/klikli_dev/modonomicon/datagen/book).
 ```
 .
 └── modonomicon/
