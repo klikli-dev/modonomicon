@@ -71,7 +71,7 @@ The data generator registration happens in three steps.
    1. Additionally a DemoLeaflet is registered. A leaflet is a special book with just one entry and no categories. You can remove this line in your setup, unless you want to create a leaflet.
 3. Finally, the language provider is registered, notice how it also receives the cache as parameter.
    1. It is important that your main mod language provider takes all contents of the cache and adds them to its output.
-   2. To simplify this, make your language provider extend `AbstractModonomiconLanguageProvider`, like Modonomicon's [EnUsProvider](https://github.com/klikli-dev/modonomicon/blob/version/1.21/common/src/main/java/com/klikli_dev/modonomicon/datagen/EnUsProvider.java) does. Then you can just leave your provider as-is.
+   2. To simplify this, make your language provider extend `AbstractModonomiconLanguageProvider`, like Modonomicon's [EnUsProvider](https://github.com/klikli-dev/modonomicon/blob/HEAD/common/src/main/java/com/klikli_dev/modonomicon/datagen/EnUsProvider.java) does. Then you can just leave your provider as-is.
 4. Modonomicon Datagen then also registers a datagen for multiblocks which you can look into if you want to generate multiblock definitions for your book.
 5. Further an ItemModelProvider is registered, which you can ignore, unless you want to add additional item models.
 
