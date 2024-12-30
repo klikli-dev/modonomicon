@@ -1,3 +1,8 @@
+<<<<<<< HEAD
 // 1.21.3	2024-11-19T18:23:08.2781483	Modonomicon/Tags for minecraft:item
+=======
+// 1.21.1	2024-12-30T13:11:47.5200198	Modonomicon/Tags for minecraft:item
+44de4772d365fcc0e5706dbfcd83d2967ec352c0 data\minecraft\tags\item\bookshelf_books.json
+>>>>>>> origin/version/1.21.1
 44de4772d365fcc0e5706dbfcd83d2967ec352c0 data\minecraft\tags\item\lectern_books.json
 44de4772d365fcc0e5706dbfcd83d2967ec352c0 data\minecraft\tags\item\bookshelf_books.json

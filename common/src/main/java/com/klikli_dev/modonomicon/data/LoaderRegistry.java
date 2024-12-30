@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.data;
 
+import com.google.common.collect.*;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
@@ -29,9 +30,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class LoaderRegistry {
+
+    private static final Multimap<ResourceLocation, BookDynamicTextMacroLoader> dynamicTextMacroLoaders = Multimaps.synchronizedListMultimap(ArrayListMultimap.create());
 
     private static final Map<ResourceLocation, BookEntryJsonLoader<? extends BookEntry>> entryTypeJsonLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
     private static final Map<ResourceLocation, NetworkLoader<? extends BookEntry>> entryTypeNetworkLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
@@ -61,6 +67,10 @@ public class LoaderRegistry {
         registerDefaultPredicates();
         registerDefaultStateMatcherLoaders();
         registerDefaultMultiblockLoaders();
+
+        registerDynamicTextMacroLoader(Modonomicon.loc("demo"), () -> {
+            return Map.of("my.test.macro", String.valueOf(new Random().nextDouble()));
+        });
     }
 
     private static void registerDefaultBookEntryTypes() {
@@ -122,6 +132,17 @@ public class LoaderRegistry {
         registerPredicate(Modonomicon.loc("non_solid"), (getter, pos, state) -> !state.isSolid());
     }
 
+    /**
+     * Registers a dynamic text macro loader for a book. The loader will be called when the book is being pre-rendered on the server. The loader should be a function that returns a map of macro key -> macro value.
+     * The loader will be called only on the server side, and only once per book during the pre-rendering phase.
+     * Call from server setup.
+     *
+     * @param forBookId the book to register the macro loader for
+     * @param loader the loader to register
+     */
+    public static void registerDynamicTextMacroLoader(ResourceLocation forBookId, BookDynamicTextMacroLoader loader) {
+        dynamicTextMacroLoaders.put(forBookId, loader);
+    }
 
     /**
      * Call from client setup
@@ -261,5 +282,9 @@ public class LoaderRegistry {
             throw new IllegalArgumentException("No network loader registered for multiblock type " + id);
         }
         return loader;
+    }
+
+    public static Collection<BookDynamicTextMacroLoader> getDynamicTextMacroLoaders(ResourceLocation bookId) {
+        return dynamicTextMacroLoaders.get(bookId);
     }
 }

@@ -99,6 +99,16 @@ public class AdvancedFormattingEntry extends EntryProvider {
                 And now some other text.
                 """
         );
+
+        this.page("dynamic_macro", () -> BookTextPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText())
+        );
+        this.pageTitle("Dynamic macro");
+        this.pageText("""
+                This text comes from a macro (Random.nextDouble()): [{}](my.test.macro)
+                """
+        );
     }
 
     @Override
