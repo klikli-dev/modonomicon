@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
+import com.klikli_dev.modonomicon.data.BookEntryJsonLoader;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -106,6 +107,11 @@ public class Book {
      * Instead, the book and pages will open, but the link will not work.
      */
     protected boolean allowOpenBooksWithInvalidLinks;
+
+    /**
+     * A map of macros. This is filled automatically based on LoaderRegistry#dynamicTextMacroLoaders, not loaded from JSON.
+     */
+    protected final Map<String, String> textMacros = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 
     public Book(ResourceLocation id, String name, BookTextHolder description, String tooltip, ResourceLocation model, BookDisplayMode displayMode, boolean generateBookItem,
                 @Nullable ResourceLocation customBookItem, String creativeTab, ResourceLocation font, ResourceLocation bookOverviewTexture, ResourceLocation frameTexture,
@@ -276,10 +282,15 @@ public class Book {
 
         var allowOpenBooksWithInvalidLinks = buffer.readBoolean();
 
-        return new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font, bookOverviewTexture,
+        var textMacros = buffer.readMap((b) -> b.readUtf(), (b) -> b.readUtf()); //necessary because using lambda causes ambiguous reference in Neo with their IFriendlyByteBufExtension#readMap
+        var book = new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font, bookOverviewTexture,
                 frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
                 bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, bookTextOffsetHeight,
                 categoryButtonXOffset, categoryButtonYOffset, searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset, leafletEntry, pageDisplayMode, singlePageTexture, allowOpenBooksWithInvalidLinks);
+
+        book.textMacros().putAll(textMacros);
+
+        return book;
     }
 
     /**
@@ -318,6 +329,10 @@ public class Book {
             category.prerenderMarkdown(textRenderer);
             BookErrorManager.get().getContextHelper().categoryId = null;
         }
+    }
+
+    public void addMacro(String key, String value) {
+        textMacros.put(key, value);
     }
 
     public void toNetwork(RegistryFriendlyByteBuf buffer) {
@@ -367,6 +382,7 @@ public class Book {
         buffer.writeResourceLocation(this.singlePageTexture);
 
         buffer.writeBoolean(this.allowOpenBooksWithInvalidLinks);
+        buffer.writeMap(this.textMacros, (b, v) -> b.writeUtf(v), (b, v) -> b.writeUtf(v));  //necessary because using lambda causes ambiguous reference in Neo with their IFriendlyByteBufExtension#writeMap
     }
 
     public boolean autoAddReadConditions() {
@@ -387,6 +403,10 @@ public class Book {
 
     public ResourceLocation getId() {
         return this.id;
+    }
+
+    public Map<String, String> textMacros() {
+        return textMacros;
     }
 
     public void addCategory(BookCategory category) {

@@ -84,6 +84,8 @@
   "book.modonomicon.demo.features.two_parents.intro.title": "Entry with two parents",
   "book.modonomicon.demo.features.two_parents.name": "Entry with two parents",
   "book.modonomicon.demo.formatting.advanced.description": "An entry showcasing advanced formatting.",
+  "book.modonomicon.demo.formatting.advanced.dynamic_macro.text": "This text comes from a macro (Random.nextDouble()): [{}](my.test.macro)\n",
+  "book.modonomicon.demo.formatting.advanced.dynamic_macro.title": "Dynamic macro",
   "book.modonomicon.demo.formatting.advanced.list_test.text": "Unordered List:\n- List item\n- List item 2\n- List item 3\n\n\\\nAnd now some other text.\n",
   "book.modonomicon.demo.formatting.advanced.name": "Advanced Formatting Entry",
   "book.modonomicon.demo.formatting.advanced.page1.text": "<t>this.could.be.a.translation.key<t>     \n***This is bold italics***     \n*++This is italics underlined++*\n[](item://minecraft:diamond)\n[TestText](item://minecraft:emerald)\n",

@@ -57,6 +57,7 @@
             "show_in_tooltip": false
           }
         },
+        "count": 1,
         "item": "minecraft:leather_helmet"
       },
       "text": "book.modonomicon.demo.features.spotlight.spotlight3.text",
@@ -74,6 +75,7 @@
             "potion": "minecraft:healing"
           }
         },
+        "count": 1,
         "item": "minecraft:potion"
       },
       "text": "book.modonomicon.demo.features.spotlight.spotlight4.text",

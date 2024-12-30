@@ -63,6 +63,17 @@
       "text": "book.modonomicon.demo.formatting.advanced.list_test.text",
       "title": "",
       "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.formatting.advanced.dynamic_macro.text",
+      "title": "book.modonomicon.demo.formatting.advanced.dynamic_macro.title",
+      "use_markdown_in_title": false
     }
   ],
   "parents": [
