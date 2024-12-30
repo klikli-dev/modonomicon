@@ -193,6 +193,7 @@ Item links are links that cannot be clicked, but that will show the (translated)
 Syntax: 
 - `[optional display text](item://minecraft:apple)`
 - `[](item://minecraft:chest)`
+  
 
 ### Patchouli Links
 
@@ -242,3 +243,37 @@ Example:
 ```markdown
 [#](ff0000)Red text [#](00ff00)from here on green [#](0000ff)now blue [#]()and finally back to default color.
 ```
+
+### Dynamic Text Macro
+
+Dynamic macros are runtime text replacements. The text replacement happens once serverside after all books and all minecraft/modded data has been loaded and is then cached for rendering on the client.
+
+Dynamic can be used to e.g. show config or registry values in the book.
+
+:::warning 
+The ModonomiconProviderBase datagen child classes, such as EntryProvider, also offers registerMacro(String, String), macros(), macro(String). These methods are for static datagen-time macros!
+::: 
+
+Macro instructions (ab)use the link syntax as follows: to start a macro use `[{}](<macro-key>)`.
+
+```markdown
+[{}](my.dynamic.key) could be replaced to show a config value!
+```
+
+To register that macro call the following code during server setup:
+
+```java
+LoaderRegistry.registerDynamicTextMacroLoader(<my-book-id>, () -> {
+    return Map.of(
+            "my.dynamic.key", MyConfig.SOME_VALUE.get()
+    );
+});
+```
+
+:::info 
+You can use any code to build the map, it does not have to be an immutable map as shown here.
+::: 
+
+:::info 
+You can register multiple macro loaders per book id, but in the end all macros from all loaders will be merged into one map per book.
+::: 
