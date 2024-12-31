@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 public class ModonomiconJeiIntegration {
 
     public static boolean isJeiLoaded() {
-        return Services.PLATFORM.isModLoaded("jei");
+        return Services.PLATFORM.isModLoaded("jei") && ModonomiconJeiPlugin.isRuntimeAvailable();
     }
 
     public static boolean isJEIRecipesGuiOpen() {
@@ -76,6 +76,10 @@ public class ModonomiconJeiIntegration {
         private static final ResourceLocation UID = new ResourceLocation(ModonomiconAPI.ID, ModonomiconAPI.ID);
 
         private static IJeiRuntime jeiRuntime;
+
+        public static boolean isRuntimeAvailable() {
+            return jeiRuntime != null;
+        }
 
         @NotNull
         @Override
