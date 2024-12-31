@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.77.4] - 2024-12-31
+### :bug: Bug Fixes
+- [`cd3cfd2`](https://github.com/klikli-dev/modonomicon/commit/cd3cfd2020c82cf41c1f5c12aa5289092e7e681d) - handle cases where jei is loaded, but its runtime is disabled (e.g. with  EMI present) *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.77.3] - 2024-10-05
 ### :bug: Bug Fixes
 - [`1e09744`](https://github.com/klikli-dev/modonomicon/commit/1e09744b5fa392abe33f54820539db8771bbca1a) - add books to modonomicon tab by default *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -909,3 +914,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.77.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.77.0...release/v1.20.1-1.77.1
 [release/v1.20.1-1.77.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.77.1...release/v1.20.1-1.77.2
 [release/v1.20.1-1.77.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.77.2...release/v1.20.1-1.77.3
+[release/v1.20.1-1.77.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.77.3...release/v1.20.1-1.77.4
