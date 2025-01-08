@@ -158,6 +158,7 @@ public class BookUnlockStateManager {
 
     public void onServerTickEnd(MinecraftServer server) {
         this.handleSyncRequestedPlayers(server);
+        this.handleAdvancementUpdateRequestedPlayers(server);
     }
 
     /**
