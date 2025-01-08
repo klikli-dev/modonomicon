@@ -16,6 +16,7 @@ import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.networking.RequestSyncBookStatesMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
 import com.klikli_dev.modonomicon.platform.Services;
+import it.unimi.dsi.fastutil.objects.Object2LongArrayMap;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -33,6 +34,8 @@ public class BookUnlockStateManager {
 
     private static final BookUnlockStateManager instance = new BookUnlockStateManager();
     private final Set<UUID> syncRequestedPlayers = new ObjectLinkedOpenHashSet<>();
+    private final Set<UUID> advancementUpdateRequestedPlayers = new ObjectLinkedOpenHashSet<>();
+    private final Object2LongArrayMap<UUID> lastAdvancementUpdateRequests = new Object2LongArrayMap<>();
     public BookStatesSaveData saveData;
     private boolean wasLoaded = false;
 
@@ -124,7 +127,16 @@ public class BookUnlockStateManager {
     }
 
     public void onAdvancement(ServerPlayer player) {
-        this.updateAndSyncFor(player);
+        var lastAdvancementUpdateRequest = this.lastAdvancementUpdateRequests.getOrDefault(player.getUUID(), 0);
+        this.lastAdvancementUpdateRequests.put(player.getUUID(), player.level().getGameTime());
+
+        //If the player has not requested an update in the last 5 seconds, update immediately.
+        //If he has, add him to the queue to be updated later.
+        if (player.level().getGameTime() - lastAdvancementUpdateRequest > 100) { //100 ticks = 5 seconds
+            this.updateAndSyncFor(player);
+        } else {
+            this.advancementUpdateRequestedPlayers.add(player.getUUID());
+        }
     }
 
     /**
@@ -150,6 +162,32 @@ public class BookUnlockStateManager {
     }
 
     public void onServerTickEnd(MinecraftServer server) {
+        this.handleSyncRequestedPlayers(server);
+        this.handleAdvancementUpdateRequestedPlayers(server);
+    }
+
+    /**
+     * If a player unlocks a lot of advancements in a short amount of time, the state update is delayed to prevent overload.
+     * This method then performs the update for all queued players.
+     */
+    public void handleAdvancementUpdateRequestedPlayers(MinecraftServer server){
+        if (server.getTickCount() % 100 != 0) return; //We only update every 5 seconds (100 ticks)
+
+        if (!this.advancementUpdateRequestedPlayers.isEmpty()) {
+            var list = server.getPlayerList();
+            for (UUID id : this.advancementUpdateRequestedPlayers) {
+                ServerPlayer player = list.getPlayer(id);
+                if (player != null) this.updateAndSyncFor(player);
+            }
+            this.advancementUpdateRequestedPlayers.clear();
+        }
+    }
+
+    /**
+     * If players request a sync while the books are not built, they are queued up. 
+     * This method then performs the sync for all queued players.
+     */
+    public void handleSyncRequestedPlayers(MinecraftServer server){
         if (server.getTickCount() % 100 != 0) return; //We only update every 5 seconds (100 ticks)
         boolean newState = BookDataManager.get().areBooksBuilt();
         if (newState != this.wasLoaded) { // we only check for things if the state changed for some reason.
