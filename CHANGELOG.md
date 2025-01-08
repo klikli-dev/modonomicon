@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.1-1.111.2] - 2025-01-08
+### :bug: Bug Fixes
+- [`1451708`](https://github.com/klikli-dev/modonomicon/commit/1451708dc729ef3f8bac678ec81d2cad874e08b4) - high performance cost of unlock state updates if a lot of advancements unlock at once *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.1-1.111.1] - 2024-12-31
 ### :bug: Bug Fixes
 - [`bb71af1`](https://github.com/klikli-dev/modonomicon/commit/bb71af1d0fe515d1cda0b7402707b68ae043511c) - handle cases where jei is loaded, but its runtime is disabled (e.g. with  EMI present) *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1798,3 +1803,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.1-1.110.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.110.0...release/v1.21.1-1.110.1
 [release/v1.21.1-1.111.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.110.1...release/v1.21.1-1.111.0
 [release/v1.21.1-1.111.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.111.0...release/v1.21.1-1.111.1
+[release/v1.21.1-1.111.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.111.1...release/v1.21.1-1.111.2
