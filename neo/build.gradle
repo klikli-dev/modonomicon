@@ -126,7 +126,7 @@ tasks.withType(ProcessResources).excludingNeoTasks().configureEach {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId base.archivesName.get()
+            artifactId = base.archivesName.get()
 
             from components.java
 
