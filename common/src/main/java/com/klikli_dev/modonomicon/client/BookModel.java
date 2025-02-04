@@ -10,116 +10,38 @@ import com.klikli_dev.modonomicon.item.ModonomiconItem;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.*;
-import net.minecraft.core.Direction;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
-public class BookModel implements BakedModel {
-    private final BakedModel original;
-    private final BakedOverrides itemHandler;
+public class BookModel implements ItemModel {
+    private final ItemModel original;
 
-    public BookModel(BakedModel original) {
+    public BookModel(ItemModel original) {
         this.original = original;
-
-        this.itemHandler = new BakedOverrides(new ModelBaker() {
-            //For IModelBakerExtension of Neo
-            public Function<Material, TextureAtlasSprite> getModelTextureGetter() {
-                return null;
-            }
-
-            //For IModelBakerExtension of Neo
-            @Nullable
-            public UnbakedModel getTopLevelModel(ModelResourceLocation location){
-                return null;
-            }
-
-            //For IModelBakerExtension of Neo
-            public BakedModel bake(ResourceLocation location, ModelState state, Function<Material, TextureAtlasSprite> sprites){
-                return null;
-            }
-
-            //For IModelBakerExtension of Neo
-            public BakedModel bakeUncached(UnbakedModel model, ModelState state, Function<Material, TextureAtlasSprite> sprites) {
-                return null;
-            }
-
-            @Override
-            public @NotNull BakedModel bake(@NotNull ResourceLocation resourceLocation, @NotNull ModelState modelState) {
-                return null;
-            }
-        }, Collections.emptyList()) {
-            @Nullable
-            @Override
-            public BakedModel findOverride(ItemStack itemStack, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity, int i) {
-                var book = ModonomiconItem.getBook(itemStack);
-                if (book != null) {
-                    ModelResourceLocation modelPath = new ModelResourceLocation(book.getModel(), "inventory");
-                    return Minecraft.getInstance().getModelManager().getModel(modelPath);
-                }
-                return original;
-            }
-        };
     }
 
-    public static void replace(Map<ModelResourceLocation, BakedModel> models) {
-        ModelResourceLocation key = new ModelResourceLocation(ItemRegistry.MODONOMICON.getId(), "inventory");
-        models.computeIfPresent(key, (k, oldModel) -> new BookModel(oldModel));
+    public static void replace(Map<ResourceLocation, ItemModel> models) {
+        models.computeIfPresent(ItemRegistry.MODONOMICON.getId(), (k, oldModel) -> new BookModel(oldModel));
     }
 
-    @NotNull
-    @Override
-    public BakedOverrides overrides() {
-        return this.itemHandler;
-    }
-
-    @NotNull
-    @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand) {
-        return this.original.getQuads(state, side, rand);
-    }
 
     @Override
-    public boolean useAmbientOcclusion() {
-        return this.original.useAmbientOcclusion();
-    }
-
-    @Override
-    public boolean isGui3d() {
-        return this.original.isGui3d();
-    }
-
-    @Override
-    public boolean usesBlockLight() {
-        return this.original.usesBlockLight();
-    }
-
-    @Override
-    public boolean isCustomRenderer() {
-        return this.original.isCustomRenderer();
-    }
-
-    @NotNull
-    @Override
-    public TextureAtlasSprite getParticleIcon() {
-        return this.original.getParticleIcon();
-    }
-
-    @Override
-    public ItemTransforms getTransforms() {
-        return this.original.getTransforms();
+    public void update(@NotNull ItemStackRenderState renderState, @NotNull ItemStack stack, @NotNull ItemModelResolver itemModelResolver, @NotNull ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
+        var book = ModonomiconItem.getBook(stack);
+        if (book != null) {
+            var itemModel = Minecraft.getInstance().getModelManager().getItemModel(book.getModel());
+            itemModel.update(renderState, stack, itemModelResolver, displayContext, level, entity, seed);
+        } else {
+            this.original.update(renderState, stack, itemModelResolver, displayContext, level, entity, seed);
+        }
     }
 }
