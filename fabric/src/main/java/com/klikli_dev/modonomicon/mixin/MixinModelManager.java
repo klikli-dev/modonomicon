@@ -28,6 +28,6 @@ public class MixinModelManager {
                     shift = At.Shift.AFTER),
             locals = LocalCapture.CAPTURE_FAILEXCEPTION)
     private void modifyItemModelsAfterBake(ProfilerFiller profiler, Map<ResourceLocation, AtlasSet.StitchResult> atlasPreperations, ModelBakery modelBakery, Object2IntMap<BlockState> modelGroups, EntityModelSet entityModelSet, SpecialBlockModelRenderer specialBlockModelRenderer, CallbackInfo ci, ModelBakery.BakingResult bakingResult) {
-        BookModel.replace(bakingResult().itemStackModels());
+        BookModel.replace(bakingResult.itemStackModels());
     }
 }
