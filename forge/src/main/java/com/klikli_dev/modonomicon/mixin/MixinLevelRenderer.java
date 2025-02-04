@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.mixin;
 
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
