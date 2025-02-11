@@ -187,6 +187,7 @@ public class BookSearchScreen extends BookPaginatedScreen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        RenderSystem.disableDepthTest(); //guard against depth test being enabled by other rendering code, that would cause ui elements to vanish
 
         this.resetTooltip();
 
