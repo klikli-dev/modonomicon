@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.77.6] - 2025-02-11
+### :bug: Bug Fixes
+- [`49d6ad7`](https://github.com/klikli-dev/modonomicon/commit/49d6ad7aa8de3440672ce5e66c405cc6e1e6719f) - NPE caused by category link book entries *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.77.5] - 2025-01-08
 ### :bug: Bug Fixes
 - [`88e6cc9`](https://github.com/klikli-dev/modonomicon/commit/88e6cc9684f1253d03635f9a7ecf89da8a8a3110) - high performance cost of unlock state updates if a lot of advancements unlock at once *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -924,3 +929,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.77.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.77.2...release/v1.20.1-1.77.3
 [release/v1.20.1-1.77.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.77.3...release/v1.20.1-1.77.4
 [release/v1.20.1-1.77.5]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.77.4...release/v1.20.1-1.77.5
+[release/v1.20.1-1.77.6]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.77.5...release/v1.20.1-1.77.6
