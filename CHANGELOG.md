@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.1-1.112.1] - 2025-02-11
+### :bug: Bug Fixes
+- [`ec957eb`](https://github.com/klikli-dev/modonomicon/commit/ec957eb36ce9dac0769d593edcbc21d3895d8523) - NPE caused by category link book entries *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.1-1.112] - 2025-02-10
 ### :bug: Bug Fixes
 - [`a4e541a`](https://github.com/klikli-dev/modonomicon/commit/a4e541ad7b78629fc83e3f57ab8b538dda59c478) - custom font not used for entry list buttons *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1810,3 +1815,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.1-1.111.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.111.0...release/v1.21.1-1.111.1
 [release/v1.21.1-1.111.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.111.1...release/v1.21.1-1.111.2
 [release/v1.21.1-1.112]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.111.2...release/v1.21.1-1.112
+[release/v1.21.1-1.112.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.112...release/v1.21.1-1.112.1
