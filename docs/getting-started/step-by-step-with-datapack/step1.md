@@ -1,17 +1,19 @@
 ---
-sidebar_position: 10
+sidebar_position: 5
 ---
 
-# Step 1: Set up an empty datapack
+# Step 1: Download and extract demo content
 
-1. Set up a folder structure as required by minecraft: https://minecraft.wiki/w/Data_pack#Folder_structure.
-   1. You do not need to create all the subfolders of the `data` folder, you can keep `data` empty in the first step.
-   
-2. Now create a folder for your namespace. Usually your namespace is your mod id or modpack id (e.g. the modpack name in all lowercase with no spaces) (See also https://minecraft.wiki/w/Resource_location#Namespaces)
+The best approach to creating a book as a datapack (as opposed to [datagen](../step-by-step-with-datagen/)) is to create a datapack from the demo book, and then modify and extend it to your needs. This saves you a lot of time and effort in manually creating a valid file structure for your book.
 
-3. In your namespace folder, create a folder `/modonomicon/`.
+First, download the modonomicon source code, as it contains the demo book:
+1. Start by visiting https://github.com/klikli-dev/modonomicon
+2. Find the green "Code" button and click it. Then click "Download ZIP" at the bottom of the dropdown menu.
+3. Extract the ZIP file to a location of your choice.
+4. Remember where you extracted the files, you will need them in a future step.
 
-4. In the `/modonomicon/` folder, create a folder `/books/` and `/multiblocks/`:
-   :::info
-        If you do not plan on having any multiblocks or multiblock pages, you can skip the `/multiblocks/` folder.
-   :::
+:::tip
+
+If you are already well-versed with datapacks you can look at the demo book **[here](https://github.com/klikli-dev/modonomicon/tree/HEAD/neo/src/generated/resources/data/modonomicon/modonomicon/books)** and the demo multiblocks used by the book **[here](https://github.com/klikli-dev/modonomicon/tree/HEAD/neo/src/generated/resources/data/modonomicon/modonomicon/multiblocks)** and simply download the individual files you want to use as a reference.
+
+:::

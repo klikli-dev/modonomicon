@@ -1,22 +1,17 @@
 ---
-sidebar_position: 20
+sidebar_position: 10
 ---
 
-# Step 2: Copy demo content into your datapack
+# Step 2: Set up an empty datapack
 
+1. Set up a folder structure as required by minecraft: https://minecraft.wiki/w/Data_pack#Folder_structure.
+   1. You do not need to create all the subfolders of the `data` folder, you can keep `data` empty in the first step.
+   
+2. Now create a folder for your namespace. Usually your namespace is your mod id or modpack id (e.g. the modpack name in all lowercase with no spaces) (See also https://minecraft.wiki/w/Resource_location#Namespaces)
 
-1. In your file explorer go to the folder you extracted and then into `<extracted_folder>\neo\src\generated\resources\data\modonomicon\modonomicon\books\`.
+3. In your namespace folder, create a folder `/modonomicon/`.
 
-2. Copy the `demo` folder (or if you want to make a leaflet, the `demo_leaflet` folder) and paste it in your datapack's `/modonomicon/books/` folder.
-
-3. In your file explorer go to the folder you extracted and then into `<extracted_folder>\neo\src\generated\resources\data\modonomicon\modonomicon\multiblocks\`.
-
-4. Copy all `.json` files and paste them in your datapack's `/modonomicon/multiblocks/` folder.
+4. In the `/modonomicon/` folder, create a folder `/books/` and `/multiblocks/`:
    :::info
-        If you do not plan on having any multiblocks or multiblock pages, you can skip copying the contents of the `/multiblocks/` folder.
+        If you do not plan on having any multiblocks or multiblock pages, you can skip the `/multiblocks/` folder.
    :::
-
-5. If you **did not** set up multiblocks, go into your datapack folder `<your datapack>/data/<your namespace>/modonomicon/books/demo/entries/features/` and **delete** the `multiblock.json` file.
-   :::info
-        If you do not delete that file, this multiblock entry will look for the multiblocks in the `/multiblocks/` folder and will throw an error if it does not find them.
-   :::   
