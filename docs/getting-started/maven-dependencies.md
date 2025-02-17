@@ -82,6 +82,32 @@ dependencies {
 }
 ```
 
+:::warning
+If you add this and datagen suddenly deletes all _your_ generated files and instead generates a lot of modonomicon files, you need to tell fabric to run your datagen only. 
+
+Adjust `configureDataGeneration` in your `build.gradle` like this:
+
+```groovy
+fabricApi {
+	configureDataGeneration{
+		modId = <your_mod_id>
+    }
+}
+```
+:::
+
+:::warning
+If there are issues related to missing (transitive) dependencies, you can individually exclude the non-needed ones instead of using `transitive=false`. The dependency statement for modonomicon would then look like this:
+
+```groovy
+	modImplementation ("com.klikli_dev:modonomicon-${minecraft_version}-fabric:${modonomicon_version}"){
+		exclude group: 'mezz.jei', module: "jei-${minecraft_version}-common-api"
+		exclude group: 'mezz.jei', module: "jei-${minecraft_version}-fabric-api"
+		exclude group: 'mezz.jei', module: "jei-${minecraft_version}-fabric"
+	}
+```
+:::
+
 ### Common
 
 ```groovy
