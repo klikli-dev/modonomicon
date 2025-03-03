@@ -10,6 +10,10 @@ Data-driven minecraft in-game documentation with progress visualization.
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.dev/klikli-dev/modonomicon)
 
+## Getting Started (for Mod and Pack Devs)
+
+Visit the [Documentation](https://klikli-dev.github.io/modonomicon/)!
+
 ## Curseforge
 
 https://www.curseforge.com/minecraft/mc-mods/modonomicon
