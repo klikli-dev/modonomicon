@@ -102,11 +102,18 @@ public class BookProvider implements DataProvider {
 
             for (var bookModel : this.bookModels.values()) {
                 Path bookPath = this.getPath(dataFolder, bookModel);
-                futures.add(DataProvider.saveStable(cache, bookModel.toJson(registries), bookPath));
+
+                if(!bookModel.dontGenerateJson()){ //a model from AddToBookSubProvider
+                    futures.add(DataProvider.saveStable(cache, bookModel.toJson(registries), bookPath));
+                }
+
 
                 for (var bookCategoryModel : bookModel.getCategories()) {
                     Path bookCategoryPath = this.getPath(dataFolder, bookCategoryModel);
-                    futures.add(DataProvider.saveStable(cache, bookCategoryModel.toJson(registries), bookCategoryPath));
+
+                    if(!bookCategoryModel.dontGenerateJson()){ //a model from AddToCategorySubProvider
+                        futures.add(DataProvider.saveStable(cache, bookCategoryModel.toJson(registries), bookCategoryPath));
+                    }
 
                     for (var bookEntryModel : bookCategoryModel.getEntries()) {
                         Path bookEntryPath = this.getPath(dataFolder, bookEntryModel);

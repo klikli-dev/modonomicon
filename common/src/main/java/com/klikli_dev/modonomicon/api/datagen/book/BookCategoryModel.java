@@ -76,6 +76,11 @@ public class BookCategoryModel {
      */
     protected boolean openEntryToOpenOnlyOnce = true;
 
+    /**
+     * If true, this model will not generate a \<category-id\>.json file, but the categories and entries will still be generated.
+     */
+    protected boolean dontGenerateJson = false;
+
     protected BookCategoryModel(ResourceLocation id, String name) {
         this.id = id;
         this.name = name;
@@ -191,6 +196,10 @@ public class BookCategoryModel {
 
     public ResourceLocation getEntryTextures() {
         return this.entryTextures;
+    }
+
+    public boolean dontGenerateJson() {
+        return this.dontGenerateJson;
     }
 
     /**
@@ -440,6 +449,14 @@ public class BookCategoryModel {
     public BookCategoryModel withEntryToOpen(ResourceLocation entryToOpen, boolean openEntryToOpenOnlyOnce) {
         this.entryToOpen = entryToOpen;
         this.openEntryToOpenOnlyOnce = openEntryToOpenOnlyOnce;
+        return this;
+    }
+
+    /**
+     * If true, this model will not generate a \<category-id\>.json file, but the categories and entries will still be generated.
+     */
+    public BookCategoryModel withDontGenerateJson(boolean value) {
+        this.dontGenerateJson = value;
         return this;
     }
 }
