@@ -17,6 +17,8 @@ import java.util.function.BiConsumer;
 
 /**
  * An opinionated book sub provider with helper methods to generate contents for an existing book more easily. E.g. for use in a mod that adds to a book from another mod, or modpacks that use datapacks to add to a book.
+ *
+ * Generates book categories, but no book.json
  */
 public abstract class AddToBookSubProvider extends ModonomiconProviderBase implements BookSubProvider {
     protected BookModel book;

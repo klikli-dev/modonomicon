@@ -1,4 +1,4 @@
-// 1.21	2024-12-30T12:59:54.8031891	Books: modonomicon
+// 1.21	2025-03-08T18:52:27.7166569	Books: modonomicon
 ea82c1ec5ac99b6c53186c37a2964666b6824399 data/modonomicon/modonomicon/books/demo/book.json
 9bf40644b1a94e0f93e2d4d49e6f9ed6bd942ae5 data/modonomicon/modonomicon/books/demo/categories/conditional.json
 1026c22d26aacaf4cdbc863df4fb00229af152a3 data/modonomicon/modonomicon/books/demo/categories/features.json
@@ -31,3 +31,6 @@ b29c41fb8f25a7cc177e2955a3cbd5af6c9677ea data/modonomicon/modonomicon/books/demo
 631f8d62bf05e90eba6f7ce2e441e069099b7198 data/modonomicon/modonomicon/books/demo_leaflet/book.json
 56c22a396d523514af2db5eacdf5b70bdcd9fb3b data/modonomicon/modonomicon/books/demo_leaflet/categories/leaflet.json
 eff793d776fcd5711c6efdb0eb30124a8f633448 data/modonomicon/modonomicon/books/demo_leaflet/entries/leaflet/leaflet.json
+3a4e3997de607a18f224c85aa74be10db1c68110 data/theurgy/modonomicon/books/the_hermetica/categories/new.json
+fe07039b1350f4b135c531019fb97768dd690e31 data/theurgy/modonomicon/books/the_hermetica/entries/getting_started/second_about_mod.json
+40f79740fcb4d3e4d2dae9fbe46c4ceecfbe2450 data/theurgy/modonomicon/books/the_hermetica/entries/new/intro.json

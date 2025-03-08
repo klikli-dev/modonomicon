@@ -16,6 +16,8 @@ subprojects {
         }
 
         exclude ".cache"
+        exclude "**/assets/theurgy/**"
+        exclude "**/data/theurgy/**"
         exclude "**/data/modonomicon/modonomicon/books/**"
         exclude "**/data/modonomicon/modonomicon/multiblocks/**"
         exclude "**/data/modonomicon/recipe/**"
