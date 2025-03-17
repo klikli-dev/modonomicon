@@ -16,10 +16,10 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class AbstractModonomiconLanguageProvider implements ModonomiconLanguageProvider, DataProvider {
-    private final Map<String, String> data = new Object2ObjectOpenHashMap<>();
-    private final PackOutput output;
-    private final String modId;
-    private final String locale;
+    protected final Map<String, String> data = new Object2ObjectOpenHashMap<>();
+    protected final PackOutput output;
+    protected final String modId;
+    protected final String locale;
 
     private final ModonomiconLanguageProvider cachedProvider;
 

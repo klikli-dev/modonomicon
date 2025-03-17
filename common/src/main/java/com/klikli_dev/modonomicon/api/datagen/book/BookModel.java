@@ -150,6 +150,11 @@ public class BookModel {
      */
     protected boolean allowOpenBooksWithInvalidLinks = false;
 
+    /**
+     * If true, this model will not generate a book.json file, but the categories and entries will still be generated.
+     */
+    protected boolean dontGenerateJson = false;
+
     protected BookModel(ResourceLocation id, String name) {
         this.id = id;
         this.name = name;
@@ -270,6 +275,10 @@ public class BookModel {
 
     public boolean allowOpenBooksWithInvalidLinks() {
         return this.allowOpenBooksWithInvalidLinks;
+    }
+
+    public boolean dontGenerateJson() {
+        return this.dontGenerateJson;
     }
 
     public JsonObject toJson(HolderLookup.Provider provider) {
@@ -580,6 +589,14 @@ public class BookModel {
      */
     public BookModel withAllowOpenBooksWithInvalidLinks(boolean value) {
         this.allowOpenBooksWithInvalidLinks = value;
+        return this;
+    }
+
+    /**
+     * If true, this model will not generate a book.json file, but the categories and entries will still be generated.
+     */
+    public BookModel withDontGenerateJson(boolean value) {
+        this.dontGenerateJson = value;
         return this;
     }
 }
