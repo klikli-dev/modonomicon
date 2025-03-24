@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.1-1.114.1] - 2025-03-24
+### :bug: Bug Fixes
+- [`eee13be`](https://github.com/klikli-dev/modonomicon/commit/eee13beaef08004162515fbcb8b78e01801f1a18) - GUIs not rendering after viewing book entry *(PR [#287](https://github.com/klikli-dev/modonomicon/pull/287) by [@BluSpring](https://github.com/BluSpring))*
+
+
 ## [release/v1.21.1-1.114.0] - 2025-03-08
 ### :sparkles: New Features
 - [`4bca72a`](https://github.com/klikli-dev/modonomicon/commit/4bca72a85b723c77b6adbc0e98fbee6ce81a46e8) - add datagen functionality to extend books and categories in target mods  *(PR [#284](https://github.com/klikli-dev/modonomicon/pull/284) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1835,3 +1840,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.1-1.112.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.112.1...release/v1.21.1-1.112.2
 [release/v1.21.1-1.113.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.112.2...release/v1.21.1-1.113.0
 [release/v1.21.1-1.114.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.113.0...release/v1.21.1-1.114.0
+[release/v1.21.1-1.114.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.114.0...release/v1.21.1-1.114.1
