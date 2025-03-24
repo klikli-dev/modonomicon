@@ -43,7 +43,6 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -482,6 +481,7 @@ public class BookGuiManager {
     }
 
     public void closeParentScreen(BookParentScreen screen) {
+        ClientServices.GUI.popGuiLayer();
         Minecraft.getInstance().setScreen(null);
         this.openBookParentScreen = null;
 
