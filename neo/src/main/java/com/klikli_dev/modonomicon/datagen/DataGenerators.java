@@ -18,7 +18,7 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 public class DataGenerators {
 
-    public static void gatherData(GatherDataEvent event) {
+    public static void gatherData(GatherDataEvent.Client event) {
         DataGenerator generator = event.getGenerator();
 
         //We use a language cache that the book provider can write into
