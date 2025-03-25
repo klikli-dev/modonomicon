@@ -202,6 +202,7 @@ public class ModonomiconForge {
          * Needs to be in the client inner class to not load clientlevel on server
          */
         public static void onRecipesUpdated(RecipesUpdatedEvent event) {
+            //TODO: replace recipesupdatedevent
             BookDataManager.get().onRecipesUpdated(Minecraft.getInstance().level);
         }
 
