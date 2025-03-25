@@ -23,11 +23,30 @@ public class MixinModelManager {
 
     @Inject(method = "loadModels",
             at = @At(value = "INVOKE",
-                    target = "Lcom/google/common/collect/Multimap;asMap()Ljava/util/Map;",
-                    ordinal = 1,
-                    shift = At.Shift.AFTER),
+                    target = "Lnet/minecraft/client/resources/model/ModelManager;createBlockStateToModelDispatch(Ljava/util/Map;Lnet/minecraft/client/resources/model/BakedModel;)Ljava/util/Map;",
+                    shift = At.Shift.BEFORE),
             locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-    private void modifyItemModelsAfterBake(ProfilerFiller profiler, Map<ResourceLocation, AtlasSet.StitchResult> atlasPreperations, ModelBakery modelBakery, Object2IntMap<BlockState> modelGroups, EntityModelSet entityModelSet, SpecialBlockModelRenderer specialBlockModelRenderer, CallbackInfo ci, ModelBakery.BakingResult bakingResult) {
+    private void modifyItemModelsAfterBake(ProfilerFiller profiler,
+                                                       Map<ResourceLocation, AtlasSet.StitchResult> atlasPreperations,
+                                                       ModelBakery modelBakery,
+                                                       Object2IntMap<BlockState> modelGroups,
+                                                       EntityModelSet entityModelSet,
+                                                       SpecialBlockModelRenderer specialBlockModelRenderer,
+                                                       CallbackInfo ci,
+                                                       ModelBakery.BakingResult bakingResult) {
+
         BookModel.replace(bakingResult.itemStackModels());
+        // Your custom code here
     }
+
+//    //Lnet/minecraft/client/resources/model/ModelManager;loadModels(Lnet/minecraft/util/profiling/ProfilerFiller;Ljava/util/Map;Lnet/minecraft/client/resources/model/ModelBakery;Lit/unimi/dsi/fastutil/objects/Object2IntMap;Lnet/minecraft/client/model/geom/EntityModelSet;Lnet/minecraft/client/renderer/SpecialBlockModelRenderer;)Lnet/minecraft/client/resources/model/ModelManager$ReloadState;
+//    @Inject(method = "loadModels",
+//            at = @At(value = "INVOKE",
+//                    target = "Lcom/google/common/collect/Multimap;asMap()Ljava/util/Map;",
+//                    ordinal = 1,
+//                    shift = At.Shift.AFTER),
+//            locals = LocalCapture.CAPTURE_FAILEXCEPTION)
+//    private void modifyItemModelsAfterBake(ProfilerFiller profiler, Map<ResourceLocation, AtlasSet.StitchResult> atlasPreperations, ModelBakery modelBakery, Object2IntMap<BlockState> modelGroups, EntityModelSet entityModelSet, SpecialBlockModelRenderer specialBlockModelRenderer, CallbackInfo ci, ModelBakery.BakingResult bakingResult) {
+//        BookModel.replace(bakingResult.itemStackModels());
+//    }
 }

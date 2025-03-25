@@ -69,12 +69,16 @@ public class ModonomiconFabricClient implements ClientModInitializer {
                 BookDataManager.Client.get()
         ));
 
+
+        //book geometry loader
+        //done in MixinModelManager, because we have no event in Fabric
+
         ModelLoadingPlugin.register(pluginContext -> {
             //this makes the baker load the models, BUT books are not loaded yet so it does nothing
 //            for (var book : BookDataManager.get().getBooks().values()) {
-//                pluginContext.addModels(book.getModel());
-//            }
-            //TODO:
+////                pluginContext.addModels(book.getModel());
+////            }
+            //TODO: model loading on fabric -> either in mixinmodel manager or here
 //            pluginContext.modifyModelAfterBake().register(
 //                    (oldModel, ctx) -> {
 //                        if (ctx.id() != null &&
@@ -82,14 +86,12 @@ public class ModonomiconFabricClient implements ClientModInitializer {
 //                                //I am not referencing the actual registry object because I think the model loader is called before the item is registered
 //                                ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, Modonomicon.MOD_ID).equals(ctx.id()) // checks namespace and path
 //                                && oldModel != null) {
-//                            return new BookModel(oldModel);
+//                            return new BookModel(oldModel.);
 //                        }
 //                        return oldModel;
 //                    }
 //            );
         });
 
-        //book geometry loader
-        //done in MixinModelManager, because we have no event in Fabric
     }
 }
