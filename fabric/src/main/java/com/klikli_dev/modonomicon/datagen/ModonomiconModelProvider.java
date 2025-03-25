@@ -17,8 +17,8 @@ import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.world.item.Item;
 
-public class ItemModelProvider extends FabricModelProvider {
-    public ItemModelProvider(FabricDataOutput packOutput) {
+public class ModonomiconModelProvider extends FabricModelProvider {
+    public ModonomiconModelProvider(FabricDataOutput packOutput) {
         super(packOutput);
     }
 

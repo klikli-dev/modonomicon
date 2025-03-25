@@ -5,7 +5,6 @@
 package com.klikli_dev.modonomicon.datagen;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.api.datagen.AbstractModonomiconLanguageProvider;
 import com.klikli_dev.modonomicon.api.datagen.AddToModonomiconLanguageProvider;
 import com.klikli_dev.modonomicon.api.datagen.FabricBookProvider;
 import com.klikli_dev.modonomicon.api.datagen.LanguageProviderCache;
@@ -47,7 +46,7 @@ public class DataGenerators implements DataGeneratorEntrypoint {
 //        ));
 
         pack.addProvider((FabricDataOutput output) -> new DemoMultiblockProvider(output, Modonomicon.MOD_ID));
-        pack.addProvider(ItemModelProvider::new);
+        pack.addProvider(ModonomiconModelProvider::new);
 
         pack.addProvider(ItemTagsProvider::new);
     }

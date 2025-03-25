@@ -27,7 +27,7 @@ public class DataGenerators {
         //If extending an existing book in another mod, we create a separate cache for that (as that will be saved in another mod id)
         var addToLangCache = new LanguageProviderCache("en_us");
 
-        generator.addProvider(NeoBookProvider.of(event,
+        generator.addProvider(true, NeoBookProvider.of(event,
                         //Add our demo book sub provider to the book provider
                         new DemoBook(Modonomicon.MOD_ID, enUsCache),
                         //Add our demo leaflet sub provider to the book provider
@@ -37,10 +37,10 @@ public class DataGenerators {
                 )
         );
         //Important: lang provider needs to be added after the book provider, so it can read the texts added by the book provider out of the cache
-        generator.addProvider(event.includeClient(), new EnUsProvider(generator.getPackOutput(), enUsCache));
+        generator.addProvider(true, new EnUsProvider(generator.getPackOutput(), enUsCache));
 
         //For our addon book we can use the AddToModonomiconLanguageProvider class which just writes the cache to the target modid
-        generator.addProvider(event.includeClient(), new AddToModonomiconLanguageProvider(generator.getPackOutput(), "theurgy", "en_us", addToLangCache));
+        generator.addProvider(true, new AddToModonomiconLanguageProvider(generator.getPackOutput(), "theurgy", "en_us", addToLangCache));
 
 
         //Sample of a legacy book provider registration
@@ -48,11 +48,11 @@ public class DataGenerators {
 //                new MyLegacyBookProvider("bookId", generator.getPackOutput(), "modid", enUsCache)
 //        ));
 
-        generator.addProvider(new DemoMultiblockProvider(generator.getPackOutput(), Modonomicon.MOD_ID));
-        generator.addProvider(new ItemModelProvider(generator.getPackOutput(), event.getExistingFileHelper()));
+        generator.addProvider(true, new DemoMultiblockProvider(generator.getPackOutput(), Modonomicon.MOD_ID));
+        generator.addProvider(true,new ModonomiconModelProvider(generator.getPackOutput()));
 
-        var blockTagsProvider = new BlockTagsProvider(generator.getPackOutput(), event.getLookupProvider(), event.getExistingFileHelper());
-        generator.addProvider(blockTagsProvider);
-        generator.addProvider(new ItemTagsProvider(generator.getPackOutput(), event.getLookupProvider(), blockTagsProvider.contentsGetter(), event.getExistingFileHelper()));
+        var blockTagsProvider = new BlockTagsProvider(generator.getPackOutput(), event.getLookupProvider());
+        generator.addProvider(true,blockTagsProvider);
+        generator.addProvider(true, new ItemTagsProvider(generator.getPackOutput(), event.getLookupProvider(), blockTagsProvider.contentsGetter()));
     }
 }

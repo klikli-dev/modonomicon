@@ -48,7 +48,7 @@ public class DataGenerators {
 //        ));
 
         generator.addProvider(event.includeServer(), new DemoMultiblockProvider(generator.getPackOutput(), Modonomicon.MOD_ID));
-        generator.addProvider(event.includeClient(), new ItemModelProvider(generator.getPackOutput(), event.getExistingFileHelper()));
+        generator.addProvider(event.includeClient(), new ModonomiconModelProvider(generator.getPackOutput()));
 
         var blockTagsProvider = new BlockTagsProvider(generator.getPackOutput(), event.getLookupProvider(), event.getExistingFileHelper());
         generator.addProvider(event.includeClient(), blockTagsProvider);

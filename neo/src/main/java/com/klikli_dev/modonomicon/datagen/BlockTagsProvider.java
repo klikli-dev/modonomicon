@@ -7,14 +7,12 @@ package com.klikli_dev.modonomicon.datagen;
 import com.klikli_dev.modonomicon.Modonomicon;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
 public class BlockTagsProvider extends net.neoforged.neoforge.common.data.BlockTagsProvider {
-    public BlockTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(output, lookupProvider, Modonomicon.MOD_ID, existingFileHelper);
+    public BlockTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, lookupProvider, Modonomicon.MOD_ID);
     }
 
     @Override
