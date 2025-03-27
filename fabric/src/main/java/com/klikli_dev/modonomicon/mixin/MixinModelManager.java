@@ -15,7 +15,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -31,6 +30,5 @@ public class MixinModelManager {
             locals = LocalCapture.CAPTURE_FAILEXCEPTION)
     private static void modifyItemModelsAfterBake(ProfilerFiller profiler, Map<ResourceLocation, AtlasSet.StitchResult> atlasPreperations, ModelBakery modelBakery, Object2IntMap<BlockState> modelGroups, EntityModelSet entityModelSet, SpecialBlockModelRenderer specialBlockModelRenderer, CallbackInfoReturnable<ModelManager.ReloadState> cir, Multimap multimap, Multimap multimap2, TextureAtlasSprite textureAtlasSprite, ModelBakery.BakingResult bakingResult) {
         BookModel.replace(bakingResult.itemStackModels());
-        //TODO: Does not work yet
     }
 }
