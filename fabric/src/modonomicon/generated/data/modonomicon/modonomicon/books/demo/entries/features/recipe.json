@@ -1,0 +1,119 @@
+{
+  "background_u_index": 0,
+  "background_v_index": 0,
+  "category": "features",
+  "description": "book.modonomicon.demo.features.recipe.description",
+  "hide_while_locked": false,
+  "icon": {
+    "item": "minecraft:crafting_table"
+  },
+  "name": "book.modonomicon.demo.features.recipe.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.recipe.intro.text",
+      "title": "book.modonomicon.demo.features.recipe.intro.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:crafting_recipe",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "recipe_id_1": "minecraft:crafting_table",
+      "recipe_id_2": "minecraft:oak_planks",
+      "text": "book.modonomicon.demo.features.recipe.crafting.text",
+      "title1": "",
+      "title2": "test.test.test"
+    },
+    {
+      "type": "modonomicon:smelting_recipe",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "recipe_id_1": "minecraft:charcoal",
+      "recipe_id_2": "minecraft:cooked_beef",
+      "text": "book.modonomicon.demo.features.recipe.smelting.text",
+      "title1": "",
+      "title2": ""
+    },
+    {
+      "type": "modonomicon:smoking_recipe",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "recipe_id_1": "minecraft:cooked_beef_from_smoking",
+      "text": "book.modonomicon.demo.features.recipe.smoking.text",
+      "title1": "",
+      "title2": ""
+    },
+    {
+      "type": "modonomicon:blasting_recipe",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "recipe_id_2": "minecraft:iron_ingot_from_blasting_iron_ore",
+      "text": "",
+      "title1": "",
+      "title2": ""
+    },
+    {
+      "type": "modonomicon:campfire_cooking_recipe",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "recipe_id_1": "minecraft:cooked_beef_from_campfire_cooking",
+      "text": "",
+      "title1": "",
+      "title2": ""
+    },
+    {
+      "type": "modonomicon:stonecutting_recipe",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "recipe_id_1": "minecraft:andesite_slab_from_andesite_stonecutting",
+      "text": "",
+      "title1": "",
+      "title2": ""
+    },
+    {
+      "type": "modonomicon:smithing_recipe",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "recipe_id_1": "minecraft:netherite_axe_smithing",
+      "recipe_id_2": "minecraft:netherite_chestplate_smithing",
+      "text": "",
+      "title1": "book.modonomicon.demo.features.recipe.smithing.title",
+      "title2": ""
+    },
+    {
+      "type": "modonomicon:smithing_recipe",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "recipe_id_1": "minecraft:netherite_axe_smithing_does_not_exist",
+      "text": "",
+      "title1": "",
+      "title2": ""
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 6,
+  "x": -14,
+  "y": -1
+}

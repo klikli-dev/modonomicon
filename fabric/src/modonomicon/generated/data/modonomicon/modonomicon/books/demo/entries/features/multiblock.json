@@ -1,0 +1,83 @@
+{
+  "background_u_index": 0,
+  "background_v_index": 0,
+  "category": "features",
+  "description": "book.modonomicon.demo.features.multiblock.description",
+  "hide_while_locked": false,
+  "icon": {
+    "item": "minecraft:furnace"
+  },
+  "name": "book.modonomicon.demo.features.multiblock.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.multiblock.intro.text",
+      "title": "book.modonomicon.demo.features.multiblock.intro.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:multiblock",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "multiblock_id": "demo_block_entity",
+      "multiblock_name": "",
+      "show_visualize_button": true,
+      "text": ""
+    },
+    {
+      "type": "modonomicon:multiblock",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "multiblock_id": "demo_tag",
+      "multiblock_name": "",
+      "show_visualize_button": true,
+      "text": "book.modonomicon.demo.features.multiblock.demo_tag.text"
+    },
+    {
+      "type": "modonomicon:multiblock",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "multiblock_id": "demo_predicate",
+      "multiblock_name": "",
+      "show_visualize_button": true,
+      "text": ""
+    },
+    {
+      "type": "modonomicon:multiblock",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "multiblock_id": "demo_fluid",
+      "multiblock_name": "",
+      "show_visualize_button": true,
+      "text": ""
+    },
+    {
+      "type": "modonomicon:multiblock",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "multiblock_id": "demo_transparency",
+      "multiblock_name": "",
+      "show_visualize_button": true,
+      "text": ""
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 0,
+  "x": -14,
+  "y": -3
+}

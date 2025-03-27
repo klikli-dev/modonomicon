@@ -1,0 +1,91 @@
+{
+  "background_u_index": 0,
+  "background_v_index": 1,
+  "category": "formatting",
+  "description": "book.modonomicon.demo.formatting.advanced.description",
+  "hide_while_locked": false,
+  "icon": {
+    "item": "minecraft:feather"
+  },
+  "name": "book.modonomicon.demo.formatting.advanced.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.formatting.advanced.page1.text",
+      "title": "book.modonomicon.demo.formatting.advanced.page1.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.formatting.advanced.page2.text",
+      "title": "",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.formatting.advanced.page3.text",
+      "title": "book.modonomicon.demo.formatting.advanced.page3.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.formatting.advanced.page4.text",
+      "title": "book.modonomicon.demo.formatting.advanced.page4.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.formatting.advanced.list_test.text",
+      "title": "",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.formatting.advanced.dynamic_macro.text",
+      "title": "book.modonomicon.demo.formatting.advanced.dynamic_macro.title",
+      "use_markdown_in_title": false
+    }
+  ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "formatting/basic",
+      "line_enabled": true,
+      "line_reversed": false
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 1,
+  "x": -4,
+  "y": -1
+}

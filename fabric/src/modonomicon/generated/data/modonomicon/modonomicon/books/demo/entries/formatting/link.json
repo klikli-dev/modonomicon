@@ -1,0 +1,58 @@
+{
+  "background_u_index": 0,
+  "background_v_index": 2,
+  "category": "formatting",
+  "description": "book.modonomicon.demo.formatting.link.description",
+  "hide_while_locked": false,
+  "icon": {
+    "item": "minecraft:writable_book"
+  },
+  "name": "book.modonomicon.demo.formatting.link.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.formatting.link.page1.text",
+      "title": "book.modonomicon.demo.formatting.link.page1.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.formatting.link.page2.text",
+      "title": "book.modonomicon.demo.formatting.link.page2.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.formatting.link.invalidLink.text",
+      "title": "book.modonomicon.demo.formatting.link.invalidLink.title",
+      "use_markdown_in_title": false
+    }
+  ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "formatting/advanced",
+      "line_enabled": true,
+      "line_reversed": false
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 2,
+  "x": 0,
+  "y": 0
+}

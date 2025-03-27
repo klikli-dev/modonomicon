@@ -1,0 +1,28 @@
+{
+  "background_u_index": 1,
+  "background_v_index": 0,
+  "category": "features",
+  "description": "book.modonomicon.demo.features.condition_root.description",
+  "hide_while_locked": false,
+  "icon": {
+    "item": "minecraft:redstone_torch"
+  },
+  "name": "book.modonomicon.demo.features.condition_root.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.condition_root.info.text",
+      "title": "book.modonomicon.demo.features.condition_root.info.title",
+      "use_markdown_in_title": false
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 1,
+  "x": -6,
+  "y": -2
+}

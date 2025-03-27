@@ -1,0 +1,40 @@
+{
+  "background_u_index": 0,
+  "background_v_index": 0,
+  "category": "features",
+  "condition": {
+    "type": "modonomicon:entry_read",
+    "entry_id": "features/condition_root"
+  },
+  "description": "book.modonomicon.demo.features.condition_level_1.description",
+  "hide_while_locked": false,
+  "icon": {
+    "item": "minecraft:lever"
+  },
+  "name": "book.modonomicon.demo.features.condition_level_1.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.condition_level_1.info.text",
+      "title": "book.modonomicon.demo.features.condition_level_1.info.title",
+      "use_markdown_in_title": false
+    }
+  ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "features/condition_root",
+      "line_enabled": true,
+      "line_reversed": true
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 3,
+  "x": -1,
+  "y": 0
+}
