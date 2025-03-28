@@ -15,6 +15,7 @@ import net.minecraft.client.data.models.model.*;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import org.jetbrains.annotations.NotNull;
 
 public class ModonomiconModelProvider extends ModelProvider {
     public ModonomiconModelProvider(PackOutput packOutput) {
@@ -32,7 +33,7 @@ public class ModonomiconModelProvider extends ModelProvider {
     }
 
     @Override
-    protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+    protected void registerModels(@NotNull BlockModelGenerators blockModels, @NotNull ItemModelGenerators itemModels) {
         this.generateFlatItem(ItemRegistry.MODONOMICON.get(), "modonomicon_purple", itemModels);
         this.generateFlatItem(ItemRegistry.MODONOMICON_BLUE.get(), "modonomicon_blue", itemModels);
         this.generateFlatItem(ItemRegistry.MODONOMICON_GREEN.get(), "modonomicon_green", itemModels);
