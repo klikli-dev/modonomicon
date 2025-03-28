@@ -15,15 +15,13 @@ import net.minecraft.client.data.models.model.ItemModelUtils;
 import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 public class ModonomiconModelProvider extends ModelProvider {
@@ -31,43 +29,49 @@ public class ModonomiconModelProvider extends ModelProvider {
         super(packOutput);
     }
 
-    public void generateFlatItem(Item item, String texture, ItemModelGenerators itemModelGenerator) {
-        itemModelGenerator.itemModelOutput.accept(item, ItemModelUtils.plainModel(this.createFlatItemModel(item, texture, itemModelGenerator)));
+    public static void generateFlatItem(Item item, String texture, ItemModelGenerators itemModelGenerator) {
+        itemModelGenerator.itemModelOutput.accept(item, ItemModelUtils.plainModel(createFlatItemModel(item, texture, itemModelGenerator)));
     }
 
-    public ResourceLocation createFlatItemModel(Item item, String texture, ItemModelGenerators itemModelGenerator) {
+    public static ResourceLocation createFlatItemModel(Item item, String texture, ItemModelGenerators itemModelGenerator) {
         return ModelTemplates.FLAT_ITEM.create(ModelLocationUtils.getModelLocation(item),
                 TextureMapping.layer0(Modonomicon.loc("item/" + texture)),
                 itemModelGenerator.modelOutput);
     }
 
     @Override
-    protected Stream<Block> getKnownBlocks() {
+    protected @NotNull Stream<Block> getKnownBlocks() {
+        //noinspection deprecation
         return BuiltInRegistries.BLOCK.stream().filter(block -> Modonomicon.MOD_ID.equals(block.builtInRegistryHolder().key().location().getNamespace()));
     }
 
     @Override
-    protected Stream<Item> getKnownItems() {
+    protected @NotNull Stream<Item> getKnownItems() {
+        //noinspection deprecation
         return BuiltInRegistries.ITEM.stream().filter(item -> Modonomicon.MOD_ID.equals(item.builtInRegistryHolder().key().location().getNamespace()));
     }
 
     @Override
-    protected ItemModelGenerators getItemModelGenerators(ItemInfoCollector items, SimpleModelCollector models) {
-        var itemModels = super.getItemModelGenerators(items, models);
-
-        //register our own
-        this.registerItemModels(itemModels);
-        return itemModels;
+    protected @NotNull ItemModelGenerators getItemModelGenerators(@NotNull ItemInfoCollector items, @NotNull SimpleModelCollector models) {
+        return new ItemModelGenerators(items, models) {
+            @Override
+            public void run() {
+                ModonomiconModelProvider.generateFlatItem(ItemRegistry.MODONOMICON.get(), "modonomicon_purple", this);
+                ModonomiconModelProvider.generateFlatItem(ItemRegistry.MODONOMICON_BLUE.get(), "modonomicon_blue", this);
+                ModonomiconModelProvider.generateFlatItem(ItemRegistry.MODONOMICON_GREEN.get(), "modonomicon_green", this);
+                ModonomiconModelProvider.generateFlatItem(ItemRegistry.MODONOMICON_PURPLE.get(), "modonomicon_purple", this);
+                ModonomiconModelProvider.generateFlatItem(ItemRegistry.MODONOMICON_RED.get(), "modonomicon_red", this);
+                ModonomiconModelProvider.generateFlatItem(ItemRegistry.LEAFLET.get(), "leaflet", this);
+            }
+        };
     }
 
-    protected void registerItemModels(ItemModelGenerators itemModels) {
-        //TODO: Currently forge causes all minecraft assets to be generated.
-
-        this.generateFlatItem(ItemRegistry.MODONOMICON.get(), "modonomicon_purple", itemModels);
-        this.generateFlatItem(ItemRegistry.MODONOMICON_BLUE.get(), "modonomicon_blue", itemModels);
-        this.generateFlatItem(ItemRegistry.MODONOMICON_GREEN.get(), "modonomicon_green", itemModels);
-        this.generateFlatItem(ItemRegistry.MODONOMICON_PURPLE.get(), "modonomicon_purple", itemModels);
-        this.generateFlatItem(ItemRegistry.MODONOMICON_RED.get(), "modonomicon_red", itemModels);
-        this.generateFlatItem(ItemRegistry.LEAFLET.get(), "leaflet", itemModels);
+    @Override
+    protected @NotNull BlockModelGenerators getBlockModelGenerators(@NotNull BlockStateGeneratorCollector blocks, @NotNull ItemInfoCollector items, @NotNull SimpleModelCollector models) {
+        return new BlockModelGenerators(blocks, items, models) {
+            @Override
+            public void run() {
+            }
+        };
     }
 }
