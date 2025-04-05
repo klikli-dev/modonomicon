@@ -1,4 +1,4 @@
-// 1.21.1	2024-10-31T11:05:51.138905	Books: modonomicon
+// 1.21.4	2025-03-27T13:22:30.4339701	Books: modonomicon
 ea82c1ec5ac99b6c53186c37a2964666b6824399 data/modonomicon/modonomicon/books/demo/book.json
 9bf40644b1a94e0f93e2d4d49e6f9ed6bd942ae5 data/modonomicon/modonomicon/books/demo/categories/conditional.json
 1026c22d26aacaf4cdbc863df4fb00229af152a3 data/modonomicon/modonomicon/books/demo/categories/features.json
@@ -16,13 +16,13 @@ e851f15524eadea9aabcfc57af7a94d916749553 data/modonomicon/modonomicon/books/demo
 aa468bfbbd816f8d06107ab2fecf5e278c6740ab data/modonomicon/modonomicon/books/demo/entries/features/custom_icon.json
 ee56ca8dcb97da78c75ef5c31b561e1e9e7c9e65 data/modonomicon/modonomicon/books/demo/entries/features/empty.json
 2a948b807be3b8c919e3a1391ae4ffbba7123364 data/modonomicon/modonomicon/books/demo/entries/features/entity.json
-defe203f16f628d8c88a2b7228e9c0de704b364d data/modonomicon/modonomicon/books/demo/entries/features/image.json
+08653879144ce6cf5b213f1a3baeb9afeae4d90b data/modonomicon/modonomicon/books/demo/entries/features/image.json
 26a65c788648651d5b79a2e9e19e6ce88479550e data/modonomicon/modonomicon/books/demo/entries/features/multiblock.json
 357539b3d8a74d7bfced6fc27c1280d9b05acf3b data/modonomicon/modonomicon/books/demo/entries/features/recipe.json
 99a977c14e496a823810fd889776aa6f8629fc4a data/modonomicon/modonomicon/books/demo/entries/features/redirect.json
-3d02ebee99a4bfcdae31dc5bc54ee732ebbf3a1c data/modonomicon/modonomicon/books/demo/entries/features/spotlight.json
+785375ef12d84f3a9a996a50e081f0793341783a data/modonomicon/modonomicon/books/demo/entries/features/spotlight.json
 96d153396b2b721a78a84ed230c7c919af008b5b data/modonomicon/modonomicon/books/demo/entries/features/two_parents.json
-eae1e65430fcf5d922b341fceee78ac0e1dd13d9 data/modonomicon/modonomicon/books/demo/entries/formatting/advanced.json
+830d37625b5beabf79cc5cc6d3bac4a6bfbe1cfb data/modonomicon/modonomicon/books/demo/entries/formatting/advanced.json
 165dd59da572987359f7d8257a15c4b83a72fc3a data/modonomicon/modonomicon/books/demo/entries/formatting/always_locked.json
 57dab4cdc77ae3e255132cb7c5f1ac36d3897565 data/modonomicon/modonomicon/books/demo/entries/formatting/basic.json
 3dd53ac01f9fed78bf000d9c669bc1bf131a0bcc data/modonomicon/modonomicon/books/demo/entries/formatting/link.json
@@ -31,3 +31,6 @@ eae1e65430fcf5d922b341fceee78ac0e1dd13d9 data/modonomicon/modonomicon/books/demo
 631f8d62bf05e90eba6f7ce2e441e069099b7198 data/modonomicon/modonomicon/books/demo_leaflet/book.json
 56c22a396d523514af2db5eacdf5b70bdcd9fb3b data/modonomicon/modonomicon/books/demo_leaflet/categories/leaflet.json
 eff793d776fcd5711c6efdb0eb30124a8f633448 data/modonomicon/modonomicon/books/demo_leaflet/entries/leaflet/leaflet.json
+3a4e3997de607a18f224c85aa74be10db1c68110 data/theurgy/modonomicon/books/the_hermetica/categories/new.json
+fe07039b1350f4b135c531019fb97768dd690e31 data/theurgy/modonomicon/books/the_hermetica/entries/getting_started/second_about_mod.json
+40f79740fcb4d3e4d2dae9fbe46c4ceecfbe2450 data/theurgy/modonomicon/books/the_hermetica/entries/new/intro.json

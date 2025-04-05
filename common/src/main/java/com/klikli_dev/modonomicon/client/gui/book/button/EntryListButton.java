@@ -15,6 +15,7 @@ import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
+import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -88,6 +89,9 @@ public class EntryListButton extends Button {
             } else {
                 name = Component.translatable(this.entry.getName());
             }
+
+            //apply the custom book font
+            name.withStyle(style -> style.withFont(BookDataManager.Client.get().safeFont(this.entry.getBook().getFont())));
 
             int x = this.getX() + 12; //shift right to make space for the icon
             int y = this.getY() + 2;

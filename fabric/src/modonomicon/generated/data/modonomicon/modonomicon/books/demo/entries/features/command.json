@@ -1,0 +1,40 @@
+{
+  "background_u_index": 0,
+  "background_v_index": 0,
+  "category": "features",
+  "command_to_run_on_first_read": "test_command",
+  "description": "book.modonomicon.demo.features.command.description",
+  "hide_while_locked": false,
+  "icon": {
+    "item": "minecraft:oak_sign"
+  },
+  "name": "book.modonomicon.demo.features.command.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.command.intro.text",
+      "title": "book.modonomicon.demo.features.command.intro.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.command.command_link.text",
+      "title": "book.modonomicon.demo.features.command.command_link.title",
+      "use_markdown_in_title": false
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 10,
+  "x": -8,
+  "y": 3
+}

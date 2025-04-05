@@ -22,6 +22,8 @@ import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingPluginManager;
+import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 
@@ -67,28 +69,29 @@ public class ModonomiconFabricClient implements ClientModInitializer {
                 BookDataManager.Client.get()
         ));
 
-        ModelLoadingPlugin.register(pluginContext -> {
-            //this makes the baker load the models, BUT books are not loaded yet so it does nothing
-//            for (var book : BookDataManager.get().getBooks().values()) {
-//                pluginContext.addModels(book.getModel());
-//            }
-
-            pluginContext.modifyModelAfterBake().register(
-                    (oldModel, ctx) -> {
-                        if (ctx.topLevelId() != null &&
-                                //this is the item id of the item for which the model modification is made = modonomicon
-                                //I am not referencing the actual registry object because I think the model loader is called before the item is registered
-                                ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, Modonomicon.MOD_ID).equals(ctx.topLevelId().id()) // checks namespace and path
-                                && ctx.topLevelId().getVariant().equals("inventory")
-                                && oldModel != null) {
-                            return new BookModel(oldModel);
-                        }
-                        return oldModel;
-                    }
-            );
-        });
 
         //book geometry loader
         //done in MixinModelManager, because we have no event in Fabric
+
+        ModelLoadingPlugin.register(pluginContext -> {
+            //this makes the baker load the models, BUT books are not loaded yet so it does nothing
+//            for (var book : BookDataManager.get().getBooks().values()) {
+////                pluginContext.addModels(book.getModel());
+////            }
+            //TODO: model loading on fabric -> either in mixinmodel manager or here
+//            pluginContext.modifyModelAfterBake().register(
+//                    (oldModel, ctx) -> {
+//                        if (ctx.id() != null &&
+//                                //this is the item id of the item for which the model modification is made = modonomicon
+//                                //I am not referencing the actual registry object because I think the model loader is called before the item is registered
+//                                ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, Modonomicon.MOD_ID).equals(ctx.id()) // checks namespace and path
+//                                && oldModel != null) {
+//                            return new BookModel(oldModel.);
+//                        }
+//                        return oldModel;
+//                    }
+//            );
+        });
+
     }
 }

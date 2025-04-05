@@ -70,7 +70,7 @@ public abstract class CategoryProvider extends CategoryProviderBase {
 
         var map = this.generateEntryMap();
         if (map != null && map.length > 0)
-            this.entryMap().setMap(this.generateEntryMap());
+            this.entryMap().setMap(map);
 
         var category = BookCategoryModel.create(
                 this.modLoc(this.context().categoryId()),

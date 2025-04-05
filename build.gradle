@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.7-SNAPSHOT' apply(false)
+    id 'fabric-loom' version '1.10-SNAPSHOT' apply(false)
 }
 
 
@@ -16,6 +16,8 @@ subprojects {
         }
 
         exclude ".cache"
+        exclude "**/assets/theurgy/**"
+        exclude "**/data/theurgy/**"
         exclude "**/data/modonomicon/modonomicon/books/**"
         exclude "**/data/modonomicon/modonomicon/multiblocks/**"
         exclude "**/data/modonomicon/recipe/**"

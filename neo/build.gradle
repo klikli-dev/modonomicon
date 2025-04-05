@@ -48,7 +48,7 @@ runs {
 //        programArgument '--nogui'
     }
 
-    data {
+    clientData  { //neo does not recommend split datagen, they recommend to just do all in clientData
         getArguments().addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
     }
 }
@@ -126,7 +126,7 @@ tasks.withType(ProcessResources).excludingNeoTasks().configureEach {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId base.archivesName.get()
+            artifactId = base.archivesName.get()
 
             from components.java
 

@@ -44,6 +44,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
@@ -55,6 +56,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 import java.awt.*;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Function;
 
@@ -152,9 +154,7 @@ public class MultiblockPreviewRenderer {
                     // try-catch around here because the state isn't necessarily present in the world in this instance,
                     // which isn't really expected behavior for getPickBlock
                     try {
-                        Block block = lookingState.getBlock();
-                        ItemStack stack = block.getCloneItemStack(mc.level, lookingPos, lookingState);
-
+                        var stack = lookingState.getCloneItemStack(mc.level, lookingPos, true);
                         if (!stack.isEmpty()) {
                             guiGraphics.drawString(mc.font, stack.getHoverName(), left + 20, top + height + 8, 0xFFFFFF, false);
 
@@ -438,5 +438,4 @@ public class MultiblockPreviewRenderer {
             }
         }
     }
-
 }

@@ -1,0 +1,61 @@
+{
+  "type": "modonomicon:dense",
+  "mapping": {
+    "*": {
+      "type": "modonomicon:display",
+      "display": "minecraft:basalt"
+    },
+    "+": {
+      "type": "modonomicon:display",
+      "display": "minecraft:stone"
+    },
+    "E": {
+      "type": "modonomicon:blockstate",
+      "block": "minecraft:oak_stairs[facing=east]"
+    },
+    "F": {
+      "type": "modonomicon:block",
+      "block": "minecraft:furnace"
+    },
+    "K": {
+      "type": "modonomicon:blockstate",
+      "block": "minecraft:skeleton_skull"
+    },
+    "N": {
+      "type": "modonomicon:blockstate",
+      "block": "minecraft:oak_stairs[facing=north]"
+    },
+    "S": {
+      "type": "modonomicon:blockstate",
+      "block": "minecraft:oak_stairs[facing=south]"
+    },
+    "W": {
+      "type": "modonomicon:blockstate",
+      "block": "minecraft:oak_stairs[facing=west]"
+    },
+    "X": {
+      "type": "modonomicon:blockstate",
+      "block": "minecraft:skeleton_skull[rotation=2]"
+    }
+  },
+  "pattern": [
+    [
+      "_______",
+      "__WWW__",
+      "_NFXFS_",
+      "_NF0FS_",
+      "_NFKFS_",
+      "__EEE__",
+      "_______"
+    ],
+    [
+      "*+*+*+*",
+      "+*+*+*+",
+      "*+*+*+*",
+      "+*+*+*+",
+      "*+*+*+*",
+      "+*+*+*+",
+      "*+*+*+*"
+    ]
+  ]
+}

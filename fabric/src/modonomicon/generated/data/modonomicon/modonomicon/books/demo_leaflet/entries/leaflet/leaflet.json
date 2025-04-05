@@ -1,0 +1,50 @@
+{
+  "background_u_index": 0,
+  "background_v_index": 0,
+  "category": "leaflet",
+  "description": "book.modonomicon.demo_leaflet.leaflet.leaflet.description",
+  "hide_while_locked": false,
+  "icon": {
+    "item": "minecraft:paper"
+  },
+  "name": "book.modonomicon.demo_leaflet.leaflet.leaflet.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo_leaflet.leaflet.leaflet.intro.text",
+      "title": "book.modonomicon.demo_leaflet.leaflet.leaflet.intro.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo_leaflet.leaflet.leaflet.page2.text",
+      "title": "book.modonomicon.demo_leaflet.leaflet.leaflet.page2.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo_leaflet.leaflet.leaflet.page3.text",
+      "title": "book.modonomicon.demo_leaflet.leaflet.leaflet.page3.title",
+      "use_markdown_in_title": false
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 0,
+  "x": 0,
+  "y": 0
+}

@@ -168,11 +168,22 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
             return false;
         }
 
+        if(!level.isClientSide()){
+            this.resolveMacros(); //macros are only resolved serverside, the resolved macros are then stored in the book.
+        }
+
         Modonomicon.LOG.info("Building books ...");
         this.buildBooks(level);
         this.booksBuilt = true;
         Modonomicon.LOG.info("Books built.");
         return true;
+    }
+
+    public void resolveMacros(){
+        this.getBooks().forEach((id, book) -> {
+            var macroLoaders = LoaderRegistry.getDynamicTextMacroLoaders(id);
+            macroLoaders.forEach(loader -> loader.load().forEach(book::addMacro));
+        });
     }
 
     protected void onLoadingComplete() {

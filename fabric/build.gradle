@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'idea'
     id 'maven-publish'
-    id 'fabric-loom' version '1.7-SNAPSHOT'
+    id 'fabric-loom' version '1.10-SNAPSHOT'
 }
 
 if (System.getenv('MOD_VERSION') != null) {
@@ -69,13 +69,15 @@ loom {
             runDir("run")
         }
         datagen {
-            inherit client
+            client()
             setConfigName("Fabric Data Generation")
-            vmArg "-Dfabric-api.datagen"
-            vmArg "-Dfabric-api.datagen.output-dir=${file("src/generated/resources")}"
-            vmArg "-Dfabric-api.datagen.modid=${mod_id}"
 
-            runDir "build/datagen"
+            source(sourceSets.main)
+
+            property("fabric-api.datagen")
+            property("fabric-api.datagen.strict-validation", "true") // '--all' sets '--validate' to true as well
+            property("fabric-api.datagen.output-dir", file("src/generated/resources").absolutePath)
+            runDir("build/datagen")
         }
     }
 }
@@ -100,7 +102,7 @@ processResources {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId base.archivesName.get()
+            artifactId = base.archivesName.get()
 
             from components.java
 

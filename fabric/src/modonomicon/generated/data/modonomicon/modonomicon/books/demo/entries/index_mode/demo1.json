@@ -1,0 +1,28 @@
+{
+  "background_u_index": 0,
+  "background_v_index": 0,
+  "category": "index_mode",
+  "description": "book.modonomicon.demo.index_mode.demo1.description",
+  "hide_while_locked": false,
+  "icon": {
+    "item": "minecraft:nether_star"
+  },
+  "name": "book.modonomicon.demo.index_mode.demo1.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.index_mode.demo1.intro.text",
+      "title": "book.modonomicon.demo.index_mode.demo1.intro.title",
+      "use_markdown_in_title": false
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 0,
+  "x": 0,
+  "y": 0
+}

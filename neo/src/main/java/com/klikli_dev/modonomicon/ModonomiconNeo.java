@@ -23,6 +23,7 @@ import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
@@ -39,7 +40,7 @@ import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
@@ -70,12 +71,12 @@ public class ModonomiconNeo {
         modEventBus.addListener(CreativeModeTabRegistry::onCreativeModeTabBuildContents);
 
         //register data managers as reload listeners
-        NeoForge.EVENT_BUS.addListener((AddReloadListenerEvent e) -> {
+        NeoForge.EVENT_BUS.addListener((AddServerReloadListenersEvent e) -> {
             BookDataManager.get().registries(e.getRegistryAccess());
-            e.addListener(BookDataManager.get());
+            e.addListener(Modonomicon.loc("book_data_manager"), BookDataManager.get());
 
             MultiblockDataManager.get().registries(e.getRegistryAccess());
-            e.addListener(MultiblockDataManager.get());
+            e.addListener(Modonomicon.loc("multiblock_data_manager"), MultiblockDataManager.get());
         });
 
         //register commands
@@ -133,8 +134,8 @@ public class ModonomiconNeo {
             modEventBus.addListener(Client::onModifyBakingResult);
 
             //register client side reload listener that will reset the fallback font to handle locale changes on the fly
-            modEventBus.addListener((RegisterClientReloadListenersEvent e) -> {
-                e.registerReloadListener(BookDataManager.Client.get());
+            modEventBus.addListener((AddClientReloadListenersEvent e) -> {
+                e.addListener(Modonomicon.loc("book_data_manager_client"), BookDataManager.Client.get());
             });
 
             Client.registerConfigScreen(modContainer);
@@ -202,7 +203,7 @@ public class ModonomiconNeo {
         }
 
         public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
-            BookModel.replace(event.getModelBakery().getBakedTopLevelModels());
+            BookModel.replace(event.getBakingResult().itemStackModels());
         }
     }
 }

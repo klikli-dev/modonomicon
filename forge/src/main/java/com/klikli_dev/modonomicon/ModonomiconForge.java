@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon;
 
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
-import com.klikli_dev.modonomicon.client.BookModelLoader;
+import com.klikli_dev.modonomicon.client.BookModel;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
@@ -51,7 +51,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 @Mod(Modonomicon.MOD_ID)
 public class ModonomiconForge {
 
-    public ModonomiconForge() {
+    public ModonomiconForge(FMLJavaModLoadingContext context) {
         // This method is invoked by the Forge mod loader when it is ready
         // to load your mod. You can access Forge and Common code in this
         // project.
@@ -59,9 +59,9 @@ public class ModonomiconForge {
         // Use Forge to bootstrap the Common mod.
         Modonomicon.init();
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfig.get().spec);
+        context.registerConfig(ModConfig.Type.CLIENT, ClientConfig.get().spec);
 
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        IEventBus modEventBus = context.getModEventBus();
 
         //Most registries are handled by common, but creative tabs are easier per loader
         CreativeModeTabRegistry.CREATIVE_MODE_TABS.register(modEventBus);
@@ -128,7 +128,6 @@ public class ModonomiconForge {
         //Client stuff
         if (FMLEnvironment.dist == Dist.CLIENT) {
             modEventBus.addListener(Client::onClientSetup);
-            modEventBus.addListener(Client::onRegisterGeometryLoaders);
 //            modEventBus.addListener(Client::onRegisterGuiOverlays);
             //build books and render markdown when client receives recipes
             MinecraftForge.EVENT_BUS.addListener(Client::onRecipesUpdated);
@@ -203,15 +202,12 @@ public class ModonomiconForge {
          * Needs to be in the client inner class to not load clientlevel on server
          */
         public static void onRecipesUpdated(RecipesUpdatedEvent event) {
+            //TODO: replace recipesupdatedevent
             BookDataManager.get().onRecipesUpdated(Minecraft.getInstance().level);
         }
 
-        public static void onRegisterGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
-            event.register("book_model_loader", new BookModelLoader());
-        }
-
         public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
-            BookModel.replace(event.getModelBakery().getBakedTopLevelModels(), event.getModelBakery());
+            BookModel.replace(event.getResults().itemStackModels());
         }
 
         //Currently done in MixinGui because forge removed the event and LayeredDraw seems not up to the task yet
