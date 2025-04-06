@@ -154,7 +154,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
     }
 
     protected ItemStack getRecipeOutput(Level level, RecipeDisplayEntry recipeDisplayEntry) {
-        if(recipeDisplayEntry == null) {
+        if (recipeDisplayEntry == null) {
             var item = new ItemStack(Items.BARRIER);
             item.set(DataComponents.CUSTOM_NAME, Component.literal("Recipe not found, please check the logs."));
             return item;
@@ -165,6 +165,10 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
     }
 
     private RecipeDisplayEntry getRecipeDisplayEntry(ServerLevel serverLevel, ResourceKey<Recipe<?>> key) {
+        if (key == null) {
+            return null;
+        }
+
         var list = new ArrayList<RecipeDisplayEntry>();
         serverLevel.recipeAccess().listDisplaysForRecipe(key, list::add);
         var entry = list.stream().findFirst().orElse(null);
@@ -274,7 +278,8 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
     }
 
     public record JsonDataHolder(BookTextHolder title1, ResourceKey<Recipe<?>> recipeId1, BookTextHolder title2,
-                                 ResourceKey<Recipe<?>> recipeId2, BookTextHolder text, String anchor, BookCondition condition) {
+                                 ResourceKey<Recipe<?>> recipeId2, BookTextHolder text, String anchor,
+                                 BookCondition condition) {
     }
 
     public record NetworkDataHolder(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1,
