@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.book.BookCommand;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -30,10 +31,12 @@ public class SyncBookDataMessage implements Message {
     public static final Type<SyncBookDataMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "sync_book_data"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncBookDataMessage> STREAM_CODEC = CustomPacketPayload.codec(SyncBookDataMessage::encode, SyncBookDataMessage::new);
 
-    public Map<ResourceLocation, Book> books = new Object2ObjectOpenHashMap<>();
+    //We use an array map here because we are not actually doing any lookups, we just iterate over the values
+    public Map<ResourceLocation, Book> books = new Object2ObjectArrayMap<>();
 
     public SyncBookDataMessage(Map<ResourceLocation, Book> books) {
-        this.books = new Object2ObjectOpenHashMap<>(books);
+        //We use an array map here because we are not actually doing any lookups, we just iterate over the values
+        this.books = new Object2ObjectArrayMap<>(books);
     }
 
     public SyncBookDataMessage(RegistryFriendlyByteBuf buf) {
