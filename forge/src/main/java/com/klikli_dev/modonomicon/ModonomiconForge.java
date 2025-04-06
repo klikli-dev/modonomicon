@@ -27,7 +27,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -40,7 +39,6 @@ import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -72,10 +70,10 @@ public class ModonomiconForge {
 
         //register data managers as reload listeners
         MinecraftForge.EVENT_BUS.addListener((AddReloadListenerEvent e) -> {
-            BookDataManager.get().registries(e.getRegistryAccess());
+            BookDataManager.get().registries(e.getRegistries());
             e.addListener(BookDataManager.get());
 
-            MultiblockDataManager.get().registries(e.getRegistryAccess());
+            MultiblockDataManager.get().registries(e.getRegistries());
             e.addListener(MultiblockDataManager.get());
         });
 
@@ -129,8 +127,6 @@ public class ModonomiconForge {
         if (FMLEnvironment.dist == Dist.CLIENT) {
             modEventBus.addListener(Client::onClientSetup);
 //            modEventBus.addListener(Client::onRegisterGuiOverlays);
-            //build books and render markdown when client receives recipes
-            MinecraftForge.EVENT_BUS.addListener(Client::onRecipesUpdated);
             modEventBus.addListener(Client::onModifyBakingResult);
 
             //register client side reload listener that will reset the fallback font to handle locale changes on the fly
@@ -196,14 +192,6 @@ public class ModonomiconForge {
 //                    MultiblockPreviewRenderer.onRenderLevelLastEvent(pose);
 //                }
 //            });
-        }
-
-        /**
-         * Needs to be in the client inner class to not load clientlevel on server
-         */
-        public static void onRecipesUpdated(RecipesUpdatedEvent event) {
-            //TODO: replace recipesupdatedevent
-            BookDataManager.get().onRecipesUpdated(Minecraft.getInstance().level);
         }
 
         public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
