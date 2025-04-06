@@ -44,7 +44,7 @@ public abstract class BookRecipePageRenderer<R extends Recipe<?>, T extends Book
             }
         } else {
             this.drawWrappedStringNoShadow(guiGraphics,
-                    Component.translatable(ModonomiconConstants.I18n.Gui.RECIPE_PAGE_RECIPE_MISSING, this.page.getRecipeId1().toString()),
+                    Component.translatable(ModonomiconConstants.I18n.Gui.RECIPE_PAGE_RECIPE_MISSING, this.page.getRecipeKey1().toString()),
                     recipeX - 13, recipeY - 15, 0xFF0000, BookEntryScreen.PAGE_WIDTH);
         }
 

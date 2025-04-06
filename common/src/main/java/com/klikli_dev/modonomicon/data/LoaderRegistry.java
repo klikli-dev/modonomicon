@@ -6,7 +6,9 @@
 
 package com.klikli_dev.modonomicon.data;
 
-import com.google.common.collect.*;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
@@ -31,7 +33,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -42,10 +43,10 @@ public class LoaderRegistry {
     private static final Map<ResourceLocation, BookEntryJsonLoader<? extends BookEntry>> entryTypeJsonLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
     private static final Map<ResourceLocation, NetworkLoader<? extends BookEntry>> entryTypeNetworkLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 
-    private static final Map<ResourceLocation, JsonLoader<? extends BookPage>> pageJsonLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+    private static final Map<ResourceLocation, BookPageJsonLoader<? extends BookPage>> pageJsonLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
     private static final Map<ResourceLocation, NetworkLoader<? extends BookPage>> pageNetworkLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 
-    private static final Map<ResourceLocation, JsonLoader<? extends BookCondition>> conditionJsonLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+    private static final Map<ResourceLocation, BookConditionJsonLoader<? extends BookCondition>> conditionJsonLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 
     private static final Map<ResourceLocation, NetworkLoader<? extends BookCondition>> conditionNetworkLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
     private static final Map<ResourceLocation, JsonLoader<? extends Multiblock>> multiblockJsonLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
@@ -80,35 +81,32 @@ public class LoaderRegistry {
     }
 
     private static void registerDefaultPageLoaders() {
-        //TODO(BookPageLoading): when replacing jsonloader with bookpagejsonloader, remove the cast
-        registerPageLoader(Page.TEXT, (BookPageJsonLoader<?>) BookTextPage::fromJson, BookTextPage::fromNetwork);
-        registerPageLoader(Page.MULTIBLOCK, (BookPageJsonLoader<?>) BookMultiblockPage::fromJson, BookMultiblockPage::fromNetwork);
-        registerPageLoader(Page.CRAFTING_RECIPE, (BookPageJsonLoader<?>) BookCraftingRecipePage::fromJson, BookCraftingRecipePage::fromNetwork);
-        registerPageLoader(Page.SMELTING_RECIPE, (BookPageJsonLoader<?>) BookSmeltingRecipePage::fromJson, BookSmeltingRecipePage::fromNetwork);
-        registerPageLoader(Page.SMOKING_RECIPE, (BookPageJsonLoader<?>) BookSmokingRecipePage::fromJson, BookSmokingRecipePage::fromNetwork);
-        registerPageLoader(Page.CAMPFIRE_COOKING_RECIPE, (BookPageJsonLoader<?>) BookCampfireCookingRecipePage::fromJson, BookCampfireCookingRecipePage::fromNetwork);
-        registerPageLoader(Page.BLASTING_RECIPE, (BookPageJsonLoader<?>) BookBlastingRecipePage::fromJson, BookBlastingRecipePage::fromNetwork);
-        registerPageLoader(Page.STONECUTTING_RECIPE, (BookPageJsonLoader<?>) BookStonecuttingRecipePage::fromJson, BookStonecuttingRecipePage::fromNetwork);
-        registerPageLoader(Page.SMITHING_RECIPE, (BookPageJsonLoader<?>) BookSmithingRecipePage::fromJson, BookSmithingRecipePage::fromNetwork);
-        registerPageLoader(Page.SPOTLIGHT, (BookPageJsonLoader<?>) BookSpotlightPage::fromJson, BookSpotlightPage::fromNetwork);
-        registerPageLoader(Page.EMPTY, (BookPageJsonLoader<?>) BookEmptyPage::fromJson, BookEmptyPage::fromNetwork);
-        registerPageLoader(Page.ENTITY, (BookPageJsonLoader<?>) BookEntityPage::fromJson, BookEntityPage::fromNetwork);
-        registerPageLoader(Page.IMAGE, (BookPageJsonLoader<?>) BookImagePage::fromJson, BookImagePage::fromNetwork);
+        registerPageLoader(Page.TEXT, BookTextPage::fromJson, BookTextPage::fromNetwork);
+        registerPageLoader(Page.MULTIBLOCK, BookMultiblockPage::fromJson, BookMultiblockPage::fromNetwork);
+        registerPageLoader(Page.CRAFTING_RECIPE, BookCraftingRecipePage::fromJson, BookCraftingRecipePage::fromNetwork);
+        registerPageLoader(Page.SMELTING_RECIPE, BookSmeltingRecipePage::fromJson, BookSmeltingRecipePage::fromNetwork);
+        registerPageLoader(Page.SMOKING_RECIPE, BookSmokingRecipePage::fromJson, BookSmokingRecipePage::fromNetwork);
+        registerPageLoader(Page.CAMPFIRE_COOKING_RECIPE, BookCampfireCookingRecipePage::fromJson, BookCampfireCookingRecipePage::fromNetwork);
+        registerPageLoader(Page.BLASTING_RECIPE, BookBlastingRecipePage::fromJson, BookBlastingRecipePage::fromNetwork);
+        registerPageLoader(Page.STONECUTTING_RECIPE, BookStonecuttingRecipePage::fromJson, BookStonecuttingRecipePage::fromNetwork);
+        registerPageLoader(Page.SMITHING_RECIPE, BookSmithingRecipePage::fromJson, BookSmithingRecipePage::fromNetwork);
+        registerPageLoader(Page.SPOTLIGHT, BookSpotlightPage::fromJson, BookSpotlightPage::fromNetwork);
+        registerPageLoader(Page.EMPTY, BookEmptyPage::fromJson, BookEmptyPage::fromNetwork);
+        registerPageLoader(Page.ENTITY, BookEntityPage::fromJson, BookEntityPage::fromNetwork);
+        registerPageLoader(Page.IMAGE, BookImagePage::fromJson, BookImagePage::fromNetwork);
     }
 
     private static void registerDefaultConditionLoaders() {
-        //TODO(BookPageLoading): when replacing jsonloader with bookconditionjsonloader remove the cast
-
-        registerConditionLoader(Condition.NONE, (BookConditionJsonLoader<?>) BookNoneCondition::fromJson, BookNoneCondition::fromNetwork);
-        registerConditionLoader(Condition.ADVANCEMENT, (BookConditionJsonLoader<?>) BookAdvancementCondition::fromJson, BookAdvancementCondition::fromNetwork);
-        registerConditionLoader(Condition.ENTRY_UNLOCKED, (BookConditionJsonLoader<?>) BookEntryUnlockedCondition::fromJson, BookEntryUnlockedCondition::fromNetwork);
-        registerConditionLoader(Condition.ENTRY_READ, (BookConditionJsonLoader<?>) BookEntryReadCondition::fromJson, BookEntryReadCondition::fromNetwork);
-        registerConditionLoader(Condition.OR, (BookConditionJsonLoader<?>) BookOrCondition::fromJson, BookOrCondition::fromNetwork);
-        registerConditionLoader(Condition.AND, (BookConditionJsonLoader<?>) BookAndCondition::fromJson, BookAndCondition::fromNetwork);
-        registerConditionLoader(Condition.TRUE, (BookConditionJsonLoader<?>) BookTrueCondition::fromJson, BookTrueCondition::fromNetwork);
-        registerConditionLoader(Condition.FALSE, (BookConditionJsonLoader<?>) BookFalseCondition::fromJson, BookFalseCondition::fromNetwork);
-        registerConditionLoader(Condition.MOD_LOADED, (BookConditionJsonLoader<?>) BookModLoadedCondition::fromJson, BookModLoadedCondition::fromNetwork);
-        registerConditionLoader(Condition.CATEGORY_HAS_VISIBLE_ENTRIES, (BookConditionJsonLoader<?>) BookCategoryHasVisibleEntriesCondition::fromJson, BookCategoryHasVisibleEntriesCondition::fromNetwork);
+        registerConditionLoader(Condition.NONE, BookNoneCondition::fromJson, BookNoneCondition::fromNetwork);
+        registerConditionLoader(Condition.ADVANCEMENT, BookAdvancementCondition::fromJson, BookAdvancementCondition::fromNetwork);
+        registerConditionLoader(Condition.ENTRY_UNLOCKED, BookEntryUnlockedCondition::fromJson, BookEntryUnlockedCondition::fromNetwork);
+        registerConditionLoader(Condition.ENTRY_READ, BookEntryReadCondition::fromJson, BookEntryReadCondition::fromNetwork);
+        registerConditionLoader(Condition.OR, BookOrCondition::fromJson, BookOrCondition::fromNetwork);
+        registerConditionLoader(Condition.AND, BookAndCondition::fromJson, BookAndCondition::fromNetwork);
+        registerConditionLoader(Condition.TRUE, BookTrueCondition::fromJson, BookTrueCondition::fromNetwork);
+        registerConditionLoader(Condition.FALSE, BookFalseCondition::fromJson, BookFalseCondition::fromNetwork);
+        registerConditionLoader(Condition.MOD_LOADED, BookModLoadedCondition::fromJson, BookModLoadedCondition::fromNetwork);
+        registerConditionLoader(Condition.CATEGORY_HAS_VISIBLE_ENTRIES, BookCategoryHasVisibleEntriesCondition::fromJson, BookCategoryHasVisibleEntriesCondition::fromNetwork);
     }
 
     private static void registerDefaultMultiblockLoaders() {
@@ -138,7 +136,7 @@ public class LoaderRegistry {
      * Call from server setup.
      *
      * @param forBookId the book to register the macro loader for
-     * @param loader the loader to register
+     * @param loader    the loader to register
      */
     public static void registerDynamicTextMacroLoader(ResourceLocation forBookId, BookDynamicTextMacroLoader loader) {
         dynamicTextMacroLoaders.put(forBookId, loader);
@@ -156,7 +154,7 @@ public class LoaderRegistry {
     /**
      * Call from common setup
      */
-    public static void registerPageLoader(ResourceLocation id, JsonLoader<? extends BookPage> jsonLoader,
+    public static void registerPageLoader(ResourceLocation id, BookPageJsonLoader<? extends BookPage> jsonLoader,
                                           NetworkLoader<? extends BookPage> networkLoader) {
         pageJsonLoaders.put(id, jsonLoader);
         pageNetworkLoaders.put(id, networkLoader);
@@ -165,7 +163,7 @@ public class LoaderRegistry {
     /**
      * Call from common setup
      */
-    public static void registerConditionLoader(ResourceLocation id, JsonLoader<? extends BookCondition> jsonLoader,
+    public static void registerConditionLoader(ResourceLocation id, BookConditionJsonLoader<? extends BookCondition> jsonLoader,
                                                NetworkLoader<? extends BookCondition> networkLoader) {
         conditionJsonLoaders.put(id, jsonLoader);
         conditionNetworkLoaders.put(id, networkLoader);
@@ -236,7 +234,7 @@ public class LoaderRegistry {
         return predicate;
     }
 
-    public static JsonLoader<? extends BookPage> getPageJsonLoader(ResourceLocation id) {
+    public static BookPageJsonLoader<? extends BookPage> getPageJsonLoader(ResourceLocation id) {
         var loader = pageJsonLoaders.get(id);
         if (loader == null) {
             throw new IllegalArgumentException("No json loader registered for page type " + id);
@@ -252,7 +250,7 @@ public class LoaderRegistry {
         return loader;
     }
 
-    public static JsonLoader<? extends BookCondition> getConditionJsonLoader(ResourceLocation id) {
+    public static BookConditionJsonLoader<? extends BookCondition> getConditionJsonLoader(ResourceLocation id) {
         var loader = conditionJsonLoaders.get(id);
         if (loader == null) {
             throw new IllegalArgumentException("No json loader registered for condition type " + id);

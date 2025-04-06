@@ -13,30 +13,33 @@ import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmokingRecipe;
+import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
+import org.jetbrains.annotations.Nullable;
 
 public class BookSmokingRecipePage extends BookProcessingRecipePage<SmokingRecipe> {
-    public BookSmokingRecipePage(BookTextHolder title1, ResourceLocation recipeId1, BookTextHolder title2, ResourceLocation recipeId2, BookTextHolder text, String anchor, BookCondition condition) {
-        super(RecipeType.SMOKING, title1, recipeId1, title2, recipeId2, text, anchor, condition);
+
+    public BookSmokingRecipePage(JsonDataHolder common) {
+        super(common);
+    }
+
+    public BookSmokingRecipePage(NetworkDataHolder common) {
+        super(common);
     }
 
     public static BookSmokingRecipePage fromJson(ResourceLocation entryId, JsonObject json, HolderLookup.Provider provider) {
-        var common = BookRecipePage.commonFromJson(json, provider);
-        var anchor = GsonHelper.getAsString(json, "anchor", "");
-        var condition = json.has("condition")
-                ? BookCondition.fromJson(entryId, json.getAsJsonObject("condition"), provider)
-                : new BookNoneCondition();
-        return new BookSmokingRecipePage(common.title1(), common.recipeId1(), common.title2(), common.recipeId2(), common.text(), anchor, condition);
+        var common = BookRecipePage.commonFromJson(entryId, json, provider);
+        return new BookSmokingRecipePage(common);
     }
 
     public static BookSmokingRecipePage fromNetwork(RegistryFriendlyByteBuf buffer) {
         var common = BookRecipePage.commonFromNetwork(buffer);
-        var anchor = buffer.readUtf();
-        var condition = BookCondition.fromNetwork(buffer);
-        return new BookSmokingRecipePage(common.title1(), common.recipeId1(), common.title2(), common.recipeId2(), common.text(), anchor, condition);
+        return new BookSmokingRecipePage(common);
     }
 
     @Override

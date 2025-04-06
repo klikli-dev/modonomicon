@@ -81,7 +81,7 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
     }
 
     public Message getSyncMessage() {
-        //we hand over a copy of the map, because otherwise in SP scenarios if we clear this.books to prepare for receiving the message, we also clear the books in the message
+        //the message constructor will make a copy of the map, because otherwise in SP scenarios if we clear this.books to prepare for receiving the message, we also clear the books in the message
         return new SyncBookDataMessage(this.books);
     }
 
