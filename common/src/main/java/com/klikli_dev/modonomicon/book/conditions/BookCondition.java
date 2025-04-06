@@ -40,28 +40,10 @@ public abstract class BookCondition {
         return null;
     }
 
-    /**
-     * @deprecated use {@link #fromJson(ResourceLocation, JsonObject, HolderLookup.Provider)} instead.
-     */
-    @Deprecated
-    public static BookCondition fromJson(JsonObject json, HolderLookup.Provider provider) {
-        //TODO(BookPageLoading): when replacing jsonloader with bookconditionjsonloader remove the backwards compat
-
-        //this is really just praying, if conditions are used that require the parent id this will fail
-        //however, the parent will only be used if someone runs datagen.
-        return fromJson(null, json, provider);
-    }
-
-
     public static BookCondition fromJson(ResourceLocation conditionParentId, JsonObject json, HolderLookup.Provider provider) {
         var type = ResourceLocation.parse(GsonHelper.getAsString(json, "type"));
         var loader = LoaderRegistry.getConditionJsonLoader(type);
-        //TODO(BookPageLoading): when replacing jsonloader with bookconditionjsonloader remove the backwards compat
-        if(loader instanceof BookConditionJsonLoader<? extends BookCondition> bookConditionJsonLoader) {
-            return bookConditionJsonLoader.fromJson(conditionParentId, json, provider);
-        } else {
-            return loader.fromJson(json, provider);
-        }
+        return loader.fromJson(conditionParentId, json, provider);
     }
 
     public static BookCondition fromNetwork(RegistryFriendlyByteBuf buf) {

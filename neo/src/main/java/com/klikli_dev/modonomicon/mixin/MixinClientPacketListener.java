@@ -10,7 +10,6 @@ import com.klikli_dev.modonomicon.data.BookDataManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.game.ClientboundRecipeBookSettingsPacket;
-import net.minecraft.network.protocol.game.ClientboundUpdateRecipesPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

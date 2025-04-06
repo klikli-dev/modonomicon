@@ -33,6 +33,9 @@ authors = "${mod_authors}" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description = '''${mod_description}'''
 
+[[mixins]]
+config="modonomicon.neoforge.mixins.json"
+
 [[dependencies.modonomicon]]
 modId = "neoforge"
 type = "required"

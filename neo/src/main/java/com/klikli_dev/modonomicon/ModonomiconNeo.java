@@ -129,8 +129,6 @@ public class ModonomiconNeo {
         if (FMLEnvironment.dist == Dist.CLIENT) {
             modEventBus.addListener(Client::onClientSetup);
             modEventBus.addListener(Client::onRegisterGuiOverlays);
-            //build books and render markdown when client receives recipes
-//            NeoForge.EVENT_BUS.addListener(Client::onRecipesUpdated); //TODO: replace recipesupdatedevent
             modEventBus.addListener(Client::onModifyBakingResult);
 
             //register client side reload listener that will reset the fallback font to handle locale changes on the fly
@@ -189,14 +187,6 @@ public class ModonomiconNeo {
         public static void registerConfigScreen(ModContainer modContainer){
             modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
         }
-
-//        /**
-//         * Needs to be in the client inner class to not load clientlevel on server
-//         */
-//        public static void onRecipesUpdated(RecipesUpdatedEvent event) {
-//            //TODO: repalce recipesupdatedevent
-//            BookDataManager.get().onRecipesUpdated(Minecraft.getInstance().level);
-//        }
 
         public static void onRegisterGuiOverlays(RegisterGuiLayersEvent event) {
             event.registerBelow(VanillaGuiLayers.BOSS_OVERLAY, Modonomicon.loc("multiblock_hud"), (guiGraphics, partialTicks) -> MultiblockPreviewRenderer.onRenderHUD(guiGraphics, partialTicks.getGameTimeDeltaPartialTick(true)));

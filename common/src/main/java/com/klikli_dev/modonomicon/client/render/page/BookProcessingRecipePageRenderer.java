@@ -13,7 +13,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
+
+import java.util.List;
 
 public abstract class BookProcessingRecipePageRenderer<T extends Recipe<?>> extends BookRecipePageRenderer<T, BookProcessingRecipePage<T>> {
     public BookProcessingRecipePageRenderer(BookProcessingRecipePage<T> page) {
@@ -26,7 +29,7 @@ public abstract class BookProcessingRecipePageRenderer<T extends Recipe<?>> exte
     }
 
     @Override
-    protected void drawRecipe(GuiGraphics guiGraphics, RecipeHolder<T> recipe, int recipeX, int recipeY, int mouseX, int mouseY, boolean second) {
+    protected void drawRecipe(GuiGraphics guiGraphics, RecipeDisplayEntry recipeDisplayEntry, int recipeX, int recipeY, int mouseX, int mouseY, boolean second) {
 
         recipeY += 10;
 
@@ -44,10 +47,10 @@ public abstract class BookProcessingRecipePageRenderer<T extends Recipe<?>> exte
         RenderSystem.enableBlend();
         guiGraphics.blit(RenderType::guiTextured, this.page.getBook().getCraftingTexture(), recipeX, recipeY, 11, 71, 96, 24, 128, 256);
         guiGraphics.blit(RenderType::guiTextured, this.page.getBook().getCraftingTexture(), recipeX, recipeY, 11, 71, 96, 24, 128, 256);
-
-        //TODO: enable processing recipe rendering again
-//        this.parentScreen.renderIngredient(guiGraphics, recipeX + 4, recipeY + 4, mouseX, mouseY, recipe.value().getIngredients().get(0));
-//        this.parentScreen.renderItemStack(guiGraphics, recipeX + 40, recipeY + 4, mouseX, mouseY, recipe.value().getToastSymbol());
-//        this.parentScreen.renderItemStack(guiGraphics, recipeX + 76, recipeY + 4, mouseX, mouseY, recipe.value().getResultItem(Minecraft.getInstance().level.registryAccess()));
+        //noinspection DataFlowIssue
+        var context = SlotDisplayContext.fromLevel(Minecraft.getInstance().level);
+        this.parentScreen.renderIngredient(guiGraphics, recipeX + 4, recipeY + 4, mouseX, mouseY, recipeDisplayEntry.craftingRequirements().map(List::getFirst).orElseThrow());
+        this.parentScreen.renderItemStacks(guiGraphics, recipeX + 40, recipeY + 4, mouseX, mouseY, recipeDisplayEntry.display().craftingStation().resolveForStacks(context));
+        this.parentScreen.renderItemStacks(guiGraphics, recipeX + 76, recipeY + 4, mouseX, mouseY, recipeDisplayEntry.display().result().resolveForStacks(context));
     }
 }

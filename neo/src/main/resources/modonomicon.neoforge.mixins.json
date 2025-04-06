@@ -7,8 +7,6 @@
   "mixins": [
   ],
   "client": [
-    "MixinGui",
-    "MixinLevelRenderer",
     "MixinClientPacketListener"
   ],
   "server": [
