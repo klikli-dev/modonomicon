@@ -13,7 +13,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class BookRecipePageRenderer<R extends Recipe<?>, T extends BookRecipePage<R>> extends BookPageRenderer<T> implements PageWithTextRenderer {
@@ -30,15 +30,15 @@ public abstract class BookRecipePageRenderer<R extends Recipe<?>, T extends Book
         int recipeX = X;
         int recipeY = Y;
 
-        if (this.page.getRecipe1() != null) {
+        if (this.page.getRecipeDisplayEntry1() != null) {
 
             //Title 1 is always rendered (falls back to recipe name)
-            this.drawRecipe(guiGraphics, this.page.getRecipe1(), recipeX, recipeY, mouseX, mouseY, false);
+            this.drawRecipe(guiGraphics, this.page.getRecipeDisplayEntry1(), recipeX, recipeY, mouseX, mouseY, false);
 
 
-            if (this.page.getRecipe2() != null) {
+            if (this.page.getRecipeDisplayEntry2() != null) {
                 //Title 2 might be skipped if identical to Title 2, so respect that here
-                this.drawRecipe(guiGraphics, this.page.getRecipe2(), recipeX,
+                this.drawRecipe(guiGraphics, this.page.getRecipeDisplayEntry2(), recipeX,
                         recipeY + this.getRecipeHeight() - (this.page.getTitle2().getString().isEmpty() ? 10 : 0),
                         mouseX, mouseY, true);
             }
@@ -79,13 +79,13 @@ public abstract class BookRecipePageRenderer<R extends Recipe<?>, T extends Book
 
     @Override
     public int getTextY() {
-        var y = Y + (this.getRecipeHeight() * (this.page.getRecipe2() == null ? 1 : 2));
+        var y = Y + (this.getRecipeHeight() * (this.page.getRecipeDisplayEntry2() == null ? 1 : 2));
         y -= this.page.getTitle2().isEmpty() ? 10 : 0;
-        y -= this.page.getRecipe2() == null ? 0 : 10;
+        y -= this.page.getRecipeDisplayEntry2() == null ? 0 : 10;
         return y;
     }
 
     protected abstract int getRecipeHeight();
 
-    protected abstract void drawRecipe(GuiGraphics guiGraphics, RecipeHolder<R> recipe, int recipeX, int recipeY, int mouseX, int mouseY, boolean second);
+    protected abstract void drawRecipe(GuiGraphics guiGraphics, RecipeDisplayEntry recipeDisplayEntry, int recipeX, int recipeY, int mouseX, int mouseY, boolean second);
 }

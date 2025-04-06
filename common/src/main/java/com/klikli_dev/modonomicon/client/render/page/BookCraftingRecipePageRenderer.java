@@ -13,12 +13,14 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
+import net.minecraft.world.item.crafting.display.ShapedCraftingRecipeDisplay;
+import net.minecraft.world.item.crafting.display.ShapelessCraftingRecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
+
+import java.util.List;
 
 public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recipe<?>, BookCraftingRecipePage> {
     public BookCraftingRecipePageRenderer(BookCraftingRecipePage page) {
@@ -31,7 +33,7 @@ public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recip
     }
 
     @Override
-    protected void drawRecipe(GuiGraphics guiGraphics, RecipeHolder<Recipe<?>> recipe, int recipeX, int recipeY, int mouseX, int mouseY, boolean second) {
+    protected void drawRecipe(GuiGraphics guiGraphics, RecipeDisplayEntry recipeDisplayEntry, int recipeX, int recipeY, int mouseX, int mouseY, boolean second) {
 
         if (!second) {
             if (!this.page.getTitle1().isEmpty()) {
@@ -47,8 +49,9 @@ public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recip
         RenderSystem.enableBlend();
         guiGraphics.blit(RenderType::guiTextured, this.page.getBook().getCraftingTexture(), recipeX - 2, recipeY - 2, 0, 0, 100, 62, 128, 256);
 
-        boolean shaped = recipe.value() instanceof ShapedRecipe;
-        if (!shaped) {
+
+        boolean shapeless = recipeDisplayEntry.display() instanceof ShapelessCraftingRecipeDisplay;
+        if (shapeless) {
             int iconX = recipeX + 62;
             int iconY = recipeY + 2;
             guiGraphics.blit(RenderType::guiTextured, this.page.getBook().getCraftingTexture(), iconX, iconY, 0, 64, 11, 11, 128, 256);
@@ -57,19 +60,23 @@ public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recip
             }
         }
 
-        //TODO: enable recipe page rendering
-//        this.parentScreen.renderItemStack(guiGraphics, recipeX + 79, recipeY + 22, mouseX, mouseY, recipe.value().getResultItem(Minecraft.getInstance().level.registryAccess()));
-//
-//        NonNullList<Ingredient> ingredients = recipe.value().getIngredients();
-//        int wrap = 3;
-//        if (shaped) {
-//            wrap = ((ShapedRecipe) recipe.value()).getWidth();
-//        }
-//
-//        for (int i = 0; i < ingredients.size(); i++) {
-//            this.parentScreen.renderIngredient(guiGraphics, recipeX + (i % wrap) * 19 + 3, recipeY + (i / wrap) * 19 + 3, mouseX, mouseY, ingredients.get(i));
-//        }
-//
-//        this.parentScreen.renderItemStack(guiGraphics, recipeX + 79, recipeY + 41, mouseX, mouseY, recipe.value().getToastSymbol());
+        //noinspection DataFlowIssue
+        var context = SlotDisplayContext.fromLevel(Minecraft.getInstance().level);
+
+        this.parentScreen.renderItemStacks(guiGraphics, recipeX + 79, recipeY + 22, mouseX, mouseY, recipeDisplayEntry.resultItems(context));
+
+
+        var ingredients = recipeDisplayEntry.craftingRequirements().orElse(List.of());
+
+        int wrap = 3;
+        if (recipeDisplayEntry.display() instanceof ShapedCraftingRecipeDisplay shaped) {
+            wrap = shaped.width();
+        }
+
+        for (int i = 0; i < ingredients.size(); i++) {
+            this.parentScreen.renderIngredient(guiGraphics, recipeX + (i % wrap) * 19 + 3, recipeY + (i / wrap) * 19 + 3, mouseX, mouseY, ingredients.get(i));
+        }
+
+        this.parentScreen.renderItemStacks(guiGraphics, recipeX + 79, recipeY + 41, mouseX, mouseY, recipeDisplayEntry.display().craftingStation().resolveForStacks(context));
     }
 }
