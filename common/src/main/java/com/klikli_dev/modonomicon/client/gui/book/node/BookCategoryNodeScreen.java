@@ -25,8 +25,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.CoreShaders;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -167,7 +165,6 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         float yOffset = yScale == scale ? 0 : (MAX_SCROLL - (innerHeight + MAX_SCROLL * 2.0f / scale)) / 2;
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShader(CoreShaders.POSITION_TEX);
 
         //note we cannot translate -z here because even -1 immediately pushes us behind the scene -> not visible
         if (!this.category.getBackgroundParallaxLayers().isEmpty()) {
@@ -201,7 +198,6 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     private void renderEntries(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShader(CoreShaders.POSITION_TEX);
 
         //calculate the render offset
         float xOffset = this.getXOffset();
@@ -256,18 +252,11 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                 final int width = 11;
                 final int height = 11;
 
-                RenderSystem.setShader(CoreShaders.POSITION_TEX);
-                //RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-
-                RenderSystem.enableBlend();
-                RenderSystem.defaultBlendFunc();
-                RenderSystem.enableDepthTest();
-
                 //testing
                 guiGraphics.pose().pushPose();
                 guiGraphics.pose().translate(0, 0, 11); //and push the unread icon in front of the background and icon (they are at Z 10)
                 //if focused we go to the right of our normal button (instead of down, like mc buttons do)
-                BookContentRenderer.drawFromContentTexture(guiGraphics, this.bookParentScreen.getBook(),
+                BookContentRenderer.drawFromContentTexture(RenderType::guiTexturedOverlay, guiGraphics, this.bookParentScreen.getBook(),
                         entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 16 + 2,
                         entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP - 2, U + (isHovered ? width : 0), V, width, height);
                 guiGraphics.pose().popPose();
@@ -335,7 +324,6 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     private void renderConnections(GuiGraphics guiGraphics, BookEntry entry, float xOffset, float yOffset) {
         //our arrows are aliased and need blending
-        RenderSystem.enableBlend();
 
         for (var parent : entry.getParents()) {
             var parentDisplayState = this.getEntryDisplayState(parent.getEntry());
@@ -347,8 +335,6 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             this.connectionRenderer.render(guiGraphics, entry, parent);
             guiGraphics.pose().popPose();
         }
-
-        RenderSystem.disableBlend();
     }
 
     private void scroll(double pDragX, double pDragY) {

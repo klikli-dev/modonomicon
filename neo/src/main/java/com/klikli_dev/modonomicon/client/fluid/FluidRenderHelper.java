@@ -15,6 +15,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -113,7 +115,7 @@ public class FluidRenderHelper {
                     long maskTop = TEXTURE_SIZE - height;
                     int maskRight = TEXTURE_SIZE - width;
 
-                    drawTextureWithMasking(matrix, x, y, sprite, maskTop, maskRight, 100);
+                    drawTextureWithMasking(guiGraphics.bufferSource, matrix, x, y, sprite, maskTop, maskRight, 100);
                 }
             }
         }
@@ -130,7 +132,7 @@ public class FluidRenderHelper {
         RenderSystem.setShaderColor(red, green, blue, alpha);
     }
 
-    private static void drawTextureWithMasking(Matrix4f matrix, float xCoord, float yCoord, TextureAtlasSprite textureSprite, long maskTop, long maskRight, float zLevel) {
+    private static void drawTextureWithMasking(MultiBufferSource bufferSource, Matrix4f matrix, float xCoord, float yCoord, TextureAtlasSprite textureSprite, long maskTop, long maskRight, float zLevel) {
         float uMin = textureSprite.getU0();
         float uMax = textureSprite.getU1();
         float vMin = textureSprite.getV0();
@@ -138,13 +140,14 @@ public class FluidRenderHelper {
         uMax = uMax - (maskRight / 16F * (uMax - uMin));
         vMax = vMax - (maskTop / 16F * (vMax - vMin));
 
-        RenderSystem.setShader(CoreShaders.POSITION_TEX);
 
+        VertexConsumer vertexconsumer = bufferSource.getBuffer(RenderType.blockScreenEffect(textureSprite.atlasLocation()));
         BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferBuilder.addVertex(matrix, xCoord, yCoord + 16, zLevel).setUv(uMin, vMax);
-        bufferBuilder.addVertex(matrix, xCoord + 16 - maskRight, yCoord + 16, zLevel).setUv(uMax, vMax);
-        bufferBuilder.addVertex(matrix, xCoord + 16 - maskRight, yCoord + maskTop, zLevel).setUv(uMax, vMin);
-        bufferBuilder.addVertex(matrix, xCoord, yCoord + maskTop, zLevel).setUv(uMin, vMin);
+        vertexconsumer.addVertex(matrix, xCoord, yCoord + 16, zLevel).setUv(uMin, vMax);
+        vertexconsumer.addVertex(matrix, xCoord + 16 - maskRight, yCoord + 16, zLevel).setUv(uMax, vMax);
+        vertexconsumer.addVertex(matrix, xCoord + 16 - maskRight, yCoord + maskTop, zLevel).setUv(uMax, vMin);
+        vertexconsumer.addVertex(matrix, xCoord, yCoord + maskTop, zLevel).setUv(uMin, vMin);
+        //TODO: find out how to render the vertexconsumer
         BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
     }
 

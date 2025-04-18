@@ -190,7 +190,7 @@ public class EntryConnectionRenderer {
     }
 
     protected void blit(GuiGraphics guiGraphics, int pX, int pY, float pUOffset, float pVOffset, int pUWidth, int pVHeight) {
-        guiGraphics.blit(RenderType::guiTextured, this.entryTextures, pX, pY, pUOffset, pVOffset, pUWidth, pVHeight, 256, 256);
+        guiGraphics.blit(RenderType::guiTexturedOverlay, this.entryTextures, pX, pY, pUOffset, pVOffset, pUWidth, pVHeight, 256, 256);
     }
 
     protected void drawSmallCurveLeftDown(GuiGraphics guiGraphics, int x, int y) {

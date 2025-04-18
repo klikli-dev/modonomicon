@@ -233,6 +233,10 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
             pMouseY = this.renderMouseYOverride;
         }
 
+        var device = RenderSystem.getDevice();
+
+        device.createCommandEncoder().createRenderPass()
+
         RenderSystem.disableDepthTest(); //guard against depth test being enabled by other rendering code, that would cause ui elements to vanish
 
         this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
