@@ -94,6 +94,7 @@ public class BookVisualStateManager {
      * Won't do anything on the client, clients get their save data set by the server via packet.
      */
     private void getSaveDataIfNecessary(Player player) {
+        //TODO: See LevelAttachmentsSavedData for how to implement save data
         if (this.saveData == null) {
             if (player instanceof ServerPlayer serverPlayer) {
                 this.saveData = serverPlayer.getServer().overworld().getDataStorage().computeIfAbsent(

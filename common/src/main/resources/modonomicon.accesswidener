@@ -17,3 +17,4 @@ accessible field net/minecraft/client/renderer/RenderStateShard name Ljava/lang/
 accessible field net/minecraft/server/network/ServerCommonPacketListenerImpl connection Lnet/minecraft/network/Connection;
 accessible class net/minecraft/client/resources/model/ModelManager$ReloadState
 accessible field net/minecraft/client/gui/GuiGraphics bufferSource Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline$Builder definesBuilder Ljava/util/Optional;
