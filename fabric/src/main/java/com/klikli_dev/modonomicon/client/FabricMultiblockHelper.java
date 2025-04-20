@@ -10,7 +10,9 @@ import com.klikli_dev.modonomicon.platform.services.MultiblockHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.RenderShape;
@@ -28,9 +30,11 @@ public class FabricMultiblockHelper implements MultiblockHelper {
             blockRenderer.renderLiquid(pos, multiblock, new FluidBlockVertexConsumer(buffer, ps, pos), state, fluidState);
         }
         if (state.getRenderShape() != RenderShape.INVISIBLE) {
-            var layer = ItemBlockRenderTypes.getChunkRenderType(state);
-            var buffer = buffers.getBuffer(layer);
-            blockRenderer.renderBatched(state, pos, multiblock, ps, buffer, false, rand);
+//            var layer = ItemBlockRenderTypes.getChunkRenderType(state);
+//            var buffer = buffers.getBuffer(layer);
+//            blockRenderer.renderBatched(state, pos, multiblock, ps, buffer, false, rand);
+            //batched rendering has changed significantly
+            blockRenderer.renderSingleBlock(state, ps, buffers, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         }
     }
 }
