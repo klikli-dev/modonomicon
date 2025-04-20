@@ -18,3 +18,6 @@ accessible field net/minecraft/server/network/ServerCommonPacketListenerImpl con
 accessible class net/minecraft/client/resources/model/ModelManager$ReloadState
 accessible field net/minecraft/client/gui/GuiGraphics bufferSource Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;
 accessible field com/mojang/blaze3d/pipeline/RenderPipeline$Builder definesBuilder Ljava/util/Optional;
+accessible field net/minecraft/client/renderer/RenderType$CompositeRenderType renderPipeline Lcom/mojang/blaze3d/pipeline/RenderPipeline;
+mutable field net/minecraft/client/renderer/RenderType$CompositeRenderType renderPipeline Lcom/mojang/blaze3d/pipeline/RenderPipeline;
+accessible class net/minecraft/client/renderer/RenderType$CompositeRenderType

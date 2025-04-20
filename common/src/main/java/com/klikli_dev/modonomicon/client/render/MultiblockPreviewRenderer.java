@@ -22,6 +22,8 @@ import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.DepthTestFunction;
+import com.mojang.blaze3d.platform.DestFactor;
+import com.mojang.blaze3d.platform.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.datafixers.util.Pair;
@@ -388,7 +390,7 @@ public class MultiblockPreviewRenderer {
         var layerBuffers = original.fixedBuffers;
         SequencedMap<RenderType, ByteBufferBuilder> remapped = new Object2ObjectLinkedOpenHashMap<>();
         for (Map.Entry<RenderType, ByteBufferBuilder> e : layerBuffers.entrySet()) {
-            remapped.put(GhostRenderLayer.remap(e.getKey()), e.getValue());
+            remapped.put(GhostRenderType.remap(e.getKey()), e.getValue());
         }
         return new GhostBuffers(fallback, remapped);
     }
@@ -400,17 +402,17 @@ public class MultiblockPreviewRenderer {
 
         @Override
         public VertexConsumer getBuffer(RenderType type) {
-            return super.getBuffer(GhostRenderLayer.remap(type));
+            return super.getBuffer(GhostRenderType.remap(type));
         }
     }
 
-    private static class GhostRenderLayer extends RenderType {
+    private static class GhostRenderType extends RenderType {
         private static final Map<RenderType, RenderType> remappedTypes = new IdentityHashMap<>();
 
         private final RenderPipeline pipeline;
         private final RenderType original;
 
-        private GhostRenderLayer(RenderType original, RenderPipeline pipeline) {
+        private GhostRenderType(RenderType original, RenderPipeline pipeline) {
             super(String.format("%s_%s_ghost", original.toString(), ModonomiconAPI.ID), original.bufferSize(), original.affectsCrumbling(), true, () -> {
 
                 original.setupRenderState();
@@ -432,7 +434,7 @@ public class MultiblockPreviewRenderer {
         }
 
         public static RenderType remap(RenderType in) {
-            if (in instanceof GhostRenderLayer) {
+            if (in instanceof GhostRenderType) {
                 return in;
             } else {
                 return remappedTypes.computeIfAbsent(in, (type) -> {
@@ -444,9 +446,10 @@ public class MultiblockPreviewRenderer {
 
                     //modify the pipeline
                     var pipeline = toBuilder(in.getRenderPipeline())
-                            .withBlend(BlendFunction.TRANSLUCENT).withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST);
+                            .withBlend(BlendFunction.TRANSLUCENT)
+                            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST);
 
-                    return new GhostRenderLayer(type, pipeline.build());
+                    return new GhostRenderType(type, pipeline.build());
                 });
             }
         }
@@ -495,7 +498,16 @@ public class MultiblockPreviewRenderer {
 
         @Override
         public void draw(@NotNull MeshData meshData) {
-            this.original.draw(meshData);
+            //TODO: this is not working yet, it's not using the pipeline translucency settings
+            //overlay works but looks horrible
+            if (this.original instanceof CompositeRenderType composite) {
+                var oldPipeline = this.original.getRenderPipeline();
+                composite.renderPipeline = this.pipeline; //set our own modified pipeline
+                this.original.draw(meshData);
+                composite.renderPipeline = oldPipeline; //restore
+            } else {
+                this.original.draw(meshData);
+            }
         }
 
         @Override
