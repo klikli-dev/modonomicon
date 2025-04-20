@@ -507,7 +507,7 @@ public class MultiblockPreviewRenderer {
             builder.withDepthWrite(pipeline.isWriteDepth());
             builder.withColorLogic(pipeline.getColorLogic());
 
-            if (pipeline.getBlendFunction().isEmpty())
+            if (!pipeline.getBlendFunction().isEmpty())
                 builder.withBlend(pipeline.getBlendFunction().get());
             else
                 builder.withoutBlend();
