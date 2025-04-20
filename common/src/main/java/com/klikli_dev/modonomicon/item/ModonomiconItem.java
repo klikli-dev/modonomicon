@@ -26,9 +26,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class ModonomiconItem extends Item {
     public ModonomiconItem(Properties pProperties) {
@@ -48,7 +50,7 @@ public class ModonomiconItem extends Item {
     }
 
     @Override
-    public InteractionResult use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
+    public @NotNull InteractionResult use(Level pLevel, Player pPlayer, @NotNull InteractionHand pUsedHand) {
         var itemInHand = pPlayer.getItemInHand(pUsedHand);
 
         if (pLevel.isClientSide) {
@@ -65,7 +67,7 @@ public class ModonomiconItem extends Item {
     }
 
     @Override
-    public Component getName(ItemStack pStack) {
+    public @NotNull Component getName(@NotNull ItemStack pStack) {
         Book book = getBook(pStack);
         if (book != null) {
             return Component.translatable(book.getName());
@@ -74,19 +76,20 @@ public class ModonomiconItem extends Item {
         return super.getName(pStack);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
-    public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, List<Component> list, TooltipFlag tooltipFlag) {
-        super.appendHoverText(itemStack, tooltipContext, list, tooltipFlag);
+    public void appendHoverText(@NotNull ItemStack itemStack, @NotNull TooltipContext tooltipContext, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> consumer, @NotNull TooltipFlag tooltipFlag) {
+        super.appendHoverText(itemStack, tooltipContext, tooltipDisplay, consumer, tooltipFlag);
 
         Book book = getBook(itemStack);
         if (book != null) {
             if (tooltipFlag.isAdvanced()) {
-                list.add(Component.literal("Book ID: ").withStyle(ChatFormatting.DARK_GRAY)
+                consumer.accept(Component.literal("Book ID: ").withStyle(ChatFormatting.DARK_GRAY)
                         .append(Component.literal(book.getId().toString()).withStyle(ChatFormatting.RED)));
             }
 
             if (!book.getTooltip().isBlank()) {
-                list.add(Component.translatable(book.getTooltip()).withStyle(ChatFormatting.GRAY));
+                consumer.accept(Component.translatable(book.getTooltip()).withStyle(ChatFormatting.GRAY));
             }
         } else {
             var compound = new CompoundTag();
@@ -97,9 +100,8 @@ public class ModonomiconItem extends Item {
                 compound.put(key.toString(), tag);
             }
 
-            list.add(Component.translatable(Tooltips.ITEM_NO_BOOK_FOUND_FOR_STACK, NbtUtils.toPrettyComponent(compound))
+            consumer.accept(Component.translatable(Tooltips.ITEM_NO_BOOK_FOUND_FOR_STACK, NbtUtils.toPrettyComponent(compound))
                     .withStyle(ChatFormatting.DARK_GRAY));
         }
     }
-
 }
