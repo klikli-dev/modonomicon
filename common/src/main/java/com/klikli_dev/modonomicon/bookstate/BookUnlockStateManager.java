@@ -22,9 +22,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
-import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.saveddata.SavedData;
 
 import java.util.List;
 import java.util.Set;
@@ -146,11 +144,7 @@ public class BookUnlockStateManager {
     private void getSaveDataIfNecessary(Player player) {
         if (this.saveData == null) {
             if (player instanceof ServerPlayer serverPlayer) {
-
-                this.saveData = serverPlayer.getServer().overworld().getDataStorage().computeIfAbsent(
-                        new SavedData.Factory<>(BookStatesSaveData::new, BookStatesSaveData::load, DataFixTypes.PLAYER),
-                        BookStatesSaveData.ID
-                );
+                this.saveData = serverPlayer.getServer().overworld().getDataStorage().computeIfAbsent(BookStatesSaveData.TYPE);
             } else {
                 //this should not happen, we set an empty object to prevent a crash
                 this.saveData = new BookStatesSaveData();
@@ -170,7 +164,7 @@ public class BookUnlockStateManager {
      * If a player unlocks a lot of advancements in a short amount of time, the state update is delayed to prevent overload.
      * This method then performs the update for all queued players.
      */
-    public void handleAdvancementUpdateRequestedPlayers(MinecraftServer server){
+    public void handleAdvancementUpdateRequestedPlayers(MinecraftServer server) {
         if (server.getTickCount() % 100 != 0) return; //We only update every 5 seconds (100 ticks)
 
         if (!this.advancementUpdateRequestedPlayers.isEmpty()) {
@@ -184,10 +178,10 @@ public class BookUnlockStateManager {
     }
 
     /**
-     * If players request a sync while the books are not built, they are queued up. 
+     * If players request a sync while the books are not built, they are queued up.
      * This method then performs the sync for all queued players.
      */
-    public void handleSyncRequestedPlayers(MinecraftServer server){
+    public void handleSyncRequestedPlayers(MinecraftServer server) {
         if (server.getTickCount() % 100 != 0) return; //We only update every 5 seconds (100 ticks)
         boolean newState = BookDataManager.get().areBooksBuilt();
         if (newState != this.wasLoaded) { // we only check for things if the state changed for some reason.
