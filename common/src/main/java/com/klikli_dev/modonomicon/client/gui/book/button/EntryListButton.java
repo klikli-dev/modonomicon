@@ -71,7 +71,6 @@ public class EntryListButton extends Button {
 
             guiGraphics.pose().scale(0.5F, 0.5F, 0.5F);
             guiGraphics.fill(this.getX() * 2, this.getY() * 2, (this.getX() + (int) ((float) this.width * widthFract)) * 2, (this.getY() + this.height) * 2, 0x22000000);
-            RenderSystem.enableBlend();
 
             if (locked) {
                 RenderSystem.setShaderColor(1F, 1F, 1F, 0.7F);

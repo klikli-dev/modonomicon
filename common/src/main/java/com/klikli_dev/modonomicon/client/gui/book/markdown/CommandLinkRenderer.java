@@ -11,7 +11,6 @@ import com.klikli_dev.modonomicon.book.CommandLink;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import org.commonmark.node.Link;
@@ -37,8 +36,8 @@ public class CommandLinkRenderer implements LinkRenderer {
             //if we have a color we use it, otherwise we use link default.
             context.setCurrentStyle(context.getCurrentStyle()
                     .withColor(currentColor == null ? context.getLinkColor() : currentColor)
-                    .withClickEvent(new ClickEvent(Action.RUN_COMMAND, link.getDestination()))
-                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent))
+                    .withClickEvent(new ClickEvent.RunCommand(link.getDestination()))
+                    .withHoverEvent(new HoverEvent.ShowText(hoverComponent))
             );
 
             visitChildren.accept(link);

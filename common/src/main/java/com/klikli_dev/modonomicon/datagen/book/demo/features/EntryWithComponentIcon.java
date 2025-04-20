@@ -64,7 +64,7 @@ public class EntryWithComponentIcon extends EntryProvider {
     @Override
     protected BookIconModel entryIcon() {
         var iconStack = new ItemStack(Items.LEATHER_HELMET);
-        iconStack.set(DataComponents.DYED_COLOR, new DyedItemColor(0x169C9C, false));
+        iconStack.set(DataComponents.DYED_COLOR, new DyedItemColor(0x169C9C));
         return BookIconModel.create(iconStack);
     }
 

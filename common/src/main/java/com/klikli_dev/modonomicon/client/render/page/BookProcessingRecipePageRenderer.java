@@ -44,9 +44,8 @@ public abstract class BookProcessingRecipePageRenderer<T extends Recipe<?>> exte
             }
         }
 
-        RenderSystem.enableBlend();
-        guiGraphics.blit(RenderType::guiTextured, this.page.getBook().getCraftingTexture(), recipeX, recipeY, 11, 71, 96, 24, 128, 256);
-        guiGraphics.blit(RenderType::guiTextured, this.page.getBook().getCraftingTexture(), recipeX, recipeY, 11, 71, 96, 24, 128, 256);
+        guiGraphics.blit(RenderType::guiTexturedOverlay, this.page.getBook().getCraftingTexture(), recipeX, recipeY, 11, 71, 96, 24, 128, 256);
+        guiGraphics.blit(RenderType::guiTexturedOverlay, this.page.getBook().getCraftingTexture(), recipeX, recipeY, 11, 71, 96, 24, 128, 256);
         //noinspection DataFlowIssue
         var context = SlotDisplayContext.fromLevel(Minecraft.getInstance().level);
         this.parentScreen.renderIngredient(guiGraphics, recipeX + 4, recipeY + 4, mouseX, mouseY, recipeDisplayEntry.craftingRequirements().map(List::getFirst).orElseThrow());

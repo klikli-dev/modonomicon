@@ -184,7 +184,6 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     public void renderBackgroundParallaxLayer(GuiGraphics guiGraphics, BookCategoryBackgroundParallaxLayer layer, int x, int y, int width, int height, float scrollX, float scrollY, float parallax, float xOffset, float yOffset, float zoom, int backgroundWidth, int backgroundHeight, float backgroundTextureZoomMultiplier) {
         float parallax1 = parallax / layer.getSpeed();
-        RenderSystem.setShaderTexture(0, layer.getBackground());
 
         if (layer.getVanishZoom() == -1 || layer.getVanishZoom() > zoom) {
             //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along

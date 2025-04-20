@@ -28,6 +28,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
@@ -39,6 +40,7 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
@@ -129,6 +131,8 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
         rotMat.transform(eye);
         eye.div(eye.w);
 
+        Vec3 eye3 = new Vec3(eye.x(), eye.y(), eye.z());
+
 
         var buffers = mc.renderBuffers().bufferSource();
 
@@ -175,7 +179,8 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
                     try {
                         BlockEntityRenderer<BlockEntity> renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(be);
                         if (renderer != null) {
-                            renderer.render(be, ClientTicks.partialTicks, guiGraphics.pose(), buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
+                            //TODO what camera position do we need to provide?
+                            renderer.render(be, ClientTicks.partialTicks, guiGraphics.pose(), buffers, 0xF000F0, OverlayTexture.NO_OVERLAY, eye3);
                         }
                     } catch (Exception e) {
                         this.erroredBlockEntities.add(be);
@@ -225,9 +230,8 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
         //render a frame for the multiblock render area
         int x = BookEntryScreen.PAGE_WIDTH / 2 - 53;
         int y = 7;
-        RenderSystem.enableBlend();
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        BookContentRenderer.drawFromContentTexture(guiGraphics, this.page.getBook(), x, y, 405, 149, 106, 106);
+        BookContentRenderer.drawFromContentTexture(RenderType::guiTexturedOverlay, guiGraphics, this.page.getBook(), x, y, 405, 149, 106, 106);
 
         //render multiblock name in place of title
         if (!this.page.getMultiblockName().isEmpty()) {

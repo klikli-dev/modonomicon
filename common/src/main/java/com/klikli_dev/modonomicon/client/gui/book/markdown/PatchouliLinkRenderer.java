@@ -47,8 +47,8 @@ public class PatchouliLinkRenderer implements LinkRenderer {
             //if we have a color we use it, otherwise we use link default.
             context.setCurrentStyle(context.getCurrentStyle()
                     .withColor(currentColor == null ? context.getLinkColor() : currentColor)
-                    .withClickEvent(new ClickEvent(Action.CHANGE_PAGE, link.getDestination()))
-                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent))
+                    .withClickEvent(new ClickEvent.OpenFile(link.getDestination()))
+                    .withHoverEvent(new HoverEvent.ShowText(hoverComponent))
             );
 
             visitChildren.accept(link);

@@ -36,8 +36,7 @@ public class BookSpotlightPageRenderer extends BookPageRenderer<BookSpotlightPag
         int w = 66;
         int h = 26;
 
-        RenderSystem.enableBlend();
-        guiGraphics.blit(RenderType::guiTextured, this.page.getBook().getCraftingTexture(), BookEntryScreen.PAGE_WIDTH / 2 - w / 2, 10, 0, 128 - h, w, h, 128, 256);
+        guiGraphics.blit(RenderType::guiTexturedOverlay, this.page.getBook().getCraftingTexture(), BookEntryScreen.PAGE_WIDTH / 2 - w / 2, 10, 0, 128 - h, w, h, 128, 256);
 
         this.page.getItem().ifRight(
                 ingredient -> {
