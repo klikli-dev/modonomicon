@@ -34,10 +34,12 @@ public class ItemLinkHandler extends LinkHandler {
         if (event == null)
             return ClickResult.UNHANDLED;
 
-        if (event.getAction() != ClickEvent.Action.CHANGE_PAGE)
+        //Item links use OPEN_FILE action as it allows us to hand over a string.
+        //the isItemLink below will check for a protocol prefix
+        if (event.action() != ClickEvent.Action.OPEN_FILE || !(event instanceof ClickEvent.OpenFile openFile))
             return ClickResult.UNHANDLED;
 
-        if (!ItemLinkRenderer.isItemLink(event.getValue()))
+        if (!ItemLinkRenderer.isItemLink(openFile.path()))
             return ClickResult.UNHANDLED;
 
         if (!ModonomiconJeiIntegration.get().isLoaded())
@@ -46,13 +48,13 @@ public class ItemLinkHandler extends LinkHandler {
 
         var itemStack = ItemStack.EMPTY;
         try {
-            var itemId = event.getValue().substring(ItemLinkRenderer.PROTOCOL_ITEM_LENGTH);
+            var itemId = openFile.path().substring(ItemLinkRenderer.PROTOCOL_ITEM_LENGTH);
             var reader = new StringReader(itemId);
             var itemResult = this.itemParser.parse(reader);
             var itemInput = new ItemInput(itemResult.item(), itemResult.components());
             itemStack = itemInput.createItemStack(1, false);
         } catch (Exception e) {
-            Modonomicon.LOG.error("Failed to parse item link: {}", event.getValue(), e);
+            Modonomicon.LOG.error("Failed to parse item link: {}", openFile.path(), e);
             return ClickResult.FAILURE;
         }
 

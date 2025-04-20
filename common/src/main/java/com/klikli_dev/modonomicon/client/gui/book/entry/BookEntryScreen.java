@@ -114,8 +114,8 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     }
 
     @Override
-    public Font getFont() {
-        return this.minecraft.font;
+    public Minecraft getMinecraft() {
+        return this.minecraft;
     }
 
     @Override

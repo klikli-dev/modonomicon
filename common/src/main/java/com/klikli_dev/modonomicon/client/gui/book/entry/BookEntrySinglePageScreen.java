@@ -125,8 +125,6 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        RenderSystem.disableDepthTest(); //guard against depth test being enabled by other rendering code, that would cause ui elements to vanish
-
         this.resetTooltip();
 
         //we need to modify blit offset (now: z pose) to not draw over toasts

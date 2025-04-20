@@ -28,12 +28,11 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.Collection;
 
 public interface ContentRenderingScreen {
 
-    default Screen asScreen(){
+    default Screen asScreen() {
         return (Screen) this;
     }
 
@@ -42,6 +41,8 @@ public interface ContentRenderingScreen {
     BookContentEntry getEntry();
 
     Font getFont();
+
+    Minecraft getMinecraft();
 
     int getTicksInBook();
 
@@ -135,14 +136,13 @@ public interface ContentRenderingScreen {
         guiGraphics.pose().translate(0, 0, 1000);
         var newStyle = style;
         if (style != null && style.getHoverEvent() != null) {
-            if (style.getHoverEvent().getAction() == HoverEvent.Action.SHOW_TEXT) {
+            if (style.getHoverEvent().action() == HoverEvent.Action.SHOW_TEXT && style.getHoverEvent() instanceof HoverEvent.ShowText showText) {
                 var clickEvent = style.getClickEvent();
                 if (clickEvent != null) {
-                    if (clickEvent.getAction() == ClickEvent.Action.CHANGE_PAGE) {
-
+                    if (clickEvent.action() == ClickEvent.Action.OPEN_FILE && clickEvent instanceof ClickEvent.OpenFile openFile) {
                         //handle book links -> check if locked
-                        if (BookLink.isBookLink(clickEvent.getValue())) {
-                            var link = BookLink.from(this.getBook(), clickEvent.getValue());
+                        if (BookLink.isBookLink(openFile.path())) {
+                            var link = BookLink.from(this.getBook(), openFile.path());
                             var book = BookDataManager.get().getBook(link.bookId);
                             if (link.entryId != null) {
                                 var entry = book.getEntry(link.entryId);
@@ -156,7 +156,7 @@ public interface ContentRenderingScreen {
                                 //handleComponentClicked will prevent the actual click
 
                                 if (!BookUnlockStateManager.get().isUnlockedFor(Minecraft.getInstance().player, entry)) {
-                                    var oldComponent = style.getHoverEvent().getValue(HoverEvent.Action.SHOW_TEXT);
+                                    var oldComponent = showText.value();
 
                                     var newComponent = Component.translatable(
                                             ModonomiconConstants.I18n.Gui.HOVER_BOOK_LINK_LOCKED,
@@ -173,9 +173,9 @@ public interface ContentRenderingScreen {
                                                     )
                                     );
 
-                                    newStyle = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newComponent));
+                                    newStyle = style.withHoverEvent(new HoverEvent.ShowText(newComponent));
                                 } else if (page != null && !BookUnlockStateManager.get().isUnlockedFor(Minecraft.getInstance().player, entry.getPages().get(page))) {
-                                    var oldComponent = style.getHoverEvent().getValue(HoverEvent.Action.SHOW_TEXT);
+                                    var oldComponent = showText.value();
 
                                     var newComponent = Component.translatable(
                                             ModonomiconConstants.I18n.Gui.HOVER_BOOK_LINK_LOCKED,
@@ -194,31 +194,31 @@ public interface ContentRenderingScreen {
                                                     )
                                     );
 
-                                    newStyle = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newComponent));
+                                    newStyle = style.withHoverEvent(new HoverEvent.ShowText(newComponent));
                                 }
                             }
                         }
                     }
 
-                    if (clickEvent.getAction() == ClickEvent.Action.RUN_COMMAND) {
-                        if (CommandLink.isCommandLink(clickEvent.getValue())) {
-                            var link = CommandLink.from(this.getBook(), clickEvent.getValue());
+                    if (clickEvent.action() == ClickEvent.Action.RUN_COMMAND && clickEvent instanceof ClickEvent.RunCommand runCommand) {
+                        if (CommandLink.isCommandLink(runCommand.command())) {
+                            var link = CommandLink.from(this.getBook(), runCommand.command());
                             var book = BookDataManager.get().getBook(link.bookId);
                             if (link.commandId != null) {
                                 var command = book.getCommand(link.commandId);
 
-                                var oldComponent = style.getHoverEvent().getValue(HoverEvent.Action.SHOW_TEXT);
+                                var oldComponent = showText.value();
 
                                 if (!BookUnlockStateManager.get().canRunFor(Minecraft.getInstance().player, command)) {
                                     var hoverComponent = Component.translatable(ModonomiconConstants.I18n.Gui.HOVER_COMMAND_LINK_UNAVAILABLE).withStyle(ChatFormatting.RED);
-                                    newStyle = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent));
+                                    newStyle = style.withHoverEvent(new HoverEvent.ShowText(hoverComponent));
                                     oldComponent = hoverComponent;
                                 }
 
                                 if (Screen.hasShiftDown()) {
                                     var newComponent = oldComponent.copy().append(Component.literal("\n")).append(
                                             Component.literal(command.getCommand()).withStyle(ChatFormatting.GRAY));
-                                    newStyle = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newComponent));
+                                    newStyle = style.withHoverEvent(new HoverEvent.ShowText(newComponent));
                                 }
                             }
                         }
@@ -232,38 +232,37 @@ public interface ContentRenderingScreen {
         //original GuiGraphics.renderComponentHoverEffect(pPoseStack, newStyle, mouseX, mouseY);
         // our own copy of the render code that limits width for the show_text action to not go out of screen
         if (style != null && style.getHoverEvent() != null) {
-            HoverEvent hoverevent = style.getHoverEvent();
-            HoverEvent.ItemStackInfo hoverevent$itemstackinfo = hoverevent.getValue(HoverEvent.Action.SHOW_ITEM);
-            if (hoverevent$itemstackinfo != null) {
-                //special handling for item link hovers -> we append another line in this.getTooltipFromItem
-                if (style.getClickEvent() != null)// && ItemLinkRenderer.isItemLink(style.getClickEvent().getValue()))
-                    this.isHoveringItemLink(true);
+            switch (style.getHoverEvent()) {
+                case HoverEvent.ShowItem(ItemStack itemstack):
+                    //special handling for item link hovers -> we append another line in this.getTooltipFromItem
+                    if (style.getClickEvent() != null)// && ItemLinkRenderer.isItemLink(style.getClickEvent().getValue()))
+                        this.isHoveringItemLink(true);
 
-                //temporarily modify width to force forge to handle wrapping correctly
-                var backupWidth = this.asScreen().width;
-                this.asScreen().width = this.asScreen().width / 2; //not quite sure why exaclty / 2 works, but then forge wrapping handles it correctly on gui scale 3+4
-                guiGraphics.renderTooltip(this.getFont(), hoverevent$itemstackinfo.getItemStack(), mouseX, mouseY);
-                this.asScreen().width = backupWidth;
+                    //temporarily modify width to force forge to handle wrapping correctly
+                    var backupWidth = this.asScreen().width;
+                    this.asScreen().width = this.asScreen().width / 2; //not quite sure why exaclty / 2 works, but then forge wrapping handles it correctly on gui scale 3+4
+                    guiGraphics.renderTooltip(this.getFont(), itemstack, mouseX, mouseY);
+                    this.asScreen().width = backupWidth;
 
-                //then we reset so other item tooltip renders are not affected
-                this.isHoveringItemLink(false);
-            } else {
-                HoverEvent.EntityTooltipInfo hoverevent$entitytooltipinfo = hoverevent.getValue(HoverEvent.Action.SHOW_ENTITY);
-                if (hoverevent$entitytooltipinfo != null) {
-                    if (Minecraft.getInstance().options.advancedItemTooltips) {
+                    //then we reset so other item tooltip renders are not affected
+                    this.isHoveringItemLink(false);
+
+                    break;
+                case HoverEvent.ShowEntity(HoverEvent.EntityTooltipInfo hoverevent$entitytooltipinfo1):
+                    HoverEvent.EntityTooltipInfo hoverevent$entitytooltipinfo = hoverevent$entitytooltipinfo1;
+                    if (this.getMinecraft().options.advancedItemTooltips) {
                         guiGraphics.renderComponentTooltip(this.getFont(), hoverevent$entitytooltipinfo.getTooltipLines(), mouseX, mouseY);
                     }
-                } else {
-                    Component component = hoverevent.getValue(HoverEvent.Action.SHOW_TEXT);
-                    if (component != null) {
-                        //var width = Math.max(this.width / 2, 200); //original width calc
-                        var width = (this.asScreen().width / 2) - mouseX - 10; //our own
-                        guiGraphics.renderTooltip(this.getFont(), this.getFont().split(component, width), mouseX, mouseY);
-                    }
-                }
+                    break;
+                case HoverEvent.ShowText(Component component):
+                    //      guiGraphics.renderTooltip(this.getFont(), this.getFont().split(component, Math.max(guiGraphics.guiWidth() / 2, 200)), mouseX, mouseY); //render call with original width calc
+                    var width = (this.asScreen().width / 2) - mouseX - 10; //our own width calc
+                    guiGraphics.renderTooltip(this.getFont(), this.getFont().split(component, width), mouseX, mouseY);
+                    break;
+                default:
             }
-
         }
+
         guiGraphics.pose().popPose();
     }
 }
