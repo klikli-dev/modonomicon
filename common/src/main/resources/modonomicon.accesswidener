@@ -4,12 +4,12 @@ accessible field net/minecraft/client/renderer/MultiBufferSource$BufferSource fi
 accessible field net/minecraft/client/gui/screens/Screen narratables Ljava/util/List;
 accessible field net/minecraft/client/gui/screens/Screen renderables Ljava/util/List;
 accessible field net/minecraft/client/multiplayer/ClientAdvancements progress Ljava/util/Map;
-accessible field net/minecraft/world/item/crafting/SmithingTransformRecipe base Ljava/util/Optional;
+accessible field net/minecraft/world/item/crafting/SmithingTransformRecipe base Lnet/minecraft/world/item/crafting/Ingredient;
 accessible field net/minecraft/world/item/crafting/SmithingTransformRecipe addition Ljava/util/Optional;
 accessible field net/minecraft/world/item/crafting/SmithingTransformRecipe template Ljava/util/Optional;
-accessible field net/minecraft/world/item/crafting/SmithingTrimRecipe base Ljava/util/Optional;
-accessible field net/minecraft/world/item/crafting/SmithingTrimRecipe addition Ljava/util/Optional;
-accessible field net/minecraft/world/item/crafting/SmithingTrimRecipe template Ljava/util/Optional;
+accessible field net/minecraft/world/item/crafting/SmithingTrimRecipe base Lnet/minecraft/world/item/crafting/Ingredient;
+accessible field net/minecraft/world/item/crafting/SmithingTrimRecipe addition Lnet/minecraft/world/item/crafting/Ingredient;
+accessible field net/minecraft/world/item/crafting/SmithingTrimRecipe template Lnet/minecraft/world/item/crafting/Ingredient;
 extendable method net/minecraft/client/gui/components/AbstractWidget render (Lnet/minecraft/client/gui/GuiGraphics;IIF)V
 extendable method net/minecraft/client/gui/screens/Screen renderWithTooltip (Lnet/minecraft/client/gui/GuiGraphics;IIF)V
 extendable method net/minecraft/client/gui/screens/Screen init (Lnet/minecraft/client/Minecraft;II)V
