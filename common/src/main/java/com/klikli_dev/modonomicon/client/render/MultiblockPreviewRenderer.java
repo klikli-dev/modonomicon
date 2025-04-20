@@ -52,6 +52,7 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -406,8 +407,8 @@ public class MultiblockPreviewRenderer {
     private static class GhostRenderLayer extends RenderType {
         private static final Map<RenderType, RenderType> remappedTypes = new IdentityHashMap<>();
 
-        private RenderPipeline pipeline;
-        private RenderType original;
+        private final RenderPipeline pipeline;
+        private final RenderType original;
 
         private GhostRenderLayer(RenderType original, RenderPipeline pipeline) {
             super(String.format("%s_%s_ghost", original.toString(), ModonomiconAPI.ID), original.bufferSize(), original.affectsCrumbling(), true, () -> {
@@ -442,37 +443,12 @@ public class MultiblockPreviewRenderer {
 //                        type = RenderType.translucent();
 
                     //modify the pipeline
-                    var pipeline = toBuilder(in.getRenderPipeline()).withBlend(BlendFunction.TRANSLUCENT).withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST);
+                    var pipeline = toBuilder(in.getRenderPipeline())
+                            .withBlend(BlendFunction.TRANSLUCENT).withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST);
 
                     return new GhostRenderLayer(type, pipeline.build());
                 });
             }
-        }
-
-
-        @Override
-        public void draw(MeshData meshData) {
-            original.draw(meshData);
-        }
-
-        @Override
-        public RenderTarget getRenderTarget() {
-            return original.getRenderTarget();
-        }
-
-        @Override
-        public RenderPipeline getRenderPipeline() {
-            return this.pipeline; //get our own modified pipeline
-        }
-
-        @Override
-        public VertexFormat format() {
-            return original.format();
-        }
-
-        @Override
-        public VertexFormat.Mode mode() {
-            return original.mode();
         }
 
         public static RenderPipeline.Builder toBuilder(RenderPipeline pipeline) {
@@ -515,6 +491,31 @@ public class MultiblockPreviewRenderer {
             builder.withDepthBias(pipeline.getDepthBiasScaleFactor(), pipeline.getDepthBiasConstant());
 
             return builder;
+        }
+
+        @Override
+        public void draw(@NotNull MeshData meshData) {
+            this.original.draw(meshData);
+        }
+
+        @Override
+        public @NotNull RenderTarget getRenderTarget() {
+            return this.original.getRenderTarget();
+        }
+
+        @Override
+        public @NotNull RenderPipeline getRenderPipeline() {
+            return this.pipeline; //get our own modified pipeline
+        }
+
+        @Override
+        public @NotNull VertexFormat format() {
+            return this.original.format();
+        }
+
+        @Override
+        public VertexFormat.@NotNull Mode mode() {
+            return this.original.mode();
         }
 
     }
