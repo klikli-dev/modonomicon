@@ -47,7 +47,7 @@ public class EntityUtil {
 
         if (!nbtStr.isEmpty()) {
             try {
-                nbt = TagParser.parseTag(nbtStr);
+                nbt = TagParser.parseCompoundFully(nbtStr);
             } catch (CommandSyntaxException e) {
                 Modonomicon.LOG.error("Failed to load entity data", e);
             }

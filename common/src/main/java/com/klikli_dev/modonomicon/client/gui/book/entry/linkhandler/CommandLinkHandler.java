@@ -26,13 +26,15 @@ public class CommandLinkHandler extends LinkHandler {
         if (event == null)
             return ClickResult.UNHANDLED;
 
-        if (event.getAction() != ClickEvent.Action.RUN_COMMAND)
+        //Command links use RUN_COMMAND action, but the command string is not a vanilla string, instead it is a custom protocol string.
+        //the isCommandLink below will check for a protocol prefix
+        if (event.action() != ClickEvent.Action.RUN_COMMAND || !(event instanceof ClickEvent.RunCommand runCommand))
             return ClickResult.UNHANDLED;
 
-        if (!CommandLink.isCommandLink(event.getValue()))
+        if (!CommandLink.isCommandLink(runCommand.command()))
             return ClickResult.UNHANDLED;
 
-        var link = CommandLink.from(this.book(), event.getValue());
+        var link = CommandLink.from(this.book(), runCommand.command());
         var book = BookDataManager.get().getBook(link.bookId);
         if (link.commandId == null)
             return ClickResult.FAILURE;

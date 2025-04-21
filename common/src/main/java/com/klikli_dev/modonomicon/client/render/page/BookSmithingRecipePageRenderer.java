@@ -44,8 +44,7 @@ public class BookSmithingRecipePageRenderer extends BookRecipePageRenderer<Smith
             }
         }
 
-        RenderSystem.enableBlend();
-        guiGraphics.blit(RenderType::guiTextured, this.page.getBook().getCraftingTexture(), recipeX, recipeY, 11, 178, 96, 62, 128, 256);
+        guiGraphics.blit(RenderType::guiTexturedOverlay, this.page.getBook().getCraftingTexture(), recipeX, recipeY, 11, 178, 96, 62, 128, 256);
 
         if (recipeDisplayEntry.display() instanceof SmithingRecipeDisplay smithingRecipeDisplay) {
             //noinspection DataFlowIssue

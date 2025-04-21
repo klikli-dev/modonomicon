@@ -14,7 +14,6 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.HoverEvent.Action;
-import net.minecraft.network.chat.HoverEvent.ItemStackInfo;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.ItemStack;
 import org.commonmark.node.Link;
@@ -65,8 +64,8 @@ public class ItemLinkRenderer implements LinkRenderer {
             //if we have a color we use it, otherwise we use item link default.
             context.setCurrentStyle(context.getCurrentStyle()
                     .withColor(currentColor == null ? ITEM_LINK_COLOR : currentColor)
-                    .withHoverEvent(new HoverEvent(Action.SHOW_ITEM, new ItemStackInfo(itemStack)))
-                    .withClickEvent(new ClickEvent(ClickEvent.Action.CHANGE_PAGE, link.getDestination()))
+                    .withHoverEvent(new HoverEvent.ShowItem(itemStack))
+                    .withClickEvent(new ClickEvent.OpenFile(link.getDestination()))
             );
 
             //TODO: show usage infos -> shift to show usage, click to show recipe

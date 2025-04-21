@@ -24,13 +24,15 @@ public class BookLinkHandler extends LinkHandler {
         if (event == null)
             return ClickResult.UNHANDLED;
 
-        if (event.getAction() != ClickEvent.Action.CHANGE_PAGE)
+        //Book links use OPEN_FILE action as it allows us to hand over a string.
+        //the IsBookLink below will check for a protocol prefix
+        if (event.action() != ClickEvent.Action.OPEN_FILE || !(event instanceof ClickEvent.OpenFile openFile))
             return ClickResult.UNHANDLED;
 
-        if (!BookLink.isBookLink(event.getValue()))
+        if (!BookLink.isBookLink(openFile.path()))
             return ClickResult.UNHANDLED;
 
-        var link = BookLink.from(this.book(), event.getValue());
+        var link = BookLink.from(this.book(), openFile.path());
         var book = BookDataManager.get().getBook(link.bookId);
         if (link.entryId != null) {
             var entry = book.getEntry(link.entryId);

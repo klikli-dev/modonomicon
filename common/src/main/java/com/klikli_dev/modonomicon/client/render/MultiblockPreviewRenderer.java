@@ -18,10 +18,14 @@ import com.klikli_dev.modonomicon.multiblock.matcher.DisplayOnlyMatcher;
 import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.platform.DepthTestFunction;
+import com.mojang.blaze3d.platform.DestFactor;
+import com.mojang.blaze3d.platform.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -29,6 +33,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.ShaderDefines;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -42,21 +47,17 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 
 import java.awt.*;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Function;
 
@@ -304,7 +305,7 @@ public class MultiblockPreviewRenderer {
                             try {
                                 BlockEntityRenderer<BlockEntity> renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(be);
                                 if (renderer != null) {
-                                    renderer.render(be, ClientTicks.partialTicks, ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
+                                    renderer.render(be, ClientTicks.partialTicks, ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY, erd.camera.getPosition());
                                 }
                             } catch (Exception e) {
                                 erroredBlockEntities.add(be);
@@ -389,7 +390,7 @@ public class MultiblockPreviewRenderer {
         var layerBuffers = original.fixedBuffers;
         SequencedMap<RenderType, ByteBufferBuilder> remapped = new Object2ObjectLinkedOpenHashMap<>();
         for (Map.Entry<RenderType, ByteBufferBuilder> e : layerBuffers.entrySet()) {
-            remapped.put(GhostRenderLayer.remap(e.getKey()), e.getValue());
+            remapped.put(GhostRenderType.remap(e.getKey()), e.getValue());
         }
         return new GhostBuffers(fallback, remapped);
     }
@@ -401,41 +402,133 @@ public class MultiblockPreviewRenderer {
 
         @Override
         public VertexConsumer getBuffer(RenderType type) {
-            return super.getBuffer(GhostRenderLayer.remap(type));
+            return super.getBuffer(GhostRenderType.remap(type));
         }
     }
 
-    private static class GhostRenderLayer extends RenderType {
+    private static class GhostRenderType extends RenderType {
         private static final Map<RenderType, RenderType> remappedTypes = new IdentityHashMap<>();
 
-        private GhostRenderLayer(RenderType original) {
-            super(String.format("%s_%s_ghost", original.toString(), ModonomiconAPI.ID), original.format(), original.mode(), original.bufferSize(), original.affectsCrumbling(), true, () -> {
-                original.setupRenderState();
+        private final RenderPipeline pipeline;
+        private final RenderType original;
 
-                RenderSystem.disableDepthTest();
-                RenderSystem.enableBlend();
+        private GhostRenderType(RenderType original, RenderPipeline pipeline) {
+            super(String.format("%s_%s_ghost", original.toString(), ModonomiconAPI.ID), original.bufferSize(), original.affectsCrumbling(), true, () -> {
+
+                original.setupRenderState();
+//                RenderSystem.disableDepthTest();
+//                RenderSystem.enableBlend();
+                //don't need the above, now in pipeline
                 RenderSystem.setShaderColor(1, 1, 1, 0.4F);
             }, () -> {
                 RenderSystem.setShaderColor(1, 1, 1, 1);
-                RenderSystem.disableBlend();
-                RenderSystem.enableDepthTest();
+//                RenderSystem.disableBlend();
+//                RenderSystem.enableDepthTest();
+                //don't need the above, now in pipeline
 
                 original.clearRenderState();
             });
+
+            this.pipeline = pipeline;
+            this.original = original;
         }
 
         public static RenderType remap(RenderType in) {
-            if (in instanceof GhostRenderLayer) {
+            if (in instanceof GhostRenderType) {
                 return in;
             } else {
                 return remappedTypes.computeIfAbsent(in, (type) -> {
-                    //hack to address https://github.com/klikli-dev/modonomicon/issues/260, but it should work reasonably well
-                    //need to exclude entity, because otherwise entity cutout layers will render using the block atlas.
-                    if(type.name.contains("cutout") && !type.name.contains("entity"))
-                        type = RenderType.translucent();
-                    return new GhostRenderLayer(type);
+                    //TODO: Do we need cutout/entity handling still?
+//                    //hack to address https://github.com/klikli-dev/modonomicon/issues/260, but it should work reasonably well
+//                    //need to exclude entity, because otherwise entity cutout layers will render using the block atlas.
+//                    if (type.name.contains("cutout") && !type.name.contains("entity"))
+//                        type = RenderType.translucent();
+
+                    //modify the pipeline
+                    var pipeline = toBuilder(in.getRenderPipeline())
+                            .withBlend(BlendFunction.TRANSLUCENT)
+                            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST);
+
+                    return new GhostRenderType(type, pipeline.build());
                 });
             }
         }
+
+        public static RenderPipeline.Builder toBuilder(RenderPipeline pipeline) {
+            RenderPipeline.Builder builder = RenderPipeline.builder();
+            builder.withLocation(pipeline.getLocation());
+            builder.withFragmentShader(pipeline.getFragmentShader());
+            builder.withVertexShader(pipeline.getVertexShader());
+
+            if (!pipeline.getShaderDefines().isEmpty()) {
+                ShaderDefines.Builder defBuilder = ShaderDefines.builder();
+                for (Map.Entry<String, String> entry : pipeline.getShaderDefines().values().entrySet()) {
+                    defBuilder.define(entry.getKey(), entry.getValue());
+                }
+                for (String flag : pipeline.getShaderDefines().flags()) {
+                    defBuilder.define(flag);
+                }
+                builder.definesBuilder = Optional.of(defBuilder);
+            }
+
+            if (!pipeline.getSamplers().isEmpty()) {
+                pipeline.getSamplers().forEach(builder::withSampler);
+            }
+
+            if (!pipeline.getUniforms().isEmpty()) {
+                pipeline.getUniforms().forEach(u -> builder.withUniform(u.name(), u.type()));
+            }
+
+            builder.withDepthTestFunction(pipeline.getDepthTestFunction());
+            builder.withPolygonMode(pipeline.getPolygonMode());
+            builder.withCull(pipeline.isCull());
+            builder.withColorWrite(pipeline.isWriteColor(), pipeline.isWriteAlpha());
+            builder.withDepthWrite(pipeline.isWriteDepth());
+            builder.withColorLogic(pipeline.getColorLogic());
+
+            if (!pipeline.getBlendFunction().isEmpty())
+                builder.withBlend(pipeline.getBlendFunction().get());
+            else
+                builder.withoutBlend();
+            builder.withVertexFormat(pipeline.getVertexFormat(), pipeline.getVertexFormatMode());
+            builder.withDepthBias(pipeline.getDepthBiasScaleFactor(), pipeline.getDepthBiasConstant());
+
+            return builder;
+        }
+
+        @Override
+        public void draw(@NotNull MeshData meshData) {
+            //TODO: this is not working yet, it's not using the pipeline translucency settings
+            //overlay works but looks horrible
+            if (this.original instanceof CompositeRenderType composite) {
+                var oldPipeline = this.original.getRenderPipeline();
+                composite.renderPipeline = this.pipeline; //set our own modified pipeline
+                this.original.draw(meshData);
+                composite.renderPipeline = oldPipeline; //restore
+            } else {
+                this.original.draw(meshData);
+            }
+        }
+
+        @Override
+        public @NotNull RenderTarget getRenderTarget() {
+            return this.original.getRenderTarget();
+        }
+
+        @Override
+        public @NotNull RenderPipeline getRenderPipeline() {
+            return this.pipeline; //get our own modified pipeline
+        }
+
+        @Override
+        public @NotNull VertexFormat format() {
+            return this.original.format();
+        }
+
+        @Override
+        public VertexFormat.@NotNull Mode mode() {
+            return this.original.mode();
+        }
+
     }
 }

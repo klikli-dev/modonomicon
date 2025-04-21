@@ -18,6 +18,7 @@ import net.minecraft.network.chat.Style;
 import org.commonmark.node.*;
 import org.commonmark.renderer.NodeRenderer;
 
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -112,8 +113,8 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
         //if we have a color we use it, otherwise we use link default.
         this.context.setCurrentStyle(this.context.getCurrentStyle()
                 .withColor(currentColor == null ? this.context.getLinkColor() : currentColor)
-                .withClickEvent(new ClickEvent(Action.OPEN_URL, link.getDestination()))
-                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent))
+                .withClickEvent(new ClickEvent.OpenUrl(URI.create(link.getDestination())))
+                .withHoverEvent(new HoverEvent.ShowText(hoverComponent))
         );
 
         this.visitChildren(link);

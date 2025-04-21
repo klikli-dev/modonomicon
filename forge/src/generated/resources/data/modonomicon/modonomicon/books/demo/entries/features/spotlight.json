@@ -48,10 +48,7 @@
       },
       "item": {
         "components": {
-          "minecraft:dyed_color": {
-            "rgb": 1481884,
-            "show_in_tooltip": false
-          }
+          "minecraft:dyed_color": 1481884
         },
         "count": 1,
         "item": "minecraft:leather_helmet"

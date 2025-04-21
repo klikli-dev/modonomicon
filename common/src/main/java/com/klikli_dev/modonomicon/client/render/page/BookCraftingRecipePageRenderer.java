@@ -46,15 +46,14 @@ public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recip
             }
         }
 
-        RenderSystem.enableBlend();
-        guiGraphics.blit(RenderType::guiTextured, this.page.getBook().getCraftingTexture(), recipeX - 2, recipeY - 2, 0, 0, 100, 62, 128, 256);
+        guiGraphics.blit(RenderType::guiTexturedOverlay, this.page.getBook().getCraftingTexture(), recipeX - 2, recipeY - 2, 0, 0, 100, 62, 128, 256);
 
 
         boolean shapeless = recipeDisplayEntry.display() instanceof ShapelessCraftingRecipeDisplay;
         if (shapeless) {
             int iconX = recipeX + 62;
             int iconY = recipeY + 2;
-            guiGraphics.blit(RenderType::guiTextured, this.page.getBook().getCraftingTexture(), iconX, iconY, 0, 64, 11, 11, 128, 256);
+            guiGraphics.blit(RenderType::guiTexturedOverlay, this.page.getBook().getCraftingTexture(), iconX, iconY, 0, 64, 11, 11, 128, 256);
             if (this.parentScreen.isMouseInRange(mouseX, mouseY, iconX, iconY, 11, 11)) {
                 this.parentScreen.setTooltip(Component.translatable(Tooltips.RECIPE_CRAFTING_SHAPELESS));
             }

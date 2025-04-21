@@ -62,7 +62,7 @@ public class SpotlightEntry extends EntryProvider {
         this.pageText("A sample spotlight page with automatic title.");
 
         var iconStack = new ItemStack(Items.LEATHER_HELMET);
-        iconStack.set(DataComponents.DYED_COLOR, new DyedItemColor(0x169C9C, false));
+        iconStack.set(DataComponents.DYED_COLOR, new DyedItemColor(0x169C9C));
         this.page("spotlight3", () -> BookSpotlightPageModel.create()
                 .withText(this.context().pageText())
                 .withItem(iconStack)

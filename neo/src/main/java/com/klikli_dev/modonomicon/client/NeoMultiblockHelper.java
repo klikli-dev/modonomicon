@@ -10,12 +10,13 @@ import com.klikli_dev.modonomicon.platform.services.MultiblockHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
 
 public class NeoMultiblockHelper implements MultiblockHelper {
     @Override
@@ -30,11 +31,14 @@ public class NeoMultiblockHelper implements MultiblockHelper {
         }
 
         if (state.getRenderShape() != RenderShape.INVISIBLE) {
-            var model = blockRenderer.getBlockModel(state);
-            for (var layer : model.getRenderTypes(state, rand, ModelData.EMPTY)) {
-                var buffer = buffers.getBuffer(layer);
-                blockRenderer.renderBatched(state, pos, multiblock, ps, buffer, false, rand, ModelData.EMPTY, layer);
-            }
+//            var model = blockRenderer.getBlockModel(state);
+//            for (var layer : model.getRenderTypes(state, rand, ModelData.EMPTY)) {
+//                var buffer = buffers.getBuffer(layer);
+//                blockRenderer.renderBatched(state, pos, multiblock, ps, buffer, false, rand, ModelData.EMPTY, layer);
+//            }
+
+            //noinspection deprecation
+            blockRenderer.renderSingleBlock(state, ps, buffers, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         }
     }
 }

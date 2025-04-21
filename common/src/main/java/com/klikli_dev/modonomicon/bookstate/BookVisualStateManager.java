@@ -18,9 +18,7 @@ import com.klikli_dev.modonomicon.networking.RequestSyncBookStatesMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookVisualStatesMessage;
 import com.klikli_dev.modonomicon.platform.Services;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.saveddata.SavedData;
 
 import java.util.List;
 
@@ -94,12 +92,10 @@ public class BookVisualStateManager {
      * Won't do anything on the client, clients get their save data set by the server via packet.
      */
     private void getSaveDataIfNecessary(Player player) {
+        //TODO: See LevelAttachmentsSavedData for how to implement save data or better TicketStorage
         if (this.saveData == null) {
             if (player instanceof ServerPlayer serverPlayer) {
-                this.saveData = serverPlayer.getServer().overworld().getDataStorage().computeIfAbsent(
-                        new SavedData.Factory<>(BookStatesSaveData::new, BookStatesSaveData::load, DataFixTypes.PLAYER),
-                        BookStatesSaveData.ID
-                );
+                this.saveData = serverPlayer.getServer().overworld().getDataStorage().computeIfAbsent(BookStatesSaveData.TYPE);
             } else {
                 //this should not happen, we set an empty object to prevent a crash
                 this.saveData = new BookStatesSaveData();

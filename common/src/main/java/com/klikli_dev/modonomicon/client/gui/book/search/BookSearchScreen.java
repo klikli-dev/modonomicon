@@ -27,6 +27,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
@@ -187,8 +188,6 @@ public class BookSearchScreen extends BookPaginatedScreen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        RenderSystem.disableDepthTest(); //guard against depth test being enabled by other rendering code, that would cause ui elements to vanish
-
         this.resetTooltip();
 
         //we need to modify blit offset (now: z pose) to not draw over toasts
@@ -224,7 +223,7 @@ public class BookSearchScreen extends BookPaginatedScreen {
         if (!this.searchField.getValue().isEmpty()) {
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             //draw search field bg
-            BookContentRenderer.drawFromContentTexture(guiGraphics, this.parentScreen.getBook(), this.searchField.getX() - 8, this.searchField.getY(), 140, 183, 99, 14);
+            BookContentRenderer.drawFromContentTexture(RenderType::guiTexturedOverlay, guiGraphics, this.parentScreen.getBook(), this.searchField.getX() - 8, this.searchField.getY(), 140, 183, 99, 14);
             var searchComponent = Component.literal(this.searchField.getValue());
             guiGraphics.drawString(this.font, searchComponent, this.searchField.getX() + 7, this.searchField.getY() + 1, 0, false);
         }

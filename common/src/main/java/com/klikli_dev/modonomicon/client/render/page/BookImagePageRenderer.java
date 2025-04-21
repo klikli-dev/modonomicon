@@ -57,7 +57,6 @@ public class BookImagePageRenderer extends BookPageRenderer<BookImagePage> imple
         int x = BookEntryScreen.PAGE_WIDTH / 2 - 53;
         int y = 7;
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        RenderSystem.enableBlend();
         guiGraphics.pose().pushPose();
         guiGraphics.pose().scale(0.5F, 0.5F, 1);
         if (this.page.useLegacyRendering())
@@ -71,7 +70,7 @@ public class BookImagePageRenderer extends BookPageRenderer<BookImagePage> imple
         guiGraphics.pose().popPose();
 
         if (this.page.hasBorder()) {
-            BookContentRenderer.drawFromContentTexture(guiGraphics, this.getPage().getBook(), x, y, 405, 149, 106, 106);
+            BookContentRenderer.drawFromContentTexture(RenderType::guiTexturedOverlay, guiGraphics, this.getPage().getBook(), x, y, 405, 149, 106, 106);
         }
 
         if (this.page.getImages().length > 1 && this.page.hasBorder()) {

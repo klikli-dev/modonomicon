@@ -14,12 +14,14 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.function.Function;
+
 public class BookContentRenderer {
 
     private static long lastTurnPageSoundTime;
 
-    public static void drawFromContentTexture(GuiGraphics guiGraphics, Book book, int x, int y, int u, int v, int w, int h) {
-        guiGraphics.blit(RenderType::guiTextured, book.getBookContentTexture(), x, y, u, v, w, h, 512, 256);
+    public static void drawFromContentTexture(Function<ResourceLocation, RenderType> renderTypeGetter, GuiGraphics guiGraphics, Book book, int x, int y, int u, int v, int w, int h) {
+        guiGraphics.blit(renderTypeGetter, book.getBookContentTexture(), x, y, u, v, w, h, 512, 256);
     }
 
     public static void drawTitleSeparator(GuiGraphics guiGraphics, Book book, int x, int y) {
@@ -27,15 +29,14 @@ public class BookContentRenderer {
         int h = 3;
         int rx = x - w / 2;
 
-        RenderSystem.enableBlend();
         RenderSystem.setShaderColor(1F, 1F, 1F, 0.8F);
         //u and v are the pixel coordinates in our book_content_texture
-        drawFromContentTexture(guiGraphics, book, rx, y, 0, 253, w, h);
+        drawFromContentTexture(RenderType::guiTexturedOverlay, guiGraphics, book, rx, y, 0, 253, w, h);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
     }
 
     public static void drawLock(GuiGraphics guiGraphics, Book book, int x, int y) {
-        drawFromContentTexture(guiGraphics, book, x, y, 496, 0, 16, 16);
+        drawFromContentTexture(RenderType::guiTexturedOverlay, guiGraphics, book, x, y, 496, 0, 16, 16);
     }
 
     public static void playTurnPageSound(Book book) {

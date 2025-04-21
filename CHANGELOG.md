@@ -9,7 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [`c74fd10`](https://github.com/klikli-dev/modonomicon/commit/c74fd10be61b4e5aee66187c70f8c2c9b838245d) - enable recipe pages again *(PR [#289](https://github.com/klikli-dev/modonomicon/pull/289) by [@klikli-dev](https://github.com/klikli-dev))*
 - [`df47bb7`](https://github.com/klikli-dev/modonomicon/commit/df47bb75f98778d2785f5224438c449913d60db0) - unify initial markdown parsing across modloaders *(commit by [@klikli-dev](https://github.com/klikli-dev))*
 
-
 ## [release/v1.21.4-1.115.0] - 2025-04-05
 ### :sparkles: New Features
 - [`b983377`](https://github.com/klikli-dev/modonomicon/commit/b983377853de7b8d373384e3b973aa47033f5724) - update to 1.21.4 *(PR [#288](https://github.com/klikli-dev/modonomicon/pull/288) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1823,6 +1822,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.77.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.77.3...release/v1.20.1-1.77.4
 [release/v1.21.1-1.108.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.108.1...release/v1.21.1-1.108.2
 [release/v1.21.1-1.108.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.108.2...release/v1.21.1-1.108.3
+[release/v1.21.1-1.108.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.108.3...release/v1.21.1-1.108.4
+[release/v1.21.1-1.108.5]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.108.4...release/v1.21.1-1.108.5
+[release/v1.21.1-1.109.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.108.5...release/v1.21.1-1.109.0
+[release/v1.21.1-1.110.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.109.0...release/v1.21.1-1.110.0
+[release/v1.21.1-1.110.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.110.0...release/v1.21.1-1.110.1
+[release/v1.21.1-1.111.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.110.1...release/v1.21.1-1.111.0
+[release/v1.21.1-1.111.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.111.0...release/v1.21.1-1.111.1
+[release/v1.21.1-1.111.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.111.1...release/v1.21.1-1.111.2
+[release/v1.21.1-1.112]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.111.2...release/v1.21.1-1.112
+[release/v1.21.1-1.112.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.112...release/v1.21.1-1.112.1
+[release/v1.21.1-1.112.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.112.1...release/v1.21.1-1.112.2
+[release/v1.21.1-1.113.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.112.2...release/v1.21.1-1.113.0
+[release/v1.21.1-1.114.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.113.0...release/v1.21.1-1.114.0
+[release/v1.21.1-1.114.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.114.0...release/v1.21.1-1.114.1
 [release/v1.21.1-1.108.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.108.3...release/v1.21.1-1.108.4
 [release/v1.21.1-1.108.5]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.108.4...release/v1.21.1-1.108.5
 [release/v1.21.1-1.109.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.108.5...release/v1.21.1-1.109.0
