@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.1-1.114.2] - 2025-05-18
+### :wrench: Chores
+- [`228a5bd`](https://github.com/klikli-dev/modonomicon/commit/228a5bde7b6d7731f19c79090ebec7cfc8ef556d) - fix gradle.properties var name *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`505290e`](https://github.com/klikli-dev/modonomicon/commit/505290e527e3aef867b4c16fd16cf036be61d7e9) - disable the addon book datagen example *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.1-1.114.1] - 2025-03-24
 ### :bug: Bug Fixes
 - [`eee13be`](https://github.com/klikli-dev/modonomicon/commit/eee13beaef08004162515fbcb8b78e01801f1a18) - GUIs not rendering after viewing book entry *(PR [#287](https://github.com/klikli-dev/modonomicon/pull/287) by [@BluSpring](https://github.com/BluSpring))*
@@ -1841,3 +1847,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.1-1.113.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.112.2...release/v1.21.1-1.113.0
 [release/v1.21.1-1.114.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.113.0...release/v1.21.1-1.114.0
 [release/v1.21.1-1.114.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.114.0...release/v1.21.1-1.114.1
+[release/v1.21.1-1.114.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.114.1...release/v1.21.1-1.114.2
