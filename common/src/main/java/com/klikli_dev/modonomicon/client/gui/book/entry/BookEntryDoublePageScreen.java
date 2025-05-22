@@ -126,12 +126,12 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
         guiGraphics.pose().popPose();
 
         guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(this.bookLeft, this.bookTop, 0);
+        guiGraphics.pose().translate(this.bookLeft, this.bookTop, 1000); //push the page background to the front. Otherwise the entries render over it.
         BookContentRenderer.renderBookBackground(guiGraphics, this.bookContentTexture);
         guiGraphics.pose().popPose();
 
         guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(this.bookLeft, this.bookTop, 0);
+        guiGraphics.pose().translate(this.bookLeft, this.bookTop, 1000);//push the page content  to the front. Otherwise the entries render over it.
         this.renderPage(guiGraphics, this.leftPageRenderer, pMouseX, pMouseY, pPartialTick);
         this.renderPage(guiGraphics, this.rightPageRenderer, pMouseX, pMouseY, pPartialTick);
         guiGraphics.pose().popPose();
