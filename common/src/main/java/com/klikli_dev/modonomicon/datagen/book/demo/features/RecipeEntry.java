@@ -31,7 +31,7 @@ public class RecipeEntry extends EntryProvider {
                 """);
 
         this.page("crafting", () -> BookCraftingRecipePageModel.create()
-                .withRecipeId1("minecraft:crafting_table")
+                .withRecipeId1("minecraft:iron_axe")
                 .withRecipeId2("minecraft:oak_planks")
                 .withText(this.context().pageText())
                 .withTitle2("test.test.test")
