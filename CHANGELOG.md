@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.5-1.117.2] - 2025-05-22
+### :bug: Bug Fixes
+- [`472bc6c`](https://github.com/klikli-dev/modonomicon/commit/472bc6cba17d507c98cb9d0b24407bedd5805175) - shaped recipe rendering *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`fca406e`](https://github.com/klikli-dev/modonomicon/commit/fca406e050cafb56f4eaf7580a12dc242f976021) - entry icon and background render in front of page *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.5-1.117.1] - 2025-05-18
 ### :bug: Bug Fixes
 - [`0335cb7`](https://github.com/klikli-dev/modonomicon/commit/0335cb7b8ede7dd80cbf603b1b9b01af76cb6cf0) - model manager mixin for latest fabric *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1864,3 +1870,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.4-1.116.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.4-1.115.0...release/v1.21.4-1.116.0
 [release/v1.21.5-1.117.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.5-0.0.0...release/v1.21.5-1.117.0
 [release/v1.21.5-1.117.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.5-1.117.0...release/v1.21.5-1.117.1
+[release/v1.21.5-1.117.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.5-1.117.1...release/v1.21.5-1.117.2
