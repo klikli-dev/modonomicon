@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.4-1.116.1] - 2025-05-23
+### :bug: Bug Fixes
+- [`ed3a994`](https://github.com/klikli-dev/modonomicon/commit/ed3a994de403df86c3805bb20c5a6a0856c6dd77) - shaped recipe rendering *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.4-1.116.0] - 2025-04-06
 ### :sparkles: New Features
 - [`c74fd10`](https://github.com/klikli-dev/modonomicon/commit/c74fd10be61b4e5aee66187c70f8c2c9b838245d) - enable recipe pages again *(PR [#289](https://github.com/klikli-dev/modonomicon/pull/289) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1839,3 +1844,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.1-1.114.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.114.0...release/v1.21.1-1.114.1
 [release/v1.21.4-1.115.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.4-0.0.0...release/v1.21.4-1.115.0
 [release/v1.21.4-1.116.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.4-1.115.0...release/v1.21.4-1.116.0
+[release/v1.21.4-1.116.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.4-1.116.0...release/v1.21.4-1.116.1
