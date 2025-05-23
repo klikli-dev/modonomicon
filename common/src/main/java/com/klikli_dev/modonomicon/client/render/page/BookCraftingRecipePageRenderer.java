@@ -14,6 +14,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.recipebook.PlaceRecipeHelper;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
 import net.minecraft.world.item.crafting.display.ShapedCraftingRecipeDisplay;
@@ -50,8 +52,8 @@ public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recip
         guiGraphics.blit(RenderType::guiTextured, this.page.getBook().getCraftingTexture(), recipeX - 2, recipeY - 2, 0, 0, 100, 62, 128, 256);
 
 
-        boolean shapeless = recipeDisplayEntry.display() instanceof ShapelessCraftingRecipeDisplay;
-        if (shapeless) {
+        boolean isShapeless = recipeDisplayEntry.display() instanceof ShapelessCraftingRecipeDisplay;
+        if (isShapeless) {
             int iconX = recipeX + 62;
             int iconY = recipeY + 2;
             guiGraphics.blit(RenderType::guiTextured, this.page.getBook().getCraftingTexture(), iconX, iconY, 0, 64, 11, 11, 128, 256);
@@ -66,15 +68,43 @@ public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recip
         this.parentScreen.renderItemStacks(guiGraphics, recipeX + 79, recipeY + 22, mouseX, mouseY, recipeDisplayEntry.resultItems(context));
 
 
-        var ingredients = recipeDisplayEntry.craftingRequirements().orElse(List.of());
+//        var ingredients = recipeDisplayEntry.craftingRequirements().orElse(List.of());
+//
+//        int wrap = 3;
+//        if (recipeDisplayEntry.display() instanceof ShapedCraftingRecipeDisplay shaped) {
+//            wrap = shaped.width();
+//        }
 
-        int wrap = 3;
-        if (recipeDisplayEntry.display() instanceof ShapedCraftingRecipeDisplay shaped) {
-            wrap = shaped.width();
-        }
+//
+//        for (int i = 0; i < ingredients.size(); i++) {
+//            this.parentScreen.renderIngredient(guiGraphics, recipeX + (i % wrap) * 19 + 3, recipeY + (i / wrap) * 19 + 3, mouseX, mouseY, ingredients.get(i));
+//        }
 
-        for (int i = 0; i < ingredients.size(); i++) {
-            this.parentScreen.renderIngredient(guiGraphics, recipeX + (i % wrap) * 19 + 3, recipeY + (i / wrap) * 19 + 3, mouseX, mouseY, ingredients.get(i));
+        switch (recipeDisplayEntry.display()) {
+            case ShapedCraftingRecipeDisplay shaped:
+                PlaceRecipeHelper.placeRecipe(
+                        3, //we only support 3x3 grid size recipes
+                        3,
+                        shaped.width(),
+                        shaped.height(),
+                        shaped.ingredients(),
+                        (item, slot, x, y) -> {
+                            this.parentScreen.renderItemStacks(guiGraphics, recipeX + x * 19 + 3, recipeY + y * 19 + 3, mouseX, mouseY, item.resolveForStacks(context));
+                        }
+                );
+                break;
+            case ShapelessCraftingRecipeDisplay shapeless:
+                PlaceRecipeHelper.placeRecipe(
+                        3, //we only support 3x3 grid size recipes
+                        3,
+                        3,
+                        3,
+                        shapeless.ingredients(),
+                        (item, slot, x, y) -> {
+                            this.parentScreen.renderItemStacks(guiGraphics, recipeX + x * 19 + 3, recipeY + y * 19 + 3, mouseX, mouseY, item.resolveForStacks(context));
+                        }
+                );
+            default:
         }
 
         this.parentScreen.renderItemStacks(guiGraphics, recipeX + 79, recipeY + 41, mouseX, mouseY, recipeDisplayEntry.display().craftingStation().resolveForStacks(context));
