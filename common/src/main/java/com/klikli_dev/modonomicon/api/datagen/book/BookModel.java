@@ -97,6 +97,7 @@ public class BookModel {
      * Contains textures for the crafting pages, such as crafting grids and result arrows.
      */
     protected ResourceLocation craftingTexture = ResourceLocation.parse(Book.DEFAULT_CRAFTING_TEXTURE);
+    protected ResourceLocation turnPageSound = ResourceLocation.parse(Book.DEFAULT_PAGE_TURN_SOUND);
     protected int defaultTitleColor = 0x00000;
     protected float categoryButtonIconScale = 1.0f;
 
@@ -174,6 +175,10 @@ public class BookModel {
 
     public ResourceLocation getCraftingTexture() {
         return this.craftingTexture;
+    }
+
+    public ResourceLocation getTurnPageSound() {
+        return this.turnPageSound;
     }
 
     public boolean generateBookItem() {
@@ -298,6 +303,7 @@ public class BookModel {
         json.add("right_frame_overlay", BookFrameOverlay.CODEC.encodeStart(JsonOps.INSTANCE, this.rightFrameOverlay).getOrThrow());
         json.addProperty("book_content_texture", this.bookContentTexture.toString());
         json.addProperty("crafting_texture", this.craftingTexture.toString());
+        json.addProperty("turn_page_sound", this.turnPageSound.toString());
         json.addProperty("default_title_color", this.defaultTitleColor);
         json.addProperty("category_button_icon_scale", this.categoryButtonIconScale);
         json.addProperty("book_text_offset_x", this.bookTextOffsetX);
@@ -426,6 +432,15 @@ public class BookModel {
 
     public BookModel withCraftingTexture(ResourceLocation craftingTexture) {
         this.craftingTexture = craftingTexture;
+        return this;
+    }
+
+    /**
+     * Sets the sound to play when turning a page in the book.
+     * Default is {@link Data.Book#DEFAULT_PAGE_TURN_SOUND}.
+     */
+    public BookModel withTurnPageSound(ResourceLocation turnPageSound) {
+        this.turnPageSound = turnPageSound;
         return this;
     }
 
