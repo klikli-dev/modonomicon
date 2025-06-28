@@ -114,7 +114,7 @@ public class BookGuiManager {
     protected BookCategory getSavedOrAddressedCategoryOrDefault(Book book, BookAddress address) {
         var savedCategory = this.getSavedOrAddressedCategory(book, address);
         if (savedCategory == null) {
-            return book.getCategoriesSorted().getFirst();
+            return book.getCategoriesSorted().stream().filter(BookCategory::showCategoryButton).findFirst().orElseThrow();
         }
         return savedCategory;
     }
