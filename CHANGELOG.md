@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.1-1.114.4] - 2025-06-28
+### :bug: Bug Fixes
+- [`ad56b50`](https://github.com/klikli-dev/modonomicon/commit/ad56b50d199af6e8cdfedd2bec2d7b5686ccac89) - category without category button can be auto opened *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.1-1.114.3] - 2025-06-27
 ### :bug: Bug Fixes
 - [`8936604`](https://github.com/klikli-dev/modonomicon/commit/8936604ff46df66a8b21dccad5fe96f699427a79) - BookModel is missing turnPageSound *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1854,3 +1859,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.1-1.114.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.114.0...release/v1.21.1-1.114.1
 [release/v1.21.1-1.114.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.114.1...release/v1.21.1-1.114.2
 [release/v1.21.1-1.114.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.114.2...release/v1.21.1-1.114.3
+[release/v1.21.1-1.114.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.114.3...release/v1.21.1-1.114.4
