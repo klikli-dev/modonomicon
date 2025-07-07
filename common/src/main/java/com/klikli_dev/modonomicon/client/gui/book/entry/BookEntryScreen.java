@@ -437,7 +437,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
 
     @SuppressWarnings("NullableProblems")
     @Override
-    public Font getFont() {
+    public Font getContentFont() {
         //this is necessary because while Screen has getFont(), if a mod uses non-mojang mappings the method won't be found
         return this.font;
     }
