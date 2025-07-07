@@ -435,6 +435,13 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         this.updateBookmarksButton();
     }
 
+    @SuppressWarnings("NullableProblems")
+    @Override
+    public Font getFont() {
+        //this is necessary because while Screen has getFont(), if a mod uses non-mojang mappings the method won't be found
+        return this.font;
+    }
+
     protected abstract int getOpenPagesIndexForPage(int pageIndex);
 
     /**
