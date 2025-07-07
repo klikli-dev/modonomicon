@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Style;
 import org.jetbrains.annotations.Nullable;
@@ -146,5 +147,10 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
         this.drawTooltip(guiGraphics, pMouseX, pMouseY);
     }
 
-
+    @SuppressWarnings("NullableProblems")
+    @Override
+    public Font getFont() {
+        //this is necessary because while Screen has getFont(), if a mod uses non-mojang mappings the method won't be found
+        return this.font;
+    }
 }
