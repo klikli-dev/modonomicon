@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.5-1.117.7] - 2025-07-07
+### :wrench: Chores
+- [`bac5576`](https://github.com/klikli-dev/modonomicon/commit/bac5576ad9aea9b756cf8d89d77a021a88e31b78) - rename getFont to getContentFont to avoid clash with mappings *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.5-1.117.6] - 2025-07-07
 ### :wrench: Chores
 - [`bc7d333`](https://github.com/klikli-dev/modonomicon/commit/bc7d333b02f340d4ca0c7d203c6a226244c6c642) - copy default implementation of getFont() from Screen *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1893,3 +1898,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.5-1.117.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.5-1.117.2...release/v1.21.5-1.117.3
 [release/v1.21.5-1.117.5]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.5-1.117.3...release/v1.21.5-1.117.5
 [release/v1.21.5-1.117.6]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.5-1.117.5...release/v1.21.5-1.117.6
+[release/v1.21.5-1.117.7]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.5-1.117.6...release/v1.21.5-1.117.7
