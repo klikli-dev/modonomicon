@@ -11,7 +11,6 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
@@ -40,7 +39,7 @@ public class BookCategoryHasVisibleEntriesCondition extends BookCondition {
                 ResourceLocation.parse(categoryPath) :
                 ResourceLocation.fromNamespaceAndPath(conditionParentId.getNamespace(), categoryPath);
 
-        Component tooltip = Component.translatable(ModonomiconConstants.I18n.Tooltips.CONDITION_CATEGORY_HAS_VISIBLE_ENTRIES, categoryId);
+        Component tooltip = Component.translatable(ModonomiconConstants.I18n.Tooltips.CONDITION_CATEGORY_HAS_VISIBLE_ENTRIES, categoryId.toLanguageKey());
         return new BookCategoryHasVisibleEntriesCondition(tooltip, categoryId);
     }
 
