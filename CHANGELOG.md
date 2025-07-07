@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.5-1.117.5] - 2025-07-07
+### :bug: Bug Fixes
+- [`0637e84`](https://github.com/klikli-dev/modonomicon/commit/0637e844f9298a2871c021291458c2afa556276f) - category without category button can be auto opened *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`e6057b1`](https://github.com/klikli-dev/modonomicon/commit/e6057b15b141a4a0e362a2b177930e9911c9f123) - small lang fix for category_has_visible_entries *(PR [#297](https://github.com/klikli-dev/modonomicon/pull/297) by [@DaFuqs](https://github.com/DaFuqs))*
+
+### :wrench: Chores
+- [`68b020d`](https://github.com/klikli-dev/modonomicon/commit/68b020d6f41c068503f1219d41b587e3d78148fd) - copy default implementation of getFont() from Screen *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.5-1.117.3] - 2025-06-27
 ### :bug: Bug Fixes
 - [`78e08c3`](https://github.com/klikli-dev/modonomicon/commit/78e08c3d0f9a7aed2d98c74f829a35b4b125c3d9) - BookModel is missing turnPageSound *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1877,3 +1886,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.5-1.117.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.5-1.117.0...release/v1.21.5-1.117.1
 [release/v1.21.5-1.117.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.5-1.117.1...release/v1.21.5-1.117.2
 [release/v1.21.5-1.117.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.5-1.117.2...release/v1.21.5-1.117.3
+[release/v1.21.5-1.117.5]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.5-1.117.3...release/v1.21.5-1.117.5
