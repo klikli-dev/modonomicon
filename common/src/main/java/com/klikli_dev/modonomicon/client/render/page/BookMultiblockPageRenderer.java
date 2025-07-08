@@ -101,7 +101,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
         guiGraphics.pose().pushPose();
 
         guiGraphics.pose().translate(xPos, yPos, 100);
-        guiGraphics.pose().scale(scale, scale, scale);
+        guiGraphics.pose().scale(scale, scale);
         guiGraphics.pose().translate(-(float) sizeX / 2, -(float) sizeY / 2, 0);
 
 

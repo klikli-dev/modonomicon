@@ -14,6 +14,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -41,7 +42,6 @@ public class BookErrorScreen extends Screen {
         int x = 0;
         int y = 0;
 
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BOOK_CONTENT_TEXTURE, x, y, 0, 0, 272, 178, 512, 256);
     }
 
@@ -73,10 +73,8 @@ public class BookErrorScreen extends Screen {
 
         this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(this.bookLeft, this.bookTop, 0);
+        guiGraphics.pose().translate(this.bookLeft, this.bookTop);
         this.renderBookBackground(guiGraphics);
-        guiGraphics.pose().popPose();
 
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
@@ -84,10 +82,8 @@ public class BookErrorScreen extends Screen {
             renderable.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
         }
 
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(this.bookLeft, this.bookTop, 0);
+        guiGraphics.pose().translate(this.bookLeft, this.bookTop);
         this.renderError(guiGraphics, this.errorText, 15, 15, BOOK_BACKGROUND_WIDTH - 30);
-        guiGraphics.pose().popPose();
     }
 
     @Override

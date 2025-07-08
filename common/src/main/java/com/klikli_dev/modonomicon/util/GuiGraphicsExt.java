@@ -6,8 +6,10 @@
 
 package com.klikli_dev.modonomicon.util;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -72,7 +74,7 @@ public class GuiGraphicsExt {
      * See Forge IForgeGuiGraphics
      *
      * @param texture       the ResourceLocation object that contains the desired image
-     * @param function      the render type function
+     * @param pipeline      the render pipeline
      * @param x             x-axis offset
      * @param y             y-axis offset
      * @param u             bound resource location image x offset
@@ -83,8 +85,8 @@ public class GuiGraphicsExt {
      * @param textureHeight the height of the box texture in the resource location image
      * @param borderSize    the size of the box's borders
      */
-    public static void blitWithBorder(GuiGraphics guiGraphics, Function<ResourceLocation, RenderType> function, ResourceLocation texture, int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight, int borderSize) {
-        blitWithBorder(guiGraphics, function, texture, x, y, u, v, width, height, textureWidth, textureHeight, borderSize, borderSize, borderSize, borderSize);
+    public static void blitWithBorder(GuiGraphics guiGraphics, RenderPipeline pipeline, ResourceLocation texture, int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight, int borderSize) {
+        blitWithBorder(guiGraphics, pipeline, texture, x, y, u, v, width, height, textureWidth, textureHeight, borderSize, borderSize, borderSize, borderSize);
     }
 
     /**
@@ -93,7 +95,7 @@ public class GuiGraphicsExt {
      * See Forge IForgeGuiGraphics
      *
      * @param texture       the ResourceLocation object that contains the desired image
-     * @param function      the render type function
+     * @param pipeline      the render pipeline
      * @param x             x-axis offset
      * @param y             y-axis offset
      * @param u             bound resource location image x offset
@@ -107,7 +109,7 @@ public class GuiGraphicsExt {
      * @param leftBorder    the size of the box's left border
      * @param rightBorder   the size of the box's right border
      */
-    public static void blitWithBorder(GuiGraphics guiGraphics, Function<ResourceLocation, RenderType> function, ResourceLocation texture, int x, int y, int u, int v, int width, int height, int maxU, int maxV, int topBorder, int bottomBorder, int leftBorder, int rightBorder) {
+    public static void blitWithBorder(GuiGraphics guiGraphics, RenderPipeline pipeline, ResourceLocation texture, int x, int y, int u, int v, int width, int height, int maxU, int maxV, int topBorder, int bottomBorder, int leftBorder, int rightBorder) {
         int fillerWidth = maxU - leftBorder - rightBorder;
         int fillerHeight = maxV - topBorder - bottomBorder;
         int canvasWidth = width - leftBorder - rightBorder;
@@ -119,31 +121,31 @@ public class GuiGraphicsExt {
 
         // Draw Border
         // Top Left
-        guiGraphics.blit(function, texture, x, y, u, v, leftBorder, topBorder, 256, 256);
+        guiGraphics.blit(pipeline, texture, x, y, u, v, leftBorder, topBorder, 256, 256);
         // Top Right
-        guiGraphics.blit(function, texture, x + leftBorder + canvasWidth, y, u + leftBorder + fillerWidth, v, rightBorder, topBorder, 256, 256);
+        guiGraphics.blit(pipeline, texture, x + leftBorder + canvasWidth, y, u + leftBorder + fillerWidth, v, rightBorder, topBorder, 256, 256);
         // Bottom Left
-        guiGraphics.blit(function, texture, x, y + topBorder + canvasHeight, u, v + topBorder + fillerHeight, leftBorder, bottomBorder, 256, 256);
+        guiGraphics.blit(pipeline, texture, x, y + topBorder + canvasHeight, u, v + topBorder + fillerHeight, leftBorder, bottomBorder, 256, 256);
         // Bottom Right
-        guiGraphics.blit(function, texture, x + leftBorder + canvasWidth, y + topBorder + canvasHeight, u + leftBorder + fillerWidth, v + topBorder + fillerHeight, rightBorder, bottomBorder, 256, 256);
+        guiGraphics.blit(pipeline, texture, x + leftBorder + canvasWidth, y + topBorder + canvasHeight, u + leftBorder + fillerWidth, v + topBorder + fillerHeight, rightBorder, bottomBorder, 256, 256);
 
         for (int i = 0; i < xPasses + (remainderWidth > 0 ? 1 : 0); i++) {
             // Top Border
-            guiGraphics.blit(function, texture, x + leftBorder + (i * fillerWidth), y, u + leftBorder, v, (i == xPasses ? remainderWidth : fillerWidth), topBorder, 256, 256);
+            guiGraphics.blit(pipeline, texture, x + leftBorder + (i * fillerWidth), y, u + leftBorder, v, (i == xPasses ? remainderWidth : fillerWidth), topBorder, 256, 256);
             // Bottom Border
-            guiGraphics.blit(function, texture, x + leftBorder + (i * fillerWidth), y + topBorder + canvasHeight, u + leftBorder, v + topBorder + fillerHeight, (i == xPasses ? remainderWidth : fillerWidth), bottomBorder, 256, 256);
+            guiGraphics.blit(pipeline, texture, x + leftBorder + (i * fillerWidth), y + topBorder + canvasHeight, u + leftBorder, v + topBorder + fillerHeight, (i == xPasses ? remainderWidth : fillerWidth), bottomBorder, 256, 256);
 
             // Throw in some filler for good measure
             for (int j = 0; j < yPasses + (remainderHeight > 0 ? 1 : 0); j++)
-                guiGraphics.blit(function, texture, x + leftBorder + (i * fillerWidth), y + topBorder + (j * fillerHeight), u + leftBorder, v + topBorder, (i == xPasses ? remainderWidth : fillerWidth), (j == yPasses ? remainderHeight : fillerHeight), 256, 256);
+                guiGraphics.blit(pipeline, texture, x + leftBorder + (i * fillerWidth), y + topBorder + (j * fillerHeight), u + leftBorder, v + topBorder, (i == xPasses ? remainderWidth : fillerWidth), (j == yPasses ? remainderHeight : fillerHeight), 256, 256);
         }
 
         // Side Borders
         for (int j = 0; j < yPasses + (remainderHeight > 0 ? 1 : 0); j++) {
             // Left Border
-            guiGraphics.blit(function, texture, x, y + topBorder + (j * fillerHeight), u, v + topBorder, leftBorder, (j == yPasses ? remainderHeight : fillerHeight), 256, 256);
+            guiGraphics.blit(pipeline, texture, x, y + topBorder + (j * fillerHeight), u, v + topBorder, leftBorder, (j == yPasses ? remainderHeight : fillerHeight), 256, 256);
             // Right Border
-            guiGraphics.blit(function, texture, x + leftBorder + canvasWidth, y + topBorder + (j * fillerHeight), u + leftBorder + fillerWidth, v + topBorder, rightBorder, (j == yPasses ? remainderHeight : fillerHeight), 256, 256);
+            guiGraphics.blit(pipeline, texture, x + leftBorder + canvasWidth, y + topBorder + (j * fillerHeight), u + leftBorder + fillerWidth, v + topBorder, rightBorder, (j == yPasses ? remainderHeight : fillerHeight), 256, 256);
         }
     }
 

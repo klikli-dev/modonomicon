@@ -29,6 +29,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -171,7 +172,6 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
         //draw a resizeable border. Center parts of each side will be stretched
         //the exact border size mostly does not matter because the center is empty anyway, but 50 gives a lot of flexiblity
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         GuiGraphicsExt.blitWithBorder(guiGraphics, RenderPipelines.GUI_TEXTURED, this.book.getFrameTexture(), x, y, 0, 0, width, height, 140, 140, 50, 50, 50, 50);
 
         //now render overlays on top of that border to cover repeating elements

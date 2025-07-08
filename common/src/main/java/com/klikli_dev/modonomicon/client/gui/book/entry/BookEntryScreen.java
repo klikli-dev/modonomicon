@@ -228,10 +228,8 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
             return;
         }
 
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(page.left, page.top, 0);
+        guiGraphics.pose().translate(page.left, page.top);
         page.render(guiGraphics, pMouseX - this.bookLeft - page.left, pMouseY - this.bookTop - page.top, pPartialTick);
-        guiGraphics.pose().popPose();
     }
 
     protected void onPageChanged() {

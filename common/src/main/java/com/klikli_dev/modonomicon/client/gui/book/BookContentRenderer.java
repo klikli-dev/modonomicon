@@ -15,12 +15,17 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 
 import java.util.function.Function;
 
 public class BookContentRenderer {
 
     private static long lastTurnPageSoundTime;
+
+    public static void drawFromContentTexture(RenderPipeline renderPipeline, GuiGraphics guiGraphics, Book book, int x, int y, int u, int v, int w, int h, int color) {
+        guiGraphics.blit(renderPipeline, book.getBookContentTexture(), x, y, u, v, w, h, 512, 256, color);
+    }
 
     public static void drawFromContentTexture(RenderPipeline renderPipeline, GuiGraphics guiGraphics, Book book, int x, int y, int u, int v, int w, int h) {
         guiGraphics.blit(renderPipeline, book.getBookContentTexture(), x, y, u, v, w, h, 512, 256);
@@ -31,13 +36,17 @@ public class BookContentRenderer {
         int h = 3;
         int rx = x - w / 2;
 
-        RenderSystem.setShaderColor(1F, 1F, 1F, 0.8F);
+        var color = ARGB.colorFromFloat(0.8f, 1f, 1f,1f);
         //u and v are the pixel coordinates in our book_content_texture
-        drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, book, rx, y, 0, 253, w, h);
+        drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, book, rx, y, 0, 253, w, h, color);
     }
 
     public static void drawLock(GuiGraphics guiGraphics, Book book, int x, int y) {
         drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, book, x, y, 496, 0, 16, 16);
+    }
+
+    public static void drawLock(GuiGraphics guiGraphics, Book book, int x, int y, int color) {
+        drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, book, x, y, 496, 0, 16, 16, color);
     }
 
     public static void playTurnPageSound(Book book) {
@@ -52,7 +61,6 @@ public class BookContentRenderer {
         int x = 0; // (this.width - BOOK_BACKGROUND_WIDTH) / 2;
         int y = 0; // (this.height - BOOK_BACKGROUND_HEIGHT) / 2;
 
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, bookContentTexture, x, y, 0, 0, 272, 178, 512, 256);
     }
 

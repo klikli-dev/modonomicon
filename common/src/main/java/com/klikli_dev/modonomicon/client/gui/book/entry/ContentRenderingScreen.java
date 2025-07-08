@@ -107,10 +107,8 @@ public interface ContentRenderingScreen {
             return;
         }
 
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(x, y, 0);
+        guiGraphics.pose().translate(x, y);
         ClientServices.FLUID.drawFluid(guiGraphics, 18, 18, stack, capacity);
-        guiGraphics.pose().popPose();
 
         if (this.isMouseInRange(mouseX, mouseY, x, y, 18, 18)) {
             this.setTooltipStack(stack);
@@ -132,8 +130,7 @@ public interface ContentRenderingScreen {
      * Our copy of guiGraphics.renderComponentHoverEffect(); to handle book links
      */
     default void renderComponentHoverEffect(GuiGraphics guiGraphics, @Nullable Style style, int mouseX, int mouseY) {
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, 1000);
+        //TODO: we had a +1000 z translate here
         var newStyle = style;
         if (style != null && style.getHoverEvent() != null) {
             if (style.getHoverEvent().action() == HoverEvent.Action.SHOW_TEXT && style.getHoverEvent() instanceof HoverEvent.ShowText showText) {
@@ -262,7 +259,5 @@ public interface ContentRenderingScreen {
                 default:
             }
         }
-
-        guiGraphics.pose().popPose();
     }
 }

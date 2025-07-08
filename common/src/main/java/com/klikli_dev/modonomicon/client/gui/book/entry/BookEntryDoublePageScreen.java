@@ -121,22 +121,22 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
         this.resetTooltip();
 
         //we need to modify blit offset (now: z pose) to not draw over toasts
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, -1300);  //magic number arrived by testing until toasts show, but BookOverviewScreen does not
+        //TODO we had -1300z here
         this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
-        guiGraphics.pose().popPose();
 
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(this.bookLeft, this.bookTop, 1000); //push the page background to the front. Otherwise the entries render over it.
+        //TODO we had -1000z here //push the page background to the front. Otherwise the entries render over it.
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(this.bookLeft, this.bookTop);
         BookContentRenderer.renderBookBackground(guiGraphics, this.bookContentTexture);
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
 
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(this.bookLeft, this.bookTop, 1000);//push the page content  to the front. Otherwise the entries render over it.
+        guiGraphics.pose().pushMatrix();
+        //TODO we had -1000z here //push the page background to the front. Otherwise the entries render over it.
+        guiGraphics.pose().translate(this.bookLeft, this.bookTop);
+
         this.renderPage(guiGraphics, this.leftPageRenderer, pMouseX, pMouseY, pPartialTick);
         this.renderPage(guiGraphics, this.rightPageRenderer, pMouseX, pMouseY, pPartialTick);
-        guiGraphics.pose().popPose();
-
+        guiGraphics.pose().popMatrix();
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
         for (var renderable : this.renderables) {

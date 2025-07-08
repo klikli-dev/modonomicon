@@ -16,6 +16,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -74,8 +75,7 @@ public class ReadAllButton extends Button {
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //if focused we go to the right of our normal button (instead of down, like mc buttons do)
 
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, 200);
+        //TODO had a +200 z here
         var hovered = this.isHovered();
 
         int u = U;
@@ -92,10 +92,7 @@ public class ReadAllButton extends Button {
             v = V_READ_ALL;
         }
 
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.parent.getBook().getBookOverviewTexture(), this.getX(), this.getY(), u, v, this.width, this.height, 256, 256);
-
-        guiGraphics.pose().popPose();
     }
 
     private void updateCustomTooltip() {

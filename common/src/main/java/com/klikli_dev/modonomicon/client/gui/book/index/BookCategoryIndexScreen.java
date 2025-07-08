@@ -78,17 +78,14 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
     }
 
     protected void drawTitle(GuiGraphics guiGraphics, int x, int y){
-        guiGraphics.pose().pushPose();
         var scale = Math.min(1.0f, (float) BookEntryScreen.MAX_TITLE_WIDTH / (float) this.font.width(this.getTitle()));
         if (scale < 1) {
-            guiGraphics.pose().translate(x - x * scale, y - y * scale, 0);
-            guiGraphics.pose().scale(scale, scale, scale);
+            guiGraphics.pose().translate(x - x * scale, y - y * scale);
+            guiGraphics.pose().scale(scale, scale);
         }
 
         //we use scale 1 because our scale translation handling in there is off a bit. the above translation code is better
         this.drawCenteredStringNoShadow(guiGraphics, this.getTitle(), x, y, this.getBook().getDefaultTitleColor(), 1);
-
-        guiGraphics.pose().popPose();
     }
 
     public void drawCenteredStringNoShadow(GuiGraphics guiGraphics, Component s, int x, int y, int color) {
@@ -215,13 +212,9 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
         this.resetTooltip();
 
         //we need to modify blit offset (now: z pose) to not draw over toasts
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, -1300);  //magic number arrived by testing until toasts show, but BookOverviewScreen does not
+        //TODO we had -1300z here
         this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
-        guiGraphics.pose().popPose();
-
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(this.bookLeft, this.bookTop, 0);
+        guiGraphics.pose().translate(this.bookLeft, this.bookTop);
 
         BookContentRenderer.renderBookBackground(guiGraphics, this.getBook().getBookContentTexture());
 
@@ -250,8 +243,6 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
                         BookEntryScreen.LEFT_PAGE_X, BookEntryScreen.TOP_PADDING + 22, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - (BookEntryScreen.TOP_PADDING + 22));
             }
         }
-
-        guiGraphics.pose().popPose();
 
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff

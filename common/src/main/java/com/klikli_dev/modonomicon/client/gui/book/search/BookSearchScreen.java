@@ -27,6 +27,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -191,13 +192,9 @@ public class BookSearchScreen extends BookPaginatedScreen {
         this.resetTooltip();
 
         //we need to modify blit offset (now: z pose) to not draw over toasts
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, -1300);  //magic number arrived by testing until toasts show, but BookOverviewScreen does not
+        //TODO we had -1300z here
         this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
-        guiGraphics.pose().popPose();
-
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(this.bookLeft, this.bookTop, 0);
+        guiGraphics.pose().translate(this.bookLeft, this.bookTop);
 
         BookContentRenderer.renderBookBackground(guiGraphics, this.getBook().getBookContentTexture());
 
@@ -221,7 +218,6 @@ public class BookSearchScreen extends BookPaginatedScreen {
 
 
         if (!this.searchField.getValue().isEmpty()) {
-            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             //draw search field bg
             BookContentRenderer.drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, this.parentScreen.getBook(), this.searchField.getX() - 8, this.searchField.getY(), 140, 183, 99, 14);
             var searchComponent = Component.literal(this.searchField.getValue());
@@ -231,14 +227,13 @@ public class BookSearchScreen extends BookPaginatedScreen {
         if (this.visibleEntries.isEmpty()) {
             if (!this.searchField.getValue().isEmpty()) {
                 this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.SEARCH_NO_RESULTS), BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, 80, 0x333333);
-                guiGraphics.pose().scale(2F, 2F, 2F);
+                guiGraphics.pose().scale(2F, 2F);
                 this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.SEARCH_NO_RESULTS_SAD), BookEntryScreen.RIGHT_PAGE_X / 2 + BookEntryScreen.PAGE_WIDTH / 4, 47, 0x999999);
-                guiGraphics.pose().scale(0.5F, 0.5F, 0.5F);
+                guiGraphics.pose().scale(0.5F, 0.5F);
             } else {
                 this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.SEARCH_NO_RESULTS), BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, 80, 0x333333);
             }
         }
-        guiGraphics.pose().popPose();
 
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff

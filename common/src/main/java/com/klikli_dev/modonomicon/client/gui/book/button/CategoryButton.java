@@ -13,8 +13,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 
 public class CategoryButton extends Button {
 
@@ -35,9 +37,8 @@ public class CategoryButton extends Button {
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTicks) {
         if (this.visible) {
-            guiGraphics.pose().pushPose();
             int xOffset = this.getCategory().getBook().getCategoryButtonXOffset();
-            guiGraphics.pose().translate(xOffset, 0, 0);
+            guiGraphics.pose().translate(xOffset, 0);
 
             int texX = 0;
             int texY = 145;
@@ -45,44 +46,37 @@ public class CategoryButton extends Button {
             int renderX = this.getX();
             int renderWidth = this.width;
 
+            int color;
             if (BookGuiManager.get().openBookCategoryScreen != null && this.category == BookGuiManager.get().openBookCategoryScreen.getCategory()) {
                 renderX -= 3;
                 renderWidth += 3;
-                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+                color = ARGB.colorFromFloat(1.0f, 1.0F, 1.0F, 1.0F);
             } else if (this.isHovered()) {
                 renderX -= 1;
                 renderWidth += 1;
-                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+                color = ARGB.colorFromFloat(1.0f, 1.0F, 1.0F, 1.0F);
             } else {
-                RenderSystem.setShaderColor(0.8f, 0.8f, 0.8f, 1.0F);
+                color = ARGB.colorFromFloat(1.0f, 0.8F, 0.8F, 0.8F);
             }
 
             //draw category button background
 //            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.parent.getBookOverviewTexture(), renderX, this.getY(), texX, texY, renderWidth, this.height, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.parent.getBookOverviewTexture(), renderX, this.getY(), texX, texY, renderWidth, this.height, 256, 256, color);
 
             //then draw icon
             int iconSize = 16;
             int centerIconOffset = iconSize / 2;
             float scale = this.getCategory().getBook().getCategoryButtonIconScale();
 
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(0, 0, 100); //push category icon to front
-            guiGraphics.pose().translate(renderX + 8, this.getY() + 2, 0); //move to desired render location
+            //TODO had a +100 z here
+            guiGraphics.pose().translate(renderX + 8, this.getY() + 20); //move to desired render location
 
             //now scale around center
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(centerIconOffset, centerIconOffset, 0);
-            guiGraphics.pose().scale(scale, scale, 1);
-            guiGraphics.pose().translate(-centerIconOffset, -centerIconOffset, 0);
+            guiGraphics.pose().translate(centerIconOffset, centerIconOffset);
+            guiGraphics.pose().scale(scale, scale);
+            guiGraphics.pose().translate(-centerIconOffset, -centerIconOffset);
 
             this.category.getIcon().render(guiGraphics, 0, 0);
-
-            guiGraphics.pose().popPose();
-
-            guiGraphics.pose().popPose();
-
-            guiGraphics.pose().popPose();
         }
     }
 }
