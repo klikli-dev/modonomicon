@@ -59,7 +59,7 @@ public class CategoryButton extends Button {
 
             //draw category button background
 //            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            guiGraphics.blit(RenderType::guiTextured, this.parent.getBookOverviewTexture(), renderX, this.getY(), texX, texY, renderWidth, this.height, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.parent.getBookOverviewTexture(), renderX, this.getY(), texX, texY, renderWidth, this.height, 256, 256);
 
             //then draw icon
             int iconSize = 16;

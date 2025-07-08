@@ -42,7 +42,7 @@ public class BookErrorScreen extends Screen {
         int y = 0;
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        guiGraphics.blit(RenderType::guiTextured, BOOK_CONTENT_TEXTURE, x, y, 0, 0, 272, 178, 512, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BOOK_CONTENT_TEXTURE, x, y, 0, 0, 272, 178, 512, 256);
     }
 
     public void renderError(GuiGraphics guiGraphics, Component text, int x, int y, int width) {

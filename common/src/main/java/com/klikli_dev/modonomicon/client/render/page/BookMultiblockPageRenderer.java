@@ -28,6 +28,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -142,7 +143,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
         }
 
         guiGraphics.pose().pushPose();
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+
         guiGraphics.pose().translate(0, 0, -1);
 
         for (Multiblock.SimulateResult r : this.multiblockSimulation.getSecond()) {
@@ -230,8 +231,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
         //render a frame for the multiblock render area
         int x = BookEntryScreen.PAGE_WIDTH / 2 - 53;
         int y = 7;
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        BookContentRenderer.drawFromContentTexture(RenderType::guiTexturedOverlay, guiGraphics, this.page.getBook(), x, y, 405, 149, 106, 106);
+        BookContentRenderer.drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, this.page.getBook(), x, y, 405, 149, 106, 106);
 
         //render multiblock name in place of title
         if (!this.page.getMultiblockName().isEmpty()) {

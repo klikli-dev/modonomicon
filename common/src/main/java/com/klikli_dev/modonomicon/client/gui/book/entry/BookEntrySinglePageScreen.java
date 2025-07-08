@@ -40,7 +40,7 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
         int y = 0; // (this.height - BOOK_BACKGROUND_HEIGHT) / 2;
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        guiGraphics.blit(RenderType::guiTextured, bookContentTexture, x, y, 0, 0, 145, 178, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, bookContentTexture, x, y, 0, 0, 145, 178, 256, 256);
     }
 
     @Override

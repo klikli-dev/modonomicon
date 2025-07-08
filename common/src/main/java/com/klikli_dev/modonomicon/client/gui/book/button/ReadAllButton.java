@@ -93,7 +93,7 @@ public class ReadAllButton extends Button {
         }
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        guiGraphics.blit(RenderType::guiTextured, this.parent.getBook().getBookOverviewTexture(), this.getX(), this.getY(), u, v, this.width, this.height, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.parent.getBook().getBookOverviewTexture(), this.getX(), this.getY(), u, v, this.width, this.height, 256, 256);
 
         guiGraphics.pose().popPose();
     }

@@ -54,7 +54,7 @@ public class SearchButton extends Button {
             guiGraphics.enableScissor(scissorX, scissorY, scissorX + scissorWidth, scissorY + 1000);
 
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            guiGraphics.blit(RenderType::guiTextured, this.parent.getBook().getBookOverviewTexture(), renderX, this.getY(), texX, texY, this.width, this.height, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.parent.getBook().getBookOverviewTexture(), renderX, this.getY(), texX, texY, this.width, this.height, 256, 256);
 
             guiGraphics.disableScissor();
 

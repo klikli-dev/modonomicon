@@ -124,12 +124,12 @@ public class BookCommand {
             player.sendSystemMessage(Component.translatable(failureMessage).withStyle(ChatFormatting.RED));
             return;
         } else {
-            var commandSourceStack = new CommandSourceStack(player.commandSource(), player.position(), player.getRotationVector(), player.serverLevel(), this.permissionLevel, player.getName().getString(), player.getDisplayName(), player.server, player);
+            var commandSourceStack = new CommandSourceStack(player.commandSource(), player.position(), player.getRotationVector(), player.level(), this.permissionLevel, player.getName().getString(), player.getDisplayName(), player.getServer(), player);
 
             BookUnlockStateManager.get().setRunFor(player, this);
 
             try {
-                player.server.getCommands().performPrefixedCommand(commandSourceStack, this.command);
+                player.getServer().getCommands().performPrefixedCommand(commandSourceStack, this.command);
 
                 if (this.successMessage != null) {
                     player.sendSystemMessage(Component.translatable(this.successMessage).withStyle(ChatFormatting.GREEN));

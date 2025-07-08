@@ -25,6 +25,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -174,7 +175,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         } else {
             //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
             //force offset to int here to reduce difference to entry rendering which is pos based and thus int precision only
-            guiGraphics.blit(RenderType::guiTextured, this.category.getBackground(), innerX, innerY,
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.category.getBackground(), innerX, innerY,
                     (this.scrollX + MAX_SCROLL) / scale + xOffset,
                     (this.scrollY + MAX_SCROLL) / scale + yOffset,
                     innerWidth, innerHeight, (int) (backgroundHeight * backgroundTextureZoomMultiplier), (int) (backgroundWidth * backgroundTextureZoomMultiplier));
@@ -187,7 +188,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
         if (layer.getVanishZoom() == -1 || layer.getVanishZoom() > zoom) {
             //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
-            guiGraphics.blit(RenderType::guiTextured, layer.getBackground(), x, y,
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, layer.getBackground(), x, y,
                     (scrollX + this.getCategory().getMaxScrollX()) / parallax1 + xOffset,
                     (scrollY + this.getCategory().getMaxScrollY()) / parallax1 + yOffset,
                     width, height, (int) (backgroundHeight * backgroundTextureZoomMultiplier), (int) (backgroundWidth * backgroundTextureZoomMultiplier));
@@ -229,13 +230,14 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
             if (displayState == EntryDisplayState.LOCKED) {
                 //Draw locked entries greyed out
+                //TODO shader color needs to be handed as last parameter to blit
                 RenderSystem.setShaderColor(0.2F, 0.2F, 0.2F, 1.0F);
             } else if (isHovered) {
                 //Draw hovered entries slightly greyed out
                 RenderSystem.setShaderColor(0.8F, 0.8F, 0.8F, 1.0F);
             }
             //render entry background
-            guiGraphics.blit(RenderType::guiTextured, this.category.getEntryTextures(), entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.category.getEntryTextures(), entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT, 256, 256);
 
             guiGraphics.pose().pushPose();
 
@@ -251,11 +253,10 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                 final int width = 11;
                 final int height = 11;
 
-                //testing
                 guiGraphics.pose().pushPose();
                 guiGraphics.pose().translate(0, 0, 11); //and push the unread icon in front of the background and icon (they are at Z 10)
                 //if focused we go to the right of our normal button (instead of down, like mc buttons do)
-                BookContentRenderer.drawFromContentTexture(RenderType::guiTexturedOverlay, guiGraphics, this.bookParentScreen.getBook(),
+                BookContentRenderer.drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, this.bookParentScreen.getBook(),
                         entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 16 + 2,
                         entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP - 2, U + (isHovered ? width : 0), V, width, height);
                 guiGraphics.pose().popPose();

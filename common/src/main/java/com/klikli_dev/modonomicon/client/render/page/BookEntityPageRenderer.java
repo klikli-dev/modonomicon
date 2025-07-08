@@ -18,6 +18,7 @@ import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.network.chat.Component;
@@ -88,8 +89,7 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
 
         int x = BookEntryScreen.PAGE_WIDTH / 2 - 53;
         int y = 7;
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-       BookContentRenderer.drawFromContentTexture(RenderType::guiTexturedOverlay, guiGraphics, this.getPage().getBook(), x, y, 405, 149, 106, 106);
+       BookContentRenderer.drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, this.getPage().getBook(), x, y, 405, 149, 106, 106);
 
         if (this.errored) {
             guiGraphics.drawString(this.font, Component.translatable(Gui.PAGE_ENTITY_LOADING_ERROR), 58, 60, 0xFF0000, true);
