@@ -25,10 +25,14 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -165,8 +169,6 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         float xOffset = xScale == scale ? 0 : (MAX_SCROLL - (innerWidth + MAX_SCROLL * 2.0f / scale)) / 2;
         float yOffset = yScale == scale ? 0 : (MAX_SCROLL - (innerHeight + MAX_SCROLL * 2.0f / scale)) / 2;
 
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
         //note we cannot translate -z here because even -1 immediately pushes us behind the scene -> not visible
         if (!this.category.getBackgroundParallaxLayers().isEmpty()) {
             this.category.getBackgroundParallaxLayers().forEach(layer -> {
@@ -197,14 +199,12 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
     }
 
     private void renderEntries(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         //calculate the render offset
         float xOffset = this.getXOffset();
         float yOffset = this.getYOffset();
 
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().scale(this.currentZoom, this.currentZoom, 1.0f);
+        guiGraphics.pose().scale(this.currentZoom, this.currentZoom);
 
         for (var entry : this.category.getEntries().values()) {
             var displayState = this.getEntryDisplayState(entry);
@@ -216,35 +216,31 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             int texX = entry.getEntryBackgroundVIndex() * ENTRY_HEIGHT;
             int texY = entry.getEntryBackgroundUIndex() * ENTRY_WIDTH;
 
-            guiGraphics.pose().pushPose();
             //we translate instead of applying the offset to the entry x/y to avoid jittering when moving
-            guiGraphics.pose().translate(xOffset, yOffset, 0);
+            guiGraphics.pose().translate(xOffset, yOffset);
 
 
             //we apply a z offset to push the entries before the connection arrows
-            guiGraphics.pose().translate(0, 0, 10);
+            //TODO here we had a translate +10z
 
             //As of 1.20 this is not necessary, in fact it causes the entry to render behind the bg
             //guiGraphics.pose().translate(0, 0, -10); //push the whole entry behind the frame
 
 
+            int color = ARGB.colorFromFloat(1.0f, 1.0F, 1.0F, 1.0F);
             if (displayState == EntryDisplayState.LOCKED) {
                 //Draw locked entries greyed out
                 //TODO shader color needs to be handed as last parameter to blit
-                RenderSystem.setShaderColor(0.2F, 0.2F, 0.2F, 1.0F);
+                color = ARGB.colorFromFloat(0.2f, 0.2F, 0.2F, 0.2F);
             } else if (isHovered) {
                 //Draw hovered entries slightly greyed out
-                RenderSystem.setShaderColor(0.8F, 0.8F, 0.8F, 1.0F);
+                color = ARGB.colorFromFloat(0.8f, 0.8F, 0.8F, 1.0F);
             }
             //render entry background
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.category.getEntryTextures(), entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT, 256, 256);
-
-            guiGraphics.pose().pushPose();
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.category.getEntryTextures(), entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT, 256, 256, color);
 
             //render icon
             entry.getIcon().render(guiGraphics, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 5, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP + 5);
-
-            guiGraphics.pose().popPose();
 
             //render unread icon
             if (displayState == EntryDisplayState.UNLOCKED && !BookUnlockStateManager.get().isReadFor(Minecraft.getInstance().player, entry)) {
@@ -253,23 +249,15 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                 final int width = 11;
                 final int height = 11;
 
-                guiGraphics.pose().pushPose();
-                guiGraphics.pose().translate(0, 0, 11); //and push the unread icon in front of the background and icon (they are at Z 10)
+                //TODO her ewe had translate +11 z
                 //if focused we go to the right of our normal button (instead of down, like mc buttons do)
                 BookContentRenderer.drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, this.bookParentScreen.getBook(),
                         entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 16 + 2,
                         entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP - 2, U + (isHovered ? width : 0), V, width, height);
-                guiGraphics.pose().popPose();
             }
-
-            guiGraphics.pose().popPose();
-
-            //reset color to avoid greyed out carrying over
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
             this.renderConnections(guiGraphics, entry, xOffset, yOffset);
         }
-        guiGraphics.pose().popPose();
     }
 
     public void renderEntryTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
@@ -303,22 +291,22 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         //hovered?
         if (this.isEntryHovered(entry, xOffset, yOffset, mouseX, mouseY)) {
 
-            var tooltip = new ArrayList<Component>();
+            var tooltip = new ArrayList<ClientTooltipComponent>();
 
             if (displayState == EntryDisplayState.LOCKED) {
-                tooltip.addAll(entry.getCondition().getTooltip(Minecraft.getInstance().player, BookConditionEntryContext.of(this.bookParentScreen.getBook(), entry)));
+                tooltip.addAll(
+                        entry.getCondition().getTooltip(Minecraft.getInstance().player, BookConditionEntryContext.of(this.bookParentScreen.getBook(), entry)).stream().map(Component::getVisualOrderText).map(ClientTooltipComponent::create).toList());
             } else if (displayState == EntryDisplayState.UNLOCKED) {
                 //add name in bold
-                tooltip.add(Component.translatable(entry.getName()).withStyle(ChatFormatting.BOLD));
+                tooltip.add(ClientTooltipComponent.create(Component.translatable(entry.getName()).withStyle(ChatFormatting.BOLD).getVisualOrderText()));
                 //add description
                 if (!entry.getDescription().isEmpty()) {
-                    tooltip.add(Component.translatable(entry.getDescription()));
+                    tooltip.add(ClientTooltipComponent.create(Component.translatable(entry.getDescription()).getVisualOrderText()));
                 }
             }
 
             //draw description
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            guiGraphics.renderTooltip(Minecraft.getInstance().font, tooltip, Optional.empty(), mouseX, mouseY);
+            guiGraphics.renderTooltip(Minecraft.getInstance().font, tooltip, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
         }
     }
 
@@ -330,10 +318,8 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             if (parentDisplayState == EntryDisplayState.HIDDEN)
                 continue;
 
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(xOffset, yOffset, 0);
+            guiGraphics.pose().translate(xOffset, yOffset);
             this.connectionRenderer.render(guiGraphics, entry, parent);
-            guiGraphics.pose().popPose();
         }
     }
 
