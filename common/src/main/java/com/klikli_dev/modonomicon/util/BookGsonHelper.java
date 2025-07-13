@@ -8,8 +8,10 @@ package com.klikli_dev.modonomicon.util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 
 public class BookGsonHelper {
 
@@ -21,7 +23,7 @@ public class BookGsonHelper {
         if (pJson.isJsonPrimitive()) {
             return new BookTextHolder(pJson.getAsString());
         } else {
-            return new BookTextHolder(Component.Serializer.fromJson(pJson, provider));
+            return new BookTextHolder(ComponentSerialization.CODEC.parse(provider.createSerializationContext(JsonOps.INSTANCE), pJson).getOrThrow());
         }
     }
 }
