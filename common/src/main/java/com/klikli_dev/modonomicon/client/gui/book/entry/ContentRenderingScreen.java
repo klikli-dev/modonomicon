@@ -238,7 +238,7 @@ public interface ContentRenderingScreen {
                     //temporarily modify width to force forge to handle wrapping correctly
                     var backupWidth = this.asScreen().width;
                     this.asScreen().width = this.asScreen().width / 2; //not quite sure why exaclty / 2 works, but then forge wrapping handles it correctly on gui scale 3+4
-                    guiGraphics.renderTooltip(this.getContentFont(), itemstack, mouseX, mouseY);
+                    guiGraphics.setTooltipForNextFrame(this.getContentFont(), itemstack, mouseX, mouseY);
                     this.asScreen().width = backupWidth;
 
                     //then we reset so other item tooltip renders are not affected
@@ -248,13 +248,13 @@ public interface ContentRenderingScreen {
                 case HoverEvent.ShowEntity(HoverEvent.EntityTooltipInfo hoverevent$entitytooltipinfo1):
                     HoverEvent.EntityTooltipInfo hoverevent$entitytooltipinfo = hoverevent$entitytooltipinfo1;
                     if (this.getMinecraft().options.advancedItemTooltips) {
-                        guiGraphics.renderComponentTooltip(this.getContentFont(), hoverevent$entitytooltipinfo.getTooltipLines(), mouseX, mouseY);
+                        guiGraphics.setTooltipForNextFrame(this.getContentFont(), hoverevent$entitytooltipinfo.getTooltipLines().stream().map(Component::getVisualOrderText).toList(), mouseX, mouseY);
                     }
                     break;
                 case HoverEvent.ShowText(Component component):
                     //      guiGraphics.renderTooltip(this.getFont(), this.getFont().split(component, Math.max(guiGraphics.guiWidth() / 2, 200)), mouseX, mouseY); //render call with original width calc
                     var width = (this.asScreen().width / 2) - mouseX - 10; //our own width calc
-                    guiGraphics.renderTooltip(this.getContentFont(), this.getContentFont().split(component, width), mouseX, mouseY);
+                    guiGraphics.setTooltipForNextFrame(this.getContentFont(), this.getContentFont().split(component, width), mouseX, mouseY);
                     break;
                 default:
             }

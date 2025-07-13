@@ -111,7 +111,7 @@ public class BookBookmarksScreen extends BookPaginatedScreen {
 
     protected void drawTooltip(GuiGraphics guiGraphics, int pMouseX, int pMouseY) {
         if (this.tooltip != null && !this.tooltip.isEmpty()) {
-            guiGraphics.renderComponentTooltip(this.font, this.tooltip, pMouseX, pMouseY);
+            guiGraphics.setTooltipForNextFrame(this.tooltip.stream().map(Component::getVisualOrderText).toList(), pMouseX, pMouseY);
         }
     }
 
