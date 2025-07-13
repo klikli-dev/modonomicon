@@ -109,8 +109,8 @@ public class MultiblockPreviewRenderer {
                 return;
             }
 
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(0, -Math.max(0, animTime - waitTime) * fadeOutSpeed, 0);
+            guiGraphics.pose().pushMatrix();
+            guiGraphics.pose().translate(0, -Math.max(0, animTime - waitTime) * fadeOutSpeed);
 
             Minecraft mc = Minecraft.getInstance();
             int x = mc.getWindow().getGuiScaledWidth() / 2;
@@ -125,12 +125,12 @@ public class MultiblockPreviewRenderer {
 
             if (timeComplete > 0) {
                 String s = I18n.get(ModonomiconConstants.I18n.Multiblock.COMPLETE);
-                guiGraphics.pose().pushPose();
-                guiGraphics.pose().translate(0, Math.min(height + 5, animTime), 0);
+                guiGraphics.pose().pushMatrix();
+                guiGraphics.pose().translate(0, Math.min(height + 5, animTime));
                 guiGraphics.drawString(mc.font, s, (int) (x - mc.font.width(s) / 2.0F), top + height - 10, 0x00FF00, false);
-                guiGraphics.pose().popPose();
+                guiGraphics.pose().popMatrix();
             }
-            guiGraphics.pose().pushPose();
+            guiGraphics.pose().popMatrix();
 
             //render a black square at the "bottom", 1px larger than the actual progress bar, so it acts as a border
             guiGraphics.fill(left - 1, top - 1, left + width + 1, top + height + 1, 0xFF000000);
@@ -146,7 +146,7 @@ public class MultiblockPreviewRenderer {
             //finally, on top of that, render a colored gradient as "filled progress"
             guiGraphics.fillGradient(left, top, left + progressWidth, top + height, color, color2);
 
-            guiGraphics.pose().popPose();
+            guiGraphics.pose().popMatrix();
             if (!isAnchored) {
                 String s = I18n.get(ModonomiconConstants.I18n.Multiblock.NOT_ANCHORED);
                 guiGraphics.drawString(mc.font, s, (int) (x - mc.font.width(s) / 2.0F), top + height + 8, 0xFFFFFF, false);
@@ -184,7 +184,7 @@ public class MultiblockPreviewRenderer {
                 }
             }
 
-            guiGraphics.pose().popPose();
+            guiGraphics.pose().popMatrix();
         }
     }
 
