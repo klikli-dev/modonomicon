@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -25,46 +26,40 @@ public class GuiGraphicsExt {
     /**
      * drawString for rendering at float coordinates.
      */
-    public static int drawString(GuiGraphics guiGraphics, Font font, @Nullable Component component, float x, float y, int color, boolean drawShadow) {
-        if (component == null) {
-            return 0;
-        } else {
-            AtomicInteger i = new AtomicInteger();
-            guiGraphics.drawSpecial(bufferSource -> {
-                i.set(font.drawInBatch(component, x, y, color, drawShadow, guiGraphics.pose().last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, 15728880));
-            });
-            return i.get();
-        }
+    public static void drawString(GuiGraphics guiGraphics, Font font, Component component, float x, float y, int color, boolean drawShadow) {
+            int x1i = Mth.floor(x);
+            int y1i = Mth.floor(y);
+            float x1f = x-x1i;
+            float y1f = y-y1i;
+
+            guiGraphics.pose().translate(x1f, y1f);
+            guiGraphics.drawString(font, component, x1i, y1i, color, drawShadow);
     }
 
     /**
      * drawString for rendering at float coordinates.
      */
-    public static int drawString(GuiGraphics guiGraphics, Font font, @Nullable String string, float x, float y, int color, boolean drawShadow) {
-        if (string == null) {
-            return 0;
-        } else {
-            AtomicInteger i = new AtomicInteger();
-            guiGraphics.drawSpecial(bufferSource -> {
-                i.set(font.drawInBatch(string, x, y, color, drawShadow, guiGraphics.pose().last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, 15728880));
-            });
-            return i.get();
-        }
+    public static void drawString(GuiGraphics guiGraphics, Font font, String string, float x, float y, int color, boolean drawShadow) {
+        int x1i = Mth.floor(x);
+        int y1i = Mth.floor(y);
+        float x1f = x-x1i;
+        float y1f = y-y1i;
+
+        guiGraphics.pose().translate(x1f, y1f);
+        guiGraphics.drawString(font, string, x1i, y1i, color, drawShadow);
     }
 
     /**
      * drawString for rendering at float coordinates.
      */
-    public static int drawString(GuiGraphics guiGraphics, Font font, @Nullable FormattedCharSequence string, float x, float y, int color, boolean drawShadow) {
-        if (string == null) {
-            return 0;
-        } else {
-            AtomicInteger i = new AtomicInteger();
-            guiGraphics.drawSpecial(bufferSource -> {
-                i.set(font.drawInBatch(string, x, y, color, drawShadow, guiGraphics.pose().last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, 15728880));
-            });
-            return i.get();
-        }
+    public static void drawString(GuiGraphics guiGraphics, Font font, FormattedCharSequence string, float x, float y, int color, boolean drawShadow) {
+        int x1i = Mth.floor(x);
+        int y1i = Mth.floor(y);
+        float x1f = x-x1i;
+        float y1f = y-y1i;
+
+        guiGraphics.pose().translate(x1f, y1f);
+        guiGraphics.drawString(font, string, x1i, y1i, color, drawShadow);
     }
 
 
