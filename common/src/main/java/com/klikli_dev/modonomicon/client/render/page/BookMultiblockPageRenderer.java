@@ -98,6 +98,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
         int xPos = BookEntryScreen.PAGE_WIDTH / 2;
         int yPos = 60;
 
+        //TODO: we probably need to call guigraphics render picture in picture thing
         guiGraphics.pose().pushPose();
 
         guiGraphics.pose().translate(xPos, yPos, 100);
