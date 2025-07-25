@@ -10,7 +10,12 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 public final class GhostVertexConsumer extends VertexConsumerWrapper {
+    private static final Map<VertexConsumer, VertexConsumer> remappedVertexConsumers = new IdentityHashMap<>();
+
     private final int alpha;
     private final int white;
 
@@ -18,6 +23,12 @@ public final class GhostVertexConsumer extends VertexConsumerWrapper {
         super(wrapped);
         this.alpha = alpha;
         this.white = ARGB.color(alpha, 0xFFFFFF);
+    }
+
+    public static VertexConsumer remap(VertexConsumer in) {
+        return remappedVertexConsumers.computeIfAbsent(in, (type) -> {
+            return new GhostVertexConsumer(in, (int) (0.4f * 255));
+        });
     }
 
     @Override

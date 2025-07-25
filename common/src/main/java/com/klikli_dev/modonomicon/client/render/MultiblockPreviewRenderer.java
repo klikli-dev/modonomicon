@@ -17,7 +17,9 @@ import com.klikli_dev.modonomicon.multiblock.matcher.DisplayOnlyMatcher;
 import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.ByteBufferBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -45,6 +47,7 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -378,12 +381,7 @@ public class MultiblockPreviewRenderer {
     private static MultiBufferSource.BufferSource initBuffers(MultiBufferSource.BufferSource original) {
         var fallback = original.sharedBuffer;
         var layerBuffers = original.fixedBuffers;
-        //TODO here or in ghostrendertype we need to remap the vertexconsumer we use
-        SequencedMap<RenderType, ByteBufferBuilder> remapped = new Object2ObjectLinkedOpenHashMap<>();
-        for (Map.Entry<RenderType, ByteBufferBuilder> e : layerBuffers.entrySet()) {
-            remapped.put(GhostRenderType.remap(e.getKey()), e.getValue());
-        }
-        return new GhostBuffers(fallback, remapped);
+        return new GhostBuffers(fallback, layerBuffers);
     }
 
     private static class GhostBuffers extends MultiBufferSource.BufferSource {
@@ -392,8 +390,8 @@ public class MultiblockPreviewRenderer {
         }
 
         @Override
-        public VertexConsumer getBuffer(RenderType type) {
-            return super.getBuffer(GhostRenderType.remap(type));
+        public @NotNull VertexConsumer getBuffer(@NotNull RenderType type) {
+            return GhostVertexConsumer.remap(super.getBuffer(type));
         }
     }
 
