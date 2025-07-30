@@ -24,6 +24,12 @@ For `/data/<mod_id>/modonomicons/my_book/commands/rewards/apple` the id would be
 
 The minecraft command to run. Commands will be run with the player as "sender", so take that into account.
 
+### **allowed_entries** (List of Strings, _mandatory_)
+
+A list of entry ids (without book or category id) that this command is allowed to be run from.
+Please specify all entries in which you plan to include a command link to this command.
+This is a security feature to prevent players from running commands before unlocking the required content.
+
 ### **permission_level** (Integer, _optional_)
 
 Defaults to `0`.    
