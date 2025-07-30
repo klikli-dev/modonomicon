@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.1-1.115.0] - 2025-07-30
+### :sparkles: New Features
+- [`5d7ced5`](https://github.com/klikli-dev/modonomicon/commit/5d7ced5368a90ab5619febef00080ed65634587a) - run commands only on allowed entries and only increase command uses on success *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.1-1.114.5] - 2025-07-07
 ### :bug: Bug Fixes
 - [`00967cb`](https://github.com/klikli-dev/modonomicon/commit/00967cbb20a726d0983ac5eb92b4a1d594cbfe89) - small lang fix for category_has_visible_entries *(PR [#297](https://github.com/klikli-dev/modonomicon/pull/297) by [@DaFuqs](https://github.com/DaFuqs))*
@@ -1866,3 +1871,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.1-1.114.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.114.2...release/v1.21.1-1.114.3
 [release/v1.21.1-1.114.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.114.3...release/v1.21.1-1.114.4
 [release/v1.21.1-1.114.5]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.114.4...release/v1.21.1-1.114.5
+[release/v1.21.1-1.115.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.114.5...release/v1.21.1-1.115.0
