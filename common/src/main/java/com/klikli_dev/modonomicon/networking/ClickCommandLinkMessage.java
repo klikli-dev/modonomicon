@@ -25,15 +25,24 @@ public class ClickCommandLinkMessage implements Message {
             (m) -> m.bookId,
             ResourceLocation.STREAM_CODEC,
             (m) -> m.commandId,
+            ResourceLocation.STREAM_CODEC,
+            (m) -> m.entryId,
             ClickCommandLinkMessage::new
     );
 
     public ResourceLocation bookId;
     public ResourceLocation commandId;
+    public ResourceLocation entryId; // The entry the command is being run from
 
-    public ClickCommandLinkMessage(ResourceLocation bookId, ResourceLocation commandId) {
+    public ClickCommandLinkMessage(ResourceLocation bookId, ResourceLocation commandId, ResourceLocation entryId) {
         this.bookId = bookId;
         this.commandId = commandId;
+        this.entryId = entryId;
+    }
+
+    // Backwards compatibility
+    public ClickCommandLinkMessage(ResourceLocation bookId, ResourceLocation commandId) {
+        this(bookId, commandId, null);
     }
 
     @Override
@@ -47,6 +56,14 @@ public class ClickCommandLinkMessage implements Message {
         if (book != null) {
             var command = book.getCommand(this.commandId);
             if (command != null) {
+                // Check if the entry is allowed for this command
+                if (this.entryId != null && !command.isEntryAllowed(this.entryId)) {
+                    // Always use the modonomicon-defined failure message
+                    player.sendSystemMessage(net.minecraft.network.chat.Component.translatable(
+                        com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Command.FAILURE_NOT_ALLOWED_HERE
+                    ).withStyle(net.minecraft.ChatFormatting.RED));
+                    return;
+                }
                 command.execute(player);
             }
         }

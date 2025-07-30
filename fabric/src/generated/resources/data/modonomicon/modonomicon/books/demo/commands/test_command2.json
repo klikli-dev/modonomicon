@@ -1,4 +1,7 @@
 {
+  "allowed_entries": [
+    "modonomicon:features/command"
+  ],
   "command": "/give @s minecraft:wheat 1",
   "max_uses": 1,
   "permission_level": 2,

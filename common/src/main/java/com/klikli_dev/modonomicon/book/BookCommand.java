@@ -19,6 +19,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.GsonHelper;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 public class BookCommand {
     protected ResourceLocation id;
     protected Book book;
@@ -46,13 +50,24 @@ public class BookCommand {
     @Nullable
     protected String successMessage;
 
-    public BookCommand(ResourceLocation id, String command, int permissionLevel, int maxUses, @Nullable String failureMessage, @Nullable String successMessage) {
+    /**
+     * The set of entry resource locations where this command can be run. If empty or null, allowed everywhere.
+     */
+    protected Set<ResourceLocation> allowedEntries;
+
+    public BookCommand(ResourceLocation id, String command, int permissionLevel, int maxUses, @Nullable String failureMessage, @Nullable String successMessage, @Nullable Set<ResourceLocation> allowedEntries) {
         this.id = id;
         this.command = command;
         this.permissionLevel = permissionLevel;
         this.maxUses = maxUses;
         this.failureMessage = failureMessage;
         this.successMessage = successMessage;
+        this.allowedEntries = allowedEntries == null ? Collections.emptySet() : allowedEntries;
+    }
+
+    // Backwards compatible constructor
+    public BookCommand(ResourceLocation id, String command, int permissionLevel, int maxUses, @Nullable String failureMessage, @Nullable String successMessage) {
+        this(id, command, permissionLevel, maxUses, failureMessage, successMessage, null);
     }
 
     public static BookCommand fromJson(ResourceLocation id, JsonObject json) {
@@ -61,8 +76,13 @@ public class BookCommand {
         var maxUses = GsonHelper.getAsInt(json, "max_uses", ModonomiconConstants.Data.Command.DEFAULT_MAX_USES);
         var failureMessage = GsonHelper.getAsString(json, "failure_message", null);
         var successMessage = GsonHelper.getAsString(json, "success_message", null);
-
-        return new BookCommand(id, command, permissionLevel, maxUses, failureMessage, successMessage);
+        Set<ResourceLocation> allowedEntries = new HashSet<>();
+        if (json.has("allowed_entries")) {
+            for (var e : GsonHelper.getAsJsonArray(json, "allowed_entries")) {
+                allowedEntries.add(ResourceLocation.parse(e.getAsString()));
+            }
+        }
+        return new BookCommand(id, command, permissionLevel, maxUses, failureMessage, successMessage, allowedEntries);
     }
 
     public static BookCommand fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
@@ -71,7 +91,12 @@ public class BookCommand {
         var maxUses = buffer.readVarInt();
         var failureMessage = buffer.readNullable(FriendlyByteBuf::readUtf);
         var successMessage = buffer.readNullable(FriendlyByteBuf::readUtf);
-        return new BookCommand(id, command, permissionLevel, maxUses, failureMessage, successMessage);
+        int allowedEntriesSize = buffer.readVarInt();
+        Set<ResourceLocation> allowedEntries = new HashSet<>();
+        for (int i = 0; i < allowedEntriesSize; i++) {
+            allowedEntries.add(buffer.readResourceLocation());
+        }
+        return new BookCommand(id, command, permissionLevel, maxUses, failureMessage, successMessage, allowedEntries);
     }
 
     /**
@@ -87,6 +112,10 @@ public class BookCommand {
         buffer.writeVarInt(this.maxUses);
         buffer.writeNullable(this.failureMessage, FriendlyByteBuf::writeUtf);
         buffer.writeNullable(this.successMessage, FriendlyByteBuf::writeUtf);
+        buffer.writeVarInt(this.allowedEntries.size());
+        for (var entry : this.allowedEntries) {
+            buffer.writeResourceLocation(entry);
+        }
     }
 
     public ResourceLocation getId() {
@@ -117,6 +146,10 @@ public class BookCommand {
         return this.successMessage;
     }
 
+    public Set<ResourceLocation> getAllowedEntries() {
+        return this.allowedEntries;
+    }
+
     public void execute(ServerPlayer player) {
         if (!BookUnlockStateManager.get().canRunFor(player, this)) {
             var failureMessage = this.failureMessage == null ? ModonomiconConstants.I18n.Command.DEFAULT_FAILURE_MESSAGE : this.failureMessage;
@@ -124,16 +157,21 @@ public class BookCommand {
             player.sendSystemMessage(Component.translatable(failureMessage).withStyle(ChatFormatting.RED));
             return;
         } else {
-            var commandSourceStack = new CommandSourceStack(player, player.position(), player.getRotationVector(), player.serverLevel(), this.permissionLevel, player.getName().getString(), player.getDisplayName(), player.server, player);
+            var commandSourceStack = new CommandSourceStack(player, player.position(), player.getRotationVector(), player.serverLevel(), this.permissionLevel, player.getName().getString(), player.getDisplayName(), player.server, player)
+                    .withCallback((success, result) -> {
+                        if (success) {
+                            BookUnlockStateManager.get().setRunFor(player, this);
+                            if (this.successMessage != null) {
+                                player.sendSystemMessage(Component.translatable(this.successMessage).withStyle(ChatFormatting.GREEN));
+                            }
+                        } else {
+                            Modonomicon.LOG.error("Command [" + this.id.toString() + "] was executed, but failed.");
+                        }
+                    });
 
-            BookUnlockStateManager.get().setRunFor(player, this);
 
             try {
                 player.server.getCommands().performPrefixedCommand(commandSourceStack, this.command);
-
-                if (this.successMessage != null) {
-                    player.sendSystemMessage(Component.translatable(this.successMessage).withStyle(ChatFormatting.GREEN));
-                }
             } catch (Exception e) {
                 Modonomicon.LOG.error("Running command [" + this.id.toString() + "] failed: ", e);
             }
@@ -143,5 +181,9 @@ public class BookCommand {
         //This allows us to "Pretend" success clientside and disable the command source (button/link/etc) so the player cannot spam-click it.
         //spam-clicking would not allow abuse anyway, but would lead to error messages sent back to the player.
         BookUnlockStateManager.get().syncFor(player);
+    }
+
+    public boolean isEntryAllowed(ResourceLocation entry) {
+        return this.allowedEntries.contains(entry);
     }
 }
