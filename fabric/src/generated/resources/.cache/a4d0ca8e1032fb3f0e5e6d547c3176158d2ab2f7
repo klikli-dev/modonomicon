@@ -1,3 +1,9 @@
+<<<<<<< HEAD
 // 1.21.5	-999999999-01-01T00:00:00	Modonomicon/Tags for minecraft:item
 44de4772d365fcc0e5706dbfcd83d2967ec352c0 data/minecraft/tags/item/bookshelf_books.json
 44de4772d365fcc0e5706dbfcd83d2967ec352c0 data/minecraft/tags/item/lectern_books.json
+=======
+// 1.21.1	2025-07-30T15:03:33.3001091	Modonomicon/Tags for minecraft:item
+44de4772d365fcc0e5706dbfcd83d2967ec352c0 data\minecraft\tags\item\bookshelf_books.json
+44de4772d365fcc0e5706dbfcd83d2967ec352c0 data\minecraft\tags\item\lectern_books.json
+>>>>>>> 5d7ced53 (feat: run commands only on allowed entries and only increase command uses on success)

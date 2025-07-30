@@ -1,2 +1,7 @@
+<<<<<<< HEAD
 // 1.21.5	2025-04-20T15:11:17.7197994	Languages: en_us
 0edbc3d59aba29861f6e31d604b5f6eefc49dd52 assets/modonomicon/lang/en_us.json
+=======
+// 1.21.1	2025-07-30T15:05:07.9759387	Languages: en_us
+40a010c4ef6a260e739da69d55c058d9efed6b79 assets/modonomicon/lang/en_us.json
+>>>>>>> 5d7ced53 (feat: run commands only on allowed entries and only increase command uses on success)

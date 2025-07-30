@@ -6,11 +6,16 @@
 
 package com.klikli_dev.modonomicon.api.datagen.book;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BookCommandModel {
     protected BookModel book;
@@ -25,6 +30,8 @@ public class BookCommandModel {
 
     @Nullable
     protected String successMessage;
+
+    protected Set<ResourceLocation> allowedEntries = new HashSet<>();
 
     protected BookCommandModel(ResourceLocation id, String command) {
         this.id = id;
@@ -52,6 +59,13 @@ public class BookCommandModel {
             json.addProperty("failure_message", this.failureMessage);
         if (this.successMessage != null)
             json.addProperty("success_message", this.successMessage);
+        if (this.allowedEntries != null && !this.allowedEntries.isEmpty()) {
+            var arr = new JsonArray();
+            for (var entry : this.allowedEntries) {
+                arr.add(entry.toString());
+            }
+            json.add("allowed_entries", arr);
+        }
         return json;
     }
 
@@ -121,6 +135,32 @@ public class BookCommandModel {
 
     public BookCommandModel withSuccessMessage(@Nullable String successMessage) {
         this.successMessage = successMessage;
+        return this;
+    }
+
+    /**
+     * Sets the entries that are allowed to execute this command.
+     * If set, only these entries will be able to execute the command.
+     * If not set, all entries will be able to execute the command.
+     */
+    public BookCommandModel withAllowedEntries(Set<ResourceLocation> allowedEntries) {
+        this.allowedEntries = allowedEntries == null ? new HashSet<>() : new HashSet<>(allowedEntries);
+        return this;
+    }
+
+    /**
+     * Adds a single allowed entry by ResourceLocation.
+     */
+    public BookCommandModel withAllowedEntry(ResourceLocation entry) {
+        this.allowedEntries.add(entry);
+        return this;
+    }
+
+    /**
+     * Adds a single allowed entry by String (converted to ResourceLocation).
+     */
+    public BookCommandModel withAllowedEntry(String entry) {
+        this.allowedEntries.add(ResourceLocation.parse(entry));
         return this;
     }
 }

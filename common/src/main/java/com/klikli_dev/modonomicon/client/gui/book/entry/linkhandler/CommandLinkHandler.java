@@ -40,9 +40,16 @@ public class CommandLinkHandler extends LinkHandler {
             return ClickResult.FAILURE;
 
         var command = book.getCommand(link.commandId);
+        // Get the current entry's ResourceLocation
+        var entryId = this.screen.getEntry().getId();
+        // Check if the command is allowed for this entry
+        if (!command.isEntryAllowed(entryId)) {
+            com.klikli_dev.modonomicon.Modonomicon.LOG.warn("Blocked command link: Command '{}' is not allowed on entry '{}' (book '{}')", command.getId(), entryId, book.getId());
+            return ClickResult.FAILURE;
+        }
 
         if (BookUnlockStateManager.get().canRunFor(this.player(), command)) {
-            Services.NETWORK.sendToServer(new ClickCommandLinkMessage(link.bookId, link.commandId));
+            Services.NETWORK.sendToServer(new ClickCommandLinkMessage(link.bookId, link.commandId, entryId));
 
             //we immediately count up the usage client side -> to avoid spamming the server
             //if the server ends up not counting up the usage, it will sync the correct info back down to us
@@ -50,8 +57,9 @@ public class CommandLinkHandler extends LinkHandler {
             //that means, for singleplayer clients OR clients that share to lan we dont call the setRunFor
             if (Minecraft.getInstance().getSingleplayerServer() == null)
                 BookUnlockStateManager.get().setRunFor(this.player(), command);
-        }
 
-        return ClickResult.SUCCESS;
+            return ClickResult.SUCCESS;
+        }
+        return ClickResult.FAILURE;
     }
 }

@@ -1,2 +1,6 @@
+<<<<<<< HEAD
 // 1.21.5	2025-04-20T15:10:31.2128471	Languages: en_us for theurgy
 4e67c8894676e538aba4f31f586929eee4e1bfe0 assets/theurgy/lang/en_us.json
+=======
+// 1.21	2025-07-30T14:22:56.67903	Languages: en_us for theurgy
+>>>>>>> 5d7ced53 (feat: run commands only on allowed entries and only increase command uses on success)
