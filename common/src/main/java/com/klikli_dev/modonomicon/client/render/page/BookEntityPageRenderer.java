@@ -42,16 +42,17 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
     }
 
     public static void renderEntity(GuiGraphics guiGraphics, Entity entity, Level world, float x, float y, float rotation, float renderScale, float offset) {
-        Vector3f vector3f = new Vector3f(0.0F, p_275689_.getBbHeight() / 2.0F + p_275604_ * f9, 0.0F);
-
-
-        if(entity instanceof LivingEntity livingEntity) {
-            EntityRenderDispatcher erd = Minecraft.getInstance().getEntityRenderDispatcher();
-            EntityRenderer<? super LivingEntity, ?> entityrenderer = erd.getRenderer(livingEntity);
-            EntityRenderState entityrenderstate = entityrenderer.createRenderState(livingEntity, 1.0F);
-            entityrenderstate.hitboxesRenderState = null;
-            guiGraphics.submitEntityRenderState(entityrenderstate, renderScale, translation, rotation, overrideCameraAngle, x1, y1, x2, y2);
-        }
+        //TODO: fix entity rendering
+//        Vector3f vector3f = new Vector3f(0.0F, p_275689_.getBbHeight() / 2.0F + p_275604_ * f9, 0.0F);
+//
+//
+//        if(entity instanceof LivingEntity livingEntity) {
+//            EntityRenderDispatcher erd = Minecraft.getInstance().getEntityRenderDispatcher();
+//            EntityRenderer<? super LivingEntity, ?> entityrenderer = erd.getRenderer(livingEntity);
+//            EntityRenderState entityrenderstate = entityrenderer.createRenderState(livingEntity, 1.0F);
+//            entityrenderstate.hitboxesRenderState = null;
+//            guiGraphics.submitEntityRenderState(entityrenderstate, renderScale, translation, rotation, overrideCameraAngle, x1, y1, x2, y2);
+//        }
     }
 
     private void loadEntity(Level world) {
