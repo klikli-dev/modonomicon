@@ -30,15 +30,12 @@ import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.OnDatapackSyncEvent;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.event.*;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.LevelEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -59,17 +56,18 @@ public class ModonomiconForge {
 
         context.registerConfig(ModConfig.Type.CLIENT, ClientConfig.get().spec);
 
-        IEventBus modEventBus = context.getModEventBus();
+        var modBusGroup = context.getModBusGroup();
+
 
         //Most registries are handled by common, but creative tabs are easier per loader
-        CreativeModeTabRegistry.CREATIVE_MODE_TABS.register(modEventBus);
+        CreativeModeTabRegistry.CREATIVE_MODE_TABS.register(modBusGroup);
 
         //directly register event handlers
-        modEventBus.addListener(this::onCommonSetup);
-        modEventBus.addListener(CreativeModeTabRegistry::onCreativeModeTabBuildContents);
+        FMLCommonSetupEvent.getBus(modBusGroup).addListener(this::onCommonSetup);
+        BuildCreativeModeTabContentsEvent.getBus(modBusGroup).addListener(CreativeModeTabRegistry::onCreativeModeTabBuildContents);
 
         //register data managers as reload listeners
-        MinecraftForge.EVENT_BUS.addListener((AddReloadListenerEvent e) -> {
+        AddReloadListenerEvent.BUS.addListener((AddReloadListenerEvent e) -> {
             BookDataManager.get().registries(e.getRegistries());
             e.addListener(BookDataManager.get());
 
@@ -78,15 +76,15 @@ public class ModonomiconForge {
         });
 
         //register commands
-        MinecraftForge.EVENT_BUS.addListener((RegisterCommandsEvent e) ->
+        RegisterCommandsEvent.BUS.addListener((RegisterCommandsEvent e) ->
                 CommandRegistry.registerCommands(e.getDispatcher())
         );
-        MinecraftForge.EVENT_BUS.addListener((RegisterClientCommandsEvent e) ->
+        RegisterClientCommandsEvent.BUS.addListener((RegisterClientCommandsEvent e) ->
                 CommandRegistry.registerClientCommands(e.getDispatcher())
         );
 
         //datapack sync = build books and sync to client
-        MinecraftForge.EVENT_BUS.addListener((OnDatapackSyncEvent e) -> {
+        OnDatapackSyncEvent.BUS.addListener((OnDatapackSyncEvent e) -> {
             if (e.getPlayer() != null) {
                 BookDataManager.get().onDatapackSync(e.getPlayer());
                 MultiblockDataManager.get().onDatapackSync(e.getPlayer());
@@ -94,7 +92,7 @@ public class ModonomiconForge {
         });
 
         //sync book state on player join
-        MinecraftForge.EVENT_BUS.addListener((EntityJoinLevelEvent e) -> {
+        EntityJoinLevelEvent.BUS.addListener((EntityJoinLevelEvent e) -> {
             if (e.getEntity() instanceof ServerPlayer player) {
                 BookUnlockStateManager.get().updateAndSyncFor(player);
                 BookVisualStateManager.get().syncFor(player);
@@ -104,7 +102,7 @@ public class ModonomiconForge {
         //on overworld unload clear the save data reference in the state manager
         // this ensures that if another world is loaded the save data is taken from file
         // instead of bleeding in from the previous level
-        MinecraftForge.EVENT_BUS.addListener((LevelEvent.Unload e) -> {
+        LevelEvent.Unload.BUS.addListener((LevelEvent.Unload e) -> {
             if (e.getLevel() instanceof Level level && level.dimension() == Level.OVERWORLD) {
                 BookUnlockStateManager.get().saveData = null;
                 BookVisualStateManager.get().saveData = null;
@@ -113,24 +111,25 @@ public class ModonomiconForge {
 
 
         //Advancement event handling for condition/unlock system
-        MinecraftForge.EVENT_BUS.addListener((AdvancementEvent.AdvancementEarnEvent e) -> BookUnlockStateManager.get().onAdvancement((ServerPlayer) e.getEntity()));
+        AdvancementEvent.AdvancementEarnEvent.BUS.addListener((AdvancementEvent.AdvancementEarnEvent e) -> BookUnlockStateManager.get().onAdvancement((ServerPlayer) e.getEntity()));
 
         //We use server tick to flush the queue of players that need a book state sync
-        MinecraftForge.EVENT_BUS.addListener(((TickEvent.ServerTickEvent.Post e) -> {
+        TickEvent.ServerTickEvent.Post.BUS.addListener(((TickEvent.ServerTickEvent.Post e) -> {
             BookUnlockStateManager.get().onServerTickEnd(e.getServer());
         }));
 
         //Datagen
-        modEventBus.addListener(DataGenerators::gatherData);
+        GatherDataEvent.getBus(modBusGroup).addListener(DataGenerators::gatherData);
 
         //Client stuff
         if (FMLEnvironment.dist == Dist.CLIENT) {
-            modEventBus.addListener(Client::onClientSetup);
+            FMLClientSetupEvent.getBus(modBusGroup).addListener(Client::onClientSetup);
 //            modEventBus.addListener(Client::onRegisterGuiOverlays);
-            modEventBus.addListener(Client::onModifyBakingResult);
+
+            ModelEvent.ModifyBakingResult.getBus(modBusGroup).addListener(Client::onModifyBakingResult);
 
             //register client side reload listener that will reset the fallback font to handle locale changes on the fly
-            modEventBus.addListener((RegisterClientReloadListenersEvent e) -> {
+            RegisterClientReloadListenersEvent.getBus(modBusGroup).addListener((RegisterClientReloadListenersEvent e) -> {
                 e.registerReloadListener(BookDataManager.Client.get());
             });
         }
@@ -141,12 +140,13 @@ public class ModonomiconForge {
 
         LoaderRegistry.registerLoaders();
 
-        MinecraftForge.EVENT_BUS.addListener((PlayerInteractEvent.RightClickBlock e) -> {
+        PlayerInteractEvent.RightClickBlock.BUS.addListener((PlayerInteractEvent.RightClickBlock e) -> {
             var result = LecternIntegration.rightClick(e.getEntity(), e.getLevel(), e.getHand(), e.getHitVec());
             if (result.consumesAction()) {
-                e.setCanceled(true);
                 e.setCancellationResult(result);
+                return true; //true = cancel
             }
+            return false;
         });
     }
 
@@ -154,33 +154,29 @@ public class ModonomiconForge {
         public static void onClientSetup(FMLClientSetupEvent event) {
             PageRendererRegistry.registerPageRenderers();
 
-            MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent e) -> {
-                if (e.phase == TickEvent.Phase.END) {
+            TickEvent.ClientTickEvent.Post.BUS.addListener((TickEvent.ClientTickEvent.Post e) -> {
                     ClientTicks.endClientTick(Minecraft.getInstance());
-                }
             });
-            MinecraftForge.EVENT_BUS.addListener((TickEvent.RenderTickEvent e) -> {
-                if (e.phase == TickEvent.Phase.START) {
+            TickEvent.RenderTickEvent.Pre.BUS.addListener((TickEvent.RenderTickEvent.Pre e) -> {
                     ClientTicks.renderTickStart(e.getTimer().getGameTimeDeltaPartialTick(true));
-                } else {
+            });
+            TickEvent.RenderTickEvent.Post.BUS.addListener((TickEvent.RenderTickEvent.Post e) -> {
                     ClientTicks.renderTickEnd();
-                }
             });
 
             //let multiblock preview renderer handle right clicks for anchoring
-            MinecraftForge.EVENT_BUS.addListener((PlayerInteractEvent.RightClickBlock e) -> {
+            PlayerInteractEvent.RightClickBlock.BUS.addListener((PlayerInteractEvent.RightClickBlock e) -> {
                 InteractionResult result = MultiblockPreviewRenderer.onPlayerInteract(e.getEntity(), e.getLevel(), e.getHand(), e.getHitVec());
                 if (result.consumesAction()) {
-                    e.setCanceled(true);
                     e.setCancellationResult(result);
+                    return true; //true = cancel
                 }
+                return false;
             });
 
             //Tick multiblock preview
-            MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent e) -> {
-                if (e.phase == TickEvent.Phase.END) {
+            TickEvent.ClientTickEvent.Post.BUS.addListener((TickEvent.ClientTickEvent.Post e) -> {
                     MultiblockPreviewRenderer.onClientTick(Minecraft.getInstance());
-                }
             });
 
 //            //Render multiblock preview

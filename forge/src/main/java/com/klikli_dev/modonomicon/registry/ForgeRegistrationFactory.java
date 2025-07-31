@@ -29,7 +29,7 @@ public class ForgeRegistrationFactory implements RegistrationProvider.Factory {
         final var cont = containerOpt.get();
         if (cont instanceof FMLModContainer fmlModContainer) {
             final var register = DeferredRegister.create(resourceKey, modId);
-            register.register(fmlModContainer.getEventBus());
+            register.register(fmlModContainer.getModBusGroup());
             return new Provider<>(modId, register);
         } else {
             throw new ClassCastException("The container of the mod " + modId + " is not a FML one!");

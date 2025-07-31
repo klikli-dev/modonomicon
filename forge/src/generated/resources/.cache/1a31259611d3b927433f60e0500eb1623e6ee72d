@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-// 1.21.5	2025-05-22T17:57:03.5788103	Books: modonomicon
-ea82c1ec5ac99b6c53186c37a2964666b6824399 data/modonomicon/modonomicon/books/demo/book.json
-=======
-// 1.21.1	2025-07-30T15:05:07.972887	Books: modonomicon
+// 1.21.7	2025-07-31T16:39:27.4112908	Books: modonomicon
 f8343b4d818835676a34cc51f0dd5ad898e3f1ea data/modonomicon/modonomicon/books/demo/book.json
->>>>>>> 5d7ced53 (feat: run commands only on allowed entries and only increase command uses on success)
 9bf40644b1a94e0f93e2d4d49e6f9ed6bd942ae5 data/modonomicon/modonomicon/books/demo/categories/conditional.json
 1026c22d26aacaf4cdbc863df4fb00229af152a3 data/modonomicon/modonomicon/books/demo/categories/features.json
 04a62c4a3db29f09d9164e269f5f0bb26a413e79 data/modonomicon/modonomicon/books/demo/categories/formatting.json

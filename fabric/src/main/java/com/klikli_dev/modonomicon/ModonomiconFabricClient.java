@@ -20,6 +20,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingPluginManager;
@@ -55,6 +56,8 @@ public class ModonomiconFabricClient implements ClientModInitializer {
 
         //Tick multiblock preview
         ClientTickEvents.END_CLIENT_TICK.register(MultiblockPreviewRenderer::onClientTick);
+
+        //TODO: register PIP renderers using SpecialGuiElementRegistry.register();
 
         //Render multiblock preview
         //done in MixinLevelRenderer, because we have no event in Fabric

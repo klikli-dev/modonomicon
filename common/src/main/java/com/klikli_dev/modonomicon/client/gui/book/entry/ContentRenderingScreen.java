@@ -107,8 +107,7 @@ public interface ContentRenderingScreen {
             return;
         }
 
-        guiGraphics.pose().translate(x, y);
-        ClientServices.FLUID.drawFluid(guiGraphics, 18, 18, stack, capacity);
+        ClientServices.FLUID.drawFluid(guiGraphics, 18, 18, stack, capacity, x, y);
 
         if (this.isMouseInRange(mouseX, mouseY, x, y, 18, 18)) {
             this.setTooltipStack(stack);

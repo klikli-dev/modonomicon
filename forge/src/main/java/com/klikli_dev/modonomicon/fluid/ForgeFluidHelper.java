@@ -16,8 +16,8 @@ import java.util.List;
 
 public class ForgeFluidHelper implements FluidHelper {
     @Override
-    public void drawFluid(GuiGraphics guiGraphics, int width, int height, FluidHolder fluidHolder, int capacity) {
-        FluidRenderHelper.drawFluid(guiGraphics, width, height, ForgeFluidHolder.toStack(fluidHolder), capacity);
+    public void drawFluid(GuiGraphics guiGraphics, int width, int height, FluidHolder fluidHolder, int capacity, int x, int y) {
+        FluidRenderHelper.drawFluid(guiGraphics, width, height, ForgeFluidHolder.toStack(fluidHolder), capacity, x, y);
     }
 
     @Override

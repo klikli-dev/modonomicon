@@ -45,7 +45,7 @@ public class FabricGuiHelper implements GuiHelper {
         }
 
         screen.init(minecraft, minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight());
-        minecraft.getNarrator().sayNow(screen.getNarrationMessage());
+        minecraft.getNarrator().saySystemNow(screen.getNarrationMessage());
     }
 
     @Override
@@ -67,7 +67,7 @@ public class FabricGuiHelper implements GuiHelper {
         removed.removed();
 
         if (!multiLayerScreen.guiLayers.isEmpty()) {
-            minecraft.getNarrator().sayNow(multiLayerScreen.guiLayers.peek().getNarrationMessage());
+            minecraft.getNarrator().saySystemNow(multiLayerScreen.guiLayers.peek().getNarrationMessage());
         }
     }
 

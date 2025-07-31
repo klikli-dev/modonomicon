@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-// 1.21.5	-999999999-01-01T00:00:00	Modonomicon/Model Definitions
+// 1.21.7	-999999999-01-01T00:00:00	Modonomicon/Model Definitions
 776c5bad77b18f9883052bed303243bc4ded0ba3 assets/modonomicon/items/leaflet.json
 28157df962998631968b9ed2e994bedc1b1718fc assets/modonomicon/items/modonomicon.json
 631ef49f40a8f19dc5016cb4c4ee09b73ffc8a80 assets/modonomicon/items/modonomicon_blue.json
@@ -12,11 +11,3 @@ b02e0bc9f75e0fde6807935577e74b75348413fb assets/modonomicon/models/item/modonomi
 83adea7fd65acd9581797454e1a6dc6122d8a826 assets/modonomicon/models/item/modonomicon_green.json
 4b35646623b74487675fa8ec1bb375535100c336 assets/modonomicon/models/item/modonomicon_purple.json
 a4a605637998b2d6d6b7cd9c002d5ba0163622c0 assets/modonomicon/models/item/modonomicon_red.json
-=======
-// 1.21.1	2025-07-30T15:03:33.2991088	Modonomicon/Model Definitions
-b02e0bc9f75e0fde6807935577e74b75348413fb assets\modonomicon\models\item\modonomicon_blue.json
-83adea7fd65acd9581797454e1a6dc6122d8a826 assets\modonomicon\models\item\modonomicon_green.json
-a4a605637998b2d6d6b7cd9c002d5ba0163622c0 assets\modonomicon\models\item\modonomicon_red.json
-9d681528515f3d6fd6fdd2940a280dcde6a53da0 assets\modonomicon\models\item\leaflet.json
-4b35646623b74487675fa8ec1bb375535100c336 assets\modonomicon\models\item\modonomicon_purple.json
->>>>>>> 5d7ced53 (feat: run commands only on allowed entries and only increase command uses on success)
