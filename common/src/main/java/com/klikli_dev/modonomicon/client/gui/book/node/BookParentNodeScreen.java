@@ -232,9 +232,8 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
             pMouseY = this.renderMouseYOverride;
         }
 
-        var device = RenderSystem.getDevice();
-
-        this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
+        //not needed any more in 1.21.8+ because screen now calls it before render()
+//        this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
         this.getCurrentCategoryScreen().renderBackground(guiGraphics);
 
