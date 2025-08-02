@@ -114,6 +114,11 @@ public class BookGuiManager {
     protected BookCategory getSavedOrAddressedCategoryOrDefault(Book book, BookAddress address) {
         var savedCategory = this.getSavedOrAddressedCategory(book, address);
         if (savedCategory == null) {
+            //if there is only one category then we ignore whether or not it shows the category button, it is the only one we can open
+            var categories = book.getCategoriesSorted();
+            if (categories.size() == 1) {
+                return categories.getFirst();
+            }
             return book.getCategoriesSorted().stream().filter(BookCategory::showCategoryButton).findFirst().orElseThrow();
         }
         return savedCategory;
