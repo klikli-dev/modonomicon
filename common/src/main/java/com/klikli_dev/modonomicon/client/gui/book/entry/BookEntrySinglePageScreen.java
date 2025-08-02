@@ -128,13 +128,15 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         this.resetTooltip();
 
-        //we need to modify blit offset (now: z pose) to not draw over toasts
-        //TODO we had -1300z here
-        this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
+        guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
         renderSinglePageBookBackground(guiGraphics, this.singlePageTexture);
+        guiGraphics.pose().popMatrix();
+
+        guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
         this.renderPage(guiGraphics, this.pageRenderer, pMouseX, pMouseY, pPartialTick);
+        guiGraphics.pose().popMatrix();
 
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff

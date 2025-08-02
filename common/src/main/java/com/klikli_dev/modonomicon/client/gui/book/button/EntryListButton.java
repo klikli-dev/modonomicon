@@ -70,6 +70,7 @@ public class EntryListButton extends Button {
             float widthFract = time / ANIM_TIME;
             boolean locked = !BookUnlockStateManager.get().isUnlockedFor(Minecraft.getInstance().player, this.entry);
 
+            guiGraphics.pose().pushMatrix();
             guiGraphics.pose().scale(0.5F, 0.5F);
             guiGraphics.fill(this.getX() * 2, this.getY() * 2, (this.getX() + (int) ((float) this.width * widthFract)) * 2, (this.getY() + this.height) * 2, 0x22000000);
 
@@ -81,6 +82,7 @@ public class EntryListButton extends Button {
             }
 
             guiGraphics.pose().scale(2F, 2F);
+            guiGraphics.pose().popMatrix();
 
             MutableComponent name;
             if (locked) {

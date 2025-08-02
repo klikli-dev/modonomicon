@@ -105,6 +105,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
 
             float scale = getBookTextHolderScaleForRenderSize(text, font, width, height);
 
+            guiGraphics.pose().pushMatrix();
             if (scale < 1) {
                 guiGraphics.pose().translate(x - x * scale, y - y * scale);
                 guiGraphics.pose().scale(scale, scale);
@@ -118,7 +119,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
                     renderY += font.lineHeight;
                 }
             }
-
+            guiGraphics.pose().popMatrix();
         } else {
             Modonomicon.LOG.warn("BookTextHolder with String {} has no component, but is not rendered to markdown either.", text.getString());
         }
@@ -193,6 +194,8 @@ public abstract class BookPageRenderer<T extends BookPage> {
      */
     public void renderTitle(GuiGraphics guiGraphics, BookTextHolder title, boolean showTitleSeparator, int x, int y) {
 
+        guiGraphics.pose().pushMatrix();
+
         if (title instanceof RenderedBookTextHolder renderedTitle) {
             //if user decided to use markdown title, we need to use the  rendered version
             var formattedCharSequence = FormattedCharSequence.fromList(
@@ -230,6 +233,8 @@ public abstract class BookPageRenderer<T extends BookPage> {
             BookErrorManager.get().getContextHelper().reset();
             BookErrorManager.get().setCurrentBookId(null);
         }
+
+        guiGraphics.pose().popMatrix();
 
         if (showTitleSeparator)
             BookContentRenderer.drawTitleSeparator(guiGraphics, this.page.getBook(), x, y + 12);

@@ -204,6 +204,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         float xOffset = this.getXOffset();
         float yOffset = this.getYOffset();
 
+        guiGraphics.pose().pushMatrix();
         guiGraphics.pose().scale(this.currentZoom, this.currentZoom);
 
         for (var entry : this.category.getEntries().values()) {
@@ -216,6 +217,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             int texX = entry.getEntryBackgroundVIndex() * ENTRY_HEIGHT;
             int texY = entry.getEntryBackgroundUIndex() * ENTRY_WIDTH;
 
+            guiGraphics.pose().pushMatrix();
             //we translate instead of applying the offset to the entry x/y to avoid jittering when moving
             guiGraphics.pose().translate(xOffset, yOffset);
 
@@ -239,8 +241,12 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             //render entry background
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.category.getEntryTextures(), entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT, 256, 256, color);
 
+            guiGraphics.pose().pushMatrix();
+
             //render icon
             entry.getIcon().render(guiGraphics, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 5, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP + 5);
+
+            guiGraphics.pose().popMatrix();
 
             //render unread icon
             if (displayState == EntryDisplayState.UNLOCKED && !BookUnlockStateManager.get().isReadFor(Minecraft.getInstance().player, entry)) {
@@ -249,15 +255,20 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                 final int width = 11;
                 final int height = 11;
 
-                //TODO her ewe had translate +11 z
+                guiGraphics.pose().pushMatrix();
+                //TODO here we had translate +11 z
                 //if focused we go to the right of our normal button (instead of down, like mc buttons do)
                 BookContentRenderer.drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, this.bookParentScreen.getBook(),
                         entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 16 + 2,
                         entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP - 2, U + (isHovered ? width : 0), V, width, height);
+                guiGraphics.pose().popMatrix();
             }
+
+            guiGraphics.pose().popMatrix();
 
             this.renderConnections(guiGraphics, entry, xOffset, yOffset);
         }
+        guiGraphics.pose().popMatrix();
     }
 
     public void renderEntryTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
@@ -318,8 +329,10 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             if (parentDisplayState == EntryDisplayState.HIDDEN)
                 continue;
 
+            guiGraphics.pose().pushMatrix();
             guiGraphics.pose().translate(xOffset, yOffset);
             this.connectionRenderer.render(guiGraphics, entry, parent);
+            guiGraphics.pose().popMatrix();
         }
     }
 

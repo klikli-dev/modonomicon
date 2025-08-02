@@ -179,13 +179,9 @@ public class BookBookmarksScreen extends BookPaginatedScreen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-
         this.resetTooltip();
 
-        //we need to modify blit offset (now: z pose) to not draw over toasts);
-        //TODO we had a -1300 z translate here
-        this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
-
+        guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
 
         BookContentRenderer.renderBookBackground(guiGraphics, this.getBook().getBookContentTexture());
@@ -211,6 +207,8 @@ public class BookBookmarksScreen extends BookPaginatedScreen {
         if (this.visibleEntries.isEmpty()) {
             this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.BOOKMARKS_NO_RESULTS), BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, 80, 0x333333);
         }
+
+        guiGraphics.pose().popMatrix();
 
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff

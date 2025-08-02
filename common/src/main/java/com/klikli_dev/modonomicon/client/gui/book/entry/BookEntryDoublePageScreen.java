@@ -120,10 +120,6 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         this.resetTooltip();
 
-        //we need to modify blit offset (now: z pose) to not draw over toasts
-        //TODO we had -1300z here
-        this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
-
         //TODO we had -1000z here //push the page background to the front. Otherwise the entries render over it.
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
@@ -137,6 +133,7 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
         this.renderPage(guiGraphics, this.leftPageRenderer, pMouseX, pMouseY, pPartialTick);
         this.renderPage(guiGraphics, this.rightPageRenderer, pMouseX, pMouseY, pPartialTick);
         guiGraphics.pose().popMatrix();
+
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
         for (var renderable : this.renderables) {

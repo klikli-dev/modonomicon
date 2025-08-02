@@ -75,6 +75,7 @@ public class ReadAllButton extends Button {
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //if focused we go to the right of our normal button (instead of down, like mc buttons do)
 
+        guiGraphics.pose().pushMatrix();
         //TODO had a +200 z here
         var hovered = this.isHovered();
 
@@ -93,6 +94,8 @@ public class ReadAllButton extends Button {
         }
 
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.parent.getBook().getBookOverviewTexture(), this.getX(), this.getY(), u, v, this.width, this.height, 256, 256);
+
+        guiGraphics.pose().popMatrix();
     }
 
     private void updateCustomTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {

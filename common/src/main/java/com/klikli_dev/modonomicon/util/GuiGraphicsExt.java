@@ -63,8 +63,10 @@ public class GuiGraphicsExt {
             float x1f = x-x1i;
             float y1f = y-y1i;
 
+        guiGraphics.pose().pushMatrix();
             guiGraphics.pose().translate(x1f, y1f);
             guiGraphics.drawString(font, component, x1i, y1i, color, drawShadow);
+        guiGraphics.pose().popMatrix();
     }
 
     /**
@@ -76,8 +78,10 @@ public class GuiGraphicsExt {
         float x1f = x-x1i;
         float y1f = y-y1i;
 
+        guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(x1f, y1f);
         guiGraphics.drawString(font, string, x1i, y1i, color, drawShadow);
+        guiGraphics.pose().popMatrix();
     }
 
     /**
@@ -89,8 +93,10 @@ public class GuiGraphicsExt {
         float x1f = x-x1i;
         float y1f = y-y1i;
 
+        guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(x1f, y1f);
         guiGraphics.drawString(font, string, x1i, y1i, color, drawShadow);
+        guiGraphics.pose().popMatrix();
     }
 
 

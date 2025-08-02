@@ -31,6 +31,7 @@ public class AddBookmarkButton extends Button {
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTicks) {
         if (this.visible) {
+            guiGraphics.pose().pushMatrix();
             int xOffset = this.parent.getBook().getSearchButtonXOffset();
             guiGraphics.pose().translate(xOffset, 0);
 
@@ -56,6 +57,7 @@ public class AddBookmarkButton extends Button {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.parent.getBook().getBookOverviewTexture(), renderX, this.getY(), texX, texY, this.width, this.height, 256, 256);
 
             guiGraphics.disableScissor();
+            guiGraphics.pose().popMatrix();
         }
     }
 }

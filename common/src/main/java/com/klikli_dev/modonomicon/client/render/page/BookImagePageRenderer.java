@@ -57,6 +57,7 @@ public class BookImagePageRenderer extends BookPageRenderer<BookImagePage> imple
 
         int x = BookEntryScreen.PAGE_WIDTH / 2 - 53;
         int y = 7;
+        guiGraphics.pose().pushMatrix();
         guiGraphics.pose().scale(0.5F, 0.5F);
         if (this.page.useLegacyRendering())
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.page.getImages()[this.index], x * 2 + 6, y * 2 + 6, 0, 0, 200, 200, 256, 256);
@@ -66,6 +67,7 @@ public class BookImagePageRenderer extends BookPageRenderer<BookImagePage> imple
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.page.getImages()[this.index], x * 2 + 6, y * 2 + 6, 0, 0, 200, 200, 200, 200, 200, 200);
 
         guiGraphics.pose().scale(2F, 2F);
+        guiGraphics.pose().popMatrix();
 
         if (this.page.hasBorder()) {
             BookContentRenderer.drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, this.getPage().getBook(), x, y, 405, 149, 106, 106);

@@ -37,6 +37,7 @@ public class CategoryButton extends Button {
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTicks) {
         if (this.visible) {
+            guiGraphics.pose().pushMatrix();
             int xOffset = this.getCategory().getBook().getCategoryButtonXOffset();
             guiGraphics.pose().translate(xOffset, 0);
 
@@ -68,15 +69,21 @@ public class CategoryButton extends Button {
             int centerIconOffset = iconSize / 2;
             float scale = this.getCategory().getBook().getCategoryButtonIconScale();
 
+            guiGraphics.pose().pushMatrix();
             //TODO had a +100 z here
             guiGraphics.pose().translate(renderX + 8, this.getY() + 20); //move to desired render location
 
             //now scale around center
+            guiGraphics.pose().pushMatrix();
             guiGraphics.pose().translate(centerIconOffset, centerIconOffset);
             guiGraphics.pose().scale(scale, scale);
             guiGraphics.pose().translate(-centerIconOffset, -centerIconOffset);
 
             this.category.getIcon().render(guiGraphics, 0, 0);
+
+            guiGraphics.pose().popMatrix();
+            guiGraphics.pose().popMatrix();
+            guiGraphics.pose().popMatrix();
         }
     }
 }

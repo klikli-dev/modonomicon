@@ -70,11 +70,10 @@ public class BookErrorScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-
-        this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
-
+        guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
         this.renderBookBackground(guiGraphics);
+        guiGraphics.pose().popMatrix();
 
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
@@ -82,8 +81,10 @@ public class BookErrorScreen extends Screen {
             renderable.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
         }
 
+        guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
         this.renderError(guiGraphics, this.errorText, 15, 15, BOOK_BACKGROUND_WIDTH - 30);
+        guiGraphics.pose().popMatrix();
     }
 
     @Override
