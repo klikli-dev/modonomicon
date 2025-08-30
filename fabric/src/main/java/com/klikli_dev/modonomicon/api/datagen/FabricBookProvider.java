@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-uchpackage com.klikli_dev.modonomicon.api.datagen;
+package com.klikli_dev.modonomicon.api.datagen;
 
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
