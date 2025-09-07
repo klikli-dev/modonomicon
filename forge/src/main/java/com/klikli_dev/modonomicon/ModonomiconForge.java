@@ -21,11 +21,18 @@ import com.klikli_dev.modonomicon.integration.LecternIntegration;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
+import com.mojang.blaze3d.framegraph.FramePass;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LevelTargetBundle;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.ShapeRenderer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.FramePassManager;
+import net.minecraftforge.client.event.AddFramePassEvent;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
@@ -179,15 +186,25 @@ public class ModonomiconForge {
                     MultiblockPreviewRenderer.onClientTick(Minecraft.getInstance());
             });
 
-//            //Render multiblock preview
-            //currently done with MixinLevelRenderer because forge no longer gives us a posestack ..
-//            MinecraftForge.EVENT_BUS.addListener((RenderLevelStageEvent e) -> {
-//                if (e.getStage() == RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS) { //After translucent causes block entities to error out on render in preview
-//                    var pose = new PoseStack();
-//                    pose.last().pose = e.getPoseStack();
-//                    MultiblockPreviewRenderer.onRenderLevelLastEvent(pose);
-//                }
-//            });
+            //Render multiblock preview
+            AddFramePassEvent.BUS.addListener((AddFramePassEvent e) -> {
+                var mainCamera = Minecraft.getInstance().gameRenderer.getMainCamera();
+                e.addPass(Modonomicon.loc("multiblock_preview"), (new FramePassManager.PassDefinition() {
+                    @Override
+                    public void targets(LevelTargetBundle bundle, FramePass pass) {
+                        bundle.main = pass.readsAndWrites(bundle.main);
+                    }
+
+                    @Override
+                    public void executes() {
+                        PoseStack ps = new PoseStack();
+                        ps.translate(mainCamera.getPosition().multiply(-1,-1,-1));
+                        ps.pushPose();
+                        MultiblockPreviewRenderer.onRenderLevelLastEvent(ps);
+                        ps.popPose();
+                    }
+                }));
+            });
         }
 
         public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {

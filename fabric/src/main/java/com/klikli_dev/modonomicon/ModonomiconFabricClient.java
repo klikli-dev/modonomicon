@@ -21,6 +21,8 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingPluginManager;
@@ -60,18 +62,20 @@ public class ModonomiconFabricClient implements ClientModInitializer {
         //TODO: register PIP renderers using SpecialGuiElementRegistry.register();
 
         //Render multiblock preview
-        //done in MixinLevelRenderer, because we have no event in Fabric
+        WorldRenderEvents.LAST.register(context -> {
+            MultiblockPreviewRenderer.onRenderLevelLastEvent(context.matrixStack());
+        });
 
         //render multiblock hud
-        HudRenderCallback.EVENT.register((drawContext, tickCounter) ->
-                MultiblockPreviewRenderer.onRenderHUD(drawContext, tickCounter.getGameTimeDeltaPartialTick(true)));
+        HudElementRegistry.addLast(Modonomicon.loc("multiblock_preview_hud"), (context, tickCounter) -> {
+            MultiblockPreviewRenderer.onRenderHUD(context, tickCounter.getGameTimeDeltaPartialTick(true));
+        });
 
         //register client side reload listener that will reset the fallback font to handle locale changes on the fly
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new ReloadListenerWrapper(
                 Modonomicon.loc("book_data_manager_client"),
                 BookDataManager.Client.get()
         ));
-
 
         //book geometry loader
         //done in MixinModelManager, because we have no event in Fabric
