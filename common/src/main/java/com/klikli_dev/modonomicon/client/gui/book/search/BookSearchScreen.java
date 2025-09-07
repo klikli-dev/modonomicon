@@ -188,6 +188,11 @@ public class BookSearchScreen extends BookPaginatedScreen {
     }
 
     @Override
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        //do not render background because we are on a gui stack and double blur would crash
+    }
+
+    @Override
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         this.resetTooltip();
 

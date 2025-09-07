@@ -272,7 +272,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
      * Make public to access from pages
      */
     @Override
-    public <T extends GuiEventListener & Renderable & NarratableEntry> T addRenderableWidget(T pWidget) {
+    public <T extends GuiEventListener & Renderable & NarratableEntry> @NotNull T addRenderableWidget(@NotNull T pWidget) {
         return super.addRenderableWidget(pWidget);
     }
 
@@ -435,11 +435,15 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         this.updateBookmarksButton();
     }
 
-    @SuppressWarnings("NullableProblems")
     @Override
     public Font getContentFont() {
         //this is necessary because while Screen has getFont(), if a mod uses non-mojang mappings the method won't be found
         return this.font;
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        //do not render background because we are on a gui stack and double blur would crash
     }
 
     protected abstract int getOpenPagesIndexForPage(int pageIndex);

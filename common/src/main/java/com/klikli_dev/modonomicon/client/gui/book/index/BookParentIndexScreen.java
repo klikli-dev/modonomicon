@@ -217,8 +217,6 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
         //we need to modify blit offset (now: z pose) to not draw over toasts
         //TODO we had -1300z here
-        this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
-
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
 
         BookContentRenderer.renderBookBackground(guiGraphics, this.getBook().getBookContentTexture());

@@ -88,10 +88,12 @@ public class BookBookmarksScreen extends BookPaginatedScreen {
         return this.parentScreen;
     }
 
+    @Override
     public boolean canSeeArrowButton(boolean left) {
         return left ? this.openPagesIndex > 0 : (this.openPagesIndex + 1) < this.maxOpenPagesIndex;
     }
 
+    @Override
     protected void flipPage(boolean left, boolean playSound) {
         if (this.canSeeArrowButton(left)) {
 
@@ -175,6 +177,11 @@ public class BookBookmarksScreen extends BookPaginatedScreen {
     @Override
     public Book getBook() {
         return this.parentScreen.getBook();
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        //do not render background because we are on a gui stack and double blur would crash
     }
 
     @Override
