@@ -190,8 +190,10 @@ public class ModonomiconForge {
                 }
             });
 
-            //register item properties
-            ItemProperties.register(ItemRegistry.MODONOMICON.get(), Modonomicon.loc("open_state"), new BookOpenStateItemPropertyGetter());
+            event.enqueueWork(() -> {
+                //register item properties
+                ItemProperties.registerGeneric(Modonomicon.loc("open_state"), new BookOpenStateItemPropertyGetter());
+            });
         }
 
         /**

@@ -67,7 +67,7 @@ public class ModonomiconFabricClient implements ClientModInitializer {
         ));
 
         //register item properties
-        ItemProperties.register(ItemRegistry.MODONOMICON.get(), Modonomicon.loc("open_state"), new BookOpenStateItemPropertyGetter());
+        ItemProperties.registerGeneric(Modonomicon.loc("open_state"), new BookOpenStateItemPropertyGetter());
 
         //book geometry loader
         //done in MixinModelManager, because we have no event in Fabric
