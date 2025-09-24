@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ext.ComponentStrikethroughExtension;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ext.ComponentUnderlineExtension;
 import com.klikli_dev.modonomicon.data.BookDataManager;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -40,7 +41,7 @@ public class BookTextRenderer {
     }
 
     public List<MutableComponent> render(String markdown) {
-        return this.render(markdown, Style.EMPTY);
+        return this.render(markdown, Style.EMPTY.withColor(ChatFormatting.BLACK));
     }
 
     public List<MutableComponent> render(String markdown, Style defaultStyle) {

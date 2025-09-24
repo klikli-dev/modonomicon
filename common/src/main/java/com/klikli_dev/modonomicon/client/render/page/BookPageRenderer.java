@@ -93,7 +93,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
         if (text.hasComponent()) {
             //if it is a component, we draw it directly
             for (FormattedCharSequence formattedcharsequence : font.split(text.getComponent(), width)) {
-                guiGraphics.drawString(font, formattedcharsequence, x, y, 0, false);
+                guiGraphics.drawString(font, formattedcharsequence, x, y, -1, false);
                 y += font.lineHeight;
             }
         } else if (text instanceof RenderedBookTextHolder renderedText) {
@@ -115,7 +115,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
             for (var component : components) {
                 var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, (int) (width / scale), (int) ((width - 10) / scale), font);
                 for (FormattedCharSequence formattedcharsequence : wrapped) {
-                    GuiGraphicsExt.drawString(guiGraphics, font, formattedcharsequence, x, renderY, 0, false);
+                    GuiGraphicsExt.drawString(guiGraphics, font, formattedcharsequence, x, renderY, -1, false);
                     renderY += font.lineHeight;
                 }
             }
@@ -208,7 +208,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
                 guiGraphics.pose().scale(scale, scale);
             }
 
-            this.drawCenteredStringNoShadow(guiGraphics, formattedCharSequence, x, y, 0, scale);
+            this.drawCenteredStringNoShadow(guiGraphics, formattedCharSequence, x, y, -1, scale);
         } else if (title.hasComponent()) {
             //non-markdown title we just render as usual
 
@@ -223,7 +223,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
             }
 
             //otherwise we use the component - that is either provided by the user, or created from the default title style.
-            this.drawCenteredStringNoShadow(guiGraphics, titleComponent.getVisualOrderText(), x, y, 0, scale);
+            this.drawCenteredStringNoShadow(guiGraphics, titleComponent.getVisualOrderText(), x, y, -1, scale);
         } else {
             //this means a non-markdown title has no component -> this should not be possible, it indicates that either:
             // - a page did not set up its (non markdown) book text holder correctly in preprender markdown

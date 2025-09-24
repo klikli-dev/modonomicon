@@ -109,7 +109,7 @@ public class MultiblockPreviewRenderer {
             int x = mc.getWindow().getGuiScaledWidth() / 2;
             int y = 12;
 
-            GuiGraphicsExt.drawString(guiGraphics, mc.font, name, x - mc.font.width(name) / 2.0F, y, 0xFFFFFF, false);
+            GuiGraphicsExt.drawString(guiGraphics, mc.font, name, x - mc.font.width(name) / 2.0F, y, -1, false);
 
             int width = 180;
             int height = 9;

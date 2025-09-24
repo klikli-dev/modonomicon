@@ -54,7 +54,7 @@ public class EntryListButton extends Button {
     }
 
     private int getEntryColor() {
-        return 0x000000;
+        return 0xFF000000;
     }
 
     @Override

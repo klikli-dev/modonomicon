@@ -125,6 +125,7 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
         BookContentRenderer.renderBookBackground(guiGraphics, this.bookContentTexture);
         guiGraphics.pose().popMatrix();
+        guiGraphics.nextStratum();
 
         guiGraphics.pose().pushMatrix();
         //TODO we had -1000z here //push the page background to the front. Otherwise the entries render over it.
@@ -133,6 +134,7 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
         this.renderPage(guiGraphics, this.leftPageRenderer, pMouseX, pMouseY, pPartialTick);
         this.renderPage(guiGraphics, this.rightPageRenderer, pMouseX, pMouseY, pPartialTick);
         guiGraphics.pose().popMatrix();
+        guiGraphics.nextStratum();
 
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff

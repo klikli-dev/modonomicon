@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.client.render.page;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.book.page.BookRecipePage;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -44,8 +45,8 @@ public abstract class BookRecipePageRenderer<R extends Recipe<?>, T extends Book
             }
         } else {
             this.drawWrappedStringNoShadow(guiGraphics,
-                    Component.translatable(ModonomiconConstants.I18n.Gui.RECIPE_PAGE_RECIPE_MISSING, this.page.getRecipeKey1().toString()),
-                    recipeX - 13, recipeY - 15, 0xFF0000, BookEntryScreen.PAGE_WIDTH);
+                    Component.translatable(ModonomiconConstants.I18n.Gui.RECIPE_PAGE_RECIPE_MISSING, this.page.getRecipeKey1().toString()).withStyle(ChatFormatting.RED),
+                    recipeX - 13, recipeY - 15, -1, BookEntryScreen.PAGE_WIDTH);
         }
 
         var textY = this.getTextY();

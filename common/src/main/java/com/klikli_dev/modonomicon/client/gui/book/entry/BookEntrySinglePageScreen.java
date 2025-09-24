@@ -132,11 +132,13 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
         renderSinglePageBookBackground(guiGraphics, this.singlePageTexture);
         guiGraphics.pose().popMatrix();
+        guiGraphics.nextStratum();
 
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
         this.renderPage(guiGraphics, this.pageRenderer, pMouseX, pMouseY, pPartialTick);
         guiGraphics.pose().popMatrix();
+        guiGraphics.nextStratum();
 
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
