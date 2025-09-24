@@ -15,7 +15,7 @@ import java.util.List;
 
 public interface FluidHelper {
 
-    void drawFluid(GuiGraphics guiGraphics, final int width, final int height, FluidHolder fluidHolder, int capacity);
+    void drawFluid(GuiGraphics guiGraphics, final int width, final int height, FluidHolder fluidHolder, int capacity, int x, int y);
 
     List<Component> getTooltip(FluidHolder fluidHolder, int capacity, TooltipFlag tooltipFlag, TooltipMode tooltipMode);
 

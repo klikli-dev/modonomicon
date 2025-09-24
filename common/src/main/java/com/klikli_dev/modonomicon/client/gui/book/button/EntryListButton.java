@@ -23,6 +23,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.Nullable;
 
 public class EntryListButton extends Button {
@@ -53,7 +54,7 @@ public class EntryListButton extends Button {
     }
 
     private int getEntryColor() {
-        return 0x000000;
+        return 0xFF000000;
     }
 
     @Override
@@ -69,18 +70,19 @@ public class EntryListButton extends Button {
             float widthFract = time / ANIM_TIME;
             boolean locked = !BookUnlockStateManager.get().isUnlockedFor(Minecraft.getInstance().player, this.entry);
 
-            guiGraphics.pose().scale(0.5F, 0.5F, 0.5F);
+            guiGraphics.pose().pushMatrix();
+            guiGraphics.pose().scale(0.5F, 0.5F);
             guiGraphics.fill(this.getX() * 2, this.getY() * 2, (this.getX() + (int) ((float) this.width * widthFract)) * 2, (this.getY() + this.height) * 2, 0x22000000);
 
             if (locked) {
-                RenderSystem.setShaderColor(1F, 1F, 1F, 0.7F);
-                BookContentRenderer.drawLock(guiGraphics, this.entry.getBook(), this.getX() * 2 + 2, this.getY() * 2 + 2);
+                var color = ARGB.colorFromFloat(0.7f, 1f, 1f,1f);
+                BookContentRenderer.drawLock(guiGraphics, this.entry.getBook(), this.getX() * 2 + 2, this.getY() * 2 + 2, color);
             } else {
-                RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
                 this.entry.getIcon().render(guiGraphics, this.getX() * 2 + 2, this.getY() * 2 + 2);
             }
 
-            guiGraphics.pose().scale(2F, 2F, 2F);
+            guiGraphics.pose().scale(2F, 2F);
+            guiGraphics.pose().popMatrix();
 
             MutableComponent name;
             if (locked) {
@@ -96,16 +98,16 @@ public class EntryListButton extends Button {
             int y = this.getY() + 2;
             int maxWidth = BookEntryScreen.PAGE_WIDTH - 12; //make space for the icon and margin
 
-            guiGraphics.pose().pushPose();
+            guiGraphics.pose().pushMatrix();
 
             var scale = Math.min(1.0f, (float) maxWidth / (float) Minecraft.getInstance().font.width(name));
             if (scale < 1) {
-                guiGraphics.pose().translate(x - x * scale, y - y * scale, 0);
-                guiGraphics.pose().scale(scale, scale, scale);
+                guiGraphics.pose().translate(x - x * scale, y - y * scale);
+                guiGraphics.pose().scale(scale, scale);
             }
             guiGraphics.drawString(Minecraft.getInstance().font, name, x, y, this.getEntryColor(), false);
 
-            guiGraphics.pose().popPose();
+            guiGraphics.pose().popMatrix();
         }
     }
 

@@ -67,7 +67,7 @@ public class BookFrameOverlay {
     }
 
     public static BookFrameOverlay fromNetwork(FriendlyByteBuf buffer) {
-        return buffer.readJsonWithCodec(BookFrameOverlay.CODEC);
+        return buffer.readLenientJsonWithCodec(BookFrameOverlay.CODEC);
     }
 
     public void toNetwork(FriendlyByteBuf buffer) {

@@ -22,13 +22,13 @@ public class FabricMultiblockHelper implements MultiblockHelper {
     @Override
     public void renderBlock(BlockState state, BlockPos pos, Multiblock multiblock, PoseStack ps, MultiBufferSource buffers, RandomSource rand) {
         var blockRenderer = Minecraft.getInstance().getBlockRenderer();
-
-        var fluidState = state.getFluidState();
-        if (!fluidState.isEmpty()) {
-            var layer = ItemBlockRenderTypes.getRenderLayer(fluidState);
-            var buffer = buffers.getBuffer(layer);
-            blockRenderer.renderLiquid(pos, multiblock, new FluidBlockVertexConsumer(buffer, ps, pos), state, fluidState);
-        }
+        //TODO: Fluid rendering
+//        var fluidState = state.getFluidState();
+//        if (!fluidState.isEmpty()) {
+//            var layer = ItemBlockRenderTypes.getRenderLayer(fluidState);
+//            var buffer = buffers.getBuffer(layer);
+//            blockRenderer.renderLiquid(pos, multiblock, new FluidBlockVertexConsumer(buffer, ps, pos), state, fluidState);
+//        }
         if (state.getRenderShape() != RenderShape.INVISIBLE) {
 //            var layer = ItemBlockRenderTypes.getChunkRenderType(state);
 //            var buffer = buffers.getBuffer(layer);

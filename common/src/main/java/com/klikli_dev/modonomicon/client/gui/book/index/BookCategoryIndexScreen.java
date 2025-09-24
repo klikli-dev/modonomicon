@@ -78,17 +78,16 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
     }
 
     protected void drawTitle(GuiGraphics guiGraphics, int x, int y){
-        guiGraphics.pose().pushPose();
+        guiGraphics.pose().pushMatrix();
         var scale = Math.min(1.0f, (float) BookEntryScreen.MAX_TITLE_WIDTH / (float) this.font.width(this.getTitle()));
         if (scale < 1) {
-            guiGraphics.pose().translate(x - x * scale, y - y * scale, 0);
-            guiGraphics.pose().scale(scale, scale, scale);
+            guiGraphics.pose().translate(x - x * scale, y - y * scale);
+            guiGraphics.pose().scale(scale, scale);
         }
 
         //we use scale 1 because our scale translation handling in there is off a bit. the above translation code is better
         this.drawCenteredStringNoShadow(guiGraphics, this.getTitle(), x, y, this.getBook().getDefaultTitleColor(), 1);
-
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
     }
 
     public void drawCenteredStringNoShadow(GuiGraphics guiGraphics, Component s, int x, int y, int color) {
@@ -128,7 +127,7 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
 
     protected void drawTooltip(GuiGraphics guiGraphics, int pMouseX, int pMouseY) {
         if (this.tooltip != null && !this.tooltip.isEmpty()) {
-            guiGraphics.renderComponentTooltip(this.font, this.tooltip, pMouseX, pMouseY);
+            guiGraphics.setTooltipForNextFrame(this.tooltip.stream().map(Component::getVisualOrderText).toList(), pMouseX, pMouseY);
         }
     }
 
@@ -208,20 +207,18 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
     }
 
     @Override
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        //do not render background because we are on a gui stack and double blur would crash
+    }
+    @Override
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         if (BookGuiManager.get().openBookEntryScreen != null) //do not render self while an entry screen is open to avoid double render effects
             return;
 
         this.resetTooltip();
 
-        //we need to modify blit offset (now: z pose) to not draw over toasts
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, -1300);  //magic number arrived by testing until toasts show, but BookOverviewScreen does not
-        this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
-        guiGraphics.pose().popPose();
-
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(this.bookLeft, this.bookTop, 0);
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(this.bookLeft, this.bookTop);
 
         BookContentRenderer.renderBookBackground(guiGraphics, this.getBook().getBookContentTexture());
 
@@ -251,7 +248,7 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
             }
         }
 
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
 
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff

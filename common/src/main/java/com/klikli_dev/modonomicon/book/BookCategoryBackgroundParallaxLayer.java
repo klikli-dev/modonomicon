@@ -63,9 +63,8 @@ public class BookCategoryBackgroundParallaxLayer {
                 .collect(Collectors.toList());
     }
 
-
     public static BookCategoryBackgroundParallaxLayer fromNetwork(FriendlyByteBuf buffer) {
-        return buffer.readJsonWithCodec(BookCategoryBackgroundParallaxLayer.CODEC);
+        return buffer.readLenientJsonWithCodec(BookCategoryBackgroundParallaxLayer.CODEC);
     }
 
     public void toNetwork(FriendlyByteBuf buffer) {

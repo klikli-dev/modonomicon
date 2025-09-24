@@ -88,10 +88,12 @@ public class BookBookmarksScreen extends BookPaginatedScreen {
         return this.parentScreen;
     }
 
+    @Override
     public boolean canSeeArrowButton(boolean left) {
         return left ? this.openPagesIndex > 0 : (this.openPagesIndex + 1) < this.maxOpenPagesIndex;
     }
 
+    @Override
     protected void flipPage(boolean left, boolean playSound) {
         if (this.canSeeArrowButton(left)) {
 
@@ -111,7 +113,7 @@ public class BookBookmarksScreen extends BookPaginatedScreen {
 
     protected void drawTooltip(GuiGraphics guiGraphics, int pMouseX, int pMouseY) {
         if (this.tooltip != null && !this.tooltip.isEmpty()) {
-            guiGraphics.renderComponentTooltip(this.font, this.tooltip, pMouseX, pMouseY);
+            guiGraphics.setTooltipForNextFrame(this.tooltip.stream().map(Component::getVisualOrderText).toList(), pMouseX, pMouseY);
         }
     }
 
@@ -178,18 +180,16 @@ public class BookBookmarksScreen extends BookPaginatedScreen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        //do not render background because we are on a gui stack and double blur would crash
+    }
 
+    @Override
+    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         this.resetTooltip();
 
-        //we need to modify blit offset (now: z pose) to not draw over toasts
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, -1300);  //magic number arrived by testing until toasts show, but BookOverviewScreen does not
-        this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
-        guiGraphics.pose().popPose();
-
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(this.bookLeft, this.bookTop, 0);
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(this.bookLeft, this.bookTop);
 
         BookContentRenderer.renderBookBackground(guiGraphics, this.getBook().getBookContentTexture());
 
@@ -214,7 +214,8 @@ public class BookBookmarksScreen extends BookPaginatedScreen {
         if (this.visibleEntries.isEmpty()) {
             this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.BOOKMARKS_NO_RESULTS), BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, 80, 0x333333);
         }
-        guiGraphics.pose().popPose();
+
+        guiGraphics.pose().popMatrix();
 
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff

@@ -16,8 +16,8 @@ import java.util.List;
 
 public class FabricFluidHelper implements FluidHelper {
     @Override
-    public void drawFluid(GuiGraphics guiGraphics, int width, int height, FluidHolder fluidHolder, int capacity) {
-        FluidRenderHelper.drawFluid(guiGraphics, width, height, new FabricFluidHolder(fluidHolder), capacity);
+    public void drawFluid(GuiGraphics guiGraphics, int width, int height, FluidHolder fluidHolder, int capacity, int x, int y) {
+        FluidRenderHelper.drawFluid(guiGraphics, width, height, new FabricFluidHolder(fluidHolder), capacity, x, y);
     }
 
     @Override

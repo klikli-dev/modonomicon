@@ -16,6 +16,7 @@ import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
@@ -39,8 +40,7 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
         int x = 0; // (this.width - BOOK_BACKGROUND_WIDTH) / 2;
         int y = 0; // (this.height - BOOK_BACKGROUND_HEIGHT) / 2;
 
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        guiGraphics.blit(RenderType::guiTextured, bookContentTexture, x, y, 0, 0, 145, 178, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, bookContentTexture, x, y, 0, 0, 145, 178, 256, 256);
     }
 
     @Override
@@ -128,21 +128,17 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         this.resetTooltip();
 
-        //we need to modify blit offset (now: z pose) to not draw over toasts
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, -1300);  //magic number arrived by testing until toasts show, but BookOverviewScreen does not
-        this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
-        guiGraphics.pose().popPose();
-
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(this.bookLeft, this.bookTop, 0);
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(this.bookLeft, this.bookTop);
         renderSinglePageBookBackground(guiGraphics, this.singlePageTexture);
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
+        guiGraphics.nextStratum();
 
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(this.bookLeft, this.bookTop, 0);
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(this.bookLeft, this.bookTop);
         this.renderPage(guiGraphics, this.pageRenderer, pMouseX, pMouseY, pPartialTick);
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
+        guiGraphics.nextStratum();
 
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
@@ -152,12 +148,5 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
 
         //do not translate tooltip, would mess up location
         this.drawTooltip(guiGraphics, pMouseX, pMouseY);
-    }
-
-    @SuppressWarnings("NullableProblems")
-    @Override
-    public Font getFont() {
-        //this is necessary because while Screen has getFont(), if a mod uses non-mojang mappings the method won't be found
-        return this.font;
     }
 }

@@ -7,15 +7,18 @@ package com.klikli_dev.modonomicon.datagen;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.Item;
 
 import java.util.concurrent.CompletableFuture;
 
-public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider {
-    public ItemTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagLookup<Block>> pBlockTags) {
-        super(output, lookupProvider, pBlockTags, Modonomicon.MOD_ID);
+public class ItemTagsProvider extends IntrinsicHolderTagsProvider<Item> {
+    public ItemTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        //noinspection deprecation
+        super(output, Registries.ITEM, lookupProvider, item -> item.builtInRegistryHolder().key(), Modonomicon.MOD_ID);
     }
 
     @Override

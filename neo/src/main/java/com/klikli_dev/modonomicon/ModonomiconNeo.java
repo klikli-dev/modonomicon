@@ -175,14 +175,13 @@ public class ModonomiconNeo {
             });
 
             //Render multiblock preview
-            NeoForge.EVENT_BUS.addListener((RenderLevelStageEvent e) -> {
-                if (e.getStage() == RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS) { //After translucent causes block entities to error out on render in preview
-                    MultiblockPreviewRenderer.onRenderLevelLastEvent(e.getPoseStack());
-                }
+            NeoForge.EVENT_BUS.addListener((RenderLevelStageEvent.AfterTripwireBlocks e) -> {
+                //After translucent causes block entities to error out on render in preview so we use after tripwire.
+                MultiblockPreviewRenderer.onRenderLevelLastEvent(e.getPoseStack());
             });
         }
 
-        public static void registerConfigScreen(ModContainer modContainer){
+        public static void registerConfigScreen(ModContainer modContainer) {
             modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
         }
 

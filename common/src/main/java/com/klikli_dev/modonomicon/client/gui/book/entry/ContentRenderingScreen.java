@@ -40,7 +40,7 @@ public interface ContentRenderingScreen {
 
     BookContentEntry getEntry();
 
-    Font getFont();
+    Font getContentFont();
 
     Minecraft getMinecraft();
 
@@ -71,7 +71,7 @@ public interface ContentRenderingScreen {
         }
 
         guiGraphics.renderItem(stack, x, y);
-        guiGraphics.renderItemDecorations(this.getFont(), stack, x, y);
+        guiGraphics.renderItemDecorations(this.getContentFont(), stack, x, y);
 
         if (this.isMouseInRange(mouseX, mouseY, x, y, 16, 16)) {
             this.setTooltipStack(stack);
@@ -107,10 +107,9 @@ public interface ContentRenderingScreen {
             return;
         }
 
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(x, y, 0);
-        ClientServices.FLUID.drawFluid(guiGraphics, 18, 18, stack, capacity);
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().pushMatrix();
+        ClientServices.FLUID.drawFluid(guiGraphics, 18, 18, stack, capacity, x, y);
+        guiGraphics.pose().popMatrix();
 
         if (this.isMouseInRange(mouseX, mouseY, x, y, 18, 18)) {
             this.setTooltipStack(stack);
@@ -132,8 +131,9 @@ public interface ContentRenderingScreen {
      * Our copy of guiGraphics.renderComponentHoverEffect(); to handle book links
      */
     default void renderComponentHoverEffect(GuiGraphics guiGraphics, @Nullable Style style, int mouseX, int mouseY) {
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, 1000);
+
+        guiGraphics.pose().pushMatrix();
+        //TODO: we had a +1000 z translate here
         var newStyle = style;
         if (style != null && style.getHoverEvent() != null) {
             if (style.getHoverEvent().action() == HoverEvent.Action.SHOW_TEXT && style.getHoverEvent() instanceof HoverEvent.ShowText showText) {
@@ -241,7 +241,7 @@ public interface ContentRenderingScreen {
                     //temporarily modify width to force forge to handle wrapping correctly
                     var backupWidth = this.asScreen().width;
                     this.asScreen().width = this.asScreen().width / 2; //not quite sure why exaclty / 2 works, but then forge wrapping handles it correctly on gui scale 3+4
-                    guiGraphics.renderTooltip(this.getFont(), itemstack, mouseX, mouseY);
+                    guiGraphics.setTooltipForNextFrame(this.getContentFont(), itemstack, mouseX, mouseY);
                     this.asScreen().width = backupWidth;
 
                     //then we reset so other item tooltip renders are not affected
@@ -251,18 +251,19 @@ public interface ContentRenderingScreen {
                 case HoverEvent.ShowEntity(HoverEvent.EntityTooltipInfo hoverevent$entitytooltipinfo1):
                     HoverEvent.EntityTooltipInfo hoverevent$entitytooltipinfo = hoverevent$entitytooltipinfo1;
                     if (this.getMinecraft().options.advancedItemTooltips) {
-                        guiGraphics.renderComponentTooltip(this.getFont(), hoverevent$entitytooltipinfo.getTooltipLines(), mouseX, mouseY);
+                        guiGraphics.setTooltipForNextFrame(this.getContentFont(), hoverevent$entitytooltipinfo.getTooltipLines().stream().map(Component::getVisualOrderText).toList(), mouseX, mouseY);
                     }
                     break;
                 case HoverEvent.ShowText(Component component):
-                    //      guiGraphics.renderTooltip(this.getFont(), this.getFont().split(component, Math.max(guiGraphics.guiWidth() / 2, 200)), mouseX, mouseY); //render call with original width calc
-                    var width = (this.asScreen().width / 2) - mouseX - 10; //our own width calc
-                    guiGraphics.renderTooltip(this.getFont(), this.getFont().split(component, width), mouseX, mouseY);
+                    //there seem to be cases where tooltip overflows the screen, so we force newlines.
+                    var width = this.asScreen().width;
+                    guiGraphics.setTooltipForNextFrame(this.getContentFont(), this.getContentFont().split(component, width), mouseX, mouseY);
+//                    guiGraphics.setTooltipForNextFrame(this.getContentFont(), component, mouseX, mouseY);
                     break;
                 default:
             }
         }
 
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
     }
 }

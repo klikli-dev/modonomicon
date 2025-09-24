@@ -199,7 +199,7 @@ public class Book {
         var bookContentTexture = ResourceLocation.parse(GsonHelper.getAsString(json, "book_content_texture", Data.Book.DEFAULT_CONTENT_TEXTURE));
         var craftingTexture = ResourceLocation.parse(GsonHelper.getAsString(json, "crafting_texture", Data.Book.DEFAULT_CRAFTING_TEXTURE));
         var turnPageSound = ResourceLocation.parse(GsonHelper.getAsString(json, "turn_page_sound", Data.Book.DEFAULT_PAGE_TURN_SOUND));
-        var defaultTitleColor = GsonHelper.getAsInt(json, "default_title_color", 0x00000);
+        var defaultTitleColor = GsonHelper.getAsInt(json, "default_title_color", 0xFF000000);
         var categoryButtonIconScale = GsonHelper.getAsFloat(json, "category_button_icon_scale", 1.0f);
         var autoAddReadConditions = GsonHelper.getAsBoolean(json, "auto_add_read_conditions", false);
 

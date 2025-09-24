@@ -18,13 +18,18 @@ import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> implements PageWithTextRenderer {
     private Entity entity;
@@ -37,17 +42,17 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
     }
 
     public static void renderEntity(GuiGraphics guiGraphics, Entity entity, Level world, float x, float y, float rotation, float renderScale, float offset) {
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(x, y, 50);
-        guiGraphics.pose().scale(renderScale, renderScale, renderScale);
-        guiGraphics.pose().translate(0, offset, 0);
-        guiGraphics.pose().mulPose(Axis.ZP.rotationDegrees(180));
-        guiGraphics.pose().mulPose(Axis.YP.rotationDegrees(rotation));
-        EntityRenderDispatcher erd = Minecraft.getInstance().getEntityRenderDispatcher();
-        erd.setRenderShadow(false);
-        guiGraphics.drawSpecial(bufferSource -> erd.render(entity, 0.0, 0.0, 0.0, 1.0F, guiGraphics.pose(), bufferSource, 0xF000F0));
-        erd.setRenderShadow(true);
-        guiGraphics.pose().popPose();
+        //TODO: fix entity rendering
+//        Vector3f vector3f = new Vector3f(0.0F, p_275689_.getBbHeight() / 2.0F + p_275604_ * f9, 0.0F);
+//
+//
+//        if(entity instanceof LivingEntity livingEntity) {
+//            EntityRenderDispatcher erd = Minecraft.getInstance().getEntityRenderDispatcher();
+//            EntityRenderer<? super LivingEntity, ?> entityrenderer = erd.getRenderer(livingEntity);
+//            EntityRenderState entityrenderstate = entityrenderer.createRenderState(livingEntity, 1.0F);
+//            entityrenderstate.hitboxesRenderState = null;
+//            guiGraphics.submitEntityRenderState(entityrenderstate, renderScale, translation, rotation, overrideCameraAngle, x1, y1, x2, y2);
+//        }
     }
 
     private void loadEntity(Level world) {
@@ -88,8 +93,7 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
 
         int x = BookEntryScreen.PAGE_WIDTH / 2 - 53;
         int y = 7;
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-       BookContentRenderer.drawFromContentTexture(RenderType::guiTexturedOverlay, guiGraphics, this.getPage().getBook(), x, y, 405, 149, 106, 106);
+       BookContentRenderer.drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, this.getPage().getBook(), x, y, 405, 149, 106, 106);
 
         if (this.errored) {
             guiGraphics.drawString(this.font, Component.translatable(Gui.PAGE_ENTITY_LOADING_ERROR), 58, 60, 0xFF0000, true);

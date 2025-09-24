@@ -25,9 +25,14 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -164,8 +169,6 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         float xOffset = xScale == scale ? 0 : (MAX_SCROLL - (innerWidth + MAX_SCROLL * 2.0f / scale)) / 2;
         float yOffset = yScale == scale ? 0 : (MAX_SCROLL - (innerHeight + MAX_SCROLL * 2.0f / scale)) / 2;
 
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
         //note we cannot translate -z here because even -1 immediately pushes us behind the scene -> not visible
         if (!this.category.getBackgroundParallaxLayers().isEmpty()) {
             this.category.getBackgroundParallaxLayers().forEach(layer -> {
@@ -174,7 +177,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         } else {
             //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
             //force offset to int here to reduce difference to entry rendering which is pos based and thus int precision only
-            guiGraphics.blit(RenderType::guiTextured, this.category.getBackground(), innerX, innerY,
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.category.getBackground(), innerX, innerY,
                     (this.scrollX + MAX_SCROLL) / scale + xOffset,
                     (this.scrollY + MAX_SCROLL) / scale + yOffset,
                     innerWidth, innerHeight, (int) (backgroundHeight * backgroundTextureZoomMultiplier), (int) (backgroundWidth * backgroundTextureZoomMultiplier));
@@ -187,7 +190,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
         if (layer.getVanishZoom() == -1 || layer.getVanishZoom() > zoom) {
             //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
-            guiGraphics.blit(RenderType::guiTextured, layer.getBackground(), x, y,
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, layer.getBackground(), x, y,
                     (scrollX + this.getCategory().getMaxScrollX()) / parallax1 + xOffset,
                     (scrollY + this.getCategory().getMaxScrollY()) / parallax1 + yOffset,
                     width, height, (int) (backgroundHeight * backgroundTextureZoomMultiplier), (int) (backgroundWidth * backgroundTextureZoomMultiplier));
@@ -196,14 +199,13 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
     }
 
     private void renderEntries(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         //calculate the render offset
         float xOffset = this.getXOffset();
         float yOffset = this.getYOffset();
 
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().scale(this.currentZoom, this.currentZoom, 1.0f);
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().scale(this.currentZoom, this.currentZoom);
 
         for (var entry : this.category.getEntries().values()) {
             var displayState = this.getEntryDisplayState(entry);
@@ -215,34 +217,36 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             int texX = entry.getEntryBackgroundVIndex() * ENTRY_HEIGHT;
             int texY = entry.getEntryBackgroundUIndex() * ENTRY_WIDTH;
 
-            guiGraphics.pose().pushPose();
+            guiGraphics.pose().pushMatrix();
             //we translate instead of applying the offset to the entry x/y to avoid jittering when moving
-            guiGraphics.pose().translate(xOffset, yOffset, 0);
+            guiGraphics.pose().translate(xOffset, yOffset);
 
 
             //we apply a z offset to push the entries before the connection arrows
-            guiGraphics.pose().translate(0, 0, 10);
+            //TODO here we had a translate +10z
 
             //As of 1.20 this is not necessary, in fact it causes the entry to render behind the bg
             //guiGraphics.pose().translate(0, 0, -10); //push the whole entry behind the frame
 
 
+            int color = ARGB.colorFromFloat(1.0f, 1.0F, 1.0F, 1.0F);
             if (displayState == EntryDisplayState.LOCKED) {
                 //Draw locked entries greyed out
-                RenderSystem.setShaderColor(0.2F, 0.2F, 0.2F, 1.0F);
+                //TODO shader color needs to be handed as last parameter to blit
+                color = ARGB.colorFromFloat(1f, 0.2F, 0.2F, 0.2F);
             } else if (isHovered) {
                 //Draw hovered entries slightly greyed out
-                RenderSystem.setShaderColor(0.8F, 0.8F, 0.8F, 1.0F);
+                color = ARGB.colorFromFloat(1f, 0.8F, 0.8F, 0.8F);
             }
             //render entry background
-            guiGraphics.blit(RenderType::guiTextured, this.category.getEntryTextures(), entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.category.getEntryTextures(), entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT, 256, 256, color);
 
-            guiGraphics.pose().pushPose();
+            guiGraphics.pose().pushMatrix();
 
             //render icon
             entry.getIcon().render(guiGraphics, entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 5, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP + 5);
 
-            guiGraphics.pose().popPose();
+            guiGraphics.pose().popMatrix();
 
             //render unread icon
             if (displayState == EntryDisplayState.UNLOCKED && !BookUnlockStateManager.get().isReadFor(Minecraft.getInstance().player, entry)) {
@@ -251,24 +255,20 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                 final int width = 11;
                 final int height = 11;
 
-                //testing
-                guiGraphics.pose().pushPose();
-                guiGraphics.pose().translate(0, 0, 11); //and push the unread icon in front of the background and icon (they are at Z 10)
+                guiGraphics.pose().pushMatrix();
+                //TODO here we had translate +11 z
                 //if focused we go to the right of our normal button (instead of down, like mc buttons do)
-                BookContentRenderer.drawFromContentTexture(RenderType::guiTexturedOverlay, guiGraphics, this.bookParentScreen.getBook(),
+                BookContentRenderer.drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, this.bookParentScreen.getBook(),
                         entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 16 + 2,
                         entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP - 2, U + (isHovered ? width : 0), V, width, height);
-                guiGraphics.pose().popPose();
+                guiGraphics.pose().popMatrix();
             }
 
-            guiGraphics.pose().popPose();
-
-            //reset color to avoid greyed out carrying over
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            guiGraphics.pose().popMatrix();
 
             this.renderConnections(guiGraphics, entry, xOffset, yOffset);
         }
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
     }
 
     public void renderEntryTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
@@ -302,22 +302,28 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         //hovered?
         if (this.isEntryHovered(entry, xOffset, yOffset, mouseX, mouseY)) {
 
-            var tooltip = new ArrayList<Component>();
+            var tooltip = new ArrayList<ClientTooltipComponent>();
+            var tooltipComponents = new ArrayList<Component>();
 
             if (displayState == EntryDisplayState.LOCKED) {
-                tooltip.addAll(entry.getCondition().getTooltip(Minecraft.getInstance().player, BookConditionEntryContext.of(this.bookParentScreen.getBook(), entry)));
+                tooltip.addAll(
+                        entry.getCondition().getTooltip(Minecraft.getInstance().player, BookConditionEntryContext.of(this.bookParentScreen.getBook(), entry)).stream().map(Component::getVisualOrderText).map(ClientTooltipComponent::create).toList());
+                tooltipComponents.addAll(
+                        entry.getCondition().getTooltip(Minecraft.getInstance().player, BookConditionEntryContext.of(this.bookParentScreen.getBook(), entry)));
             } else if (displayState == EntryDisplayState.UNLOCKED) {
                 //add name in bold
-                tooltip.add(Component.translatable(entry.getName()).withStyle(ChatFormatting.BOLD));
+                tooltip.add(ClientTooltipComponent.create(Component.translatable(entry.getName()).withStyle(ChatFormatting.BOLD).getVisualOrderText()));
+                tooltipComponents.add(Component.translatable(entry.getName()).withStyle(ChatFormatting.BOLD));
                 //add description
                 if (!entry.getDescription().isEmpty()) {
-                    tooltip.add(Component.translatable(entry.getDescription()));
+                    tooltip.add(ClientTooltipComponent.create(Component.translatable(entry.getDescription()).getVisualOrderText()));
+                    tooltipComponents.add(Component.translatable(entry.getDescription()));
                 }
             }
 
             //draw description
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            guiGraphics.renderTooltip(Minecraft.getInstance().font, tooltip, Optional.empty(), mouseX, mouseY);
+            guiGraphics.setComponentTooltipForNextFrame(Minecraft.getInstance().font, tooltipComponents, mouseX, mouseY);
+//            guiGraphics.renderTooltip(Minecraft.getInstance().font, tooltip, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
         }
     }
 
@@ -329,10 +335,10 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             if (parentDisplayState == EntryDisplayState.HIDDEN)
                 continue;
 
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(xOffset, yOffset, 0);
+            guiGraphics.pose().pushMatrix();
+            guiGraphics.pose().translate(xOffset, yOffset);
             this.connectionRenderer.render(guiGraphics, entry, parent);
-            guiGraphics.pose().popPose();
+            guiGraphics.pose().popMatrix();
         }
     }
 

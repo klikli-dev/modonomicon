@@ -11,9 +11,11 @@ import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.data.BookConditionJsonLoader;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.platform.Services;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -35,7 +37,7 @@ public abstract class BookCondition {
             if (tooltipElement.isJsonPrimitive())
                 return Component.translatable(tooltipElement.getAsString());
 
-            return Component.Serializer.fromJson(tooltipElement, provider);
+            Component.literal("").append(ComponentSerialization.CODEC.parse(provider.createSerializationContext(JsonOps.INSTANCE), tooltipElement).getOrThrow());
         }
         return null;
     }

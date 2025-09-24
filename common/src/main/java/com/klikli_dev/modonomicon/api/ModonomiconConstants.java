@@ -214,6 +214,7 @@ public class ModonomiconConstants {
             public static final String RELOAD_SUCCESS = SUCCESS_PREFIX + "reload_requested";
             public static final String RELOAD_REQUESTED = PREFIX + "reload_requested";
             public static final String DEFAULT_FAILURE_MESSAGE = PREFIX + "failure";
+            public static final String FAILURE_NOT_ALLOWED_HERE = PREFIX + "failure_not_allowed_here";
         }
     }
 }

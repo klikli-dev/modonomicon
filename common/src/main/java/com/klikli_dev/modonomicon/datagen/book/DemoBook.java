@@ -38,7 +38,8 @@ public class DemoBook extends SingleBookSubProvider {
 
         var commandEntryLinkCommand = BookCommandModel.create(this.modLoc("test_command2"), "/give @s minecraft:wheat 1")
                 .withPermissionLevel(2)
-                .withSuccessMessage("modonomicon.command.test_command2.success");
+                .withSuccessMessage("modonomicon.command.test_command2.success")
+                .withAllowedEntry("modonomicon:features/command");
         this.add(commandEntryLinkCommand.getSuccessMessage(), "You got wheat, because clicking is cool!");
 
         return book.withModel(ResourceLocation.parse("modonomicon:modonomicon_green"))

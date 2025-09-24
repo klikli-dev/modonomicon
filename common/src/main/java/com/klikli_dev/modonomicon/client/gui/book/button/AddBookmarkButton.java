@@ -12,6 +12,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 
@@ -30,9 +31,9 @@ public class AddBookmarkButton extends Button {
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTicks) {
         if (this.visible) {
-            guiGraphics.pose().pushPose();
+            guiGraphics.pose().pushMatrix();
             int xOffset = this.parent.getBook().getSearchButtonXOffset();
-            guiGraphics.pose().translate(xOffset, 0, 0);
+            guiGraphics.pose().translate(xOffset, 0);
 
             int scissorX = this.scissorX + xOffset;
             int texX = 68;
@@ -53,13 +54,10 @@ public class AddBookmarkButton extends Button {
             //GL scissors allows us to move the button on hover without intersecting with book border
             guiGraphics.enableScissor(scissorX, scissorY, scissorX + scissorWidth, scissorY + 1000);
 
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            guiGraphics.blit(RenderType::guiTextured, this.parent.getBook().getBookOverviewTexture(), renderX, this.getY(), texX, texY, this.width, this.height, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.parent.getBook().getBookOverviewTexture(), renderX, this.getY(), texX, texY, this.width, this.height, 256, 256);
 
             guiGraphics.disableScissor();
-
-            guiGraphics.pose().popPose();
-
+            guiGraphics.pose().popMatrix();
         }
     }
 }

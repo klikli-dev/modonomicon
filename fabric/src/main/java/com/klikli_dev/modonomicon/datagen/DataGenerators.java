@@ -30,15 +30,15 @@ public class DataGenerators implements DataGeneratorEntrypoint {
                 //Add our demo book sub provider to the book provider
                 new DemoBook(Modonomicon.MOD_ID, enUsCache),
                 //Add our demo leaflet sub provider to the book provider
-                new DemoLeaflet(Modonomicon.MOD_ID, enUsCache),
+                new DemoLeaflet(Modonomicon.MOD_ID, enUsCache)
                 //Add our addon book provider which adds to theurgy's book
-                new AddToDemoBook(addToLangCache)
+//                new AddToDemoBook(addToLangCache)
         ));
         //Important: lang provider needs to be added after the book provider, so it can read the texts added by the book provider out of the cache
         pack.addProvider((FabricDataOutput output) -> new EnUsProvider(output, enUsCache));
 
         //For our addon book we can use the AddToModonomiconLanguageProvider class which just writes the cache to the target modid
-        pack.addProvider((FabricDataOutput output) -> new AddToModonomiconLanguageProvider(output, "theurgy", "en_us", addToLangCache));
+//        pack.addProvider((FabricDataOutput output) -> new AddToModonomiconLanguageProvider(output, "theurgy", "en_us", addToLangCache));
 
         //Sample of a legacy book provider registration
 //        pack.addProvider(FabricBookProvider.of(

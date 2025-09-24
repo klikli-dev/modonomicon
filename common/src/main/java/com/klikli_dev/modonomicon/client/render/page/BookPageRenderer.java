@@ -93,7 +93,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
         if (text.hasComponent()) {
             //if it is a component, we draw it directly
             for (FormattedCharSequence formattedcharsequence : font.split(text.getComponent(), width)) {
-                guiGraphics.drawString(font, formattedcharsequence, x, y, 0, false);
+                guiGraphics.drawString(font, formattedcharsequence, x, y, -1, false);
                 y += font.lineHeight;
             }
         } else if (text instanceof RenderedBookTextHolder renderedText) {
@@ -105,24 +105,21 @@ public abstract class BookPageRenderer<T extends BookPage> {
 
             float scale = getBookTextHolderScaleForRenderSize(text, font, width, height);
 
-            guiGraphics.pose().pushPose();
-
+            guiGraphics.pose().pushMatrix();
             if (scale < 1) {
-                guiGraphics.pose().translate(x - x * scale, y - y * scale, 0);
-                guiGraphics.pose().scale(scale, scale, scale);
+                guiGraphics.pose().translate(x - x * scale, y - y * scale);
+                guiGraphics.pose().scale(scale, scale);
             }
 
             float renderY = y;
             for (var component : components) {
                 var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, (int) (width / scale), (int) ((width - 10) / scale), font);
                 for (FormattedCharSequence formattedcharsequence : wrapped) {
-                    GuiGraphicsExt.drawString(guiGraphics, font, formattedcharsequence, x, renderY, 0, false);
+                    GuiGraphicsExt.drawString(guiGraphics, font, formattedcharsequence, x, renderY, -1, false);
                     renderY += font.lineHeight;
                 }
             }
-
-            guiGraphics.pose().popPose();
-
+            guiGraphics.pose().popMatrix();
         } else {
             Modonomicon.LOG.warn("BookTextHolder with String {} has no component, but is not rendered to markdown either.", text.getString());
         }
@@ -197,7 +194,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
      */
     public void renderTitle(GuiGraphics guiGraphics, BookTextHolder title, boolean showTitleSeparator, int x, int y) {
 
-        guiGraphics.pose().pushPose();
+        guiGraphics.pose().pushMatrix();
 
         if (title instanceof RenderedBookTextHolder renderedTitle) {
             //if user decided to use markdown title, we need to use the  rendered version
@@ -207,11 +204,11 @@ public abstract class BookPageRenderer<T extends BookPage> {
             //if title is larger than allowed, scaled to fit
             var scale = Math.min(1.0f, (float) BookEntryScreen.MAX_TITLE_WIDTH / (float) this.font.width(formattedCharSequence));
             if (scale < 1) {
-                guiGraphics.pose().translate(0, y - y * scale, 0);
-                guiGraphics.pose().scale(scale, scale, scale);
+                guiGraphics.pose().translate(0, y - y * scale);
+                guiGraphics.pose().scale(scale, scale);
             }
 
-            this.drawCenteredStringNoShadow(guiGraphics, formattedCharSequence, x, y, 0, scale);
+            this.drawCenteredStringNoShadow(guiGraphics, formattedCharSequence, x, y, -1, scale);
         } else if (title.hasComponent()) {
             //non-markdown title we just render as usual
 
@@ -221,12 +218,12 @@ public abstract class BookPageRenderer<T extends BookPage> {
             //if title is larger than allowed, scaled to fit
             var scale = Math.min(1.0f, (float) BookEntryScreen.MAX_TITLE_WIDTH / (float) this.font.width(titleComponent.getVisualOrderText()));
             if (scale < 1) {
-                guiGraphics.pose().translate(0, y - y * scale, 0);
-                guiGraphics.pose().scale(scale, scale, scale);
+                guiGraphics.pose().translate(0, y - y * scale);
+                guiGraphics.pose().scale(scale, scale);
             }
 
             //otherwise we use the component - that is either provided by the user, or created from the default title style.
-            this.drawCenteredStringNoShadow(guiGraphics, titleComponent.getVisualOrderText(), x, y, 0, scale);
+            this.drawCenteredStringNoShadow(guiGraphics, titleComponent.getVisualOrderText(), x, y, -1, scale);
         } else {
             //this means a non-markdown title has no component -> this should not be possible, it indicates that either:
             // - a page did not set up its (non markdown) book text holder correctly in preprender markdown
@@ -237,7 +234,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
             BookErrorManager.get().setCurrentBookId(null);
         }
 
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
 
         if (showTitleSeparator)
             BookContentRenderer.drawTitleSeparator(guiGraphics, this.page.getBook(), x, y + 12);

@@ -28,7 +28,8 @@ public class BookTextPageRenderer extends BookPageRenderer<BookTextPage> impleme
 
         var style = this.getClickedComponentStyleAt(mouseX, mouseY);
         if (style != null)
-            this.parentScreen.renderComponentHoverEffect(guiGraphics, style, mouseX, mouseY);
+            //pMouseX - this.bookLeft - page.left, pMouseY - this.bookTop - page.top
+            this.parentScreen.renderComponentHoverEffect(guiGraphics, style, mouseX + this.parentScreen.getBookLeft() + this.left, mouseY + this.parentScreen.getBookTop() + this.top);
     }
 
     @Nullable

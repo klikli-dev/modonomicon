@@ -31,16 +31,16 @@ public class DataGenerators {
                         //Add our demo book sub provider to the book provider
                         new DemoBook(Modonomicon.MOD_ID, enUsCache),
                         //Add our demo leaflet sub provider to the book provider
-                        new DemoLeaflet(Modonomicon.MOD_ID, enUsCache),
+                        new DemoLeaflet(Modonomicon.MOD_ID, enUsCache)
                         //Add our addon book provider which adds to theurgy's book
-                        new AddToDemoBook(addToLangCache)
+//                        new AddToDemoBook(addToLangCache)
                 )
         );
         //Important: lang provider needs to be added after the book provider, so it can read the texts added by the book provider out of the cache
         generator.addProvider(event.includeClient(), new EnUsProvider(generator.getPackOutput(), enUsCache));
 
         //For our addon book we can use the AddToModonomiconLanguageProvider class which just writes the cache to the target modid
-        generator.addProvider(event.includeClient(), new AddToModonomiconLanguageProvider(generator.getPackOutput(), "theurgy", "en_us", addToLangCache));
+//        generator.addProvider(event.includeClient(), new AddToModonomiconLanguageProvider(generator.getPackOutput(), "theurgy", "en_us", addToLangCache));
 
         //Sample of a legacy book provider registration
 //        generator.addProvider(event.includeServer(), ForgeBookProvider.of(event,
@@ -52,6 +52,6 @@ public class DataGenerators {
 
         var blockTagsProvider = new BlockTagsProvider(generator.getPackOutput(), event.getLookupProvider(), event.getExistingFileHelper());
         generator.addProvider(event.includeClient(), blockTagsProvider);
-        generator.addProvider(event.includeClient(), new ItemTagsProvider(generator.getPackOutput(), event.getLookupProvider(), blockTagsProvider.contentsGetter(), event.getExistingFileHelper()));
+        generator.addProvider(event.includeClient(), new ItemTagsProvider(generator.getPackOutput(), event.getLookupProvider(), event.getExistingFileHelper()));
     }
 }

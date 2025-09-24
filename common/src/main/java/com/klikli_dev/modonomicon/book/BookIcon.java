@@ -13,6 +13,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentPatch;
@@ -107,7 +108,7 @@ public class BookIcon {
         if (this.texture != null) {
             //1.21.3+ parameter order taken from ImageWidget#renderWidget
             guiGraphics.blit(
-                    RenderType::guiTextured,
+                    RenderPipelines.GUI_TEXTURED,
                     this.texture,
                     x, y,
                     0, 0,
@@ -116,7 +117,7 @@ public class BookIcon {
                     this.width, this.height
             );
 
-            //    guiGraphics.blit(RenderType::guiTextured, this.page.getImages()[this.index], x * 2 + 6, y * 2 + 6, 0, 0, 200, 200, 200, 200, 200, 200);
+            //    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.page.getImages()[this.index], x * 2 + 6, y * 2 + 6, 0, 0, 200, 200, 200, 200, 200, 200);
         } else {
             guiGraphics.renderItem(this.itemStack, x, y);
         }

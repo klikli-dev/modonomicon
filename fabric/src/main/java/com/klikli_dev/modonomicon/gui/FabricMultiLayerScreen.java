@@ -6,15 +6,21 @@
 
 package com.klikli_dev.modonomicon.gui;
 
+import net.minecraft.CrashReport;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ComponentPath;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.sounds.Music;
@@ -41,7 +47,7 @@ public class FabricMultiLayerScreen extends Screen {
 
     @Override
     public void renderWithTooltip(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        pGuiGraphics.pose().pushPose();
+        pGuiGraphics.pose().pushMatrix();
         for (int i = 0; i < this.guiLayers.size(); i++) {
             Screen layer = this.guiLayers.get(i);
             if (i == this.guiLayers.size() - 1) {
@@ -51,7 +57,7 @@ public class FabricMultiLayerScreen extends Screen {
                 layer.renderWithTooltip(pGuiGraphics, Integer.MAX_VALUE, Integer.MAX_VALUE, pPartialTick);
             }
         }
-        pGuiGraphics.pose().popPose();
+        pGuiGraphics.pose().popMatrix();
     }
 
     @Override
@@ -167,23 +173,23 @@ public class FabricMultiLayerScreen extends Screen {
     }
 
     @Override
-    public void setTooltipForNextRenderPass(Tooltip tooltip, ClientTooltipPositioner positioner, boolean override) {
-        this.guiLayers.peek().setTooltipForNextRenderPass(tooltip, positioner, override);
+    public void init(Minecraft minecraft, int width, int height) {
+        this.guiLayers.peek().init(minecraft, width, height);
     }
 
     @Override
-    public void setTooltipForNextRenderPass(Component tooltip) {
-        this.guiLayers.peek().setTooltipForNextRenderPass(tooltip);
+    public void fillCrashDetails(CrashReport crashReport) {
+        this.guiLayers.peek().fillCrashDetails(crashReport);
     }
 
     @Override
-    public void setTooltipForNextRenderPass(List<FormattedCharSequence> tooltip, ClientTooltipPositioner positioner, boolean override) {
-        this.guiLayers.peek().setTooltipForNextRenderPass(tooltip, positioner, override);
+    public Font getFont() {
+        return this.guiLayers.peek().getFont();
     }
 
     @Override
-    public void setTooltipForNextRenderPass(List<FormattedCharSequence> tooltip) {
-        this.guiLayers.peek().setTooltipForNextRenderPass(tooltip);
+    public boolean showsActiveEffects() {
+        return this.guiLayers.peek().showsActiveEffects();
     }
 
     @Override

@@ -12,9 +12,12 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.ValueInput;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.function.Function;
@@ -66,7 +69,8 @@ public class EntityUtil {
             try {
                 entity = type.get().value().create(world, EntitySpawnReason.LOAD);
                 if (useNbt != null) {
-                    entity.load(useNbt);
+                    ValueInput readView = TagValueInput.create(new ProblemReporter.Collector(), world.registryAccess(), useNbt);
+                    entity.load(readView);
                 }
 
                 return entity;

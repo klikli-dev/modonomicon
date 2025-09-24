@@ -206,12 +206,12 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     protected void drawTooltip(GuiGraphics guiGraphics, int pMouseX, int pMouseY) {
         if (this.tooltipStack != null) {
             List<Component> tooltip = this.getTooltipFromItem(this.tooltipStack);
-            guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, tooltip, pMouseX, pMouseY);
+            guiGraphics.setTooltipForNextFrame(tooltip.stream().map(Component::getVisualOrderText).toList(), pMouseX, pMouseY);
         } else if (this.tooltipFluidStack != null) {
             List<Component> tooltip = this.getTooltipFromFluid(this.tooltipFluidStack);
-            guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, tooltip, pMouseX, pMouseY);
+            guiGraphics.setTooltipForNextFrame(tooltip.stream().map(Component::getVisualOrderText).toList(), pMouseX, pMouseY);
         } else if (this.tooltip != null && !this.tooltip.isEmpty()) {
-            guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, this.tooltip, pMouseX, pMouseY);
+            guiGraphics.setTooltipForNextFrame(this.tooltip.stream().map(Component::getVisualOrderText).toList(), pMouseX, pMouseY);
         }
     }
 
@@ -228,10 +228,10 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
             return;
         }
 
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(page.left, page.top, 0);
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(page.left, page.top);
         page.render(guiGraphics, pMouseX - this.bookLeft - page.left, pMouseY - this.bookTop - page.top, pPartialTick);
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
     }
 
     protected void onPageChanged() {
@@ -272,7 +272,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
      * Make public to access from pages
      */
     @Override
-    public <T extends GuiEventListener & Renderable & NarratableEntry> T addRenderableWidget(T pWidget) {
+    public <T extends GuiEventListener & Renderable & NarratableEntry> @NotNull T addRenderableWidget(@NotNull T pWidget) {
         return super.addRenderableWidget(pWidget);
     }
 
@@ -435,11 +435,15 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         this.updateBookmarksButton();
     }
 
-    @SuppressWarnings("NullableProblems")
     @Override
-    public Font getFont() {
+    public Font getContentFont() {
         //this is necessary because while Screen has getFont(), if a mod uses non-mojang mappings the method won't be found
         return this.font;
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        //do not render background because we are on a gui stack and double blur would crash
     }
 
     protected abstract int getOpenPagesIndexForPage(int pageIndex);

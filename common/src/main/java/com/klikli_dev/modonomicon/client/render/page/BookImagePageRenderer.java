@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Style;
 import org.jetbrains.annotations.Nullable;
@@ -56,21 +57,20 @@ public class BookImagePageRenderer extends BookPageRenderer<BookImagePage> imple
 
         int x = BookEntryScreen.PAGE_WIDTH / 2 - 53;
         int y = 7;
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().scale(0.5F, 0.5F, 1);
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().scale(0.5F, 0.5F);
         if (this.page.useLegacyRendering())
-            guiGraphics.blit(RenderType::guiTextured, this.page.getImages()[this.index], x * 2 + 6, y * 2 + 6, 0, 0, 200, 200, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.page.getImages()[this.index], x * 2 + 6, y * 2 + 6, 0, 0, 200, 200, 256, 256);
         else
             //TODO: look into this once parchment is up to date. Not sure why we have to add the height + width 3 times instead of 2.
             //from experiments in bookicon it seems that the first set of parameters after the "0, 0" is the render size, the second and third are then the size in the texture and the texture size.
-            guiGraphics.blit(RenderType::guiTextured, this.page.getImages()[this.index], x * 2 + 6, y * 2 + 6, 0, 0, 200, 200, 200, 200, 200, 200);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.page.getImages()[this.index], x * 2 + 6, y * 2 + 6, 0, 0, 200, 200, 200, 200, 200, 200);
 
-        guiGraphics.pose().scale(2F, 2F, 1);
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().scale(2F, 2F);
+        guiGraphics.pose().popMatrix();
 
         if (this.page.hasBorder()) {
-            BookContentRenderer.drawFromContentTexture(RenderType::guiTexturedOverlay, guiGraphics, this.getPage().getBook(), x, y, 405, 149, 106, 106);
+            BookContentRenderer.drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, this.getPage().getBook(), x, y, 405, 149, 106, 106);
         }
 
         if (this.page.getImages().length > 1 && this.page.hasBorder()) {
