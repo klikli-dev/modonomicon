@@ -52,8 +52,13 @@ public class ModonomiconItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
         var itemInHand = pPlayer.getItemInHand(pUsedHand);
 
-        if (pLevel.isClientSide) {
+        // Set the book state to open in NBT
+        if (!itemInHand.hasTag()) {
+            itemInHand.getOrCreateTag();
+        }
+        itemInHand.getTag().putString(Nbt.ITEM_BOOK_OPEN_STATE_TAG, "open");
 
+        if (pLevel.isClientSide) {
             if (itemInHand.hasTag()) {
                 var book = getBook(itemInHand);
                 BookGuiManager.get().openBook(book.getId());
@@ -63,6 +68,25 @@ public class ModonomiconItem extends Item {
         }
 
         return InteractionResultHolder.sidedSuccess(itemInHand, pLevel.isClientSide);
+    }
+
+    /**
+     * Sets the book state to closed in NBT. Should be called server-side.
+     */
+    public static void setBookClosed(ItemStack stack) {
+        if (stack != null && stack.hasTag()) {
+            stack.getTag().putString(Nbt.ITEM_BOOK_OPEN_STATE_TAG, "closed");
+        }
+    }
+
+    /**
+     * Returns true if the book is open, false if closed or not set.
+     */
+    public static boolean isBookOpen(ItemStack stack) {
+        if (stack != null && stack.hasTag() && stack.getTag().contains(Nbt.ITEM_BOOK_OPEN_STATE_TAG)) {
+            return "open".equals(stack.getTag().getString(Nbt.ITEM_BOOK_OPEN_STATE_TAG));
+        }
+        return false;
     }
 
     @Override
