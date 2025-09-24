@@ -255,9 +255,10 @@ public interface ContentRenderingScreen {
                     }
                     break;
                 case HoverEvent.ShowText(Component component):
-                    //      guiGraphics.renderTooltip(this.getFont(), this.getFont().split(component, Math.max(guiGraphics.guiWidth() / 2, 200)), mouseX, mouseY); //render call with original width calc
-                    var width = (this.asScreen().width / 2) - mouseX - 10; //our own width calc
+                    //there seem to be cases where tooltip overflows the screen, so we force newlines.
+                    var width = this.asScreen().width;
                     guiGraphics.setTooltipForNextFrame(this.getContentFont(), this.getContentFont().split(component, width), mouseX, mouseY);
+//                    guiGraphics.setTooltipForNextFrame(this.getContentFont(), component, mouseX, mouseY);
                     break;
                 default:
             }
