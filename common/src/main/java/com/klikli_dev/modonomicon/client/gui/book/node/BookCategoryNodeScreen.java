@@ -303,21 +303,27 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         if (this.isEntryHovered(entry, xOffset, yOffset, mouseX, mouseY)) {
 
             var tooltip = new ArrayList<ClientTooltipComponent>();
+            var tooltipComponents = new ArrayList<Component>();
 
             if (displayState == EntryDisplayState.LOCKED) {
                 tooltip.addAll(
                         entry.getCondition().getTooltip(Minecraft.getInstance().player, BookConditionEntryContext.of(this.bookParentScreen.getBook(), entry)).stream().map(Component::getVisualOrderText).map(ClientTooltipComponent::create).toList());
+                tooltipComponents.addAll(
+                        entry.getCondition().getTooltip(Minecraft.getInstance().player, BookConditionEntryContext.of(this.bookParentScreen.getBook(), entry)));
             } else if (displayState == EntryDisplayState.UNLOCKED) {
                 //add name in bold
                 tooltip.add(ClientTooltipComponent.create(Component.translatable(entry.getName()).withStyle(ChatFormatting.BOLD).getVisualOrderText()));
+                tooltipComponents.add(Component.translatable(entry.getName()).withStyle(ChatFormatting.BOLD));
                 //add description
                 if (!entry.getDescription().isEmpty()) {
                     tooltip.add(ClientTooltipComponent.create(Component.translatable(entry.getDescription()).getVisualOrderText()));
+                    tooltipComponents.add(Component.translatable(entry.getDescription()));
                 }
             }
 
             //draw description
-            guiGraphics.renderTooltip(Minecraft.getInstance().font, tooltip, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+            guiGraphics.setComponentTooltipForNextFrame(Minecraft.getInstance().font, tooltipComponents, mouseX, mouseY);
+//            guiGraphics.renderTooltip(Minecraft.getInstance().font, tooltip, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
         }
     }
 
