@@ -233,10 +233,10 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             if (displayState == EntryDisplayState.LOCKED) {
                 //Draw locked entries greyed out
                 //TODO shader color needs to be handed as last parameter to blit
-                color = ARGB.colorFromFloat(0.2f, 0.2F, 0.2F, 0.2F);
+                color = ARGB.colorFromFloat(1f, 0.2F, 0.2F, 0.2F);
             } else if (isHovered) {
                 //Draw hovered entries slightly greyed out
-                color = ARGB.colorFromFloat(0.8f, 0.8F, 0.8F, 1.0F);
+                color = ARGB.colorFromFloat(1f, 0.8F, 0.8F, 0.8F);
             }
             //render entry background
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.category.getEntryTextures(), entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT, 256, 256, color);
