@@ -17,6 +17,7 @@ import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ReadAllButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
+import com.klikli_dev.modonomicon.item.ModonomiconItem;
 import com.klikli_dev.modonomicon.networking.ClickReadAllButtonMessage;
 import com.klikli_dev.modonomicon.networking.SaveBookStateMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
@@ -291,11 +292,15 @@ public class BookOverviewScreen extends Screen {
         // Find the ModonomiconItem in the player's hand and send a packet to the server
         var player = Minecraft.getInstance().player;
         if (player != null) {
-            if (player.getMainHandItem().getItem() instanceof com.klikli_dev.modonomicon.item.ModonomiconItem) {
+
+            //If the book in the main hand is this book, we send MAIN_HAND, otherwise OFF_HAND
+            //That means if the book is in neither hand, we send OFF_HAND
+            //that is fine, the server will then just not update the closed state nbt on any item.
+            //this is for the case of a custom button opening the book gui while the book is not in hand
+            if (ModonomiconItem.getBook(player.getMainHandItem()).getId().equals(this.book.getId()))
                 this.sendBookClosedPacket(net.minecraft.world.InteractionHand.MAIN_HAND);
-            } else if (player.getOffhandItem().getItem() instanceof com.klikli_dev.modonomicon.item.ModonomiconItem) {
+            else
                 this.sendBookClosedPacket(net.minecraft.world.InteractionHand.OFF_HAND);
-            }
         }
 
         super.onClose();
