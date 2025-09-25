@@ -114,9 +114,6 @@ dependencies {
 
 //    implementation "vazkii.patchouli:Patchouli:${minecraft_version}-${patchouli_version}-FORGE"
 
-    // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transtive dependencies request 6.0+
-    implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
-
     //commonmark
     //mark it for forge to add to the classpath
     minecraftLibrary "org.commonmark:commonmark:${commonmark_version}"
