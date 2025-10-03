@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.1-1.116.0] - 2025-10-03
+### :sparkles: New Features
+- [`5886941`](https://github.com/klikli-dev/modonomicon/commit/5886941bef0c59f887c9e2adca8d1059aaae131f) - add russian translation (thanks #v0pros) *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.1-1.115.1] - 2025-08-02
 ### :bug: Bug Fixes
 - [`54f411f`](https://github.com/klikli-dev/modonomicon/commit/54f411f462cf21729344c34add1851bbd85fdce7) - crash if there is only one category and it is set to hide the category button *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1878,3 +1883,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.1-1.114.5]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.114.4...release/v1.21.1-1.114.5
 [release/v1.21.1-1.115.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.114.5...release/v1.21.1-1.115.0
 [release/v1.21.1-1.115.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.115.0...release/v1.21.1-1.115.1
+[release/v1.21.1-1.116.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.115.1...release/v1.21.1-1.116.0
