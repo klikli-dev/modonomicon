@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.1-1.116.1] - 2025-10-04
+### :bug: Bug Fixes
+- [`0ea3bd2`](https://github.com/klikli-dev/modonomicon/commit/0ea3bd24bc033acb7de99c4baadbcd5bd271f68e) - [#308](https://github.com/klikli-dev/modonomicon/pull/308) *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.1-1.116.0] - 2025-10-03
 ### :sparkles: New Features
 - [`5886941`](https://github.com/klikli-dev/modonomicon/commit/5886941bef0c59f887c9e2adca8d1059aaae131f) - add russian translation (thanks #v0pros) *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1884,3 +1889,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.1-1.115.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.114.5...release/v1.21.1-1.115.0
 [release/v1.21.1-1.115.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.115.0...release/v1.21.1-1.115.1
 [release/v1.21.1-1.116.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.115.1...release/v1.21.1-1.116.0
+[release/v1.21.1-1.116.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.116.0...release/v1.21.1-1.116.1
