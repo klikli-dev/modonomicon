@@ -4,7 +4,7 @@
 // There are various equivalent ways to declare your Docusaurus config.
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
-import {themes as prismThemes} from 'prism-react-renderer';
+import { themes as prismThemes } from 'prism-react-renderer';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -13,10 +13,16 @@ const config = {
   url: 'https://klikli-dev.github.io',
   baseUrl: '/modonomicon/',
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   organizationName: 'klikli-dev', // Usually your GitHub org/user name.
   projectName: 'modonomicon', // Usually your repo name.
+
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'throw',
+      onBrokenMarkdownImages: 'throw',
+    },
+  },
 
   presets: [
     [
@@ -24,9 +30,26 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
+          // The sidebar id defined in `sidebars.js` (tutorialSidebar)
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl: 'https://github.com/klikli-dev/modonomicon/tree/documentation',
+
+          // The default (latest) version label shown in the version dropdown
+          // `current` refers to the unversioned docs in /docs (if used)
+          includeCurrentVersion: false,
+          lastVersion: '1.21.1',
+          // Use custom version labels file to map version folder -> label
+          versions: {
+            "1.21.1": {
+              label: "1.21.1 (Latest)",
+              banner: "none"
+            },
+            "1.20.1": {
+              label: "1.20.1",
+              banner: "none"
+            }
+          }
         },
         // blog: {
         //   showReadingTime: true,
@@ -47,12 +70,12 @@ const config = {
       algolia: {
         // The application ID provided by Algolia
         appId: 'HARYGHSL7I',
-  
+
         // Public API key: it is safe to commit it
         apiKey: '46397651f888076243bd99575a933cf0',
-  
+
         indexName: 'klikli-devio',
-  
+
         // Optional: see doc section below
         contextualSearch: true,
         // Optional: path for search page that enabled by default (`false` to disable it)
@@ -71,6 +94,14 @@ const config = {
             position: 'left',
             label: 'Docs',
           },
+          {
+            type: 'docsVersionDropdown',
+            position: 'right',
+            // Optionally customize the dropdown text and include current
+            // See https://docusaurus.io/docs/versioning for options
+            dropdownActiveClassDisabled: true,
+            // includeVersions: ['1.21.1','1.20.1'], // not required, automatic from versions.json
+          },
           // {to: '/blog', label: 'Blog', position: 'left'},
           {
             href: 'https://github.com/klikli-dev/modonomicon',
@@ -86,7 +117,7 @@ const config = {
             title: 'Docs',
             items: [
               {
-                label: 'Tutorial',
+                label: 'Docs',
                 to: '/docs/intro',
               },
             ],
@@ -122,6 +153,8 @@ const config = {
         additionalLanguages: ['java', 'groovy'],
       },
     }),
+
+
 };
 
 module.exports = config;
