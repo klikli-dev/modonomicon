@@ -48,28 +48,6 @@ public class ModonomiconItem extends Item {
         return ResourceLocation.tryParse(bookStr);
     }
 
-    @Override
-    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
-        var itemInHand = pPlayer.getItemInHand(pUsedHand);
-
-        // Set the book state to open in NBT
-        if (!itemInHand.hasTag()) {
-            itemInHand.getOrCreateTag();
-        }
-        itemInHand.getTag().putString(Nbt.ITEM_BOOK_OPEN_STATE_TAG, "open");
-
-        if (pLevel.isClientSide) {
-            if (itemInHand.hasTag()) {
-                var book = getBook(itemInHand);
-                BookGuiManager.get().openBook(book.getId());
-            } else {
-                Modonomicon.LOG.error("ModonomiconItem: ItemStack has no tag!");
-            }
-        }
-
-        return InteractionResultHolder.sidedSuccess(itemInHand, pLevel.isClientSide);
-    }
-
     /**
      * Sets the book state to closed in NBT. Should be called server-side.
      */
@@ -89,9 +67,35 @@ public class ModonomiconItem extends Item {
         return false;
     }
 
+    public Book getBookFor(ItemStack stack) {
+        return getBook(stack);
+    }
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
+        var itemInHand = pPlayer.getItemInHand(pUsedHand);
+
+        // Set the book state to open in NBT
+        if (!itemInHand.hasTag()) {
+            itemInHand.getOrCreateTag();
+        }
+        itemInHand.getTag().putString(Nbt.ITEM_BOOK_OPEN_STATE_TAG, "open");
+
+        if (pLevel.isClientSide) {
+            if (itemInHand.hasTag()) {
+                var book = this.getBookFor(itemInHand);
+                BookGuiManager.get().openBook(book.getId());
+            } else {
+                Modonomicon.LOG.error("ModonomiconItem: ItemStack has no tag!");
+            }
+        }
+
+        return InteractionResultHolder.sidedSuccess(itemInHand, pLevel.isClientSide);
+    }
+
     @Override
     public Component getName(ItemStack pStack) {
-        Book book = getBook(pStack);
+        Book book = this.getBookFor(pStack);
         if (book != null) {
             return Component.translatable(book.getName());
         }
@@ -103,7 +107,7 @@ public class ModonomiconItem extends Item {
     public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
 
-        Book book = getBook(stack);
+        Book book = this.getBookFor(stack);
         if (book != null) {
             if (flagIn.isAdvanced()) {
                 tooltip.add(Component.literal("Book ID: ").withStyle(ChatFormatting.DARK_GRAY)
