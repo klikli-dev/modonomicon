@@ -5,7 +5,7 @@ sidebar_position: 10
 # Step by Step Guide for a Book via Datapack
 
 This section will guide you through a reasonably easy way to create a book _without_ datagen.
-It uses the [Demo Book](https://github.com/klikli-dev/modonomicon/tree/HEAD/neo/src/generated/resources/data/modonomicon/modonomicon/books) modonomicon provides as a starting point. 
+It uses the [Demo Book](https://github.com/klikli-dev/modonomicon/tree/version/1.21.1/neo/src/generated/resources/data/modonomicon/modonomicon/books) modonomicon provides as a starting point. 
 
 :::tip
 

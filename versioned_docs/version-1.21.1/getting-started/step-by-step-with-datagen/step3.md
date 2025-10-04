@@ -77,4 +77,4 @@ You now have a working and already modified book that you can extend to your lik
 - Remove demo content.
 
 For an overview of the possible page types and other content settings, you can view once again the demo book content, or take a look at the [Basics](/docs/basics) and [Advanced](/docs/advanced) documentation. The documentation documents the JSON format, however if you compare it to the demo book you will notice corresponding java methods, usually prefixed with "with".
-Another good resource is: https://github.com/klikli-dev/theurgy/tree/HEAD/src/main/java/com/klikli_dev/theurgy/datagen/book as theurgy extensively uses Modonomicon for its in-game documentation.
+Another good resource is: https://github.com/klikli-dev/theurgy/tree/version/1.21.1/src/main/java/com/klikli_dev/theurgy/datagen/book as theurgy extensively uses Modonomicon for its in-game documentation.

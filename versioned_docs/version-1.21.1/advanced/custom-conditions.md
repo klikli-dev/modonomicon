@@ -25,7 +25,7 @@ In addition to implementing the interface methods that your IDE will suggest you
 
 in `getType()` return your ResourceLocation.
 
-See https://github.com/klikli-dev/modonomicon/blob/HEAD/common/src/main/java/com/klikli_dev/modonomicon/book/conditions/BookAdvancementCondition.java for an example condition.
+See https://github.com/klikli-dev/modonomicon/tree/version/1.21.1/common/src/main/java/com/klikli_dev/modonomicon/book/conditions/BookAdvancementCondition.java for an example condition.
 
 ## Condition Registration
 

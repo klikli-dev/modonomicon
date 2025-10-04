@@ -5,7 +5,7 @@ sidebar_position: 10
 # Step by Step Guide for Book Datagen
 
 This page will guide you through the recommended and most convenient way to create a book.  
-It uses the [Demo Book](https://github.com/klikli-dev/modonomicon/tree/HEAD/neo/src/generated/resources/data/modonomicon/modonomicon/books) modonomicon provides as a starting point. 
+It uses the [Demo Book](https://github.com/klikli-dev/modonomicon/tree/version/1.21.1/neo/src/generated/resources/data/modonomicon/modonomicon/books) modonomicon provides as a starting point. 
 
 :::tip
 
@@ -17,7 +17,7 @@ If you run into any issues or have any questions, join our Discord: **https://ds
 
 To show how to create a book with datagen, we have created a demo book that showcases the most commonly used modonomicon features and you can use as a starting point for your own book. 
 
-You can find the files at *[*https://github.com/klikli-dev/modonomicon-demo-book](https://github.com/klikli-dev/modonomicon/tree/HEAD/common/src/main/java/com/klikli_dev/modonomicon/datagen/book)**
+You can find the files at *[*https://github.com/klikli-dev/modonomicon-demo-book](https://github.com/klikli-dev/modonomicon/tree/version/1.21.1/common/src/main/java/com/klikli_dev/modonomicon/datagen/book)**
 
 ### For Mod Developers
 
@@ -50,7 +50,7 @@ Java programming knowledge will be helpful to get the most out of modonomicon da
 Modonomicon provides a "BookProvider", which works much like the Loot Table provider. It generates book JSON files for a given book definition (book model). Neither mod developers nor pack developers needto change or subclass the book provider. Instead, it takes "Subproviders" that define the content of the book, and which it will convert into JSON files.
 
 Modonomicon comes with "SingleBookSubProvider", which is a datagen helper class that comes with convenience methods for setting up a book.   
-The example modonomicon provides, https://github.com/klikli-dev/modonomicon/blob/HEAD/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/DemoBook.java, uses this class to set up the demo book. It is recommended to simply copy this file (or modify it directly).
+The example modonomicon provides, https://github.com/klikli-dev/modonomicon/tree/version/1.21.1/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/DemoBook.java, uses this class to set up the demo book. It is recommended to simply copy this file (or modify it directly).
 
 
 ## Step 0: The Editor of your Choice 
