@@ -115,6 +115,8 @@ public class ModonomiconConstants {
         public static final String VERSION_TAG = PREFIX + "nbt_version";
 
         public static final String ITEM_BOOK_ID_TAG = PREFIX + "book_id";
+
+        public static final String ITEM_BOOK_OPEN_STATE_TAG = PREFIX + "book_open_state";
     }
 
     public static class I18n {

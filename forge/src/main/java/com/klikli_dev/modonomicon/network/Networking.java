@@ -137,6 +137,12 @@ public class Networking {
                 RequestSyncBookStatesMessage::encode,
                 RequestSyncBookStatesMessage::new,
                 MessageHandler::handle);
+
+        INSTANCE.registerMessage(nextID(),
+                BookClosedMessage.class,
+                BookClosedMessage::encode,
+                BookClosedMessage::new,
+                MessageHandler::handle);
     }
 
     public static <T> void sendToSplit(ServerPlayer player, T message) {

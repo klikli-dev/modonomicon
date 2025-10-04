@@ -17,6 +17,7 @@ import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ReadAllButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
+import com.klikli_dev.modonomicon.item.ModonomiconItem;
 import com.klikli_dev.modonomicon.networking.ClickReadAllButtonMessage;
 import com.klikli_dev.modonomicon.networking.SaveBookStateMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
@@ -79,9 +80,7 @@ public class BookOverviewScreen extends Screen {
         this.hasUnreadEntries = this.book.getEntries().values().stream().anyMatch(e -> !BookUnlockStateManager.get().isReadFor(this.minecraft.player, e));
 
         //check if any currently unlocked entry is unread
-        this.hasUnreadUnlockedEntries = this.book.getEntries().values().stream().anyMatch(e ->
-                BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e) &&
-                        !BookUnlockStateManager.get().isReadFor(this.minecraft.player, e));
+        this.hasUnreadUnlockedEntries = this.book.getEntries().values().stream().anyMatch(e -> BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e) && !BookUnlockStateManager.get().isReadFor(this.minecraft.player, e));
     }
 
     public BookCategoryScreen getCurrentCategoryScreen() {
@@ -137,10 +136,10 @@ public class BookOverviewScreen extends Screen {
     }
 
     public void changeCategory(BookCategory category) {
-        if(category == null) {
+        if (category == null) {
             Modonomicon.LOG.warn("Tried to change to a null category in this book ({}).", this.book.getId());
         }
-        
+
         int index = this.categories.indexOf(category);
         if (index != -1) {
             this.changeCategory(index);
@@ -150,7 +149,7 @@ public class BookOverviewScreen extends Screen {
     }
 
     public void changeCategory(int categoryIndex) {
-        if(this.currentCategory == categoryIndex) {
+        if (this.currentCategory == categoryIndex) {
             return; //this is an easy fix for #179, otherwise we have to rethink state tracking
         }
 
@@ -290,7 +289,25 @@ public class BookOverviewScreen extends Screen {
 
         BookGuiManager.get().openOverviewScreen = null;
 
+        // Find the ModonomiconItem in the player's hand and send a packet to the server
+        var player = Minecraft.getInstance().player;
+        if (player != null) {
+
+            //If the book in the main hand is this book, we send MAIN_HAND, otherwise OFF_HAND
+            //That means if the book is in neither hand, we send OFF_HAND
+            //that is fine, the server will then just not update the closed state nbt on any item.
+            //this is for the case of a custom button opening the book gui while the book is not in hand
+            if (ModonomiconItem.getBook(player.getMainHandItem()).getId().equals(this.book.getId()))
+                this.sendBookClosedPacket(net.minecraft.world.InteractionHand.MAIN_HAND);
+            else
+                this.sendBookClosedPacket(net.minecraft.world.InteractionHand.OFF_HAND);
+        }
+
         super.onClose();
+    }
+
+    private void sendBookClosedPacket(net.minecraft.world.InteractionHand hand) {
+        Services.NETWORK.sendToServer(new com.klikli_dev.modonomicon.networking.BookClosedMessage(hand));
     }
 
     @Override
@@ -326,10 +343,7 @@ public class BookOverviewScreen extends Screen {
         int buttonCount = 0;
         for (int i = 0, size = this.categories.size(); i < size; i++) {
             if (this.categories.get(i).showCategoryButton() && BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, this.categories.get(i))) {
-                var button = new CategoryButton(this, this.categories.get(i), i,
-                        buttonX, buttonY + (buttonHeight + buttonSpacing) * buttonCount, buttonWidth, buttonHeight,
-                        (b) -> this.onBookCategoryButtonClick((CategoryButton) b),
-                        Tooltip.create(Component.translatable(this.categories.get(i).getName())));
+                var button = new CategoryButton(this, this.categories.get(i), i, buttonX, buttonY + (buttonHeight + buttonSpacing) * buttonCount, buttonWidth, buttonHeight, (b) -> this.onBookCategoryButtonClick((CategoryButton) b), Tooltip.create(Component.translatable(this.categories.get(i).getName())));
 
                 this.addRenderableWidget(button);
                 buttonCount++;
@@ -341,8 +355,7 @@ public class BookOverviewScreen extends Screen {
 
         int readAllButtonY = (this.height - this.getFrameHeight()) / 2 + ReadAllButton.HEIGHT / 2 + readAllButtonYOffset;
 
-        var readAllButton = new ReadAllButton(this, readAllButtonX, readAllButtonY,
-                () -> this.hasUnreadUnlockedEntries, //if we have unlocked entries that are not read -> blue
+        var readAllButton = new ReadAllButton(this, readAllButtonX, readAllButtonY, () -> this.hasUnreadUnlockedEntries, //if we have unlocked entries that are not read -> blue
                 this::canSeeReadAllButton, //display condition -> if we have any unlocked entries -> grey
                 (b) -> this.onReadAllButtonClick((ReadAllButton) b));
 
@@ -356,11 +369,7 @@ public class BookOverviewScreen extends Screen {
         int searchButtonWidth = 44; //width in png
         int scissorX = this.getFrameWidth() + this.getFrameThicknessW() * 2 + 2; //this is the render location of our frame so our search button never overlaps
 
-        var searchButton = new SearchButton(this, searchButtonX, searchButtonY,
-                scissorX,
-                searchButtonWidth, buttonHeight,
-                (b) -> this.onSearchButtonClick((SearchButton) b),
-                Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_SEARCH)));
+        var searchButton = new SearchButton(this, searchButtonX, searchButtonY, scissorX, searchButtonWidth, buttonHeight, (b) -> this.onSearchButtonClick((SearchButton) b), Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_SEARCH)));
 
         this.addRenderableWidget(searchButton);
     }
