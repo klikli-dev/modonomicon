@@ -30,6 +30,7 @@ public class Networking {
         registrar.playToServer(SendUnlockCodeToServerMessage.TYPE, SendUnlockCodeToServerMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToServer(AddBookmarkMessage.TYPE, AddBookmarkMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToServer(RemoveBookmarkMessage.TYPE, RemoveBookmarkMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToServer(BookClosedMessage.TYPE, BookClosedMessage.STREAM_CODEC, MessageHandler::handle);
 
         registrar.playToClient(SendUnlockCodeToClientMessage.TYPE, SendUnlockCodeToClientMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToClient(SendAdvancementToClientMessage.TYPE, SendAdvancementToClientMessage.STREAM_CODEC, MessageHandler::handle);

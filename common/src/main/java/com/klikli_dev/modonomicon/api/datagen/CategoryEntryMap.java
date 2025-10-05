@@ -33,7 +33,7 @@ public class CategoryEntryMap {
         //we remove whitespaces, including tabs
         this.map = Arrays.stream(map).map(s -> s.replaceAll("\\s", "")).toArray(String[]::new);
 
-        this.offset = new Vec2(-(int) (map[0].length() / 2.0f), -(int) (map.length / 2.0f));
+        this.offset = new Vec2(-(int) (this.map[0].length() / 2.0f), -(int) (this.map.length / 2.0f));
     }
 
     /**

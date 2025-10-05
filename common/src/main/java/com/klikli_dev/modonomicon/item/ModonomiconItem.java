@@ -49,9 +49,36 @@ public class ModonomiconItem extends Item {
         return stack.get(DataComponentRegistry.BOOK_ID.get());
     }
 
+    /**
+     * Sets the book state to closed using data components. Should be called server-side.
+     */
+    public static void setBookClosed(ItemStack stack) {
+        if (stack != null) {
+            stack.set(DataComponentRegistry.BOOK_OPEN.get(), false);
+        }
+    }
+
+    /**
+     * Returns true if the book is open, false if closed or not set.
+     */
+    public static boolean isBookOpen(ItemStack stack) {
+        if (stack != null && stack.has(DataComponentRegistry.BOOK_OPEN.get())) {
+            Boolean val = stack.get(DataComponentRegistry.BOOK_OPEN.get());
+            return Boolean.TRUE.equals(val);
+        }
+        return false;
+    }
+
+    public Book getBookFor(ItemStack stack) {
+        return getBook(stack);
+    }
+
     @Override
     public @NotNull InteractionResult use(Level pLevel, Player pPlayer, @NotNull InteractionHand pUsedHand) {
         var itemInHand = pPlayer.getItemInHand(pUsedHand);
+
+        // Set the book state to open using data components
+        itemInHand.set(DataComponentRegistry.BOOK_OPEN.get(), true);
 
         if (pLevel.isClientSide) {
             if (itemInHand.get(DataComponentRegistry.BOOK_ID.get()) != null) {
@@ -67,8 +94,8 @@ public class ModonomiconItem extends Item {
     }
 
     @Override
-    public @NotNull Component getName(@NotNull ItemStack pStack) {
-        Book book = getBook(pStack);
+    public Component getName(ItemStack pStack) {
+        Book book = this.getBookFor(pStack);
         if (book != null) {
             return Component.translatable(book.getName());
         }

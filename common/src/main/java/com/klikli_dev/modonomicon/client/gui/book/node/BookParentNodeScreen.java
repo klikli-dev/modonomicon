@@ -19,7 +19,9 @@ import com.klikli_dev.modonomicon.client.gui.book.BookScreenWithButtons;
 import com.klikli_dev.modonomicon.client.gui.book.bookmarks.BookBookmarksScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.*;
 import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
+import com.klikli_dev.modonomicon.item.ModonomiconItem;
 import com.klikli_dev.modonomicon.networking.ClickReadAllButtonMessage;
+import com.klikli_dev.modonomicon.networking.SaveBookStateMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
@@ -83,9 +85,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
         this.hasUnreadEntries = this.book.getEntries().values().stream().anyMatch(e -> !BookUnlockStateManager.get().isReadFor(this.minecraft.player, e));
 
         //check if any currently unlocked entry is unread
-        this.hasUnreadUnlockedEntries = this.book.getEntries().values().stream().anyMatch(e ->
-                BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e) &&
-                        !BookUnlockStateManager.get().isReadFor(this.minecraft.player, e));
+        this.hasUnreadUnlockedEntries = this.book.getEntries().values().stream().anyMatch(e -> BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e) && !BookUnlockStateManager.get().isReadFor(this.minecraft.player, e));
     }
 
     public BookCategoryNodeScreen getCurrentCategoryScreen() {
@@ -283,6 +283,10 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
         //currently nothing to save - open category is handled by gui manager
     }
 
+    private void sendBookClosedPacket(net.minecraft.world.InteractionHand hand) {
+        Services.NETWORK.sendToServer(new com.klikli_dev.modonomicon.networking.BookClosedMessage(hand));
+    }
+
     @Override
     public boolean handleComponentClicked(@Nullable Style pStyle) {
         return super.handleComponentClicked(pStyle);
@@ -315,8 +319,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
         int readAllButtonY = (this.height - this.getFrameHeight()) / 2 + ReadAllButton.HEIGHT / 2 + readAllButtonYOffset;
 
-        var readAllButton = new ReadAllButton(this, readAllButtonX, readAllButtonY,
-                () -> this.hasUnreadUnlockedEntries, //if we have unlocked entries that are not read -> blue
+        var readAllButton = new ReadAllButton(this, readAllButtonX, readAllButtonY, () -> this.hasUnreadUnlockedEntries, //if we have unlocked entries that are not read -> blue
                 this::canSeeReadAllButton, //display condition -> if we have any unlocked entries -> grey
                 (b) -> this.onReadAllButtonClick((ReadAllButton) b));
 

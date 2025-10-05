@@ -13,8 +13,10 @@ import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.data.ReloadListenerWrapper;
+import com.klikli_dev.modonomicon.item.BookOpenStateItemPropertyGetter;
 import com.klikli_dev.modonomicon.network.ClientNetworking;
 import com.klikli_dev.modonomicon.registry.FabricClientCommandRegistry;
+import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -76,6 +78,9 @@ public class ModonomiconFabricClient implements ClientModInitializer {
                 Modonomicon.loc("book_data_manager_client"),
                 BookDataManager.Client.get()
         ));
+
+        //register item properties
+        ItemProperties.registerGeneric(Modonomicon.loc("open_state"), new BookOpenStateItemPropertyGetter());
 
         //book geometry loader
         //done in MixinModelManager, because we have no event in Fabric

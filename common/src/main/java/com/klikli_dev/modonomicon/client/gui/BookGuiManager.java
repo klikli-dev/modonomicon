@@ -32,10 +32,8 @@ import com.klikli_dev.modonomicon.client.gui.book.node.BookParentNodeScreen;
 import com.klikli_dev.modonomicon.client.gui.book.node.DummyBookCategoryNodeScreen;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.events.ModonomiconEvents;
-import com.klikli_dev.modonomicon.networking.BookEntryReadMessage;
-import com.klikli_dev.modonomicon.networking.SaveBookStateMessage;
-import com.klikli_dev.modonomicon.networking.SaveCategoryStateMessage;
-import com.klikli_dev.modonomicon.networking.SaveEntryStateMessage;
+import com.klikli_dev.modonomicon.item.ModonomiconItem;
+import com.klikli_dev.modonomicon.networking.*;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -43,6 +41,7 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -493,6 +492,22 @@ public class BookGuiManager {
         var state = BookVisualStateManager.get().getBookStateFor(this.player(), screen.getBook());
         screen.saveState(state);
         Services.NETWORK.sendToServer(new SaveBookStateMessage(screen.getBook(), state));
+
+        this.sendBookClosedMessage(screen);
+    }
+
+    protected void sendBookClosedMessage(BookParentScreen screen) {
+        var player = Minecraft.getInstance().player;
+        if (player != null) {
+            //If the book in the main hand is this book, we send MAIN_HAND, otherwise OFF_HAND
+            //That means if the book is in neither hand, we send OFF_HAND
+            //that is fine, the server will then just not update the closed state nbt on any item.
+            //this is for the case of a custom button opening the book gui while the book is not in hand
+            if (ModonomiconItem.getBook(player.getMainHandItem()).getId().equals(screen.getBook().getId()))
+                Services.NETWORK.sendToServer(new BookClosedMessage(InteractionHand.MAIN_HAND));
+            else
+                Services.NETWORK.sendToServer(new BookClosedMessage(InteractionHand.OFF_HAND));
+        }
     }
 
     public void closeScreenStack(BookParentScreen screen) {

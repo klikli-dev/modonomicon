@@ -18,6 +18,7 @@ import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
 import com.klikli_dev.modonomicon.integration.LecternIntegration;
+import com.klikli_dev.modonomicon.item.BookOpenStateItemPropertyGetter;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
@@ -194,7 +195,6 @@ public class ModonomiconForge {
                     public void targets(LevelTargetBundle bundle, FramePass pass) {
                         bundle.main = pass.readsAndWrites(bundle.main);
                     }
-
                     @Override
                     public void executes() {
                         PoseStack ps = new PoseStack();
@@ -205,7 +205,15 @@ public class ModonomiconForge {
                     }
                 }));
             });
+
+            event.enqueueWork(() -> {
+                //register item properties
+                ItemProperties.registerGeneric(Modonomicon.loc("open_state"), new BookOpenStateItemPropertyGetter());
+            });
+
         }
+
+        
 
         public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
             BookModel.replace(event.getResults().itemStackModels());
