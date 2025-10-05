@@ -18,10 +18,13 @@ import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
 import com.klikli_dev.modonomicon.integration.LecternIntegration;
+import com.klikli_dev.modonomicon.item.BookOpenStateItemPropertyGetter;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
+import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
@@ -196,6 +199,10 @@ public class ModonomiconForge {
 //                    MultiblockPreviewRenderer.onRenderLevelLastEvent(pose);
 //                }
 //            });
+            event.enqueueWork(() -> {
+                //register item properties
+                ItemProperties.registerGeneric(Modonomicon.loc("open_state"), new BookOpenStateItemPropertyGetter());
+            });
         }
 
         /**

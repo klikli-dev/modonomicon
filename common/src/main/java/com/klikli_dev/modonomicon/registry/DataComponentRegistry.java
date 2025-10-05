@@ -7,8 +7,10 @@
 package com.klikli_dev.modonomicon.registry;
 
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.UnaryOperator;
@@ -19,6 +21,12 @@ public class DataComponentRegistry {
     public static final RegistryObject<DataComponentType<ResourceLocation>> BOOK_ID = register("book_id", builder ->
             builder.persistent(ResourceLocation.CODEC)
                     .networkSynchronized(ResourceLocation.STREAM_CODEC).cacheEncoding()
+    );
+
+    // Data component for storing whether the book item is currently open (true) or closed (false)
+    public static final RegistryObject<DataComponentType<Boolean>> BOOK_OPEN = register("book_open", builder ->
+            builder.persistent(Codec.BOOL)
+                    .networkSynchronized(ByteBufCodecs.BOOL).cacheEncoding()
     );
 
     // Called in the mod initializer / constructor in order to make sure that items are registered

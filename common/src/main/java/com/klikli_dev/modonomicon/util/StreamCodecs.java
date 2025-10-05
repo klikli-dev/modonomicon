@@ -5,11 +5,27 @@
 package com.klikli_dev.modonomicon.util;
 
 import com.mojang.datafixers.util.Function7;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
 public class StreamCodecs {
+    public static <B extends FriendlyByteBuf, V extends Enum<V>> StreamCodec<B, V> enumCodec(Class<V> enumClass) {
+        return new StreamCodec<>() {
+            @Override
+            public @NotNull V decode(@NotNull B buf) {
+                return buf.readEnum(enumClass);
+            }
+
+            @Override
+            public void encode(@NotNull B buf, @NotNull V value) {
+                buf.writeEnum(value);
+            }
+        };
+    }
+
     public static <B, C, T1, T2, T3, T4, T5, T6, T7> StreamCodec<B, C> composite(
             final StreamCodec<? super B, T1> pCodec1,
             final Function<C, T1> pGetter1,

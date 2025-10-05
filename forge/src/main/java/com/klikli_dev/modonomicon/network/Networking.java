@@ -184,6 +184,12 @@ public class Networking {
                 .decoder(decoder(RemoveBookmarkMessage.STREAM_CODEC))
                 .consumerNetworkThread((BiConsumer<RemoveBookmarkMessage, CustomPayloadEvent.Context>) MessageHandler::handle)
                 .add();
+                
+        INSTANCE.messageBuilder(BookClosedMessage.class)
+                .encoder(encoder(BookClosedMessage.STREAM_CODEC))
+                .decoder(decoder(BookClosedMessage.STREAM_CODEC))
+                .consumerNetworkThread((BiConsumer<BookClosedMessage, CustomPayloadEvent.Context>) MessageHandler::handle)
+                .add();
     }
 
     public static <T> void sendToSplit(ServerPlayer player, T message) {
