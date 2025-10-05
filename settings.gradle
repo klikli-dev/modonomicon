@@ -19,6 +19,16 @@ pluginManagement {
         maven {
             url = 'https://maven.parchmentmc.org'
         }
+        exclusiveContent {
+            forRepository {
+                maven {
+                    url "https://cursemaven.com"
+                }
+            }
+            filter {
+                includeGroup "curse.maven"
+            }
+        }
     }
 }
 
