@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.79.1] - 2025-10-05
+### :bug: Bug Fixes
+- [`e61666a`](https://github.com/klikli-dev/modonomicon/commit/e61666a93a72b49775a7a5421d11f5cdd59457f2) - ModonomiconCustoitemBase did not use book id *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.79.0] - 2025-10-04
 ### :sparkles: New Features
 - [`254c3ab`](https://github.com/klikli-dev/modonomicon/commit/254c3ab244cb32846a5438066d151e146b91e2a1) - add item property that indicates whether a modonomicon book is open or closed *(PR [#311](https://github.com/klikli-dev/modonomicon/pull/311) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -942,3 +947,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.77.6]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.77.5...release/v1.20.1-1.77.6
 [release/v1.20.1-1.78.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.77.6...release/v1.20.1-1.78.0
 [release/v1.20.1-1.79.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.78.0...release/v1.20.1-1.79.0
+[release/v1.20.1-1.79.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.79.0...release/v1.20.1-1.79.1
