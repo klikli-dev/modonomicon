@@ -14,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 public class ModonomiconCustomItemBase extends ModonomiconItem {
 
     public ResourceLocation bookId;
+
     public ModonomiconCustomItemBase(ResourceLocation bookId, Properties pProperties) {
         super(pProperties);
         this.bookId = bookId;
@@ -22,7 +23,7 @@ public class ModonomiconCustomItemBase extends ModonomiconItem {
     @Override
     public Book getBookFor(ItemStack stack) {
         if (!stack.getOrCreateTag().contains(Nbt.ITEM_BOOK_ID_TAG))
-            stack.getTag().putString(Nbt.ITEM_BOOK_ID_TAG, "modonomicon:demo");
+            stack.getTag().putString(Nbt.ITEM_BOOK_ID_TAG, this.bookId.toString());
 
         return super.getBookFor(stack);
     }
