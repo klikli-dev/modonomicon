@@ -22,6 +22,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FontDescription;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.Nullable;
@@ -92,7 +93,7 @@ public class EntryListButton extends Button {
             }
 
             //apply the custom book font
-            name.withStyle(style -> style.withFont(BookDataManager.Client.get().safeFont(this.entry.getBook().getFont())));
+            name.withStyle(style -> style.withFont(new FontDescription.Resource(BookDataManager.Client.get().safeFont(this.entry.getBook().getFont()))));
 
             int x = this.getX() + 12; //shift right to make space for the icon
             int y = this.getY() + 2;
