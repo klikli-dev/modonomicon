@@ -95,7 +95,7 @@ public class BookVisualStateManager {
         //TODO: See LevelAttachmentsSavedData for how to implement save data or better TicketStorage
         if (this.saveData == null) {
             if (player instanceof ServerPlayer serverPlayer) {
-                this.saveData = serverPlayer.getServer().overworld().getDataStorage().computeIfAbsent(BookStatesSaveData.TYPE);
+                this.saveData = serverPlayer.level().getServer().overworld().getDataStorage().computeIfAbsent(BookStatesSaveData.TYPE);
             } else {
                 //this should not happen, we set an empty object to prevent a crash
                 this.saveData = new BookStatesSaveData();

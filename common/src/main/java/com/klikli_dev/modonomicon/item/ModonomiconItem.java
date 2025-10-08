@@ -80,7 +80,7 @@ public class ModonomiconItem extends Item {
         // Set the book state to open using data components
         itemInHand.set(DataComponentRegistry.BOOK_OPEN.get(), true);
 
-        if (pLevel.isClientSide) {
+        if (pLevel.isClientSide()) {
             if (itemInHand.get(DataComponentRegistry.BOOK_ID.get()) != null) {
                 var book = getBook(itemInHand);
 

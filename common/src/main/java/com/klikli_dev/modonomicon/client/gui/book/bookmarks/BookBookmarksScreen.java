@@ -27,6 +27,7 @@ import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
@@ -234,8 +235,8 @@ public class BookBookmarksScreen extends BookPaginatedScreen {
     }
 
     @Override
-    public boolean keyPressed(int key, int scanCode, int modifiers) {
-        if (key == GLFW.GLFW_KEY_ENTER) {
+    public boolean keyPressed(KeyEvent event) {
+        if (event.key() == GLFW.GLFW_KEY_ENTER) {
             if (this.visibleEntries.size() == 1) {
                 var entry = this.visibleEntries.get(0);
                 this.onClose();
@@ -244,7 +245,7 @@ public class BookBookmarksScreen extends BookPaginatedScreen {
             }
         }
 
-        return super.keyPressed(key, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     @Override

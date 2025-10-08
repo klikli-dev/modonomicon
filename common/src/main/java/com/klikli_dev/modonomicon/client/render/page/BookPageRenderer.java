@@ -20,6 +20,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
@@ -151,10 +152,9 @@ public abstract class BookPageRenderer<T extends BookPage> {
     }
 
     /**
-     * @param pMouseX localized to page x (mouseX - bookLeft - page.left)
-     * @param pMouseY localized to page y (mouseY - bookTop - page.top)
+     * @param event localized to page x (mouseX - bookLeft - page.left) and y (mouseY - bookTop - page.top)
      */
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         return false;
     }
 

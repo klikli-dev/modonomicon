@@ -31,10 +31,13 @@ import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
@@ -287,13 +290,13 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
     }
 
     @Override
-    public boolean keyPressed(int key, int scanCode, int modifiers) {
-        if (key == GLFW.GLFW_KEY_ESCAPE) {
+    public boolean keyPressed(KeyEvent event) {
+        if (event.key() == GLFW.GLFW_KEY_ESCAPE) {
             BookGuiManager.get().closeScreenStack(this);
             return true;
         }
 
-        if (key == GLFW.GLFW_KEY_ENTER) {
+        if (event.key() == GLFW.GLFW_KEY_ENTER) {
             if (this.visibleEntries.size() == 1) {
                 var entry = this.visibleEntries.get(0);
                 BookGuiManager.get().openEntry(entry.getBook().getId(), entry.getId(), 0);
@@ -301,7 +304,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
             }
         }
 
-        return super.keyPressed(key, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     protected boolean canSeeReadAllButton() {
@@ -310,10 +313,11 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
 
     protected void onReadAllButtonClick(ReadAllButton button) {
-        if (this.hasUnreadUnlockedEntries && !Screen.hasShiftDown()) {
+        if (this.hasUnreadUnlockedEntries &&
+                !this.minecraft.hasShiftDown()) {
             Services.NETWORK.sendToServer(new ClickReadAllButtonMessage(this.book.getId(), false));
             this.hasUnreadUnlockedEntries = false;
-        } else if (this.hasUnreadEntries && Screen.hasShiftDown()) {
+        } else if (this.hasUnreadEntries && this.minecraft.hasShiftDown()) {
             Services.NETWORK.sendToServer(new ClickReadAllButtonMessage(this.book.getId(), true));
             this.hasUnreadEntries = false;
         }

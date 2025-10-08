@@ -5,6 +5,7 @@
 package com.klikli_dev.modonomicon.api.events;
 
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -15,20 +16,16 @@ public class EntryClickedEvent extends ModonomiconEvent {
     protected ResourceLocation bookId;
     protected ResourceLocation entryId;
 
-    protected double mouseX;
-    protected double mouseY;
-    protected int button;
+    protected MouseButtonEvent mouseButtonEvent;
 
     protected EntryDisplayState displayState;
 
-    public EntryClickedEvent(ResourceLocation bookId, ResourceLocation entryId, double mouseX, double mouseY, int button, EntryDisplayState displayState) {
+    public EntryClickedEvent(ResourceLocation bookId, ResourceLocation entryId, MouseButtonEvent mouseButtonEvent, EntryDisplayState displayState) {
         super(true);
 
         this.bookId = bookId;
         this.entryId = entryId;
-        this.mouseX = mouseX;
-        this.mouseY = mouseY;
-        this.button = button;
+        this.mouseButtonEvent = mouseButtonEvent;
         this.displayState = displayState;
     }
 
@@ -41,24 +38,12 @@ public class EntryClickedEvent extends ModonomiconEvent {
     }
 
     /**
-     * For categories in Index mode this is the X coordinate of the button that was clicked, instead of the mouse cursor that clicked it.
+     * For categories in Index mode this has the X coordinate of the button that was clicked, instead of the mouse cursor that clicked it.
+     * For categories in Index mode this has the Y coordinate of the button that was clicked, instead of the mouse cursor that clicked it.
+     * For categories in Index mode this always has GLFW_MOUSE_BUTTON_1 (= 0 = left mouse button).
      */
-    public double getMouseX() {
-        return this.mouseX;
-    }
-
-    /**
-     * For categories in Index mode this is the Y coordinate of the button that was clicked, instead of the mouse cursor that clicked it.
-     */
-    public double getMouseY() {
-        return this.mouseY;
-    }
-
-    /**
-     * For categories in Index mode this is always GLFW_MOUSE_BUTTON_1 (= 0 = left mouse button).
-     */
-    public int getButton() {
-        return this.button;
+    public MouseButtonEvent getMouseButtonEvent() {
+        return this.mouseButtonEvent;
     }
 
     public EntryDisplayState getDisplayState() {

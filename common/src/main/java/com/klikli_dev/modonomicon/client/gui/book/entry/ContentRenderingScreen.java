@@ -215,7 +215,7 @@ public interface ContentRenderingScreen {
                                     oldComponent = hoverComponent;
                                 }
 
-                                if (Screen.hasShiftDown()) {
+                                if (Minecraft.getInstance().hasShiftDown()) {
                                     var newComponent = oldComponent.copy().append(Component.literal("\n")).append(
                                             Component.literal(command.getCommand()).withStyle(ChatFormatting.GRAY));
                                     newStyle = style.withHoverEvent(new HoverEvent.ShowText(newComponent));

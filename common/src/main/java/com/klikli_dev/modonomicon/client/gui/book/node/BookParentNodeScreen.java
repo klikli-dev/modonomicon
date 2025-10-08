@@ -31,6 +31,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -192,10 +194,10 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
     }
 
     protected void onReadAllButtonClick(ReadAllButton button) {
-        if (this.hasUnreadUnlockedEntries && !Screen.hasShiftDown()) {
+        if (this.hasUnreadUnlockedEntries && !Minecraft.getInstance().hasShiftDown()) {
             Services.NETWORK.sendToServer(new ClickReadAllButtonMessage(this.book.getId(), false));
             this.hasUnreadUnlockedEntries = false;
-        } else if (this.hasUnreadEntries && Screen.hasShiftDown()) {
+        } else if (this.hasUnreadEntries && Minecraft.getInstance().hasShiftDown()) {
             Services.NETWORK.sendToServer(new ClickReadAllButtonMessage(this.book.getId(), true));
             this.hasUnreadEntries = false;
         }
@@ -206,17 +208,16 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
     }
 
     @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         //ignore return value, because we need our base class to handle dragging and such
-        this.getCurrentCategoryScreen().mouseClicked(pMouseX, pMouseY, pButton);
-        return super.mouseClicked(pMouseX, pMouseY, pButton);
+        this.getCurrentCategoryScreen().mouseClicked(event, isDoubleClick);
+        return super.mouseClicked(event, isDoubleClick);
     }
 
     @Override
-    public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
-        return this.getCurrentCategoryScreen().mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
+    public boolean mouseDragged(MouseButtonEvent event, double mouseX, double mouseY) {
+        return this.getCurrentCategoryScreen().mouseDragged(event, mouseX, mouseY);
     }
-
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
@@ -253,19 +254,19 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
     }
 
     @Override
-    public boolean keyPressed(int key, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent event) {
         //delegate key handling to the open category
         //this ensures the open category is saved by calling the right overload of onEsc
-        if (this.getCurrentCategoryScreen().keyPressed(key, scanCode, modifiers)) {
+        if (this.getCurrentCategoryScreen().keyPressed(event)) {
             return true;
         }
 
         //This is unlikely to be reached as the category screen will already handle esc
-        if (key == GLFW.GLFW_KEY_ESCAPE) {
+        if (event.key() == GLFW.GLFW_KEY_ESCAPE) {
             BookGuiManager.get().closeScreenStack(this);
             return true;
         }
-        return super.keyPressed(key, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     @Override

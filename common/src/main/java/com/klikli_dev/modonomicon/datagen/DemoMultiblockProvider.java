@@ -121,7 +121,7 @@ public class DemoMultiblockProvider extends MultiblockProvider {
                 .block('G', () -> Blocks.GLASS_PANE)
                 .block('F', () -> Blocks.GRAY_STAINED_GLASS_PANE)
                 .block('I', () -> Blocks.IRON_BARS)
-                .block('C', () -> Blocks.CHAIN)
+                .block('C', () -> Blocks.IRON_CHAIN)
         );
 
     }

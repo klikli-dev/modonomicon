@@ -405,7 +405,7 @@ public class BookGuiManager {
     public void keepMousePosition(Runnable run) {
         var mousePos = Pair.of(Minecraft.getInstance().mouseHandler.xpos(), Minecraft.getInstance().mouseHandler.ypos());
         run.run();
-        InputConstants.grabOrReleaseMouse(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_CURSOR_NORMAL, mousePos.getFirst(), mousePos.getSecond());
+        InputConstants.grabOrReleaseMouse(Minecraft.getInstance().getWindow(), GLFW.GLFW_CURSOR_NORMAL, mousePos.getFirst(), mousePos.getSecond());
     }
 
     /**

@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -89,7 +90,7 @@ public class ReadAllButton extends Button {
         if (hovered)
             u += this.width; //shift to the right for hover variant
 
-        if (Screen.hasShiftDown()) {
+        if (Minecraft.getInstance().hasShiftDown()) {
             v = V_READ_ALL;
         }
 
@@ -119,7 +120,7 @@ public class ReadAllButton extends Button {
 
     public MutableComponent getCustomTooltip() {
 
-        if (Screen.hasShiftDown()) {
+        if (Minecraft.getInstance().hasShiftDown()) {
             return Component.empty().append(this.tooltipReadAll).append(Component.literal("\n\n")).append(this.tooltipShiftWarning);
         }
 
