@@ -18,7 +18,7 @@ import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
 import com.klikli_dev.modonomicon.integration.LecternIntegration;
-import com.klikli_dev.modonomicon.item.BookOpenStateItemPropertyGetter;
+import com.klikli_dev.modonomicon.item.IsBookOpen;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
@@ -26,8 +26,7 @@ import com.mojang.blaze3d.framegraph.FramePass;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelTargetBundle;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.ShapeRenderer;
+import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperties;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
@@ -37,7 +36,6 @@ import net.minecraftforge.client.event.AddFramePassEvent;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.*;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
@@ -163,13 +161,13 @@ public class ModonomiconForge {
             PageRendererRegistry.registerPageRenderers();
 
             TickEvent.ClientTickEvent.Post.BUS.addListener((TickEvent.ClientTickEvent.Post e) -> {
-                    ClientTicks.endClientTick(Minecraft.getInstance());
+                ClientTicks.endClientTick(Minecraft.getInstance());
             });
             TickEvent.RenderTickEvent.Pre.BUS.addListener((TickEvent.RenderTickEvent.Pre e) -> {
-                    ClientTicks.renderTickStart(e.getTimer().getGameTimeDeltaPartialTick(true));
+                ClientTicks.renderTickStart(e.getTimer().getGameTimeDeltaPartialTick(true));
             });
             TickEvent.RenderTickEvent.Post.BUS.addListener((TickEvent.RenderTickEvent.Post e) -> {
-                    ClientTicks.renderTickEnd();
+                ClientTicks.renderTickEnd();
             });
 
             //let multiblock preview renderer handle right clicks for anchoring
@@ -184,7 +182,7 @@ public class ModonomiconForge {
 
             //Tick multiblock preview
             TickEvent.ClientTickEvent.Post.BUS.addListener((TickEvent.ClientTickEvent.Post e) -> {
-                    MultiblockPreviewRenderer.onClientTick(Minecraft.getInstance());
+                MultiblockPreviewRenderer.onClientTick(Minecraft.getInstance());
             });
 
             //Render multiblock preview
@@ -195,10 +193,11 @@ public class ModonomiconForge {
                     public void targets(LevelTargetBundle bundle, FramePass pass) {
                         bundle.main = pass.readsAndWrites(bundle.main);
                     }
+
                     @Override
                     public void executes() {
                         PoseStack ps = new PoseStack();
-                        ps.translate(mainCamera.getPosition().multiply(-1,-1,-1));
+                        ps.translate(mainCamera.getPosition().multiply(-1, -1, -1));
                         ps.pushPose();
                         MultiblockPreviewRenderer.onRenderLevelLastEvent(ps);
                         ps.popPose();
@@ -206,14 +205,17 @@ public class ModonomiconForge {
                 }));
             });
 
+            //register item model properties
             event.enqueueWork(() -> {
-                //register item properties
-                ItemProperties.registerGeneric(Modonomicon.loc("open_state"), new BookOpenStateItemPropertyGetter());
+                ConditionalItemModelProperties.ID_MAPPER.put(
+                        // The registry name
+                        Modonomicon.loc("is_book_open"),
+                        // The map codec
+                        IsBookOpen.MAP_CODEC
+                );
             });
 
         }
-
-        
 
         public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
             BookModel.replace(event.getResults().itemStackModels());
