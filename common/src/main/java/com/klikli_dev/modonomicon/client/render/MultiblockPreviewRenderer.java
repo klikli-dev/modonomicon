@@ -296,7 +296,7 @@ public class MultiblockPreviewRenderer {
                             ms.translate(bePos.getX(), bePos.getY(), bePos.getZ());
 
                             try {
-                                BlockEntityRenderer<BlockEntity> renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(be);
+                                var renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(be);
                                 if (renderer != null) {
                                     renderer.render(be, ClientTicks.partialTicks, ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY, erd.camera.getPosition());
                                 }
