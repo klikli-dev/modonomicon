@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -35,13 +36,13 @@ public class BookModel implements ItemModel {
 
 
     @Override
-    public void update(@NotNull ItemStackRenderState renderState, @NotNull ItemStack stack, @NotNull ItemModelResolver itemModelResolver, @NotNull ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
+    public void update(@NotNull ItemStackRenderState renderState, @NotNull ItemStack stack, @NotNull ItemModelResolver itemModelResolver, @NotNull ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable ItemOwner owner, int seed) {
         var book = ModonomiconItem.getBook(stack);
         if (book != null) {
             var itemModel = Minecraft.getInstance().getModelManager().getItemModel(book.getModel());
-            itemModel.update(renderState, stack, itemModelResolver, displayContext, level, entity, seed);
+            itemModel.update(renderState, stack, itemModelResolver, displayContext, level, owner, seed);
         } else {
-            this.original.update(renderState, stack, itemModelResolver, displayContext, level, entity, seed);
+            this.original.update(renderState, stack, itemModelResolver, displayContext, level, owner, seed);
         }
     }
 }
