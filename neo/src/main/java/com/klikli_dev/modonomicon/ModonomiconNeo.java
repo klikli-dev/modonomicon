@@ -18,10 +18,13 @@ import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
 import com.klikli_dev.modonomicon.integration.LecternIntegration;
+import com.klikli_dev.modonomicon.item.IsBookOpen;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperties;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
@@ -178,6 +181,16 @@ public class ModonomiconNeo {
             NeoForge.EVENT_BUS.addListener((RenderLevelStageEvent.AfterTripwireBlocks e) -> {
                 //After translucent causes block entities to error out on render in preview so we use after tripwire.
                 MultiblockPreviewRenderer.onRenderLevelLastEvent(e.getPoseStack());
+            });
+
+            //register item model properties
+            event.enqueueWork(() -> {
+                ConditionalItemModelProperties.ID_MAPPER.put(
+                        // The registry name
+                        Modonomicon.loc("is_book_open"),
+                        // The map codec
+                        IsBookOpen.MAP_CODEC
+                );
             });
         }
 
