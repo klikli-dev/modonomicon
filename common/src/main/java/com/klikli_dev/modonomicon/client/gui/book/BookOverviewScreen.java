@@ -18,6 +18,7 @@ import com.klikli_dev.modonomicon.client.gui.book.button.CategoryButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ReadAllButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
 import com.klikli_dev.modonomicon.item.ModonomiconItem;
+import com.klikli_dev.modonomicon.networking.BookClosedMessage;
 import com.klikli_dev.modonomicon.networking.ClickReadAllButtonMessage;
 import com.klikli_dev.modonomicon.networking.SaveBookStateMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
@@ -32,6 +33,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -292,23 +294,20 @@ public class BookOverviewScreen extends Screen {
         // Find the ModonomiconItem in the player's hand and send a packet to the server
         var player = Minecraft.getInstance().player;
         if (player != null) {
-
-            //If the book in the main hand is this book, we send MAIN_HAND, otherwise OFF_HAND
+            //If there is a book in the main hand and it is the closed screen's book, we send MAIN_HAND, otherwise OFF_HAND
             //That means if the book is in neither hand, we send OFF_HAND
             //that is fine, the server will then just not update the closed state nbt on any item.
             //this is for the case of a custom button opening the book gui while the book is not in hand
-            if (ModonomiconItem.getBook(player.getMainHandItem()).getId().equals(this.book.getId()))
-                this.sendBookClosedPacket(net.minecraft.world.InteractionHand.MAIN_HAND);
+            var bookInMainhand = ModonomiconItem.getBook(player.getMainHandItem());
+            if (bookInMainhand != null && this.book.getId().equals(bookInMainhand.getId()))
+                Services.NETWORK.sendToServer(new BookClosedMessage(InteractionHand.MAIN_HAND));
             else
-                this.sendBookClosedPacket(net.minecraft.world.InteractionHand.OFF_HAND);
+                Services.NETWORK.sendToServer(new BookClosedMessage(InteractionHand.OFF_HAND));
         }
 
         super.onClose();
     }
 
-    private void sendBookClosedPacket(net.minecraft.world.InteractionHand hand) {
-        Services.NETWORK.sendToServer(new com.klikli_dev.modonomicon.networking.BookClosedMessage(hand));
-    }
 
     @Override
     public boolean handleComponentClicked(@Nullable Style pStyle) {
