@@ -5,6 +5,7 @@
 package com.klikli_dev.modonomicon.networking;
 
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.item.ModonomiconItem;
 import com.klikli_dev.modonomicon.util.StreamCodecs;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -43,8 +44,8 @@ public class BookClosedMessage implements Message, CustomPacketPayload {
 
         //Only set to closed if it is a modonomicon with a valid book.
         //The item in hand could be anything if the book screen was opened e.g. via a custom UI button.
-        if (com.klikli_dev.modonomicon.item.ModonomiconItem.getBook(stack) != null) {
-            com.klikli_dev.modonomicon.item.ModonomiconItem.setBookClosed(stack);
+        if (ModonomiconItem.getBook(stack) != null) {
+            ModonomiconItem.setBookClosed(stack);
         }
     }
 }
