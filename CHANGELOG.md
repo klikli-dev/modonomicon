@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.20.1-1.79.2] - 2025-10-09
+### :bug: Bug Fixes
+- [`c945d1c`](https://github.com/klikli-dev/modonomicon/commit/c945d1cbb23276a70736956f55d4588f4e250b58) - crash on close book *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.79.1] - 2025-10-05
 ### :bug: Bug Fixes
 - [`e61666a`](https://github.com/klikli-dev/modonomicon/commit/e61666a93a72b49775a7a5421d11f5cdd59457f2) - ModonomiconCustoitemBase did not use book id *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -948,3 +953,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.20.1-1.78.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.77.6...release/v1.20.1-1.78.0
 [release/v1.20.1-1.79.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.78.0...release/v1.20.1-1.79.0
 [release/v1.20.1-1.79.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.79.0...release/v1.20.1-1.79.1
+[release/v1.20.1-1.79.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.79.1...release/v1.20.1-1.79.2
