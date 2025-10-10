@@ -174,6 +174,7 @@ public class FabricMultiLayerScreen extends Screen {
 
     @Override
     public void init(Minecraft minecraft, int width, int height) {
+        super.init(minecraft, width, height);
         this.guiLayers.peek().init(minecraft, width, height);
     }
 

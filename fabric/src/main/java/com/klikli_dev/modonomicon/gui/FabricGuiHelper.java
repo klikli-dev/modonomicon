@@ -12,11 +12,14 @@ import net.minecraft.client.gui.screens.Screen;
 
 public class FabricGuiHelper implements GuiHelper {
 
-    private static final FabricMultiLayerScreen multiLayerScreen = new FabricMultiLayerScreen();
+    private static FabricMultiLayerScreen multiLayerScreen;
 
     public static float getGuiFarPlane() {
         // 11000 units for the overlay background,
         // and 10000 units for each layered Screen,
+
+        if(multiLayerScreen == null)
+            return 11000.0F;
 
         return 11000.0F + 10000.0F * (1 + multiLayerScreen.guiLayers.size());
     }
@@ -26,6 +29,9 @@ public class FabricGuiHelper implements GuiHelper {
         var minecraft = Minecraft.getInstance();
 
         var oldScreen = minecraft.screen;
+
+        if(multiLayerScreen == null)
+            multiLayerScreen = new FabricMultiLayerScreen();
 
         if (oldScreen != multiLayerScreen) {
             //if our layer screen is not the current screen then some other mod or vanilla/loader code has set a screen or null
@@ -52,6 +58,9 @@ public class FabricGuiHelper implements GuiHelper {
     public void popGuiLayer() {
         var minecraft = Minecraft.getInstance();
 
+        if(multiLayerScreen == null)
+            return;
+
         if (minecraft.screen != multiLayerScreen) {
             //someone already overwrote screen, we exit
             return;
@@ -73,6 +82,9 @@ public class FabricGuiHelper implements GuiHelper {
 
     @Override
     public Screen getCurrentScreen() {
+        if(multiLayerScreen == null)
+            return Minecraft.getInstance().screen;
+
         return multiLayerScreen.guiLayers.isEmpty() ? Minecraft.getInstance().screen : multiLayerScreen.guiLayers.peek();
     }
 
