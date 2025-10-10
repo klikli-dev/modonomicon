@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.8-1.117.1] - 2025-10-10
+### :bug: Bug Fixes
+- [`a2a4eda`](https://github.com/klikli-dev/modonomicon/commit/a2a4edac15f9f308689563fd1325a5b6e85ce7c6) - crash when fabric checks for screen event initialization *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`99f4194`](https://github.com/klikli-dev/modonomicon/commit/99f41941a76be038ddbb0c329dd34c941cd10624) - run datagen *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`5628f7a`](https://github.com/klikli-dev/modonomicon/commit/5628f7ae0167bb7f1dc25b186887c3afeac015c9) - disable forge, it still fails to compile on a vanilla mc class ... *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.8-1.116.0] - 2025-09-25
 ### :sparkles: New Features
 - [`3fc5bf1`](https://github.com/klikli-dev/modonomicon/commit/3fc5bf13d6ec513c09ce2c4e0164f29a4338c7fa) - initial update to 1.21.8 - some render features are still missing/deactivated *(PR [#310](https://github.com/klikli-dev/modonomicon/pull/310) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1903,3 +1912,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.5-1.117.5]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.5-1.117.3...release/v1.21.5-1.117.5
 [release/v1.21.5-1.117.6]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.5-1.117.5...release/v1.21.5-1.117.6
 [release/v1.21.8-1.116.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.8-0.0.0...release/v1.21.8-1.116.0
+[release/v1.21.8-1.117.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.8-1.117.0...release/v1.21.8-1.117.1
