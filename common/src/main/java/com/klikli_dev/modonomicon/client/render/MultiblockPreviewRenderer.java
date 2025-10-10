@@ -29,6 +29,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -271,25 +272,25 @@ public class MultiblockPreviewRenderer {
                 }
 
                 if (!r.test(level, facingRotation)) {
-                    BlockState renderState = r.getStateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
-                    renderBlock(level, renderState, r.getWorldPosition(), multiblock, air, alpha, ms);
+                    BlockState displayedState = r.getStateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
+                    renderBlock(level, displayedState, r.getWorldPosition(), multiblock, air, alpha, ms);
 
-                    if (renderState.getBlock() instanceof EntityBlock eb) {
+                    if (displayedState.getBlock() instanceof EntityBlock eb) {
 
                         //if our cached be is not compatible with the render state, remove it.
                         //this happens e.g. if there is a blocktag that contains multible blocks with different BEs
                         //we also have to translate by startpos to counteract the preview moving in the world (but the BE cache being static)
                         var be = blockEntityCache.compute(r.getWorldPosition().subtract(startPos).immutable(), (p, cachedBe) -> {
-                            if (cachedBe != null && !cachedBe.getType().isValid(renderState)) {
-                                return eb.newBlockEntity(p, renderState);
+                            if (cachedBe != null && !cachedBe.getType().isValid(displayedState)) {
+                                return eb.newBlockEntity(p, displayedState);
                             }
-                            return cachedBe != null ? cachedBe : eb.newBlockEntity(p, renderState);
+                            return cachedBe != null ? cachedBe : eb.newBlockEntity(p, displayedState);
                         });
                         if (be != null && !erroredBlockEntities.contains(be)) {
                             be.setLevel(mc.level);
 
                             // fake cached state in case the renderer checks it as we don't want to query the actual world
-                            be.setBlockState(renderState);
+                            be.setBlockState(displayedState);
 
                             ms.pushPose();
                             var bePos = r.getWorldPosition();
@@ -298,6 +299,9 @@ public class MultiblockPreviewRenderer {
                             try {
                                 var renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(be);
                                 if (renderer != null) {
+                                    var renderState = renderer.createRenderState();
+                                    renderer.extractRenderState(be, renderState, ClientTicks.partialTicks, erd.camera.getPosition(), null);
+                                    renderer.submit(renderState, ms, );
                                     renderer.render(be, ClientTicks.partialTicks, ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY, erd.camera.getPosition());
                                 }
                             } catch (Exception e) {
