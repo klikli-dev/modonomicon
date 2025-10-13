@@ -304,7 +304,7 @@ public class BookSearchScreen extends BookPaginatedScreen {
             return true;
         }
         var localEvent = new MouseButtonEvent(event.x() - this.bookLeft, event.y() - this.bookTop, event.buttonInfo());
-        return this.searchField.mouseClicked(localEvent, isDoubleClick) || super.mouseClicked(event, isDoubleClick);
+        return this.searchField.mouseClicked(localEvent, isDoubleClick);
     }
 
     @Override
