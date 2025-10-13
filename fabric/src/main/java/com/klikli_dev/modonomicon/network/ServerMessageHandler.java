@@ -16,8 +16,8 @@ public class ServerMessageHandler<T extends Message> implements ServerPlayNetwor
 
     @Override
     public void receive(T payload, ServerPlayNetworking.Context context) {
-        context.player().getServer().execute(() -> {
-            payload.onServerReceived(context.player().getServer(), context.player());
+        context.server().execute(() -> {
+            payload.onServerReceived(context.server(), context.player());
         });
     }
 }
