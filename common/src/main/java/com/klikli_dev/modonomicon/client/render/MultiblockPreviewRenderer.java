@@ -121,7 +121,6 @@ public class MultiblockPreviewRenderer {
                 guiGraphics.drawString(mc.font, s, (int) (x - mc.font.width(s) / 2.0F), top + height - 10, 0x00FF00, false);
                 guiGraphics.pose().popMatrix();
             }
-            guiGraphics.pose().popMatrix();
 
             //render a black square at the "bottom", 1px larger than the actual progress bar, so it acts as a border
             guiGraphics.fill(left - 1, top - 1, left + width + 1, top + height + 1, 0xFF000000);
@@ -137,7 +136,6 @@ public class MultiblockPreviewRenderer {
             //finally, on top of that, render a colored gradient as "filled progress"
             guiGraphics.fillGradient(left, top, left + progressWidth, top + height, color, color2);
 
-            guiGraphics.pose().popMatrix();
             if (!isAnchored) {
                 String s = I18n.get(ModonomiconConstants.I18n.Multiblock.NOT_ANCHORED);
                 guiGraphics.drawString(mc.font, s, (int) (x - mc.font.width(s) / 2.0F), top + height + 8, 0xFFFFFF, false);
