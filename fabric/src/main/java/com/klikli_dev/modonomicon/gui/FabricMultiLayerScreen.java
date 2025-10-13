@@ -49,6 +49,21 @@ public class FabricMultiLayerScreen extends Screen {
     }
 
     @Override
+    public final void renderWithTooltipAndSubtitles(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        guiGraphics.pose().pushMatrix();
+        for (int i = 0; i < this.guiLayers.size(); i++) {
+            Screen layer = this.guiLayers.get(i);
+            if (i == this.guiLayers.size() - 1) {
+                // This is the last layer, it gets actual mouse over
+                layer.renderWithTooltipAndSubtitles(guiGraphics, mouseX, mouseY, partialTick);
+            } else {
+                layer.renderWithTooltipAndSubtitles(guiGraphics, Integer.MAX_VALUE, Integer.MAX_VALUE, partialTick);
+            }
+        }
+        guiGraphics.pose().popMatrix();
+    }
+
+    @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         //do nothing
     }

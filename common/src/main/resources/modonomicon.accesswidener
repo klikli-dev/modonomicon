@@ -21,3 +21,4 @@ mutable field net/minecraft/client/renderer/RenderType$CompositeRenderType rende
 accessible class net/minecraft/client/renderer/RenderType$CompositeRenderType
 accessible method net/minecraft/client/gui/GuiGraphics blitTiledSprite (Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;IIIIIIIIIII)V
 accessible field net/minecraft/client/renderer/item/properties/conditional/ConditionalItemModelProperties ID_MAPPER Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
+extendable method net/minecraft/client/gui/screens/Screen renderWithTooltipAndSubtitles (Lnet/minecraft/client/gui/GuiGraphics;IIF)V
