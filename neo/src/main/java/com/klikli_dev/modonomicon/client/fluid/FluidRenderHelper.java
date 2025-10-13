@@ -88,8 +88,8 @@ public class FluidRenderHelper {
 
         //noinspection deprecation
         TextureAtlasSprite sprite = Minecraft.getInstance()
-                .getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
-                .apply(fluidStill);
+                .getAtlasManager().getAtlasOrThrow(TextureAtlas.LOCATION_BLOCKS)
+                .getSprite(fluidStill);
         return Optional.of(sprite)
                 .filter(s -> s.atlasLocation() != MissingTextureAtlasSprite.getLocation());
     }
