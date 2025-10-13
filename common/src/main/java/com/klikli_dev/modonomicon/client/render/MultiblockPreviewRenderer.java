@@ -229,22 +229,30 @@ public class MultiblockPreviewRenderer {
             return;
         }
 
-        // Position/facing should already be established by the caller; if not, nothing to extract
-        if (pos == null) {
+        if (!isAnchored) {
+            facingRotation = getRotation(mc.player);
+            if (mc.hitResult instanceof BlockHitResult) {
+                pos = ((BlockHitResult) mc.hitResult).getBlockPos();
+            }
+        } else if (pos.distToCenterSqr(mc.player.position()) > 64 * 64) {
             return;
         }
 
-        // Use NONE if the multiblock is symmetrical or no facing was set
-        Rotation rot = multiblock.isSymmetrical() ? Rotation.NONE : (facingRotation == null ? Rotation.NONE : facingRotation);
+        if (pos == null) {
+            return;
+        }
+        if (multiblock.isSymmetrical()) {
+            facingRotation = Rotation.NONE;
+        }
 
         multiblock.setLevel(level);
 
         // Extract block entity render states from the simulated multiblock
         BlockPos startPos = getStartPos();
-        Pair<BlockPos, Collection<Multiblock.SimulateResult>> sim = multiblock.simulate(level, startPos, rot, true, false);
+        Pair<BlockPos, Collection<Multiblock.SimulateResult>> sim = multiblock.simulate(level, startPos, getFacingRotation(), true, false);
         for (Multiblock.SimulateResult r : sim.getSecond()) {
             try {
-                BlockState displayedState = r.getStateMatcher().getDisplayedState(ClientTicks.ticks).rotate(rot);
+                BlockState displayedState = r.getStateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
 
                 if (displayedState.getBlock() instanceof EntityBlock eb) {
                     // Cache/create a fake block entity at the simulated position (translate by startPos)
