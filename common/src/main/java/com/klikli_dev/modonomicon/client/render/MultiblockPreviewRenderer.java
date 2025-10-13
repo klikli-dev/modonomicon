@@ -229,94 +229,51 @@ public class MultiblockPreviewRenderer {
             return;
         }
 
-        if (!isAnchored) {
-            facingRotation = getRotation(mc.player);
-            if (mc.hitResult instanceof BlockHitResult) {
-                pos = ((BlockHitResult) mc.hitResult).getBlockPos();
-            }
-        } else if (pos.distToCenterSqr(mc.player.position()) > 64 * 64) {
-            return;
-        }
-
+        // Position/facing should already be established by the caller; if not, nothing to extract
         if (pos == null) {
             return;
         }
-        if (multiblock.isSymmetrical()) {
-            facingRotation = Rotation.NONE;
-        }
+
+        // Use NONE if the multiblock is symmetrical or no facing was set
+        Rotation rot = multiblock.isSymmetrical() ? Rotation.NONE : (facingRotation == null ? Rotation.NONE : facingRotation);
 
         multiblock.setLevel(level);
 
-        EntityRenderDispatcher erd = mc.getEntityRenderDispatcher();
-
-        BlockPos checkPos = null;
-        if (mc.hitResult instanceof BlockHitResult blockRes) {
-            checkPos = blockRes.getBlockPos().relative(blockRes.getDirection());
-        }
-
-        blocks = blocksDone = airFilled = 0;
-        lookingState = null;
-        lookingPos = checkPos;
-
+        // Extract block entity render states from the simulated multiblock
         BlockPos startPos = getStartPos();
-
-        Pair<BlockPos, Collection<Multiblock.SimulateResult>> sim = multiblock.simulate(level, startPos, getFacingRotation(), true, false);
+        Pair<BlockPos, Collection<Multiblock.SimulateResult>> sim = multiblock.simulate(level, startPos, rot, true, false);
         for (Multiblock.SimulateResult r : sim.getSecond()) {
-            float alpha = 0.3F;
-            if (r.getWorldPosition().equals(checkPos)) {
-                lookingState = r.getStateMatcher().getDisplayedState(ClientTicks.ticks);
-                alpha = 0.6F + (float) (Math.sin(ClientTicks.total * 0.3F) + 1F) * 0.1F;
-            }
+            try {
+                BlockState displayedState = r.getStateMatcher().getDisplayedState(ClientTicks.ticks).rotate(rot);
 
-            if (!r.getStateMatcher().equals(Matchers.ANY) && r.getStateMatcher().getType() != DisplayOnlyMatcher.TYPE) {
-                boolean air = !r.getStateMatcher().countsTowardsTotalBlocks();
-                if (!air) {
-                    blocks++;
-                }
+                if (displayedState.getBlock() instanceof EntityBlock eb) {
+                    // Cache/create a fake block entity at the simulated position (translate by startPos)
+                    var cacheKey = r.getWorldPosition().subtract(startPos).immutable();
+                    var be = blockEntityCache.compute(cacheKey, (p, cachedBe) -> {
+                        if (cachedBe != null && !cachedBe.getType().isValid(displayedState)) {
+                            return eb.newBlockEntity(p, displayedState);
+                        }
+                        return cachedBe != null ? cachedBe : eb.newBlockEntity(p, displayedState);
+                    });
 
-                if (!r.test(level, facingRotation)) {
-                    BlockState displayedState = r.getStateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
+                    if (be != null && !erroredBlockEntities.contains(be)) {
+                        be.setLevel(mc.level);
+                        // Provide the displayed state to avoid querying the real world
+                        be.setBlockState(displayedState);
 
-                    if (displayedState.getBlock() instanceof EntityBlock eb) {
-                        //if our cached be is not compatible with the render state, remove it.
-                        //this happens e.g. if there is a blocktag that contains multiple blocks with different BEs
-                        //we also have to translate by startpos to counteract the preview moving in the world (but the BE cache being static)
-                        var be = blockEntityCache.compute(r.getWorldPosition().subtract(startPos).immutable(), (p, cachedBe) -> {
-                            if (cachedBe != null && !cachedBe.getType().isValid(displayedState)) {
-                                return eb.newBlockEntity(p, displayedState);
-                            }
-                            return cachedBe != null ? cachedBe : eb.newBlockEntity(p, displayedState);
-                        });
-                        if (be != null && !erroredBlockEntities.contains(be)) {
-                            be.setLevel(mc.level);
-                            // fake cached state in case the renderer checks it as we don't want to query the actual world
-                            be.setBlockState(displayedState);
-
-                            try {
-                                var renderState = Minecraft.getInstance().getBlockEntityRenderDispatcher().tryExtractRenderState(be, ClientTicks.partialTicks, null);
-                                if (renderState != null) {
-                                    levelRenderState.blockEntityRenderStates.add(renderState);
-                                }
-                            } catch (Exception e) {
-                                erroredBlockEntities.add(be);
-                                Modonomicon.LOG.error("Error extracting block entity render state", e);
-                            }
+                        var renderState = Minecraft.getInstance().getBlockEntityRenderDispatcher().tryExtractRenderState(be, ClientTicks.partialTicks, null);
+                        if (renderState != null) {
+                            levelRenderState.blockEntityRenderStates.add(renderState);
                         }
                     }
-
-                    if (air) {
-                        airFilled++;
-                    }
-                } else if (!air) {
-                    blocksDone++;
                 }
+            } catch (Exception e) {
+                // Don't let a failure extracting one block entity abort the entire extraction loop
+                Modonomicon.LOG.error("Error extracting block entity render state", e);
             }
         }
-
-        if (!isAnchored) {
-            blocks = blocksDone = 0;
-        }
     }
+
 
     /**
      * Phase 2: Render the multiblock using the extracted render state.
