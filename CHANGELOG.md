@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.10-1.118.0] - 2025-10-13
+### :sparkles: New Features
+- [`c178737`](https://github.com/klikli-dev/modonomicon/commit/c1787375df17840b5b7ec29ec11a106b6ddca78d) - update to 1.21.10 *(PR [#313](https://github.com/klikli-dev/modonomicon/pull/313) by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`ce36067`](https://github.com/klikli-dev/modonomicon/commit/ce36067b16793972a404224b189d3ca1019b0077) - accidentally removed multilayer render logic *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`aa83393`](https://github.com/klikli-dev/modonomicon/commit/aa8339301a66e12d184df460819738d4420beec7) - remove redundant call to super *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.8-1.118.0] - 2025-10-13
 ### :sparkles: New Features
 - [`c178737`](https://github.com/klikli-dev/modonomicon/commit/c1787375df17840b5b7ec29ec11a106b6ddca78d) - update to 1.21.10 *(PR [#313](https://github.com/klikli-dev/modonomicon/pull/313) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1909,3 +1920,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.5-1.117.6]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.5-1.117.5...release/v1.21.5-1.117.6
 [release/v1.21.8-1.116.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.8-0.0.0...release/v1.21.8-1.116.0
 [release/v1.21.8-1.118.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.8-1.117.1...release/v1.21.8-1.118.0
+[release/v1.21.10-1.118.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.10-0.0.0...release/v1.21.10-1.118.0
