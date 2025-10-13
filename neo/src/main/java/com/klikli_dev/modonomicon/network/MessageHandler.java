@@ -25,7 +25,7 @@ public class MessageHandler {
     }
 
     public static <T extends Message> void handleServer(T message, IPayloadContext ctx) {
-        MinecraftServer server = ctx.player().getServer();
+        MinecraftServer server = ctx.player().level().getServer();
         message.onServerReceived(server, (ServerPlayer) ctx.player());
     }
 }
