@@ -70,7 +70,7 @@ public class ModonomiconForge {
 
         //directly register event handlers
         FMLCommonSetupEvent.getBus(modBusGroup).addListener(this::onCommonSetup);
-        BuildCreativeModeTabContentsEvent.getBus(modBusGroup).addListener(CreativeModeTabRegistry::onCreativeModeTabBuildContents);
+        BuildCreativeModeTabContentsEvent.BUS.addListener(CreativeModeTabRegistry::onCreativeModeTabBuildContents);
 
         //register data managers as reload listeners
         AddReloadListenerEvent.BUS.addListener((AddReloadListenerEvent e) -> {
@@ -121,7 +121,7 @@ public class ModonomiconForge {
 
         //We use server tick to flush the queue of players that need a book state sync
         TickEvent.ServerTickEvent.Post.BUS.addListener(((TickEvent.ServerTickEvent.Post e) -> {
-            BookUnlockStateManager.get().onServerTickEnd(e.getServer());
+            BookUnlockStateManager.get().onServerTickEnd(e.server());
         }));
 
         //Datagen
@@ -132,10 +132,10 @@ public class ModonomiconForge {
             FMLClientSetupEvent.getBus(modBusGroup).addListener(Client::onClientSetup);
 //            modEventBus.addListener(Client::onRegisterGuiOverlays);
 
-            ModelEvent.ModifyBakingResult.getBus(modBusGroup).addListener(Client::onModifyBakingResult);
+            ModelEvent.ModifyBakingResult.BUS.addListener(Client::onModifyBakingResult);
 
             //register client side reload listener that will reset the fallback font to handle locale changes on the fly
-            RegisterClientReloadListenersEvent.getBus(modBusGroup).addListener((RegisterClientReloadListenersEvent e) -> {
+            RegisterClientReloadListenersEvent.BUS.addListener((RegisterClientReloadListenersEvent e) -> {
                 e.registerReloadListener(BookDataManager.Client.get());
             });
         }
@@ -164,7 +164,7 @@ public class ModonomiconForge {
                 ClientTicks.endClientTick(Minecraft.getInstance());
             });
             TickEvent.RenderTickEvent.Pre.BUS.addListener((TickEvent.RenderTickEvent.Pre e) -> {
-                ClientTicks.renderTickStart(e.getTimer().getGameTimeDeltaPartialTick(true));
+                ClientTicks.renderTickStart(e.timer().getGameTimeDeltaPartialTick(true));
             });
             TickEvent.RenderTickEvent.Post.BUS.addListener((TickEvent.RenderTickEvent.Post e) -> {
                 ClientTicks.renderTickEnd();
@@ -185,25 +185,26 @@ public class ModonomiconForge {
                 MultiblockPreviewRenderer.onClientTick(Minecraft.getInstance());
             });
 
-            //Render multiblock preview
-            AddFramePassEvent.BUS.addListener((AddFramePassEvent e) -> {
-                var mainCamera = Minecraft.getInstance().gameRenderer.getMainCamera();
-                e.addPass(Modonomicon.loc("multiblock_preview"), (new FramePassManager.PassDefinition() {
-                    @Override
-                    public void targets(LevelTargetBundle bundle, FramePass pass) {
-                        bundle.main = pass.readsAndWrites(bundle.main);
-                    }
-
-                    @Override
-                    public void executes() {
-                        PoseStack ps = new PoseStack();
-                        ps.translate(mainCamera.getPosition().multiply(-1, -1, -1));
-                        ps.pushPose();
-                        MultiblockPreviewRenderer.onRenderLevelLastEvent(ps);
-                        ps.popPose();
-                    }
-                }));
-            });
+            //TODO re-enable once forge offers an API for the new two-pass approach
+//            //Render multiblock preview
+//            AddFramePassEvent.BUS.addListener((AddFramePassEvent e) -> {
+//                var mainCamera = Minecraft.getInstance().gameRenderer.getMainCamera();
+//                e.addPass(Modonomicon.loc("multiblock_preview"), (new FramePassManager.PassDefinition() {
+//                    @Override
+//                    public void targets(LevelTargetBundle bundle, FramePass pass) {
+//                        bundle.main = pass.readsAndWrites(bundle.main);
+//                    }
+//
+//                    @Override
+//                    public void executes() {
+//                        PoseStack ps = new PoseStack();
+//                        ps.translate(mainCamera.getPosition().multiply(-1, -1, -1));
+//                        ps.pushPose();
+//                        MultiblockPreviewRenderer.onRenderLevelLastEvent(ps);
+//                        ps.popPose();
+//                    }
+//                }));
+//            });
 
             //register item model properties
             event.enqueueWork(() -> {

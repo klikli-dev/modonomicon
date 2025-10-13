@@ -58,9 +58,10 @@ public class ModonomiconFabricClient implements ClientModInitializer {
         //TODO: register PIP renderers using SpecialGuiElementRegistry.register();
 
         //Render multiblock preview
-        WorldRenderEvents.LAST.register(context -> {
-            MultiblockPreviewRenderer.onRenderLevelLastEvent(context.matrixStack());
-        });
+        //TODO: re-enable once fabric offers an API for this
+//        WorldRenderEvents.LAST.register(context -> {
+//            MultiblockPreviewRenderer.onRenderLevelLastEvent(context.matrixStack());
+//        });
 
         //render multiblock hud
         HudElementRegistry.addLast(Modonomicon.loc("multiblock_preview_hud"), (context, tickCounter) -> {

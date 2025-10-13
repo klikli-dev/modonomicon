@@ -21,16 +21,13 @@ import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.state.LevelRenderState;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
@@ -182,9 +179,9 @@ public class MultiblockPreviewRenderer {
         }
     }
 
-    public static void onRenderLevelLastEvent(PoseStack poseStack) {
+    public static void onRenderLevelLastEvent(LevelRenderState levelRenderState, PoseStack poseStack) {
         if (hasMultiblock && multiblock != null) {
-            renderMultiblock(Minecraft.getInstance().level, poseStack);
+            renderMultiblock(levelRenderState, poseStack);
         }
     }
 
@@ -215,8 +212,23 @@ public class MultiblockPreviewRenderer {
         }
     }
 
-    public static void renderMultiblock(Level level, PoseStack ms) {
+    /**
+     * Phase 1: Extract render state from the level.
+     * This should be called during the render state extraction phase.
+     *
+     * @param levelRenderState The level render state to extract data into
+     */
+    public static void extractRenderState(LevelRenderState levelRenderState) {
+        if (!hasMultiblock || multiblock == null) {
+            return;
+        }
+
         Minecraft mc = Minecraft.getInstance();
+        Level level = mc.level;
+        if (level == null) {
+            return;
+        }
+
         if (!isAnchored) {
             facingRotation = getRotation(mc.player);
             if (mc.hitResult instanceof BlockHitResult) {
@@ -236,15 +248,6 @@ public class MultiblockPreviewRenderer {
         multiblock.setLevel(level);
 
         EntityRenderDispatcher erd = mc.getEntityRenderDispatcher();
-        double renderPosX = erd.camera.getPosition().x();
-        double renderPosY = erd.camera.getPosition().y();
-        double renderPosZ = erd.camera.getPosition().z();
-        ms.pushPose();
-        ms.translate(-renderPosX, -renderPosY, -renderPosZ);
-
-        if (buffers == null) {
-            buffers = initBuffers(mc.renderBuffers().bufferSource());
-        }
 
         BlockPos checkPos = null;
         if (mc.hitResult instanceof BlockHitResult blockRes) {
@@ -273,12 +276,10 @@ public class MultiblockPreviewRenderer {
 
                 if (!r.test(level, facingRotation)) {
                     BlockState displayedState = r.getStateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
-                    renderBlock(level, displayedState, r.getWorldPosition(), multiblock, air, alpha, ms);
 
                     if (displayedState.getBlock() instanceof EntityBlock eb) {
-
                         //if our cached be is not compatible with the render state, remove it.
-                        //this happens e.g. if there is a blocktag that contains multible blocks with different BEs
+                        //this happens e.g. if there is a blocktag that contains multiple blocks with different BEs
                         //we also have to translate by startpos to counteract the preview moving in the world (but the BE cache being static)
                         var be = blockEntityCache.compute(r.getWorldPosition().subtract(startPos).immutable(), (p, cachedBe) -> {
                             if (cachedBe != null && !cachedBe.getType().isValid(displayedState)) {
@@ -288,27 +289,18 @@ public class MultiblockPreviewRenderer {
                         });
                         if (be != null && !erroredBlockEntities.contains(be)) {
                             be.setLevel(mc.level);
-
                             // fake cached state in case the renderer checks it as we don't want to query the actual world
                             be.setBlockState(displayedState);
 
-                            ms.pushPose();
-                            var bePos = r.getWorldPosition();
-                            ms.translate(bePos.getX(), bePos.getY(), bePos.getZ());
-
                             try {
-                                var renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(be);
-                                if (renderer != null) {
-                                    var renderState = renderer.createRenderState();
-                                    renderer.extractRenderState(be, renderState, ClientTicks.partialTicks, erd.camera.getPosition(), null);
-                                    renderer.submit(renderState, ms, );
-                                    renderer.render(be, ClientTicks.partialTicks, ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY, erd.camera.getPosition());
+                                var renderState = Minecraft.getInstance().getBlockEntityRenderDispatcher().tryExtractRenderState(be, ClientTicks.partialTicks, null);
+                                if (renderState != null) {
+                                    levelRenderState.blockEntityRenderStates.add(renderState);
                                 }
                             } catch (Exception e) {
                                 erroredBlockEntities.add(be);
-                                Modonomicon.LOG.error("Error rendering block entity", e);
+                                Modonomicon.LOG.error("Error extracting block entity render state", e);
                             }
-                            ms.popPose();
                         }
                     }
 
@@ -321,12 +313,88 @@ public class MultiblockPreviewRenderer {
             }
         }
 
-        buffers.endBatch();
-        ms.popPose();
-
         if (!isAnchored) {
             blocks = blocksDone = 0;
         }
+    }
+
+    /**
+     * Phase 2: Render the multiblock using the extracted render state.
+     * This should be called during the actual rendering phase with the levelRenderState.
+     *
+     * @param levelRenderState The level render state containing extracted data
+     * @param ms               The pose stack for rendering
+     */
+    public static void renderMultiblock(LevelRenderState levelRenderState, PoseStack ms) {
+        if (!hasMultiblock || multiblock == null) {
+            return;
+        }
+
+        Minecraft mc = Minecraft.getInstance();
+        Level level = mc.level;
+        if (level == null) {
+            return;
+        }
+
+        if (!isAnchored) {
+            if (mc.hitResult instanceof BlockHitResult) {
+                pos = ((BlockHitResult) mc.hitResult).getBlockPos();
+            }
+        } else if (pos.distToCenterSqr(mc.player.position()) > 64 * 64) {
+            return;
+        }
+
+        if (pos == null) {
+            return;
+        }
+
+        EntityRenderDispatcher erd = mc.getEntityRenderDispatcher();
+        double renderPosX = erd.camera.getPosition().x();
+        double renderPosY = erd.camera.getPosition().y();
+        double renderPosZ = erd.camera.getPosition().z();
+        ms.pushPose();
+        ms.translate(-renderPosX, -renderPosY, -renderPosZ);
+
+        if (buffers == null) {
+            buffers = initBuffers(mc.renderBuffers().bufferSource());
+        }
+
+        BlockPos checkPos = null;
+        if (mc.hitResult instanceof BlockHitResult blockRes) {
+            checkPos = blockRes.getBlockPos().relative(blockRes.getDirection());
+        }
+
+        BlockPos startPos = getStartPos();
+
+        Pair<BlockPos, Collection<Multiblock.SimulateResult>> sim = multiblock.simulate(level, startPos, getFacingRotation(), true, false);
+        for (Multiblock.SimulateResult r : sim.getSecond()) {
+            float alpha = 0.3F;
+            if (r.getWorldPosition().equals(checkPos)) {
+                alpha = 0.6F + (float) (Math.sin(ClientTicks.total * 0.3F) + 1F) * 0.1F;
+            }
+
+            if (!r.getStateMatcher().equals(Matchers.ANY) && r.getStateMatcher().getType() != DisplayOnlyMatcher.TYPE) {
+                boolean air = !r.getStateMatcher().countsTowardsTotalBlocks();
+
+                if (!r.test(level, facingRotation)) {
+                    BlockState displayedState = r.getStateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
+                    renderBlock(level, displayedState, r.getWorldPosition(), multiblock, air, alpha, ms);
+                }
+            }
+        }
+
+        // Render block entities using the extracted render states
+        for (var blockEntityRenderState : levelRenderState.blockEntityRenderStates) {
+            ms.pushPose();
+            ms.translate(blockEntityRenderState.blockPos.getX(), blockEntityRenderState.blockPos.getY(), blockEntityRenderState.blockPos.getZ());
+
+            Minecraft.getInstance().getBlockEntityRenderDispatcher().submit(blockEntityRenderState, ms, Minecraft.getInstance().gameRenderer.getSubmitNodeStorage(), levelRenderState.cameraRenderState);
+
+            ms.popPose();
+        }
+
+        buffers.endBatch();
+        ms.popPose();
     }
 
     public static void renderBlock(Level world, BlockState state, BlockPos pos, Multiblock multiblock, boolean isAir, float alpha, PoseStack ms) {
@@ -398,5 +466,4 @@ public class MultiblockPreviewRenderer {
             return GhostVertexConsumer.remap(super.getBuffer(type));
         }
     }
-
 }
