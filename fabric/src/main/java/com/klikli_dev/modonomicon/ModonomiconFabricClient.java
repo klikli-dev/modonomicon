@@ -11,7 +11,6 @@ import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
-import com.klikli_dev.modonomicon.data.ReloadListenerWrapper;
 import com.klikli_dev.modonomicon.item.IsBookOpen;
 import com.klikli_dev.modonomicon.network.ClientNetworking;
 import com.klikli_dev.modonomicon.registry.FabricClientCommandRegistry;
@@ -19,10 +18,9 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperties;
 import net.minecraft.server.packs.PackType;
 
@@ -69,10 +67,7 @@ public class ModonomiconFabricClient implements ClientModInitializer {
         });
 
         //register client side reload listener that will reset the fallback font to handle locale changes on the fly
-        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new ReloadListenerWrapper(
-                Modonomicon.loc("book_data_manager_client"),
-                BookDataManager.Client.get()
-        ));
+        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(Modonomicon.loc("book_data_manager_client"), BookDataManager.Client.get());
 
         //register item model properties
         ConditionalItemModelProperties.ID_MAPPER.put(

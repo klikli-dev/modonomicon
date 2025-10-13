@@ -11,7 +11,6 @@ import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
-import com.klikli_dev.modonomicon.data.ReloadListenerWrapper;
 import com.klikli_dev.modonomicon.integration.LecternIntegration;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
@@ -24,7 +23,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.PackType;
@@ -53,23 +52,8 @@ public class ModonomiconFabric implements ModInitializer {
         LoaderRegistry.registerLoaders();
 
         //register data managers as reload listeners
-        var bookDataReloadListener = new ReloadListenerWrapper(Modonomicon.loc("book_data_manager"), BookDataManager.get());
-        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(
-                bookDataReloadListener.getFabricId(),
-                (registries) -> {
-                    BookDataManager.get().registries(registries);
-                    return bookDataReloadListener;
-                }
-        );
-
-        var multiblockDataReloadListener = new ReloadListenerWrapper(Modonomicon.loc("multiblock_data_manager"), MultiblockDataManager.get());
-        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(
-                multiblockDataReloadListener.getFabricId(),
-                (registries) -> {
-                    MultiblockDataManager.get().registries(registries);
-                    return multiblockDataReloadListener;
-                }
-        );
+        ResourceLoader.get(PackType.SERVER_DATA).registerReloader(Modonomicon.loc("book_data_manager"), BookDataManager.get());
+        ResourceLoader.get(PackType.SERVER_DATA).registerReloader(Modonomicon.loc("multiblock_data_manager"), MultiblockDataManager.get());
 
         //register commands
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
