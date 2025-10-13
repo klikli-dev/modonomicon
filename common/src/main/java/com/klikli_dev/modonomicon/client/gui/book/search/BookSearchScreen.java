@@ -27,6 +27,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.language.I18n;
@@ -256,16 +259,16 @@ public class BookSearchScreen extends BookPaginatedScreen {
     }
 
     @Override
-    public boolean keyPressed(int key, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent event) {
         String currQuery = this.searchField.getValue();
 
-        if (key == GLFW.GLFW_KEY_ENTER) {
+        if (event.key() == GLFW.GLFW_KEY_ENTER) {
             if (this.visibleEntries.size() == 1) {
                 var entry = this.visibleEntries.get(0);
                 BookGuiManager.get().openEntry(entry.getBook().getId(), entry.getId(), 0);
                 return true;
             }
-        } else if (this.searchField.keyPressed(key, scanCode, modifiers)) {
+        } else if (this.searchField.keyPressed(event)) {
             if (!this.searchField.getValue().equals(currQuery)) {
                 this.createEntryList();
             }
@@ -273,7 +276,7 @@ public class BookSearchScreen extends BookPaginatedScreen {
             return true;
         }
 
-        return super.keyPressed(key, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     @Override
@@ -296,18 +299,18 @@ public class BookSearchScreen extends BookPaginatedScreen {
     }
 
     @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if (super.mouseClicked(pMouseX, pMouseY, pButton)) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        if (super.mouseClicked(event, isDoubleClick)) {
             return true;
         }
-
-        return this.searchField.mouseClicked(pMouseX - this.bookLeft, pMouseY - this.bookTop, pButton) || super.mouseClicked(pMouseX, pMouseY, pButton);
+        var localEvent = new MouseButtonEvent(event.x() - this.bookLeft, event.y() - this.bookTop, event.buttonInfo());
+        return this.searchField.mouseClicked(localEvent, isDoubleClick) || super.mouseClicked(event, isDoubleClick);
     }
 
     @Override
-    public boolean charTyped(char c, int i) {
+    public boolean charTyped(CharacterEvent event) {
         String currQuery = this.searchField.getValue();
-        if (this.searchField.charTyped(c, i)) {
+        if (this.searchField.charTyped(event)) {
             if (!this.searchField.getValue().equals(currQuery)) {
                 this.createEntryList();
             }
@@ -315,8 +318,9 @@ public class BookSearchScreen extends BookPaginatedScreen {
             return true;
         }
 
-        return super.charTyped(c, i);
+        return super.charTyped(event);
     }
+
 
     void addEntryButtons(int x, int y, int start, int count) {
         for (int i = 0; i < count && (i + start) < this.visibleEntries.size(); i++) {

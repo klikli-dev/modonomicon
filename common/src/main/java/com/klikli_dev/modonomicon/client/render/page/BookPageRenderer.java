@@ -20,7 +20,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FontDescription;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.Nullable;
@@ -151,10 +153,9 @@ public abstract class BookPageRenderer<T extends BookPage> {
     }
 
     /**
-     * @param pMouseX localized to page x (mouseX - bookLeft - page.left)
-     * @param pMouseY localized to page y (mouseY - bookTop - page.top)
+     * @param event localized to page x (mouseX - bookLeft - page.left) and y (mouseY - bookTop - page.top)
      */
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         return false;
     }
 
@@ -212,7 +213,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
         } else if (title.hasComponent()) {
             //non-markdown title we just render as usual
 
-            var font = BookDataManager.Client.get().safeFont(this.page.getBook().getFont());
+            var font = new FontDescription.Resource(BookDataManager.Client.get().safeFont(this.page.getBook().getFont()));
 
             var titleComponent = Component.empty().append(title.getComponent()).withStyle(s -> s.withFont(font));
             //if title is larger than allowed, scaled to fit

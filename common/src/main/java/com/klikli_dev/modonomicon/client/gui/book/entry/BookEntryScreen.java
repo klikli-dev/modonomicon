@@ -39,6 +39,8 @@ import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
@@ -215,9 +217,10 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         }
     }
 
-    protected boolean clickPage(BookPageRenderer<?> page, double mouseX, double mouseY, int mouseButton) {
+    protected boolean clickPage(BookPageRenderer<?> page, MouseButtonEvent event, boolean isDoubleClick) {
         if (page != null) {
-            return page.mouseClicked(mouseX - this.bookLeft - page.left, mouseY - this.bookTop - page.top, mouseButton);
+            var localEvent = new MouseButtonEvent(event.x() - this.bookLeft - page.left, event.y() - this.bookTop - page.top, event.buttonInfo());
+            return page.mouseClicked(localEvent, isDoubleClick);
         }
 
         return false;
@@ -253,12 +256,12 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     }
 
     @Override
-    public boolean keyPressed(int key, int scanCode, int modifiers) {
-        if (key == GLFW.GLFW_KEY_ESCAPE) {
+    public boolean keyPressed(KeyEvent event) {
+        if (event.key() == GLFW.GLFW_KEY_ESCAPE) {
             BookGuiManager.get().closeScreenStack(this);
             return true;
         }
-        return super.keyPressed(key, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     @Override
@@ -405,25 +408,25 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     public void tick() {
         super.tick();
 
-        if (!hasShiftDown()) {
+        if (!this.getMinecraft().hasShiftDown()) {
             this.ticksInBook++;
         }
     }
 
     @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if (pButton == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-            var style = this.getClickedComponentStyleAt(pMouseX, pMouseY);
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        if (event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+            var style = this.getClickedComponentStyleAt(event.x(), event.y());
             if (style != null && this.handleComponentClicked(style)) {
                 return true;
             }
         }
 
-        if (super.mouseClicked(pMouseX, pMouseY, pButton)) {
+        if (super.mouseClicked(event, isDoubleClick)) {
             return true;
         }
 
-        return this.mouseClickedPage(pMouseX, pMouseY, pButton);
+        return this.mouseClickedPage(event, isDoubleClick);
     }
 
     @Override
@@ -456,7 +459,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     @Nullable
     protected abstract Style getClickedComponentStyleAt(double pMouseX, double pMouseY);
 
-    protected abstract boolean mouseClickedPage(double pMouseX, double pMouseY, int pButton);
+    protected abstract boolean mouseClickedPage(MouseButtonEvent event, boolean isDoubleClick);
 
     protected abstract void beginDisplayPages();
 }

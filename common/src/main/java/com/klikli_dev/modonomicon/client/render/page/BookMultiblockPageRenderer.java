@@ -124,7 +124,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
 //        float offZ = (float) -sizeZ / 2 + 1;
 //
 //        float time = this.parentScreen.getTicksInBook() * 0.5F;
-//        if (!Screen.hasShiftDown()) {
+//        if (!Minecraft.getInstance().hasShiftDown()) {
 //            time += ClientTicks.partialTicks;
 //        }
 //        guiGraphics.pose().translate(-offX, 0, -offZ);

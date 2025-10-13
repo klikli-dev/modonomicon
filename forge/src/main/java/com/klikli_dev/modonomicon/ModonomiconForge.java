@@ -18,7 +18,7 @@ import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
 import com.klikli_dev.modonomicon.integration.LecternIntegration;
-import com.klikli_dev.modonomicon.item.BookOpenStateItemPropertyGetter;
+import com.klikli_dev.modonomicon.item.IsBookOpen;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
@@ -26,8 +26,7 @@ import com.mojang.blaze3d.framegraph.FramePass;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelTargetBundle;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.ShapeRenderer;
+import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperties;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
@@ -37,7 +36,6 @@ import net.minecraftforge.client.event.AddFramePassEvent;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.*;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
@@ -72,7 +70,7 @@ public class ModonomiconForge {
 
         //directly register event handlers
         FMLCommonSetupEvent.getBus(modBusGroup).addListener(this::onCommonSetup);
-        BuildCreativeModeTabContentsEvent.getBus(modBusGroup).addListener(CreativeModeTabRegistry::onCreativeModeTabBuildContents);
+        BuildCreativeModeTabContentsEvent.BUS.addListener(CreativeModeTabRegistry::onCreativeModeTabBuildContents);
 
         //register data managers as reload listeners
         AddReloadListenerEvent.BUS.addListener((AddReloadListenerEvent e) -> {
@@ -123,7 +121,7 @@ public class ModonomiconForge {
 
         //We use server tick to flush the queue of players that need a book state sync
         TickEvent.ServerTickEvent.Post.BUS.addListener(((TickEvent.ServerTickEvent.Post e) -> {
-            BookUnlockStateManager.get().onServerTickEnd(e.getServer());
+            BookUnlockStateManager.get().onServerTickEnd(e.server());
         }));
 
         //Datagen
@@ -134,10 +132,10 @@ public class ModonomiconForge {
             FMLClientSetupEvent.getBus(modBusGroup).addListener(Client::onClientSetup);
 //            modEventBus.addListener(Client::onRegisterGuiOverlays);
 
-            ModelEvent.ModifyBakingResult.getBus(modBusGroup).addListener(Client::onModifyBakingResult);
+            ModelEvent.ModifyBakingResult.BUS.addListener(Client::onModifyBakingResult);
 
             //register client side reload listener that will reset the fallback font to handle locale changes on the fly
-            RegisterClientReloadListenersEvent.getBus(modBusGroup).addListener((RegisterClientReloadListenersEvent e) -> {
+            RegisterClientReloadListenersEvent.BUS.addListener((RegisterClientReloadListenersEvent e) -> {
                 e.registerReloadListener(BookDataManager.Client.get());
             });
         }
@@ -163,13 +161,13 @@ public class ModonomiconForge {
             PageRendererRegistry.registerPageRenderers();
 
             TickEvent.ClientTickEvent.Post.BUS.addListener((TickEvent.ClientTickEvent.Post e) -> {
-                    ClientTicks.endClientTick(Minecraft.getInstance());
+                ClientTicks.endClientTick(Minecraft.getInstance());
             });
             TickEvent.RenderTickEvent.Pre.BUS.addListener((TickEvent.RenderTickEvent.Pre e) -> {
-                    ClientTicks.renderTickStart(e.getTimer().getGameTimeDeltaPartialTick(true));
+                ClientTicks.renderTickStart(e.timer().getGameTimeDeltaPartialTick(true));
             });
             TickEvent.RenderTickEvent.Post.BUS.addListener((TickEvent.RenderTickEvent.Post e) -> {
-                    ClientTicks.renderTickEnd();
+                ClientTicks.renderTickEnd();
             });
 
             //let multiblock preview renderer handle right clicks for anchoring
@@ -184,36 +182,41 @@ public class ModonomiconForge {
 
             //Tick multiblock preview
             TickEvent.ClientTickEvent.Post.BUS.addListener((TickEvent.ClientTickEvent.Post e) -> {
-                    MultiblockPreviewRenderer.onClientTick(Minecraft.getInstance());
+                MultiblockPreviewRenderer.onClientTick(Minecraft.getInstance());
             });
 
-            //Render multiblock preview
-            AddFramePassEvent.BUS.addListener((AddFramePassEvent e) -> {
-                var mainCamera = Minecraft.getInstance().gameRenderer.getMainCamera();
-                e.addPass(Modonomicon.loc("multiblock_preview"), (new FramePassManager.PassDefinition() {
-                    @Override
-                    public void targets(LevelTargetBundle bundle, FramePass pass) {
-                        bundle.main = pass.readsAndWrites(bundle.main);
-                    }
-                    @Override
-                    public void executes() {
-                        PoseStack ps = new PoseStack();
-                        ps.translate(mainCamera.getPosition().multiply(-1,-1,-1));
-                        ps.pushPose();
-                        MultiblockPreviewRenderer.onRenderLevelLastEvent(ps);
-                        ps.popPose();
-                    }
-                }));
-            });
+            //TODO re-enable once forge offers an API for the new two-pass approach
+//            //Render multiblock preview
+//            AddFramePassEvent.BUS.addListener((AddFramePassEvent e) -> {
+//                var mainCamera = Minecraft.getInstance().gameRenderer.getMainCamera();
+//                e.addPass(Modonomicon.loc("multiblock_preview"), (new FramePassManager.PassDefinition() {
+//                    @Override
+//                    public void targets(LevelTargetBundle bundle, FramePass pass) {
+//                        bundle.main = pass.readsAndWrites(bundle.main);
+//                    }
+//
+//                    @Override
+//                    public void executes() {
+//                        PoseStack ps = new PoseStack();
+//                        ps.translate(mainCamera.getPosition().multiply(-1, -1, -1));
+//                        ps.pushPose();
+//                        MultiblockPreviewRenderer.onRenderLevelLastEvent(ps);
+//                        ps.popPose();
+//                    }
+//                }));
+//            });
 
+            //register item model properties
             event.enqueueWork(() -> {
-                //register item properties
-                ItemProperties.registerGeneric(Modonomicon.loc("open_state"), new BookOpenStateItemPropertyGetter());
+                ConditionalItemModelProperties.ID_MAPPER.put(
+                        // The registry name
+                        Modonomicon.loc("is_book_open"),
+                        // The map codec
+                        IsBookOpen.MAP_CODEC
+                );
             });
 
         }
-
-        
 
         public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
             BookModel.replace(event.getResults().itemStackModels());

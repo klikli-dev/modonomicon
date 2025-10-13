@@ -28,6 +28,9 @@ import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
@@ -67,7 +70,7 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
         var entry = ((EntryListButton) button).getEntry();
 
         var displayStyle = this.getEntryDisplayState(entry);
-        var event = new EntryClickedEvent(this.category.getBook().getId(), entry.getId(), button.getX(), button.getY(), GLFW.GLFW_MOUSE_BUTTON_1, displayStyle);
+        var event = new EntryClickedEvent(this.category.getBook().getId(), entry.getId(), new MouseButtonEvent(button.getX(), button.getY(), new MouseButtonInfo(GLFW.GLFW_MOUSE_BUTTON_1, 0)), displayStyle);
 
         //if event is canceled -> click was handled and we do not open the entry.
         if (ModonomiconEvents.client().entryClicked(event)) {
@@ -293,13 +296,13 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
     }
 
     @Override
-    public boolean keyPressed(int key, int scanCode, int modifiers) {
-        if (key == GLFW.GLFW_KEY_ESCAPE) {
+    public boolean keyPressed(KeyEvent event) {
+        if (event.key() == GLFW.GLFW_KEY_ESCAPE) {
             BookGuiManager.get().closeScreenStack(this);
             return true;
         }
 
-        if (key == GLFW.GLFW_KEY_ENTER) {
+        if (event.key() == GLFW.GLFW_KEY_ENTER) {
             if (this.visibleEntries.size() == 1) {
                 var entry = this.visibleEntries.get(0);
                 BookGuiManager.get().openEntry(entry.getBook().getId(), entry.getId(), 0);
@@ -307,7 +310,7 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
             }
         }
 
-        return super.keyPressed(key, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     @Override

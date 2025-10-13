@@ -27,6 +27,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -105,33 +107,33 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             this.targetZoom = 1f;
     }
 
-    public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
+    public boolean mouseDragged(MouseButtonEvent event, double mouseX, double mouseY) {
         //Based on advancementsscreen
-        if (pButton != 0) {
+        if (event.button() != 0) {
             this.isScrolling = false;
             return false;
         } else {
             if (!this.isScrolling) {
                 this.isScrolling = true;
             } else {
-                this.scroll(pDragX * 1.5, pDragY * 1.5);
+                this.scroll(mouseX * 1.5, mouseY * 1.5);
             }
             return true;
         }
     }
 
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
 
         float xOffset = this.getXOffset();
         float yOffset = this.getYOffset();
         for (var entry : this.category.getEntries().values()) {
             var displayStyle = this.getEntryDisplayState(entry);
 
-            if (this.isEntryHovered(entry, xOffset, yOffset, (int) pMouseX, (int) pMouseY)) {
+            if (this.isEntryHovered(entry, xOffset, yOffset, (int) event.x(), (int) event.y())) {
 
-                var event = new EntryClickedEvent(this.category.getBook().getId(), entry.getId(), pMouseX, pMouseY, pButton, displayStyle);
+                var entryClickedEvent = new EntryClickedEvent(this.category.getBook().getId(), entry.getId(), event, displayStyle);
                 //if event is canceled -> click was handled and we do not open the entry.
-                if (ModonomiconEvents.client().entryClicked(event)) {
+                if (ModonomiconEvents.client().entryClicked(entryClickedEvent)) {
                     return true;
                 }
 
@@ -376,8 +378,8 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         //Note: As this is not a vanilla screen child we don't even have a super :)
     }
 
-    public boolean keyPressed(int key, int scanCode, int modifiers) {
-        if (key == GLFW.GLFW_KEY_ESCAPE) {
+    public boolean keyPressed(KeyEvent event) {
+        if (event.key() == GLFW.GLFW_KEY_ESCAPE) {
             BookGuiManager.get().closeScreenStack(this);
             return true;
         }

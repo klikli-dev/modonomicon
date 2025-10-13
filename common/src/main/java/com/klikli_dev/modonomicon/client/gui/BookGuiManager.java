@@ -405,7 +405,7 @@ public class BookGuiManager {
     public void keepMousePosition(Runnable run) {
         var mousePos = Pair.of(Minecraft.getInstance().mouseHandler.xpos(), Minecraft.getInstance().mouseHandler.ypos());
         run.run();
-        InputConstants.grabOrReleaseMouse(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_CURSOR_NORMAL, mousePos.getFirst(), mousePos.getSecond());
+        InputConstants.grabOrReleaseMouse(Minecraft.getInstance().getWindow(), GLFW.GLFW_CURSOR_NORMAL, mousePos.getFirst(), mousePos.getSecond());
     }
 
     /**
@@ -499,11 +499,12 @@ public class BookGuiManager {
     protected void sendBookClosedMessage(BookParentScreen screen) {
         var player = Minecraft.getInstance().player;
         if (player != null) {
-            //If the book in the main hand is this book, we send MAIN_HAND, otherwise OFF_HAND
+            //If there is a book in the main hand and it is the closed screen's book, we send MAIN_HAND, otherwise OFF_HAND
             //That means if the book is in neither hand, we send OFF_HAND
             //that is fine, the server will then just not update the closed state nbt on any item.
             //this is for the case of a custom button opening the book gui while the book is not in hand
-            if (ModonomiconItem.getBook(player.getMainHandItem()).getId().equals(screen.getBook().getId()))
+            var bookInMainhand = ModonomiconItem.getBook(player.getMainHandItem());
+            if (bookInMainhand != null && screen.getBook().getId().equals(bookInMainhand.getId()))
                 Services.NETWORK.sendToServer(new BookClosedMessage(InteractionHand.MAIN_HAND));
             else
                 Services.NETWORK.sendToServer(new BookClosedMessage(InteractionHand.OFF_HAND));

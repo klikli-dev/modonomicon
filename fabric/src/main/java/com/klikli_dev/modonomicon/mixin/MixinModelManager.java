@@ -21,19 +21,11 @@ public class MixinModelManager {
      * This mixes into the synthethic method created for the lambda "return modelBakery.bakeModels(new SpriteGetter() { ... }, executor).thenApply((bakingResult) -> { });" in ModelManager#loadModels. There we can access the bakingResult
      */
     @Inject(
-            method = "method_68047(Lcom/google/common/collect/Multimap;Lcom/google/common/collect/Multimap;Lit/unimi/dsi/fastutil/objects/Object2IntMap;Ljava/util/Map;Lnet/minecraft/client/model/geom/EntityModelSet;Lnet/minecraft/client/renderer/SpecialBlockModelRenderer;Ljava/util/concurrent/CompletableFuture;Lnet/minecraft/client/resources/model/ModelBakery$BakingResult;)Lnet/minecraft/client/resources/model/ModelManager$ReloadState;",
+            method = "method_68047(Lcom/google/common/collect/Multimap;Lcom/google/common/collect/Multimap;Lit/unimi/dsi/fastutil/objects/Object2IntMap;Lnet/minecraft/client/model/geom/EntityModelSet;Lnet/minecraft/client/renderer/SpecialBlockModelRenderer;Lnet/minecraft/client/resources/model/ModelBakery$BakingResult;)Lnet/minecraft/client/resources/model/ModelManager$ReloadState;",
             at = @At("HEAD")
     )
     private static void onMethod68047(
-            Multimap<?, ?> multimap,
-            Multimap<?, ?> multimap2,
-            Object2IntMap<?> object2IntMap,
-            Map<?, ?> map,
-            EntityModelSet entityModelSet,
-            SpecialBlockModelRenderer specialBlockModelRenderer,
-            CompletableFuture<?> completableFuture,
-            ModelBakery.BakingResult bakingResult,
-            CallbackInfoReturnable<ModelManager.ReloadState> cir
+            Multimap multimap, Multimap multimap2, Object2IntMap object2IntMap, EntityModelSet entityModelSet, SpecialBlockModelRenderer specialBlockModelRenderer, ModelBakery.BakingResult bakingResult, CallbackInfoReturnable<ModelManager.ReloadState> cir
     ) {
         BookModel.replace(bakingResult.itemStackModels());
         // Your code here

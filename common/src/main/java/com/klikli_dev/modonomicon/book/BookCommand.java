@@ -157,7 +157,7 @@ public class BookCommand {
             player.sendSystemMessage(Component.translatable(failureMessage).withStyle(ChatFormatting.RED));
             return;
         } else {
-            var commandSourceStack = new CommandSourceStack(player.commandSource(), player.position(), player.getRotationVector(), player.level(), this.permissionLevel, player.getName().getString(), player.getDisplayName(), player.getServer(), player)
+            var commandSourceStack = new CommandSourceStack(player.commandSource(), player.position(), player.getRotationVector(), player.level(), this.permissionLevel, player.getName().getString(), player.getDisplayName(), player.level().getServer(), player)
                     .withCallback((success, result) -> {
                         if (success) {
                             BookUnlockStateManager.get().setRunFor(player, this);
@@ -171,7 +171,7 @@ public class BookCommand {
 
 
             try {
-                player.getServer().getCommands().performPrefixedCommand(commandSourceStack, this.command);
+                player.level().getServer().getCommands().performPrefixedCommand(commandSourceStack, this.command);
             } catch (Exception e) {
                 Modonomicon.LOG.error("Running command [" + this.id.toString() + "] failed: ", e);
             }

@@ -12,6 +12,8 @@ import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
@@ -78,13 +80,13 @@ public abstract class BookPaginatedScreen extends Screen implements BookScreenWi
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == GLFW.GLFW_KEY_BACKSPACE) {
+    public boolean keyPressed(KeyEvent event) {
+        if (event.key() == GLFW.GLFW_KEY_BACKSPACE) {
             this.back();
             return true;
         }
 
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     public boolean canSeeBackButton() {
@@ -105,18 +107,19 @@ public abstract class BookPaginatedScreen extends Screen implements BookScreenWi
     }
 
     @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if (this.isClickOutsideEntry(pMouseX, pMouseY)) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        if (this.isClickOutsideEntry(event.x(), event.y())) {
             this.onClose();
             return true; //need to return, otherwise a right click outside the entry causes a double-close (the whole book, due to calling .back() below)
         }
 
-        if (pButton == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+        if (event.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
             this.back();
             return true;
         }
 
-        return super.mouseClicked(pMouseX, pMouseY, pButton);
+
+        return super.mouseClicked(event, isDoubleClick);
     }
 
     @Override

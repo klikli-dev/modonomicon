@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Style;
 import org.jetbrains.annotations.Nullable;
 
@@ -80,9 +81,9 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
     }
 
     @Override
-    protected boolean mouseClickedPage(double pMouseX, double pMouseY, int pButton) {
-        return this.clickPage(this.leftPageRenderer, pMouseX, pMouseY, pButton)
-                || this.clickPage(this.rightPageRenderer, pMouseX, pMouseY, pButton);
+    protected boolean mouseClickedPage(MouseButtonEvent event, boolean isDoubleClick) {
+        return this.clickPage(this.leftPageRenderer, event, isDoubleClick)
+                || this.clickPage(this.rightPageRenderer, event, isDoubleClick);
     }
 
     protected void beginDisplayPages() {

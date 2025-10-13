@@ -20,6 +20,9 @@ import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -46,25 +49,9 @@ public class FabricMultiLayerScreen extends Screen {
     }
 
     @Override
-    public void renderWithTooltip(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        pGuiGraphics.pose().pushMatrix();
-        for (int i = 0; i < this.guiLayers.size(); i++) {
-            Screen layer = this.guiLayers.get(i);
-            if (i == this.guiLayers.size() - 1) {
-                // This is the last layer, it gets actual mouse over
-                layer.renderWithTooltip(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
-            } else {
-                layer.renderWithTooltip(pGuiGraphics, Integer.MAX_VALUE, Integer.MAX_VALUE, pPartialTick);
-            }
-        }
-        pGuiGraphics.pose().popMatrix();
-    }
-
-    @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         //do nothing
     }
-
 
     @Override
     public void triggerImmediateNarration(boolean onlyNarrateNew) {
@@ -110,14 +97,15 @@ public class FabricMultiLayerScreen extends Screen {
         return this.guiLayers.peek().isFocused();
     }
 
+
     @Override
-    public boolean charTyped(char codePoint, int modifiers) {
-        return this.guiLayers.peek().charTyped(codePoint, modifiers);
+    public boolean charTyped(CharacterEvent event) {
+        return this.guiLayers.peek().charTyped(event);
     }
 
     @Override
-    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        return this.guiLayers.peek().keyReleased(keyCode, scanCode, modifiers);
+    public boolean keyReleased(KeyEvent event) {
+        return this.guiLayers.peek().keyReleased(event);
     }
 
     @Override
@@ -126,18 +114,18 @@ public class FabricMultiLayerScreen extends Screen {
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        return this.guiLayers.peek().mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    public boolean mouseDragged(MouseButtonEvent event, double mouseX, double mouseY) {
+       return this.guiLayers.peek().mouseDragged(event, mouseX, mouseY);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        return this.guiLayers.peek().mouseReleased(mouseX, mouseY, button);
+    public boolean mouseReleased(MouseButtonEvent event) {
+        return this.guiLayers.peek().mouseReleased(event);
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return this.guiLayers.peek().mouseClicked(mouseX, mouseY, button);
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        return this.guiLayers.peek().mouseClicked(event, isDoubleClick);
     }
 
     @Override
@@ -174,6 +162,7 @@ public class FabricMultiLayerScreen extends Screen {
 
     @Override
     public void init(Minecraft minecraft, int width, int height) {
+        super.init(minecraft, width, height);
         this.guiLayers.peek().init(minecraft, width, height);
     }
 
@@ -274,8 +263,8 @@ public class FabricMultiLayerScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        return this.guiLayers.peek().keyPressed(keyCode, scanCode, modifiers);
+    public boolean keyPressed(KeyEvent event) {
+        return this.guiLayers.peek().keyPressed(event);
     }
 
     @Override

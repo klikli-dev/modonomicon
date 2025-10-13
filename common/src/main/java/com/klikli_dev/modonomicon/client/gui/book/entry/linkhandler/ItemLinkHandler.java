@@ -62,7 +62,7 @@ public class ItemLinkHandler extends LinkHandler {
         BookGuiManager.get().keepMousePosition(() -> {
             BookGuiManager.get().closeScreenStack(this.screen()); //will cause the book to close entirely, and save the open page
 
-            if (Screen.hasShiftDown()) {
+            if (Minecraft.getInstance().hasShiftDown()) {
                 ModonomiconJeiIntegration.get().showUses(finalItemStack);
             } else {
                 ModonomiconJeiIntegration.get().showRecipe(finalItemStack);

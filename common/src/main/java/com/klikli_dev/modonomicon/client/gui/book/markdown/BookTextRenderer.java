@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.client.gui.book.markdown.ext.ComponentUnderlin
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.network.chat.FontDescription;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -59,7 +60,7 @@ public class BookTextRenderer {
                         new PatchouliLinkRenderer(),
                         new DynamicMacroLinkRenderer(),
                         new CommandLinkRenderer()))
-                .style(defaultStyle.withFont(BookDataManager.Client.get().safeFont(this.book.getFont())))
+                .style(defaultStyle.withFont(new FontDescription.Resource(BookDataManager.Client.get().safeFont(this.book.getFont()))))
                 .extensions(this.extensions)
                 .build();
 

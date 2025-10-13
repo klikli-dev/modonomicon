@@ -16,6 +16,7 @@ import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Style;
@@ -100,8 +101,8 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
     }
 
     @Override
-    protected boolean mouseClickedPage(double pMouseX, double pMouseY, int pButton) {
-        return this.clickPage(this.pageRenderer, pMouseX, pMouseY, pButton);
+    public boolean mouseClickedPage(MouseButtonEvent event, boolean isDoubleClick) {
+        return this.clickPage(this.pageRenderer, event, isDoubleClick);
     }
 
     protected void beginDisplayPages() {

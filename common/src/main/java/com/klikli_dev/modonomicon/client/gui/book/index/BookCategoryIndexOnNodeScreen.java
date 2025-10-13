@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.node.BookParentNodeScreen;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 
 /**
  * A special version of the BookCategoryIndexScreen that is intended to be rendered on top of a parent node screen (instead of a parent index screen)
@@ -45,17 +46,17 @@ public class BookCategoryIndexOnNodeScreen extends BookCategoryIndexScreen {
     }
 
     @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         //if we click outside, we don't close like the parent would, instead we let the click unhandled so the parent can handle it
-        if (this.isClickOutsideEntry(pMouseX, pMouseY)) {
+        if (this.isClickOutsideEntry(event.x(), event.y())) {
             if (BookGuiManager.get().openBookParentScreen instanceof BookParentNodeScreen parentScreen) {
-                return parentScreen.mouseClicked(pMouseX, pMouseY, pButton);
+                return parentScreen.mouseClicked(event, isDoubleClick);
             }
 
             return false;
         }
 
         //with the "outside closing" prevented we can let our parents do the rest
-        return super.mouseClicked(pMouseX, pMouseY, pButton);
+        return super.mouseClicked(event, isDoubleClick);
     }
 }

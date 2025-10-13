@@ -32,7 +32,7 @@ public class LecternIntegration {
             if (player.isShiftKeyDown()) {
                 takeBook(player, lectern);
             } else {
-                if (!pLevel.isClientSide && player instanceof ServerPlayer serverPlayer) {
+                if (!pLevel.isClientSide() && player instanceof ServerPlayer serverPlayer) {
                     if (openBook(serverPlayer, lectern.getBook()))
                         return InteractionResult.SUCCESS;
                 }

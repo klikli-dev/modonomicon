@@ -79,9 +79,8 @@ public class FluidRenderHelper {
         ResourceLocation fluidStill = renderProperties.getStillTexture(fluidStack);
 
         //noinspection deprecation
-        TextureAtlasSprite sprite = Minecraft.getInstance()
-                .getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
-                .apply(fluidStill);
+        var sprite = Minecraft.getInstance()
+                .getAtlasManager().getAtlasOrThrow(TextureAtlas.LOCATION_BLOCKS).getSprite(fluidStill);
         return Optional.of(sprite)
                 .filter(s -> s.atlasLocation() != MissingTextureAtlasSprite.getLocation());
     }
