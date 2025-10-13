@@ -127,7 +127,7 @@ public class ModonomiconNeo {
         modEventBus.addListener(DataGenerators::gatherData);
 
         //Client stuff
-        if (FMLEnvironment.dist == Dist.CLIENT) {
+        if (FMLEnvironment.getDist() == Dist.CLIENT) {
             modEventBus.addListener(Client::onClientSetup);
             modEventBus.addListener(Client::onRegisterGuiOverlays);
             modEventBus.addListener(Client::onModifyBakingResult);
@@ -186,7 +186,6 @@ public class ModonomiconNeo {
             NeoForge.EVENT_BUS.addListener((RenderLevelStageEvent.AfterTripwireBlocks e) -> {
                 //After translucent causes block entities to error out on render in preview so we use after tripwire.
                 MultiblockPreviewRenderer.onRenderLevelLastEvent(e.getLevelRenderState(), e.getPoseStack());
-                e.getLevelRenderState()
             });
 
             //register item model properties
