@@ -71,6 +71,11 @@ public abstract class AbstractModonomiconLanguageProvider implements Modonomicon
     }
 
     @Override
+    public @NotNull Map<String, String> data() {
+        return this.data;
+    }
+
+    @Override
     public void accept(String key, String value) {
         if (this.data.put(key, value) != null)
             throw new IllegalStateException("Duplicate translation key " + key);
