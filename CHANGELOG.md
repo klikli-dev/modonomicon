@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.10-1.119.0] - 2025-10-18
+### :sparkles: New Features
+- [`5395c23`](https://github.com/klikli-dev/modonomicon/commit/5395c232f492a7e9adeb8dbb35fdbe511235d2d3) - re-enable book entity page rendering *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`5830e39`](https://github.com/klikli-dev/modonomicon/commit/5830e3913bf727f59735f99bf7a60a6f0c86e0c4) - re-enable book multiblock page rendering *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`7aef1e8`](https://github.com/klikli-dev/modonomicon/commit/7aef1e812000ca4fd7cacfb61e90528a7f7f69c8) - multiblock preview renderer collects BE renderstates into the wrong list *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.10-1.118.0] - 2025-10-13
 ### :sparkles: New Features
 - [`c178737`](https://github.com/klikli-dev/modonomicon/commit/c1787375df17840b5b7ec29ec11a106b6ddca78d) - update to 1.21.10 *(PR [#313](https://github.com/klikli-dev/modonomicon/pull/313) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1921,3 +1930,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.8-1.116.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.8-0.0.0...release/v1.21.8-1.116.0
 [release/v1.21.8-1.118.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.8-1.117.1...release/v1.21.8-1.118.0
 [release/v1.21.10-1.118.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.10-0.0.0...release/v1.21.10-1.118.0
+[release/v1.21.10-1.119.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.10-1.118.0...release/v1.21.10-1.119.0
