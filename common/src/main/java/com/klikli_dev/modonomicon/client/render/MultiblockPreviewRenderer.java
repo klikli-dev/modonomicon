@@ -26,7 +26,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.state.LevelRenderState;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -50,12 +52,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.function.Function;
 
 public class MultiblockPreviewRenderer {
 
     private static final Map<BlockPos, BlockEntity> blockEntityCache = new Object2ObjectOpenHashMap<>();
     private static final Set<BlockEntity> erroredBlockEntities = Collections.newSetFromMap(new WeakHashMap<>());
+    private static final List<BlockEntityRenderState> blockEntityRenderStates = new ArrayList<>();
     public static boolean hasMultiblock;
     private static Multiblock multiblock;
     private static Component name;
@@ -221,6 +225,8 @@ public class MultiblockPreviewRenderer {
             return;
         }
 
+        blockEntityRenderStates.clear();
+
         Minecraft mc = Minecraft.getInstance();
         Level level = mc.level;
         if (level == null) {
@@ -267,9 +273,16 @@ public class MultiblockPreviewRenderer {
                         // Provide the displayed state to avoid querying the real world
                         be.setBlockState(displayedState);
 
-                        var renderState = Minecraft.getInstance().getBlockEntityRenderDispatcher().tryExtractRenderState(be, ClientTicks.partialTicks, null);
-                        if (renderState != null) {
-                            levelRenderState.blockEntityRenderStates.add(renderState);
+                        var dispatcher = Minecraft.getInstance().getBlockEntityRenderDispatcher();
+                        var renderer = dispatcher.getRenderer(be);
+                        if (renderer != null) {
+                            var renderState = renderer.createRenderState();
+                            var eye = mc.getEntityRenderDispatcher().camera.getPosition();
+                            eye = eye.subtract(startPos.getX(), startPos.getY(), startPos.getZ());
+
+                            //Note: we cannot use Minecraft.getInstance().getBlockEntityRenderDispatcher().tryExtractRenderState because that takes the camera eye position of the in-world camera, but our multiblock exists in a virtual level close to 0 0 0
+                            renderer.extractRenderState(be, renderState, ClientTicks.partialTicks, eye, null);
+                            blockEntityRenderStates.add(renderState);
                         }
                     }
                 }
@@ -347,14 +360,23 @@ public class MultiblockPreviewRenderer {
         }
 
         // Render block entities using the extracted render states
-        for (var blockEntityRenderState : levelRenderState.blockEntityRenderStates) {
+        for (var blockEntityRenderState : blockEntityRenderStates) {
             ms.pushPose();
-            ms.translate(blockEntityRenderState.blockPos.getX(), blockEntityRenderState.blockPos.getY(), blockEntityRenderState.blockPos.getZ());
+            ms.translate(blockEntityRenderState.blockPos.getX(),
+                    blockEntityRenderState.blockPos.getY(),
+                    blockEntityRenderState.blockPos.getZ());
 
-            Minecraft.getInstance().getBlockEntityRenderDispatcher().submit(blockEntityRenderState, ms, Minecraft.getInstance().gameRenderer.getSubmitNodeStorage(), levelRenderState.cameraRenderState);
+            //TODO: We see no BEs in the world preview (GUI works though ... )
+
+            var dispatcher = Minecraft.getInstance().getBlockEntityRenderDispatcher();
+            var featureDispatcher = Minecraft.getInstance().gameRenderer.getFeatureRenderDispatcher();
+            var cameraRenderState = new CameraRenderState();
+            dispatcher.submit(blockEntityRenderState, ms, featureDispatcher.getSubmitNodeStorage(), cameraRenderState);
+            featureDispatcher.renderAllFeatures();
 
             ms.popPose();
         }
+        blockEntityRenderStates.clear();
 
         buffers.endBatch();
         ms.popPose();
