@@ -13,13 +13,9 @@ import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.util.EntityUtil;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
@@ -29,6 +25,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> implements PageWithTextRenderer {
@@ -41,18 +38,38 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
         super(page);
     }
 
-    public static void renderEntity(GuiGraphics guiGraphics, Entity entity, Level world, float x, float y, float rotation, float renderScale, float offset) {
-        //TODO: fix entity rendering
-//        Vector3f vector3f = new Vector3f(0.0F, p_275689_.getBbHeight() / 2.0F + p_275604_ * f9, 0.0F);
-//
-//
-//        if(entity instanceof LivingEntity livingEntity) {
-//            EntityRenderDispatcher erd = Minecraft.getInstance().getEntityRenderDispatcher();
-//            EntityRenderer<? super LivingEntity, ?> entityrenderer = erd.getRenderer(livingEntity);
-//            EntityRenderState entityrenderstate = entityrenderer.createRenderState(livingEntity, 1.0F);
-//            entityrenderstate.hitboxesRenderState = null;
-//            guiGraphics.submitEntityRenderState(entityrenderstate, renderScale, translation, rotation, overrideCameraAngle, x1, y1, x2, y2);
-//        }
+    private void renderEntity(GuiGraphics guiGraphics, int left, int top, float rotation) {
+        if (!(this.entity instanceof LivingEntity livingEntity)) return;
+
+        EntityRenderDispatcher erd = Minecraft.getInstance().getEntityRenderDispatcher();
+        EntityRenderer<? super LivingEntity, ?> entityrenderer = erd.getRenderer(livingEntity);
+        EntityRenderState entityrenderstate = entityrenderer.createRenderState(livingEntity, 10F);
+        entityrenderstate.lightCoords = 15728880;
+        entityrenderstate.hitboxesRenderState = null;
+        entityrenderstate.shadowPieces.clear();
+        entityrenderstate.outlineColor = 0;
+
+        // Calculate scissor bounds - entity should be centered in the 106x106 area
+        // 53 is not a magic number, it is half of the display area :)
+        int boxX = left + BookEntryScreen.PAGE_WIDTH / 2 + 53;
+        int boxY = top + 7;
+        int boxX2 = boxX + 106;
+        int boxY2 = boxY + 106;
+
+        // Calculate entity scale and position it properly within the scissor bounds
+        float scale = this.renderScale;
+        float entityHeight = this.entity.getBbHeight();
+        float yOffset = this.renderOffset;
+
+        // Position entity at the center of the scissor bounds with proper vertical offset
+        // Note: x positives moves them to the right
+        Vector3f translation = new Vector3f(0, entityHeight / 2.0F + yOffset, 0f);
+
+        // Set up rotation - start with base rotation like InventoryScreen, then apply entity rotation
+        Quaternionf rotationQuat = new Quaternionf().rotateZ((float) Math.PI);
+        rotationQuat.mul(new Quaternionf().rotateY(rotation * (float) Math.PI / 180.0F));
+
+        guiGraphics.submitEntityRenderState(entityrenderstate, scale, translation, rotationQuat, null, boxX, boxY, boxX2, boxY2);
     }
 
     private void loadEntity(Level world) {
@@ -66,7 +83,7 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
 
                 float entitySize = Math.max(1F, Math.max(width, height));
 
-                this.renderScale = 100F / entitySize * 0.8F * this.getPage().getScale();
+                this.renderScale = 100F / entitySize * 0.75F * this.getPage().getScale();
                 this.renderOffset = Math.max(height, entitySize) * 0.5F + this.getPage().getOffset();
             } catch (Exception e) {
                 this.errored = true;
@@ -101,7 +118,7 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
 
         if (this.entity != null) {
             float rotation = this.page.doesRotate() ? ClientTicks.total : this.page.getDefaultRotation();
-            renderEntity(guiGraphics, this.entity, Minecraft.getInstance().level, 58, 60, rotation, this.renderScale, this.renderOffset);
+            this.renderEntity(guiGraphics, this.left, this.top, rotation);
         }
 
         var style = this.getClickedComponentStyleAt(mouseX, mouseY);
