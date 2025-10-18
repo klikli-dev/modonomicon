@@ -12,6 +12,8 @@ import com.klikli_dev.modonomicon.client.BookModel;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
+import com.klikli_dev.modonomicon.client.render.pip.GuiMultiblockRenderer;
+import com.klikli_dev.modonomicon.client.render.state.pip.GuiMultiblockRenderState;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
@@ -131,6 +133,7 @@ public class ModonomiconNeo {
             modEventBus.addListener(Client::onClientSetup);
             modEventBus.addListener(Client::onRegisterGuiOverlays);
             modEventBus.addListener(Client::onModifyBakingResult);
+            modEventBus.addListener(Client::onRegisterPipRenderers);
 
             //register client side reload listener that will reset the fallback font to handle locale changes on the fly
             modEventBus.addListener((AddClientReloadListenersEvent e) -> {
@@ -209,6 +212,13 @@ public class ModonomiconNeo {
 
         public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
             BookModel.replace(event.getBakingResult().itemStackModels());
+        }
+
+        public static void onRegisterPipRenderers(RegisterPictureInPictureRenderersEvent event) {
+            event.register(
+                    GuiMultiblockRenderState.class,
+                    GuiMultiblockRenderer::new
+            );
         }
     }
 }

@@ -12,6 +12,8 @@ import com.klikli_dev.modonomicon.client.BookModel;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
+import com.klikli_dev.modonomicon.client.render.pip.GuiMultiblockRenderer;
+import com.klikli_dev.modonomicon.client.render.state.pip.GuiMultiblockRenderState;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
@@ -32,10 +34,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.FramePassManager;
-import net.minecraftforge.client.event.AddFramePassEvent;
-import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.client.event.RegisterClientCommandsEvent;
-import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.*;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
@@ -133,6 +132,7 @@ public class ModonomiconForge {
 //            modEventBus.addListener(Client::onRegisterGuiOverlays);
 
             ModelEvent.ModifyBakingResult.BUS.addListener(Client::onModifyBakingResult);
+            RegisterPictureInPictureRendererEvent.BUS.addListener(Client::onRegisterPipRenderers);
 
             //register client side reload listener that will reset the fallback font to handle locale changes on the fly
             RegisterClientReloadListenersEvent.BUS.addListener((RegisterClientReloadListenersEvent e) -> {
@@ -228,5 +228,11 @@ public class ModonomiconForge {
 //                MultiblockPreviewRenderer.onRenderHUD(guiGraphics, partialTick);
 //            });
 //        }
+
+        public static void onRegisterPipRenderers(RegisterPictureInPictureRendererEvent event) {
+            event.register(
+                    new GuiMultiblockRenderer(event.getBufferSource())
+            );
+        }
     }
 }
