@@ -13,7 +13,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.network.CustomPayloadEvent;
@@ -28,7 +28,7 @@ import java.util.function.Function;
 
 public class Networking {
     public static final SimpleChannel INSTANCE = ChannelBuilder
-            .named(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "main"))
+            .named(Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "main"))
             .clientAcceptedVersions((a, b) -> true)
             .serverAcceptedVersions((a, b) -> true)
             .networkProtocolVersion(1)

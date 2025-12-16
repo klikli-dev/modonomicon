@@ -7,7 +7,7 @@ package com.klikli_dev.modonomicon.api.multiblock;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -20,7 +20,7 @@ public interface StateMatcher {
     /**
      * The state matcher type Id for serialization.
      */
-    ResourceLocation getType();
+    Identifier getType();
 
     /**
      * Gets the state displayed by this state matcher for rendering the multiblock page type and the in-world preview.

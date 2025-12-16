@@ -23,7 +23,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
@@ -37,7 +37,7 @@ import java.util.Map.Entry;
 
 public class SparseMultiblock extends AbstractMultiblock {
 
-    public static final ResourceLocation TYPE = Modonomicon.loc("sparse");
+    public static final Identifier TYPE = Modonomicon.loc("sparse");
 
     private final Map<BlockPos, StateMatcher> stateMatchers;
     private final Vec3i size;
@@ -136,7 +136,7 @@ public class SparseMultiblock extends AbstractMultiblock {
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return TYPE;
     }
 

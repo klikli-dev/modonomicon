@@ -7,14 +7,14 @@
 package com.klikli_dev.modonomicon.book;
 
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.commons.lang3.StringUtils;
 
 public class PatchouliLink {
     public static final String PROTOCOL_PATCHOULI = "patchouli://";
 
-    public ResourceLocation bookId;
-    public ResourceLocation entryId;
+    public Identifier bookId;
+    public Identifier entryId;
     public int pageNumber;
 
     private PatchouliLink() {
@@ -34,7 +34,7 @@ public class PatchouliLink {
         linkText = linkText.substring(PROTOCOL_PATCHOULI.length());
         var bookLink = new PatchouliLink();
         var bookAndEntry = linkText.split("//", 2);
-        bookLink.bookId = ResourceLocation.tryParse(bookAndEntry[0]);
+        bookLink.bookId = Identifier.tryParse(bookAndEntry[0]);
 
         //unlike book link we're not verifying patchouli link book ids, as we don't control the loading cycle
         // and may parse this link before patchouli is available
@@ -52,7 +52,7 @@ public class PatchouliLink {
             var postHash = entryId.substring(lastHashIndex);
             var path = StringUtils.removeEnd(entryId.substring(0, lastHashIndex), "/"); //remove trailing /
 
-            bookLink.entryId = path.contains(":") ? ResourceLocation.tryParse(path) : ResourceLocation.fromNamespaceAndPath(bookLink.bookId.getNamespace(), path);
+            bookLink.entryId = path.contains(":") ? Identifier.tryParse(path) : Identifier.fromNamespaceAndPath(bookLink.bookId.getNamespace(), path);
 
             //We're not verifying patchouli link entry ids either
 
@@ -68,7 +68,7 @@ public class PatchouliLink {
 
         //handle no page number/anchor
         //We're not verifying patchouli link entry ids here either
-        bookLink.entryId = entryId.contains(":") ? ResourceLocation.tryParse(entryId) : ResourceLocation.fromNamespaceAndPath(bookLink.bookId.getNamespace(), entryId);
+        bookLink.entryId = entryId.contains(":") ? Identifier.tryParse(entryId) : Identifier.fromNamespaceAndPath(bookLink.bookId.getNamespace(), entryId);
 
         return bookLink;
     }

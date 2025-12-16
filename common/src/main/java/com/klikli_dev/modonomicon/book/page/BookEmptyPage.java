@@ -12,7 +12,7 @@ import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 
@@ -22,7 +22,7 @@ public class BookEmptyPage extends BookPage {
         super(anchor, condition);
     }
 
-    public static BookEmptyPage fromJson(ResourceLocation entryId, JsonObject json, HolderLookup.Provider provider) {
+    public static BookEmptyPage fromJson(Identifier entryId, JsonObject json, HolderLookup.Provider provider) {
         var anchor = GsonHelper.getAsString(json, "anchor", "");
         var condition = json.has("condition")
                 ? BookCondition.fromJson(entryId, json.getAsJsonObject("condition"), provider)
@@ -37,7 +37,7 @@ public class BookEmptyPage extends BookPage {
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return Page.EMPTY;
     }
 

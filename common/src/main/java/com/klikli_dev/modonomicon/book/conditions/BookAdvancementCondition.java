@@ -18,7 +18,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
@@ -27,15 +27,15 @@ import java.util.List;
 
 public class BookAdvancementCondition extends BookCondition {
 
-    protected ResourceLocation advancementId;
+    protected Identifier advancementId;
 
-    public BookAdvancementCondition(Component component, ResourceLocation advancementId) {
+    public BookAdvancementCondition(Component component, Identifier advancementId) {
         super(component);
         this.advancementId = advancementId;
     }
 
-    public static BookAdvancementCondition fromJson(ResourceLocation conditionParentId, JsonObject json, HolderLookup.Provider provider) {
-        var advancementId = ResourceLocation.parse(GsonHelper.getAsString(json, "advancement_id"));
+    public static BookAdvancementCondition fromJson(Identifier conditionParentId, JsonObject json, HolderLookup.Provider provider) {
+        var advancementId = Identifier.parse(GsonHelper.getAsString(json, "advancement_id"));
 
 
         //default tooltip is null because we construct it on the fly from the advancement id
@@ -55,7 +55,7 @@ public class BookAdvancementCondition extends BookCondition {
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return Condition.ADVANCEMENT;
     }
 
@@ -90,7 +90,7 @@ public class BookAdvancementCondition extends BookCondition {
 
     public static class DistHelper {
         public static long lastRequestTime = 0;
-        public static Component getAdvancementTitle(Player player, ResourceLocation advancementId) {
+        public static Component getAdvancementTitle(Player player, Identifier advancementId) {
             if (player instanceof LocalPlayer localPlayer) {
                 //Problem: Advancements are not synced to the client by vanilla if they are visible - and actively removed if they are not.
                 var adv = localPlayer.connection.getAdvancements().get(advancementId);

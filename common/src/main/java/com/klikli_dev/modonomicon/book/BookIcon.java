@@ -20,7 +20,7 @@ import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -42,7 +42,7 @@ public class BookIcon {
     public static final Codec<ItemStack> ITEM_STACK_CODEC = Codec.withAlternative(CUSTOM_ITEM_STACK_CODEC, ItemStack.CODEC);
 
     private final ItemStack itemStack;
-    private final ResourceLocation texture;
+    private final Identifier texture;
 
     private final int width;
     private final int height;
@@ -54,7 +54,7 @@ public class BookIcon {
         this.height = ModonomiconConstants.Data.Icon.DEFAULT_HEIGHT;
     }
 
-    public BookIcon(ResourceLocation texture, int width, int height) {
+    public BookIcon(Identifier texture, int width, int height) {
         this.texture = texture;
         this.itemStack = ItemStack.EMPTY;
         this.width = width;
@@ -65,14 +65,14 @@ public class BookIcon {
         //if string -> use from string
         //if json object -> parse from json
         if (jsonElement.isJsonPrimitive()) {
-            return fromString(ResourceLocation.parse(jsonElement.getAsString()));
+            return fromString(Identifier.parse(jsonElement.getAsString()));
         }
 
         var jsonObject = jsonElement.getAsJsonObject();
         if (jsonObject.has("texture")) {
             var width = GsonHelper.getAsInt(jsonObject, "width", ModonomiconConstants.Data.Icon.DEFAULT_WIDTH);
             var height = GsonHelper.getAsInt(jsonObject, "height", ModonomiconConstants.Data.Icon.DEFAULT_HEIGHT);
-            var texture = ResourceLocation.parse(GsonHelper.getAsString(jsonObject, "texture"));
+            var texture = Identifier.parse(GsonHelper.getAsString(jsonObject, "texture"));
             return new BookIcon(texture, width, height);
         } else {
             var stack = ITEM_STACK_CODEC.decode(provider.createSerializationContext(JsonOps.INSTANCE), jsonObject).getOrThrow((e) -> {
@@ -83,7 +83,7 @@ public class BookIcon {
         }
     }
 
-    private static BookIcon fromString(ResourceLocation value) {
+    private static BookIcon fromString(Identifier value) {
         if (value.getPath().endsWith(".png")) {
             return new BookIcon(value, ModonomiconConstants.Data.Icon.DEFAULT_WIDTH, ModonomiconConstants.Data.Icon.DEFAULT_HEIGHT);
         } else {
@@ -94,7 +94,7 @@ public class BookIcon {
 
     public static BookIcon fromNetwork(RegistryFriendlyByteBuf buffer) {
         if (buffer.readBoolean()) {
-            ResourceLocation texture = buffer.readResourceLocation();
+            Identifier texture = buffer.readResourceLocation();
             int width = buffer.readVarInt();
             int height = buffer.readVarInt();
             return new BookIcon(texture, width, height);

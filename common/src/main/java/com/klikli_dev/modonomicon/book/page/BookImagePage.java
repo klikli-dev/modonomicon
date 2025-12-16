@@ -18,18 +18,18 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 
 public class BookImagePage extends BookPage {
     protected BookTextHolder title;
     protected BookTextHolder text;
-    protected ResourceLocation[] images;
+    protected Identifier[] images;
     protected boolean border;
     protected boolean useLegacyRendering;
 
-    public BookImagePage(BookTextHolder title, BookTextHolder text, ResourceLocation[] images, boolean border, boolean useLegacyRendering, String anchor, BookCondition condition) {
+    public BookImagePage(BookTextHolder title, BookTextHolder text, Identifier[] images, boolean border, boolean useLegacyRendering, String anchor, BookCondition condition) {
         super(anchor, condition);
         this.title = title;
         this.text = text;
@@ -38,14 +38,14 @@ public class BookImagePage extends BookPage {
         this.useLegacyRendering = useLegacyRendering;
     }
 
-    public static BookImagePage fromJson(ResourceLocation entryId, JsonObject json, HolderLookup.Provider provider) {
+    public static BookImagePage fromJson(Identifier entryId, JsonObject json, HolderLookup.Provider provider) {
         var title = BookGsonHelper.getAsBookTextHolder(json, "title", BookTextHolder.EMPTY, provider);
         var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY, provider);
 
         var imagesArray = GsonHelper.getAsJsonArray(json, "images");
-        var images = new ResourceLocation[imagesArray.size()];
+        var images = new Identifier[imagesArray.size()];
         for (int i = 0; i < imagesArray.size(); i++) {
-            images[i] = ResourceLocation.parse(GsonHelper.convertToString(imagesArray.get(i), "images[" + i + "]"));
+            images[i] = Identifier.parse(GsonHelper.convertToString(imagesArray.get(i), "images[" + i + "]"));
         }
 
         var border = GsonHelper.getAsBoolean(json, "border", true);
@@ -63,9 +63,9 @@ public class BookImagePage extends BookPage {
         var text = BookTextHolder.fromNetwork(buffer);
 
         var count = buffer.readVarInt();
-        var images = new ResourceLocation[count];
+        var images = new Identifier[count];
         for (int i = 0; i < count; i++) {
-            images[i] = ResourceLocation.parse(buffer.readUtf());
+            images[i] = Identifier.parse(buffer.readUtf());
         }
 
         var border = buffer.readBoolean();
@@ -76,7 +76,7 @@ public class BookImagePage extends BookPage {
         return new BookImagePage(title, text, images, border, useLegacyRendering, anchor, condition);
     }
 
-    public ResourceLocation[] getImages() {
+    public Identifier[] getImages() {
         return this.images;
     }
 
@@ -101,7 +101,7 @@ public class BookImagePage extends BookPage {
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return Page.IMAGE;
     }
 

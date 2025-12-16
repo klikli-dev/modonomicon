@@ -16,7 +16,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 
@@ -24,18 +24,18 @@ import java.util.List;
 
 public class BookEntryReadCondition extends BookCondition {
 
-    protected ResourceLocation entryId;
+    protected Identifier entryId;
 
-    public BookEntryReadCondition(Component tooltip, ResourceLocation entryId) {
+    public BookEntryReadCondition(Component tooltip, Identifier entryId) {
         super(tooltip);
         this.entryId = entryId;
     }
 
-    public static BookEntryReadCondition fromJson(ResourceLocation conditionParentId, JsonObject json, HolderLookup.Provider provider) {
+    public static BookEntryReadCondition fromJson(Identifier conditionParentId, JsonObject json, HolderLookup.Provider provider) {
         var entryPath = GsonHelper.getAsString(json, "entry_id");
         var entryId = entryPath.contains(":") ?
-                ResourceLocation.parse(entryPath) :
-                ResourceLocation.fromNamespaceAndPath(conditionParentId.getNamespace(), entryPath);
+                Identifier.parse(entryPath) :
+                Identifier.fromNamespaceAndPath(conditionParentId.getNamespace(), entryPath);
 
         var tooltip = tooltipFromJson(json, provider);
 
@@ -49,7 +49,7 @@ public class BookEntryReadCondition extends BookCondition {
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return Condition.ENTRY_READ;
     }
 

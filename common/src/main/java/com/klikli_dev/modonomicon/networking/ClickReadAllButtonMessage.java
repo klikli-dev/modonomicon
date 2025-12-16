@@ -13,26 +13,26 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 public class ClickReadAllButtonMessage implements Message {
 
-    public static final Type<ClickReadAllButtonMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "click_read_all_button"));
+    public static final Type<ClickReadAllButtonMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "click_read_all_button"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ClickReadAllButtonMessage> STREAM_CODEC = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC,
+            Identifier.STREAM_CODEC,
             (m) -> m.bookId,
             ByteBufCodecs.BOOL,
             (m) -> m.readAll,
             ClickReadAllButtonMessage::new
     );
 
-    public ResourceLocation bookId;
+    public Identifier bookId;
     public boolean readAll; //true to not only read unlocked but even the locked ones
 
-    public ClickReadAllButtonMessage(ResourceLocation bookId, boolean readAll) {
+    public ClickReadAllButtonMessage(Identifier bookId, boolean readAll) {
         this.bookId = bookId;
         this.readAll = readAll;
     }

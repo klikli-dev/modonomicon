@@ -11,7 +11,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -62,7 +62,7 @@ public abstract class LegacyBookProvider extends ModonomiconProviderBase impleme
     }
 
     @Override
-    public void generate(BiConsumer<ResourceLocation, BookModel> consumer, HolderLookup.Provider registries) {
+    public void generate(BiConsumer<Identifier, BookModel> consumer, HolderLookup.Provider registries) {
         this.registries(registries);
         this.registerDefaultMacros();
 

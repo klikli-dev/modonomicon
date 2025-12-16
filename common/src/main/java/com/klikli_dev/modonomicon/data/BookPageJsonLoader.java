@@ -9,8 +9,8 @@ package com.klikli_dev.modonomicon.data;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public interface BookPageJsonLoader<T extends BookPage> {
-    T fromJson(ResourceLocation entryId, JsonObject json, HolderLookup.Provider provider);
+    T fromJson(Identifier entryId, JsonObject json, HolderLookup.Provider provider);
 }

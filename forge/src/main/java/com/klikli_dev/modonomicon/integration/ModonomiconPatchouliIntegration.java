@@ -8,11 +8,11 @@ package com.klikli_dev.modonomicon.integration;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.platform.Services;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class ModonomiconPatchouliIntegration {
 
-    public static void openEntry(ResourceLocation book, ResourceLocation entry, int page) {
+    public static void openEntry(Identifier book, Identifier entry, int page) {
         if (Services.PLATFORM.isModLoaded("patchouli")) {
             PatchouliHelper.openEntry(book, entry, page);
         } else {
@@ -21,7 +21,7 @@ public class ModonomiconPatchouliIntegration {
     }
 
     public static class PatchouliHelper {
-        public static void openEntry(ResourceLocation book, ResourceLocation entry, int page) {
+        public static void openEntry(Identifier book, Identifier entry, int page) {
             //TODO: Enable patchouli
 //            PatchouliAPI.get().openBookEntry(book, entry, page);
         }

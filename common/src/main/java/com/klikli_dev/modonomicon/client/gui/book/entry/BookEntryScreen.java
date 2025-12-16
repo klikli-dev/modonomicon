@@ -43,7 +43,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
@@ -68,7 +68,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
 
     protected final BookParentScreen parentScreen;
     protected final BookContentEntry entry;
-    protected final ResourceLocation bookContentTexture;
+    protected final Identifier bookContentTexture;
 
     protected int ticksInBook;
     protected List<BookPage> unlockedPages;

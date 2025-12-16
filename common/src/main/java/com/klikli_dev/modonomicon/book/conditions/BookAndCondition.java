@@ -14,7 +14,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 
@@ -35,7 +35,7 @@ public class BookAndCondition extends BookCondition {
         this.children = children;
     }
 
-    public static BookAndCondition fromJson(ResourceLocation conditionParentId, JsonObject json, HolderLookup.Provider provider) {
+    public static BookAndCondition fromJson(Identifier conditionParentId, JsonObject json, HolderLookup.Provider provider) {
         var children = new ArrayList<BookCondition>();
         for (var j : GsonHelper.getAsJsonArray(json, "children")) {
             if (!j.isJsonObject())
@@ -57,7 +57,7 @@ public class BookAndCondition extends BookCondition {
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return Condition.AND;
     }
 

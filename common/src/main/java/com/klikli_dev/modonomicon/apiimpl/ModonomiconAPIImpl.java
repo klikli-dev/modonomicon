@@ -13,7 +13,7 @@ import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.multiblock.MultiblockPreviewData;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 public class ModonomiconAPIImpl implements ModonomiconAPI {
@@ -32,7 +32,7 @@ public class ModonomiconAPIImpl implements ModonomiconAPI {
     }
 
     @Override
-    public Multiblock getMultiblock(ResourceLocation id) {
+    public Multiblock getMultiblock(Identifier id) {
         return MultiblockDataManager.get().getMultiblock(id);
     }
 

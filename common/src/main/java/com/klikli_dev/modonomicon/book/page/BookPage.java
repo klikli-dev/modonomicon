@@ -11,7 +11,7 @@ import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 
 public abstract class BookPage {
@@ -36,7 +36,7 @@ public abstract class BookPage {
         return this.condition;
     }
 
-    public abstract ResourceLocation getType();
+    public abstract Identifier getType();
 
     /**
      * call after loading the book jsons to finalize.

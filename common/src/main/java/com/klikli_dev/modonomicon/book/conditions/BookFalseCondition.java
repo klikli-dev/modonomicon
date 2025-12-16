@@ -13,7 +13,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 public class BookFalseCondition extends BookCondition {
@@ -22,7 +22,7 @@ public class BookFalseCondition extends BookCondition {
         super(component);
     }
 
-    public static BookFalseCondition fromJson(ResourceLocation conditionParentId, JsonObject json, HolderLookup.Provider provider) {
+    public static BookFalseCondition fromJson(Identifier conditionParentId, JsonObject json, HolderLookup.Provider provider) {
         var tooltip = tooltipFromJson(json, provider);
         return new BookFalseCondition(tooltip);
     }
@@ -33,7 +33,7 @@ public class BookFalseCondition extends BookCondition {
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return Condition.FALSE;
     }
 

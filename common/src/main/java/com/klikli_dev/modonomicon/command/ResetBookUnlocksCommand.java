@@ -46,10 +46,10 @@ public class ResetBookUnlocksCommand implements com.mojang.brigadier.Command<Com
 
 
     public static Book getBook(CommandContext<CommandSourceStack> pContext, String pName) throws CommandSyntaxException {
-        var resourcelocation = ResourceLocationArgument.getId(pContext, pName);
-        var book = BookDataManager.get().getBook(resourcelocation);
+        var Identifier = ResourceLocationArgument.getId(pContext, pName);
+        var book = BookDataManager.get().getBook(Identifier);
         if (book == null) {
-            throw ERROR_UNKNOWN_BOOK.create(resourcelocation);
+            throw ERROR_UNKNOWN_BOOK.create(Identifier);
         } else {
             return book;
         }

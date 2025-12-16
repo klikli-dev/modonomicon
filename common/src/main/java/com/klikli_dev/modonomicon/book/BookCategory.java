@@ -19,7 +19,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 
@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class BookCategory {
 
-    protected ResourceLocation id;
+    protected Identifier id;
     protected Book book;
     protected String name;
     protected BookIcon icon;
@@ -39,7 +39,7 @@ public class BookCategory {
      */
     protected BookDisplayMode displayMode;
     protected int sortNumber;
-    protected ResourceLocation background;
+    protected Identifier background;
     protected int backgroundWidth;
     protected int backgroundHeight;
     protected int maxScrollX;
@@ -50,22 +50,22 @@ public class BookCategory {
      */
     protected float backgroundTextureZoomMultiplier;
     protected List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers;
-    protected ResourceLocation entryTextures;
-    protected Map<ResourceLocation, BookEntry> entries;
+    protected Identifier entryTextures;
+    protected Map<Identifier, BookEntry> entries;
     protected BookCondition condition;
     protected boolean showCategoryButton;
     /**
      * The entry to open when this category is opened.
      * If null, no entry will be opened.
      */
-    protected ResourceLocation entryToOpen;
+    protected Identifier entryToOpen;
     /**
      * If true, the entryToOpen will only be opened the first time the category is opened.
      * If false, the entryToOpen will be opened every time the category is opened.
      */
     protected boolean openEntryToOpenOnlyOnce;
 
-    public BookCategory(ResourceLocation id, String name, BookTextHolder description, int sortNumber, BookCondition condition, boolean showCategoryButton, BookIcon icon, BookDisplayMode displayMode, ResourceLocation background, int backgroundWidth, int backgroundHeight, int maxScrollX, int maxScrollY, float backgroundTextureZoomMultiplier, List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers, ResourceLocation entryTextures, ResourceLocation entryToOpen, boolean openEntryOnlyOnce) {
+    public BookCategory(Identifier id, String name, BookTextHolder description, int sortNumber, BookCondition condition, boolean showCategoryButton, BookIcon icon, BookDisplayMode displayMode, Identifier background, int backgroundWidth, int backgroundHeight, int maxScrollX, int maxScrollY, float backgroundTextureZoomMultiplier, List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers, Identifier entryTextures, Identifier entryToOpen, boolean openEntryOnlyOnce) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -87,20 +87,20 @@ public class BookCategory {
         this.openEntryToOpenOnlyOnce = openEntryOnlyOnce;
     }
 
-    public static BookCategory fromJson(ResourceLocation id, JsonObject json, HolderLookup.Provider provider) {
+    public static BookCategory fromJson(Identifier id, JsonObject json, HolderLookup.Provider provider) {
         var name = GsonHelper.getAsString(json, "name");
         var description = BookGsonHelper.getAsBookTextHolder(json, "description", BookTextHolder.EMPTY, provider);
         var sortNumber = GsonHelper.getAsInt(json, "sort_number", -1);
         var icon = BookIcon.fromJson(json.get("icon"), provider);
         var displayMode = BookDisplayMode.byName(GsonHelper.getAsString(json, "display_mode", BookDisplayMode.NODE.getSerializedName()));
-        var background = ResourceLocation.parse(GsonHelper.getAsString(json, "background", Category.DEFAULT_BACKGROUND));
+        var background = Identifier.parse(GsonHelper.getAsString(json, "background", Category.DEFAULT_BACKGROUND));
         var backgroundWidth = GsonHelper.getAsInt(json, "background_width", Category.DEFAULT_BACKGROUND_WIDTH);
         var backgroundHeight = GsonHelper.getAsInt(json, "background_height", Category.DEFAULT_BACKGROUND_HEIGHT);
         var defaultMaxScrollX = GsonHelper.getAsInt(json, "max_scroll_x", Category.DEFAULT_MAX_SCROLL_X);
         var defaultMaxScrollY = GsonHelper.getAsInt(json, "max_scroll_y", Category.DEFAULT_MAX_SCROLL_Y);
 
         var backgroundTextureZoomMultiplier = GsonHelper.getAsFloat(json, "background_texture_zoom_multiplier", Category.DEFAULT_BACKGROUND_TEXTURE_ZOOM_MULTIPLIER);
-        var entryTextures = ResourceLocation.parse(GsonHelper.getAsString(json, "entry_textures", Category.DEFAULT_ENTRY_TEXTURES));
+        var entryTextures = Identifier.parse(GsonHelper.getAsString(json, "entry_textures", Category.DEFAULT_ENTRY_TEXTURES));
         var showCategoryButton = GsonHelper.getAsBoolean(json, "show_category_button", true);
 
         BookCondition condition = new BookNoneCondition(); //default to unlocked
@@ -112,12 +112,12 @@ public class BookCategory {
         if (json.has("background_parallax_layers"))
             backgroundParallaxLayers = BookCategoryBackgroundParallaxLayer.fromJson(json.getAsJsonArray("background_parallax_layers"));
 
-        ResourceLocation entryToOpen = null;
+        Identifier entryToOpen = null;
         if (json.has("entry_to_open")) {
             var entryToOpenPath = GsonHelper.getAsString(json, "entry_to_open");
             entryToOpen = entryToOpenPath.contains(":") ?
-                    ResourceLocation.parse(entryToOpenPath) :
-                    ResourceLocation.fromNamespaceAndPath(id.getNamespace(), entryToOpenPath);
+                    Identifier.parse(entryToOpenPath) :
+                    Identifier.fromNamespaceAndPath(id.getNamespace(), entryToOpenPath);
         }
         boolean openEntryOnlyOnce = GsonHelper.getAsBoolean(json, "open_entry_to_open_only_once", true);
 
@@ -125,7 +125,7 @@ public class BookCategory {
                 defaultMaxScrollX, defaultMaxScrollY, backgroundTextureZoomMultiplier, backgroundParallaxLayers, entryTextures, entryToOpen, openEntryOnlyOnce);
     }
 
-    public static BookCategory fromNetwork(ResourceLocation id, RegistryFriendlyByteBuf buffer) {
+    public static BookCategory fromNetwork(Identifier id, RegistryFriendlyByteBuf buffer) {
         var name = buffer.readUtf();
         var description = BookTextHolder.fromNetwork(buffer);
         var sortNumber = buffer.readInt();
@@ -207,7 +207,7 @@ public class BookCategory {
         }
     }
 
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return this.id;
     }
 
@@ -235,7 +235,7 @@ public class BookCategory {
         return this.displayMode;
     }
 
-    public ResourceLocation getBackground() {
+    public Identifier getBackground() {
         return this.background;
     }
 
@@ -263,11 +263,11 @@ public class BookCategory {
         return this.backgroundParallaxLayers;
     }
 
-    public ResourceLocation getEntryTextures() {
+    public Identifier getEntryTextures() {
         return this.entryTextures;
     }
 
-    public Map<ResourceLocation, BookEntry> getEntries() {
+    public Map<Identifier, BookEntry> getEntries() {
         return this.entries;
     }
 
@@ -275,7 +275,7 @@ public class BookCategory {
         this.entries.putIfAbsent(entry.getId(), entry);
     }
 
-    public BookEntry getEntry(ResourceLocation id) {
+    public BookEntry getEntry(Identifier id) {
         return this.entries.get(id);
     }
 
@@ -288,7 +288,7 @@ public class BookCategory {
         return this.openEntryToOpenOnlyOnce;
     }
 
-    public ResourceLocation getEntryToOpen() {
+    public Identifier getEntryToOpen() {
         return this.entryToOpen;
     }
 

@@ -19,7 +19,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ColorResolver;
@@ -43,7 +43,7 @@ import java.util.Map.Entry;
 public abstract class AbstractMultiblock implements Multiblock {
 
     private final Map<BlockPos, BlockEntity> blockEntityCache = new Object2ObjectOpenHashMap<>();
-    public ResourceLocation id;
+    public Identifier id;
     protected int offX, offY, offZ;
     protected int viewOffX, viewOffY, viewOffZ;
     protected boolean symmetrical;
@@ -56,7 +56,7 @@ public abstract class AbstractMultiblock implements Multiblock {
                 throw new JsonSyntaxException("Mapping key needs to be only 1 character");
             char key = entry.getKey().charAt(0);
             var value = entry.getValue().getAsJsonObject();
-            var stateMatcherType = ResourceLocation.tryParse(GsonHelper.getAsString(value, "type"));
+            var stateMatcherType = Identifier.tryParse(GsonHelper.getAsString(value, "type"));
             var stateMatcher = LoaderRegistry.getStateMatcherJsonLoader(stateMatcherType).fromJson(value, provider);
             mapping.put(key, stateMatcher);
         }
@@ -131,7 +131,7 @@ public abstract class AbstractMultiblock implements Multiblock {
     }
 
     @Override
-    public Multiblock setId(ResourceLocation res) {
+    public Multiblock setId(Identifier res) {
         this.id = res;
         return this;
     }
@@ -142,7 +142,7 @@ public abstract class AbstractMultiblock implements Multiblock {
     }
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return this.id;
     }
 

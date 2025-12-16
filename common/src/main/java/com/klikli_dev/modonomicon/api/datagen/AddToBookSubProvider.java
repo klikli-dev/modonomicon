@@ -10,7 +10,7 @@ package com.klikli_dev.modonomicon.api.datagen;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -26,18 +26,18 @@ public abstract class AddToBookSubProvider extends ModonomiconProviderBase imple
     protected int currentSortIndex;
 
     /**
-     * @param targetBook  The ResourceLocation (modid and book name) of the book to add to.
+     * @param targetBook  The Identifier (modid and book name) of the book to add to.
      * @param defaultLang The LanguageProvider to fill with this book provider. IMPORTANT: the Language Provider needs to be added to the DataGenerator AFTER the BookProvider.
      */
-    public AddToBookSubProvider(ResourceLocation targetBook, BiConsumer<String, String> defaultLang) {
+    public AddToBookSubProvider(Identifier targetBook, BiConsumer<String, String> defaultLang) {
         this(targetBook, defaultLang, Map.of());
     }
 
     /**
-     * @param targetBook  The ResourceLocation (modid and book name) of the book to add to.
+     * @param targetBook  The Identifier (modid and book name) of the book to add to.
      * @param defaultLang The LanguageProvider to fill with this book provider. IMPORTANT: the Language Provider needs to be added to the DataGenerator AFTER the BookProvider.
      */
-    public AddToBookSubProvider(ResourceLocation targetBook, BiConsumer<String, String> defaultLang, Map<String, BiConsumer<String, String>> translations) {
+    public AddToBookSubProvider(Identifier targetBook, BiConsumer<String, String> defaultLang, Map<String, BiConsumer<String, String>> translations) {
         super(targetBook.getNamespace(), defaultLang, translations, new BookContextHelper(targetBook.getNamespace()), new ConditionHelper());
         this.book = null;
 
@@ -72,7 +72,7 @@ public abstract class AddToBookSubProvider extends ModonomiconProviderBase imple
     }
 
     @Override
-    public void generate(BiConsumer<ResourceLocation, BookModel> consumer, HolderLookup.Provider registries) {
+    public void generate(BiConsumer<Identifier, BookModel> consumer, HolderLookup.Provider registries) {
         this.registries(registries);
 
         this.registerDefaultMacros();

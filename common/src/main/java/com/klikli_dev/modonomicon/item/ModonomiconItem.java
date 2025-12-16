@@ -19,7 +19,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -38,14 +38,14 @@ public class ModonomiconItem extends Item {
     }
 
     public static Book getBook(ItemStack stack) {
-        ResourceLocation res = getBookId(stack);
+        Identifier res = getBookId(stack);
         if (res == null) {
             return null;
         }
         return BookDataManager.get().getBook(res);
     }
 
-    public static ResourceLocation getBookId(ItemStack stack) {
+    public static Identifier getBookId(ItemStack stack) {
         return stack.get(DataComponentRegistry.BOOK_ID.get());
     }
 

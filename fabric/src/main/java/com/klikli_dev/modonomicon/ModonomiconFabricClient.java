@@ -95,7 +95,7 @@ public class ModonomiconFabricClient implements ClientModInitializer {
 //                        if (ctx.id() != null &&
 //                                //this is the item id of the item for which the model modification is made = modonomicon
 //                                //I am not referencing the actual registry object because I think the model loader is called before the item is registered
-//                                ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, Modonomicon.MOD_ID).equals(ctx.id()) // checks namespace and path
+//                                Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, Modonomicon.MOD_ID).equals(ctx.id()) // checks namespace and path
 //                                && oldModel != null) {
 //                            return new BookModel(oldModel.);
 //                        }

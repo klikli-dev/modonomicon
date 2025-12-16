@@ -13,12 +13,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 public class SendAdvancementToClientMessage implements Message {
 
-    public static final Type<SendAdvancementToClientMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "send_advancement_to_client"));
+    public static final Type<SendAdvancementToClientMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "send_advancement_to_client"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SendAdvancementToClientMessage> STREAM_CODEC = StreamCodec.composite(
             AdvancementHolder.STREAM_CODEC,

@@ -11,16 +11,16 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.function.UnaryOperator;
 
 public class DataComponentRegistry {
     public static final RegistrationProvider<DataComponentType<?>> DATA_COMPONENTS = RegistrationProvider.get(Registries.DATA_COMPONENT_TYPE, Modonomicon.MOD_ID);
 
-    public static final RegistryObject<DataComponentType<ResourceLocation>> BOOK_ID = register("book_id", builder ->
-            builder.persistent(ResourceLocation.CODEC)
-                    .networkSynchronized(ResourceLocation.STREAM_CODEC).cacheEncoding()
+    public static final RegistryObject<DataComponentType<Identifier>> BOOK_ID = register("book_id", builder ->
+            builder.persistent(Identifier.CODEC)
+                    .networkSynchronized(Identifier.STREAM_CODEC).cacheEncoding()
     );
 
     // Data component for storing whether the book item is currently open (true) or closed (false)

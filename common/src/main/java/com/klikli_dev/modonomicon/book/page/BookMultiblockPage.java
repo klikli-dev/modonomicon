@@ -22,7 +22,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 
@@ -31,11 +31,11 @@ public class BookMultiblockPage extends BookPage {
     protected BookTextHolder multiblockName;
     protected BookTextHolder text;
     protected boolean showVisualizeButton;
-    protected ResourceLocation multiblockId;
+    protected Identifier multiblockId;
 
     protected Multiblock multiblock;
 
-    public BookMultiblockPage(BookTextHolder multiblockName, BookTextHolder text, ResourceLocation multiblockId, boolean showVisualizeButton, String anchor, BookCondition condition) {
+    public BookMultiblockPage(BookTextHolder multiblockName, BookTextHolder text, Identifier multiblockId, boolean showVisualizeButton, String anchor, BookCondition condition) {
         super(anchor, condition);
         this.multiblockName = multiblockName;
         this.text = text;
@@ -43,15 +43,15 @@ public class BookMultiblockPage extends BookPage {
         this.showVisualizeButton = showVisualizeButton;
     }
 
-    public static BookMultiblockPage fromJson(ResourceLocation entryId, JsonObject json, HolderLookup.Provider provider) {
+    public static BookMultiblockPage fromJson(Identifier entryId, JsonObject json, HolderLookup.Provider provider) {
         var multiblockName = BookGsonHelper.getAsBookTextHolder(json, "multiblock_name", BookTextHolder.EMPTY, provider);
 
 
         var multiblockPath = GsonHelper.getAsString(json, "multiblock_id");
         //leaflet entries can be without a namespace, in which case we use the book namespace.
         var multiblockId = multiblockPath.contains(":") ?
-                ResourceLocation.parse(multiblockPath) :
-                ResourceLocation.fromNamespaceAndPath(entryId.getNamespace(), multiblockPath);
+                Identifier.parse(multiblockPath) :
+                Identifier.fromNamespaceAndPath(entryId.getNamespace(), multiblockPath);
 
         var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY, provider);
         var showVisualizeButton = GsonHelper.getAsBoolean(json, "show_visualize_button", true);
@@ -89,7 +89,7 @@ public class BookMultiblockPage extends BookPage {
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return Page.MULTIBLOCK;
     }
 

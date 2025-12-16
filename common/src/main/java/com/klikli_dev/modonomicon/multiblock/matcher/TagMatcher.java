@@ -20,7 +20,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
@@ -38,7 +38,7 @@ import java.util.function.Supplier;
  * Matches against the given tag, and optionally checks for the given BlockState properties.
  */
 public class TagMatcher implements StateMatcher {
-    public static final ResourceLocation TYPE = Modonomicon.loc("tag");
+    public static final Identifier TYPE = Modonomicon.loc("tag");
 
     private final BlockState displayState;
     private final Supplier<TagKey<Block>> tag;
@@ -136,7 +136,7 @@ public class TagMatcher implements StateMatcher {
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return TYPE;
     }
 

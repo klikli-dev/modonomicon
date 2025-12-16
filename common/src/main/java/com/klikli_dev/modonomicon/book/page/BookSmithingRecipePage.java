@@ -10,7 +10,7 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.SmithingRecipe;
 
 public class BookSmithingRecipePage extends BookRecipePage<SmithingRecipe> {
@@ -23,7 +23,7 @@ public class BookSmithingRecipePage extends BookRecipePage<SmithingRecipe> {
         super(common);
     }
 
-    public static BookSmithingRecipePage fromJson(ResourceLocation entryId, JsonObject json, HolderLookup.Provider provider) {
+    public static BookSmithingRecipePage fromJson(Identifier entryId, JsonObject json, HolderLookup.Provider provider) {
         var common = BookRecipePage.commonFromJson(entryId, json, provider);
         return new BookSmithingRecipePage(common);
     }
@@ -34,7 +34,7 @@ public class BookSmithingRecipePage extends BookRecipePage<SmithingRecipe> {
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return Page.SMITHING_RECIPE;
     }
 }

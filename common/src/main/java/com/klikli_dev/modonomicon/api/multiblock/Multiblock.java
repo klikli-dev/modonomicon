@@ -10,7 +10,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
@@ -63,18 +63,18 @@ public interface Multiblock extends BlockAndTintGetter {
     // Getters
     // ================================================================================================
 
-    ResourceLocation getId();
+    Identifier getId();
 
     /**
      * Sets the multiblock's ID. Not something you need to
      * call yourself as the register method in the main API class does it for you.
      */
-    Multiblock setId(ResourceLocation res);
+    Multiblock setId(Identifier res);
 
     /**
      * The multiblock type id for serialization.
      */
-    ResourceLocation getType();
+    Identifier getType();
 
     /**
      * Sets the level the multiblock should use for e.g registry access

@@ -15,7 +15,7 @@ import com.klikli_dev.modonomicon.book.PageDisplayMode;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class BookModel {
     /**
      * The book ID, e.g. "modonomicon:demo". The ID must be unique (usually that is guaranteed by the mod ID).
      */
-    protected ResourceLocation id;
+    protected Identifier id;
     /**
      * The name of the book, should be a translation key/description id
      */
@@ -50,7 +50,7 @@ public class BookModel {
     /**
      * The creative tab to add the book to.
      */
-    protected ResourceLocation creativeTab = ResourceLocation.parse("modonomicon:modonomicon");
+    protected Identifier creativeTab = Identifier.parse("modonomicon:modonomicon");
 
     /**
      * If true, automatically generates an item for this book and registers it with the creative tab.
@@ -60,25 +60,25 @@ public class BookModel {
     /**
      * The item model to use for the book. Only used if generateBookItem = true.
      */
-    protected ResourceLocation model = ResourceLocation.parse(Book.DEFAULT_MODEL);
+    protected Identifier model = Identifier.parse(Book.DEFAULT_MODEL);
 
     /**
      * If set, uses this item for the book. That means you need to implement all functionality to open the book yourself.
      */
     @Nullable
-    protected ResourceLocation customBookItem = null;
+    protected Identifier customBookItem = null;
 
     /**
      * This texture contains buttons for the "node view" of the book. E.g. search button, category buttons, "read all" button.
      */
-    protected ResourceLocation bookOverviewTexture = ResourceLocation.parse(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
+    protected Identifier bookOverviewTexture = Identifier.parse(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
 
     /**
      * The font to use for the book text.
      */
-    protected ResourceLocation font = ResourceLocation.parse(Book.DEFAULT_FONT);
+    protected Identifier font = Identifier.parse(Book.DEFAULT_FONT);
 
-    protected ResourceLocation frameTexture = ResourceLocation.parse(Book.DEFAULT_FRAME_TEXTURE);
+    protected Identifier frameTexture = Identifier.parse(Book.DEFAULT_FRAME_TEXTURE);
     protected BookFrameOverlay topFrameOverlay = Data.Book.DEFAULT_TOP_FRAME_OVERLAY;
     protected BookFrameOverlay bottomFrameOverlay = Data.Book.DEFAULT_BOTTOM_FRAME_OVERLAY;
     protected BookFrameOverlay leftFrameOverlay = Data.Book.DEFAULT_LEFT_FRAME_OVERLAY;
@@ -88,16 +88,16 @@ public class BookModel {
      * Contains textures for the entry view, as well as index views (book or category in index mode, as well as search screen).
      * This includes the book "page" background for double page view and various navigation buttons.
      */
-    protected ResourceLocation bookContentTexture = ResourceLocation.parse(Data.Book.DEFAULT_CONTENT_TEXTURE);
+    protected Identifier bookContentTexture = Identifier.parse(Data.Book.DEFAULT_CONTENT_TEXTURE);
 
     protected PageDisplayMode pageDisplayMode = PageDisplayMode.DOUBLE_PAGE;
-    protected ResourceLocation singlePageTexture = ResourceLocation.parse(Data.Book.DEFAULT_SINGLE_PAGE_TEXTURE);
+    protected Identifier singlePageTexture = Identifier.parse(Data.Book.DEFAULT_SINGLE_PAGE_TEXTURE);
 
     /**
      * Contains textures for the crafting pages, such as crafting grids and result arrows.
      */
-    protected ResourceLocation craftingTexture = ResourceLocation.parse(Book.DEFAULT_CRAFTING_TEXTURE);
-    protected ResourceLocation turnPageSound = ResourceLocation.parse(Book.DEFAULT_PAGE_TURN_SOUND);
+    protected Identifier craftingTexture = Identifier.parse(Book.DEFAULT_CRAFTING_TEXTURE);
+    protected Identifier turnPageSound = Identifier.parse(Book.DEFAULT_PAGE_TURN_SOUND);
     protected int defaultTitleColor = 0x00000;
     protected float categoryButtonIconScale = 1.0f;
 
@@ -143,7 +143,7 @@ public class BookModel {
      * The book will be treated as a book in index mode (that means, no big "node view" background will be shown behind the entry).
      */
     @Nullable
-    protected ResourceLocation leafletEntry;
+    protected Identifier leafletEntry;
 
     /**
      * If true, invalid links do not show an error screen when opening the book.
@@ -156,7 +156,7 @@ public class BookModel {
      */
     protected boolean dontGenerateJson = false;
 
-    protected BookModel(ResourceLocation id, String name) {
+    protected BookModel(Identifier id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -165,7 +165,7 @@ public class BookModel {
      * @param id   The book ID, e.g. "modonomicon:demo". The ID must be unique (usually that is guaranteed by the mod ID).
      * @param name Should be a translation key.
      */
-    public static BookModel create(ResourceLocation id, String name) {
+    public static BookModel create(Identifier id, String name) {
         return new BookModel(id, name);
     }
 
@@ -173,11 +173,11 @@ public class BookModel {
         return this.autoAddReadConditions;
     }
 
-    public ResourceLocation getCraftingTexture() {
+    public Identifier getCraftingTexture() {
         return this.craftingTexture;
     }
 
-    public ResourceLocation getTurnPageSound() {
+    public Identifier getTurnPageSound() {
         return this.turnPageSound;
     }
 
@@ -186,7 +186,7 @@ public class BookModel {
     }
 
     @Nullable
-    public ResourceLocation getCustomBookItem() {
+    public Identifier getCustomBookItem() {
         return this.customBookItem;
     }
 
@@ -198,7 +198,7 @@ public class BookModel {
         return this.commands;
     }
 
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return this.id;
     }
 
@@ -214,27 +214,27 @@ public class BookModel {
         return this.tooltip;
     }
 
-    public ResourceLocation getCreativeTab() {
+    public Identifier getCreativeTab() {
         return this.creativeTab;
     }
 
-    public ResourceLocation getModel() {
+    public Identifier getModel() {
         return this.model;
     }
 
-    public ResourceLocation getBookOverviewTexture() {
+    public Identifier getBookOverviewTexture() {
         return this.bookOverviewTexture;
     }
 
-    public ResourceLocation getFont() {
+    public Identifier getFont() {
         return this.font;
     }
 
-    public ResourceLocation getFrameTexture() {
+    public Identifier getFrameTexture() {
         return this.frameTexture;
     }
 
-    public ResourceLocation getBookContentTexture() {
+    public Identifier getBookContentTexture() {
         return this.bookContentTexture;
     }
 
@@ -270,11 +270,11 @@ public class BookModel {
         return this.pageDisplayMode;
     }
 
-    public ResourceLocation getSinglePageTexture() {
+    public Identifier getSinglePageTexture() {
         return this.singlePageTexture;
     }
 
-    public @Nullable ResourceLocation getLeafletEntry() {
+    public @Nullable Identifier getLeafletEntry() {
         return this.leafletEntry;
     }
 
@@ -359,17 +359,17 @@ public class BookModel {
         return this;
     }
 
-    public BookModel withCreativeTab(ResourceLocation creativeTab) {
+    public BookModel withCreativeTab(Identifier creativeTab) {
         this.creativeTab = creativeTab;
         return this;
     }
 
-    public BookModel withBookOverviewTexture(ResourceLocation bookOverviewTexture) {
+    public BookModel withBookOverviewTexture(Identifier bookOverviewTexture) {
         this.bookOverviewTexture = bookOverviewTexture;
         return this;
     }
 
-    public BookModel withFont(ResourceLocation font) {
+    public BookModel withFont(Identifier font) {
         this.font = font;
         return this;
     }
@@ -380,7 +380,7 @@ public class BookModel {
      * Default is {@link Data.Book#DEFAULT_FRAME_TEXTURE}.
      * See {@link BookModel#withBottomFrameOverride}, {@link BookModel#withTopFrameOverride}, {@link BookModel#withLeftFrameOverride} and  {@link BookModel#withRightFrameOverride} on how to set a non-repeating center part.
      */
-    public BookModel withFrameTexture(ResourceLocation frameTexture) {
+    public BookModel withFrameTexture(Identifier frameTexture) {
         this.frameTexture = frameTexture;
         return this;
     }
@@ -425,12 +425,12 @@ public class BookModel {
         return this;
     }
 
-    public BookModel withBookContentTexture(ResourceLocation bookContentTexture) {
+    public BookModel withBookContentTexture(Identifier bookContentTexture) {
         this.bookContentTexture = bookContentTexture;
         return this;
     }
 
-    public BookModel withCraftingTexture(ResourceLocation craftingTexture) {
+    public BookModel withCraftingTexture(Identifier craftingTexture) {
         this.craftingTexture = craftingTexture;
         return this;
     }
@@ -439,12 +439,12 @@ public class BookModel {
      * Sets the sound to play when turning a page in the book.
      * Default is {@link Data.Book#DEFAULT_PAGE_TURN_SOUND}.
      */
-    public BookModel withTurnPageSound(ResourceLocation turnPageSound) {
+    public BookModel withTurnPageSound(Identifier turnPageSound) {
         this.turnPageSound = turnPageSound;
         return this;
     }
 
-    public BookModel withModel(ResourceLocation model) {
+    public BookModel withModel(Identifier model) {
         this.model = model;
         return this;
     }
@@ -463,7 +463,7 @@ public class BookModel {
         return this;
     }
 
-    public BookModel withCustomBookItem(ResourceLocation customBookItem) {
+    public BookModel withCustomBookItem(Identifier customBookItem) {
         this.customBookItem = customBookItem;
         return this;
     }
@@ -579,9 +579,9 @@ public class BookModel {
      * If this entry is set the book will ignore all other content and just display this entry.
      * Note that the entry still needs to be in a valid category, even if the category is not displayed.
      *
-     * @param leafletEntry The ResourceLocation of the entry to display
+     * @param leafletEntry The Identifier of the entry to display
      */
-    public BookModel withLeafletEntry(ResourceLocation leafletEntry) {
+    public BookModel withLeafletEntry(Identifier leafletEntry) {
         this.leafletEntry = leafletEntry;
         return this;
     }
@@ -591,7 +591,7 @@ public class BookModel {
         return this;
     }
 
-    public BookModel withSinglePageTexture(ResourceLocation singlePageTexture) {
+    public BookModel withSinglePageTexture(Identifier singlePageTexture) {
         this.singlePageTexture = singlePageTexture;
         return this;
     }

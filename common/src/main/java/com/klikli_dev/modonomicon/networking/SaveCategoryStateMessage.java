@@ -14,13 +14,13 @@ import com.klikli_dev.modonomicon.data.BookDataManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 public class SaveCategoryStateMessage implements Message {
 
-    public static final Type<SaveCategoryStateMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "save_category_state"));
+    public static final Type<SaveCategoryStateMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "save_category_state"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SaveCategoryStateMessage> STREAM_CODEC = CustomPacketPayload.codec(SaveCategoryStateMessage::encode, SaveCategoryStateMessage::new);
 
     public BookCategory category;
@@ -29,13 +29,13 @@ public class SaveCategoryStateMessage implements Message {
     public float scrollY = 0;
     public float targetZoom;
 
-    public ResourceLocation openEntry = null;
+    public Identifier openEntry = null;
 
     public SaveCategoryStateMessage(BookCategory category, CategoryVisualState state) {
         this(category, state.scrollX, state.scrollY, state.targetZoom, state.openEntry);
     }
 
-    public SaveCategoryStateMessage(BookCategory category, float scrollX, float scrollY, float targetZoom, ResourceLocation openEntry) {
+    public SaveCategoryStateMessage(BookCategory category, float scrollX, float scrollY, float targetZoom, Identifier openEntry) {
         this.category = category;
         this.scrollX = scrollX;
         this.scrollY = scrollY;

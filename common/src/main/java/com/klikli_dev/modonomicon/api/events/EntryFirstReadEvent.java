@@ -6,7 +6,7 @@ package com.klikli_dev.modonomicon.api.events;
 
 import com.klikli_dev.modonomicon.book.BookCommand;
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
 /**
@@ -19,21 +19,21 @@ import net.minecraft.server.level.ServerPlayer;
  * Further, any rewards or persistent game logic should only be done on the server side call of this event.
  */
 public class EntryFirstReadEvent extends ModonomiconEvent {
-    protected ResourceLocation bookId;
-    protected ResourceLocation entryId;
+    protected Identifier bookId;
+    protected Identifier entryId;
 
-    public EntryFirstReadEvent(ResourceLocation bookId, ResourceLocation entryId) {
+    public EntryFirstReadEvent(Identifier bookId, Identifier entryId) {
         super(false);
 
         this.bookId = bookId;
         this.entryId = entryId;
     }
 
-    public ResourceLocation getBookId() {
+    public Identifier getBookId() {
         return this.bookId;
     }
 
-    public ResourceLocation getEntryId() {
+    public Identifier getEntryId() {
         return this.entryId;
     }
 }

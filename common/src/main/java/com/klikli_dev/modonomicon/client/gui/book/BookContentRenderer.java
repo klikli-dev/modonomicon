@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 
 import java.util.function.Function;
@@ -57,7 +57,7 @@ public class BookContentRenderer {
         }
     }
 
-    public static void renderBookBackground(GuiGraphics guiGraphics, ResourceLocation bookContentTexture) {
+    public static void renderBookBackground(GuiGraphics guiGraphics, Identifier bookContentTexture) {
         int x = 0; // (this.width - BOOK_BACKGROUND_WIDTH) / 2;
         int y = 0; // (this.height - BOOK_BACKGROUND_HEIGHT) / 2;
 

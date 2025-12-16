@@ -12,7 +12,7 @@ import com.klikli_dev.modonomicon.data.BookDataManager;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenCustomHashSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
@@ -46,7 +46,7 @@ public class CreativeModeTabRegistry {
         BookDataManager.get().getBooks().values().forEach(b -> {
             if (event.getTabKey() == CreativeModeTabs.SEARCH ||
                     modonomiconTab == event.getTab() ||
-                    net.minecraftforge.common.CreativeModeTabRegistry.getTab(ResourceLocation.parse(b.getCreativeTab())) == event.getTab()) {
+                    net.minecraftforge.common.CreativeModeTabRegistry.getTab(Identifier.parse(b.getCreativeTab())) == event.getTab()) {
                 if (b.generateBookItem()) {
                     ItemStack stack = new ItemStack(ItemRegistry.MODONOMICON.get());
 

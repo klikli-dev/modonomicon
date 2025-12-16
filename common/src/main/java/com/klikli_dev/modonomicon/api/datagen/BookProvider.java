@@ -17,7 +17,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
@@ -36,7 +36,7 @@ public class BookProvider implements DataProvider {
 
     protected final PackOutput packOutput;
     //This is a bit of a relic, one provider is only supposed to generate one book.
-    protected final Map<ResourceLocation, BookModel> bookModels;
+    protected final Map<Identifier, BookModel> bookModels;
     protected final List<BookSubProvider> subProviders;
 
 
@@ -54,7 +54,7 @@ public class BookProvider implements DataProvider {
     }
 
     protected Path getPath(Path dataFolder, BookModel bookModel) {
-        ResourceLocation id = bookModel.getId();
+        Identifier id = bookModel.getId();
         return dataFolder
                 .resolve(id.getNamespace())
                 .resolve(ModonomiconConstants.Data.MODONOMICON_DATA_PATH)
@@ -62,7 +62,7 @@ public class BookProvider implements DataProvider {
     }
 
     protected Path getPath(Path dataFolder, BookCategoryModel bookCategoryModel) {
-        ResourceLocation id = bookCategoryModel.getId();
+        Identifier id = bookCategoryModel.getId();
         return dataFolder
                 .resolve(id.getNamespace())
                 .resolve(ModonomiconConstants.Data.MODONOMICON_DATA_PATH)
@@ -72,7 +72,7 @@ public class BookProvider implements DataProvider {
     }
 
     protected Path getPath(Path dataFolder, BookCommandModel bookCommandModel) {
-        ResourceLocation id = bookCommandModel.getId();
+        Identifier id = bookCommandModel.getId();
         return dataFolder
                 .resolve(id.getNamespace())
                 .resolve(ModonomiconConstants.Data.MODONOMICON_DATA_PATH)
@@ -82,7 +82,7 @@ public class BookProvider implements DataProvider {
     }
 
     protected Path getPath(Path dataFolder, BookEntryModel bookEntryModel) {
-        ResourceLocation id = bookEntryModel.getId();
+        Identifier id = bookEntryModel.getId();
         return dataFolder
                 .resolve(id.getNamespace())
                 .resolve(ModonomiconConstants.Data.MODONOMICON_DATA_PATH)

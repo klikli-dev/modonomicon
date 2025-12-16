@@ -22,7 +22,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -37,7 +37,7 @@ import java.util.Map;
 
 public class DenseMultiblock extends AbstractMultiblock {
 
-    public static final ResourceLocation TYPE = Modonomicon.loc("dense");
+    public static final Identifier TYPE = Modonomicon.loc("dense");
 
     private static final Gson GSON = new GsonBuilder().create();
 
@@ -170,7 +170,7 @@ public class DenseMultiblock extends AbstractMultiblock {
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return TYPE;
     }
 

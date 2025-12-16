@@ -14,7 +14,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.repository.PackRepository;
@@ -28,7 +28,7 @@ public class ReloadResourcesDoneMessage implements Message {
 
     public static final ReloadResourcesDoneMessage INSTANCE = new ReloadResourcesDoneMessage();
 
-    public static final Type<ReloadResourcesDoneMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "reload_resources_done"));
+    public static final Type<ReloadResourcesDoneMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "reload_resources_done"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ReloadResourcesDoneMessage> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 

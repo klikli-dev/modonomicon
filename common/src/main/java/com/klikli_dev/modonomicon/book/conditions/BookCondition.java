@@ -17,7 +17,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 
@@ -42,8 +42,8 @@ public abstract class BookCondition {
         return null;
     }
 
-    public static BookCondition fromJson(ResourceLocation conditionParentId, JsonObject json, HolderLookup.Provider provider) {
-        var type = ResourceLocation.parse(GsonHelper.getAsString(json, "type"));
+    public static BookCondition fromJson(Identifier conditionParentId, JsonObject json, HolderLookup.Provider provider) {
+        var type = Identifier.parse(GsonHelper.getAsString(json, "type"));
         var loader = LoaderRegistry.getConditionJsonLoader(type);
         return loader.fromJson(conditionParentId, json, provider);
     }
@@ -59,7 +59,7 @@ public abstract class BookCondition {
         condition.toNetwork(buf);
     }
 
-    public abstract ResourceLocation getType();
+    public abstract Identifier getType();
 
     /**
      * Always write type before calling, ideally call {@link #toNetwork(BookCondition, RegistryFriendlyByteBuf)}

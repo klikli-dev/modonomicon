@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.api;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.BookFrameOverlay;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class ModonomiconConstants {
 
@@ -17,8 +17,8 @@ public class ModonomiconConstants {
         public static final String MULTIBLOCK_DATA_PATH = ModonomiconAPI.ID + "/multiblocks";
 
         public static class Book {
-            public static final String DEFAULT_OVERVIEW_TEXTURE = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/book_overview.png").toString();
-            public static final String DEFAULT_FRAME_TEXTURE = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/book_frame.png").toString();
+            public static final String DEFAULT_OVERVIEW_TEXTURE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/book_overview.png").toString();
+            public static final String DEFAULT_FRAME_TEXTURE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/book_frame.png").toString();
 
             public static final BookFrameOverlay DEFAULT_TOP_FRAME_OVERLAY = new BookFrameOverlay(
                     Modonomicon.loc("textures/gui/book_frame_top_overlay.png"),
@@ -36,25 +36,25 @@ public class ModonomiconConstants {
                     Modonomicon.loc("textures/gui/book_frame_right_overlay.png"),
                     256, 256, 8, 70, -4, 0);
 
-            public static final String DEFAULT_CONTENT_TEXTURE = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/book_content.png").toString();
-            public static final String DEFAULT_SINGLE_PAGE_TEXTURE = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/single_page_entry.png").toString();
-            public static final String DEFAULT_FONT = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "default").toString();
-            public static final String DEFAULT_CRAFTING_TEXTURE = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/crafting_textures.png").toString();
-            public static final String DEFAULT_PAGE_TURN_SOUND = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "turn_page").toString();
-            public static final String DEFAULT_MODEL = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "modonomicon_purple").toString();
-            public static final ResourceLocation ITEM_ID = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "modonomicon");
+            public static final String DEFAULT_CONTENT_TEXTURE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/book_content.png").toString();
+            public static final String DEFAULT_SINGLE_PAGE_TEXTURE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/single_page_entry.png").toString();
+            public static final String DEFAULT_FONT = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "default").toString();
+            public static final String DEFAULT_CRAFTING_TEXTURE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/crafting_textures.png").toString();
+            public static final String DEFAULT_PAGE_TURN_SOUND = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "turn_page").toString();
+            public static final String DEFAULT_MODEL = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "modonomicon_purple").toString();
+            public static final Identifier ITEM_ID = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "modonomicon");
 
         }
 
         public static class Category {
-            public static final String DEFAULT_ICON = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "modonomicon_purple").toString();
-            public static final String DEFAULT_BACKGROUND = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/dark_slate_seamless.png").toString();
+            public static final String DEFAULT_ICON = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "modonomicon_purple").toString();
+            public static final String DEFAULT_BACKGROUND = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/dark_slate_seamless.png").toString();
             public static final int DEFAULT_BACKGROUND_WIDTH = 512;
             public static final int DEFAULT_BACKGROUND_HEIGHT = 512;
             public static final int DEFAULT_MAX_SCROLL_X = 512;
             public static final int DEFAULT_MAX_SCROLL_Y = 512;
             public static final float DEFAULT_BACKGROUND_TEXTURE_ZOOM_MULTIPLIER = 1f;
-            public static final String DEFAULT_ENTRY_TEXTURES = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/entry_textures.png").toString();
+            public static final String DEFAULT_ENTRY_TEXTURES = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/entry_textures.png").toString();
         }
 
         public static class Icon {
@@ -68,44 +68,44 @@ public class ModonomiconConstants {
         }
 
         public static class EntryType {
-            public static final ResourceLocation CONTENT = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "content");
-            public static final ResourceLocation CATEGORY_LINK = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "category_link");
-            public static final ResourceLocation ENTRY_LINK = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "entry_link");
+            public static final Identifier CONTENT = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "content");
+            public static final Identifier CATEGORY_LINK = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "category_link");
+            public static final Identifier ENTRY_LINK = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "entry_link");
         }
 
         public static class Page {
-            public static final ResourceLocation TEXT = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "text");
-            public static final ResourceLocation MULTIBLOCK = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "multiblock");
-            public static final ResourceLocation CRAFTING_RECIPE = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "crafting_recipe");
-            public static final ResourceLocation SMOKING_RECIPE = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "smoking_recipe");
-            public static final ResourceLocation SMELTING_RECIPE = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "smelting_recipe");
-            public static final ResourceLocation BLASTING_RECIPE = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "blasting_recipe");
-            public static final ResourceLocation CAMPFIRE_COOKING_RECIPE = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "campfire_cooking_recipe");
-            public static final ResourceLocation STONECUTTING_RECIPE = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "stonecutting_recipe");
-            public static final ResourceLocation SMITHING_RECIPE = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "smithing_recipe");
-            public static final ResourceLocation SPOTLIGHT = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "spotlight");
-            public static final ResourceLocation EMPTY = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "empty");
-            public static final ResourceLocation ENTITY = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "entity");
-            public static final ResourceLocation IMAGE = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "image");
+            public static final Identifier TEXT = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "text");
+            public static final Identifier MULTIBLOCK = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "multiblock");
+            public static final Identifier CRAFTING_RECIPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "crafting_recipe");
+            public static final Identifier SMOKING_RECIPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "smoking_recipe");
+            public static final Identifier SMELTING_RECIPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "smelting_recipe");
+            public static final Identifier BLASTING_RECIPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "blasting_recipe");
+            public static final Identifier CAMPFIRE_COOKING_RECIPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "campfire_cooking_recipe");
+            public static final Identifier STONECUTTING_RECIPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "stonecutting_recipe");
+            public static final Identifier SMITHING_RECIPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "smithing_recipe");
+            public static final Identifier SPOTLIGHT = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "spotlight");
+            public static final Identifier EMPTY = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "empty");
+            public static final Identifier ENTITY = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "entity");
+            public static final Identifier IMAGE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "image");
         }
 
         public static class Condition {
 
-            public static final ResourceLocation NONE = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "none");
-            public static final ResourceLocation ADVANCEMENT = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "advancement");
-            public static final ResourceLocation MOD_LOADED = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "mod_loaded");
-            public static final ResourceLocation OR = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "or");
-            public static final ResourceLocation AND = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "and");
+            public static final Identifier NONE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "none");
+            public static final Identifier ADVANCEMENT = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "advancement");
+            public static final Identifier MOD_LOADED = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "mod_loaded");
+            public static final Identifier OR = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "or");
+            public static final Identifier AND = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "and");
 
-            public static final ResourceLocation TRUE = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "true");
+            public static final Identifier TRUE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "true");
 
-            public static final ResourceLocation FALSE = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "false");
+            public static final Identifier FALSE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "false");
 
-            public static final ResourceLocation ENTRY_UNLOCKED = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "entry_unlocked");
+            public static final Identifier ENTRY_UNLOCKED = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "entry_unlocked");
 
-            public static final ResourceLocation ENTRY_READ = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "entry_read");
+            public static final Identifier ENTRY_READ = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "entry_read");
 
-            public static final ResourceLocation CATEGORY_HAS_VISIBLE_ENTRIES = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "category_has_visible_entries");
+            public static final Identifier CATEGORY_HAS_VISIBLE_ENTRIES = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "category_has_visible_entries");
         }
     }
 

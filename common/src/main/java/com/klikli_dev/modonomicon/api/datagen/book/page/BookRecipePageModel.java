@@ -10,7 +10,7 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.datagen.book.BookTextHolderModel;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public abstract class BookRecipePageModel<T extends BookRecipePageModel<T>> extends BookPageModel<T> {
 
@@ -23,7 +23,7 @@ public abstract class BookRecipePageModel<T extends BookRecipePageModel<T>> exte
     protected BookTextHolderModel text = new BookTextHolderModel("");
 
 
-    protected BookRecipePageModel(ResourceLocation type) {
+    protected BookRecipePageModel(Identifier type) {
         super(type);
     }
 
@@ -48,7 +48,7 @@ public abstract class BookRecipePageModel<T extends BookRecipePageModel<T>> exte
     }
 
     @Override
-    public JsonObject toJson(ResourceLocation entryId, HolderLookup.Provider provider) {
+    public JsonObject toJson(Identifier entryId, HolderLookup.Provider provider) {
         var json = super.toJson(entryId, provider);
         json.add("title1", this.title1.toJson(provider));
         if (this.recipeId1 != null && !this.recipeId1.isEmpty()) {
@@ -104,7 +104,7 @@ public abstract class BookRecipePageModel<T extends BookRecipePageModel<T>> exte
         return (T) this;
     }
 
-    public T withRecipeId1(ResourceLocation recipeId) {
+    public T withRecipeId1(Identifier recipeId) {
         this.recipeId1 = recipeId.toString();
         //noinspection unchecked
         return (T) this;
@@ -116,7 +116,7 @@ public abstract class BookRecipePageModel<T extends BookRecipePageModel<T>> exte
         return (T) this;
     }
 
-    public T withRecipeId2(ResourceLocation recipeId) {
+    public T withRecipeId2(Identifier recipeId) {
         this.recipeId2 = recipeId.toString();
         //noinspection unchecked
         return (T) this;

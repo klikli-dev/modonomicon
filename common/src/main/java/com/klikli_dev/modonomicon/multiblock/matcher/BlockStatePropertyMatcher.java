@@ -19,7 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  * Matches a BlockState, respecting only the provided BlockState properties.
  */
 public class BlockStatePropertyMatcher implements StateMatcher {
-    public static final ResourceLocation TYPE = Modonomicon.loc("blockstateproperty");
+    public static final Identifier TYPE = Modonomicon.loc("blockstateproperty");
 
     private final BlockState displayState;
     private final Block block;
@@ -100,7 +100,7 @@ public class BlockStatePropertyMatcher implements StateMatcher {
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return TYPE;
     }
 

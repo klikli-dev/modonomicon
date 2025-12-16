@@ -12,13 +12,13 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.api.datagen.book.BookTextHolderModel;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class BookImagePageModel extends BookPageModel<BookImagePageModel> {
     protected BookTextHolderModel title = new BookTextHolderModel("");
     protected BookTextHolderModel text = new BookTextHolderModel("");
 
-    protected ResourceLocation[] images = new ResourceLocation[0];
+    protected Identifier[] images = new Identifier[0];
     protected boolean border = true;
     /**
      * If true then the image will render only the top left 200x200px out of a 256x256px image.
@@ -38,7 +38,7 @@ public class BookImagePageModel extends BookPageModel<BookImagePageModel> {
         return this.title;
     }
 
-    public ResourceLocation[] getImages() {
+    public Identifier[] getImages() {
         return this.images;
     }
 
@@ -51,7 +51,7 @@ public class BookImagePageModel extends BookPageModel<BookImagePageModel> {
     }
 
     @Override
-    public JsonObject toJson(ResourceLocation entryId, HolderLookup.Provider provider) {
+    public JsonObject toJson(Identifier entryId, HolderLookup.Provider provider) {
         var json = super.toJson(entryId, provider);
         json.add("title", this.title.toJson(provider));
         json.add("text", this.text.toJson(provider));
@@ -91,7 +91,7 @@ public class BookImagePageModel extends BookPageModel<BookImagePageModel> {
         return this;
     }
 
-    public BookImagePageModel withImages(ResourceLocation... images) {
+    public BookImagePageModel withImages(Identifier... images) {
         this.images = images;
         return this;
     }

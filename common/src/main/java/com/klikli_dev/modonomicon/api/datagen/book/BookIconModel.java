@@ -12,13 +12,13 @@ import com.klikli_dev.modonomicon.book.BookIcon;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
 public class BookIconModel {
     private final ItemStack itemStack;
-    private final ResourceLocation texture;
+    private final Identifier texture;
 
     private final int width;
     private final int height;
@@ -30,7 +30,7 @@ public class BookIconModel {
         this.height = ModonomiconConstants.Data.Icon.DEFAULT_HEIGHT;
     }
 
-    protected BookIconModel(ResourceLocation texture, int width, int height) {
+    protected BookIconModel(Identifier texture, int width, int height) {
         this.texture = texture;
         this.itemStack = ItemStack.EMPTY;
         this.width = width;
@@ -45,11 +45,11 @@ public class BookIconModel {
         return new BookIconModel(stack);
     }
 
-    public static BookIconModel create(ResourceLocation texture) {
+    public static BookIconModel create(Identifier texture) {
         return create(texture, ModonomiconConstants.Data.Icon.DEFAULT_WIDTH, ModonomiconConstants.Data.Icon.DEFAULT_HEIGHT);
     }
 
-    public static BookIconModel create(ResourceLocation texture, int width, int height) {
+    public static BookIconModel create(Identifier texture, int width, int height) {
         return new BookIconModel(texture, width, height);
     }
 

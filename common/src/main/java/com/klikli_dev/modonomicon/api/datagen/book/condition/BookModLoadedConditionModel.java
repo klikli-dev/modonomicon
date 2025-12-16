@@ -11,7 +11,7 @@ package com.klikli_dev.modonomicon.api.datagen.book.condition;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class BookModLoadedConditionModel extends BookConditionModel<BookModLoadedConditionModel> {
     private String modId;
@@ -25,7 +25,7 @@ public class BookModLoadedConditionModel extends BookConditionModel<BookModLoade
     }
 
     @Override
-    public JsonObject toJson(ResourceLocation conditionParentId, HolderLookup.Provider provider) {
+    public JsonObject toJson(Identifier conditionParentId, HolderLookup.Provider provider) {
         var json = super.toJson(conditionParentId, provider);
         json.addProperty("mod_id", this.modId);
         return json;

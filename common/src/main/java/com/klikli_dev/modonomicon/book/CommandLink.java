@@ -7,12 +7,12 @@
 package com.klikli_dev.modonomicon.book;
 
 import com.klikli_dev.modonomicon.data.BookDataManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class CommandLink {
     public static final String PROTOCOL_COMMAND = "command://";
-    public ResourceLocation bookId;
-    public ResourceLocation commandId;
+    public Identifier bookId;
+    public Identifier commandId;
 
     private CommandLink() {
 
@@ -26,7 +26,7 @@ public class CommandLink {
         if (linkText.contains(":")) {
             //with book id
             var parts = linkText.split("/", 2);
-            commandLink.bookId = ResourceLocation.tryParse(parts[0]);
+            commandLink.bookId = Identifier.tryParse(parts[0]);
             var book = BookDataManager.get().getBook(commandLink.bookId);
             if (book == null) {
                 throw new IllegalArgumentException("Invalid command link, book not found: " + linkText);
@@ -35,7 +35,7 @@ public class CommandLink {
             if (parts.length == 1) //we only got a book id
                 throw new IllegalArgumentException("Invalid command link, does not contain any command id: " + linkText);
 
-            commandLink.commandId = ResourceLocation.fromNamespaceAndPath(commandLink.bookId.getNamespace(), parts[1]);
+            commandLink.commandId = Identifier.fromNamespaceAndPath(commandLink.bookId.getNamespace(), parts[1]);
             var command = book.getCommand(commandLink.commandId);
             if (command == null) {
                 throw new IllegalArgumentException("Invalid command link, command not found in book: " + linkText);
@@ -48,7 +48,7 @@ public class CommandLink {
             if (linkText.isEmpty())
                 throw new IllegalArgumentException("Invalid command link, does not contain any command id, because it is empty: " + linkText);
 
-            commandLink.commandId = ResourceLocation.fromNamespaceAndPath(commandLink.bookId.getNamespace(), linkText);
+            commandLink.commandId = Identifier.fromNamespaceAndPath(commandLink.bookId.getNamespace(), linkText);
             var command = fromBook.getCommand(commandLink.commandId);
             if (command == null) {
                 throw new IllegalArgumentException("Invalid command link, command not found in book: " + linkText);

@@ -10,7 +10,7 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.BlastingRecipe;
 
 public class BookBlastingRecipePage extends BookProcessingRecipePage<BlastingRecipe> {
@@ -23,7 +23,7 @@ public class BookBlastingRecipePage extends BookProcessingRecipePage<BlastingRec
         super(common);
     }
 
-    public static BookBlastingRecipePage fromJson(ResourceLocation entryId, JsonObject json, HolderLookup.Provider provider) {
+    public static BookBlastingRecipePage fromJson(Identifier entryId, JsonObject json, HolderLookup.Provider provider) {
         var common = BookRecipePage.commonFromJson(entryId, json, provider);
         return new BookBlastingRecipePage(common);
     }
@@ -34,7 +34,7 @@ public class BookBlastingRecipePage extends BookProcessingRecipePage<BlastingRec
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return Page.BLASTING_RECIPE;
     }
 }

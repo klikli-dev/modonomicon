@@ -21,7 +21,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,21 +29,21 @@ import java.util.Map;
 
 public class BookVisualStates {
     public static final Codec<BookVisualStates> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.unboundedMap(ResourceLocation.CODEC, BookVisualState.CODEC).fieldOf("bookStates").forGetter((s) -> s.bookStates),
-            Codec.unboundedMap(ResourceLocation.CODEC, BookAddress.CODEC.listOf()).fieldOf("bookBookmarks").forGetter((s) -> s.bookBookmarks)
+            Codec.unboundedMap(Identifier.CODEC, BookVisualState.CODEC).fieldOf("bookStates").forGetter((s) -> s.bookStates),
+            Codec.unboundedMap(Identifier.CODEC, BookAddress.CODEC.listOf()).fieldOf("bookBookmarks").forGetter((s) -> s.bookBookmarks)
     ).apply(instance, BookVisualStates::new));
 
     public static final StreamCodec<ByteBuf, BookVisualStates> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 
-    public Map<ResourceLocation, BookVisualState> bookStates;
+    public Map<Identifier, BookVisualState> bookStates;
 
-    public Map<ResourceLocation, List<BookAddress>> bookBookmarks;
+    public Map<Identifier, List<BookAddress>> bookBookmarks;
 
     public BookVisualStates() {
         this(Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap());
     }
 
-    public BookVisualStates(Map<ResourceLocation, BookVisualState> bookStates, Map<ResourceLocation, List<BookAddress>> bookBookmarks) {
+    public BookVisualStates(Map<Identifier, BookVisualState> bookStates, Map<Identifier, List<BookAddress>> bookBookmarks) {
         this.bookStates = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>(bookStates));
         this.bookBookmarks = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
         bookBookmarks.forEach((bookId, entries) -> this.bookBookmarks.put(bookId, new ArrayList<>(entries)));

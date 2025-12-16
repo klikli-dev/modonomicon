@@ -19,7 +19,7 @@ import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -31,20 +31,20 @@ public class BookContentEntry extends BookEntry {
 
     protected List<BookPage> pages;
 
-    public BookContentEntry(ResourceLocation id, BookEntryData data, ResourceLocation commandToRunOnFirstReadId, List<BookPage> pages) {
+    public BookContentEntry(Identifier id, BookEntryData data, Identifier commandToRunOnFirstReadId, List<BookPage> pages) {
         super(id, data, commandToRunOnFirstReadId);
         this.pages = pages;
     }
 
-    public static BookContentEntry fromJson(ResourceLocation id, JsonObject json, boolean autoAddReadConditions, HolderLookup.Provider provider) {
+    public static BookContentEntry fromJson(Identifier id, JsonObject json, boolean autoAddReadConditions, HolderLookup.Provider provider) {
         BookEntryData data = BookEntryData.fromJson(id, json, autoAddReadConditions, provider);
 
-        ResourceLocation commandToRunOnFirstReadId = null;
+        Identifier commandToRunOnFirstReadId = null;
         if (json.has("command_to_run_on_first_read")) {
             var commandToRunOnFirstReadIdPath = GsonHelper.getAsString(json, "command_to_run_on_first_read");
             commandToRunOnFirstReadId = commandToRunOnFirstReadIdPath.contains(":") ?
-                    ResourceLocation.parse(commandToRunOnFirstReadIdPath) :
-                    ResourceLocation.fromNamespaceAndPath(id.getNamespace(), commandToRunOnFirstReadIdPath);
+                    Identifier.parse(commandToRunOnFirstReadIdPath) :
+                    Identifier.fromNamespaceAndPath(id.getNamespace(), commandToRunOnFirstReadIdPath);
         }
 
         var pages = new ArrayList<BookPage>();
@@ -53,7 +53,7 @@ public class BookContentEntry extends BookEntry {
             for (var pageElem : jsonPages) {
                 BookErrorManager.get().setContext("Page Index: {}", pages.size());
                 var pageJson = GsonHelper.convertToJsonObject(pageElem, "page");
-                var type = ResourceLocation.parse(GsonHelper.getAsString(pageJson, "type"));
+                var type = Identifier.parse(GsonHelper.getAsString(pageJson, "type"));
                 var loader = LoaderRegistry.getPageJsonLoader(type);
 
                 var page = loader.fromJson(id, pageJson, provider);
@@ -68,7 +68,7 @@ public class BookContentEntry extends BookEntry {
     public static BookContentEntry fromNetwork(RegistryFriendlyByteBuf buffer) {
         var id = buffer.readResourceLocation();
         BookEntryData data = BookEntryData.fromNetwork(buffer);
-        ResourceLocation commandToRunOnFirstReadId = buffer.readNullable(FriendlyByteBuf::readResourceLocation);
+        Identifier commandToRunOnFirstReadId = buffer.readNullable(FriendlyByteBuf::readResourceLocation);
 
         var pages = new ArrayList<BookPage>();
         var pageCount = buffer.readVarInt();
@@ -83,7 +83,7 @@ public class BookContentEntry extends BookEntry {
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return ModonomiconConstants.Data.EntryType.CONTENT;
     }
 

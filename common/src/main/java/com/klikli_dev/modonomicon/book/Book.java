@@ -19,7 +19,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -29,27 +29,27 @@ import java.util.List;
 import java.util.Map;
 
 public class Book {
-    protected ResourceLocation id;
+    protected Identifier id;
     protected String name;
     protected BookTextHolder description;
     protected String tooltip;
     protected String creativeTab;
 
 
-    protected ResourceLocation model;
-    protected ResourceLocation bookOverviewTexture;
-    protected ResourceLocation frameTexture;
+    protected Identifier model;
+    protected Identifier bookOverviewTexture;
+    protected Identifier frameTexture;
     protected BookFrameOverlay topFrameOverlay;
     protected BookFrameOverlay bottomFrameOverlay;
     protected BookFrameOverlay leftFrameOverlay;
     protected BookFrameOverlay rightFrameOverlay;
-    protected ResourceLocation bookContentTexture;
+    protected Identifier bookContentTexture;
 
-    protected ResourceLocation craftingTexture;
-    protected ResourceLocation turnPageSound;
-    protected Map<ResourceLocation, BookCategory> categories;
-    protected Map<ResourceLocation, BookEntry> entries;
-    protected Map<ResourceLocation, BookCommand> commands;
+    protected Identifier craftingTexture;
+    protected Identifier turnPageSound;
+    protected Map<Identifier, BookCategory> categories;
+    protected Map<Identifier, BookEntry> entries;
+    protected Map<Identifier, BookCommand> commands;
 
 
     protected int defaultTitleColor;
@@ -57,9 +57,9 @@ public class Book {
     protected boolean autoAddReadConditions;
     protected boolean generateBookItem;
     @Nullable
-    protected ResourceLocation customBookItem;
+    protected Identifier customBookItem;
 
-    protected ResourceLocation font;
+    protected Identifier font;
 
     /**
      * The display mode - node based (thaumonomicon style) or index based (lexica botania / patchouli style)
@@ -97,10 +97,10 @@ public class Book {
     protected int searchButtonYOffset;
     protected int readAllButtonYOffset;
 
-    protected ResourceLocation leafletEntry;
+    protected Identifier leafletEntry;
 
     protected PageDisplayMode pageDisplayMode = PageDisplayMode.DOUBLE_PAGE;
-    protected ResourceLocation singlePageTexture = ResourceLocation.parse(Data.Book.DEFAULT_SINGLE_PAGE_TEXTURE);
+    protected Identifier singlePageTexture = Identifier.parse(Data.Book.DEFAULT_SINGLE_PAGE_TEXTURE);
 
     /**
      * If true, invalid links do not show an error screen when opening the book.
@@ -113,13 +113,13 @@ public class Book {
      */
     protected final Map<String, String> textMacros = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 
-    public Book(ResourceLocation id, String name, BookTextHolder description, String tooltip, ResourceLocation model, BookDisplayMode displayMode, boolean generateBookItem,
-                @Nullable ResourceLocation customBookItem, String creativeTab, ResourceLocation font, ResourceLocation bookOverviewTexture, ResourceLocation frameTexture,
+    public Book(Identifier id, String name, BookTextHolder description, String tooltip, Identifier model, BookDisplayMode displayMode, boolean generateBookItem,
+                @Nullable Identifier customBookItem, String creativeTab, Identifier font, Identifier bookOverviewTexture, Identifier frameTexture,
                 BookFrameOverlay topFrameOverlay, BookFrameOverlay bottomFrameOverlay, BookFrameOverlay leftFrameOverlay, BookFrameOverlay rightFrameOverlay,
-                ResourceLocation bookContentTexture, ResourceLocation craftingTexture, ResourceLocation turnPageSound,
+                Identifier bookContentTexture, Identifier craftingTexture, Identifier turnPageSound,
                 int defaultTitleColor, float categoryButtonIconScale, boolean autoAddReadConditions, int bookTextOffsetX, int bookTextOffsetY, int bookTextOffsetWidth, int bookTextOffsetHeight,
-                int categoryButtonXOffset, int categoryButtonYOffset, int searchButtonXOffset, int searchButtonYOffset, int readAllButtonYOffset, ResourceLocation leafletEntry,
-                PageDisplayMode pageDisplayMode, ResourceLocation singlePageTexture, boolean allowOpenBooksWithInvalidLinks) {
+                int categoryButtonXOffset, int categoryButtonYOffset, int searchButtonXOffset, int searchButtonYOffset, int readAllButtonYOffset, Identifier leafletEntry,
+                PageDisplayMode pageDisplayMode, Identifier singlePageTexture, boolean allowOpenBooksWithInvalidLinks) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -164,19 +164,19 @@ public class Book {
         this.allowOpenBooksWithInvalidLinks = allowOpenBooksWithInvalidLinks;
     }
 
-    public static Book fromJson(ResourceLocation id, JsonObject json, HolderLookup.Provider provider) {
+    public static Book fromJson(Identifier id, JsonObject json, HolderLookup.Provider provider) {
         var name = GsonHelper.getAsString(json, "name");
         var description = BookGsonHelper.getAsBookTextHolder(json, "description", BookTextHolder.EMPTY, provider);
         var tooltip = GsonHelper.getAsString(json, "tooltip", "");
-        var model = ResourceLocation.parse(GsonHelper.getAsString(json, "model", Data.Book.DEFAULT_MODEL));
+        var model = Identifier.parse(GsonHelper.getAsString(json, "model", Data.Book.DEFAULT_MODEL));
         var generateBookItem = GsonHelper.getAsBoolean(json, "generate_book_item", true);
         var displayMode = BookDisplayMode.byName(GsonHelper.getAsString(json, "display_mode", BookDisplayMode.NODE.getSerializedName()));
         var customBookItem = json.has("custom_book_item") ?
-                ResourceLocation.parse(GsonHelper.getAsString(json, "custom_book_item")) :
+                Identifier.parse(GsonHelper.getAsString(json, "custom_book_item")) :
                 null;
         var creativeTab = GsonHelper.getAsString(json, "creative_tab", "misc");
-        var bookOverviewTexture = ResourceLocation.parse(GsonHelper.getAsString(json, "book_overview_texture", Data.Book.DEFAULT_OVERVIEW_TEXTURE));
-        var frameTexture = ResourceLocation.parse(GsonHelper.getAsString(json, "frame_texture", Data.Book.DEFAULT_FRAME_TEXTURE));
+        var bookOverviewTexture = Identifier.parse(GsonHelper.getAsString(json, "book_overview_texture", Data.Book.DEFAULT_OVERVIEW_TEXTURE));
+        var frameTexture = Identifier.parse(GsonHelper.getAsString(json, "frame_texture", Data.Book.DEFAULT_FRAME_TEXTURE));
 
         var topFrameOverlay = json.has("top_frame_overlay") ?
                 BookFrameOverlay.fromJson(json.get("top_frame_overlay").getAsJsonObject()) :
@@ -194,11 +194,11 @@ public class Book {
                 BookFrameOverlay.fromJson(json.get("right_frame_overlay").getAsJsonObject()) :
                 Data.Book.DEFAULT_RIGHT_FRAME_OVERLAY;
 
-        var font = ResourceLocation.parse(GsonHelper.getAsString(json, "font", Data.Book.DEFAULT_FONT));
+        var font = Identifier.parse(GsonHelper.getAsString(json, "font", Data.Book.DEFAULT_FONT));
 
-        var bookContentTexture = ResourceLocation.parse(GsonHelper.getAsString(json, "book_content_texture", Data.Book.DEFAULT_CONTENT_TEXTURE));
-        var craftingTexture = ResourceLocation.parse(GsonHelper.getAsString(json, "crafting_texture", Data.Book.DEFAULT_CRAFTING_TEXTURE));
-        var turnPageSound = ResourceLocation.parse(GsonHelper.getAsString(json, "turn_page_sound", Data.Book.DEFAULT_PAGE_TURN_SOUND));
+        var bookContentTexture = Identifier.parse(GsonHelper.getAsString(json, "book_content_texture", Data.Book.DEFAULT_CONTENT_TEXTURE));
+        var craftingTexture = Identifier.parse(GsonHelper.getAsString(json, "crafting_texture", Data.Book.DEFAULT_CRAFTING_TEXTURE));
+        var turnPageSound = Identifier.parse(GsonHelper.getAsString(json, "turn_page_sound", Data.Book.DEFAULT_PAGE_TURN_SOUND));
         var defaultTitleColor = GsonHelper.getAsInt(json, "default_title_color", 0xFF000000);
         var categoryButtonIconScale = GsonHelper.getAsFloat(json, "category_button_icon_scale", 1.0f);
         var autoAddReadConditions = GsonHelper.getAsBoolean(json, "auto_add_read_conditions", false);
@@ -214,17 +214,17 @@ public class Book {
         var searchButtonYOffset = GsonHelper.getAsInt(json, "search_button_y_offset", 0);
         var readAllButtonYOffset = GsonHelper.getAsInt(json, "read_all_button_y_offset", 0);
 
-        ResourceLocation leafletEntry = null;
+        Identifier leafletEntry = null;
         if (json.has("leaflet_entry")) {
             var leafletEntryPath = GsonHelper.getAsString(json, "leaflet_entry");
             //leaflet entries can be without a namespace, in which case we use the book namespace.
             leafletEntry = leafletEntryPath.contains(":") ?
-                    ResourceLocation.parse(leafletEntryPath) :
-                    ResourceLocation.fromNamespaceAndPath(id.getNamespace(), leafletEntryPath);
+                    Identifier.parse(leafletEntryPath) :
+                    Identifier.fromNamespaceAndPath(id.getNamespace(), leafletEntryPath);
         }
 
         var pageDisplayMode = PageDisplayMode.byName(GsonHelper.getAsString(json, "page_display_mode", PageDisplayMode.DOUBLE_PAGE.getSerializedName()));
-        var singlePageTexture = ResourceLocation.parse(GsonHelper.getAsString(json, "single_page_texture", Data.Book.DEFAULT_SINGLE_PAGE_TEXTURE));
+        var singlePageTexture = Identifier.parse(GsonHelper.getAsString(json, "single_page_texture", Data.Book.DEFAULT_SINGLE_PAGE_TEXTURE));
 
         var allowOpenBooksWithInvalidLinks = GsonHelper.getAsBoolean(json, "allow_open_book_with_invalid_links", false);
 
@@ -236,7 +236,7 @@ public class Book {
 
 
     @SuppressWarnings("deprecation")
-    public static Book fromNetwork(ResourceLocation id, RegistryFriendlyByteBuf buffer) {
+    public static Book fromNetwork(Identifier id, RegistryFriendlyByteBuf buffer) {
         var name = buffer.readUtf();
         var description = BookTextHolder.fromNetwork(buffer);
         var tooltip = buffer.readUtf();
@@ -389,7 +389,7 @@ public class Book {
         return this.autoAddReadConditions;
     }
 
-    public ResourceLocation getTurnPageSound() {
+    public Identifier getTurnPageSound() {
         return this.turnPageSound;
     }
 
@@ -401,7 +401,7 @@ public class Book {
         return this.categoryButtonIconScale;
     }
 
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return this.id;
     }
 
@@ -413,11 +413,11 @@ public class Book {
         this.categories.putIfAbsent(category.id, category);
     }
 
-    public BookCategory getCategory(ResourceLocation id) {
+    public BookCategory getCategory(Identifier id) {
         return this.categories.get(id);
     }
 
-    public Map<ResourceLocation, BookCategory> getCategories() {
+    public Map<Identifier, BookCategory> getCategories() {
         return this.categories;
     }
 
@@ -429,11 +429,11 @@ public class Book {
         this.entries.putIfAbsent(entry.getId(), entry);
     }
 
-    public BookEntry getEntry(ResourceLocation id) {
+    public BookEntry getEntry(Identifier id) {
         return this.entries.get(id);
     }
 
-    public Map<ResourceLocation, BookEntry> getEntries() {
+    public Map<Identifier, BookEntry> getEntries() {
         return this.entries;
     }
 
@@ -441,11 +441,11 @@ public class Book {
         this.commands.putIfAbsent(command.id, command);
     }
 
-    public Map<ResourceLocation, BookCommand> getCommands() {
+    public Map<Identifier, BookCommand> getCommands() {
         return this.commands;
     }
 
-    public BookCommand getCommand(ResourceLocation id) {
+    public BookCommand getCommand(Identifier id) {
         return this.commands.get(id);
     }
 
@@ -465,15 +465,15 @@ public class Book {
         return this.creativeTab;
     }
 
-    public ResourceLocation getBookOverviewTexture() {
+    public Identifier getBookOverviewTexture() {
         return this.bookOverviewTexture;
     }
 
-    public ResourceLocation getFont() {
+    public Identifier getFont() {
         return this.font;
     }
 
-    public ResourceLocation getFrameTexture() {
+    public Identifier getFrameTexture() {
         return this.frameTexture;
     }
 
@@ -494,19 +494,19 @@ public class Book {
     }
 
     @Nullable
-    public ResourceLocation getCustomBookItem() {
+    public Identifier getCustomBookItem() {
         return this.customBookItem;
     }
 
-    public ResourceLocation getCraftingTexture() {
+    public Identifier getCraftingTexture() {
         return this.craftingTexture;
     }
 
-    public ResourceLocation getBookContentTexture() {
+    public Identifier getBookContentTexture() {
         return this.bookContentTexture;
     }
 
-    public ResourceLocation getModel() {
+    public Identifier getModel() {
         return this.model;
     }
 
@@ -557,7 +557,7 @@ public class Book {
         return this.readAllButtonYOffset;
     }
 
-    public ResourceLocation getLeafletEntry() {
+    public Identifier getLeafletEntry() {
         return this.leafletEntry;
     }
 
@@ -574,7 +574,7 @@ public class Book {
         return this.pageDisplayMode;
     }
 
-    public ResourceLocation getSinglePageTexture() {
+    public Identifier getSinglePageTexture() {
         return this.singlePageTexture;
     }
 

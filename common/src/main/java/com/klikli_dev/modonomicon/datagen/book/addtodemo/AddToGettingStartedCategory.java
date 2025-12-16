@@ -8,7 +8,7 @@ import com.klikli_dev.modonomicon.api.datagen.AddToBookSubProvider;
 import com.klikli_dev.modonomicon.api.datagen.AddToCategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryParentModel;
 import com.klikli_dev.modonomicon.datagen.book.addtodemo.gettingstarted.SecondAboutModEntry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 
 public class AddToGettingStartedCategory extends AddToCategoryProvider {
@@ -55,7 +55,7 @@ public class AddToGettingStartedCategory extends AddToCategoryProvider {
     @Override
     protected void generateEntries() {
         var aboutModEntry = new SecondAboutModEntry(this).generate('b');
-        aboutModEntry.withParent(BookEntryParentModel.create(ResourceLocation.fromNamespaceAndPath("theurgy", "getting_started/intro")));
+        aboutModEntry.withParent(BookEntryParentModel.create(Identifier.fromNamespaceAndPath("theurgy", "getting_started/intro")));
     }
 
     @Override

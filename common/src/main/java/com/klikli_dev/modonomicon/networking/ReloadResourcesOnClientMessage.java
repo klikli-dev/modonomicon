@@ -12,14 +12,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 public class ReloadResourcesOnClientMessage implements Message {
 
     public static final ReloadResourcesOnClientMessage INSTANCE = new ReloadResourcesOnClientMessage();
 
-    public static final Type<ReloadResourcesOnClientMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "reload_resources_on_client"));
+    public static final Type<ReloadResourcesOnClientMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "reload_resources_on_client"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ReloadResourcesOnClientMessage> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 

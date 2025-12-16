@@ -25,7 +25,7 @@ import net.minecraft.client.resources.metadata.gui.GuiSpriteScaling;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -84,7 +84,7 @@ public class FluidRenderHelper {
     private static Optional<TextureAtlasSprite> getStillFluidSprite(FluidStack fluidStack) {
         Fluid fluid = fluidStack.getFluid();
         IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluid);
-        ResourceLocation fluidStill = renderProperties.getStillTexture(fluidStack);
+        Identifier fluidStill = renderProperties.getStillTexture(fluidStack);
 
         //noinspection deprecation
         TextureAtlasSprite sprite = Minecraft.getInstance()
@@ -133,9 +133,9 @@ public class FluidRenderHelper {
         tooltip.add(displayName);
 
         if (tooltipFlag.isAdvanced()) {
-            ResourceLocation resourceLocation = BuiltInRegistries.FLUID.getKey(fluid);
-            if (resourceLocation != null) {
-                MutableComponent advancedId = Component.literal(resourceLocation.toString())
+            Identifier Identifier = BuiltInRegistries.FLUID.getKey(fluid);
+            if (Identifier != null) {
+                MutableComponent advancedId = Component.literal(Identifier.toString())
                         .withStyle(ChatFormatting.DARK_GRAY);
                 tooltip.add(advancedId);
             }

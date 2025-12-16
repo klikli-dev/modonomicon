@@ -11,12 +11,12 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.api.datagen.book.BookTextHolderModel;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class BookMultiblockPageModel extends BookPageModel<BookMultiblockPageModel> {
     protected BookTextHolderModel multiblockName = new BookTextHolderModel("");
     protected BookTextHolderModel text = new BookTextHolderModel("");
-    protected ResourceLocation multiblockId = null;
+    protected Identifier multiblockId = null;
     protected boolean showVisualizeButton = true;
 
     protected BookMultiblockPageModel() {
@@ -31,7 +31,7 @@ public class BookMultiblockPageModel extends BookPageModel<BookMultiblockPageMod
         return this.multiblockName;
     }
 
-    public ResourceLocation getMultiblockId() {
+    public Identifier getMultiblockId() {
         return this.multiblockId;
     }
 
@@ -44,7 +44,7 @@ public class BookMultiblockPageModel extends BookPageModel<BookMultiblockPageMod
     }
 
     @Override
-    public JsonObject toJson(ResourceLocation entryId, HolderLookup.Provider provider) {
+    public JsonObject toJson(Identifier entryId, HolderLookup.Provider provider) {
         var json = super.toJson(entryId, provider);
         json.add("multiblock_name", this.multiblockName.toJson(provider));
         json.add("text", this.text.toJson(provider));
@@ -69,7 +69,7 @@ public class BookMultiblockPageModel extends BookPageModel<BookMultiblockPageMod
         return this;
     }
 
-    public BookMultiblockPageModel withMultiblockId(ResourceLocation multiblockId) {
+    public BookMultiblockPageModel withMultiblockId(Identifier multiblockId) {
         this.multiblockId = multiblockId;
         return this;
     }

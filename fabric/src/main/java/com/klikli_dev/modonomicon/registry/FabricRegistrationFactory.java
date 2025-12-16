@@ -11,7 +11,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -57,7 +57,7 @@ public class FabricRegistrationFactory implements RegistrationProvider.Factory {
         @Override
         @SuppressWarnings("unchecked")
         public <I extends T> RegistryObject<I> register(String name, Supplier<? extends I> supplier) {
-            final var rl = ResourceLocation.fromNamespaceAndPath(this.modId, name);
+            final var rl = Identifier.fromNamespaceAndPath(this.modId, name);
             final var obj = Registry.register(this.registry, rl, supplier.get());
             final var ro = new RegistryObject<I>() {
                 final ResourceKey<I> key = ResourceKey.create((ResourceKey<? extends Registry<I>>) Provider.this.registry.key(), rl);
@@ -68,7 +68,7 @@ public class FabricRegistrationFactory implements RegistrationProvider.Factory {
                 }
 
                 @Override
-                public ResourceLocation getId() {
+                public Identifier getId() {
                     return rl;
                 }
 

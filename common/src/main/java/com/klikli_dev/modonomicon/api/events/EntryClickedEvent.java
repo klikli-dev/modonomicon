@@ -6,21 +6,21 @@ package com.klikli_dev.modonomicon.api.events;
 
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * An event that is fired on the client-side when an entry is clicked in the book.
  * If the event is cancelled by a listener, the entry will not be displayed.
  */
 public class EntryClickedEvent extends ModonomiconEvent {
-    protected ResourceLocation bookId;
-    protected ResourceLocation entryId;
+    protected Identifier bookId;
+    protected Identifier entryId;
 
     protected MouseButtonEvent mouseButtonEvent;
 
     protected EntryDisplayState displayState;
 
-    public EntryClickedEvent(ResourceLocation bookId, ResourceLocation entryId, MouseButtonEvent mouseButtonEvent, EntryDisplayState displayState) {
+    public EntryClickedEvent(Identifier bookId, Identifier entryId, MouseButtonEvent mouseButtonEvent, EntryDisplayState displayState) {
         super(true);
 
         this.bookId = bookId;
@@ -29,11 +29,11 @@ public class EntryClickedEvent extends ModonomiconEvent {
         this.displayState = displayState;
     }
 
-    public ResourceLocation getBookId() {
+    public Identifier getBookId() {
         return this.bookId;
     }
 
-    public ResourceLocation getEntryId() {
+    public Identifier getEntryId() {
         return this.entryId;
     }
 

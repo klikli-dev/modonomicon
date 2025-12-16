@@ -13,7 +13,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 /**
@@ -29,7 +29,7 @@ public class BookNoneCondition extends BookCondition {
         super(component);
     }
 
-    public static BookNoneCondition fromJson(ResourceLocation conditionParentId, JsonObject json, HolderLookup.Provider provider) {
+    public static BookNoneCondition fromJson(Identifier conditionParentId, JsonObject json, HolderLookup.Provider provider) {
         var tooltip = tooltipFromJson(json, provider);
         return new BookNoneCondition(tooltip);
     }
@@ -40,7 +40,7 @@ public class BookNoneCondition extends BookCondition {
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return Condition.NONE;
     }
 

@@ -30,7 +30,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.*;
@@ -38,11 +38,11 @@ import java.util.stream.Collectors;
 
 public class BookUnlockStates {
     public static final Codec<BookUnlockStates> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.unboundedMap(ResourceLocation.CODEC, Codecs.set(ResourceLocation.CODEC)).fieldOf("readEntries").forGetter((s) -> s.readEntries),
-            Codec.unboundedMap(ResourceLocation.CODEC, Codec.unboundedMap(ResourceLocation.CODEC, Codecs.set(Codec.INT))).fieldOf("unlockedPages").forGetter((s) -> s.unlockedPages),
-            Codec.unboundedMap(ResourceLocation.CODEC, Codecs.set(ResourceLocation.CODEC)).fieldOf("unlockedEntries").forGetter((s) -> s.unlockedEntries),
-            Codec.unboundedMap(ResourceLocation.CODEC, Codecs.set(ResourceLocation.CODEC)).fieldOf("unlockedCategories").forGetter((s) -> s.unlockedCategories),
-            Codec.unboundedMap(ResourceLocation.CODEC, Codec.unboundedMap(ResourceLocation.CODEC, Codec.INT)).fieldOf("usedCommands").forGetter((s) -> s.usedCommands)
+            Codec.unboundedMap(Identifier.CODEC, Codecs.set(Identifier.CODEC)).fieldOf("readEntries").forGetter((s) -> s.readEntries),
+            Codec.unboundedMap(Identifier.CODEC, Codec.unboundedMap(Identifier.CODEC, Codecs.set(Codec.INT))).fieldOf("unlockedPages").forGetter((s) -> s.unlockedPages),
+            Codec.unboundedMap(Identifier.CODEC, Codecs.set(Identifier.CODEC)).fieldOf("unlockedEntries").forGetter((s) -> s.unlockedEntries),
+            Codec.unboundedMap(Identifier.CODEC, Codecs.set(Identifier.CODEC)).fieldOf("unlockedCategories").forGetter((s) -> s.unlockedCategories),
+            Codec.unboundedMap(Identifier.CODEC, Codec.unboundedMap(Identifier.CODEC, Codec.INT)).fieldOf("usedCommands").forGetter((s) -> s.usedCommands)
     ).apply(instance, BookUnlockStates::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BookUnlockStates> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC);
@@ -51,37 +51,37 @@ public class BookUnlockStates {
     /**
      * Map Book ID to read entry IDs
      */
-    public Map<ResourceLocation, Set<ResourceLocation>> readEntries;
+    public Map<Identifier, Set<Identifier>> readEntries;
 
     /**
      * Map Book ID to entry IDs to lists of unlocked pages
      */
-    public Map<ResourceLocation, Map<ResourceLocation, Set<Integer>>> unlockedPages;
+    public Map<Identifier, Map<Identifier, Set<Integer>>> unlockedPages;
 
     /**
      * Map Book ID to unlocked entry IDs
      */
-    public Map<ResourceLocation, Set<ResourceLocation>> unlockedEntries;
+    public Map<Identifier, Set<Identifier>> unlockedEntries;
 
     /**
      * Map Book ID to unlocked categories IDs
      */
-    public Map<ResourceLocation, Set<ResourceLocation>> unlockedCategories;
+    public Map<Identifier, Set<Identifier>> unlockedCategories;
 
     /**
      * Map Book ID to commands used. This is never wiped to avoid reusing reward commands.
      */
-    public Map<ResourceLocation, Map<ResourceLocation, Integer>> usedCommands;
+    public Map<Identifier, Map<Identifier, Integer>> usedCommands;
 
     public BookUnlockStates() {
         this(Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap());
     }
 
-    public BookUnlockStates(Map<ResourceLocation, Set<ResourceLocation>> readEntries,
-                            Map<ResourceLocation, Map<ResourceLocation, Set<Integer>>> unlockedPages,
-                            Map<ResourceLocation, Set<ResourceLocation>> unlockedEntries,
-                            Map<ResourceLocation, Set<ResourceLocation>> unlockedCategories,
-                            Map<ResourceLocation, Map<ResourceLocation, Integer>> usedCommands) {
+    public BookUnlockStates(Map<Identifier, Set<Identifier>> readEntries,
+                            Map<Identifier, Map<Identifier, Set<Integer>>> unlockedPages,
+                            Map<Identifier, Set<Identifier>> unlockedEntries,
+                            Map<Identifier, Set<Identifier>> unlockedCategories,
+                            Map<Identifier, Map<Identifier, Integer>> usedCommands) {
         this.readEntries = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>(readEntries));
 
         this.unlockedPages = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
@@ -297,8 +297,8 @@ public class BookUnlockStates {
         //Do not reset the commands!
     }
 
-    public List<ResourceLocation> getBooks() {
-        var books = new ObjectOpenHashSet<ResourceLocation>();
+    public List<Identifier> getBooks() {
+        var books = new ObjectOpenHashSet<Identifier>();
         books.addAll(this.readEntries.keySet());
         books.addAll(this.unlockedPages.keySet());
         books.addAll(this.unlockedEntries.keySet());
@@ -346,10 +346,10 @@ public class BookUnlockStates {
             if (book == null)
                 return null;
 
-            var unlockedCategories = new ObjectOpenHashSet<ResourceLocation>();
-            var unlockedEntries = new ObjectOpenHashSet<ResourceLocation>();
-            var unlockedPages = new Object2ObjectOpenHashMap<ResourceLocation, Set<Integer>>();
-            var readEntries = new ObjectOpenHashSet<ResourceLocation>();
+            var unlockedCategories = new ObjectOpenHashSet<Identifier>();
+            var unlockedEntries = new ObjectOpenHashSet<Identifier>();
+            var unlockedPages = new Object2ObjectOpenHashMap<Identifier, Set<Integer>>();
+            var readEntries = new ObjectOpenHashSet<Identifier>();
 
             var unlockedCategoriesSize = buf.readVarInt();
             for (var i = 0; i < unlockedCategoriesSize; i++) {

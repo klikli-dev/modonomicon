@@ -8,8 +8,8 @@ package com.klikli_dev.modonomicon.data;
 
 import com.google.gson.JsonObject;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public interface BookEntryJsonLoader<T> {
-    T fromJson(ResourceLocation id, JsonObject json, boolean autoAddReadConditions, HolderLookup.Provider provider);
+    T fromJson(Identifier id, JsonObject json, boolean autoAddReadConditions, HolderLookup.Provider provider);
 }

@@ -11,7 +11,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.api.datagen.book.BookTextHolderModel;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class BookEntityPageModel extends BookPageModel<BookEntityPageModel> {
     protected BookTextHolderModel entityName = new BookTextHolderModel("");
@@ -59,7 +59,7 @@ public class BookEntityPageModel extends BookPageModel<BookEntityPageModel> {
     }
 
     @Override
-    public JsonObject toJson(ResourceLocation entryId, HolderLookup.Provider provider) {
+    public JsonObject toJson(Identifier entryId, HolderLookup.Provider provider) {
         var json = super.toJson(entryId, provider);
         json.add("name", this.entityName.toJson(provider));
         json.add("text", this.text.toJson(provider));

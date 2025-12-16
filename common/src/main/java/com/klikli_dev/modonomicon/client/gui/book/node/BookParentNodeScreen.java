@@ -37,7 +37,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -109,7 +109,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
         //So we do nothing
     }
 
-    public ResourceLocation getBookOverviewTexture() {
+    public Identifier getBookOverviewTexture() {
         return this.book.getBookOverviewTexture();
     }
 

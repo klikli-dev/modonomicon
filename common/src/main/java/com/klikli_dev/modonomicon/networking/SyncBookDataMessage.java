@@ -19,7 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,13 +28,13 @@ import java.util.Map;
 public class SyncBookDataMessage implements Message {
 
 
-    public static final Type<SyncBookDataMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "sync_book_data"));
+    public static final Type<SyncBookDataMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "sync_book_data"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncBookDataMessage> STREAM_CODEC = CustomPacketPayload.codec(SyncBookDataMessage::encode, SyncBookDataMessage::new);
 
     //We use an array map here because we are not actually doing any lookups, we just iterate over the values
-    public Map<ResourceLocation, Book> books = new Object2ObjectArrayMap<>();
+    public Map<Identifier, Book> books = new Object2ObjectArrayMap<>();
 
-    public SyncBookDataMessage(Map<ResourceLocation, Book> books) {
+    public SyncBookDataMessage(Map<Identifier, Book> books) {
         //We use an array map here because we are not actually doing any lookups, we just iterate over the values
         this.books = new Object2ObjectArrayMap<>(books);
     }
@@ -73,13 +73,13 @@ public class SyncBookDataMessage implements Message {
         //build books
         int bookCount = buf.readVarInt();
         for (int i = 0; i < bookCount; i++) {
-            ResourceLocation bookId = buf.readResourceLocation();
+            Identifier bookId = buf.readResourceLocation();
             Book book = Book.fromNetwork(bookId, buf);
             this.books.put(bookId, book);
 
             int categoryCount = buf.readVarInt();
             for (int j = 0; j < categoryCount; j++) {
-                ResourceLocation categoryId = buf.readResourceLocation();
+                Identifier categoryId = buf.readResourceLocation();
                 BookCategory category = BookCategory.fromNetwork(categoryId, buf);
 
                 //link category and book
@@ -87,7 +87,7 @@ public class SyncBookDataMessage implements Message {
 
                 int entryCount = buf.readVarInt();
                 for (int k = 0; k < entryCount; k++) {
-                    ResourceLocation entryTypeId = buf.readResourceLocation();
+                    Identifier entryTypeId = buf.readResourceLocation();
                     BookEntry entry = LoaderRegistry.getEntryNetworkLoader(entryTypeId).fromNetwork(buf);
 
                     //link entry and category
@@ -97,7 +97,7 @@ public class SyncBookDataMessage implements Message {
 
             int commandCount = buf.readVarInt();
             for (int j = 0; j < commandCount; j++) {
-                ResourceLocation commandId = buf.readResourceLocation();
+                Identifier commandId = buf.readResourceLocation();
                 BookCommand command = BookCommand.fromNetwork(commandId, buf);
 
                 //link command and book

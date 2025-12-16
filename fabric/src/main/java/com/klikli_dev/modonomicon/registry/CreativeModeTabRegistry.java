@@ -15,7 +15,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
@@ -39,7 +39,7 @@ public class CreativeModeTabRegistry {
         BookDataManager.get().getBooks().values().forEach(b -> {
             if (tabKey == CreativeModeTabs.SEARCH ||
                     MODONOMICON == group ||
-                    BuiltInRegistries.CREATIVE_MODE_TAB.getValue(ResourceLocation.parse(b.getCreativeTab())) == group) {
+                    BuiltInRegistries.CREATIVE_MODE_TAB.getValue(Identifier.parse(b.getCreativeTab())) == group) {
                 if (b.generateBookItem()) {
                     ItemStack stack = new ItemStack(ItemRegistry.MODONOMICON.get());
 

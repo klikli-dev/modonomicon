@@ -10,7 +10,7 @@ import com.klikli_dev.modonomicon.util.StreamCodecs;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -18,7 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class BookClosedMessage implements Message, CustomPacketPayload {
-    public static final Type<BookClosedMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "book_closed"));
+    public static final Type<BookClosedMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "book_closed"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BookClosedMessage> STREAM_CODEC = StreamCodec.composite(
             StreamCodecs.enumCodec(InteractionHand.class),

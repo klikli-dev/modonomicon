@@ -7,11 +7,11 @@
 package com.klikli_dev.modonomicon.integration;
 
 import com.klikli_dev.modonomicon.platform.services.PatchouliHelper;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class FabricPatchouliHelper implements PatchouliHelper {
     @Override
-    public void openEntry(ResourceLocation book, ResourceLocation entry, int page) {
+    public void openEntry(Identifier book, Identifier entry, int page) {
         ModonomiconPatchouliIntegration.openEntry(book, entry, page);
     }
 }

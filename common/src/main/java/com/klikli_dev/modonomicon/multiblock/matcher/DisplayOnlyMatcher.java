@@ -17,7 +17,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,7 +29,7 @@ import java.util.Objects;
  * Matches any block, including air, but displays a block in the multiblock preview.
  */
 public class DisplayOnlyMatcher implements StateMatcher {
-    public static final ResourceLocation TYPE = Modonomicon.loc("display");
+    public static final Identifier TYPE = Modonomicon.loc("display");
 
     private final BlockState displayState;
     private final TriPredicate<BlockGetter, BlockPos, BlockState> predicate;
@@ -58,7 +58,7 @@ public class DisplayOnlyMatcher implements StateMatcher {
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return TYPE;
     }
 

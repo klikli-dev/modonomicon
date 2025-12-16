@@ -13,7 +13,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.phys.Vec2;
 
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookEntryModel {
-    protected ResourceLocation id;
+    protected Identifier id;
     protected BookCategoryModel category;
     protected List<BookEntryParentModel> parents = new ArrayList<>();
     protected String name;
@@ -36,13 +36,13 @@ public class BookEntryModel {
     protected boolean showWhenAnyParentUnlocked;
     protected List<BookPageModel<?>> pages = new ArrayList<>();
     protected BookConditionModel<?> condition;
-    protected ResourceLocation categoryToOpen;
-    protected ResourceLocation commandToRunOnFirstRead;
-    protected ResourceLocation entryToOpen;
+    protected Identifier categoryToOpen;
+    protected Identifier commandToRunOnFirstRead;
+    protected Identifier entryToOpen;
 
     protected int sortNumber = -1;
 
-    protected BookEntryModel(ResourceLocation id, String name) {
+    protected BookEntryModel(Identifier id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -51,7 +51,7 @@ public class BookEntryModel {
      * @param id   The entry ID, e.g. "modonomicon:features/test". The ID must be unique within the book.
      * @param name Should be a translation key.
      */
-    public static BookEntryModel create(ResourceLocation id, String name) {
+    public static BookEntryModel create(Identifier id, String name) {
         return new BookEntryModel(id, name);
     }
 
@@ -133,19 +133,19 @@ public class BookEntryModel {
         return this.condition;
     }
 
-    public ResourceLocation getCategoryToOpen() {
+    public Identifier getCategoryToOpen() {
         return this.categoryToOpen;
     }
 
-    public ResourceLocation getCommandToRunOnFirstRead() {
+    public Identifier getCommandToRunOnFirstRead() {
         return this.commandToRunOnFirstRead;
     }
 
-    public ResourceLocation getEntryToOpen() {
+    public Identifier getEntryToOpen() {
         return this.entryToOpen;
     }
 
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return this.id;
     }
 
@@ -203,7 +203,7 @@ public class BookEntryModel {
      *
      * @param id the entry ID, e.g. "modonomicon:features/image"
      */
-    public BookEntryModel withId(ResourceLocation id) {
+    public BookEntryModel withId(Identifier id) {
         this.id = id;
         return this;
     }
@@ -279,7 +279,7 @@ public class BookEntryModel {
     /**
      * Sets the entry's icon as the given texture resource location
      */
-    public BookEntryModel withIcon(ResourceLocation texture) {
+    public BookEntryModel withIcon(Identifier texture) {
         this.icon = BookIconModel.create(texture);
         return this;
     }
@@ -287,7 +287,7 @@ public class BookEntryModel {
     /**
      * Sets the entry's icon as the given texture resource location with the given size
      */
-    public BookEntryModel withIcon(ResourceLocation texture, int width, int height) {
+    public BookEntryModel withIcon(Identifier texture, int width, int height) {
         this.icon = BookIconModel.create(texture, width, height);
         return this;
     }
@@ -427,7 +427,7 @@ public class BookEntryModel {
      *
      * @param categoryToOpen The category to open when this entry is clicked. Should be a resource location (e.g.: "modonomicon:features").
      */
-    public BookEntryModel withCategoryToOpen(ResourceLocation categoryToOpen) {
+    public BookEntryModel withCategoryToOpen(Identifier categoryToOpen) {
         this.categoryToOpen = categoryToOpen;
         return this;
     }
@@ -442,7 +442,7 @@ public class BookEntryModel {
     /**
      * The command to run when this entry is first read.
      */
-    public BookEntryModel withCommandToRunOnFirstRead(ResourceLocation bookCommandModel) {
+    public BookEntryModel withCommandToRunOnFirstRead(Identifier bookCommandModel) {
         this.commandToRunOnFirstRead = bookCommandModel;
         return this;
     }
@@ -452,7 +452,7 @@ public class BookEntryModel {
      *
      * @param entryToOpen The entry to open when this entry is clicked. Should be a resource location (e.g.: "modonomicon:features/image").
      */
-    public BookEntryModel withEntryToOpen(ResourceLocation entryToOpen) {
+    public BookEntryModel withEntryToOpen(Identifier entryToOpen) {
         this.entryToOpen = entryToOpen;
         return this;
     }

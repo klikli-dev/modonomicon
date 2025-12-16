@@ -15,7 +15,7 @@ import com.klikli_dev.modonomicon.datagen.book.demo.FeaturesCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.FormattingCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.IndexModeCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionRootEntry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class DemoBook extends SingleBookSubProvider {
 
@@ -42,7 +42,7 @@ public class DemoBook extends SingleBookSubProvider {
                 .withAllowedEntry("modonomicon:features/command");
         this.add(commandEntryLinkCommand.getSuccessMessage(), "You got wheat, because clicking is cool!");
 
-        return book.withModel(ResourceLocation.parse("modonomicon:modonomicon_green"))
+        return book.withModel(Identifier.parse("modonomicon:modonomicon_green"))
                 .withBookTextOffsetX(5)
                 .withBookTextOffsetY(0) //no top offset
                 .withBookTextOffsetWidth(-5)

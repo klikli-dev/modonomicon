@@ -20,7 +20,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,15 +33,15 @@ import java.util.Objects;
  */
 public class PredicateMatcher implements StateMatcher {
 
-    public static final ResourceLocation TYPE = Modonomicon.loc("predicate");
+    public static final Identifier TYPE = Modonomicon.loc("predicate");
 
     private final BlockState displayState;
-    private final ResourceLocation predicateId;
+    private final Identifier predicateId;
     private final Supplier<TriPredicate<BlockGetter, BlockPos, BlockState>> predicate;
 
     private final boolean countsTowardsTotalBlocks;
 
-    protected PredicateMatcher(BlockState displayState, ResourceLocation predicateId, boolean countsTowardsTotalBlocks) {
+    protected PredicateMatcher(BlockState displayState, Identifier predicateId, boolean countsTowardsTotalBlocks) {
         this.displayState = displayState;
         this.predicateId = predicateId;
         this.predicate = Suppliers.memoize(() -> LoaderRegistry.getPredicate(this.predicateId));
@@ -51,7 +51,7 @@ public class PredicateMatcher implements StateMatcher {
     public static PredicateMatcher fromJson(JsonObject json, HolderLookup.Provider provider) {
         try {
             var displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(GsonHelper.getAsString(json, "display")), false).blockState();
-            var predicateId = ResourceLocation.parse(GsonHelper.getAsString(json, "predicate"));
+            var predicateId = Identifier.parse(GsonHelper.getAsString(json, "predicate"));
             var countsTowardsTotalBlocks = GsonHelper.getAsBoolean(json, "counts_towards_total_blocks", true);
             return new PredicateMatcher(displayState, predicateId, countsTowardsTotalBlocks);
         } catch (CommandSyntaxException e) {
@@ -70,12 +70,12 @@ public class PredicateMatcher implements StateMatcher {
         }
     }
 
-    public ResourceLocation getPredicateId() {
+    public Identifier getPredicateId() {
         return this.predicateId;
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return TYPE;
     }
 

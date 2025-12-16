@@ -10,21 +10,21 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookNoneConditionModel;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import org.jetbrains.annotations.NotNull;
 
 public class BookPageModel<T extends BookPageModel<T>> {
 
-    protected ResourceLocation type;
+    protected Identifier type;
     protected String anchor = "";
     protected BookConditionModel<?> condition = BookNoneConditionModel.create();
 
-    protected BookPageModel(ResourceLocation type) {
+    protected BookPageModel(Identifier type) {
         this.type = type;
     }
 
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return this.type;
     }
 
@@ -35,7 +35,7 @@ public class BookPageModel<T extends BookPageModel<T>> {
     /**
      * Serializes the model to json.
      */
-    public JsonObject toJson(ResourceLocation entryId, HolderLookup.Provider provider) {
+    public JsonObject toJson(Identifier entryId, HolderLookup.Provider provider) {
         JsonObject json = new JsonObject();
         json.addProperty("type", this.type.toString());
         json.addProperty("anchor", this.anchor);

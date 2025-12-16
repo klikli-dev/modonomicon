@@ -17,7 +17,7 @@ import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +33,7 @@ public class ModonomiconModelProvider extends ModelProvider {
         itemModelGenerator.itemModelOutput.accept(item, ItemModelUtils.plainModel(createFlatItemModel(item, texture, itemModelGenerator)));
     }
 
-    public static ResourceLocation createFlatItemModel(Item item, String texture, ItemModelGenerators itemModelGenerator) {
+    public static Identifier createFlatItemModel(Item item, String texture, ItemModelGenerators itemModelGenerator) {
         return ModelTemplates.FLAT_ITEM.create(ModelLocationUtils.getModelLocation(item),
                 TextureMapping.layer0(Modonomicon.loc("item/" + texture)),
                 itemModelGenerator.modelOutput);

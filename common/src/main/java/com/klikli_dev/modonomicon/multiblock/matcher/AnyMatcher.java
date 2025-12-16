@@ -11,7 +11,7 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Blocks;
 
 /**
@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.Blocks;
  */
 public class AnyMatcher extends DisplayOnlyMatcher {
 
-    public static final ResourceLocation TYPE = Modonomicon.loc("any");
+    public static final Identifier TYPE = Modonomicon.loc("any");
 
     protected AnyMatcher() {
         super(Blocks.AIR.defaultBlockState());
@@ -34,7 +34,7 @@ public class AnyMatcher extends DisplayOnlyMatcher {
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return TYPE;
     }
 

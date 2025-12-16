@@ -11,23 +11,23 @@ import com.klikli_dev.modonomicon.platform.Services;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 public class RequestAdvancementMessage implements Message {
 
-    public static final Type<RequestAdvancementMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "request_advancement"));
+    public static final Type<RequestAdvancementMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "request_advancement"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestAdvancementMessage> STREAM_CODEC = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC,
+            Identifier.STREAM_CODEC,
             (m) -> m.advancementId,
             RequestAdvancementMessage::new
     );
 
-    public ResourceLocation advancementId;
+    public Identifier advancementId;
 
-    public RequestAdvancementMessage(ResourceLocation advancementId) {
+    public RequestAdvancementMessage(Identifier advancementId) {
         this.advancementId = advancementId;
     }
 
