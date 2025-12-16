@@ -65,9 +65,6 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
     public BookParentNodeScreen(Book book) {
         super(Component.literal(""));
 
-        //somehow there are render calls before init(), leaving minecraft null
-        this.minecraft = Minecraft.getInstance();
-
         this.book = book;
 
         this.categories = book.getCategoriesSorted(); //we no longer handle category locking here, is done on init to be able to refresh on unlock

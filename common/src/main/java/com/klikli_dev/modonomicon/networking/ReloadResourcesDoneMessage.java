@@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.Commands;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -18,6 +19,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.repository.PackRepository;
+import net.minecraft.server.permissions.LevelBasedPermissionSet;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.level.storage.WorldData;
 
 import java.util.Collection;
@@ -68,7 +71,7 @@ public class ReloadResourcesDoneMessage implements Message {
     @Override
     public void onServerReceived(MinecraftServer minecraftServer, ServerPlayer player) {
 
-        if (!player.hasPermissions(2)) //same leve las the reload command
+        if (!player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER)) //same leve las the reload command
             return;
 
         //below is copied from ReloadCommand, modified not to need a command source and to only post messages after reload is complete

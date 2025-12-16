@@ -12,10 +12,12 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.*;
 import net.minecraft.util.GsonHelper;
 import org.jetbrains.annotations.Nullable;
 
@@ -94,7 +96,7 @@ public class BookCommand {
         int allowedEntriesSize = buffer.readVarInt();
         Set<Identifier> allowedEntries = new HashSet<>();
         for (int i = 0; i < allowedEntriesSize; i++) {
-            allowedEntries.add(buffer.readResourceLocation());
+            allowedEntries.add(buffer.readIdentifier());
         }
         return new BookCommand(id, command, permissionLevel, maxUses, failureMessage, successMessage, allowedEntries);
     }
@@ -157,7 +159,8 @@ public class BookCommand {
             player.sendSystemMessage(Component.translatable(failureMessage).withStyle(ChatFormatting.RED));
             return;
         } else {
-            var commandSourceStack = new CommandSourceStack(player.commandSource(), player.position(), player.getRotationVector(), player.level(), this.permissionLevel, player.getName().getString(), player.getDisplayName(), player.level().getServer(), player)
+            var commandSourceStack = new CommandSourceStack(player.commandSource(), player.position(), player.getRotationVector(), player.level(),
+                    LevelBasedPermissionSet.GAMEMASTER, player.getName().getString(), player.getDisplayName(), player.level().getServer(), player)
                     .withCallback((success, result) -> {
                         if (success) {
                             BookUnlockStateManager.get().setRunFor(player, this);

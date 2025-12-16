@@ -88,8 +88,6 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
 
         this.parentScreen = parentScreen;
 
-        this.minecraft = Minecraft.getInstance();
-
         this.entry = entry;
 
         this.bookContentTexture = this.parentScreen.getBook().getBookContentTexture();

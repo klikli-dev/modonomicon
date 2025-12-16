@@ -292,6 +292,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
             //if we are horizontally left of the title, exit
 
             //horizontally over and right of the title is handled by font splitter
+            //TODO: ClickableStyleFinder
             return this.font.getSplitter().componentStyleAtWidth(formattedCharSequence, (int) pMouseX - x);
         } else {
             if (title.getComponent() == null) {

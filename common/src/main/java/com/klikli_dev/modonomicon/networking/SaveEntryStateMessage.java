@@ -48,7 +48,7 @@ public class SaveEntryStateMessage implements Message {
     }
 
     private void decode(RegistryFriendlyByteBuf buf) {
-        this.entry = BookDataManager.get().getBook(buf.readResourceLocation()).getEntry(buf.readResourceLocation());
+        this.entry = BookDataManager.get().getBook(buf.readIdentifier()).getEntry(buf.readIdentifier());
         this.openPagesIndex = buf.readVarInt();
     }
 

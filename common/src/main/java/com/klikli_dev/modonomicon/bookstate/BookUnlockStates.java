@@ -312,11 +312,11 @@ public class BookUnlockStates {
 
         var unlockedCategories = this.unlockedCategories.getOrDefault(book.getId(), Set.of());
         buf.writeVarInt(unlockedCategories.size());
-        unlockedCategories.forEach(buf::writeResourceLocation);
+        unlockedCategories.forEach(buf::writeIdentifier);
 
         var unlockedEntries = this.unlockedEntries.getOrDefault(book.getId(), Set.of());
         buf.writeVarInt(unlockedEntries.size());
-        unlockedEntries.forEach(buf::writeResourceLocation);
+        unlockedEntries.forEach(buf::writeIdentifier);
 
         var unlockedPages = this.unlockedPages.getOrDefault(book.getId(), Map.of());
         buf.writeVarInt(unlockedPages.size());
@@ -328,7 +328,7 @@ public class BookUnlockStates {
 
         var readEntries = this.readEntries.getOrDefault(book.getId(), Set.of());
         buf.writeVarInt(readEntries.size());
-        readEntries.forEach(buf::writeResourceLocation);
+        readEntries.forEach(buf::writeIdentifier);
 
         byte[] bytes = new byte[buf.readableBytes()];
         buf.readBytes(bytes);
@@ -353,12 +353,12 @@ public class BookUnlockStates {
 
             var unlockedCategoriesSize = buf.readVarInt();
             for (var i = 0; i < unlockedCategoriesSize; i++) {
-                unlockedCategories.add(buf.readResourceLocation());
+                unlockedCategories.add(buf.readIdentifier());
             }
 
             var unlockedEntriesSize = buf.readVarInt();
             for (var i = 0; i < unlockedEntriesSize; i++) {
-                unlockedEntries.add(buf.readResourceLocation());
+                unlockedEntries.add(buf.readIdentifier());
             }
 
             var unlockedPagesSize = buf.readVarInt();
@@ -375,7 +375,7 @@ public class BookUnlockStates {
 
             var readEntriesSize = buf.readVarInt();
             for (var i = 0; i < readEntriesSize; i++) {
-                readEntries.add(buf.readResourceLocation());
+                readEntries.add(buf.readIdentifier());
             }
 
             unlockedCategories.trim();

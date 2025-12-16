@@ -107,7 +107,7 @@ public class TagMatcher implements StateMatcher {
                 displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(buffer.readUtf()), false).blockState();
             }
 
-            var tag = TagKey.create(Registries.BLOCK, buffer.readResourceLocation());
+            var tag = TagKey.create(Registries.BLOCK, buffer.readIdentifier());
             var props = buffer.readMap((b) -> b.readUtf(), (b) -> b.readUtf());
 
             return new TagMatcher(displayState, () -> tag, () -> props);

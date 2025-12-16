@@ -60,7 +60,7 @@ public class SaveCategoryStateMessage implements Message {
     }
 
     private void decode(RegistryFriendlyByteBuf buf) {
-        this.category = BookDataManager.get().getBook(buf.readResourceLocation()).getCategory(buf.readResourceLocation());
+        this.category = BookDataManager.get().getBook(buf.readIdentifier()).getCategory(buf.readIdentifier());
         this.scrollX = buf.readFloat();
         this.scrollY = buf.readFloat();
         this.targetZoom = buf.readFloat();

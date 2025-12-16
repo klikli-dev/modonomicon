@@ -49,7 +49,7 @@ public class SaveBookStateMessage implements Message {
     }
 
     private void decode(RegistryFriendlyByteBuf buf) {
-        this.book = BookDataManager.get().getBook(buf.readResourceLocation());
+        this.book = BookDataManager.get().getBook(buf.readIdentifier());
         if (buf.readBoolean()) {
             this.openCategory = buf.readIdentifier();
         }

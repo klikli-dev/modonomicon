@@ -45,7 +45,6 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
         EntityRenderer<? super LivingEntity, ?> entityrenderer = erd.getRenderer(livingEntity);
         EntityRenderState entityrenderstate = entityrenderer.createRenderState(livingEntity, 10F);
         entityrenderstate.lightCoords = 15728880;
-        entityrenderstate.hitboxesRenderState = null;
         entityrenderstate.shadowPieces.clear();
         entityrenderstate.outlineColor = 0;
 

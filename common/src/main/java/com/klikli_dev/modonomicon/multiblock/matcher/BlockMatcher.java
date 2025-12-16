@@ -76,7 +76,7 @@ public class BlockMatcher implements StateMatcher {
             if (buffer.readBoolean())
                 displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(buffer.readUtf()), false).blockState();
 
-            var block = BuiltInRegistries.BLOCK.getValue(buffer.readResourceLocation());
+            var block = BuiltInRegistries.BLOCK.getValue(buffer.readIdentifier());
             return new BlockMatcher(displayState, block);
         } catch (CommandSyntaxException e) {
             throw new IllegalArgumentException("Failed to parse BlockMatcher from network.", e);

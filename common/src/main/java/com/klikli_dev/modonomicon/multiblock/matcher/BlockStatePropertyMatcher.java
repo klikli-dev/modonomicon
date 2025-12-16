@@ -76,7 +76,7 @@ public class BlockStatePropertyMatcher implements StateMatcher {
             if (buffer.readBoolean())
                 displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(buffer.readUtf()), false).blockState();
 
-            var block = BuiltInRegistries.BLOCK.getValue(buffer.readResourceLocation());
+            var block = BuiltInRegistries.BLOCK.getValue(buffer.readIdentifier());
             var props = buffer.readMap((b) -> b.readUtf(), (b) -> b.readUtf());
 
 
