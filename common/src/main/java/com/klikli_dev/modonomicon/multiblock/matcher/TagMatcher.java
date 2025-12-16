@@ -166,7 +166,7 @@ public class TagMatcher implements StateMatcher {
         if (this.displayState != null) {
             buffer.writeUtf(BlockStateParser.serialize(this.displayState));
         }
-        buffer.writeResourceLocation(this.tag.get().location());
+        buffer.writeIdentifier(this.tag.get().location());
         buffer.writeMap(this.props.get(), (b, v) -> b.writeUtf(v), (b, v) -> b.writeUtf(v));
     }
 

@@ -49,12 +49,12 @@ public class BookCategoryHasVisibleEntriesCondition extends BookCondition {
         if (this.tooltip != null) {
             ComponentSerialization.STREAM_CODEC.encode(buffer, this.tooltip);
         }
-        buffer.writeResourceLocation(this.categoryId);
+        buffer.writeIdentifier(this.categoryId);
     }
     
     public static BookCategoryHasVisibleEntriesCondition fromNetwork(RegistryFriendlyByteBuf buffer) {
         var tooltip = buffer.readBoolean() ? ComponentSerialization.STREAM_CODEC.decode(buffer) : null;
-        var entryId = buffer.readResourceLocation();
+        var entryId = buffer.readIdentifier();
         return new BookCategoryHasVisibleEntriesCondition(tooltip, entryId);
     }
     

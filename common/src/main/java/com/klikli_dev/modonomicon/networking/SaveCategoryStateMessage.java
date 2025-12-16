@@ -48,14 +48,14 @@ public class SaveCategoryStateMessage implements Message {
     }
 
     private void encode(RegistryFriendlyByteBuf buf) {
-        buf.writeResourceLocation(this.category.getBook().getId());
-        buf.writeResourceLocation(this.category.getId());
+        buf.writeIdentifier(this.category.getBook().getId());
+        buf.writeIdentifier(this.category.getId());
         buf.writeFloat(this.scrollX);
         buf.writeFloat(this.scrollY);
         buf.writeFloat(this.targetZoom);
         buf.writeBoolean(this.openEntry != null);
         if (this.openEntry != null) {
-            buf.writeResourceLocation(this.openEntry);
+            buf.writeIdentifier(this.openEntry);
         }
     }
 
@@ -65,7 +65,7 @@ public class SaveCategoryStateMessage implements Message {
         this.scrollY = buf.readFloat();
         this.targetZoom = buf.readFloat();
         if (buf.readBoolean()) {
-            this.openEntry = buf.readResourceLocation();
+            this.openEntry = buf.readIdentifier();
         }
     }
 

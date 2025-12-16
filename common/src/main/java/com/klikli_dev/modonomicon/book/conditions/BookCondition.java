@@ -49,13 +49,13 @@ public abstract class BookCondition {
     }
 
     public static BookCondition fromNetwork(RegistryFriendlyByteBuf buf) {
-        var type = buf.readResourceLocation();
+        var type = buf.readIdentifier();
         var loader = LoaderRegistry.getConditionNetworkLoader(type);
         return loader.fromNetwork(buf);
     }
 
     public static void toNetwork(BookCondition condition, RegistryFriendlyByteBuf buf) {
-        buf.writeResourceLocation(condition.getType());
+        buf.writeIdentifier(condition.getType());
         condition.toNetwork(buf);
     }
 

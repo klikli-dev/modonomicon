@@ -41,17 +41,17 @@ public class SaveBookStateMessage implements Message {
     }
 
     private void encode(RegistryFriendlyByteBuf buf) {
-        buf.writeResourceLocation(this.book.getId());
+        buf.writeIdentifier(this.book.getId());
         buf.writeBoolean(this.openCategory != null);
         if (this.openCategory != null) {
-            buf.writeResourceLocation(this.openCategory);
+            buf.writeIdentifier(this.openCategory);
         }
     }
 
     private void decode(RegistryFriendlyByteBuf buf) {
         this.book = BookDataManager.get().getBook(buf.readResourceLocation());
         if (buf.readBoolean()) {
-            this.openCategory = buf.readResourceLocation();
+            this.openCategory = buf.readIdentifier();
         }
     }
 

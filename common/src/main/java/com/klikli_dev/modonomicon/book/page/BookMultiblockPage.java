@@ -64,7 +64,7 @@ public class BookMultiblockPage extends BookPage {
 
     public static BookMultiblockPage fromNetwork(RegistryFriendlyByteBuf buffer) {
         var multiblockName = BookTextHolder.fromNetwork(buffer);
-        var multiblockId = buffer.readResourceLocation();
+        var multiblockId = buffer.readIdentifier();
         var text = BookTextHolder.fromNetwork(buffer);
         var showVisualizeButton = buffer.readBoolean();
         var anchor = buffer.readUtf();
@@ -122,7 +122,7 @@ public class BookMultiblockPage extends BookPage {
     @Override
     public void toNetwork(RegistryFriendlyByteBuf buffer) {
         this.multiblockName.toNetwork(buffer);
-        buffer.writeResourceLocation(this.multiblockId);
+        buffer.writeIdentifier(this.multiblockId);
         this.text.toNetwork(buffer);
         buffer.writeBoolean(this.showVisualizeButton);
         super.toNetwork(buffer);

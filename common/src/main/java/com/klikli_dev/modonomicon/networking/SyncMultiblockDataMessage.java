@@ -40,8 +40,8 @@ public class SyncMultiblockDataMessage implements Message {
     private void encode(RegistryFriendlyByteBuf buf) {
         buf.writeVarInt(this.multiblocks.size());
         for (var multiblock : this.multiblocks.values()) {
-            buf.writeResourceLocation(multiblock.getType());
-            buf.writeResourceLocation(multiblock.getId());
+            buf.writeIdentifier(multiblock.getType());
+            buf.writeIdentifier(multiblock.getId());
             multiblock.toNetwork(buf);
         }
     }
@@ -49,8 +49,8 @@ public class SyncMultiblockDataMessage implements Message {
     private void decode(RegistryFriendlyByteBuf buf) {
         int multiblockCount = buf.readVarInt();
         for (int i = 0; i < multiblockCount; i++) {
-            var type = buf.readResourceLocation();
-            var id = buf.readResourceLocation();
+            var type = buf.readIdentifier();
+            var id = buf.readIdentifier();
             var multiblock = LoaderRegistry.getMultiblockNetworkLoader(type).fromNetwork(buf);
             multiblock.setId(id);
             this.multiblocks.put(multiblock.getId(), multiblock);

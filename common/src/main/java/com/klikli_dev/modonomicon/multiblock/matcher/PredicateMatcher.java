@@ -62,7 +62,7 @@ public class PredicateMatcher implements StateMatcher {
     public static PredicateMatcher fromNetwork(FriendlyByteBuf buffer) {
         try {
             var displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(buffer.readUtf()), false).blockState();
-            var predicateId = buffer.readResourceLocation();
+            var predicateId = buffer.readIdentifier();
             var countsTowardsTotalBlocks = buffer.readBoolean();
             return new PredicateMatcher(displayState, predicateId, countsTowardsTotalBlocks);
         } catch (CommandSyntaxException e) {

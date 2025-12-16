@@ -240,27 +240,27 @@ public class Book {
         var name = buffer.readUtf();
         var description = BookTextHolder.fromNetwork(buffer);
         var tooltip = buffer.readUtf();
-        var model = buffer.readResourceLocation();
+        var model = buffer.readIdentifier();
         var displayMode = BookDisplayMode.byId(buffer.readByte());
 
         var generateBookItem = buffer.readBoolean();
         var customBookItem = buffer.readNullable(FriendlyByteBuf::readResourceLocation);
         var creativeTab = buffer.readUtf();
 
-        var font = buffer.readResourceLocation();
+        var font = buffer.readIdentifier();
 
-        var bookOverviewTexture = buffer.readResourceLocation();
+        var bookOverviewTexture = buffer.readIdentifier();
 
-        var frameTexture = buffer.readResourceLocation();
+        var frameTexture = buffer.readIdentifier();
 
         var topFrameOverlay = BookFrameOverlay.fromNetwork(buffer);
         var bottomFrameOverlay = BookFrameOverlay.fromNetwork(buffer);
         var leftFrameOverlay = BookFrameOverlay.fromNetwork(buffer);
         var rightFrameOverlay = BookFrameOverlay.fromNetwork(buffer);
 
-        var bookContentTexture = buffer.readResourceLocation();
-        var craftingTexture = buffer.readResourceLocation();
-        var turnPageSound = buffer.readResourceLocation();
+        var bookContentTexture = buffer.readIdentifier();
+        var craftingTexture = buffer.readIdentifier();
+        var turnPageSound = buffer.readIdentifier();
         var defaultTitleColor = buffer.readInt();
         var categoryButtonIconScale = buffer.readFloat();
         var autoAddReadConditions = buffer.readBoolean();
@@ -278,7 +278,7 @@ public class Book {
         var leafletEntry = buffer.readNullable(FriendlyByteBuf::readResourceLocation);
 
         var pageDisplayMode = PageDisplayMode.byId(buffer.readByte());
-        var singlePageTexture = buffer.readResourceLocation();
+        var singlePageTexture = buffer.readIdentifier();
 
         var allowOpenBooksWithInvalidLinks = buffer.readBoolean();
 
@@ -339,7 +339,7 @@ public class Book {
         buffer.writeUtf(this.name);
         this.description.toNetwork(buffer);
         buffer.writeUtf(this.tooltip);
-        buffer.writeResourceLocation(this.model);
+        buffer.writeIdentifier(this.model);
         buffer.writeByte(this.displayMode.ordinal());
 
         buffer.writeBoolean(this.generateBookItem);
@@ -348,19 +348,19 @@ public class Book {
 
         buffer.writeUtf(this.creativeTab);
 
-        buffer.writeResourceLocation(this.font);
+        buffer.writeIdentifier(this.font);
 
-        buffer.writeResourceLocation(this.bookOverviewTexture);
-        buffer.writeResourceLocation(this.frameTexture);
+        buffer.writeIdentifier(this.bookOverviewTexture);
+        buffer.writeIdentifier(this.frameTexture);
 
         this.topFrameOverlay.toNetwork(buffer);
         this.bottomFrameOverlay.toNetwork(buffer);
         this.leftFrameOverlay.toNetwork(buffer);
         this.rightFrameOverlay.toNetwork(buffer);
 
-        buffer.writeResourceLocation(this.bookContentTexture);
-        buffer.writeResourceLocation(this.craftingTexture);
-        buffer.writeResourceLocation(this.turnPageSound);
+        buffer.writeIdentifier(this.bookContentTexture);
+        buffer.writeIdentifier(this.craftingTexture);
+        buffer.writeIdentifier(this.turnPageSound);
         buffer.writeInt(this.defaultTitleColor);
         buffer.writeFloat(this.categoryButtonIconScale);
         buffer.writeBoolean(this.autoAddReadConditions);
@@ -379,7 +379,7 @@ public class Book {
         buffer.writeNullable(this.leafletEntry, FriendlyByteBuf::writeResourceLocation);
 
         buffer.writeByte(this.pageDisplayMode.ordinal());
-        buffer.writeResourceLocation(this.singlePageTexture);
+        buffer.writeIdentifier(this.singlePageTexture);
 
         buffer.writeBoolean(this.allowOpenBooksWithInvalidLinks);
         buffer.writeMap(this.textMacros, (b, v) -> b.writeUtf(v), (b, v) -> b.writeUtf(v));  //necessary because using lambda causes ambiguous reference in Neo with their IFriendlyByteBufExtension#writeMap

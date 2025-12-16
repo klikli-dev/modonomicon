@@ -50,7 +50,7 @@ public class BookAdvancementCondition extends BookCondition {
 
     public static BookAdvancementCondition fromNetwork(RegistryFriendlyByteBuf buffer) {
         var tooltip = buffer.readBoolean() ? ComponentSerialization.STREAM_CODEC.decode(buffer) : null;
-        var advancementId = buffer.readResourceLocation();
+        var advancementId = buffer.readIdentifier();
         return new BookAdvancementCondition(tooltip, advancementId);
     }
 
@@ -65,7 +65,7 @@ public class BookAdvancementCondition extends BookCondition {
         if (this.tooltip != null) {
             ComponentSerialization.STREAM_CODEC.encode(buffer, this.tooltip);
         }
-        buffer.writeResourceLocation(this.advancementId);
+        buffer.writeIdentifier(this.advancementId);
     }
 
     @Override

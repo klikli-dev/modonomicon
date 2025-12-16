@@ -108,7 +108,7 @@ public class SparseMultiblock extends AbstractMultiblock {
         var stateMatchers = new Object2ObjectOpenHashMap<BlockPos, StateMatcher>();
         for (int i = 0; i < size; i++) {
             var pos = buffer.readBlockPos();
-            var type = buffer.readResourceLocation();
+            var type = buffer.readIdentifier();
             var matcher = LoaderRegistry.getStateMatcherNetworkLoader(type).fromNetwork(buffer);
             stateMatchers.put(pos, matcher);
         }
@@ -181,7 +181,7 @@ public class SparseMultiblock extends AbstractMultiblock {
         buffer.writeVarInt(this.stateMatchers.size());
         for (Entry<BlockPos, StateMatcher> entry : this.stateMatchers.entrySet()) {
             buffer.writeBlockPos(entry.getKey());
-            buffer.writeResourceLocation(entry.getValue().getType());
+            buffer.writeIdentifier(entry.getValue().getType());
             entry.getValue().toNetwork(buffer);
         }
     }

@@ -43,7 +43,7 @@ public class BookEntryUnlockedCondition extends BookCondition {
 
     public static BookEntryUnlockedCondition fromNetwork(RegistryFriendlyByteBuf buffer) {
         var tooltip = buffer.readBoolean() ? ComponentSerialization.STREAM_CODEC.decode(buffer) : null;
-        var entryId = buffer.readResourceLocation();
+        var entryId = buffer.readIdentifier();
         return new BookEntryUnlockedCondition(tooltip, entryId);
     }
 
@@ -63,7 +63,7 @@ public class BookEntryUnlockedCondition extends BookCondition {
         if (this.tooltip != null) {
             ComponentSerialization.STREAM_CODEC.encode(buffer, this.tooltip);
         }
-        buffer.writeResourceLocation(this.entryId);
+        buffer.writeIdentifier(this.entryId);
     }
 
     @Override

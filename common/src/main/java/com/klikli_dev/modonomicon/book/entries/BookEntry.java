@@ -281,7 +281,7 @@ public abstract class BookEntry {
         }
 
         public static BookEntryData fromNetwork(RegistryFriendlyByteBuf buffer) {
-            var categoryId = buffer.readResourceLocation();
+            var categoryId = buffer.readIdentifier();
             var name = buffer.readUtf();
             var description = buffer.readUtf();
             var icon = BookIcon.fromNetwork(buffer);
@@ -305,7 +305,7 @@ public abstract class BookEntry {
         }
 
         public void toNetwork(RegistryFriendlyByteBuf buffer) {
-            buffer.writeResourceLocation(this.categoryId);
+            buffer.writeIdentifier(this.categoryId);
             buffer.writeUtf(this.name);
             buffer.writeUtf(this.description);
             this.icon.toNetwork(buffer);
@@ -316,7 +316,7 @@ public abstract class BookEntry {
             buffer.writeBoolean(this.hideWhileLocked);
             buffer.writeBoolean(this.showWhenAnyParentUnlocked);
 
-            buffer.writeResourceLocation(this.condition.getType());
+            buffer.writeIdentifier(this.condition.getType());
             this.condition.toNetwork(buffer);
 
             buffer.writeVarInt(this.parents.size());

@@ -103,7 +103,7 @@ public class BlockMatcher implements StateMatcher {
         buffer.writeBoolean(this.displayState != null);
         if (this.displayState != null)
             buffer.writeUtf(BlockStateParser.serialize(this.displayState));
-        buffer.writeResourceLocation(BuiltInRegistries.BLOCK.getKey(this.block));
+        buffer.writeIdentifier(BuiltInRegistries.BLOCK.getKey(this.block));
     }
 
     @Override

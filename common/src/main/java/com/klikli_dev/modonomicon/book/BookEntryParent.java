@@ -42,7 +42,7 @@ public class BookEntryParent {
     }
 
     public static BookEntryParent fromNetwork(FriendlyByteBuf buffer) {
-        var entry = buffer.readResourceLocation();
+        var entry = buffer.readIdentifier();
         var parent = new BookEntryParent(entry);
         parent.drawArrow = buffer.readBoolean();
         parent.lineEnabled = buffer.readBoolean();
@@ -51,7 +51,7 @@ public class BookEntryParent {
     }
 
     public void toNetwork(FriendlyByteBuf buffer) {
-        buffer.writeResourceLocation(this.entryId);
+        buffer.writeIdentifier(this.entryId);
         buffer.writeBoolean(this.drawArrow);
         buffer.writeBoolean(this.lineEnabled);
         buffer.writeBoolean(this.lineReversed);

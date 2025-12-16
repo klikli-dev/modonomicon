@@ -114,7 +114,7 @@ public class BookCommand {
         buffer.writeNullable(this.successMessage, FriendlyByteBuf::writeUtf);
         buffer.writeVarInt(this.allowedEntries.size());
         for (var entry : this.allowedEntries) {
-            buffer.writeResourceLocation(entry);
+            buffer.writeIdentifier(entry);
         }
     }
 

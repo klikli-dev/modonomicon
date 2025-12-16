@@ -88,7 +88,7 @@ public class DenseMultiblock extends AbstractMultiblock {
         var targetCount = buffer.readVarInt();
         for (int i = 0; i < targetCount; i++) {
             var key = buffer.readChar();
-            var type = buffer.readResourceLocation();
+            var type = buffer.readIdentifier();
             var stateMatcher = LoaderRegistry.getStateMatcherNetworkLoader(type).fromNetwork(buffer);
             targets.put(key, stateMatcher);
         }
@@ -232,7 +232,7 @@ public class DenseMultiblock extends AbstractMultiblock {
         buffer.writeVarInt(this.targets.size());
         for (var entry : this.targets.entrySet()) {
             buffer.writeChar(entry.getKey());
-            buffer.writeResourceLocation(entry.getValue().getType());
+            buffer.writeIdentifier(entry.getValue().getType());
             entry.getValue().toNetwork(buffer);
         }
     }

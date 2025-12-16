@@ -46,24 +46,24 @@ public class SyncBookDataMessage implements Message {
     private void encode(RegistryFriendlyByteBuf buf) {
         buf.writeVarInt(this.books.size());
         for (var book : this.books.values()) {
-            buf.writeResourceLocation(book.getId());
+            buf.writeIdentifier(book.getId());
             book.toNetwork(buf);
 
             buf.writeVarInt(book.getCategories().size());
             for (var category : book.getCategories().values()) {
-                buf.writeResourceLocation(category.getId());
+                buf.writeIdentifier(category.getId());
                 category.toNetwork(buf);
 
                 buf.writeVarInt(category.getEntries().size());
                 for (var entry : category.getEntries().values()) {
-                    buf.writeResourceLocation(entry.getType());
+                    buf.writeIdentifier(entry.getType());
                     entry.toNetwork(buf);
                 }
             }
 
             buf.writeVarInt(book.getCommands().size());
             for (var command : book.getCommands().values()) {
-                buf.writeResourceLocation(command.getId());
+                buf.writeIdentifier(command.getId());
                 command.toNetwork(buf);
             }
         }
@@ -73,13 +73,13 @@ public class SyncBookDataMessage implements Message {
         //build books
         int bookCount = buf.readVarInt();
         for (int i = 0; i < bookCount; i++) {
-            Identifier bookId = buf.readResourceLocation();
+            Identifier bookId = buf.readIdentifier();
             Book book = Book.fromNetwork(bookId, buf);
             this.books.put(bookId, book);
 
             int categoryCount = buf.readVarInt();
             for (int j = 0; j < categoryCount; j++) {
-                Identifier categoryId = buf.readResourceLocation();
+                Identifier categoryId = buf.readIdentifier();
                 BookCategory category = BookCategory.fromNetwork(categoryId, buf);
 
                 //link category and book
@@ -87,7 +87,7 @@ public class SyncBookDataMessage implements Message {
 
                 int entryCount = buf.readVarInt();
                 for (int k = 0; k < entryCount; k++) {
-                    Identifier entryTypeId = buf.readResourceLocation();
+                    Identifier entryTypeId = buf.readIdentifier();
                     BookEntry entry = LoaderRegistry.getEntryNetworkLoader(entryTypeId).fromNetwork(buf);
 
                     //link entry and category
@@ -97,7 +97,7 @@ public class SyncBookDataMessage implements Message {
 
             int commandCount = buf.readVarInt();
             for (int j = 0; j < commandCount; j++) {
-                Identifier commandId = buf.readResourceLocation();
+                Identifier commandId = buf.readIdentifier();
                 BookCommand command = BookCommand.fromNetwork(commandId, buf);
 
                 //link command and book

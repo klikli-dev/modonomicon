@@ -308,7 +308,7 @@ public class BookUnlockStates {
 
     public String getUnlockCode(Book book) {
         var buf = new FriendlyByteBuf(Unpooled.buffer());
-        buf.writeResourceLocation(book.getId());
+        buf.writeIdentifier(book.getId());
 
         var unlockedCategories = this.unlockedCategories.getOrDefault(book.getId(), Set.of());
         buf.writeVarInt(unlockedCategories.size());
@@ -321,7 +321,7 @@ public class BookUnlockStates {
         var unlockedPages = this.unlockedPages.getOrDefault(book.getId(), Map.of());
         buf.writeVarInt(unlockedPages.size());
         unlockedPages.forEach((entry, pages) -> {
-            buf.writeResourceLocation(entry);
+            buf.writeIdentifier(entry);
             buf.writeVarInt(pages.size());
             pages.forEach(buf::writeVarInt);
         });
@@ -340,7 +340,7 @@ public class BookUnlockStates {
         try {
             var decoded = Base64.getDecoder().decode(code);
             var buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(decoded));
-            var bookId = buf.readResourceLocation();
+            var bookId = buf.readIdentifier();
 
             var book = BookDataManager.get().getBook(bookId);
             if (book == null)
@@ -363,7 +363,7 @@ public class BookUnlockStates {
 
             var unlockedPagesSize = buf.readVarInt();
             for (var i = 0; i < unlockedPagesSize; i++) {
-                var entryId = buf.readResourceLocation();
+                var entryId = buf.readIdentifier();
                 var unlockedPagesForEntry = new ObjectOpenHashSet<Integer>();
                 unlockedPages.put(entryId, unlockedPagesForEntry);
 

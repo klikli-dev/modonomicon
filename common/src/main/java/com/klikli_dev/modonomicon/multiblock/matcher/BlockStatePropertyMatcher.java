@@ -119,7 +119,7 @@ public class BlockStatePropertyMatcher implements StateMatcher {
         buffer.writeBoolean(this.displayState != null);
         if (this.displayState != null)
             buffer.writeUtf(BlockStateParser.serialize(this.displayState));
-        buffer.writeResourceLocation(BuiltInRegistries.BLOCK.getKey(this.block));
+        buffer.writeIdentifier(BuiltInRegistries.BLOCK.getKey(this.block));
         buffer.writeMap(this.props.get(), (b, v) -> b.writeUtf(v), (b, v) -> b.writeUtf(v));
     }
 

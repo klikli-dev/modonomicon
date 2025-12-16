@@ -49,10 +49,10 @@ public class EntryLinkBookEntry extends BookEntry {
     }
 
     public static EntryLinkBookEntry fromNetwork(RegistryFriendlyByteBuf buffer) {
-        var id = buffer.readResourceLocation();
+        var id = buffer.readIdentifier();
         BookEntryData data = BookEntryData.fromNetwork(buffer);
         Identifier commandToRunOnFirstReadId = buffer.readNullable(FriendlyByteBuf::readResourceLocation);
-        Identifier entryToOpen = buffer.readResourceLocation();
+        Identifier entryToOpen = buffer.readIdentifier();
 
         return new EntryLinkBookEntry(id, data, commandToRunOnFirstReadId, entryToOpen);
     }
@@ -64,10 +64,10 @@ public class EntryLinkBookEntry extends BookEntry {
 
     @Override
     public void toNetwork(RegistryFriendlyByteBuf buffer) {
-        buffer.writeResourceLocation(this.id);
+        buffer.writeIdentifier(this.id);
         this.data.toNetwork(buffer);
         buffer.writeNullable(this.commandToRunOnFirstReadId, FriendlyByteBuf::writeResourceLocation);
-        buffer.writeResourceLocation(this.entryToOpenId);
+        buffer.writeIdentifier(this.entryToOpenId);
     }
 
     @Override
