@@ -19,8 +19,11 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.commands.arguments.IdentifierArgument;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.permissions.Permission;
+import net.minecraft.server.permissions.PermissionLevel;
+import net.minecraft.server.permissions.Permissions;
 
 public class ResetBookUnlocksCommand implements com.mojang.brigadier.Command<CommandSourceStack> {
 
@@ -37,8 +40,8 @@ public class ResetBookUnlocksCommand implements com.mojang.brigadier.Command<Com
 
     public static ArgumentBuilder<CommandSourceStack, ?> register(CommandDispatcher<CommandSourceStack> dispatcher) {
         return Commands.literal("reset")
-                .requires(cs -> cs.hasPermission(1))
-                .then(Commands.argument("book", ResourceLocationArgument.id())
+                .requires(Commands.hasPermission(Commands.LEVEL_ALL))
+                .then(Commands.argument("book", IdentifierArgument.id())
                         .suggests(SUGGEST_BOOK)
                         .executes(CMD));
 
@@ -46,7 +49,7 @@ public class ResetBookUnlocksCommand implements com.mojang.brigadier.Command<Com
 
 
     public static Book getBook(CommandContext<CommandSourceStack> pContext, String pName) throws CommandSyntaxException {
-        var Identifier = ResourceLocationArgument.getId(pContext, pName);
+        var Identifier = IdentifierArgument.getId(pContext, pName);
         var book = BookDataManager.get().getBook(Identifier);
         if (book == null) {
             throw ERROR_UNKNOWN_BOOK.create(Identifier);

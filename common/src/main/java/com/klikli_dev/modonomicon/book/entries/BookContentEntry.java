@@ -68,7 +68,7 @@ public class BookContentEntry extends BookEntry {
     public static BookContentEntry fromNetwork(RegistryFriendlyByteBuf buffer) {
         var id = buffer.readIdentifier();
         BookEntryData data = BookEntryData.fromNetwork(buffer);
-        Identifier commandToRunOnFirstReadId = buffer.readNullable(FriendlyByteBuf::readResourceLocation);
+        Identifier commandToRunOnFirstReadId = buffer.readNullable(FriendlyByteBuf::readIdentifier);
 
         var pages = new ArrayList<BookPage>();
         var pageCount = buffer.readVarInt();
@@ -91,7 +91,7 @@ public class BookContentEntry extends BookEntry {
     public void toNetwork(RegistryFriendlyByteBuf buffer) {
         buffer.writeIdentifier(this.id);
         this.data.toNetwork(buffer);
-        buffer.writeNullable(this.commandToRunOnFirstReadId, FriendlyByteBuf::writeResourceLocation);
+        buffer.writeNullable(this.commandToRunOnFirstReadId, FriendlyByteBuf::writeIdentifier);
 
         buffer.writeVarInt(this.pages.size());
         for (var page : this.pages) {

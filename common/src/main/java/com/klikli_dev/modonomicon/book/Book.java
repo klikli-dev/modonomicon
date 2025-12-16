@@ -244,7 +244,7 @@ public class Book {
         var displayMode = BookDisplayMode.byId(buffer.readByte());
 
         var generateBookItem = buffer.readBoolean();
-        var customBookItem = buffer.readNullable(FriendlyByteBuf::readResourceLocation);
+        var customBookItem = buffer.readNullable(FriendlyByteBuf::readIdentifier);
         var creativeTab = buffer.readUtf();
 
         var font = buffer.readIdentifier();
@@ -275,7 +275,7 @@ public class Book {
         var searchButtonYOffset = (int) buffer.readShort();
         var readAllButtonYOffset = (int) buffer.readShort();
 
-        var leafletEntry = buffer.readNullable(FriendlyByteBuf::readResourceLocation);
+        var leafletEntry = buffer.readNullable(FriendlyByteBuf::readIdentifier);
 
         var pageDisplayMode = PageDisplayMode.byId(buffer.readByte());
         var singlePageTexture = buffer.readIdentifier();
@@ -344,7 +344,7 @@ public class Book {
 
         buffer.writeBoolean(this.generateBookItem);
 
-        buffer.writeNullable(this.customBookItem, FriendlyByteBuf::writeResourceLocation);
+        buffer.writeNullable(this.customBookItem, FriendlyByteBuf::writeIdentifier);
 
         buffer.writeUtf(this.creativeTab);
 
@@ -376,7 +376,7 @@ public class Book {
         buffer.writeShort(this.searchButtonYOffset);
         buffer.writeShort(this.readAllButtonYOffset);
 
-        buffer.writeNullable(this.leafletEntry, FriendlyByteBuf::writeResourceLocation);
+        buffer.writeNullable(this.leafletEntry, FriendlyByteBuf::writeIdentifier);
 
         buffer.writeByte(this.pageDisplayMode.ordinal());
         buffer.writeIdentifier(this.singlePageTexture);

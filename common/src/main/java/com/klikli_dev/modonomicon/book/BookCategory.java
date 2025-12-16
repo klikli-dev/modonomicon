@@ -141,7 +141,7 @@ public class BookCategory {
         var entryTextures = buffer.readIdentifier();
         var condition = BookCondition.fromNetwork(buffer);
         var showCategoryButton = buffer.readBoolean();
-        var entryToOpen = buffer.readNullable(FriendlyByteBuf::readResourceLocation);
+        var entryToOpen = buffer.readNullable(FriendlyByteBuf::readIdentifier);
         var openEntryOnlyOnce = buffer.readBoolean();
         return new BookCategory(id, name, description, sortNumber, condition, showCategoryButton, icon, displayMode, background, backgroundWidth, backgroundHeight,
                 defaultMaxScrollX, defaultMaxScrollY, backgroundTextureZoomMultiplier, backgroundParallaxLayers, entryTextures, entryToOpen, openEntryOnlyOnce);
@@ -163,7 +163,7 @@ public class BookCategory {
         buffer.writeIdentifier(this.entryTextures);
         BookCondition.toNetwork(this.condition, buffer);
         buffer.writeBoolean(this.showCategoryButton);
-        buffer.writeNullable(this.entryToOpen, FriendlyByteBuf::writeResourceLocation);
+        buffer.writeNullable(this.entryToOpen, FriendlyByteBuf::writeIdentifier);
         buffer.writeBoolean(this.openEntryToOpenOnlyOnce);
     }
 

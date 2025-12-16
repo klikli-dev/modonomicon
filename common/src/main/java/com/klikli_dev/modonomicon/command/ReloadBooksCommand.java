@@ -24,7 +24,7 @@ public class ReloadBooksCommand implements com.mojang.brigadier.Command<CommandS
 
     public static ArgumentBuilder<CommandSourceStack, ?> register(CommandDispatcher<CommandSourceStack> dispatcher) {
         return Commands.literal("reload")
-                .requires(cs -> cs.hasPermission(2))
+                .requires(Commands.hasPermission(Commands.LEVEL_MODERATORS))
                 .executes(CMD);
     }
 

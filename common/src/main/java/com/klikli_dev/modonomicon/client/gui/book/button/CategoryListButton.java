@@ -47,7 +47,7 @@ public class CategoryListButton extends Button {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    protected void renderContents(GuiGraphics guiGraphics, int i, int j, float partialTicks) {
         if (this.active) {
             if (this.isHovered()) {
                 this.timeHovered = Math.min(ANIM_TIME, this.timeHovered + ClientTicks.delta);

@@ -51,8 +51,8 @@ public class CategoryLinkBookEntry extends BookEntry {
     public static CategoryLinkBookEntry fromNetwork(RegistryFriendlyByteBuf buffer) {
         var id = buffer.readIdentifier();
         BookEntryData data = BookEntryData.fromNetwork(buffer);
-        Identifier commandToRunOnFirstReadId = buffer.readNullable(FriendlyByteBuf::readResourceLocation);
-        Identifier categoryToOpen = buffer.readNullable(FriendlyByteBuf::readResourceLocation); //can be set to null in #build, if the category was not found
+        Identifier commandToRunOnFirstReadId = buffer.readNullable(FriendlyByteBuf::readIdentifier);
+        Identifier categoryToOpen = buffer.readNullable(FriendlyByteBuf::readIdentifier); //can be set to null in #build, if the category was not found
 
         return new CategoryLinkBookEntry(id, data, commandToRunOnFirstReadId, categoryToOpen);
     }
@@ -66,8 +66,8 @@ public class CategoryLinkBookEntry extends BookEntry {
     public void toNetwork(RegistryFriendlyByteBuf buffer) {
         buffer.writeIdentifier(this.id);
         this.data.toNetwork(buffer);
-        buffer.writeNullable(this.commandToRunOnFirstReadId, FriendlyByteBuf::writeResourceLocation);
-        buffer.writeNullable(this.categoryToOpenId, FriendlyByteBuf::writeResourceLocation); //can be set to null in #build, if the category was not found
+        buffer.writeNullable(this.commandToRunOnFirstReadId, FriendlyByteBuf::writeIdentifier);
+        buffer.writeNullable(this.categoryToOpenId, FriendlyByteBuf::writeIdentifier); //can be set to null in #build, if the category was not found
     }
 
     @Override

@@ -28,7 +28,7 @@ public class LoadUnlocksCommand implements com.mojang.brigadier.Command<CommandS
     public static ArgumentBuilder<CommandSourceStack, ?> register(CommandDispatcher<CommandSourceStack> dispatcher) {
 
         return Commands.literal("load_progress")
-                .requires(cs -> cs.hasPermission(1))
+                .requires(Commands.hasPermission(Commands.LEVEL_ALL))
                 .executes(CMD);
     }
 
