@@ -14,7 +14,6 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -94,7 +93,7 @@ public class BookIcon {
 
     public static BookIcon fromNetwork(RegistryFriendlyByteBuf buffer) {
         if (buffer.readBoolean()) {
-            Identifier texture = buffer.readResourceLocation();
+            Identifier texture = buffer.readIdentifier();
             int width = buffer.readVarInt();
             int height = buffer.readVarInt();
             return new BookIcon(texture, width, height);
@@ -126,7 +125,7 @@ public class BookIcon {
     public void toNetwork(RegistryFriendlyByteBuf buffer) {
         buffer.writeBoolean(this.texture != null);
         if (this.texture != null) {
-            buffer.writeResourceLocation(this.texture);
+            buffer.writeIdentifier(this.texture);
             buffer.writeVarInt(this.width);
             buffer.writeVarInt(this.height);
         } else {
