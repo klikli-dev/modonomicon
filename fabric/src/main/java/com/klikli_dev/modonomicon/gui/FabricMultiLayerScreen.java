@@ -44,8 +44,8 @@ public class FabricMultiLayerScreen extends Screen {
     }
 
     @Override
-    public void resize(Minecraft minecraft, int width, int height) {
-        this.guiLayers.forEach(screen -> screen.resize(minecraft, width, height));
+    public void resize(int width, int height) {
+        this.guiLayers.forEach(screen -> screen.resize( width, height));
     }
 
     @Override
@@ -176,9 +176,9 @@ public class FabricMultiLayerScreen extends Screen {
     }
 
     @Override
-    public void init(Minecraft minecraft, int width, int height) {
-        super.init(minecraft, width, height);
-        this.guiLayers.peek().init(minecraft, width, height);
+    public void init(int width, int height) {
+        super.init(width, height);
+        this.guiLayers.peek().init(width, height);
     }
 
     @Override
@@ -256,12 +256,6 @@ public class FabricMultiLayerScreen extends Screen {
         return this.guiLayers.peek().children();
     }
 
-
-    @Override
-    public boolean handleComponentClicked(@Nullable Style style) {
-        return this.guiLayers.peek().handleComponentClicked(style);
-    }
-
     @Override
     public void onClose() {
         this.guiLayers.peek().onClose();
@@ -291,4 +285,6 @@ public class FabricMultiLayerScreen extends Screen {
     public Component getTitle() {
         return this.guiLayers.peek().getTitle();
     }
+
+
 }

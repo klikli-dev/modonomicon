@@ -286,11 +286,6 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
     }
 
     @Override
-    public boolean handleComponentClicked(@Nullable Style pStyle) {
-        return super.handleComponentClicked(pStyle);
-    }
-
-    @Override
     public void onSyncBookUnlockStatesMessage(SyncBookUnlockStatesMessage message) {
         //this leads to re-init of the category buttons after a potential unlock
         this.rebuildWidgets();
