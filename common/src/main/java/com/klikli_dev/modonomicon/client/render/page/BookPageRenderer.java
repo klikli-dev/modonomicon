@@ -17,8 +17,10 @@ import com.klikli_dev.modonomicon.client.gui.book.markdown.MarkdownComponentRend
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.TextAlignment;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -290,10 +292,12 @@ public abstract class BookPageRenderer<T extends BookPage> {
             if (pMouseX < x)
                 return null;
             //if we are horizontally left of the title, exit
-
-            //horizontally over and right of the title is handled by font splitter
-            //TODO: ClickableStyleFinder
-            return this.font.getSplitter().componentStyleAtWidth(formattedCharSequence, (int) pMouseX - x);
+            var styleFinder = new ActiveTextCollector.ClickableStyleFinder(
+                    font, (int) pMouseX - x, y);
+            //TODO: verify if the y is correct. See ModListScreen for an example usage
+            //TODO: is left really right for titles?
+            styleFinder.accept(TextAlignment.LEFT, 0, 0, formattedCharSequence);
+            return styleFinder.result();
         } else {
             if (title.getComponent() == null) {
                 //this should not happen, but other errors earlier in the pipeline might cause it.
@@ -307,8 +311,12 @@ public abstract class BookPageRenderer<T extends BookPage> {
                 return null;
             //if we are horizontally left of the title, exit
 
-            //horizontally over and right of the title is handled by font splitter
-            return this.font.getSplitter().componentStyleAtWidth(formattedCharSequence, (int) pMouseX - x);
+            var styleFinder = new ActiveTextCollector.ClickableStyleFinder(
+                    font, (int) pMouseX - x, y);
+            //TODO: verify if the y is correct. See ModListScreen for an example usage
+            //TODO: is left really right for titles?
+            styleFinder.accept(TextAlignment.LEFT, 0, 0, formattedCharSequence);
+            return styleFinder.result();
         }
     }
 
@@ -334,7 +342,11 @@ public abstract class BookPageRenderer<T extends BookPage> {
                 if (pMouseY > y && pMouseY < y + this.font.lineHeight) {
                     //check if we are vertically over the title line
                     //horizontally over and right of the title is handled by font splitter
-                    return this.font.getSplitter().componentStyleAtWidth(formattedcharsequence, (int) pMouseX - x);
+
+                    var styleFinder = new ActiveTextCollector.ClickableStyleFinder(
+                            font, (int) pMouseX - x, y);
+                    //TODO: verify if the y is correct. See ModListScreen for an example usage
+                    styleFinder.accept(TextAlignment.LEFT, 0, 0, formattedcharsequence);
                 }
                 y += this.font.lineHeight;
             }
@@ -351,7 +363,10 @@ public abstract class BookPageRenderer<T extends BookPage> {
                     if (pMouseY > minY && pMouseY < maxY) {
                         //check if we are vertically over the title line
                         //horizontally over and right of the title is handled by font splitter
-                        return this.font.getSplitter().componentStyleAtWidth(formattedcharsequence, (int) ((pMouseX - x) / scale));
+                        var styleFinder = new ActiveTextCollector.ClickableStyleFinder(
+                                font, (int) pMouseX - x, y);
+                        //TODO: verify if the y is correct. See ModListScreen for an example usage
+                        styleFinder.accept(TextAlignment.LEFT, 0, 0, formattedcharsequence);
                     }
                     currentY += this.font.lineHeight * scale;
                 }

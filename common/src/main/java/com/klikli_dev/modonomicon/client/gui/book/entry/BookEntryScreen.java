@@ -309,7 +309,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         return tooltip;
     }
 
-    @Override
+    //TODO: check if we need to change this to the new click style detection stuff
     public boolean handleComponentClicked(@Nullable Style pStyle) {
         if (pStyle != null) {
             for (LinkHandler handler : this.linkHandlers) {
@@ -327,7 +327,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
                 //unhandled -> continue to next
             }
         }
-        return super.handleComponentClicked(pStyle);
+        return false;
     }
 
     @Override
