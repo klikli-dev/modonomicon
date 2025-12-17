@@ -20,7 +20,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 
@@ -48,7 +48,7 @@ public class BookEntityPage extends BookPage {
         this.defaultRotation = defaultRotation;
     }
 
-    public static BookEntityPage fromJson(ResourceLocation entryId, JsonObject json, HolderLookup.Provider provider) {
+    public static BookEntityPage fromJson(Identifier entryId, JsonObject json, HolderLookup.Provider provider) {
         var entityName = BookGsonHelper.getAsBookTextHolder(json, "name", BookTextHolder.EMPTY, provider);
         var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY, provider);
         var entityId = GsonHelper.getAsString(json, "entity_id");
@@ -106,7 +106,7 @@ public class BookEntityPage extends BookPage {
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return Page.ENTITY;
     }
 

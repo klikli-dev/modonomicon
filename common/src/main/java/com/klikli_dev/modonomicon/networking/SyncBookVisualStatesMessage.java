@@ -16,14 +16,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Map;
 
 public class SyncBookVisualStatesMessage implements Message {
 
-    public static final Type<SyncBookVisualStatesMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "sync_book_visual_states"));
+    public static final Type<SyncBookVisualStatesMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "sync_book_visual_states"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncBookVisualStatesMessage> STREAM_CODEC = StreamCodec.composite(
             BookVisualStates.STREAM_CODEC,

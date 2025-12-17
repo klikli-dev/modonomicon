@@ -11,8 +11,8 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookAdvancementConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.Util;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Util;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
 
 public class ConditionAdvancementEntry extends EntryProvider {
@@ -35,7 +35,7 @@ public class ConditionAdvancementEntry extends EntryProvider {
 
         //set up a condition for a conditional page
         var pageCondition = BookAdvancementConditionModel.create()
-                .withAdvancementId(ResourceLocation.parse("minecraft:story/mine_stone"));
+                .withAdvancementId(Identifier.parse("minecraft:story/mine_stone"));
         this.lang().add(
                 Util.makeDescriptionId("advancement", pageCondition.getAdvancementId()) + ".title",
                 "Mine Stone"
@@ -55,7 +55,7 @@ public class ConditionAdvancementEntry extends EntryProvider {
     @Override
     protected BookEntryModel additionalSetup(BookEntryModel entry) {
         //Set up the condition for the entry.
-        var advancementCondition = this.condition().advancement(ResourceLocation.parse("minecraft:husbandry/ride_a_boat_with_a_goat"));
+        var advancementCondition = this.condition().advancement(Identifier.parse("minecraft:husbandry/ride_a_boat_with_a_goat"));
         this.lang().add(
                 Util.makeDescriptionId("advancement", advancementCondition.getAdvancementId()) + ".title",
                 "Ride a Boat with a Goat"

@@ -8,19 +8,19 @@ package com.klikli_dev.modonomicon.api.datagen.book;
 
 import com.google.gson.JsonObject;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class BookEntryParentModel {
-    protected ResourceLocation entryId;
+    protected Identifier entryId;
     protected boolean drawArrow = true;
     protected boolean lineEnabled = true;
     protected boolean lineReversed = false;
 
-    protected BookEntryParentModel(ResourceLocation entryId) {
+    protected BookEntryParentModel(Identifier entryId) {
         this.entryId = entryId;
     }
 
-    public static BookEntryParentModel create(ResourceLocation entryId) {
+    public static BookEntryParentModel create(Identifier entryId) {
         return new BookEntryParentModel(entryId);
     }
 
@@ -28,7 +28,7 @@ public class BookEntryParentModel {
      * @param ownerEntryId the entry id of the entry that contains this parent information. This is the CHILD not the parent.
      * @param provider a registry / holder lookup provider.
      */
-    public JsonObject toJson(ResourceLocation ownerEntryId, HolderLookup.Provider provider) {
+    public JsonObject toJson(Identifier ownerEntryId, HolderLookup.Provider provider) {
         JsonObject json = new JsonObject();
 
         //if we are in the same namespace, which we basically always should be, omit namespace
@@ -43,7 +43,7 @@ public class BookEntryParentModel {
         return json;
     }
 
-    public ResourceLocation getEntryId() {
+    public Identifier getEntryId() {
         return this.entryId;
     }
 
@@ -59,7 +59,7 @@ public class BookEntryParentModel {
         return this.lineReversed;
     }
 
-    public BookEntryParentModel withEntryId(ResourceLocation entryId) {
+    public BookEntryParentModel withEntryId(Identifier entryId) {
         this.entryId = entryId;
         return this;
     }

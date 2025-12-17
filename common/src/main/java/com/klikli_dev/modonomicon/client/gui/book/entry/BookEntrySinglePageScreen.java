@@ -18,16 +18,16 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
+
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 public class BookEntrySinglePageScreen extends BookEntryScreen {
 
     public static final int SINGLE_PAGE_BOOK_BACKGROUND_WIDTH = 145;
     public static final int SINGLE_PAGE_BOOK_BACKGROUND_HEIGHT = 178;
-    protected final ResourceLocation singlePageTexture;
+    protected final Identifier singlePageTexture;
     private BookPage page;
     private BookPageRenderer<?> pageRenderer;
 
@@ -37,7 +37,7 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
         this.singlePageTexture = entry.getBook().getSinglePageTexture();
     }
 
-    public static void renderSinglePageBookBackground(GuiGraphics guiGraphics, ResourceLocation bookContentTexture) {
+    public static void renderSinglePageBookBackground(GuiGraphics guiGraphics, Identifier bookContentTexture) {
         int x = 0; // (this.width - BOOK_BACKGROUND_WIDTH) / 2;
         int y = 0; // (this.height - BOOK_BACKGROUND_HEIGHT) / 2;
 

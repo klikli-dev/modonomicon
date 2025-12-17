@@ -27,6 +27,11 @@ public record FluidBlockVertexConsumer(VertexConsumer prior, PoseStack pose, Blo
     }
 
     @Override
+    public VertexConsumer setColor(int color) {
+        return this.prior.setColor(color);
+    }
+
+    @Override
     public VertexConsumer setUv(float f, float g) {
         return this.prior.setUv(f, g);
     }
@@ -44,5 +49,10 @@ public record FluidBlockVertexConsumer(VertexConsumer prior, PoseStack pose, Blo
     @Override
     public VertexConsumer setNormal(float f, float g, float h) {
         return this.prior.setNormal(f, g, h);
+    }
+
+    @Override
+    public VertexConsumer setLineWidth(float f) {
+        return this.prior.setLineWidth(f);
     }
 }

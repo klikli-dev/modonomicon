@@ -28,7 +28,7 @@ import com.klikli_dev.modonomicon.multiblock.matcher.*;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -38,25 +38,25 @@ import java.util.Random;
 
 public class LoaderRegistry {
 
-    private static final Multimap<ResourceLocation, BookDynamicTextMacroLoader> dynamicTextMacroLoaders = Multimaps.synchronizedListMultimap(ArrayListMultimap.create());
+    private static final Multimap<Identifier, BookDynamicTextMacroLoader> dynamicTextMacroLoaders = Multimaps.synchronizedListMultimap(ArrayListMultimap.create());
 
-    private static final Map<ResourceLocation, BookEntryJsonLoader<? extends BookEntry>> entryTypeJsonLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
-    private static final Map<ResourceLocation, NetworkLoader<? extends BookEntry>> entryTypeNetworkLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+    private static final Map<Identifier, BookEntryJsonLoader<? extends BookEntry>> entryTypeJsonLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+    private static final Map<Identifier, NetworkLoader<? extends BookEntry>> entryTypeNetworkLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 
-    private static final Map<ResourceLocation, BookPageJsonLoader<? extends BookPage>> pageJsonLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
-    private static final Map<ResourceLocation, NetworkLoader<? extends BookPage>> pageNetworkLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+    private static final Map<Identifier, BookPageJsonLoader<? extends BookPage>> pageJsonLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+    private static final Map<Identifier, NetworkLoader<? extends BookPage>> pageNetworkLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 
-    private static final Map<ResourceLocation, BookConditionJsonLoader<? extends BookCondition>> conditionJsonLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+    private static final Map<Identifier, BookConditionJsonLoader<? extends BookCondition>> conditionJsonLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 
-    private static final Map<ResourceLocation, NetworkLoader<? extends BookCondition>> conditionNetworkLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
-    private static final Map<ResourceLocation, JsonLoader<? extends Multiblock>> multiblockJsonLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
-    private static final Map<ResourceLocation, NetworkLoader<? extends Multiblock>> multiblockNetworkLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+    private static final Map<Identifier, NetworkLoader<? extends BookCondition>> conditionNetworkLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+    private static final Map<Identifier, JsonLoader<? extends Multiblock>> multiblockJsonLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+    private static final Map<Identifier, NetworkLoader<? extends Multiblock>> multiblockNetworkLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 
-    private static final Map<ResourceLocation, JsonLoader<? extends StateMatcher>> stateMatcherJsonLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
-    private static final Map<ResourceLocation, NetworkLoader<? extends StateMatcher>> stateMatcherNetworkLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+    private static final Map<Identifier, JsonLoader<? extends StateMatcher>> stateMatcherJsonLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+    private static final Map<Identifier, NetworkLoader<? extends StateMatcher>> stateMatcherNetworkLoaders = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 
 
-    private static final Map<ResourceLocation, TriPredicate<BlockGetter, BlockPos, BlockState>> predicates = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+    private static final Map<Identifier, TriPredicate<BlockGetter, BlockPos, BlockState>> predicates = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 
     /**
      * Call from common setup
@@ -138,14 +138,14 @@ public class LoaderRegistry {
      * @param forBookId the book to register the macro loader for
      * @param loader    the loader to register
      */
-    public static void registerDynamicTextMacroLoader(ResourceLocation forBookId, BookDynamicTextMacroLoader loader) {
+    public static void registerDynamicTextMacroLoader(Identifier forBookId, BookDynamicTextMacroLoader loader) {
         dynamicTextMacroLoaders.put(forBookId, loader);
     }
 
     /**
      * Call from client setup
      */
-    public static void registerEntryType(ResourceLocation id, BookEntryJsonLoader<? extends BookEntry> jsonLoader,
+    public static void registerEntryType(Identifier id, BookEntryJsonLoader<? extends BookEntry> jsonLoader,
                                          NetworkLoader<? extends BookEntry> networkLoader) {
         entryTypeJsonLoaders.put(id, jsonLoader);
         entryTypeNetworkLoaders.put(id, networkLoader);
@@ -154,7 +154,7 @@ public class LoaderRegistry {
     /**
      * Call from common setup
      */
-    public static void registerPageLoader(ResourceLocation id, BookPageJsonLoader<? extends BookPage> jsonLoader,
+    public static void registerPageLoader(Identifier id, BookPageJsonLoader<? extends BookPage> jsonLoader,
                                           NetworkLoader<? extends BookPage> networkLoader) {
         pageJsonLoaders.put(id, jsonLoader);
         pageNetworkLoaders.put(id, networkLoader);
@@ -163,7 +163,7 @@ public class LoaderRegistry {
     /**
      * Call from common setup
      */
-    public static void registerConditionLoader(ResourceLocation id, BookConditionJsonLoader<? extends BookCondition> jsonLoader,
+    public static void registerConditionLoader(Identifier id, BookConditionJsonLoader<? extends BookCondition> jsonLoader,
                                                NetworkLoader<? extends BookCondition> networkLoader) {
         conditionJsonLoaders.put(id, jsonLoader);
         conditionNetworkLoaders.put(id, networkLoader);
@@ -172,7 +172,7 @@ public class LoaderRegistry {
     /**
      * Call from common setup
      */
-    public static void registerMultiblockLoader(ResourceLocation id, JsonLoader<? extends Multiblock> jsonLoader,
+    public static void registerMultiblockLoader(Identifier id, JsonLoader<? extends Multiblock> jsonLoader,
                                                 NetworkLoader<? extends Multiblock> networkLoader) {
         multiblockJsonLoaders.put(id, jsonLoader);
         multiblockNetworkLoaders.put(id, networkLoader);
@@ -181,7 +181,7 @@ public class LoaderRegistry {
     /**
      * Call from common setup
      */
-    public static void registerStateMatcherLoader(ResourceLocation id, JsonLoader<? extends StateMatcher> jsonLoader,
+    public static void registerStateMatcherLoader(Identifier id, JsonLoader<? extends StateMatcher> jsonLoader,
                                                   NetworkLoader<? extends StateMatcher> networkLoader) {
         stateMatcherJsonLoaders.put(id, jsonLoader);
         stateMatcherNetworkLoaders.put(id, networkLoader);
@@ -190,11 +190,11 @@ public class LoaderRegistry {
     /**
      * Call from common setup, so predicates are available on both sides.
      */
-    public static void registerPredicate(ResourceLocation id, TriPredicate<BlockGetter, BlockPos, BlockState> predicate) {
+    public static void registerPredicate(Identifier id, TriPredicate<BlockGetter, BlockPos, BlockState> predicate) {
         predicates.put(id, predicate);
     }
 
-    public static BookEntryJsonLoader<? extends BookEntry> getEntryJsonLoader(ResourceLocation id) {
+    public static BookEntryJsonLoader<? extends BookEntry> getEntryJsonLoader(Identifier id) {
         var loader = entryTypeJsonLoaders.get(id);
         if (loader == null) {
             throw new IllegalArgumentException("No json loader registered for entry type " + id);
@@ -202,7 +202,7 @@ public class LoaderRegistry {
         return loader;
     }
 
-    public static NetworkLoader<? extends BookEntry> getEntryNetworkLoader(ResourceLocation id) {
+    public static NetworkLoader<? extends BookEntry> getEntryNetworkLoader(Identifier id) {
         var loader = entryTypeNetworkLoaders.get(id);
         if (loader == null) {
             throw new IllegalArgumentException("No network loader registered for entry type " + id);
@@ -210,7 +210,7 @@ public class LoaderRegistry {
         return loader;
     }
 
-    public static JsonLoader<? extends StateMatcher> getStateMatcherJsonLoader(ResourceLocation id) {
+    public static JsonLoader<? extends StateMatcher> getStateMatcherJsonLoader(Identifier id) {
         var loader = stateMatcherJsonLoaders.get(id);
         if (loader == null) {
             throw new IllegalArgumentException("No json loader registered for state matcher type " + id);
@@ -218,7 +218,7 @@ public class LoaderRegistry {
         return loader;
     }
 
-    public static NetworkLoader<? extends StateMatcher> getStateMatcherNetworkLoader(ResourceLocation id) {
+    public static NetworkLoader<? extends StateMatcher> getStateMatcherNetworkLoader(Identifier id) {
         var loader = stateMatcherNetworkLoaders.get(id);
         if (loader == null) {
             throw new IllegalArgumentException("No network loader registered for state matcher type " + id);
@@ -226,7 +226,7 @@ public class LoaderRegistry {
         return loader;
     }
 
-    public static TriPredicate<BlockGetter, BlockPos, BlockState> getPredicate(ResourceLocation id) {
+    public static TriPredicate<BlockGetter, BlockPos, BlockState> getPredicate(Identifier id) {
         var predicate = predicates.get(id);
         if (predicate == null) {
             throw new IllegalArgumentException("No predicated registered for id " + id);
@@ -234,7 +234,7 @@ public class LoaderRegistry {
         return predicate;
     }
 
-    public static BookPageJsonLoader<? extends BookPage> getPageJsonLoader(ResourceLocation id) {
+    public static BookPageJsonLoader<? extends BookPage> getPageJsonLoader(Identifier id) {
         var loader = pageJsonLoaders.get(id);
         if (loader == null) {
             throw new IllegalArgumentException("No json loader registered for page type " + id);
@@ -242,7 +242,7 @@ public class LoaderRegistry {
         return loader;
     }
 
-    public static NetworkLoader<? extends BookPage> getPageNetworkLoader(ResourceLocation id) {
+    public static NetworkLoader<? extends BookPage> getPageNetworkLoader(Identifier id) {
         var loader = pageNetworkLoaders.get(id);
         if (loader == null) {
             throw new IllegalArgumentException("No network loader registered for page type " + id);
@@ -250,7 +250,7 @@ public class LoaderRegistry {
         return loader;
     }
 
-    public static BookConditionJsonLoader<? extends BookCondition> getConditionJsonLoader(ResourceLocation id) {
+    public static BookConditionJsonLoader<? extends BookCondition> getConditionJsonLoader(Identifier id) {
         var loader = conditionJsonLoaders.get(id);
         if (loader == null) {
             throw new IllegalArgumentException("No json loader registered for condition type " + id);
@@ -258,7 +258,7 @@ public class LoaderRegistry {
         return loader;
     }
 
-    public static NetworkLoader<? extends BookCondition> getConditionNetworkLoader(ResourceLocation id) {
+    public static NetworkLoader<? extends BookCondition> getConditionNetworkLoader(Identifier id) {
         var loader = conditionNetworkLoaders.get(id);
         if (loader == null) {
             throw new IllegalArgumentException("No network loader registered for condition type " + id);
@@ -266,7 +266,7 @@ public class LoaderRegistry {
         return loader;
     }
 
-    public static JsonLoader<? extends Multiblock> getMultiblockJsonLoader(ResourceLocation id) {
+    public static JsonLoader<? extends Multiblock> getMultiblockJsonLoader(Identifier id) {
         var loader = multiblockJsonLoaders.get(id);
         if (loader == null) {
             throw new IllegalArgumentException("No json loader registered for multiblock type " + id);
@@ -274,7 +274,7 @@ public class LoaderRegistry {
         return loader;
     }
 
-    public static NetworkLoader<? extends Multiblock> getMultiblockNetworkLoader(ResourceLocation id) {
+    public static NetworkLoader<? extends Multiblock> getMultiblockNetworkLoader(Identifier id) {
         var loader = multiblockNetworkLoaders.get(id);
         if (loader == null) {
             throw new IllegalArgumentException("No network loader registered for multiblock type " + id);
@@ -282,7 +282,7 @@ public class LoaderRegistry {
         return loader;
     }
 
-    public static Collection<BookDynamicTextMacroLoader> getDynamicTextMacroLoaders(ResourceLocation bookId) {
+    public static Collection<BookDynamicTextMacroLoader> getDynamicTextMacroLoaders(Identifier bookId) {
         return dynamicTextMacroLoaders.get(bookId);
     }
 }

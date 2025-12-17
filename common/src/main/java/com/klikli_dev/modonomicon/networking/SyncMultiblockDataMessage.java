@@ -15,7 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,12 +24,12 @@ import java.util.Map;
 public class SyncMultiblockDataMessage implements Message {
 
 
-    public static final Type<SyncMultiblockDataMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "sync_multiblock_data"));
+    public static final Type<SyncMultiblockDataMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "sync_multiblock_data"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncMultiblockDataMessage> STREAM_CODEC = CustomPacketPayload.codec(SyncMultiblockDataMessage::encode, SyncMultiblockDataMessage::new);
 
-    public Map<ResourceLocation, Multiblock> multiblocks = new Object2ObjectOpenHashMap<>();
+    public Map<Identifier, Multiblock> multiblocks = new Object2ObjectOpenHashMap<>();
 
-    public SyncMultiblockDataMessage(Map<ResourceLocation, Multiblock> multiblocks) {
+    public SyncMultiblockDataMessage(Map<Identifier, Multiblock> multiblocks) {
         this.multiblocks = new Object2ObjectOpenHashMap<>(multiblocks);
     }
 
@@ -40,8 +40,8 @@ public class SyncMultiblockDataMessage implements Message {
     private void encode(RegistryFriendlyByteBuf buf) {
         buf.writeVarInt(this.multiblocks.size());
         for (var multiblock : this.multiblocks.values()) {
-            buf.writeResourceLocation(multiblock.getType());
-            buf.writeResourceLocation(multiblock.getId());
+            buf.writeIdentifier(multiblock.getType());
+            buf.writeIdentifier(multiblock.getId());
             multiblock.toNetwork(buf);
         }
     }
@@ -49,8 +49,8 @@ public class SyncMultiblockDataMessage implements Message {
     private void decode(RegistryFriendlyByteBuf buf) {
         int multiblockCount = buf.readVarInt();
         for (int i = 0; i < multiblockCount; i++) {
-            var type = buf.readResourceLocation();
-            var id = buf.readResourceLocation();
+            var type = buf.readIdentifier();
+            var id = buf.readIdentifier();
             var multiblock = LoaderRegistry.getMultiblockNetworkLoader(type).fromNetwork(buf);
             multiblock.setId(id);
             this.multiblocks.put(multiblock.getId(), multiblock);

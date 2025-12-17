@@ -13,7 +13,7 @@ import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenCustomHashSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
@@ -40,7 +40,7 @@ public class CreativeModeTabRegistry {
         var modonomiconTab = CreativeModeTabRegistry.MODONOMICON.get();
 
         BookDataManager.get().getBooks().values().forEach(b -> {
-            var bookTab = BuiltInRegistries.CREATIVE_MODE_TAB.getValue(ResourceLocation.parse(b.getCreativeTab()));
+            var bookTab = BuiltInRegistries.CREATIVE_MODE_TAB.getValue(Identifier.parse(b.getCreativeTab()));
 
             if (bookTab == event.getTab() || modonomiconTab == event.getTab()
             ) {

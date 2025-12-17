@@ -11,7 +11,7 @@
     },
     "C": {
       "type": "modonomicon:block",
-      "block": "minecraft:chain"
+      "block": "minecraft:iron_chain"
     },
     "F": {
       "type": "modonomicon:block",

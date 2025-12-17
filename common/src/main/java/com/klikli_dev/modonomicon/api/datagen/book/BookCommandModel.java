@@ -10,7 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -19,7 +19,7 @@ import java.util.Set;
 
 public class BookCommandModel {
     protected BookModel book;
-    protected ResourceLocation id;
+    protected Identifier id;
 
     protected String command;
     protected int permissionLevel = ModonomiconConstants.Data.Command.DEFAULT_PERMISSION_LEVEL;
@@ -31,9 +31,9 @@ public class BookCommandModel {
     @Nullable
     protected String successMessage;
 
-    protected Set<ResourceLocation> allowedEntries = new HashSet<>();
+    protected Set<Identifier> allowedEntries = new HashSet<>();
 
-    protected BookCommandModel(ResourceLocation id, String command) {
+    protected BookCommandModel(Identifier id, String command) {
         this.id = id;
         this.command = command;
     }
@@ -42,7 +42,7 @@ public class BookCommandModel {
      * @param id      The command ID, e.g. "modonomicon:rewards/random". The ID must be unique within the book.
      * @param command The minecraft command to execute.
      */
-    public static BookCommandModel create(ResourceLocation id, String command) {
+    public static BookCommandModel create(Identifier id, String command) {
         return new BookCommandModel(id, command);
     }
 
@@ -69,7 +69,7 @@ public class BookCommandModel {
         return json;
     }
 
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return this.id;
     }
 
@@ -143,24 +143,24 @@ public class BookCommandModel {
      * If set, only these entries will be able to execute the command.
      * If not set, all entries will be able to execute the command.
      */
-    public BookCommandModel withAllowedEntries(Set<ResourceLocation> allowedEntries) {
+    public BookCommandModel withAllowedEntries(Set<Identifier> allowedEntries) {
         this.allowedEntries = allowedEntries == null ? new HashSet<>() : new HashSet<>(allowedEntries);
         return this;
     }
 
     /**
-     * Adds a single allowed entry by ResourceLocation.
+     * Adds a single allowed entry by Identifier.
      */
-    public BookCommandModel withAllowedEntry(ResourceLocation entry) {
+    public BookCommandModel withAllowedEntry(Identifier entry) {
         this.allowedEntries.add(entry);
         return this;
     }
 
     /**
-     * Adds a single allowed entry by String (converted to ResourceLocation).
+     * Adds a single allowed entry by String (converted to Identifier).
      */
     public BookCommandModel withAllowedEntry(String entry) {
-        this.allowedEntries.add(ResourceLocation.parse(entry));
+        this.allowedEntries.add(Identifier.parse(entry));
         return this;
     }
 }

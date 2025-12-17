@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.FileToIdConverter;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Copied from 1.21.1
  */
-public abstract class LegacySimpleJsonResourceReloadListener extends SimplePreparableReloadListener<Map<ResourceLocation, JsonElement>> {
+public abstract class LegacySimpleJsonResourceReloadListener extends SimplePreparableReloadListener<Map<Identifier, JsonElement>> {
     private static final Logger LOGGER = LogUtils.getLogger();
     private final Gson gson;
     private final String directory;
@@ -34,18 +34,18 @@ public abstract class LegacySimpleJsonResourceReloadListener extends SimplePrepa
     /**
      * Performs any reloading that can be done off-thread, such as file IO
      */
-    protected Map<ResourceLocation, JsonElement> prepare(ResourceManager resourceManager, ProfilerFiller profiler) {
-        Map<ResourceLocation, JsonElement> map = new HashMap<>();
+    protected Map<Identifier, JsonElement> prepare(ResourceManager resourceManager, ProfilerFiller profiler) {
+        Map<Identifier, JsonElement> map = new HashMap<>();
         scanDirectory(resourceManager, this.directory, this.gson, map);
         return map;
     }
 
-    public static void scanDirectory(ResourceManager resourceManager, String name, Gson gson, Map<ResourceLocation, JsonElement> output) {
+    public static void scanDirectory(ResourceManager resourceManager, String name, Gson gson, Map<Identifier, JsonElement> output) {
         FileToIdConverter filetoidconverter = FileToIdConverter.json(name);
 
-        for (Map.Entry<ResourceLocation, Resource> entry : filetoidconverter.listMatchingResources(resourceManager).entrySet()) {
-            ResourceLocation resourcelocation = entry.getKey();
-            ResourceLocation resourcelocation1 = filetoidconverter.fileToId(resourcelocation);
+        for (Map.Entry<Identifier, Resource> entry : filetoidconverter.listMatchingResources(resourceManager).entrySet()) {
+            Identifier Identifier = entry.getKey();
+            Identifier resourcelocation1 = filetoidconverter.fileToId(Identifier);
 
             try (Reader reader = entry.getValue().openAsReader()) {
                 JsonElement jsonelement = GsonHelper.fromJson(gson, reader, JsonElement.class);
@@ -54,12 +54,12 @@ public abstract class LegacySimpleJsonResourceReloadListener extends SimplePrepa
                     throw new IllegalStateException("Duplicate data file ignored with ID " + resourcelocation1);
                 }
             } catch (IllegalArgumentException | IOException | JsonParseException jsonparseexception) {
-                LOGGER.error("Couldn't parse data file {} from {}", resourcelocation1, resourcelocation, jsonparseexception);
+                LOGGER.error("Couldn't parse data file {} from {}", resourcelocation1, Identifier, jsonparseexception);
             }
         }
     }
 
-    protected ResourceLocation getPreparedPath(ResourceLocation rl) {
+    protected Identifier getPreparedPath(Identifier rl) {
         return rl.withPath(this.directory + "/" + rl.getPath() + ".json");
     }
 }

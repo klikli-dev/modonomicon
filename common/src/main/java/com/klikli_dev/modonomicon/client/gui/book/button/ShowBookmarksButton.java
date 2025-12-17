@@ -13,7 +13,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
+
 import net.minecraft.network.chat.Component;
 
 public class ShowBookmarksButton extends Button {
@@ -29,7 +29,7 @@ public class ShowBookmarksButton extends Button {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTicks) {
+    protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f) {
         if (this.visible) {
 
             guiGraphics.pose().pushMatrix();

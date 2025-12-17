@@ -15,11 +15,11 @@ import com.klikli_dev.modonomicon.datagen.book.demo.FeaturesCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.FormattingCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.IndexModeCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionRootEntry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class AddToDemoBook extends AddToBookSubProvider {
 
-    public static final ResourceLocation TARGET_BOOK_ID = ResourceLocation.fromNamespaceAndPath("theurgy", "the_hermetica");
+    public static final Identifier TARGET_BOOK_ID = Identifier.fromNamespaceAndPath("theurgy", "the_hermetica");
 
     public AddToDemoBook(ModonomiconLanguageProvider lang) {
         super(TARGET_BOOK_ID, lang);

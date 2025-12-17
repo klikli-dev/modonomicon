@@ -12,7 +12,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookEntryParentModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.level.ItemLike;
 
@@ -57,11 +57,11 @@ public abstract class LegacyCategoryProvider extends CategoryProviderBase {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v1, v2) -> v1));
     }
 
-    protected BookEntryModel entry(String location, ResourceLocation texture) {
+    protected BookEntryModel entry(String location, Identifier texture) {
         return this.entry(location).withIcon(texture);
     }
 
-    protected BookEntryModel entry(String location, ResourceLocation texture, int width, int height) {
+    protected BookEntryModel entry(String location, Identifier texture, int width, int height) {
         return this.entry(location).withIcon(texture, width, height);
     }
 
@@ -69,11 +69,11 @@ public abstract class LegacyCategoryProvider extends CategoryProviderBase {
         return this.entry(location).withIcon(icon);
     }
 
-    protected BookEntryModel entry(char location, ResourceLocation texture) {
+    protected BookEntryModel entry(char location, Identifier texture) {
         return this.entry(location).withIcon(texture);
     }
 
-    protected BookEntryModel entry(char location, ResourceLocation texture, int width, int height) {
+    protected BookEntryModel entry(char location, Identifier texture, int width, int height) {
         return this.entry(location).withIcon(texture, width, height);
     }
 

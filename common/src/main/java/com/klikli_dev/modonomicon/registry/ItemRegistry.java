@@ -10,7 +10,7 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.item.ModonomiconItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -42,7 +42,7 @@ public class ItemRegistry {
 
 
     public static <I extends Item> RegistryObject<I> register(final String name, final Function<Item.Properties, ? extends I> itemConstructor) {
-        return ITEMS.register(name, () -> itemConstructor.apply(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, name)))));
+        return ITEMS.register(name, () -> itemConstructor.apply(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, name)))));
     }
 
 }

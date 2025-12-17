@@ -14,13 +14,13 @@ import com.klikli_dev.modonomicon.data.BookDataManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 public class SaveCategoryStateMessage implements Message {
 
-    public static final Type<SaveCategoryStateMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "save_category_state"));
+    public static final Type<SaveCategoryStateMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "save_category_state"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SaveCategoryStateMessage> STREAM_CODEC = CustomPacketPayload.codec(SaveCategoryStateMessage::encode, SaveCategoryStateMessage::new);
 
     public BookCategory category;
@@ -29,13 +29,13 @@ public class SaveCategoryStateMessage implements Message {
     public float scrollY = 0;
     public float targetZoom;
 
-    public ResourceLocation openEntry = null;
+    public Identifier openEntry = null;
 
     public SaveCategoryStateMessage(BookCategory category, CategoryVisualState state) {
         this(category, state.scrollX, state.scrollY, state.targetZoom, state.openEntry);
     }
 
-    public SaveCategoryStateMessage(BookCategory category, float scrollX, float scrollY, float targetZoom, ResourceLocation openEntry) {
+    public SaveCategoryStateMessage(BookCategory category, float scrollX, float scrollY, float targetZoom, Identifier openEntry) {
         this.category = category;
         this.scrollX = scrollX;
         this.scrollY = scrollY;
@@ -48,24 +48,24 @@ public class SaveCategoryStateMessage implements Message {
     }
 
     private void encode(RegistryFriendlyByteBuf buf) {
-        buf.writeResourceLocation(this.category.getBook().getId());
-        buf.writeResourceLocation(this.category.getId());
+        buf.writeIdentifier(this.category.getBook().getId());
+        buf.writeIdentifier(this.category.getId());
         buf.writeFloat(this.scrollX);
         buf.writeFloat(this.scrollY);
         buf.writeFloat(this.targetZoom);
         buf.writeBoolean(this.openEntry != null);
         if (this.openEntry != null) {
-            buf.writeResourceLocation(this.openEntry);
+            buf.writeIdentifier(this.openEntry);
         }
     }
 
     private void decode(RegistryFriendlyByteBuf buf) {
-        this.category = BookDataManager.get().getBook(buf.readResourceLocation()).getCategory(buf.readResourceLocation());
+        this.category = BookDataManager.get().getBook(buf.readIdentifier()).getCategory(buf.readIdentifier());
         this.scrollX = buf.readFloat();
         this.scrollY = buf.readFloat();
         this.targetZoom = buf.readFloat();
         if (buf.readBoolean()) {
-            this.openEntry = buf.readResourceLocation();
+            this.openEntry = buf.readIdentifier();
         }
     }
 

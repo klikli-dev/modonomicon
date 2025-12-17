@@ -32,7 +32,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -51,7 +51,7 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
 
     private static final BookDataManager instance = new BookDataManager();
 
-    private final Map<ResourceLocation, Book> books = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+    private final Map<Identifier, Book> books = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
     private boolean loaded;
     private boolean booksBuilt;
     private HolderLookup.Provider registries;
@@ -72,11 +72,11 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
         return this.loaded;
     }
 
-    public Map<ResourceLocation, Book> getBooks() {
+    public Map<Identifier, Book> getBooks() {
         return this.books;
     }
 
-    public Book getBook(ResourceLocation id) {
+    public Book getBook(Identifier id) {
         return this.books.get(id);
     }
 
@@ -190,17 +190,17 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
         this.loaded = true;
     }
 
-    private Book loadBook(ResourceLocation key, JsonObject value, HolderLookup.Provider provider) {
+    private Book loadBook(Identifier key, JsonObject value, HolderLookup.Provider provider) {
         return Book.fromJson(key, value, provider);
     }
 
-    private BookCategory loadCategory(ResourceLocation key, JsonObject value, HolderLookup.Provider provider) {
+    private BookCategory loadCategory(Identifier key, JsonObject value, HolderLookup.Provider provider) {
         return BookCategory.fromJson(key, value, provider);
     }
 
-    private BookEntry loadEntry(ResourceLocation id, JsonObject value, boolean autoAddReadConditions, HolderLookup.Provider provider) {
+    private BookEntry loadEntry(Identifier id, JsonObject value, boolean autoAddReadConditions, HolderLookup.Provider provider) {
         if (value.has("type")) {
-            ResourceLocation typeId = ResourceLocation.tryParse(value.get("type").getAsString());
+            Identifier typeId = Identifier.tryParse(value.get("type").getAsString());
             return LoaderRegistry.getEntryJsonLoader(typeId).fromJson(id, value, autoAddReadConditions, provider);
         }
 
@@ -213,7 +213,7 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
         return BookContentEntry.fromJson(id, value, autoAddReadConditions, provider);
     }
 
-    private BookCommand loadCommand(ResourceLocation key, JsonObject value) {
+    private BookCommand loadCommand(Identifier key, JsonObject value) {
         return BookCommand.fromJson(key, value);
     }
 
@@ -224,7 +224,7 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
      * @param bookObject the json object representing the content
      * @return false if the condition is not met and the content should not be loaded.
      */
-    private boolean testConditionOnLoad(ResourceLocation key, JsonObject bookObject, HolderLookup.Provider provider) {
+    private boolean testConditionOnLoad(Identifier key, JsonObject bookObject, HolderLookup.Provider provider) {
         if (!bookObject.has("condition")) {
             return true; //no condition -> always load
         }
@@ -233,16 +233,16 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
     }
 
 
-    private void categorizeContent(Map<ResourceLocation, JsonElement> content,
-                                   HashMap<ResourceLocation, JsonObject> bookJsons,
-                                   HashMap<ResourceLocation, JsonObject> categoryJsons,
-                                   HashMap<ResourceLocation, JsonObject> entryJsons,
-                                   HashMap<ResourceLocation, JsonObject> commandJsons
+    private void categorizeContent(Map<Identifier, JsonElement> content,
+                                   HashMap<Identifier, JsonObject> bookJsons,
+                                   HashMap<Identifier, JsonObject> categoryJsons,
+                                   HashMap<Identifier, JsonObject> entryJsons,
+                                   HashMap<Identifier, JsonObject> commandJsons
     ) {
         for (var entry : content.entrySet()) {
             var pathParts = entry.getKey().getPath().split("/");
 
-            var bookId = ResourceLocation.fromNamespaceAndPath(entry.getKey().getNamespace(), pathParts[0]);
+            var bookId = Identifier.fromNamespaceAndPath(entry.getKey().getNamespace(), pathParts[0]);
             switch (pathParts[1]) {
                 case "book" -> {
                     bookJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
@@ -267,23 +267,23 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> content, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
+    protected void apply(Map<Identifier, JsonElement> content, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
         this.preLoad();
 
         //TODO: handle datapack overrides, see TagLoader#load line 69 (refers to Tag.Builder#addFromJson)
 
         //first, load all json entries
-        var bookJsons = new HashMap<ResourceLocation, JsonObject>();
-        var categoryJsons = new HashMap<ResourceLocation, JsonObject>();
-        var entryJsons = new HashMap<ResourceLocation, JsonObject>();
-        var commandJsons = new HashMap<ResourceLocation, JsonObject>();
+        var bookJsons = new HashMap<Identifier, JsonObject>();
+        var categoryJsons = new HashMap<Identifier, JsonObject>();
+        var entryJsons = new HashMap<Identifier, JsonObject>();
+        var commandJsons = new HashMap<Identifier, JsonObject>();
         this.categorizeContent(content, bookJsons, categoryJsons, entryJsons, commandJsons);
 
         //load books
         for (var entry : bookJsons.entrySet()) {
             try {
                 var pathParts = entry.getKey().getPath().split("/");
-                var bookId = ResourceLocation.fromNamespaceAndPath(entry.getKey().getNamespace(), pathParts[0]);
+                var bookId = Identifier.fromNamespaceAndPath(entry.getKey().getNamespace(), pathParts[0]);
                 BookErrorManager.get().setCurrentBookId(bookId);
                 BookErrorManager.get().setContext("Loading Book JSON");
                 var book = this.loadBook(bookId, entry.getValue(), this.registries);
@@ -300,11 +300,11 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
             try {
                 //load categories and link to book
                 var pathParts = entry.getKey().getPath().split("/");
-                var bookId = ResourceLocation.fromNamespaceAndPath(entry.getKey().getNamespace(), pathParts[0]);
+                var bookId = Identifier.fromNamespaceAndPath(entry.getKey().getNamespace(), pathParts[0]);
                 BookErrorManager.get().setCurrentBookId(bookId);
 
                 //category id skips the book id and the category directory
-                var categoryId = ResourceLocation.fromNamespaceAndPath(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
+                var categoryId = Identifier.fromNamespaceAndPath(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
 
                 BookErrorManager.get().getContextHelper().categoryId = categoryId;
                 //test if we should load the category at all
@@ -330,11 +330,11 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
             try {
                 //load entries and link to category
                 var pathParts = entry.getKey().getPath().split("/");
-                var bookId = ResourceLocation.fromNamespaceAndPath(entry.getKey().getNamespace(), pathParts[0]);
+                var bookId = Identifier.fromNamespaceAndPath(entry.getKey().getNamespace(), pathParts[0]);
                 BookErrorManager.get().setCurrentBookId(bookId);
 
                 //entry id skips the book id and the entries directory, but keeps category so it is unique
-                var entryId = ResourceLocation.fromNamespaceAndPath(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
+                var entryId = Identifier.fromNamespaceAndPath(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
 
                 BookErrorManager.get().getContextHelper().entryId = entryId;
                 //test if we should load the category at all
@@ -361,13 +361,13 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
             try {
                 //load commands and link to book
                 var pathParts = entry.getKey().getPath().split("/");
-                var bookId = ResourceLocation.fromNamespaceAndPath(entry.getKey().getNamespace(), pathParts[0]);
+                var bookId = Identifier.fromNamespaceAndPath(entry.getKey().getNamespace(), pathParts[0]);
                 BookErrorManager.get().setCurrentBookId(bookId);
 
                 BookErrorManager.get().setContext("Loading Command JSON");
 
                 //commands id skips the book id and the commands directory
-                var commandId = ResourceLocation.fromNamespaceAndPath(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
+                var commandId = Identifier.fromNamespaceAndPath(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
 
                 BookErrorManager.get().setContext("Loading Command JSON: " + commandId);
                 var command = this.loadCommand(commandId, entry.getValue());
@@ -391,11 +391,11 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
 
         private static final Client instance = new Client();
 
-        private static final ResourceLocation fallbackFont = ResourceLocation.fromNamespaceAndPath("minecraft", "default");
+        private static final Identifier fallbackFont = Identifier.fromNamespaceAndPath("minecraft", "default");
         /**
          * Our local advancement cache, because we cannot just store random advancement in ClientAdvancements -> they get rejected
          */
-        private final Map<ResourceLocation, AdvancementHolder> advancements = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+        private final Map<Identifier, AdvancementHolder> advancements = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
         private final Object2FloatOpenHashMap<BookTextHolder.ScaleCacheKey> bookTextHolderScaleCache = new Object2FloatOpenHashMap<>();
         private boolean isFallbackLocale;
         private boolean isFontInitialized;
@@ -424,11 +424,11 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
             return this.isFallbackLocale;
         }
 
-        public ResourceLocation safeFont(ResourceLocation requested) {
+        public Identifier safeFont(Identifier requested) {
             return this.useFallbackFont() ? fallbackFont : requested;
         }
 
-        public AdvancementHolder getAdvancement(ResourceLocation id) {
+        public AdvancementHolder getAdvancement(Identifier id) {
             return this.advancements.get(id);
         }
 
@@ -448,7 +448,7 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
         }
 
         @Override
-        protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profiler) {
+        protected void apply(Map<Identifier, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profiler) {
             //reset on reload
             this.resetUseFallbackFont();
             this.advancements.clear();

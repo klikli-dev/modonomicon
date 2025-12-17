@@ -14,19 +14,19 @@ import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class BookConditionModel<T extends BookConditionModel<T>> {
     protected Component tooltip = null;
     protected String tooltipString = null;
 
-    protected ResourceLocation type;
+    protected Identifier type;
 
-    protected BookConditionModel(ResourceLocation type) {
+    protected BookConditionModel(Identifier type) {
         this.type = type;
     }
 
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return this.type;
     }
 
@@ -38,7 +38,7 @@ public class BookConditionModel<T extends BookConditionModel<T>> {
         return this.tooltipString;
     }
 
-    public JsonObject toJson(ResourceLocation conditionParentId, HolderLookup.Provider provider) {
+    public JsonObject toJson(Identifier conditionParentId, HolderLookup.Provider provider) {
         JsonObject json = new JsonObject();
         json.addProperty("type", this.getType().toString());
         if (this.tooltipString != null)

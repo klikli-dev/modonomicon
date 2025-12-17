@@ -10,12 +10,12 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
+
 import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.metadata.gui.GuiSpriteScaling;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
@@ -105,7 +105,7 @@ public class GuiGraphicsExt {
      * based on a fixed size textured box with continuous borders and filler.
      * See Forge IForgeGuiGraphics
      *
-     * @param texture       the ResourceLocation object that contains the desired image
+     * @param texture       the Identifier object that contains the desired image
      * @param pipeline      the render pipeline
      * @param x             x-axis offset
      * @param y             y-axis offset
@@ -117,7 +117,7 @@ public class GuiGraphicsExt {
      * @param textureHeight the height of the box texture in the resource location image
      * @param borderSize    the size of the box's borders
      */
-    public static void blitWithBorder(GuiGraphics guiGraphics, RenderPipeline pipeline, ResourceLocation texture, int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight, int borderSize) {
+    public static void blitWithBorder(GuiGraphics guiGraphics, RenderPipeline pipeline, Identifier texture, int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight, int borderSize) {
         blitWithBorder(guiGraphics, pipeline, texture, x, y, u, v, width, height, textureWidth, textureHeight, borderSize, borderSize, borderSize, borderSize);
     }
 
@@ -126,7 +126,7 @@ public class GuiGraphicsExt {
      * based on a fixed size textured box with continuous borders and filler.
      * See Forge IForgeGuiGraphics
      *
-     * @param texture       the ResourceLocation object that contains the desired image
+     * @param texture       the Identifier object that contains the desired image
      * @param pipeline      the render pipeline
      * @param x             x-axis offset
      * @param y             y-axis offset
@@ -141,7 +141,7 @@ public class GuiGraphicsExt {
      * @param leftBorder    the size of the box's left border
      * @param rightBorder   the size of the box's right border
      */
-    public static void blitWithBorder(GuiGraphics guiGraphics, RenderPipeline pipeline, ResourceLocation texture, int x, int y, int u, int v, int width, int height, int maxU, int maxV, int topBorder, int bottomBorder, int leftBorder, int rightBorder) {
+    public static void blitWithBorder(GuiGraphics guiGraphics, RenderPipeline pipeline, Identifier texture, int x, int y, int u, int v, int width, int height, int maxU, int maxV, int topBorder, int bottomBorder, int leftBorder, int rightBorder) {
         int fillerWidth = maxU - leftBorder - rightBorder;
         int fillerHeight = maxV - topBorder - bottomBorder;
         int canvasWidth = width - leftBorder - rightBorder;

@@ -15,7 +15,7 @@ import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 
@@ -24,50 +24,50 @@ public class CategoryLinkBookEntry extends BookEntry {
     /**
      * The category to open on click
      */
-    protected ResourceLocation categoryToOpenId;
+    protected Identifier categoryToOpenId;
     protected BookCategory categoryToOpen;
 
-    public CategoryLinkBookEntry(ResourceLocation id, BookEntryData data, ResourceLocation commandToRunOnFirstReadId, ResourceLocation categoryToOpenId) {
+    public CategoryLinkBookEntry(Identifier id, BookEntryData data, Identifier commandToRunOnFirstReadId, Identifier categoryToOpenId) {
         super(id, data, commandToRunOnFirstReadId);
         this.categoryToOpenId = categoryToOpenId;
     }
 
-    public static CategoryLinkBookEntry fromJson(ResourceLocation id, JsonObject json, boolean autoAddReadConditions, HolderLookup.Provider provider) {
+    public static CategoryLinkBookEntry fromJson(Identifier id, JsonObject json, boolean autoAddReadConditions, HolderLookup.Provider provider) {
         BookEntryData data = BookEntryData.fromJson(id, json, autoAddReadConditions, provider);
 
-        ResourceLocation commandToRunOnFirstReadId = null;
+        Identifier commandToRunOnFirstReadId = null;
         if (json.has("command_to_run_on_first_read")) {
-            commandToRunOnFirstReadId = ResourceLocation.parse(GsonHelper.getAsString(json, "command_to_run_on_first_read"));
+            commandToRunOnFirstReadId = Identifier.parse(GsonHelper.getAsString(json, "command_to_run_on_first_read"));
         }
 
         var categoryToOpenIdPath = GsonHelper.getAsString(json, "category_to_open");
         var categoryToOpenId = categoryToOpenIdPath.contains(":") ?
-                ResourceLocation.parse(categoryToOpenIdPath) :
-                ResourceLocation.fromNamespaceAndPath(id.getNamespace(), categoryToOpenIdPath);
+                Identifier.parse(categoryToOpenIdPath) :
+                Identifier.fromNamespaceAndPath(id.getNamespace(), categoryToOpenIdPath);
 
         return new CategoryLinkBookEntry(id, data, commandToRunOnFirstReadId, categoryToOpenId);
     }
 
     public static CategoryLinkBookEntry fromNetwork(RegistryFriendlyByteBuf buffer) {
-        var id = buffer.readResourceLocation();
+        var id = buffer.readIdentifier();
         BookEntryData data = BookEntryData.fromNetwork(buffer);
-        ResourceLocation commandToRunOnFirstReadId = buffer.readNullable(FriendlyByteBuf::readResourceLocation);
-        ResourceLocation categoryToOpen = buffer.readNullable(FriendlyByteBuf::readResourceLocation); //can be set to null in #build, if the category was not found
+        Identifier commandToRunOnFirstReadId = buffer.readNullable(FriendlyByteBuf::readIdentifier);
+        Identifier categoryToOpen = buffer.readNullable(FriendlyByteBuf::readIdentifier); //can be set to null in #build, if the category was not found
 
         return new CategoryLinkBookEntry(id, data, commandToRunOnFirstReadId, categoryToOpen);
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return ModonomiconConstants.Data.EntryType.CATEGORY_LINK;
     }
 
     @Override
     public void toNetwork(RegistryFriendlyByteBuf buffer) {
-        buffer.writeResourceLocation(this.id);
+        buffer.writeIdentifier(this.id);
         this.data.toNetwork(buffer);
-        buffer.writeNullable(this.commandToRunOnFirstReadId, FriendlyByteBuf::writeResourceLocation);
-        buffer.writeNullable(this.categoryToOpenId, FriendlyByteBuf::writeResourceLocation); //can be set to null in #build, if the category was not found
+        buffer.writeNullable(this.commandToRunOnFirstReadId, FriendlyByteBuf::writeIdentifier);
+        buffer.writeNullable(this.categoryToOpenId, FriendlyByteBuf::writeIdentifier); //can be set to null in #build, if the category was not found
     }
 
     @Override

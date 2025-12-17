@@ -40,4 +40,14 @@ public final class GhostVertexConsumer extends VertexConsumerWrapper {
     public @NotNull VertexConsumer setColor(int red, int green, int blue, int alpha) {
         return this.parent.setColor(red, green, blue, (alpha * this.alpha) / 0xFF);
     }
+
+    @Override
+    public VertexConsumer setColor(int color) {
+        return this.parent.setColor(ARGB.multiply(this.alpha, color));
+    }
+
+    @Override
+    public VertexConsumer setLineWidth(float f) {
+        return this.parent.setLineWidth(f);
+    }
 }

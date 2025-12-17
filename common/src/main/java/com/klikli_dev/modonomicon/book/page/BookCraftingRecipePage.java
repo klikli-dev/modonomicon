@@ -14,7 +14,7 @@ import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
@@ -30,7 +30,7 @@ public class BookCraftingRecipePage extends BookRecipePage<Recipe<?>> {
         super(common);
     }
 
-    public static BookCraftingRecipePage fromJson(ResourceLocation entryId, JsonObject json, HolderLookup.Provider provider) {
+    public static BookCraftingRecipePage fromJson(Identifier entryId, JsonObject json, HolderLookup.Provider provider) {
         var common = BookRecipePage.commonFromJson(entryId, json, provider);
         return new BookCraftingRecipePage(common);
     }
@@ -41,7 +41,7 @@ public class BookCraftingRecipePage extends BookRecipePage<Recipe<?>> {
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return Page.CRAFTING_RECIPE;
     }
 }

@@ -15,7 +15,7 @@ import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 
@@ -24,50 +24,50 @@ public class EntryLinkBookEntry extends BookEntry {
     /**
      * The entry to open on click
      */
-    protected ResourceLocation entryToOpenId;
+    protected Identifier entryToOpenId;
     protected BookEntry entryToOpen;
 
-    public EntryLinkBookEntry(ResourceLocation id, BookEntryData data, ResourceLocation commandToRunOnFirstReadId, ResourceLocation entryToOpenId) {
+    public EntryLinkBookEntry(Identifier id, BookEntryData data, Identifier commandToRunOnFirstReadId, Identifier entryToOpenId) {
         super(id, data, commandToRunOnFirstReadId);
         this.entryToOpenId = entryToOpenId;
     }
 
-    public static EntryLinkBookEntry fromJson(ResourceLocation id, JsonObject json, boolean autoAddReadConditions, HolderLookup.Provider provider) {
+    public static EntryLinkBookEntry fromJson(Identifier id, JsonObject json, boolean autoAddReadConditions, HolderLookup.Provider provider) {
         BookEntryData data = BookEntryData.fromJson(id, json, autoAddReadConditions, provider);
 
-        ResourceLocation commandToRunOnFirstReadId = null;
+        Identifier commandToRunOnFirstReadId = null;
         if (json.has("command_to_run_on_first_read")) {
-            commandToRunOnFirstReadId = ResourceLocation.parse(GsonHelper.getAsString(json, "command_to_run_on_first_read"));
+            commandToRunOnFirstReadId = Identifier.parse(GsonHelper.getAsString(json, "command_to_run_on_first_read"));
         }
 
         var entryToOpenIdPath = GsonHelper.getAsString(json, "entry_to_open");
         var entryToOpenId = entryToOpenIdPath.contains(":") ?
-                ResourceLocation.parse(entryToOpenIdPath) :
-                ResourceLocation.fromNamespaceAndPath(id.getNamespace(), entryToOpenIdPath);
+                Identifier.parse(entryToOpenIdPath) :
+                Identifier.fromNamespaceAndPath(id.getNamespace(), entryToOpenIdPath);
 
         return new EntryLinkBookEntry(id, data, commandToRunOnFirstReadId, entryToOpenId);
     }
 
     public static EntryLinkBookEntry fromNetwork(RegistryFriendlyByteBuf buffer) {
-        var id = buffer.readResourceLocation();
+        var id = buffer.readIdentifier();
         BookEntryData data = BookEntryData.fromNetwork(buffer);
-        ResourceLocation commandToRunOnFirstReadId = buffer.readNullable(FriendlyByteBuf::readResourceLocation);
-        ResourceLocation entryToOpen = buffer.readResourceLocation();
+        Identifier commandToRunOnFirstReadId = buffer.readNullable(FriendlyByteBuf::readIdentifier);
+        Identifier entryToOpen = buffer.readIdentifier();
 
         return new EntryLinkBookEntry(id, data, commandToRunOnFirstReadId, entryToOpen);
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return ModonomiconConstants.Data.EntryType.ENTRY_LINK;
     }
 
     @Override
     public void toNetwork(RegistryFriendlyByteBuf buffer) {
-        buffer.writeResourceLocation(this.id);
+        buffer.writeIdentifier(this.id);
         this.data.toNetwork(buffer);
-        buffer.writeNullable(this.commandToRunOnFirstReadId, FriendlyByteBuf::writeResourceLocation);
-        buffer.writeResourceLocation(this.entryToOpenId);
+        buffer.writeNullable(this.commandToRunOnFirstReadId, FriendlyByteBuf::writeIdentifier);
+        buffer.writeIdentifier(this.entryToOpenId);
     }
 
     @Override

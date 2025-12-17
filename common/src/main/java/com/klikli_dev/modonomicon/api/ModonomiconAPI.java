@@ -13,7 +13,7 @@ import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.multiblock.MultiblockPreviewData;
 import com.klikli_dev.modonomicon.api.stub.ModonomiconAPIStub;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
 import org.apache.logging.log4j.LogManager;
@@ -47,7 +47,7 @@ public interface ModonomiconAPI {
     @Deprecated
     CategoryEntryMap getEntryMap();
 
-    Multiblock getMultiblock(ResourceLocation id);
+    Multiblock getMultiblock(Identifier id);
 
     /**
      * Gets the multiblock currently previewed by the player, or null if none.

@@ -12,10 +12,10 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class BookCategoryHasVisibleEntriesConditionModel extends BookConditionModel<BookCategoryHasVisibleEntriesConditionModel> {
-    private ResourceLocation categoryId;
+    private Identifier categoryId;
 
     protected BookCategoryHasVisibleEntriesConditionModel() {
         super(Condition.CATEGORY_HAS_VISIBLE_ENTRIES);
@@ -27,7 +27,7 @@ public class BookCategoryHasVisibleEntriesConditionModel extends BookConditionMo
 
 
     @Override
-    public JsonObject toJson(ResourceLocation conditionParentId, HolderLookup.Provider provider) {
+    public JsonObject toJson(Identifier conditionParentId, HolderLookup.Provider provider) {
         var json = super.toJson(conditionParentId, provider);
 
         if (this.categoryId.getNamespace().equals(conditionParentId.getNamespace()))
@@ -38,19 +38,19 @@ public class BookCategoryHasVisibleEntriesConditionModel extends BookConditionMo
         return json;
     }
 
-    public ResourceLocation getCategoryId() {
+    public Identifier getCategoryId() {
         return this.categoryId;
     }
 
 
-    public BookCategoryHasVisibleEntriesConditionModel withCategory(ResourceLocation entryId) {
+    public BookCategoryHasVisibleEntriesConditionModel withCategory(Identifier entryId) {
         this.categoryId = entryId;
         return this;
     }
 
 
     public BookCategoryHasVisibleEntriesConditionModel withCategory(String entryId) {
-        this.categoryId = ResourceLocation.parse(entryId);
+        this.categoryId = Identifier.parse(entryId);
         return this;
     }
 

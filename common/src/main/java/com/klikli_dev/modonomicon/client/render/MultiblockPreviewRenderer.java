@@ -25,9 +25,10 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.state.LevelRenderState;
 import net.minecraft.client.resources.language.I18n;
@@ -277,7 +278,7 @@ public class MultiblockPreviewRenderer {
                         var renderer = dispatcher.getRenderer(be);
                         if (renderer != null) {
                             var renderState = renderer.createRenderState();
-                            var eye = mc.getEntityRenderDispatcher().camera.getPosition();
+                            var eye = mc.getEntityRenderDispatcher().camera.position();
                             eye = eye.subtract(startPos.getX(), startPos.getY(), startPos.getZ());
 
                             //Note: we cannot use Minecraft.getInstance().getBlockEntityRenderDispatcher().tryExtractRenderState because that takes the camera eye position of the in-world camera, but our multiblock exists in a virtual level close to 0 0 0
@@ -325,9 +326,9 @@ public class MultiblockPreviewRenderer {
         }
 
         EntityRenderDispatcher erd = mc.getEntityRenderDispatcher();
-        double renderPosX = erd.camera.getPosition().x();
-        double renderPosY = erd.camera.getPosition().y();
-        double renderPosZ = erd.camera.getPosition().z();
+        double renderPosX = erd.camera.position().x();
+        double renderPosY = erd.camera.position().y();
+        double renderPosZ = erd.camera.position().z();
         ms.pushPose();
         ms.translate(-renderPosX, -renderPosY, -renderPosZ);
 

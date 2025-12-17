@@ -58,8 +58,15 @@ jobs:
           token: ${{ github.token }}
           tag: ${{ github.ref_name }}
           mcVersion: ${{ steps.get_mc_version.outputs.result }}
+      - name: Check Artifacts
+        id: check_artifacts
+        run: |
+          echo "neo_exists=$(test -f neo/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-neoforge-${{ steps.get_version.outputs.result }}.jar && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "forge_exists=$(test -f forge/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-forge-${{ steps.get_version.outputs.result }}.jar && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "fabric_exists=$(test -f fabric/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-fabric-${{ steps.get_version.outputs.result }}.jar && echo true || echo false)" >> $GITHUB_OUTPUT
       - name: Create Neo Release
         id: create_neo_release
+        if: steps.check_artifacts.outputs.neo_exists == 'true'
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
@@ -71,21 +78,23 @@ jobs:
           #tag: ${{ github.ref }}
           artifacts: neo/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-neoforge-${{ steps.get_version.outputs.result }}.jar,neo/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-neoforge-${{ steps.get_version.outputs.result }}-slim.jar,neo/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-neoforge-${{ steps.get_version.outputs.result }}-sources.jar,common/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-common-${{ steps.get_version.outputs.result }}.jar,common/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-common-${{ steps.get_version.outputs.result }}-sources.jar
           artifactContentType: application/java-archive
-#      - name: Create Forge Release
-#        id: create_forge_release
-#        uses: ncipollo/release-action@v1
-#        with:
-#          allowUpdates: true
-#          draft: false
-#          replacesArtifacts: false
-#          name: modonomicon-${{ steps.get_mc_version.outputs.result }}-${{ steps.get_version.outputs.result }}-${{ steps.get_release_type.outputs.result }}
-#          body: ${{ steps.changelog.outputs.changes }}
-#          token: ${{ github.token }}
-#          #tag: ${{ github.ref }}
-#          artifacts: forge/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-forge-${{ steps.get_version.outputs.result }}.jar,forge/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-forge-${{ steps.get_version.outputs.result }}-slim.jar,forge/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-forge-${{ steps.get_version.outputs.result }}-sources.jar,common/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-common-${{ steps.get_version.outputs.result }}.jar,common/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-common-${{ steps.get_version.outputs.result }}-sources.jar
-#          artifactContentType: application/java-archive
+      - name: Create Forge Release
+        id: create_forge_release
+        if: steps.check_artifacts.outputs.forge_exists == 'true'
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          draft: false
+          replacesArtifacts: false
+          name: modonomicon-${{ steps.get_mc_version.outputs.result }}-${{ steps.get_version.outputs.result }}-${{ steps.get_release_type.outputs.result }}
+          body: ${{ steps.changelog.outputs.changes }}
+          token: ${{ github.token }}
+          #tag: ${{ github.ref }}
+          artifacts: forge/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-forge-${{ steps.get_version.outputs.result }}.jar,forge/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-forge-${{ steps.get_version.outputs.result }}-slim.jar,forge/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-forge-${{ steps.get_version.outputs.result }}-sources.jar,common/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-common-${{ steps.get_version.outputs.result }}.jar,common/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-common-${{ steps.get_version.outputs.result }}-sources.jar
+          artifactContentType: application/java-archive
       - name: Create Fabric Release
         id: create_fabric_release
+        if: steps.check_artifacts.outputs.fabric_exists == 'true'
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
@@ -101,12 +110,12 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         if: ${{ steps.get_release_type.outputs.result != 'test' }}
         with:
-          branch: version/1.21.10
+          branch: version/1.21.11
           commit_message: 'docs: update CHANGELOG.md for ${{ github.ref_name }} [skip ci]'
           file_pattern: CHANGELOG.md
       - name: Upload Neo Version to Mod Platforms
         uses: Kir-Antipov/mc-publish@v3.3.0
-        if: ${{ steps.get_release_type.outputs.result != 'test' }}
+        if: ${{ steps.get_release_type.outputs.result != 'test' && steps.check_artifacts.outputs.neo_exists == 'true' }}
         with:
           modrinth-id: 692GClaE
           modrinth-token: ${{ secrets.MODRINTH_API_KEY }}
@@ -130,35 +139,35 @@ jobs:
             Find changes for all versions at https://github.com/klikli-dev/modonomicon/releases
           dependencies: |
             jei(optional)
-#      - name: Upload Forge Version to Mod Platforms
-#        uses: Kir-Antipov/mc-publish@v3.3.0
-#        if: ${{ steps.get_release_type.outputs.result != 'test' }}
-#        with:
-#          modrinth-id: 692GClaE
-#          modrinth-token: ${{ secrets.MODRINTH_API_KEY }}
-#          curseforge-id: 538392
-#          curseforge-token: ${{ secrets.CURSEFORGE_API_KEY }}
-#
-#          files: |
-#            forge/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-forge-${{ steps.get_version.outputs.result }}.jar
-#            forge/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-forge-${{ steps.get_version.outputs.result }}-sources.jar
-#
-#          name: modonomicon-${{ steps.get_mc_version.outputs.result }}-forge-${{ steps.get_version.outputs.result }}.jar
-#          version: ${{ steps.get_mc_version.outputs.result }}-${{ steps.get_version.outputs.result }}
-#          version-type: ${{ steps.get_release_type.outputs.result }}
-#          loaders: |
-#            forge
-#          game-versions: |
-#            ${{ steps.get_mc_version.outputs.result }}
-#          changelog: |-
-#            ${{ steps.changelog.outputs.changes }}
-#
-#            Find changes for all versions at https://github.com/klikli-dev/modonomicon/releases
-#          dependencies: |
-#            jei(optional)
+      - name: Upload Forge Version to Mod Platforms
+        uses: Kir-Antipov/mc-publish@v3.3.0
+        if: ${{ steps.get_release_type.outputs.result != 'test' && steps.check_artifacts.outputs.forge_exists == 'true' }}
+        with:
+          modrinth-id: 692GClaE
+          modrinth-token: ${{ secrets.MODRINTH_API_KEY }}
+          curseforge-id: 538392
+          curseforge-token: ${{ secrets.CURSEFORGE_API_KEY }}
+
+          files: |
+            forge/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-forge-${{ steps.get_version.outputs.result }}.jar
+            forge/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-forge-${{ steps.get_version.outputs.result }}-sources.jar
+
+          name: modonomicon-${{ steps.get_mc_version.outputs.result }}-forge-${{ steps.get_version.outputs.result }}.jar
+          version: ${{ steps.get_mc_version.outputs.result }}-${{ steps.get_version.outputs.result }}
+          version-type: ${{ steps.get_release_type.outputs.result }}
+          loaders: |
+            forge
+          game-versions: |
+            ${{ steps.get_mc_version.outputs.result }}
+          changelog: |-
+            ${{ steps.changelog.outputs.changes }}
+
+            Find changes for all versions at https://github.com/klikli-dev/modonomicon/releases
+          dependencies: |
+            jei(optional)
       - name: Upload Fabric Version to Mod Platforms
         uses: Kir-Antipov/mc-publish@v3.3.0
-        if: ${{ steps.get_release_type.outputs.result != 'test' }}
+        if: ${{ steps.get_release_type.outputs.result != 'test' && steps.check_artifacts.outputs.fabric_exists == 'true' }}
         with:
           modrinth-id: 692GClaE
           modrinth-token: ${{ secrets.MODRINTH_API_KEY }}

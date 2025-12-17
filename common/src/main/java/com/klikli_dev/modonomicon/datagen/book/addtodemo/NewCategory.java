@@ -9,7 +9,7 @@ import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.datagen.book.addtodemo.newcat.IntroEntry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
 
 public class NewCategory extends CategoryProvider {
@@ -43,7 +43,7 @@ public class NewCategory extends CategoryProvider {
 
     @Override
     protected BookCategoryModel additionalSetup(BookCategoryModel category) {
-        return super.additionalSetup(category).withBackground(ResourceLocation.fromNamespaceAndPath("theurgy", "textures/gui/book/bg_nightsky.png"));
+        return super.additionalSetup(category).withBackground(Identifier.fromNamespaceAndPath("theurgy", "textures/gui/book/bg_nightsky.png"));
     }
 
     @Override

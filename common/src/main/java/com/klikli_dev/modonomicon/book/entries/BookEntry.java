@@ -22,7 +22,7 @@ import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -33,7 +33,7 @@ import java.util.List;
 public abstract class BookEntry {
 
     protected final BookEntryData data;
-    protected ResourceLocation id;
+    protected Identifier id;
     protected Book book;
     protected BookCategory category;
     protected List<ResolvedBookEntryParent> parents;
@@ -41,10 +41,10 @@ public abstract class BookEntry {
     /**
      * if this is not null, the command will be run when the entry is first read.
      */
-    protected ResourceLocation commandToRunOnFirstReadId;
+    protected Identifier commandToRunOnFirstReadId;
     protected BookCommand commandToRunOnFirstRead;
 
-    public BookEntry(ResourceLocation id, BookEntryData data, ResourceLocation commandToRunOnFirstReadId) {
+    public BookEntry(Identifier id, BookEntryData data, Identifier commandToRunOnFirstReadId) {
         this.id = id;
         this.data = data;
 
@@ -59,7 +59,7 @@ public abstract class BookEntry {
         return this.data.y;
     }
 
-    public abstract ResourceLocation getType();
+    public abstract Identifier getType();
 
     public abstract void openEntry(BookAddress address);
 
@@ -98,7 +98,7 @@ public abstract class BookEntry {
         }
     }
 
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return this.id;
     }
 
@@ -200,7 +200,7 @@ public abstract class BookEntry {
         return this.data.icon;
     }
 
-    public ResourceLocation getCategoryId() {
+    public Identifier getCategoryId() {
         return this.data.categoryId;
     }
 
@@ -216,16 +216,16 @@ public abstract class BookEntry {
      * U index = Y Axis / Up-Down
      * V index = X Axis / Left-Right
      */
-    public record BookEntryData(ResourceLocation categoryId, List<BookEntryParent> parents, int x, int y, String name,
+    public record BookEntryData(Identifier categoryId, List<BookEntryParent> parents, int x, int y, String name,
                                 String description, BookIcon icon, int entryBackgroundUIndex, int entryBackgroundVIndex,
                                 BookCondition condition, boolean hideWhileLocked, boolean showWhenAnyParentUnlocked,
                                 int sortNumber) {
 
-        public static BookEntryData fromJson(ResourceLocation id, JsonObject json, boolean autoAddReadConditions, HolderLookup.Provider provider) {
+        public static BookEntryData fromJson(Identifier id, JsonObject json, boolean autoAddReadConditions, HolderLookup.Provider provider) {
             var categoryIdPath = GsonHelper.getAsString(json, "category");
             var categoryId = categoryIdPath.contains(":") ?
-                    ResourceLocation.parse(categoryIdPath) :
-                    ResourceLocation.fromNamespaceAndPath(id.getNamespace(), categoryIdPath);
+                    Identifier.parse(categoryIdPath) :
+                    Identifier.fromNamespaceAndPath(id.getNamespace(), categoryIdPath);
 
             var x = GsonHelper.getAsInt(json, "x");
             var y = GsonHelper.getAsInt(json, "y");
@@ -242,7 +242,7 @@ public abstract class BookEntry {
                 for (var pageElem : GsonHelper.getAsJsonArray(json, "pages")) {
                     BookErrorManager.get().setContext("Page Index: {}", pages.size());
                     var pageJson = GsonHelper.convertToJsonObject(pageElem, "page");
-                    var type = ResourceLocation.parse(GsonHelper.getAsString(pageJson, "type"));
+                    var type = Identifier.parse(GsonHelper.getAsString(pageJson, "type"));
                     var loader = LoaderRegistry.getPageJsonLoader(type);
 
                     var page = loader.fromJson(id, pageJson, provider);
@@ -281,7 +281,7 @@ public abstract class BookEntry {
         }
 
         public static BookEntryData fromNetwork(RegistryFriendlyByteBuf buffer) {
-            var categoryId = buffer.readResourceLocation();
+            var categoryId = buffer.readIdentifier();
             var name = buffer.readUtf();
             var description = buffer.readUtf();
             var icon = BookIcon.fromNetwork(buffer);
@@ -305,7 +305,7 @@ public abstract class BookEntry {
         }
 
         public void toNetwork(RegistryFriendlyByteBuf buffer) {
-            buffer.writeResourceLocation(this.categoryId);
+            buffer.writeIdentifier(this.categoryId);
             buffer.writeUtf(this.name);
             buffer.writeUtf(this.description);
             this.icon.toNetwork(buffer);
@@ -316,7 +316,7 @@ public abstract class BookEntry {
             buffer.writeBoolean(this.hideWhileLocked);
             buffer.writeBoolean(this.showWhenAnyParentUnlocked);
 
-            buffer.writeResourceLocation(this.condition.getType());
+            buffer.writeIdentifier(this.condition.getType());
             this.condition.toNetwork(buffer);
 
             buffer.writeVarInt(this.parents.size());

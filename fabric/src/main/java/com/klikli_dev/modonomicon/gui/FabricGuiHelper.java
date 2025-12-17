@@ -46,11 +46,11 @@ public class FabricGuiHelper implements GuiHelper {
 
         if (oldScreen != multiLayerScreen) {
             //init needs to happen after we added screens, because with an empty guiLayers stack we get errors
-            multiLayerScreen.init(minecraft, minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight());
+            multiLayerScreen.init(minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight());
             minecraft.screen = multiLayerScreen;
         }
 
-        screen.init(minecraft, minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight());
+        screen.init(minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight());
         minecraft.getNarrator().saySystemNow(screen.getNarrationMessage());
     }
 

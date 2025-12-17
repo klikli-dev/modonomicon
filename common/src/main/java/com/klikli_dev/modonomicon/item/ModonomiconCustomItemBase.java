@@ -8,14 +8,14 @@ package com.klikli_dev.modonomicon.item;
 
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.registry.DataComponentRegistry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 public class ModonomiconCustomItemBase extends ModonomiconItem {
 
-    public ResourceLocation bookId;
+    public Identifier bookId;
 
-    public ModonomiconCustomItemBase(ResourceLocation bookId, Properties pProperties) {
+    public ModonomiconCustomItemBase(Identifier bookId, Properties pProperties) {
         super(pProperties);
         this.bookId = bookId;
     }

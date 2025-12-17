@@ -18,7 +18,6 @@ import com.klikli_dev.modonomicon.registry.FabricClientCommandRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -84,25 +83,26 @@ public class ModonomiconFabricClient implements ClientModInitializer {
         //book geometry loader
         //done in MixinModelManager, because we have no event in Fabric
 
-        ModelLoadingPlugin.register(pluginContext -> {
+        //TODO: model loading on fabric -> either in mixinmodel manager or here
+
+//        ModelLoadingPlugin.register(pluginContext -> {
             //this makes the baker load the models, BUT books are not loaded yet so it does nothing
 //            for (var book : BookDataManager.get().getBooks().values()) {
 ////                pluginContext.addModels(book.getModel());
 ////            }
-            //TODO: model loading on fabric -> either in mixinmodel manager or here
 //            pluginContext.modifyModelAfterBake().register(
 //                    (oldModel, ctx) -> {
 //                        if (ctx.id() != null &&
 //                                //this is the item id of the item for which the model modification is made = modonomicon
 //                                //I am not referencing the actual registry object because I think the model loader is called before the item is registered
-//                                ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, Modonomicon.MOD_ID).equals(ctx.id()) // checks namespace and path
+//                                Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, Modonomicon.MOD_ID).equals(ctx.id()) // checks namespace and path
 //                                && oldModel != null) {
 //                            return new BookModel(oldModel.);
 //                        }
 //                        return oldModel;
 //                    }
 //            );
-        });
+//        });
 
     }
 }

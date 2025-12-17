@@ -12,10 +12,12 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.*;
 import net.minecraft.util.GsonHelper;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,7 +26,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class BookCommand {
-    protected ResourceLocation id;
+    protected Identifier id;
     protected Book book;
 
     protected String command;
@@ -53,9 +55,9 @@ public class BookCommand {
     /**
      * The set of entry resource locations where this command can be run. If empty or null, allowed everywhere.
      */
-    protected Set<ResourceLocation> allowedEntries;
+    protected Set<Identifier> allowedEntries;
 
-    public BookCommand(ResourceLocation id, String command, int permissionLevel, int maxUses, @Nullable String failureMessage, @Nullable String successMessage, @Nullable Set<ResourceLocation> allowedEntries) {
+    public BookCommand(Identifier id, String command, int permissionLevel, int maxUses, @Nullable String failureMessage, @Nullable String successMessage, @Nullable Set<Identifier> allowedEntries) {
         this.id = id;
         this.command = command;
         this.permissionLevel = permissionLevel;
@@ -66,35 +68,35 @@ public class BookCommand {
     }
 
     // Backwards compatible constructor
-    public BookCommand(ResourceLocation id, String command, int permissionLevel, int maxUses, @Nullable String failureMessage, @Nullable String successMessage) {
+    public BookCommand(Identifier id, String command, int permissionLevel, int maxUses, @Nullable String failureMessage, @Nullable String successMessage) {
         this(id, command, permissionLevel, maxUses, failureMessage, successMessage, null);
     }
 
-    public static BookCommand fromJson(ResourceLocation id, JsonObject json) {
+    public static BookCommand fromJson(Identifier id, JsonObject json) {
         var command = GsonHelper.getAsString(json, "command");
         var permissionLevel = GsonHelper.getAsInt(json, "permission_level", ModonomiconConstants.Data.Command.DEFAULT_PERMISSION_LEVEL);
         var maxUses = GsonHelper.getAsInt(json, "max_uses", ModonomiconConstants.Data.Command.DEFAULT_MAX_USES);
         var failureMessage = GsonHelper.getAsString(json, "failure_message", null);
         var successMessage = GsonHelper.getAsString(json, "success_message", null);
-        Set<ResourceLocation> allowedEntries = new HashSet<>();
+        Set<Identifier> allowedEntries = new HashSet<>();
         if (json.has("allowed_entries")) {
             for (var e : GsonHelper.getAsJsonArray(json, "allowed_entries")) {
-                allowedEntries.add(ResourceLocation.parse(e.getAsString()));
+                allowedEntries.add(Identifier.parse(e.getAsString()));
             }
         }
         return new BookCommand(id, command, permissionLevel, maxUses, failureMessage, successMessage, allowedEntries);
     }
 
-    public static BookCommand fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
+    public static BookCommand fromNetwork(Identifier id, FriendlyByteBuf buffer) {
         var command = buffer.readUtf();
         var permissionLevel = (int) buffer.readByte();
         var maxUses = buffer.readVarInt();
         var failureMessage = buffer.readNullable(FriendlyByteBuf::readUtf);
         var successMessage = buffer.readNullable(FriendlyByteBuf::readUtf);
         int allowedEntriesSize = buffer.readVarInt();
-        Set<ResourceLocation> allowedEntries = new HashSet<>();
+        Set<Identifier> allowedEntries = new HashSet<>();
         for (int i = 0; i < allowedEntriesSize; i++) {
-            allowedEntries.add(buffer.readResourceLocation());
+            allowedEntries.add(buffer.readIdentifier());
         }
         return new BookCommand(id, command, permissionLevel, maxUses, failureMessage, successMessage, allowedEntries);
     }
@@ -114,11 +116,11 @@ public class BookCommand {
         buffer.writeNullable(this.successMessage, FriendlyByteBuf::writeUtf);
         buffer.writeVarInt(this.allowedEntries.size());
         for (var entry : this.allowedEntries) {
-            buffer.writeResourceLocation(entry);
+            buffer.writeIdentifier(entry);
         }
     }
 
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return this.id;
     }
 
@@ -146,7 +148,7 @@ public class BookCommand {
         return this.successMessage;
     }
 
-    public Set<ResourceLocation> getAllowedEntries() {
+    public Set<Identifier> getAllowedEntries() {
         return this.allowedEntries;
     }
 
@@ -157,7 +159,8 @@ public class BookCommand {
             player.sendSystemMessage(Component.translatable(failureMessage).withStyle(ChatFormatting.RED));
             return;
         } else {
-            var commandSourceStack = new CommandSourceStack(player.commandSource(), player.position(), player.getRotationVector(), player.level(), this.permissionLevel, player.getName().getString(), player.getDisplayName(), player.level().getServer(), player)
+            var commandSourceStack = new CommandSourceStack(player.commandSource(), player.position(), player.getRotationVector(), player.level(),
+                    LevelBasedPermissionSet.GAMEMASTER, player.getName().getString(), player.getDisplayName(), player.level().getServer(), player)
                     .withCallback((success, result) -> {
                         if (success) {
                             BookUnlockStateManager.get().setRunFor(player, this);
@@ -183,7 +186,7 @@ public class BookCommand {
         BookUnlockStateManager.get().syncFor(player);
     }
 
-    public boolean isEntryAllowed(ResourceLocation entry) {
+    public boolean isEntryAllowed(Identifier entry) {
         return this.allowedEntries.contains(entry);
     }
 }

@@ -11,7 +11,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -37,7 +37,7 @@ public class EntityUtil {
 
     public static String getEntityName(String entityId) {
         Pair<String, String> nameAndNbt = splitNameAndNBT(entityId);
-        var type = BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.parse(nameAndNbt.getLeft()));
+        var type = BuiltInRegistries.ENTITY_TYPE.get(Identifier.parse(nameAndNbt.getLeft()));
 
         return type.get().value().getDescriptionId();
     }
@@ -56,7 +56,7 @@ public class EntityUtil {
             }
         }
 
-        ResourceLocation key = ResourceLocation.parse(entityId);
+        Identifier key = Identifier.parse(entityId);
         var type = BuiltInRegistries.ENTITY_TYPE.get(key);
         if (type.isEmpty()) {
             throw new RuntimeException("Unknown entity id: " + entityId);

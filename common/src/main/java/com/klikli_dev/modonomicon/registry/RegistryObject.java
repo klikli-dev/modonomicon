@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.registry;
 
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.function.Supplier;
 
@@ -31,7 +31,7 @@ public interface RegistryObject<T> extends Supplier<T> {
      *
      * @return the id of the object
      */
-    ResourceLocation getId();
+    Identifier getId();
 
     /**
      * Gets the object behind this wrapper. Calling this method too early

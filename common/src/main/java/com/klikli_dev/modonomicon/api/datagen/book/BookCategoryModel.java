@@ -16,7 +16,7 @@ import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,7 +26,7 @@ import java.util.List;
 public class BookCategoryModel {
     protected BookModel book;
 
-    protected ResourceLocation id;
+    protected Identifier id;
     protected String name;
     /**
      * The description to (optionally) display on the first page of the category.
@@ -40,7 +40,7 @@ public class BookCategoryModel {
     protected BookDisplayMode displayMode = BookDisplayMode.NODE;
 
     protected int sortNumber = -1;
-    protected ResourceLocation background = ResourceLocation.parse(Category.DEFAULT_BACKGROUND);
+    protected Identifier background = Identifier.parse(Category.DEFAULT_BACKGROUND);
     protected int backgroundWidth = Category.DEFAULT_BACKGROUND_WIDTH;
     protected int backgroundHeight = Category.DEFAULT_BACKGROUND_HEIGHT;
     /**
@@ -57,7 +57,7 @@ public class BookCategoryModel {
      */
     protected float backgroundTextureZoomMultiplier = Category.DEFAULT_BACKGROUND_TEXTURE_ZOOM_MULTIPLIER;
     protected List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers = new ArrayList<>();
-    protected ResourceLocation entryTextures = ResourceLocation.parse(Category.DEFAULT_ENTRY_TEXTURES);
+    protected Identifier entryTextures = Identifier.parse(Category.DEFAULT_ENTRY_TEXTURES);
     protected List<BookEntryModel> entries = new ArrayList<>();
 
     @Nullable
@@ -69,7 +69,7 @@ public class BookCategoryModel {
      * If null, no entry will be opened.
      */
     @Nullable
-    protected ResourceLocation entryToOpen = null;
+    protected Identifier entryToOpen = null;
     /**
      * If true, the entryToOpen will only be opened the first time the category is opened.
      * If false, the entryToOpen will be opened every time the category is opened.
@@ -81,7 +81,7 @@ public class BookCategoryModel {
      */
     protected boolean dontGenerateJson = false;
 
-    protected BookCategoryModel(ResourceLocation id, String name) {
+    protected BookCategoryModel(Identifier id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -90,7 +90,7 @@ public class BookCategoryModel {
      * @param id   The category ID, e.g. "modonomicon:features". The ID must be unique within the book.
      * @param name Should be a translation key.
      */
-    public static BookCategoryModel create(ResourceLocation id, String name) {
+    public static BookCategoryModel create(Identifier id, String name) {
         return new BookCategoryModel(id, name);
     }
 
@@ -146,7 +146,7 @@ public class BookCategoryModel {
         return json;
     }
 
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return this.id;
     }
 
@@ -170,7 +170,7 @@ public class BookCategoryModel {
         return this.sortNumber;
     }
 
-    public ResourceLocation getBackground() {
+    public Identifier getBackground() {
         return this.background;
     }
 
@@ -194,7 +194,7 @@ public class BookCategoryModel {
         return this.backgroundParallaxLayers;
     }
 
-    public ResourceLocation getEntryTextures() {
+    public Identifier getEntryTextures() {
         return this.entryTextures;
     }
 
@@ -229,7 +229,7 @@ public class BookCategoryModel {
     /**
      * Sets the category's icon as the given texture resource location
      */
-    public BookCategoryModel withIcon(ResourceLocation texture) {
+    public BookCategoryModel withIcon(Identifier texture) {
         this.icon = BookIconModel.create(texture);
         return this;
     }
@@ -237,7 +237,7 @@ public class BookCategoryModel {
     /**
      * Sets the category's icon as the given texture resource location with the given size
      */
-    public BookCategoryModel withIcon(ResourceLocation texture, int width, int height) {
+    public BookCategoryModel withIcon(Identifier texture, int width, int height) {
         this.icon = BookIconModel.create(texture, width, height);
         return this;
     }
@@ -273,7 +273,7 @@ public class BookCategoryModel {
      * The texture needs to be a 512x512 png file, unless withBackgroundSize is called to specify a different size.
      * Default value is {@link Category#DEFAULT_BACKGROUND}.
      */
-    public BookCategoryModel withBackground(ResourceLocation background) {
+    public BookCategoryModel withBackground(Identifier background) {
         this.background = background;
         return this;
     }
@@ -362,7 +362,7 @@ public class BookCategoryModel {
      * If there are any parallax layers, the background texture will be ignored.
      * The texture needs to be a 512x512 png file, unless withBackgroundSize is called to specify a different size.
      */
-    public BookCategoryModel withBackgroundParallaxLayer(ResourceLocation layerTexture) {
+    public BookCategoryModel withBackgroundParallaxLayer(Identifier layerTexture) {
         this.backgroundParallaxLayers.add(new BookCategoryBackgroundParallaxLayer(layerTexture));
         return this;
     }
@@ -373,7 +373,7 @@ public class BookCategoryModel {
      * This texture is used to display the entry background icons as well as the arrows connecting entries.
      * Default value is {@link Category#DEFAULT_ENTRY_TEXTURES}
      */
-    public BookCategoryModel withEntryTextures(ResourceLocation entryTextures) {
+    public BookCategoryModel withEntryTextures(Identifier entryTextures) {
         this.entryTextures = entryTextures;
         return this;
     }
@@ -390,7 +390,7 @@ public class BookCategoryModel {
     protected BookEntryModel linkEntry(BookEntryModel entry) {
         entry.withCategory(this);
         if (!entry.id.getPath().startsWith(this.id.getPath())) {
-            entry.id = ResourceLocation.fromNamespaceAndPath(entry.id.getNamespace(), this.id.getPath() + "/" + entry.id.getPath());
+            entry.id = Identifier.fromNamespaceAndPath(entry.id.getNamespace(), this.id.getPath() + "/" + entry.id.getPath());
         }
         return entry;
     }
@@ -436,7 +436,7 @@ public class BookCategoryModel {
      * <p>
      * By default the entry will only be opened the first time. Specify openEntryToOpenOnlyOnce=false to open it every time.
      */
-    public BookCategoryModel withEntryToOpen(ResourceLocation entryToOpen) {
+    public BookCategoryModel withEntryToOpen(Identifier entryToOpen) {
         return this.withEntryToOpen(entryToOpen, true);
     }
 
@@ -446,7 +446,7 @@ public class BookCategoryModel {
      * <p>
      * By default the entry will only be opened the first time. Specify openEntryToOpenOnlyOnce=false to open it every time.
      */
-    public BookCategoryModel withEntryToOpen(ResourceLocation entryToOpen, boolean openEntryToOpenOnlyOnce) {
+    public BookCategoryModel withEntryToOpen(Identifier entryToOpen, boolean openEntryToOpenOnlyOnce) {
         this.entryToOpen = entryToOpen;
         this.openEntryToOpenOnlyOnce = openEntryToOpenOnlyOnce;
         return this;

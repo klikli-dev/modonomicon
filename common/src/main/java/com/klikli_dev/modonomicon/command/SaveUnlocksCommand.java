@@ -16,7 +16,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.commands.arguments.IdentifierArgument;
 import net.minecraft.network.chat.Component;
 
 public class SaveUnlocksCommand implements com.mojang.brigadier.Command<CommandSourceStack> {
@@ -27,8 +27,8 @@ public class SaveUnlocksCommand implements com.mojang.brigadier.Command<CommandS
     public static ArgumentBuilder<CommandSourceStack, ?> register(CommandDispatcher<CommandSourceStack> dispatcher) {
 
         return Commands.literal("save_progress")
-                .requires(cs -> cs.hasPermission(1))
-                .then(Commands.argument("book", ResourceLocationArgument.id())
+                .requires(Commands.hasPermission(Commands.LEVEL_ALL))
+                .then(Commands.argument("book", IdentifierArgument.id())
                         .suggests(ResetBookUnlocksCommand.SUGGEST_BOOK)
                         .executes(CMD));
 

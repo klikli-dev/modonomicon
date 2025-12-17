@@ -12,7 +12,7 @@ import com.klikli_dev.modonomicon.api.datagen.BookContextHelper;
 import com.klikli_dev.modonomicon.api.datagen.CategoryEntryMap;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.multiblock.MultiblockPreviewData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 public class ModonomiconAPIStub implements ModonomiconAPI {
@@ -41,7 +41,7 @@ public class ModonomiconAPIStub implements ModonomiconAPI {
     }
 
     @Override
-    public Multiblock getMultiblock(ResourceLocation id) {
+    public Multiblock getMultiblock(Identifier id) {
         return null;
     }
 

@@ -15,16 +15,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
+
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 
 public class BookErrorScreen extends Screen {
 
     public static final int BOOK_BACKGROUND_WIDTH = 272;
     public static final int BOOK_BACKGROUND_HEIGHT = 178;
-    private static final ResourceLocation BOOK_CONTENT_TEXTURE = ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "textures/gui/book_content.png");
+    private static final Identifier BOOK_CONTENT_TEXTURE = Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "textures/gui/book_content.png");
     private final Book book;
     private int bookLeft;
     private int bookTop;
@@ -34,8 +34,6 @@ public class BookErrorScreen extends Screen {
         super(Component.literal(""));
 
         this.book = book;
-
-        this.minecraft = Minecraft.getInstance();
     }
 
     public void renderBookBackground(GuiGraphics guiGraphics) {

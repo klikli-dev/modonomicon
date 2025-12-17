@@ -11,7 +11,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Allows configuring the rendering of a book frame overlay.
@@ -21,7 +21,7 @@ public class BookFrameOverlay {
 
     public static final Codec<BookFrameOverlay> CODEC = RecordCodecBuilder.create((builder) -> {
         return builder.group(
-                ResourceLocation.CODEC.fieldOf("texture").forGetter((overlay) -> {
+                Identifier.CODEC.fieldOf("texture").forGetter((overlay) -> {
                     return overlay.texture;
                 }),
                 Codec.SHORT.fieldOf("texture_width").forGetter((overlay) -> {
@@ -50,9 +50,9 @@ public class BookFrameOverlay {
     private final int frameHeight;
     private final int frameXOffset;
     private final int frameYOffset;
-    private final ResourceLocation texture;
+    private final Identifier texture;
 
-    public BookFrameOverlay(ResourceLocation texture, int textureWidth, int textureHeight, int frameWidth, int frameHeight, int frameXOffset, int frameYOffset) {
+    public BookFrameOverlay(Identifier texture, int textureWidth, int textureHeight, int frameWidth, int frameHeight, int frameXOffset, int frameYOffset) {
         this.texture = texture;
         this.textureWidth = textureWidth;
         this.textureHeight = textureHeight;
@@ -90,7 +90,7 @@ public class BookFrameOverlay {
         return startY - this.frameHeight / 2 + this.frameYOffset;
     }
 
-    public ResourceLocation getTexture() {
+    public Identifier getTexture() {
         return this.texture;
     }
 

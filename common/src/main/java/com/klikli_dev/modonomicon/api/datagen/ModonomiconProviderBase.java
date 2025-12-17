@@ -14,7 +14,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ItemLike;
 
 import java.text.MessageFormat;
@@ -97,12 +97,12 @@ public abstract class ModonomiconProviderBase {
         return String.join("/", parts);
     }
 
-    protected ResourceLocation modLoc(String... idParts) {
-        return ResourceLocation.fromNamespaceAndPath(this.modId, this.path(idParts));
+    protected Identifier modLoc(String... idParts) {
+        return Identifier.fromNamespaceAndPath(this.modId, this.path(idParts));
     }
 
-    protected ResourceLocation modLoc(String name) {
-        return ResourceLocation.fromNamespaceAndPath(this.modId, name);
+    protected Identifier modLoc(String name) {
+        return Identifier.fromNamespaceAndPath(this.modId, name);
     }
 
     /**

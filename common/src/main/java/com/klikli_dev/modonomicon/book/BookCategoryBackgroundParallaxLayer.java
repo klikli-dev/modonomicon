@@ -13,7 +13,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,7 +22,7 @@ import java.util.stream.StreamSupport;
 public class BookCategoryBackgroundParallaxLayer {
     public static final Codec<BookCategoryBackgroundParallaxLayer> CODEC = RecordCodecBuilder.create((builder) ->
             builder.group(
-                    ResourceLocation.CODEC.fieldOf("background").forGetter((overlay) -> overlay.background),
+                    Identifier.CODEC.fieldOf("background").forGetter((overlay) -> overlay.background),
                     Codec.FLOAT.optionalFieldOf("speed", 0.5f).forGetter((overlay) -> overlay.speed),
                     Codec.FLOAT.optionalFieldOf("vanishZoom", -1.0f).forGetter((overlay) -> overlay.vanishZoom)
             ).apply(builder, BookCategoryBackgroundParallaxLayer::new));
@@ -30,7 +30,7 @@ public class BookCategoryBackgroundParallaxLayer {
     /**
      * The texture to use for this layer.
      */
-    protected ResourceLocation background;
+    protected Identifier background;
 
     /**
      * The speed at which this layer moves.
@@ -42,11 +42,11 @@ public class BookCategoryBackgroundParallaxLayer {
      */
     protected float vanishZoom;
 
-    public BookCategoryBackgroundParallaxLayer(ResourceLocation background) {
+    public BookCategoryBackgroundParallaxLayer(Identifier background) {
         this(background, 0.5f, -1.0f);
     }
 
-    public BookCategoryBackgroundParallaxLayer(ResourceLocation background, float speed, float vanishZoom) {
+    public BookCategoryBackgroundParallaxLayer(Identifier background, float speed, float vanishZoom) {
         this.background = background;
         this.speed = speed;
         this.vanishZoom = vanishZoom;
@@ -71,7 +71,7 @@ public class BookCategoryBackgroundParallaxLayer {
         buffer.writeJsonWithCodec(BookCategoryBackgroundParallaxLayer.CODEC, this);
     }
 
-    public ResourceLocation getBackground() {
+    public Identifier getBackground() {
         return this.background;
     }
 

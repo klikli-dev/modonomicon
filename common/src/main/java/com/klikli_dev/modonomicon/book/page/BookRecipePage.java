@@ -23,7 +23,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
@@ -87,13 +87,13 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
 
     }
 
-    public static JsonDataHolder commonFromJson(ResourceLocation entryId, JsonObject json, HolderLookup.Provider provider) {
+    public static JsonDataHolder commonFromJson(Identifier entryId, JsonObject json, HolderLookup.Provider provider) {
         var title1 = BookGsonHelper.getAsBookTextHolder(json, "title1", BookTextHolder.EMPTY, provider);
-        ResourceLocation recipeId1 = json.has("recipe_id_1") ? ResourceLocation.tryParse(GsonHelper.getAsString(json, "recipe_id_1")) : null;
+        Identifier recipeId1 = json.has("recipe_id_1") ? Identifier.tryParse(GsonHelper.getAsString(json, "recipe_id_1")) : null;
         var recipeKey1 = recipeId1 != null ? ResourceKey.create(Registries.RECIPE, recipeId1) : null;
 
         var title2 = BookGsonHelper.getAsBookTextHolder(json, "title2", BookTextHolder.EMPTY, provider);
-        ResourceLocation recipeId2 = json.has("recipe_id_2") ? ResourceLocation.tryParse(GsonHelper.getAsString(json, "recipe_id_2")) : null;
+        Identifier recipeId2 = json.has("recipe_id_2") ? Identifier.tryParse(GsonHelper.getAsString(json, "recipe_id_2")) : null;
         var recipeKey2 = recipeId2 != null ? ResourceKey.create(Registries.RECIPE, recipeId2) : null;
 
         var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY, provider);

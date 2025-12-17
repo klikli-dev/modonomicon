@@ -15,13 +15,13 @@ import com.klikli_dev.modonomicon.data.BookDataManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 public class AddBookmarkMessage implements Message {
 
-    public static final Type<AddBookmarkMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "add_bookmark"));
+    public static final Type<AddBookmarkMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "add_bookmark"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, AddBookmarkMessage> STREAM_CODEC = StreamCodec.composite(
             BookAddress.STREAM_CODEC,

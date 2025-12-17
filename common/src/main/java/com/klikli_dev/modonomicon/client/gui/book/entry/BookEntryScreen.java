@@ -43,7 +43,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
@@ -68,7 +68,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
 
     protected final BookParentScreen parentScreen;
     protected final BookContentEntry entry;
-    protected final ResourceLocation bookContentTexture;
+    protected final Identifier bookContentTexture;
 
     protected int ticksInBook;
     protected List<BookPage> unlockedPages;
@@ -87,8 +87,6 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         super(Component.literal(""));
 
         this.parentScreen = parentScreen;
-
-        this.minecraft = Minecraft.getInstance();
 
         this.entry = entry;
 
@@ -311,7 +309,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         return tooltip;
     }
 
-    @Override
+    //TODO: check if we need to change this to the new click style detection stuff
     public boolean handleComponentClicked(@Nullable Style pStyle) {
         if (pStyle != null) {
             for (LinkHandler handler : this.linkHandlers) {
@@ -329,7 +327,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
                 //unhandled -> continue to next
             }
         }
-        return super.handleComponentClicked(pStyle);
+        return false;
     }
 
     @Override

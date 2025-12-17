@@ -14,7 +14,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 
@@ -35,7 +35,7 @@ public class CategoryButton extends Button {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTicks) {
+    protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f) {
         if (this.visible) {
             guiGraphics.pose().pushMatrix();
             int xOffset = this.getCategory().getBook().getCategoryButtonXOffset();

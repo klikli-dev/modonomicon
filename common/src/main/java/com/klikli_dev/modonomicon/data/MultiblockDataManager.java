@@ -17,7 +17,7 @@ import com.klikli_dev.modonomicon.platform.Services;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -33,7 +33,7 @@ public class MultiblockDataManager extends LegacySimpleJsonResourceReloadListene
 
     private static final MultiblockDataManager instance = new MultiblockDataManager();
 
-    private Map<ResourceLocation, Multiblock> multiblocks = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+    private Map<Identifier, Multiblock> multiblocks = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
     private boolean loaded;
     private HolderLookup.Provider registries;
 
@@ -53,11 +53,11 @@ public class MultiblockDataManager extends LegacySimpleJsonResourceReloadListene
         return this.loaded;
     }
 
-    public Multiblock getMultiblock(ResourceLocation id) {
+    public Multiblock getMultiblock(Identifier id) {
         return this.multiblocks.get(id);
     }
 
-    public Map<ResourceLocation, Multiblock> getMultiblocks() {
+    public Map<Identifier, Multiblock> getMultiblocks() {
         return this.multiblocks;
     }
 
@@ -93,12 +93,12 @@ public class MultiblockDataManager extends LegacySimpleJsonResourceReloadListene
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> content, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
+    protected void apply(Map<Identifier, JsonElement> content, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
         this.preLoad();
 
         for (var entry : content.entrySet()) {
             var json = GsonHelper.convertToJsonObject(entry.getValue(), "multiblock json file");
-            var type = ResourceLocation.tryParse(GsonHelper.getAsString(json, "type"));
+            var type = Identifier.tryParse(GsonHelper.getAsString(json, "type"));
             var multiblock = LoaderRegistry.getMultiblockJsonLoader(type).fromJson(json, this.registries);
             multiblock.setId(entry.getKey());
             this.multiblocks.put(multiblock.getId(), multiblock);

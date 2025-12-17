@@ -40,7 +40,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.ApiStatus;
@@ -54,7 +54,7 @@ public class BookGuiManager {
 
     private static final BookGuiManager instance = new BookGuiManager();
 
-    private final Map<ResourceLocation, Stack<BookAddress>> history = new Object2ObjectArrayMap<>();
+    private final Map<Identifier, Stack<BookAddress>> history = new Object2ObjectArrayMap<>();
 
     /**
      * The currently open screen. Used for unlock state sync to immediately update the open screen.
@@ -71,7 +71,7 @@ public class BookGuiManager {
         return instance;
     }
 
-    protected boolean showErrorScreen(ResourceLocation bookId) {
+    protected boolean showErrorScreen(Identifier bookId) {
         if (BookErrorManager.get().hasErrors(bookId)) {
             var book = BookDataManager.get().getBook(bookId);
             Minecraft.getInstance().setScreen(new BookErrorScreen(book));
@@ -352,13 +352,13 @@ public class BookGuiManager {
         entry.openEntry(address); //visitor pattern that will call openContentEntry or openCategoryLinkEntry
     }
 
-    public void pushHistory(ResourceLocation bookId, @Nullable ResourceLocation entryId, int page) {
+    public void pushHistory(Identifier bookId, @Nullable Identifier entryId, int page) {
         var book = BookDataManager.get().getBook(bookId);
         var entry = book.getEntry(entryId);
         this.history.computeIfAbsent(bookId, k -> new Stack<>()).push(BookAddress.of(bookId, entry.getCategoryId(), entryId, page));
     }
 
-    public void pushHistory(ResourceLocation bookId, @Nullable ResourceLocation categoryId, @Nullable ResourceLocation entryId, int page) {
+    public void pushHistory(Identifier bookId, @Nullable Identifier categoryId, @Nullable Identifier entryId, int page) {
         this.history.computeIfAbsent(bookId, k -> new Stack<>()).push(BookAddress.of(bookId, categoryId, entryId, page));
     }
 
@@ -366,19 +366,19 @@ public class BookGuiManager {
         this.history.computeIfAbsent(entry.bookId(), k -> new Stack<>()).push(entry);
     }
 
-    public BookAddress popHistory(ResourceLocation bookId) {
+    public BookAddress popHistory(Identifier bookId) {
         if (!this.history.containsKey(bookId) || this.history.get(bookId).isEmpty())
             return null;
         return this.history.get(bookId).pop();
     }
 
-    public BookAddress peekHistory(ResourceLocation bookId) {
+    public BookAddress peekHistory(Identifier bookId) {
         if (!this.history.containsKey(bookId) || this.history.get(bookId).isEmpty())
             return null;
         return this.history.get(bookId).peek();
     }
 
-    public int getHistorySize(ResourceLocation bookId) {
+    public int getHistorySize(Identifier bookId) {
         if (!this.history.containsKey(bookId))
             return 0;
         return this.history.get(bookId).size();
@@ -392,7 +392,7 @@ public class BookGuiManager {
      * Opens the book at the given location. Will open as far as possible (meaning, if category and entry are null, it
      * will not open those obviously).
      */
-    public void openEntry(ResourceLocation bookId, ResourceLocation entryId, int page) {
+    public void openEntry(Identifier bookId, Identifier entryId, int page) {
         var book = BookDataManager.get().getBook(bookId);
         var entry = book.getEntry(entryId);
         this.openEntry(bookId, entry.getCategoryId(), entryId, page);
@@ -412,7 +412,7 @@ public class BookGuiManager {
      * Opens the book at the given location. Will open as far as possible (meaning, if category and entry are null, it
      * will not open those obviously).
      */
-    public void openEntry(ResourceLocation bookId, @Nullable ResourceLocation categoryId, @Nullable ResourceLocation entryId, int page) {
+    public void openEntry(Identifier bookId, @Nullable Identifier categoryId, @Nullable Identifier entryId, int page) {
         this.safeguardBooksBuilt();
 
         if (bookId == null) {

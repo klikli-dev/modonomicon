@@ -13,7 +13,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSets;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
@@ -26,7 +26,7 @@ import java.util.Set;
 public class PageRendererRegistry {
     static final Set<Item> ITEMS_NOT_TO_RENDER = ObjectSets.synchronize(new ObjectOpenHashSet<>());
     static final Set<Fluid> FLUIDS_NOT_TO_RENDER = ObjectSets.synchronize(new ObjectOpenHashSet<>());
-    private static final Map<ResourceLocation, PageRendererFactory> pageRenderers = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+    private static final Map<Identifier, PageRendererFactory> pageRenderers = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 
     /**
      * Call from client setup
@@ -64,11 +64,11 @@ public class PageRendererRegistry {
     /**
      * Call from client setup
      */
-    public static void registerPageRenderer(ResourceLocation id, PageRendererFactory factory) {
+    public static void registerPageRenderer(Identifier id, PageRendererFactory factory) {
         pageRenderers.put(id, factory);
     }
 
-    public static PageRendererFactory getPageRenderer(ResourceLocation id) {
+    public static PageRendererFactory getPageRenderer(Identifier id) {
         var renderer = pageRenderers.get(id);
         if (renderer == null) {
             throw new IllegalArgumentException("No page renderer registered for page type " + id);

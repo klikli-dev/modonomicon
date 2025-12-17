@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.registry;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 
 public class SoundRegistry {
@@ -24,7 +24,7 @@ public class SoundRegistry {
      * @return the sound event.
      */
     private static SoundEvent loadSoundEvent(String name) {
-        ResourceLocation location = ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, name);
+        Identifier location = Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, name);
         return SoundEvent.createVariableRangeEvent(location);
     }
 

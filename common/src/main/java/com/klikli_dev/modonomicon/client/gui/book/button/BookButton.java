@@ -12,7 +12,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
+
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
@@ -45,7 +45,7 @@ public class BookButton extends Button {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f) {
         //if focused we go to the right of our normal button (instead of down, like mc buttons do)
         BookContentRenderer.drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, this.parent.getBook(), this.getX(), this.getY(), this.u + (this.isHovered() ? this.width : 0), this.v, this.width, this.height);
         if (this.isHovered()) {

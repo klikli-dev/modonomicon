@@ -10,14 +10,14 @@ import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 public final class StubMatcher implements StateMatcher {
 
-    public static final ResourceLocation TYPE = ResourceLocation.parse(ModonomiconAPI.ID + ":stub");
+    public static final Identifier TYPE = Identifier.parse(ModonomiconAPI.ID + ":stub");
 
     public static final StubMatcher INSTANCE = new StubMatcher();
 
@@ -27,7 +27,7 @@ public final class StubMatcher implements StateMatcher {
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return TYPE;
     }
 

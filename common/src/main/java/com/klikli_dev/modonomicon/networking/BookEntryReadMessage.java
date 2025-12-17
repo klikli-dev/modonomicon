@@ -14,26 +14,26 @@ import com.klikli_dev.modonomicon.events.ModonomiconEvents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 public class BookEntryReadMessage implements Message {
 
-    public static final Type<BookEntryReadMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "book_entry_read"));
+    public static final Type<BookEntryReadMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "book_entry_read"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BookEntryReadMessage> STREAM_CODEC = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC,
+            Identifier.STREAM_CODEC,
             (m) -> m.bookId,
-            ResourceLocation.STREAM_CODEC,
+            Identifier.STREAM_CODEC,
             (m) -> m.entryId,
             BookEntryReadMessage::new
     );
 
-    public ResourceLocation bookId;
-    public ResourceLocation entryId;
+    public Identifier bookId;
+    public Identifier entryId;
 
-    public BookEntryReadMessage(ResourceLocation bookId, ResourceLocation entryId) {
+    public BookEntryReadMessage(Identifier bookId, Identifier entryId) {
         this.bookId = bookId;
         this.entryId = entryId;
     }

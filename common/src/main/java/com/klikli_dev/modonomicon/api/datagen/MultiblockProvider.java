@@ -15,7 +15,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -32,20 +32,20 @@ public abstract class MultiblockProvider implements DataProvider {
     protected final PackOutput.PathProvider pathProvider;
     protected String modid;
 
-    protected BiConsumer<ResourceLocation, JsonObject> multiblockConsumer;
+    protected BiConsumer<Identifier, JsonObject> multiblockConsumer;
 
     public MultiblockProvider(PackOutput packOutput, String modid) {
         this.pathProvider = packOutput.createPathProvider(PackOutput.Target.DATA_PACK, "modonomicon/multiblocks");
         this.modid = modid;
     }
 
-    protected ResourceLocation modLoc(String name) {
-        return ResourceLocation.fromNamespaceAndPath(this.modid, name);
+    protected Identifier modLoc(String name) {
+        return Identifier.fromNamespaceAndPath(this.modid, name);
     }
 
     @Override
     public CompletableFuture<?> run(CachedOutput pOutput) {
-        Set<ResourceLocation> set = Sets.newHashSet();
+        Set<Identifier> set = Sets.newHashSet();
         List<CompletableFuture<?>> futures = new ArrayList<>();
         this.multiblockConsumer = (id, recipe) -> {
             if (!set.add(id)) {
@@ -58,12 +58,12 @@ public abstract class MultiblockProvider implements DataProvider {
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
-    protected void add(ResourceLocation id, MultiblockBuilder multiblock) {
+    protected void add(Identifier id, MultiblockBuilder multiblock) {
         this.add(id, multiblock.build());
     }
 
 
-    protected void add(ResourceLocation id, JsonObject multiblock) {
+    protected void add(Identifier id, JsonObject multiblock) {
         this.multiblockConsumer.accept(id, multiblock);
     }
 
@@ -154,20 +154,20 @@ public abstract class MultiblockProvider implements DataProvider {
 
         /**
          * Creates a block matcher that will match the predicate with the given id.
-         * Predicates are registered via {@link com.klikli_dev.modonomicon.data.LoaderRegistry#registerPredicate(ResourceLocation, TriPredicate)}
+         * Predicates are registered via {@link com.klikli_dev.modonomicon.data.LoaderRegistry#registerPredicate(Identifier, TriPredicate)}
          *
          * @param c                        the character
          * @param predicateId              the id of the predicate to match
          * @param countsTowardsTotalBlocks whether this block counts towards the total number of blocks in the multiblock, if false behaves like the air matcher.
          * @param display                  the block to display in previews
          */
-        public DenseMultiblockBuilder predicate(char c, ResourceLocation predicateId, boolean countsTowardsTotalBlocks, Supplier<? extends Block> display) {
+        public DenseMultiblockBuilder predicate(char c, Identifier predicateId, boolean countsTowardsTotalBlocks, Supplier<? extends Block> display) {
             return this.predicate(c, predicateId, countsTowardsTotalBlocks, display, "");
         }
 
         /**
          * Creates a block matcher that will match the predicate with the given id.
-         * Predicates are registered via {@link com.klikli_dev.modonomicon.data.LoaderRegistry#registerPredicate(ResourceLocation, TriPredicate)}
+         * Predicates are registered via {@link com.klikli_dev.modonomicon.data.LoaderRegistry#registerPredicate(Identifier, TriPredicate)}
          *
          * @param c                        the character
          * @param predicateId              the id of the predicate to match
@@ -175,7 +175,7 @@ public abstract class MultiblockProvider implements DataProvider {
          * @param display                  the block to display in previews
          * @param displayState             a state string in the minecraft format, e.g. [facing=north]. "" will display the default state.
          */
-        public DenseMultiblockBuilder predicate(char c, ResourceLocation predicateId, boolean countsTowardsTotalBlocks, Supplier<? extends Block> display, String displayState) {
+        public DenseMultiblockBuilder predicate(char c, Identifier predicateId, boolean countsTowardsTotalBlocks, Supplier<? extends Block> display, String displayState) {
             JsonObject json = new JsonObject();
 
             json.addProperty("type", "modonomicon:predicate");

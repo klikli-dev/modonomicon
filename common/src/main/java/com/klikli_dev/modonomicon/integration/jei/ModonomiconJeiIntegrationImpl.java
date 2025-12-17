@@ -18,7 +18,7 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -70,7 +70,7 @@ public class ModonomiconJeiIntegrationImpl implements ModonomiconJeiIntegration 
 
     @JeiPlugin
     public static class ModonomiconJeiPlugin implements IModPlugin {
-        private static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, ModonomiconAPI.ID);
+        private static final Identifier UID = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, ModonomiconAPI.ID);
 
         private static IJeiRuntime jeiRuntime;
 
@@ -80,7 +80,7 @@ public class ModonomiconJeiIntegrationImpl implements ModonomiconJeiIntegration 
 
         @NotNull
         @Override
-        public ResourceLocation getPluginUid() {
+        public Identifier getPluginUid() {
             return UID;
         }
 

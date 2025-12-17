@@ -14,13 +14,13 @@ import com.klikli_dev.modonomicon.data.BookDataManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 public class SaveEntryStateMessage implements Message {
 
-    public static final Type<SaveEntryStateMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "save_entry_state"));
+    public static final Type<SaveEntryStateMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "save_entry_state"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SaveEntryStateMessage> STREAM_CODEC = CustomPacketPayload.codec(SaveEntryStateMessage::encode, SaveEntryStateMessage::new);
 
@@ -42,13 +42,13 @@ public class SaveEntryStateMessage implements Message {
     }
 
     private void encode(RegistryFriendlyByteBuf buf) {
-        buf.writeResourceLocation(this.entry.getBook().getId());
-        buf.writeResourceLocation(this.entry.getId());
+        buf.writeIdentifier(this.entry.getBook().getId());
+        buf.writeIdentifier(this.entry.getId());
         buf.writeVarInt(this.openPagesIndex);
     }
 
     private void decode(RegistryFriendlyByteBuf buf) {
-        this.entry = BookDataManager.get().getBook(buf.readResourceLocation()).getEntry(buf.readResourceLocation());
+        this.entry = BookDataManager.get().getBook(buf.readIdentifier()).getEntry(buf.readIdentifier());
         this.openPagesIndex = buf.readVarInt();
     }
 

@@ -40,7 +40,7 @@ public class CommandLinkHandler extends LinkHandler {
             return ClickResult.FAILURE;
 
         var command = book.getCommand(link.commandId);
-        // Get the current entry's ResourceLocation
+        // Get the current entry's Identifier
         var entryId = this.screen.getEntry().getId();
         // Check if the command is allowed for this entry
         if (!command.isEntryAllowed(entryId)) {

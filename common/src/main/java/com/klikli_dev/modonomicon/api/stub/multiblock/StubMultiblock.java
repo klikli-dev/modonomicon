@@ -12,7 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ColorResolver;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
@@ -27,7 +27,7 @@ import java.util.Collections;
 
 public class StubMultiblock implements Multiblock {
 
-    public static final ResourceLocation TYPE = ResourceLocation.parse(ModonomiconAPI.ID + ":stub");
+    public static final Identifier TYPE = Identifier.parse(ModonomiconAPI.ID + ":stub");
 
     public static final StubMultiblock INSTANCE = new StubMultiblock();
 
@@ -35,7 +35,7 @@ public class StubMultiblock implements Multiblock {
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return TYPE;
     }
 
@@ -60,7 +60,7 @@ public class StubMultiblock implements Multiblock {
     }
 
     @Override
-    public Multiblock setId(ResourceLocation res) {
+    public Multiblock setId(Identifier res) {
         return this;
     }
 
@@ -70,8 +70,8 @@ public class StubMultiblock implements Multiblock {
     }
 
     @Override
-    public ResourceLocation getId() {
-        return ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "stub");
+    public Identifier getId() {
+        return Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "stub");
     }
 
     @Override

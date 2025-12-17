@@ -12,7 +12,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.page.BookImagePageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookSpotlightPageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
@@ -39,8 +39,8 @@ public class ImageEntry extends EntryProvider {
                         .withText(this.context().pageText())
                         .withTitle(this.context().pageTitle())
                         .withImages(
-                                ResourceLocation.parse("modonomicon:textures/gui/default_background.png"),
-                                ResourceLocation.parse("modonomicon:textures/gui/dark_slate_seamless.png")
+                                Identifier.parse("modonomicon:textures/gui/default_background.png"),
+                                Identifier.parse("modonomicon:textures/gui/dark_slate_seamless.png")
                         )
         );
         this.pageTitle("Sample image!");
@@ -58,8 +58,8 @@ public class ImageEntry extends EntryProvider {
                         .withText(this.context().pageText())
                         .withTitle(this.context().pageTitle())
                         .withImages(
-                                ResourceLocation.parse("modonomicon:textures/gui/default_background.png"),
-                                ResourceLocation.parse("modonomicon:textures/gui/dark_slate_seamless.png")
+                                Identifier.parse("modonomicon:textures/gui/default_background.png"),
+                                Identifier.parse("modonomicon:textures/gui/dark_slate_seamless.png")
                         )
         );
         this.pageTitle("Test image!");

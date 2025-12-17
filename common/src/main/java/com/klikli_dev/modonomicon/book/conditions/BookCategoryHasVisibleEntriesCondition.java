@@ -14,7 +14,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 
@@ -26,18 +26,18 @@ import java.util.List;
  */
 public class BookCategoryHasVisibleEntriesCondition extends BookCondition {
     
-    protected ResourceLocation categoryId;
+    protected Identifier categoryId;
     
-    public BookCategoryHasVisibleEntriesCondition(Component tooltip, ResourceLocation categoryId) {
+    public BookCategoryHasVisibleEntriesCondition(Component tooltip, Identifier categoryId) {
         super(tooltip);
         this.categoryId = categoryId;
     }
     
-    public static BookCategoryHasVisibleEntriesCondition fromJson(ResourceLocation conditionParentId, JsonObject json, HolderLookup.Provider provider) {
+    public static BookCategoryHasVisibleEntriesCondition fromJson(Identifier conditionParentId, JsonObject json, HolderLookup.Provider provider) {
         var categoryPath = GsonHelper.getAsString(json, "category_id");
         var categoryId = categoryPath.contains(":") ?
-                ResourceLocation.parse(categoryPath) :
-                ResourceLocation.fromNamespaceAndPath(conditionParentId.getNamespace(), categoryPath);
+                Identifier.parse(categoryPath) :
+                Identifier.fromNamespaceAndPath(conditionParentId.getNamespace(), categoryPath);
 
         Component tooltip = Component.translatable(ModonomiconConstants.I18n.Tooltips.CONDITION_CATEGORY_HAS_VISIBLE_ENTRIES, categoryId.toLanguageKey());
         return new BookCategoryHasVisibleEntriesCondition(tooltip, categoryId);
@@ -49,17 +49,17 @@ public class BookCategoryHasVisibleEntriesCondition extends BookCondition {
         if (this.tooltip != null) {
             ComponentSerialization.STREAM_CODEC.encode(buffer, this.tooltip);
         }
-        buffer.writeResourceLocation(this.categoryId);
+        buffer.writeIdentifier(this.categoryId);
     }
     
     public static BookCategoryHasVisibleEntriesCondition fromNetwork(RegistryFriendlyByteBuf buffer) {
         var tooltip = buffer.readBoolean() ? ComponentSerialization.STREAM_CODEC.decode(buffer) : null;
-        var entryId = buffer.readResourceLocation();
+        var entryId = buffer.readIdentifier();
         return new BookCategoryHasVisibleEntriesCondition(tooltip, entryId);
     }
     
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return ModonomiconConstants.Data.Condition.CATEGORY_HAS_VISIBLE_ENTRIES;
     }
     

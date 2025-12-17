@@ -13,7 +13,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -30,7 +30,7 @@ public class BookModel implements ItemModel {
         this.original = original;
     }
 
-    public static void replace(Map<ResourceLocation, ItemModel> models) {
+    public static void replace(Map<Identifier, ItemModel> models) {
         models.computeIfPresent(ItemRegistry.MODONOMICON.getId(), (k, oldModel) -> new BookModel(oldModel));
     }
 

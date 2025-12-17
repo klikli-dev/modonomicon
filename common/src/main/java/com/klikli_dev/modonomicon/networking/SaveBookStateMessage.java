@@ -14,24 +14,24 @@ import com.klikli_dev.modonomicon.data.BookDataManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 public class SaveBookStateMessage implements Message {
 
-    public static final Type<SaveBookStateMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Modonomicon.MOD_ID, "save_book_state"));
+    public static final Type<SaveBookStateMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "save_book_state"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SaveBookStateMessage> STREAM_CODEC = CustomPacketPayload.codec(SaveBookStateMessage::encode, SaveBookStateMessage::new);
 
     public Book book;
 
-    ResourceLocation openCategory = null;
+    Identifier openCategory = null;
 
     public SaveBookStateMessage(Book book, BookVisualState state) {
         this(book, state.openCategory);
     }
 
-    public SaveBookStateMessage(Book book, ResourceLocation openCategory) {
+    public SaveBookStateMessage(Book book, Identifier openCategory) {
         this.book = book;
         this.openCategory = openCategory;
     }
@@ -41,17 +41,17 @@ public class SaveBookStateMessage implements Message {
     }
 
     private void encode(RegistryFriendlyByteBuf buf) {
-        buf.writeResourceLocation(this.book.getId());
+        buf.writeIdentifier(this.book.getId());
         buf.writeBoolean(this.openCategory != null);
         if (this.openCategory != null) {
-            buf.writeResourceLocation(this.openCategory);
+            buf.writeIdentifier(this.openCategory);
         }
     }
 
     private void decode(RegistryFriendlyByteBuf buf) {
-        this.book = BookDataManager.get().getBook(buf.readResourceLocation());
+        this.book = BookDataManager.get().getBook(buf.readIdentifier());
         if (buf.readBoolean()) {
-            this.openCategory = buf.readResourceLocation();
+            this.openCategory = buf.readIdentifier();
         }
     }
 

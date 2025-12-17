@@ -34,10 +34,10 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -64,9 +64,6 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
     public BookParentNodeScreen(Book book) {
         super(Component.literal(""));
-
-        //somehow there are render calls before init(), leaving minecraft null
-        this.minecraft = Minecraft.getInstance();
 
         this.book = book;
 
@@ -109,7 +106,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
         //So we do nothing
     }
 
-    public ResourceLocation getBookOverviewTexture() {
+    public Identifier getBookOverviewTexture() {
         return this.book.getBookOverviewTexture();
     }
 
@@ -286,11 +283,6 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
     private void sendBookClosedPacket(net.minecraft.world.InteractionHand hand) {
         Services.NETWORK.sendToServer(new com.klikli_dev.modonomicon.networking.BookClosedMessage(hand));
-    }
-
-    @Override
-    public boolean handleComponentClicked(@Nullable Style pStyle) {
-        return super.handleComponentClicked(pStyle);
     }
 
     @Override

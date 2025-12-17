@@ -6,11 +6,11 @@
 
 package com.klikli_dev.modonomicon.book.error;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class BookErrorContextHelper {
-    public ResourceLocation categoryId;
-    public ResourceLocation entryId;
+    public Identifier categoryId;
+    public Identifier entryId;
     public int pageNumber = 1;
 
     public void reset() {
