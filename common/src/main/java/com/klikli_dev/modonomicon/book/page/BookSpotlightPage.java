@@ -43,7 +43,7 @@ public class BookSpotlightPage extends BookPage {
      */
     public static final Codec<ItemStack> CUSTOM_ITEM_STACK_CODEC = Codec.lazyInitialized(
             () -> RecordCodecBuilder.create((builder) -> builder.group(
-                    Item.CODEC.fieldOf("item").forGetter(ItemStack::getItemHolder),
+                    Item.CODEC.fieldOf("item").forGetter(ItemStack::typeHolder),
                     ExtraCodecs.intRange(1, 99).fieldOf("count").orElse(1).forGetter(ItemStack::getCount),
                     DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(ItemStack::getComponentsPatch)
             ).apply(builder, ItemStack::new))

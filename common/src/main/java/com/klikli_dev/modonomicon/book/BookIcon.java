@@ -30,7 +30,7 @@ public class BookIcon {
      * A custom codec that still uses the "item" field instead of "id" for backwards comp,
      */
     public static final Codec<ItemStack> CUSTOM_ITEM_STACK_CODEC = RecordCodecBuilder.create((builder) -> builder.group(
-            Item.CODEC.fieldOf("item").forGetter(ItemStack::getItemHolder),
+            Item.CODEC.fieldOf("item").forGetter(ItemStack::typeHolder),
             Codec.INT.optionalFieldOf("count", 1).forGetter(ItemStack::getCount),
             DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(ItemStack::getComponentsPatch)
     ).apply(builder, ItemStack::new));

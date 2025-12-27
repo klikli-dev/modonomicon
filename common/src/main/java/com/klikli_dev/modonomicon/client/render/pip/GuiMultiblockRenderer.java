@@ -9,14 +9,11 @@ import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -104,7 +101,7 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
             BlockState displayedBlockState = r.getStateMatcher().getDisplayedState(ClientTicks.ticks).rotate(state.facingRotation());
 
             // Render block (via platform service)
-            renderBlock(buffers, level, state.multiblock(), displayedBlockState, r.getWorldPosition(), alpha, poseStack, state.randomSource());
+            this.renderBlock(buffers, level, state.multiblock(), displayedBlockState, r.getWorldPosition(), alpha, poseStack, state.randomSource());
 
             if (displayedBlockState.getBlock() instanceof EntityBlock eb) {
                 var cache = state.blockEntityCache();
@@ -133,7 +130,7 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
                             var renderState = renderer.createRenderState();
                             //Note: we cannot use Minecraft.getInstance().getBlockEntityRenderDispatcher().tryExtractRenderState because that takes the camera eye position of the in-world camera
                             renderer.extractRenderState(be, renderState, ClientTicks.partialTicks, eye3, null);
-                            renderState.lightCoords = LightTexture.FULL_BRIGHT;
+                            renderState.lightCoords = LightCoordsUtil.FULL_BRIGHT;
                             var featureDispatcher = Minecraft.getInstance().gameRenderer.getFeatureRenderDispatcher();
                             var cameraRenderState = new CameraRenderState();
                             dispatcher.submit(renderState, poseStack, featureDispatcher.getSubmitNodeStorage(), cameraRenderState);

@@ -5,22 +5,16 @@
 package com.klikli_dev.modonomicon.client;
 
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
-import com.klikli_dev.modonomicon.client.render.FluidBlockVertexConsumer;
-import com.klikli_dev.modonomicon.client.render.GhostVertexConsumer;
 import com.klikli_dev.modonomicon.platform.services.MultiblockHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.NeoForgeRenderTypes;
 
 public class NeoMultiblockHelper implements MultiblockHelper {
     @Override
@@ -45,7 +39,7 @@ public class NeoMultiblockHelper implements MultiblockHelper {
 //            }
 
             //noinspection deprecation
-            blockRenderer.renderSingleBlock(state, ps, buffers, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+            blockRenderer.renderSingleBlock(state, ps, buffers, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         }
     }
 }

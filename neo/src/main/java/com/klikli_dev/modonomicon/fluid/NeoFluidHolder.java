@@ -36,7 +36,7 @@ public class NeoFluidHolder implements FluidHolder {
 
     @Override
     public Holder<Fluid> getFluid() {
-        return this.fluidStack.getFluidHolder();
+        return this.fluidStack.typeHolder();
     }
 
     @Override
