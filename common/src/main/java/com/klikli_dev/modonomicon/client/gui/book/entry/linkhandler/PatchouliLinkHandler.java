@@ -25,13 +25,13 @@ public class PatchouliLinkHandler extends LinkHandler {
 
         //Patchouli links use OPEN_FILE action as it allows us to hand over a string.
         //the isPatchouliLink below will check for a protocol prefix
-        if (event.action() != ClickEvent.Action.OPEN_FILE || !(event instanceof ClickEvent.OpenFile openFile))
+        if (event.action() != ClickEvent.Action.OPEN_FILE || !(event instanceof ClickEvent.OpenFile(String path)))
             return ClickResult.UNHANDLED;
 
-        if (!PatchouliLink.isPatchouliLink(openFile.path()))
+        if (!PatchouliLink.isPatchouliLink(path))
             return ClickResult.UNHANDLED;
 
-        var link = PatchouliLink.from(openFile.path());
+        var link = PatchouliLink.from(path);
         if (link.bookId == null)
             return ClickResult.FAILURE;
 

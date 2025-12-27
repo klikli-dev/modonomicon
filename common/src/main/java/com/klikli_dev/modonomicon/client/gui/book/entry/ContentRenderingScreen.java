@@ -136,13 +136,17 @@ public interface ContentRenderingScreen {
         //TODO: we had a +1000 z translate here
         var newStyle = style;
         if (style != null && style.getHoverEvent() != null) {
-            if (style.getHoverEvent().action() == HoverEvent.Action.SHOW_TEXT && style.getHoverEvent() instanceof HoverEvent.ShowText showText) {
+            if (style.getHoverEvent().action() == HoverEvent.Action.SHOW_TEXT && style.getHoverEvent() instanceof HoverEvent.ShowText(
+                    Component oldComponent
+            )) {
                 var clickEvent = style.getClickEvent();
                 if (clickEvent != null) {
-                    if (clickEvent.action() == ClickEvent.Action.OPEN_FILE && clickEvent instanceof ClickEvent.OpenFile openFile) {
+                    if (clickEvent.action() == ClickEvent.Action.OPEN_FILE && clickEvent instanceof ClickEvent.OpenFile(
+                            String path
+                    )) {
                         //handle book links -> check if locked
-                        if (BookLink.isBookLink(openFile.path())) {
-                            var link = BookLink.from(this.getBook(), openFile.path());
+                        if (BookLink.isBookLink(path)) {
+                            var link = BookLink.from(this.getBook(), path);
                             var book = BookDataManager.get().getBook(link.bookId);
                             if (link.entryId != null) {
                                 var entry = book.getEntry(link.entryId);
@@ -156,7 +160,6 @@ public interface ContentRenderingScreen {
                                 //handleComponentClicked will prevent the actual click
 
                                 if (!BookUnlockStateManager.get().isUnlockedFor(Minecraft.getInstance().player, entry)) {
-                                    var oldComponent = showText.value();
 
                                     var newComponent = Component.translatable(
                                             ModonomiconConstants.I18n.Gui.HOVER_BOOK_LINK_LOCKED,
@@ -175,7 +178,6 @@ public interface ContentRenderingScreen {
 
                                     newStyle = style.withHoverEvent(new HoverEvent.ShowText(newComponent));
                                 } else if (page != null && !BookUnlockStateManager.get().isUnlockedFor(Minecraft.getInstance().player, entry.getPages().get(page))) {
-                                    var oldComponent = showText.value();
 
                                     var newComponent = Component.translatable(
                                             ModonomiconConstants.I18n.Gui.HOVER_BOOK_LINK_LOCKED,
@@ -200,14 +202,14 @@ public interface ContentRenderingScreen {
                         }
                     }
 
-                    if (clickEvent.action() == ClickEvent.Action.RUN_COMMAND && clickEvent instanceof ClickEvent.RunCommand runCommand) {
-                        if (CommandLink.isCommandLink(runCommand.command())) {
-                            var link = CommandLink.from(this.getBook(), runCommand.command());
+                    if (clickEvent.action() == ClickEvent.Action.RUN_COMMAND && clickEvent instanceof ClickEvent.RunCommand(
+                            String command1
+                    )) {
+                        if (CommandLink.isCommandLink(command1)) {
+                            var link = CommandLink.from(this.getBook(), command1);
                             var book = BookDataManager.get().getBook(link.bookId);
                             if (link.commandId != null) {
                                 var command = book.getCommand(link.commandId);
-
-                                var oldComponent = showText.value();
 
                                 if (!BookUnlockStateManager.get().canRunFor(Minecraft.getInstance().player, command)) {
                                     var hoverComponent = Component.translatable(ModonomiconConstants.I18n.Gui.HOVER_COMMAND_LINK_UNAVAILABLE).withStyle(ChatFormatting.RED);

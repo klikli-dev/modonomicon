@@ -22,7 +22,7 @@ public interface FluidHolder {
 
     void setAmount(int amount);
 
-    public DataComponentPatch getComponents();
+    DataComponentPatch getComponents();
 
     FluidHolder copy();
 }

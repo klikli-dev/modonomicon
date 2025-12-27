@@ -19,14 +19,11 @@ import com.klikli_dev.modonomicon.client.gui.book.BookScreenWithButtons;
 import com.klikli_dev.modonomicon.client.gui.book.bookmarks.BookBookmarksScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.*;
 import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
-import com.klikli_dev.modonomicon.item.ModonomiconItem;
 import com.klikli_dev.modonomicon.networking.ClickReadAllButtonMessage;
-import com.klikli_dev.modonomicon.networking.SaveBookStateMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
@@ -36,12 +33,9 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BookParentNodeScreen extends Screen implements BookParentScreen, BookScreenWithButtons {
@@ -181,8 +175,8 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
     }
 
     protected void renderFrameOverlay(GuiGraphics guiGraphics, BookFrameOverlay overlay, int x, int y) {
-        if (overlay.getFrameWidth() > 0 && overlay.getFrameHeight() > 0) {
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, overlay.getTexture(), overlay.getFrameX(x), overlay.getFrameY(y), overlay.getFrameU(), overlay.getFrameV(), overlay.getFrameWidth(), overlay.getFrameHeight(), 256, 256);
+        if (overlay.frameWidth() > 0 && overlay.frameHeight() > 0) {
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, overlay.texture(), overlay.getFrameX(x), overlay.getFrameY(y), overlay.getFrameU(), overlay.getFrameV(), overlay.frameWidth(), overlay.frameHeight(), 256, 256);
         }
     }
 

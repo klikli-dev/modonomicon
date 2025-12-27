@@ -332,7 +332,7 @@ public class Book {
     }
 
     public void addMacro(String key, String value) {
-        textMacros.put(key, value);
+        this.textMacros.put(key, value);
     }
 
     public void toNetwork(RegistryFriendlyByteBuf buffer) {
@@ -406,7 +406,7 @@ public class Book {
     }
 
     public Map<String, String> textMacros() {
-        return textMacros;
+        return this.textMacros;
     }
 
     public void addCategory(BookCategory category) {

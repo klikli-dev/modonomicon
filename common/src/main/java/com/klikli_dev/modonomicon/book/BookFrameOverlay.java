@@ -17,7 +17,8 @@ import net.minecraft.resources.Identifier;
  * Allows configuring the rendering of a book frame overlay.
  * These frame overlays are rendered at the center of each frame side and allow to add non-repeating elements.
  */
-public class BookFrameOverlay {
+public record BookFrameOverlay(Identifier texture, int textureWidth, int textureHeight, int frameWidth, int frameHeight,
+                               int frameXOffset, int frameYOffset) {
 
     public static final Codec<BookFrameOverlay> CODEC = RecordCodecBuilder.create((builder) -> {
         return builder.group(
@@ -44,23 +45,6 @@ public class BookFrameOverlay {
                 })
         ).apply(builder, BookFrameOverlay::new);
     });
-    private final int textureHeight;
-    private final int textureWidth;
-    private final int frameWidth;
-    private final int frameHeight;
-    private final int frameXOffset;
-    private final int frameYOffset;
-    private final Identifier texture;
-
-    public BookFrameOverlay(Identifier texture, int textureWidth, int textureHeight, int frameWidth, int frameHeight, int frameXOffset, int frameYOffset) {
-        this.texture = texture;
-        this.textureWidth = textureWidth;
-        this.textureHeight = textureHeight;
-        this.frameWidth = frameWidth;
-        this.frameHeight = frameHeight;
-        this.frameXOffset = frameXOffset;
-        this.frameYOffset = frameYOffset;
-    }
 
     public static BookFrameOverlay fromJson(JsonObject json) {
         return BookFrameOverlay.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow();
@@ -88,33 +72,5 @@ public class BookFrameOverlay {
 
     public int getFrameY(int startY) {
         return startY - this.frameHeight / 2 + this.frameYOffset;
-    }
-
-    public Identifier getTexture() {
-        return this.texture;
-    }
-
-    public int getTextureHeight() {
-        return this.textureHeight;
-    }
-
-    public int getTextureWidth() {
-        return this.textureWidth;
-    }
-
-    public int getFrameWidth() {
-        return this.frameWidth;
-    }
-
-    public int getFrameHeight() {
-        return this.frameHeight;
-    }
-
-    public int getFrameXOffset() {
-        return this.frameXOffset;
-    }
-
-    public int getFrameYOffset() {
-        return this.frameYOffset;
     }
 }

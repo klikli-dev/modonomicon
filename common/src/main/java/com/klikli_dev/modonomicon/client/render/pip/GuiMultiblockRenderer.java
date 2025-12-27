@@ -94,20 +94,20 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
 
         for (Multiblock.SimulateResult r : state.simulateResults()) {
             float alpha = 0.3F;
-            if (r.getWorldPosition().equals(checkPos)) {
+            if (r.worldPosition().equals(checkPos)) {
                 alpha = 0.6F + (float) (Math.sin(ClientTicks.total * 0.3F) + 1F) * 0.1F;
             }
 
-            BlockState displayedBlockState = r.getStateMatcher().getDisplayedState(ClientTicks.ticks).rotate(state.facingRotation());
+            BlockState displayedBlockState = r.stateMatcher().getDisplayedState(ClientTicks.ticks).rotate(state.facingRotation());
 
             // Render block (via platform service)
-            this.renderBlock(buffers, level, state.multiblock(), displayedBlockState, r.getWorldPosition(), alpha, poseStack, state.randomSource());
+            this.renderBlock(buffers, level, state.multiblock(), displayedBlockState, r.worldPosition(), alpha, poseStack, state.randomSource());
 
             if (displayedBlockState.getBlock() instanceof EntityBlock eb) {
                 var cache = state.blockEntityCache();
                 var errored = state.erroredBlockEntities();
 
-                var be = cache.compute(r.getWorldPosition().immutable(), (p, cachedBe) -> {
+                var be = cache.compute(r.worldPosition().immutable(), (p, cachedBe) -> {
                     if (cachedBe != null && !cachedBe.getType().isValid(displayedBlockState)) {
                         return eb.newBlockEntity(p, displayedBlockState);
                     }
@@ -120,7 +120,7 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
                     be.setBlockState(displayedBlockState);
 
                     poseStack.pushPose();
-                    var bePos = r.getWorldPosition();
+                    var bePos = r.worldPosition();
                     poseStack.translate(bePos.getX(), bePos.getY(), bePos.getZ());
 
                     try {

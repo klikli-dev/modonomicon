@@ -293,7 +293,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
                 return null;
             //if we are horizontally left of the title, exit
             var styleFinder = new ActiveTextCollector.ClickableStyleFinder(
-                    font, (int) pMouseX - x, y);
+                    this.font, (int) pMouseX - x, y);
             //TODO: verify if the y is correct. See ModListScreen for an example usage
             //TODO: is left really right for titles?
             styleFinder.accept(TextAlignment.LEFT, 0, 0, formattedCharSequence);
@@ -312,7 +312,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
             //if we are horizontally left of the title, exit
 
             var styleFinder = new ActiveTextCollector.ClickableStyleFinder(
-                    font, (int) pMouseX - x, y);
+                    this.font, (int) pMouseX - x, y);
             //TODO: verify if the y is correct. See ModListScreen for an example usage
             //TODO: is left really right for titles?
             styleFinder.accept(TextAlignment.LEFT, 0, 0, formattedCharSequence);
@@ -344,7 +344,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
                     //horizontally over and right of the title is handled by font splitter
 
                     var styleFinder = new ActiveTextCollector.ClickableStyleFinder(
-                            font, (int) pMouseX - x, y);
+                            this.font, (int) pMouseX - x, y);
                     //TODO: verify if the y is correct. See ModListScreen for an example usage
                     styleFinder.accept(TextAlignment.LEFT, 0, 0, formattedcharsequence);
                 }
@@ -364,7 +364,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
                         //check if we are vertically over the title line
                         //horizontally over and right of the title is handled by font splitter
                         var styleFinder = new ActiveTextCollector.ClickableStyleFinder(
-                                font, (int) pMouseX - x, y);
+                                this.font, (int) pMouseX - x, y);
                         //TODO: verify if the y is correct. See ModListScreen for an example usage
                         styleFinder.accept(TextAlignment.LEFT, 0, 0, formattedcharsequence);
                     }

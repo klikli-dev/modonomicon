@@ -247,10 +247,10 @@ public class DenseMultiblock extends AbstractMultiblock {
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
-        if (x < 0 || y < 0 || z < 0 || x >= size.getX() || y >= size.getY() || z >= size.getZ()) {
+        if (x < 0 || y < 0 || z < 0 || x >= this.size.getX() || y >= this.size.getY() || z >= this.size.getZ()) {
             return Blocks.AIR.defaultBlockState();
         }
-        long ticks = level != null ? level.getGameTime() : 0L;
-        return stateMatchers[x][y][z].getDisplayedState(ticks);
+        long ticks = this.level != null ? this.level.getGameTime() : 0L;
+        return this.stateMatchers[x][y][z].getDisplayedState(ticks);
     }
 }
