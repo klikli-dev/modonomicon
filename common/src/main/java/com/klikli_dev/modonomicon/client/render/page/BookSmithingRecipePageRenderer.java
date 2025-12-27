@@ -47,14 +47,20 @@ public class BookSmithingRecipePageRenderer extends BookRecipePageRenderer<Smith
 
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.page.getBook().getCraftingTexture(), recipeX, recipeY, 11, 178, 96, 62, 128, 256);
 
-        if (recipeDisplayEntry.display() instanceof SmithingRecipeDisplay smithingRecipeDisplay) {
+        if (recipeDisplayEntry.display() instanceof SmithingRecipeDisplay(
+                net.minecraft.world.item.crafting.display.SlotDisplay template,
+                net.minecraft.world.item.crafting.display.SlotDisplay base,
+                net.minecraft.world.item.crafting.display.SlotDisplay addition,
+                net.minecraft.world.item.crafting.display.SlotDisplay result,
+                net.minecraft.world.item.crafting.display.SlotDisplay craftingStation
+        )) {
             //noinspection DataFlowIssue
             var context = SlotDisplayContext.fromLevel(Minecraft.getInstance().level);
-            this.parentScreen.renderItemStacks(guiGraphics, recipeX + 4, recipeY + 4, mouseX, mouseY, smithingRecipeDisplay.template().resolveForStacks(context));
-            this.parentScreen.renderItemStacks(guiGraphics, recipeX + 4, recipeY + 23, mouseX, mouseY, smithingRecipeDisplay.base().resolveForStacks(context));
-            this.parentScreen.renderItemStacks(guiGraphics, recipeX + 4, recipeY + 42, mouseX, mouseY, smithingRecipeDisplay.addition().resolveForStacks(context));
-            this.parentScreen.renderItemStacks(guiGraphics, recipeX + 40, recipeY + 23, mouseX, mouseY, smithingRecipeDisplay.craftingStation().resolveForStacks(context));
-            this.parentScreen.renderItemStacks(guiGraphics, recipeX + 76, recipeY + 23, mouseX, mouseY, smithingRecipeDisplay.result().resolveForStacks(context));
+            this.parentScreen.renderItemStacks(guiGraphics, recipeX + 4, recipeY + 4, mouseX, mouseY, template.resolveForStacks(context));
+            this.parentScreen.renderItemStacks(guiGraphics, recipeX + 4, recipeY + 23, mouseX, mouseY, base.resolveForStacks(context));
+            this.parentScreen.renderItemStacks(guiGraphics, recipeX + 4, recipeY + 42, mouseX, mouseY, addition.resolveForStacks(context));
+            this.parentScreen.renderItemStacks(guiGraphics, recipeX + 40, recipeY + 23, mouseX, mouseY, craftingStation.resolveForStacks(context));
+            this.parentScreen.renderItemStacks(guiGraphics, recipeX + 76, recipeY + 23, mouseX, mouseY, result.resolveForStacks(context));
         }
     }
 }

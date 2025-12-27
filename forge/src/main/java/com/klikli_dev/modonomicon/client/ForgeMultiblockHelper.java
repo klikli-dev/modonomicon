@@ -10,7 +10,7 @@ import com.klikli_dev.modonomicon.platform.services.MultiblockHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
@@ -40,7 +40,7 @@ public class ForgeMultiblockHelper implements MultiblockHelper {
 //            }
 
             //noinspection deprecation
-            blockRenderer.renderSingleBlock(state, ps, buffers, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+            blockRenderer.renderSingleBlock(state, ps, buffers, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         }
     }
 }

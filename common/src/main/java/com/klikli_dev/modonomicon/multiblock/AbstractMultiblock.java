@@ -150,8 +150,8 @@ public abstract class AbstractMultiblock implements Multiblock {
     public void place(Level world, BlockPos pos, Rotation rotation) {
         this.setLevel(world);
         this.simulate(world, pos, rotation, false, false).getSecond().forEach(r -> {
-            BlockPos placePos = r.getWorldPosition();
-            BlockState targetState = r.getStateMatcher().getDisplayedState(world.getGameTime()).rotate(rotation);
+            BlockPos placePos = r.worldPosition();
+            BlockState targetState = r.stateMatcher().getDisplayedState(world.getGameTime()).rotate(rotation);
 
             if (!targetState.isAir() && targetState.canSurvive(world, placePos) && world.getBlockState(placePos).canBeReplaced()) {
                 world.setBlockAndUpdate(placePos, targetState);
@@ -179,8 +179,8 @@ public abstract class AbstractMultiblock implements Multiblock {
         Pair<BlockPos, Collection<SimulateResult>> sim = this.simulate(world, pos, rotation, false, false);
 
         return sim.getSecond().stream().allMatch(r -> {
-            BlockPos checkPos = r.getWorldPosition();
-            TriPredicate<BlockGetter, BlockPos, BlockState> pred = r.getStateMatcher().getStatePredicate();
+            BlockPos checkPos = r.worldPosition();
+            TriPredicate<BlockGetter, BlockPos, BlockState> pred = r.stateMatcher().getStatePredicate();
             BlockState state = world.getBlockState(checkPos).rotate(fixHorizontal(rotation));
 
             return pred.test(world, checkPos, state);

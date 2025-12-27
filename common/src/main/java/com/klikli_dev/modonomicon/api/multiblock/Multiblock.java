@@ -137,18 +137,18 @@ public interface Multiblock extends BlockAndTintGetter {
         /**
          * Final world position this block will be matched or placed at
          */
-        BlockPos getWorldPosition();
+        BlockPos worldPosition();
 
         /**
          * The matcher used at this position
          */
-        StateMatcher getStateMatcher();
+        StateMatcher stateMatcher();
 
         /**
          * The character used to express the state matcher, if this is a dense multiblock.
          */
         @Nullable
-        Character getCharacter();
+        Character character();
 
         /**
          * @return Whether the multiblock is fulfilled at this position

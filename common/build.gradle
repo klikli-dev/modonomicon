@@ -2,7 +2,7 @@ plugins {
     id 'idea'
     id 'java'
     id 'maven-publish'
-    id 'fabric-loom' version "${loom_version}"
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
 }
 
 
@@ -16,7 +16,7 @@ base {
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/modonomicon.accesswidener")
+    accessWidenerPath = file("src/main/resources/modonomicon.classtweaker")
     mixin {
         useLegacyMixinAp = false
     }
@@ -32,10 +32,6 @@ sourceSets {
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings loom.layered() {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${loom_mapping_version}@zip")
-    }
 
     compileOnly group: 'org.spongepowered', name: 'mixin', version: "${mixin_version}"
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: "${jsr305_version}"

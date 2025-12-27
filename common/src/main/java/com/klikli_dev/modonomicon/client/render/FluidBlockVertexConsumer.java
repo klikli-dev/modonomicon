@@ -18,7 +18,7 @@ public record FluidBlockVertexConsumer(VertexConsumer prior, PoseStack pose, Blo
         final float dx = this.pos.getX() & 15;
         final float dy = this.pos.getY() & 15;
         final float dz = this.pos.getZ() & 15;
-        return this.prior.addVertex(this.pose.last().pose(), (float) x - dx, (float) y - dy, (float) z - dz);
+        return this.prior.addVertex(this.pose.last().pose(), x - dx, y - dy, z - dz);
     }
 
     @Override

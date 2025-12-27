@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'idea'
     id 'maven-publish'
-    id 'fabric-loom' version "${loom_version}"
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
 }
 
 if (System.getenv('MOD_VERSION') != null) {
@@ -21,13 +21,9 @@ test {
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings loom.layered() {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${loom_mapping_version}@zip")
-    }
 
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: "${jsr305_version}"
     implementation project(":common")
     //implementation project(path: ":common", configuration: "namedElements")
@@ -54,8 +50,8 @@ dependencies {
 }
 
 loom {
-    if (project(":common").file("src/main/resources/${mod_id}.accesswidener").exists()) {
-        accessWidenerPath.set(project(":common").file("src/main/resources/${mod_id}.accesswidener"))
+    if (project(":common").file("src/main/resources/${mod_id}.classtweaker").exists()) {
+        accessWidenerPath.set(project(":common").file("src/main/resources/${mod_id}.classtweaker"))
     }
     mixin {
         defaultRefmapName.set("${mod_id}.refmap.json")

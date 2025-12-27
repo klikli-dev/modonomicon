@@ -5,15 +5,13 @@
 package com.klikli_dev.modonomicon.client;
 
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
-import com.klikli_dev.modonomicon.client.render.FluidBlockVertexConsumer;
 import com.klikli_dev.modonomicon.platform.services.MultiblockHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
@@ -34,7 +32,7 @@ public class FabricMultiblockHelper implements MultiblockHelper {
 //            var buffer = buffers.getBuffer(layer);
 //            blockRenderer.renderBatched(state, pos, multiblock, ps, buffer, false, rand);
             //batched rendering has changed significantly
-            blockRenderer.renderSingleBlock(state, ps, buffers, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+            blockRenderer.renderSingleBlock(state, ps, buffers, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         }
     }
 }

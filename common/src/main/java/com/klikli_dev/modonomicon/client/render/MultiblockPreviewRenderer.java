@@ -257,11 +257,11 @@ public class MultiblockPreviewRenderer {
         Pair<BlockPos, Collection<Multiblock.SimulateResult>> sim = multiblock.simulate(level, startPos, getFacingRotation(), true, false);
         for (Multiblock.SimulateResult r : sim.getSecond()) {
             try {
-                BlockState displayedState = r.getStateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
+                BlockState displayedState = r.stateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
 
                 if (displayedState.getBlock() instanceof EntityBlock eb) {
                     // Cache/create a fake block entity at the simulated position (translate by startPos)
-                    var cacheKey = r.getWorldPosition().subtract(startPos).immutable();
+                    var cacheKey = r.worldPosition().subtract(startPos).immutable();
                     var be = blockEntityCache.compute(cacheKey, (p, cachedBe) -> {
                         if (cachedBe != null && !cachedBe.getType().isValid(displayedState)) {
                             return eb.newBlockEntity(p, displayedState);
@@ -346,16 +346,16 @@ public class MultiblockPreviewRenderer {
         Pair<BlockPos, Collection<Multiblock.SimulateResult>> sim = multiblock.simulate(level, startPos, getFacingRotation(), true, false);
         for (Multiblock.SimulateResult r : sim.getSecond()) {
             float alpha = 0.3F;
-            if (r.getWorldPosition().equals(checkPos)) {
+            if (r.worldPosition().equals(checkPos)) {
                 alpha = 0.6F + (float) (Math.sin(ClientTicks.total * 0.3F) + 1F) * 0.1F;
             }
 
-            if (!r.getStateMatcher().equals(Matchers.ANY) && r.getStateMatcher().getType() != DisplayOnlyMatcher.TYPE) {
-                boolean air = !r.getStateMatcher().countsTowardsTotalBlocks();
+            if (!r.stateMatcher().equals(Matchers.ANY) && r.stateMatcher().getType() != DisplayOnlyMatcher.TYPE) {
+                boolean air = !r.stateMatcher().countsTowardsTotalBlocks();
 
                 if (!r.test(level, facingRotation)) {
-                    BlockState displayedState = r.getStateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
-                    renderBlock(level, displayedState, r.getWorldPosition(), multiblock, air, alpha, ms);
+                    BlockState displayedState = r.stateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
+                    renderBlock(level, displayedState, r.worldPosition(), multiblock, air, alpha, ms);
                 }
             }
         }

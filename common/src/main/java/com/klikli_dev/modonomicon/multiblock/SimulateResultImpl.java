@@ -14,38 +14,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 
-public class SimulateResultImpl implements Multiblock.SimulateResult {
-    private final BlockPos worldPosition;
-    private final StateMatcher stateMatcher;
-    @Nullable
-    private final Character character;
-
-    public SimulateResultImpl(BlockPos worldPosition, StateMatcher stateMatcher, @Nullable Character character) {
-        this.worldPosition = worldPosition;
-        this.stateMatcher = stateMatcher;
-        this.character = character;
-    }
-
-    @Override
-    public BlockPos getWorldPosition() {
-        return this.worldPosition;
-    }
-
-    @Override
-    public StateMatcher getStateMatcher() {
-        return this.stateMatcher;
-    }
-
-    @Nullable
-    @Override
-    public Character getCharacter() {
-        return this.character;
-    }
+public record SimulateResultImpl(BlockPos worldPosition, StateMatcher stateMatcher,
+                                 @Nullable Character character) implements Multiblock.SimulateResult {
 
     @Override
     public boolean test(Level world, Rotation rotation) {
-        var pos = this.getWorldPosition();
+        var pos = this.worldPosition();
         BlockState state = world.getBlockState(pos).rotate(AbstractMultiblock.fixHorizontal(rotation));
-        return this.getStateMatcher().getStatePredicate().test(world, pos, state);
+        return this.stateMatcher().getStatePredicate().test(world, pos, state);
     }
 }
