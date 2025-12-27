@@ -26,7 +26,7 @@ jobs:
           github-token: ${{ secrets.RELEASE_NOTES_TOKEN }}
           result-encoding: string
           script: |
-            return '${{ github.ref }}'.match(/refs\/tags\/(.*)\/v((.*)-(.*))/)[1];
+            return '${{ github.ref }}'.match(/refs\/tags\/(.*)\/v((.*?)-(.*))/)[1];
       - name: Get file version from tag
         id: get_version
         uses: actions/github-script@v8
@@ -34,7 +34,7 @@ jobs:
           github-token: ${{ secrets.RELEASE_NOTES_TOKEN }}
           result-encoding: string
           script: |
-            return '${{ github.ref }}'.match(/refs\/tags\/(.*)\/v((.*)-(.*))/)[4];
+            return '${{ github.ref }}'.match(/refs\/tags\/(.*)\/v((.*?)-(.*))/)[4];
       - name: Get main mc version from tag
         id: get_mc_version
         uses: actions/github-script@v8
@@ -42,7 +42,7 @@ jobs:
           github-token: ${{ secrets.RELEASE_NOTES_TOKEN }}
           result-encoding: string
           script: |
-            return '${{ github.ref }}'.match(/refs\/tags\/(.*)\/v((.*)-(.*))/)[3];
+            return '${{ github.ref }}'.match(/refs\/tags\/(.*)\/v((.*?)-(.*))/)[3];
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
         with:
