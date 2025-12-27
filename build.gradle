@@ -1,11 +1,11 @@
 plugins {
-    id 'fabric-loom' version "${loom_version}" apply(false)
+    id 'net.fabricmc.fabric-loom' version "${loom_version}" apply(false)
 }
 
 subprojects {
     apply plugin: 'java'
 
-    java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+    java.toolchain.languageVersion = JavaLanguageVersion.of(25)
     java.withSourcesJar()
 //    java.withJavadocJar()
 
