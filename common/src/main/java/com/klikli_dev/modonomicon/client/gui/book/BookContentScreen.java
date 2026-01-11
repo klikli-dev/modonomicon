@@ -214,7 +214,7 @@ public class BookContentScreen extends BookPaginatedScreen {
         var filteredStacks = PageRendererRegistry.filterRenderableItemStacks(stacks);
         if (filteredStacks.size() > 0) {
             var currentStack = filteredStacks.get((this.ticksInBook / 20) % filteredStacks.size());
-            this.renderItemStack(guiGraphics, x, y, mouseX, mouseY, countOverride > 0 ? currentStack.copyWithCount(countOverride) : currentStack);
+            this.renderItemStack(guiGraphics, x, y, mouseX, mouseY, countOverride > 0 ? currentStack.copyWithCount(countOverride) : currentStack.copy());
         }
     }
 
