@@ -86,7 +86,7 @@ public interface ContentRenderingScreen {
         var filteredStacks = PageRendererRegistry.filterRenderableItemStacks(stacks);
         if (filteredStacks.size() > 0) {
             var currentStack = filteredStacks.get((this.getTicksInBook() / 20) % filteredStacks.size());
-            this.renderItemStack(guiGraphics, x, y, mouseX, mouseY, countOverride > 0 ? currentStack.copyWithCount(countOverride) : currentStack);
+            this.renderItemStack(guiGraphics, x, y, mouseX, mouseY, countOverride > 0 ? currentStack.copyWithCount(countOverride) : currentStack.copy());
         }
     }
 
