@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1-1.121.2] - 2026-03-06
+### :bug: Bug Fixes
+- [`40f5c99`](https://github.com/klikli-dev/modonomicon/commit/40f5c999c7af1b6c36b091a20881f4323ad221e1) - fabric resource reloading *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1-1.121.1] - 2026-01-11
 ### :bug: Bug Fixes
 - [`6a9b5fb`](https://github.com/klikli-dev/modonomicon/commit/6a9b5fbe5df0a13ee6f62e910e4758ad662355ed) - copy item stack during ingredient rendering to avoid nbt/data component issues *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1955,3 +1960,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.11-1.120.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.11-0.0.0...release/v1.21.11-1.120.0
 [release/v26.1-1.121.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-0.0.0...release/v26.1-1.121.0
 [release/v26.1-1.121.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.121.0...release/v26.1-1.121.1
+[release/v26.1-1.121.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.121.1...release/v26.1-1.121.2
