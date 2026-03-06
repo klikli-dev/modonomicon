@@ -27,7 +27,11 @@ import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.level.Level;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 public class ModonomiconFabric implements ModInitializer {
 
@@ -52,8 +56,14 @@ public class ModonomiconFabric implements ModInitializer {
         LoaderRegistry.registerLoaders();
 
         //register data managers as reload listeners
-        ResourceLoader.get(PackType.SERVER_DATA).registerReloader(Modonomicon.loc("book_data_manager"), BookDataManager.get());
-        ResourceLoader.get(PackType.SERVER_DATA).registerReloader(Modonomicon.loc("multiblock_data_manager"), MultiblockDataManager.get());
+        ResourceLoader.get(PackType.SERVER_DATA).registerReloader(Modonomicon.loc("book_data_manager"), (sharedState, exectutor, barrier, applyExectutor) -> {
+            BookDataManager.get().registries(sharedState.get(ResourceLoader.RELOADER_REGISTRY_LOOKUP_KEY));
+            return BookDataManager.get().reload(sharedState, exectutor, barrier, applyExectutor);
+        });
+        ResourceLoader.get(PackType.SERVER_DATA).registerReloader(Modonomicon.loc("multiblock_data_manager"), (sharedState, exectutor, barrier, applyExectutor) -> {
+            MultiblockDataManager.get().registries(sharedState.get(ResourceLoader.RELOADER_REGISTRY_LOOKUP_KEY));
+            return MultiblockDataManager.get().reload(sharedState, exectutor, barrier, applyExectutor);
+        });
 
         //register commands
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
