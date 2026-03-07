@@ -22,23 +22,23 @@ public class ModonomiconModelProvider extends ModelProvider {
         super(packOutput, Modonomicon.MOD_ID);
     }
 
-    public void generateFlatItem(Item item, String texture, ItemModelGenerators itemModelGenerator) {
-        itemModelGenerator.itemModelOutput.accept(item, ItemModelUtils.plainModel(this.createFlatItemModel(item, texture, itemModelGenerator)));
+    public void generateFlatItem(Item item, String suffix, ItemModelGenerators itemModelGenerator) {
+        itemModelGenerator.itemModelOutput.accept(item, ItemModelUtils.plainModel(this.createFlatItemModel(item, suffix, itemModelGenerator)));
     }
 
-    public Identifier createFlatItemModel(Item item, String texture, ItemModelGenerators itemModelGenerator) {
+    public Identifier createFlatItemModel(Item item, String suffix, ItemModelGenerators itemModelGenerator) {
         return ModelTemplates.FLAT_ITEM.create(ModelLocationUtils.getModelLocation(item),
-                TextureMapping.layer0(Modonomicon.loc("item/" + texture)),
+                TextureMapping.layer0(TextureMapping.getItemTexture(item, suffix)),
                 itemModelGenerator.modelOutput);
     }
 
     @Override
     protected void registerModels(@NotNull BlockModelGenerators blockModels, @NotNull ItemModelGenerators itemModels) {
-        this.generateFlatItem(ItemRegistry.MODONOMICON.get(), "modonomicon_purple", itemModels);
-        this.generateFlatItem(ItemRegistry.MODONOMICON_BLUE.get(), "modonomicon_blue", itemModels);
-        this.generateFlatItem(ItemRegistry.MODONOMICON_GREEN.get(), "modonomicon_green", itemModels);
-        this.generateFlatItem(ItemRegistry.MODONOMICON_PURPLE.get(), "modonomicon_purple", itemModels);
-        this.generateFlatItem(ItemRegistry.MODONOMICON_RED.get(), "modonomicon_red", itemModels);
-        this.generateFlatItem(ItemRegistry.LEAFLET.get(), "leaflet", itemModels);
+        this.generateFlatItem(ItemRegistry.MODONOMICON.get(), "purple", itemModels);
+        this.generateFlatItem(ItemRegistry.MODONOMICON_BLUE.get(), "blue", itemModels);
+        this.generateFlatItem(ItemRegistry.MODONOMICON_GREEN.get(), "green", itemModels);
+        this.generateFlatItem(ItemRegistry.MODONOMICON_PURPLE.get(), "purple", itemModels);
+        this.generateFlatItem(ItemRegistry.MODONOMICON_RED.get(), "red", itemModels);
+        this.generateFlatItem(ItemRegistry.LEAFLET.get(), "", itemModels);
     }
 }

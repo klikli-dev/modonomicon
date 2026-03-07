@@ -38,8 +38,10 @@ public class NeoMultiblockHelper implements MultiblockHelper {
 //                blockRenderer.renderBatched(state, pos, multiblock, ps, buffer, false, rand, ModelData.EMPTY, layer);
 //            }
 
+            //TODO: fix block rendering, from 26.1 snapshot 1 to snapshot 10 renderSingleBlock was removed
+
             //noinspection deprecation
-            blockRenderer.renderSingleBlock(state, ps, buffers, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+//            blockRenderer.renderSingleBlock(state, ps, buffers, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         }
     }
 }

@@ -52,7 +52,7 @@ public class ItemLinkHandler extends LinkHandler {
             var reader = new StringReader(itemId);
             var itemResult = this.itemParser.parse(reader);
             var itemInput = new ItemInput(itemResult.item(), itemResult.components());
-            itemStack = itemInput.createItemStack(1, false);
+            itemStack = itemInput.createItemStack(1);
         } catch (Exception e) {
             Modonomicon.LOG.error("Failed to parse item link: {}", path, e);
             return ClickResult.FAILURE;

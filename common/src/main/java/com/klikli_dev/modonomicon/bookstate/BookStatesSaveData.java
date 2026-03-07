@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.bookstate;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.util.Codecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -14,6 +15,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
@@ -23,7 +25,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class BookStatesSaveData extends SavedData {
-    public static final String ID = "modonomicon_book_states";
+    public static final Identifier ID = Modonomicon.loc( "book_states");
 
     public static final Codec<BookStatesSaveData> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
             Codec.unboundedMap(Codecs.UUID, BookUnlockStates.CODEC).fieldOf("unlockStates").forGetter((state) -> state.unlockStates),

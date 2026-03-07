@@ -13,6 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.CardinalLighting;
 import net.minecraft.world.level.ColorResolver;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
@@ -120,13 +121,13 @@ public class StubMultiblock implements Multiblock {
     }
 
     @Override
-    public float getShade(Direction direction, boolean shade) {
-        return 0;
+    public LevelLightEngine getLightEngine() {
+        return null;
     }
 
     @Override
-    public LevelLightEngine getLightEngine() {
-        return null;
+    public CardinalLighting cardinalLighting() {
+        return CardinalLighting.DEFAULT;
     }
 
     @Override

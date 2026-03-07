@@ -32,7 +32,9 @@ public class FabricMultiblockHelper implements MultiblockHelper {
 //            var buffer = buffers.getBuffer(layer);
 //            blockRenderer.renderBatched(state, pos, multiblock, ps, buffer, false, rand);
             //batched rendering has changed significantly
-            blockRenderer.renderSingleBlock(state, ps, buffers, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+
+            //TODO: fix block rendering, from 26.1 snapshot 1 to snapshot 10 renderSingleBlock was removed
+//            blockRenderer.renderSingleBlock(state, ps, buffers, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         }
     }
 }

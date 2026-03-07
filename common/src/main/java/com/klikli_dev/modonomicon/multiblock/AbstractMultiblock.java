@@ -238,11 +238,6 @@ public abstract class AbstractMultiblock implements Multiblock {
     }
 
     @Override
-    public float getShade(Direction direction, boolean shaded) {
-        return 1.0F;
-    }
-
-    @Override
     public LevelLightEngine getLightEngine() {
         return null;
     }

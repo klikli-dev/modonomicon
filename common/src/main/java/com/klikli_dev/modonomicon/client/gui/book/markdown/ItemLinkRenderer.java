@@ -16,6 +16,7 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.HoverEvent.Action;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import org.commonmark.node.Link;
 import org.commonmark.node.Node;
 import org.commonmark.node.Text;
@@ -56,15 +57,17 @@ public class ItemLinkRenderer implements LinkRenderer {
                 var reader = new StringReader(itemId);
                 var itemResult = itemParser.parse(reader);
                 var itemInput = new ItemInput(itemResult.item(), itemResult.components());
-                itemStack = itemInput.createItemStack(1, false);
+                itemStack = itemInput.createItemStack(1);
             } catch (Exception e) {
                 BookErrorManager.get().error("Failed to parse item link.", e);
             }
 
+
+
             //if we have a color we use it, otherwise we use item link default.
             context.setCurrentStyle(context.getCurrentStyle()
                     .withColor(currentColor == null ? ITEM_LINK_COLOR : currentColor)
-                    .withHoverEvent(new HoverEvent.ShowItem(itemStack))
+                    .withHoverEvent(new HoverEvent.ShowItem(ItemStackTemplate.fromNonEmptyStack(itemStack)))
                     .withClickEvent(new ClickEvent.OpenFile(link.getDestination()))
             );
 

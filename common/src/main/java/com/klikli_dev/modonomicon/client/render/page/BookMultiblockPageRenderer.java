@@ -54,7 +54,7 @@ import java.util.*;
 
 public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockPage> implements PageWithTextRenderer {
 
-    private static final RandomSource randomSource = RandomSource.createNewThreadLocalInstance();
+    private static final RandomSource randomSource = RandomSource.createThreadLocalInstance();
     private final Map<BlockPos, BlockEntity> blockEntityCache = new Object2ObjectOpenHashMap<>();
     private final Set<BlockEntity> erroredBlockEntities = Collections.newSetFromMap(new WeakHashMap<>());
 

@@ -186,7 +186,7 @@ public class ModonomiconNeo {
             });
 
             //Render multiblock preview - Phase 2: Render with extracted state
-            NeoForge.EVENT_BUS.addListener((RenderLevelStageEvent.AfterTripwireBlocks e) -> {
+            NeoForge.EVENT_BUS.addListener((RenderLevelStageEvent.AfterTranslucentParticles e) -> {
                 //After translucent causes block entities to error out on render in preview so we use after tripwire.
                 MultiblockPreviewRenderer.onRenderLevelLastEvent(e.getLevelRenderState(), e.getPoseStack());
             });

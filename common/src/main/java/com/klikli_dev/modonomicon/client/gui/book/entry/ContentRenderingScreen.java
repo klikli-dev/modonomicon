@@ -24,6 +24,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import org.jetbrains.annotations.Nullable;
@@ -235,7 +236,7 @@ public interface ContentRenderingScreen {
         // our own copy of the render code that limits width for the show_text action to not go out of screen
         if (style != null && style.getHoverEvent() != null) {
             switch (style.getHoverEvent()) {
-                case HoverEvent.ShowItem(ItemStack itemstack):
+                case HoverEvent.ShowItem(ItemStackTemplate itemstack):
                     //special handling for item link hovers -> we append another line in this.getTooltipFromItem
                     if (style.getClickEvent() != null)// && ItemLinkRenderer.isItemLink(style.getClickEvent().getValue()))
                         this.isHoveringItemLink(true);
@@ -243,7 +244,7 @@ public interface ContentRenderingScreen {
                     //temporarily modify width to force forge to handle wrapping correctly
                     var backupWidth = this.asScreen().width;
                     this.asScreen().width = this.asScreen().width / 2; //not quite sure why exaclty / 2 works, but then forge wrapping handles it correctly on gui scale 3+4
-                    guiGraphics.setTooltipForNextFrame(this.getContentFont(), itemstack, mouseX, mouseY);
+                    guiGraphics.setTooltipForNextFrame(this.getContentFont(), itemstack.create(), mouseX, mouseY);
                     this.asScreen().width = backupWidth;
 
                     //then we reset so other item tooltip renders are not affected
