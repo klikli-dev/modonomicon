@@ -1,0 +1,11 @@
+{
+    "servers": {
+        "minecraft-dev": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@mcdxai/minecraft-dev-mcp"
+            ]
+        }
+    }
+}
