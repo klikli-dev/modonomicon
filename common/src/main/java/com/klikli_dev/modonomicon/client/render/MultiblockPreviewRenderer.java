@@ -99,7 +99,7 @@ public class MultiblockPreviewRenderer {
     private static int timeComplete;
     private static BlockState lookingState;
     private static BlockPos lookingPos;
-    
+
     private static final RandomSource RANDOM = RandomSource.create();
     private static final List<BlockModelPart> PART_SCRATCH_LIST = new ObjectArrayList<>();
     private static final ByteBufferBuilder BUFFER_BUILDER = new ByteBufferBuilder(RenderType.TRANSIENT_BUFFER_SIZE);
@@ -397,7 +397,7 @@ public class MultiblockPreviewRenderer {
         double renderPosZ = erd.camera.position().z();
         ms.pushPose();
         ms.translate(-renderPosX, -renderPosY, -renderPosZ);
-        
+
         for (var blockEntityRenderState : blockEntityRenderStates) {
             ms.pushPose();
             ms.translate(blockEntityRenderState.blockPos.getX(),
@@ -421,13 +421,13 @@ public class MultiblockPreviewRenderer {
 
     public static void renderBlock(Level world, BlockState state, BlockPos pos, Multiblock multiblock, boolean isAir, float alpha, ModelBlockRenderer blockRenderer, PoseStack poseStack, BufferBuilder buffer) {
         if (pos == null) return;
-        
+
         Minecraft mc = Minecraft.getInstance();
         Vec3 cameraPos = mc.gameRenderer.getMainCamera().position();
         Vec3 offset = Vec3.atLowerCornerOf(pos).subtract(cameraPos);
-        
+
         VertexConsumer consumer = new GhostVertexConsumer(buffer, (int) (alpha * 255.0f));
-        BlockQuadOutput output = (levelIn, stateIn, posIn, quad, instance) -> 
+        BlockQuadOutput output = (levelIn, stateIn, posIn, quad, instance) ->
              consumer.putBakedQuad(poseStack.last(), quad, instance);
 
         poseStack.pushPose();
@@ -447,7 +447,7 @@ public class MultiblockPreviewRenderer {
         model.collectParts(RANDOM, PART_SCRATCH_LIST);
         blockRenderer.tesselateBlock(output, 0, 0, 0, multiblock, pos, state, model, 0);
         PART_SCRATCH_LIST.clear();
-        
+
         poseStack.popPose();
     }
 
