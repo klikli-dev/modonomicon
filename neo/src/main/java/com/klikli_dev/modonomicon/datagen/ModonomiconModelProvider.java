@@ -34,10 +34,10 @@ public class ModonomiconModelProvider extends ModelProvider {
 
     @Override
     protected void registerModels(@NotNull BlockModelGenerators blockModels, @NotNull ItemModelGenerators itemModels) {
-        this.generateFlatItem(ItemRegistry.MODONOMICON.get(), "purple", itemModels);
-        this.generateFlatItem(ItemRegistry.MODONOMICON_BLUE.get(), "blue", itemModels);
-        this.generateFlatItem(ItemRegistry.MODONOMICON_GREEN.get(), "green", itemModels);
-        this.generateFlatItem(ItemRegistry.MODONOMICON_PURPLE.get(), "purple", itemModels);
+        this.generateFlatItem(ItemRegistry.MODONOMICON.get(), "_purple", itemModels);
+        this.generateFlatItem(ItemRegistry.MODONOMICON_BLUE.get(), "", itemModels);
+        this.generateFlatItem(ItemRegistry.MODONOMICON_GREEN.get(), "", itemModels);
+        this.generateFlatItem(ItemRegistry.MODONOMICON_PURPLE.get(), "", itemModels);
         this.generateFlatItem(ItemRegistry.MODONOMICON_RED.get(), "red", itemModels);
         this.generateFlatItem(ItemRegistry.LEAFLET.get(), "", itemModels);
     }

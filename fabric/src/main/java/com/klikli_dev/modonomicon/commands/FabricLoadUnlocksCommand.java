@@ -13,10 +13,9 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
-import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 
 import java.util.Base64;
@@ -27,7 +26,7 @@ public class FabricLoadUnlocksCommand implements com.mojang.brigadier.Command<Fa
 
 
     public static ArgumentBuilder<FabricClientCommandSource, ?> register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        return ClientCommandManager.literal("load_progress")
+        return ClientCommands.literal("load_progress")
                 .executes(CMD);
     }
 

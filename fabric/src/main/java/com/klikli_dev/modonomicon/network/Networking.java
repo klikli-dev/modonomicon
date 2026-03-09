@@ -29,28 +29,28 @@ public class Networking {
 
     public static void registerMessages() {
         //to server
-        PayloadTypeRegistry.playC2S().register(BookEntryReadMessage.TYPE, BookEntryReadMessage.STREAM_CODEC);
-        PayloadTypeRegistry.playC2S().register(ClickCommandLinkMessage.TYPE, ClickCommandLinkMessage.STREAM_CODEC);
-        PayloadTypeRegistry.playC2S().register(ClickReadAllButtonMessage.TYPE, ClickReadAllButtonMessage.STREAM_CODEC);
-        PayloadTypeRegistry.playC2S().register(SaveBookStateMessage.TYPE, SaveBookStateMessage.STREAM_CODEC);
-        PayloadTypeRegistry.playC2S().register(SaveCategoryStateMessage.TYPE, SaveCategoryStateMessage.STREAM_CODEC);
-        PayloadTypeRegistry.playC2S().register(SaveEntryStateMessage.TYPE, SaveEntryStateMessage.STREAM_CODEC);
-        PayloadTypeRegistry.playC2S().register(SendUnlockCodeToServerMessage.TYPE, SendUnlockCodeToServerMessage.STREAM_CODEC);
-        PayloadTypeRegistry.playC2S().register(ReloadResourcesDoneMessage.TYPE, ReloadResourcesDoneMessage.STREAM_CODEC);
-        PayloadTypeRegistry.playC2S().register(RequestSyncBookStatesMessage.TYPE, RequestSyncBookStatesMessage.STREAM_CODEC);
-        PayloadTypeRegistry.playC2S().register(RequestAdvancementMessage.TYPE, RequestAdvancementMessage.STREAM_CODEC);
-        PayloadTypeRegistry.playC2S().register(AddBookmarkMessage.TYPE, AddBookmarkMessage.STREAM_CODEC);
-        PayloadTypeRegistry.playC2S().register(RemoveBookmarkMessage.TYPE, RemoveBookmarkMessage.STREAM_CODEC);
-        PayloadTypeRegistry.playC2S().register(BookClosedMessage.TYPE, BookClosedMessage.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(BookEntryReadMessage.TYPE, BookEntryReadMessage.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(ClickCommandLinkMessage.TYPE, ClickCommandLinkMessage.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(ClickReadAllButtonMessage.TYPE, ClickReadAllButtonMessage.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(SaveBookStateMessage.TYPE, SaveBookStateMessage.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(SaveCategoryStateMessage.TYPE, SaveCategoryStateMessage.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(SaveEntryStateMessage.TYPE, SaveEntryStateMessage.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(SendUnlockCodeToServerMessage.TYPE, SendUnlockCodeToServerMessage.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(ReloadResourcesDoneMessage.TYPE, ReloadResourcesDoneMessage.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(RequestSyncBookStatesMessage.TYPE, RequestSyncBookStatesMessage.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(RequestAdvancementMessage.TYPE, RequestAdvancementMessage.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(AddBookmarkMessage.TYPE, AddBookmarkMessage.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(RemoveBookmarkMessage.TYPE, RemoveBookmarkMessage.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(BookClosedMessage.TYPE, BookClosedMessage.STREAM_CODEC);
 
         //to client
-        PayloadTypeRegistry.playS2C().register(SendUnlockCodeToClientMessage.TYPE, SendUnlockCodeToClientMessage.STREAM_CODEC);
-        PayloadTypeRegistry.playS2C().register(SyncBookDataMessage.TYPE, SyncBookDataMessage.STREAM_CODEC);
-        PayloadTypeRegistry.playS2C().register(SyncBookUnlockStatesMessage.TYPE, SyncBookUnlockStatesMessage.STREAM_CODEC);
-        PayloadTypeRegistry.playS2C().register(SyncBookVisualStatesMessage.TYPE, SyncBookVisualStatesMessage.STREAM_CODEC);
-        PayloadTypeRegistry.playS2C().register(SyncMultiblockDataMessage.TYPE, SyncMultiblockDataMessage.STREAM_CODEC);
-        PayloadTypeRegistry.playS2C().register(ReloadResourcesOnClientMessage.TYPE, ReloadResourcesOnClientMessage.STREAM_CODEC);
-        PayloadTypeRegistry.playS2C().register(SendAdvancementToClientMessage.TYPE, SendAdvancementToClientMessage.STREAM_CODEC);
-        PayloadTypeRegistry.playS2C().register(OpenBookOnClientMessage.TYPE, OpenBookOnClientMessage.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(SendUnlockCodeToClientMessage.TYPE, SendUnlockCodeToClientMessage.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(SyncBookDataMessage.TYPE, SyncBookDataMessage.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(SyncBookUnlockStatesMessage.TYPE, SyncBookUnlockStatesMessage.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(SyncBookVisualStatesMessage.TYPE, SyncBookVisualStatesMessage.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(SyncMultiblockDataMessage.TYPE, SyncMultiblockDataMessage.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(ReloadResourcesOnClientMessage.TYPE, ReloadResourcesOnClientMessage.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(SendAdvancementToClientMessage.TYPE, SendAdvancementToClientMessage.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(OpenBookOnClientMessage.TYPE, OpenBookOnClientMessage.STREAM_CODEC);
     }
 }

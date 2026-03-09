@@ -13,7 +13,7 @@ import com.klikli_dev.modonomicon.datagen.book.DemoBook;
 import com.klikli_dev.modonomicon.datagen.book.DemoLeaflet;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 
 public class DataGenerators implements DataGeneratorEntrypoint {
     @Override
@@ -35,7 +35,7 @@ public class DataGenerators implements DataGeneratorEntrypoint {
 //                new AddToDemoBook(addToLangCache)
         ));
         //Important: lang provider needs to be added after the book provider, so it can read the texts added by the book provider out of the cache
-        pack.addProvider((FabricDataOutput output) -> new EnUsProvider(output, enUsCache));
+        pack.addProvider((FabricPackOutput output) -> new EnUsProvider(output, enUsCache));
 
         //For our addon book we can use the AddToModonomiconLanguageProvider class which just writes the cache to the target modid
 //        pack.addProvider((FabricDataOutput output) -> new AddToModonomiconLanguageProvider(output, "theurgy", "en_us", addToLangCache));
@@ -45,7 +45,7 @@ public class DataGenerators implements DataGeneratorEntrypoint {
 //                (output, registries) -> new MyLegacyBookProvider("bookId", output, "modId", enUsCache)
 //        ));
 
-        pack.addProvider((FabricDataOutput output) -> new DemoMultiblockProvider(output, Modonomicon.MOD_ID));
+        pack.addProvider((FabricPackOutput output) -> new DemoMultiblockProvider(output, Modonomicon.MOD_ID));
         pack.addProvider(ModonomiconModelProvider::new);
 
         pack.addProvider(ItemTagsProvider::new);

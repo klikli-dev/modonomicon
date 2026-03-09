@@ -39,7 +39,7 @@ public class FabricFluidHolder implements FluidHolder {
 
     @Override
     public Holder<Fluid> getFluid() {
-        return this.fluidVariant.getRegistryEntry();
+        return this.fluidVariant.typeHolder();
     }
 
     @Override
@@ -60,7 +60,7 @@ public class FabricFluidHolder implements FluidHolder {
 
     @Override
     public DataComponentPatch getComponents() {
-        return this.fluidVariant.getComponents();
+        return this.fluidVariant.getComponentsPatch();
     }
 
 

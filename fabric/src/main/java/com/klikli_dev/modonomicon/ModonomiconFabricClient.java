@@ -18,7 +18,7 @@ import com.klikli_dev.modonomicon.registry.FabricClientCommandRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.PictureInPictureRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
@@ -68,7 +68,7 @@ public class ModonomiconFabricClient implements ClientModInitializer {
         });
 
         //register client side reload listener that will reset the fallback font to handle locale changes on the fly
-        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(Modonomicon.loc("book_data_manager_client"), BookDataManager.Client.get());
+        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(Modonomicon.loc("book_data_manager_client"), BookDataManager.Client.get());
 
         //register item model properties
         ConditionalItemModelProperties.ID_MAPPER.put(
@@ -78,7 +78,7 @@ public class ModonomiconFabricClient implements ClientModInitializer {
                 IsBookOpen.MAP_CODEC
         );
 
-        SpecialGuiElementRegistry.register((ctx) -> new GuiMultiblockRenderer(ctx.vertexConsumers()));
+        PictureInPictureRendererRegistry.register((ctx) -> new GuiMultiblockRenderer(ctx.bufferSource()));
 
         //book geometry loader
         //done in MixinModelManager, because we have no event in Fabric

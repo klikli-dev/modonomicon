@@ -17,11 +17,11 @@ import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLevelEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.minecraft.core.Registry;
@@ -43,7 +43,7 @@ public class ModonomiconFabric implements ModInitializer {
 
         //Most registries are handled by common, but creative tabs are easier per loader
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, CreativeModeTabRegistry.MODONOMICON_TAB_KEY, CreativeModeTabRegistry.MODONOMICON);
-        ItemGroupEvents.MODIFY_ENTRIES_ALL.register(CreativeModeTabRegistry::onModifyEntries);
+        CreativeModeTabEvents.MODIFY_OUTPUT_ALL.register(CreativeModeTabRegistry::onModifyOutput);
 
         //Equivalent to Common setup
         Networking.registerMessages();
@@ -52,12 +52,12 @@ public class ModonomiconFabric implements ModInitializer {
         LoaderRegistry.registerLoaders();
 
         //register data managers as reload listeners
-        ResourceLoader.get(PackType.SERVER_DATA).registerReloader(Modonomicon.loc("book_data_manager"), (sharedState, exectutor, barrier, applyExectutor) -> {
-            BookDataManager.get().registries(sharedState.get(ResourceLoader.RELOADER_REGISTRY_LOOKUP_KEY));
+        ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(Modonomicon.loc("book_data_manager"), (sharedState, exectutor, barrier, applyExectutor) -> {
+            BookDataManager.get().registries(sharedState.get(ResourceLoader.REGISTRY_LOOKUP_KEY));
             return BookDataManager.get().reload(sharedState, exectutor, barrier, applyExectutor);
         });
-        ResourceLoader.get(PackType.SERVER_DATA).registerReloader(Modonomicon.loc("multiblock_data_manager"), (sharedState, exectutor, barrier, applyExectutor) -> {
-            MultiblockDataManager.get().registries(sharedState.get(ResourceLoader.RELOADER_REGISTRY_LOOKUP_KEY));
+        ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(Modonomicon.loc("multiblock_data_manager"), (sharedState, exectutor, barrier, applyExectutor) -> {
+            MultiblockDataManager.get().registries(sharedState.get(ResourceLoader.REGISTRY_LOOKUP_KEY));
             return MultiblockDataManager.get().reload(sharedState, exectutor, barrier, applyExectutor);
         });
 
@@ -82,7 +82,7 @@ public class ModonomiconFabric implements ModInitializer {
         //on overworld unload clear the save data reference in the state manager
         // this ensures that if another world is loaded the save data is taken from file
         // instead of bleeding in from the previous level
-        ServerWorldEvents.UNLOAD.register((server, level) -> {
+        ServerLevelEvents.UNLOAD.register((server, level) -> {
             if (level.dimension() == Level.OVERWORLD) {
                 BookUnlockStateManager.get().saveData = null;
                 BookVisualStateManager.get().saveData = null;
