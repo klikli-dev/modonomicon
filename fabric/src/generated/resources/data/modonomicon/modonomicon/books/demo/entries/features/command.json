@@ -6,7 +6,7 @@
   "description": "book.modonomicon.demo.features.command.description",
   "hide_while_locked": false,
   "icon": {
-    "item": "minecraft:oak_sign"
+    "id": "minecraft:oak_sign"
   },
   "name": "book.modonomicon.demo.features.command.name",
   "pages": [

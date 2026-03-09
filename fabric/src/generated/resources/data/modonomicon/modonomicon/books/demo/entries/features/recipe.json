@@ -5,7 +5,7 @@
   "description": "book.modonomicon.demo.features.recipe.description",
   "hide_while_locked": false,
   "icon": {
-    "item": "minecraft:crafting_table"
+    "id": "minecraft:crafting_table"
   },
   "name": "book.modonomicon.demo.features.recipe.name",
   "pages": [

@@ -18,7 +18,7 @@
   "description": "book.modonomicon.demo.features.two_parents.description",
   "hide_while_locked": false,
   "icon": {
-    "item": "minecraft:amethyst_cluster"
+    "id": "minecraft:amethyst_cluster"
   },
   "name": "book.modonomicon.demo.features.two_parents.name",
   "pages": [

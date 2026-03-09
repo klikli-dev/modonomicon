@@ -5,7 +5,7 @@
   "description": "book.modonomicon.demo_leaflet.leaflet.leaflet.description",
   "hide_while_locked": false,
   "icon": {
-    "item": "minecraft:paper"
+    "id": "minecraft:paper"
   },
   "name": "book.modonomicon.demo_leaflet.leaflet.leaflet.name",
   "pages": [

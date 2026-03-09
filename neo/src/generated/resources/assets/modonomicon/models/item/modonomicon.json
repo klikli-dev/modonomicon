@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "modonomicon:item/modonomiconpurple"
+    "layer0": "modonomicon:item/modonomicon_purple"
   }
 }

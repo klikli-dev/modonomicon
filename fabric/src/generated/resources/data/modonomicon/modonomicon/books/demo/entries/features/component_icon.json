@@ -8,7 +8,7 @@
     "components": {
       "minecraft:dyed_color": 1481884
     },
-    "item": "minecraft:leather_helmet"
+    "id": "minecraft:leather_helmet"
   },
   "name": "book.modonomicon.demo.features.component_icon.name",
   "pages": [

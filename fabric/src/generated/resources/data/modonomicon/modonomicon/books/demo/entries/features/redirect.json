@@ -6,7 +6,7 @@
   "description": "book.modonomicon.demo.features.redirect.description",
   "hide_while_locked": false,
   "icon": {
-    "item": "minecraft:ender_pearl"
+    "id": "minecraft:ender_pearl"
   },
   "name": "book.modonomicon.demo.features.redirect.name",
   "show_when_any_parent_unlocked": false,
