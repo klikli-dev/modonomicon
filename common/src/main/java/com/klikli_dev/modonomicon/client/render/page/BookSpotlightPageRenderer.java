@@ -46,9 +46,9 @@ public class BookSpotlightPageRenderer extends BookPageRenderer<BookSpotlightPag
                 }
         );
         this.page.getItem().ifLeft(
-                itemStack -> {
+                itemStackTemplate -> {
                     //item
-                    this.parentScreen.renderItemStack(guiGraphics, ITEM_X, ITEM_Y, mouseX, mouseY, itemStack);
+                    this.parentScreen.renderItemStack(guiGraphics, ITEM_X, ITEM_Y, mouseX, mouseY, this.page.getCachedItemStack());
                 }
         );
 

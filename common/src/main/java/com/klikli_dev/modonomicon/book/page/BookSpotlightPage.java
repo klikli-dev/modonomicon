@@ -22,6 +22,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -32,64 +33,46 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class BookSpotlightPage extends BookPage {
-    /**
-     * A custom codec that still uses the "item" field instead of "id" for backwards comp,
-     */
-    public static final Codec<ItemStack> CUSTOM_ITEM_STACK_CODEC = Codec.lazyInitialized(
-            () -> RecordCodecBuilder.create((builder) -> builder.group(
-                    Item.CODEC.fieldOf("item").forGetter(ItemStack::typeHolder),
-                    ExtraCodecs.intRange(1, 99).fieldOf("count").orElse(1).forGetter(ItemStack::getCount),
-                    DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(ItemStack::getComponentsPatch)
-            ).apply(builder, ItemStack::new))
-    );
-    
-    /**
-     * We allow both vanilla item stack syntax and our custom syntax.
-     */
-    public static final Codec<ItemStack> ITEM_STACK_CODEC = Codec.lazyInitialized(() -> Codec.withAlternative(CUSTOM_ITEM_STACK_CODEC, ItemStack.CODEC));
+    public static final Codec<Either<ItemStackTemplate, Ingredient>> ITEM_CODEC = Codec.lazyInitialized(() -> Codec.either(ItemStackTemplate.CODEC, Ingredient.CODEC));
 
-    /**
-     * We allow both ingredients and item stacks.
-     */
-    public static final Codec<Either<ItemStack, Ingredient>> ITEM_CODEC = Codec.lazyInitialized(() -> Codec.either(ITEM_STACK_CODEC, Ingredient.CODEC));
-
-    public static final StreamCodec<RegistryFriendlyByteBuf, Either<ItemStack, Ingredient>> ITEM_STREAM_CODEC = new StreamCodec<>() {
-
+    public static final StreamCodec<RegistryFriendlyByteBuf, Either<ItemStackTemplate, Ingredient>> ITEM_STREAM_CODEC = new StreamCodec<>() {
 
         @Override
-        public void encode(@NotNull RegistryFriendlyByteBuf buf, Either<ItemStack, Ingredient> item) {
+        public void encode(@NotNull RegistryFriendlyByteBuf buf, Either<ItemStackTemplate, Ingredient> item) {
             item.ifRight(i -> {
                 buf.writeBoolean(true);
                 Ingredient.CONTENTS_STREAM_CODEC.encode(buf, i);
             });
             item.ifLeft(i -> {
                 buf.writeBoolean(false);
-                ItemStack.STREAM_CODEC.encode(buf, i);
+                ItemStackTemplate.STREAM_CODEC.encode(buf, i);
             });
         }
 
         @Override
-        public @NotNull Either<ItemStack, Ingredient> decode(@NotNull RegistryFriendlyByteBuf buf) {
+        public @NotNull Either<ItemStackTemplate, Ingredient> decode(@NotNull RegistryFriendlyByteBuf buf) {
             boolean isIngredient = buf.readBoolean();
             if (isIngredient) {
                 return Either.right(Ingredient.CONTENTS_STREAM_CODEC.decode(buf));
             } else {
-                return Either.left(ItemStack.STREAM_CODEC.decode(buf));
+                return Either.left(ItemStackTemplate.STREAM_CODEC.decode(buf));
             }
         }
     };
 
     protected BookTextHolder title;
     protected BookTextHolder text;
-    protected Either<ItemStack, Ingredient> item;
+    protected Either<ItemStackTemplate, Ingredient> item;
+    private ItemStack cachedItemStack;
 
-    public BookSpotlightPage(BookTextHolder title, BookTextHolder text, Either<ItemStack, Ingredient> item, String anchor, BookCondition condition) {
+    public BookSpotlightPage(BookTextHolder title, BookTextHolder text, Either<ItemStackTemplate, Ingredient> item, String anchor, BookCondition condition) {
         super(anchor, condition);
         this.title = title;
         this.text = text;
@@ -116,8 +99,15 @@ public class BookSpotlightPage extends BookPage {
         return new BookSpotlightPage(title, text, item, anchor, condition);
     }
 
-    public Either<ItemStack, Ingredient> getItem() {
+    public Either<ItemStackTemplate, Ingredient> getItem() {
         return this.item;
+    }
+
+    public ItemStack getCachedItemStack() {
+        if (this.cachedItemStack == null) {
+            this.item.ifLeft(l -> this.cachedItemStack = l.create());
+        }
+        return this.cachedItemStack;
     }
 
     public BookTextHolder getTitle() {
@@ -143,7 +133,7 @@ public class BookSpotlightPage extends BookPage {
 
         if (this.title.isEmpty()) {
             //use ingredient name if we don't have a custom title
-            var item = this.item.map(i -> i, i -> i.display().resolveForFirstStack(SlotDisplayContext.fromLevel(level)));
+            var item = this.item.map(i -> i.create(), i -> i.display().resolveForFirstStack(SlotDisplayContext.fromLevel(level)));
 
             this.title = new BookTextHolder(((MutableComponent) item.getHoverName())
                     .withStyle(Style.EMPTY
@@ -185,7 +175,9 @@ public class BookSpotlightPage extends BookPage {
     }
 
     protected boolean itemStackMatchesQuery(String query) {
-        return this.item.mapLeft(l -> this.matchesQuery(l, query)).left().orElse(false);
+        return this.item.mapLeft(l -> {
+            return this.matchesQuery(this.getCachedItemStack(), query);
+        }).left().orElse(false);
     }
 
     protected boolean ingredientMatchesQuery(String query, Level level) {

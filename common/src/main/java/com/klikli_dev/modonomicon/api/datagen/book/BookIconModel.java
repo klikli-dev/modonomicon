@@ -13,17 +13,17 @@ import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.ItemLike;
 
 public class BookIconModel {
-    private final ItemStack itemStack;
+    private final ItemStackTemplate itemStack;
     private final Identifier texture;
 
     private final int width;
     private final int height;
 
-    protected BookIconModel(ItemStack itemStack) {
+    protected BookIconModel(ItemStackTemplate itemStack) {
         this.itemStack = itemStack;
         this.texture = null;
         this.width = ModonomiconConstants.Data.Icon.DEFAULT_WIDTH;
@@ -32,16 +32,16 @@ public class BookIconModel {
 
     protected BookIconModel(Identifier texture, int width, int height) {
         this.texture = texture;
-        this.itemStack = ItemStack.EMPTY;
+        this.itemStack = null;
         this.width = width;
         this.height = height;
     }
 
     public static BookIconModel create(ItemLike item) {
-        return new BookIconModel(new ItemStack(item));
+        return new BookIconModel(new ItemStackTemplate(item.asItem()));
     }
 
-    public static BookIconModel create(ItemStack stack) {
+    public static BookIconModel create(ItemStackTemplate stack) {
         return new BookIconModel(stack);
     }
 
@@ -61,7 +61,7 @@ public class BookIconModel {
             json.addProperty("height", this.height);
             return json;
         } else {
-            return (JsonObject) BookIcon.ITEM_STACK_CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), this.itemStack).getOrThrow();
+            return (JsonObject) ItemStackTemplate.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), this.itemStack).getOrThrow();
         }
     }
 }

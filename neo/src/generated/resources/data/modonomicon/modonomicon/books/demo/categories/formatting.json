@@ -9,7 +9,7 @@
   "entry_textures": "modonomicon:textures/gui/entry_textures.png",
   "entry_to_open": "formatting/basic",
   "icon": {
-    "item": "minecraft:book"
+    "id": "minecraft:book"
   },
   "max_scroll_x": 512,
   "max_scroll_y": 512,

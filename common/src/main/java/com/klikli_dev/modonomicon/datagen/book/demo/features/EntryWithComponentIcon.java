@@ -13,12 +13,13 @@ import com.klikli_dev.modonomicon.api.datagen.book.page.BookSpotlightPageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.platform.Services;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -63,8 +64,7 @@ public class EntryWithComponentIcon extends EntryProvider {
 
     @Override
     protected BookIconModel entryIcon() {
-        var iconStack = new ItemStack(Items.LEATHER_HELMET);
-        iconStack.set(DataComponents.DYED_COLOR, new DyedItemColor(0x169C9C));
+        var iconStack = new ItemStackTemplate(Items.LEATHER_HELMET, DataComponentPatch.builder().set(DataComponents.DYED_COLOR, new DyedItemColor(0x169C9C)).build());
         return BookIconModel.create(iconStack);
     }
 

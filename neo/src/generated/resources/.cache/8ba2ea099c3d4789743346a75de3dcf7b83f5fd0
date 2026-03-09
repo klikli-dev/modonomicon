@@ -1,4 +1,4 @@
-// 1.21.11	2025-12-17T12:21:53.7832253	Model Definitions - modonomicon
+// 26.1-snapshot-10	2026-03-09T15:48:12.000471	Model Definitions - modonomicon
 776c5bad77b18f9883052bed303243bc4ded0ba3 assets/modonomicon/items/leaflet.json
 28157df962998631968b9ed2e994bedc1b1718fc assets/modonomicon/items/modonomicon.json
 631ef49f40a8f19dc5016cb4c4ee09b73ffc8a80 assets/modonomicon/items/modonomicon_blue.json
@@ -6,8 +6,8 @@ fcdaa30d90e7dc1ba5e8fb452f77bc1785a5f2ad assets/modonomicon/items/modonomicon_gr
 60b6eba818782d742bc2f85c217736f0eb17aad9 assets/modonomicon/items/modonomicon_purple.json
 c0615cadbf2bb8c211fa79920c87489f2aba4da5 assets/modonomicon/items/modonomicon_red.json
 9d681528515f3d6fd6fdd2940a280dcde6a53da0 assets/modonomicon/models/item/leaflet.json
-4b35646623b74487675fa8ec1bb375535100c336 assets/modonomicon/models/item/modonomicon.json
-b02e0bc9f75e0fde6807935577e74b75348413fb assets/modonomicon/models/item/modonomicon_blue.json
-83adea7fd65acd9581797454e1a6dc6122d8a826 assets/modonomicon/models/item/modonomicon_green.json
-4b35646623b74487675fa8ec1bb375535100c336 assets/modonomicon/models/item/modonomicon_purple.json
-a4a605637998b2d6d6b7cd9c002d5ba0163622c0 assets/modonomicon/models/item/modonomicon_red.json
+233f28da854b9dd8d4b47ad835675a2089c0cd0c assets/modonomicon/models/item/modonomicon.json
+ca794bf9472a7a1a0e28364c8ec843b4558668c8 assets/modonomicon/models/item/modonomicon_blue.json
+a5a90a0f660e4f8a2fad7cfeeb8345eaa50f2dc7 assets/modonomicon/models/item/modonomicon_green.json
+5b132700c91b860a6047bf735aea8324691a72c7 assets/modonomicon/models/item/modonomicon_purple.json
+df7c590f45ae18e78bb0737492d7985757a55d3e assets/modonomicon/models/item/modonomicon_red.json

@@ -11,9 +11,11 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookSpotlightPageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
@@ -61,18 +63,18 @@ public class SpotlightEntry extends EntryProvider {
         );
         this.pageText("A sample spotlight page with automatic title.");
 
-        var iconStack = new ItemStack(Items.LEATHER_HELMET);
-        iconStack.set(DataComponents.DYED_COLOR, new DyedItemColor(0x169C9C));
+        var iconTemplate = new ItemStackTemplate(Items.LEATHER_HELMET, DataComponentPatch.builder().set(DataComponents.DYED_COLOR, new DyedItemColor(0x169C9C)).build());
         this.page("spotlight3", () -> BookSpotlightPageModel.create()
                 .withText(this.context().pageText())
-                .withItem(iconStack)
+                .withItem(iconTemplate)
         );
         this.pageText("A sample spotlight page with an item with components");
 
         this.page("spotlight4", () -> BookSpotlightPageModel.create()
                 .withText(this.context().pageText())
                 //We are using the potion registry here to test and demonstrate using this.registries(). Vanilla potions can be accessed directly without using the resource key, as the Potions class offers potion holders.
-                .withItem(PotionContents.createItemStack(Items.POTION, this.registries().lookupOrThrow(Registries.POTION).getOrThrow(Potions.HEALING.unwrapKey().get())))
+                .withItem(
+                        new ItemStackTemplate(Items.POTION, DataComponentPatch.builder().set(DataComponents.POTION_CONTENTS, new PotionContents(this.registries().lookupOrThrow(Registries.POTION).getOrThrow(Potions.HEALING.unwrapKey().get()))).build()))
         );
         this.pageText("A sample spotlight page with a potion");
     }

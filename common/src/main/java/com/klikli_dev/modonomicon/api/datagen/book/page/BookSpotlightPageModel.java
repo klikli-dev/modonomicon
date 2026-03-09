@@ -16,12 +16,13 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
 public class BookSpotlightPageModel extends BookPageModel<BookSpotlightPageModel> {
-    protected Either<ItemStack, Ingredient> item = Either.left(ItemStack.EMPTY);
+    protected Either<ItemStackTemplate, Ingredient> item;
     protected BookTextHolderModel title = new BookTextHolderModel("");
     protected BookTextHolderModel text = new BookTextHolderModel("");
 
@@ -37,7 +38,7 @@ public class BookSpotlightPageModel extends BookPageModel<BookSpotlightPageModel
         return this.title;
     }
 
-    public Either<ItemStack, Ingredient> getItem() {
+    public Either<ItemStackTemplate, Ingredient> getItem() {
         return this.item;
     }
 
@@ -71,18 +72,18 @@ public class BookSpotlightPageModel extends BookPageModel<BookSpotlightPageModel
         return this;
     }
 
-    public BookSpotlightPageModel withItem(ItemStack item) {
+    public BookSpotlightPageModel withItem(ItemStackTemplate item) {
         this.item = Either.left(item);
         return this;
     }
 
     public BookSpotlightPageModel withItem(ItemLike item) {
-        this.item = Either.left(new ItemStack(item));
+        this.item = Either.left(new ItemStackTemplate(item.asItem()));
         return this;
     }
 
     public BookSpotlightPageModel withItem(Item item) {
-        this.item = Either.left(new ItemStack(item));
+        this.item = Either.left(new ItemStackTemplate(item));
         return this;
     }
 

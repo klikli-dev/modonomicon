@@ -5,7 +5,7 @@
   "description": "book.modonomicon.demo.index_mode.demo1.description",
   "hide_while_locked": false,
   "icon": {
-    "item": "minecraft:nether_star"
+    "id": "minecraft:nether_star"
   },
   "name": "book.modonomicon.demo.index_mode.demo1.name",
   "pages": [

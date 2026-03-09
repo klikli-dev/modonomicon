@@ -23,6 +23,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 
 public class BookIcon {
 
@@ -35,19 +36,15 @@ public class BookIcon {
             DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(ItemStack::getComponentsPatch)
     ).apply(builder, ItemStack::new));
 
-    /**
-     * We allow both vanilla item stack syntax and our custom syntax.
-     */
-    public static final Codec<ItemStack> ITEM_STACK_CODEC = Codec.withAlternative(CUSTOM_ITEM_STACK_CODEC, ItemStack.CODEC);
-
-    private final ItemStack itemStack;
+    private final ItemStackTemplate itemStackTemplate;
+    private ItemStack cachedItemStack;
     private final Identifier texture;
 
     private final int width;
     private final int height;
 
-    public BookIcon(ItemStack stack) {
-        this.itemStack = stack;
+    public BookIcon(ItemStackTemplate stack) {
+        this.itemStackTemplate = stack;
         this.texture = null;
         this.width = ModonomiconConstants.Data.Icon.DEFAULT_WIDTH;
         this.height = ModonomiconConstants.Data.Icon.DEFAULT_HEIGHT;
@@ -55,7 +52,7 @@ public class BookIcon {
 
     public BookIcon(Identifier texture, int width, int height) {
         this.texture = texture;
-        this.itemStack = ItemStack.EMPTY;
+        this.itemStackTemplate = null;
         this.width = width;
         this.height = height;
     }
@@ -74,7 +71,8 @@ public class BookIcon {
             var texture = Identifier.parse(GsonHelper.getAsString(jsonObject, "texture"));
             return new BookIcon(texture, width, height);
         } else {
-            var stack = ITEM_STACK_CODEC.decode(provider.createSerializationContext(JsonOps.INSTANCE), jsonObject).getOrThrow((e) -> {
+            //TODO provide backwards compatible codec for itemstack template
+            var stack = ItemStackTemplate.CODEC.decode(provider.createSerializationContext(JsonOps.INSTANCE), jsonObject).getOrThrow((e) -> {
                 throw new JsonParseException("BookIcon must have either item or texture defined." + jsonElement, new Throwable(e));
             }).getFirst();
 
@@ -87,7 +85,7 @@ public class BookIcon {
             return new BookIcon(value, ModonomiconConstants.Data.Icon.DEFAULT_WIDTH, ModonomiconConstants.Data.Icon.DEFAULT_HEIGHT);
         } else {
             Item item = BuiltInRegistries.ITEM.getValue(value);
-            return new BookIcon(new ItemStack(item));
+            return new BookIcon(new ItemStackTemplate(item));
         }
     }
 
@@ -99,7 +97,7 @@ public class BookIcon {
             return new BookIcon(texture, width, height);
         }
 
-        var stack = ItemStack.STREAM_CODEC.decode(buffer);
+        var stack = ItemStackTemplate.STREAM_CODEC.decode(buffer);
         return new BookIcon(stack);
     }
 
@@ -118,7 +116,10 @@ public class BookIcon {
 
             //    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.page.getImages()[this.index], x * 2 + 6, y * 2 + 6, 0, 0, 200, 200, 200, 200, 200, 200);
         } else {
-            guiGraphics.renderItem(this.itemStack, x, y);
+            if (this.cachedItemStack == null) {
+                this.cachedItemStack = this.itemStackTemplate.create();
+            }
+            guiGraphics.renderItem(this.cachedItemStack, x, y);
         }
     }
 
@@ -129,7 +130,7 @@ public class BookIcon {
             buffer.writeVarInt(this.width);
             buffer.writeVarInt(this.height);
         } else {
-            ItemStack.STREAM_CODEC.encode(buffer, this.itemStack);
+            ItemStackTemplate.STREAM_CODEC.encode(buffer, this.itemStackTemplate);
         }
     }
 }
