@@ -10,7 +10,6 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.platform.services.ClientConfigHelper;
 import com.klikli_dev.modonomicon.platform.services.FluidHelper;
 import com.klikli_dev.modonomicon.platform.services.GuiHelper;
-import com.klikli_dev.modonomicon.platform.services.MultiblockHelper;
 
 import java.util.ServiceLoader;
 
@@ -18,8 +17,6 @@ import java.util.ServiceLoader;
 // environment to another. In the context of MultiLoader we use this feature to access a mock API in the common code that
 // is swapped out for the platform specific implementation at runtime.
 public class ClientServices {
-    public static final MultiblockHelper MULTIBLOCK = load(MultiblockHelper.class);
-
     public static final GuiHelper GUI = load(GuiHelper.class);
 
     public static final ClientConfigHelper CLIENT_CONFIG = load(ClientConfigHelper.class);

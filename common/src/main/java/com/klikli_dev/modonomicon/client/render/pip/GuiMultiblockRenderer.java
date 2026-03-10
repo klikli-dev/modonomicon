@@ -5,11 +5,16 @@ import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.render.state.pip.GuiMultiblockRenderState;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.BlockQuadOutput;
+import net.minecraft.client.renderer.block.ModelBlockRenderer;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.LightCoordsUtil;
@@ -151,9 +156,23 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
         if (pos != null) {
             ps.pushPose();
             ps.translate(pos.getX(), pos.getY(), pos.getZ());
-            // Delegate to platform abstraction for block rendering
-            com.klikli_dev.modonomicon.platform.ClientServices.MULTIBLOCK.renderBlock(state, pos, multiblock, ps, buffers, randomSource);
+
+            Minecraft minecraft = Minecraft.getInstance();
+            BlockStateModel model = minecraft.getBlockRenderer().getBlockModel(state);
+            PoseStack.Pose pose = ps.last();
+
+            var renderType = model.hasTranslucency() ? Sheets.translucentBlockSheet() : Sheets.cutoutBlockSheet();
+
+            BlockQuadOutput output = (_, _, _, quad, instance) ->
+            {
+                VertexConsumer buffer = this.bufferSource.getBuffer(renderType);
+                buffer.putBakedQuad(pose, quad, instance);
+            };
+            ModelBlockRenderer blockRenderer = new ModelBlockRenderer(minecraft.options.ambientOcclusion().get(), false, minecraft.getBlockColors());
+            blockRenderer.tesselateBlock(output, 0, 0, 0, multiblock, BlockPos.ZERO, state, model, 0);
+
             ps.popPose();
+
         }
     }
 
