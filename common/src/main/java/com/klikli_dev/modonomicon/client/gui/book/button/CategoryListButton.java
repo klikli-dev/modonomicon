@@ -61,7 +61,7 @@ public class CategoryListButton extends Button {
 
             guiGraphics.pose().pushMatrix();
             guiGraphics.pose().scale(0.5F, 0.5F);
-            guiGraphics.fill(this.getX() * 2, this.getY() * 2, (this.getX() + (int) ((float) this.width * widthFract)) * 2, (this.getY() + this.height) * 2, 0x22000000);
+            guiGraphics.fill(this.getX() * 2, (this.getY() - 1) * 2, (this.getX() + (int) ((float) this.width * widthFract)) * 2, (this.getY() + this.height + 1) * 2, 0x22000000);
 
             if (locked) {
                 int color = ARGB.colorFromFloat(0.7f, 1.0F, 1.0F, 1.0F);
@@ -84,14 +84,14 @@ public class CategoryListButton extends Button {
             name.withStyle(style -> style.withFont(new FontDescription.Resource(BookDataManager.Client.get().safeFont(this.category.getBook().getFont()))));
 
             int x = this.getX() + 12; //shift right to make space for the icon
-            int y = this.getY() + 2;
+            int y = this.getY() + 1;
             int maxWidth = BookEntryScreen.PAGE_WIDTH - 12; //make space for the icon and margin
 
             guiGraphics.pose().pushMatrix();
 
             var scale = Math.min(1.0f, (float) maxWidth / (float) Minecraft.getInstance().font.width(name));
             if (scale < 1) {
-                guiGraphics.pose().translate(x - x * scale, y - y * scale);
+                guiGraphics.pose().translate(x - x * scale, y - y * scale + (Minecraft.getInstance().font.lineHeight - Minecraft.getInstance().font.lineHeight * scale) / 2.0f);
                 guiGraphics.pose().scale(scale, scale);
             }
             guiGraphics.drawString(Minecraft.getInstance().font, name, x, y, this.getEntryColor(), false);
