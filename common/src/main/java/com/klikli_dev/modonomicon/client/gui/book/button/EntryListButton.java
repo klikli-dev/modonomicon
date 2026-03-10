@@ -70,7 +70,7 @@ public class EntryListButton extends Button {
             boolean locked = !BookUnlockStateManager.get().isUnlockedFor(Minecraft.getInstance().player, this.entry);
 
             guiGraphics.pose().scale(0.5F, 0.5F, 0.5F);
-            guiGraphics.fill(this.getX() * 2, this.getY() * 2, (this.getX() + (int) ((float) this.width * widthFract)) * 2, (this.getY() + this.height) * 2, 0x22000000);
+            guiGraphics.fill(this.getX() * 2, (this.getY() - 1) * 2, (this.getX() + (int) ((float) this.width * widthFract)) * 2, (this.getY() + this.height + 1) * 2, 0x22000000);
             RenderSystem.enableBlend();
 
             if (locked) {
@@ -101,7 +101,7 @@ public class EntryListButton extends Button {
 
             var scale = Math.min(1.0f, (float) maxWidth / (float) Minecraft.getInstance().font.width(name));
             if (scale < 1) {
-                guiGraphics.pose().translate(x - x * scale, y - y * scale, 0);
+                guiGraphics.pose().translate(x - x * scale, y - y * scale + (Minecraft.getInstance().font.lineHeight - Minecraft.getInstance().font.lineHeight * scale) / 2.0f, 0);
                 guiGraphics.pose().scale(scale, scale, scale);
             }
             guiGraphics.drawString(Minecraft.getInstance().font, name, x, y, this.getEntryColor(), false);

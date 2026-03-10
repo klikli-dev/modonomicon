@@ -35,8 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookBookmarksScreen extends BookPaginatedScreen {
-    public static final int ENTRIES_PER_PAGE = 13;
-    public static final int ENTRIES_IN_FIRST_PAGE = 11;
+    public static final int ENTRIES_PER_PAGE = 11;
+    public static final int ENTRIES_IN_FIRST_PAGE = 9;
     protected final List<Button> entryButtons = new ArrayList<>();
     protected final BookParentScreen parentScreen;
     private final List<BookAddress> visibleEntries = new ArrayList<>();
@@ -265,7 +265,7 @@ public class BookBookmarksScreen extends BookPaginatedScreen {
     void addEntryButtons(int x, int y, int start, int count) {
         for (int i = 0; i < count && (i + start) < this.visibleEntries.size(); i++) {
             var address = this.visibleEntries.get(start + i);
-            Button button = new EntryListButton(this.getBook().getEntry(address.entryId()), address, this.bookLeft + x, this.bookTop + y + i * 11, this::handleButtonEntry);
+            Button button = new EntryListButton(this.getBook().getEntry(address.entryId()), address, this.bookLeft + x, this.bookTop + y + i * 13, this::handleButtonEntry);
             this.addRenderableWidget(button);
             this.entryButtons.add(button);
         }

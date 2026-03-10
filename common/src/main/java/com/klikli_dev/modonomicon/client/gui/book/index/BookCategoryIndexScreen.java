@@ -36,8 +36,8 @@ import java.util.Comparator;
 import java.util.List;
 
 public class BookCategoryIndexScreen extends BookPaginatedScreen implements BookCategoryScreen {
-    public static final int ENTRIES_PER_PAGE = 13;
-    public static final int ENTRIES_IN_FIRST_PAGE = 11;
+    public static final int ENTRIES_PER_PAGE = 11;
+    public static final int ENTRIES_IN_FIRST_PAGE = 9;
     protected final List<Button> entryButtons = new ArrayList<>();
     protected final BookParentScreen parentScreen;
     protected final BookCategory category;
@@ -330,7 +330,7 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
 
     void addEntryButtons(int x, int y, int start, int count) {
         for (int i = 0; i < count && (i + start) < this.visibleEntries.size(); i++) {
-            Button button = new EntryListButton(this.visibleEntries.get(start + i), this.bookLeft + x, this.bookTop + y + i * 11, this::handleEntryListButton);
+            Button button = new EntryListButton(this.visibleEntries.get(start + i), this.bookLeft + x, this.bookTop + y + i * 13, this::handleEntryListButton);
             this.addRenderableWidget(button);
             this.entryButtons.add(button);
         }
