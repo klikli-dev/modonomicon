@@ -94,7 +94,7 @@ public class EntryListButton extends Button {
             name.withStyle(style -> style.withFont(BookDataManager.Client.get().safeFont(this.entry.getBook().getFont())));
 
             int x = this.getX() + 12; //shift right to make space for the icon
-            int y = this.getY() + 2;
+            int y = this.getY() + 1;
             int maxWidth = BookEntryScreen.PAGE_WIDTH - 12; //make space for the icon and margin
 
             guiGraphics.pose().pushPose();
