@@ -37,6 +37,7 @@ import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.util.LightCoordsUtil;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -398,22 +399,30 @@ public class MultiblockPreviewRenderer {
         ms.pushPose();
         ms.translate(-renderPosX, -renderPosY, -renderPosZ);
 
+        var dispatcher = Minecraft.getInstance().getBlockEntityRenderDispatcher();
+        var featureDispatcher = Minecraft.getInstance().gameRenderer.getFeatureRenderDispatcher();
+
         for (var blockEntityRenderState : blockEntityRenderStates) {
             ms.pushPose();
+
             ms.translate(blockEntityRenderState.blockPos.getX(),
                     blockEntityRenderState.blockPos.getY(),
                     blockEntityRenderState.blockPos.getZ());
-
             //TODO: We see no BEs in the world preview (GUI works though ... )
 
-            var dispatcher = Minecraft.getInstance().getBlockEntityRenderDispatcher();
-            var featureDispatcher = Minecraft.getInstance().gameRenderer.getFeatureRenderDispatcher();
             var cameraRenderState = new CameraRenderState();
             dispatcher.submit(blockEntityRenderState, ms, featureDispatcher.getSubmitNodeStorage(), cameraRenderState);
             featureDispatcher.renderAllFeatures();
 
+//            var renderer = dispatcher.getRenderer(blockEntityRenderState);
+//            if (renderer != null) {
+//                var cameraRenderState = new CameraRenderState();
+//                dispatcher.submit(blockEntityRenderState, ms, featureDispatcher.getSubmitNodeStorage(), cameraRenderState);
+//            }
+
             ms.popPose();
         }
+
         blockEntityRenderStates.clear();
 
         ms.popPose();
