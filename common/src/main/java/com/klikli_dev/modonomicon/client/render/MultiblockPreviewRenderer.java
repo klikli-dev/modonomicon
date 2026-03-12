@@ -15,12 +15,7 @@ import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.multiblock.AbstractMultiblock;
 import com.klikli_dev.modonomicon.multiblock.matcher.DisplayOnlyMatcher;
 import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
-import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
-import com.mojang.blaze3d.vertex.ByteBufferBuilder;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -28,39 +23,31 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.FilterMode;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.MeshData;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.*;
+import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.block.BlockQuadOutput;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.util.LightCoordsUtil;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.util.RandomSource;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.MultiBufferSource;
-
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.state.LevelRenderState;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -72,8 +59,11 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.awt.*;
 import java.util.*;
@@ -89,6 +79,9 @@ public class MultiblockPreviewRenderer {
     private static final Map<BlockPos, BlockEntity> blockEntityCache = new Object2ObjectOpenHashMap<>();
     private static final Set<BlockEntity> erroredBlockEntities = Collections.newSetFromMap(new WeakHashMap<>());
     private static final List<BlockEntityRenderState> blockEntityRenderStates = new ArrayList<>();
+    private static final RandomSource RANDOM = RandomSource.create();
+    private static final List<BlockModelPart> PART_SCRATCH_LIST = new ObjectArrayList<>();
+    private static final ByteBufferBuilder BUFFER_BUILDER = new ByteBufferBuilder(RenderType.TRANSIENT_BUFFER_SIZE);
     public static boolean hasMultiblock;
     private static Multiblock multiblock;
     private static Component name;
@@ -100,10 +93,6 @@ public class MultiblockPreviewRenderer {
     private static int timeComplete;
     private static BlockState lookingState;
     private static BlockPos lookingPos;
-
-    private static final RandomSource RANDOM = RandomSource.create();
-    private static final List<BlockModelPart> PART_SCRATCH_LIST = new ObjectArrayList<>();
-    private static final ByteBufferBuilder BUFFER_BUILDER = new ByteBufferBuilder(RenderType.TRANSIENT_BUFFER_SIZE);
 
     public static void setMultiblock(Multiblock multiblock, Component name, boolean flip) {
         setMultiblock(multiblock, name, flip, pos -> pos);
@@ -409,17 +398,10 @@ public class MultiblockPreviewRenderer {
             ms.translate(blockEntityRenderState.blockPos.getX(),
                     blockEntityRenderState.blockPos.getY(),
                     blockEntityRenderState.blockPos.getZ());
-            //TODO: We see no BEs in the world preview (GUI works though ... )
 
             var cameraRenderState = new CameraRenderState();
             dispatcher.submit(blockEntityRenderState, ms, featureDispatcher.getSubmitNodeStorage(), cameraRenderState);
             featureDispatcher.renderAllFeatures();
-
-//            var renderer = dispatcher.getRenderer(blockEntityRenderState);
-//            if (renderer != null) {
-//                var cameraRenderState = new CameraRenderState();
-//                dispatcher.submit(blockEntityRenderState, ms, featureDispatcher.getSubmitNodeStorage(), cameraRenderState);
-//            }
 
             ms.popPose();
         }
@@ -438,7 +420,7 @@ public class MultiblockPreviewRenderer {
 
         VertexConsumer consumer = new GhostVertexConsumer(buffer, (int) (alpha * 255.0f));
         BlockQuadOutput output = (levelIn, stateIn, posIn, quad, instance) ->
-             consumer.putBakedQuad(poseStack.last(), quad, instance);
+                consumer.putBakedQuad(poseStack.last(), quad, instance);
 
         poseStack.pushPose();
         poseStack.translate(offset.x + .5, offset.y + .5, offset.z + .5);
