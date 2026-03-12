@@ -314,6 +314,7 @@ public class MultiblockPreviewRenderer {
 
                             //Note: we cannot use Minecraft.getInstance().getBlockEntityRenderDispatcher().tryExtractRenderState because that takes the camera eye position of the in-world camera, but our multiblock exists in a virtual level close to 0 0 0
                             renderer.extractRenderState(be, renderState, ClientTicks.partialTicks, eye, null);
+                            renderState.blockPos = r.worldPosition();
                             blockEntityRenderStates.add(renderState);
                         }
                     }
