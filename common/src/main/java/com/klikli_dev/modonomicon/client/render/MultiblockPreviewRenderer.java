@@ -65,6 +65,9 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
+import net.minecraft.client.renderer.MultiBufferSource;
+import org.jspecify.annotations.NonNull;
+
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -391,6 +394,26 @@ public class MultiblockPreviewRenderer {
 
         var dispatcher = Minecraft.getInstance().getBlockEntityRenderDispatcher();
         var featureDispatcher = Minecraft.getInstance().gameRenderer.getFeatureRenderDispatcher();
+        var originalBufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+
+        int ghostAlpha = (int) (0.6f * 255); // Default alpha, though it could be computed dynamically
+        var ghostBufferSource = new MultiBufferSource.BufferSource(originalBufferSource.sharedBuffer, originalBufferSource.fixedBuffers) {
+            @Override
+            public @NonNull VertexConsumer getBuffer(@NonNull RenderType renderType) {
+                return new GhostVertexConsumer(originalBufferSource.getBuffer(renderType), ghostAlpha);
+            }
+        };
+
+        var customSubmitStorage = new net.minecraft.client.renderer.SubmitNodeStorage();
+        var ghostFeatureDispatcher = new net.minecraft.client.renderer.feature.FeatureRenderDispatcher(
+                customSubmitStorage,
+                Minecraft.getInstance().getBlockRenderer(),
+                ghostBufferSource,
+                Minecraft.getInstance().getAtlasManager(),
+                Minecraft.getInstance().renderBuffers().outlineBufferSource(),
+                Minecraft.getInstance().renderBuffers().crumblingBufferSource(),
+                Minecraft.getInstance().font
+        );
 
         for (var blockEntityRenderState : blockEntityRenderStates) {
             ms.pushPose();
@@ -400,12 +423,13 @@ public class MultiblockPreviewRenderer {
                     blockEntityRenderState.blockPos.getZ());
 
             var cameraRenderState = new CameraRenderState();
-            dispatcher.submit(blockEntityRenderState, ms, featureDispatcher.getSubmitNodeStorage(), cameraRenderState);
-            featureDispatcher.renderAllFeatures();
+            dispatcher.submit(blockEntityRenderState, ms, ghostFeatureDispatcher.getSubmitNodeStorage(), cameraRenderState);
+            ghostFeatureDispatcher.renderAllFeatures();
 
             ms.popPose();
         }
 
+        ghostFeatureDispatcher.close(); // Clean up if required
         blockEntityRenderStates.clear();
 
         ms.popPose();
