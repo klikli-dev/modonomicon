@@ -44,3 +44,18 @@ accessible field com/mojang/blaze3d/pipeline/RenderPipeline$Builder cull Ljava/u
 accessible field com/mojang/blaze3d/pipeline/RenderPipeline$Builder colorTargetState Ljava/util/Optional;
 accessible field com/mojang/blaze3d/pipeline/RenderPipeline$Builder vertexFormat Ljava/util/Optional;
 accessible field com/mojang/blaze3d/pipeline/RenderPipeline$Builder vertexFormatMode Ljava/util/Optional;
+accessible field net/minecraft/client/renderer/rendertype/RenderType state Lnet/minecraft/client/renderer/rendertype/RenderSetup;
+accessible method net/minecraft/client/renderer/rendertype/RenderType create (Ljava/lang/String;Lnet/minecraft/client/renderer/rendertype/RenderSetup;)Lnet/minecraft/client/renderer/rendertype/RenderType;
+accessible field net/minecraft/client/renderer/rendertype/RenderType name Ljava/lang/String;
+accessible field net/minecraft/client/renderer/rendertype/RenderSetup useLightmap Z
+accessible field net/minecraft/client/renderer/rendertype/RenderSetup useOverlay Z
+accessible field net/minecraft/client/renderer/rendertype/RenderSetup outlineProperty Lnet/minecraft/client/renderer/rendertype/RenderSetup$OutlineProperty;
+accessible field net/minecraft/client/renderer/rendertype/RenderSetup affectsCrumbling Z
+accessible field net/minecraft/client/renderer/rendertype/RenderSetup sortOnUpload Z
+accessible field net/minecraft/client/renderer/rendertype/RenderSetup bufferSize I
+accessible field net/minecraft/client/renderer/rendertype/RenderSetup layeringTransform Lnet/minecraft/client/renderer/rendertype/LayeringTransform;
+accessible field net/minecraft/client/renderer/rendertype/RenderSetup textureTransform Lnet/minecraft/client/renderer/rendertype/TextureTransform;
+accessible field net/minecraft/client/renderer/rendertype/RenderSetup outputTarget Lnet/minecraft/client/renderer/rendertype/OutputTarget;
+accessible field net/minecraft/client/renderer/rendertype/RenderSetup textures Ljava/util/Map;
+accessible class net/minecraft/client/renderer/rendertype/RenderSetup$TextureBinding
+accessible method net/minecraft/client/renderer/rendertype/RenderSetup$TextureBinding <init> (Lnet/minecraft/resources/Identifier;Ljava/util/function/Supplier;)V

@@ -16,8 +16,10 @@ import com.klikli_dev.modonomicon.multiblock.AbstractMultiblock;
 import com.klikli_dev.modonomicon.multiblock.matcher.DisplayOnlyMatcher;
 import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
+import com.klikli_dev.modonomicon.util.RenderUtil;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderPass;
@@ -85,8 +87,36 @@ public class MultiblockPreviewRenderer {
     private static final Set<BlockEntity> erroredBlockEntities = Collections.newSetFromMap(new WeakHashMap<>());
     private static final List<BlockEntityRenderState> blockEntityRenderStates = new ArrayList<>();
     private static final RandomSource RANDOM = RandomSource.create();
-    private static final List<BlockModelPart> PART_SCRATCH_LIST = new ObjectArrayList<>();
+    private static final ObjectArrayList<BlockModelPart> PART_SCRATCH_LIST = new ObjectArrayList<>();
     private static final ByteBufferBuilder BUFFER_BUILDER = new ByteBufferBuilder(RenderType.TRANSIENT_BUFFER_SIZE);
+
+    private static final Map<RenderType, RenderType> GHOST_RENDER_TYPE_CACHE = new java.util.IdentityHashMap<>();
+
+    private static RenderType getGhostRenderType(RenderType original) {
+        if (original.pipeline().getColorTargetState().blendFunction().isPresent()) {
+            return original;
+        }
+
+        return GHOST_RENDER_TYPE_CACHE.computeIfAbsent(original, rt -> {
+
+            if(rt.hasBlending())
+                return rt;
+
+            //should never happen, but if there is some weird custom stuff going on we just not ghost it
+            if(rt.state.textures.isEmpty())
+                return rt;
+
+            var sampler0 = rt.state.textures.get("Sampler0");
+
+            //again, should not happen, but non-vanilla RTs might do whatever.
+            //we could fall back onto any other texture, but let's only do that if something concrete is reported.
+            if(sampler0 == null)
+                return rt;
+
+            return RenderTypes.entityTranslucent(sampler0.location());
+        });
+    }
+
     public static boolean hasMultiblock;
     private static Multiblock multiblock;
     private static Component name;
@@ -398,14 +428,12 @@ public class MultiblockPreviewRenderer {
         var featureDispatcher = Minecraft.getInstance().gameRenderer.getFeatureRenderDispatcher();
         var originalBufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
 
-
-        var beBuffer = new BufferBuilder(BUFFER_BUILDER, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
         int ghostAlpha = (int) (0.6f * 255);
         var ghostBufferSource = new MultiBufferSource.BufferSource(originalBufferSource.sharedBuffer, originalBufferSource.fixedBuffers) {
             @Override
             public @NonNull VertexConsumer getBuffer(@NonNull RenderType renderType) {
-                RenderTypes.entityTranslucent()
-                return new GhostVertexConsumer(beBuffer, ghostAlpha);
+                var ghostType = getGhostRenderType(renderType);
+                return new GhostVertexConsumer(originalBufferSource.getBuffer(ghostType), ghostAlpha);
             }
         };
 

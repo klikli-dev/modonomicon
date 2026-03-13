@@ -2,6 +2,7 @@ package com.klikli_dev.modonomicon.util;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.renderer.ShaderDefines;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -43,6 +44,37 @@ public class RenderUtil {
         builder.colorTargetState = Optional.of(pipeline.colorTargetState);
         builder.vertexFormat = Optional.of(pipeline.vertexFormat);
         builder.vertexFormatMode = Optional.of(pipeline.vertexFormatMode);
+
+        return builder;
+    }
+
+    public static RenderSetup.RenderSetupBuilder toBuilder(
+            RenderSetup setup,
+            RenderPipeline pipeline) {
+
+        var builder = RenderSetup.builder(pipeline);
+
+        builder.bufferSize(setup.bufferSize);
+        if (setup.useLightmap) builder.useLightmap();
+        if (setup.useOverlay) builder.useOverlay();
+        if (setup.affectsCrumbling) builder.affectsCrumbling();
+        if (setup.sortOnUpload) builder.sortOnUpload();
+        builder.setOutline(setup.outlineProperty);
+        builder.setLayeringTransform(setup.layeringTransform);
+        builder.setTextureTransform(setup.textureTransform);
+        builder.setOutputTarget(setup.outputTarget);
+
+        if (setup.textures != null) {
+            for (var entry : setup.textures.entrySet()) {
+                var location = entry.getValue().location();
+                var sampler = entry.getValue().sampler();
+                if (sampler != null) {
+                    builder.withTexture(entry.getKey(), location, sampler);
+                } else {
+                    builder.withTexture(entry.getKey(), location);
+                }
+            }
+        }
 
         return builder;
     }
