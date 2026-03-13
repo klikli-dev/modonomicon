@@ -21,3 +21,26 @@ extendable method net/minecraft/client/gui/screens/Screen renderWithTooltipAndSu
 accessible field net/minecraft/client/gui/GuiGraphics guiRenderState Lnet/minecraft/client/gui/render/state/GuiRenderState;
 accessible field net/minecraft/client/gui/GuiGraphics scissorStack Lnet/minecraft/client/gui/GuiGraphics$ScissorStack;
 accessible class net/minecraft/client/gui/GuiGraphics$ScissorStack
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline location Lnet/minecraft/resources/Identifier;
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline vertexShader Lnet/minecraft/resources/Identifier;
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline fragmentShader Lnet/minecraft/resources/Identifier;
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline shaderDefines Lnet/minecraft/client/renderer/ShaderDefines;
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline samplers Ljava/util/List;
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline uniforms Ljava/util/List;
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline depthStencilState Lcom/mojang/blaze3d/pipeline/DepthStencilState;
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline polygonMode Lcom/mojang/blaze3d/platform/PolygonMode;
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline cull Z
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline colorTargetState Lcom/mojang/blaze3d/pipeline/ColorTargetState;
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline vertexFormat Lcom/mojang/blaze3d/vertex/VertexFormat;
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline vertexFormatMode Lcom/mojang/blaze3d/vertex/VertexFormat$Mode;
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline$Builder location Ljava/util/Optional;
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline$Builder fragmentShader Ljava/util/Optional;
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline$Builder vertexShader Ljava/util/Optional;
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline$Builder samplers Ljava/util/Optional;
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline$Builder uniforms Ljava/util/Optional;
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline$Builder depthStencilState Ljava/util/Optional;
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline$Builder polygonMode Ljava/util/Optional;
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline$Builder cull Ljava/util/Optional;
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline$Builder colorTargetState Ljava/util/Optional;
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline$Builder vertexFormat Ljava/util/Optional;
+accessible field com/mojang/blaze3d/pipeline/RenderPipeline$Builder vertexFormatMode Ljava/util/Optional;
