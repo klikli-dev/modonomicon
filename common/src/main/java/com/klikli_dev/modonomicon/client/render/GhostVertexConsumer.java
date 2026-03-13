@@ -25,12 +25,6 @@ public final class GhostVertexConsumer extends VertexConsumerWrapper {
         this.white = ARGB.color(alpha, 0xFFFFFF);
     }
 
-    public static VertexConsumer remap(VertexConsumer in) {
-        return remappedVertexConsumers.computeIfAbsent(in, (type) -> {
-            return new GhostVertexConsumer(in, (int) (0.4f * 255));
-        });
-    }
-
     @Override
     public void addVertex(float x, float y, float z, int color, float u, float v, int overlay, int light, float nx, float ny, float nz) {
         this.parent.addVertex(x, y, z, ARGB.multiply(this.white, color), u, v, overlay, light, nx, ny, nz);

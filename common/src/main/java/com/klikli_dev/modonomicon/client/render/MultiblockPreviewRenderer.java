@@ -30,12 +30,14 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.block.BlockQuadOutput;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
@@ -396,16 +398,19 @@ public class MultiblockPreviewRenderer {
         var featureDispatcher = Minecraft.getInstance().gameRenderer.getFeatureRenderDispatcher();
         var originalBufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
 
-        int ghostAlpha = (int) (0.6f * 255); // Default alpha, though it could be computed dynamically
+
+        var beBuffer = new BufferBuilder(BUFFER_BUILDER, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
+        int ghostAlpha = (int) (0.6f * 255);
         var ghostBufferSource = new MultiBufferSource.BufferSource(originalBufferSource.sharedBuffer, originalBufferSource.fixedBuffers) {
             @Override
             public @NonNull VertexConsumer getBuffer(@NonNull RenderType renderType) {
-                return new GhostVertexConsumer(originalBufferSource.getBuffer(renderType), ghostAlpha);
+                RenderTypes.entityTranslucent()
+                return new GhostVertexConsumer(beBuffer, ghostAlpha);
             }
         };
 
-        var customSubmitStorage = new net.minecraft.client.renderer.SubmitNodeStorage();
-        var ghostFeatureDispatcher = new net.minecraft.client.renderer.feature.FeatureRenderDispatcher(
+        var customSubmitStorage = new SubmitNodeStorage();
+        var ghostFeatureDispatcher = new FeatureRenderDispatcher(
                 customSubmitStorage,
                 Minecraft.getInstance().getBlockRenderer(),
                 ghostBufferSource,
