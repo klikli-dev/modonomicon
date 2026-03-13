@@ -1,7 +1,7 @@
 package com.klikli_dev.modonomicon.util;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.shaders.ShaderDefines;
+import net.minecraft.client.renderer.ShaderDefines;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -10,11 +10,11 @@ import java.util.Optional;
 public class RenderUtil {
 
     public static RenderPipeline.Builder toBuilder(RenderPipeline pipeline) {
-        RenderPipeline.Builder builder = new RenderPipeline.Builder();
+        RenderPipeline.Builder builder = RenderPipeline.builder();
         builder.location = Optional.of(pipeline.location);
         builder.fragmentShader = Optional.of(pipeline.fragmentShader);
         builder.vertexShader = Optional.of(pipeline.vertexShader);
-        
+
         if (!pipeline.shaderDefines.isEmpty()) {
             ShaderDefines.Builder defBuilder = ShaderDefines.builder();
 
@@ -43,8 +43,7 @@ public class RenderUtil {
         builder.colorTargetState = Optional.of(pipeline.colorTargetState);
         builder.vertexFormat = Optional.of(pipeline.vertexFormat);
         builder.vertexFormatMode = Optional.of(pipeline.vertexFormatMode);
-        builder.stencilTest = pipeline.stencilTest;
-        
+
         return builder;
     }
 }
