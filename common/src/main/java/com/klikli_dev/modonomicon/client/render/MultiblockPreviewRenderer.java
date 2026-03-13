@@ -425,7 +425,6 @@ public class MultiblockPreviewRenderer {
         ms.translate(-renderPosX, -renderPosY, -renderPosZ);
 
         var dispatcher = Minecraft.getInstance().getBlockEntityRenderDispatcher();
-        var featureDispatcher = Minecraft.getInstance().gameRenderer.getFeatureRenderDispatcher();
         var originalBufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
 
         int ghostAlpha = (int) (0.6f * 255);
@@ -457,11 +456,11 @@ public class MultiblockPreviewRenderer {
 
             var cameraRenderState = new CameraRenderState();
             dispatcher.submit(blockEntityRenderState, ms, ghostFeatureDispatcher.getSubmitNodeStorage(), cameraRenderState);
-            ghostFeatureDispatcher.renderAllFeatures();
 
             ms.popPose();
         }
 
+        ghostFeatureDispatcher.renderAllFeatures();
         ghostFeatureDispatcher.close(); // Clean up if required
         blockEntityRenderStates.clear();
 
