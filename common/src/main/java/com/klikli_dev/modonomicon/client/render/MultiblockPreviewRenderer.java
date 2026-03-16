@@ -16,7 +16,6 @@ import com.klikli_dev.modonomicon.multiblock.AbstractMultiblock;
 import com.klikli_dev.modonomicon.multiblock.matcher.DisplayOnlyMatcher;
 import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
-import com.klikli_dev.modonomicon.util.RenderUtil;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.ColorTargetState;

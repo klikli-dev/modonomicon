@@ -79,9 +79,6 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
         var multiblock = this.page.getMultiblock();
 
         var facingRotation = Rotation.NONE;
-        if (multiblock.isSymmetrical()) {
-            facingRotation = Rotation.NONE;
-        }
 
         var size = multiblock.getSize();
         int sizeX = size.getX();
@@ -161,11 +158,6 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
 
         var textY = this.getTextY();
         this.renderBookTextHolder(guiGraphics, this.page.getText(), 0, textY, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - textY);
-
-        //TODO: render button to show multiblock in world
-        //            //TODO: show multiblock preview on button click
-//            var block = MultiblockDataManager.get().getMultiblock(Identifier.tryParse("modonomicon:blockentity"));
-//            MultiblockPreviewRenderer.setMultiblock(block, Component.translatable("multiblock.modonomicon.test"), true);
 
         var style = this.getClickedComponentStyleAt(mouseX, mouseY);
         if (style != null)
