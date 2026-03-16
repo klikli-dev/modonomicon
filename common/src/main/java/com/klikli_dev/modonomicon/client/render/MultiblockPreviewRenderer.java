@@ -436,6 +436,7 @@ public class MultiblockPreviewRenderer {
             }
         };
 
+        var cameraRenderState = new CameraRenderState();
         var customSubmitStorage = new SubmitNodeStorage();
         var ghostFeatureDispatcher = new FeatureRenderDispatcher(
                 customSubmitStorage,
@@ -454,7 +455,6 @@ public class MultiblockPreviewRenderer {
                     blockEntityRenderState.blockPos.getY(),
                     blockEntityRenderState.blockPos.getZ());
 
-            var cameraRenderState = new CameraRenderState();
             dispatcher.submit(blockEntityRenderState, ms, ghostFeatureDispatcher.getSubmitNodeStorage(), cameraRenderState);
 
             ms.popPose();
@@ -462,7 +462,6 @@ public class MultiblockPreviewRenderer {
 
         ghostFeatureDispatcher.renderAllFeatures();
         ghostFeatureDispatcher.close(); // Clean up if required
-        blockEntityRenderStates.clear();
 
         ms.popPose();
     }
