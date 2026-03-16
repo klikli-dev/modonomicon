@@ -15,12 +15,7 @@ import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.multiblock.AbstractMultiblock;
 import com.klikli_dev.modonomicon.multiblock.matcher.DisplayOnlyMatcher;
 import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
-import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
-import com.mojang.blaze3d.vertex.ByteBufferBuilder;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -28,38 +23,34 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.FilterMode;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.MeshData;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.renderer.block.BlockQuadOutput;
-import net.minecraft.client.renderer.block.ModelBlockRenderer;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.util.RandomSource;
+import com.mojang.blaze3d.vertex.*;
+import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
-
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.block.BlockQuadOutput;
+import net.minecraft.client.renderer.block.ModelBlockRenderer;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.client.renderer.state.LevelRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -71,8 +62,12 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
+import org.jspecify.annotations.NonNull;
 
 import java.awt.*;
 import java.util.*;
@@ -88,6 +83,11 @@ public class MultiblockPreviewRenderer {
     private static final Map<BlockPos, BlockEntity> blockEntityCache = new Object2ObjectOpenHashMap<>();
     private static final Set<BlockEntity> erroredBlockEntities = Collections.newSetFromMap(new WeakHashMap<>());
     private static final List<BlockEntityRenderState> blockEntityRenderStates = new ArrayList<>();
+    private static final RandomSource RANDOM = RandomSource.create();
+    private static final ObjectArrayList<BlockStateModelPart> PART_SCRATCH_LIST = new ObjectArrayList<>();
+    private static final ByteBufferBuilder BUFFER_BUILDER = new ByteBufferBuilder(RenderType.TRANSIENT_BUFFER_SIZE);
+
+    private static final Map<RenderType, RenderType> GHOST_RENDER_TYPE_CACHE = new java.util.IdentityHashMap<>();
     public static boolean hasMultiblock;
     private static Multiblock multiblock;
     private static Component name;
@@ -100,9 +100,30 @@ public class MultiblockPreviewRenderer {
     private static BlockState lookingState;
     private static BlockPos lookingPos;
 
-    private static final RandomSource RANDOM = RandomSource.create();
-    private static final List<BlockModelPart> PART_SCRATCH_LIST = new ObjectArrayList<>();
-    private static final ByteBufferBuilder BUFFER_BUILDER = new ByteBufferBuilder(RenderType.TRANSIENT_BUFFER_SIZE);
+    private static RenderType getGhostRenderType(RenderType original) {
+        if (original.pipeline().getColorTargetState().blendFunction().isPresent()) {
+            return original;
+        }
+
+        return GHOST_RENDER_TYPE_CACHE.computeIfAbsent(original, rt -> {
+
+            if (rt.hasBlending())
+                return rt;
+
+            //should never happen, but if there is some weird custom stuff going on we just not ghost it
+            if (rt.state.textures.isEmpty())
+                return rt;
+
+            var sampler0 = rt.state.textures.get("Sampler0");
+
+            //again, should not happen, but non-vanilla RTs might do whatever.
+            //we could fall back onto any other texture, but let's only do that if something concrete is reported.
+            if (sampler0 == null)
+                return rt;
+
+            return RenderTypes.entityTranslucent(sampler0.location());
+        });
+    }
 
     public static void setMultiblock(Multiblock multiblock, Component name, boolean flip) {
         setMultiblock(multiblock, name, flip, pos -> pos);
@@ -313,6 +334,7 @@ public class MultiblockPreviewRenderer {
 
                             //Note: we cannot use Minecraft.getInstance().getBlockEntityRenderDispatcher().tryExtractRenderState because that takes the camera eye position of the in-world camera, but our multiblock exists in a virtual level close to 0 0 0
                             renderer.extractRenderState(be, renderState, ClientTicks.partialTicks, eye, null);
+                            renderState.blockPos = r.worldPosition();
                             blockEntityRenderStates.add(renderState);
                         }
                     }
@@ -398,23 +420,45 @@ public class MultiblockPreviewRenderer {
         ms.pushPose();
         ms.translate(-renderPosX, -renderPosY, -renderPosZ);
 
+        var dispatcher = Minecraft.getInstance().getBlockEntityRenderDispatcher();
+        var originalBufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+
+        int ghostAlpha = (int) (0.6f * 255);
+        var ghostBufferSource = new MultiBufferSource.BufferSource(originalBufferSource.sharedBuffer, originalBufferSource.fixedBuffers) {
+            @Override
+            public @NonNull VertexConsumer getBuffer(@NonNull RenderType renderType) {
+                var ghostType = getGhostRenderType(renderType);
+                return new GhostVertexConsumer(originalBufferSource.getBuffer(ghostType), ghostAlpha);
+            }
+        };
+
+        var cameraRenderState = new CameraRenderState();
+        var customSubmitStorage = new SubmitNodeStorage();
+        var ghostFeatureDispatcher = new FeatureRenderDispatcher(
+                customSubmitStorage,
+                Minecraft.getInstance().getBlockRenderer(),
+                ghostBufferSource,
+                Minecraft.getInstance().getAtlasManager(),
+                Minecraft.getInstance().renderBuffers().outlineBufferSource(),
+                Minecraft.getInstance().renderBuffers().crumblingBufferSource(),
+                Minecraft.getInstance().font,
+                Minecraft.getInstance().gameRenderer.getGameRenderState()
+        );
+
         for (var blockEntityRenderState : blockEntityRenderStates) {
             ms.pushPose();
+
             ms.translate(blockEntityRenderState.blockPos.getX(),
                     blockEntityRenderState.blockPos.getY(),
                     blockEntityRenderState.blockPos.getZ());
 
-            //TODO: We see no BEs in the world preview (GUI works though ... )
-
-            var dispatcher = Minecraft.getInstance().getBlockEntityRenderDispatcher();
-            var featureDispatcher = Minecraft.getInstance().gameRenderer.getFeatureRenderDispatcher();
-            var cameraRenderState = new CameraRenderState();
-            dispatcher.submit(blockEntityRenderState, ms, featureDispatcher.getSubmitNodeStorage(), cameraRenderState);
-            featureDispatcher.renderAllFeatures();
+            dispatcher.submit(blockEntityRenderState, ms, ghostFeatureDispatcher.getSubmitNodeStorage(), cameraRenderState);
 
             ms.popPose();
         }
-        blockEntityRenderStates.clear();
+
+        ghostFeatureDispatcher.renderAllFeatures();
+        ghostFeatureDispatcher.close(); // Clean up if required
 
         ms.popPose();
     }
@@ -428,7 +472,7 @@ public class MultiblockPreviewRenderer {
 
         VertexConsumer consumer = new GhostVertexConsumer(buffer, (int) (alpha * 255.0f));
         BlockQuadOutput output = (levelIn, stateIn, posIn, quad, instance) ->
-             consumer.putBakedQuad(poseStack.last(), quad, instance);
+                consumer.putBakedQuad(poseStack.last(), quad, instance);
 
         poseStack.pushPose();
         poseStack.translate(offset.x + .5, offset.y + .5, offset.z + .5);
