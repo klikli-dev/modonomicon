@@ -18,7 +18,6 @@ import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderPass;
@@ -30,19 +29,20 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.block.BlockQuadOutput;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.client.renderer.state.LevelRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -67,8 +67,6 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-
-import net.minecraft.client.renderer.MultiBufferSource;
 import org.jspecify.annotations.NonNull;
 
 import java.awt.*;
@@ -86,36 +84,10 @@ public class MultiblockPreviewRenderer {
     private static final Set<BlockEntity> erroredBlockEntities = Collections.newSetFromMap(new WeakHashMap<>());
     private static final List<BlockEntityRenderState> blockEntityRenderStates = new ArrayList<>();
     private static final RandomSource RANDOM = RandomSource.create();
-    private static final ObjectArrayList<BlockModelPart> PART_SCRATCH_LIST = new ObjectArrayList<>();
+    private static final ObjectArrayList<BlockStateModelPart> PART_SCRATCH_LIST = new ObjectArrayList<>();
     private static final ByteBufferBuilder BUFFER_BUILDER = new ByteBufferBuilder(RenderType.TRANSIENT_BUFFER_SIZE);
 
     private static final Map<RenderType, RenderType> GHOST_RENDER_TYPE_CACHE = new java.util.IdentityHashMap<>();
-
-    private static RenderType getGhostRenderType(RenderType original) {
-        if (original.pipeline().getColorTargetState().blendFunction().isPresent()) {
-            return original;
-        }
-
-        return GHOST_RENDER_TYPE_CACHE.computeIfAbsent(original, rt -> {
-
-            if(rt.hasBlending())
-                return rt;
-
-            //should never happen, but if there is some weird custom stuff going on we just not ghost it
-            if(rt.state.textures.isEmpty())
-                return rt;
-
-            var sampler0 = rt.state.textures.get("Sampler0");
-
-            //again, should not happen, but non-vanilla RTs might do whatever.
-            //we could fall back onto any other texture, but let's only do that if something concrete is reported.
-            if(sampler0 == null)
-                return rt;
-
-            return RenderTypes.entityTranslucent(sampler0.location());
-        });
-    }
-
     public static boolean hasMultiblock;
     private static Multiblock multiblock;
     private static Component name;
@@ -127,6 +99,31 @@ public class MultiblockPreviewRenderer {
     private static int timeComplete;
     private static BlockState lookingState;
     private static BlockPos lookingPos;
+
+    private static RenderType getGhostRenderType(RenderType original) {
+        if (original.pipeline().getColorTargetState().blendFunction().isPresent()) {
+            return original;
+        }
+
+        return GHOST_RENDER_TYPE_CACHE.computeIfAbsent(original, rt -> {
+
+            if (rt.hasBlending())
+                return rt;
+
+            //should never happen, but if there is some weird custom stuff going on we just not ghost it
+            if (rt.state.textures.isEmpty())
+                return rt;
+
+            var sampler0 = rt.state.textures.get("Sampler0");
+
+            //again, should not happen, but non-vanilla RTs might do whatever.
+            //we could fall back onto any other texture, but let's only do that if something concrete is reported.
+            if (sampler0 == null)
+                return rt;
+
+            return RenderTypes.entityTranslucent(sampler0.location());
+        });
+    }
 
     public static void setMultiblock(Multiblock multiblock, Component name, boolean flip) {
         setMultiblock(multiblock, name, flip, pos -> pos);
@@ -444,7 +441,8 @@ public class MultiblockPreviewRenderer {
                 Minecraft.getInstance().getAtlasManager(),
                 Minecraft.getInstance().renderBuffers().outlineBufferSource(),
                 Minecraft.getInstance().renderBuffers().crumblingBufferSource(),
-                Minecraft.getInstance().font
+                Minecraft.getInstance().font,
+                Minecraft.getInstance().gameRenderer.getGameRenderState()
         );
 
         for (var blockEntityRenderState : blockEntityRenderStates) {

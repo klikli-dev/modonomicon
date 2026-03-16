@@ -6,8 +6,6 @@
 
 package com.klikli_dev.modonomicon.client.render.page;
 
-import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock.SimulateResult;
 import com.klikli_dev.modonomicon.book.page.BookMultiblockPage;
 import com.klikli_dev.modonomicon.client.ClientTicks;
@@ -17,38 +15,18 @@ import com.klikli_dev.modonomicon.client.gui.book.button.VisualizeButton;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.state.pip.GuiMultiblockRenderState;
-import com.klikli_dev.modonomicon.platform.ClientServices;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.gui.render.state.GuiRenderState;
-import net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
-
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
-import org.joml.Vector4f;
 
 import java.util.*;
 
@@ -102,7 +80,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
         // Define target rectangle in screen space
         int frameX = BookEntryScreen.PAGE_WIDTH / 2 - 53;
         int frameY = 7;
-        
+
         int x0 = this.parentScreen.getBookLeft() + this.left + frameX;
         int y0 = this.parentScreen.getBookTop() + this.top + frameY;
         int x1 = x0 + 106;

@@ -18,7 +18,7 @@ accessible field com/mojang/blaze3d/pipeline/RenderPipeline$Builder definesBuild
 accessible method net/minecraft/client/gui/GuiGraphics blitTiledSprite (Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;IIIIIIIIIII)V
 accessible field net/minecraft/client/renderer/item/properties/conditional/ConditionalItemModelProperties ID_MAPPER Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
 extendable method net/minecraft/client/gui/screens/Screen renderWithTooltipAndSubtitles (Lnet/minecraft/client/gui/GuiGraphics;IIF)V
-accessible field net/minecraft/client/gui/GuiGraphics guiRenderState Lnet/minecraft/client/gui/render/state/GuiRenderState;
+accessible field net/minecraft/client/gui/GuiGraphics guiRenderState Lnet/minecraft/client/renderer/state/gui/GuiRenderState;
 accessible field net/minecraft/client/gui/GuiGraphics scissorStack Lnet/minecraft/client/gui/GuiGraphics$ScissorStack;
 accessible class net/minecraft/client/gui/GuiGraphics$ScissorStack
 accessible field com/mojang/blaze3d/pipeline/RenderPipeline location Lnet/minecraft/resources/Identifier;
