@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1-1.122.1] - 2026-03-16
+### :bug: Bug Fixes
+- [`883e44e`](https://github.com/klikli-dev/modonomicon/commit/883e44eba3e76cdf2bcbf803cc165b6c124b5f85) - use proper mod version variable for fabric mod metadata *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1-1.122.0] - 2026-03-16
 ### :sparkles: New Features
 - [`ee8c3f8`](https://github.com/klikli-dev/modonomicon/commit/ee8c3f82e432939de09b98a09b24be08fa52bb2b) - update to snapshot 10 *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1981,3 +1986,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1-1.121.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.121.0...release/v26.1-1.121.1
 [release/v26.1-1.121.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.121.1...release/v26.1-1.121.2
 [release/v26.1-1.122.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.121.2...release/v26.1-1.122.0
+[release/v26.1-1.122.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.122.0...release/v26.1-1.122.1
