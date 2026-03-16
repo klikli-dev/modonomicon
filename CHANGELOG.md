@@ -4,6 +4,51 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.1-1.118.0] - 2026-03-16
+### :sparkles: New Features
+- [`fc97982`](https://github.com/klikli-dev/modonomicon/commit/fc9798233309d01f4314066cfdd683df719eb4da) - allow neo and forge book providers to take custom registry providers *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`d00fdb9`](https://github.com/klikli-dev/modonomicon/commit/d00fdb9cf4c68371365ce76646a772edf5bde83f) - dynamic text macros *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`69d5d3b`](https://github.com/klikli-dev/modonomicon/commit/69d5d3b27c5b01e3cfd2c08accb4186114cd7797) - recolor visualize multiblock button for better compat with dark mode *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`4bca72a`](https://github.com/klikli-dev/modonomicon/commit/4bca72a85b723c77b6adbc0e98fbee6ce81a46e8) - add datagen functionality to extend books and categories in target mods  *(PR [#284](https://github.com/klikli-dev/modonomicon/pull/284) by [@klikli-dev](https://github.com/klikli-dev))*
+  - :arrow_lower_right: *addresses issue [#282](https://github.com/klikli-dev/modonomicon/issues/282) opened by [@klikli-dev](https://github.com/klikli-dev)*
+- [`5d7ced5`](https://github.com/klikli-dev/modonomicon/commit/5d7ced5368a90ab5619febef00080ed65634587a) - run commands only on allowed entries and only increase command uses on success *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`5886941`](https://github.com/klikli-dev/modonomicon/commit/5886941bef0c59f887c9e2adca8d1059aaae131f) - add russian translation (thanks #v0pros) *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`f8d9756`](https://github.com/klikli-dev/modonomicon/commit/f8d9756f3d4e30254e8aad88f75fd79aeec8a20d) - add item property that indicates whether a modonomicon book is open or closed *(PR [#311](https://github.com/klikli-dev/modonomicon/pull/311) by [@klikli-dev](https://github.com/klikli-dev))*
+- [`46d34bc`](https://github.com/klikli-dev/modonomicon/commit/46d34bcbc8c906a0e570f0a3b2e6699723c9be91) - PT_BR localization *(PR [#323](https://github.com/klikli-dev/modonomicon/pull/323) by [@PrincessStelllar](https://github.com/PrincessStelllar))*
+
+### :bug: Bug Fixes
+- [`c6a66d4`](https://github.com/klikli-dev/modonomicon/commit/c6a66d40150e420eaf4e139bcc5dbff36b095882) - preview rendering of cutout blocks *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`34416ba`](https://github.com/klikli-dev/modonomicon/commit/34416ba82466c4e9fa5650ffec45c616dcb9b352) - skeleton skulls render with block atlas *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`5d68bb4`](https://github.com/klikli-dev/modonomicon/commit/5d68bb42b14f195decc63d3ad59e4a2bc2120b9b) - leaflets show floating bookmarks button *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`5003ddb`](https://github.com/klikli-dev/modonomicon/commit/5003ddbf6a381a53186337229bdad37a70aedfa7) - add special handling for SP/LAN to avoid issues with datagen registry holders *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`2f93b9a`](https://github.com/klikli-dev/modonomicon/commit/2f93b9ae5e2fcc66522f74eb05e8c0df4330d9a8) - advancement requesting from server *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`bb71af1`](https://github.com/klikli-dev/modonomicon/commit/bb71af1d0fe515d1cda0b7402707b68ae043511c) - handle cases where jei is loaded, but its runtime is disabled (e.g. with  EMI present) *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`1451708`](https://github.com/klikli-dev/modonomicon/commit/1451708dc729ef3f8bac678ec81d2cad874e08b4) - high performance cost of unlock state updates if a lot of advancements unlock at once *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`a4e541a`](https://github.com/klikli-dev/modonomicon/commit/a4e541ad7b78629fc83e3f57ab8b538dda59c478) - custom font not used for entry list buttons *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`ec957eb`](https://github.com/klikli-dev/modonomicon/commit/ec957eb36ce9dac0769d593edcbc21d3895d8523) - NPE caused by category link book entries *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`d8b364e`](https://github.com/klikli-dev/modonomicon/commit/d8b364e24a39d6cde8bd61b69a410be5768e0846) - search screen does not display on fabric *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`eee13be`](https://github.com/klikli-dev/modonomicon/commit/eee13beaef08004162515fbcb8b78e01801f1a18) - GUIs not rendering after viewing book entry *(PR [#287](https://github.com/klikli-dev/modonomicon/pull/287) by [@BluSpring](https://github.com/BluSpring))*
+- [`8936604`](https://github.com/klikli-dev/modonomicon/commit/8936604ff46df66a8b21dccad5fe96f699427a79) - BookModel is missing turnPageSound *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`ad56b50`](https://github.com/klikli-dev/modonomicon/commit/ad56b50d199af6e8cdfedd2bec2d7b5686ccac89) - category without category button can be auto opened *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`00967cb`](https://github.com/klikli-dev/modonomicon/commit/00967cbb20a726d0983ac5eb92b4a1d594cbfe89) - small lang fix for category_has_visible_entries *(PR [#297](https://github.com/klikli-dev/modonomicon/pull/297) by [@DaFuqs](https://github.com/DaFuqs))*
+- [`54f411f`](https://github.com/klikli-dev/modonomicon/commit/54f411f462cf21729344c34add1851bbd85fdce7) - crash if there is only one category and it is set to hide the category button *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`0ea3bd2`](https://github.com/klikli-dev/modonomicon/commit/0ea3bd24bc033acb7de99c4baadbcd5bd271f68e) - [#308](https://github.com/klikli-dev/modonomicon/pull/308) *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`1455bc5`](https://github.com/klikli-dev/modonomicon/commit/1455bc5dc381ce9ed76fe46c79084a9197895edf) - bookmark screen not rendering *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`fa75be6`](https://github.com/klikli-dev/modonomicon/commit/fa75be6b6394ff486385c1487de46f373ccc908c) - crash on close book *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`862508a`](https://github.com/klikli-dev/modonomicon/commit/862508a1bb5ce039cdce899b4c53a8743981ec92) - override data() on abstract modonomicon language provider *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`de22df3`](https://github.com/klikli-dev/modonomicon/commit/de22df32d7cb0457645bf1d1f5c0260b2acba919) - copy item stack during ingredient rendering to avoid nbt/data component issues *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`b2fc3cf`](https://github.com/klikli-dev/modonomicon/commit/b2fc3cfc8146e42410dbfa7c15572a434f67871d) - entry list text align *(PR [#327](https://github.com/klikli-dev/modonomicon/pull/327) by [@klikli-dev](https://github.com/klikli-dev))*
+  - :arrow_lower_right: *fixes issue [#324](https://github.com/klikli-dev/modonomicon/issues/324) opened by [@DaFuqs](https://github.com/DaFuqs)*
+- [`62e356a`](https://github.com/klikli-dev/modonomicon/commit/62e356a07290789596fa9e083832097da85de798) - use proper mod version variable for fabric mod metadata *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`a4c24e2`](https://github.com/klikli-dev/modonomicon/commit/a4c24e2b054bb4dc2316ab03991e2678e4b8453b) - increase mod version to force update *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`6a9e28b`](https://github.com/klikli-dev/modonomicon/commit/6a9e28bb0ec5fbdb5a04f590c19e8fa48901b1e0) - convert spotlight page codecs to lazy codecs to match itemstack *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`228a5bd`](https://github.com/klikli-dev/modonomicon/commit/228a5bde7b6d7731f19c79090ebec7cfc8ef556d) - fix gradle.properties var name *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`505290e`](https://github.com/klikli-dev/modonomicon/commit/505290e527e3aef867b4c16fd16cf036be61d7e9) - disable the addon book datagen example *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`98e3db7`](https://github.com/klikli-dev/modonomicon/commit/98e3db76401c72b9650aef098333cbe439eebc24) - add cursemaven for future testing *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.20.1-1.79.4] - 2026-03-10
 ### :boom: BREAKING CHANGES
 - due to [`8207870`](https://github.com/klikli-dev/modonomicon/commit/82078708496a96bfcd88779009e860dd29b6c603) - update to the new neo network system *(commit by [@klikli-dev](https://github.com/klikli-dev))*:
@@ -2295,3 +2340,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.1-1.117.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.10-0.0.0...release/v1.21.1-1.117.2
 [release/v1.21.1-1.117.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.11-1.120.0...release/v1.21.1-1.117.4
 [release/v1.20.1-1.79.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.79.3...release/v1.20.1-1.79.4
+[release/v1.21.1-1.118.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.11-1.120.1...release/v1.21.1-1.118.0
