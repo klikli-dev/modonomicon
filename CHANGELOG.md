@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1-1.122.0] - 2026-03-16
+### :sparkles: New Features
+- [`ee8c3f8`](https://github.com/klikli-dev/modonomicon/commit/ee8c3f82e432939de09b98a09b24be08fa52bb2b) - update to snapshot 10 *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`3a2305c`](https://github.com/klikli-dev/modonomicon/commit/3a2305c46c45988dff999b140838e729ba9d52c2) - let copilot attempt to fix transparency rendering of inworld multiblocks *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`88e22cd`](https://github.com/klikli-dev/modonomicon/commit/88e22cd7b97e539a36202e7822e41866abad5153) - udate usage of itemstack to itemstacktemplate where vanilla now requires it *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`52e12e0`](https://github.com/klikli-dev/modonomicon/commit/52e12e07b590563d21fad337b38d8b4b6d9680c6) - update various fabric stuffs *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`fbf1701`](https://github.com/klikli-dev/modonomicon/commit/fbf1701b1500893111c45df2d2c689999a0e64fd) - update multiblock preview and book page rendering to 26.1 *(PR [#328](https://github.com/klikli-dev/modonomicon/pull/328) by [@klikli-dev](https://github.com/klikli-dev))*
+  - :arrow_lower_right: *addresses issue [#326](https://github.com/klikli-dev/modonomicon/issues/326) opened by [@klikli-dev](https://github.com/klikli-dev)*
+
+### :bug: Bug Fixes
+- [`79183c0`](https://github.com/klikli-dev/modonomicon/commit/79183c0a099ce1dac1de7fcede44f0f9037439e5) - multiblock rendering in multiblock page *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`e4a912b`](https://github.com/klikli-dev/modonomicon/commit/e4a912b009ceba7a914f48786d46b380de426d8c) - entry list text align *(PR [#327](https://github.com/klikli-dev/modonomicon/pull/327) by [@klikli-dev](https://github.com/klikli-dev))*
+  - :arrow_lower_right: *fixes issue [#324](https://github.com/klikli-dev/modonomicon/issues/324) opened by [@DaFuqs](https://github.com/DaFuqs)*
+
+### :wrench: Chores
+- [`3c3820c`](https://github.com/klikli-dev/modonomicon/commit/3c3820c3e1f6fa20ec50246bd4e542115d9e71e9) - reformat *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`764e9e5`](https://github.com/klikli-dev/modonomicon/commit/764e9e5c9127548d27b5ae44025f428a3c640f6b) - rerun datagen with fixed model names *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1-1.121.2] - 2026-03-06
 ### :bug: Bug Fixes
 - [`40f5c99`](https://github.com/klikli-dev/modonomicon/commit/40f5c999c7af1b6c36b091a20881f4323ad221e1) - fabric resource reloading *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1961,3 +1980,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1-1.121.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-0.0.0...release/v26.1-1.121.0
 [release/v26.1-1.121.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.121.0...release/v26.1-1.121.1
 [release/v26.1-1.121.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.121.1...release/v26.1-1.121.2
+[release/v26.1-1.122.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.121.2...release/v26.1-1.122.0
