@@ -100,8 +100,11 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
         }
 
         // Define target rectangle in screen space
-        int x0 = this.left + BookEntryScreen.PAGE_WIDTH / 2 + 53;
-        int y0 = this.top + 70; //not sure why we have to shift it that much down, but this way the MB renders nicely :)
+        int frameX = BookEntryScreen.PAGE_WIDTH / 2 - 53;
+        int frameY = 7;
+        
+        int x0 = this.parentScreen.getBookLeft() + this.left + frameX;
+        int y0 = this.parentScreen.getBookTop() + this.top + frameY;
         int x1 = x0 + 106;
         int y1 = y0 + 106;
 
