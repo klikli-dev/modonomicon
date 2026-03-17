@@ -79,6 +79,16 @@ JSON does not support hex values, so you need to convert them to decimal. For ex
 
 :::
 
+### **default_text_color** (Integer, _optional_)
+
+Default value: `0` (= black). The default text color for this book. The color is specified as a **decimal RGB value**.
+
+:::caution
+
+JSON does not support hex values, so you need to convert them to decimal. For example, `#FF0000` is `16711680` in decimal.
+
+:::
+
 ### **auto_add_read_conditions** (Boolean, _optional_)
 
 Default value: `false`. If true, the book will automatically generate an "Entry Read Condition" for each entry in the book. This means that the entry will only be visible if the parent entry has been read. This is useful if you want to make sure that the player reads the book in order.   
