@@ -30,23 +30,6 @@ A list of entry ids (without book or category id) that this command is allowed t
 Please specify all entries in which you plan to include a command link to this command.
 This is a security feature to prevent players from running commands before unlocking the required content.
 
-### **permission_level** (Integer, _optional_)
-
-Defaults to `0`.    
-The permission level to run the command with. This will be used instead of the actual permission level of the player.
-
-:::tip
-
-For most commands (such as /give) you will need at least permission level 2.
-
-:::
-
-:::tip
-
-When testing and the command fails with an obscure error message (such as: incomplete command), despite the same command working fine when running it in chat, try to increase the permission level up to 4.
-
-:::
-
 ### **max_usages** (Integer, _optional_)
 
 Defaults to `-1`.   
