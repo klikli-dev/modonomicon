@@ -58,6 +58,11 @@ This ensures that commands cannot be abused to cheat a reward multiple times.
 
 :::
 
+### **suppress_output** (Boolean, _optional_)
+
+Defaults to `false`.   
+Sets whether the command's default output should be suppressed to silence it towards the player.
+
 ### **failure_message** (DescriptionId, _optional_)
 
 A custom failure message to display, if the command has been used beyond max_usages already.  

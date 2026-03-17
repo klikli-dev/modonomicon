@@ -30,6 +30,7 @@ A list of entry ids (without book or category id) that this command is allowed t
 Please specify all entries in which you plan to include a command link to this command.
 This is a security feature to prevent players from running commands before unlocking the required content.
 
+
 ### **permission_level** (Integer, _optional_)
 
 Defaults to `0`.    
@@ -57,6 +58,11 @@ The maximum amount of times the command can be used. Modonomicon will keep track
 This ensures that commands cannot be abused to cheat a reward multiple times.
 
 :::
+
+### **suppress_output** (Boolean, _optional_)
+
+Defaults to `false`.   
+Sets whether the command's default output should be suppressed to silence it towards the player.
 
 ### **failure_message** (DescriptionId, _optional_)
 
