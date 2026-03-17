@@ -64,7 +64,6 @@ public class ModonomiconConstants {
 
         public static class Command {
             public static final int DEFAULT_MAX_USES = 1;
-            public static final int DEFAULT_PERMISSION_LEVEL = 0;
         }
 
         public static class EntryType {

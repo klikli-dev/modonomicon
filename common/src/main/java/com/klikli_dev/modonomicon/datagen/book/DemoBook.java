@@ -32,12 +32,10 @@ public class DemoBook extends SingleBookSubProvider {
         //this.add(lang("ru_ru"), this.context().bookTooltip(), "Книга для демонстрации и тестирования функций \"Модономикона\".");
 
         var commandEntryCommand = BookCommandModel.create(this.modLoc("test_command"), "/give @s minecraft:apple 1")
-                .withPermissionLevel(2)
                 .withSuccessMessage("modonomicon.command.test_command.success");
         this.add(commandEntryCommand.getSuccessMessage(), "You got an apple, because reading is cool!");
 
         var commandEntryLinkCommand = BookCommandModel.create(this.modLoc("test_command2"), "/give @s minecraft:wheat 1")
-                .withPermissionLevel(2)
                 .withSuccessMessage("modonomicon.command.test_command2.success")
                 .withAllowedEntry("modonomicon:features/command");
         this.add(commandEntryLinkCommand.getSuccessMessage(), "You got wheat, because clicking is cool!");

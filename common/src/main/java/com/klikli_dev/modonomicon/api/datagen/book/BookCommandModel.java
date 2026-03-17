@@ -13,7 +13,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,8 +21,8 @@ public class BookCommandModel {
     protected Identifier id;
 
     protected String command;
-    protected int permissionLevel = ModonomiconConstants.Data.Command.DEFAULT_PERMISSION_LEVEL;
     protected int maxUses = ModonomiconConstants.Data.Command.DEFAULT_MAX_USES;
+    protected boolean suppressOutput;
 
     @Nullable
     protected String failureMessage;
@@ -53,8 +52,8 @@ public class BookCommandModel {
     public JsonObject toJson(HolderLookup.Provider provider) {
         JsonObject json = new JsonObject();
         json.addProperty("command", this.command);
-        json.addProperty("permission_level", this.permissionLevel);
         json.addProperty("max_uses", this.maxUses);
+        json.addProperty("suppress_output", this.suppressOutput);
         if (this.failureMessage != null)
             json.addProperty("failure_message", this.failureMessage);
         if (this.successMessage != null)
@@ -77,12 +76,12 @@ public class BookCommandModel {
         return this.command;
     }
 
-    public int getPermissionLevel() {
-        return this.permissionLevel;
-    }
-
     public int getMaxUses() {
         return this.maxUses;
+    }
+
+    public boolean shouldSuppressOutput() {
+        return this.suppressOutput;
     }
 
     public @Nullable String getFailureMessage() {
@@ -94,17 +93,6 @@ public class BookCommandModel {
     }
 
     /**
-     * Sets the commands permission level.
-     * The command will be executed with this level. Defaults to 0.
-     *
-     * @param permissionLevel a minecraft permission level int (0-4).
-     */
-    public BookCommandModel withPermissionLevel(int permissionLevel) {
-        this.permissionLevel = permissionLevel;
-        return this;
-    }
-
-    /**
      * Sets the commands max uses.
      * The command can only be executed this many times by the same player.
      * This is useful for e.g. commands to give rewards.
@@ -112,6 +100,15 @@ public class BookCommandModel {
      */
     public BookCommandModel withMaxUses(int maxUses) {
         this.maxUses = maxUses;
+        return this;
+    }
+
+    /**
+     * Sets whether the command's default output should be suppressed to silence it towards the player.
+     * Defaults to false.
+     */
+    public BookCommandModel withSuppressOutput(boolean suppressOutput) {
+        this.suppressOutput = suppressOutput;
         return this;
     }
 
