@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.1-1.119.0] - 2026-03-17
+### :sparkles: New Features
+- [`5ca493c`](https://github.com/klikli-dev/modonomicon/commit/5ca493cc8d8ef01dd6a6b656c6b0d55f85312b34) - allow silencing book command executions *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`d6d8de2`](https://github.com/klikli-dev/modonomicon/commit/d6d8de2ec1b01e027c81bd9ac5b8066d0e96c79c) - tooltip image rendering *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.1-1.118.0] - 2026-03-16
 ### :sparkles: New Features
 - [`fc97982`](https://github.com/klikli-dev/modonomicon/commit/fc9798233309d01f4314066cfdd683df719eb4da) - allow neo and forge book providers to take custom registry providers *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2341,3 +2349,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.1-1.117.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.11-1.120.0...release/v1.21.1-1.117.4
 [release/v1.20.1-1.79.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.20.1-1.79.3...release/v1.20.1-1.79.4
 [release/v1.21.1-1.118.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.11-1.120.1...release/v1.21.1-1.118.0
+[release/v1.21.1-1.119.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.118.0...release/v1.21.1-1.119.0
