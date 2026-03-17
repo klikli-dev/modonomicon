@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1-1.124.1] - 2026-03-17
+### :bug: Bug Fixes
+- [`a42e28d`](https://github.com/klikli-dev/modonomicon/commit/a42e28d1dc64f704f1abfdc42dce9e1416adbe7b) - book text offset not taken into account for hover location calculation *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1-1.124.0] - 2026-03-17
 ### :sparkles: New Features
 - [`fe391a4`](https://github.com/klikli-dev/modonomicon/commit/fe391a41d545096379aa6843385aa25152f4c9aa) - add default book text color property *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2003,3 +2008,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1-1.122.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.122.0...release/v26.1-1.122.1
 [release/v26.1-1.123.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.122.1...release/v26.1-1.123.0
 [release/v26.1-1.124.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.123.0...release/v26.1-1.124.0
+[release/v26.1-1.124.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.124.0...release/v26.1-1.124.1
