@@ -33,6 +33,7 @@ public class BookCommand {
      * -1 is unlimited.
      */
     protected int maxUses;
+    protected boolean suppressOutput;
 
     /**
      * If set, this message will be displayed if the command fails.
@@ -55,25 +56,35 @@ public class BookCommand {
      */
     protected Set<ResourceLocation> allowedEntries;
 
-    public BookCommand(ResourceLocation id, String command, int permissionLevel, int maxUses, @Nullable String failureMessage, @Nullable String successMessage, @Nullable Set<ResourceLocation> allowedEntries) {
+    public BookCommand(ResourceLocation id, String command, int permissionLevel, int maxUses, boolean suppressOutput, @Nullable String failureMessage, @Nullable String successMessage, @Nullable Set<ResourceLocation> allowedEntries) {
         this.id = id;
         this.command = command;
         this.permissionLevel = permissionLevel;
         this.maxUses = maxUses;
+        this.suppressOutput = suppressOutput;
         this.failureMessage = failureMessage;
         this.successMessage = successMessage;
         this.allowedEntries = allowedEntries == null ? Collections.emptySet() : allowedEntries;
     }
 
+    public BookCommand(ResourceLocation id, String command, int permissionLevel, int maxUses, boolean suppressOutput, @Nullable String failureMessage, @Nullable String successMessage) {
+        this(id, command, permissionLevel, maxUses, suppressOutput, failureMessage, successMessage, null);
+    }
+
     // Backwards compatible constructor
     public BookCommand(ResourceLocation id, String command, int permissionLevel, int maxUses, @Nullable String failureMessage, @Nullable String successMessage) {
-        this(id, command, permissionLevel, maxUses, failureMessage, successMessage, null);
+        this(id, command, permissionLevel, maxUses, false, failureMessage, successMessage, null);
+    }
+
+    public BookCommand(ResourceLocation id, String command, int permissionLevel, int maxUses, @Nullable String failureMessage, @Nullable String successMessage, @Nullable Set<ResourceLocation> allowedEntries) {
+        this(id, command, permissionLevel, maxUses, false, failureMessage, successMessage, allowedEntries);
     }
 
     public static BookCommand fromJson(ResourceLocation id, JsonObject json) {
         var command = GsonHelper.getAsString(json, "command");
         var permissionLevel = GsonHelper.getAsInt(json, "permission_level", ModonomiconConstants.Data.Command.DEFAULT_PERMISSION_LEVEL);
         var maxUses = GsonHelper.getAsInt(json, "max_uses", ModonomiconConstants.Data.Command.DEFAULT_MAX_USES);
+        var suppressOutput = GsonHelper.getAsBoolean(json, "suppress_output", false);
         var failureMessage = GsonHelper.getAsString(json, "failure_message", null);
         var successMessage = GsonHelper.getAsString(json, "success_message", null);
         Set<ResourceLocation> allowedEntries = new HashSet<>();
@@ -82,13 +93,14 @@ public class BookCommand {
                 allowedEntries.add(ResourceLocation.parse(e.getAsString()));
             }
         }
-        return new BookCommand(id, command, permissionLevel, maxUses, failureMessage, successMessage, allowedEntries);
+        return new BookCommand(id, command, permissionLevel, maxUses, suppressOutput, failureMessage, successMessage, allowedEntries);
     }
 
     public static BookCommand fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
         var command = buffer.readUtf();
         var permissionLevel = (int) buffer.readByte();
         var maxUses = buffer.readVarInt();
+        var suppressOutput = buffer.readBoolean();
         var failureMessage = buffer.readNullable(FriendlyByteBuf::readUtf);
         var successMessage = buffer.readNullable(FriendlyByteBuf::readUtf);
         int allowedEntriesSize = buffer.readVarInt();
@@ -96,7 +108,7 @@ public class BookCommand {
         for (int i = 0; i < allowedEntriesSize; i++) {
             allowedEntries.add(buffer.readResourceLocation());
         }
-        return new BookCommand(id, command, permissionLevel, maxUses, failureMessage, successMessage, allowedEntries);
+        return new BookCommand(id, command, permissionLevel, maxUses, suppressOutput, failureMessage, successMessage, allowedEntries);
     }
 
     /**
@@ -110,6 +122,7 @@ public class BookCommand {
         buffer.writeUtf(this.command);
         buffer.writeByte(this.permissionLevel);
         buffer.writeVarInt(this.maxUses);
+        buffer.writeBoolean(this.suppressOutput);
         buffer.writeNullable(this.failureMessage, FriendlyByteBuf::writeUtf);
         buffer.writeNullable(this.successMessage, FriendlyByteBuf::writeUtf);
         buffer.writeVarInt(this.allowedEntries.size());
@@ -138,6 +151,10 @@ public class BookCommand {
         return this.maxUses;
     }
 
+    public boolean shouldSuppressOutput() {
+        return this.suppressOutput;
+    }
+
     public @Nullable String getFailureMessage() {
         return this.failureMessage;
     }
@@ -157,17 +174,20 @@ public class BookCommand {
             player.sendSystemMessage(Component.translatable(failureMessage).withStyle(ChatFormatting.RED));
             return;
         } else {
-            var commandSourceStack = new CommandSourceStack(player, player.position(), player.getRotationVector(), player.serverLevel(), this.permissionLevel, player.getName().getString(), player.getDisplayName(), player.server, player)
-                    .withCallback((success, result) -> {
-                        if (success) {
-                            BookUnlockStateManager.get().setRunFor(player, this);
-                            if (this.successMessage != null) {
-                                player.sendSystemMessage(Component.translatable(this.successMessage).withStyle(ChatFormatting.GREEN));
-                            }
-                        } else {
-                            Modonomicon.LOG.error("Command [" + this.id.toString() + "] was executed, but failed.");
-                        }
-                    });
+            var commandSourceStack = new CommandSourceStack(player, player.position(), player.getRotationVector(), player.serverLevel(), this.permissionLevel, player.getName().getString(), player.getDisplayName(), player.server, player);
+            if (this.suppressOutput) {
+                commandSourceStack = commandSourceStack.withSuppressedOutput();
+            }
+            commandSourceStack = commandSourceStack.withCallback((success, result) -> {
+                if (success) {
+                    BookUnlockStateManager.get().setRunFor(player, this);
+                    if (this.successMessage != null) {
+                        player.sendSystemMessage(Component.translatable(this.successMessage).withStyle(ChatFormatting.GREEN));
+                    }
+                } else {
+                    Modonomicon.LOG.error("Command [" + this.id.toString() + "] was executed, but failed.");
+                }
+            });
 
 
             try {

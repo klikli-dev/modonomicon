@@ -13,7 +13,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,6 +23,7 @@ public class BookCommandModel {
     protected String command;
     protected int permissionLevel = ModonomiconConstants.Data.Command.DEFAULT_PERMISSION_LEVEL;
     protected int maxUses = ModonomiconConstants.Data.Command.DEFAULT_MAX_USES;
+    protected boolean suppressOutput;
 
     @Nullable
     protected String failureMessage;
@@ -55,6 +55,7 @@ public class BookCommandModel {
         json.addProperty("command", this.command);
         json.addProperty("permission_level", this.permissionLevel);
         json.addProperty("max_uses", this.maxUses);
+        json.addProperty("suppress_output", this.suppressOutput);
         if (this.failureMessage != null)
             json.addProperty("failure_message", this.failureMessage);
         if (this.successMessage != null)
@@ -85,6 +86,10 @@ public class BookCommandModel {
         return this.maxUses;
     }
 
+    public boolean shouldSuppressOutput() {
+        return this.suppressOutput;
+    }
+
     public @Nullable String getFailureMessage() {
         return this.failureMessage;
     }
@@ -112,6 +117,15 @@ public class BookCommandModel {
      */
     public BookCommandModel withMaxUses(int maxUses) {
         this.maxUses = maxUses;
+        return this;
+    }
+
+    /**
+     * Sets whether the command's default output should be suppressed to silence it towards the player.
+     * Defaults to false.
+     */
+    public BookCommandModel withSuppressOutput(boolean suppressOutput) {
+        this.suppressOutput = suppressOutput;
         return this;
     }
 
