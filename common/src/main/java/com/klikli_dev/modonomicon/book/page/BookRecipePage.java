@@ -66,7 +66,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
         this(common.title1(), common.recipeKey1(), common.recipeDisplayEntry1(), common.title2(), common.recipeKey2(), common.recipeDisplayEntry2(), common.text(), common.anchor(), common.condition());
     }
 
-    private BookRecipePage(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1, BookTextHolder title2, ResourceKey<Recipe<?>> recipeKey2, BookTextHolder text, String anchor, BookCondition condition) {
+    public BookRecipePage(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1, BookTextHolder title2, ResourceKey<Recipe<?>> recipeKey2, BookTextHolder text, String anchor, BookCondition condition) {
         super(anchor, condition);
         this.title1 = title1;
         this.recipeKey1 = recipeKey1;
@@ -75,7 +75,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
         this.text = text;
     }
 
-    private BookRecipePage(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1, @Nullable RecipeDisplayEntry recipeDisplayEntry1, BookTextHolder title2, ResourceKey<Recipe<?>> recipeKey2, @Nullable RecipeDisplayEntry recipeDisplayEntry2, BookTextHolder text, String anchor, BookCondition condition) {
+    public BookRecipePage(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1, @Nullable RecipeDisplayEntry recipeDisplayEntry1, BookTextHolder title2, ResourceKey<Recipe<?>> recipeKey2, @Nullable RecipeDisplayEntry recipeDisplayEntry2, BookTextHolder text, String anchor, BookCondition condition) {
         super(anchor, condition);
         this.title1 = title1;
         this.recipeKey1 = recipeKey1;
@@ -164,7 +164,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
         return results.stream().findFirst().orElse(ItemStack.EMPTY);
     }
 
-    private RecipeDisplayEntry getRecipeDisplayEntry(ServerLevel serverLevel, ResourceKey<Recipe<?>> key) {
+    protected RecipeDisplayEntry getRecipeDisplayEntry(ServerLevel serverLevel, ResourceKey<Recipe<?>> key) {
         if (key == null) {
             return null;
         }
