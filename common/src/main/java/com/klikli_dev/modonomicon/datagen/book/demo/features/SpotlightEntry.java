@@ -11,14 +11,18 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookSpotlightPageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.component.BundleContents;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.crafting.Ingredient;
+
+import java.util.List;
 
 public class SpotlightEntry extends EntryProvider {
     public static final String ID = "spotlight";
@@ -75,6 +79,14 @@ public class SpotlightEntry extends EntryProvider {
                 .withItem(PotionContents.createItemStack(Items.POTION, this.registries().lookupOrThrow(Registries.POTION).getOrThrow(Potions.HEALING.unwrapKey().get())))
         );
         this.pageText("A sample spotlight page with a potion");
+
+        ItemStack item = Items.BUNDLE.getDefaultInstance();
+        item.set(DataComponents.BUNDLE_CONTENTS, new BundleContents(List.of(Items.APPLE.getDefaultInstance())));
+        this.page("spotlight5", () -> BookSpotlightPageModel.create()
+                .withText(this.context().pageText())
+                .withItem(item)
+        );
+        this.pageText("A sample spotlight page with a bundle");
     }
 
     @Override
