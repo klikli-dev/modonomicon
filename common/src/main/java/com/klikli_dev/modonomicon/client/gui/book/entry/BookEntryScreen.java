@@ -206,7 +206,8 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     protected void drawTooltip(GuiGraphics guiGraphics, int pMouseX, int pMouseY) {
         if (this.tooltipStack != null) {
             List<Component> tooltip = this.getTooltipFromItem(this.tooltipStack);
-            guiGraphics.setTooltipForNextFrame(tooltip.stream().map(Component::getVisualOrderText).toList(), pMouseX, pMouseY);
+            var tooltipImage = this.tooltipStack.getTooltipImage();
+            guiGraphics.setTooltipForNextFrame(Minecraft.getInstance().font, tooltip, tooltipImage, pMouseX, pMouseY);
         } else if (this.tooltipFluidStack != null) {
             List<Component> tooltip = this.getTooltipFromFluid(this.tooltipFluidStack);
             guiGraphics.setTooltipForNextFrame(tooltip.stream().map(Component::getVisualOrderText).toList(), pMouseX, pMouseY);

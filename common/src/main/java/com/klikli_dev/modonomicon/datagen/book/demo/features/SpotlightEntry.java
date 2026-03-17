@@ -19,8 +19,11 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.component.BundleContents;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.crafting.Ingredient;
+
+import java.util.List;
 
 public class SpotlightEntry extends EntryProvider {
     public static final String ID = "spotlight";
@@ -77,6 +80,14 @@ public class SpotlightEntry extends EntryProvider {
                         new ItemStackTemplate(Items.POTION, DataComponentPatch.builder().set(DataComponents.POTION_CONTENTS, new PotionContents(this.registries().lookupOrThrow(Registries.POTION).getOrThrow(Potions.HEALING.unwrapKey().get()))).build()))
         );
         this.pageText("A sample spotlight page with a potion");
+
+        ItemStack item = Items.BUNDLE.getDefaultInstance();
+        item.set(DataComponents.BUNDLE_CONTENTS, new BundleContents(List.of(Items.APPLE.getDefaultInstance())));
+        this.page("spotlight5", () -> BookSpotlightPageModel.create()
+                .withText(this.context().pageText())
+                .withItem(item)
+        );
+        this.pageText("A sample spotlight page with a bundle");
     }
 
     @Override
