@@ -53,6 +53,7 @@ public class Book {
 
 
     protected int defaultTitleColor;
+    protected int defaultTextColor;
     protected float categoryButtonIconScale;
     protected boolean autoAddReadConditions;
     protected boolean generateBookItem;
@@ -117,7 +118,7 @@ public class Book {
                 @Nullable ResourceLocation customBookItem, String creativeTab, ResourceLocation font, ResourceLocation bookOverviewTexture, ResourceLocation frameTexture,
                 BookFrameOverlay topFrameOverlay, BookFrameOverlay bottomFrameOverlay, BookFrameOverlay leftFrameOverlay, BookFrameOverlay rightFrameOverlay,
                 ResourceLocation bookContentTexture, ResourceLocation craftingTexture, ResourceLocation turnPageSound,
-                int defaultTitleColor, float categoryButtonIconScale, boolean autoAddReadConditions, int bookTextOffsetX, int bookTextOffsetY, int bookTextOffsetWidth, int bookTextOffsetHeight,
+                int defaultTitleColor, int defaultTextColor, float categoryButtonIconScale, boolean autoAddReadConditions, int bookTextOffsetX, int bookTextOffsetY, int bookTextOffsetWidth, int bookTextOffsetHeight,
                 int categoryButtonXOffset, int categoryButtonYOffset, int searchButtonXOffset, int searchButtonYOffset, int readAllButtonYOffset, ResourceLocation leafletEntry,
                 PageDisplayMode pageDisplayMode, ResourceLocation singlePageTexture, boolean allowOpenBooksWithInvalidLinks) {
         this.id = id;
@@ -140,6 +141,7 @@ public class Book {
         this.craftingTexture = craftingTexture;
         this.turnPageSound = turnPageSound;
         this.defaultTitleColor = defaultTitleColor;
+        this.defaultTextColor = defaultTextColor;
         this.categoryButtonIconScale = categoryButtonIconScale;
         this.autoAddReadConditions = autoAddReadConditions;
         this.categories = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
@@ -200,6 +202,7 @@ public class Book {
         var craftingTexture = ResourceLocation.parse(GsonHelper.getAsString(json, "crafting_texture", Data.Book.DEFAULT_CRAFTING_TEXTURE));
         var turnPageSound = ResourceLocation.parse(GsonHelper.getAsString(json, "turn_page_sound", Data.Book.DEFAULT_PAGE_TURN_SOUND));
         var defaultTitleColor = GsonHelper.getAsInt(json, "default_title_color", 0x00000);
+        var defaultTextColor = GsonHelper.getAsInt(json, "default_text_color", 0x00000);
         var categoryButtonIconScale = GsonHelper.getAsFloat(json, "category_button_icon_scale", 1.0f);
         var autoAddReadConditions = GsonHelper.getAsBoolean(json, "auto_add_read_conditions", false);
 
@@ -230,7 +233,7 @@ public class Book {
 
         return new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font, bookOverviewTexture,
                 frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
-                bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, bookTextOffsetHeight,
+                bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, defaultTextColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, bookTextOffsetHeight,
                 categoryButtonXOffset, categoryButtonYOffset, searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset, leafletEntry, pageDisplayMode, singlePageTexture, allowOpenBooksWithInvalidLinks);
     }
 
@@ -262,6 +265,7 @@ public class Book {
         var craftingTexture = buffer.readResourceLocation();
         var turnPageSound = buffer.readResourceLocation();
         var defaultTitleColor = buffer.readInt();
+        var defaultTextColor = buffer.readInt();
         var categoryButtonIconScale = buffer.readFloat();
         var autoAddReadConditions = buffer.readBoolean();
         var bookTextOffsetX = (int) buffer.readShort();
@@ -285,7 +289,7 @@ public class Book {
         var textMacros = buffer.readMap((b) -> b.readUtf(), (b) -> b.readUtf()); //necessary because using lambda causes ambiguous reference in Neo with their IFriendlyByteBufExtension#readMap
         var book = new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font, bookOverviewTexture,
                 frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
-                bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, bookTextOffsetHeight,
+                bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, defaultTextColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, bookTextOffsetHeight,
                 categoryButtonXOffset, categoryButtonYOffset, searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset, leafletEntry, pageDisplayMode, singlePageTexture, allowOpenBooksWithInvalidLinks);
 
         book.textMacros().putAll(textMacros);
@@ -362,6 +366,7 @@ public class Book {
         buffer.writeResourceLocation(this.craftingTexture);
         buffer.writeResourceLocation(this.turnPageSound);
         buffer.writeInt(this.defaultTitleColor);
+        buffer.writeInt(this.defaultTextColor);
         buffer.writeFloat(this.categoryButtonIconScale);
         buffer.writeBoolean(this.autoAddReadConditions);
 
@@ -395,6 +400,10 @@ public class Book {
 
     public int getDefaultTitleColor() {
         return this.defaultTitleColor;
+    }
+
+    public int getDefaultTextColor() {
+        return this.defaultTextColor;
     }
 
     public float getCategoryButtonIconScale() {
