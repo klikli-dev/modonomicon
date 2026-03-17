@@ -97,8 +97,8 @@ public class BookImagePageRenderer extends BookPageRenderer<BookImagePage> imple
                 }
             }
 
-            var textY = this.getTextY();
-            var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), 0, textY, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - textY, pMouseX, pMouseY);
+            var bounds = this.getBookTextHolderBounds(0, this.getTextY(), BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - this.getTextY());
+            var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), bounds.x, bounds.y, bounds.width, bounds.height, pMouseX, pMouseY);
             if (textStyle != null) {
                 return textStyle;
             }
