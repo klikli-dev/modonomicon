@@ -14,7 +14,6 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -51,12 +50,12 @@ public class SpotlightEntry extends EntryProvider {
         );
         this.pageTitle("Custom Title");
         this.pageText("""
-                A sample spotlight page with custom title.\\
-                It shows how an {0} can be rendered with a little border and fancyness around it.\\
-                I am adding this link to see if spotlight pages have an offset problem. \\
-                The entry needs to be longer to trigger scaling.\\
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed odio eu dolor ornare tempor. In nibh erat, finibus sed eros id, finibus interdum justo. Aenean luctus, magna at pharetra accumsan, tellus libero tincidunt enim, id varius ante sem sit amet ipsum.\s
-                """,
+                        A sample spotlight page with custom title.\\
+                        It shows how an {0} can be rendered with a little border and fancyness around it.\\
+                        I am adding this link to see if spotlight pages have an offset problem. \\
+                        The entry needs to be longer to trigger scaling.\\
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed odio eu dolor ornare tempor. In nibh erat, finibus sed eros id, finibus interdum justo. Aenean luctus, magna at pharetra accumsan, tellus libero tincidunt enim, id varius ante sem sit amet ipsum.\s
+                        """,
                 this.itemLink(Items.APPLE)
         );
 
@@ -81,11 +80,10 @@ public class SpotlightEntry extends EntryProvider {
         );
         this.pageText("A sample spotlight page with a potion");
 
-        ItemStack item = Items.BUNDLE.getDefaultInstance();
-        item.set(DataComponents.BUNDLE_CONTENTS, new BundleContents(List.of(Items.APPLE.getDefaultInstance())));
+        var bundle = new ItemStackTemplate(Items.BUNDLE, DataComponentPatch.builder().set(DataComponents.BUNDLE_CONTENTS, new BundleContents(List.of(new ItemStackTemplate(Items.APPLE)))).build());
         this.page("spotlight5", () -> BookSpotlightPageModel.create()
                 .withText(this.context().pageText())
-                .withItem(item)
+                .withItem(bundle)
         );
         this.pageText("A sample spotlight page with a bundle");
     }
