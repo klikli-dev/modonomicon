@@ -29,6 +29,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BookPageRenderer<T extends BookPage> {
+    protected static final class TextHolderBounds {
+        public final int x;
+        public final int y;
+        public final int width;
+        public final int height;
+
+        protected TextHolderBounds(int x, int y, int width, int height) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+        }
+    }
+
     public int left;
     public int top;
     protected T page;
@@ -187,6 +201,11 @@ public abstract class BookPageRenderer<T extends BookPage> {
      * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
      */
     public void renderBookTextHolder(GuiGraphics guiGraphics, BookTextHolder text, int x, int y, int width, int height) {
+        var bounds = this.getBookTextHolderBounds(x, y, width, height);
+        renderBookTextHolder(guiGraphics, text, this.font, bounds.x, bounds.y, bounds.width, bounds.height, this.parentScreen.getBook().getDefaultTextColor());
+    }
+
+    protected TextHolderBounds getBookTextHolderBounds(int x, int y, int width, int height) {
         x += this.parentScreen.getBook().getBookTextOffsetX();
         y += this.parentScreen.getBook().getBookTextOffsetY();
 
@@ -196,7 +215,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
         width += this.parentScreen.getBook().getBookTextOffsetWidth();
         width -= this.parentScreen.getBook().getBookTextOffsetX(); //always remove the offset x from the width to avoid overflow
 
-        renderBookTextHolder(guiGraphics, text, this.font, x, y, width, height, this.parentScreen.getBook().getDefaultTextColor());
+        return new TextHolderBounds(x, y, width, height);
     }
 
     /**
@@ -340,6 +359,8 @@ public abstract class BookPageRenderer<T extends BookPage> {
             //why? Because performance should not matter (significantly enough to bother)
             for (FormattedCharSequence formattedcharsequence : this.font.split(text.getComponent(), width)) {
                 if (pMouseY > y && pMouseY < y + this.font.lineHeight) {
+                    if (pMouseX < x)
+                        return null;
                     //check if we are vertically over the title line
                     //horizontally over and right of the title is handled by font splitter
                     return this.font.getSplitter().componentStyleAtWidth(formattedcharsequence, (int) pMouseX - x);
@@ -357,6 +378,8 @@ public abstract class BookPageRenderer<T extends BookPage> {
                     float minY = currentY;
                     float maxY = currentY + this.font.lineHeight * scale;
                     if (pMouseY > minY && pMouseY < maxY) {
+                        if (pMouseX < x)
+                            return null;
                         //check if we are vertically over the title line
                         //horizontally over and right of the title is handled by font splitter
                         return this.font.getSplitter().componentStyleAtWidth(formattedcharsequence, (int) ((pMouseX - x) / scale));
