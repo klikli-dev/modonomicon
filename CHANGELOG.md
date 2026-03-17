@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1-1.123.0] - 2026-03-17
+### :sparkles: New Features
+- [`0d8c836`](https://github.com/klikli-dev/modonomicon/commit/0d8c836f8fba905cac2316b4e5f725d770f70684) - allow silencing book command executions *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`c0d34a7`](https://github.com/klikli-dev/modonomicon/commit/c0d34a74b67288548a15c31cbb93b3167a68f5df) - tooltip image rendering *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`d1b46b4`](https://github.com/klikli-dev/modonomicon/commit/d1b46b405050259f58c7ddb86e20f217bf75b7e9) - bundle datagen for spotlight page *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1-1.122.1] - 2026-03-16
 ### :bug: Bug Fixes
 - [`883e44e`](https://github.com/klikli-dev/modonomicon/commit/883e44eba3e76cdf2bcbf803cc165b6c124b5f85) - use proper mod version variable for fabric mod metadata *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1987,3 +1996,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1-1.121.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.121.1...release/v26.1-1.121.2
 [release/v26.1-1.122.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.121.2...release/v26.1-1.122.0
 [release/v26.1-1.122.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.122.0...release/v26.1-1.122.1
+[release/v26.1-1.123.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.122.1...release/v26.1-1.123.0
