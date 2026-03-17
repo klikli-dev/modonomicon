@@ -48,6 +48,11 @@ public class BookTextRenderer {
     public List<MutableComponent> render(String markdown, Style defaultStyle) {
         //TODO: make renderer configurable for modders
 
+        var baseStyle = defaultStyle.withFont(new FontDescription.Resource(BookDataManager.Client.get().safeFont(this.book.getFont())));
+        if (defaultStyle.getColor() == null) {
+            baseStyle = baseStyle.withColor(this.book.getDefaultTextColor());
+        }
+
         //renderer needs to be instantiated every time, because it caches the results
         var renderer = new ComponentRenderer.Builder()
                 .renderSoftLineBreaks(false)
@@ -60,7 +65,7 @@ public class BookTextRenderer {
                         new PatchouliLinkRenderer(),
                         new DynamicMacroLinkRenderer(),
                         new CommandLinkRenderer()))
-                .style(defaultStyle.withFont(new FontDescription.Resource(BookDataManager.Client.get().safeFont(this.book.getFont()))))
+                .style(baseStyle)
                 .extensions(this.extensions)
                 .build();
 

@@ -209,7 +209,8 @@ public class BookBookmarksScreen extends BookPaginatedScreen {
                     BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING + 12);
 
             BookPageRenderer.renderBookTextHolder(guiGraphics, this.infoText, this.font,
-                    BookEntryScreen.LEFT_PAGE_X, BookEntryScreen.TOP_PADDING + 22, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - (BookEntryScreen.TOP_PADDING + 22));
+                    BookEntryScreen.LEFT_PAGE_X, BookEntryScreen.TOP_PADDING + 22, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - (BookEntryScreen.TOP_PADDING + 22),
+                    this.parentScreen.getBook().getDefaultTextColor());
         }
 
         if (this.visibleEntries.isEmpty()) {

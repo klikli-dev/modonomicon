@@ -247,7 +247,8 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
 
 
                 BookPageRenderer.renderBookTextHolder(guiGraphics, this.category.getDescription(), this.font,
-                        BookEntryScreen.LEFT_PAGE_X, BookEntryScreen.TOP_PADDING + 22, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - (BookEntryScreen.TOP_PADDING + 22));
+                        BookEntryScreen.LEFT_PAGE_X, BookEntryScreen.TOP_PADDING + 22, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - (BookEntryScreen.TOP_PADDING + 22),
+                        this.parentScreen.getBook().getDefaultTextColor());
             }
         }
 

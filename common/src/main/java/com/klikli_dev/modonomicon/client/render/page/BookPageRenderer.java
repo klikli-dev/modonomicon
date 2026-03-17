@@ -94,10 +94,17 @@ public abstract class BookPageRenderer<T extends BookPage> {
      * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
      */
     public static void renderBookTextHolder(GuiGraphics guiGraphics, BookTextHolder text, Font font, int x, int y, int width, int height) {
+        renderBookTextHolder(guiGraphics, text, font, x, y, width, height, 0);
+    }
+
+    /**
+     * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
+     */
+    public static void renderBookTextHolder(GuiGraphics guiGraphics, BookTextHolder text, Font font, int x, int y, int width, int height, int defaultTextColor) {
         if (text.hasComponent()) {
             //if it is a component, we draw it directly
             for (FormattedCharSequence formattedcharsequence : font.split(text.getComponent(), width)) {
-                guiGraphics.drawString(font, formattedcharsequence, x, y, -1, false);
+                guiGraphics.drawString(font, formattedcharsequence, x, y, defaultTextColor, false);
                 y += font.lineHeight;
             }
         } else if (text instanceof RenderedBookTextHolder renderedText) {
@@ -119,7 +126,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
             for (var component : components) {
                 var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, (int) (width / scale), (int) ((width - 10) / scale), font);
                 for (FormattedCharSequence formattedcharsequence : wrapped) {
-                    GuiGraphicsExt.drawString(guiGraphics, font, formattedcharsequence, x, renderY, -1, false);
+                    GuiGraphicsExt.drawString(guiGraphics, font, formattedcharsequence, x, renderY, defaultTextColor, false);
                     renderY += font.lineHeight;
                 }
             }
@@ -173,7 +180,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
         if (this instanceof PageWithTextRenderer pageWithTextRenderer)
             textY = pageWithTextRenderer.getTextY();
 
-        renderBookTextHolder(guiGraphics, text, this.font, x, y, width, BookEntryScreen.PAGE_HEIGHT - textY);
+        renderBookTextHolder(guiGraphics, text, this.font, x, y, width, BookEntryScreen.PAGE_HEIGHT - textY, this.parentScreen.getBook().getDefaultTextColor());
     }
 
     /**
@@ -189,7 +196,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
         width += this.parentScreen.getBook().getBookTextOffsetWidth();
         width -= this.parentScreen.getBook().getBookTextOffsetX(); //always remove the offset x from the width to avoid overflow
 
-        renderBookTextHolder(guiGraphics, text, this.font, x, y, width, height);
+        renderBookTextHolder(guiGraphics, text, this.font, x, y, width, height, this.parentScreen.getBook().getDefaultTextColor());
     }
 
     /**

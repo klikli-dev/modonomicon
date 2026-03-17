@@ -99,6 +99,7 @@ public class BookModel {
     protected Identifier craftingTexture = Identifier.parse(Book.DEFAULT_CRAFTING_TEXTURE);
     protected Identifier turnPageSound = Identifier.parse(Book.DEFAULT_PAGE_TURN_SOUND);
     protected int defaultTitleColor = 0x00000;
+    protected int defaultTextColor = 0x00000;
     protected float categoryButtonIconScale = 1.0f;
 
     protected List<BookCategoryModel> categories = new ArrayList<>();
@@ -242,6 +243,10 @@ public class BookModel {
         return this.defaultTitleColor;
     }
 
+    public int getDefaultTextColor() {
+        return this.defaultTextColor;
+    }
+
     public float getCategoryButtonIconScale() {
         return this.categoryButtonIconScale;
     }
@@ -305,6 +310,7 @@ public class BookModel {
         json.addProperty("crafting_texture", this.craftingTexture.toString());
         json.addProperty("turn_page_sound", this.turnPageSound.toString());
         json.addProperty("default_title_color", this.defaultTitleColor);
+        json.addProperty("default_text_color", this.defaultTextColor);
         json.addProperty("category_button_icon_scale", this.categoryButtonIconScale);
         json.addProperty("book_text_offset_x", this.bookTextOffsetX);
         json.addProperty("book_text_offset_y", this.bookTextOffsetY);
@@ -470,6 +476,11 @@ public class BookModel {
 
     public BookModel withDefaultTitleColor(int defaultTitleColor) {
         this.defaultTitleColor = defaultTitleColor;
+        return this;
+    }
+
+    public BookModel withDefaultTextColor(int defaultTextColor) {
+        this.defaultTextColor = defaultTextColor;
         return this;
     }
 
