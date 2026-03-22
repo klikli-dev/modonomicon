@@ -71,21 +71,21 @@ public class SpotlightEntry extends EntryProvider {
                 .withItem(iconTemplate)
         );
         this.pageText("A sample spotlight page with an item with components");
-//TODO: re-enable potion
-//        this.page("spotlight4", () -> BookSpotlightPageModel.create()
-//                .withText(this.context().pageText())
-//                //We are using the potion registry here to test and demonstrate using this.registries(). Vanilla potions can be accessed directly without using the resource key, as the Potions class offers potion holders.
-//                .withItem(
-//                        new ItemStackTemplate(Items.POTION, DataComponentPatch.builder().set(DataComponents.POTION_CONTENTS, new PotionContents(this.registries().lookupOrThrow(Registries.POTION).getOrThrow(Potions.HEALING.unwrapKey().get()))).build()))
-//        );
-//        this.pageText("A sample spotlight page with a potion");
-//TODO: re-enable bundle
-//        var bundle = new ItemStackTemplate(Items.BUNDLE, DataComponentPatch.builder().set(DataComponents.BUNDLE_CONTENTS, new BundleContents(List.of(new ItemStackTemplate(Items.APPLE)))).build());
-//        this.page("spotlight5", () -> BookSpotlightPageModel.create()
-//                .withText(this.context().pageText())
-//                .withItem(bundle)
-//        );
-//        this.pageText("A sample spotlight page with a bundle");
+
+        this.page("spotlight4", () -> BookSpotlightPageModel.create()
+                .withText(this.context().pageText())
+                //We are using the potion registry here to test and demonstrate using this.registries(). Vanilla potions can be accessed directly without using the resource key, as the Potions class offers potion holders.
+                .withItem(
+                        new ItemStackTemplate(Items.POTION, DataComponentPatch.builder().set(DataComponents.POTION_CONTENTS, new PotionContents(this.registries().lookupOrThrow(Registries.POTION).getOrThrow(Potions.HEALING.unwrapKey().get()))).build()))
+        );
+        this.pageText("A sample spotlight page with a potion");
+
+        var bundle = new ItemStackTemplate(Items.BUNDLE, DataComponentPatch.builder().set(DataComponents.BUNDLE_CONTENTS, new BundleContents(List.of(new ItemStackTemplate(Items.APPLE)))).build());
+        this.page("spotlight5", () -> BookSpotlightPageModel.create()
+                .withText(this.context().pageText())
+                .withItem(bundle)
+        );
+        this.pageText("A sample spotlight page with a bundle");
     }
 
     @Override
