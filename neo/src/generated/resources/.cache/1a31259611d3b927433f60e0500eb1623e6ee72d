@@ -1,11 +1,11 @@
-// 26.1-snapshot-10	2026-03-09T15:48:11.9994708	Books: modonomicon
-f8343b4d818835676a34cc51f0dd5ad898e3f1ea data/modonomicon/modonomicon/books/demo/book.json
+// 26.1-snapshot-11	2026-03-22T13:23:22.3432657	Books: modonomicon
+69d036f8ee9cf4a1360ff88bc15cca077fe6f9ff data/modonomicon/modonomicon/books/demo/book.json
 af821b5afce5c48d872cbdf41de89edb595ef1b9 data/modonomicon/modonomicon/books/demo/categories/conditional.json
 44940b1a6dfbe44718bcf9aeb12098680a943282 data/modonomicon/modonomicon/books/demo/categories/features.json
 fae33f769ad135cab707f7f25fa17457d3968893 data/modonomicon/modonomicon/books/demo/categories/formatting.json
 14d020ad78fbf9745b16f0a59b69aeb0373d5698 data/modonomicon/modonomicon/books/demo/categories/index_mode.json
-91921129e14250f4f9403e2ee1b4614da61f702a data/modonomicon/modonomicon/books/demo/commands/test_command.json
-e84426ec4a5a52dfe5476e3484b7db00eacf7d5c data/modonomicon/modonomicon/books/demo/commands/test_command2.json
+65547d99ebfabe04813e616983debe3d25cc3afd data/modonomicon/modonomicon/books/demo/commands/test_command.json
+3e71981f6288e40f2bd7e9f4abf02c8d2992fb16 data/modonomicon/modonomicon/books/demo/commands/test_command2.json
 ffb872f9c68b17a109c06f0114889162a706af50 data/modonomicon/modonomicon/books/demo/entries/conditional/always_locked.json
 40d8d3cfd5166d491db782bdab791e7653a86c95 data/modonomicon/modonomicon/books/demo/entries/features/command.json
 853024df612bea058671cee2ac1a1dcd80263208 data/modonomicon/modonomicon/books/demo/entries/features/component_icon.json
@@ -20,7 +20,7 @@ f610be891c89ecc428adef66a16f15c3ddf82151 data/modonomicon/modonomicon/books/demo
 b6a79b406d19bfd28cb31cdf1c7cb491b34a0fdf data/modonomicon/modonomicon/books/demo/entries/features/multiblock.json
 86c374211f8ccea74bd21e1052b1e3e367434a53 data/modonomicon/modonomicon/books/demo/entries/features/recipe.json
 1ff06474439f3b22c209646ff306c77e3989d738 data/modonomicon/modonomicon/books/demo/entries/features/redirect.json
-c892ec38f08f1ad5b66437d869ea8589b25a8dee data/modonomicon/modonomicon/books/demo/entries/features/spotlight.json
+c972dfa1cc7851a50ab61c002b19419bcdd307e4 data/modonomicon/modonomicon/books/demo/entries/features/spotlight.json
 dcd0734647ead2aa86fdd0513e4688eb070dd4ec data/modonomicon/modonomicon/books/demo/entries/features/two_parents.json
 402e078b663fb95ea08d5c526df6281145a9e3f9 data/modonomicon/modonomicon/books/demo/entries/formatting/advanced.json
 2c5fe5a996973aafb856ce7cf579c99ed79d2daf data/modonomicon/modonomicon/books/demo/entries/formatting/always_locked.json
@@ -28,6 +28,6 @@ dcd0734647ead2aa86fdd0513e4688eb070dd4ec data/modonomicon/modonomicon/books/demo
 cc0b8572a37594507ae308433a72f5e8b62b49a8 data/modonomicon/modonomicon/books/demo/entries/formatting/link.json
 f480ab4e0f1440f9817438aa2acf106aac664a2d data/modonomicon/modonomicon/books/demo/entries/index_mode/demo1.json
 adfb919743aad07b46f9a59fa59319727286f123 data/modonomicon/modonomicon/books/demo/entries/index_mode/demo2.json
-cc61c0230918c135ae9e88187c86954dcdabc5d3 data/modonomicon/modonomicon/books/demo_leaflet/book.json
+abceb837266267bfc65474e2e8500847d7040a1e data/modonomicon/modonomicon/books/demo_leaflet/book.json
 802a3525f55220f1a601096a4a70479be7b81368 data/modonomicon/modonomicon/books/demo_leaflet/categories/leaflet.json
 ee21aa53f0ab33b81e91d84f7ab2e0779a646f97 data/modonomicon/modonomicon/books/demo_leaflet/entries/leaflet/leaflet.json
