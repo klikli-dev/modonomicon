@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1-1.124.2] - 2026-03-22
+### :bug: Bug Fixes
+- [`63c4ab1`](https://github.com/klikli-dev/modonomicon/commit/63c4ab1c26da6a72b1b7f9fd036ade170b003fd7) - page setup modifies item name default for all of mc *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`262e025`](https://github.com/klikli-dev/modonomicon/commit/262e0256b1dc93af361f90df037f9f72b6a9402e) - page text renders transparent *(PR [#330](https://github.com/klikli-dev/modonomicon/pull/330) by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1-1.124.1] - 2026-03-17
 ### :bug: Bug Fixes
 - [`a42e28d`](https://github.com/klikli-dev/modonomicon/commit/a42e28d1dc64f704f1abfdc42dce9e1416adbe7b) - book text offset not taken into account for hover location calculation *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2009,3 +2015,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1-1.123.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.122.1...release/v26.1-1.123.0
 [release/v26.1-1.124.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.123.0...release/v26.1-1.124.0
 [release/v26.1-1.124.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.124.0...release/v26.1-1.124.1
+[release/v26.1-1.124.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.124.1...release/v26.1-1.124.2
