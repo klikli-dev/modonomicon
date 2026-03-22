@@ -98,8 +98,8 @@ public class BookModel {
      */
     protected Identifier craftingTexture = Identifier.parse(Book.DEFAULT_CRAFTING_TEXTURE);
     protected Identifier turnPageSound = Identifier.parse(Book.DEFAULT_PAGE_TURN_SOUND);
-    protected int defaultTitleColor = 0x00000;
-    protected int defaultTextColor = 0x00000;
+    protected int defaultTitleColor = Data.Book.DEFAULT_TITLE_COLOR;
+    protected int defaultTextColor = Book.DEFAULT_TEXT_COLOR;
     protected float categoryButtonIconScale = 1.0f;
 
     protected List<BookCategoryModel> categories = new ArrayList<>();
