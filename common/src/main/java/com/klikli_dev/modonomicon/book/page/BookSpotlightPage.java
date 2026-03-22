@@ -135,7 +135,7 @@ public class BookSpotlightPage extends BookPage {
             //use ingredient name if we don't have a custom title
             var item = this.item.map(i -> i.create(), i -> i.display().resolveForFirstStack(SlotDisplayContext.fromLevel(level)));
 
-            this.title = new BookTextHolder(((MutableComponent) item.getHoverName())
+            this.title = new BookTextHolder((item.getHoverName().copy())
                     .withStyle(Style.EMPTY
                             .withBold(true)
                             .withColor(this.getParentEntry().getBook().getDefaultTitleColor())

@@ -20,10 +20,9 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
@@ -200,7 +199,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
 
         if (this.title1.isEmpty()) {
             //use recipe title if we don't have a custom one
-            this.title1 = new BookTextHolder(((MutableComponent) this.getRecipeOutput(level, this.recipeDisplayEntry1).getHoverName())
+            this.title1 = new BookTextHolder((this.getRecipeOutput(level, this.recipeDisplayEntry1).getHoverName().copy())
                     .withStyle(Style.EMPTY
                             .withBold(true)
                             .withColor(this.getParentEntry().getBook().getDefaultTitleColor())
@@ -209,7 +208,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
 
         if (this.recipeDisplayEntry2 != null && this.title2.isEmpty()) {
             //use recipe title if we don't have a custom one
-            this.title2 = new BookTextHolder(((MutableComponent) this.getRecipeOutput(level, this.recipeDisplayEntry2).getHoverName())
+            this.title2 = new BookTextHolder((this.getRecipeOutput(level, this.recipeDisplayEntry2).getHoverName().copy())
                     .withStyle(Style.EMPTY
                             .withBold(true)
                             .withColor(this.getParentEntry().getBook().getDefaultTitleColor())

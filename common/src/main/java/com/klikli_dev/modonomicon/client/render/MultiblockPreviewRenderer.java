@@ -202,7 +202,7 @@ public class MultiblockPreviewRenderer {
                     try {
                         var stack = lookingState.getCloneItemStack(mc.level, lookingPos, true);
                         if (!stack.isEmpty()) {
-                            guiGraphics.drawString(mc.font, stack.getHoverName(), left + 20, top + height + 8, 0xFFFFFF, false);
+                            guiGraphics.drawString(mc.font, stack.getHoverName().copy(), left + 20, top + height + 8, 0xFFFFFF, false);
 
                             guiGraphics.renderItem(stack, left, top + height + 2);
                         }
