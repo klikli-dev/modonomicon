@@ -71,6 +71,25 @@
       },
       "text": "book.modonomicon.demo.features.spotlight.spotlight4.text",
       "title": ""
+    },
+    {
+      "type": "modonomicon:spotlight",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "item": {
+        "components": {
+          "minecraft:bundle_contents": [
+            {
+              "id": "minecraft:apple"
+            }
+          ]
+        },
+        "id": "minecraft:bundle"
+      },
+      "text": "book.modonomicon.demo.features.spotlight.spotlight5.text",
+      "title": ""
     }
   ],
   "parents": [

@@ -38,7 +38,7 @@ public class ModonomiconModelProvider extends ModelProvider {
         this.generateFlatItem(ItemRegistry.MODONOMICON_BLUE.get(), "", itemModels);
         this.generateFlatItem(ItemRegistry.MODONOMICON_GREEN.get(), "", itemModels);
         this.generateFlatItem(ItemRegistry.MODONOMICON_PURPLE.get(), "", itemModels);
-        this.generateFlatItem(ItemRegistry.MODONOMICON_RED.get(), "red", itemModels);
+        this.generateFlatItem(ItemRegistry.MODONOMICON_RED.get(), "", itemModels);
         this.generateFlatItem(ItemRegistry.LEAFLET.get(), "", itemModels);
     }
 }
