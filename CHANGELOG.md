@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1-1.126.0] - 2026-03-24
+### :sparkles: New Features
+- [`afab6ef`](https://github.com/klikli-dev/modonomicon/commit/afab6ef552fe4392a1f19bfb86f1089f88c3e190) - update to 26.1 pre 3 *(PR [#332](https://github.com/klikli-dev/modonomicon/pull/332) by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1-1.125.0] - 2026-03-23
 ### :sparkles: New Features
 - [`1d84305`](https://github.com/klikli-dev/modonomicon/commit/1d8430548100221956ee3e4266ec53a24af7ca65) - make release action auto-update mod version in gradle.properties *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2025,3 +2030,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1-1.124.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.124.0...release/v26.1-1.124.1
 [release/v26.1-1.124.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.124.1...release/v26.1-1.124.2
 [release/v26.1-1.125.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.124.2...release/v26.1-1.125.0
+[release/v26.1-1.126.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.125.0...release/v26.1-1.126.0
