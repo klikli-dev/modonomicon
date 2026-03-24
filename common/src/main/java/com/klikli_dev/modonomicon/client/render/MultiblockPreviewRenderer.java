@@ -389,19 +389,33 @@ public class MultiblockPreviewRenderer {
 
         BlockPos startPos = getStartPos();
 
+        blocks = blocksDone = airFilled = 0;
+        lookingState = null;
+        lookingPos = checkPos;
+
         Pair<BlockPos, Collection<Multiblock.SimulateResult>> sim = multiblock.simulate(level, startPos, getFacingRotation(), true, false);
         for (Multiblock.SimulateResult r : sim.getSecond()) {
             float alpha = 0.3F;
             if (r.worldPosition().equals(checkPos)) {
+                lookingState = r.stateMatcher().getDisplayedState(ClientTicks.ticks);
                 alpha = 0.6F + (float) (Math.sin(ClientTicks.total * 0.3F) + 1F) * 0.1F;
             }
 
             if (!r.stateMatcher().equals(Matchers.ANY) && r.stateMatcher().getType() != DisplayOnlyMatcher.TYPE) {
                 boolean air = !r.stateMatcher().countsTowardsTotalBlocks();
+                if (!air) {
+                    blocks++;
+                }
 
                 if (!r.test(level, facingRotation)) {
                     BlockState displayedState = r.stateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
                     renderBlock(level, displayedState, r.worldPosition(), multiblock, air, alpha, blockRenderer, ms, buffer);
+
+                    if (air) {
+                        airFilled++;
+                    }
+                } else if (!air) {
+                    blocksDone++;
                 }
             }
         }
@@ -462,6 +476,10 @@ public class MultiblockPreviewRenderer {
         ghostFeatureDispatcher.close(); // Clean up if required
 
         ms.popPose();
+
+        if (!isAnchored) {
+            blocks = blocksDone = 0;
+        }
     }
 
     public static void renderBlock(Level world, BlockState state, BlockPos pos, Multiblock multiblock, boolean isAir, float alpha, ModelBlockRenderer blockRenderer, PoseStack poseStack, BufferBuilder buffer) {
