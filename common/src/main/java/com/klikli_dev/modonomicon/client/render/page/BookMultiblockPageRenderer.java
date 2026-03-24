@@ -18,7 +18,7 @@ import com.klikli_dev.modonomicon.client.render.state.pip.GuiMultiblockRenderSta
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.BlockPos;
@@ -53,7 +53,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
 //        parent.addBookmarkButtons();
     }
 
-    private void renderMultiblock(GuiGraphics guiGraphics) {
+    private void renderMultiblock(GuiGraphicsExtractor guiGraphics) {
         var multiblock = this.page.getMultiblock();
 
         var facingRotation = Rotation.NONE;
@@ -102,7 +102,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
                 guiGraphics.scissorStack.peek()
         );
 
-        guiGraphics.guiRenderState.submitPicturesInPictureState(state);
+        guiGraphics.guiRenderState.addPicturesInPictureState(state);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float ticks) {
+    public void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float ticks) {
 
         //render a frame for the multiblock render area
         int x = BookEntryScreen.PAGE_WIDTH / 2 - 53;

@@ -25,7 +25,7 @@ import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
@@ -77,11 +77,11 @@ public class BookBookmarksScreen extends BookPaginatedScreen {
         }
     }
 
-    public void drawCenteredStringNoShadow(GuiGraphics guiGraphics, Component s, int x, int y, int color) {
+    public void drawCenteredStringNoShadow(GuiGraphicsExtractor guiGraphics, Component s, int x, int y, int color) {
         this.drawCenteredStringNoShadow(guiGraphics, s, x, y, color, 1.0f);
     }
 
-    public void drawCenteredStringNoShadow(GuiGraphics guiGraphics, Component s, int x, int y, int color, float scale) {
+    public void drawCenteredStringNoShadow(GuiGraphicsExtractor guiGraphics, Component s, int x, int y, int color, float scale) {
         GuiGraphicsExt.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
     }
 
@@ -112,7 +112,7 @@ public class BookBookmarksScreen extends BookPaginatedScreen {
     }
 
 
-    protected void drawTooltip(GuiGraphics guiGraphics, int pMouseX, int pMouseY) {
+    protected void drawTooltip(GuiGraphicsExtractor guiGraphics, int pMouseX, int pMouseY) {
         if (this.tooltip != null && !this.tooltip.isEmpty()) {
             guiGraphics.setTooltipForNextFrame(this.tooltip.stream().map(Component::getVisualOrderText).toList(), pMouseX, pMouseY);
         }
@@ -181,12 +181,12 @@ public class BookBookmarksScreen extends BookPaginatedScreen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         //do not render background because we are on a gui stack and double blur would crash
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         this.resetTooltip();
 
         guiGraphics.pose().pushMatrix();
@@ -222,7 +222,7 @@ public class BookBookmarksScreen extends BookPaginatedScreen {
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
         for (var renderable : this.renderables) {
-            renderable.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+            renderable.extractRenderState(guiGraphics, pMouseX, pMouseY, pPartialTick);
         }
 
         this.drawTooltip(guiGraphics, pMouseX, pMouseY);

@@ -11,7 +11,7 @@ import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.node.BookParentNodeScreen;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 
 /**
@@ -24,8 +24,8 @@ public class BookCategoryIndexOnNodeScreen extends BookCategoryIndexScreen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        super.extractRenderState(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
         if (BookGuiManager.get().openBookParentScreen instanceof BookParentNodeScreen parentScreen) {
             parentScreen.renderMouseXOverride = pMouseX;
@@ -34,7 +34,7 @@ public class BookCategoryIndexOnNodeScreen extends BookCategoryIndexScreen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         //we prevent the default background rendering because we still need to see the underlying parent node screen
     }
 

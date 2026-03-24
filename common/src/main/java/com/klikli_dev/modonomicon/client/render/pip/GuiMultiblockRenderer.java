@@ -158,10 +158,10 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
             ps.translate(pos.getX(), pos.getY(), pos.getZ());
 
             Minecraft minecraft = Minecraft.getInstance();
-            BlockStateModel model = minecraft.getBlockRenderer().getBlockModel(state);
+            BlockStateModel model = minecraft.getModelManager().getBlockStateModelSet().get(state);
             PoseStack.Pose pose = ps.last();
 
-            var renderType = model.hasTranslucency() ? Sheets.translucentBlockSheet() : Sheets.cutoutBlockSheet();
+            var renderType = model.hasMaterialFlag(net.minecraft.client.resources.model.geometry.BakedQuad.FLAG_TRANSLUCENT) ? Sheets.translucentBlockSheet() : Sheets.cutoutBlockSheet();
 
             BlockQuadOutput output = (_, _, _, quad, instance) ->
             {

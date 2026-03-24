@@ -9,7 +9,7 @@ package com.klikli_dev.modonomicon.client.gui.book.button;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.BookScreenWithButtons;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.RenderPipelines;
 
@@ -39,13 +39,10 @@ public class BookButton extends Button {
     }
 
     @Override
-    public final void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
         this.active = this.visible = this.displayCondition.get();
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-    }
+        if (!this.visible) return;
 
-    @Override
-    protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f) {
         //if focused we go to the right of our normal button (instead of down, like mc buttons do)
         BookContentRenderer.drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, this.parent.getBook(), this.getX(), this.getY(), this.u + (this.isHovered() ? this.width : 0), this.v, this.width, this.height);
         if (this.isHovered()) {

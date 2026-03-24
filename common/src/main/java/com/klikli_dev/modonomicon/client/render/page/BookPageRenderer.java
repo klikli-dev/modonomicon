@@ -19,7 +19,7 @@ import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.TextAlignment;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -107,18 +107,18 @@ public abstract class BookPageRenderer<T extends BookPage> {
     /**
      * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
      */
-    public static void renderBookTextHolder(GuiGraphics guiGraphics, BookTextHolder text, Font font, int x, int y, int width, int height) {
+    public static void renderBookTextHolder(GuiGraphicsExtractor guiGraphics, BookTextHolder text, Font font, int x, int y, int width, int height) {
         renderBookTextHolder(guiGraphics, text, font, x, y, width, height, 0);
     }
 
     /**
      * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
      */
-    public static void renderBookTextHolder(GuiGraphics guiGraphics, BookTextHolder text, Font font, int x, int y, int width, int height, int defaultTextColor) {
+    public static void renderBookTextHolder(GuiGraphicsExtractor guiGraphics, BookTextHolder text, Font font, int x, int y, int width, int height, int defaultTextColor) {
         if (text.hasComponent()) {
             //if it is a component, we draw it directly
             for (FormattedCharSequence formattedcharsequence : font.split(text.getComponent(), width)) {
-                guiGraphics.drawString(font, formattedcharsequence, x, y, defaultTextColor, false);
+                guiGraphics.text(font, formattedcharsequence, x, y, defaultTextColor, false);
                 y += font.lineHeight;
             }
         } else if (text instanceof RenderedBookTextHolder renderedText) {
@@ -185,11 +185,11 @@ public abstract class BookPageRenderer<T extends BookPage> {
     /**
      * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
      *
-     * @deprecated use {@link #renderBookTextHolder(GuiGraphics, BookTextHolder, Font, int, int, int, int)} instead and provide the desired height.
+     * @deprecated use {@link #renderBookTextHolder(GuiGraphicsExtractor, BookTextHolder, Font, int, int, int, int)} instead and provide the desired height.
      * This exists only for backwards compatibility of custom pages and may estimate the wrong height.
      */
     @Deprecated
-    public void renderBookTextHolder(GuiGraphics guiGraphics, BookTextHolder text, int x, int y, int width) {
+    public void renderBookTextHolder(GuiGraphicsExtractor guiGraphics, BookTextHolder text, int x, int y, int width) {
         var textY = 0;
         if (this instanceof PageWithTextRenderer pageWithTextRenderer)
             textY = pageWithTextRenderer.getTextY();
@@ -200,7 +200,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
     /**
      * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
      */
-    public void renderBookTextHolder(GuiGraphics guiGraphics, BookTextHolder text, int x, int y, int width, int height) {
+    public void renderBookTextHolder(GuiGraphicsExtractor guiGraphics, BookTextHolder text, int x, int y, int width, int height) {
         var bounds = this.getBookTextHolderBounds(x, y, width, height);
         renderBookTextHolder(guiGraphics, text, this.font, bounds.x, bounds.y, bounds.width, bounds.height, this.parentScreen.getBook().getDefaultTextColor());
     }
@@ -221,7 +221,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
     /**
      * Will render the given BookTextHolder as (centered) title.
      */
-    public void renderTitle(GuiGraphics guiGraphics, BookTextHolder title, boolean showTitleSeparator, int x, int y) {
+    public void renderTitle(GuiGraphicsExtractor guiGraphics, BookTextHolder title, boolean showTitleSeparator, int x, int y) {
 
         guiGraphics.pose().pushMatrix();
 
@@ -269,19 +269,19 @@ public abstract class BookPageRenderer<T extends BookPage> {
             BookContentRenderer.drawTitleSeparator(guiGraphics, this.page.getBook(), x, y + 12);
     }
 
-    public abstract void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float ticks);
+    public abstract void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float ticks);
 
-    public void drawCenteredStringNoShadow(GuiGraphics guiGraphics, FormattedCharSequence s, int x, int y, int color, float scale) {
+    public void drawCenteredStringNoShadow(GuiGraphicsExtractor guiGraphics, FormattedCharSequence s, int x, int y, int color, float scale) {
         GuiGraphicsExt.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
     }
 
-    public void drawCenteredStringNoShadow(GuiGraphics guiGraphics, String s, int x, int y, int color, float scale) {
+    public void drawCenteredStringNoShadow(GuiGraphicsExtractor guiGraphics, String s, int x, int y, int color, float scale) {
         GuiGraphicsExt.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
     }
 
-    public void drawWrappedStringNoShadow(GuiGraphics guiGraphics, Component s, int x, int y, int color, int width) {
+    public void drawWrappedStringNoShadow(GuiGraphicsExtractor guiGraphics, Component s, int x, int y, int color, int width) {
         for (FormattedCharSequence formattedcharsequence : this.font.split(s, width)) {
-            guiGraphics.drawString(this.font, formattedcharsequence, x, y + (this.font.lineHeight), color, false);
+            guiGraphics.text(this.font, formattedcharsequence, x, y + (this.font.lineHeight), color, false);
             y += this.font.lineHeight;
         }
     }

@@ -34,7 +34,7 @@ import com.klikli_dev.modonomicon.platform.services.FluidHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -203,7 +203,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         this.narratables.removeIf(n -> n instanceof Renderable && renderables.contains(n));
     }
 
-    protected void drawTooltip(GuiGraphics guiGraphics, int pMouseX, int pMouseY) {
+    protected void drawTooltip(GuiGraphicsExtractor guiGraphics, int pMouseX, int pMouseY) {
         if (this.tooltipStack != null) {
             List<Component> tooltip = this.getTooltipFromItem(this.tooltipStack);
             var tooltipImage = this.tooltipStack.getTooltipImage();
@@ -225,7 +225,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         return false;
     }
 
-    protected void renderPage(GuiGraphics guiGraphics, BookPageRenderer<?> page, int pMouseX, int pMouseY, float pPartialTick) {
+    protected void renderPage(GuiGraphicsExtractor guiGraphics, BookPageRenderer<?> page, int pMouseX, int pMouseY, float pPartialTick) {
         if (page == null) {
             return;
         }
@@ -444,7 +444,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         //do not render background because we are on a gui stack and double blur would crash
     }
 

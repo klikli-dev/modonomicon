@@ -25,7 +25,7 @@ import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
@@ -157,7 +157,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
         return this.height - 20;
     }
 
-    protected void renderFrame(GuiGraphics guiGraphics) {
+    protected void renderFrame(GuiGraphicsExtractor guiGraphics) {
         int width = this.getFrameWidth();
         int height = this.getFrameHeight();
         int x = (this.width - width) / 2;
@@ -174,7 +174,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
         this.renderFrameOverlay(guiGraphics, this.book.getRightFrameOverlay(), x + width, y + (height / 2));
     }
 
-    protected void renderFrameOverlay(GuiGraphics guiGraphics, BookFrameOverlay overlay, int x, int y) {
+    protected void renderFrameOverlay(GuiGraphicsExtractor guiGraphics, BookFrameOverlay overlay, int x, int y) {
         if (overlay.frameWidth() > 0 && overlay.frameHeight() > 0) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, overlay.texture(), overlay.getFrameX(x), overlay.getFrameY(y), overlay.getFrameU(), overlay.getFrameV(), overlay.frameWidth(), overlay.frameHeight(), 256, 256);
         }
@@ -218,7 +218,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
 
     @Override
-    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         if (this.renderMouseXOverride != -1 && this.renderMouseYOverride != -1) {
             pMouseX = this.renderMouseXOverride;
             pMouseY = this.renderMouseYOverride;
@@ -237,7 +237,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
         for (var renderable : this.renderables) {
-            renderable.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+            renderable.extractRenderState(guiGraphics, pMouseX, pMouseY, pPartialTick);
         }
 
         this.renderMouseXOverride = -1;

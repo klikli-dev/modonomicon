@@ -12,7 +12,7 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderPipelines;
 
@@ -36,16 +36,16 @@ public class BookErrorScreen extends Screen {
         this.book = book;
     }
 
-    public void renderBookBackground(GuiGraphics guiGraphics) {
+    public void renderBookBackground(GuiGraphicsExtractor guiGraphics) {
         int x = 0;
         int y = 0;
 
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BOOK_CONTENT_TEXTURE, x, y, 0, 0, 272, 178, 512, 256);
     }
 
-    public void renderError(GuiGraphics guiGraphics, Component text, int x, int y, int width) {
+    public void renderError(GuiGraphicsExtractor guiGraphics, Component text, int x, int y, int width) {
         for (FormattedCharSequence formattedcharsequence : this.font.split(text, width)) {
-            guiGraphics.drawString(this.font, formattedcharsequence, x, y, 1, false);
+            guiGraphics.text(this.font, formattedcharsequence, x, y, 1, false);
             y += this.font.lineHeight;
         }
     }
@@ -67,7 +67,7 @@ public class BookErrorScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
         this.renderBookBackground(guiGraphics);
@@ -76,7 +76,7 @@ public class BookErrorScreen extends Screen {
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
         for (var renderable : this.renderables) {
-            renderable.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+            renderable.extractRenderState(guiGraphics, pMouseX, pMouseY, pPartialTick);
         }
 
         guiGraphics.pose().pushMatrix();

@@ -10,7 +10,7 @@ import net.minecraft.CrashReport;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -49,22 +49,22 @@ public class FabricMultiLayerScreen extends Screen {
     }
 
     @Override
-    public final void renderWithTooltipAndSubtitles(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public final void extractRenderStateWithTooltipAndSubtitles(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         guiGraphics.pose().pushMatrix();
         for (int i = 0; i < this.guiLayers.size(); i++) {
             Screen layer = this.guiLayers.get(i);
             if (i == this.guiLayers.size() - 1) {
                 // This is the last layer, it gets actual mouse over
-                layer.renderWithTooltipAndSubtitles(guiGraphics, mouseX, mouseY, partialTick);
+                layer.extractRenderStateWithTooltipAndSubtitles(guiGraphics, mouseX, mouseY, partialTick);
             } else {
-                layer.renderWithTooltipAndSubtitles(guiGraphics, Integer.MAX_VALUE, Integer.MAX_VALUE, partialTick);
+                layer.extractRenderStateWithTooltipAndSubtitles(guiGraphics, Integer.MAX_VALUE, Integer.MAX_VALUE, partialTick);
             }
         }
         guiGraphics.pose().popMatrix();
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         //do nothing
     }
 
@@ -232,13 +232,13 @@ public class FabricMultiLayerScreen extends Screen {
     }
 
     @Override
-    public void renderTransparentBackground(GuiGraphics guiGraphics) {
-        this.guiLayers.peek().renderTransparentBackground(guiGraphics);
+    public void extractTransparentBackground(GuiGraphicsExtractor guiGraphics) {
+        this.guiLayers.peek().extractTransparentBackground(guiGraphics);
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.guiLayers.peek().renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        this.guiLayers.peek().extractBackground(guiGraphics, mouseX, mouseY, partialTick);
     }
 
     @Override

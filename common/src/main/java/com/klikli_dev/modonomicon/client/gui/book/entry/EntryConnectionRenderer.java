@@ -10,7 +10,7 @@ package com.klikli_dev.modonomicon.client.gui.book.entry;
 import com.klikli_dev.modonomicon.book.BookEntryParent;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.client.gui.book.node.BookCategoryNodeScreen;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 
 import net.minecraft.resources.Identifier;
@@ -26,7 +26,7 @@ public class EntryConnectionRenderer {
         this.entryTextures = entryTextures;
     }
 
-    public void renderLinedUpEntries(GuiGraphics guiGraphics, BookEntry entry, BookEntry parentEntry, BookEntryParent parent, boolean isVertical) {
+    public void renderLinedUpEntries(GuiGraphicsExtractor guiGraphics, BookEntry entry, BookEntry parentEntry, BookEntryParent parent, boolean isVertical) {
         if (isVertical) {
             this.drawVerticalLine(guiGraphics, parentEntry.getX(), entry.getY(), parentEntry.getY());
             if (parent.drawArrow()) {
@@ -49,7 +49,7 @@ public class EntryConnectionRenderer {
         }
     }
 
-    public void renderSmallCurves(GuiGraphics guiGraphics, BookEntry entry, BookEntry parentEntry, BookEntryParent parent) {
+    public void renderSmallCurves(GuiGraphicsExtractor guiGraphics, BookEntry entry, BookEntry parentEntry, BookEntryParent parent) {
         this.drawVerticalLine(guiGraphics, entry.getX(), parentEntry.getY(), entry.getY());
         this.drawHorizontalLine(guiGraphics, parentEntry.getY(), parentEntry.getX(), entry.getX());
         if (entry.getX() > parentEntry.getX()) {
@@ -75,7 +75,7 @@ public class EntryConnectionRenderer {
         }
     }
 
-    public void renderSmallCurvesReversed(GuiGraphics guiGraphics, BookEntry entry, BookEntry parentEntry, BookEntryParent parent) {
+    public void renderSmallCurvesReversed(GuiGraphicsExtractor guiGraphics, BookEntry entry, BookEntry parentEntry, BookEntryParent parent) {
         this.drawHorizontalLine(guiGraphics, entry.getY(), entry.getX(), parentEntry.getX());
         this.drawVerticalLine(guiGraphics, parentEntry.getX(), parentEntry.getY(), entry.getY());
         if (entry.getX() < parentEntry.getX()) {
@@ -101,7 +101,7 @@ public class EntryConnectionRenderer {
         }
     }
 
-    public void renderLargeCurves(GuiGraphics guiGraphics, BookEntry entry, BookEntry parentEntry, BookEntryParent parent) {
+    public void renderLargeCurves(GuiGraphicsExtractor guiGraphics, BookEntry entry, BookEntry parentEntry, BookEntryParent parent) {
         this.drawHorizontalLineShortened(guiGraphics, parentEntry.getY(), parentEntry.getX(), entry.getX());
         this.drawVerticalLineShortened(guiGraphics, entry.getX(), entry.getY(), parentEntry.getY());
         if (entry.getX() > parentEntry.getX()) {
@@ -127,7 +127,7 @@ public class EntryConnectionRenderer {
         }
     }
 
-    public void renderLargeCurvesReversed(GuiGraphics guiGraphics, BookEntry entry, BookEntry parentEntry, BookEntryParent parent) {
+    public void renderLargeCurvesReversed(GuiGraphicsExtractor guiGraphics, BookEntry entry, BookEntry parentEntry, BookEntryParent parent) {
         this.drawHorizontalLineShortened(guiGraphics, entry.getY(), entry.getX(), parentEntry.getX());
         this.drawVerticalLineShortened(guiGraphics, parentEntry.getX(), parentEntry.getY(), entry.getY());
         if (entry.getX() > parentEntry.getX()) {
@@ -147,7 +147,7 @@ public class EntryConnectionRenderer {
         }
     }
 
-    public void render(GuiGraphics guiGraphics, BookEntry entry, BookEntryParent parent) {
+    public void render(GuiGraphicsExtractor guiGraphics, BookEntry entry, BookEntryParent parent) {
         BookEntry parentEntry = parent.getEntry();
 
         //only render if line is enabled and if we are in the same category (other category -> other page!)
@@ -190,51 +190,51 @@ public class EntryConnectionRenderer {
         return y * BookCategoryNodeScreen.ENTRY_GRID_SCALE;
     }
 
-    protected void blit(GuiGraphics guiGraphics, int pX, int pY, float pUOffset, float pVOffset, int pUWidth, int pVHeight) {
+    protected void blit(GuiGraphicsExtractor guiGraphics, int pX, int pY, float pUOffset, float pVOffset, int pUWidth, int pVHeight) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.entryTextures, pX, pY, pUOffset, pVOffset, pUWidth, pVHeight, 256, 256);
     }
 
-    protected void drawSmallCurveLeftDown(GuiGraphics guiGraphics, int x, int y) {
+    protected void drawSmallCurveLeftDown(GuiGraphicsExtractor guiGraphics, int x, int y) {
         this.blit(guiGraphics, this.screenX(x), this.screenY(y), 0, 226, 30, 30);
     }
 
-    protected void drawSmallCurveRightDown(GuiGraphics guiGraphics, int x, int y) {
+    protected void drawSmallCurveRightDown(GuiGraphicsExtractor guiGraphics, int x, int y) {
         this.blit(guiGraphics, this.screenX(x), this.screenY(y), 30, 226, 30, 30);
     }
 
-    protected void drawSmallCurveLeftUp(GuiGraphics guiGraphics, int x, int y) {
+    protected void drawSmallCurveLeftUp(GuiGraphicsExtractor guiGraphics, int x, int y) {
         this.blit(guiGraphics, this.screenX(x), this.screenY(y), 0, 196, 30, 30);
     }
 
-    protected void drawSmallCurveRightUp(GuiGraphics guiGraphics, int x, int y) {
+    protected void drawSmallCurveRightUp(GuiGraphicsExtractor guiGraphics, int x, int y) {
         this.blit(guiGraphics, this.screenX(x), this.screenY(y), 30, 196, 30, 30);
     }
 
-    protected void drawLargeCurveLeftDown(GuiGraphics guiGraphics, int x, int y) {
+    protected void drawLargeCurveLeftDown(GuiGraphicsExtractor guiGraphics, int x, int y) {
         this.blit(guiGraphics, this.screenX(x), this.screenY(y), 62, 196, 60, 60);
     }
 
-    protected void drawLargeCurveRightDown(GuiGraphics guiGraphics, int x, int y) {
+    protected void drawLargeCurveRightDown(GuiGraphicsExtractor guiGraphics, int x, int y) {
         this.blit(guiGraphics, this.screenX(x), this.screenY(y), 122, 196, 60, 60);
     }
 
-    protected void drawLargeCurveLeftUp(GuiGraphics guiGraphics, int x, int y) {
+    protected void drawLargeCurveLeftUp(GuiGraphicsExtractor guiGraphics, int x, int y) {
         this.blit(guiGraphics, this.screenX(x), this.screenY(y), 62, 134, 60, 60);
     }
 
-    protected void drawLargeCurveRightUp(GuiGraphics guiGraphics, int x, int y) {
+    protected void drawLargeCurveRightUp(GuiGraphicsExtractor guiGraphics, int x, int y) {
         this.blit(guiGraphics, this.screenX(x), this.screenY(y), 122, 134, 60, 60);
     }
 
-    void drawVerticalLineAt(GuiGraphics guiGraphics, int x, int y) {
+    void drawVerticalLineAt(GuiGraphicsExtractor guiGraphics, int x, int y) {
         this.blit(guiGraphics, this.screenX(x), this.screenY(y), 184, 164, 30, 31);
     }
 
-    void drawHorizontalLineAt(GuiGraphics guiGraphics, int x, int y) {
+    void drawHorizontalLineAt(GuiGraphicsExtractor guiGraphics, int x, int y) {
         this.blit(guiGraphics, this.screenX(x), this.screenY(y), 184, 226, 31, 30);
     }
 
-    void drawVerticalLine(GuiGraphics guiGraphics, int x, int startY, int endY) {
+    void drawVerticalLine(GuiGraphicsExtractor guiGraphics, int x, int startY, int endY) {
         int temp = startY;
 
         //swap them if endY > startY
@@ -245,7 +245,7 @@ public class EntryConnectionRenderer {
             this.drawVerticalLineAt(guiGraphics, x, j);
     }
 
-    void drawHorizontalLine(GuiGraphics guiGraphics, int y, int startX, int endX) {
+    void drawHorizontalLine(GuiGraphicsExtractor guiGraphics, int y, int startX, int endX) {
         int temp = startX;
 
         //swap them if endX > startX
@@ -257,7 +257,7 @@ public class EntryConnectionRenderer {
         }
     }
 
-    void drawHorizontalLineShortened(GuiGraphics guiGraphics, int y, int startX, int endX) {
+    void drawHorizontalLineShortened(GuiGraphicsExtractor guiGraphics, int y, int startX, int endX) {
         int temp = startX;
 
         // reduce length by one
@@ -274,7 +274,7 @@ public class EntryConnectionRenderer {
             this.drawHorizontalLineAt(guiGraphics, j, y);
     }
 
-    void drawVerticalLineShortened(GuiGraphics guiGraphics, int x, int startY, int endY) {
+    void drawVerticalLineShortened(GuiGraphicsExtractor guiGraphics, int x, int startY, int endY) {
         int temp = startY;
 
         // reduce length by one
@@ -292,19 +292,19 @@ public class EntryConnectionRenderer {
     }
 
 
-    void drawUpArrow(GuiGraphics guiGraphics, int x, int y) {
+    void drawUpArrow(GuiGraphicsExtractor guiGraphics, int x, int y) {
         this.blit(guiGraphics, this.screenX(x), this.screenY(y) - 1, 0, 134, 30, 30);
     }
 
-    void drawDownArrow(GuiGraphics guiGraphics, int x, int y) {
+    void drawDownArrow(GuiGraphicsExtractor guiGraphics, int x, int y) {
         this.blit(guiGraphics, this.screenX(x), this.screenY(y) + 1, 0, 164, 30, 30);
     }
 
-    void drawRightArrow(GuiGraphics guiGraphics, int x, int y) {
+    void drawRightArrow(GuiGraphicsExtractor guiGraphics, int x, int y) {
         this.blit(guiGraphics, this.screenX(x) + 1, this.screenY(y), 30, 134, 30, 30);
     }
 
-    void drawLeftArrow(GuiGraphics guiGraphics, int x, int y) {
+    void drawLeftArrow(GuiGraphicsExtractor guiGraphics, int x, int y) {
         this.blit(guiGraphics, this.screenX(x) - 1, this.screenY(y), 30, 164, 30, 30);
     }
 }

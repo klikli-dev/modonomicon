@@ -24,7 +24,7 @@ import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.input.KeyEvent;
@@ -81,7 +81,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         return ((this.bookParentScreen.getInnerHeight() / 2f) * (1 / this.currentZoom)) - this.scrollY / 2;
     }
 
-    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public void render(GuiGraphicsExtractor guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         if (ClientServices.CLIENT_CONFIG.enableSmoothZoom()) {
             float diff = this.targetZoom - this.currentZoom;
             this.currentZoom = this.currentZoom + Math.min(pPartialTick * (2 / 3f), 1) * diff;
@@ -148,7 +148,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         return false;
     }
 
-    public void renderBackground(GuiGraphics guiGraphics) {
+    public void renderBackground(GuiGraphicsExtractor guiGraphics) {
         //based on the frame's total width and its thickness, calculate where the inner area starts
         int innerX = this.bookParentScreen.getInnerX();
         int innerY = this.bookParentScreen.getInnerY();
@@ -187,7 +187,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         }
     }
 
-    public void renderBackgroundParallaxLayer(GuiGraphics guiGraphics, BookCategoryBackgroundParallaxLayer layer, int x, int y, int width, int height, float scrollX, float scrollY, float parallax, float xOffset, float yOffset, float zoom, int backgroundWidth, int backgroundHeight, float backgroundTextureZoomMultiplier) {
+    public void renderBackgroundParallaxLayer(GuiGraphicsExtractor guiGraphics, BookCategoryBackgroundParallaxLayer layer, int x, int y, int width, int height, float scrollX, float scrollY, float parallax, float xOffset, float yOffset, float zoom, int backgroundWidth, int backgroundHeight, float backgroundTextureZoomMultiplier) {
         float parallax1 = parallax / layer.getSpeed();
 
         if (layer.getVanishZoom() == -1 || layer.getVanishZoom() > zoom) {
@@ -200,7 +200,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     }
 
-    private void renderEntries(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    private void renderEntries(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
 
         //calculate the render offset
         float xOffset = this.getXOffset();
@@ -273,7 +273,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         guiGraphics.pose().popMatrix();
     }
 
-    public void renderEntryTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderEntryTooltips(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //calculate the render offset
         float xOffset = this.getXOffset();
         float yOffset = this.getYOffset();
@@ -300,7 +300,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                 && mouseY >= innerY && mouseY <= innerY + innerHeight;
     }
 
-    private void renderTooltip(GuiGraphics guiGraphics, BookEntry entry, EntryDisplayState displayState, float xOffset, float yOffset, int mouseX, int mouseY) {
+    private void renderTooltip(GuiGraphicsExtractor guiGraphics, BookEntry entry, EntryDisplayState displayState, float xOffset, float yOffset, int mouseX, int mouseY) {
         //hovered?
         if (this.isEntryHovered(entry, xOffset, yOffset, mouseX, mouseY)) {
 
@@ -329,7 +329,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         }
     }
 
-    private void renderConnections(GuiGraphics guiGraphics, BookEntry entry, float xOffset, float yOffset) {
+    private void renderConnections(GuiGraphicsExtractor guiGraphics, BookEntry entry, float xOffset, float yOffset) {
         //our arrows are aliased and need blending
 
         for (var parent : entry.getParents()) {

@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.client.render.page;
 
 import com.klikli_dev.modonomicon.book.page.BookTextPage;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Style;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +18,7 @@ public class BookTextPageRenderer extends BookPageRenderer<BookTextPage> impleme
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float ticks) {
+    public void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float ticks) {
         if (this.page.hasTitle()) {
             this.renderTitle(guiGraphics, this.page.getTitle(), this.page.showTitleSeparator(), BookEntryScreen.PAGE_WIDTH / 2, 0);
         }

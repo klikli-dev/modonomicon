@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.util;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 
 import net.minecraft.client.renderer.texture.SpriteContents;
@@ -25,7 +25,7 @@ import java.util.function.Function;
 
 public class GuiGraphicsExt {
 
-    public static void drawTiledSprite(GuiGraphics guiGraphics, final int tiledWidth, final int tiledHeight, int color, int scaledAmount, TextureAtlasSprite sprite, int posX, int posY) {
+    public static void drawTiledSprite(GuiGraphicsExtractor guiGraphics, final int tiledWidth, final int tiledHeight, int color, int scaledAmount, TextureAtlasSprite sprite, int posX, int posY) {
 
 
         SpriteContents spriteContents = sprite.contents();
@@ -57,7 +57,7 @@ public class GuiGraphicsExt {
     /**
      * drawString for rendering at float coordinates.
      */
-    public static void drawString(GuiGraphics guiGraphics, Font font, Component component, float x, float y, int color, boolean drawShadow) {
+    public static void drawString(GuiGraphicsExtractor guiGraphics, Font font, Component component, float x, float y, int color, boolean drawShadow) {
             int x1i = Mth.floor(x);
             int y1i = Mth.floor(y);
             float x1f = x-x1i;
@@ -65,14 +65,14 @@ public class GuiGraphicsExt {
 
         guiGraphics.pose().pushMatrix();
             guiGraphics.pose().translate(x1f, y1f);
-            guiGraphics.drawString(font, component, x1i, y1i, color, drawShadow);
+            guiGraphics.text(font, component, x1i, y1i, color, drawShadow);
         guiGraphics.pose().popMatrix();
     }
 
     /**
      * drawString for rendering at float coordinates.
      */
-    public static void drawString(GuiGraphics guiGraphics, Font font, String string, float x, float y, int color, boolean drawShadow) {
+    public static void drawString(GuiGraphicsExtractor guiGraphics, Font font, String string, float x, float y, int color, boolean drawShadow) {
         int x1i = Mth.floor(x);
         int y1i = Mth.floor(y);
         float x1f = x-x1i;
@@ -80,14 +80,14 @@ public class GuiGraphicsExt {
 
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(x1f, y1f);
-        guiGraphics.drawString(font, string, x1i, y1i, color, drawShadow);
+        guiGraphics.text(font, string, x1i, y1i, color, drawShadow);
         guiGraphics.pose().popMatrix();
     }
 
     /**
      * drawString for rendering at float coordinates.
      */
-    public static void drawString(GuiGraphics guiGraphics, Font font, FormattedCharSequence string, float x, float y, int color, boolean drawShadow) {
+    public static void drawString(GuiGraphicsExtractor guiGraphics, Font font, FormattedCharSequence string, float x, float y, int color, boolean drawShadow) {
         int x1i = Mth.floor(x);
         int y1i = Mth.floor(y);
         float x1f = x-x1i;
@@ -95,7 +95,7 @@ public class GuiGraphicsExt {
 
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(x1f, y1f);
-        guiGraphics.drawString(font, string, x1i, y1i, color, drawShadow);
+        guiGraphics.text(font, string, x1i, y1i, color, drawShadow);
         guiGraphics.pose().popMatrix();
     }
 
@@ -117,7 +117,7 @@ public class GuiGraphicsExt {
      * @param textureHeight the height of the box texture in the resource location image
      * @param borderSize    the size of the box's borders
      */
-    public static void blitWithBorder(GuiGraphics guiGraphics, RenderPipeline pipeline, Identifier texture, int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight, int borderSize) {
+    public static void blitWithBorder(GuiGraphicsExtractor guiGraphics, RenderPipeline pipeline, Identifier texture, int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight, int borderSize) {
         blitWithBorder(guiGraphics, pipeline, texture, x, y, u, v, width, height, textureWidth, textureHeight, borderSize, borderSize, borderSize, borderSize);
     }
 
@@ -141,7 +141,7 @@ public class GuiGraphicsExt {
      * @param leftBorder    the size of the box's left border
      * @param rightBorder   the size of the box's right border
      */
-    public static void blitWithBorder(GuiGraphics guiGraphics, RenderPipeline pipeline, Identifier texture, int x, int y, int u, int v, int width, int height, int maxU, int maxV, int topBorder, int bottomBorder, int leftBorder, int rightBorder) {
+    public static void blitWithBorder(GuiGraphicsExtractor guiGraphics, RenderPipeline pipeline, Identifier texture, int x, int y, int u, int v, int width, int height, int maxU, int maxV, int topBorder, int bottomBorder, int leftBorder, int rightBorder) {
         int fillerWidth = maxU - leftBorder - rightBorder;
         int fillerHeight = maxV - topBorder - bottomBorder;
         int canvasWidth = width - leftBorder - rightBorder;

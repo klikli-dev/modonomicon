@@ -15,7 +15,8 @@ import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -41,7 +42,7 @@ public class FluidRenderHelper {
      * @param fluidHolder the fluid stack representing the fluid and the amount to render.
      * @param capacity    the capacity of the fluid "slot" - together with the amount it determines the actual height of the fluid rendered within the slot.
      */
-    public static void drawFluid(GuiGraphics guiGraphics, final int width, final int height, FabricFluidHolder fluidHolder, int capacity, int x, int y) {
+    public static void drawFluid(GuiGraphicsExtractor guiGraphics, final int width, final int height, FabricFluidHolder fluidHolder, int capacity, int x, int y) {
         var fluidVariant = fluidHolder.toVariant();
         Fluid fluid = fluidHolder.getFluid().value();
         if (fluid.isSame(Fluids.EMPTY)) {
@@ -71,7 +72,9 @@ public class FluidRenderHelper {
     }
 
     private static Optional<TextureAtlasSprite> getStillFluidSprite(FluidVariant fluidVariant) {
-        TextureAtlasSprite sprite = FluidVariantRendering.getSprite(fluidVariant);
+        var fluid = fluidVariant.getFluid();
+        var fluidModel = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluid.defaultFluidState());
+        var sprite = fluidModel.stillMaterial().sprite();
         return Optional.ofNullable(sprite);
     }
 

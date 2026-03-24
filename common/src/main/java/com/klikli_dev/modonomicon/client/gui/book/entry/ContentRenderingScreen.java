@@ -17,7 +17,7 @@ import com.klikli_dev.modonomicon.platform.ClientServices;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
@@ -66,24 +66,24 @@ public interface ContentRenderingScreen {
         return mx > x && my > y && mx <= (x + w) && my <= (y + h);
     }
 
-    default void renderItemStack(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, ItemStack stack) {
+    default void renderItemStack(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY, ItemStack stack) {
         if (stack.isEmpty() || !PageRendererRegistry.isRenderable(stack)) {
             return;
         }
 
-        guiGraphics.renderItem(stack, x, y);
-        guiGraphics.renderItemDecorations(this.getContentFont(), stack, x, y);
+        guiGraphics.item(stack, x, y);
+        guiGraphics.itemDecorations(this.getContentFont(), stack, x, y);
 
         if (this.isMouseInRange(mouseX, mouseY, x, y, 16, 16)) {
             this.setTooltipStack(stack);
         }
     }
 
-    default void renderItemStacks(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, Collection<ItemStack> stacks) {
+    default void renderItemStacks(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY, Collection<ItemStack> stacks) {
         this.renderItemStacks(guiGraphics, x, y, mouseX, mouseY, stacks, -1);
     }
 
-    default void renderItemStacks(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, Collection<ItemStack> stacks, int countOverride) {
+    default void renderItemStacks(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY, Collection<ItemStack> stacks, int countOverride) {
         var filteredStacks = PageRendererRegistry.filterRenderableItemStacks(stacks);
         if (filteredStacks.size() > 0) {
             var currentStack = filteredStacks.get((this.getTicksInBook() / 20) % filteredStacks.size());
@@ -91,19 +91,19 @@ public interface ContentRenderingScreen {
         }
     }
 
-    default void renderIngredient(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, Ingredient ingr) {
+    default void renderIngredient(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY, Ingredient ingr) {
         this.renderItemStacks(guiGraphics, x, y, mouseX, mouseY, ingr.display().resolveForStacks(SlotDisplayContext.fromLevel(Minecraft.getInstance().level)), -1);
     }
 
-    default void renderIngredient(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, Ingredient ingr, int countOverride) {
+    default void renderIngredient(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY, Ingredient ingr, int countOverride) {
         this.renderItemStacks(guiGraphics, x, y, mouseX, mouseY, ingr.display().resolveForStacks(SlotDisplayContext.fromLevel(Minecraft.getInstance().level)), countOverride);
     }
 
-    default void renderFluidStack(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, FluidHolder stack) {
+    default void renderFluidStack(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY, FluidHolder stack) {
         this.renderFluidStack(guiGraphics, x, y, mouseX, mouseY, stack, FluidHolder.BUCKET_VOLUME);
     }
 
-    default void renderFluidStack(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, FluidHolder stack, int capacity) {
+    default void renderFluidStack(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY, FluidHolder stack, int capacity) {
         if (stack.isEmpty() || !PageRendererRegistry.isRenderable(stack)) {
             return;
         }
@@ -117,11 +117,11 @@ public interface ContentRenderingScreen {
         }
     }
 
-    default void renderFluidStacks(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, Collection<FluidHolder> stacks) {
+    default void renderFluidStacks(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY, Collection<FluidHolder> stacks) {
         this.renderFluidStacks(guiGraphics, x, y, mouseX, mouseY, stacks, FluidHolder.BUCKET_VOLUME);
     }
 
-    default void renderFluidStacks(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, Collection<FluidHolder> stacks, int capacity) {
+    default void renderFluidStacks(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY, Collection<FluidHolder> stacks, int capacity) {
         var filteredStacks = PageRendererRegistry.filterRenderableFluidStacks(stacks);
         if (filteredStacks.size() > 0) {
             this.renderFluidStack(guiGraphics, x, y, mouseX, mouseY, filteredStacks.get((this.getTicksInBook() / 20) % filteredStacks.size()), capacity);
@@ -131,7 +131,7 @@ public interface ContentRenderingScreen {
     /**
      * Our copy of guiGraphics.renderComponentHoverEffect(); to handle book links
      */
-    default void renderComponentHoverEffect(GuiGraphics guiGraphics, @Nullable Style style, int mouseX, int mouseY) {
+    default void renderComponentHoverEffect(GuiGraphicsExtractor guiGraphics, @Nullable Style style, int mouseX, int mouseY) {
 
         guiGraphics.pose().pushMatrix();
         //TODO: we had a +1000 z translate here
