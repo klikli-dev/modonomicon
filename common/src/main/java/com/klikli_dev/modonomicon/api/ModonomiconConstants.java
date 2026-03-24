@@ -163,8 +163,14 @@ public class ModonomiconConstants {
             public static final String BOOKMARKS_ENTRY_LIST_TITLE = PREFIX + "bookmarks.entry_list_title";
             public static final String BOOKMARKS_NO_RESULTS = PREFIX + "bookmarks.no_results";
 
+            public static final String RECENTLY_UNLOCKED_SCREEN_TITLE = PREFIX + "recently_unlocked.screen.title";
+            public static final String RECENTLY_UNLOCKED_INFO_TEXT = PREFIX + "recently_unlocked.info";
+            public static final String RECENTLY_UNLOCKED_ENTRY_LIST_TITLE = PREFIX + "recently_unlocked.entry_list_title";
+            public static final String RECENTLY_UNLOCKED_NO_RESULTS = PREFIX + "recently_unlocked.no_results";
+
             public static final String OPEN_SEARCH = PREFIX + "open_search";
             public static final String OPEN_BOOKMARKS = PREFIX + "open_bookmarks";
+            public static final String OPEN_RECENTLY_UNLOCKED = PREFIX + "open_recently_unlocked";
             public static final String ADD_BOOKMARK = PREFIX + "add_bookmark";
             public static final String REMOVE_BOOKMARK = PREFIX + "remove_bookmark";
 
