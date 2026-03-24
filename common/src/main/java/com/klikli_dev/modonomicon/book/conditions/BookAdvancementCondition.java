@@ -70,6 +70,10 @@ public class BookAdvancementCondition extends BookCondition {
 
     @Override
     public boolean test(BookConditionContext context, Player player) {
+        if (Services.SERVER_CONFIG.disableAdvancementLocking()) {
+            return true;
+        }
+
         if (player instanceof ServerPlayer serverPlayer) {
             var advancement = serverPlayer.level().getServer().getAdvancements().get(this.advancementId);
             return advancement != null && serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone();

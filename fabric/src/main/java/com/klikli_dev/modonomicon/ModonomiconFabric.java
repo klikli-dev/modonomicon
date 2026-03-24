@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon;
 
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
+import com.klikli_dev.modonomicon.config.ServerConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
@@ -40,6 +41,8 @@ public class ModonomiconFabric implements ModInitializer {
 
         // Use Fabric to bootstrap the Common mod.
         Modonomicon.init();
+
+        ServerConfig.init();
 
         //Most registries are handled by common, but creative tabs are easier per loader
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, CreativeModeTabRegistry.MODONOMICON_TAB_KEY, CreativeModeTabRegistry.MODONOMICON);

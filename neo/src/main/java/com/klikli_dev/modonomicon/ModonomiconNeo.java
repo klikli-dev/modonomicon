@@ -15,6 +15,7 @@ import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.client.render.pip.GuiMultiblockRenderer;
 import com.klikli_dev.modonomicon.client.render.state.pip.GuiMultiblockRenderState;
 import com.klikli_dev.modonomicon.config.ClientConfig;
+import com.klikli_dev.modonomicon.config.ServerConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
@@ -64,6 +65,7 @@ public class ModonomiconNeo {
         Modonomicon.init();
 
         modContainer.registerConfig(ModConfig.Type.CLIENT, ClientConfig.get().spec);
+        modContainer.registerConfig(ModConfig.Type.SERVER, ServerConfig.get().spec);
 
         //Most registries are handled by common, but creative tabs are easier per loader
         CreativeModeTabRegistry.CREATIVE_MODE_TABS.register(modEventBus);

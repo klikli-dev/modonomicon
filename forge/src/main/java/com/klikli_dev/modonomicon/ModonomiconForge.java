@@ -15,6 +15,7 @@ import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.client.render.pip.GuiMultiblockRenderer;
 import com.klikli_dev.modonomicon.client.render.state.pip.GuiMultiblockRenderState;
 import com.klikli_dev.modonomicon.config.ClientConfig;
+import com.klikli_dev.modonomicon.config.ServerConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
@@ -60,6 +61,7 @@ public class ModonomiconForge {
         Modonomicon.init();
 
         context.registerConfig(ModConfig.Type.CLIENT, ClientConfig.get().spec);
+        context.registerConfig(ModConfig.Type.SERVER, ServerConfig.get().spec);
 
         var modBusGroup = context.getModBusGroup();
 
