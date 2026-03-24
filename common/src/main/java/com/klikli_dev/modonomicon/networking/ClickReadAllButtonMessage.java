@@ -49,6 +49,12 @@ public class ClickReadAllButtonMessage implements Message {
                 }
             }
 
+            for (var category : book.getCategories().values()) {
+                if ((this.readAll || BookUnlockStateManager.get().isUnlockedFor(player, category)) && BookUnlockStateManager.get().readCategoryFor(player, category)) {
+                    anyRead = true;
+                }
+            }
+
             if (anyRead) {
                 BookUnlockStateManager.get().updateAndSyncFor(player);
             }
