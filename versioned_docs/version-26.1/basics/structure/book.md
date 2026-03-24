@@ -255,6 +255,14 @@ If set to `true`, the book will not throw an error when trying to open a book wi
 
 The main use for this is for mods that have external translators for their books, where translations might be outdated after entries have been removed or moved.
 
+### **show_recently_unlocked** (Boolean, _optional_)
+
+Default value: `true`.
+
+If set to `true`, a "Recently Unlocked" button will be shown in the book sidebar (above the bookmarks button). Clicking it opens a paginated view of all entries the player has unlocked, sorted with unread entries first and then by most recent unlock timestamp.
+
+Set to `false` to hide the button.
+
 ## Usage Examples
 
 `/data/<mod_id>/modonomicon/books/<book_id>/book.json`:
