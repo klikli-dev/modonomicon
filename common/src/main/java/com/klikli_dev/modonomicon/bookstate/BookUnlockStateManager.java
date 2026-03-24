@@ -104,6 +104,10 @@ public class BookUnlockStateManager {
         return this.getStateFor(player).isRead(entry);
     }
 
+    public boolean isCategoryReadFor(Player player, BookCategory category) {
+        return this.getStateFor(player).isCategoryRead(category);
+    }
+
     public boolean canRunFor(Player player, BookCommand command) {
         return this.getStateFor(player).canRun(command);
     }
@@ -122,6 +126,13 @@ public class BookUnlockStateManager {
      */
     public boolean readFor(ServerPlayer player, BookEntry entry) {
         return this.getStateFor(player).read(entry, player);
+    }
+
+    /**
+     * Modifies state, but does not call syncFor, needs to be done by the caller side if needed.
+     */
+    public boolean readCategoryFor(ServerPlayer player, BookCategory category) {
+        return this.getStateFor(player).readCategory(category);
     }
 
     public void onAdvancement(ServerPlayer player) {
