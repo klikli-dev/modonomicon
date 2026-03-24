@@ -24,7 +24,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -72,6 +74,10 @@ public class BookUnlockStateManager {
             this.syncRequestedPlayers.add(player.getUUID());
             this.wasLoaded = false;
         }
+    }
+
+    public Map<Identifier, Long> getUnlockTimestampsFor(Player player, Book book) {
+        return this.getStateFor(player).unlockTimestamps.getOrDefault(book.getId(), Collections.emptyMap());
     }
 
     public List<Identifier> getBooksFor(Player player) {
