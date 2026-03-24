@@ -53,6 +53,8 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
     private BookCategoryNodeScreen currentCategoryNodeScreen;
     private boolean hasUnreadEntries;
     private boolean hasUnreadUnlockedEntries;
+    private boolean hasUnreadCategories;
+    private boolean hasUnreadUnlockedCategories;
 
     private int categoryButtonRenderOffset = 0;
 
@@ -79,6 +81,12 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
         //check if any currently unlocked entry is unread
         this.hasUnreadUnlockedEntries = this.book.getEntries().values().stream().anyMatch(e -> BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e) && !BookUnlockStateManager.get().isReadFor(this.minecraft.player, e));
+
+        //check if ANY category is unread
+        this.hasUnreadCategories = this.book.getCategories().values().stream().anyMatch(c -> !BookUnlockStateManager.get().isCategoryReadFor(this.minecraft.player, c));
+
+        //check if any currently unlocked category is unread
+        this.hasUnreadUnlockedCategories = this.book.getCategories().values().stream().anyMatch(c -> BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, c) && !BookUnlockStateManager.get().isCategoryReadFor(this.minecraft.player, c));
     }
 
     public BookCategoryNodeScreen getCurrentCategoryScreen() {
@@ -195,7 +203,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
     }
 
     protected boolean canSeeReadAllButton() {
-        return this.hasUnreadEntries || this.hasUnreadUnlockedEntries;
+        return this.hasUnreadEntries || this.hasUnreadUnlockedEntries || this.hasUnreadCategories || this.hasUnreadUnlockedCategories;
     }
 
     @Override

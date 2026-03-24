@@ -19,6 +19,7 @@ public class Networking {
         var registrar = event.registrar(Modonomicon.MOD_ID);
 
         registrar.playToServer(BookEntryReadMessage.TYPE, BookEntryReadMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToServer(BookCategoryReadMessage.TYPE, BookCategoryReadMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToServer(ClickCommandLinkMessage.TYPE, ClickCommandLinkMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToServer(ClickReadAllButtonMessage.TYPE, ClickReadAllButtonMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToServer(SaveBookStateMessage.TYPE, SaveBookStateMessage.STREAM_CODEC, MessageHandler::handle);

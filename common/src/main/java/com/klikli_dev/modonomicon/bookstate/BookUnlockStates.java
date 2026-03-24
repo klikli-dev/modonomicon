@@ -42,7 +42,8 @@ public class BookUnlockStates {
             Codec.unboundedMap(Identifier.CODEC, Codec.unboundedMap(Identifier.CODEC, Codecs.set(Codec.INT))).fieldOf("unlockedPages").forGetter((s) -> s.unlockedPages),
             Codec.unboundedMap(Identifier.CODEC, Codecs.set(Identifier.CODEC)).fieldOf("unlockedEntries").forGetter((s) -> s.unlockedEntries),
             Codec.unboundedMap(Identifier.CODEC, Codecs.set(Identifier.CODEC)).fieldOf("unlockedCategories").forGetter((s) -> s.unlockedCategories),
-            Codec.unboundedMap(Identifier.CODEC, Codec.unboundedMap(Identifier.CODEC, Codec.INT)).fieldOf("usedCommands").forGetter((s) -> s.usedCommands)
+            Codec.unboundedMap(Identifier.CODEC, Codec.unboundedMap(Identifier.CODEC, Codec.INT)).fieldOf("usedCommands").forGetter((s) -> s.usedCommands),
+            Codec.unboundedMap(Identifier.CODEC, Codecs.set(Identifier.CODEC)).optionalFieldOf("readCategories", Object2ObjectMaps.emptyMap()).forGetter((s) -> s.readCategories)
     ).apply(instance, BookUnlockStates::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BookUnlockStates> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC);
@@ -73,15 +74,21 @@ public class BookUnlockStates {
      */
     public Map<Identifier, Map<Identifier, Integer>> usedCommands;
 
+    /**
+     * Map Book ID to read category IDs
+     */
+    public Map<Identifier, Set<Identifier>> readCategories;
+
     public BookUnlockStates() {
-        this(Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap());
+        this(Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap());
     }
 
     public BookUnlockStates(Map<Identifier, Set<Identifier>> readEntries,
                             Map<Identifier, Map<Identifier, Set<Integer>>> unlockedPages,
                             Map<Identifier, Set<Identifier>> unlockedEntries,
                             Map<Identifier, Set<Identifier>> unlockedCategories,
-                            Map<Identifier, Map<Identifier, Integer>> usedCommands) {
+                            Map<Identifier, Map<Identifier, Integer>> usedCommands,
+                            Map<Identifier, Set<Identifier>> readCategories) {
         this.readEntries = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>(readEntries));
 
         this.unlockedPages = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
@@ -101,6 +108,8 @@ public class BookUnlockStates {
             var innerMap = this.usedCommands.computeIfAbsent(bookId, k -> Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>()));
             innerMap.putAll(commandUsesMap);
         });
+
+        this.readCategories = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>(readCategories));
     }
 
     public void update(ServerPlayer owner) {
@@ -239,6 +248,24 @@ public class BookUnlockStates {
         return true;
     }
 
+    /**
+     * @return true if category is now read, false if it was already read before.
+     */
+    public boolean readCategory(BookCategory category) {
+        if (this.isCategoryRead(category))
+            return false;
+
+        this.readCategories.computeIfAbsent(category.getBook().getId(), k -> new ObjectOpenHashSet<>()).add(category.getId());
+
+        return true;
+    }
+
+    public boolean isCategoryRead(BookCategory category) {
+        if (category.getBook() == null)
+            return false;
+        return this.readCategories.getOrDefault(category.getBook().getId(), Set.of()).contains(category.getId());
+    }
+
     public void setRun(BookCommand command) {
         if (command.getBook() == null)
             return;
@@ -294,6 +321,7 @@ public class BookUnlockStates {
         this.unlockedPages.remove(book.getId());
         this.unlockedEntries.remove(book.getId());
         this.unlockedCategories.remove(book.getId());
+        this.readCategories.remove(book.getId());
         //Do not reset the commands!
     }
 
@@ -303,6 +331,7 @@ public class BookUnlockStates {
         books.addAll(this.unlockedPages.keySet());
         books.addAll(this.unlockedEntries.keySet());
         books.addAll(this.unlockedCategories.keySet());
+        books.addAll(this.readCategories.keySet());
         return books.stream().toList();
     }
 
@@ -330,6 +359,10 @@ public class BookUnlockStates {
         buf.writeVarInt(readEntries.size());
         readEntries.forEach(buf::writeIdentifier);
 
+        var readCategories = this.readCategories.getOrDefault(book.getId(), Set.of());
+        buf.writeVarInt(readCategories.size());
+        readCategories.forEach(buf::writeIdentifier);
+
         byte[] bytes = new byte[buf.readableBytes()];
         buf.readBytes(bytes);
 
@@ -350,6 +383,7 @@ public class BookUnlockStates {
             var unlockedEntries = new ObjectOpenHashSet<Identifier>();
             var unlockedPages = new Object2ObjectOpenHashMap<Identifier, Set<Integer>>();
             var readEntries = new ObjectOpenHashSet<Identifier>();
+            var readCategories = new ObjectOpenHashSet<Identifier>();
 
             var unlockedCategoriesSize = buf.readVarInt();
             for (var i = 0; i < unlockedCategoriesSize; i++) {
@@ -378,15 +412,24 @@ public class BookUnlockStates {
                 readEntries.add(buf.readIdentifier());
             }
 
+            // Read categories - added later, so may not be present in older unlock codes
+            if (buf.isReadable()) {
+                var readCategoriesSize = buf.readVarInt();
+                for (var i = 0; i < readCategoriesSize; i++) {
+                    readCategories.add(buf.readIdentifier());
+                }
+            }
+
             unlockedCategories.trim();
             unlockedPages.trim();
-            unlockedPages.trim();
             readEntries.trim();
+            readCategories.trim();
 
             this.unlockedCategories.put(bookId, unlockedCategories);
             this.unlockedEntries.put(bookId, unlockedEntries);
             this.unlockedPages.put(bookId, unlockedPages);
             this.readEntries.put(bookId, readEntries);
+            this.readCategories.put(bookId, readCategories);
 
             return book;
         } catch (Exception e) {

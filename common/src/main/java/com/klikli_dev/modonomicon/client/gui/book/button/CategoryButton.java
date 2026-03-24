@@ -7,9 +7,12 @@
 package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
+import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.node.BookParentNodeScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -85,6 +88,13 @@ public class CategoryButton extends Button {
 
             guiGraphics.pose().popMatrix();
             guiGraphics.pose().popMatrix();
+
+            //render unread category indicator
+            if (!BookUnlockStateManager.get().isCategoryReadFor(Minecraft.getInstance().player, this.category)) {
+                BookContentRenderer.drawUnreadIndicator(guiGraphics, this.category.getBook(),
+                        renderX + renderWidth - 11 + 2, this.getY() - 2, this.isHovered());
+            }
+
             guiGraphics.pose().popMatrix();
         }
     }

@@ -97,6 +97,16 @@ public class CategoryListButton extends Button {
             guiGraphics.text(Minecraft.getInstance().font, name, x, y, this.getEntryColor(), false);
 
             guiGraphics.pose().popMatrix();
+
+            //render unread category indicator
+            if (!locked && !BookUnlockStateManager.get().isCategoryReadFor(Minecraft.getInstance().player, this.category)) {
+                guiGraphics.pose().pushMatrix();
+                guiGraphics.pose().scale(0.5F, 0.5F);
+                BookContentRenderer.drawUnreadIndicator(guiGraphics, this.category.getBook(),
+                        this.getX() * 2 + BookEntryScreen.PAGE_WIDTH * 2 - 11 - 2, this.getY() * 2 + 2, this.isHovered());
+                guiGraphics.pose().scale(2F, 2F);
+                guiGraphics.pose().popMatrix();
+            }
         }
     }
 
