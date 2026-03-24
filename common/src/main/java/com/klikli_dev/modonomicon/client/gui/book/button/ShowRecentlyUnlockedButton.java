@@ -32,7 +32,7 @@ public class ShowRecentlyUnlockedButton extends Button {
 
             int scissorX = this.scissorX + xOffset;
             int texX = 68;
-            int texY = 165;
+            int texY = 185;
 
             int renderX = this.getX();
             int scissorWidth = this.width + (this.getX() - this.scissorX);
