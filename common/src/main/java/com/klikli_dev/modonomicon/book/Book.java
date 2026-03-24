@@ -111,7 +111,7 @@ public class Book {
 
     /**
      * If true, a "Recently Unlocked" button is shown that lists entries sorted by unlock timestamp.
-     * Useful for books with many conditional entries. Defaults to false.
+     * Useful for books with many conditional entries. Defaults to true.
      */
     protected boolean showRecentlyUnlocked;
 
@@ -239,7 +239,7 @@ public class Book {
 
         var allowOpenBooksWithInvalidLinks = GsonHelper.getAsBoolean(json, "allow_open_book_with_invalid_links", false);
 
-        var showRecentlyUnlocked = GsonHelper.getAsBoolean(json, "show_recently_unlocked", false);
+        var showRecentlyUnlocked = GsonHelper.getAsBoolean(json, "show_recently_unlocked", true);
 
         return new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font, bookOverviewTexture,
                 frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
