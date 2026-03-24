@@ -14,6 +14,7 @@ public class Networking {
 
     public static void registerReceivers() {
         ServerPlayNetworking.registerGlobalReceiver(BookEntryReadMessage.TYPE, new ServerMessageHandler<>());
+        ServerPlayNetworking.registerGlobalReceiver(BookCategoryReadMessage.TYPE, new ServerMessageHandler<>());
         ServerPlayNetworking.registerGlobalReceiver(ClickCommandLinkMessage.TYPE, new ServerMessageHandler<>());
         ServerPlayNetworking.registerGlobalReceiver(ClickReadAllButtonMessage.TYPE, new ServerMessageHandler<>());
         ServerPlayNetworking.registerGlobalReceiver(SaveBookStateMessage.TYPE, new ServerMessageHandler<>());
@@ -30,6 +31,7 @@ public class Networking {
     public static void registerMessages() {
         //to server
         PayloadTypeRegistry.serverboundPlay().register(BookEntryReadMessage.TYPE, BookEntryReadMessage.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(BookCategoryReadMessage.TYPE, BookCategoryReadMessage.STREAM_CODEC);
         PayloadTypeRegistry.serverboundPlay().register(ClickCommandLinkMessage.TYPE, ClickCommandLinkMessage.STREAM_CODEC);
         PayloadTypeRegistry.serverboundPlay().register(ClickReadAllButtonMessage.TYPE, ClickReadAllButtonMessage.STREAM_CODEC);
         PayloadTypeRegistry.serverboundPlay().register(SaveBookStateMessage.TYPE, SaveBookStateMessage.STREAM_CODEC);

@@ -227,6 +227,11 @@ public class BookGuiManager {
             BookGuiManager.get().closeCategoryScreen(this.openBookCategoryScreen);
         }
 
+        //Mark category as read if not already read
+        if (!BookUnlockStateManager.get().isCategoryReadFor(this.player(), category)) {
+            Services.NETWORK.sendToServer(new BookCategoryReadMessage(category.getBook().getId(), category.getId()));
+        }
+
         var displayMode = category.getDisplayMode();
         //if the book is in index mode, force all categories into index mode too!
         if (displayMode == BookDisplayMode.INDEX || category.getBook().getDisplayMode() == BookDisplayMode.INDEX) {

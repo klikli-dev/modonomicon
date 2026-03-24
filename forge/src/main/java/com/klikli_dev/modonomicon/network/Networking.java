@@ -68,6 +68,12 @@ public class Networking {
                 .consumerNetworkThread((BiConsumer<BookEntryReadMessage, CustomPayloadEvent.Context>) MessageHandler::handle)
                 .add();
 
+        INSTANCE.messageBuilder(BookCategoryReadMessage.class)
+                .encoder(encoder(BookCategoryReadMessage.STREAM_CODEC))
+                .decoder(decoder(BookCategoryReadMessage.STREAM_CODEC))
+                .consumerNetworkThread((BiConsumer<BookCategoryReadMessage, CustomPayloadEvent.Context>) MessageHandler::handle)
+                .add();
+
         INSTANCE.messageBuilder(ClickCommandLinkMessage.class)
                 .encoder(encoder(ClickCommandLinkMessage.STREAM_CODEC))
                 .decoder(decoder(ClickCommandLinkMessage.STREAM_CODEC))
