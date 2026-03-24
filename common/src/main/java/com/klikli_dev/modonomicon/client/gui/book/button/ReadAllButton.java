@@ -8,20 +8,16 @@ package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
-import com.klikli_dev.modonomicon.platform.ClientServices;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.renderer.RenderPipelines;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.Util;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 
@@ -110,22 +106,22 @@ public class ReadAllButton extends Button {
         if (flag && Util.getMillis() - this.hoveredStartTime > (long) this.tooltipMsDelay) {
             var tooltip = this.getCustomTooltip();
 
-            guiGraphics.setTooltipForNextFrame(tooltip, mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(Minecraft.getInstance().font, tooltip, Optional.empty(), mouseX, mouseY);
         }
 
     }
 
-    public MutableComponent getCustomTooltip() {
+    public List<Component> getCustomTooltip() {
 
         if (Minecraft.getInstance().hasShiftDown()) {
-            return Component.empty().append(this.tooltipReadAll).append(Component.literal("\n\n")).append(this.tooltipShiftWarning);
+            return List.of(this.tooltipReadAll, Component.empty(), this.tooltipShiftWarning);
         }
 
         if (this.hasUnreadUnlockedEntries.get()) {
-            return Component.empty().append(this.tooltipReadUnlocked).append(Component.literal("\n\n")).append(this.tooltipShiftInstructions);
+            return List.of(this.tooltipReadUnlocked, Component.empty(), this.tooltipShiftInstructions);
         }
 
-        return Component.empty().append(this.tooltipNone).append(Component.literal("\n\n")).append(this.tooltipShiftInstructions);
+        return List.of(this.tooltipNone, Component.empty(), this.tooltipShiftInstructions);
     }
 
 }
