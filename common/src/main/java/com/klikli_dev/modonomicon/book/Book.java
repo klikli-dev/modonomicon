@@ -110,6 +110,12 @@ public class Book {
     protected boolean allowOpenBooksWithInvalidLinks;
 
     /**
+     * If true, a "Recently Unlocked" button is shown that lists entries sorted by unlock timestamp.
+     * Useful for books with many conditional entries. Defaults to true.
+     */
+    protected boolean showRecentlyUnlocked;
+
+    /**
      * A map of macros. This is filled automatically based on LoaderRegistry#dynamicTextMacroLoaders, not loaded from JSON.
      */
     protected final Map<String, String> textMacros = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
@@ -120,7 +126,7 @@ public class Book {
                 Identifier bookContentTexture, Identifier craftingTexture, Identifier turnPageSound,
                 int defaultTitleColor, int defaultTextColor, float categoryButtonIconScale, boolean autoAddReadConditions, int bookTextOffsetX, int bookTextOffsetY, int bookTextOffsetWidth, int bookTextOffsetHeight,
                 int categoryButtonXOffset, int categoryButtonYOffset, int searchButtonXOffset, int searchButtonYOffset, int readAllButtonYOffset, Identifier leafletEntry,
-                PageDisplayMode pageDisplayMode, Identifier singlePageTexture, boolean allowOpenBooksWithInvalidLinks) {
+                PageDisplayMode pageDisplayMode, Identifier singlePageTexture, boolean allowOpenBooksWithInvalidLinks, boolean showRecentlyUnlocked) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -164,6 +170,8 @@ public class Book {
         this.singlePageTexture = singlePageTexture;
 
         this.allowOpenBooksWithInvalidLinks = allowOpenBooksWithInvalidLinks;
+
+        this.showRecentlyUnlocked = showRecentlyUnlocked;
     }
 
     public static Book fromJson(Identifier id, JsonObject json, HolderLookup.Provider provider) {
@@ -231,10 +239,12 @@ public class Book {
 
         var allowOpenBooksWithInvalidLinks = GsonHelper.getAsBoolean(json, "allow_open_book_with_invalid_links", false);
 
+        var showRecentlyUnlocked = GsonHelper.getAsBoolean(json, "show_recently_unlocked", true);
+
         return new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font, bookOverviewTexture,
                 frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
                 bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, defaultTextColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, bookTextOffsetHeight,
-                categoryButtonXOffset, categoryButtonYOffset, searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset, leafletEntry, pageDisplayMode, singlePageTexture, allowOpenBooksWithInvalidLinks);
+                categoryButtonXOffset, categoryButtonYOffset, searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset, leafletEntry, pageDisplayMode, singlePageTexture, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked);
     }
 
 
@@ -286,11 +296,13 @@ public class Book {
 
         var allowOpenBooksWithInvalidLinks = buffer.readBoolean();
 
+        var showRecentlyUnlocked = buffer.readBoolean();
+
         var textMacros = buffer.readMap((b) -> b.readUtf(), (b) -> b.readUtf()); //necessary because using lambda causes ambiguous reference in Neo with their IFriendlyByteBufExtension#readMap
         var book = new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font, bookOverviewTexture,
                 frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
                 bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, defaultTextColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, bookTextOffsetHeight,
-                categoryButtonXOffset, categoryButtonYOffset, searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset, leafletEntry, pageDisplayMode, singlePageTexture, allowOpenBooksWithInvalidLinks);
+                categoryButtonXOffset, categoryButtonYOffset, searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset, leafletEntry, pageDisplayMode, singlePageTexture, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked);
 
         book.textMacros().putAll(textMacros);
 
@@ -387,6 +399,7 @@ public class Book {
         buffer.writeIdentifier(this.singlePageTexture);
 
         buffer.writeBoolean(this.allowOpenBooksWithInvalidLinks);
+        buffer.writeBoolean(this.showRecentlyUnlocked);
         buffer.writeMap(this.textMacros, (b, v) -> b.writeUtf(v), (b, v) -> b.writeUtf(v));  //necessary because using lambda causes ambiguous reference in Neo with their IFriendlyByteBufExtension#writeMap
     }
 
@@ -589,5 +602,9 @@ public class Book {
 
     public boolean allowOpenBooksWithInvalidLinks() {
         return this.allowOpenBooksWithInvalidLinks;
+    }
+
+    public boolean showRecentlyUnlocked() {
+        return this.showRecentlyUnlocked;
     }
 }

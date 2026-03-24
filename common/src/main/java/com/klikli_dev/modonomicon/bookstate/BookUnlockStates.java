@@ -43,7 +43,8 @@ public class BookUnlockStates {
             Codec.unboundedMap(Identifier.CODEC, Codecs.set(Identifier.CODEC)).fieldOf("unlockedEntries").forGetter((s) -> s.unlockedEntries),
             Codec.unboundedMap(Identifier.CODEC, Codecs.set(Identifier.CODEC)).fieldOf("unlockedCategories").forGetter((s) -> s.unlockedCategories),
             Codec.unboundedMap(Identifier.CODEC, Codec.unboundedMap(Identifier.CODEC, Codec.INT)).fieldOf("usedCommands").forGetter((s) -> s.usedCommands),
-            Codec.unboundedMap(Identifier.CODEC, Codecs.set(Identifier.CODEC)).optionalFieldOf("readCategories", Object2ObjectMaps.emptyMap()).forGetter((s) -> s.readCategories)
+            Codec.unboundedMap(Identifier.CODEC, Codecs.set(Identifier.CODEC)).optionalFieldOf("readCategories", Object2ObjectMaps.emptyMap()).forGetter((s) -> s.readCategories),
+            Codec.unboundedMap(Identifier.CODEC, Codec.unboundedMap(Identifier.CODEC, Codec.LONG)).optionalFieldOf("unlockTimestamps", Object2ObjectMaps.emptyMap()).forGetter((s) -> s.unlockTimestamps)
     ).apply(instance, BookUnlockStates::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BookUnlockStates> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC);
@@ -79,8 +80,13 @@ public class BookUnlockStates {
      */
     public Map<Identifier, Set<Identifier>> readCategories;
 
+    /**
+     * Map Book ID to entry IDs to unlock timestamps
+     */
+    public Map<Identifier, Map<Identifier, Long>> unlockTimestamps;
+
     public BookUnlockStates() {
-        this(Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap());
+        this(Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap());
     }
 
     public BookUnlockStates(Map<Identifier, Set<Identifier>> readEntries,
@@ -88,7 +94,8 @@ public class BookUnlockStates {
                             Map<Identifier, Set<Identifier>> unlockedEntries,
                             Map<Identifier, Set<Identifier>> unlockedCategories,
                             Map<Identifier, Map<Identifier, Integer>> usedCommands,
-                            Map<Identifier, Set<Identifier>> readCategories) {
+                            Map<Identifier, Set<Identifier>> readCategories,
+                            Map<Identifier, Map<Identifier, Long>> unlockTimestamps) {
         this.readEntries = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>(readEntries));
 
         this.unlockedPages = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
@@ -110,6 +117,12 @@ public class BookUnlockStates {
         });
 
         this.readCategories = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>(readCategories));
+
+        this.unlockTimestamps = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+        unlockTimestamps.forEach((bookId, entryTimestampsMap) -> {
+            var innerMap = this.unlockTimestamps.computeIfAbsent(bookId, k -> Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>()));
+            innerMap.putAll(entryTimestampsMap);
+        });
     }
 
     public void update(ServerPlayer owner) {
@@ -117,6 +130,8 @@ public class BookUnlockStates {
 
         //store conditions that are not unlocked when first checked, but may be unlocked due to changes later in the first pass.
         List<Map.Entry<BookCondition, BookConditionContext>> conditionsThatRequireMultipass = new ArrayList<>();
+
+        long now = System.currentTimeMillis();
 
         for (var book : BookDataManager.get().getBooks().values()) {
             BookErrorManager.get().reset();
@@ -144,9 +159,13 @@ public class BookUnlockStates {
 
                     try {
                         var entryContext = BookConditionContext.of(book, entry);
-                        if (entry.getCondition().test(entryContext, owner))
-                            this.unlockedEntries.computeIfAbsent(book.getId(), k -> new ObjectOpenHashSet<>()).add(entry.getId());
-                        else if (entry.getCondition().requiresMultiPassUnlockTest())
+                        if (entry.getCondition().test(entryContext, owner)) {
+                            var unlocked = this.unlockedEntries.computeIfAbsent(book.getId(), k -> new ObjectOpenHashSet<>());
+                            if (!unlocked.contains(entry.getId())) {
+                                unlocked.add(entry.getId());
+                                this.unlockTimestamps.computeIfAbsent(book.getId(), k -> new Object2ObjectOpenHashMap<>()).put(entry.getId(), now);
+                            }
+                        } else if (entry.getCondition().requiresMultiPassUnlockTest())
                             //if the condition is not met AND it requires a multi pass unlock test we store it to test again later
                             //this is because if the condition depends on an unlock that may happen later in the first pass it should unlock this condition alongside
                             conditionsThatRequireMultipass.add(Map.entry(entry.getCondition(), entryContext));
@@ -195,22 +214,26 @@ public class BookUnlockStates {
                         condition.getValue().toString()
                 );
 
-                //check if condition is now unlocked
-                if (condition.getKey().test(condition.getValue(), owner)) {
-                    try {
-                        //then store the unlock result
-                        if (condition.getValue() instanceof BookConditionPageContext pageContext) {
-                            var pages = this.unlockedPages.computeIfAbsent(pageContext.getBook().getId(), k -> new Object2ObjectOpenHashMap<>())
-                                    .computeIfAbsent(pageContext.getEntry().getId(), k -> new ObjectOpenHashSet<>());
-                            if (!pages.contains(pageContext.getPage().getPageNumber())) {
-                                pages.add(pageContext.getPage().getPageNumber());
-                                this.readEntries.computeIfAbsent(pageContext.getBook().getId(), k -> new ObjectOpenHashSet<>()).remove(pageContext.getEntry().getId());
-                            }
-                        } else if (condition.getValue() instanceof BookConditionEntryContext entryContext) {
-                            this.unlockedEntries.computeIfAbsent(entryContext.getBook().getId(), k -> new ObjectOpenHashSet<>()).add(entryContext.getEntry().getId());
-                        } else if (condition.getValue() instanceof BookConditionCategoryContext categoryContext) {
-                            this.unlockedCategories.computeIfAbsent(categoryContext.getBook().getId(), k -> new ObjectOpenHashSet<>()).add(categoryContext.getCategory().getId());
-                        }
+                        //check if condition is now unlocked
+                        if (condition.getKey().test(condition.getValue(), owner)) {
+                            try {
+                                //then store the unlock result
+                                if (condition.getValue() instanceof BookConditionPageContext pageContext) {
+                                    var pages = this.unlockedPages.computeIfAbsent(pageContext.getBook().getId(), k -> new Object2ObjectOpenHashMap<>())
+                                            .computeIfAbsent(pageContext.getEntry().getId(), k -> new ObjectOpenHashSet<>());
+                                    if (!pages.contains(pageContext.getPage().getPageNumber())) {
+                                        pages.add(pageContext.getPage().getPageNumber());
+                                        this.readEntries.computeIfAbsent(pageContext.getBook().getId(), k -> new ObjectOpenHashSet<>()).remove(pageContext.getEntry().getId());
+                                    }
+                                } else if (condition.getValue() instanceof BookConditionEntryContext entryContext) {
+                                    var unlocked = this.unlockedEntries.computeIfAbsent(entryContext.getBook().getId(), k -> new ObjectOpenHashSet<>());
+                                    if (!unlocked.contains(entryContext.getEntry().getId())) {
+                                        unlocked.add(entryContext.getEntry().getId());
+                                        this.unlockTimestamps.computeIfAbsent(entryContext.getBook().getId(), k -> new Object2ObjectOpenHashMap<>()).put(entryContext.getEntry().getId(), now);
+                                    }
+                                } else if (condition.getValue() instanceof BookConditionCategoryContext categoryContext) {
+                                    this.unlockedCategories.computeIfAbsent(categoryContext.getBook().getId(), k -> new ObjectOpenHashSet<>()).add(categoryContext.getCategory().getId());
+                                }
 
                         //make sure to iterate again now -> could unlock further conditions depending on this unlock
                         unlockedAny = true;

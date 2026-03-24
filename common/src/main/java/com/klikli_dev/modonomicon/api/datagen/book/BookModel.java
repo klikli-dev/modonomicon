@@ -153,6 +153,12 @@ public class BookModel {
     protected boolean allowOpenBooksWithInvalidLinks = false;
 
     /**
+     * If true, a "Recently Unlocked" button is shown that lists entries sorted by unlock timestamp.
+     * Useful for books with many conditional entries. Defaults to true.
+     */
+    protected boolean showRecentlyUnlocked = true;
+
+    /**
      * If true, this model will not generate a book.json file, but the categories and entries will still be generated.
      */
     protected boolean dontGenerateJson = false;
@@ -340,6 +346,8 @@ public class BookModel {
         json.addProperty("single_page_texture", this.singlePageTexture.toString());
 
         json.addProperty("allow_open_book_with_invalid_links", this.allowOpenBooksWithInvalidLinks);
+
+        json.addProperty("show_recently_unlocked", this.showRecentlyUnlocked);
 
         return json;
     }
@@ -615,6 +623,15 @@ public class BookModel {
      */
     public BookModel withAllowOpenBooksWithInvalidLinks(boolean value) {
         this.allowOpenBooksWithInvalidLinks = value;
+        return this;
+    }
+
+    /**
+     * If true, a "Recently Unlocked" button is shown that lists entries sorted by unlock timestamp.
+     * Useful for books with many conditional entries. Defaults to true.
+     */
+    public BookModel withShowRecentlyUnlocked(boolean value) {
+        this.showRecentlyUnlocked = value;
         return this;
     }
 

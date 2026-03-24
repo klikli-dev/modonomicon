@@ -52,6 +52,7 @@
   },
   "search_button_x_offset": 0,
   "search_button_y_offset": 0,
+  "show_recently_unlocked": true,
   "single_page_texture": "modonomicon:textures/gui/single_page_entry.png",
   "tooltip": "book.modonomicon.demo.tooltip",
   "top_frame_overlay": {

@@ -18,6 +18,7 @@ import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookScreenWithButtons;
 import com.klikli_dev.modonomicon.client.gui.book.bookmarks.BookBookmarksScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.*;
+import com.klikli_dev.modonomicon.client.gui.book.recentlyunlocked.BookRecentlyUnlockedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
 import com.klikli_dev.modonomicon.networking.ClickReadAllButtonMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
@@ -343,6 +344,17 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
                 (b) -> this.onShowBookmarksButtonClick((ShowBookmarksButton) b),
                 Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_BOOKMARKS)));
         this.addRenderableWidget(showBookmarksButton);
+
+        if (this.book.showRecentlyUnlocked()) {
+            searchButtonY -= buttonHeight + 2;
+
+            var showRecentlyUnlockedButton = new ShowRecentlyUnlockedButton(this, searchButtonX, searchButtonY,
+                    scissorX,
+                    searchButtonWidth, buttonHeight,
+                    (b) -> this.onShowRecentlyUnlockedButtonClick((ShowRecentlyUnlockedButton) b),
+                    Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_RECENTLY_UNLOCKED)));
+            this.addRenderableWidget(showRecentlyUnlockedButton);
+        }
     }
 
     protected void updateCategoryButtons(int buttonX, int buttonY, int buttonWidth, int buttonHeight, int buttonSpacing) {
@@ -397,6 +409,10 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
     protected void onShowBookmarksButtonClick(ShowBookmarksButton button) {
         ClientServices.GUI.pushGuiLayer(new BookBookmarksScreen(this));
+    }
+
+    protected void onShowRecentlyUnlockedButtonClick(ShowRecentlyUnlockedButton button) {
+        ClientServices.GUI.pushGuiLayer(new BookRecentlyUnlockedScreen(this));
     }
 
     @Override

@@ -86,6 +86,17 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Gui.ADD_BOOKMARK, "Add Bookmark");
         this.add(Gui.REMOVE_BOOKMARK, "Remove Bookmark");
 
+        this.add(Gui.RECENTLY_UNLOCKED_SCREEN_TITLE, "Recently Unlocked");
+        this.add(Gui.RECENTLY_UNLOCKED_ENTRY_LIST_TITLE, "Entries");
+        this.add(Gui.RECENTLY_UNLOCKED_NO_RESULTS, "No recently unlocked entries.");
+        this.add(Gui.RECENTLY_UNLOCKED_INFO_TEXT, """
+                This list shows all entries you have recently unlocked, sorted by most recent first.
+                \\
+                \\
+                That means, most recent are shown at the top.
+                """);
+        this.add(Gui.OPEN_RECENTLY_UNLOCKED, "Recently Unlocked");
+
         this.add(Gui.RECIPE_PAGE_RECIPE_MISSING, "Recipe %s was not found! This may be an issue with the mod, or the modpack may have disabled it.");
 
         //Tooltip
