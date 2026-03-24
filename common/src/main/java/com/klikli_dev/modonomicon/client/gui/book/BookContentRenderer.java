@@ -48,6 +48,16 @@ public class BookContentRenderer {
         drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, book, x, y, 496, 0, 16, 16, color);
     }
 
+    public static void drawUnreadIndicator(GuiGraphicsExtractor guiGraphics, Book book, int x, int y, boolean hovered) {
+        final int U = 350;
+        final int V = 19;
+        final int SIZE = 11;
+
+        guiGraphics.pose().pushMatrix();
+        drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, book, x, y, U + (hovered ? SIZE : 0), V, SIZE, SIZE);
+        guiGraphics.pose().popMatrix();
+    }
+
     public static void playTurnPageSound(Book book) {
         if (ClientTicks.ticks - lastTurnPageSoundTime > 6) {
             var sound = BuiltInRegistries.SOUND_EVENT.getValue(book.getTurnPageSound());

@@ -91,17 +91,8 @@ public class CategoryButton extends Button {
 
             //render unread category indicator
             if (!BookUnlockStateManager.get().isCategoryReadFor(Minecraft.getInstance().player, this.category)) {
-                final int U = 350;
-                final int V = 19;
-                final int indicatorWidth = 11;
-                final int indicatorHeight = 11;
-
-                guiGraphics.pose().pushMatrix();
-                BookContentRenderer.drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, this.category.getBook(),
-                        renderX + renderWidth - indicatorWidth + 2,
-                        this.getY() - 2,
-                        U + (this.isHovered() ? indicatorWidth : 0), V, indicatorWidth, indicatorHeight);
-                guiGraphics.pose().popMatrix();
+                BookContentRenderer.drawUnreadIndicator(guiGraphics, this.category.getBook(),
+                        renderX + renderWidth - 11 + 2, this.getY() - 2, this.isHovered());
             }
 
             guiGraphics.pose().popMatrix();

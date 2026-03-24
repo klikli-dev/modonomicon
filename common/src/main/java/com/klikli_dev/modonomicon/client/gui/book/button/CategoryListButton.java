@@ -19,7 +19,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FontDescription;
@@ -101,17 +100,10 @@ public class CategoryListButton extends Button {
 
             //render unread category indicator
             if (!locked && !BookUnlockStateManager.get().isCategoryReadFor(Minecraft.getInstance().player, this.category)) {
-                final int U = 350;
-                final int V = 19;
-                final int indicatorWidth = 11;
-                final int indicatorHeight = 11;
-
                 guiGraphics.pose().pushMatrix();
                 guiGraphics.pose().scale(0.5F, 0.5F);
-                BookContentRenderer.drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, this.category.getBook(),
-                        this.getX() * 2 + BookEntryScreen.PAGE_WIDTH * 2 - indicatorWidth - 2,
-                        this.getY() * 2 + 2,
-                        U + (this.isHovered() ? indicatorWidth : 0), V, indicatorWidth, indicatorHeight);
+                BookContentRenderer.drawUnreadIndicator(guiGraphics, this.category.getBook(),
+                        this.getX() * 2 + BookEntryScreen.PAGE_WIDTH * 2 - 11 - 2, this.getY() * 2 + 2, this.isHovered());
                 guiGraphics.pose().scale(2F, 2F);
                 guiGraphics.pose().popMatrix();
             }

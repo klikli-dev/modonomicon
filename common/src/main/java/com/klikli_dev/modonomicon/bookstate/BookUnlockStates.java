@@ -263,7 +263,7 @@ public class BookUnlockStates {
     public boolean isCategoryRead(BookCategory category) {
         if (category.getBook() == null)
             return false;
-        return this.readCategories.getOrDefault(category.getBook().getId(), new ObjectOpenHashSet<>()).contains(category.getId());
+        return this.readCategories.getOrDefault(category.getBook().getId(), Set.of()).contains(category.getId());
     }
 
     public void setRun(BookCommand command) {
@@ -421,7 +421,6 @@ public class BookUnlockStates {
             }
 
             unlockedCategories.trim();
-            unlockedPages.trim();
             unlockedPages.trim();
             readEntries.trim();
             readCategories.trim();

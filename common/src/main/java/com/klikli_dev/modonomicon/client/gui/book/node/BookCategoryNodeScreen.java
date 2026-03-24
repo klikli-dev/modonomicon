@@ -252,18 +252,9 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
             //render unread icon
             if (displayState == EntryDisplayState.UNLOCKED && !BookUnlockStateManager.get().isReadFor(Minecraft.getInstance().player, entry)) {
-                final int U = 350;
-                final int V = 19;
-                final int width = 11;
-                final int height = 11;
-
-                guiGraphics.pose().pushMatrix();
-                //TODO here we had translate +11 z
-                //if focused we go to the right of our normal button (instead of down, like mc buttons do)
-                BookContentRenderer.drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, this.bookParentScreen.getBook(),
+                BookContentRenderer.drawUnreadIndicator(guiGraphics, this.bookParentScreen.getBook(),
                         entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 16 + 2,
-                        entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP - 2, U + (isHovered ? width : 0), V, width, height);
-                guiGraphics.pose().popMatrix();
+                        entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP - 2, isHovered);
             }
 
             guiGraphics.pose().popMatrix();
