@@ -174,7 +174,7 @@ public class MultiblockPreviewRenderer {
                 String s = I18n.get(ModonomiconConstants.I18n.Multiblock.COMPLETE);
                 guiGraphics.pose().pushMatrix();
                 guiGraphics.pose().translate(0, Math.min(height + 5, animTime));
-                guiGraphics.text(mc.font, s, (int) (x - mc.font.width(s) / 2.0F), top + height - 10, 0x00FF00, false);
+                guiGraphics.text(mc.font, s, (int) (x - mc.font.width(s) / 2.0F), top + height - 10, 0xFF00FF00, false);
                 guiGraphics.pose().popMatrix();
             }
 
@@ -194,7 +194,7 @@ public class MultiblockPreviewRenderer {
 
             if (!isAnchored) {
                 String s = I18n.get(ModonomiconConstants.I18n.Multiblock.NOT_ANCHORED);
-                guiGraphics.text(mc.font, s, (int) (x - mc.font.width(s) / 2.0F), top + height + 8, 0xFFFFFF, false);
+                guiGraphics.text(mc.font, s, (int) (x - mc.font.width(s) / 2.0F), top + height + 8, 0xFFFFFFFF, false);
             } else {
                 if (lookingState != null) {
                     // try-catch around here because the state isn't necessarily present in the world in this instance,
@@ -202,7 +202,7 @@ public class MultiblockPreviewRenderer {
                     try {
                         var stack = lookingState.getCloneItemStack(mc.level, lookingPos, true);
                         if (!stack.isEmpty()) {
-                            guiGraphics.text(mc.font, stack.getHoverName().copy(), left + 20, top + height + 8, 0xFFFFFF, false);
+                            guiGraphics.text(mc.font, stack.getHoverName().copy(), left + 20, top + height + 8, 0xFFFFFFFF, false);
 
                             guiGraphics.item(stack, left, top + height + 2);
                         }
@@ -211,7 +211,7 @@ public class MultiblockPreviewRenderer {
                 }
 
                 if (timeComplete == 0) {
-                    color = 0xFFFFFF;
+                    color = 0xFFFFFFFF;
                     int posx = left + width;
                     int posy = top + height + 2;
                     float mult = 1;
@@ -219,7 +219,7 @@ public class MultiblockPreviewRenderer {
 
                     if (blocksDone == blocks && airFilled > 0) {
                         progress = I18n.get(ModonomiconConstants.I18n.Multiblock.REMOVE_BLOCKS);
-                        color = 0xDA4E3F;
+                        color = 0xFFDA4E3F;
                         mult *= 2;
                         posx -= width / 2;
                         posy += 2;
