@@ -66,6 +66,8 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
     private boolean hasUnreadEntries;
     private boolean hasUnreadUnlockedEntries;
+    private boolean hasUnreadCategories;
+    private boolean hasUnreadUnlockedCategories;
 
     public BookParentIndexScreen(Book book) {
         super(Component.translatable(book.getName()));
@@ -81,6 +83,12 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         this.hasUnreadUnlockedEntries = this.book.getEntries().values().stream().anyMatch(e ->
                 BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e) &&
                         !BookUnlockStateManager.get().isReadFor(this.minecraft.player, e));
+
+        //check if ANY category is unread
+        this.hasUnreadCategories = this.book.getCategories().values().stream().anyMatch(c -> !BookUnlockStateManager.get().isCategoryReadFor(this.minecraft.player, c));
+
+        //check if any currently unlocked category is unread
+        this.hasUnreadUnlockedCategories = this.book.getCategories().values().stream().anyMatch(c -> BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, c) && !BookUnlockStateManager.get().isCategoryReadFor(this.minecraft.player, c));
     }
 
     public void handleButtonEntry(Button button) {
@@ -309,7 +317,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
     }
 
     protected boolean canSeeReadAllButton() {
-        return this.hasUnreadEntries || this.hasUnreadUnlockedEntries;
+        return this.hasUnreadEntries || this.hasUnreadUnlockedEntries || this.hasUnreadCategories || this.hasUnreadUnlockedCategories;
     }
 
 
