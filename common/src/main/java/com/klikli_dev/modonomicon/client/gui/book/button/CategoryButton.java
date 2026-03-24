@@ -7,9 +7,12 @@
 package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
+import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.node.BookParentNodeScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -85,6 +88,22 @@ public class CategoryButton extends Button {
 
             guiGraphics.pose().popMatrix();
             guiGraphics.pose().popMatrix();
+
+            //render unread category indicator
+            if (!BookUnlockStateManager.get().isCategoryReadFor(Minecraft.getInstance().player, this.category)) {
+                final int U = 350;
+                final int V = 19;
+                final int indicatorWidth = 11;
+                final int indicatorHeight = 11;
+
+                guiGraphics.pose().pushMatrix();
+                BookContentRenderer.drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, this.category.getBook(),
+                        renderX + renderWidth - indicatorWidth + 2,
+                        this.getY() - 2,
+                        U + (this.isHovered() ? indicatorWidth : 0), V, indicatorWidth, indicatorHeight);
+                guiGraphics.pose().popMatrix();
+            }
+
             guiGraphics.pose().popMatrix();
         }
     }
