@@ -23,7 +23,9 @@ import com.klikli_dev.modonomicon.client.gui.book.button.CategoryListButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ReadAllButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ShowBookmarksButton;
+import com.klikli_dev.modonomicon.client.gui.book.button.ShowRecentlyUnlockedButton;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
+import com.klikli_dev.modonomicon.client.gui.book.recentlyunlocked.BookRecentlyUnlockedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.networking.ClickReadAllButtonMessage;
@@ -378,6 +380,17 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
                 (b) -> this.onShowBookmarksButtonClick((ShowBookmarksButton) b),
                 Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_BOOKMARKS)));
         this.addRenderableWidget(showBookmarksButton);
+
+        if (this.book.showRecentlyUnlocked()) {
+            searchButtonY -= buttonHeight + 2;
+
+            var showRecentlyUnlockedButton = new ShowRecentlyUnlockedButton(this, searchButtonX, searchButtonY,
+                    scissorX,
+                    searchButtonWidth, buttonHeight,
+                    (b) -> this.onShowRecentlyUnlockedButtonClick((ShowRecentlyUnlockedButton) b),
+                    Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_RECENTLY_UNLOCKED)));
+            this.addRenderableWidget(showRecentlyUnlockedButton);
+        }
     }
 
     protected void onSearchButtonClick(SearchButton button) {
@@ -386,6 +399,10 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
     protected void onShowBookmarksButtonClick(ShowBookmarksButton button) {
         ClientServices.GUI.pushGuiLayer(new BookBookmarksScreen(this));
+    }
+
+    protected void onShowRecentlyUnlockedButtonClick(ShowRecentlyUnlockedButton button) {
+        ClientServices.GUI.pushGuiLayer(new BookRecentlyUnlockedScreen(this));
     }
 
     protected void addEntryButtons(int x, int y, int start, int count) {
