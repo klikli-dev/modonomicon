@@ -93,7 +93,7 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
                 This list shows all entries you have recently unlocked, sorted by most recent first.
                 \\
                 \\
-                Unread entries are shown at the top.
+                That means, most recent are shown at the top.
                 """);
         this.add(Gui.OPEN_RECENTLY_UNLOCKED, "Recently Unlocked");
 
