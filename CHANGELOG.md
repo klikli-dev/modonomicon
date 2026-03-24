@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1-1.127.0] - 2026-03-24
+### :sparkles: New Features
+- [`5e7cb2d`](https://github.com/klikli-dev/modonomicon/commit/5e7cb2debdeb0583f109d6d4989da3794d69e473) - add unread indicator for new/unvisited categories *(PR [#333](https://github.com/klikli-dev/modonomicon/pull/333) by [@klikli-dev](https://github.com/klikli-dev))*
+  - :arrow_lower_right: *addresses issue [#315](https://github.com/klikli-dev/modonomicon/issues/315) opened by [@DaFuqs](https://github.com/DaFuqs)*
+- [`b9e8bd8`](https://github.com/klikli-dev/modonomicon/commit/b9e8bd80a98fe92b84b1bfda82e4e939ccb1fc1e) - add server config option to disable advancement-based book locking *(PR [#334](https://github.com/klikli-dev/modonomicon/pull/334) by [@klikli-dev](https://github.com/klikli-dev))*
+  - :arrow_lower_right: *addresses issue [#262](https://github.com/klikli-dev/modonomicon/issues/262) opened by [@MuteTiefling](https://github.com/MuteTiefling)*
+- [`97c56f2`](https://github.com/klikli-dev/modonomicon/commit/97c56f25e5618ebfa6a96a390e9e59ea2d4078b1) - add 'Recently Unlocked' category view ([#314](https://github.com/klikli-dev/modonomicon/pull/314)) *(PR [#337](https://github.com/klikli-dev/modonomicon/pull/337) by [@klikli-dev](https://github.com/klikli-dev))*
+  - :arrow_lower_right: *addresses issue [#314](https://github.com/klikli-dev/modonomicon/issues/314) opened by [@DaFuqs](https://github.com/DaFuqs)*
+
+### :bug: Bug Fixes
+- [`2c7d917`](https://github.com/klikli-dev/modonomicon/commit/2c7d917775e6614e186d213fbded3c89e4972fd0) - restore block counting logic in multiblock preview renderer *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`2b9a992`](https://github.com/klikli-dev/modonomicon/commit/2b9a99218e3c2eeef121f9e43c0e9806796f943e) - add alpha component to HUD text colors in multiblock preview *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`b327b97`](https://github.com/klikli-dev/modonomicon/commit/b327b97f0401b6e28ba0381ecf66e7e4f2806e74) - use list of components for ReadAllButton tooltip to support newlines *(PR [#336](https://github.com/klikli-dev/modonomicon/pull/336) by [@klikli-dev](https://github.com/klikli-dev))*
+  - :arrow_lower_right: *fixes issue [#335](https://github.com/klikli-dev/modonomicon/issues/335) opened by [@klikli-dev](https://github.com/klikli-dev)*
+
+
 ## [release/v26.1-1.126.0] - 2026-03-24
 ### :sparkles: New Features
 - [`afab6ef`](https://github.com/klikli-dev/modonomicon/commit/afab6ef552fe4392a1f19bfb86f1089f88c3e190) - update to 26.1 pre 3 *(PR [#332](https://github.com/klikli-dev/modonomicon/pull/332) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2031,3 +2047,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1-1.124.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.124.1...release/v26.1-1.124.2
 [release/v26.1-1.125.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.124.2...release/v26.1-1.125.0
 [release/v26.1-1.126.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.125.0...release/v26.1-1.126.0
+[release/v26.1-1.127.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.126.0...release/v26.1-1.127.0
