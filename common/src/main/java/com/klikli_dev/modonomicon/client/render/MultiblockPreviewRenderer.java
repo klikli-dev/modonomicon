@@ -28,7 +28,7 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.SubmitNodeStorage;
@@ -144,7 +144,7 @@ public class MultiblockPreviewRenderer {
         }
     }
 
-    public static void onRenderHUD(GuiGraphics guiGraphics, float partialTicks) {
+    public static void onRenderHUD(GuiGraphicsExtractor guiGraphics, float partialTicks) {
         if (hasMultiblock) {
             int waitTime = 40;
             int fadeOutSpeed = 4;
@@ -174,7 +174,7 @@ public class MultiblockPreviewRenderer {
                 String s = I18n.get(ModonomiconConstants.I18n.Multiblock.COMPLETE);
                 guiGraphics.pose().pushMatrix();
                 guiGraphics.pose().translate(0, Math.min(height + 5, animTime));
-                guiGraphics.drawString(mc.font, s, (int) (x - mc.font.width(s) / 2.0F), top + height - 10, 0x00FF00, false);
+                guiGraphics.text(mc.font, s, (int) (x - mc.font.width(s) / 2.0F), top + height - 10, 0x00FF00, false);
                 guiGraphics.pose().popMatrix();
             }
 
@@ -194,7 +194,7 @@ public class MultiblockPreviewRenderer {
 
             if (!isAnchored) {
                 String s = I18n.get(ModonomiconConstants.I18n.Multiblock.NOT_ANCHORED);
-                guiGraphics.drawString(mc.font, s, (int) (x - mc.font.width(s) / 2.0F), top + height + 8, 0xFFFFFF, false);
+                guiGraphics.text(mc.font, s, (int) (x - mc.font.width(s) / 2.0F), top + height + 8, 0xFFFFFF, false);
             } else {
                 if (lookingState != null) {
                     // try-catch around here because the state isn't necessarily present in the world in this instance,
@@ -202,9 +202,9 @@ public class MultiblockPreviewRenderer {
                     try {
                         var stack = lookingState.getCloneItemStack(mc.level, lookingPos, true);
                         if (!stack.isEmpty()) {
-                            guiGraphics.drawString(mc.font, stack.getHoverName().copy(), left + 20, top + height + 8, 0xFFFFFF, false);
+                            guiGraphics.text(mc.font, stack.getHoverName().copy(), left + 20, top + height + 8, 0xFFFFFF, false);
 
-                            guiGraphics.renderItem(stack, left, top + height + 2);
+                            guiGraphics.item(stack, left, top + height + 2);
                         }
                     } catch (Exception ignored) {
                     }
@@ -225,7 +225,7 @@ public class MultiblockPreviewRenderer {
                         posy += 2;
                     }
 
-                    guiGraphics.drawString(mc.font, progress, (int) (posx - mc.font.width(progress) / mult), posy, color, true);
+                    guiGraphics.text(mc.font, progress, (int) (posx - mc.font.width(progress) / mult), posy, color, true);
                 }
             }
 
@@ -377,7 +377,8 @@ public class MultiblockPreviewRenderer {
             return;
         }
 
-        RenderPipeline pipeline = RenderPipelines.TRANSLUCENT_MOVING_BLOCK;
+        RenderType movingBlockRenderType = RenderTypes.translucentMovingBlock();
+        RenderPipeline pipeline = movingBlockRenderType.pipeline();
         BufferBuilder buffer = new BufferBuilder(BUFFER_BUILDER, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
         ModelBlockRenderer blockRenderer = new ModelBlockRenderer(mc.options.ambientOcclusion().get(), false, mc.getBlockColors());
 
@@ -436,7 +437,7 @@ public class MultiblockPreviewRenderer {
         var customSubmitStorage = new SubmitNodeStorage();
         var ghostFeatureDispatcher = new FeatureRenderDispatcher(
                 customSubmitStorage,
-                Minecraft.getInstance().getBlockRenderer(),
+                Minecraft.getInstance().getModelManager(),
                 ghostBufferSource,
                 Minecraft.getInstance().getAtlasManager(),
                 Minecraft.getInstance().renderBuffers().outlineBufferSource(),
@@ -487,7 +488,7 @@ public class MultiblockPreviewRenderer {
 
         poseStack.translate(-.5F, -.5F, -.5F);
 
-        BlockStateModel model = mc.getBlockRenderer().getBlockModel(state);
+        BlockStateModel model = mc.getModelManager().getBlockStateModelSet().get(state);
         model.collectParts(RANDOM, PART_SCRATCH_LIST);
         blockRenderer.tesselateBlock(output, 0, 0, 0, multiblock, pos, state, model, 0);
         PART_SCRATCH_LIST.clear();
@@ -532,7 +533,7 @@ public class MultiblockPreviewRenderer {
             renderPass.setVertexBuffer(0, vertexBuffer);
             renderPass.setIndexBuffer(indexBuffer, indexType);
 
-            renderPass.bindTexture("Sampler0", Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_BLOCKS).getTextureView(), RenderTypes.MOVING_BLOCK_SAMPLER.get());
+            renderPass.bindTexture("Sampler0", Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_BLOCKS).getTextureView(), RenderSystem.getSamplerCache().getRepeat(FilterMode.NEAREST));
             renderPass.bindTexture("Sampler1", null, null);
             renderPass.bindTexture("Sampler2", Minecraft.getInstance().gameRenderer.lightmap(), RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR));
 

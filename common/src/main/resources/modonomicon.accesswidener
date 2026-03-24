@@ -10,17 +10,17 @@ accessible field net/minecraft/world/item/crafting/SmithingTransformRecipe templ
 accessible field net/minecraft/world/item/crafting/SmithingTrimRecipe base Lnet/minecraft/world/item/crafting/Ingredient;
 accessible field net/minecraft/world/item/crafting/SmithingTrimRecipe addition Lnet/minecraft/world/item/crafting/Ingredient;
 accessible field net/minecraft/world/item/crafting/SmithingTrimRecipe template Lnet/minecraft/world/item/crafting/Ingredient;
-extendable method net/minecraft/client/gui/components/AbstractWidget render (Lnet/minecraft/client/gui/GuiGraphics;IIF)V
+#REMOVED in 26.1-pre-3: extendable method net/minecraft/client/gui/components/AbstractWidget render (Lnet/minecraft/client/gui/GuiGraphics;IIF)V
 extendable method net/minecraft/client/gui/screens/Screen init (II)V
 accessible field net/minecraft/server/network/ServerCommonPacketListenerImpl connection Lnet/minecraft/network/Connection;
 accessible class net/minecraft/client/resources/model/ModelManager$ReloadState
 accessible field com/mojang/blaze3d/pipeline/RenderPipeline$Builder definesBuilder Ljava/util/Optional;
-accessible method net/minecraft/client/gui/GuiGraphics blitTiledSprite (Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;IIIIIIIIIII)V
+accessible method net/minecraft/client/gui/GuiGraphicsExtractor blitTiledSprite (Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;IIIIIIIIIII)V
 accessible field net/minecraft/client/renderer/item/properties/conditional/ConditionalItemModelProperties ID_MAPPER Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
-extendable method net/minecraft/client/gui/screens/Screen renderWithTooltipAndSubtitles (Lnet/minecraft/client/gui/GuiGraphics;IIF)V
-accessible field net/minecraft/client/gui/GuiGraphics guiRenderState Lnet/minecraft/client/renderer/state/gui/GuiRenderState;
-accessible field net/minecraft/client/gui/GuiGraphics scissorStack Lnet/minecraft/client/gui/GuiGraphics$ScissorStack;
-accessible class net/minecraft/client/gui/GuiGraphics$ScissorStack
+extendable method net/minecraft/client/gui/screens/Screen extractRenderStateWithTooltipAndSubtitles (Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V
+accessible field net/minecraft/client/gui/GuiGraphicsExtractor guiRenderState Lnet/minecraft/client/renderer/state/gui/GuiRenderState;
+accessible field net/minecraft/client/gui/GuiGraphicsExtractor scissorStack Lnet/minecraft/client/gui/GuiGraphicsExtractor$ScissorStack;
+accessible class net/minecraft/client/gui/GuiGraphicsExtractor$ScissorStack
 accessible field com/mojang/blaze3d/pipeline/RenderPipeline location Lnet/minecraft/resources/Identifier;
 accessible field com/mojang/blaze3d/pipeline/RenderPipeline vertexShader Lnet/minecraft/resources/Identifier;
 accessible field com/mojang/blaze3d/pipeline/RenderPipeline fragmentShader Lnet/minecraft/resources/Identifier;

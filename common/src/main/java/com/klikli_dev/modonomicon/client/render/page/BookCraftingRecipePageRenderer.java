@@ -11,7 +11,7 @@ import com.klikli_dev.modonomicon.book.page.BookCraftingRecipePage;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 
 import net.minecraft.network.chat.Component;
@@ -36,7 +36,7 @@ public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recip
     }
 
     @Override
-    protected void drawRecipe(GuiGraphics guiGraphics, RecipeDisplayEntry recipeDisplayEntry, int recipeX, int recipeY, int mouseX, int mouseY, boolean second) {
+    protected void drawRecipe(GuiGraphicsExtractor guiGraphics, RecipeDisplayEntry recipeDisplayEntry, int recipeX, int recipeY, int mouseX, int mouseY, boolean second) {
 
         if (!second) {
             if (!this.page.getTitle1().isEmpty()) {

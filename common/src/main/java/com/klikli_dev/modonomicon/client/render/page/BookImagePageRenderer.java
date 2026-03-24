@@ -11,7 +11,7 @@ import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.button.SmallArrowButton;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.RenderPipelines;
 
@@ -47,7 +47,7 @@ public class BookImagePageRenderer extends BookPageRenderer<BookImagePage> imple
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float ticks) {
+    public void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float ticks) {
         if (this.page.hasTitle()) {
             this.renderTitle(guiGraphics, this.page.getTitle(), false, BookEntryScreen.PAGE_WIDTH / 2, 0);
         }

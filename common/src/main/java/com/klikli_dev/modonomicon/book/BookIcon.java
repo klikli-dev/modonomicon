@@ -12,7 +12,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentPatch;
@@ -101,7 +101,7 @@ public class BookIcon {
         return new BookIcon(stack);
     }
 
-    public void render(GuiGraphics guiGraphics, int x, int y) {
+    public void render(GuiGraphicsExtractor guiGraphics, int x, int y) {
         if (this.texture != null) {
             //1.21.3+ parameter order taken from ImageWidget#renderWidget
             guiGraphics.blit(
@@ -119,7 +119,7 @@ public class BookIcon {
             if (this.cachedItemStack == null) {
                 this.cachedItemStack = this.itemStackTemplate.create();
             }
-            guiGraphics.renderItem(this.cachedItemStack, x, y);
+            guiGraphics.item(this.cachedItemStack, x, y);
         }
     }
 

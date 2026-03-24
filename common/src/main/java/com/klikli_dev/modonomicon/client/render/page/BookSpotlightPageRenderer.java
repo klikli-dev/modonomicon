@@ -9,7 +9,7 @@ package com.klikli_dev.modonomicon.client.render.page;
 import com.klikli_dev.modonomicon.book.page.BookSpotlightPage;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 
 import net.minecraft.network.chat.Style;
@@ -26,7 +26,7 @@ public class BookSpotlightPageRenderer extends BookPageRenderer<BookSpotlightPag
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float ticks) {
+    public void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float ticks) {
         if (this.page.hasTitle()) {
             this.renderTitle(guiGraphics, this.page.getTitle(), false, BookEntryScreen.PAGE_WIDTH / 2, 0);
         }

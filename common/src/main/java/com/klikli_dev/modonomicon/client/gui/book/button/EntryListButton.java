@@ -18,7 +18,7 @@ import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
@@ -59,7 +59,7 @@ public class EntryListButton extends Button {
     }
 
     @Override
-    protected void renderContents(GuiGraphics guiGraphics, int i, int j, float partialTicks) {
+    protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float partialTicks) {
         if (this.active) {
             if (this.isHovered()) {
                 this.timeHovered = Math.min(ANIM_TIME, this.timeHovered + ClientTicks.delta);
@@ -106,7 +106,7 @@ public class EntryListButton extends Button {
                 guiGraphics.pose().translate(x - x * scale, y - y * scale + (Minecraft.getInstance().font.lineHeight - Minecraft.getInstance().font.lineHeight * scale) / 2.0f);
                 guiGraphics.pose().scale(scale, scale);
             }
-            guiGraphics.drawString(Minecraft.getInstance().font, name, x, y, this.getEntryColor(), false);
+            guiGraphics.text(Minecraft.getInstance().font, name, x, y, this.getEntryColor(), false);
 
             guiGraphics.pose().popMatrix();
         }

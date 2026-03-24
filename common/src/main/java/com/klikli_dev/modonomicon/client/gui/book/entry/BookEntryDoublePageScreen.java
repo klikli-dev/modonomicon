@@ -11,7 +11,7 @@ import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Style;
 import org.jetbrains.annotations.Nullable;
@@ -118,7 +118,7 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         this.resetTooltip();
 
         //TODO we had -1000z here //push the page background to the front. Otherwise the entries render over it.
@@ -140,7 +140,7 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
         for (var renderable : this.renderables) {
-            renderable.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+            renderable.extractRenderState(guiGraphics, pMouseX, pMouseY, pPartialTick);
         }
 
         //do not translate tooltip, would mess up location

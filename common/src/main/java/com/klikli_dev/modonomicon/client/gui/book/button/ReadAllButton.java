@@ -12,7 +12,7 @@ import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
@@ -66,14 +66,9 @@ public class ReadAllButton extends Button {
     }
 
     @Override
-    public final void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
         this.active = this.visible = this.displayCondition.get();
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        this.updateCustomTooltip(guiGraphics, mouseX, mouseY);
-    }
-
-    @Override
-    protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f) {
+        if (!this.visible) return;
         //if focused we go to the right of our normal button (instead of down, like mc buttons do)
 
         guiGraphics.pose().pushMatrix();
@@ -97,9 +92,11 @@ public class ReadAllButton extends Button {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.parent.getBook().getBookOverviewTexture(), this.getX(), this.getY(), u, v, this.width, this.height, 256, 256);
 
         guiGraphics.pose().popMatrix();
+
+        this.updateCustomTooltip(guiGraphics, i, j);
     }
 
-    private void updateCustomTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    private void updateCustomTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
 
         boolean flag = this.isHovered();
         if (flag != this.wasHovered) {

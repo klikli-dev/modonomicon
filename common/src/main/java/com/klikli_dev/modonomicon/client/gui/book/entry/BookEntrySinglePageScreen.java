@@ -15,7 +15,7 @@ import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 
@@ -37,7 +37,7 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
         this.singlePageTexture = entry.getBook().getSinglePageTexture();
     }
 
-    public static void renderSinglePageBookBackground(GuiGraphics guiGraphics, Identifier bookContentTexture) {
+    public static void renderSinglePageBookBackground(GuiGraphicsExtractor guiGraphics, Identifier bookContentTexture) {
         int x = 0; // (this.width - BOOK_BACKGROUND_WIDTH) / 2;
         int y = 0; // (this.height - BOOK_BACKGROUND_HEIGHT) / 2;
 
@@ -126,7 +126,7 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         this.resetTooltip();
 
         guiGraphics.pose().pushMatrix();
@@ -144,7 +144,7 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
         for (var renderable : this.renderables) {
-            renderable.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+            renderable.extractRenderState(guiGraphics, pMouseX, pMouseY, pPartialTick);
         }
 
         //do not translate tooltip, would mess up location

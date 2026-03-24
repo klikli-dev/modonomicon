@@ -32,7 +32,7 @@ import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
@@ -89,7 +89,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         }
     }
 
-    protected void drawTitle(GuiGraphics guiGraphics, int x, int y){
+    protected void drawTitle(GuiGraphicsExtractor guiGraphics, int x, int y){
         var scale = Math.min(1.0f, (float) BookEntryScreen.MAX_TITLE_WIDTH / (float) this.font.width(this.getTitle()));
         if (scale < 1) {
             guiGraphics.pose().translate(x - x * scale, y - y * scale);
@@ -100,11 +100,11 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         this.drawCenteredStringNoShadow(guiGraphics, this.getTitle(), x, y, this.getBook().getDefaultTitleColor(), 1);
     }
 
-    public void drawCenteredStringNoShadow(GuiGraphics guiGraphics, Component s, int x, int y, int color) {
+    public void drawCenteredStringNoShadow(GuiGraphicsExtractor guiGraphics, Component s, int x, int y, int color) {
         this.drawCenteredStringNoShadow(guiGraphics, s, x, y, color, 1.0f);
     }
 
-    public void drawCenteredStringNoShadow(GuiGraphics guiGraphics, Component s, int x, int y, int color, float scale) {
+    public void drawCenteredStringNoShadow(GuiGraphicsExtractor guiGraphics, Component s, int x, int y, int color, float scale) {
         GuiGraphicsExt.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
     }
 
@@ -130,7 +130,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         }
     }
 
-    protected void drawTooltip(GuiGraphics guiGraphics, int pMouseX, int pMouseY) {
+    protected void drawTooltip(GuiGraphicsExtractor guiGraphics, int pMouseX, int pMouseY) {
         if (this.tooltip != null && !this.tooltip.isEmpty()) {
             guiGraphics.setTooltipForNextFrame(this.tooltip.stream().map(Component::getVisualOrderText).toList(), pMouseX, pMouseY);
         }
@@ -212,7 +212,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         if (BookGuiManager.get().openBookCategoryScreen != null) //do not render self while a category screen is open to avoid double render effects
             return;
 
@@ -254,7 +254,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
         for (var renderable : this.renderables) {
-            renderable.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+            renderable.extractRenderState(guiGraphics, pMouseX, pMouseY, pPartialTick);
         }
 
         this.drawTooltip(guiGraphics, pMouseX, pMouseY);

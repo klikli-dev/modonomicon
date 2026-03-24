@@ -9,19 +9,10 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.platform.services.FluidHelper;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderPipelines;
-
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
-import net.minecraft.client.renderer.texture.SpriteContents;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.metadata.gui.GuiSpriteScaling;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -29,10 +20,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +41,7 @@ public class FluidRenderHelper {
      * @param fluidStack  the fluid stack representing the fluid and the amount to render.
      * @param capacity    the capacity of the fluid "slot" - together with the amount it determines the actual height of the fluid rendered within the slot.
      */
-    public static void drawFluid(GuiGraphics guiGraphics, final int width, final int height, FluidStack fluidStack, int capacity, int x, int y) {
+    public static void drawFluid(GuiGraphicsExtractor guiGraphics, final int width, final int height, FluidStack fluidStack, int capacity, int x, int y) {
         Fluid fluid = fluidStack.getFluid();
         if (fluid.isSame(Fluids.EMPTY)) {
             return;
@@ -75,23 +64,20 @@ public class FluidRenderHelper {
                 });
     }
 
-    private static int getColorTint(FluidStack ingredient) {
-        Fluid fluid = ingredient.getFluid();
-        IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluid);
-        return renderProperties.getTintColor(ingredient);
+    private static int getColorTint(FluidStack fluidStack) {
+        Fluid fluid = fluidStack.getFluid();
+        var fluidState = fluid.defaultFluidState();
+        var fluidModel = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluidState);
+        var tintSource = fluidModel.tintSource();
+        int fluidColor = tintSource.color(fluidState.createLegacyBlock());
+        return fluidColor | 0xFF000000;
     }
 
     private static Optional<TextureAtlasSprite> getStillFluidSprite(FluidStack fluidStack) {
         Fluid fluid = fluidStack.getFluid();
-        IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluid);
-        Identifier fluidStill = renderProperties.getStillTexture(fluidStack);
-
-        //noinspection deprecation
-        TextureAtlasSprite sprite = Minecraft.getInstance()
-                .getAtlasManager().getAtlasOrThrow(TextureAtlas.LOCATION_BLOCKS)
-                .getSprite(fluidStill);
-        return Optional.of(sprite)
-                .filter(s -> s.atlasLocation() != MissingTextureAtlasSprite.getLocation());
+        var fluidModel = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluid.defaultFluidState());
+        var sprite = fluidModel.stillMaterial().sprite();
+        return Optional.ofNullable(sprite);
     }
 
     public static List<Component> getTooltip(FluidStack fluidStack, int capacity, TooltipFlag tooltipFlag, FluidHelper.TooltipMode tooltipMode) {

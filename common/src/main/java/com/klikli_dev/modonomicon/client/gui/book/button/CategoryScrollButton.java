@@ -11,7 +11,6 @@ import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.BookScreenWithButtons;
 import com.klikli_dev.modonomicon.client.gui.book.node.BookParentNodeScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 

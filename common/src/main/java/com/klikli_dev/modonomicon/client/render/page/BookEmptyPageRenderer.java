@@ -7,7 +7,7 @@
 package com.klikli_dev.modonomicon.client.render.page;
 
 import com.klikli_dev.modonomicon.book.page.BookEmptyPage;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class BookEmptyPageRenderer extends BookPageRenderer<BookEmptyPage> {
     public BookEmptyPageRenderer(BookEmptyPage page) {
@@ -15,7 +15,7 @@ public class BookEmptyPageRenderer extends BookPageRenderer<BookEmptyPage> {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float ticks) {
+    public void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float ticks) {
 
     }
 }

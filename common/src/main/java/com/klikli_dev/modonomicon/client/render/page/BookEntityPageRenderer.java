@@ -14,7 +14,7 @@ import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.util.EntityUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -38,7 +38,7 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
         super(page);
     }
 
-    private void renderEntity(GuiGraphics guiGraphics, int left, int top, float rotation) {
+    private void renderEntity(GuiGraphicsExtractor guiGraphics, int left, int top, float rotation) {
         if (!(this.entity instanceof LivingEntity livingEntity)) return;
 
         EntityRenderDispatcher erd = Minecraft.getInstance().getEntityRenderDispatcher();
@@ -68,7 +68,7 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
         Quaternionf rotationQuat = new Quaternionf().rotateZ((float) Math.PI);
         rotationQuat.mul(new Quaternionf().rotateY(rotation * (float) Math.PI / 180.0F));
 
-        guiGraphics.submitEntityRenderState(entityrenderstate, scale, translation, rotationQuat, null, boxX, boxY, boxX2, boxY2);
+        guiGraphics.entity(entityrenderstate, scale, translation, rotationQuat, null, boxX, boxY, boxX2, boxY2);
     }
 
     private void loadEntity(Level world) {
@@ -99,7 +99,7 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float ticks) {
+    public void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float ticks) {
         if (!this.page.getEntityName().isEmpty()) {
             this.renderTitle(guiGraphics, this.page.getEntityName(), false, BookEntryScreen.PAGE_WIDTH / 2, 0);
         }
@@ -112,7 +112,7 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
        BookContentRenderer.drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, this.getPage().getBook(), x, y, 405, 149, 106, 106);
 
         if (this.errored) {
-            guiGraphics.drawString(this.font, Component.translatable(Gui.PAGE_ENTITY_LOADING_ERROR), 58, 60, 0xFF0000, true);
+            guiGraphics.text(this.font, Component.translatable(Gui.PAGE_ENTITY_LOADING_ERROR), 58, 60, 0xFF0000, true);
         }
 
         if (this.entity != null) {
