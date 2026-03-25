@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1-1.128.0] - 2026-03-25
+### :sparkles: New Features
+- [`2e9f004`](https://github.com/klikli-dev/modonomicon/commit/2e9f0047a68cd464ee8602a1075db73acf449a39) - update to the main release of 26.1 (from pre/rec) *(PR [#338](https://github.com/klikli-dev/modonomicon/pull/338) by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1-1.127.0] - 2026-03-24
 ### :sparkles: New Features
 - [`5e7cb2d`](https://github.com/klikli-dev/modonomicon/commit/5e7cb2debdeb0583f109d6d4989da3794d69e473) - add unread indicator for new/unvisited categories *(PR [#333](https://github.com/klikli-dev/modonomicon/pull/333) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2048,3 +2053,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1-1.125.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.124.2...release/v26.1-1.125.0
 [release/v26.1-1.126.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.125.0...release/v26.1-1.126.0
 [release/v26.1-1.127.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.126.0...release/v26.1-1.127.0
+[release/v26.1-1.128.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.127.0...release/v26.1-1.128.0
