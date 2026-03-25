@@ -2,8 +2,7 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version "${forgegradle_version}"
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
-    id 'org.spongepowered.mixin' version "0.7-SNAPSHOT"
+    id 'org.spongepowered.mixin' version '0.7.+'
     id 'java-library'
 }
 
@@ -30,18 +29,6 @@ jar {
 }
 
 minecraft {
-    mappings channel: forge_mapping_channel, version: forge_mapping_version
-
-    // Tell FG to not automtically create the reobf tasks, as we now use Official mappings at runtime, If you don't use them at dev time then you'll have to fix your reobf yourself.
-    reobf = false
-
-    // When true, this property will have all Eclipse/IntelliJ IDEA run configurations run the "prepareX" task for the given run configuration before launching the game.
-    // In most cases, it is not necessary to enable.
-    // enableEclipsePrepareRuns = true
-    // enableIdeaPrepareRuns = true
-
-    copyIdeResources = true
-
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
@@ -56,10 +43,7 @@ minecraft {
             jvmArgs '-XX:+AllowEnhancedClassRedefinition', '-XX:+IgnoreUnrecognizedVMOptions'
         }
 
-        client {
-            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            property 'forge.enabledGameTestNamespaces', project.mod_id
-
+        register('client'){
             mods {
                 modClientRun {
                     source sourceSets.main
@@ -68,8 +52,7 @@ minecraft {
             }
         }
 
-        server {
-            property 'forge.enabledGameTestNamespaces', project.mod_id
+        register('server') {
             args '--nogui'
 
             mods {
@@ -80,12 +63,11 @@ minecraft {
             }
         }
 
-        data {
-            // example of overriding the workingDirectory set in configureEach above
-            workingDirectory project.file('run-data')
+        register('data') {
+            workingDir = layout.projectDirectory.dir('run-data')
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+            args '--mod', project.mod_id, '--all', '--output', layout.projectDirectory.dir('src/generated/resources/'), '--existing', layout.projectDirectory.dir('src/main/resources/')
 
             mods {
                 modClientRun {
@@ -93,7 +75,6 @@ minecraft {
                     source project(":common").sourceSets.main
                 }
             }
-
         }
     }
 }
@@ -101,7 +82,7 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    implementation minecraft.dependency("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
     annotationProcessor "org.spongepowered:mixin:0.8.6:processor"
 
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0"))
@@ -127,6 +108,13 @@ dependencies {
     jarJar(group: 'org.commonmark', name: 'commonmark', version: "[${commonmark_version},)")
     jarJar(group: 'org.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: "[${commonmark_version},)")
     jarJar(group: 'org.commonmark', name: 'commonmark-ext-ins', version: "[${commonmark_version},)")
+}
+
+repositories {
+    minecraft.mavenizer(it) // In Kotlin, it = this
+    maven fg.forgeMaven
+    maven fg.minecraftLibsMaven
+    mavenCentral()
 }
 
 //Disable test compilation as a) we are not using tests and b) it fails due to not being able to access jei in common
