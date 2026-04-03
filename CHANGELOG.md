@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1-1.130.0] - 2026-04-03
+### :bug: Bug Fixes
+- [`cf24f29`](https://github.com/klikli-dev/modonomicon/commit/cf24f293f8a4cbed9de163cc639c8563ed17f6f8) - always show entry back button *(PR [#343](https://github.com/klikli-dev/modonomicon/pull/343) by [@klikli-dev](https://github.com/klikli-dev))*
+  - :arrow_lower_right: *fixes issue [#342](https://github.com/klikli-dev/modonomicon/issues/342) opened by [@klikli-dev](https://github.com/klikli-dev)*
+
+
 ## [release/v26.1-1.129.0] - 2026-04-03
 ### :bug: Bug Fixes
 - [`c5f7bc9`](https://github.com/klikli-dev/modonomicon/commit/c5f7bc9a83d0f4aecd0b42ada2b5ca2a95464711) - use GhostRenderState for multiblock preview tessellation *(PR [#341](https://github.com/klikli-dev/modonomicon/pull/341) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2060,3 +2066,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1-1.127.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.126.0...release/v26.1-1.127.0
 [release/v26.1-1.128.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.127.0...release/v26.1-1.128.0
 [release/v26.1-1.129.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.128.0...release/v26.1-1.129.0
+[release/v26.1-1.130.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.129.0...release/v26.1-1.130.0
