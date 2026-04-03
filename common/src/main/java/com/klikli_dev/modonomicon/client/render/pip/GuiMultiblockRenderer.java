@@ -171,10 +171,10 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
             PoseStack.Pose pose = ps.last();
 
             var renderType = model.hasMaterialFlag(net.minecraft.client.resources.model.geometry.BakedQuad.FLAG_TRANSLUCENT) ? Sheets.translucentBlockSheet() : Sheets.cutoutBlockSheet();
+            VertexConsumer buffer = new GhostVertexConsumer(this.bufferSource.getBuffer(renderType), (int) (alpha * 255.0F));
 
             BlockQuadOutput output = (_, _, _, quad, instance) ->
             {
-                VertexConsumer buffer = new GhostVertexConsumer(this.bufferSource.getBuffer(renderType), (int) (alpha * 255.0F));
                 buffer.putBakedQuad(pose, quad, instance);
             };
             ModelBlockRenderer blockRenderer = new ModelBlockRenderer(minecraft.options.ambientOcclusion().get(), false, minecraft.getBlockColors());
