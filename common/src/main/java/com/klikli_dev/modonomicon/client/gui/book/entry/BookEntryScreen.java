@@ -348,11 +348,6 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         this.updateBookmarksButton();
     }
 
-    @Override
-    public boolean canSeeBackButton() {
-        return true;
-    }
-
     protected boolean isBookmarked() {
         return BookVisualStateManager.get().getBookmarksFor(this.minecraft.player, this.entry.getBook()).stream().anyMatch(b -> b.entryId().equals(this.entry.getId()));
     }
