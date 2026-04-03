@@ -18,14 +18,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.ColorResolver;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
-import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -239,14 +236,7 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     @Override
     public LevelLightEngine getLightEngine() {
-        return null;
-    }
-
-    @Override
-    public int getBlockTint(BlockPos pos, ColorResolver color) {
-        var plains = this.level.registryAccess().lookupOrThrow(Registries.BIOME)
-                .getValueOrThrow(Biomes.PLAINS);
-        return color.getColor(plains, pos.getX(), pos.getZ());
+        return this.level != null ? this.level.getLightEngine() : LevelLightEngine.EMPTY;
     }
 
     @Override
@@ -269,4 +259,5 @@ public abstract class AbstractMultiblock implements Multiblock {
     public int getMinY() {
         return 0;
     }
+
 }

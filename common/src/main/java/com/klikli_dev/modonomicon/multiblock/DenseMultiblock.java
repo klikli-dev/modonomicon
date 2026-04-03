@@ -25,7 +25,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.CardinalLighting;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
@@ -253,10 +252,5 @@ public class DenseMultiblock extends AbstractMultiblock {
         }
         long ticks = this.level != null ? this.level.getGameTime() : 0L;
         return this.stateMatchers[x][y][z].getDisplayedState(ticks);
-    }
-
-    @Override
-    public CardinalLighting cardinalLighting() {
-        return CardinalLighting.DEFAULT;
     }
 }

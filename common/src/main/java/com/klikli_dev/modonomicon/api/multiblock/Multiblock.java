@@ -7,11 +7,11 @@
 package com.klikli_dev.modonomicon.api.multiblock;
 
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.BlockAndLightGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
 import org.jetbrains.annotations.Nullable;
@@ -27,7 +27,7 @@ import java.util.Collection;
  * do not create your own implementation of this, as it'll not be compatible with
  * all the features in the mod.
  */
-public interface Multiblock extends BlockAndTintGetter {
+public interface Multiblock extends BlockAndLightGetter {
 
     // ================================================================================================
     // Builder methods
