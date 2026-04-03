@@ -1,8 +1,17 @@
+/*
+ * SPDX-FileCopyrightText: 2026 klikli-dev
+ * SPDX-FileCopyrightText: 2026 XFactHD
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 package com.klikli_dev.modonomicon.client.render.pip;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.client.ClientTicks;
+import com.klikli_dev.modonomicon.client.render.GhostVertexConsumer;
+import com.klikli_dev.modonomicon.client.render.fakelevel.GhostRenderState;
 import com.klikli_dev.modonomicon.client.render.state.pip.GuiMultiblockRenderState;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -106,7 +115,7 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
             BlockState displayedBlockState = r.stateMatcher().getDisplayedState(ClientTicks.ticks).rotate(state.facingRotation());
 
             // Render block (via platform service)
-            this.renderBlock(buffers, level, state.multiblock(), displayedBlockState, r.worldPosition(), alpha, poseStack, state.randomSource());
+            this.renderBlock(level, displayedBlockState, r.worldPosition(), alpha, poseStack);
 
             if (displayedBlockState.getBlock() instanceof EntityBlock eb) {
                 var cache = state.blockEntityCache();
@@ -152,7 +161,7 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
         poseStack.popPose();
     }
 
-    private void renderBlock(MultiBufferSource.BufferSource buffers, ClientLevel level, Multiblock multiblock, BlockState state, BlockPos pos, float alpha, PoseStack ps, net.minecraft.util.RandomSource randomSource) {
+    private void renderBlock(ClientLevel level, BlockState state, BlockPos pos, float alpha, PoseStack ps) {
         if (pos != null) {
             ps.pushPose();
             ps.translate(pos.getX(), pos.getY(), pos.getZ());
@@ -165,11 +174,12 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
 
             BlockQuadOutput output = (_, _, _, quad, instance) ->
             {
-                VertexConsumer buffer = this.bufferSource.getBuffer(renderType);
+                VertexConsumer buffer = new GhostVertexConsumer(this.bufferSource.getBuffer(renderType), (int) (alpha * 255.0F));
                 buffer.putBakedQuad(pose, quad, instance);
             };
             ModelBlockRenderer blockRenderer = new ModelBlockRenderer(minecraft.options.ambientOcclusion().get(), false, minecraft.getBlockColors());
-            blockRenderer.tesselateBlock(output, 0, 0, 0, multiblock, BlockPos.ZERO, state, model, 0);
+            GhostRenderState renderState = new GhostRenderState(level, pos, state);
+            blockRenderer.tesselateBlock(output, 0, 0, 0, renderState, pos, state, model, 0);
 
             ps.popPose();
 
