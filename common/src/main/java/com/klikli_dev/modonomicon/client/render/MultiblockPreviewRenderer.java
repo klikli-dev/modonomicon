@@ -1,6 +1,7 @@
 /*
  * SPDX-FileCopyrightText: 2022 Authors of Patchouli
  * SPDX-FileCopyrightText: 2022 klikli-dev
+ * SPDX-FileCopyrightText: 2026 XFactHD
  *
  * SPDX-License-Identifier: MIT
  */
@@ -12,6 +13,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.multiblock.MultiblockPreviewData;
 import com.klikli_dev.modonomicon.client.ClientTicks;
+import com.klikli_dev.modonomicon.client.render.fakelevel.GhostRenderState;
 import com.klikli_dev.modonomicon.multiblock.AbstractMultiblock;
 import com.klikli_dev.modonomicon.multiblock.matcher.DisplayOnlyMatcher;
 import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
@@ -26,8 +28,8 @@ import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -35,7 +37,6 @@ import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.block.BlockQuadOutput;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
@@ -50,7 +51,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -83,8 +83,6 @@ public class MultiblockPreviewRenderer {
     private static final Map<BlockPos, BlockEntity> blockEntityCache = new Object2ObjectOpenHashMap<>();
     private static final Set<BlockEntity> erroredBlockEntities = Collections.newSetFromMap(new WeakHashMap<>());
     private static final List<BlockEntityRenderState> blockEntityRenderStates = new ArrayList<>();
-    private static final RandomSource RANDOM = RandomSource.create();
-    private static final ObjectArrayList<BlockStateModelPart> PART_SCRATCH_LIST = new ObjectArrayList<>();
     private static final ByteBufferBuilder BUFFER_BUILDER = new ByteBufferBuilder(RenderType.TRANSIENT_BUFFER_SIZE);
 
     private static final Map<RenderType, RenderType> GHOST_RENDER_TYPE_CACHE = new java.util.IdentityHashMap<>();
@@ -409,7 +407,7 @@ public class MultiblockPreviewRenderer {
 
                 if (!r.test(level, facingRotation)) {
                     BlockState displayedState = r.stateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
-                    renderBlock(level, displayedState, r.worldPosition(), multiblock, air, alpha, blockRenderer, ms, buffer);
+                    renderBlock(level, displayedState, r.worldPosition(), alpha, blockRenderer, ms, buffer);
 
                     if (air) {
                         airFilled++;
@@ -482,10 +480,13 @@ public class MultiblockPreviewRenderer {
         }
     }
 
-    public static void renderBlock(Level world, BlockState state, BlockPos pos, Multiblock multiblock, boolean isAir, float alpha, ModelBlockRenderer blockRenderer, PoseStack poseStack, BufferBuilder buffer) {
+    public static void renderBlock(Level world, BlockState state, BlockPos pos, float alpha, ModelBlockRenderer blockRenderer, PoseStack poseStack, BufferBuilder buffer) {
         if (pos == null) return;
 
         Minecraft mc = Minecraft.getInstance();
+        if (!(world instanceof ClientLevel clientLevel)) {
+            return;
+        }
         Vec3 cameraPos = mc.gameRenderer.getMainCamera().position();
         Vec3 offset = Vec3.atLowerCornerOf(pos).subtract(cameraPos);
 
@@ -507,9 +508,8 @@ public class MultiblockPreviewRenderer {
         poseStack.translate(-.5F, -.5F, -.5F);
 
         BlockStateModel model = mc.getModelManager().getBlockStateModelSet().get(state);
-        model.collectParts(RANDOM, PART_SCRATCH_LIST);
-        blockRenderer.tesselateBlock(output, 0, 0, 0, multiblock, pos, state, model, 0);
-        PART_SCRATCH_LIST.clear();
+        GhostRenderState renderState = new GhostRenderState(clientLevel, pos, state);
+        blockRenderer.tesselateBlock(output, 0, 0, 0, renderState, pos, state, model, 0);
 
         poseStack.popPose();
     }

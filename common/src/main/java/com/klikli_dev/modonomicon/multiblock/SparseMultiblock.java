@@ -25,7 +25,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.level.CardinalLighting;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -191,10 +190,5 @@ public class SparseMultiblock extends AbstractMultiblock {
     public BlockState getBlockState(BlockPos pos) {
         long ticks = this.level != null ? this.level.getGameTime() : 0L;
         return this.stateMatchers.getOrDefault(pos, Matchers.AIR).getDisplayedState(ticks);
-    }
-
-    @Override
-    public CardinalLighting cardinalLighting() {
-        return CardinalLighting.DEFAULT;
     }
 }
