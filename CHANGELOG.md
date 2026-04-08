@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.2-1.133.0] - 2026-04-08
+### :sparkles: New Features
+- [`cfbf008`](https://github.com/klikli-dev/modonomicon/commit/cfbf0084aa0c5c7eb46d53527e211d97022307a2) - update to 26.2-snapshot-1 *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`45511c9`](https://github.com/klikli-dev/modonomicon/commit/45511c959f91a834e5438aee1d0f5ce4f4bb83ff) - update rendering and mixins *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`d22f317`](https://github.com/klikli-dev/modonomicon/commit/d22f3173532a03815b28f9515ed719fc7e365817) - multiblock preview rendering *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`ed41950`](https://github.com/klikli-dev/modonomicon/commit/ed41950ebf49eef56e72fc28614f8c517c62fe79) - prevent node book open crash *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`6cbc206`](https://github.com/klikli-dev/modonomicon/commit/6cbc20660c038ffeab51913cefe85d91b77d0ffc) - call render state extraction to make BEs render on fabric *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`c13984b`](https://github.com/klikli-dev/modonomicon/commit/c13984b7745e093c18229c7a4589e78053b02ebe) - update action versions *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`a5f6948`](https://github.com/klikli-dev/modonomicon/commit/a5f6948c2b865eb2bcb2473b4d7508c437cd12b4) - improve logging *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1-1.130.0] - 2026-04-03
 ### :bug: Bug Fixes
 - [`cf24f29`](https://github.com/klikli-dev/modonomicon/commit/cf24f293f8a4cbed9de163cc639c8563ed17f6f8) - always show entry back button *(PR [#343](https://github.com/klikli-dev/modonomicon/pull/343) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2067,3 +2082,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1-1.128.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.127.0...release/v26.1-1.128.0
 [release/v26.1-1.129.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.128.0...release/v26.1-1.129.0
 [release/v26.1-1.130.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.129.0...release/v26.1-1.130.0
+[release/v26.2-1.133.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.2-0.0.0...release/v26.2-1.133.0
