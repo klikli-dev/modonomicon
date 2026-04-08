@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.1-1.132.0] - 2026-04-08
+### :bug: Bug Fixes
+- [`f579d5b`](https://github.com/klikli-dev/modonomicon/commit/f579d5bc36c7cc2f3a65059c7e83be199df278c8) - model manager mixin *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`c7a64e5`](https://github.com/klikli-dev/modonomicon/commit/c7a64e5041f96c7bdf4165e14ec4f7e74def0520) - multiblock preview rendering *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.1-1.131.0] - 2026-04-08
 ### :sparkles: New Features
 - [`d80dfe0`](https://github.com/klikli-dev/modonomicon/commit/d80dfe05f1fc222c875d936d111d193d1eafa758) - update to 26.1.1 *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2073,3 +2079,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1-1.129.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.128.0...release/v26.1-1.129.0
 [release/v26.1-1.130.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.129.0...release/v26.1-1.130.0
 [release/v26.1.1-1.131.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.1-0.0.0...release/v26.1.1-1.131.0
+[release/v26.1.1-1.132.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.1-1.131.0...release/v26.1.1-1.132.0
