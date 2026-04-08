@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.1-1.132.2] - 2026-04-08
+### :bug: Bug Fixes
+- [`934d466`](https://github.com/klikli-dev/modonomicon/commit/934d4661a5d48efbe28b49097038983bbc81c694) - correctly call render state extraction on fabric *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`e7b5942`](https://github.com/klikli-dev/modonomicon/commit/e7b59420fa4ab5a2ab7b8343cf484a5995467a38) - clean up comments *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.1-1.132.1] - 2026-04-08
 ### :bug: Bug Fixes
 - [`d35e42c`](https://github.com/klikli-dev/modonomicon/commit/d35e42c2cbd9bca3aa34e50964ecde3bb3f6a2b8) - multiblock preview block entity rendering in fabric *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2086,3 +2094,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.1-1.131.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.1-0.0.0...release/v26.1.1-1.131.0
 [release/v26.1.1-1.132.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.1-1.131.0...release/v26.1.1-1.132.0
 [release/v26.1.1-1.132.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.1-1.132.0...release/v26.1.1-1.132.1
+[release/v26.1.1-1.132.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.1-1.132.1...release/v26.1.1-1.132.2
