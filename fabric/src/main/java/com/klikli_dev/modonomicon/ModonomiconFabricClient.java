@@ -20,6 +20,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.PictureInPictureRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperties;
@@ -54,13 +55,10 @@ public class ModonomiconFabricClient implements ClientModInitializer {
         //Tick multiblock preview
         ClientTickEvents.END_CLIENT_TICK.register(MultiblockPreviewRenderer::onClientTick);
 
-        //TODO: register PIP renderers using SpecialGuiElementRegistry.register();
-
         //Render multiblock preview
-        //TODO: re-enable once fabric offers an API for this
-//        WorldRenderEvents.LAST.register(context -> {
-//            MultiblockPreviewRenderer.onRenderLevelLastEvent(context.matrixStack());
-//        });
+        LevelRenderEvents.AFTER_TRANSLUCENT_FEATURES.register(context -> {
+            MultiblockPreviewRenderer.onRenderLevelLastEvent(context.levelState(), context.poseStack());
+        });
 
         //render multiblock hud
         HudElementRegistry.addLast(Modonomicon.loc("multiblock_preview_hud"), (context, tickCounter) -> {
