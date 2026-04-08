@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Set up OpenJDK 25
         uses: actions/setup-java@v5
         with:
@@ -44,7 +44,7 @@ jobs:
           script: |
             return '${{ github.ref }}'.match(/refs\/tags\/(.*)\/v((.*?)-(.*))/)[3];
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@v6
         with:
           gradle-home-cache-cleanup: true
       - name: Build
@@ -110,7 +110,7 @@ jobs:
         if: ${{ steps.get_release_type.outputs.result != 'test' }}
         run: sed -i "s/^mod_version=.*/mod_version=${{ steps.get_version.outputs.result }}/" gradle.properties
       - name: Commit CHANGELOG.md and gradle.properties
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         if: ${{ steps.get_release_type.outputs.result != 'test' }}
         with:
           branch: version/${{ steps.get_mc_version.outputs.result }}
