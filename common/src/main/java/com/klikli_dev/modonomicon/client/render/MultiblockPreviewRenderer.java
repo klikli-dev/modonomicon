@@ -91,7 +91,7 @@ public class MultiblockPreviewRenderer {
     private static Component name;
     private static BlockPos pos;
     private static boolean isAnchored;
-    private static Rotation facingRotation;
+    private static Rotation facingRotation = Rotation.NONE;
     private static Function<BlockPos, BlockPos> offsetApplier;
     private static int blocks, blocksDone, airFilled;
     private static int timeComplete;
