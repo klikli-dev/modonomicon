@@ -188,13 +188,15 @@ public class BookGuiManager {
             openBookParentScreen.loadState(state);
         }
 
+        var openCategory = this.getSavedOrAddressedCategoryOrDefault(book, address);
+        openBookParentScreen.setCurrentCategoryScreen(new DummyBookCategoryNodeScreen(openBookParentScreen, openCategory));
+
         //Call after restoring state, to ensure the correct page etc display right away
         Minecraft.getInstance().setScreenAndShow(openBookParentScreen);
 
         //run additional init logic (e.g. unlock state determination)
         openBookParentScreen.onDisplay();
 
-        var openCategory = this.getSavedOrAddressedCategoryOrDefault(book, address);
         this.openCategory(openCategory, address);
     }
 

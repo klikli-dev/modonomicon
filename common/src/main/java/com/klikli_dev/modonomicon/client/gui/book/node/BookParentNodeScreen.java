@@ -210,18 +210,25 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         //ignore return value, because we need our base class to handle dragging and such
-        this.getCurrentCategoryScreen().mouseClicked(event, isDoubleClick);
+        var currentCategoryScreen = this.getCurrentCategoryScreen();
+        if (currentCategoryScreen != null) {
+            currentCategoryScreen.mouseClicked(event, isDoubleClick);
+        }
         return super.mouseClicked(event, isDoubleClick);
     }
 
     @Override
     public boolean mouseDragged(MouseButtonEvent event, double mouseX, double mouseY) {
-        return this.getCurrentCategoryScreen().mouseDragged(event, mouseX, mouseY);
+        var currentCategoryScreen = this.getCurrentCategoryScreen();
+        return currentCategoryScreen != null && currentCategoryScreen.mouseDragged(event, mouseX, mouseY);
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        this.getCurrentCategoryScreen().zoom(scrollY);
+        var currentCategoryScreen = this.getCurrentCategoryScreen();
+        if (currentCategoryScreen != null) {
+            currentCategoryScreen.zoom(scrollY);
+        }
         return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
@@ -233,16 +240,22 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
             pMouseY = this.renderMouseYOverride;
         }
 
+        var currentCategoryScreen = this.getCurrentCategoryScreen();
+
         //not needed any more in 1.21.8+ because screen now calls it before render()
 //        this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
-        this.getCurrentCategoryScreen().renderBackground(guiGraphics);
+        if (currentCategoryScreen != null) {
+            currentCategoryScreen.renderBackground(guiGraphics);
 
-        this.getCurrentCategoryScreen().render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+            currentCategoryScreen.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+        }
 
         this.renderFrame(guiGraphics);
 
-        this.getCurrentCategoryScreen().renderEntryTooltips(guiGraphics, pMouseX, pMouseY, pPartialTick);
+        if (currentCategoryScreen != null) {
+            currentCategoryScreen.renderEntryTooltips(guiGraphics, pMouseX, pMouseY, pPartialTick);
+        }
 
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
         for (var renderable : this.renderables) {
@@ -257,7 +270,8 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
     public boolean keyPressed(KeyEvent event) {
         //delegate key handling to the open category
         //this ensures the open category is saved by calling the right overload of onEsc
-        if (this.getCurrentCategoryScreen().keyPressed(event)) {
+        var currentCategoryScreen = this.getCurrentCategoryScreen();
+        if (currentCategoryScreen != null && currentCategoryScreen.keyPressed(event)) {
             return true;
         }
 
