@@ -74,7 +74,7 @@ public class BookGuiManager {
     protected boolean showErrorScreen(Identifier bookId) {
         if (BookErrorManager.get().hasErrors(bookId)) {
             var book = BookDataManager.get().getBook(bookId);
-            Minecraft.getInstance().setScreen(new BookErrorScreen(book));
+            Minecraft.getInstance().setScreenAndShow(new BookErrorScreen(book));
             return true;
         }
         return false;
@@ -189,7 +189,7 @@ public class BookGuiManager {
         }
 
         //Call after restoring state, to ensure the correct page etc display right away
-        Minecraft.getInstance().setScreen(openBookParentScreen);
+        Minecraft.getInstance().setScreenAndShow(openBookParentScreen);
 
         //run additional init logic (e.g. unlock state determination)
         openBookParentScreen.onDisplay();
@@ -208,7 +208,7 @@ public class BookGuiManager {
         }
 
         //Call after restoring state, to ensure the correct page etc display right away
-        Minecraft.getInstance().setScreen(openBookParentScreen);
+        Minecraft.getInstance().setScreenAndShow(openBookParentScreen);
 
         //run additional init logic (e.g. unlock state determination)
         openBookParentScreen.onDisplay();
@@ -491,7 +491,7 @@ public class BookGuiManager {
 
     public void closeParentScreen(BookParentScreen screen) {
         ClientServices.GUI.popGuiLayer();
-        Minecraft.getInstance().setScreen(null);
+        Minecraft.getInstance().setScreenAndShow(null);
         this.openBookParentScreen = null;
 
         var state = BookVisualStateManager.get().getBookStateFor(this.player(), screen.getBook());

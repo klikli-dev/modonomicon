@@ -21,32 +21,37 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockQuadOutput;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
+import org.jspecify.annotations.NonNull;
 
 public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultiblockRenderState> {
 
+    MultiBufferSource.BufferSource bufferSource;
+
     public GuiMultiblockRenderer(MultiBufferSource.BufferSource bufferSource) {
-        super(bufferSource);
+        super();
+
+        this.bufferSource = bufferSource;
     }
 
     @Override
-    public Class<GuiMultiblockRenderState> getRenderStateClass() {
+    public @NonNull Class<GuiMultiblockRenderState> getRenderStateClass() {
         return GuiMultiblockRenderState.class;
     }
 
     @Override
-    protected void renderToTexture(GuiMultiblockRenderState state, PoseStack poseStack) {
+    protected void renderToTexture(GuiMultiblockRenderState state, @NonNull PoseStack poseStack, @NonNull SubmitNodeCollector submitNodeCollector) {
         var mc = Minecraft.getInstance();
         ClientLevel level = mc.level;
         if (level == null) return;
@@ -171,7 +176,7 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
             PoseStack.Pose pose = ps.last();
             int lightCoords = LevelRenderer.getLightCoords(LevelRenderer.BrightnessGetter.DEFAULT, level, state, pos);
 
-            var renderType = model.hasMaterialFlag(net.minecraft.client.resources.model.geometry.BakedQuad.FLAG_TRANSLUCENT) ? Sheets.translucentBlockSheet() : Sheets.cutoutBlockSheet();
+            var renderType = model.hasMaterialFlag(net.minecraft.client.resources.model.geometry.BakedQuad.FLAG_TRANSLUCENT) ? Sheets.translucentBlockItemSheet() : Sheets.cutoutBlockItemSheet();
             VertexConsumer buffer = this.bufferSource.getBuffer(renderType);
 
             BlockQuadOutput output = (_, _, _, quad, instance) ->

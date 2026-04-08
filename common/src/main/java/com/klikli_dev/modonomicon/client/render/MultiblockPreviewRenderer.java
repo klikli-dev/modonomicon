@@ -500,7 +500,7 @@ public class MultiblockPreviewRenderer {
         if (state.getBlock() == Blocks.AIR) {
             float scale = 0.3F;
             poseStack.scale(scale, scale, scale);
-            state = Blocks.RED_CONCRETE.defaultBlockState();
+            state = Blocks.CONCRETE.red().defaultBlockState();
         } else {
             poseStack.scale(1.0001F, 1.0001F, 1.0001F);
         }
@@ -532,7 +532,7 @@ public class MultiblockPreviewRenderer {
 
         GpuBufferSlice dynamicUniforms = RenderSystem.getDynamicUniforms()
                 .writeTransform(
-                        RenderSystem.getModelViewMatrix(),
+                        RenderSystem.getModelViewMatrixCopy(),
                         new Vector4f(1.0F, 1.0F, 1.0F, 1.0F),
                         new Vector3f(),
                         new Matrix4f()

@@ -31,7 +31,7 @@ public class DemoMultiblockProvider extends MultiblockProvider {
                 .blockstate('S', () -> Blocks.OAK_STAIRS, "[facing=south]")
                 .blockstate('W', () -> Blocks.OAK_STAIRS, "[facing=west]")
                 .blockstate('E', () -> Blocks.OAK_STAIRS, "[facing=east]")
-                .tag('G', BlockTags.CANDLES, () -> Blocks.WHITE_CANDLE)
+                .tag('G', BlockTags.CANDLES, Blocks.DYED_CANDLE::white)
                 .block('0', () -> Blocks.SKELETON_SKULL)
         );
 
@@ -119,7 +119,7 @@ public class DemoMultiblockProvider extends MultiblockProvider {
                         "I C"
                 )
                 .block('G', () -> Blocks.GLASS_PANE)
-                .block('F', () -> Blocks.GRAY_STAINED_GLASS_PANE)
+                .block('F', Blocks.STAINED_GLASS_PANE::gray)
                 .block('I', () -> Blocks.IRON_BARS)
                 .block('C', () -> Blocks.IRON_CHAIN)
         );

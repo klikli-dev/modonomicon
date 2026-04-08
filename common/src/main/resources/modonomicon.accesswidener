@@ -59,3 +59,5 @@ accessible field net/minecraft/client/renderer/rendertype/RenderSetup outputTarg
 accessible field net/minecraft/client/renderer/rendertype/RenderSetup textures Ljava/util/Map;
 accessible class net/minecraft/client/renderer/rendertype/RenderSetup$TextureBinding
 accessible method net/minecraft/client/renderer/rendertype/RenderSetup$TextureBinding <init> (Lnet/minecraft/resources/Identifier;Ljava/util/function/Supplier;)V
+accessible field net/minecraft/client/gui/Gui screen Lnet/minecraft/client/gui/screens/Screen;
+accessible class net/minecraft/client/resources/model/ModelManager$MaterialBakerImpl

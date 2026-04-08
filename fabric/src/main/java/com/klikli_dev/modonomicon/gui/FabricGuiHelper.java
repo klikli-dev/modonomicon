@@ -28,7 +28,7 @@ public class FabricGuiHelper implements GuiHelper {
     public void pushGuiLayer(Screen screen) {
         var minecraft = Minecraft.getInstance();
 
-        var oldScreen = minecraft.screen;
+        var oldScreen = minecraft.gui.screen();
 
         if(multiLayerScreen == null)
             multiLayerScreen = new FabricMultiLayerScreen();
@@ -47,7 +47,7 @@ public class FabricGuiHelper implements GuiHelper {
         if (oldScreen != multiLayerScreen) {
             //init needs to happen after we added screens, because with an empty guiLayers stack we get errors
             multiLayerScreen.init(minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight());
-            minecraft.screen = multiLayerScreen;
+            minecraft.gui.screen = multiLayerScreen;
         }
 
         screen.init(minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight());
@@ -61,7 +61,7 @@ public class FabricGuiHelper implements GuiHelper {
         if(multiLayerScreen == null)
             return;
 
-        if (minecraft.screen != multiLayerScreen) {
+        if (minecraft.gui.screen() != multiLayerScreen) {
             //someone already overwrote screen, we exit
             return;
         }
@@ -69,7 +69,7 @@ public class FabricGuiHelper implements GuiHelper {
         if (multiLayerScreen.guiLayers.size() == 1) {
             //we are at the last layer, so we close the screen
             //we do this here because then the last screen gets the related events from mc / modloader
-            minecraft.setScreen(null);
+            minecraft.setScreenAndShow(null);
         }
 
         var removed = multiLayerScreen.guiLayers.pop();
@@ -83,9 +83,9 @@ public class FabricGuiHelper implements GuiHelper {
     @Override
     public Screen getCurrentScreen() {
         if(multiLayerScreen == null)
-            return Minecraft.getInstance().screen;
+            return Minecraft.getInstance().gui.screen();
 
-        return multiLayerScreen.guiLayers.isEmpty() ? Minecraft.getInstance().screen : multiLayerScreen.guiLayers.peek();
+        return multiLayerScreen.guiLayers.isEmpty() ? Minecraft.getInstance().gui.screen() : multiLayerScreen.guiLayers.peek();
     }
 
 }
