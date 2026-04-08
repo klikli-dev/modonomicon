@@ -56,7 +56,7 @@ public class ModonomiconFabricClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(MultiblockPreviewRenderer::onClientTick);
 
         //Render multiblock preview
-        LevelRenderEvents.AFTER_TRANSLUCENT_FEATURES.register(context -> {
+        LevelRenderEvents.END_MAIN.register(context -> {
             MultiblockPreviewRenderer.onRenderLevelLastEvent(context.levelState(), context.poseStack());
         });
 
