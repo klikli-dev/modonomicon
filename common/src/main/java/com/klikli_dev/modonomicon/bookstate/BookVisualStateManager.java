@@ -101,7 +101,7 @@ public class BookVisualStateManager {
                 this.saveData = new BookStatesSaveData();
                 //and we request a sync
                 Services.NETWORK.sendToServer(RequestSyncBookStatesMessage.INSTANCE);
-                Modonomicon.LOG.error("Tried to get Modonomicon save data for player on client side, but was not set. This should not happen. Requesting a sync from the server. Please re-open the book in a few seconds to see your progress.");
+                Modonomicon.LOG.error("Tried to get Modonomicon visual state save data for player on client side, but was not set. This should not happen. Requesting a sync from the server. Please re-open the book in a few seconds to see your progress.");
             }
         }
     }
