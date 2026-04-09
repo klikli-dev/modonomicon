@@ -50,6 +50,7 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -333,6 +334,7 @@ public class MultiblockPreviewRenderer {
                             //Note: we cannot use Minecraft.getInstance().getBlockEntityRenderDispatcher().tryExtractRenderState because that takes the camera eye position of the in-world camera, but our multiblock exists in a virtual level close to 0 0 0
                             renderer.extractRenderState(be, renderState, ClientTicks.partialTicks, eye, null);
                             renderState.blockPos = r.worldPosition();
+                            renderState.lightCoords = LightCoordsUtil.FULL_BRIGHT;
                             blockEntityRenderStates.add(renderState);
                         }
                     }
