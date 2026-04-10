@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-1.134.1] - 2026-04-10
+### :bug: Bug Fixes
+- [`8b52b40`](https://github.com/klikli-dev/modonomicon/commit/8b52b405dc7b2f1bf56ac46417194cb178ae4479) - compiler error on testcompile *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.1-1.132.3] - 2026-04-09
 ### :bug: Bug Fixes
 - [`dfbd197`](https://github.com/klikli-dev/modonomicon/commit/dfbd1974ee1b27b0995b15ad4d51a263c8d7110f) - multiblock preview rendering BE lighting *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2101,3 +2106,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.1-1.132.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.1-1.132.0...release/v26.1.1-1.132.1
 [release/v26.1.1-1.132.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.1-1.132.1...release/v26.1.1-1.132.2
 [release/v26.1.1-1.132.3]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.1-1.132.2...release/v26.1.1-1.132.3
+[release/v26.1.2-1.134.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.134.0...release/v26.1.2-1.134.1
