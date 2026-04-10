@@ -31,6 +31,7 @@ public class ComponentRenderer {
     private final boolean renderSoftLineBreaks;
     private final boolean replaceSoftLineBreaksWithSpace;
     private final TextColor linkColor;
+    private final TextColor defaultTextColor;
     private MutableComponent currentComponent;
     private Style currentStyle;
     private ListHolder listHolder;
@@ -39,6 +40,7 @@ public class ComponentRenderer {
         this.renderSoftLineBreaks = builder.renderSoftLineBreaks;
         this.replaceSoftLineBreaksWithSpace = builder.replaceSoftLineBreaksWithSpace;
         this.linkColor = builder.linkColor;
+        this.defaultTextColor = builder.defaultTextColor;
         this.currentStyle = builder.style;
         this.linkRenderers = builder.linkRenderers;
 
@@ -84,6 +86,7 @@ public class ComponentRenderer {
         private boolean renderSoftLineBreaks = false;
         private boolean replaceSoftLineBreaksWithSpace = true;
         private TextColor linkColor = TextColor.fromRgb(0x5555FF);
+        private TextColor defaultTextColor = TextColor.fromRgb(0x000000);
         private Style style = Style.EMPTY;
 
         /**
@@ -115,6 +118,14 @@ public class ComponentRenderer {
          */
         public ComponentRenderer.Builder linkColor(TextColor linkColor) {
             this.linkColor = linkColor;
+            return this;
+        }
+
+        /**
+         * The default text color for the book.
+         */
+        public ComponentRenderer.Builder defaultTextColor(TextColor defaultTextColor) {
+            this.defaultTextColor = defaultTextColor;
             return this;
         }
 
@@ -255,6 +266,11 @@ public class ComponentRenderer {
         @Override
         public TextColor getLinkColor() {
             return ComponentRenderer.this.linkColor;
+        }
+
+        @Override
+        public TextColor getDefaultTextColor() {
+            return ComponentRenderer.this.defaultTextColor;
         }
 
         @Override
