@@ -42,16 +42,18 @@ public class BookTextRenderer {
     }
 
     public List<MutableComponent> render(String markdown) {
-        return this.render(markdown, Style.EMPTY.withColor(ChatFormatting.BLACK));
+        return this.render(markdown, Style.EMPTY);
     }
 
     public List<MutableComponent> render(String markdown, Style defaultStyle) {
         //TODO: make renderer configurable for modders
 
         var baseStyle = defaultStyle.withFont(new FontDescription.Resource(BookDataManager.Client.get().safeFont(this.book.getFont())));
-        if (defaultStyle.getColor() == null) {
-            baseStyle = baseStyle.withColor(this.book.getDefaultTextColor());
-        }
+        //TODO: the default text color needs to be implemented in the node renderers and added to the component renderer builder and context, not here.
+        //if it is done here, it will lead to link colors being ignored.
+//        if (defaultStyle.getColor() == null) {
+//            baseStyle = baseStyle.withColor(this.book.getDefaultTextColor());
+//        }
 
         //renderer needs to be instantiated every time, because it caches the results
         var renderer = new ComponentRenderer.Builder()
