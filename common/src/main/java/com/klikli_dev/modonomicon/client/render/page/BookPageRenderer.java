@@ -375,6 +375,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
                             this.font, (int) pMouseX - x, y);
                     //TODO: verify if the y is correct. See ModListScreen for an example usage
                     styleFinder.accept(TextAlignment.LEFT, 0, 0, formattedcharsequence);
+                    return styleFinder.result();
                 }
                 y += this.font.lineHeight;
             }
@@ -397,6 +398,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
                                 this.font, (int) pMouseX - x, y);
                         //TODO: verify if the y is correct. See ModListScreen for an example usage
                         styleFinder.accept(TextAlignment.LEFT, 0, 0, formattedcharsequence);
+                        return styleFinder.result();
                     }
                     currentY += this.font.lineHeight * scale;
                 }
