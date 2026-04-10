@@ -85,7 +85,7 @@ loom {
 
 sourceSets.main.resources.srcDir 'src/generated/resources'
 
-tasks.withType(JavaCompile).configureEach {
+tasks.named("compileJava", JavaCompile).configure {
     source(project(":common").sourceSets.main.allSource)
 }
 
