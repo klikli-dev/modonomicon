@@ -195,8 +195,12 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
 
     @Override
     public void visit(Text text) {
+        var style = this.context.getCurrentStyle();
+        if (style.getColor() == null) {
+            style = style.withColor(this.context.getDefaultTextColor());
+        }
         this.context.getCurrentComponent().append(
-                Component.translatable(text.getLiteral()).withStyle(this.context.getCurrentStyle()));
+                Component.translatable(text.getLiteral()).withStyle(style));
         this.visitChildren(text);
     }
 
