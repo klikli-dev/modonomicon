@@ -323,20 +323,10 @@ public abstract class BookPageRenderer<T extends BookPage> {
 
     @Nullable
     protected Style getClickedComponentStyleAtForTitle(BookTextHolder title, int x, int y, double pMouseX, double pMouseY) {
+        FormattedCharSequence formattedCharSequence;
         if (title instanceof RenderedBookTextHolder renderedTitle) {
-            var formattedCharSequence = FormattedCharSequence.fromList(
+            formattedCharSequence = FormattedCharSequence.fromList(
                     renderedTitle.getRenderedText().stream().map(Component::getVisualOrderText).toList());
-            float scale = Math.min(1.0f, (float) BookEntryScreen.MAX_TITLE_WIDTH / (float) this.font.width(formattedCharSequence));
-            float renderX = x - this.font.width(formattedCharSequence) * scale / 2.0F;
-            float renderY = y + (this.font.lineHeight * (1 - scale));
-
-            var pose = new Matrix3x2f();
-            if (scale < 1) {
-                pose.translate(0, y - y * scale);
-                pose.scale(scale, scale);
-            }
-
-            return this.findClickedStyleAtRenderedLine(formattedCharSequence, renderX, renderY, pMouseX, pMouseY, pose);
         } else {
             if (title.getComponent() == null) {
                 //this should not happen, but other errors earlier in the pipeline might cause it.
@@ -346,19 +336,20 @@ public abstract class BookPageRenderer<T extends BookPage> {
 
             var font = new FontDescription.Resource(BookDataManager.Client.get().safeFont(this.page.getBook().getFont()));
             var titleComponent = Component.empty().append(title.getComponent()).withStyle(s -> s.withFont(font));
-            var formattedCharSequence = titleComponent.getVisualOrderText();
-            float scale = Math.min(1.0f, (float) BookEntryScreen.MAX_TITLE_WIDTH / (float) this.font.width(formattedCharSequence));
-            float renderX = x - this.font.width(formattedCharSequence) * scale / 2.0F;
-            float renderY = y + (this.font.lineHeight * (1 - scale));
-
-            var pose = new Matrix3x2f();
-            if (scale < 1) {
-                pose.translate(0, y - y * scale);
-                pose.scale(scale, scale);
-            }
-
-            return this.findClickedStyleAtRenderedLine(formattedCharSequence, renderX, renderY, pMouseX, pMouseY, pose);
+            formattedCharSequence = titleComponent.getVisualOrderText();
         }
+
+        float scale = Math.min(1.0f, (float) BookEntryScreen.MAX_TITLE_WIDTH / (float) this.font.width(formattedCharSequence));
+        float renderX = x - this.font.width(formattedCharSequence) * scale / 2.0F;
+        float renderY = y + (this.font.lineHeight * (1 - scale));
+
+        var pose = new Matrix3x2f();
+        if (scale < 1) {
+            pose.translate(0, y - y * scale);
+            pose.scale(scale, scale);
+        }
+
+        return this.findClickedStyleAtRenderedLine(formattedCharSequence, renderX, renderY, pMouseX, pMouseY, pose);
     }
 
     /**
