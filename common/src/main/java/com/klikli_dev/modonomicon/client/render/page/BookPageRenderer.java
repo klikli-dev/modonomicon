@@ -28,6 +28,7 @@ import net.minecraft.network.chat.FontDescription;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -303,27 +304,29 @@ public abstract class BookPageRenderer<T extends BookPage> {
     }
 
     @Nullable
+    private Style findClickedStyleAtRenderedLine(FormattedCharSequence text, float x, float y, double pMouseX, double pMouseY) {
+        return this.findClickedStyleAtRenderedLine(text, x, y, pMouseX, pMouseY, new Matrix3x2f());
+    }
+
+    @Nullable
+    private Style findClickedStyleAtRenderedLine(FormattedCharSequence text, float x, float y, double pMouseX, double pMouseY, Matrix3x2f pose) {
+        int textX = (int) Math.floor(x);
+        int textY = (int) Math.floor(y);
+        float xOffset = x - textX;
+        float yOffset = y - textY;
+
+        var styleFinder = new ActiveTextCollector.ClickableStyleFinder(this.font, (int) pMouseX, (int) pMouseY);
+        var parameters = new ActiveTextCollector.Parameters(new Matrix3x2f(pose).translate(xOffset, yOffset));
+        styleFinder.accept(TextAlignment.LEFT, textX, textY, parameters, text);
+        return styleFinder.result();
+    }
+
+    @Nullable
     protected Style getClickedComponentStyleAtForTitle(BookTextHolder title, int x, int y, double pMouseX, double pMouseY) {
-        //check if we are vertically over the title line
-        if (!(pMouseY > y && pMouseY < y + this.font.lineHeight))
-            return null;
-
-        //they say good code comments itself. Well, this is not good code.
+        FormattedCharSequence formattedCharSequence;
         if (title instanceof RenderedBookTextHolder renderedTitle) {
-            //markdown title
-            var formattedCharSequence = FormattedCharSequence.fromList(
+            formattedCharSequence = FormattedCharSequence.fromList(
                     renderedTitle.getRenderedText().stream().map(Component::getVisualOrderText).toList());
-
-            x = x - this.font.width(formattedCharSequence) / 2;
-            if (pMouseX < x)
-                return null;
-            //if we are horizontally left of the title, exit
-            var styleFinder = new ActiveTextCollector.ClickableStyleFinder(
-                    this.font, (int) pMouseX - x, y);
-            //TODO: verify if the y is correct. See ModListScreen for an example usage
-            //TODO: is left really right for titles?
-            styleFinder.accept(TextAlignment.LEFT, 0, 0, formattedCharSequence);
-            return styleFinder.result();
         } else {
             if (title.getComponent() == null) {
                 //this should not happen, but other errors earlier in the pipeline might cause it.
@@ -331,19 +334,22 @@ public abstract class BookPageRenderer<T extends BookPage> {
                 return null;
             }
 
-            var formattedCharSequence = title.getComponent().getVisualOrderText();
-            x = x - this.font.width(formattedCharSequence) / 2;
-            if (pMouseX < x)
-                return null;
-            //if we are horizontally left of the title, exit
-
-            var styleFinder = new ActiveTextCollector.ClickableStyleFinder(
-                    this.font, (int) pMouseX - x, y);
-            //TODO: verify if the y is correct. See ModListScreen for an example usage
-            //TODO: is left really right for titles?
-            styleFinder.accept(TextAlignment.LEFT, 0, 0, formattedCharSequence);
-            return styleFinder.result();
+            var font = new FontDescription.Resource(BookDataManager.Client.get().safeFont(this.page.getBook().getFont()));
+            var titleComponent = Component.empty().append(title.getComponent()).withStyle(s -> s.withFont(font));
+            formattedCharSequence = titleComponent.getVisualOrderText();
         }
+
+        float scale = Math.min(1.0f, (float) BookEntryScreen.MAX_TITLE_WIDTH / (float) this.font.width(formattedCharSequence));
+        float renderX = x - this.font.width(formattedCharSequence) * scale / 2.0F;
+        float renderY = y + (this.font.lineHeight * (1 - scale));
+
+        var pose = new Matrix3x2f();
+        if (scale < 1) {
+            pose.translate(0, y - y * scale);
+            pose.scale(scale, scale);
+        }
+
+        return this.findClickedStyleAtRenderedLine(formattedCharSequence, renderX, renderY, pMouseX, pMouseY, pose);
     }
 
     /**
@@ -362,45 +368,29 @@ public abstract class BookPageRenderer<T extends BookPage> {
     @Nullable
     protected Style getClickedComponentStyleAtForTextHolder(BookTextHolder text, int x, int y, int width, int height, double pMouseX, double pMouseY) {
         if (text.hasComponent()) {
-            //we don't do math to get the current line, we just split and iterate.
-            //why? Because performance should not matter (significantly enough to bother)
             for (FormattedCharSequence formattedcharsequence : this.font.split(text.getComponent(), width)) {
-                if (pMouseY > y && pMouseY < y + this.font.lineHeight) {
-                    if (pMouseX < x)
-                        return null;
-                    //check if we are vertically over the title line
-                    //horizontally over and right of the title is handled by font splitter
-
-                    var styleFinder = new ActiveTextCollector.ClickableStyleFinder(
-                            this.font, (int) pMouseX - x, y);
-                    //TODO: verify if the y is correct. See ModListScreen for an example usage
-                    styleFinder.accept(TextAlignment.LEFT, 0, 0, formattedcharsequence);
-                    return styleFinder.result();
-                }
+                var style = this.findClickedStyleAtRenderedLine(formattedcharsequence, x, y, pMouseX, pMouseY);
+                if (style != null)
+                    return style;
                 y += this.font.lineHeight;
             }
         } else if (text instanceof RenderedBookTextHolder renderedText) {
             var scale = getBookTextHolderScaleForRenderSize(text, this.font, width, height);
+            var pose = new Matrix3x2f();
+            if (scale < 1) {
+                pose.translate(x - x * scale, y - y * scale);
+                pose.scale(scale, scale);
+            }
 
             float currentY = y;
             var components = renderedText.getRenderedText();
             for (var component : components) {
                 var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, (int) (width / scale), (int) ((width - 10) / scale), this.font);
                 for (FormattedCharSequence formattedcharsequence : wrapped) {
-                    float minY = currentY;
-                    float maxY = currentY + this.font.lineHeight * scale;
-                    if (pMouseY > minY && pMouseY < maxY) {
-                        if (pMouseX < x)
-                            return null;
-                        //check if we are vertically over the title line
-                        //horizontally over and right of the title is handled by font splitter
-                        var styleFinder = new ActiveTextCollector.ClickableStyleFinder(
-                                this.font, (int) pMouseX - x, y);
-                        //TODO: verify if the y is correct. See ModListScreen for an example usage
-                        styleFinder.accept(TextAlignment.LEFT, 0, 0, formattedcharsequence);
-                        return styleFinder.result();
-                    }
-                    currentY += this.font.lineHeight * scale;
+                    var style = this.findClickedStyleAtRenderedLine(formattedcharsequence, x, currentY, pMouseX, pMouseY, pose);
+                    if (style != null)
+                        return style;
+                    currentY += this.font.lineHeight;
                 }
             }
         }

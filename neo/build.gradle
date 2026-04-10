@@ -34,13 +34,20 @@ neoForge {
 
         client {
             client()
-            systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'neoforge.enableGameTest', 'true'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
             programArguments.add "--username=Modonomicon"
         }
 
         server {
             server()
-            systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'neoforge.enableGameTest', 'true'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
 
         clientData {
