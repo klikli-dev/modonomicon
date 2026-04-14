@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.11-1.121.0] - 2026-04-14
+### :bug: Bug Fixes
+- [`f502a26`](https://github.com/klikli-dev/modonomicon/commit/f502a265d59bb4f278a0bd52be4c23c7f04c83d8) - book rendering and demo config *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`b0c56e4`](https://github.com/klikli-dev/modonomicon/commit/b0c56e4918f0fe8cdded6a5455d90a791a89f022) - update to latest fabric *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.11-1.120.1] - 2026-03-06
 ### :bug: Bug Fixes
 - [`ca8e5a3`](https://github.com/klikli-dev/modonomicon/commit/ca8e5a31c795c695bf8308da4f5af3a2985c6f38) - fabric resource reloading *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -1949,3 +1957,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.10-1.119.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.10-1.119.0...release/v1.21.10-1.119.1
 [release/v1.21.11-1.120.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.11-0.0.0...release/v1.21.11-1.120.0
 [release/v1.21.11-1.120.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.11-1.120.0...release/v1.21.11-1.120.1
+[release/v1.21.11-1.121.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.11-1.120.1...release/v1.21.11-1.121.0
