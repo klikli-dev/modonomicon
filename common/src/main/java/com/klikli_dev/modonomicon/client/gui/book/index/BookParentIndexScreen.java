@@ -218,8 +218,8 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
         this.resetTooltip();
 
-        //we need to modify blit offset (now: z pose) to not draw over toasts
-        //TODO we had -1300z here
+        //we need to translate the book contents, but widget rendering below must happen in screen space
+        guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
 
         BookContentRenderer.renderBookBackground(guiGraphics, this.getBook().getBookContentTexture());
@@ -249,6 +249,8 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
                         BookEntryScreen.LEFT_PAGE_X, BookEntryScreen.TOP_PADDING + 22, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - (BookEntryScreen.TOP_PADDING + 22));
             }
         }
+
+        guiGraphics.pose().popMatrix();
 
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
