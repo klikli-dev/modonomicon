@@ -27,7 +27,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
 import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.Level;
@@ -174,6 +177,28 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
 
         if (entry == null) {
             Modonomicon.LOG.warn("Recipe {} not found.", key);
+            return null;
+        }
+
+        // Fix for recipes with null or unregistered category - use a fallback category to avoid encoding errors.
+        // Some mods create RecipeBookCategory instances without registering them in the registry.
+        var category = entry.category();
+        if (category == null) {
+            Modonomicon.LOG.warn("Recipe {} has null recipe book category, using fallback CRAFTING_MISC.", key);
+            entry = new RecipeDisplayEntry(
+                    entry.id(), entry.display(), entry.group(),
+                    RecipeBookCategories.CRAFTING_MISC, entry.craftingRequirements()
+            );
+        } else {
+            // Try to get the key from registry - returns empty if not registered
+            var categoryKey = BuiltInRegistries.RECIPE_BOOK_CATEGORY.getKey(category);
+            if (categoryKey == null) {
+                Modonomicon.LOG.warn("Recipe {} has unregistered recipe book category {}, using fallback CRAFTING_MISC.", key, category);
+                entry = new RecipeDisplayEntry(
+                        entry.id(), entry.display(), entry.group(),
+                        RecipeBookCategories.CRAFTING_MISC, entry.craftingRequirements()
+                );
+            }
         }
 
         return entry;
