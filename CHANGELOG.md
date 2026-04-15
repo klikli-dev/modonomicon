@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-1.134.3] - 2026-04-15
+### :bug: Bug Fixes
+- [`4960a2c`](https://github.com/klikli-dev/modonomicon/commit/4960a2cb79025e5ced768ecace1c06329aab9f16) - handle null and unregistered recipe book categories *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.2-1.134.2] - 2026-04-14
 ### :bug: Bug Fixes
 - [`5a59cd0`](https://github.com/klikli-dev/modonomicon/commit/5a59cd04dc30a6ca63566e56e91720b8fb6b8a1d) - restore index overview widget layout *(PR [#350](https://github.com/klikli-dev/modonomicon/pull/350) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2117,3 +2122,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.1-1.132.3]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.1-1.132.2...release/v26.1.1-1.132.3
 [release/v26.1.2-1.134.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.134.0...release/v26.1.2-1.134.1
 [release/v26.1.2-1.134.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.134.1...release/v26.1.2-1.134.2
+[release/v26.1.2-1.134.3]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.134.2...release/v26.1.2-1.134.3
