@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-1.135.0] - 2026-04-25
+### :sparkles: New Features
+- [`5ea9fc5`](https://github.com/klikli-dev/modonomicon/commit/5ea9fc54aea843eaffe12f14bde86c0f0eb87ad5) - add AGENTS.md *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`1996c21`](https://github.com/klikli-dev/modonomicon/commit/1996c210ec4495031e7559e80ba884475823ade5) - restore search screen text alpha *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`ab0b28e`](https://github.com/klikli-dev/modonomicon/commit/ab0b28e34d5be2b6ef85dfa28de99f1db49367c0) - improve AGENTS.md *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.2-1.134.3] - 2026-04-15
 ### :bug: Bug Fixes
 - [`4960a2c`](https://github.com/klikli-dev/modonomicon/commit/4960a2cb79025e5ced768ecace1c06329aab9f16) - handle null and unregistered recipe book categories *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2123,3 +2134,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-1.134.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.134.0...release/v26.1.2-1.134.1
 [release/v26.1.2-1.134.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.134.1...release/v26.1.2-1.134.2
 [release/v26.1.2-1.134.3]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.134.2...release/v26.1.2-1.134.3
+[release/v26.1.2-1.135.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.134.3...release/v26.1.2-1.135.0
