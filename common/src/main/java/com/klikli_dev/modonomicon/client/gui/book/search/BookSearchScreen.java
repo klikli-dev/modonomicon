@@ -228,17 +228,17 @@ public class BookSearchScreen extends BookPaginatedScreen {
             //draw search field bg
             BookContentRenderer.drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, this.parentScreen.getBook(), this.searchField.getX() - 8, this.searchField.getY(), 140, 183, 99, 14);
             var searchComponent = Component.literal(this.searchField.getValue());
-            guiGraphics.text(this.font, searchComponent, this.searchField.getX() + 7, this.searchField.getY() + 1, 0, false);
+            guiGraphics.text(this.font, searchComponent, this.searchField.getX() + 7, this.searchField.getY() + 1, 0xFF000000, false);
         }
 
         if (this.visibleEntries.isEmpty()) {
             if (!this.searchField.getValue().isEmpty()) {
-                this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.SEARCH_NO_RESULTS), BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, 80, 0x333333);
+                this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.SEARCH_NO_RESULTS), BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, 80, 0xFF333333);
                 guiGraphics.pose().scale(2F, 2F);
-                this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.SEARCH_NO_RESULTS_SAD), BookEntryScreen.RIGHT_PAGE_X / 2 + BookEntryScreen.PAGE_WIDTH / 4, 47, 0x999999);
+                this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.SEARCH_NO_RESULTS_SAD), BookEntryScreen.RIGHT_PAGE_X / 2 + BookEntryScreen.PAGE_WIDTH / 4, 47, 0xFF999999);
                 guiGraphics.pose().scale(0.5F, 0.5F);
             } else {
-                this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.SEARCH_NO_RESULTS), BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, 80, 0x333333);
+                this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.SEARCH_NO_RESULTS), BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, 80, 0xFF333333);
             }
         }
         guiGraphics.pose().popMatrix();
