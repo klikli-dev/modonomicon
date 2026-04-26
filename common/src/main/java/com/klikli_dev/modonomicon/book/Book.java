@@ -12,6 +12,8 @@ import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
+import com.klikli_dev.modonomicon.client.gui.book.theme.BookTheme;
+import com.klikli_dev.modonomicon.client.gui.book.theme.DefaultBookTheme;
 import com.klikli_dev.modonomicon.data.BookEntryJsonLoader;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
@@ -598,6 +600,10 @@ public class Book {
 
     public Identifier getSinglePageTexture() {
         return this.singlePageTexture;
+    }
+
+    public BookTheme theme() {
+        return DefaultBookTheme.INSTANCE;
     }
 
     public boolean allowOpenBooksWithInvalidLinks() {
