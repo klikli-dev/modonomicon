@@ -20,6 +20,44 @@ MANIFEST_PATH = Path("tools/modonomicon_theme_manifest.json")
 DEFAULT_PACKAGE = "com.klikli_dev.modonomicon.client.gui.book.theme"
 DEFAULT_CLASS_NAME = "GeneratedBookThemeData"
 
+OUTPUT_PATHS = {
+    "content/double_page_background": "backgrounds/book/double_page_background",
+    "content/single_page_background": "backgrounds/book/single_page_background",
+    "content/title_separator": "decorations/book/title_separator",
+    "content/lock_icon": "icons/book/lock_icon",
+    "content/unread_indicator": "indicators/book/unread_indicator",
+    "content/next_page_button": "buttons/navigation/next_page_button",
+    "content/previous_page_button": "buttons/navigation/previous_page_button",
+    "content/small_next_page_button": "buttons/navigation/small_next_page_button",
+    "content/small_previous_page_button": "buttons/navigation/small_previous_page_button",
+    "content/back_button": "buttons/navigation/back_button",
+    "content/exit_button": "buttons/navigation/exit_button",
+    "content/visualize_button": "buttons/navigation/visualize_button",
+    "content/category_scroll_up_button": "buttons/category/category_scroll_up_button",
+    "content/category_scroll_down_button": "buttons/category/category_scroll_down_button",
+    "content/search_field_background": "fields/search/background",
+    "content/media_frame": "pages/media/frame",
+    "overview/category_button": "buttons/category/category_button",
+    "overview/search_button": "buttons/side/search_button",
+    "overview/show_bookmarks_button": "buttons/side/show_bookmarks_button",
+    "overview/show_recently_unlocked_button": "buttons/side/show_recently_unlocked_button",
+    "overview/add_bookmark_button": "buttons/side/add_bookmark_button",
+    "overview/remove_bookmark_button": "buttons/side/remove_bookmark_button",
+    "overview/read_unlocked_button": "buttons/read/read_unlocked_button",
+    "overview/read_all_button": "buttons/read/read_all_button",
+    "overview/read_none_button": "buttons/read/read_none_button",
+    "frame/frame": "frame/frame",
+    "frame/top_overlay": "frame/top_overlay",
+    "frame/bottom_overlay": "frame/bottom_overlay",
+    "frame/left_overlay": "frame/left_overlay",
+    "frame/right_overlay": "frame/right_overlay",
+    "recipes/crafting_grid": "pages/recipes/crafting_grid",
+    "recipes/shapeless_icon": "pages/recipes/shapeless_icon",
+    "recipes/processing_recipe_background": "pages/recipes/processing_recipe_background",
+    "recipes/smithing_recipe_background": "pages/recipes/smithing_recipe_background",
+    "recipes/spotlight_slot": "pages/recipes/spotlight_slot",
+}
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Extract Modonomicon theme sprites and generate Java theme data.")
@@ -75,7 +113,6 @@ def resolve_book_json(repo_root: Path, namespace: str, path: str, override: str 
 
     relative = BOOK_JSON_RELATIVE_PATTERN.format(namespace=namespace, path=path)
     matches = [root / relative for root in resource_roots(repo_root) if (root / relative).exists()]
-
     if not matches:
         fail(f"No book.json found for {namespace}:{path}")
 
@@ -96,7 +133,6 @@ def resolve_resource_path(repo_root: Path, identifier: str) -> Path:
     namespace, path = validate_identifier(identifier)
     asset_relative = Path("assets") / namespace / path
     matches = [root / asset_relative for root in resource_roots(repo_root) if (root / asset_relative).exists()]
-
     if not matches:
         fail(f"Missing source texture for {identifier}")
 
@@ -117,10 +153,9 @@ def resolve_output_resource_root(repo_root: Path, book_json_path: Path, override
 
     resource_path = book_json_path.resolve()
     parts = resource_path.parts
-    for marker in ("src",):
-        for index in range(len(parts) - 2):
-            if parts[index] == marker and parts[index + 1] in {"main", "generated"} and parts[index + 2] == "resources":
-                return Path(*parts[: index + 3])
+    for index in range(len(parts) - 2):
+        if parts[index] == "src" and parts[index + 1] in {"main", "generated"} and parts[index + 2] == "resources":
+            return Path(*parts[: index + 3])
 
     fail(f"Could not derive resource root from {book_json_path}")
     raise AssertionError
@@ -131,14 +166,12 @@ def resolve_java_source_root(resource_root: Path) -> Path:
     if len(parts) < 3 or parts[-3:] not in (["src", "main", "resources"], ["src", "generated", "resources"]):
         fail(f"Cannot derive java source root from resource root {resource_root}")
 
-    source_kind = parts[-2]
-    return Path(*parts[:-3], "src", source_kind, "java")
+    return Path(*parts[:-3], "src", parts[-2], "java")
 
 
 def validate_package_name(value: str) -> None:
     if not re.fullmatch(r"[A-Za-z_]\w*(\.[A-Za-z_]\w*)*", value):
         fail(f"Invalid package name: {value}")
-
     for segment in value.split("."):
         if keyword.iskeyword(segment):
             fail(f"Invalid package name segment: {segment}")
@@ -147,6 +180,28 @@ def validate_package_name(value: str) -> None:
 def validate_class_name(value: str) -> None:
     if not re.fullmatch(r"[A-Za-z_]\w*", value) or keyword.iskeyword(value):
         fail(f"Invalid class name: {value}")
+
+
+def logical_output_base(key: str) -> str:
+    return OUTPUT_PATHS.get(key, key)
+
+
+def sprite_relative_path(key: str, suffix: str | None = None) -> str:
+    base = Path(logical_output_base(key))
+    if suffix:
+        return (base.parent / f"{base.name}_{suffix}.png").as_posix()
+    return base.with_suffix(".png").as_posix()
+
+
+def sprite_output_relative(theme_path: str, key: str, suffix: str | None = None) -> Path:
+    return Path("textures/gui/sprites/modonomicon") / theme_path / sprite_relative_path(key, suffix)
+
+
+def write_image(path: Path, image: Image.Image, dry_run: bool) -> None:
+    if dry_run:
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    image.save(path)
 
 
 def crop_rect(image: Image.Image, rect: dict, source_name: str) -> Image.Image:
@@ -163,25 +218,37 @@ def constant_name_from_key(key: str) -> str:
     return re.sub(r"[^A-Z0-9]+", "_", key.upper()).strip("_")
 
 
-def sprite_output_relative(theme_path: str, key: str, suffix: str | None = None) -> Path:
-    name = f"{key}_{suffix}.png" if suffix else f"{key}.png"
-    return Path("textures/gui/sprites/modonomicon") / theme_path / name
+def is_column_transparent(image: Image.Image, x: int, y: int, height: int) -> bool:
+    return all(image.getpixel((x, yy))[3] == 0 for yy in range(y, y + height))
 
 
-def write_image(path: Path, image: Image.Image, dry_run: bool) -> None:
-    if dry_run:
-        return
-    path.parent.mkdir(parents=True, exist_ok=True)
-    image.save(path)
+def apply_adjustment(image: Image.Image, rect: dict) -> dict:
+    adjusted = {key: value for key, value in rect.items() if key != "adjust"}
+    adjust = rect.get("adjust")
+    if adjust is None:
+        return adjusted
+
+    probe = adjust.get("probe")
+    mode = adjust.get("mode")
+
+    if probe == "left" and mode == "shift_until_transparent":
+        while adjusted["x"] > 0 and not is_column_transparent(image, adjusted["x"] - 1, adjusted["y"], adjusted["height"]):
+            adjusted["x"] -= 1
+        return adjusted
+
+    if probe == "right" and mode == "expand_to_transparent":
+        end_x = adjusted["x"] + adjusted["width"]
+        while end_x < image.width and not is_column_transparent(image, end_x, adjusted["y"], adjusted["height"]):
+            end_x += 1
+        adjusted["width"] = end_x - adjusted["x"]
+        return adjusted
+
+    fail(f"Unsupported rect adjustment: {adjust}")
+    raise AssertionError
 
 
 def source_descriptor(book_json: dict, source: str) -> tuple[str, dict | str]:
-    overlay_keys = {
-        "top_frame_overlay",
-        "bottom_frame_overlay",
-        "left_frame_overlay",
-        "right_frame_overlay",
-    }
+    overlay_keys = {"top_frame_overlay", "bottom_frame_overlay", "left_frame_overlay", "right_frame_overlay"}
     if source in overlay_keys:
         overlay = book_json.get(source)
         if overlay is None:
@@ -194,7 +261,23 @@ def source_descriptor(book_json: dict, source: str) -> tuple[str, dict | str]:
     return "texture", value
 
 
-def generated_java(package_name: str, class_name: str, namespace: str, theme_path: str, entries: list[dict], generated: list[dict]) -> str:
+def resolve_variant_alias(variants: dict, variant_name: str) -> str:
+    visited = set()
+    current = variant_name
+    while True:
+        if current in visited:
+            fail(f"Variant alias loop detected for {variant_name}")
+        visited.add(current)
+        variant = variants[current]
+        if "copy_of" in variant:
+            current = variant["copy_of"]
+            if current not in variants:
+                fail(f"Variant '{variant_name}' copies unknown variant '{current}'")
+            continue
+        return current
+
+
+def generated_java(package_name: str, class_name: str, namespace: str, theme_path: str, generated: list[dict]) -> str:
     lines = [
         "/*",
         " * SPDX-FileCopyrightText: 2026 klikli-dev",
@@ -214,38 +297,31 @@ def generated_java(package_name: str, class_name: str, namespace: str, theme_pat
         key = item["key"]
         name = constant_name_from_key(key)
         kind = item["kind"]
+
         if kind == "sprite":
             rect = item["rect"]
-            lines.append(f"    public static final GuiSprite {name} = sprite(\"{key}.png\", {rect['width']}, {rect['height']});")
+            lines.append(f"    public static final GuiSprite {name} = sprite(\"{sprite_relative_path(key)}\", {rect['width']}, {rect['height']});")
         elif kind == "button_states":
-            variants = item["variants"]
+            variants = item["resolved_variants"]
             pressed = variants.get("pressed")
+            normal_ref = f"sprite(\"{sprite_relative_path(key, variants['normal']['target'])}\", {variants['normal']['width']}, {variants['normal']['height']})"
+            hover_ref = f"sprite(\"{sprite_relative_path(key, variants['hover']['target'])}\", {variants['hover']['width']}, {variants['hover']['height']})"
             if pressed is None:
-                lines.append(
-                    f"    public static final GuiButtonSprites {name} = new GuiButtonSprites("
-                    f"sprite(\"{key}_normal.png\", {variants['normal']['width']}, {variants['normal']['height']}), "
-                    f"sprite(\"{key}_hover.png\", {variants['hover']['width']}, {variants['hover']['height']})"
-                    ");"
-                )
+                lines.append(f"    public static final GuiButtonSprites {name} = new GuiButtonSprites({normal_ref}, {hover_ref});")
             else:
-                lines.append(
-                    f"    public static final GuiButtonSprites {name} = new GuiButtonSprites("
-                    f"sprite(\"{key}_normal.png\", {variants['normal']['width']}, {variants['normal']['height']}), "
-                    f"sprite(\"{key}_hover.png\", {variants['hover']['width']}, {variants['hover']['height']}), "
-                    f"sprite(\"{key}_pressed.png\", {pressed['width']}, {pressed['height']})"
-                    ");"
-                )
+                pressed_ref = f"sprite(\"{sprite_relative_path(key, pressed['target'])}\", {pressed['width']}, {pressed['height']})"
+                lines.append(f"    public static final GuiButtonSprites {name} = new GuiButtonSprites({normal_ref}, {hover_ref}, {pressed_ref});")
         elif kind == "nine_slice":
             rect = item["rect"]
             borders = item["borders"]
             lines.append(
-                f"    public static final GuiNineSlice {name} = new GuiNineSlice(texture(\"{key}.png\"), {rect['width']}, {rect['height']}, "
+                f"    public static final GuiNineSlice {name} = new GuiNineSlice(texture(\"{sprite_relative_path(key)}\"), {rect['width']}, {rect['height']}, "
                 f"{borders['left']}, {borders['right']}, {borders['top']}, {borders['bottom']});"
             )
         elif kind == "frame_overlay":
             rect = item["rect"]
             lines.append(
-                f"    public static final GuiFrameOverlay {name} = new GuiFrameOverlay(sprite(\"{key}.png\", {rect['width']}, {rect['height']}), "
+                f"    public static final GuiFrameOverlay {name} = new GuiFrameOverlay(sprite(\"{sprite_relative_path(key)}\", {rect['width']}, {rect['height']}), "
                 f"{item['frame_x_offset']}, {item['frame_y_offset']});"
             )
 
@@ -296,14 +372,13 @@ def main() -> None:
     book_json = read_json(book_json_path)
     output_resource_root = resolve_output_resource_root(repo_root, book_json_path, args.resource_root)
     java_source_root = resolve_java_source_root(output_resource_root)
-    target_texture_root = output_resource_root / "assets" / namespace / "textures/gui/sprites/modonomicon" / theme_path
     target_java_path = java_source_root / Path(args.package.replace(".", "/")) / f"{args.class_name}.java"
 
     seen_outputs: set[Path] = set()
+    seen_constant_names: set[str] = set()
     resolved_sources: dict[str, Path] = {}
     generated_entries: list[dict] = []
     extracted_count = 0
-    seen_constant_names: set[str] = set()
 
     for entry in entries:
         constant_name = constant_name_from_key(entry["key"])
@@ -317,35 +392,53 @@ def main() -> None:
         if source_kind == "texture":
             source_path = resolve_resource_path(repo_root, source_value)
             resolved_sources.setdefault(entry["source"], source_path)
-            with Image.open(source_path) as image:
+
+            with Image.open(source_path).convert("RGBA") as image:
                 if kind == "sprite":
+                    rect = apply_adjustment(image, entry["rect"])
                     output_relative = sprite_output_relative(theme_path, entry["key"])
                     output_path = output_resource_root / "assets" / namespace / output_relative
                     if output_path in seen_outputs:
                         fail(f"Duplicate output sprite path: {output_path}")
                     seen_outputs.add(output_path)
-                    write_image(output_path, crop_rect(image, entry["rect"], str(source_path)), args.dry_run)
-                    generated_entries.append(entry)
+                    write_image(output_path, crop_rect(image, rect, str(source_path)), args.dry_run)
+                    generated_entries.append({**entry, "rect": rect})
                     extracted_count += 1
                 elif kind == "button_states":
-                    generated_entry = {**entry}
-                    generated_entries.append(generated_entry)
-                    for variant_name, rect in entry["variants"].items():
-                        output_relative = sprite_output_relative(theme_path, entry["key"], variant_name)
+                    variants = entry["variants"]
+                    alias_map = {variant_name: resolve_variant_alias(variants, variant_name) for variant_name in variants}
+                    canonical_names = list(dict.fromkeys(alias_map.values()))
+                    resolved_variants = {}
+
+                    for canonical_name in canonical_names:
+                        rect = apply_adjustment(image, variants[canonical_name])
+                        output_relative = sprite_output_relative(theme_path, entry["key"], canonical_name)
                         output_path = output_resource_root / "assets" / namespace / output_relative
                         if output_path in seen_outputs:
                             fail(f"Duplicate output sprite path: {output_path}")
                         seen_outputs.add(output_path)
                         write_image(output_path, crop_rect(image, rect, str(source_path)), args.dry_run)
                         extracted_count += 1
+                        resolved_variants[canonical_name] = {**rect, "target": canonical_name}
+
+                    generated_entry = {**entry, "resolved_variants": {}}
+                    for variant_name, canonical_name in alias_map.items():
+                        rect = resolved_variants[canonical_name]
+                        generated_entry["resolved_variants"][variant_name] = {
+                            "width": rect["width"],
+                            "height": rect["height"],
+                            "target": canonical_name,
+                        }
+                    generated_entries.append(generated_entry)
                 elif kind == "nine_slice":
+                    rect = apply_adjustment(image, entry["rect"])
                     output_relative = sprite_output_relative(theme_path, entry["key"])
                     output_path = output_resource_root / "assets" / namespace / output_relative
                     if output_path in seen_outputs:
                         fail(f"Duplicate output sprite path: {output_path}")
                     seen_outputs.add(output_path)
-                    write_image(output_path, crop_rect(image, entry["rect"], str(source_path)), args.dry_run)
-                    generated_entries.append(entry)
+                    write_image(output_path, crop_rect(image, rect, str(source_path)), args.dry_run)
+                    generated_entries.append({**entry, "rect": rect})
                     extracted_count += 1
                 else:
                     fail(f"Entry kind '{kind}' requires overlay source data, but '{entry['key']}' uses a texture source.")
@@ -357,6 +450,7 @@ def main() -> None:
             overlay_texture = overlay.get("texture")
             if overlay_texture is None:
                 fail(f"Overlay {entry['source']} is missing a texture id")
+
             source_path = resolve_resource_path(repo_root, overlay_texture)
             resolved_sources.setdefault(entry["source"], source_path)
             rect = {
@@ -365,13 +459,8 @@ def main() -> None:
                 "width": overlay["frame_width"],
                 "height": overlay["frame_height"],
             }
-            generated_entry = {
-                **entry,
-                "rect": rect,
-                "frame_x_offset": overlay["frame_x_offset"],
-                "frame_y_offset": overlay["frame_y_offset"],
-            }
-            with Image.open(source_path) as image:
+
+            with Image.open(source_path).convert("RGBA") as image:
                 output_relative = sprite_output_relative(theme_path, entry["key"])
                 output_path = output_resource_root / "assets" / namespace / output_relative
                 if output_path in seen_outputs:
@@ -379,9 +468,15 @@ def main() -> None:
                 seen_outputs.add(output_path)
                 write_image(output_path, crop_rect(image, rect, str(source_path)), args.dry_run)
                 extracted_count += 1
-            generated_entries.append(generated_entry)
 
-    java_source = generated_java(args.package, args.class_name, namespace, theme_path, entries, generated_entries)
+            generated_entries.append({
+                **entry,
+                "rect": rect,
+                "frame_x_offset": overlay["frame_x_offset"],
+                "frame_y_offset": overlay["frame_y_offset"],
+            })
+
+    java_source = generated_java(args.package, args.class_name, namespace, theme_path, generated_entries)
     if not args.dry_run:
         target_java_path.parent.mkdir(parents=True, exist_ok=True)
         target_java_path.write_text(java_source, encoding="utf-8")

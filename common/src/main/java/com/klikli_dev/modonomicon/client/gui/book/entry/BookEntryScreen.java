@@ -352,10 +352,10 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         this.children().removeIf(b -> b instanceof AddBookmarkButton || b instanceof SearchButton);
         this.narratables.removeIf(b -> b instanceof AddBookmarkButton || b instanceof SearchButton);
 
-        int buttonHeight = 20;
+        int buttonHeight = this.getBook().theme().overview().addBookmarkButton().normal().height();
         int searchButtonX = this.bookLeft + FULL_WIDTH - 5;
         int searchButtonY = this.bookTop + FULL_HEIGHT - 30;
-        int searchButtonWidth = 44; //width in png
+        int searchButtonWidth = this.getBook().theme().overview().addBookmarkButton().normal().width();
         int scissorX = this.bookLeft + FULL_WIDTH;//this is the render location of our frame so our search button never overlaps
 
 

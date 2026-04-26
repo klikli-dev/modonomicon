@@ -109,10 +109,6 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
         //So we do nothing
     }
 
-    public Identifier getBookOverviewTexture() {
-        return this.book.getBookOverviewTexture();
-    }
-
     /**
      * gets the x coordinate of the inner area of the book frame
      */
@@ -305,7 +301,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
         int buttonY = (this.height - this.getFrameHeight()) / 2 - this.getFrameThicknessH() + buttonYOffset;
         //calculate button width so it aligns with the outer edge of the frame
         int buttonWidth = (this.width - this.getFrameWidth()) / 2 + buttonXOffset + 6;
-        int buttonHeight = 20;
+        int buttonHeight = this.getBook().theme().overview().categoryButton().normal().height();
         int buttonSpacing = 2;
 
         this.updateCategoryButtons(buttonX, buttonY, buttonWidth, buttonHeight, buttonSpacing);
@@ -326,7 +322,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
         int searchButtonYOffset = -30 + this.getBook().theme().layout().searchButtonYOffset();
         int searchButtonX = this.getFrameWidth() + this.getFrameThicknessW() + ReadAllButton.WIDTH / 2 + searchButtonXOffset;
         int searchButtonY = this.getFrameHeight() + this.getFrameThicknessH() - ReadAllButton.HEIGHT / 2 + searchButtonYOffset;
-        int searchButtonWidth = 44; //width in png
+        int searchButtonWidth = this.getBook().theme().overview().searchButton().normal().width();
         int scissorX = this.getFrameWidth() + this.getFrameThicknessW() * 2 + 2; //this is the render location of our frame so our search button never overlaps
 
         var searchButton = new SearchButton(this, searchButtonX, searchButtonY,
