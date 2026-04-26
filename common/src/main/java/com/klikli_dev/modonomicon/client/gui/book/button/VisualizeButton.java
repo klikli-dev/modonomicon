@@ -20,7 +20,7 @@ public class VisualizeButton extends BookButton {
     public static final int WIDTH = 11;
 
     public VisualizeButton(BookEntryScreen parent, int x, int y, Button.OnPress onPress) {
-        super(parent, x, y, U, V, WIDTH, HEIGHT,
+        super(parent, x, y, WIDTH, HEIGHT, theme -> theme.content().visualizeButton(),
                 Component.translatable(Gui.BUTTON_VISUALIZE),
                 onPress,
                 Component.translatable(Gui.BUTTON_VISUALIZE_TOOLTIP)

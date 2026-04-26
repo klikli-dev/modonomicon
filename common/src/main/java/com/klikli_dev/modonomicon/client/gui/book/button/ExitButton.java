@@ -19,7 +19,7 @@ public class ExitButton extends BookButton {
     public static final int WIDTH = 12;
 
     public ExitButton(BookScreenWithButtons parent, int x, int y, OnPress onPress) {
-        super(parent, x, y, U, V, WIDTH, HEIGHT, () -> true,
+        super(parent, x, y, WIDTH, HEIGHT, theme -> theme.content().exitButton(), () -> true,
                 Component.translatable(Gui.BUTTON_EXIT),
                 onPress,
                 Component.translatable(Gui.BUTTON_EXIT) //button title equals hover text

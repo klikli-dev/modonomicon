@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.theme;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import com.klikli_dev.modonomicon.book.Book;
 
 public final class DefaultBookTheme implements BookTheme {
 
@@ -15,183 +16,183 @@ public final class DefaultBookTheme implements BookTheme {
     private static final BookContentTheme CONTENT = new BookContentTheme() {
         @Override
         public GuiSprite doublePageBackground() {
-            return GeneratedDefaultBookThemeData.DOUBLE_PAGE_BACKGROUND;
+            return GeneratedDefaultBookThemeData.CONTENT_DOUBLE_PAGE_BACKGROUND;
         }
 
         @Override
         public GuiSprite singlePageBackground() {
-            return GeneratedDefaultBookThemeData.SINGLE_PAGE_BACKGROUND;
+            return GeneratedDefaultBookThemeData.CONTENT_SINGLE_PAGE_BACKGROUND;
         }
 
         @Override
         public GuiSprite titleSeparator() {
-            return GeneratedDefaultBookThemeData.TITLE_SEPARATOR;
+            return GeneratedDefaultBookThemeData.CONTENT_TITLE_SEPARATOR;
         }
 
         @Override
         public GuiSprite lockIcon() {
-            return GeneratedDefaultBookThemeData.LOCK_ICON;
+            return GeneratedDefaultBookThemeData.CONTENT_LOCK_ICON;
         }
 
         @Override
         public GuiButtonSprites unreadIndicator() {
-            return GeneratedDefaultBookThemeData.UNREAD_INDICATOR;
+            return GeneratedDefaultBookThemeData.CONTENT_UNREAD_INDICATOR;
         }
 
         @Override
         public GuiButtonSprites nextPageButton() {
-            return GeneratedDefaultBookThemeData.NEXT_PAGE_BUTTON;
+            return GeneratedDefaultBookThemeData.CONTENT_NEXT_PAGE_BUTTON;
         }
 
         @Override
         public GuiButtonSprites previousPageButton() {
-            return GeneratedDefaultBookThemeData.PREVIOUS_PAGE_BUTTON;
+            return GeneratedDefaultBookThemeData.CONTENT_PREVIOUS_PAGE_BUTTON;
         }
 
         @Override
         public GuiButtonSprites smallNextPageButton() {
-            return GeneratedDefaultBookThemeData.SMALL_NEXT_PAGE_BUTTON;
+            return GeneratedDefaultBookThemeData.CONTENT_SMALL_NEXT_PAGE_BUTTON;
         }
 
         @Override
         public GuiButtonSprites smallPreviousPageButton() {
-            return GeneratedDefaultBookThemeData.SMALL_PREVIOUS_PAGE_BUTTON;
+            return GeneratedDefaultBookThemeData.CONTENT_SMALL_PREVIOUS_PAGE_BUTTON;
         }
 
         @Override
         public GuiButtonSprites backButton() {
-            return GeneratedDefaultBookThemeData.BACK_BUTTON;
+            return GeneratedDefaultBookThemeData.CONTENT_BACK_BUTTON;
         }
 
         @Override
         public GuiButtonSprites exitButton() {
-            return GeneratedDefaultBookThemeData.EXIT_BUTTON;
+            return GeneratedDefaultBookThemeData.CONTENT_EXIT_BUTTON;
         }
 
         @Override
         public GuiButtonSprites visualizeButton() {
-            return GeneratedDefaultBookThemeData.VISUALIZE_BUTTON;
+            return GeneratedDefaultBookThemeData.CONTENT_VISUALIZE_BUTTON;
         }
 
         @Override
         public GuiButtonSprites categoryScrollUpButton() {
-            return GeneratedDefaultBookThemeData.CATEGORY_SCROLL_UP_BUTTON;
+            return GeneratedDefaultBookThemeData.CONTENT_CATEGORY_SCROLL_UP_BUTTON;
         }
 
         @Override
         public GuiButtonSprites categoryScrollDownButton() {
-            return GeneratedDefaultBookThemeData.CATEGORY_SCROLL_DOWN_BUTTON;
+            return GeneratedDefaultBookThemeData.CONTENT_CATEGORY_SCROLL_DOWN_BUTTON;
         }
 
         @Override
         public GuiSprite searchFieldBackground() {
-            return GeneratedDefaultBookThemeData.SEARCH_FIELD_BACKGROUND;
+            return GeneratedDefaultBookThemeData.CONTENT_SEARCH_FIELD_BACKGROUND;
         }
 
         @Override
         public GuiSprite mediaFrame() {
-            return GeneratedDefaultBookThemeData.MEDIA_FRAME;
+            return GeneratedDefaultBookThemeData.CONTENT_MEDIA_FRAME;
         }
     };
 
     private static final BookOverviewTheme OVERVIEW = new BookOverviewTheme() {
         @Override
         public GuiButtonSprites categoryButton() {
-            return GeneratedDefaultBookThemeData.CATEGORY_BUTTON;
+            return GeneratedDefaultBookThemeData.OVERVIEW_CATEGORY_BUTTON;
         }
 
         @Override
         public GuiButtonSprites searchButton() {
-            return GeneratedDefaultBookThemeData.SEARCH_BUTTON;
+            return GeneratedDefaultBookThemeData.OVERVIEW_SEARCH_BUTTON;
         }
 
         @Override
         public GuiButtonSprites showBookmarksButton() {
-            return GeneratedDefaultBookThemeData.SHOW_BOOKMARKS_BUTTON;
+            return GeneratedDefaultBookThemeData.OVERVIEW_SHOW_BOOKMARKS_BUTTON;
         }
 
         @Override
         public GuiButtonSprites showRecentlyUnlockedButton() {
-            return GeneratedDefaultBookThemeData.SHOW_RECENTLY_UNLOCKED_BUTTON;
+            return GeneratedDefaultBookThemeData.OVERVIEW_SHOW_RECENTLY_UNLOCKED_BUTTON;
         }
 
         @Override
         public GuiButtonSprites addBookmarkButton() {
-            return GeneratedDefaultBookThemeData.ADD_BOOKMARK_BUTTON;
+            return GeneratedDefaultBookThemeData.OVERVIEW_ADD_BOOKMARK_BUTTON;
         }
 
         @Override
         public GuiButtonSprites removeBookmarkButton() {
-            return GeneratedDefaultBookThemeData.REMOVE_BOOKMARK_BUTTON;
+            return GeneratedDefaultBookThemeData.OVERVIEW_REMOVE_BOOKMARK_BUTTON;
         }
 
         @Override
         public GuiButtonSprites readAllButton() {
-            return GeneratedDefaultBookThemeData.READ_ALL_BUTTON;
+            return GeneratedDefaultBookThemeData.OVERVIEW_READ_ALL_BUTTON;
         }
 
         @Override
         public GuiButtonSprites readNoneButton() {
-            return GeneratedDefaultBookThemeData.READ_NONE_BUTTON;
+            return GeneratedDefaultBookThemeData.OVERVIEW_READ_NONE_BUTTON;
         }
 
         @Override
         public GuiButtonSprites readUnlockedButton() {
-            return GeneratedDefaultBookThemeData.READ_UNLOCKED_BUTTON;
+            return GeneratedDefaultBookThemeData.OVERVIEW_READ_UNLOCKED_BUTTON;
         }
     };
 
     private static final BookFrameTheme FRAME = new BookFrameTheme() {
         @Override
         public GuiNineSlice frame() {
-            return GeneratedDefaultBookThemeData.FRAME;
+            return GeneratedDefaultBookThemeData.FRAME_FRAME;
         }
 
         @Override
         public GuiFrameOverlay topOverlay() {
-            return GeneratedDefaultBookThemeData.TOP_OVERLAY;
+            return GeneratedDefaultBookThemeData.FRAME_TOP_OVERLAY;
         }
 
         @Override
         public GuiFrameOverlay bottomOverlay() {
-            return GeneratedDefaultBookThemeData.BOTTOM_OVERLAY;
+            return GeneratedDefaultBookThemeData.FRAME_BOTTOM_OVERLAY;
         }
 
         @Override
         public GuiFrameOverlay leftOverlay() {
-            return GeneratedDefaultBookThemeData.LEFT_OVERLAY;
+            return GeneratedDefaultBookThemeData.FRAME_LEFT_OVERLAY;
         }
 
         @Override
         public GuiFrameOverlay rightOverlay() {
-            return GeneratedDefaultBookThemeData.RIGHT_OVERLAY;
+            return GeneratedDefaultBookThemeData.FRAME_RIGHT_OVERLAY;
         }
     };
 
     private static final BookRecipeTheme RECIPES = new BookRecipeTheme() {
         @Override
         public GuiSprite craftingGrid() {
-            return GeneratedDefaultBookThemeData.CRAFTING_GRID;
+            return GeneratedDefaultBookThemeData.RECIPES_CRAFTING_GRID;
         }
 
         @Override
         public GuiSprite shapelessIcon() {
-            return GeneratedDefaultBookThemeData.SHAPELESS_ICON;
+            return GeneratedDefaultBookThemeData.RECIPES_SHAPELESS_ICON;
         }
 
         @Override
         public GuiSprite processingRecipeBackground() {
-            return GeneratedDefaultBookThemeData.PROCESSING_RECIPE_BACKGROUND;
+            return GeneratedDefaultBookThemeData.RECIPES_PROCESSING_RECIPE_BACKGROUND;
         }
 
         @Override
         public GuiSprite smithingRecipeBackground() {
-            return GeneratedDefaultBookThemeData.SMITHING_RECIPE_BACKGROUND;
+            return GeneratedDefaultBookThemeData.RECIPES_SMITHING_RECIPE_BACKGROUND;
         }
 
         @Override
         public GuiSprite spotlightSlot() {
-            return GeneratedDefaultBookThemeData.SPOTLIGHT_SLOT;
+            return GeneratedDefaultBookThemeData.RECIPES_SPOTLIGHT_SLOT;
         }
     };
 
@@ -260,6 +261,100 @@ public final class DefaultBookTheme implements BookTheme {
     };
 
     private DefaultBookTheme() {
+    }
+
+    public static BookTheme forBook(Book book) {
+        return new BookTheme() {
+            @Override
+            public BookContentTheme content() {
+                return INSTANCE.content();
+            }
+
+            @Override
+            public BookOverviewTheme overview() {
+                return INSTANCE.overview();
+            }
+
+            @Override
+            public BookFrameTheme frame() {
+                return INSTANCE.frame();
+            }
+
+            @Override
+            public BookRecipeTheme recipes() {
+                return INSTANCE.recipes();
+            }
+
+            @Override
+            public BookLayoutTheme layout() {
+                return new BookLayoutTheme() {
+                    @Override
+                    public int bookTextOffsetX() {
+                        return book.getBookTextOffsetX();
+                    }
+
+                    @Override
+                    public int bookTextOffsetY() {
+                        return book.getBookTextOffsetY();
+                    }
+
+                    @Override
+                    public int bookTextOffsetWidth() {
+                        return book.getBookTextOffsetWidth();
+                    }
+
+                    @Override
+                    public int bookTextOffsetHeight() {
+                        return book.getBookTextOffsetHeight();
+                    }
+
+                    @Override
+                    public int categoryButtonXOffset() {
+                        return book.getCategoryButtonXOffset();
+                    }
+
+                    @Override
+                    public int categoryButtonYOffset() {
+                        return book.getCategoryButtonYOffset();
+                    }
+
+                    @Override
+                    public int searchButtonXOffset() {
+                        return book.getSearchButtonXOffset();
+                    }
+
+                    @Override
+                    public int searchButtonYOffset() {
+                        return book.getSearchButtonYOffset();
+                    }
+
+                    @Override
+                    public int readAllButtonYOffset() {
+                        return book.getReadAllButtonYOffset();
+                    }
+
+                    @Override
+                    public float categoryButtonIconScale() {
+                        return book.getCategoryButtonIconScale();
+                    }
+                };
+            }
+
+            @Override
+            public BookPaletteTheme palette() {
+                return new BookPaletteTheme() {
+                    @Override
+                    public int defaultTitleColor() {
+                        return book.getDefaultTitleColor();
+                    }
+
+                    @Override
+                    public int defaultTextColor() {
+                        return book.getDefaultTextColor();
+                    }
+                };
+            }
+        };
     }
 
     @Override

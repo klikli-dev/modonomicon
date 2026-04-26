@@ -1,0 +1,339 @@
+{
+  "entries": [
+    {
+      "key": "content/double_page_background",
+      "source": "book_content_texture",
+      "kind": "sprite",
+      "rect": {"x": 0, "y": 0, "width": 272, "height": 178},
+      "site": "BookContentRenderer#renderBookBackground",
+      "notes": "Double-page background texture."
+    },
+    {
+      "key": "content/single_page_background",
+      "source": "single_page_texture",
+      "kind": "sprite",
+      "rect": {"x": 0, "y": 0, "width": 145, "height": 178},
+      "site": "BookEntrySinglePageScreen#renderSinglePageBookBackground",
+      "notes": "Single-page background texture."
+    },
+    {
+      "key": "content/title_separator",
+      "source": "book_content_texture",
+      "kind": "sprite",
+      "rect": {"x": 0, "y": 253, "width": 110, "height": 3},
+      "site": "BookContentRenderer#drawTitleSeparator",
+      "notes": "Separator line drawn under titles."
+    },
+    {
+      "key": "content/lock_icon",
+      "source": "book_content_texture",
+      "kind": "sprite",
+      "rect": {"x": 496, "y": 0, "width": 16, "height": 16},
+      "site": "BookContentRenderer#drawLock",
+      "notes": "Lock icon used in lists and tooltips."
+    },
+    {
+      "key": "content/unread_indicator",
+      "source": "book_content_texture",
+      "kind": "button_states",
+      "variants": {
+        "normal": {"x": 350, "y": 19, "width": 11, "height": 11},
+        "hover": {"x": 361, "y": 19, "width": 11, "height": 11}
+      },
+      "site": "BookContentRenderer#drawUnreadIndicator",
+      "notes": "Unread marker for categories and entries."
+    },
+    {
+      "key": "content/next_page_button",
+      "source": "book_content_texture",
+      "kind": "button_states",
+      "variants": {
+        "normal": {"x": 300, "y": 0, "width": 18, "height": 10},
+        "hover": {"x": 318, "y": 0, "width": 18, "height": 10}
+      },
+      "site": "ArrowButton#ArrowButton",
+      "notes": "Right navigation button."
+    },
+    {
+      "key": "content/previous_page_button",
+      "source": "book_content_texture",
+      "kind": "button_states",
+      "variants": {
+        "normal": {"x": 300, "y": 10, "width": 18, "height": 10},
+        "hover": {"x": 318, "y": 10, "width": 18, "height": 10}
+      },
+      "site": "ArrowButton#ArrowButton",
+      "notes": "Left navigation button."
+    },
+    {
+      "key": "content/small_next_page_button",
+      "source": "book_content_texture",
+      "kind": "button_states",
+      "variants": {
+        "normal": {"x": 380, "y": 12, "width": 5, "height": 7},
+        "hover": {"x": 385, "y": 12, "width": 5, "height": 7}
+      },
+      "site": "SmallArrowButton#SmallArrowButton",
+      "notes": "Right image-gallery navigation button."
+    },
+    {
+      "key": "content/small_previous_page_button",
+      "source": "book_content_texture",
+      "kind": "button_states",
+      "variants": {
+        "normal": {"x": 380, "y": 19, "width": 5, "height": 7},
+        "hover": {"x": 385, "y": 19, "width": 5, "height": 7}
+      },
+      "site": "SmallArrowButton#SmallArrowButton",
+      "notes": "Left image-gallery navigation button."
+    },
+    {
+      "key": "content/back_button",
+      "source": "book_content_texture",
+      "kind": "button_states",
+      "variants": {
+        "normal": {"x": 380, "y": 0, "width": 18, "height": 9},
+        "hover": {"x": 398, "y": 0, "width": 18, "height": 9}
+      },
+      "site": "BackButton#BackButton",
+      "notes": "Back button shown on entry screens."
+    },
+    {
+      "key": "content/exit_button",
+      "source": "book_content_texture",
+      "kind": "button_states",
+      "variants": {
+        "normal": {"x": 350, "y": 0, "width": 12, "height": 12},
+        "hover": {"x": 362, "y": 0, "width": 12, "height": 12}
+      },
+      "site": "ExitButton#ExitButton",
+      "notes": "Close button shown on book screens."
+    },
+    {
+      "key": "content/visualize_button",
+      "source": "book_content_texture",
+      "kind": "button_states",
+      "variants": {
+        "normal": {"x": 350, "y": 12, "width": 11, "height": 7},
+        "hover": {"x": 361, "y": 12, "width": 11, "height": 7}
+      },
+      "site": "VisualizeButton#VisualizeButton",
+      "notes": "Multiblock visualize action button."
+    },
+    {
+      "key": "content/category_scroll_up_button",
+      "source": "book_content_texture",
+      "kind": "button_states",
+      "variants": {
+        "normal": {"x": 398, "y": 22, "width": 14, "height": 10},
+        "hover": {"x": 412, "y": 22, "width": 14, "height": 10}
+      },
+      "site": "CategoryScrollButton#CategoryScrollButton",
+      "notes": "Top category scroll button."
+    },
+    {
+      "key": "content/category_scroll_down_button",
+      "source": "book_content_texture",
+      "kind": "button_states",
+      "variants": {
+        "normal": {"x": 398, "y": 12, "width": 14, "height": 10},
+        "hover": {"x": 412, "y": 12, "width": 14, "height": 10}
+      },
+      "site": "CategoryScrollButton#CategoryScrollButton",
+      "notes": "Bottom category scroll button."
+    },
+    {
+      "key": "content/search_field_background",
+      "source": "book_content_texture",
+      "kind": "sprite",
+      "rect": {"x": 140, "y": 183, "width": 99, "height": 14},
+      "site": "BookSearchScreen#extractRenderState",
+      "notes": "Background drawn behind search text input."
+    },
+    {
+      "key": "content/media_frame",
+      "source": "book_content_texture",
+      "kind": "sprite",
+      "rect": {"x": 405, "y": 149, "width": 106, "height": 106},
+      "site": "BookImagePageRenderer#render, BookEntityPageRenderer#render, BookMultiblockPageRenderer#render",
+      "notes": "Decorative frame used for media displays."
+    },
+    {
+      "key": "overview/category_button",
+      "source": "book_overview_texture",
+      "kind": "button_states",
+      "variants": {
+        "normal": {"x": 0, "y": 145, "width": 28, "height": 20},
+        "hover": {"x": 0, "y": 145, "width": 28, "height": 20},
+        "pressed": {"x": 0, "y": 145, "width": 28, "height": 20}
+      },
+      "site": "CategoryButton#extractContents",
+      "notes": "Category button background; runtime crops this sprite to 25/26/28 px widths for normal/hover/selected states."
+    },
+    {
+      "key": "overview/search_button",
+      "source": "book_overview_texture",
+      "kind": "button_states",
+      "variants": {
+        "normal": {"x": 15, "y": 165, "width": 44, "height": 20},
+        "hover": {"x": 15, "y": 165, "width": 44, "height": 20}
+      },
+      "site": "SearchButton#extractContents",
+      "notes": "Search action button; hover state is positional only."
+    },
+    {
+      "key": "overview/show_bookmarks_button",
+      "source": "book_overview_texture",
+      "kind": "button_states",
+      "variants": {
+        "normal": {"x": 68, "y": 165, "width": 44, "height": 20},
+        "hover": {"x": 68, "y": 165, "width": 44, "height": 20}
+      },
+      "site": "ShowBookmarksButton#extractContents",
+      "notes": "Bookmarks screen button; hover state is positional only."
+    },
+    {
+      "key": "overview/show_recently_unlocked_button",
+      "source": "book_overview_texture",
+      "kind": "button_states",
+      "variants": {
+        "normal": {"x": 68, "y": 185, "width": 44, "height": 20},
+        "hover": {"x": 68, "y": 185, "width": 44, "height": 20}
+      },
+      "site": "ShowRecentlyUnlockedButton#extractContents",
+      "notes": "Recently unlocked screen button; hover state is positional only."
+    },
+    {
+      "key": "overview/add_bookmark_button",
+      "source": "book_overview_texture",
+      "kind": "button_states",
+      "variants": {
+        "normal": {"x": 68, "y": 145, "width": 44, "height": 20},
+        "hover": {"x": 68, "y": 145, "width": 44, "height": 20}
+      },
+      "site": "AddBookmarkButton#extractContents",
+      "notes": "Add bookmark button; hover state is positional only."
+    },
+    {
+      "key": "overview/remove_bookmark_button",
+      "source": "book_overview_texture",
+      "kind": "button_states",
+      "variants": {
+        "normal": {"x": 68, "y": 125, "width": 44, "height": 20},
+        "hover": {"x": 68, "y": 125, "width": 44, "height": 20}
+      },
+      "site": "RemoveBookmarkButton#extractContents",
+      "notes": "Remove bookmark button; hover state is positional only."
+    },
+    {
+      "key": "overview/read_unlocked_button",
+      "source": "book_overview_texture",
+      "kind": "button_states",
+      "variants": {
+        "normal": {"x": 0, "y": 196, "width": 16, "height": 14},
+        "hover": {"x": 16, "y": 196, "width": 16, "height": 14}
+      },
+      "site": "ReadAllButton#extractContents",
+      "notes": "Read-unlocked button state."
+    },
+    {
+      "key": "overview/read_all_button",
+      "source": "book_overview_texture",
+      "kind": "button_states",
+      "variants": {
+        "normal": {"x": 0, "y": 210, "width": 16, "height": 14},
+        "hover": {"x": 16, "y": 210, "width": 16, "height": 14}
+      },
+      "site": "ReadAllButton#extractContents",
+      "notes": "Read-all button state shown while shift is held."
+    },
+    {
+      "key": "overview/read_none_button",
+      "source": "book_overview_texture",
+      "kind": "button_states",
+      "variants": {
+        "normal": {"x": 0, "y": 224, "width": 16, "height": 14},
+        "hover": {"x": 16, "y": 224, "width": 16, "height": 14}
+      },
+      "site": "ReadAllButton#extractContents",
+      "notes": "Disabled/no-unread button state."
+    },
+    {
+      "key": "frame/frame",
+      "source": "frame_texture",
+      "kind": "nine_slice",
+      "rect": {"x": 0, "y": 0, "width": 140, "height": 140},
+      "borders": {"left": 50, "right": 50, "top": 50, "bottom": 50},
+      "site": "BookParentNodeScreen#renderFrame",
+      "notes": "Frame nine-slice texture with border metadata."
+    },
+    {
+      "key": "frame/top_overlay",
+      "source": "top_frame_overlay",
+      "kind": "frame_overlay",
+      "site": "BookParentNodeScreen#renderFrameOverlay",
+      "notes": "Top frame overlay cropped from centered source rectangle."
+    },
+    {
+      "key": "frame/bottom_overlay",
+      "source": "bottom_frame_overlay",
+      "kind": "frame_overlay",
+      "site": "BookParentNodeScreen#renderFrameOverlay",
+      "notes": "Bottom frame overlay cropped from centered source rectangle."
+    },
+    {
+      "key": "frame/left_overlay",
+      "source": "left_frame_overlay",
+      "kind": "frame_overlay",
+      "site": "BookParentNodeScreen#renderFrameOverlay",
+      "notes": "Left frame overlay cropped from centered source rectangle."
+    },
+    {
+      "key": "frame/right_overlay",
+      "source": "right_frame_overlay",
+      "kind": "frame_overlay",
+      "site": "BookParentNodeScreen#renderFrameOverlay",
+      "notes": "Right frame overlay cropped from centered source rectangle."
+    },
+    {
+      "key": "recipes/crafting_grid",
+      "source": "crafting_texture",
+      "kind": "sprite",
+      "rect": {"x": 0, "y": 0, "width": 100, "height": 62},
+      "site": "BookCraftingRecipePageRenderer#drawRecipe",
+      "notes": "Crafting recipe background."
+    },
+    {
+      "key": "recipes/shapeless_icon",
+      "source": "crafting_texture",
+      "kind": "sprite",
+      "rect": {"x": 0, "y": 64, "width": 11, "height": 11},
+      "site": "BookCraftingRecipePageRenderer#drawRecipe",
+      "notes": "Shapeless recipe icon."
+    },
+    {
+      "key": "recipes/processing_recipe_background",
+      "source": "crafting_texture",
+      "kind": "sprite",
+      "rect": {"x": 11, "y": 71, "width": 96, "height": 24},
+      "site": "BookProcessingRecipePageRenderer#drawRecipe",
+      "notes": "Processing recipe background."
+    },
+    {
+      "key": "recipes/smithing_recipe_background",
+      "source": "crafting_texture",
+      "kind": "sprite",
+      "rect": {"x": 11, "y": 178, "width": 96, "height": 62},
+      "site": "BookSmithingRecipePageRenderer#drawRecipe",
+      "notes": "Smithing recipe background."
+    },
+    {
+      "key": "recipes/spotlight_slot",
+      "source": "crafting_texture",
+      "kind": "sprite",
+      "rect": {"x": 0, "y": 102, "width": 66, "height": 26},
+      "site": "BookSpotlightPageRenderer#render",
+      "notes": "Spotlight page slot background."
+    }
+  ]
+}

@@ -8,10 +8,10 @@ package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiButtonSprites;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Util;
@@ -23,10 +23,6 @@ import java.util.function.Supplier;
 
 public class ReadAllButton extends Button {
 
-    public static final int U = 0;
-    public static final int V_READ_UNLOCKED = 196;
-    public static final int V_READ_ALL = 210;
-    public static final int V_NONE = 224;
     public static final int WIDTH = 16;
     public static final int HEIGHT = 14;
 
@@ -71,21 +67,18 @@ public class ReadAllButton extends Button {
         //TODO had a +200 z here
         var hovered = this.isHovered();
 
-        int u = U;
-
         //by default we show green if we can read unlocked entries or gray if none
         //if shift is down we offer to mark all as read
         //if neither is possible the button should be hidden which is handled by BookOverviewScreen#canSeeReadAllButton
-        int v = this.hasUnreadUnlockedEntries.get() ? V_READ_UNLOCKED : V_NONE;
-
-        if (hovered)
-            u += this.width; //shift to the right for hover variant
+        GuiButtonSprites sprites = this.hasUnreadUnlockedEntries.get()
+                ? this.parent.getBook().theme().overview().readUnlockedButton()
+                : this.parent.getBook().theme().overview().readNoneButton();
 
         if (Minecraft.getInstance().hasShiftDown()) {
-            v = V_READ_ALL;
+            sprites = this.parent.getBook().theme().overview().readAllButton();
         }
 
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.parent.getBook().getBookOverviewTexture(), this.getX(), this.getY(), u, v, this.width, this.height, 256, 256);
+        com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer.drawButton(guiGraphics, sprites, this.getX(), this.getY(), hovered);
 
         guiGraphics.pose().popMatrix();
 

@@ -202,16 +202,16 @@ public class BookSearchScreen extends BookPaginatedScreen {
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
 
-        BookContentRenderer.renderBookBackground(guiGraphics, this.getBook().getBookContentTexture());
+        BookContentRenderer.renderBookBackground(guiGraphics, this.getBook());
 
 
         if (this.openPagesIndex == 0) {
             this.drawCenteredStringNoShadow(guiGraphics, this.getTitle(),
                     BookEntryScreen.LEFT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING,
-                    this.parentScreen.getBook().getDefaultTitleColor());
+                    this.parentScreen.getBook().theme().palette().defaultTitleColor());
             this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.SEARCH_ENTRY_LIST_TITLE),
                     BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING,
-                    this.parentScreen.getBook().getDefaultTitleColor());
+                    this.parentScreen.getBook().theme().palette().defaultTitleColor());
 
             BookContentRenderer.drawTitleSeparator(guiGraphics, this.parentScreen.getBook(),
                     BookEntryScreen.LEFT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING + 12);
@@ -220,13 +220,13 @@ public class BookSearchScreen extends BookPaginatedScreen {
 
             BookPageRenderer.renderBookTextHolder(guiGraphics, this.infoText, this.font,
                     BookEntryScreen.LEFT_PAGE_X, BookEntryScreen.TOP_PADDING + 22, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - (BookEntryScreen.TOP_PADDING + 22),
-                    this.parentScreen.getBook().getDefaultTextColor());
+                    this.parentScreen.getBook().theme().palette().defaultTextColor());
         }
 
 
         if (!this.searchField.getValue().isEmpty()) {
             //draw search field bg
-            BookContentRenderer.drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, this.parentScreen.getBook(), this.searchField.getX() - 8, this.searchField.getY(), 140, 183, 99, 14);
+            BookContentRenderer.drawSprite(guiGraphics, this.parentScreen.getBook().theme().content().searchFieldBackground(), this.searchField.getX() - 8, this.searchField.getY());
             var searchComponent = Component.literal(this.searchField.getValue());
             guiGraphics.text(this.font, searchComponent, this.searchField.getX() + 7, this.searchField.getY() + 1, 0xFF000000, false);
         }

@@ -603,7 +603,7 @@ public class Book {
     }
 
     public BookTheme theme() {
-        return DefaultBookTheme.INSTANCE;
+        return DefaultBookTheme.forBook(this);
     }
 
     public boolean allowOpenBooksWithInvalidLinks() {

@@ -26,7 +26,7 @@ public class CategoryScrollButton extends BookButton {
     public final boolean bottom;
 
     public CategoryScrollButton(BookParentNodeScreen parent, int x, int y, boolean bottom, Supplier<Boolean> displayCondition, OnPress onPress) {
-        super(parent, x, y, U, bottom ? V : V + HEIGHT, WIDTH, HEIGHT, displayCondition,
+        super(parent, x, y, WIDTH, HEIGHT, theme -> bottom ? theme.content().categoryScrollDownButton() : theme.content().categoryScrollUpButton(), displayCondition,
                 Component.translatable(bottom ? Gui.BUTTON_PREVIOUS : Gui.BUTTON_NEXT),
                 onPress,
                 Component.translatable(bottom ? Gui.BUTTON_PREVIOUS : Gui.BUTTON_NEXT)
