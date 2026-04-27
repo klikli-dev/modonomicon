@@ -6,7 +6,6 @@
   "background_width": 512,
   "description": "",
   "display_mode": "node",
-  "entry_textures": "modonomicon:textures/gui/entry_textures.png",
   "entry_to_open": "formatting/basic",
   "icon": {
     "id": "minecraft:book"

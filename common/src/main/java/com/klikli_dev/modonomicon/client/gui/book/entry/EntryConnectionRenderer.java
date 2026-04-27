@@ -10,20 +10,21 @@ package com.klikli_dev.modonomicon.client.gui.book.entry;
 import com.klikli_dev.modonomicon.book.BookEntryParent;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.client.gui.book.node.BookCategoryNodeScreen;
+import com.klikli_dev.modonomicon.client.gui.book.theme.BookNodeTheme;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
+import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
-
-import net.minecraft.resources.Identifier;
 
 import static java.lang.Math.*;
 
 public class EntryConnectionRenderer {
 
     public int blitOffset;
-    public Identifier entryTextures;
+    public BookNodeTheme nodeTheme;
 
-    public EntryConnectionRenderer(Identifier entryTextures) {
-        this.entryTextures = entryTextures;
+    public EntryConnectionRenderer(BookNodeTheme nodeTheme) {
+        this.nodeTheme = nodeTheme;
     }
 
     public void renderLinedUpEntries(GuiGraphicsExtractor guiGraphics, BookEntry entry, BookEntry parentEntry, BookEntryParent parent, boolean isVertical) {
@@ -190,48 +191,48 @@ public class EntryConnectionRenderer {
         return y * BookCategoryNodeScreen.ENTRY_GRID_SCALE;
     }
 
-    protected void blit(GuiGraphicsExtractor guiGraphics, int pX, int pY, float pUOffset, float pVOffset, int pUWidth, int pVHeight) {
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.entryTextures, pX, pY, pUOffset, pVOffset, pUWidth, pVHeight, 256, 256);
+    protected void blit(GuiGraphicsExtractor guiGraphics, GuiSprite sprite, int pX, int pY) {
+        GuiGraphicsExt.blitSprite(guiGraphics, RenderPipelines.GUI_TEXTURED, sprite, pX, pY);
     }
 
     protected void drawSmallCurveLeftDown(GuiGraphicsExtractor guiGraphics, int x, int y) {
-        this.blit(guiGraphics, this.screenX(x), this.screenY(y), 0, 226, 30, 30);
+        this.blit(guiGraphics, this.nodeTheme.smallCurveLeftDown(), this.screenX(x), this.screenY(y));
     }
 
     protected void drawSmallCurveRightDown(GuiGraphicsExtractor guiGraphics, int x, int y) {
-        this.blit(guiGraphics, this.screenX(x), this.screenY(y), 30, 226, 30, 30);
+        this.blit(guiGraphics, this.nodeTheme.smallCurveRightDown(), this.screenX(x), this.screenY(y));
     }
 
     protected void drawSmallCurveLeftUp(GuiGraphicsExtractor guiGraphics, int x, int y) {
-        this.blit(guiGraphics, this.screenX(x), this.screenY(y), 0, 196, 30, 30);
+        this.blit(guiGraphics, this.nodeTheme.smallCurveLeftUp(), this.screenX(x), this.screenY(y));
     }
 
     protected void drawSmallCurveRightUp(GuiGraphicsExtractor guiGraphics, int x, int y) {
-        this.blit(guiGraphics, this.screenX(x), this.screenY(y), 30, 196, 30, 30);
+        this.blit(guiGraphics, this.nodeTheme.smallCurveRightUp(), this.screenX(x), this.screenY(y));
     }
 
     protected void drawLargeCurveLeftDown(GuiGraphicsExtractor guiGraphics, int x, int y) {
-        this.blit(guiGraphics, this.screenX(x), this.screenY(y), 62, 196, 60, 60);
+        this.blit(guiGraphics, this.nodeTheme.largeCurveLeftDown(), this.screenX(x), this.screenY(y));
     }
 
     protected void drawLargeCurveRightDown(GuiGraphicsExtractor guiGraphics, int x, int y) {
-        this.blit(guiGraphics, this.screenX(x), this.screenY(y), 122, 196, 60, 60);
+        this.blit(guiGraphics, this.nodeTheme.largeCurveRightDown(), this.screenX(x), this.screenY(y));
     }
 
     protected void drawLargeCurveLeftUp(GuiGraphicsExtractor guiGraphics, int x, int y) {
-        this.blit(guiGraphics, this.screenX(x), this.screenY(y), 62, 134, 60, 60);
+        this.blit(guiGraphics, this.nodeTheme.largeCurveLeftUp(), this.screenX(x), this.screenY(y));
     }
 
     protected void drawLargeCurveRightUp(GuiGraphicsExtractor guiGraphics, int x, int y) {
-        this.blit(guiGraphics, this.screenX(x), this.screenY(y), 122, 134, 60, 60);
+        this.blit(guiGraphics, this.nodeTheme.largeCurveRightUp(), this.screenX(x), this.screenY(y));
     }
 
     void drawVerticalLineAt(GuiGraphicsExtractor guiGraphics, int x, int y) {
-        this.blit(guiGraphics, this.screenX(x), this.screenY(y), 184, 164, 30, 31);
+        this.blit(guiGraphics, this.nodeTheme.verticalLine(), this.screenX(x), this.screenY(y));
     }
 
     void drawHorizontalLineAt(GuiGraphicsExtractor guiGraphics, int x, int y) {
-        this.blit(guiGraphics, this.screenX(x), this.screenY(y), 184, 226, 31, 30);
+        this.blit(guiGraphics, this.nodeTheme.horizontalLine(), this.screenX(x), this.screenY(y));
     }
 
     void drawVerticalLine(GuiGraphicsExtractor guiGraphics, int x, int startY, int endY) {
@@ -293,18 +294,18 @@ public class EntryConnectionRenderer {
 
 
     void drawUpArrow(GuiGraphicsExtractor guiGraphics, int x, int y) {
-        this.blit(guiGraphics, this.screenX(x), this.screenY(y) - 1, 0, 134, 30, 30);
+        this.blit(guiGraphics, this.nodeTheme.upArrow(), this.screenX(x), this.screenY(y) - 1);
     }
 
     void drawDownArrow(GuiGraphicsExtractor guiGraphics, int x, int y) {
-        this.blit(guiGraphics, this.screenX(x), this.screenY(y) + 1, 0, 164, 30, 30);
+        this.blit(guiGraphics, this.nodeTheme.downArrow(), this.screenX(x), this.screenY(y) + 1);
     }
 
     void drawRightArrow(GuiGraphicsExtractor guiGraphics, int x, int y) {
-        this.blit(guiGraphics, this.screenX(x) + 1, this.screenY(y), 30, 134, 30, 30);
+        this.blit(guiGraphics, this.nodeTheme.rightArrow(), this.screenX(x) + 1, this.screenY(y));
     }
 
     void drawLeftArrow(GuiGraphicsExtractor guiGraphics, int x, int y) {
-        this.blit(guiGraphics, this.screenX(x) - 1, this.screenY(y), 30, 164, 30, 30);
+        this.blit(guiGraphics, this.nodeTheme.leftArrow(), this.screenX(x) - 1, this.screenY(y));
     }
 }

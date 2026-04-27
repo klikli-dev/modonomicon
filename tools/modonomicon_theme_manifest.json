@@ -259,6 +259,158 @@
       "notes": "Disabled/no-unread button state."
     },
     {
+      "key": "node/entry_background_0_0",
+      "source": "entry_textures",
+      "kind": "sprite",
+      "rect": {"x": 0, "y": 0, "width": 26, "height": 26},
+      "site": "BookCategoryNodeScreen#renderEntries",
+      "notes": "Entry background variant at U=0, V=0."
+    },
+    {
+      "key": "node/entry_background_0_1",
+      "source": "entry_textures",
+      "kind": "sprite",
+      "rect": {"x": 26, "y": 0, "width": 26, "height": 26},
+      "site": "BookCategoryNodeScreen#renderEntries",
+      "notes": "Entry background variant at U=0, V=1."
+    },
+    {
+      "key": "node/entry_background_0_2",
+      "source": "entry_textures",
+      "kind": "sprite",
+      "rect": {"x": 52, "y": 0, "width": 26, "height": 26},
+      "site": "BookCategoryNodeScreen#renderEntries",
+      "notes": "Entry background variant at U=0, V=2."
+    },
+    {
+      "key": "node/entry_background_1_0",
+      "source": "entry_textures",
+      "kind": "sprite",
+      "rect": {"x": 0, "y": 26, "width": 26, "height": 26},
+      "site": "BookCategoryNodeScreen#renderEntries",
+      "notes": "Entry background variant at U=1, V=0."
+    },
+    {
+      "key": "node/entry_background_1_1",
+      "source": "entry_textures",
+      "kind": "sprite",
+      "rect": {"x": 26, "y": 26, "width": 26, "height": 26},
+      "site": "BookCategoryNodeScreen#renderEntries",
+      "notes": "Entry background variant at U=1, V=1."
+    },
+    {
+      "key": "node/small_curve_left_down",
+      "source": "entry_textures",
+      "kind": "sprite",
+      "rect": {"x": 0, "y": 226, "width": 30, "height": 30},
+      "site": "EntryConnectionRenderer#drawSmallCurveLeftDown",
+      "notes": "Small left-down node connection curve."
+    },
+    {
+      "key": "node/small_curve_right_down",
+      "source": "entry_textures",
+      "kind": "sprite",
+      "rect": {"x": 30, "y": 226, "width": 30, "height": 30},
+      "site": "EntryConnectionRenderer#drawSmallCurveRightDown",
+      "notes": "Small right-down node connection curve."
+    },
+    {
+      "key": "node/small_curve_left_up",
+      "source": "entry_textures",
+      "kind": "sprite",
+      "rect": {"x": 0, "y": 196, "width": 30, "height": 30},
+      "site": "EntryConnectionRenderer#drawSmallCurveLeftUp",
+      "notes": "Small left-up node connection curve."
+    },
+    {
+      "key": "node/small_curve_right_up",
+      "source": "entry_textures",
+      "kind": "sprite",
+      "rect": {"x": 30, "y": 196, "width": 30, "height": 30},
+      "site": "EntryConnectionRenderer#drawSmallCurveRightUp",
+      "notes": "Small right-up node connection curve."
+    },
+    {
+      "key": "node/large_curve_left_down",
+      "source": "entry_textures",
+      "kind": "sprite",
+      "rect": {"x": 62, "y": 196, "width": 60, "height": 60},
+      "site": "EntryConnectionRenderer#drawLargeCurveLeftDown",
+      "notes": "Large left-down node connection curve."
+    },
+    {
+      "key": "node/large_curve_right_down",
+      "source": "entry_textures",
+      "kind": "sprite",
+      "rect": {"x": 122, "y": 196, "width": 60, "height": 60},
+      "site": "EntryConnectionRenderer#drawLargeCurveRightDown",
+      "notes": "Large right-down node connection curve."
+    },
+    {
+      "key": "node/large_curve_left_up",
+      "source": "entry_textures",
+      "kind": "sprite",
+      "rect": {"x": 62, "y": 134, "width": 60, "height": 60},
+      "site": "EntryConnectionRenderer#drawLargeCurveLeftUp",
+      "notes": "Large left-up node connection curve."
+    },
+    {
+      "key": "node/large_curve_right_up",
+      "source": "entry_textures",
+      "kind": "sprite",
+      "rect": {"x": 122, "y": 134, "width": 60, "height": 60},
+      "site": "EntryConnectionRenderer#drawLargeCurveRightUp",
+      "notes": "Large right-up node connection curve."
+    },
+    {
+      "key": "node/vertical_line",
+      "source": "entry_textures",
+      "kind": "sprite",
+      "rect": {"x": 184, "y": 164, "width": 30, "height": 31},
+      "site": "EntryConnectionRenderer#drawVerticalLineAt",
+      "notes": "Vertical node connection segment."
+    },
+    {
+      "key": "node/horizontal_line",
+      "source": "entry_textures",
+      "kind": "sprite",
+      "rect": {"x": 184, "y": 226, "width": 31, "height": 30},
+      "site": "EntryConnectionRenderer#drawHorizontalLineAt",
+      "notes": "Horizontal node connection segment."
+    },
+    {
+      "key": "node/up_arrow",
+      "source": "entry_textures",
+      "kind": "sprite",
+      "rect": {"x": 0, "y": 134, "width": 30, "height": 30},
+      "site": "EntryConnectionRenderer#drawUpArrow",
+      "notes": "Upward node connection arrow."
+    },
+    {
+      "key": "node/down_arrow",
+      "source": "entry_textures",
+      "kind": "sprite",
+      "rect": {"x": 0, "y": 164, "width": 30, "height": 30},
+      "site": "EntryConnectionRenderer#drawDownArrow",
+      "notes": "Downward node connection arrow."
+    },
+    {
+      "key": "node/right_arrow",
+      "source": "entry_textures",
+      "kind": "sprite",
+      "rect": {"x": 30, "y": 134, "width": 30, "height": 30},
+      "site": "EntryConnectionRenderer#drawRightArrow",
+      "notes": "Rightward node connection arrow."
+    },
+    {
+      "key": "node/left_arrow",
+      "source": "entry_textures",
+      "kind": "sprite",
+      "rect": {"x": 30, "y": 164, "width": 30, "height": 30},
+      "site": "EntryConnectionRenderer#drawLeftArrow",
+      "notes": "Leftward node connection arrow."
+    },
+    {
       "key": "frame/frame",
       "source": "frame_texture",
       "kind": "nine_slice",

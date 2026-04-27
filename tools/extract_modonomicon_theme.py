@@ -46,6 +46,25 @@ OUTPUT_PATHS = {
     "overview/read_unlocked_button": "buttons/read/read_unlocked_button",
     "overview/read_all_button": "buttons/read/read_all_button",
     "overview/read_none_button": "buttons/read/read_none_button",
+    "node/entry_background_0_0": "nodes/entry_backgrounds/entry_background_0_0",
+    "node/entry_background_0_1": "nodes/entry_backgrounds/entry_background_0_1",
+    "node/entry_background_0_2": "nodes/entry_backgrounds/entry_background_0_2",
+    "node/entry_background_1_0": "nodes/entry_backgrounds/entry_background_1_0",
+    "node/entry_background_1_1": "nodes/entry_backgrounds/entry_background_1_1",
+    "node/small_curve_left_down": "nodes/connections/small_curve_left_down",
+    "node/small_curve_right_down": "nodes/connections/small_curve_right_down",
+    "node/small_curve_left_up": "nodes/connections/small_curve_left_up",
+    "node/small_curve_right_up": "nodes/connections/small_curve_right_up",
+    "node/large_curve_left_down": "nodes/connections/large_curve_left_down",
+    "node/large_curve_right_down": "nodes/connections/large_curve_right_down",
+    "node/large_curve_left_up": "nodes/connections/large_curve_left_up",
+    "node/large_curve_right_up": "nodes/connections/large_curve_right_up",
+    "node/vertical_line": "nodes/connections/vertical_line",
+    "node/horizontal_line": "nodes/connections/horizontal_line",
+    "node/up_arrow": "nodes/connections/up_arrow",
+    "node/down_arrow": "nodes/connections/down_arrow",
+    "node/right_arrow": "nodes/connections/right_arrow",
+    "node/left_arrow": "nodes/connections/left_arrow",
     "frame/frame": "frame/frame",
     "frame/top_overlay": "frame/top_overlay",
     "frame/bottom_overlay": "frame/bottom_overlay",
@@ -124,6 +143,18 @@ def resolve_book_json(repo_root: Path, namespace: str, path: str, override: str 
     return unique_matches[0]
 
 
+def resolve_first_category_json(book_json_path: Path) -> Path:
+    categories_dir = book_json_path.parent / "categories"
+    if not categories_dir.exists() or not categories_dir.is_dir():
+        fail(f"Missing categories directory next to book.json: {categories_dir}")
+
+    matches = sorted(path.resolve() for path in categories_dir.glob("*.json") if path.is_file())
+    if not matches:
+        fail(f"No category json files found in {categories_dir}")
+
+    return matches[0]
+
+
 def read_json(path: Path) -> dict:
     with path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
@@ -142,6 +173,16 @@ def resolve_resource_path(repo_root: Path, identifier: str) -> Path:
         fail(f"Multiple source texture matches found for {identifier}:\n{formatted}")
 
     return unique_matches[0]
+
+
+def try_resolve_resource_path(repo_root: Path, identifier: str) -> Path | None:
+    namespace, path = validate_identifier(identifier)
+    asset_relative = Path("assets") / namespace / path
+    matches = [root / asset_relative for root in resource_roots(repo_root) if (root / asset_relative).exists()]
+    unique_matches = sorted({match.resolve() for match in matches})
+    if len(unique_matches) == 1:
+        return unique_matches[0]
+    return None
 
 
 def resolve_output_resource_root(repo_root: Path, book_json_path: Path, override: str | None) -> Path:
@@ -264,6 +305,18 @@ def source_descriptor(book_json: dict, source: str) -> tuple[str, dict | str]:
     return "texture", value
 
 
+def resolve_category_entry_textures_source(repo_root: Path, category_json: dict, namespace: str) -> str:
+    value = category_json.get("entry_textures")
+    if value is not None:
+        return value
+
+    namespace_default = f"{namespace}:textures/gui/entry_textures.png"
+    if try_resolve_resource_path(repo_root, namespace_default) is not None:
+        return namespace_default
+
+    return "modonomicon:textures/gui/entry_textures.png"
+
+
 def resolve_variant_alias(variants: dict, variant_name: str) -> str:
     visited = set()
     current = variant_name
@@ -361,7 +414,9 @@ def main() -> None:
     namespace, book_path = validate_identifier(args.book_id)
     theme_path = args.theme_path or book_path
     book_json_path = resolve_book_json(repo_root, namespace, book_path, args.book_json_path)
+    category_json_path = resolve_first_category_json(book_json_path)
     print(f"Resolved book json: {book_json_path}")
+    print(f"Resolved first category json: {category_json_path}")
 
     manifest_path = repo_root / MANIFEST_PATH
     if not manifest_path.exists():
@@ -373,6 +428,7 @@ def main() -> None:
         fail("Manifest does not contain any entries.")
 
     book_json = read_json(book_json_path)
+    category_json = read_json(category_json_path)
     output_resource_root = resolve_output_resource_root(repo_root, book_json_path, args.resource_root)
     java_source_root = resolve_java_source_root(output_resource_root)
     target_java_path = java_source_root / Path(args.package.replace(".", "/")) / f"{args.class_name}.java"
@@ -390,7 +446,10 @@ def main() -> None:
         seen_constant_names.add(constant_name)
 
         kind = entry["kind"]
-        source_kind, source_value = source_descriptor(book_json, entry["source"])
+        if entry["source"] == "entry_textures":
+            source_kind, source_value = ("texture", resolve_category_entry_textures_source(repo_root, category_json, namespace))
+        else:
+            source_kind, source_value = source_descriptor(book_json, entry["source"])
 
         if source_kind == "texture":
             source_path = resolve_resource_path(repo_root, source_value)

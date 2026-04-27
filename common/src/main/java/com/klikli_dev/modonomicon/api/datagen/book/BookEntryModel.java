@@ -335,8 +335,7 @@ public class BookEntryModel {
     }
 
     /**
-     * Select the entry background as found in the Category's "entry_textures" array.
-     * You need to provide the starting UV coordinates of the background - use a tool like Photoshop or Photopea to find out the pixel coordinate of the upper left corner of the desired background.
+     * Select the themed node entry background variant by its U/V index in the built-in default set.
      * U = Y Axis / Up-Down
      * V = X Axis / Left-Right
      */
@@ -347,8 +346,7 @@ public class BookEntryModel {
     }
 
     /**
-     * Select the entry background as found in the Category's "entry_textures" array.
-     * You need to provide the starting UV coordinates of the background - use a tool like Photoshop or Photopea to find out the pixel coordinate of the upper left corner of the desired background.
+     * Select the themed node entry background variant by its U/V index in the built-in default set.
      * First = U = Y Axis / Up-Down
      * Second = V = X Axis / Left-Right
      */

@@ -12,6 +12,8 @@ public interface BookTheme {
 
     BookOverviewTheme overview();
 
+    BookNodeTheme node();
+
     BookFrameTheme frame();
 
     BookRecipeTheme recipes();

@@ -142,6 +142,96 @@ public final class DefaultBookTheme implements BookTheme {
         }
     };
 
+    private static final BookNodeTheme NODE = new BookNodeTheme() {
+        @Override
+        public GuiSprite entryBackground(int uIndex, int vIndex) {
+            return switch (uIndex) {
+                case 0 -> switch (vIndex) {
+                    case 0 -> GeneratedDefaultBookThemeData.NODE_ENTRY_BACKGROUND_0_0;
+                    case 1 -> GeneratedDefaultBookThemeData.NODE_ENTRY_BACKGROUND_0_1;
+                    case 2 -> GeneratedDefaultBookThemeData.NODE_ENTRY_BACKGROUND_0_2;
+                    default -> GuiSprite.EMPTY;
+                };
+                case 1 -> switch (vIndex) {
+                    case 0 -> GeneratedDefaultBookThemeData.NODE_ENTRY_BACKGROUND_1_0;
+                    case 1 -> GeneratedDefaultBookThemeData.NODE_ENTRY_BACKGROUND_1_1;
+                    default -> GuiSprite.EMPTY;
+                };
+                default -> GuiSprite.EMPTY;
+            };
+        }
+
+        @Override
+        public GuiSprite smallCurveLeftDown() {
+            return GeneratedDefaultBookThemeData.NODE_SMALL_CURVE_LEFT_DOWN;
+        }
+
+        @Override
+        public GuiSprite smallCurveRightDown() {
+            return GeneratedDefaultBookThemeData.NODE_SMALL_CURVE_RIGHT_DOWN;
+        }
+
+        @Override
+        public GuiSprite smallCurveLeftUp() {
+            return GeneratedDefaultBookThemeData.NODE_SMALL_CURVE_LEFT_UP;
+        }
+
+        @Override
+        public GuiSprite smallCurveRightUp() {
+            return GeneratedDefaultBookThemeData.NODE_SMALL_CURVE_RIGHT_UP;
+        }
+
+        @Override
+        public GuiSprite largeCurveLeftDown() {
+            return GeneratedDefaultBookThemeData.NODE_LARGE_CURVE_LEFT_DOWN;
+        }
+
+        @Override
+        public GuiSprite largeCurveRightDown() {
+            return GeneratedDefaultBookThemeData.NODE_LARGE_CURVE_RIGHT_DOWN;
+        }
+
+        @Override
+        public GuiSprite largeCurveLeftUp() {
+            return GeneratedDefaultBookThemeData.NODE_LARGE_CURVE_LEFT_UP;
+        }
+
+        @Override
+        public GuiSprite largeCurveRightUp() {
+            return GeneratedDefaultBookThemeData.NODE_LARGE_CURVE_RIGHT_UP;
+        }
+
+        @Override
+        public GuiSprite verticalLine() {
+            return GeneratedDefaultBookThemeData.NODE_VERTICAL_LINE;
+        }
+
+        @Override
+        public GuiSprite horizontalLine() {
+            return GeneratedDefaultBookThemeData.NODE_HORIZONTAL_LINE;
+        }
+
+        @Override
+        public GuiSprite upArrow() {
+            return GeneratedDefaultBookThemeData.NODE_UP_ARROW;
+        }
+
+        @Override
+        public GuiSprite downArrow() {
+            return GeneratedDefaultBookThemeData.NODE_DOWN_ARROW;
+        }
+
+        @Override
+        public GuiSprite rightArrow() {
+            return GeneratedDefaultBookThemeData.NODE_RIGHT_ARROW;
+        }
+
+        @Override
+        public GuiSprite leftArrow() {
+            return GeneratedDefaultBookThemeData.NODE_LEFT_ARROW;
+        }
+    };
+
     private static final BookFrameTheme FRAME = new BookFrameTheme() {
         @Override
         public GuiNineSlice frame() {
@@ -281,6 +371,11 @@ public final class DefaultBookTheme implements BookTheme {
             }
 
             @Override
+            public BookNodeTheme node() {
+                return INSTANCE.node();
+            }
+
+            @Override
             public BookRecipeTheme recipes() {
                 return INSTANCE.recipes();
             }
@@ -370,6 +465,11 @@ public final class DefaultBookTheme implements BookTheme {
     @Override
     public BookFrameTheme frame() {
         return FRAME;
+    }
+
+    @Override
+    public BookNodeTheme node() {
+        return NODE;
     }
 
     @Override

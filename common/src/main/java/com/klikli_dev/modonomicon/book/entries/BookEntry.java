@@ -211,8 +211,8 @@ public abstract class BookEntry {
     public abstract void toNetwork(RegistryFriendlyByteBuf buf);
 
     /**
-     * The first two rows in "entry_textures.png" are reserved for the entry icons.
-     * the entry background is selected by querying the texture at entryBackgroundUIndex * 26 (= Y Axis / Up-Down), entryBackgroundUIndex * 26 (= X Axis / Left-Right)
+     * The default book theme provides a fixed set of node entry backgrounds.
+     * The entry background is selected by querying the themed background at entryBackgroundUIndex * 26 (= Y Axis / Up-Down), entryBackgroundVIndex * 26 (= X Axis / Left-Right).
      * U index = Y Axis / Up-Down
      * V index = X Axis / Left-Right
      */

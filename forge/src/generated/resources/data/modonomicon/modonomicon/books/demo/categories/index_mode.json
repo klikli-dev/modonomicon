@@ -6,7 +6,6 @@
   "background_width": 512,
   "description": "book.modonomicon.demo.index_mode.description",
   "display_mode": "index",
-  "entry_textures": "modonomicon:textures/gui/entry_textures.png",
   "icon": {
     "item": "minecraft:paper"
   },

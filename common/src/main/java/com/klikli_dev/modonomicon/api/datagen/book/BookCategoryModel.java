@@ -57,7 +57,6 @@ public class BookCategoryModel {
      */
     protected float backgroundTextureZoomMultiplier = Category.DEFAULT_BACKGROUND_TEXTURE_ZOOM_MULTIPLIER;
     protected List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers = new ArrayList<>();
-    protected Identifier entryTextures = Identifier.parse(Category.DEFAULT_ENTRY_TEXTURES);
     protected List<BookEntryModel> entries = new ArrayList<>();
 
     @Nullable
@@ -129,7 +128,6 @@ public class BookCategoryModel {
                         .map(layer -> BookCategoryBackgroundParallaxLayer.CODEC.encodeStart(JsonOps.INSTANCE, layer)
                                 .getOrThrow())
                         .collect(JsonArray::new, JsonArray::add, JsonArray::addAll));
-        json.addProperty("entry_textures", this.entryTextures.toString());
         if (this.condition != null) {
             json.add("condition", this.condition.toJson(this.getId(), provider));
         }
@@ -192,10 +190,6 @@ public class BookCategoryModel {
 
     public List<BookCategoryBackgroundParallaxLayer> getBackgroundParallaxLayers() {
         return this.backgroundParallaxLayers;
-    }
-
-    public Identifier getEntryTextures() {
-        return this.entryTextures;
     }
 
     public boolean dontGenerateJson() {
@@ -364,17 +358,6 @@ public class BookCategoryModel {
      */
     public BookCategoryModel withBackgroundParallaxLayer(Identifier layerTexture) {
         this.backgroundParallaxLayers.add(new BookCategoryBackgroundParallaxLayer(layerTexture));
-        return this;
-    }
-
-    /**
-     * Sets the category's entry textures.
-     * The texture must be a 256x256 png file.
-     * This texture is used to display the entry background icons as well as the arrows connecting entries.
-     * Default value is {@link Category#DEFAULT_ENTRY_TEXTURES}
-     */
-    public BookCategoryModel withEntryTextures(Identifier entryTextures) {
-        this.entryTextures = entryTextures;
         return this;
     }
 
