@@ -2,7 +2,7 @@
   "entries": [
     {
       "key": "content/double_page_background",
-      "source": "book_content_texture",
+      "source": "modonomicon:textures/gui/book_content.png",
       "kind": "sprite",
       "rect": {"x": 0, "y": 0, "width": 272, "height": 178},
       "site": "BookContentRenderer#renderBookBackground",
@@ -18,7 +18,7 @@
     },
     {
       "key": "content/title_separator",
-      "source": "book_content_texture",
+      "source": "modonomicon:textures/gui/book_content.png",
       "kind": "sprite",
       "rect": {"x": 0, "y": 253, "width": 110, "height": 3},
       "site": "BookContentRenderer#drawTitleSeparator",
@@ -26,7 +26,7 @@
     },
     {
       "key": "content/lock_icon",
-      "source": "book_content_texture",
+      "source": "modonomicon:textures/gui/book_content.png",
       "kind": "sprite",
       "rect": {"x": 496, "y": 0, "width": 16, "height": 16},
       "site": "BookContentRenderer#drawLock",
@@ -34,7 +34,7 @@
     },
     {
       "key": "content/unread_indicator",
-      "source": "book_content_texture",
+      "source": "modonomicon:textures/gui/book_content.png",
       "kind": "button_states",
       "variants": {
         "normal": {"x": 350, "y": 19, "width": 11, "height": 11},
@@ -45,7 +45,7 @@
     },
     {
       "key": "content/next_page_button",
-      "source": "book_content_texture",
+      "source": "modonomicon:textures/gui/book_content.png",
       "kind": "button_states",
       "variants": {
         "normal": {"x": 300, "y": 0, "width": 18, "height": 10},
@@ -56,7 +56,7 @@
     },
     {
       "key": "content/previous_page_button",
-      "source": "book_content_texture",
+      "source": "modonomicon:textures/gui/book_content.png",
       "kind": "button_states",
       "variants": {
         "normal": {"x": 300, "y": 10, "width": 18, "height": 10},
@@ -67,7 +67,7 @@
     },
     {
       "key": "content/small_next_page_button",
-      "source": "book_content_texture",
+      "source": "modonomicon:textures/gui/book_content.png",
       "kind": "button_states",
       "variants": {
         "normal": {"x": 380, "y": 12, "width": 5, "height": 7},
@@ -78,7 +78,7 @@
     },
     {
       "key": "content/small_previous_page_button",
-      "source": "book_content_texture",
+      "source": "modonomicon:textures/gui/book_content.png",
       "kind": "button_states",
       "variants": {
         "normal": {"x": 380, "y": 19, "width": 5, "height": 7},
@@ -89,7 +89,7 @@
     },
     {
       "key": "content/back_button",
-      "source": "book_content_texture",
+      "source": "modonomicon:textures/gui/book_content.png",
       "kind": "button_states",
       "variants": {
         "normal": {"x": 380, "y": 0, "width": 18, "height": 9},
@@ -100,7 +100,7 @@
     },
     {
       "key": "content/exit_button",
-      "source": "book_content_texture",
+      "source": "modonomicon:textures/gui/book_content.png",
       "kind": "button_states",
       "variants": {
         "normal": {"x": 350, "y": 0, "width": 12, "height": 12},
@@ -111,7 +111,7 @@
     },
     {
       "key": "content/visualize_button",
-      "source": "book_content_texture",
+      "source": "modonomicon:textures/gui/book_content.png",
       "kind": "button_states",
       "variants": {
         "normal": {"x": 350, "y": 12, "width": 11, "height": 7},
@@ -122,7 +122,7 @@
     },
     {
       "key": "content/category_scroll_up_button",
-      "source": "book_content_texture",
+      "source": "modonomicon:textures/gui/book_content.png",
       "kind": "button_states",
       "variants": {
         "normal": {"x": 398, "y": 22, "width": 14, "height": 10},
@@ -133,7 +133,7 @@
     },
     {
       "key": "content/category_scroll_down_button",
-      "source": "book_content_texture",
+      "source": "modonomicon:textures/gui/book_content.png",
       "kind": "button_states",
       "variants": {
         "normal": {"x": 398, "y": 12, "width": 14, "height": 10},
@@ -144,7 +144,7 @@
     },
     {
       "key": "content/search_field_background",
-      "source": "book_content_texture",
+      "source": "modonomicon:textures/gui/book_content.png",
       "kind": "sprite",
       "rect": {"x": 140, "y": 183, "width": 99, "height": 14},
       "site": "BookSearchScreen#extractRenderState",
@@ -152,7 +152,7 @@
     },
     {
       "key": "content/media_frame",
-      "source": "book_content_texture",
+      "source": "modonomicon:textures/gui/book_content.png",
       "kind": "sprite",
       "rect": {"x": 405, "y": 149, "width": 106, "height": 106},
       "site": "BookImagePageRenderer#render, BookEntityPageRenderer#render, BookMultiblockPageRenderer#render",
@@ -160,7 +160,7 @@
     },
     {
       "key": "overview/category_button",
-      "source": "book_overview_texture",
+      "source": "modonomicon:textures/gui/book_overview.png",
       "kind": "button_states",
       "variants": {
         "normal": {"x": 0, "y": 145, "width": 28, "height": 20, "adjust": {"probe": "right", "mode": "expand_to_transparent"}},
@@ -172,7 +172,7 @@
     },
     {
       "key": "overview/search_button",
-      "source": "book_overview_texture",
+      "source": "modonomicon:textures/gui/book_overview.png",
       "kind": "button_states",
       "variants": {
         "normal": {"x": 15, "y": 165, "width": 44, "height": 20, "adjust": {"probe": "left", "mode": "shift_until_transparent"}},
@@ -183,7 +183,7 @@
     },
     {
       "key": "overview/show_bookmarks_button",
-      "source": "book_overview_texture",
+      "source": "modonomicon:textures/gui/book_overview.png",
       "kind": "button_states",
       "variants": {
         "normal": {"x": 68, "y": 165, "width": 44, "height": 20, "adjust": {"probe": "left", "mode": "shift_until_transparent"}},
@@ -194,7 +194,7 @@
     },
     {
       "key": "overview/show_recently_unlocked_button",
-      "source": "book_overview_texture",
+      "source": "modonomicon:textures/gui/book_overview.png",
       "kind": "button_states",
       "variants": {
         "normal": {"x": 68, "y": 185, "width": 44, "height": 20, "adjust": {"probe": "left", "mode": "shift_until_transparent"}},
@@ -205,7 +205,7 @@
     },
     {
       "key": "overview/add_bookmark_button",
-      "source": "book_overview_texture",
+      "source": "modonomicon:textures/gui/book_overview.png",
       "kind": "button_states",
       "variants": {
         "normal": {"x": 68, "y": 145, "width": 44, "height": 20, "adjust": {"probe": "left", "mode": "shift_until_transparent"}},
@@ -216,7 +216,7 @@
     },
     {
       "key": "overview/remove_bookmark_button",
-      "source": "book_overview_texture",
+      "source": "modonomicon:textures/gui/book_overview.png",
       "kind": "button_states",
       "variants": {
         "normal": {"x": 68, "y": 125, "width": 44, "height": 20, "adjust": {"probe": "left", "mode": "shift_until_transparent"}},
@@ -227,7 +227,7 @@
     },
     {
       "key": "overview/read_unlocked_button",
-      "source": "book_overview_texture",
+      "source": "modonomicon:textures/gui/book_overview.png",
       "kind": "button_states",
       "variants": {
         "normal": {"x": 0, "y": 196, "width": 16, "height": 14},
@@ -238,7 +238,7 @@
     },
     {
       "key": "overview/read_all_button",
-      "source": "book_overview_texture",
+      "source": "modonomicon:textures/gui/book_overview.png",
       "kind": "button_states",
       "variants": {
         "normal": {"x": 0, "y": 210, "width": 16, "height": 14},
@@ -249,7 +249,7 @@
     },
     {
       "key": "overview/read_none_button",
-      "source": "book_overview_texture",
+      "source": "modonomicon:textures/gui/book_overview.png",
       "kind": "button_states",
       "variants": {
         "normal": {"x": 0, "y": 224, "width": 16, "height": 14},

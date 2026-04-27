@@ -255,6 +255,9 @@ def source_descriptor(book_json: dict, source: str) -> tuple[str, dict | str]:
             fail(f"Book json is missing required overlay entry: {source}")
         return "overlay", overlay
 
+    if ":" in source:
+        return "texture", source
+
     value = book_json.get(source)
     if value is None:
         fail(f"Book json is missing required texture entry: {source}")

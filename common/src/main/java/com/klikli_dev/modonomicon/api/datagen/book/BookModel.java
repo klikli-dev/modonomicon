@@ -43,7 +43,7 @@ public class BookModel {
     /**
      * The display mode - node based (thaumonomicon style) or index based (lexica botania / patchouli style)
      * If the book is in index mode then all categories will also be shown in index mode. If the book is in node mode, then individual categories can be in index mode.
-     * If in index mode, the frame textures will be ignored, instead bookContentTexture will be used.
+     * If in index mode, the themed double-page background is used instead of the node frame texture.
      */
     protected BookDisplayMode displayMode = BookDisplayMode.NODE;
 
@@ -69,11 +69,6 @@ public class BookModel {
     protected Identifier customBookItem = null;
 
     /**
-     * This texture contains buttons for the "node view" of the book. E.g. search button, category buttons, "read all" button.
-     */
-    protected Identifier bookOverviewTexture = Identifier.parse(Data.Book.DEFAULT_OVERVIEW_TEXTURE);
-
-    /**
      * The font to use for the book text.
      */
     protected Identifier font = Identifier.parse(Book.DEFAULT_FONT);
@@ -83,12 +78,6 @@ public class BookModel {
     protected BookFrameOverlay bottomFrameOverlay = Data.Book.DEFAULT_BOTTOM_FRAME_OVERLAY;
     protected BookFrameOverlay leftFrameOverlay = Data.Book.DEFAULT_LEFT_FRAME_OVERLAY;
     protected BookFrameOverlay rightFrameOverlay = Data.Book.DEFAULT_RIGHT_FRAME_OVERLAY;
-
-    /**
-     * Contains textures for the entry view, as well as index views (book or category in index mode, as well as search screen).
-     * This includes the book "page" background for double page view and various navigation buttons.
-     */
-    protected Identifier bookContentTexture = Identifier.parse(Data.Book.DEFAULT_CONTENT_TEXTURE);
 
     protected PageDisplayMode pageDisplayMode = PageDisplayMode.DOUBLE_PAGE;
     protected Identifier singlePageTexture = Identifier.parse(Data.Book.DEFAULT_SINGLE_PAGE_TEXTURE);
@@ -229,28 +218,12 @@ public class BookModel {
         return this.model;
     }
 
-    /**
-     * @deprecated Runtime rendering should use generated theme sprites instead of raw overview atlases.
-     */
-    @Deprecated(forRemoval = false)
-    public Identifier getBookOverviewTexture() {
-        return this.bookOverviewTexture;
-    }
-
     public Identifier getFont() {
         return this.font;
     }
 
     public Identifier getFrameTexture() {
         return this.frameTexture;
-    }
-
-    /**
-     * @deprecated Runtime rendering should use generated theme sprites instead of raw content atlases.
-     */
-    @Deprecated(forRemoval = false)
-    public Identifier getBookContentTexture() {
-        return this.bookContentTexture;
     }
 
     public int getDefaultTitleColor() {
@@ -313,14 +286,12 @@ public class BookModel {
         json.addProperty("model", this.model.toString());
         json.addProperty("display_mode", this.displayMode.getSerializedName());
         json.addProperty("creative_tab", this.creativeTab.toString());
-        json.addProperty("book_overview_texture", this.bookOverviewTexture.toString());
         json.addProperty("font", this.font.toString());
         json.addProperty("frame_texture", this.frameTexture.toString());
         json.add("top_frame_overlay", BookFrameOverlay.CODEC.encodeStart(JsonOps.INSTANCE, this.topFrameOverlay).getOrThrow());
         json.add("bottom_frame_overlay", BookFrameOverlay.CODEC.encodeStart(JsonOps.INSTANCE, this.bottomFrameOverlay).getOrThrow());
         json.add("left_frame_overlay", BookFrameOverlay.CODEC.encodeStart(JsonOps.INSTANCE, this.leftFrameOverlay).getOrThrow());
         json.add("right_frame_overlay", BookFrameOverlay.CODEC.encodeStart(JsonOps.INSTANCE, this.rightFrameOverlay).getOrThrow());
-        json.addProperty("book_content_texture", this.bookContentTexture.toString());
         json.addProperty("crafting_texture", this.craftingTexture.toString());
         json.addProperty("turn_page_sound", this.turnPageSound.toString());
         json.addProperty("default_title_color", this.defaultTitleColor);
@@ -386,11 +357,6 @@ public class BookModel {
         return this;
     }
 
-    public BookModel withBookOverviewTexture(Identifier bookOverviewTexture) {
-        this.bookOverviewTexture = bookOverviewTexture;
-        return this;
-    }
-
     public BookModel withFont(Identifier font) {
         this.font = font;
         return this;
@@ -447,11 +413,6 @@ public class BookModel {
         return this;
     }
 
-    public BookModel withBookContentTexture(Identifier bookContentTexture) {
-        this.bookContentTexture = bookContentTexture;
-        return this;
-    }
-
     public BookModel withCraftingTexture(Identifier craftingTexture) {
         this.craftingTexture = craftingTexture;
         return this;
@@ -472,8 +433,8 @@ public class BookModel {
     }
 
     /**
-     * Sets the display mode - node based (thaumonomicon style) or index based (lexica botania / patchouli style)
-     * If in index mode, the frame textures will be ignored, instead bookContentTexture will be used
+     * Sets the display mode - node based (thaumonomicon style) or index based (lexica botania / patchouli style).
+     * If in index mode, the themed double-page background is used instead of the node frame texture.
      */
     public BookModel withDisplayMode(BookDisplayMode displayMode) {
         this.displayMode = displayMode;

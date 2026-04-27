@@ -35,8 +35,6 @@ This plan does **not** define the final book-side theme configuration mechanism 
 
 The current book JSON config provides these texture entry points:
 
-- `book_content_texture`
-- `book_overview_texture`
 - `frame_texture`
 - `top_frame_overlay.texture`
 - `bottom_frame_overlay.texture`
@@ -44,6 +42,8 @@ The current book JSON config provides these texture entry points:
 - `right_frame_overlay.texture`
 - `crafting_texture`
 - `single_page_texture`
+
+The default themed content/overview atlases are extracted from built-in Modonomicon textures rather than per-book JSON fields.
 
 The primary migration target requested here is the content / overview / frame family, while recipe and single-page assets should be planned as part of the same theme system so the API does not need to be reworked again immediately.
 
@@ -55,11 +55,9 @@ That gives a reviewable list of only the regions Modonomicon actually uses.
 
 ### 1. Content texture call chain
 
-Primary chain:
+Primary source:
 
-- `Book#getBookContentTexture()`
-- `BookContentRenderer.drawFromContentTexture(...)`
-- terminal `GuiGraphicsExtractor.blit(...)`
+- built-in atlas `modonomicon:textures/gui/book_content.png`
 
 Important direct bypasses:
 
@@ -84,9 +82,9 @@ Current known hard-coded content UV users include:
 
 ### 2. Overview texture call chain
 
-Primary chain:
+Primary source:
 
-- `Book#getBookOverviewTexture()`
+- built-in atlas `modonomicon:textures/gui/book_overview.png`
 - direct `GuiGraphicsExtractor.blit(...)` calls in overview button classes
 
 Known overview users include:
@@ -151,7 +149,7 @@ The Python script should use a checked-in extraction manifest instead of trying 
 Recommended structure per entry:
 
 - `key`: semantic name such as `content/title_separator`
-- `source`: `book_content_texture`, `book_overview_texture`, `frame_texture`, `top_frame_overlay`, etc.
+- `source`: direct texture ids, `frame_texture`, `top_frame_overlay`, etc.
 - `rect`: `x`, `y`, `width`, `height`
 - `variants`: optional map for hover / pressed variants
 - `kind`: `sprite`, `button_states`, or `nine_slice`
@@ -213,12 +211,12 @@ Behavior:
 
 Read `book.json` and resolve these values into PNG file paths:
 
-- `book_content_texture`
-- `book_overview_texture`
 - `frame_texture`
 - overlay textures from the frame overlay entries
 - `crafting_texture`
 - `single_page_texture`
+
+The built-in theme atlases `modonomicon:textures/gui/book_content.png` and `modonomicon:textures/gui/book_overview.png` are resolved directly from the extraction manifest.
 
 Resource resolution rule:
 

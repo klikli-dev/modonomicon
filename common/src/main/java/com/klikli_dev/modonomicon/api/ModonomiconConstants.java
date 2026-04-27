@@ -17,7 +17,6 @@ public class ModonomiconConstants {
         public static final String MULTIBLOCK_DATA_PATH = ModonomiconAPI.ID + "/multiblocks";
 
         public static class Book {
-            public static final String DEFAULT_OVERVIEW_TEXTURE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/book_overview.png").toString();
             public static final String DEFAULT_FRAME_TEXTURE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/book_frame.png").toString();
 
             public static final BookFrameOverlay DEFAULT_TOP_FRAME_OVERLAY = new BookFrameOverlay(
@@ -36,7 +35,6 @@ public class ModonomiconConstants {
                     Modonomicon.loc("textures/gui/book_frame_right_overlay.png"),
                     256, 256, 8, 70, -4, 0);
 
-            public static final String DEFAULT_CONTENT_TEXTURE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/book_content.png").toString();
             public static final String DEFAULT_SINGLE_PAGE_TEXTURE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/single_page_entry.png").toString();
             public static final String DEFAULT_FONT = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "default").toString();
             public static final String DEFAULT_CRAFTING_TEXTURE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/crafting_textures.png").toString();

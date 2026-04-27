@@ -39,14 +39,11 @@ public class Book {
 
 
     protected Identifier model;
-    protected Identifier bookOverviewTexture;
     protected Identifier frameTexture;
     protected BookFrameOverlay topFrameOverlay;
     protected BookFrameOverlay bottomFrameOverlay;
     protected BookFrameOverlay leftFrameOverlay;
     protected BookFrameOverlay rightFrameOverlay;
-    protected Identifier bookContentTexture;
-
     protected Identifier craftingTexture;
     protected Identifier turnPageSound;
     protected Map<Identifier, BookCategory> categories;
@@ -67,7 +64,7 @@ public class Book {
     /**
      * The display mode - node based (thaumonomicon style) or index based (lexica botania / patchouli style)
      * If the book is in index mode then all categories will also be shown in index mode. If the book is in node mode, then individual categories can be in index mode.
-     * If in index mode, the frame textures will be ignored, instead bookContentTexture will be used.
+     * If in index mode, the themed double-page background is used instead of the node frame texture.
      */
     protected BookDisplayMode displayMode;
 
@@ -123,9 +120,9 @@ public class Book {
     protected final Map<String, String> textMacros = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 
     public Book(Identifier id, String name, BookTextHolder description, String tooltip, Identifier model, BookDisplayMode displayMode, boolean generateBookItem,
-                @Nullable Identifier customBookItem, String creativeTab, Identifier font, Identifier bookOverviewTexture, Identifier frameTexture,
+                @Nullable Identifier customBookItem, String creativeTab, Identifier font, Identifier frameTexture,
                 BookFrameOverlay topFrameOverlay, BookFrameOverlay bottomFrameOverlay, BookFrameOverlay leftFrameOverlay, BookFrameOverlay rightFrameOverlay,
-                Identifier bookContentTexture, Identifier craftingTexture, Identifier turnPageSound,
+                Identifier craftingTexture, Identifier turnPageSound,
                 int defaultTitleColor, int defaultTextColor, float categoryButtonIconScale, boolean autoAddReadConditions, int bookTextOffsetX, int bookTextOffsetY, int bookTextOffsetWidth, int bookTextOffsetHeight,
                 int categoryButtonXOffset, int categoryButtonYOffset, int searchButtonXOffset, int searchButtonYOffset, int readAllButtonYOffset, Identifier leafletEntry,
                 PageDisplayMode pageDisplayMode, Identifier singlePageTexture, boolean allowOpenBooksWithInvalidLinks, boolean showRecentlyUnlocked) {
@@ -138,14 +135,12 @@ public class Book {
         this.generateBookItem = generateBookItem;
         this.customBookItem = customBookItem;
         this.creativeTab = creativeTab;
-        this.bookOverviewTexture = bookOverviewTexture;
         this.font = font;
         this.frameTexture = frameTexture;
         this.topFrameOverlay = topFrameOverlay;
         this.bottomFrameOverlay = bottomFrameOverlay;
         this.leftFrameOverlay = leftFrameOverlay;
         this.rightFrameOverlay = rightFrameOverlay;
-        this.bookContentTexture = bookContentTexture;
         this.craftingTexture = craftingTexture;
         this.turnPageSound = turnPageSound;
         this.defaultTitleColor = defaultTitleColor;
@@ -187,7 +182,6 @@ public class Book {
                 Identifier.parse(GsonHelper.getAsString(json, "custom_book_item")) :
                 null;
         var creativeTab = GsonHelper.getAsString(json, "creative_tab", "misc");
-        var bookOverviewTexture = Identifier.parse(GsonHelper.getAsString(json, "book_overview_texture", Data.Book.DEFAULT_OVERVIEW_TEXTURE));
         var frameTexture = Identifier.parse(GsonHelper.getAsString(json, "frame_texture", Data.Book.DEFAULT_FRAME_TEXTURE));
 
         var topFrameOverlay = json.has("top_frame_overlay") ?
@@ -208,7 +202,6 @@ public class Book {
 
         var font = Identifier.parse(GsonHelper.getAsString(json, "font", Data.Book.DEFAULT_FONT));
 
-        var bookContentTexture = Identifier.parse(GsonHelper.getAsString(json, "book_content_texture", Data.Book.DEFAULT_CONTENT_TEXTURE));
         var craftingTexture = Identifier.parse(GsonHelper.getAsString(json, "crafting_texture", Data.Book.DEFAULT_CRAFTING_TEXTURE));
         var turnPageSound = Identifier.parse(GsonHelper.getAsString(json, "turn_page_sound", Data.Book.DEFAULT_PAGE_TURN_SOUND));
         var defaultTitleColor = GsonHelper.getAsInt(json, "default_title_color", Data.Book.DEFAULT_TITLE_COLOR);
@@ -243,14 +236,13 @@ public class Book {
 
         var showRecentlyUnlocked = GsonHelper.getAsBoolean(json, "show_recently_unlocked", true);
 
-        return new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font, bookOverviewTexture,
+        return new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font,
                 frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
-                bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, defaultTextColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, bookTextOffsetHeight,
+                craftingTexture, turnPageSound, defaultTitleColor, defaultTextColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, bookTextOffsetHeight,
                 categoryButtonXOffset, categoryButtonYOffset, searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset, leafletEntry, pageDisplayMode, singlePageTexture, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked);
     }
 
 
-    @SuppressWarnings("deprecation")
     public static Book fromNetwork(Identifier id, RegistryFriendlyByteBuf buffer) {
         var name = buffer.readUtf();
         var description = BookTextHolder.fromNetwork(buffer);
@@ -264,8 +256,6 @@ public class Book {
 
         var font = buffer.readIdentifier();
 
-        var bookOverviewTexture = buffer.readIdentifier();
-
         var frameTexture = buffer.readIdentifier();
 
         var topFrameOverlay = BookFrameOverlay.fromNetwork(buffer);
@@ -273,7 +263,6 @@ public class Book {
         var leftFrameOverlay = BookFrameOverlay.fromNetwork(buffer);
         var rightFrameOverlay = BookFrameOverlay.fromNetwork(buffer);
 
-        var bookContentTexture = buffer.readIdentifier();
         var craftingTexture = buffer.readIdentifier();
         var turnPageSound = buffer.readIdentifier();
         var defaultTitleColor = buffer.readInt();
@@ -301,9 +290,9 @@ public class Book {
         var showRecentlyUnlocked = buffer.readBoolean();
 
         var textMacros = buffer.readMap((b) -> b.readUtf(), (b) -> b.readUtf()); //necessary because using lambda causes ambiguous reference in Neo with their IFriendlyByteBufExtension#readMap
-        var book = new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font, bookOverviewTexture,
+        var book = new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font,
                 frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
-                bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, defaultTextColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, bookTextOffsetHeight,
+                craftingTexture, turnPageSound, defaultTitleColor, defaultTextColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, bookTextOffsetHeight,
                 categoryButtonXOffset, categoryButtonYOffset, searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset, leafletEntry, pageDisplayMode, singlePageTexture, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked);
 
         book.textMacros().putAll(textMacros);
@@ -368,7 +357,6 @@ public class Book {
 
         buffer.writeIdentifier(this.font);
 
-        buffer.writeIdentifier(this.bookOverviewTexture);
         buffer.writeIdentifier(this.frameTexture);
 
         this.topFrameOverlay.toNetwork(buffer);
@@ -376,7 +364,6 @@ public class Book {
         this.leftFrameOverlay.toNetwork(buffer);
         this.rightFrameOverlay.toNetwork(buffer);
 
-        buffer.writeIdentifier(this.bookContentTexture);
         buffer.writeIdentifier(this.craftingTexture);
         buffer.writeIdentifier(this.turnPageSound);
         buffer.writeInt(this.defaultTitleColor);
@@ -489,14 +476,6 @@ public class Book {
         return this.creativeTab;
     }
 
-    /**
-     * @deprecated Use {@link #theme()} for runtime book UI rendering.
-     */
-    @Deprecated(forRemoval = false)
-    public Identifier getBookOverviewTexture() {
-        return this.bookOverviewTexture;
-    }
-
     public Identifier getFont() {
         return this.font;
     }
@@ -528,14 +507,6 @@ public class Book {
 
     public Identifier getCraftingTexture() {
         return this.craftingTexture;
-    }
-
-    /**
-     * @deprecated Use {@link #theme()} for runtime book UI rendering.
-     */
-    @Deprecated(forRemoval = false)
-    public Identifier getBookContentTexture() {
-        return this.bookContentTexture;
     }
 
     public Identifier getModel() {
