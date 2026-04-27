@@ -229,6 +229,10 @@ public class BookModel {
         return this.model;
     }
 
+    /**
+     * @deprecated Runtime rendering should use generated theme sprites instead of raw overview atlases.
+     */
+    @Deprecated(forRemoval = false)
     public Identifier getBookOverviewTexture() {
         return this.bookOverviewTexture;
     }
@@ -241,6 +245,10 @@ public class BookModel {
         return this.frameTexture;
     }
 
+    /**
+     * @deprecated Runtime rendering should use generated theme sprites instead of raw content atlases.
+     */
+    @Deprecated(forRemoval = false)
     public Identifier getBookContentTexture() {
         return this.bookContentTexture;
     }

@@ -489,6 +489,10 @@ public class Book {
         return this.creativeTab;
     }
 
+    /**
+     * @deprecated Use {@link #theme()} for runtime book UI rendering.
+     */
+    @Deprecated(forRemoval = false)
     public Identifier getBookOverviewTexture() {
         return this.bookOverviewTexture;
     }
@@ -526,6 +530,10 @@ public class Book {
         return this.craftingTexture;
     }
 
+    /**
+     * @deprecated Use {@link #theme()} for runtime book UI rendering.
+     */
+    @Deprecated(forRemoval = false)
     public Identifier getBookContentTexture() {
         return this.bookContentTexture;
     }

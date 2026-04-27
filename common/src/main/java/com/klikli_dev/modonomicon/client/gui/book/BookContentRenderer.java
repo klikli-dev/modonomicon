@@ -9,29 +9,16 @@ import com.klikli_dev.modonomicon.client.gui.book.theme.GuiButtonSprites;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
-
-import java.util.function.Function;
 
 public class BookContentRenderer {
 
     private static long lastTurnPageSoundTime;
-
-    public static void drawFromContentTexture(RenderPipeline renderPipeline, GuiGraphicsExtractor guiGraphics, Book book, int x, int y, int u, int v, int w, int h, int color) {
-        guiGraphics.blit(renderPipeline, book.getBookContentTexture(), x, y, u, v, w, h, 512, 256, color);
-    }
-
-    public static void drawFromContentTexture(RenderPipeline renderPipeline, GuiGraphicsExtractor guiGraphics, Book book, int x, int y, int u, int v, int w, int h) {
-        guiGraphics.blit(renderPipeline, book.getBookContentTexture(), x, y, u, v, w, h, 512, 256);
-    }
 
     public static void drawTitleSeparator(GuiGraphicsExtractor guiGraphics, Book book, int x, int y) {
         var sprite = book.theme().content().titleSeparator();
@@ -83,10 +70,6 @@ public class BookContentRenderer {
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(sound, (float) (0.7 + Math.random() * 0.3)));
             lastTurnPageSoundTime = ClientTicks.ticks;
         }
-    }
-
-    public static void renderBookBackground(GuiGraphicsExtractor guiGraphics, Identifier bookContentTexture) {
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, bookContentTexture, 0, 0, 0, 0, 272, 178, 512, 256);
     }
 
     public static void renderBookBackground(GuiGraphicsExtractor guiGraphics, Book book) {
