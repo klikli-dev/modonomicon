@@ -39,7 +39,7 @@ public class ShowBookmarksButton extends Button {
             int scissorX = this.scissorX + xOffset;
             var sprite = this.parent.getBook().theme().overview().showBookmarksButton().state(this.isHovered(), false);
 
-            int renderX = this.getX();
+            int renderX = this.getX() - 1;
             int scissorWidth = this.width + (this.getX() - this.scissorX);
             int scissorY = (((Screen) this.parent).height - this.getY() - this.height - 1); //from the bottom up
 
