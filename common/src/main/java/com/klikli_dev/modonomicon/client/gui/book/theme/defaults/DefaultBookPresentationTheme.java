@@ -4,9 +4,12 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.client.gui.book.theme;
+package com.klikli_dev.modonomicon.client.gui.book.theme.defaults;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import com.klikli_dev.modonomicon.client.gui.book.theme.BookLayoutTheme;
+import com.klikli_dev.modonomicon.client.gui.book.theme.BookPaletteTheme;
+import com.klikli_dev.modonomicon.client.gui.book.theme.BookPresentationTheme;
 
 public final class DefaultBookPresentationTheme implements BookPresentationTheme {
 

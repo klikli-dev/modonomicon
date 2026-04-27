@@ -4,8 +4,13 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.client.gui.book.theme;
+package com.klikli_dev.modonomicon.client.gui.book.theme.defaults;
 
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiButtonSprites;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiFrameOverlay;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiNineSlice;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiTexture;
 import net.minecraft.resources.Identifier;
 
 public final class GeneratedDefaultBookThemeData {
