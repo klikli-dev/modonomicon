@@ -60,6 +60,7 @@ public class Book {
     protected Identifier customBookItem;
 
     protected Identifier font;
+    protected transient BookTheme theme;
 
     /**
      * The display mode - node based (thaumonomicon style) or index based (lexica botania / patchouli style)
@@ -582,7 +583,10 @@ public class Book {
     }
 
     public BookTheme theme() {
-        return DefaultBookTheme.forBook(this);
+        if (this.theme == null) {
+            this.theme = DefaultBookTheme.forBook(this);
+        }
+        return this.theme;
     }
 
     public boolean allowOpenBooksWithInvalidLinks() {
