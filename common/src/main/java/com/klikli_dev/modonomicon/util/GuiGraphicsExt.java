@@ -7,7 +7,6 @@
 package com.klikli_dev.modonomicon.util;
 
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiNineSlice;
-import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiTexture;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.gui.Font;
@@ -28,30 +27,6 @@ import java.util.function.Function;
 
 public class GuiGraphicsExt {
 
-    public static void blitSprite(GuiGraphicsExtractor guiGraphics, RenderPipeline pipeline, GuiSprite sprite, int x, int y) {
-        blitSprite(guiGraphics, pipeline, sprite, x, y, sprite.width(), sprite.height());
-    }
-
-    public static void blitSprite(GuiGraphicsExtractor guiGraphics, RenderPipeline pipeline, GuiSprite sprite, int x, int y, int color) {
-        blitSprite(guiGraphics, pipeline, sprite, x, y, sprite.width(), sprite.height(), color);
-    }
-
-    public static void blitSprite(GuiGraphicsExtractor guiGraphics, RenderPipeline pipeline, GuiSprite sprite, int x, int y, int width, int height) {
-        guiGraphics.blit(pipeline, sprite.texture(), x, y, 0, 0, width, height, sprite.width(), sprite.height());
-    }
-
-    public static void blitSprite(GuiGraphicsExtractor guiGraphics, RenderPipeline pipeline, GuiSprite sprite, int x, int y, int width, int height, int color) {
-        guiGraphics.blit(pipeline, sprite.texture(), x, y, 0, 0, width, height, sprite.width(), sprite.height(), color);
-    }
-
-    public static void blitSpriteRegion(GuiGraphicsExtractor guiGraphics, RenderPipeline pipeline, GuiSprite sprite, int x, int y, int u, int v, int width, int height) {
-        guiGraphics.blit(pipeline, sprite.texture(), x, y, u, v, width, height, sprite.width(), sprite.height());
-    }
-
-    public static void blitSpriteRegion(GuiGraphicsExtractor guiGraphics, RenderPipeline pipeline, GuiSprite sprite, int x, int y, int u, int v, int width, int height, int color) {
-        guiGraphics.blit(pipeline, sprite.texture(), x, y, u, v, width, height, sprite.width(), sprite.height(), color);
-    }
-
     public static void blitGuiTexture(GuiGraphicsExtractor guiGraphics, RenderPipeline pipeline, GuiTexture texture, int x, int y) {
         blitGuiTexture(guiGraphics, pipeline, texture, x, y, texture.width(), texture.height());
     }
@@ -61,11 +36,11 @@ public class GuiGraphicsExt {
     }
 
     public static void blitGuiTexture(GuiGraphicsExtractor guiGraphics, RenderPipeline pipeline, GuiTexture texture, int x, int y, int width, int height) {
-        guiGraphics.blitSprite(pipeline, texture.sprite(), x, y, width, height);
+        guiGraphics.blit(pipeline, texture.sprite(), x, y, 0, 0, width, height, texture.width(), texture.height());
     }
 
     public static void blitGuiTexture(GuiGraphicsExtractor guiGraphics, RenderPipeline pipeline, GuiTexture texture, int x, int y, int width, int height, int color) {
-        guiGraphics.blitSprite(pipeline, texture.sprite(), x, y, width, height, color);
+        guiGraphics.blit(pipeline, texture.sprite(), x, y, 0, 0, width, height, texture.width(), texture.height(), color);
     }
 
     public static void drawTiledSprite(GuiGraphicsExtractor guiGraphics, final int tiledWidth, final int tiledHeight, int color, int scaledAmount, TextureAtlasSprite sprite, int posX, int posY) {

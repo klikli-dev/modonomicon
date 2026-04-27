@@ -8,7 +8,6 @@ package com.klikli_dev.modonomicon.client.render.page;
 
 import com.klikli_dev.modonomicon.book.page.BookProcessingRecipePage;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
-import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -46,7 +45,8 @@ public abstract class BookProcessingRecipePageRenderer<T extends Recipe<?>> exte
             }
         }
 
-        GuiGraphicsExt.blitSprite(guiGraphics, RenderPipelines.GUI_TEXTURED, this.page.getBook().theme().recipes().processingRecipeBackground(), recipeX, recipeY);
+        var background = this.page.getBook().theme().recipes().processingRecipeBackground();
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, background.texture(), recipeX, recipeY, 0, 0, background.width(), background.height(), background.width(), background.height());
         //noinspection DataFlowIssue
         var context = SlotDisplayContext.fromLevel(Minecraft.getInstance().level);
         this.parentScreen.renderIngredient(guiGraphics, recipeX + 4, recipeY + 4, mouseX, mouseY, recipeDisplayEntry.craftingRequirements().map(List::getFirst).orElseThrow());

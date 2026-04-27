@@ -9,7 +9,6 @@ package com.klikli_dev.modonomicon.client.render.page;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.book.page.BookCraftingRecipePage;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
-import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -50,14 +49,16 @@ public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recip
             }
         }
 
-        GuiGraphicsExt.blitSprite(guiGraphics, RenderPipelines.GUI_TEXTURED, this.page.getBook().theme().recipes().craftingGrid(), recipeX - 2, recipeY - 2);
+        var craftingGrid = this.page.getBook().theme().recipes().craftingGrid();
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, craftingGrid.texture(), recipeX - 2, recipeY - 2, 0, 0, craftingGrid.width(), craftingGrid.height(), craftingGrid.width(), craftingGrid.height());
 
 
         boolean isShapeless = recipeDisplayEntry.display() instanceof ShapelessCraftingRecipeDisplay;
         if (isShapeless) {
             int iconX = recipeX + 62;
             int iconY = recipeY + 2;
-            GuiGraphicsExt.blitSprite(guiGraphics, RenderPipelines.GUI_TEXTURED, this.page.getBook().theme().recipes().shapelessIcon(), iconX, iconY);
+            var shapelessIcon = this.page.getBook().theme().recipes().shapelessIcon();
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, shapelessIcon.texture(), iconX, iconY, 0, 0, shapelessIcon.width(), shapelessIcon.height(), shapelessIcon.width(), shapelessIcon.height());
             if (this.parentScreen.isMouseInRange(mouseX, mouseY, iconX, iconY, 11, 11)) {
                 this.parentScreen.setTooltip(Component.translatable(Tooltips.RECIPE_CRAFTING_SHAPELESS));
             }

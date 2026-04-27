@@ -7,7 +7,6 @@
 package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
-import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -55,7 +54,7 @@ public class RemoveBookmarkButton extends Button {
             //GL scissors allows us to move the button on hover without intersecting with book border
             guiGraphics.enableScissor(scissorX, scissorY, scissorX + scissorWidth, scissorY + 1000);
 
-            GuiGraphicsExt.blitSpriteRegion(guiGraphics, RenderPipelines.GUI_TEXTURED, sprite, renderX, this.getY(), 0, 0, this.width, this.height);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.texture(), renderX, this.getY(), 0, 0, this.width, this.height, sprite.width(), sprite.height());
 
             guiGraphics.disableScissor();
             guiGraphics.pose().popMatrix();

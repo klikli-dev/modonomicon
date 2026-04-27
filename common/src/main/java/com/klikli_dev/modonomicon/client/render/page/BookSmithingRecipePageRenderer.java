@@ -8,7 +8,6 @@ package com.klikli_dev.modonomicon.client.render.page;
 
 import com.klikli_dev.modonomicon.book.page.BookSmithingRecipePage;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
-import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -46,7 +45,8 @@ public class BookSmithingRecipePageRenderer extends BookRecipePageRenderer<Smith
             }
         }
 
-        GuiGraphicsExt.blitSprite(guiGraphics, RenderPipelines.GUI_TEXTURED, this.page.getBook().theme().recipes().smithingRecipeBackground(), recipeX, recipeY);
+        var background = this.page.getBook().theme().recipes().smithingRecipeBackground();
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, background.texture(), recipeX, recipeY, 0, 0, background.width(), background.height(), background.width(), background.height());
 
         if (recipeDisplayEntry.display() instanceof SmithingRecipeDisplay(
                 net.minecraft.world.item.crafting.display.SlotDisplay template,

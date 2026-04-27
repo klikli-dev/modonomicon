@@ -146,7 +146,7 @@ public final class DefaultBookTheme implements BookTheme {
     private static final BookNodeTheme NODE = new BookNodeTheme() {
         @Override
         public GuiTexture entryBackground(String spriteId) {
-            return new GuiTexture(Identifier.parse(spriteId), -1, -1);
+            return new GuiTexture(Identifier.parse(spriteId), 26, 26);
         }
 
         @Override
