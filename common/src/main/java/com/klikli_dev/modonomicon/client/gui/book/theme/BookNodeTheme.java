@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.client.gui.book.theme;
 
 public interface BookNodeTheme {
 
-    GuiSprite entryBackground(int uIndex, int vIndex);
+    GuiTexture entryBackground(String spriteId);
 
     GuiSprite smallCurveLeftDown();
 

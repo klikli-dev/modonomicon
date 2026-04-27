@@ -11,7 +11,7 @@
   "description": "",
   "display_mode": "node",
   "icon": {
-    "item": "minecraft:chest"
+    "id": "minecraft:chest"
   },
   "max_scroll_x": 512,
   "max_scroll_y": 512,

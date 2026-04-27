@@ -1,6 +1,9 @@
 {
-  "background_u_index": 0,
-  "background_v_index": 0,
+  "background": {
+    "height": -1,
+    "sprite": "modonomicon:nodes/entry_backgrounds/entry_background_0_0",
+    "width": -1
+  },
   "category": "features",
   "condition": {
     "type": "modonomicon:and",
@@ -18,7 +21,7 @@
   "description": "book.modonomicon.demo.features.two_parents.description",
   "hide_while_locked": false,
   "icon": {
-    "item": "minecraft:amethyst_cluster"
+    "id": "minecraft:amethyst_cluster"
   },
   "name": "book.modonomicon.demo.features.two_parents.name",
   "pages": [
@@ -50,6 +53,6 @@
   ],
   "show_when_any_parent_unlocked": true,
   "sort_number": 5,
-  "x": -7,
+  "x": -1,
   "y": -3
 }

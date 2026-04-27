@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.client.gui.book.theme;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.book.Book;
+import net.minecraft.resources.Identifier;
 
 public final class DefaultBookTheme implements BookTheme {
 
@@ -144,21 +145,8 @@ public final class DefaultBookTheme implements BookTheme {
 
     private static final BookNodeTheme NODE = new BookNodeTheme() {
         @Override
-        public GuiSprite entryBackground(int uIndex, int vIndex) {
-            return switch (uIndex) {
-                case 0 -> switch (vIndex) {
-                    case 0 -> GeneratedDefaultBookThemeData.NODE_ENTRY_BACKGROUND_0_0;
-                    case 1 -> GeneratedDefaultBookThemeData.NODE_ENTRY_BACKGROUND_0_1;
-                    case 2 -> GeneratedDefaultBookThemeData.NODE_ENTRY_BACKGROUND_0_2;
-                    default -> GuiSprite.EMPTY;
-                };
-                case 1 -> switch (vIndex) {
-                    case 0 -> GeneratedDefaultBookThemeData.NODE_ENTRY_BACKGROUND_1_0;
-                    case 1 -> GeneratedDefaultBookThemeData.NODE_ENTRY_BACKGROUND_1_1;
-                    default -> GuiSprite.EMPTY;
-                };
-                default -> GuiSprite.EMPTY;
-            };
+        public GuiTexture entryBackground(String spriteId) {
+            return new GuiTexture(Identifier.parse(spriteId), -1, -1);
         }
 
         @Override

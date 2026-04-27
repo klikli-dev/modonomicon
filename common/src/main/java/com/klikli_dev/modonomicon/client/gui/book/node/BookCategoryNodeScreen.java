@@ -217,7 +217,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             if (displayState == EntryDisplayState.HIDDEN)
                 continue;
 
-            var entryBackground = this.category.getBook().theme().node().entryBackground(entry.getEntryBackgroundUIndex(), entry.getEntryBackgroundVIndex());
+            var entryBackground = entry.getEntryBackground();
 
             guiGraphics.pose().pushMatrix();
             //we translate instead of applying the offset to the entry x/y to avoid jittering when moving
@@ -241,7 +241,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                 color = ARGB.colorFromFloat(1f, 0.8F, 0.8F, 0.8F);
             }
             //render entry background
-            GuiGraphicsExt.blitSprite(guiGraphics, RenderPipelines.GUI_TEXTURED, entryBackground,
+            GuiGraphicsExt.blitGuiTexture(guiGraphics, RenderPipelines.GUI_TEXTURED, entryBackground,
                     entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP,
                     ENTRY_WIDTH, ENTRY_HEIGHT, color);
 

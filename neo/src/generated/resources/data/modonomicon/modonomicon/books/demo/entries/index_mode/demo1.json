@@ -1,6 +1,9 @@
 {
-  "background_u_index": 0,
-  "background_v_index": 0,
+  "background": {
+    "height": -1,
+    "sprite": "modonomicon:nodes/entry_backgrounds/entry_background_0_0",
+    "width": -1
+  },
   "category": "index_mode",
   "description": "book.modonomicon.demo.index_mode.demo1.description",
   "hide_while_locked": false,

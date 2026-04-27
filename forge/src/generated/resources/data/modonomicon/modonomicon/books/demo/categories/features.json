@@ -20,7 +20,7 @@
   "description": "",
   "display_mode": "node",
   "icon": {
-    "item": "minecraft:nether_star"
+    "id": "minecraft:nether_star"
   },
   "max_scroll_x": 512,
   "max_scroll_y": 512,

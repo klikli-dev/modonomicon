@@ -19,6 +19,7 @@ import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiTexture;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -180,12 +181,8 @@ public abstract class BookEntry {
         return this.parents == null ? this.data.parents : this.parents;
     }
 
-    public int getEntryBackgroundUIndex() {
-        return this.data.entryBackgroundUIndex;
-    }
-
-    public int getEntryBackgroundVIndex() {
-        return this.data.entryBackgroundVIndex;
+    public GuiTexture getEntryBackground() {
+        return this.data.entryBackground;
     }
 
     public boolean showWhenAnyParentUnlocked() {
@@ -211,13 +208,10 @@ public abstract class BookEntry {
     public abstract void toNetwork(RegistryFriendlyByteBuf buf);
 
     /**
-     * The default book theme provides a fixed set of node entry backgrounds.
-     * The entry background is selected by querying the themed background at entryBackgroundUIndex * 26 (= Y Axis / Up-Down), entryBackgroundVIndex * 26 (= X Axis / Left-Right).
-     * U index = Y Axis / Up-Down
-     * V index = X Axis / Left-Right
+     * The entry background is selected by GUI sprite id.
      */
     public record BookEntryData(Identifier categoryId, List<BookEntryParent> parents, int x, int y, String name,
-                                String description, BookIcon icon, int entryBackgroundUIndex, int entryBackgroundVIndex,
+                                String description, BookIcon icon, GuiTexture entryBackground,
                                 BookCondition condition, boolean hideWhileLocked, boolean showWhenAnyParentUnlocked,
                                 int sortNumber) {
 
@@ -253,8 +247,7 @@ public abstract class BookEntry {
             var name = GsonHelper.getAsString(json, "name");
             var description = GsonHelper.getAsString(json, "description", "");
             var icon = BookIcon.fromJson(json.get("icon"), provider);
-            var entryBackgroundUIndex = GsonHelper.getAsInt(json, "background_u_index", 0);
-            var entryBackgroundVIndex = GsonHelper.getAsInt(json, "background_v_index", 0);
+            var entryBackground = json.has("background") ? GuiTexture.fromJson(json.get("background")) : GuiTexture.EMPTY;
 
             BookCondition condition = new BookNoneCondition(); //default to unlocked
             if (json.has("condition")) {
@@ -277,7 +270,7 @@ public abstract class BookEntry {
 
             var sortNumber = GsonHelper.getAsInt(json, "sort_number", -1);
 
-            return new BookEntryData(categoryId, parents, x, y, name, description, icon, entryBackgroundUIndex, entryBackgroundVIndex, condition, hideWhileLocked, showWhenAnyParentUnlocked, sortNumber);
+            return new BookEntryData(categoryId, parents, x, y, name, description, icon, entryBackground, condition, hideWhileLocked, showWhenAnyParentUnlocked, sortNumber);
         }
 
         public static BookEntryData fromNetwork(RegistryFriendlyByteBuf buffer) {
@@ -287,8 +280,7 @@ public abstract class BookEntry {
             var icon = BookIcon.fromNetwork(buffer);
             var x = buffer.readVarInt();
             var y = buffer.readVarInt();
-            var entryBackgroundUIndex = buffer.readVarInt();
-            var entryBackgroundVIndex = buffer.readVarInt();
+            var entryBackground = GuiTexture.fromNetwork(buffer);
             var hideWhileLocked = buffer.readBoolean();
             var showWhenAnyParentUnlocked = buffer.readBoolean();
             var condition = BookCondition.fromNetwork(buffer);
@@ -301,7 +293,7 @@ public abstract class BookEntry {
 
             var sortNumber = buffer.readVarInt();
 
-            return new BookEntryData(categoryId, parentEntries, x, y, name, description, icon, entryBackgroundUIndex, entryBackgroundVIndex, condition, hideWhileLocked, showWhenAnyParentUnlocked, sortNumber);
+            return new BookEntryData(categoryId, parentEntries, x, y, name, description, icon, entryBackground, condition, hideWhileLocked, showWhenAnyParentUnlocked, sortNumber);
         }
 
         public void toNetwork(RegistryFriendlyByteBuf buffer) {
@@ -311,8 +303,7 @@ public abstract class BookEntry {
             this.icon.toNetwork(buffer);
             buffer.writeVarInt(this.x);
             buffer.writeVarInt(this.y);
-            buffer.writeVarInt(this.entryBackgroundUIndex);
-            buffer.writeVarInt(this.entryBackgroundVIndex);
+            this.entryBackground.toNetwork(buffer);
             buffer.writeBoolean(this.hideWhileLocked);
             buffer.writeBoolean(this.showWhenAnyParentUnlocked);
 

@@ -1,11 +1,14 @@
 {
-  "background_u_index": 0,
-  "background_v_index": 0,
+  "background": {
+    "height": -1,
+    "sprite": "modonomicon:nodes/entry_backgrounds/entry_background_0_0",
+    "width": -1
+  },
   "category": "features",
   "description": "book.modonomicon.demo.features.spotlight.description",
   "hide_while_locked": false,
   "icon": {
-    "item": "minecraft:beacon"
+    "id": "minecraft:beacon"
   },
   "name": "book.modonomicon.demo.features.spotlight.name",
   "pages": [
@@ -50,8 +53,7 @@
         "components": {
           "minecraft:dyed_color": 1481884
         },
-        "count": 1,
-        "item": "minecraft:leather_helmet"
+        "id": "minecraft:leather_helmet"
       },
       "text": "book.modonomicon.demo.features.spotlight.spotlight3.text",
       "title": ""
@@ -68,10 +70,28 @@
             "potion": "minecraft:healing"
           }
         },
-        "count": 1,
-        "item": "minecraft:potion"
+        "id": "minecraft:potion"
       },
       "text": "book.modonomicon.demo.features.spotlight.spotlight4.text",
+      "title": ""
+    },
+    {
+      "type": "modonomicon:spotlight",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "item": {
+        "components": {
+          "minecraft:bundle_contents": [
+            {
+              "id": "minecraft:apple"
+            }
+          ]
+        },
+        "id": "minecraft:bundle"
+      },
+      "text": "book.modonomicon.demo.features.spotlight.spotlight5.text",
       "title": ""
     }
   ],
@@ -85,6 +105,6 @@
   ],
   "show_when_any_parent_unlocked": false,
   "sort_number": 7,
-  "x": -14,
+  "x": -8,
   "y": 1
 }

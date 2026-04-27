@@ -7,7 +7,7 @@
   "description": "",
   "display_mode": "node",
   "icon": {
-    "item": "minecraft:paper"
+    "id": "minecraft:paper"
   },
   "max_scroll_x": 512,
   "max_scroll_y": 512,

@@ -11,7 +11,7 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.datagen.CategoryEntryMap;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
-import com.mojang.datafixers.util.Pair;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiTexture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ItemLike;
@@ -29,8 +29,7 @@ public class BookEntryModel {
     protected BookIconModel icon;
     protected int x;
     protected int y;
-    protected int entryBackgroundUIndex = 0;
-    protected int entryBackgroundVIndex = 0;
+    protected GuiTexture entryBackground = GuiTexture.EMPTY;
 
     protected boolean hideWhileLocked;
     protected boolean showWhenAnyParentUnlocked;
@@ -69,8 +68,7 @@ public class BookEntryModel {
         json.add("icon", this.icon.toJson(provider));
         json.addProperty("x", this.x);
         json.addProperty("y", this.y);
-        json.addProperty("background_u_index", this.entryBackgroundUIndex);
-        json.addProperty("background_v_index", this.entryBackgroundVIndex);
+        json.add("background", this.entryBackground.toJson());
         json.addProperty("hide_while_locked", this.hideWhileLocked);
         json.addProperty("show_when_any_parent_unlocked", this.showWhenAnyParentUnlocked);
 
@@ -121,12 +119,8 @@ public class BookEntryModel {
         return json;
     }
 
-    public int getEntryBackgroundUIndex() {
-        return this.entryBackgroundUIndex;
-    }
-
-    public int getEntryBackgroundVIndex() {
-        return this.entryBackgroundVIndex;
+    public GuiTexture getEntryBackground() {
+        return this.entryBackground;
     }
 
     public BookConditionModel<?> getCondition() {
@@ -335,24 +329,10 @@ public class BookEntryModel {
     }
 
     /**
-     * Select the themed node entry background variant by its U/V index in the built-in default set.
-     * U = Y Axis / Up-Down
-     * V = X Axis / Left-Right
+     * Select the themed node entry background by GUI sprite id and optional dimensions.
      */
-    public BookEntryModel withEntryBackground(int u, int v) {
-        this.entryBackgroundUIndex = u;
-        this.entryBackgroundVIndex = v;
-        return this;
-    }
-
-    /**
-     * Select the themed node entry background variant by its U/V index in the built-in default set.
-     * First = U = Y Axis / Up-Down
-     * Second = V = X Axis / Left-Right
-     */
-    public BookEntryModel withEntryBackground(Pair<Integer, Integer> uv) {
-        this.entryBackgroundUIndex = uv.getFirst();
-        this.entryBackgroundVIndex = uv.getSecond();
+    public BookEntryModel withEntryBackground(GuiTexture texture) {
+        this.entryBackground = texture;
         return this;
     }
 

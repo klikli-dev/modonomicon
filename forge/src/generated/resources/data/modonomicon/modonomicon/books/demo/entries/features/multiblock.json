@@ -1,11 +1,14 @@
 {
-  "background_u_index": 0,
-  "background_v_index": 0,
+  "background": {
+    "height": -1,
+    "sprite": "modonomicon:nodes/entry_backgrounds/entry_background_0_0",
+    "width": -1
+  },
   "category": "features",
   "description": "book.modonomicon.demo.features.multiblock.description",
   "hide_while_locked": false,
   "icon": {
-    "item": "minecraft:furnace"
+    "id": "minecraft:furnace"
   },
   "name": "book.modonomicon.demo.features.multiblock.name",
   "pages": [
@@ -78,6 +81,6 @@
   ],
   "show_when_any_parent_unlocked": false,
   "sort_number": 0,
-  "x": -14,
+  "x": -8,
   "y": -3
 }

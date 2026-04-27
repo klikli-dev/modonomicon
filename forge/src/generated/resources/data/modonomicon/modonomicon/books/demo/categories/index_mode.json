@@ -7,7 +7,7 @@
   "description": "book.modonomicon.demo.index_mode.description",
   "display_mode": "index",
   "icon": {
-    "item": "minecraft:paper"
+    "id": "minecraft:paper"
   },
   "max_scroll_x": 512,
   "max_scroll_y": 512,
