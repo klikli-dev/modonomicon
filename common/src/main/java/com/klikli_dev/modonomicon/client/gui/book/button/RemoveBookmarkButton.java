@@ -39,7 +39,7 @@ public class RemoveBookmarkButton extends Button {
             int scissorX = this.scissorX + xOffset;
             var sprite = this.parent.getBook().theme().overview().removeBookmarkButton().state(this.isHovered(), false);
 
-            int renderX = this.getX() - 1;
+            int renderX = this.getX() - 16;
             int scissorWidth = this.width + (this.getX() - this.scissorX);
             int scissorY = (this.parent.height - this.getY() - this.height - 1); //from the bottom up
 

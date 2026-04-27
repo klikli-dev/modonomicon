@@ -38,7 +38,7 @@ public class SearchButton extends Button {
             int scissorX = this.scissorX + xOffset;
             var sprite = this.parent.getBook().theme().overview().searchButton().state(this.isHovered(), false);
 
-            int renderX = this.getX() - 1;
+            int renderX = this.getX() - 16;
             int scissorWidth = this.width + (this.getX() - this.scissorX);
             int scissorY = (((Screen) this.parent).height - this.getY() - this.height - 1); //from the bottom up
 
