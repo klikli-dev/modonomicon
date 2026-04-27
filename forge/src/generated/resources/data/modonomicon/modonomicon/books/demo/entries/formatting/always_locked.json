@@ -1,7 +1,7 @@
 {
   "background": {
     "height": -1,
-    "sprite": "modonomicon:nodes/entry_backgrounds/entry_background_0_1",
+    "sprite": "modonomicon:textures/gui/sprites/modonomicon/default/nodes/entry_backgrounds/entry_background_0_1.png",
     "width": -1
   },
   "category": "formatting",
