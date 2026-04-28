@@ -17,6 +17,13 @@ public class BookThemePaletteModel {
         return new BookThemePalette(this.defaultTitleColor, this.defaultTextColor);
     }
 
-    public BookThemePaletteModel withDefaultTitleColor(int value) { this.defaultTitleColor = value; return this; }
-    public BookThemePaletteModel withDefaultTextColor(int value) { this.defaultTextColor = value; return this; }
+    public BookThemePaletteModel withDefaultTitleColor(int value) {
+        this.defaultTitleColor = value;
+        return this;
+    }
+
+    public BookThemePaletteModel withDefaultTextColor(int value) {
+        this.defaultTextColor = value;
+        return this;
+    }
 }

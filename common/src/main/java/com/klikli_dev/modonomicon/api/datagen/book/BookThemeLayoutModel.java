@@ -27,14 +27,53 @@ public class BookThemeLayoutModel {
                 this.readAllButtonYOffset, this.categoryButtonIconScale);
     }
 
-    public BookThemeLayoutModel withBookTextOffsetX(int value) { this.bookTextOffsetX = value; return this; }
-    public BookThemeLayoutModel withBookTextOffsetY(int value) { this.bookTextOffsetY = value; return this; }
-    public BookThemeLayoutModel withBookTextOffsetWidth(int value) { this.bookTextOffsetWidth = value; return this; }
-    public BookThemeLayoutModel withBookTextOffsetHeight(int value) { this.bookTextOffsetHeight = value; return this; }
-    public BookThemeLayoutModel withCategoryButtonXOffset(int value) { this.categoryButtonXOffset = value; return this; }
-    public BookThemeLayoutModel withCategoryButtonYOffset(int value) { this.categoryButtonYOffset = value; return this; }
-    public BookThemeLayoutModel withSearchButtonXOffset(int value) { this.searchButtonXOffset = value; return this; }
-    public BookThemeLayoutModel withSearchButtonYOffset(int value) { this.searchButtonYOffset = value; return this; }
-    public BookThemeLayoutModel withReadAllButtonYOffset(int value) { this.readAllButtonYOffset = value; return this; }
-    public BookThemeLayoutModel withCategoryButtonIconScale(float value) { this.categoryButtonIconScale = value; return this; }
+    public BookThemeLayoutModel withBookTextOffsetX(int value) {
+        this.bookTextOffsetX = value;
+        return this;
+    }
+
+    public BookThemeLayoutModel withBookTextOffsetY(int value) {
+        this.bookTextOffsetY = value;
+        return this;
+    }
+
+    public BookThemeLayoutModel withBookTextOffsetWidth(int value) {
+        this.bookTextOffsetWidth = value;
+        return this;
+    }
+
+    public BookThemeLayoutModel withBookTextOffsetHeight(int value) {
+        this.bookTextOffsetHeight = value;
+        return this;
+    }
+
+    public BookThemeLayoutModel withCategoryButtonXOffset(int value) {
+        this.categoryButtonXOffset = value;
+        return this;
+    }
+
+    public BookThemeLayoutModel withCategoryButtonYOffset(int value) {
+        this.categoryButtonYOffset = value;
+        return this;
+    }
+
+    public BookThemeLayoutModel withSearchButtonXOffset(int value) {
+        this.searchButtonXOffset = value;
+        return this;
+    }
+
+    public BookThemeLayoutModel withSearchButtonYOffset(int value) {
+        this.searchButtonYOffset = value;
+        return this;
+    }
+
+    public BookThemeLayoutModel withReadAllButtonYOffset(int value) {
+        this.readAllButtonYOffset = value;
+        return this;
+    }
+
+    public BookThemeLayoutModel withCategoryButtonIconScale(float value) {
+        this.categoryButtonIconScale = value;
+        return this;
+    }
 }

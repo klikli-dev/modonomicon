@@ -33,15 +33,6 @@ public record BookThemeData(Identifier id, Identifier type, BookThemeLayout layo
         );
     }
 
-    public JsonObject toJson() {
-        JsonObject json = new JsonObject();
-        json.addProperty("id", this.id.toString());
-        json.addProperty("type", this.type.toString());
-        json.add("layout", this.layout.toJson());
-        json.add("palette", this.palette.toJson());
-        return json;
-    }
-
     public static BookThemeData fromNetwork(RegistryFriendlyByteBuf buffer) {
         return new BookThemeData(
                 buffer.readIdentifier(),
@@ -49,6 +40,15 @@ public record BookThemeData(Identifier id, Identifier type, BookThemeLayout layo
                 BookThemeLayout.fromNetwork(buffer),
                 BookThemePalette.fromNetwork(buffer)
         );
+    }
+
+    public JsonObject toJson() {
+        JsonObject json = new JsonObject();
+        json.addProperty("id", this.id.toString());
+        json.addProperty("type", this.type.toString());
+        json.add("layout", this.layout.toJson());
+        json.add("palette", this.palette.toJson());
+        return json;
     }
 
     public void toNetwork(RegistryFriendlyByteBuf buffer) {
