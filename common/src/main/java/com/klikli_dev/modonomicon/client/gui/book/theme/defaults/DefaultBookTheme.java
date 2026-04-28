@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.theme.defaults;
 
 import com.klikli_dev.modonomicon.client.gui.book.theme.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 
 import java.util.Map;
@@ -16,6 +17,7 @@ public class DefaultBookTheme implements BookTheme {
 
     private static final int NODE_ENTRY_BACKGROUND_WIDTH = 26;
     private static final int NODE_ENTRY_BACKGROUND_HEIGHT = 26;
+    private static final String DEFAULT_TEXTURE_ROOT = "textures/gui/sprites/modonomicon/themes/default/";
 
     private final BookThemeData data;
     private final String textureRoot;
@@ -420,7 +422,13 @@ public class DefaultBookTheme implements BookTheme {
     }
 
     private Identifier texture(String relativePath) {
-        return Identifier.fromNamespaceAndPath(this.data.id().getNamespace(), this.textureRoot + relativePath);
+        Identifier themed = Identifier.fromNamespaceAndPath(this.data.id().getNamespace(), this.textureRoot + relativePath);
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft == null || minecraft.getResourceManager() == null || minecraft.getResourceManager().getResource(themed).isPresent()) {
+            return themed;
+        }
+
+        return Identifier.fromNamespaceAndPath("modonomicon", DEFAULT_TEXTURE_ROOT + relativePath);
     }
 
     private GuiTexture createEntryBackground(String spriteId) {

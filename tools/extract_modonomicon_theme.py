@@ -20,48 +20,6 @@ MANIFEST_PATH = Path("tools/modonomicon_theme_manifest.json")
 DEFAULT_PACKAGE = "com.klikli_dev.modonomicon.client.gui.book.theme"
 DEFAULT_CLASS_NAME = "GeneratedBookThemeData"
 
-DEFAULT_BOOK_SOURCES = {
-    "single_page_texture": "modonomicon:textures/gui/single_page_entry.png",
-    "frame_texture": "modonomicon:textures/gui/book_frame.png",
-    "crafting_texture": "modonomicon:textures/gui/crafting_textures.png",
-    "top_frame_overlay": {
-        "texture": "modonomicon:textures/gui/book_frame_top_overlay.png",
-        "texture_width": 256,
-        "texture_height": 256,
-        "frame_width": 72,
-        "frame_height": 7,
-        "frame_x_offset": 0,
-        "frame_y_offset": 4,
-    },
-    "bottom_frame_overlay": {
-        "texture": "modonomicon:textures/gui/book_frame_bottom_overlay.png",
-        "texture_width": 256,
-        "texture_height": 256,
-        "frame_width": 72,
-        "frame_height": 8,
-        "frame_x_offset": 0,
-        "frame_y_offset": -4,
-    },
-    "left_frame_overlay": {
-        "texture": "modonomicon:textures/gui/book_frame_left_overlay.png",
-        "texture_width": 256,
-        "texture_height": 256,
-        "frame_width": 7,
-        "frame_height": 70,
-        "frame_x_offset": 3,
-        "frame_y_offset": 0,
-    },
-    "right_frame_overlay": {
-        "texture": "modonomicon:textures/gui/book_frame_right_overlay.png",
-        "texture_width": 256,
-        "texture_height": 256,
-        "frame_width": 8,
-        "frame_height": 70,
-        "frame_x_offset": -4,
-        "frame_y_offset": 0,
-    },
-}
-
 OUTPUT_PATHS = {
     "content/double_page_background": "backgrounds/book/double_page_background",
     "content/single_page_background": "backgrounds/book/single_page_background",
@@ -227,6 +185,25 @@ def try_resolve_resource_path(repo_root: Path, identifier: str) -> Path | None:
     return None
 
 
+def resolve_preferred_resource_path(repo_root: Path, identifier: str, namespace: str) -> Path | None:
+    source_namespace, source_path = validate_identifier(identifier)
+    candidates = []
+    if source_namespace == "modonomicon":
+        candidates.append(f"{namespace}:{source_path}")
+    candidates.append(identifier)
+
+    seen = set()
+    for candidate in candidates:
+        if candidate in seen:
+            continue
+        seen.add(candidate)
+        resolved = try_resolve_resource_path(repo_root, candidate)
+        if resolved is not None:
+            return resolved
+
+    return None
+
+
 def resolve_output_resource_root(repo_root: Path, book_json_path: Path, override: str | None) -> Path:
     if override:
         result = (repo_root / override).resolve() if not Path(override).is_absolute() else Path(override).resolve()
@@ -330,24 +307,24 @@ def apply_adjustment(image: Image.Image, rect: dict) -> dict:
     raise AssertionError
 
 
-def source_descriptor(book_json: dict, source: str) -> tuple[str, dict | str]:
+def source_descriptor(book_json: dict, source: str) -> tuple[str | None, dict | str | None]:
     overlay_keys = {"top_frame_overlay", "bottom_frame_overlay", "left_frame_overlay", "right_frame_overlay"}
     if source in overlay_keys:
-        overlay = book_json.get(source, DEFAULT_BOOK_SOURCES.get(source))
+        overlay = book_json.get(source)
         if overlay is None:
-            fail(f"Book json is missing required overlay entry: {source}")
+            return None, None
         return "overlay", overlay
 
     if ":" in source:
         return "texture", source
 
-    value = book_json.get(source, DEFAULT_BOOK_SOURCES.get(source))
+    value = book_json.get(source)
     if value is None:
-        fail(f"Book json is missing required texture entry: {source}")
+        return None, None
     return "texture", value
 
 
-def resolve_category_entry_textures_source(repo_root: Path, category_json: dict, namespace: str) -> str:
+def resolve_category_entry_textures_source(repo_root: Path, category_json: dict, namespace: str) -> str | None:
     value = category_json.get("entry_textures")
     if value is not None:
         return value
@@ -356,7 +333,7 @@ def resolve_category_entry_textures_source(repo_root: Path, category_json: dict,
     if try_resolve_resource_path(repo_root, namespace_default) is not None:
         return namespace_default
 
-    return "modonomicon:textures/gui/entry_textures.png"
+    return None
 
 
 def resolve_variant_alias(variants: dict, variant_name: str) -> str:
@@ -489,12 +466,22 @@ def main() -> None:
 
         kind = entry["kind"]
         if entry["source"] == "entry_textures":
-            source_kind, source_value = ("texture", resolve_category_entry_textures_source(repo_root, category_json, namespace))
+            source_value = resolve_category_entry_textures_source(repo_root, category_json, namespace)
+            if source_value is None:
+                print(f"Skipping {entry['key']}: missing entry_textures source")
+                continue
+            source_kind, source_value = ("texture", source_value)
         else:
             source_kind, source_value = source_descriptor(book_json, entry["source"])
+            if source_kind is None or source_value is None:
+                print(f"Skipping {entry['key']}: missing source declaration '{entry['source']}'")
+                continue
 
         if source_kind == "texture":
-            source_path = resolve_resource_path(repo_root, source_value)
+            source_path = resolve_preferred_resource_path(repo_root, source_value, namespace)
+            if source_path is None:
+                print(f"Skipping {entry['key']}: missing source texture {source_value}")
+                continue
             resolved_sources.setdefault(entry["source"], source_path)
 
             with Image.open(source_path).convert("RGBA") as image:
@@ -553,9 +540,13 @@ def main() -> None:
             overlay = source_value
             overlay_texture = overlay.get("texture")
             if overlay_texture is None:
-                fail(f"Overlay {entry['source']} is missing a texture id")
+                print(f"Skipping {entry['key']}: overlay '{entry['source']}' is missing a texture id")
+                continue
 
-            source_path = resolve_resource_path(repo_root, overlay_texture)
+            source_path = resolve_preferred_resource_path(repo_root, overlay_texture, namespace)
+            if source_path is None:
+                print(f"Skipping {entry['key']}: missing source texture {overlay_texture}")
+                continue
             resolved_sources.setdefault(entry["source"], source_path)
             rect = {
                 "x": overlay["texture_width"] // 2 - overlay["frame_width"] // 2,
