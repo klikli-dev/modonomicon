@@ -15,6 +15,8 @@ Some of the most interesting features are:
 - Easy styling of texts with (extended) Markdown syntax.
 - Various page types to display text, recipes, images, items and more.
 
+If you are upgrading an older book, see **[Updating from 1.21.1 to 26.1.2](./getting-started/updating-from-1.21.1-to-26.1.2.md)**.
+
 :::tip
 
 If you run into any issues or have any questions, join our Discord: **https://dsc.gg/klikli**

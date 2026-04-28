@@ -21,6 +21,10 @@ Even for modpack creators it is recommended to follow this process. Datagen is a
 
 :::
 
+## Updating from 1.21.1
+
+If you are upgrading an older book, follow **[Updating from 1.21.1 to 26.1.2](./updating-from-1.21.1-to-26.1.2.md)**.
+
 ## Manually creating books 
 
 :::warning
