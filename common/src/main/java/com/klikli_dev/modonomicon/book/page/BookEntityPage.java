@@ -119,7 +119,7 @@ public class BookEntityPage extends BookPage {
             this.entityName = new BookTextHolder(Component.translatable(EntityUtil.getEntityName(this.entityId))
                     .withStyle(Style.EMPTY
                             .withBold(true)
-                            .withColor(this.getParentEntry().getBook().getDefaultTitleColor())
+                            .withColor(this.getParentEntry().getBook().theme().palette().defaultTitleColor())
                     ));
         }
     }
@@ -132,7 +132,7 @@ public class BookEntityPage extends BookPage {
             this.entityName = new BookTextHolder(Component.translatable(this.entityName.getKey())
                     .withStyle(Style.EMPTY
                             .withBold(true)
-                            .withColor(this.getParentEntry().getBook().getDefaultTitleColor())));
+                            .withColor(this.getParentEntry().getBook().theme().palette().defaultTitleColor())));
         }
         if (!this.text.hasComponent()) {
             this.text = new RenderedBookTextHolder(this.text, textRenderer.render(this.text.getString()));

@@ -22,6 +22,7 @@ import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.entries.CategoryLinkBookEntry;
 import com.klikli_dev.modonomicon.book.entries.EntryLinkBookEntry;
 import com.klikli_dev.modonomicon.book.page.*;
+import com.klikli_dev.modonomicon.client.gui.book.theme.ThemeRegistry;
 import com.klikli_dev.modonomicon.multiblock.DenseMultiblock;
 import com.klikli_dev.modonomicon.multiblock.SparseMultiblock;
 import com.klikli_dev.modonomicon.multiblock.matcher.*;
@@ -62,6 +63,7 @@ public class LoaderRegistry {
      * Call from common setup
      */
     public static void registerLoaders() {
+        ThemeRegistry.registerThemes();
         registerDefaultBookEntryTypes();
         registerDefaultPageLoaders();
         registerDefaultConditionLoaders();

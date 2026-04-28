@@ -6,9 +6,8 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.theme;
 
-public interface BookPresentationTheme {
+@FunctionalInterface
+public interface BookThemeFactory {
 
-    BookLayoutTheme layout();
-
-    BookPaletteTheme palette();
+    BookTheme create(BookThemeData data);
 }

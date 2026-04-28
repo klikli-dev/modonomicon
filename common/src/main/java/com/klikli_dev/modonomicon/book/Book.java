@@ -12,8 +12,9 @@ import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
+import com.klikli_dev.modonomicon.client.gui.book.theme.BookThemeData;
 import com.klikli_dev.modonomicon.client.gui.book.theme.BookTheme;
-import com.klikli_dev.modonomicon.client.gui.book.theme.defaults.DefaultBookTheme;
+import com.klikli_dev.modonomicon.client.gui.book.theme.ThemeRegistry;
 import com.klikli_dev.modonomicon.data.BookEntryJsonLoader;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
@@ -60,6 +61,7 @@ public class Book {
     protected Identifier customBookItem;
 
     protected Identifier font;
+    protected BookThemeData themeData;
     protected transient BookTheme theme;
 
     /**
@@ -126,7 +128,8 @@ public class Book {
                 Identifier craftingTexture, Identifier turnPageSound,
                 int defaultTitleColor, int defaultTextColor, float categoryButtonIconScale, boolean autoAddReadConditions, int bookTextOffsetX, int bookTextOffsetY, int bookTextOffsetWidth, int bookTextOffsetHeight,
                 int categoryButtonXOffset, int categoryButtonYOffset, int searchButtonXOffset, int searchButtonYOffset, int readAllButtonYOffset, Identifier leafletEntry,
-                PageDisplayMode pageDisplayMode, Identifier singlePageTexture, boolean allowOpenBooksWithInvalidLinks, boolean showRecentlyUnlocked) {
+                PageDisplayMode pageDisplayMode, Identifier singlePageTexture, boolean allowOpenBooksWithInvalidLinks, boolean showRecentlyUnlocked,
+                BookThemeData themeData) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -170,9 +173,14 @@ public class Book {
         this.allowOpenBooksWithInvalidLinks = allowOpenBooksWithInvalidLinks;
 
         this.showRecentlyUnlocked = showRecentlyUnlocked;
+        this.themeData = themeData;
     }
 
     public static Book fromJson(Identifier id, JsonObject json, HolderLookup.Provider provider) {
+        return fromJson(id, json, BookThemeData.fromLegacyBookJson(json), provider);
+    }
+
+    public static Book fromJson(Identifier id, JsonObject json, BookThemeData themeData, HolderLookup.Provider provider) {
         var name = GsonHelper.getAsString(json, "name");
         var description = BookGsonHelper.getAsBookTextHolder(json, "description", BookTextHolder.EMPTY, provider);
         var tooltip = GsonHelper.getAsString(json, "tooltip", "");
@@ -205,21 +213,21 @@ public class Book {
 
         var craftingTexture = Identifier.parse(GsonHelper.getAsString(json, "crafting_texture", Data.Book.DEFAULT_CRAFTING_TEXTURE));
         var turnPageSound = Identifier.parse(GsonHelper.getAsString(json, "turn_page_sound", Data.Book.DEFAULT_PAGE_TURN_SOUND));
-        var defaultTitleColor = GsonHelper.getAsInt(json, "default_title_color", Data.Book.DEFAULT_TITLE_COLOR);
-        var defaultTextColor = GsonHelper.getAsInt(json, "default_text_color", Data.Book.DEFAULT_TEXT_COLOR);
-        var categoryButtonIconScale = GsonHelper.getAsFloat(json, "category_button_icon_scale", 1.0f);
+        var defaultTitleColor = themeData.palette().defaultTitleColor();
+        var defaultTextColor = themeData.palette().defaultTextColor();
+        var categoryButtonIconScale = themeData.layout().categoryButtonIconScale();
         var autoAddReadConditions = GsonHelper.getAsBoolean(json, "auto_add_read_conditions", false);
 
-        var bookTextOffsetX = GsonHelper.getAsInt(json, "book_text_offset_x", 0);
-        var bookTextOffsetY = GsonHelper.getAsInt(json, "book_text_offset_y", 0);
-        var bookTextOffsetWidth = GsonHelper.getAsInt(json, "book_text_offset_width", 0);
-        var bookTextOffsetHeight = GsonHelper.getAsInt(json, "book_text_offset_height", 0);
+        var bookTextOffsetX = themeData.layout().bookTextOffsetX();
+        var bookTextOffsetY = themeData.layout().bookTextOffsetY();
+        var bookTextOffsetWidth = themeData.layout().bookTextOffsetWidth();
+        var bookTextOffsetHeight = themeData.layout().bookTextOffsetHeight();
 
-        var categoryButtonXOffset = GsonHelper.getAsInt(json, "category_button_x_offset", 0);
-        var categoryButtonYOffset = GsonHelper.getAsInt(json, "category_button_y_offset", 0);
-        var searchButtonXOffset = GsonHelper.getAsInt(json, "search_button_x_offset", 0);
-        var searchButtonYOffset = GsonHelper.getAsInt(json, "search_button_y_offset", 0);
-        var readAllButtonYOffset = GsonHelper.getAsInt(json, "read_all_button_y_offset", 0);
+        var categoryButtonXOffset = themeData.layout().categoryButtonXOffset();
+        var categoryButtonYOffset = themeData.layout().categoryButtonYOffset();
+        var searchButtonXOffset = themeData.layout().searchButtonXOffset();
+        var searchButtonYOffset = themeData.layout().searchButtonYOffset();
+        var readAllButtonYOffset = themeData.layout().readAllButtonYOffset();
 
         Identifier leafletEntry = null;
         if (json.has("leaflet_entry")) {
@@ -240,7 +248,7 @@ public class Book {
         return new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font,
                 frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
                 craftingTexture, turnPageSound, defaultTitleColor, defaultTextColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, bookTextOffsetHeight,
-                categoryButtonXOffset, categoryButtonYOffset, searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset, leafletEntry, pageDisplayMode, singlePageTexture, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked);
+                categoryButtonXOffset, categoryButtonYOffset, searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset, leafletEntry, pageDisplayMode, singlePageTexture, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, themeData);
     }
 
 
@@ -250,6 +258,7 @@ public class Book {
         var tooltip = buffer.readUtf();
         var model = buffer.readIdentifier();
         var displayMode = BookDisplayMode.byId(buffer.readByte());
+        var themeData = BookThemeData.fromNetwork(buffer);
 
         var generateBookItem = buffer.readBoolean();
         var customBookItem = buffer.readNullable(FriendlyByteBuf::readIdentifier);
@@ -294,7 +303,7 @@ public class Book {
         var book = new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font,
                 frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
                 craftingTexture, turnPageSound, defaultTitleColor, defaultTextColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, bookTextOffsetHeight,
-                categoryButtonXOffset, categoryButtonYOffset, searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset, leafletEntry, pageDisplayMode, singlePageTexture, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked);
+                categoryButtonXOffset, categoryButtonYOffset, searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset, leafletEntry, pageDisplayMode, singlePageTexture, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, themeData);
 
         book.textMacros().putAll(textMacros);
 
@@ -349,6 +358,7 @@ public class Book {
         buffer.writeUtf(this.tooltip);
         buffer.writeIdentifier(this.model);
         buffer.writeByte(this.displayMode.ordinal());
+        this.themeData.toNetwork(buffer);
 
         buffer.writeBoolean(this.generateBookItem);
 
@@ -584,7 +594,7 @@ public class Book {
 
     public BookTheme theme() {
         if (this.theme == null) {
-            this.theme = DefaultBookTheme.forBook(this);
+            this.theme = ThemeRegistry.createTheme(this.themeData);
         }
         return this.theme;
     }

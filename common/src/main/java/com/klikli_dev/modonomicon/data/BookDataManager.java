@@ -22,6 +22,7 @@ import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.entries.CategoryLinkBookEntry;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
+import com.klikli_dev.modonomicon.client.gui.book.theme.BookThemeData;
 import com.klikli_dev.modonomicon.networking.Message;
 import com.klikli_dev.modonomicon.networking.SyncBookDataMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
@@ -190,8 +191,12 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
         this.loaded = true;
     }
 
-    private Book loadBook(Identifier key, JsonObject value, HolderLookup.Provider provider) {
-        return Book.fromJson(key, value, provider);
+    private Book loadBook(Identifier key, JsonObject value, BookThemeData themeData, HolderLookup.Provider provider) {
+        return Book.fromJson(key, value, themeData, provider);
+    }
+
+    private BookThemeData loadTheme(JsonObject value) {
+        return BookThemeData.fromJson(value);
     }
 
     private BookCategory loadCategory(Identifier key, JsonObject value, HolderLookup.Provider provider) {
@@ -235,6 +240,7 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
 
     private void categorizeContent(Map<Identifier, JsonElement> content,
                                    HashMap<Identifier, JsonObject> bookJsons,
+                                   HashMap<Identifier, JsonObject> themeJsons,
                                    HashMap<Identifier, JsonObject> categoryJsons,
                                    HashMap<Identifier, JsonObject> entryJsons,
                                    HashMap<Identifier, JsonObject> commandJsons
@@ -247,6 +253,9 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
                 case "book" -> {
                     bookJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
                 }
+                case "theme" -> {
+                    themeJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
+                }
                 case "entries" -> {
                     entryJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
                 }
@@ -258,9 +267,9 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
                 }
                 default -> {
                     Modonomicon.LOG.warn("Found unknown content for book '{}': '{}'. " +
-                            "Should be one of: [File: book.json, Directory: entries/, Directory: categories/, Directory: commands/]", bookId, entry.getKey());
+                            "Should be one of: [File: book.json, File: theme.json, Directory: entries/, Directory: categories/, Directory: commands/]", bookId, entry.getKey());
                     BookErrorManager.get().error(bookId, "Found unknown content for book '" + bookId + "': '" + entry.getKey() + "'. " +
-                            "Should be one of: [File: book.json, Directory: entries/, Directory: categories/, Directory: commands/]");
+                            "Should be one of: [File: book.json, File: theme.json, Directory: entries/, Directory: categories/, Directory: commands/]");
                 }
             }
         }
@@ -274,10 +283,26 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
 
         //first, load all json entries
         var bookJsons = new HashMap<Identifier, JsonObject>();
+        var themeJsons = new HashMap<Identifier, JsonObject>();
         var categoryJsons = new HashMap<Identifier, JsonObject>();
         var entryJsons = new HashMap<Identifier, JsonObject>();
         var commandJsons = new HashMap<Identifier, JsonObject>();
-        this.categorizeContent(content, bookJsons, categoryJsons, entryJsons, commandJsons);
+        this.categorizeContent(content, bookJsons, themeJsons, categoryJsons, entryJsons, commandJsons);
+
+        var themeDataByBook = new HashMap<Identifier, BookThemeData>();
+        for (var entry : themeJsons.entrySet()) {
+            try {
+                var pathParts = entry.getKey().getPath().split("/");
+                var bookId = Identifier.fromNamespaceAndPath(entry.getKey().getNamespace(), pathParts[0]);
+                BookErrorManager.get().setCurrentBookId(bookId);
+                BookErrorManager.get().setContext("Loading Theme JSON");
+                themeDataByBook.put(bookId, this.loadTheme(entry.getValue()));
+                BookErrorManager.get().reset();
+            } catch (Exception e) {
+                BookErrorManager.get().error("Failed to load theme '" + entry.getKey() + "'", e);
+                BookErrorManager.get().reset();
+            }
+        }
 
         //load books
         for (var entry : bookJsons.entrySet()) {
@@ -286,7 +311,8 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
                 var bookId = Identifier.fromNamespaceAndPath(entry.getKey().getNamespace(), pathParts[0]);
                 BookErrorManager.get().setCurrentBookId(bookId);
                 BookErrorManager.get().setContext("Loading Book JSON");
-                var book = this.loadBook(bookId, entry.getValue(), this.registries);
+                var themeData = themeDataByBook.getOrDefault(bookId, BookThemeData.fromLegacyBookJson(entry.getValue()));
+                var book = this.loadBook(bookId, entry.getValue(), themeData, this.registries);
                 this.books.put(book.getId(), book);
                 BookErrorManager.get().reset();
             } catch (Exception e) {

@@ -61,6 +61,14 @@ public class BookProvider implements DataProvider {
                 .resolve(id.getPath() + "/book.json");
     }
 
+    protected Path getThemePath(Path dataFolder, BookModel bookModel) {
+        Identifier id = bookModel.getId();
+        return dataFolder
+                .resolve(id.getNamespace())
+                .resolve(ModonomiconConstants.Data.MODONOMICON_DATA_PATH)
+                .resolve(id.getPath() + "/theme.json");
+    }
+
     protected Path getPath(Path dataFolder, BookCategoryModel bookCategoryModel) {
         Identifier id = bookCategoryModel.getId();
         return dataFolder
@@ -105,6 +113,10 @@ public class BookProvider implements DataProvider {
 
                 if(!bookModel.dontGenerateJson()){ //a model from AddToBookSubProvider
                     futures.add(DataProvider.saveStable(cache, bookModel.toJson(registries), bookPath));
+                }
+
+                if (bookModel.getTheme() != null && bookModel.getTheme().shouldGenerateJson()) {
+                    futures.add(DataProvider.saveStable(cache, bookModel.getTheme().toJson(), this.getThemePath(dataFolder, bookModel)));
                 }
 
 

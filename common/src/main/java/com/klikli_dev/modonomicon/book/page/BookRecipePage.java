@@ -227,7 +227,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
             this.title1 = new BookTextHolder((this.getRecipeOutput(level, this.recipeDisplayEntry1).getHoverName().copy())
                     .withStyle(Style.EMPTY
                             .withBold(true)
-                            .withColor(this.getParentEntry().getBook().getDefaultTitleColor())
+                            .withColor(this.getParentEntry().getBook().theme().palette().defaultTitleColor())
                     ));
         }
 
@@ -236,7 +236,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
             this.title2 = new BookTextHolder((this.getRecipeOutput(level, this.recipeDisplayEntry2).getHoverName().copy())
                     .withStyle(Style.EMPTY
                             .withBold(true)
-                            .withColor(this.getParentEntry().getBook().getDefaultTitleColor())
+                            .withColor(this.getParentEntry().getBook().theme().palette().defaultTitleColor())
                     ));
         }
 
@@ -253,13 +253,13 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
             this.title1 = new BookTextHolder(Component.translatable(this.title1.getKey())
                     .withStyle(Style.EMPTY
                             .withBold(true)
-                            .withColor(this.getParentEntry().getCategory().getBook().getDefaultTitleColor())));
+                            .withColor(this.getParentEntry().getCategory().getBook().theme().palette().defaultTitleColor())));
         }
         if (!this.title2.hasComponent()) {
             this.title2 = new BookTextHolder(Component.translatable(this.title2.getKey())
                     .withStyle(Style.EMPTY
                             .withBold(true)
-                            .withColor(this.getParentEntry().getCategory().getBook().getDefaultTitleColor())));
+                            .withColor(this.getParentEntry().getCategory().getBook().theme().palette().defaultTitleColor())));
         }
 
         if (!this.text.hasComponent()) {

@@ -36,7 +36,7 @@ public class AddBookmarkButton extends Button {
             guiGraphics.pose().translate(xOffset, 0);
 
             int scissorX = this.scissorX + xOffset;
-            var sprite = this.parent.getBook().theme().overview().addBookmarkButton().state(this.isHovered(), false);
+            var sprite = this.parent.getBook().theme().content().addBookmarkButton().state(this.isHovered(), false);
 
             int renderX = this.getX() - 16;
             int scissorWidth = this.width + (this.getX() - this.scissorX);

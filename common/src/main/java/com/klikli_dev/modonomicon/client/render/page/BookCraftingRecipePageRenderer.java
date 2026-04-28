@@ -49,7 +49,7 @@ public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recip
             }
         }
 
-        var craftingGrid = this.page.getBook().theme().recipes().craftingGrid();
+        var craftingGrid = this.page.getBook().theme().content().craftingGrid();
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, craftingGrid.texture(), recipeX - 2, recipeY - 2, 0, 0, craftingGrid.width(), craftingGrid.height(), craftingGrid.width(), craftingGrid.height());
 
 
@@ -57,7 +57,7 @@ public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recip
         if (isShapeless) {
             int iconX = recipeX + 62;
             int iconY = recipeY + 2;
-            var shapelessIcon = this.page.getBook().theme().recipes().shapelessIcon();
+            var shapelessIcon = this.page.getBook().theme().content().shapelessIcon();
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, shapelessIcon.texture(), iconX, iconY, 0, 0, shapelessIcon.width(), shapelessIcon.height(), shapelessIcon.width(), shapelessIcon.height());
             if (this.parentScreen.isMouseInRange(mouseX, mouseY, iconX, iconY, 11, 11)) {
                 this.parentScreen.setTooltip(Component.translatable(Tooltips.RECIPE_CRAFTING_SHAPELESS));

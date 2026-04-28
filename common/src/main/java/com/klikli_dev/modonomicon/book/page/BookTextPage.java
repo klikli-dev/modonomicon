@@ -94,7 +94,7 @@ public class BookTextPage extends BookPage {
                 this.title = new BookTextHolder(Component.translatable(this.title.getKey())
                         .withStyle(Style.EMPTY
                                 .withBold(true)
-                                .withColor(this.getParentEntry().getCategory().getBook().getDefaultTitleColor())));
+                                .withColor(this.getParentEntry().getCategory().getBook().theme().palette().defaultTitleColor())));
             }
         }
         if (!this.text.hasComponent()) {

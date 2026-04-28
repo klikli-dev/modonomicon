@@ -46,6 +46,11 @@ public class ModonomiconConstants {
 
         }
 
+        public static class Theme {
+            public static final Identifier DEFAULT_THEME_ID = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "default");
+            public static final Identifier DEFAULT_THEME_TYPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "default");
+        }
+
         public static class Category {
             public static final String DEFAULT_ICON = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "modonomicon_purple").toString();
             public static final String DEFAULT_BACKGROUND = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/dark_slate_seamless.png").toString();

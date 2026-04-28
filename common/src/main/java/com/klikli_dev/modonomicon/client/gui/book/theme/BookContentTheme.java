@@ -36,7 +36,39 @@ public interface BookContentTheme {
 
     GuiButtonSprites categoryScrollDownButton();
 
+    GuiButtonSprites categoryButton();
+
+    GuiButtonSprites searchButton();
+
+    GuiButtonSprites showBookmarksButton();
+
+    GuiButtonSprites showRecentlyUnlockedButton();
+
+    GuiButtonSprites addBookmarkButton();
+
+    GuiButtonSprites removeBookmarkButton();
+
+    GuiButtonSprites readAllButton();
+
+    GuiButtonSprites readNoneButton();
+
+    GuiButtonSprites readUnlockedButton();
+
     GuiSprite searchFieldBackground();
 
     GuiSprite mediaFrame();
+
+    GuiSprite craftingGrid();
+
+    default GuiSprite craftingArrow() {
+        return GuiSprite.EMPTY;
+    }
+
+    GuiSprite shapelessIcon();
+
+    GuiSprite processingRecipeBackground();
+
+    GuiSprite smithingRecipeBackground();
+
+    GuiSprite spotlightSlot();
 }

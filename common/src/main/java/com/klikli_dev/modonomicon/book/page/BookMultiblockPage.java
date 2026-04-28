@@ -112,7 +112,7 @@ public class BookMultiblockPage extends BookPage {
             this.multiblockName = new BookTextHolder(Component.translatable(this.multiblockName.getKey())
                     .withStyle(Style.EMPTY
                             .withBold(true)
-                            .withColor(this.getParentEntry().getCategory().getBook().getDefaultTitleColor())));
+                            .withColor(this.getParentEntry().getCategory().getBook().theme().palette().defaultTitleColor())));
         }
         if (!this.text.hasComponent()) {
             this.text = new RenderedBookTextHolder(this.text, textRenderer.render(this.text.getString()));

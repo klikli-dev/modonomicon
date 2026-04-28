@@ -71,11 +71,11 @@ public class ReadAllButton extends Button {
         //if shift is down we offer to mark all as read
         //if neither is possible the button should be hidden which is handled by BookOverviewScreen#canSeeReadAllButton
         GuiButtonSprites sprites = this.hasUnreadUnlockedEntries.get()
-                ? this.parent.getBook().theme().overview().readUnlockedButton()
-                : this.parent.getBook().theme().overview().readNoneButton();
+                ? this.parent.getBook().theme().content().readUnlockedButton()
+                : this.parent.getBook().theme().content().readNoneButton();
 
         if (Minecraft.getInstance().hasShiftDown()) {
-            sprites = this.parent.getBook().theme().overview().readAllButton();
+            sprites = this.parent.getBook().theme().content().readAllButton();
         }
 
         com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer.drawButton(guiGraphics, sprites, this.getX(), this.getY(), hovered);

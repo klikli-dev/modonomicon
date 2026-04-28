@@ -31,7 +31,7 @@ public class ShowRecentlyUnlockedButton extends Button {
             guiGraphics.pose().translate(xOffset, 0);
 
             int scissorX = this.scissorX + xOffset;
-            var sprite = this.parent.getBook().theme().overview().showRecentlyUnlockedButton().state(this.isHovered(), false);
+            var sprite = this.parent.getBook().theme().content().showRecentlyUnlockedButton().state(this.isHovered(), false);
 
             int renderX = this.getX() - 16;
             int scissorWidth = this.width + (this.getX() - this.scissorX);

@@ -45,7 +45,7 @@ public abstract class BookProcessingRecipePageRenderer<T extends Recipe<?>> exte
             }
         }
 
-        var background = this.page.getBook().theme().recipes().processingRecipeBackground();
+        var background = this.page.getBook().theme().content().processingRecipeBackground();
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, background.texture(), recipeX, recipeY, 0, 0, background.width(), background.height(), background.width(), background.height());
         //noinspection DataFlowIssue
         var context = SlotDisplayContext.fromLevel(Minecraft.getInstance().level);

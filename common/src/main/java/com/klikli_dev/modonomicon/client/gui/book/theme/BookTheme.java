@@ -8,35 +8,13 @@ package com.klikli_dev.modonomicon.client.gui.book.theme;
 
 public interface BookTheme {
 
-    BookSkinTheme skin();
+    BookContentTheme content();
 
-    BookPresentationTheme presentation();
+    BookLayoutTheme layout();
 
-    default BookContentTheme content() {
-        return this.skin().content();
-    }
+    BookNodeTheme node();
 
-    default BookOverviewTheme overview() {
-        return this.skin().overview();
-    }
+    BookFrameTheme frame();
 
-    default BookNodeTheme node() {
-        return this.skin().node();
-    }
-
-    default BookFrameTheme frame() {
-        return this.skin().frame();
-    }
-
-    default BookRecipeTheme recipes() {
-        return this.skin().recipes();
-    }
-
-    default BookLayoutTheme layout() {
-        return this.presentation().layout();
-    }
-
-    default BookPaletteTheme palette() {
-        return this.presentation().palette();
-    }
+    BookPaletteTheme palette();
 }

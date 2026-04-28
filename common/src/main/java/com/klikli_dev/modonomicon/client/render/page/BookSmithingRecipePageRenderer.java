@@ -45,7 +45,7 @@ public class BookSmithingRecipePageRenderer extends BookRecipePageRenderer<Smith
             }
         }
 
-        var background = this.page.getBook().theme().recipes().smithingRecipeBackground();
+        var background = this.page.getBook().theme().content().smithingRecipeBackground();
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, background.texture(), recipeX, recipeY, 0, 0, background.width(), background.height(), background.width(), background.height());
 
         if (recipeDisplayEntry.display() instanceof SmithingRecipeDisplay(

@@ -195,7 +195,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
         if (this instanceof PageWithTextRenderer pageWithTextRenderer)
             textY = pageWithTextRenderer.getTextY();
 
-        renderBookTextHolder(guiGraphics, text, this.font, x, y, width, BookEntryScreen.PAGE_HEIGHT - textY, this.parentScreen.getBook().getDefaultTextColor());
+        renderBookTextHolder(guiGraphics, text, this.font, x, y, width, BookEntryScreen.PAGE_HEIGHT - textY, this.parentScreen.getBook().theme().palette().defaultTextColor());
     }
 
     /**
@@ -203,18 +203,18 @@ public abstract class BookPageRenderer<T extends BookPage> {
      */
     public void renderBookTextHolder(GuiGraphicsExtractor guiGraphics, BookTextHolder text, int x, int y, int width, int height) {
         var bounds = this.getBookTextHolderBounds(x, y, width, height);
-        renderBookTextHolder(guiGraphics, text, this.font, bounds.x, bounds.y, bounds.width, bounds.height, this.parentScreen.getBook().getDefaultTextColor());
+        renderBookTextHolder(guiGraphics, text, this.font, bounds.x, bounds.y, bounds.width, bounds.height, this.parentScreen.getBook().theme().palette().defaultTextColor());
     }
 
     protected TextHolderBounds getBookTextHolderBounds(int x, int y, int width, int height) {
-        x += this.parentScreen.getBook().getBookTextOffsetX();
-        y += this.parentScreen.getBook().getBookTextOffsetY();
+        x += this.parentScreen.getBook().theme().layout().bookTextOffsetX();
+        y += this.parentScreen.getBook().theme().layout().bookTextOffsetY();
 
-        height += this.parentScreen.getBook().getBookTextOffsetHeight();
-        height -= this.parentScreen.getBook().getBookTextOffsetY(); //always remove the offset y from the height to avoid overflow
+        height += this.parentScreen.getBook().theme().layout().bookTextOffsetHeight();
+        height -= this.parentScreen.getBook().theme().layout().bookTextOffsetY(); //always remove the offset y from the height to avoid overflow
 
-        width += this.parentScreen.getBook().getBookTextOffsetWidth();
-        width -= this.parentScreen.getBook().getBookTextOffsetX(); //always remove the offset x from the width to avoid overflow
+        width += this.parentScreen.getBook().theme().layout().bookTextOffsetWidth();
+        width -= this.parentScreen.getBook().theme().layout().bookTextOffsetX(); //always remove the offset x from the width to avoid overflow
 
         return new TextHolderBounds(x, y, width, height);
     }

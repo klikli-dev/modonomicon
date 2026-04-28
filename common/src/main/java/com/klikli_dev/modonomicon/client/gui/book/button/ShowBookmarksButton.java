@@ -37,7 +37,7 @@ public class ShowBookmarksButton extends Button {
             guiGraphics.pose().translate(xOffset, 0);
 
             int scissorX = this.scissorX + xOffset;
-            var sprite = this.parent.getBook().theme().overview().showBookmarksButton().state(this.isHovered(), false);
+            var sprite = this.parent.getBook().theme().content().showBookmarksButton().state(this.isHovered(), false);
 
             int renderX = this.getX() - 16;
             int scissorWidth = this.width + (this.getX() - this.scissorX);

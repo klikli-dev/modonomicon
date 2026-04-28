@@ -18,7 +18,7 @@ import net.minecraft.util.GsonHelper;
 public class GuiTexture {
 
     private static final String LEGACY_NODE_ENTRY_BACKGROUND_PREFIX = "nodes/entry_backgrounds/";
-    private static final String DEFAULT_THEME_SPRITE_PREFIX = "textures/gui/sprites/modonomicon/default/";
+    private static final String DEFAULT_THEME_SPRITE_PREFIX = "textures/gui/sprites/modonomicon/themes/default/node/";
 
     public static final GuiTexture EMPTY = new GuiTexture(Identifier.fromNamespaceAndPath("minecraft", "missingno"), 0, 0);
 
