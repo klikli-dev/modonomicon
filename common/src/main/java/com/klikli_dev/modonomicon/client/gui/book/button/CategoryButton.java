@@ -41,17 +41,16 @@ public class CategoryButton extends Button {
     protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
         if (this.visible) {
             guiGraphics.pose().pushMatrix();
-            int xOffset = this.getCategory().getBook().getCategoryButtonXOffset();
+            int xOffset = this.getCategory().getBook().theme().layout().categoryButtonXOffset();
             guiGraphics.pose().translate(xOffset, 0);
-
-            int texX = 0;
-            int texY = 145;
 
             int renderX = this.getX();
             int renderWidth = this.width;
+            boolean selected = BookGuiManager.get().openBookCategoryScreen != null && this.category == BookGuiManager.get().openBookCategoryScreen.getCategory();
+            var sprite = this.parent.getBook().theme().content().categoryButton().state(this.isHovered(), selected);
 
             int color;
-            if (BookGuiManager.get().openBookCategoryScreen != null && this.category == BookGuiManager.get().openBookCategoryScreen.getCategory()) {
+            if (selected) {
                 renderX -= 3;
                 renderWidth += 3;
                 color = ARGB.colorFromFloat(1.0f, 1.0F, 1.0F, 1.0F);
@@ -64,13 +63,12 @@ public class CategoryButton extends Button {
             }
 
             //draw category button background
-//            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.parent.getBookOverviewTexture(), renderX, this.getY(), texX, texY, renderWidth, this.height, 256, 256, color);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.texture(), renderX, this.getY(), 0, 0, renderWidth, this.height, sprite.width(), sprite.height(), color);
 
             //then draw icon
             int iconSize = 16;
             int centerIconOffset = iconSize / 2;
-            float scale = this.getCategory().getBook().getCategoryButtonIconScale();
+            float scale = this.getCategory().getBook().theme().layout().categoryButtonIconScale();
 
             guiGraphics.pose().pushMatrix();
             //TODO had a +100 z here

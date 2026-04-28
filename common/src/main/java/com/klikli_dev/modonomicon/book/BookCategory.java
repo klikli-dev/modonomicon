@@ -50,7 +50,6 @@ public class BookCategory {
      */
     protected float backgroundTextureZoomMultiplier;
     protected List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers;
-    protected Identifier entryTextures;
     protected Map<Identifier, BookEntry> entries;
     protected BookCondition condition;
     protected boolean showCategoryButton;
@@ -65,7 +64,7 @@ public class BookCategory {
      */
     protected boolean openEntryToOpenOnlyOnce;
 
-    public BookCategory(Identifier id, String name, BookTextHolder description, int sortNumber, BookCondition condition, boolean showCategoryButton, BookIcon icon, BookDisplayMode displayMode, Identifier background, int backgroundWidth, int backgroundHeight, int maxScrollX, int maxScrollY, float backgroundTextureZoomMultiplier, List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers, Identifier entryTextures, Identifier entryToOpen, boolean openEntryOnlyOnce) {
+    public BookCategory(Identifier id, String name, BookTextHolder description, int sortNumber, BookCondition condition, boolean showCategoryButton, BookIcon icon, BookDisplayMode displayMode, Identifier background, int backgroundWidth, int backgroundHeight, int maxScrollX, int maxScrollY, float backgroundTextureZoomMultiplier, List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers, Identifier entryToOpen, boolean openEntryOnlyOnce) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -81,7 +80,6 @@ public class BookCategory {
         this.maxScrollY = maxScrollY;
         this.backgroundTextureZoomMultiplier = backgroundTextureZoomMultiplier;
         this.backgroundParallaxLayers = backgroundParallaxLayers;
-        this.entryTextures = entryTextures;
         this.entries = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
         this.entryToOpen = entryToOpen;
         this.openEntryToOpenOnlyOnce = openEntryOnlyOnce;
@@ -100,7 +98,6 @@ public class BookCategory {
         var defaultMaxScrollY = GsonHelper.getAsInt(json, "max_scroll_y", Category.DEFAULT_MAX_SCROLL_Y);
 
         var backgroundTextureZoomMultiplier = GsonHelper.getAsFloat(json, "background_texture_zoom_multiplier", Category.DEFAULT_BACKGROUND_TEXTURE_ZOOM_MULTIPLIER);
-        var entryTextures = Identifier.parse(GsonHelper.getAsString(json, "entry_textures", Category.DEFAULT_ENTRY_TEXTURES));
         var showCategoryButton = GsonHelper.getAsBoolean(json, "show_category_button", true);
 
         BookCondition condition = new BookNoneCondition(); //default to unlocked
@@ -122,7 +119,7 @@ public class BookCategory {
         boolean openEntryOnlyOnce = GsonHelper.getAsBoolean(json, "open_entry_to_open_only_once", true);
 
         return new BookCategory(id, name, description, sortNumber, condition, showCategoryButton, icon, displayMode, background, backgroundWidth, backgroundHeight,
-                defaultMaxScrollX, defaultMaxScrollY, backgroundTextureZoomMultiplier, backgroundParallaxLayers, entryTextures, entryToOpen, openEntryOnlyOnce);
+                defaultMaxScrollX, defaultMaxScrollY, backgroundTextureZoomMultiplier, backgroundParallaxLayers, entryToOpen, openEntryOnlyOnce);
     }
 
     public static BookCategory fromNetwork(Identifier id, RegistryFriendlyByteBuf buffer) {
@@ -138,13 +135,12 @@ public class BookCategory {
         var defaultMaxScrollY = buffer.readVarInt();
         var backgroundTextureZoomMultiplier = buffer.readFloat();
         var backgroundParallaxLayers = buffer.readList(BookCategoryBackgroundParallaxLayer::fromNetwork);
-        var entryTextures = buffer.readIdentifier();
         var condition = BookCondition.fromNetwork(buffer);
         var showCategoryButton = buffer.readBoolean();
         var entryToOpen = buffer.readNullable(FriendlyByteBuf::readIdentifier);
         var openEntryOnlyOnce = buffer.readBoolean();
         return new BookCategory(id, name, description, sortNumber, condition, showCategoryButton, icon, displayMode, background, backgroundWidth, backgroundHeight,
-                defaultMaxScrollX, defaultMaxScrollY, backgroundTextureZoomMultiplier, backgroundParallaxLayers, entryTextures, entryToOpen, openEntryOnlyOnce);
+                defaultMaxScrollX, defaultMaxScrollY, backgroundTextureZoomMultiplier, backgroundParallaxLayers, entryToOpen, openEntryOnlyOnce);
     }
 
     public void toNetwork(RegistryFriendlyByteBuf buffer) {
@@ -160,7 +156,6 @@ public class BookCategory {
         buffer.writeVarInt(this.maxScrollY);
         buffer.writeFloat(this.backgroundTextureZoomMultiplier);
         buffer.writeCollection(this.backgroundParallaxLayers, (buf, layer) -> layer.toNetwork(buf));
-        buffer.writeIdentifier(this.entryTextures);
         BookCondition.toNetwork(this.condition, buffer);
         buffer.writeBoolean(this.showCategoryButton);
         buffer.writeNullable(this.entryToOpen, FriendlyByteBuf::writeIdentifier);
@@ -261,10 +256,6 @@ public class BookCategory {
 
     public List<BookCategoryBackgroundParallaxLayer> getBackgroundParallaxLayers() {
         return this.backgroundParallaxLayers;
-    }
-
-    public Identifier getEntryTextures() {
-        return this.entryTextures;
     }
 
     public Map<Identifier, BookEntry> getEntries() {

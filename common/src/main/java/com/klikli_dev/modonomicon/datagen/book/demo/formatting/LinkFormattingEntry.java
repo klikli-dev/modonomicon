@@ -5,6 +5,7 @@
 package com.klikli_dev.modonomicon.datagen.book.demo.formatting;
 
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
+import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
@@ -12,7 +13,7 @@ import com.klikli_dev.modonomicon.datagen.book.demo.FeaturesCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.FormattingCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionLevel1Entry;
 import com.klikli_dev.modonomicon.datagen.book.demo.features.MultiblockEntry;
-import com.mojang.datafixers.util.Pair;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiTexture;
 import net.minecraft.world.item.Items;
 
 public class LinkFormattingEntry extends EntryProvider {
@@ -91,8 +92,8 @@ public class LinkFormattingEntry extends EntryProvider {
     }
 
     @Override
-    protected Pair<Integer, Integer> entryBackground() {
-        return Pair.of(0, 2);
+    protected GuiTexture entryBackground() {
+        return EntryBackground.LINK;
     }
 
     @Override

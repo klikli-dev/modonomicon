@@ -41,9 +41,10 @@ public class DemoBook extends SingleBookSubProvider {
         this.add(commandEntryLinkCommand.getSuccessMessage(), "You got wheat, because clicking is cool!");
 
         return book.withModel(Identifier.parse("modonomicon:modonomicon_green"))
-                .withBookTextOffsetX(5)
-                .withBookTextOffsetY(0) //no top offset
-                .withBookTextOffsetWidth(-5)
+                .withTheme(theme -> theme.withLayout(layout -> layout
+                        .withBookTextOffsetX(5)
+                        .withBookTextOffsetY(0)
+                        .withBookTextOffsetWidth(-5)))
                 .withCommand(commandEntryCommand)
                 .withCommand(commandEntryLinkCommand)
                 .withAllowOpenBooksWithInvalidLinks(true);

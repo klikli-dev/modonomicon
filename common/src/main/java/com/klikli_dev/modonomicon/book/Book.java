@@ -7,11 +7,13 @@
 package com.klikli_dev.modonomicon.book;
 
 import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
+import com.klikli_dev.modonomicon.client.gui.book.theme.BookThemeData;
+import com.klikli_dev.modonomicon.client.gui.book.theme.BookTheme;
+import com.klikli_dev.modonomicon.client.gui.book.theme.ThemeRegistry;
 import com.klikli_dev.modonomicon.data.BookEntryJsonLoader;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
@@ -37,71 +39,31 @@ public class Book {
 
 
     protected Identifier model;
-    protected Identifier bookOverviewTexture;
-    protected Identifier frameTexture;
-    protected BookFrameOverlay topFrameOverlay;
-    protected BookFrameOverlay bottomFrameOverlay;
-    protected BookFrameOverlay leftFrameOverlay;
-    protected BookFrameOverlay rightFrameOverlay;
-    protected Identifier bookContentTexture;
-
-    protected Identifier craftingTexture;
     protected Identifier turnPageSound;
     protected Map<Identifier, BookCategory> categories;
     protected Map<Identifier, BookEntry> entries;
     protected Map<Identifier, BookCommand> commands;
 
 
-    protected int defaultTitleColor;
-    protected int defaultTextColor;
-    protected float categoryButtonIconScale;
     protected boolean autoAddReadConditions;
     protected boolean generateBookItem;
     @Nullable
     protected Identifier customBookItem;
 
     protected Identifier font;
+    protected BookThemeData themeData;
+    protected transient BookTheme theme;
 
     /**
      * The display mode - node based (thaumonomicon style) or index based (lexica botania / patchouli style)
      * If the book is in index mode then all categories will also be shown in index mode. If the book is in node mode, then individual categories can be in index mode.
-     * If in index mode, the frame textures will be ignored, instead bookContentTexture will be used.
+     * If in index mode, the themed double-page background is used instead of the node frame texture.
      */
     protected BookDisplayMode displayMode;
-
-    /**
-     * When rendering book text holders, add this offset to the x position (basically, create a left margin).
-     * Will be automatically subtracted from the width to avoid overflow.
-     */
-    protected int bookTextOffsetX;
-
-    /**
-     * When rendering book text holders, add this offset to the y position (basically, create a top margin).
-     */
-    protected int bookTextOffsetY;
-
-    /**
-     * When rendering book text holders, add this offset to the width (allows to create a right margin)
-     * To make the line end move to the left (as it would for a margin setting in eg css), use a negative value.
-     */
-    protected int bookTextOffsetWidth;
-
-    /**
-     * When rendering book text holders, add this offset to the height (allows to create a bottom margin)
-     * To make the bottom end of the text move up (as it would for a margin setting in eg css), use a negative value.
-     */
-    protected int bookTextOffsetHeight;
-
-    protected int categoryButtonXOffset;
-    protected int categoryButtonYOffset;
-    protected int searchButtonXOffset;
-    protected int searchButtonYOffset;
-    protected int readAllButtonYOffset;
 
     protected Identifier leafletEntry;
 
     protected PageDisplayMode pageDisplayMode = PageDisplayMode.DOUBLE_PAGE;
-    protected Identifier singlePageTexture = Identifier.parse(Data.Book.DEFAULT_SINGLE_PAGE_TEXTURE);
 
     /**
      * If true, invalid links do not show an error screen when opening the book.
@@ -121,12 +83,10 @@ public class Book {
     protected final Map<String, String> textMacros = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 
     public Book(Identifier id, String name, BookTextHolder description, String tooltip, Identifier model, BookDisplayMode displayMode, boolean generateBookItem,
-                @Nullable Identifier customBookItem, String creativeTab, Identifier font, Identifier bookOverviewTexture, Identifier frameTexture,
-                BookFrameOverlay topFrameOverlay, BookFrameOverlay bottomFrameOverlay, BookFrameOverlay leftFrameOverlay, BookFrameOverlay rightFrameOverlay,
-                Identifier bookContentTexture, Identifier craftingTexture, Identifier turnPageSound,
-                int defaultTitleColor, int defaultTextColor, float categoryButtonIconScale, boolean autoAddReadConditions, int bookTextOffsetX, int bookTextOffsetY, int bookTextOffsetWidth, int bookTextOffsetHeight,
-                int categoryButtonXOffset, int categoryButtonYOffset, int searchButtonXOffset, int searchButtonYOffset, int readAllButtonYOffset, Identifier leafletEntry,
-                PageDisplayMode pageDisplayMode, Identifier singlePageTexture, boolean allowOpenBooksWithInvalidLinks, boolean showRecentlyUnlocked) {
+                @Nullable Identifier customBookItem, String creativeTab, Identifier font, Identifier turnPageSound,
+                boolean autoAddReadConditions, Identifier leafletEntry,
+                PageDisplayMode pageDisplayMode, boolean allowOpenBooksWithInvalidLinks, boolean showRecentlyUnlocked,
+                BookThemeData themeData) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -136,94 +96,43 @@ public class Book {
         this.generateBookItem = generateBookItem;
         this.customBookItem = customBookItem;
         this.creativeTab = creativeTab;
-        this.bookOverviewTexture = bookOverviewTexture;
         this.font = font;
-        this.frameTexture = frameTexture;
-        this.topFrameOverlay = topFrameOverlay;
-        this.bottomFrameOverlay = bottomFrameOverlay;
-        this.leftFrameOverlay = leftFrameOverlay;
-        this.rightFrameOverlay = rightFrameOverlay;
-        this.bookContentTexture = bookContentTexture;
-        this.craftingTexture = craftingTexture;
         this.turnPageSound = turnPageSound;
-        this.defaultTitleColor = defaultTitleColor;
-        this.defaultTextColor = defaultTextColor;
-        this.categoryButtonIconScale = categoryButtonIconScale;
         this.autoAddReadConditions = autoAddReadConditions;
         this.categories = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
         this.entries = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
         this.commands = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
-        this.bookTextOffsetX = bookTextOffsetX;
-        this.bookTextOffsetY = bookTextOffsetY;
-        this.bookTextOffsetWidth = bookTextOffsetWidth;
-        this.bookTextOffsetHeight = bookTextOffsetHeight;
-
-        this.categoryButtonXOffset = categoryButtonXOffset;
-        this.categoryButtonYOffset = categoryButtonYOffset;
-        this.searchButtonXOffset = searchButtonXOffset;
-        this.searchButtonYOffset = searchButtonYOffset;
-        this.readAllButtonYOffset = readAllButtonYOffset;
 
         this.leafletEntry = leafletEntry;
 
         this.pageDisplayMode = pageDisplayMode;
-        this.singlePageTexture = singlePageTexture;
 
         this.allowOpenBooksWithInvalidLinks = allowOpenBooksWithInvalidLinks;
 
         this.showRecentlyUnlocked = showRecentlyUnlocked;
+        this.themeData = themeData;
     }
 
     public static Book fromJson(Identifier id, JsonObject json, HolderLookup.Provider provider) {
+        return fromJson(id, json, BookThemeData.defaults(), provider);
+    }
+
+    public static Book fromJson(Identifier id, JsonObject json, BookThemeData themeData, HolderLookup.Provider provider) {
         var name = GsonHelper.getAsString(json, "name");
         var description = BookGsonHelper.getAsBookTextHolder(json, "description", BookTextHolder.EMPTY, provider);
         var tooltip = GsonHelper.getAsString(json, "tooltip", "");
-        var model = Identifier.parse(GsonHelper.getAsString(json, "model", Data.Book.DEFAULT_MODEL));
+        var model = Identifier.parse(GsonHelper.getAsString(json, "model", com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Book.DEFAULT_MODEL));
         var generateBookItem = GsonHelper.getAsBoolean(json, "generate_book_item", true);
         var displayMode = BookDisplayMode.byName(GsonHelper.getAsString(json, "display_mode", BookDisplayMode.NODE.getSerializedName()));
         var customBookItem = json.has("custom_book_item") ?
                 Identifier.parse(GsonHelper.getAsString(json, "custom_book_item")) :
                 null;
         var creativeTab = GsonHelper.getAsString(json, "creative_tab", "misc");
-        var bookOverviewTexture = Identifier.parse(GsonHelper.getAsString(json, "book_overview_texture", Data.Book.DEFAULT_OVERVIEW_TEXTURE));
-        var frameTexture = Identifier.parse(GsonHelper.getAsString(json, "frame_texture", Data.Book.DEFAULT_FRAME_TEXTURE));
 
-        var topFrameOverlay = json.has("top_frame_overlay") ?
-                BookFrameOverlay.fromJson(json.get("top_frame_overlay").getAsJsonObject()) :
-                Data.Book.DEFAULT_TOP_FRAME_OVERLAY;
+        var font = Identifier.parse(GsonHelper.getAsString(json, "font", com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Book.DEFAULT_FONT));
 
-        var bottomFrameOverlay = json.has("bottom_frame_overlay") ?
-                BookFrameOverlay.fromJson(json.get("bottom_frame_overlay").getAsJsonObject()) :
-                Data.Book.DEFAULT_BOTTOM_FRAME_OVERLAY;
-
-        var leftFrameOverlay = json.has("left_frame_overlay") ?
-                BookFrameOverlay.fromJson(json.get("left_frame_overlay").getAsJsonObject()) :
-                Data.Book.DEFAULT_LEFT_FRAME_OVERLAY;
-
-        var rightFrameOverlay = json.has("right_frame_overlay") ?
-                BookFrameOverlay.fromJson(json.get("right_frame_overlay").getAsJsonObject()) :
-                Data.Book.DEFAULT_RIGHT_FRAME_OVERLAY;
-
-        var font = Identifier.parse(GsonHelper.getAsString(json, "font", Data.Book.DEFAULT_FONT));
-
-        var bookContentTexture = Identifier.parse(GsonHelper.getAsString(json, "book_content_texture", Data.Book.DEFAULT_CONTENT_TEXTURE));
-        var craftingTexture = Identifier.parse(GsonHelper.getAsString(json, "crafting_texture", Data.Book.DEFAULT_CRAFTING_TEXTURE));
-        var turnPageSound = Identifier.parse(GsonHelper.getAsString(json, "turn_page_sound", Data.Book.DEFAULT_PAGE_TURN_SOUND));
-        var defaultTitleColor = GsonHelper.getAsInt(json, "default_title_color", Data.Book.DEFAULT_TITLE_COLOR);
-        var defaultTextColor = GsonHelper.getAsInt(json, "default_text_color", Data.Book.DEFAULT_TEXT_COLOR);
-        var categoryButtonIconScale = GsonHelper.getAsFloat(json, "category_button_icon_scale", 1.0f);
+        var turnPageSound = Identifier.parse(GsonHelper.getAsString(json, "turn_page_sound", com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Book.DEFAULT_PAGE_TURN_SOUND));
         var autoAddReadConditions = GsonHelper.getAsBoolean(json, "auto_add_read_conditions", false);
-
-        var bookTextOffsetX = GsonHelper.getAsInt(json, "book_text_offset_x", 0);
-        var bookTextOffsetY = GsonHelper.getAsInt(json, "book_text_offset_y", 0);
-        var bookTextOffsetWidth = GsonHelper.getAsInt(json, "book_text_offset_width", 0);
-        var bookTextOffsetHeight = GsonHelper.getAsInt(json, "book_text_offset_height", 0);
-
-        var categoryButtonXOffset = GsonHelper.getAsInt(json, "category_button_x_offset", 0);
-        var categoryButtonYOffset = GsonHelper.getAsInt(json, "category_button_y_offset", 0);
-        var searchButtonXOffset = GsonHelper.getAsInt(json, "search_button_x_offset", 0);
-        var searchButtonYOffset = GsonHelper.getAsInt(json, "search_button_y_offset", 0);
-        var readAllButtonYOffset = GsonHelper.getAsInt(json, "read_all_button_y_offset", 0);
 
         Identifier leafletEntry = null;
         if (json.has("leaflet_entry")) {
@@ -235,26 +144,23 @@ public class Book {
         }
 
         var pageDisplayMode = PageDisplayMode.byName(GsonHelper.getAsString(json, "page_display_mode", PageDisplayMode.DOUBLE_PAGE.getSerializedName()));
-        var singlePageTexture = Identifier.parse(GsonHelper.getAsString(json, "single_page_texture", Data.Book.DEFAULT_SINGLE_PAGE_TEXTURE));
 
         var allowOpenBooksWithInvalidLinks = GsonHelper.getAsBoolean(json, "allow_open_book_with_invalid_links", false);
 
         var showRecentlyUnlocked = GsonHelper.getAsBoolean(json, "show_recently_unlocked", true);
 
-        return new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font, bookOverviewTexture,
-                frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
-                bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, defaultTextColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, bookTextOffsetHeight,
-                categoryButtonXOffset, categoryButtonYOffset, searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset, leafletEntry, pageDisplayMode, singlePageTexture, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked);
+        return new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font,
+                turnPageSound, autoAddReadConditions, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, themeData);
     }
 
 
-    @SuppressWarnings("deprecation")
     public static Book fromNetwork(Identifier id, RegistryFriendlyByteBuf buffer) {
         var name = buffer.readUtf();
         var description = BookTextHolder.fromNetwork(buffer);
         var tooltip = buffer.readUtf();
         var model = buffer.readIdentifier();
         var displayMode = BookDisplayMode.byId(buffer.readByte());
+        var themeData = BookThemeData.fromNetwork(buffer);
 
         var generateBookItem = buffer.readBoolean();
         var customBookItem = buffer.readNullable(FriendlyByteBuf::readIdentifier);
@@ -262,47 +168,20 @@ public class Book {
 
         var font = buffer.readIdentifier();
 
-        var bookOverviewTexture = buffer.readIdentifier();
-
-        var frameTexture = buffer.readIdentifier();
-
-        var topFrameOverlay = BookFrameOverlay.fromNetwork(buffer);
-        var bottomFrameOverlay = BookFrameOverlay.fromNetwork(buffer);
-        var leftFrameOverlay = BookFrameOverlay.fromNetwork(buffer);
-        var rightFrameOverlay = BookFrameOverlay.fromNetwork(buffer);
-
-        var bookContentTexture = buffer.readIdentifier();
-        var craftingTexture = buffer.readIdentifier();
         var turnPageSound = buffer.readIdentifier();
-        var defaultTitleColor = buffer.readInt();
-        var defaultTextColor = buffer.readInt();
-        var categoryButtonIconScale = buffer.readFloat();
         var autoAddReadConditions = buffer.readBoolean();
-        var bookTextOffsetX = (int) buffer.readShort();
-        var bookTextOffsetY = (int) buffer.readShort();
-        var bookTextOffsetWidth = (int) buffer.readShort();
-        var bookTextOffsetHeight = (int) buffer.readShort();
-
-        var categoryButtonXOffset = (int) buffer.readShort();
-        var categoryButtonYOffset = (int) buffer.readShort();
-        var searchButtonXOffset = (int) buffer.readShort();
-        var searchButtonYOffset = (int) buffer.readShort();
-        var readAllButtonYOffset = (int) buffer.readShort();
 
         var leafletEntry = buffer.readNullable(FriendlyByteBuf::readIdentifier);
 
         var pageDisplayMode = PageDisplayMode.byId(buffer.readByte());
-        var singlePageTexture = buffer.readIdentifier();
 
         var allowOpenBooksWithInvalidLinks = buffer.readBoolean();
 
         var showRecentlyUnlocked = buffer.readBoolean();
 
         var textMacros = buffer.readMap((b) -> b.readUtf(), (b) -> b.readUtf()); //necessary because using lambda causes ambiguous reference in Neo with their IFriendlyByteBufExtension#readMap
-        var book = new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font, bookOverviewTexture,
-                frameTexture, topFrameOverlay, bottomFrameOverlay, leftFrameOverlay, rightFrameOverlay,
-                bookContentTexture, craftingTexture, turnPageSound, defaultTitleColor, defaultTextColor, categoryButtonIconScale, autoAddReadConditions, bookTextOffsetX, bookTextOffsetY, bookTextOffsetWidth, bookTextOffsetHeight,
-                categoryButtonXOffset, categoryButtonYOffset, searchButtonXOffset, searchButtonYOffset, readAllButtonYOffset, leafletEntry, pageDisplayMode, singlePageTexture, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked);
+        var book = new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font,
+                turnPageSound, autoAddReadConditions, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, themeData);
 
         book.textMacros().putAll(textMacros);
 
@@ -357,6 +236,7 @@ public class Book {
         buffer.writeUtf(this.tooltip);
         buffer.writeIdentifier(this.model);
         buffer.writeByte(this.displayMode.ordinal());
+        this.themeData.toNetwork(buffer);
 
         buffer.writeBoolean(this.generateBookItem);
 
@@ -366,37 +246,12 @@ public class Book {
 
         buffer.writeIdentifier(this.font);
 
-        buffer.writeIdentifier(this.bookOverviewTexture);
-        buffer.writeIdentifier(this.frameTexture);
-
-        this.topFrameOverlay.toNetwork(buffer);
-        this.bottomFrameOverlay.toNetwork(buffer);
-        this.leftFrameOverlay.toNetwork(buffer);
-        this.rightFrameOverlay.toNetwork(buffer);
-
-        buffer.writeIdentifier(this.bookContentTexture);
-        buffer.writeIdentifier(this.craftingTexture);
         buffer.writeIdentifier(this.turnPageSound);
-        buffer.writeInt(this.defaultTitleColor);
-        buffer.writeInt(this.defaultTextColor);
-        buffer.writeFloat(this.categoryButtonIconScale);
         buffer.writeBoolean(this.autoAddReadConditions);
-
-        buffer.writeShort(this.bookTextOffsetX);
-        buffer.writeShort(this.bookTextOffsetY);
-        buffer.writeShort(this.bookTextOffsetWidth);
-        buffer.writeShort(this.bookTextOffsetHeight);
-
-        buffer.writeShort(this.categoryButtonXOffset);
-        buffer.writeShort(this.categoryButtonYOffset);
-        buffer.writeShort(this.searchButtonXOffset);
-        buffer.writeShort(this.searchButtonYOffset);
-        buffer.writeShort(this.readAllButtonYOffset);
 
         buffer.writeNullable(this.leafletEntry, FriendlyByteBuf::writeIdentifier);
 
         buffer.writeByte(this.pageDisplayMode.ordinal());
-        buffer.writeIdentifier(this.singlePageTexture);
 
         buffer.writeBoolean(this.allowOpenBooksWithInvalidLinks);
         buffer.writeBoolean(this.showRecentlyUnlocked);
@@ -409,18 +264,6 @@ public class Book {
 
     public Identifier getTurnPageSound() {
         return this.turnPageSound;
-    }
-
-    public int getDefaultTitleColor() {
-        return this.defaultTitleColor;
-    }
-
-    public int getDefaultTextColor() {
-        return this.defaultTextColor;
-    }
-
-    public float getCategoryButtonIconScale() {
-        return this.categoryButtonIconScale;
     }
 
     public Identifier getId() {
@@ -487,45 +330,13 @@ public class Book {
         return this.creativeTab;
     }
 
-    public Identifier getBookOverviewTexture() {
-        return this.bookOverviewTexture;
-    }
-
     public Identifier getFont() {
         return this.font;
-    }
-
-    public Identifier getFrameTexture() {
-        return this.frameTexture;
-    }
-
-    public BookFrameOverlay getTopFrameOverlay() {
-        return this.topFrameOverlay;
-    }
-
-    public BookFrameOverlay getBottomFrameOverlay() {
-        return this.bottomFrameOverlay;
-    }
-
-    public BookFrameOverlay getLeftFrameOverlay() {
-        return this.leftFrameOverlay;
-    }
-
-    public BookFrameOverlay getRightFrameOverlay() {
-        return this.rightFrameOverlay;
     }
 
     @Nullable
     public Identifier getCustomBookItem() {
         return this.customBookItem;
-    }
-
-    public Identifier getCraftingTexture() {
-        return this.craftingTexture;
-    }
-
-    public Identifier getBookContentTexture() {
-        return this.bookContentTexture;
     }
 
     public Identifier getModel() {
@@ -541,42 +352,6 @@ public class Book {
 
     public boolean generateBookItem() {
         return this.generateBookItem;
-    }
-
-    public int getBookTextOffsetX() {
-        return this.bookTextOffsetX;
-    }
-
-    public int getBookTextOffsetY() {
-        return this.bookTextOffsetY;
-    }
-
-    public int getBookTextOffsetWidth() {
-        return this.bookTextOffsetWidth;
-    }
-
-    public int getBookTextOffsetHeight() {
-        return this.bookTextOffsetHeight;
-    }
-
-    public int getCategoryButtonXOffset() {
-        return this.categoryButtonXOffset;
-    }
-
-    public int getCategoryButtonYOffset() {
-        return this.categoryButtonYOffset;
-    }
-
-    public int getSearchButtonXOffset() {
-        return this.searchButtonXOffset;
-    }
-
-    public int getSearchButtonYOffset() {
-        return this.searchButtonYOffset;
-    }
-
-    public int getReadAllButtonYOffset() {
-        return this.readAllButtonYOffset;
     }
 
     public Identifier getLeafletEntry() {
@@ -596,8 +371,15 @@ public class Book {
         return this.pageDisplayMode;
     }
 
-    public Identifier getSinglePageTexture() {
-        return this.singlePageTexture;
+    public BookThemeData themeData() {
+        return this.themeData;
+    }
+
+    public BookTheme theme() {
+        if (this.theme == null) {
+            this.theme = ThemeRegistry.createTheme(this.themeData);
+        }
+        return this.theme;
     }
 
     public boolean allowOpenBooksWithInvalidLinks() {

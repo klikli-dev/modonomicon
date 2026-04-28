@@ -32,14 +32,13 @@ public class SearchButton extends Button {
     protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
         if (this.visible) {
             guiGraphics.pose().pushMatrix();
-            int xOffset = this.parent.getBook().getSearchButtonXOffset();
+            int xOffset = this.parent.getBook().theme().layout().searchButtonXOffset();
             guiGraphics.pose().translate(xOffset, 0);
 
             int scissorX = this.scissorX + xOffset;
-            int texX = 15;
-            int texY = 165;
+            var sprite = this.parent.getBook().theme().content().searchButton().state(this.isHovered(), false);
 
-            int renderX = this.getX();
+            int renderX = this.getX() - 16;
             int scissorWidth = this.width + (this.getX() - this.scissorX);
             int scissorY = (((Screen) this.parent).height - this.getY() - this.height - 1); //from the bottom up
 
@@ -54,7 +53,7 @@ public class SearchButton extends Button {
             //GL scissors allows us to move the button on hover without intersecting with book border
             guiGraphics.enableScissor(scissorX, scissorY, scissorX + scissorWidth, scissorY + 1000);
 
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.parent.getBook().getBookOverviewTexture(), renderX, this.getY(), texX, texY, this.width, this.height, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.texture(), renderX, this.getY(), 0, 0, this.width, this.height, sprite.width(), sprite.height());
 
             guiGraphics.disableScissor();
             guiGraphics.pose().popMatrix();

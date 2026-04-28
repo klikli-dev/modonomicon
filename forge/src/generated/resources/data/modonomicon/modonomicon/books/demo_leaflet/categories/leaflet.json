@@ -6,9 +6,8 @@
   "background_width": 512,
   "description": "",
   "display_mode": "node",
-  "entry_textures": "modonomicon:textures/gui/entry_textures.png",
   "icon": {
-    "item": "minecraft:paper"
+    "id": "minecraft:paper"
   },
   "max_scroll_x": 512,
   "max_scroll_y": 512,

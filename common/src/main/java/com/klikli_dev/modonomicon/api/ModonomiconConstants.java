@@ -6,8 +6,6 @@
 
 package com.klikli_dev.modonomicon.api;
 
-import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.book.BookFrameOverlay;
 import net.minecraft.resources.Identifier;
 
 public class ModonomiconConstants {
@@ -17,35 +15,16 @@ public class ModonomiconConstants {
         public static final String MULTIBLOCK_DATA_PATH = ModonomiconAPI.ID + "/multiblocks";
 
         public static class Book {
-            public static final String DEFAULT_OVERVIEW_TEXTURE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/book_overview.png").toString();
-            public static final String DEFAULT_FRAME_TEXTURE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/book_frame.png").toString();
-
-            public static final BookFrameOverlay DEFAULT_TOP_FRAME_OVERLAY = new BookFrameOverlay(
-                    Modonomicon.loc("textures/gui/book_frame_top_overlay.png"),
-                    256, 256, 72, 7, 0, 4);
-
-            public static final BookFrameOverlay DEFAULT_BOTTOM_FRAME_OVERLAY = new BookFrameOverlay(
-                    Modonomicon.loc("textures/gui/book_frame_bottom_overlay.png"),
-                    256, 256, 72, 8, 0, -4);
-
-            public static final BookFrameOverlay DEFAULT_LEFT_FRAME_OVERLAY = new BookFrameOverlay(
-                    Modonomicon.loc("textures/gui/book_frame_left_overlay.png"),
-                    256, 256, 7, 70, 3, 0);
-
-            public static final BookFrameOverlay DEFAULT_RIGHT_FRAME_OVERLAY = new BookFrameOverlay(
-                    Modonomicon.loc("textures/gui/book_frame_right_overlay.png"),
-                    256, 256, 8, 70, -4, 0);
-
-            public static final String DEFAULT_CONTENT_TEXTURE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/book_content.png").toString();
-            public static final String DEFAULT_SINGLE_PAGE_TEXTURE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/single_page_entry.png").toString();
             public static final String DEFAULT_FONT = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "default").toString();
-            public static final String DEFAULT_CRAFTING_TEXTURE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/crafting_textures.png").toString();
             public static final String DEFAULT_PAGE_TURN_SOUND = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "turn_page").toString();
             public static final String DEFAULT_MODEL = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "modonomicon_purple").toString();
             public static final int DEFAULT_TITLE_COLOR = 0xFF000000;
             public static final int DEFAULT_TEXT_COLOR = 0xFF000000;
-            public static final Identifier ITEM_ID = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "modonomicon");
+        }
 
+        public static class Theme {
+            public static final Identifier DEFAULT_THEME_ID = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "default");
+            public static final Identifier DEFAULT_THEME_TYPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "default");
         }
 
         public static class Category {
@@ -56,7 +35,6 @@ public class ModonomiconConstants {
             public static final int DEFAULT_MAX_SCROLL_X = 512;
             public static final int DEFAULT_MAX_SCROLL_Y = 512;
             public static final float DEFAULT_BACKGROUND_TEXTURE_ZOOM_MULTIPLIER = 1f;
-            public static final String DEFAULT_ENTRY_TEXTURES = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/entry_textures.png").toString();
         }
 
         public static class Icon {

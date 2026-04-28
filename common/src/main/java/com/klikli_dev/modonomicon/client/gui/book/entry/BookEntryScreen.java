@@ -43,7 +43,6 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
@@ -68,7 +67,6 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
 
     protected final BookParentScreen parentScreen;
     protected final BookContentEntry entry;
-    protected final Identifier bookContentTexture;
 
     protected int ticksInBook;
     protected List<BookPage> unlockedPages;
@@ -89,9 +87,6 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         this.parentScreen = parentScreen;
 
         this.entry = entry;
-
-        this.bookContentTexture = this.parentScreen.getBook().getBookContentTexture();
-
         //We're doing that here to ensure unlockedPages is available for state modification during loading
         this.unlockedPages = this.entry.getUnlockedPagesFor(this.minecraft.player);
 
@@ -357,10 +352,10 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         this.children().removeIf(b -> b instanceof AddBookmarkButton || b instanceof SearchButton);
         this.narratables.removeIf(b -> b instanceof AddBookmarkButton || b instanceof SearchButton);
 
-        int buttonHeight = 20;
+        int buttonHeight = this.getBook().theme().content().addBookmarkButton().normal().height();
         int searchButtonX = this.bookLeft + FULL_WIDTH - 5;
         int searchButtonY = this.bookTop + FULL_HEIGHT - 30;
-        int searchButtonWidth = 44; //width in png
+        int searchButtonWidth = this.getBook().theme().content().addBookmarkButton().normal().width();
         int scissorX = this.bookLeft + FULL_WIDTH;//this is the render location of our frame so our search button never overlaps
 
 

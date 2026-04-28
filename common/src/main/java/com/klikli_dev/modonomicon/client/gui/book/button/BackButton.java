@@ -18,7 +18,7 @@ public class BackButton extends BookButton {
     public static final int WIDTH = 18;
 
     public BackButton(BookEntryScreen parent, int x, int y) {
-        super(parent, x, y, U, V, WIDTH, HEIGHT, parent::canSeeBackButton,
+        super(parent, x, y, WIDTH, HEIGHT, theme -> theme.content().backButton(), parent::canSeeBackButton,
                 Component.translatable(Gui.BUTTON_BACK),
                 parent::handleBackButton,
                 Component.translatable(Gui.BUTTON_BACK_TOOLTIP)

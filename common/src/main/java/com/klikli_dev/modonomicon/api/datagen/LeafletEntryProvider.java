@@ -5,7 +5,7 @@
 package com.klikli_dev.modonomicon.api.datagen;
 
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
-import com.mojang.datafixers.util.Pair;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiTexture;
 import net.minecraft.world.item.Items;
 
 public abstract class LeafletEntryProvider extends EntryProvider {
@@ -29,7 +29,7 @@ public abstract class LeafletEntryProvider extends EntryProvider {
     }
 
     @Override
-    protected Pair<Integer, Integer> entryBackground() {
+    protected GuiTexture entryBackground() {
         return EntryBackground.DEFAULT;
     }
 

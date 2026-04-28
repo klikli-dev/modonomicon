@@ -9,7 +9,6 @@ package com.klikli_dev.modonomicon.client.gui.book.node;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
-import com.klikli_dev.modonomicon.book.BookFrameOverlay;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.visual.BookVisualState;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
@@ -18,6 +17,7 @@ import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookScreenWithButtons;
 import com.klikli_dev.modonomicon.client.gui.book.bookmarks.BookBookmarksScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.*;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiFrameOverlay;
 import com.klikli_dev.modonomicon.client.gui.book.recentlyunlocked.BookRecentlyUnlockedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
 import com.klikli_dev.modonomicon.networking.ClickReadAllButtonMessage;
@@ -109,10 +109,6 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
         //So we do nothing
     }
 
-    public Identifier getBookOverviewTexture() {
-        return this.book.getBookOverviewTexture();
-    }
-
     /**
      * gets the x coordinate of the inner area of the book frame
      */
@@ -174,18 +170,18 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
         //draw a resizeable border. Center parts of each side will be stretched
         //the exact border size mostly does not matter because the center is empty anyway, but 50 gives a lot of flexiblity
-        GuiGraphicsExt.blitWithBorder(guiGraphics, RenderPipelines.GUI_TEXTURED, this.book.getFrameTexture(), x, y, 0, 0, width, height, 140, 140, 50, 50, 50, 50);
+        GuiGraphicsExt.blitWithBorder(guiGraphics, RenderPipelines.GUI_TEXTURED, this.book.theme().frame().frame(), x, y, width, height);
 
         //now render overlays on top of that border to cover repeating elements
-        this.renderFrameOverlay(guiGraphics, this.book.getTopFrameOverlay(), (x + (width / 2)), y);
-        this.renderFrameOverlay(guiGraphics, this.book.getBottomFrameOverlay(), (x + (width / 2)), (y + height));
-        this.renderFrameOverlay(guiGraphics, this.book.getLeftFrameOverlay(), x, y + (height / 2));
-        this.renderFrameOverlay(guiGraphics, this.book.getRightFrameOverlay(), x + width, y + (height / 2));
+        this.renderFrameOverlay(guiGraphics, this.book.theme().frame().topOverlay(), (x + (width / 2)), y);
+        this.renderFrameOverlay(guiGraphics, this.book.theme().frame().bottomOverlay(), (x + (width / 2)), (y + height));
+        this.renderFrameOverlay(guiGraphics, this.book.theme().frame().leftOverlay(), x, y + (height / 2));
+        this.renderFrameOverlay(guiGraphics, this.book.theme().frame().rightOverlay(), x + width, y + (height / 2));
     }
 
-    protected void renderFrameOverlay(GuiGraphicsExtractor guiGraphics, BookFrameOverlay overlay, int x, int y) {
-        if (overlay.frameWidth() > 0 && overlay.frameHeight() > 0) {
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, overlay.texture(), overlay.getFrameX(x), overlay.getFrameY(y), overlay.getFrameU(), overlay.getFrameV(), overlay.frameWidth(), overlay.frameHeight(), 256, 256);
+    protected void renderFrameOverlay(GuiGraphicsExtractor guiGraphics, GuiFrameOverlay overlay, int x, int y) {
+        if (!overlay.sprite().isEmpty()) {
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, overlay.sprite().texture(), overlay.getFrameX(x), overlay.getFrameY(y), 0, 0, overlay.sprite().width(), overlay.sprite().height(), overlay.sprite().width(), overlay.sprite().height());
         }
     }
 
@@ -300,18 +296,18 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
         super.init();
 
         int buttonXOffset = -11;
-        int buttonYOffset = 30 + this.getBook().getCategoryButtonYOffset();
+        int buttonYOffset = 30 + this.getBook().theme().layout().categoryButtonYOffset();
         int buttonX = (this.width - this.getFrameWidth()) / 2 - this.getFrameThicknessW() + buttonXOffset;
         int buttonY = (this.height - this.getFrameHeight()) / 2 - this.getFrameThicknessH() + buttonYOffset;
         //calculate button width so it aligns with the outer edge of the frame
         int buttonWidth = (this.width - this.getFrameWidth()) / 2 + buttonXOffset + 6;
-        int buttonHeight = 20;
+        int buttonHeight = this.getBook().theme().content().categoryButton().normal().height();
         int buttonSpacing = 2;
 
         this.updateCategoryButtons(buttonX, buttonY, buttonWidth, buttonHeight, buttonSpacing);
 
         int readAllButtonX = this.getFrameWidth() + this.getFrameThicknessW() + ReadAllButton.WIDTH / 2 - 3; //(this.width - this.getFrameWidth()); // / 2 - this.getFrameThicknessW() + buttonXOffset;
-        int readAllButtonYOffset = 30 + this.getBook().getReadAllButtonYOffset();
+        int readAllButtonYOffset = 30 + this.getBook().theme().layout().readAllButtonYOffset();
 
         int readAllButtonY = (this.height - this.getFrameHeight()) / 2 + ReadAllButton.HEIGHT / 2 + readAllButtonYOffset;
 
@@ -323,10 +319,10 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
 
         int searchButtonXOffset = 7;
-        int searchButtonYOffset = -30 + this.getBook().getSearchButtonYOffset();
+        int searchButtonYOffset = -30 + this.getBook().theme().layout().searchButtonYOffset();
         int searchButtonX = this.getFrameWidth() + this.getFrameThicknessW() + ReadAllButton.WIDTH / 2 + searchButtonXOffset;
         int searchButtonY = this.getFrameHeight() + this.getFrameThicknessH() - ReadAllButton.HEIGHT / 2 + searchButtonYOffset;
-        int searchButtonWidth = 44; //width in png
+        int searchButtonWidth = this.getBook().theme().content().searchButton().normal().width();
         int scissorX = this.getFrameWidth() + this.getFrameThicknessW() * 2 + 2; //this is the render location of our frame so our search button never overlaps
 
         var searchButton = new SearchButton(this, searchButtonX, searchButtonY,

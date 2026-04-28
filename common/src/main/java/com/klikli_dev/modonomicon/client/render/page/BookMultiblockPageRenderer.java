@@ -128,7 +128,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
         //render a frame for the multiblock render area
         int x = BookEntryScreen.PAGE_WIDTH / 2 - 53;
         int y = 7;
-        BookContentRenderer.drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, this.page.getBook(), x, y, 405, 149, 106, 106);
+        BookContentRenderer.drawSprite(guiGraphics, this.page.getBook().theme().content().mediaFrame(), x, y);
 
         //render multiblock name in place of title
         if (!this.page.getMultiblockName().isEmpty()) {

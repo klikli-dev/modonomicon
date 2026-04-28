@@ -9,7 +9,7 @@ import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.*;
-import com.mojang.datafixers.util.Pair;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiTexture;
 import net.minecraft.world.item.Items;
 
 public class RecipeEntry extends EntryProvider {
@@ -88,7 +88,7 @@ public class RecipeEntry extends EntryProvider {
     }
 
     @Override
-    protected Pair<Integer, Integer> entryBackground() {
+    protected GuiTexture entryBackground() {
         return EntryBackground.DEFAULT;
     }
 

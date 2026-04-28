@@ -108,7 +108,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         }
 
         //we use scale 1 because our scale translation handling in there is off a bit. the above translation code is better
-        this.drawCenteredStringNoShadow(guiGraphics, this.getTitle(), x, y, this.getBook().getDefaultTitleColor(), 1);
+        this.drawCenteredStringNoShadow(guiGraphics, this.getTitle(), x, y, this.getBook().theme().palette().defaultTitleColor(), 1);
         guiGraphics.pose().popMatrix();
     }
 
@@ -233,7 +233,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
 
-        BookContentRenderer.renderBookBackground(guiGraphics, this.getBook().getBookContentTexture());
+        BookContentRenderer.renderBookBackground(guiGraphics, this.getBook());
 
 
         if (this.openPagesIndex == 0) {
@@ -249,7 +249,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
                 this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.CATEGORY_INDEX_LIST_TITLE),
                         BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING,
-                        this.getBook().getDefaultTitleColor());
+                        this.getBook().theme().palette().defaultTitleColor());
 
                 BookContentRenderer.drawTitleSeparator(guiGraphics, this.getBook(),
                         BookEntryScreen.LEFT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING + 12);
@@ -258,7 +258,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
                 BookPageRenderer.renderBookTextHolder(guiGraphics, this.book.getDescription(), this.font,
                         BookEntryScreen.LEFT_PAGE_X, BookEntryScreen.TOP_PADDING + 22, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - (BookEntryScreen.TOP_PADDING + 22),
-                        this.book.getDefaultTextColor());
+                        this.book.theme().palette().defaultTextColor());
             }
         }
 
@@ -362,10 +362,10 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
         this.addRenderableWidget(readAllButton);
 
-        int buttonHeight = 20;
+        int buttonHeight = this.getBook().theme().content().searchButton().normal().height();
         int searchButtonX = this.bookLeft + FULL_WIDTH - 5;
         int searchButtonY = this.bookTop + FULL_HEIGHT - 30;
-        int searchButtonWidth = 44-10; //width in png
+        int searchButtonWidth = this.getBook().theme().content().searchButton().normal().width() - 10;
         int scissorX = this.bookLeft + FULL_WIDTH;//this is the render location of our frame so our search button never overlaps
 
         var searchButton = new SearchButton(this, searchButtonX, searchButtonY,

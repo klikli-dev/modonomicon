@@ -37,7 +37,8 @@ public class BookSpotlightPageRenderer extends BookPageRenderer<BookSpotlightPag
         int w = 66;
         int h = 26;
 
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.page.getBook().getCraftingTexture(), BookEntryScreen.PAGE_WIDTH / 2 - w / 2, 10, 0, 128 - h, w, h, 128, 256);
+        var spotlightSlot = this.page.getBook().theme().content().spotlightSlot();
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, spotlightSlot.texture(), BookEntryScreen.PAGE_WIDTH / 2 - w / 2, 10, 0, 0, spotlightSlot.width(), spotlightSlot.height(), spotlightSlot.width(), spotlightSlot.height());
 
         this.page.getItem().ifRight(
                 ingredient -> {

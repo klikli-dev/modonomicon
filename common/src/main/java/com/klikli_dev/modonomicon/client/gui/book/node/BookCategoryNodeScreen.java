@@ -21,6 +21,7 @@ import com.klikli_dev.modonomicon.client.gui.book.entry.EntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
 import com.klikli_dev.modonomicon.events.ModonomiconEvents;
 import com.klikli_dev.modonomicon.platform.ClientServices;
+import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -62,7 +63,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         this.bookParentScreen = bookOverviewScreen;
         this.category = category;
 
-        this.connectionRenderer = new EntryConnectionRenderer(category.getEntryTextures());
+        this.connectionRenderer = new EntryConnectionRenderer(category.getBook().theme().node());
 
         this.targetZoom = 0.7f;
         this.currentZoom = this.targetZoom;
@@ -216,8 +217,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             if (displayState == EntryDisplayState.HIDDEN)
                 continue;
 
-            int texX = entry.getEntryBackgroundVIndex() * ENTRY_HEIGHT;
-            int texY = entry.getEntryBackgroundUIndex() * ENTRY_WIDTH;
+            var entryBackground = entry.getEntryBackground();
 
             guiGraphics.pose().pushMatrix();
             //we translate instead of applying the offset to the entry x/y to avoid jittering when moving
@@ -241,7 +241,9 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                 color = ARGB.colorFromFloat(1f, 0.8F, 0.8F, 0.8F);
             }
             //render entry background
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.category.getEntryTextures(), entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT, 256, 256, color);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, entryBackground.sprite(),
+                    entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP,
+                    ENTRY_WIDTH, ENTRY_HEIGHT, color);
 
             guiGraphics.pose().pushMatrix();
 

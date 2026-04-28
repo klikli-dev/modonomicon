@@ -20,28 +20,24 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 public class BookEntrySinglePageScreen extends BookEntryScreen {
 
     public static final int SINGLE_PAGE_BOOK_BACKGROUND_WIDTH = 145;
     public static final int SINGLE_PAGE_BOOK_BACKGROUND_HEIGHT = 178;
-    protected final Identifier singlePageTexture;
     private BookPage page;
     private BookPageRenderer<?> pageRenderer;
 
     public BookEntrySinglePageScreen(BookParentScreen parentScreen, BookContentEntry entry) {
         super(parentScreen, entry);
-
-        this.singlePageTexture = entry.getBook().getSinglePageTexture();
     }
 
-    public static void renderSinglePageBookBackground(GuiGraphicsExtractor guiGraphics, Identifier bookContentTexture) {
+    public static void renderSinglePageBookBackground(GuiGraphicsExtractor guiGraphics, com.klikli_dev.modonomicon.book.Book book) {
         int x = 0; // (this.width - BOOK_BACKGROUND_WIDTH) / 2;
         int y = 0; // (this.height - BOOK_BACKGROUND_HEIGHT) / 2;
 
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, bookContentTexture, x, y, 0, 0, 145, 178, 256, 256);
+        BookContentRenderer.drawSprite(guiGraphics, book.theme().content().singlePageBackground(), x, y);
     }
 
     @Override
@@ -131,7 +127,7 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
 
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
-        renderSinglePageBookBackground(guiGraphics, this.singlePageTexture);
+        renderSinglePageBookBackground(guiGraphics, this.getBook());
         guiGraphics.pose().popMatrix();
         guiGraphics.nextStratum();
 

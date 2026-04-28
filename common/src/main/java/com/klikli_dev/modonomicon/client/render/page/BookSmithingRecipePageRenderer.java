@@ -45,7 +45,8 @@ public class BookSmithingRecipePageRenderer extends BookRecipePageRenderer<Smith
             }
         }
 
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.page.getBook().getCraftingTexture(), recipeX, recipeY, 11, 178, 96, 62, 128, 256);
+        var background = this.page.getBook().theme().content().smithingRecipeBackground();
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, background.texture(), recipeX, recipeY, 0, 0, background.width(), background.height(), background.width(), background.height());
 
         if (recipeDisplayEntry.display() instanceof SmithingRecipeDisplay(
                 net.minecraft.world.item.crafting.display.SlotDisplay template,

@@ -194,16 +194,16 @@ public class BookRecentlyUnlockedScreen extends BookPaginatedScreen {
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
 
-        BookContentRenderer.renderBookBackground(guiGraphics, this.getBook().getBookContentTexture());
+        BookContentRenderer.renderBookBackground(guiGraphics, this.getBook());
 
 
         if (this.openPagesIndex == 0) {
             this.drawCenteredStringNoShadow(guiGraphics, this.getTitle(),
                     BookEntryScreen.LEFT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING,
-                    this.parentScreen.getBook().getDefaultTitleColor());
+                    this.parentScreen.getBook().theme().palette().defaultTitleColor());
             this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.RECENTLY_UNLOCKED_ENTRY_LIST_TITLE),
                     BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING,
-                    this.parentScreen.getBook().getDefaultTitleColor());
+                    this.parentScreen.getBook().theme().palette().defaultTitleColor());
 
             BookContentRenderer.drawTitleSeparator(guiGraphics, this.parentScreen.getBook(),
                     BookEntryScreen.LEFT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING + 12);
@@ -212,7 +212,7 @@ public class BookRecentlyUnlockedScreen extends BookPaginatedScreen {
 
             BookPageRenderer.renderBookTextHolder(guiGraphics, this.infoText, this.font,
                     BookEntryScreen.LEFT_PAGE_X, BookEntryScreen.TOP_PADDING + 22, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - (BookEntryScreen.TOP_PADDING + 22),
-                    this.parentScreen.getBook().getDefaultTextColor());
+                    this.parentScreen.getBook().theme().palette().defaultTextColor());
         }
 
         if (this.visibleEntries.isEmpty()) {

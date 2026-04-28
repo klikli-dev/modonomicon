@@ -89,7 +89,7 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
         }
 
         //we use scale 1 because our scale translation handling in there is off a bit. the above translation code is better
-        this.drawCenteredStringNoShadow(guiGraphics, this.getTitle(), x, y, this.getBook().getDefaultTitleColor(), 1);
+        this.drawCenteredStringNoShadow(guiGraphics, this.getTitle(), x, y, this.getBook().theme().palette().defaultTitleColor(), 1);
         guiGraphics.pose().popMatrix();
     }
 
@@ -223,7 +223,7 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
 
-        BookContentRenderer.renderBookBackground(guiGraphics, this.getBook().getBookContentTexture());
+        BookContentRenderer.renderBookBackground(guiGraphics, this.getBook());
 
 
         if (this.openPagesIndex == 0) {
@@ -237,7 +237,7 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
                 this.drawTitle(guiGraphics, BookEntryScreen.LEFT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING);
                 this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.CATEGORY_INDEX_LIST_TITLE),
                         BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING,
-                        this.parentScreen.getBook().getDefaultTitleColor());
+                        this.parentScreen.getBook().theme().palette().defaultTitleColor());
 
                 BookContentRenderer.drawTitleSeparator(guiGraphics, this.parentScreen.getBook(),
                         BookEntryScreen.LEFT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING + 12);
@@ -248,7 +248,7 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
 
                 BookPageRenderer.renderBookTextHolder(guiGraphics, this.category.getDescription(), this.font,
                         BookEntryScreen.LEFT_PAGE_X, BookEntryScreen.TOP_PADDING + 22, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - (BookEntryScreen.TOP_PADDING + 22),
-                        this.parentScreen.getBook().getDefaultTextColor());
+                        this.parentScreen.getBook().theme().palette().defaultTextColor());
             }
         }
 

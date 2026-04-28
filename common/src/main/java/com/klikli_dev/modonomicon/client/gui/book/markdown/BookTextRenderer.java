@@ -60,7 +60,7 @@ public class BookTextRenderer {
                 .renderSoftLineBreaks(false)
                 .replaceSoftLineBreaksWithSpace(true)
                 .linkColor(TextColor.fromRgb(0x5555FF))
-                .defaultTextColor(TextColor.fromRgb(this.book.getDefaultTextColor()))
+                .defaultTextColor(TextColor.fromRgb(this.book.themeData().palette().defaultTextColor()))
                 .linkRenderers(List.of(
                         new ColorLinkRenderer(),
                         new BookLinkRenderer(),
