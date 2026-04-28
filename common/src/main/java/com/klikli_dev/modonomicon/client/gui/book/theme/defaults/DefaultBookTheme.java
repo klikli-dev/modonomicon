@@ -6,7 +6,10 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.theme.defaults;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.client.gui.book.theme.*;
+import com.klikli_dev.modonomicon.platform.Services;
+import com.klikli_dev.modonomicon.platform.services.PlatformHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 
@@ -423,12 +426,18 @@ public class DefaultBookTheme implements BookTheme {
 
     private Identifier texture(String relativePath) {
         Identifier themed = Identifier.fromNamespaceAndPath(this.data.id().getNamespace(), this.textureRoot + relativePath);
-        Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft == null || minecraft.getResourceManager() == null || minecraft.getResourceManager().getResource(themed).isPresent()) {
-            return themed;
+
+        //on client we check if the theme folder has the requested texture and serve it
+        if (Services.PLATFORM.getPhysicalSide() == PlatformHelper.PhysicalSide.CLIENT) {
+            Minecraft minecraft = Minecraft.getInstance();
+            if (minecraft == null || minecraft.getResourceManager() == null || minecraft.getResourceManager().getResource(themed).isPresent()) {
+                return themed;
+            }
         }
 
-        return Identifier.fromNamespaceAndPath("modonomicon", DEFAULT_TEXTURE_ROOT + relativePath);
+        //otherwise we fall back to the default theme.
+        //on server the actual texture does not matter and should never be accessed anyway, so we serve the defaults always.
+        return Modonomicon.loc(DEFAULT_TEXTURE_ROOT + relativePath);
     }
 
     private GuiTexture createEntryBackground(String spriteId) {

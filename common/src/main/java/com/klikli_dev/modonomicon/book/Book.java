@@ -371,6 +371,10 @@ public class Book {
         return this.pageDisplayMode;
     }
 
+    public BookThemeData themeData() {
+        return this.themeData;
+    }
+
     public BookTheme theme() {
         if (this.theme == null) {
             this.theme = ThemeRegistry.createTheme(this.themeData);

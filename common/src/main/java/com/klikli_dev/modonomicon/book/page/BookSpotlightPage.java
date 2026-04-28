@@ -138,7 +138,7 @@ public class BookSpotlightPage extends BookPage {
             this.title = new BookTextHolder((item.getHoverName().copy())
                     .withStyle(Style.EMPTY
                             .withBold(true)
-                            .withColor(this.getParentEntry().getBook().theme().palette().defaultTitleColor())
+                            .withColor(this.getParentEntry().getBook().themeData().palette().defaultTitleColor())
                     ));
         }
     }
@@ -151,7 +151,7 @@ public class BookSpotlightPage extends BookPage {
             this.title = new BookTextHolder(Component.translatable(this.title.getKey())
                     .withStyle(Style.EMPTY
                             .withBold(true)
-                            .withColor(this.getParentEntry().getBook().theme().palette().defaultTitleColor())));
+                            .withColor(this.getParentEntry().getBook().themeData().palette().defaultTitleColor())));
         }
         if (!this.text.hasComponent()) {
             this.text = new RenderedBookTextHolder(this.text, textRenderer.render(this.text.getString()));
