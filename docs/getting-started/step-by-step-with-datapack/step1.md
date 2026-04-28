@@ -14,6 +14,6 @@ First, download the modonomicon source code, as it contains the demo book:
 
 :::tip
 
-If you are already well-versed with datapacks you can look at the demo book **[here](https://github.com/klikli-dev/modonomicon/tree/version/1.21.1/neo/src/generated/resources/data/modonomicon/modonomicon/books)** and the demo multiblocks used by the book **[here](https://github.com/klikli-dev/modonomicon/tree/version/1.21.1/neo/src/generated/resources/data/modonomicon/modonomicon/multiblocks)** and simply download the individual files you want to use as a reference.
+If you are already well-versed with datapacks you can look at the demo book **[here](https://github.com/klikli-dev/modonomicon/blob/-/neo/src/generated/resources/data/modonomicon/modonomicon/books)** and the demo multiblocks used by the book **[here](https://github.com/klikli-dev/modonomicon/blob/-/neo/src/generated/resources/data/modonomicon/modonomicon/multiblocks)** and simply download the individual files you want to use as a reference.
 
 :::

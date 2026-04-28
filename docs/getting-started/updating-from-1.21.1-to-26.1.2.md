@@ -75,6 +75,7 @@ After migrating, rerun datagen so the generated book resources include the new t
 
 ### Datapack / JSON users
 
+1. Visit the [Demo Book](https://github.com/klikli-dev/modonomicon/blob/-/neo/src/generated/resources/data/modonomicon/modonomicon/books/demo) and review how `book.json` and `theme.json` are set up.
 1. Keep your book structure in `book.json`.
 2. Move old visual styling into a new `theme.json` next to the book data.
 3. Set the correct theme `id` and usually keep `type` as `modonomicon:default`.
@@ -83,9 +84,9 @@ After migrating, rerun datagen so the generated book resources include the new t
 
 ### Datagen users
 
-1. Remove old inline styling calls from your `BookModel` setup.
-2. Create a theme model.
-3. Attach it to the book with `withTheme(...)`.
+1. Visit the [Demo Book Datagen](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/DemoBook.java) and review how it sets up the book model.
+2. Remove old inline styling calls from your `BookModel` setup and instead delegate to `.withTheme(...)`.
+3. Optionally register your own theme class (see [Theme.json](../basics/structure/theme)) if you want to override rendering behaviour or use sprites with custom sizes.
 4. Run datagen again.
 
 ## Need help converting old custom styling?
