@@ -7,7 +7,6 @@
 package com.klikli_dev.modonomicon.util;
 
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiNineSlice;
-import com.klikli_dev.modonomicon.client.gui.book.theme.GuiTexture;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -26,22 +25,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 public class GuiGraphicsExt {
-
-    public static void blitGuiTexture(GuiGraphicsExtractor guiGraphics, RenderPipeline pipeline, GuiTexture texture, int x, int y) {
-        blitGuiTexture(guiGraphics, pipeline, texture, x, y, texture.width(), texture.height());
-    }
-
-    public static void blitGuiTexture(GuiGraphicsExtractor guiGraphics, RenderPipeline pipeline, GuiTexture texture, int x, int y, int color) {
-        blitGuiTexture(guiGraphics, pipeline, texture, x, y, texture.width(), texture.height(), color);
-    }
-
-    public static void blitGuiTexture(GuiGraphicsExtractor guiGraphics, RenderPipeline pipeline, GuiTexture texture, int x, int y, int width, int height) {
-        guiGraphics.blitSprite(pipeline, texture.sprite(), x, y, width, height);
-    }
-
-    public static void blitGuiTexture(GuiGraphicsExtractor guiGraphics, RenderPipeline pipeline, GuiTexture texture, int x, int y, int width, int height, int color) {
-        guiGraphics.blitSprite(pipeline, texture.sprite(), x, y, width, height, color);
-    }
 
     public static void drawTiledSprite(GuiGraphicsExtractor guiGraphics, final int tiledWidth, final int tiledHeight, int color, int scaledAmount, TextureAtlasSprite sprite, int posX, int posY) {
 
