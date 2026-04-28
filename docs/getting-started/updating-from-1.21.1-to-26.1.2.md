@@ -7,7 +7,6 @@ title: Updating from 1.21.1 to 26.1.2
 
 This update changes how book styling is defined.
 
-
 ## Summary
 
 If your 1.21.1 book used custom textures, colors, layout offsets, or other book styling fields, you will need to migrate that styling into a separate `theme.json` file and update how the textures are organised.
@@ -56,13 +55,13 @@ Only use a custom theme type if you also register a custom Java theme implementa
 
 ### The old atlases were split into individual sprites
 
-The old manual atlases such as ook_overview.png, ook_content.png, and similar shared GUI sheets were split into many individual sprite files under the theme folder.
+The old manual atlases such as `book_overview.png`, `book_content.png`, and similar shared GUI sheets were split into many individual sprite files under the theme folder.
 Minecraft now assembles the atlas automatically from those sprite files.
 
-This makes it easier to override only the parts you care about, and it also adds proper .mcmeta support for things like 	ile, 
-ine_slice, and stretch.
+This makes it easier to override only the parts you care about, and it also adds proper `.mcmeta` support for things like `tile`, `nine_slice`, and `stretch`.
 
 If you previously maintained custom versions of the old manual atlases, see the automation section below for help splitting and converting them.
+
 ### Partial theme overrides now work well
 
 You can override only the individual files you want to change.
