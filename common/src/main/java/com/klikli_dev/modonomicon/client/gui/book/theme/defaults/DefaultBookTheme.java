@@ -20,6 +20,9 @@ import com.klikli_dev.modonomicon.client.gui.book.theme.GuiTexture;
 import com.klikli_dev.modonomicon.client.gui.book.theme.BookLayoutTheme;
 import net.minecraft.resources.Identifier;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class DefaultBookTheme implements BookTheme {
 
     private static final int NODE_ENTRY_BACKGROUND_WIDTH = 26;
@@ -27,272 +30,364 @@ public class DefaultBookTheme implements BookTheme {
 
     private final BookThemeData data;
     private final String textureRoot;
+    private final Map<String, GuiTexture> entryBackgroundCache = new ConcurrentHashMap<>();
+
+    private final GuiSprite doublePageBackground;
+    private final GuiSprite singlePageBackground;
+    private final GuiSprite titleSeparator;
+    private final GuiSprite lockIcon;
+    private final GuiButtonSprites unreadIndicator;
+    private final GuiButtonSprites nextPageButton;
+    private final GuiButtonSprites previousPageButton;
+    private final GuiButtonSprites smallNextPageButton;
+    private final GuiButtonSprites smallPreviousPageButton;
+    private final GuiButtonSprites backButton;
+    private final GuiButtonSprites exitButton;
+    private final GuiButtonSprites visualizeButton;
+    private final GuiButtonSprites categoryScrollUpButton;
+    private final GuiButtonSprites categoryScrollDownButton;
+    private final GuiButtonSprites categoryButton;
+    private final GuiButtonSprites searchButton;
+    private final GuiButtonSprites showBookmarksButton;
+    private final GuiButtonSprites showRecentlyUnlockedButton;
+    private final GuiButtonSprites addBookmarkButton;
+    private final GuiButtonSprites removeBookmarkButton;
+    private final GuiButtonSprites readAllButton;
+    private final GuiButtonSprites readNoneButton;
+    private final GuiButtonSprites readUnlockedButton;
+    private final GuiSprite searchFieldBackground;
+    private final GuiSprite mediaFrame;
+    private final GuiSprite craftingGrid;
+    private final GuiSprite shapelessIcon;
+    private final GuiSprite processingRecipeBackground;
+    private final GuiSprite smithingRecipeBackground;
+    private final GuiSprite spotlightSlot;
+    private final GuiSprite smallCurveLeftDown;
+    private final GuiSprite smallCurveRightDown;
+    private final GuiSprite smallCurveLeftUp;
+    private final GuiSprite smallCurveRightUp;
+    private final GuiSprite largeCurveLeftDown;
+    private final GuiSprite largeCurveRightDown;
+    private final GuiSprite largeCurveLeftUp;
+    private final GuiSprite largeCurveRightUp;
+    private final GuiSprite verticalLine;
+    private final GuiSprite horizontalLine;
+    private final GuiSprite upArrow;
+    private final GuiSprite downArrow;
+    private final GuiSprite rightArrow;
+    private final GuiSprite leftArrow;
+    private final GuiNineSlice frameSprite;
+    private final GuiFrameOverlay topOverlay;
+    private final GuiFrameOverlay bottomOverlay;
+    private final GuiFrameOverlay leftOverlay;
+    private final GuiFrameOverlay rightOverlay;
+
     private final BookContentTheme content = new BookContentTheme() {
         @Override
         public GuiSprite doublePageBackground() {
-            return sprite("content/backgrounds/book/double_page_background.png", 272, 178);
+            return doublePageBackground;
         }
 
         @Override
         public GuiSprite singlePageBackground() {
-            return sprite("content/backgrounds/book/single_page_background.png", 145, 178);
+            return singlePageBackground;
         }
 
         @Override
         public GuiSprite titleSeparator() {
-            return sprite("content/decorations/book/title_separator.png", 110, 3);
+            return titleSeparator;
         }
 
         @Override
         public GuiSprite lockIcon() {
-            return sprite("content/icons/book/lock_icon.png", 16, 16);
+            return lockIcon;
         }
 
         @Override
         public GuiButtonSprites unreadIndicator() {
-            return button("content/indicators/book/unread_indicator", 11, 11, true);
+            return unreadIndicator;
         }
 
         @Override
         public GuiButtonSprites nextPageButton() {
-            return button("content/buttons/navigation/next_page_button", 18, 10, true);
+            return nextPageButton;
         }
 
         @Override
         public GuiButtonSprites previousPageButton() {
-            return button("content/buttons/navigation/previous_page_button", 18, 10, true);
+            return previousPageButton;
         }
 
         @Override
         public GuiButtonSprites smallNextPageButton() {
-            return button("content/buttons/navigation/small_next_page_button", 5, 7, true);
+            return smallNextPageButton;
         }
 
         @Override
         public GuiButtonSprites smallPreviousPageButton() {
-            return button("content/buttons/navigation/small_previous_page_button", 5, 7, true);
+            return smallPreviousPageButton;
         }
 
         @Override
         public GuiButtonSprites backButton() {
-            return button("content/buttons/navigation/back_button", 18, 9, true);
+            return backButton;
         }
 
         @Override
         public GuiButtonSprites exitButton() {
-            return button("content/buttons/navigation/exit_button", 12, 12, true);
+            return exitButton;
         }
 
         @Override
         public GuiButtonSprites visualizeButton() {
-            return button("content/buttons/navigation/visualize_button", 11, 7, true);
+            return visualizeButton;
         }
 
         @Override
         public GuiButtonSprites categoryScrollUpButton() {
-            return button("content/buttons/category/category_scroll_up_button", 14, 10, true);
+            return categoryScrollUpButton;
         }
 
         @Override
         public GuiButtonSprites categoryScrollDownButton() {
-            return button("content/buttons/category/category_scroll_down_button", 14, 10, true);
+            return categoryScrollDownButton;
         }
 
         @Override
         public GuiButtonSprites categoryButton() {
-            return button("content/buttons/category/category_button", 44, 20, false, false);
+            return categoryButton;
         }
 
         @Override
         public GuiButtonSprites searchButton() {
-            return button("content/buttons/side/search_button", 44, 20, false);
+            return searchButton;
         }
 
         @Override
         public GuiButtonSprites showBookmarksButton() {
-            return button("content/buttons/side/show_bookmarks_button", 44, 20, false);
+            return showBookmarksButton;
         }
 
         @Override
         public GuiButtonSprites showRecentlyUnlockedButton() {
-            return button("content/buttons/side/show_recently_unlocked_button", 44, 20, false);
+            return showRecentlyUnlockedButton;
         }
 
         @Override
         public GuiButtonSprites addBookmarkButton() {
-            return button("content/buttons/side/add_bookmark_button", 44, 20, false);
+            return addBookmarkButton;
         }
 
         @Override
         public GuiButtonSprites removeBookmarkButton() {
-            return button("content/buttons/side/remove_bookmark_button", 44, 20, false);
+            return removeBookmarkButton;
         }
 
         @Override
         public GuiButtonSprites readAllButton() {
-            return button("content/buttons/read/read_all_button", 16, 14, true);
+            return readAllButton;
         }
 
         @Override
         public GuiButtonSprites readNoneButton() {
-            return button("content/buttons/read/read_none_button", 16, 14, true);
+            return readNoneButton;
         }
 
         @Override
         public GuiButtonSprites readUnlockedButton() {
-            return button("content/buttons/read/read_unlocked_button", 16, 14, true);
+            return readUnlockedButton;
         }
 
         @Override
         public GuiSprite searchFieldBackground() {
-            return sprite("content/fields/search/background.png", 99, 14);
+            return searchFieldBackground;
         }
 
         @Override
         public GuiSprite mediaFrame() {
-            return sprite("content/pages/media/frame.png", 106, 106);
+            return mediaFrame;
         }
 
         @Override
         public GuiSprite craftingGrid() {
-            return sprite("content/pages/recipes/crafting_grid.png", 100, 62);
+            return craftingGrid;
         }
 
         @Override
         public GuiSprite shapelessIcon() {
-            return sprite("content/pages/recipes/shapeless_icon.png", 11, 11);
+            return shapelessIcon;
         }
 
         @Override
         public GuiSprite processingRecipeBackground() {
-            return sprite("content/pages/recipes/processing_recipe_background.png", 96, 24);
+            return processingRecipeBackground;
         }
 
         @Override
         public GuiSprite smithingRecipeBackground() {
-            return sprite("content/pages/recipes/smithing_recipe_background.png", 96, 62);
+            return smithingRecipeBackground;
         }
 
         @Override
         public GuiSprite spotlightSlot() {
-            return sprite("content/pages/recipes/spotlight_slot.png", 66, 26);
+            return spotlightSlot;
         }
     };
     private final BookNodeTheme node = new BookNodeTheme() {
         @Override
         public GuiTexture entryBackground(String spriteId) {
-            var parsed = Identifier.tryParse(spriteId);
-            if (parsed != null && parsed.getPath().startsWith("textures/")) {
-                return new GuiTexture(parsed, NODE_ENTRY_BACKGROUND_WIDTH, NODE_ENTRY_BACKGROUND_HEIGHT);
-            }
-
-            String relativePath = spriteId.contains("/") ? spriteId : "entry_backgrounds/" + spriteId;
-            if (!relativePath.endsWith(".png")) {
-                relativePath += ".png";
-            }
-            return new GuiTexture(texture("node/" + relativePath), NODE_ENTRY_BACKGROUND_WIDTH, NODE_ENTRY_BACKGROUND_HEIGHT);
+            return entryBackgroundCache.computeIfAbsent(spriteId, DefaultBookTheme.this::createEntryBackground);
         }
 
         @Override
         public GuiSprite smallCurveLeftDown() {
-            return sprite("node/connections/small_curve_left_down.png", 30, 30);
+            return smallCurveLeftDown;
         }
 
         @Override
         public GuiSprite smallCurveRightDown() {
-            return sprite("node/connections/small_curve_right_down.png", 30, 30);
+            return smallCurveRightDown;
         }
 
         @Override
         public GuiSprite smallCurveLeftUp() {
-            return sprite("node/connections/small_curve_left_up.png", 30, 30);
+            return smallCurveLeftUp;
         }
 
         @Override
         public GuiSprite smallCurveRightUp() {
-            return sprite("node/connections/small_curve_right_up.png", 30, 30);
+            return smallCurveRightUp;
         }
 
         @Override
         public GuiSprite largeCurveLeftDown() {
-            return sprite("node/connections/large_curve_left_down.png", 60, 60);
+            return largeCurveLeftDown;
         }
 
         @Override
         public GuiSprite largeCurveRightDown() {
-            return sprite("node/connections/large_curve_right_down.png", 60, 60);
+            return largeCurveRightDown;
         }
 
         @Override
         public GuiSprite largeCurveLeftUp() {
-            return sprite("node/connections/large_curve_left_up.png", 60, 60);
+            return largeCurveLeftUp;
         }
 
         @Override
         public GuiSprite largeCurveRightUp() {
-            return sprite("node/connections/large_curve_right_up.png", 60, 60);
+            return largeCurveRightUp;
         }
 
         @Override
         public GuiSprite verticalLine() {
-            return sprite("node/connections/vertical_line.png", 30, 31);
+            return verticalLine;
         }
 
         @Override
         public GuiSprite horizontalLine() {
-            return sprite("node/connections/horizontal_line.png", 31, 30);
+            return horizontalLine;
         }
 
         @Override
         public GuiSprite upArrow() {
-            return sprite("node/connections/up_arrow.png", 30, 30);
+            return upArrow;
         }
 
         @Override
         public GuiSprite downArrow() {
-            return sprite("node/connections/down_arrow.png", 30, 30);
+            return downArrow;
         }
 
         @Override
         public GuiSprite rightArrow() {
-            return sprite("node/connections/right_arrow.png", 30, 30);
+            return rightArrow;
         }
 
         @Override
         public GuiSprite leftArrow() {
-            return sprite("node/connections/left_arrow.png", 30, 30);
+            return leftArrow;
         }
     };
     private final BookFrameTheme frame = new BookFrameTheme() {
         @Override
         public GuiNineSlice frame() {
-            return new GuiNineSlice(texture("frame/frame.png"), 140, 140, 50, 50, 50, 50);
+            return frameSprite;
         }
 
         @Override
         public GuiFrameOverlay topOverlay() {
-            return new GuiFrameOverlay(sprite("frame/top_overlay.png", 72, 7), 0, 4);
+            return topOverlay;
         }
 
         @Override
         public GuiFrameOverlay bottomOverlay() {
-            return new GuiFrameOverlay(sprite("frame/bottom_overlay.png", 72, 8), 0, -4);
+            return bottomOverlay;
         }
 
         @Override
         public GuiFrameOverlay leftOverlay() {
-            return new GuiFrameOverlay(sprite("frame/left_overlay.png", 7, 70), 3, 0);
+            return leftOverlay;
         }
 
         @Override
         public GuiFrameOverlay rightOverlay() {
-            return new GuiFrameOverlay(sprite("frame/right_overlay.png", 8, 70), -4, 0);
+            return rightOverlay;
         }
     };
 
     public DefaultBookTheme(BookThemeData data) {
         this.data = data;
         this.textureRoot = "textures/gui/sprites/modonomicon/themes/" + data.id().getPath() + "/";
+        this.doublePageBackground = sprite("content/backgrounds/book/double_page_background.png", 272, 178);
+        this.singlePageBackground = sprite("content/backgrounds/book/single_page_background.png", 145, 178);
+        this.titleSeparator = sprite("content/decorations/book/title_separator.png", 110, 3);
+        this.lockIcon = sprite("content/icons/book/lock_icon.png", 16, 16);
+        this.unreadIndicator = button("content/indicators/book/unread_indicator", 11, 11, true);
+        this.nextPageButton = button("content/buttons/navigation/next_page_button", 18, 10, true);
+        this.previousPageButton = button("content/buttons/navigation/previous_page_button", 18, 10, true);
+        this.smallNextPageButton = button("content/buttons/navigation/small_next_page_button", 5, 7, true);
+        this.smallPreviousPageButton = button("content/buttons/navigation/small_previous_page_button", 5, 7, true);
+        this.backButton = button("content/buttons/navigation/back_button", 18, 9, true);
+        this.exitButton = button("content/buttons/navigation/exit_button", 12, 12, true);
+        this.visualizeButton = button("content/buttons/navigation/visualize_button", 11, 7, true);
+        this.categoryScrollUpButton = button("content/buttons/category/category_scroll_up_button", 14, 10, true);
+        this.categoryScrollDownButton = button("content/buttons/category/category_scroll_down_button", 14, 10, true);
+        this.categoryButton = button("content/buttons/category/category_button", 44, 20, false, false);
+        this.searchButton = button("content/buttons/side/search_button", 44, 20, false);
+        this.showBookmarksButton = button("content/buttons/side/show_bookmarks_button", 44, 20, false);
+        this.showRecentlyUnlockedButton = button("content/buttons/side/show_recently_unlocked_button", 44, 20, false);
+        this.addBookmarkButton = button("content/buttons/side/add_bookmark_button", 44, 20, false);
+        this.removeBookmarkButton = button("content/buttons/side/remove_bookmark_button", 44, 20, false);
+        this.readAllButton = button("content/buttons/read/read_all_button", 16, 14, true);
+        this.readNoneButton = button("content/buttons/read/read_none_button", 16, 14, true);
+        this.readUnlockedButton = button("content/buttons/read/read_unlocked_button", 16, 14, true);
+        this.searchFieldBackground = sprite("content/fields/search/background.png", 99, 14);
+        this.mediaFrame = sprite("content/pages/media/frame.png", 106, 106);
+        this.craftingGrid = sprite("content/pages/recipes/crafting_grid.png", 100, 62);
+        this.shapelessIcon = sprite("content/pages/recipes/shapeless_icon.png", 11, 11);
+        this.processingRecipeBackground = sprite("content/pages/recipes/processing_recipe_background.png", 96, 24);
+        this.smithingRecipeBackground = sprite("content/pages/recipes/smithing_recipe_background.png", 96, 62);
+        this.spotlightSlot = sprite("content/pages/recipes/spotlight_slot.png", 66, 26);
+        this.smallCurveLeftDown = sprite("node/connections/small_curve_left_down.png", 30, 30);
+        this.smallCurveRightDown = sprite("node/connections/small_curve_right_down.png", 30, 30);
+        this.smallCurveLeftUp = sprite("node/connections/small_curve_left_up.png", 30, 30);
+        this.smallCurveRightUp = sprite("node/connections/small_curve_right_up.png", 30, 30);
+        this.largeCurveLeftDown = sprite("node/connections/large_curve_left_down.png", 60, 60);
+        this.largeCurveRightDown = sprite("node/connections/large_curve_right_down.png", 60, 60);
+        this.largeCurveLeftUp = sprite("node/connections/large_curve_left_up.png", 60, 60);
+        this.largeCurveRightUp = sprite("node/connections/large_curve_right_up.png", 60, 60);
+        this.verticalLine = sprite("node/connections/vertical_line.png", 30, 31);
+        this.horizontalLine = sprite("node/connections/horizontal_line.png", 31, 30);
+        this.upArrow = sprite("node/connections/up_arrow.png", 30, 30);
+        this.downArrow = sprite("node/connections/down_arrow.png", 30, 30);
+        this.rightArrow = sprite("node/connections/right_arrow.png", 30, 30);
+        this.leftArrow = sprite("node/connections/left_arrow.png", 30, 30);
+        this.frameSprite = new GuiNineSlice(texture("frame/frame.png"), 140, 140, 50, 50, 50, 50);
+        this.topOverlay = new GuiFrameOverlay(sprite("frame/top_overlay.png", 72, 7), 0, 4);
+        this.bottomOverlay = new GuiFrameOverlay(sprite("frame/bottom_overlay.png", 72, 8), 0, -4);
+        this.leftOverlay = new GuiFrameOverlay(sprite("frame/left_overlay.png", 7, 70), 3, 0);
+        this.rightOverlay = new GuiFrameOverlay(sprite("frame/right_overlay.png", 8, 70), -4, 0);
     }
 
     @Override
@@ -337,5 +432,18 @@ public class DefaultBookTheme implements BookTheme {
 
     private Identifier texture(String relativePath) {
         return Identifier.fromNamespaceAndPath(this.data.id().getNamespace(), this.textureRoot + relativePath);
+    }
+
+    private GuiTexture createEntryBackground(String spriteId) {
+        var parsed = Identifier.tryParse(spriteId);
+        if (parsed != null && parsed.getPath().startsWith("textures/")) {
+            return new GuiTexture(parsed, NODE_ENTRY_BACKGROUND_WIDTH, NODE_ENTRY_BACKGROUND_HEIGHT);
+        }
+
+        String relativePath = spriteId.contains("/") ? spriteId : "entry_backgrounds/" + spriteId;
+        if (!relativePath.endsWith(".png")) {
+            relativePath += ".png";
+        }
+        return new GuiTexture(texture("node/" + relativePath), NODE_ENTRY_BACKGROUND_WIDTH, NODE_ENTRY_BACKGROUND_HEIGHT);
     }
 }
