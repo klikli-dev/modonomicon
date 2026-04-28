@@ -16,6 +16,11 @@ The main change is:
 - `book.json` now focuses on book content and structure.
 - `theme.json` now contains book appearance, layout, sprites, and palette data.
 
+See also:
+
+- [Book.json](../basics/structure/book)
+- [Theme.json](../basics/structure/theme)
+
 ## What changed
 
 ### `theme.json` is now required for custom styling
@@ -44,7 +49,13 @@ The old `BookModel` styling setters were replaced by a theme-based setup. Use a 
 
 Themes are now backed by a dedicated runtime theme system.
 
-If you use a custom theme type, make sure it is registered correctly for the new theme loading flow.
+For normal custom themes, use your own theme `id` together with the default theme `type` and place your files into the correct theme folder.
+Only use a custom theme type if you also register a custom Java theme implementation.
+
+### Partial theme overrides now work well
+
+You can override only the individual files you want to change.
+If a theme file is missing, Modonomicon falls back to the default built-in theme asset for that file.
 
 ### Regenerate generated data
 
@@ -56,8 +67,9 @@ After migrating, rerun datagen so the generated book resources include the new t
 
 1. Keep your book structure in `book.json`.
 2. Move old visual styling into a new `theme.json` next to the book data.
-3. Update texture and palette definitions to the new theme format.
-4. Test the book in game and confirm buttons, backgrounds, node connectors, and recipe visuals render correctly.
+3. Set the correct theme `id` and usually keep `type` as `modonomicon:default`.
+4. Place any custom theme textures into the matching theme asset folder.
+5. Test the book in game and confirm buttons, backgrounds, node connectors, and recipe visuals render correctly.
 
 ### Datagen users
 
