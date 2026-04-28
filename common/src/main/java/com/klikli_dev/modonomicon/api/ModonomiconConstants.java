@@ -20,8 +20,6 @@ public class ModonomiconConstants {
             public static final String DEFAULT_MODEL = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "modonomicon_purple").toString();
             public static final int DEFAULT_TITLE_COLOR = 0xFF000000;
             public static final int DEFAULT_TEXT_COLOR = 0xFF000000;
-            public static final Identifier ITEM_ID = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "modonomicon");
-
         }
 
         public static class Theme {

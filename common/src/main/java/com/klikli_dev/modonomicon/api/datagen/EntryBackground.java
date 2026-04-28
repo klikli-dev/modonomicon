@@ -4,11 +4,12 @@
 
 package com.klikli_dev.modonomicon.api.datagen;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiTexture;
 import net.minecraft.resources.Identifier;
 
 public class EntryBackground {
-    private static final String DEFAULT_THEME_ENTRY_BACKGROUND_PATH = "modonomicon/themes/default/node/entry_backgrounds/";
+    private static final String DEFAULT_THEME_ENTRY_BACKGROUND_PATH = Modonomicon.MOD_ID + "/themes/default/node/entry_backgrounds/";
 
     public static final GuiTexture SQUARE_GOLD = entryBackground("square_gold");
     public static final GuiTexture SQUARE_GRAY = entryBackground("square_gray");
@@ -24,6 +25,6 @@ public class EntryBackground {
     public static final GuiTexture LINK_TO_CATEGORY = STAR_GRAY;
 
     private static GuiTexture entryBackground(String name) {
-        return new GuiTexture(Identifier.fromNamespaceAndPath("modonomicon", DEFAULT_THEME_ENTRY_BACKGROUND_PATH + name), 26, 26);
+        return new GuiTexture(Modonomicon.loc( DEFAULT_THEME_ENTRY_BACKGROUND_PATH + name), 26, 26);
     }
 }
