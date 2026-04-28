@@ -33,6 +33,8 @@ It selects the Java theme implementation from the theme registry.
 
 Use `modonomicon:default` for normal sprite-based custom themes.
 
+See below [Advanced: Custom theme types](#advanced-custom-theme-types) for using custom theme types.
+
 ### **layout** (JSON Object, _optional_)
 
 Controls layout offsets and icon scale.
@@ -169,7 +171,7 @@ So you can override only the files you care about and keep the default look for 
 
 This also means you can start with a tiny theme and expand it over time.
 
-## Advanced custom theme types
+## Advanced: Custom theme types
 
 If the default sprite-based theme is not enough, create your own `BookTheme` implementation and register it with a custom theme type.
 
@@ -193,4 +195,4 @@ ThemeRegistry.registerTheme(
 
 Register it during common setup before books are used.
 
-Use this option if you need behavior that cannot be expressed through the default sprite path conventions, layout values, and palette values alone.
+Use this option if you need behavior that cannot be expressed through the default sprite path conventions, layout values, and palette values alone. For example if you want to use any custom rendering logic, or sprites that are of a different size than the default theme sprites.
