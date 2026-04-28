@@ -20,21 +20,17 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 public class BookEntrySinglePageScreen extends BookEntryScreen {
 
     public static final int SINGLE_PAGE_BOOK_BACKGROUND_WIDTH = 145;
     public static final int SINGLE_PAGE_BOOK_BACKGROUND_HEIGHT = 178;
-    protected final Identifier singlePageTexture;
     private BookPage page;
     private BookPageRenderer<?> pageRenderer;
 
     public BookEntrySinglePageScreen(BookParentScreen parentScreen, BookContentEntry entry) {
         super(parentScreen, entry);
-
-        this.singlePageTexture = entry.getBook().getSinglePageTexture();
     }
 
     public static void renderSinglePageBookBackground(GuiGraphicsExtractor guiGraphics, com.klikli_dev.modonomicon.book.Book book) {

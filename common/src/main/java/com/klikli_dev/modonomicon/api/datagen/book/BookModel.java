@@ -7,7 +7,6 @@
 package com.klikli_dev.modonomicon.api.datagen.book;
 
 import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Book;
 import com.klikli_dev.modonomicon.book.BookDisplayMode;
 import com.klikli_dev.modonomicon.book.PageDisplayMode;
@@ -295,21 +294,6 @@ public class BookModel {
         return this;
     }
 
-    public BookModel withDefaultTitleColor(int defaultTitleColor) {
-        this.theme().withPalette(p -> p.withDefaultTitleColor(defaultTitleColor));
-        return this;
-    }
-
-    public BookModel withDefaultTextColor(int defaultTextColor) {
-        this.theme().withPalette(p -> p.withDefaultTextColor(defaultTextColor));
-        return this;
-    }
-
-    public BookModel withCategoryButtonIconScale(float categoryButtonIconScale) {
-        this.theme().withLayout(l -> l.withCategoryButtonIconScale(categoryButtonIconScale));
-        return this;
-    }
-
     public BookModel withCategories(List<BookCategoryModel> categories) {
         categories.forEach(category -> category.book = this);
         this.categories.addAll(categories);
@@ -344,66 +328,6 @@ public class BookModel {
 
     public BookModel withAutoAddReadConditions(boolean autoAddReadConditions) {
         this.autoAddReadConditions = autoAddReadConditions;
-        return this;
-    }
-
-    /**
-     * When rendering book text holders, add this offset to the x position (basically, create a left margin).
-     * Will be automatically subtracted from the width to avoid overflow.
-     */
-    public BookModel withBookTextOffsetX(int bookTextOffsetX) {
-        this.theme().withLayout(l -> l.withBookTextOffsetX(bookTextOffsetX));
-        return this;
-    }
-
-    /**
-     * When rendering book text holders, add this offset to the y position (basically, create a top margin).
-     */
-    public BookModel withBookTextOffsetY(int bookTextOffsetY) {
-        this.theme().withLayout(l -> l.withBookTextOffsetY(bookTextOffsetY));
-        return this;
-    }
-
-    /**
-     * When rendering book text holders, add this offset to the width (allows to create a right margin)
-     * To make the line end move to the left (as it would for a margin setting in eg css), use a negative value.
-     */
-    public BookModel withBookTextOffsetWidth(int bookTextOffsetWidth) {
-        this.theme().withLayout(l -> l.withBookTextOffsetWidth(bookTextOffsetWidth));
-        return this;
-    }
-
-    /**
-     * When rendering book text holders, add this offset to the height (allows to create a bottom margin)
-     * To make the bottom end of the text move up (as it would for a margin setting in eg css), use a negative value.
-     */
-    public BookModel withBookTextOffsetHeight(int bookTextOffsetHeight) {
-        this.theme().withLayout(l -> l.withBookTextOffsetHeight(bookTextOffsetHeight));
-        return this;
-    }
-
-    public BookModel withCategoryButtonXOffset(int categoryButtonXOffset) {
-        this.theme().withLayout(l -> l.withCategoryButtonXOffset(categoryButtonXOffset));
-        return this;
-    }
-
-    public BookModel withCategoryButtonYOffset(int categoryButtonYOffset) {
-        this.theme().withLayout(l -> l.withCategoryButtonYOffset(categoryButtonYOffset));
-        return this;
-    }
-
-    public BookModel withSearchButtonXOffset(int searchButtonXOffset) {
-        this.theme().withLayout(l -> l.withSearchButtonXOffset(searchButtonXOffset));
-        return this;
-    }
-
-    public BookModel withSearchButtonYOffset(int searchButtonYOffset) {
-        this.theme().withLayout(l -> l.withSearchButtonYOffset(searchButtonYOffset));
-        return this;
-    }
-
-    public BookModel withReadAllButtonYOffset(int readAllButtonYOffset) {
-        this.theme().withLayout(l -> l.withReadAllButtonYOffset(readAllButtonYOffset));
         return this;
     }
 

@@ -311,7 +311,7 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
                 var bookId = Identifier.fromNamespaceAndPath(entry.getKey().getNamespace(), pathParts[0]);
                 BookErrorManager.get().setCurrentBookId(bookId);
                 BookErrorManager.get().setContext("Loading Book JSON");
-                var themeData = themeDataByBook.getOrDefault(bookId, BookThemeData.fromLegacyBookJson(entry.getValue()));
+                var themeData = themeDataByBook.getOrDefault(bookId, BookThemeData.defaults());
                 var book = this.loadBook(bookId, entry.getValue(), themeData, this.registries);
                 this.books.put(book.getId(), book);
                 BookErrorManager.get().reset();

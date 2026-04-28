@@ -63,8 +63,9 @@ public class DemoLeaflet extends LeafletSubProvider {
     @Override
     protected BookModel additionalLeafletSetup(BookModel book) {
         //e.g. set creative tab using .withCreativeTab(<Identifier>)
-        return book.withBookTextOffsetWidth(-5)
-                .withBookTextOffsetX(5)
+        return book.withTheme(theme -> theme.withLayout(layout -> layout
+                        .withBookTextOffsetWidth(-5)
+                        .withBookTextOffsetX(5)))
                 .withPageDisplayMode(PageDisplayMode.SINGLE_PAGE)
                 .withModel(ItemRegistry.LEAFLET.getId())
                 ;

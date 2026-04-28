@@ -33,13 +33,6 @@ public record BookThemeData(Identifier id, Identifier type, BookThemeLayout layo
         );
     }
 
-    public static BookThemeData fromLegacyBookJson(JsonObject json) {
-        var defaults = defaults();
-        var layout = BookThemeLayout.fromJson(json);
-        var palette = BookThemePalette.fromJson(json);
-        return new BookThemeData(defaults.id, defaults.type, layout, palette);
-    }
-
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("id", this.id.toString());
