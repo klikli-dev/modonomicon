@@ -20,6 +20,48 @@ MANIFEST_PATH = Path("tools/modonomicon_theme_manifest.json")
 DEFAULT_PACKAGE = "com.klikli_dev.modonomicon.client.gui.book.theme"
 DEFAULT_CLASS_NAME = "GeneratedBookThemeData"
 
+DEFAULT_BOOK_SOURCES = {
+    "single_page_texture": "modonomicon:textures/gui/single_page_entry.png",
+    "frame_texture": "modonomicon:textures/gui/book_frame.png",
+    "crafting_texture": "modonomicon:textures/gui/crafting_textures.png",
+    "top_frame_overlay": {
+        "texture": "modonomicon:textures/gui/book_frame_top_overlay.png",
+        "texture_width": 256,
+        "texture_height": 256,
+        "frame_width": 72,
+        "frame_height": 7,
+        "frame_x_offset": 0,
+        "frame_y_offset": 4,
+    },
+    "bottom_frame_overlay": {
+        "texture": "modonomicon:textures/gui/book_frame_bottom_overlay.png",
+        "texture_width": 256,
+        "texture_height": 256,
+        "frame_width": 72,
+        "frame_height": 8,
+        "frame_x_offset": 0,
+        "frame_y_offset": -4,
+    },
+    "left_frame_overlay": {
+        "texture": "modonomicon:textures/gui/book_frame_left_overlay.png",
+        "texture_width": 256,
+        "texture_height": 256,
+        "frame_width": 7,
+        "frame_height": 70,
+        "frame_x_offset": 3,
+        "frame_y_offset": 0,
+    },
+    "right_frame_overlay": {
+        "texture": "modonomicon:textures/gui/book_frame_right_overlay.png",
+        "texture_width": 256,
+        "texture_height": 256,
+        "frame_width": 8,
+        "frame_height": 70,
+        "frame_x_offset": -4,
+        "frame_y_offset": 0,
+    },
+}
+
 OUTPUT_PATHS = {
     "content/double_page_background": "backgrounds/book/double_page_background",
     "content/single_page_background": "backgrounds/book/single_page_background",
@@ -85,7 +127,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--class-name", default=DEFAULT_CLASS_NAME)
     parser.add_argument("--package", default=DEFAULT_PACKAGE)
     parser.add_argument("--resource-root", help="Resource root to write generated assets into.")
-    parser.add_argument("--theme-path", help="Output theme path below sprites/modonomicon. Defaults to the book path.")
+    parser.add_argument("--theme-path", help="Output theme path below sprites/modonomicon/themes. Defaults to the book path.")
     parser.add_argument("--book-json-path", help="Explicit book.json path to use when multiple matches exist.")
     parser.add_argument("--dry-run", action="store_true")
     return parser.parse_args()
@@ -235,7 +277,7 @@ def sprite_relative_path(key: str, suffix: str | None = None) -> str:
 
 
 def sprite_output_relative(theme_path: str, key: str, suffix: str | None = None) -> Path:
-    return Path("textures/gui/sprites/modonomicon") / theme_path / sprite_relative_path(key, suffix)
+    return Path("textures/gui/sprites/modonomicon/themes") / theme_path / sprite_relative_path(key, suffix)
 
 
 def write_image(path: Path, image: Image.Image, dry_run: bool) -> None:
@@ -291,7 +333,7 @@ def apply_adjustment(image: Image.Image, rect: dict) -> dict:
 def source_descriptor(book_json: dict, source: str) -> tuple[str, dict | str]:
     overlay_keys = {"top_frame_overlay", "bottom_frame_overlay", "left_frame_overlay", "right_frame_overlay"}
     if source in overlay_keys:
-        overlay = book_json.get(source)
+        overlay = book_json.get(source, DEFAULT_BOOK_SOURCES.get(source))
         if overlay is None:
             fail(f"Book json is missing required overlay entry: {source}")
         return "overlay", overlay
@@ -299,7 +341,7 @@ def source_descriptor(book_json: dict, source: str) -> tuple[str, dict | str]:
     if ":" in source:
         return "texture", source
 
-    value = book_json.get(source)
+    value = book_json.get(source, DEFAULT_BOOK_SOURCES.get(source))
     if value is None:
         fail(f"Book json is missing required texture entry: {source}")
     return "texture", value
@@ -383,7 +425,7 @@ def generated_java(package_name: str, class_name: str, namespace: str, theme_pat
 
     lines.extend([
         "",
-        f"    private static final String TEXTURE_ROOT = \"textures/gui/sprites/modonomicon/{theme_path}/\";",
+        f"    private static final String TEXTURE_ROOT = \"textures/gui/sprites/modonomicon/themes/{theme_path}/\";",
         "",
         f"    private {class_name}() {{",
         "    }",
