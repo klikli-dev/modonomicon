@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-1.136.0] - 2026-04-28
+### :sparkles: New Features
+- [`27ab22e`](https://github.com/klikli-dev/modonomicon/commit/27ab22e495772098087d8e9a8029f545c540ec25) - book themes *(PR [#352](https://github.com/klikli-dev/modonomicon/pull/352) by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.2-1.135.0] - 2026-04-25
 ### :sparkles: New Features
 - [`5ea9fc5`](https://github.com/klikli-dev/modonomicon/commit/5ea9fc54aea843eaffe12f14bde86c0f0eb87ad5) - add AGENTS.md *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2135,3 +2140,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-1.134.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.134.1...release/v26.1.2-1.134.2
 [release/v26.1.2-1.134.3]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.134.2...release/v26.1.2-1.134.3
 [release/v26.1.2-1.135.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.134.3...release/v26.1.2-1.135.0
+[release/v26.1.2-1.136.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.135.0...release/v26.1.2-1.136.0
