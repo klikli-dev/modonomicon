@@ -17,9 +17,6 @@ import net.minecraft.util.GsonHelper;
 
 public class GuiTexture {
 
-    private static final String LEGACY_NODE_ENTRY_BACKGROUND_PREFIX = "nodes/entry_backgrounds/";
-    private static final String DEFAULT_THEME_SPRITE_PREFIX = "textures/gui/sprites/modonomicon/themes/default/node/";
-
     public static final GuiTexture EMPTY = new GuiTexture(Identifier.fromNamespaceAndPath("minecraft", "missingno"), 0, 0);
 
     private final Identifier sprite;
@@ -27,21 +24,9 @@ public class GuiTexture {
     private int height;
 
     public GuiTexture(Identifier sprite, int width, int height) {
-        this.sprite = normalizeSpriteId(sprite);
+        this.sprite = sprite;
         this.width = width;
         this.height = height;
-    }
-
-    private static Identifier normalizeSpriteId(Identifier sprite) {
-        if (!"modonomicon".equals(sprite.getNamespace())) {
-            return sprite;
-        }
-
-        if (!sprite.getPath().startsWith(LEGACY_NODE_ENTRY_BACKGROUND_PREFIX)) {
-            return sprite;
-        }
-
-        return Identifier.fromNamespaceAndPath(sprite.getNamespace(), DEFAULT_THEME_SPRITE_PREFIX + sprite.getPath() + ".png");
     }
 
     public static GuiTexture fromJson(JsonElement jsonElement) {

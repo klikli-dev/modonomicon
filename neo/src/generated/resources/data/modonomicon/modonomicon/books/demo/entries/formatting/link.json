@@ -1,7 +1,7 @@
 {
   "background": {
     "height": 26,
-    "sprite": "modonomicon:entry_background_0_2",
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/circle_gold",
     "width": 26
   },
   "category": "formatting",

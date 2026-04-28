@@ -36,11 +36,11 @@ public class GuiGraphicsExt {
     }
 
     public static void blitGuiTexture(GuiGraphicsExtractor guiGraphics, RenderPipeline pipeline, GuiTexture texture, int x, int y, int width, int height) {
-        guiGraphics.blit(pipeline, texture.sprite(), x, y, 0, 0, width, height, texture.width(), texture.height());
+        guiGraphics.blitSprite(pipeline, texture.sprite(), x, y, width, height);
     }
 
     public static void blitGuiTexture(GuiGraphicsExtractor guiGraphics, RenderPipeline pipeline, GuiTexture texture, int x, int y, int width, int height, int color) {
-        guiGraphics.blit(pipeline, texture.sprite(), x, y, 0, 0, width, height, texture.width(), texture.height(), color);
+        guiGraphics.blitSprite(pipeline, texture.sprite(), x, y, width, height, color);
     }
 
     public static void drawTiledSprite(GuiGraphicsExtractor guiGraphics, final int tiledWidth, final int tiledHeight, int color, int scaledAmount, TextureAtlasSprite sprite, int posX, int posY) {

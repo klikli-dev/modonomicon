@@ -1,7 +1,7 @@
 {
   "background": {
     "height": 26,
-    "sprite": "modonomicon:entry_background_0_1",
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/star_gold",
     "width": 26
   },
   "category": "conditional",

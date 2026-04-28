@@ -13,18 +13,12 @@ import com.klikli_dev.modonomicon.platform.services.PlatformHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 public class DefaultBookTheme implements BookTheme {
 
-    private static final int NODE_ENTRY_BACKGROUND_WIDTH = 26;
-    private static final int NODE_ENTRY_BACKGROUND_HEIGHT = 26;
     private static final String DEFAULT_TEXTURE_ROOT = "textures/gui/sprites/modonomicon/themes/default/";
 
     private final BookThemeData data;
     private final String textureRoot;
-    private final Map<String, GuiTexture> entryBackgroundCache = new ConcurrentHashMap<>();
 
     private final GuiSprite doublePageBackground;
     private final GuiSprite singlePageBackground;
@@ -228,11 +222,6 @@ public class DefaultBookTheme implements BookTheme {
         }
     };
     private final BookNodeTheme node = new BookNodeTheme() {
-        @Override
-        public GuiTexture entryBackground(String spriteId) {
-            return DefaultBookTheme.this.entryBackgroundCache.computeIfAbsent(spriteId, DefaultBookTheme.this::createEntryBackground);
-        }
-
         @Override
         public GuiSprite smallCurveLeftDown() {
             return DefaultBookTheme.this.smallCurveLeftDown;
@@ -440,19 +429,4 @@ public class DefaultBookTheme implements BookTheme {
         return Modonomicon.loc(DEFAULT_TEXTURE_ROOT + relativePath);
     }
 
-    private GuiTexture createEntryBackground(String spriteId) {
-        var parsed = Identifier.tryParse(spriteId);
-        if (parsed != null && parsed.getPath().startsWith("textures/")) {
-            return new GuiTexture(parsed, NODE_ENTRY_BACKGROUND_WIDTH, NODE_ENTRY_BACKGROUND_HEIGHT);
-        }
-
-        String relativePath = parsed != null ? parsed.getPath() : spriteId;
-        if (!relativePath.contains("/")) {
-            relativePath = "entry_backgrounds/" + relativePath;
-        }
-        if (!relativePath.endsWith(".png")) {
-            relativePath += ".png";
-        }
-        return new GuiTexture(this.texture("node/" + relativePath), NODE_ENTRY_BACKGROUND_WIDTH, NODE_ENTRY_BACKGROUND_HEIGHT);
-    }
 }

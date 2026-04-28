@@ -182,11 +182,7 @@ public abstract class BookEntry {
     }
 
     public GuiTexture getEntryBackground() {
-        if (this.book == null) {
-            return this.data.entryBackground;
-        }
-
-        return this.book.theme().node().entryBackground(this.data.entryBackground.sprite().toString());
+        return this.data.entryBackground;
     }
 
     public boolean showWhenAnyParentUnlocked() {
