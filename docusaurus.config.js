@@ -38,12 +38,12 @@ const config = {
           // The default (latest) version label shown in the version dropdown
           // `current` refers to the unversioned docs in /docs (if used)
           includeCurrentVersion: false,
-          lastVersion: '26.1',
+          lastVersion: '26.1.2',
           //If we want to show a version with a specific label, map it here. 
           //Otherwise, the version will be shown as is (e.g. "1.21.1").
           versions: {
-              "26.1": {
-              label: "26.1 (Latest)",
+              "26.1.2": {
+              label: "26.1.2 (Latest)",
               banner: "none"
             },
           }
