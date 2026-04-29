@@ -60,6 +60,12 @@ public interface BookContentTheme {
 
     GuiSprite craftingRecipeBackground();
 
+    GuiSprite craftingGrid();
+
+    GuiSprite craftingSlot();
+
+    GuiSprite craftingArrow();
+
     GuiSprite shapelessIcon();
 
     GuiSprite processingRecipeBackground();
