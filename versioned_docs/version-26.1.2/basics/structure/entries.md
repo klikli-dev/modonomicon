@@ -75,13 +75,27 @@ If `false` the entry will only show once all parents of it are unlocked, effecti
 
 ::: 
 
-### **background_u_index** (Integer, _optional_)
+### **background** (Sprite JSON Object, _optional_)
 
-Default value: `0`. Use this to select a different entry background from the `entry_textures` texture configured in the [Category](./categories#attributes). `u` represents the Y Axis (vertical). The index is zero-based, so the first entry background is `0`, the second is `1`, etc.
+Defines the sprite used as the entry background.
 
-### **background_v_index** (Integer, _optional_)
+Default value:
 
-Default value: `0`. Use this to select a different entry background from the `entry_textures` texture configured in the [Category](./categories#attributes). `v` represents the X Axis (horizontal). The index is zero-based, so the first entry background is `0`, the second is `1`, etc.
+```json
+{
+  "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+  "width": 26,
+  "height": 26
+}
+```
+
+#### Attributes
+
+- `sprite` (ResourceLocation, mandatory): The sprite to use for the entry background.
+- `width` (Integer, optional): The background width. If omitted, defaults to `-1`.
+- `height` (Integer, optional): The background height. If omitted, defaults to `-1`.
+
+As a shorthand, `background` can also be a single ResourceLocation string instead of an object. In that case it is treated as the `sprite` value and `width` / `height` default to `-1`.
 
 ### **condition** (Condition, _optional_)
 
