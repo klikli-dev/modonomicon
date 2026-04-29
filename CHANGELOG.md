@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-1.138.0] - 2026-04-29
+### :recycle: Refactors
+- [`475388b`](https://github.com/klikli-dev/modonomicon/commit/475388b640f3e924fa6c50bd631af56828edda42) - unify gui sprite type *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.2-1.137.0] - 2026-04-29
 ### :sparkles: New Features
 - [`9baa251`](https://github.com/klikli-dev/modonomicon/commit/9baa2515c5422088984acc9f53ab018d7a4db76a) - expose book theme crafting recipe sprites *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2150,3 +2155,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-1.135.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.134.3...release/v26.1.2-1.135.0
 [release/v26.1.2-1.136.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.135.0...release/v26.1.2-1.136.0
 [release/v26.1.2-1.137.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.136.0...release/v26.1.2-1.137.0
+[release/v26.1.2-1.138.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.137.0...release/v26.1.2-1.138.0
