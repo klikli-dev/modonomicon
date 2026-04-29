@@ -10,7 +10,6 @@ import com.klikli_dev.modonomicon.book.page.BookSpotlightPage;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
 
 import net.minecraft.network.chat.Style;
 import org.jetbrains.annotations.Nullable;
@@ -38,7 +37,7 @@ public class BookSpotlightPageRenderer extends BookPageRenderer<BookSpotlightPag
         int h = 26;
 
         var spotlightSlot = this.page.getBook().theme().content().spotlightSlot();
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, spotlightSlot.sprite(), BookEntryScreen.PAGE_WIDTH / 2 - w / 2, 10, 0, 0, spotlightSlot.width(), spotlightSlot.height(), spotlightSlot.width(), spotlightSlot.height());
+        spotlightSlot.extractRenderState(guiGraphics, BookEntryScreen.PAGE_WIDTH / 2 - w / 2, 10);
 
         this.page.getItem().ifRight(
                 ingredient -> {

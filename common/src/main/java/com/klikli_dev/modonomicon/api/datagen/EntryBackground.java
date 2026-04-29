@@ -25,7 +25,7 @@ public class EntryBackground {
     public static final GuiSprite LINK_TO_CATEGORY = STAR_GRAY;
 
     private static GuiSprite entryBackground(String name) {
-        return new GuiSprite(Modonomicon.loc( DEFAULT_THEME_ENTRY_BACKGROUND_PATH + name), 26, 26);
+        return new GuiSprite(Modonomicon.loc(DEFAULT_THEME_ENTRY_BACKGROUND_PATH + name), 26, 26);
     }
 }
 

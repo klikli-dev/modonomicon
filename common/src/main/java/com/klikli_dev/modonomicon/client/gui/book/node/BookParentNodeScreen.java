@@ -181,7 +181,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
     protected void renderFrameOverlay(GuiGraphicsExtractor guiGraphics, GuiFrameOverlay overlay, int x, int y) {
         if (!overlay.sprite().isEmpty()) {
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, overlay.sprite().sprite(), overlay.getFrameX(x), overlay.getFrameY(y), 0, 0, overlay.sprite().width(), overlay.sprite().height(), overlay.sprite().width(), overlay.sprite().height());
+            overlay.sprite().extractRenderState(guiGraphics, overlay.getFrameX(x), overlay.getFrameY(y));
         }
     }
 

@@ -1,12 +1,10 @@
 package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderPipelines;
 
 import net.minecraft.network.chat.Component;
 
@@ -48,7 +46,7 @@ public class ShowRecentlyUnlockedButton extends Button {
             //GL scissors allows us to move the button on hover without intersecting with book border
             guiGraphics.enableScissor(scissorX, scissorY, scissorX + scissorWidth, scissorY + 1000);
 
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.sprite(), renderX, this.getY(), 0, 0, this.width, this.height, sprite.width(), sprite.height());
+            sprite.extractRenderState(guiGraphics, renderX, this.getY(), this.width, this.height);
 
             guiGraphics.disableScissor();
 

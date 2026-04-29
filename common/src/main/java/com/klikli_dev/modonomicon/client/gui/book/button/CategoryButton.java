@@ -11,12 +11,10 @@ import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.node.BookParentNodeScreen;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.renderer.RenderPipelines;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
@@ -63,7 +61,7 @@ public class CategoryButton extends Button {
             }
 
             //draw category button background
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.sprite(), renderX, this.getY(), 0, 0, renderWidth, this.height, sprite.width(), sprite.height(), color);
+            sprite.extractRenderState(guiGraphics, renderX, this.getY(), renderWidth, this.height, color);
 
             //then draw icon
             int iconSize = 16;

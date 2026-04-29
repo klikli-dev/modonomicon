@@ -13,7 +13,6 @@ import com.klikli_dev.modonomicon.client.gui.book.node.BookCategoryNodeScreen;
 import com.klikli_dev.modonomicon.client.gui.book.theme.BookNodeTheme;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
 
 import static java.lang.Math.*;
 
@@ -191,7 +190,7 @@ public class EntryConnectionRenderer {
     }
 
     protected void blit(GuiGraphicsExtractor guiGraphics, GuiSprite sprite, int pX, int pY) {
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.sprite(), pX, pY, 0, 0, sprite.width(), sprite.height(), sprite.width(), sprite.height());
+        sprite.extractRenderState(guiGraphics, pX, pY);
     }
 
     protected void drawSmallCurveLeftDown(GuiGraphicsExtractor guiGraphics, int x, int y) {
