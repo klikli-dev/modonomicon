@@ -9,21 +9,17 @@ package com.klikli_dev.modonomicon.client.render.page;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.book.page.BookCraftingRecipePage;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.recipebook.PlaceRecipeHelper;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
 import net.minecraft.world.item.crafting.display.ShapedCraftingRecipeDisplay;
 import net.minecraft.world.item.crafting.display.ShapelessCraftingRecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
-
-import java.util.List;
 
 public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recipe<?>, BookCraftingRecipePage> {
     public BookCraftingRecipePageRenderer(BookCraftingRecipePage page) {
@@ -49,8 +45,8 @@ public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recip
             }
         }
 
-        var craftingGrid = this.page.getBook().theme().content().craftingGrid();
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, craftingGrid.texture(), recipeX - 2, recipeY - 2, 0, 0, craftingGrid.width(), craftingGrid.height(), craftingGrid.width(), craftingGrid.height());
+        var craftingRecipeBackground = this.page.getBook().theme().content().craftingRecipeBackground();
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, craftingRecipeBackground.texture(), recipeX - 2, recipeY - 2, 0, 0, craftingRecipeBackground.width(), craftingRecipeBackground.height(), craftingRecipeBackground.width(), craftingRecipeBackground.height());
 
 
         boolean isShapeless = recipeDisplayEntry.display() instanceof ShapelessCraftingRecipeDisplay;

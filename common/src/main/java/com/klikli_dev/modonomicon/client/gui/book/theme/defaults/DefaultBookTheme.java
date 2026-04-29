@@ -45,7 +45,7 @@ public class DefaultBookTheme implements BookTheme {
     private final GuiButtonSprites readUnlockedButton;
     private final GuiSprite searchFieldBackground;
     private final GuiSprite mediaFrame;
-    private final GuiSprite craftingGrid;
+    private final GuiSprite craftingRecipeBackground;
     private final GuiSprite shapelessIcon;
     private final GuiSprite processingRecipeBackground;
     private final GuiSprite smithingRecipeBackground;
@@ -197,8 +197,8 @@ public class DefaultBookTheme implements BookTheme {
         }
 
         @Override
-        public GuiSprite craftingGrid() {
-            return DefaultBookTheme.this.craftingGrid;
+        public GuiSprite craftingRecipeBackground() {
+            return DefaultBookTheme.this.craftingRecipeBackground;
         }
 
         @Override
@@ -347,7 +347,7 @@ public class DefaultBookTheme implements BookTheme {
         this.readUnlockedButton = this.button("content/buttons/read/read_unlocked_button", 16, 14, true);
         this.searchFieldBackground = this.sprite("content/fields/search/background.png", 99, 14);
         this.mediaFrame = this.sprite("content/pages/media/frame.png", 106, 106);
-        this.craftingGrid = this.sprite("content/pages/recipes/crafting_grid.png", 100, 62);
+        this.craftingRecipeBackground = this.sprite("content/pages/recipes/crafting_recipe_background.png", 100, 62);
         this.shapelessIcon = this.sprite("content/pages/recipes/shapeless_icon.png", 11, 11);
         this.processingRecipeBackground = this.sprite("content/pages/recipes/processing_recipe_background.png", 96, 24);
         this.smithingRecipeBackground = this.sprite("content/pages/recipes/smithing_recipe_background.png", 96, 62);

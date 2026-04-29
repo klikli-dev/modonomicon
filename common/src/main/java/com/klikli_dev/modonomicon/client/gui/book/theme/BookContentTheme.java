@@ -58,11 +58,7 @@ public interface BookContentTheme {
 
     GuiSprite mediaFrame();
 
-    GuiSprite craftingGrid();
-
-    default GuiSprite craftingArrow() {
-        return GuiSprite.EMPTY;
-    }
+    GuiSprite craftingRecipeBackground();
 
     GuiSprite shapelessIcon();
 
