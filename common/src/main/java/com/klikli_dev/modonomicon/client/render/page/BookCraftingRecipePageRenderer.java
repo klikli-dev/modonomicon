@@ -11,7 +11,6 @@ import com.klikli_dev.modonomicon.book.page.BookCraftingRecipePage;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.recipebook.PlaceRecipeHelper;
@@ -46,7 +45,7 @@ public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recip
         }
 
         var craftingRecipeBackground = this.page.getBook().theme().content().craftingRecipeBackground();
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, craftingRecipeBackground.sprite(), recipeX - 2, recipeY - 2, 0, 0, craftingRecipeBackground.width(), craftingRecipeBackground.height(), craftingRecipeBackground.width(), craftingRecipeBackground.height());
+        craftingRecipeBackground.extractRenderState(guiGraphics, recipeX - 2, recipeY - 2);
 
 
         boolean isShapeless = recipeDisplayEntry.display() instanceof ShapelessCraftingRecipeDisplay;
@@ -54,7 +53,7 @@ public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recip
             int iconX = recipeX + 62;
             int iconY = recipeY + 2;
             var shapelessIcon = this.page.getBook().theme().content().shapelessIcon();
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, shapelessIcon.sprite(), iconX, iconY, 0, 0, shapelessIcon.width(), shapelessIcon.height(), shapelessIcon.width(), shapelessIcon.height());
+            shapelessIcon.extractRenderState(guiGraphics, iconX, iconY);
             if (this.parentScreen.isMouseInRange(mouseX, mouseY, iconX, iconY, 11, 11)) {
                 this.parentScreen.setTooltip(Component.translatable(Tooltips.RECIPE_CRAFTING_SHAPELESS));
             }

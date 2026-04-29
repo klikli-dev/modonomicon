@@ -241,7 +241,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                 color = ARGB.colorFromFloat(1f, 0.8F, 0.8F, 0.8F);
             }
             //render entry background
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, entryBackground.sprite(),
+            entryBackground.extractRenderState(guiGraphics,
                     entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP,
                     ENTRY_WIDTH, ENTRY_HEIGHT, color);
 

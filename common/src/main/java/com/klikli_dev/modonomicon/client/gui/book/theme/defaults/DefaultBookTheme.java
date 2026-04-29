@@ -15,9 +15,11 @@ import net.minecraft.resources.Identifier;
 
 public class DefaultBookTheme implements BookTheme {
 
-    private static final String DEFAULT_TEXTURE_ROOT = "textures/gui/sprites/modonomicon/themes/default/";
+    private static final String GUI_SPRITE_TEXTURE_ROOT = "textures/gui/sprites/";
+    private static final String DEFAULT_SPRITE_ROOT = "modonomicon/themes/default/";
 
     private final BookThemeData data;
+    private final String spriteRoot;
     private final String textureRoot;
 
     private final GuiSprite doublePageBackground;
@@ -339,7 +341,8 @@ public class DefaultBookTheme implements BookTheme {
 
     public DefaultBookTheme(BookThemeData data) {
         this.data = data;
-        this.textureRoot = "textures/gui/sprites/modonomicon/themes/" + data.id().getPath() + "/";
+        this.spriteRoot = "modonomicon/themes/" + data.id().getPath() + "/";
+        this.textureRoot = GUI_SPRITE_TEXTURE_ROOT + this.spriteRoot;
         this.doublePageBackground = this.sprite("content/backgrounds/book/double_page_background.png", 272, 178);
         this.singlePageBackground = this.sprite("content/backgrounds/book/single_page_background.png", 145, 178);
         this.titleSeparator = this.sprite("content/decorations/book/title_separator.png", 110, 3);
@@ -366,9 +369,9 @@ public class DefaultBookTheme implements BookTheme {
         this.searchFieldBackground = this.sprite("content/fields/search/background.png", 99, 14);
         this.mediaFrame = this.sprite("content/pages/media/frame.png", 106, 106);
         this.craftingRecipeBackground = this.sprite("content/pages/recipes/crafting_recipe_background.png", 100, 62);
-        this.craftingGrid = this.sprite("content/pages/recipes/crafting_grid.png", 60, 60);
-        this.craftingSlot = this.sprite("content/pages/recipes/crafting_slot.png", 22, 22);
-        this.craftingArrow = this.sprite("content/pages/recipes/crafting_arrow.png", 9, 9);
+        this.craftingGrid = this.sprite("content/pages/recipes/crafting_grid.png", 58, 58);
+        this.craftingSlot = this.sprite("content/pages/recipes/crafting_slot.png", 18, 18);
+        this.craftingArrow = this.sprite("content/pages/recipes/crafting_arrow.png", 22, 15);
         this.shapelessIcon = this.sprite("content/pages/recipes/shapeless_icon.png", 11, 11);
         this.processingRecipeBackground = this.sprite("content/pages/recipes/processing_recipe_background.png", 96, 24);
         this.smithingRecipeBackground = this.sprite("content/pages/recipes/smithing_recipe_background.png", 96, 62);
@@ -420,7 +423,7 @@ public class DefaultBookTheme implements BookTheme {
     }
 
     private GuiSprite sprite(String relativePath, int width, int height) {
-        return new GuiSprite(this.texture(relativePath), width, height);
+        return new GuiSprite(this.spriteId(relativePath), width, height);
     }
 
     private GuiButtonSprites button(String path, int width, int height, boolean hasHover) {
@@ -447,7 +450,25 @@ public class DefaultBookTheme implements BookTheme {
 
         //otherwise we fall back to the default theme.
         //on server the actual texture does not matter and should never be accessed anyway, so we serve the defaults always.
-        return Modonomicon.loc(DEFAULT_TEXTURE_ROOT + relativePath);
+        return Modonomicon.loc(GUI_SPRITE_TEXTURE_ROOT + DEFAULT_SPRITE_ROOT + relativePath);
+    }
+
+    private Identifier spriteId(String relativePath) {
+        Identifier themedSprite = Identifier.fromNamespaceAndPath(this.data.id().getNamespace(), this.spriteRoot + this.stripPng(relativePath));
+
+        if (Services.PLATFORM.getPhysicalSide() == PlatformHelper.PhysicalSide.CLIENT) {
+            Minecraft minecraft = Minecraft.getInstance();
+            Identifier themedTexture = Identifier.fromNamespaceAndPath(themedSprite.getNamespace(), GUI_SPRITE_TEXTURE_ROOT + themedSprite.getPath() + ".png");
+            if (minecraft == null || minecraft.getResourceManager() == null || minecraft.getResourceManager().getResource(themedTexture).isPresent()) {
+                return themedSprite;
+            }
+        }
+
+        return Modonomicon.loc(DEFAULT_SPRITE_ROOT + this.stripPng(relativePath));
+    }
+
+    private String stripPng(String relativePath) {
+        return relativePath.endsWith(".png") ? relativePath.substring(0, relativePath.length() - 4) : relativePath;
     }
 
 }
