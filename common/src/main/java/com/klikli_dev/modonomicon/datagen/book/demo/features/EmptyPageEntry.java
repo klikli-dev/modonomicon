@@ -10,7 +10,7 @@ import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookEmptyPageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
-import com.klikli_dev.modonomicon.client.gui.book.theme.GuiTexture;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.world.item.Items;
 
 public class EmptyPageEntry extends EntryProvider {
@@ -49,7 +49,7 @@ public class EmptyPageEntry extends EntryProvider {
     }
 
     @Override
-    protected GuiTexture entryBackground() {
+    protected GuiSprite entryBackground() {
         return EntryBackground.DEFAULT;
     }
 
@@ -63,3 +63,4 @@ public class EmptyPageEntry extends EntryProvider {
         return ID;
     }
 }
+

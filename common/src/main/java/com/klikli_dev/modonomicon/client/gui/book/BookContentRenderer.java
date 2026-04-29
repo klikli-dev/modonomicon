@@ -26,17 +26,17 @@ public class BookContentRenderer {
         int rx = x - w / 2;
 
         var color = ARGB.colorFromFloat(0.8f, 1f, 1f,1f);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.texture(), rx, y, 0, 0, sprite.width(), sprite.height(), sprite.width(), sprite.height(), color);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.sprite(), rx, y, 0, 0, sprite.width(), sprite.height(), sprite.width(), sprite.height(), color);
     }
 
     public static void drawLock(GuiGraphicsExtractor guiGraphics, Book book, int x, int y) {
         var sprite = book.theme().content().lockIcon();
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.texture(), x, y, 0, 0, sprite.width(), sprite.height(), sprite.width(), sprite.height());
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.sprite(), x, y, 0, 0, sprite.width(), sprite.height(), sprite.width(), sprite.height());
     }
 
     public static void drawLock(GuiGraphicsExtractor guiGraphics, Book book, int x, int y, int color) {
         var sprite = book.theme().content().lockIcon();
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.texture(), x, y, 0, 0, sprite.width(), sprite.height(), sprite.width(), sprite.height(), color);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.sprite(), x, y, 0, 0, sprite.width(), sprite.height(), sprite.width(), sprite.height(), color);
     }
 
     public static void drawUnreadIndicator(GuiGraphicsExtractor guiGraphics, Book book, int x, int y, boolean hovered) {
@@ -46,19 +46,19 @@ public class BookContentRenderer {
     }
 
     public static void drawSprite(GuiGraphicsExtractor guiGraphics, GuiSprite sprite, int x, int y) {
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.texture(), x, y, 0, 0, sprite.width(), sprite.height(), sprite.width(), sprite.height());
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.sprite(), x, y, 0, 0, sprite.width(), sprite.height(), sprite.width(), sprite.height());
     }
 
     public static void drawSprite(GuiGraphicsExtractor guiGraphics, GuiSprite sprite, int x, int y, int color) {
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.texture(), x, y, 0, 0, sprite.width(), sprite.height(), sprite.width(), sprite.height(), color);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.sprite(), x, y, 0, 0, sprite.width(), sprite.height(), sprite.width(), sprite.height(), color);
     }
 
     public static void drawSpriteRegion(GuiGraphicsExtractor guiGraphics, GuiSprite sprite, int x, int y, int width, int height) {
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.texture(), x, y, 0, 0, width, height, sprite.width(), sprite.height());
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.sprite(), x, y, 0, 0, width, height, sprite.width(), sprite.height());
     }
 
     public static void drawSpriteRegion(GuiGraphicsExtractor guiGraphics, GuiSprite sprite, int x, int y, int width, int height, int color) {
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.texture(), x, y, 0, 0, width, height, sprite.width(), sprite.height(), color);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.sprite(), x, y, 0, 0, width, height, sprite.width(), sprite.height(), color);
     }
 
     public static void drawButton(GuiGraphicsExtractor guiGraphics, GuiButtonSprites sprites, int x, int y, boolean hovered) {
@@ -82,3 +82,4 @@ public class BookContentRenderer {
 
 
 }
+

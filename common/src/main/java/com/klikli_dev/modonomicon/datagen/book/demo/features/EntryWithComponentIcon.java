@@ -12,7 +12,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookSpotlightPageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.platform.Services;
-import com.klikli_dev.modonomicon.client.gui.book.theme.GuiTexture;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -58,7 +58,7 @@ public class EntryWithComponentIcon extends EntryProvider {
     }
 
     @Override
-    protected GuiTexture entryBackground() {
+    protected GuiSprite entryBackground() {
         return EntryBackground.DEFAULT;
     }
 
@@ -78,3 +78,4 @@ public class EntryWithComponentIcon extends EntryProvider {
         return ID;
     }
 }
+

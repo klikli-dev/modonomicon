@@ -191,7 +191,7 @@ public class EntryConnectionRenderer {
     }
 
     protected void blit(GuiGraphicsExtractor guiGraphics, GuiSprite sprite, int pX, int pY) {
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.texture(), pX, pY, 0, 0, sprite.width(), sprite.height(), sprite.width(), sprite.height());
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.sprite(), pX, pY, 0, 0, sprite.width(), sprite.height(), sprite.width(), sprite.height());
     }
 
     protected void drawSmallCurveLeftDown(GuiGraphicsExtractor guiGraphics, int x, int y) {
@@ -308,3 +308,4 @@ public class EntryConnectionRenderer {
         this.blit(guiGraphics, this.nodeTheme.leftArrow(), this.screenX(x) - 1, this.screenY(y));
     }
 }
+

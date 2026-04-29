@@ -11,7 +11,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookAdvancementConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
-import com.klikli_dev.modonomicon.client.gui.book.theme.GuiTexture;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.util.Util;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
@@ -76,7 +76,7 @@ public class ConditionAdvancementEntry extends EntryProvider {
     }
 
     @Override
-    protected GuiTexture entryBackground() {
+    protected GuiSprite entryBackground() {
         return EntryBackground.CONDITION;
     }
 
@@ -90,3 +90,4 @@ public class ConditionAdvancementEntry extends EntryProvider {
         return ID;
     }
 }
+

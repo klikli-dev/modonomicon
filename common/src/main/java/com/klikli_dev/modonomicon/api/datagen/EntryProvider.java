@@ -9,7 +9,7 @@ package com.klikli_dev.modonomicon.api.datagen;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
-import com.klikli_dev.modonomicon.client.gui.book.theme.GuiTexture;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.phys.Vec2;
 
@@ -185,7 +185,7 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
     /**
      * Implement this and return the GUI texture used for the entry background.
      */
-    protected abstract GuiTexture entryBackground();
+    protected abstract GuiSprite entryBackground();
 
     /**
      * Implement this and return the desired icon for the entry.
@@ -199,3 +199,4 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
     protected abstract String entryId();
 
 }
+

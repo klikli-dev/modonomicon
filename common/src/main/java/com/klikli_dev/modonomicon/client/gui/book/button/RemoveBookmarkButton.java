@@ -54,10 +54,11 @@ public class RemoveBookmarkButton extends Button {
             //GL scissors allows us to move the button on hover without intersecting with book border
             guiGraphics.enableScissor(scissorX, scissorY, scissorX + scissorWidth, scissorY + 1000);
 
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.texture(), renderX, this.getY(), 0, 0, this.width, this.height, sprite.width(), sprite.height());
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.sprite(), renderX, this.getY(), 0, 0, this.width, this.height, sprite.width(), sprite.height());
 
             guiGraphics.disableScissor();
             guiGraphics.pose().popMatrix();
         }
     }
 }
+

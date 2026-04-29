@@ -63,7 +63,7 @@ public class CategoryButton extends Button {
             }
 
             //draw category button background
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.texture(), renderX, this.getY(), 0, 0, renderWidth, this.height, sprite.width(), sprite.height(), color);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, sprite.sprite(), renderX, this.getY(), 0, 0, renderWidth, this.height, sprite.width(), sprite.height(), color);
 
             //then draw icon
             int iconSize = 16;
@@ -97,3 +97,4 @@ public class CategoryButton extends Button {
         }
     }
 }
+

@@ -9,7 +9,7 @@ import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
-import com.klikli_dev.modonomicon.client.gui.book.theme.GuiTexture;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.world.item.Items;
 
 public class IntroEntry extends EntryProvider {
@@ -57,7 +57,7 @@ public class IntroEntry extends EntryProvider {
     }
 
     @Override
-    protected GuiTexture entryBackground() {
+    protected GuiSprite entryBackground() {
         return EntryBackground.CATEGORY_START;
     }
 

@@ -19,7 +19,7 @@ import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
-import com.klikli_dev.modonomicon.client.gui.book.theme.GuiTexture;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -181,7 +181,7 @@ public abstract class BookEntry {
         return this.parents == null ? this.data.parents : this.parents;
     }
 
-    public GuiTexture getEntryBackground() {
+    public GuiSprite getEntryBackground() {
         return this.data.entryBackground;
     }
 
@@ -211,7 +211,7 @@ public abstract class BookEntry {
      * The entry background is selected by GUI sprite id.
      */
     public record BookEntryData(Identifier categoryId, List<BookEntryParent> parents, int x, int y, String name,
-                                String description, BookIcon icon, GuiTexture entryBackground,
+                                String description, BookIcon icon, GuiSprite entryBackground,
                                 BookCondition condition, boolean hideWhileLocked, boolean showWhenAnyParentUnlocked,
                                 int sortNumber) {
 
@@ -247,7 +247,7 @@ public abstract class BookEntry {
             var name = GsonHelper.getAsString(json, "name");
             var description = GsonHelper.getAsString(json, "description", "");
             var icon = BookIcon.fromJson(json.get("icon"), provider);
-            var entryBackground = json.has("background") ? GuiTexture.fromJson(json.get("background")) : GuiTexture.EMPTY;
+            var entryBackground = json.has("background") ? GuiSprite.fromJson(json.get("background")) : GuiSprite.EMPTY;
 
             BookCondition condition = new BookNoneCondition(); //default to unlocked
             if (json.has("condition")) {
@@ -280,7 +280,7 @@ public abstract class BookEntry {
             var icon = BookIcon.fromNetwork(buffer);
             var x = buffer.readVarInt();
             var y = buffer.readVarInt();
-            var entryBackground = GuiTexture.fromNetwork(buffer);
+            var entryBackground = GuiSprite.fromNetwork(buffer);
             var hideWhileLocked = buffer.readBoolean();
             var showWhenAnyParentUnlocked = buffer.readBoolean();
             var condition = BookCondition.fromNetwork(buffer);
@@ -319,3 +319,4 @@ public abstract class BookEntry {
         }
     }
 }
+

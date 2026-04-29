@@ -4,7 +4,7 @@
 
 package com.klikli_dev.modonomicon.api.datagen;
 
-import com.klikli_dev.modonomicon.client.gui.book.theme.GuiTexture;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 
 public abstract class IndexModeEntryProvider extends EntryProvider{
 
@@ -15,8 +15,9 @@ public abstract class IndexModeEntryProvider extends EntryProvider{
     /**
      * Implement this and return the GUI texture used for the entry background.
      */
-    protected GuiTexture entryBackground(){
+    protected GuiSprite entryBackground(){
         //index mode rendering does not use this
         return EntryBackground.DEFAULT;
     }
 }
+

@@ -46,7 +46,7 @@ public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recip
         }
 
         var craftingRecipeBackground = this.page.getBook().theme().content().craftingRecipeBackground();
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, craftingRecipeBackground.texture(), recipeX - 2, recipeY - 2, 0, 0, craftingRecipeBackground.width(), craftingRecipeBackground.height(), craftingRecipeBackground.width(), craftingRecipeBackground.height());
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, craftingRecipeBackground.sprite(), recipeX - 2, recipeY - 2, 0, 0, craftingRecipeBackground.width(), craftingRecipeBackground.height(), craftingRecipeBackground.width(), craftingRecipeBackground.height());
 
 
         boolean isShapeless = recipeDisplayEntry.display() instanceof ShapelessCraftingRecipeDisplay;
@@ -54,7 +54,7 @@ public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recip
             int iconX = recipeX + 62;
             int iconY = recipeY + 2;
             var shapelessIcon = this.page.getBook().theme().content().shapelessIcon();
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, shapelessIcon.texture(), iconX, iconY, 0, 0, shapelessIcon.width(), shapelessIcon.height(), shapelessIcon.width(), shapelessIcon.height());
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, shapelessIcon.sprite(), iconX, iconY, 0, 0, shapelessIcon.width(), shapelessIcon.height(), shapelessIcon.width(), shapelessIcon.height());
             if (this.parentScreen.isMouseInRange(mouseX, mouseY, iconX, iconY, 11, 11)) {
                 this.parentScreen.setTooltip(Component.translatable(Tooltips.RECIPE_CRAFTING_SHAPELESS));
             }
@@ -108,3 +108,4 @@ public class BookCraftingRecipePageRenderer extends BookRecipePageRenderer<Recip
         this.parentScreen.renderItemStacks(guiGraphics, recipeX + 79, recipeY + 41, mouseX, mouseY, recipeDisplayEntry.display().craftingStation().resolveForStacks(context));
     }
 }
+

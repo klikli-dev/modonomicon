@@ -13,7 +13,7 @@ import com.klikli_dev.modonomicon.datagen.book.demo.FeaturesCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.FormattingCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionLevel1Entry;
 import com.klikli_dev.modonomicon.datagen.book.demo.features.MultiblockEntry;
-import com.klikli_dev.modonomicon.client.gui.book.theme.GuiTexture;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.world.item.Items;
 
 public class LinkFormattingEntry extends EntryProvider {
@@ -92,7 +92,7 @@ public class LinkFormattingEntry extends EntryProvider {
     }
 
     @Override
-    protected GuiTexture entryBackground() {
+    protected GuiSprite entryBackground() {
         return EntryBackground.LINK;
     }
 
@@ -106,3 +106,4 @@ public class LinkFormattingEntry extends EntryProvider {
         return ID;
     }
 }
+

@@ -11,7 +11,7 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.datagen.CategoryEntryMap;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
-import com.klikli_dev.modonomicon.client.gui.book.theme.GuiTexture;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ItemLike;
@@ -29,7 +29,7 @@ public class BookEntryModel {
     protected BookIconModel icon;
     protected int x;
     protected int y;
-    protected GuiTexture entryBackground = GuiTexture.EMPTY;
+    protected GuiSprite entryBackground = GuiSprite.EMPTY;
 
     protected boolean hideWhileLocked;
     protected boolean showWhenAnyParentUnlocked;
@@ -119,7 +119,7 @@ public class BookEntryModel {
         return json;
     }
 
-    public GuiTexture getEntryBackground() {
+    public GuiSprite getEntryBackground() {
         return this.entryBackground;
     }
 
@@ -331,7 +331,7 @@ public class BookEntryModel {
     /**
      * Select the themed node entry background by GUI sprite id and optional dimensions.
      */
-    public BookEntryModel withEntryBackground(GuiTexture texture) {
+    public BookEntryModel withEntryBackground(GuiSprite texture) {
         this.entryBackground = texture;
         return this;
     }
@@ -435,3 +435,4 @@ public class BookEntryModel {
         return this;
     }
 }
+

@@ -46,7 +46,7 @@ public abstract class BookProcessingRecipePageRenderer<T extends Recipe<?>> exte
         }
 
         var background = this.page.getBook().theme().content().processingRecipeBackground();
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, background.texture(), recipeX, recipeY, 0, 0, background.width(), background.height(), background.width(), background.height());
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, background.sprite(), recipeX, recipeY, 0, 0, background.width(), background.height(), background.width(), background.height());
         //noinspection DataFlowIssue
         var context = SlotDisplayContext.fromLevel(Minecraft.getInstance().level);
         this.parentScreen.renderIngredient(guiGraphics, recipeX + 4, recipeY + 4, mouseX, mouseY, recipeDisplayEntry.craftingRequirements().map(List::getFirst).orElseThrow());
@@ -54,3 +54,4 @@ public abstract class BookProcessingRecipePageRenderer<T extends Recipe<?>> exte
         this.parentScreen.renderItemStacks(guiGraphics, recipeX + 76, recipeY + 4, mouseX, mouseY, recipeDisplayEntry.display().result().resolveForStacks(context));
     }
 }
+
