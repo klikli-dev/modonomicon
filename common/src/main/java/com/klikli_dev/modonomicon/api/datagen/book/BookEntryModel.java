@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.api.datagen.book;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.datagen.CategoryEntryMap;
+import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
@@ -29,7 +30,7 @@ public class BookEntryModel {
     protected BookIconModel icon;
     protected int x;
     protected int y;
-    protected GuiSprite entryBackground = GuiSprite.EMPTY;
+    protected GuiSprite entryBackground = EntryBackground.DEFAULT;
 
     protected boolean hideWhileLocked;
     protected boolean showWhenAnyParentUnlocked;
