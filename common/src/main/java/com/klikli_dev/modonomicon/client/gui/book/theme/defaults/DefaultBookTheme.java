@@ -369,9 +369,9 @@ public class DefaultBookTheme implements BookTheme {
         this.searchFieldBackground = this.sprite("content/fields/search/background.png", 99, 14);
         this.mediaFrame = this.sprite("content/pages/media/frame.png", 106, 106);
         this.craftingRecipeBackground = this.sprite("content/pages/recipes/crafting_recipe_background.png", 100, 62);
-        this.craftingGrid = this.sprite("content/pages/recipes/crafting_grid.png", 58, 58);
-        this.craftingSlot = this.sprite("content/pages/recipes/crafting_slot.png", 18, 18);
-        this.craftingArrow = this.sprite("content/pages/recipes/crafting_arrow.png", 22, 15);
+        this.craftingGrid = this.sprite("content/pages/recipes/crafting_grid.png", 60, 60);
+        this.craftingSlot = this.sprite("content/pages/recipes/crafting_slot.png", 22, 22);
+        this.craftingArrow = this.sprite("content/pages/recipes/crafting_arrow.png", 9, 9);
         this.shapelessIcon = this.sprite("content/pages/recipes/shapeless_icon.png", 11, 11);
         this.processingRecipeBackground = this.sprite("content/pages/recipes/processing_recipe_background.png", 96, 24);
         this.smithingRecipeBackground = this.sprite("content/pages/recipes/smithing_recipe_background.png", 96, 62);
