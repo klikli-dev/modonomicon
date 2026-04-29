@@ -157,10 +157,15 @@ Example files inside that folder might look like:
 content/backgrounds/book/double_page_background.png
 content/buttons/navigation/next_page_button_normal.png
 content/buttons/navigation/next_page_button_hover.png
+content/pages/recipes/crafting_grid.png
+content/pages/recipes/crafting_slot.png
+content/pages/recipes/crafting_arrow.png
 frame/frame.png
 frame/top_overlay.png
 node/connections/right_arrow.png
 ```
+
+Recipe page themes can also override dedicated crafting recipe sprites such as `content/pages/recipes/crafting_grid.png`, `content/pages/recipes/crafting_slot.png`, and `content/pages/recipes/crafting_arrow.png`.
 
 ### Partial overrides are supported
 
