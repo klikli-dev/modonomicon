@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-1.140.0] - 2026-05-01
+### :recycle: Refactors
+- [`798bf0f`](https://github.com/klikli-dev/modonomicon/commit/798bf0fd6f0ce5c956f520e3cf46de941111ae04) - fluid and gui frame rendering *(PR [#355](https://github.com/klikli-dev/modonomicon/pull/355) by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.2-1.139.1] - 2026-04-29
 ### :bug: Bug Fixes
 - [`53e0fc2`](https://github.com/klikli-dev/modonomicon/commit/53e0fc21147f907e5640eb5f8a0070f7928ed1f6) - sprite sizes *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2174,3 +2179,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-1.138.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.138.0...release/v26.1.2-1.138.1
 [release/v26.1.2-1.139.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.138.1...release/v26.1.2-1.139.0
 [release/v26.1.2-1.139.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.139.0...release/v26.1.2-1.139.1
+[release/v26.1.2-1.140.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.139.1...release/v26.1.2-1.140.0
