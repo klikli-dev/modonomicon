@@ -30,7 +30,7 @@ public class ForgeFluidHelper implements FluidHelper {
         FluidStack fluidStack = ForgeFluidHolder.toStack(fluidHolder);
         Fluid fluid = fluidStack.getFluid();
         IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluid);
-        return renderProperties.getTintColor(fluidStack);
+        return renderProperties.getTintColor(fluidStack) | 0xFF000000;
     }
 
     @Override

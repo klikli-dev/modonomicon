@@ -156,7 +156,6 @@ public interface ContentRenderingScreen {
         }
 
         SpriteContents spriteContents = sprite.contents();
-        GuiSpriteScaling.Tile tileScaling = new GuiSpriteScaling.Tile(spriteContents.width(), spriteContents.height());
 
         int renderY = y + height - scaledAmount;
         guiGraphics.enableScissor(x, renderY, x + width, renderY + scaledAmount);
@@ -170,10 +169,10 @@ public interface ContentRenderingScreen {
                     scaledAmount,
                     0,
                     0,
-                    tileScaling.width(),
-                    tileScaling.height(),
-                    tileScaling.width(),
-                    tileScaling.height(),
+                    spriteContents.width(),
+                    spriteContents.height(),
+                    spriteContents.width(),
+                    spriteContents.height(),
                     ClientServices.FLUID.getColorTint(fluidHolder)
             );
         } finally {
