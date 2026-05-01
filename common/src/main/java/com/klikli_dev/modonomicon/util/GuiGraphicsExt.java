@@ -14,10 +14,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 
 public class GuiGraphicsExt {
 
@@ -25,14 +21,14 @@ public class GuiGraphicsExt {
      * drawString for rendering at float coordinates.
      */
     public static void drawString(GuiGraphicsExtractor guiGraphics, Font font, Component component, float x, float y, int color, boolean drawShadow) {
-            int x1i = Mth.floor(x);
-            int y1i = Mth.floor(y);
-            float x1f = x-x1i;
-            float y1f = y-y1i;
+        int x1i = Mth.floor(x);
+        int y1i = Mth.floor(y);
+        float x1f = x - x1i;
+        float y1f = y - y1i;
 
         guiGraphics.pose().pushMatrix();
-            guiGraphics.pose().translate(x1f, y1f);
-            guiGraphics.text(font, component, x1i, y1i, color, drawShadow);
+        guiGraphics.pose().translate(x1f, y1f);
+        guiGraphics.text(font, component, x1i, y1i, color, drawShadow);
         guiGraphics.pose().popMatrix();
     }
 
@@ -42,8 +38,8 @@ public class GuiGraphicsExt {
     public static void drawString(GuiGraphicsExtractor guiGraphics, Font font, String string, float x, float y, int color, boolean drawShadow) {
         int x1i = Mth.floor(x);
         int y1i = Mth.floor(y);
-        float x1f = x-x1i;
-        float y1f = y-y1i;
+        float x1f = x - x1i;
+        float y1f = y - y1i;
 
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(x1f, y1f);
@@ -57,8 +53,8 @@ public class GuiGraphicsExt {
     public static void drawString(GuiGraphicsExtractor guiGraphics, Font font, FormattedCharSequence string, float x, float y, int color, boolean drawShadow) {
         int x1i = Mth.floor(x);
         int y1i = Mth.floor(y);
-        float x1f = x-x1i;
-        float y1f = y-y1i;
+        float x1f = x - x1i;
+        float y1f = y - y1i;
 
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(x1f, y1f);
@@ -97,20 +93,20 @@ public class GuiGraphicsExt {
      * based on a fixed size textured box with continuous borders and filler.
      * See Forge IForgeGuiGraphics
      *
-     * @param texture       the Identifier object that contains the desired image
-     * @param pipeline      the render pipeline
-     * @param x             x-axis offset
-     * @param y             y-axis offset
-     * @param u             bound resource location image x offset
-     * @param v             bound resource location image y offset
-     * @param width         the desired box width
-     * @param height        the desired box height
-     * @param maxU          the width of the box texture in the resource location image
-     * @param maxV          the height of the box texture in the resource location image
-     * @param topBorder     the size of the box's top border
-     * @param bottomBorder  the size of the box's bottom border
-     * @param leftBorder    the size of the box's left border
-     * @param rightBorder   the size of the box's right border
+     * @param texture      the Identifier object that contains the desired image
+     * @param pipeline     the render pipeline
+     * @param x            x-axis offset
+     * @param y            y-axis offset
+     * @param u            bound resource location image x offset
+     * @param v            bound resource location image y offset
+     * @param width        the desired box width
+     * @param height       the desired box height
+     * @param maxU         the width of the box texture in the resource location image
+     * @param maxV         the height of the box texture in the resource location image
+     * @param topBorder    the size of the box's top border
+     * @param bottomBorder the size of the box's bottom border
+     * @param leftBorder   the size of the box's left border
+     * @param rightBorder  the size of the box's right border
      */
     public static void blitWithBorder(GuiGraphicsExtractor guiGraphics, RenderPipeline pipeline, Identifier texture, int x, int y, int u, int v, int width, int height, int maxU, int maxV, int topBorder, int bottomBorder, int leftBorder, int rightBorder) {
         int fillerWidth = maxU - leftBorder - rightBorder;
