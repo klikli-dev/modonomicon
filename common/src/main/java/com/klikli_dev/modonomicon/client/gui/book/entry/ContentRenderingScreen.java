@@ -5,7 +5,6 @@
 package com.klikli_dev.modonomicon.client.gui.book.entry;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
-import com.klikli_dev.modonomicon.client.render.FluidRenderHelper;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookLink;
 import com.klikli_dev.modonomicon.book.CommandLink;
@@ -14,11 +13,15 @@ import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.fluid.FluidHolder;
+import com.klikli_dev.modonomicon.platform.ClientServices;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.texture.SpriteContents;
+import net.minecraft.client.resources.metadata.gui.GuiSpriteScaling;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -27,6 +30,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
+import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -109,7 +113,7 @@ public interface ContentRenderingScreen {
         }
 
         guiGraphics.pose().pushMatrix();
-        FluidRenderHelper.drawFluid(guiGraphics, 18, 18, stack, capacity, x, y);
+        drawFluid(guiGraphics, 18, 18, stack, capacity, x, y);
         guiGraphics.pose().popMatrix();
 
         if (this.isMouseInRange(mouseX, mouseY, x, y, 18, 18)) {
@@ -125,6 +129,55 @@ public interface ContentRenderingScreen {
         var filteredStacks = PageRendererRegistry.filterRenderableFluidStacks(stacks);
         if (filteredStacks.size() > 0) {
             this.renderFluidStack(guiGraphics, x, y, mouseX, mouseY, filteredStacks.get((this.getTicksInBook() / 20) % filteredStacks.size()), capacity);
+        }
+    }
+
+    private static void drawFluid(GuiGraphicsExtractor guiGraphics, int width, int height, FluidHolder fluidHolder, int capacity, int x, int y) {
+        if (fluidHolder.isEmpty() || fluidHolder.getFluid().value().isSame(Fluids.EMPTY) || capacity <= 0) {
+            return;
+        }
+
+        var fluidModel = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluidHolder.getFluid().value().defaultFluidState());
+        var sprite = fluidModel.stillMaterial().sprite();
+        if (sprite == null) {
+            return;
+        }
+
+        int amount = fluidHolder.getAmount();
+        int scaledAmount = (amount * height) / capacity;
+        if (amount > 0 && scaledAmount < 1) {
+            scaledAmount = 1;
+        }
+        if (scaledAmount > height) {
+            scaledAmount = height;
+        }
+        if (scaledAmount <= 0) {
+            return;
+        }
+
+        SpriteContents spriteContents = sprite.contents();
+        GuiSpriteScaling.Tile tileScaling = new GuiSpriteScaling.Tile(spriteContents.width(), spriteContents.height());
+
+        int renderY = y + height - scaledAmount;
+        guiGraphics.enableScissor(x, renderY, x + width, renderY + scaledAmount);
+        try {
+            guiGraphics.blitTiledSprite(
+                    RenderPipelines.GUI_TEXTURED,
+                    sprite,
+                    x,
+                    renderY,
+                    width,
+                    scaledAmount,
+                    0,
+                    0,
+                    tileScaling.width(),
+                    tileScaling.height(),
+                    tileScaling.width(),
+                    tileScaling.height(),
+                    ClientServices.FLUID.getColorTint(fluidHolder)
+            );
+        } finally {
+            guiGraphics.disableScissor();
         }
     }
 
