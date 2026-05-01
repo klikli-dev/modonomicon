@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.client.gui.book.theme;
 
 public interface BookFrameTheme {
 
-    GuiNineSlice frame();
+    GuiSprite frame();
 
     GuiFrameOverlay topOverlay();
 
