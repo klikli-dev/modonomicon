@@ -12,7 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 
-public class GuiGraphicsExt {
+public class TextRenderHelper {
 
     /**
      * drawString for rendering at float coordinates.

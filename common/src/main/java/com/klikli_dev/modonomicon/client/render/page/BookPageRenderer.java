@@ -15,7 +15,7 @@ import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.MarkdownComponentRenderUtils;
 import com.klikli_dev.modonomicon.data.BookDataManager;
-import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
+import com.klikli_dev.modonomicon.util.TextRenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.Font;
@@ -141,7 +141,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
             for (var component : components) {
                 var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, (int) (width / scale), (int) ((width - 10) / scale), font);
                 for (FormattedCharSequence formattedcharsequence : wrapped) {
-                    GuiGraphicsExt.drawString(guiGraphics, font, formattedcharsequence, x, renderY, defaultTextColor, false);
+                    TextRenderHelper.drawString(guiGraphics, font, formattedcharsequence, x, renderY, defaultTextColor, false);
                     renderY += font.lineHeight;
                 }
             }
@@ -273,11 +273,11 @@ public abstract class BookPageRenderer<T extends BookPage> {
     public abstract void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float ticks);
 
     public void drawCenteredStringNoShadow(GuiGraphicsExtractor guiGraphics, FormattedCharSequence s, int x, int y, int color, float scale) {
-        GuiGraphicsExt.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
+        TextRenderHelper.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
     }
 
     public void drawCenteredStringNoShadow(GuiGraphicsExtractor guiGraphics, String s, int x, int y, int color, float scale) {
-        GuiGraphicsExt.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
+        TextRenderHelper.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
     }
 
     public void drawWrappedStringNoShadow(GuiGraphicsExtractor guiGraphics, Component s, int x, int y, int color, int width) {
