@@ -5,6 +5,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.entry;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import com.klikli_dev.modonomicon.client.render.FluidRenderHelper;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookLink;
 import com.klikli_dev.modonomicon.book.CommandLink;
@@ -13,7 +14,6 @@ import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.fluid.FluidHolder;
-import com.klikli_dev.modonomicon.platform.ClientServices;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -109,7 +109,7 @@ public interface ContentRenderingScreen {
         }
 
         guiGraphics.pose().pushMatrix();
-        ClientServices.FLUID.drawFluid(guiGraphics, 18, 18, stack, capacity, x, y);
+        FluidRenderHelper.drawFluid(guiGraphics, 18, 18, stack, capacity, x, y);
         guiGraphics.pose().popMatrix();
 
         if (this.isMouseInRange(mouseX, mouseY, x, y, 18, 18)) {

@@ -10,11 +10,6 @@ import com.klikli_dev.modonomicon.client.gui.book.theme.GuiNineSlice;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
-
-import net.minecraft.client.renderer.texture.SpriteContents;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.metadata.gui.GuiSpriteScaling;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
@@ -25,35 +20,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 public class GuiGraphicsExt {
-
-    public static void drawTiledSprite(GuiGraphicsExtractor guiGraphics, final int tiledWidth, final int tiledHeight, int color, int scaledAmount, TextureAtlasSprite sprite, int posX, int posY) {
-
-
-        SpriteContents spriteContents = sprite.contents();
-        GuiSpriteScaling.Tile tileScaling = new GuiSpriteScaling.Tile(spriteContents.width(), spriteContents.height());
-
-        posY = posY + tiledHeight - scaledAmount;
-
-        guiGraphics.enableScissor(posX, posY, posX + tiledWidth, posY + scaledAmount);
-        {
-            guiGraphics.blitTiledSprite(
-                    RenderPipelines.GUI_TEXTURED,
-                    sprite,
-                    posX,
-                    posY,
-                    tiledWidth,
-                    scaledAmount,
-                    0,
-                    0,
-                    tileScaling.width(),
-                    tileScaling.height(),
-                    tileScaling.width(),
-                    tileScaling.height(),
-                    color
-            );
-        }
-        guiGraphics.disableScissor();
-    }
 
     /**
      * drawString for rendering at float coordinates.
