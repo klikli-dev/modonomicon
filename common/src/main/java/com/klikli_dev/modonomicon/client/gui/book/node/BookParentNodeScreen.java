@@ -24,17 +24,14 @@ import com.klikli_dev.modonomicon.networking.ClickReadAllButtonMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
-import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
@@ -168,9 +165,9 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
         int x = (this.width - width) / 2;
         int y = (this.height - height) / 2;
 
-        //draw a resizeable border. Center parts of each side will be stretched
-        //the exact border size mostly does not matter because the center is empty anyway, but 50 gives a lot of flexiblity
-        GuiGraphicsExt.blitWithBorder(guiGraphics, RenderPipelines.GUI_TEXTURED, this.book.theme().frame().frame(), x, y, width, height);
+        //draw a resizeable border. Center parts of each side will be tiled.
+        //this is controlled via the frame.png.mcmeta in the theme frame folder.
+        this.book.theme().frame().frame().extractRenderState(guiGraphics, x, y, width, height);
 
         //now render overlays on top of that border to cover repeating elements
         this.renderFrameOverlay(guiGraphics, this.book.theme().frame().topOverlay(), (x + (width / 2)), y);

@@ -32,13 +32,10 @@ import com.klikli_dev.modonomicon.networking.ClickReadAllButtonMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
-import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
-import net.minecraft.client.Minecraft;
+import com.klikli_dev.modonomicon.util.TextRenderHelper;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -117,7 +114,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
     }
 
     public void drawCenteredStringNoShadow(GuiGraphicsExtractor guiGraphics, Component s, int x, int y, int color, float scale) {
-        GuiGraphicsExt.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
+        TextRenderHelper.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
     }
 
     @Override

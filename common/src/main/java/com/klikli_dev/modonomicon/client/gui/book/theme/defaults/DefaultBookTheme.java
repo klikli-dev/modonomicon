@@ -69,7 +69,7 @@ public class DefaultBookTheme implements BookTheme {
     private final GuiSprite downArrow;
     private final GuiSprite rightArrow;
     private final GuiSprite leftArrow;
-    private final GuiNineSlice frameSprite;
+    private final GuiSprite frameSprite;
     private final GuiFrameOverlay topOverlay;
     private final GuiFrameOverlay bottomOverlay;
     private final GuiFrameOverlay leftOverlay;
@@ -314,7 +314,7 @@ public class DefaultBookTheme implements BookTheme {
     };
     private final BookFrameTheme frame = new BookFrameTheme() {
         @Override
-        public GuiNineSlice frame() {
+        public GuiSprite frame() {
             return DefaultBookTheme.this.frameSprite;
         }
 
@@ -390,7 +390,7 @@ public class DefaultBookTheme implements BookTheme {
         this.downArrow = this.sprite("node/connections/down_arrow.png", 30, 30);
         this.rightArrow = this.sprite("node/connections/right_arrow.png", 30, 30);
         this.leftArrow = this.sprite("node/connections/left_arrow.png", 30, 30);
-        this.frameSprite = new GuiNineSlice(this.texture("frame/frame.png"), 140, 140, 50, 50, 50, 50);
+        this.frameSprite = this.sprite("frame/frame.png", 140, 140);
         this.topOverlay = new GuiFrameOverlay(this.sprite("frame/top_overlay.png", 72, 7), 0, 4);
         this.bottomOverlay = new GuiFrameOverlay(this.sprite("frame/bottom_overlay.png", 72, 8), 0, -4);
         this.leftOverlay = new GuiFrameOverlay(this.sprite("frame/left_overlay.png", 7, 70), 3, 0);

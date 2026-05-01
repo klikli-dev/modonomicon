@@ -17,7 +17,7 @@ import com.klikli_dev.modonomicon.client.render.fakelevel.GhostRenderState;
 import com.klikli_dev.modonomicon.multiblock.AbstractMultiblock;
 import com.klikli_dev.modonomicon.multiblock.matcher.DisplayOnlyMatcher;
 import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
-import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
+import com.klikli_dev.modonomicon.util.TextRenderHelper;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -32,7 +32,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.block.BlockQuadOutput;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
@@ -162,7 +161,7 @@ public class MultiblockPreviewRenderer {
             int x = mc.getWindow().getGuiScaledWidth() / 2;
             int y = 12;
 
-            GuiGraphicsExt.drawString(guiGraphics, mc.font, name, x - mc.font.width(name) / 2.0F, y, -1, false);
+            TextRenderHelper.drawString(guiGraphics, mc.font, name, x - mc.font.width(name) / 2.0F, y, -1, false);
 
             int width = 180;
             int height = 9;

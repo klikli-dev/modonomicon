@@ -22,15 +22,13 @@ import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.platform.ClientServices;
-import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.klikli_dev.modonomicon.util.TextRenderHelper;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -81,7 +79,7 @@ public class BookSearchScreen extends BookPaginatedScreen {
     }
 
     public void drawCenteredStringNoShadow(GuiGraphicsExtractor guiGraphics, Component s, int x, int y, int color, float scale) {
-        GuiGraphicsExt.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
+        TextRenderHelper.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
     }
 
     public BookParentScreen getParentScreen() {
