@@ -12,7 +12,9 @@ import com.klikli_dev.modonomicon.client.BookModel;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
+import com.klikli_dev.modonomicon.client.render.pip.GuiDirectEntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.render.pip.GuiMultiblockRenderer;
+import com.klikli_dev.modonomicon.client.render.state.pip.GuiDirectEntryConnectionRenderState;
 import com.klikli_dev.modonomicon.client.render.state.pip.GuiMultiblockRenderState;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.config.ServerConfig;
@@ -227,6 +229,10 @@ public class ModonomiconNeo {
             event.register(
                     GuiMultiblockRenderState.class,
                     GuiMultiblockRenderer::new
+            );
+            event.register(
+                    GuiDirectEntryConnectionRenderState.class,
+                    GuiDirectEntryConnectionRenderer::new
             );
         }
     }

@@ -17,7 +17,7 @@ import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.BookCategoryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
-import com.klikli_dev.modonomicon.client.gui.book.entry.EntryConnectionRenderer;
+import com.klikli_dev.modonomicon.client.gui.book.entry.DirectEntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
 import com.klikli_dev.modonomicon.events.ModonomiconEvents;
 import com.klikli_dev.modonomicon.platform.ClientServices;
@@ -47,7 +47,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     private final BookParentNodeScreen bookParentScreen;
     private final BookCategory category;
-    private final EntryConnectionRenderer connectionRenderer;
+    private final DirectEntryConnectionRenderer connectionRenderer;
     private float scrollX = 0;
     private float scrollY = 0;
     private boolean isScrolling;
@@ -58,7 +58,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         this.bookParentScreen = bookOverviewScreen;
         this.category = category;
 
-        this.connectionRenderer = new EntryConnectionRenderer(category.getBook().theme().node());
+        this.connectionRenderer = new DirectEntryConnectionRenderer();
 
         this.targetZoom = 0.7f;
         this.currentZoom = this.targetZoom;
@@ -75,6 +75,26 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     public float getYOffset() {
         return ((this.bookParentScreen.getInnerHeight() / 2f) * (1 / this.currentZoom)) - this.scrollY / 2;
+    }
+
+    public float getCurrentZoom() {
+        return this.currentZoom;
+    }
+
+    public int getInnerX() {
+        return this.bookParentScreen.getInnerX();
+    }
+
+    public int getInnerY() {
+        return this.bookParentScreen.getInnerY();
+    }
+
+    public int getInnerWidth() {
+        return this.bookParentScreen.getInnerWidth();
+    }
+
+    public int getInnerHeight() {
+        return this.bookParentScreen.getInnerHeight();
     }
 
     public void render(GuiGraphicsExtractor guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
@@ -202,6 +222,8 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         float xOffset = this.getXOffset();
         float yOffset = this.getYOffset();
 
+        this.renderConnections(guiGraphics);
+
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().scale(this.currentZoom, this.currentZoom);
 
@@ -255,8 +277,6 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             }
 
             guiGraphics.pose().popMatrix();
-
-            this.renderConnections(guiGraphics, entry, xOffset, yOffset);
         }
         guiGraphics.pose().popMatrix();
     }
@@ -317,19 +337,8 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         }
     }
 
-    private void renderConnections(GuiGraphicsExtractor guiGraphics, BookEntry entry, float xOffset, float yOffset) {
-        //our arrows are aliased and need blending
-
-        for (var parent : entry.getParents()) {
-            var parentDisplayState = this.getEntryDisplayState(parent.getEntry());
-            if (parentDisplayState == EntryDisplayState.HIDDEN)
-                continue;
-
-            guiGraphics.pose().pushMatrix();
-            guiGraphics.pose().translate(xOffset, yOffset);
-            this.connectionRenderer.render(guiGraphics, entry, parent);
-            guiGraphics.pose().popMatrix();
-        }
+    private void renderConnections(GuiGraphicsExtractor guiGraphics) {
+        this.connectionRenderer.render(guiGraphics, this);
     }
 
     private void scroll(double pDragX, double pDragY) {
