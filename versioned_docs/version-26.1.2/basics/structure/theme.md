@@ -275,10 +275,12 @@ This also means you can start with a tiny theme and expand it over time.
 
 ## FAQ
 
-### My frame overlays are the right size now, but they still render in the wrong place. How do I fix that?
+### My frame overlays are the right size, but they render in the wrong place. How do I fix that?
 
 The default theme uses built-in overlay offsets that were tuned for the original frame overlay sprites.
 If you replace `frame/top_overlay.png`, `frame/bottom_overlay.png`, `frame/left_overlay.png`, or `frame/right_overlay.png` with art that has different dimensions or padding, you may also need to adjust those offsets.
+
+See [Frame overlay offsets in custom theme types](#frame-overlay-offsets-in-custom-theme-types) for what `frameXOffset` and `frameYOffset` mean.
 
 For the current default frame overlay positioning, these are the offset values used:
 
@@ -297,6 +299,43 @@ In practice, moving an overlay further inside the frame means:
 - decrease the right overlay `frameXOffset`
 
 If you need offsets different from the built-in default theme behavior, create a custom `BookTheme` implementation or extend the default one and override the `GuiFrameOverlay` setup.
+
+## Frame overlay offsets in custom theme types
+
+`GuiFrameOverlay` is defined as:
+
+```java
+public record GuiFrameOverlay(GuiSprite sprite, int frameXOffset, int frameYOffset)
+```
+
+- `frameXOffset` moves the overlay horizontally relative to its anchored frame edge
+- `frameYOffset` moves the overlay vertically relative to its anchored frame edge
+
+For the built-in frame anchors this means:
+
+- top overlay: larger `frameYOffset` moves it down
+- bottom overlay: smaller `frameYOffset` moves it up
+- left overlay: larger `frameXOffset` moves it right
+- right overlay: smaller `frameXOffset` moves it left
+
+Inside a custom theme implementation, overlay offsets are defined when constructing `GuiFrameOverlay` instances:
+
+```java
+GuiFrameOverlay topOverlay = new GuiFrameOverlay(topSprite, 0, 8);
+GuiFrameOverlay bottomOverlay = new GuiFrameOverlay(bottomSprite, 0, -10);
+GuiFrameOverlay leftOverlay = new GuiFrameOverlay(leftSprite, 8, 0);
+GuiFrameOverlay rightOverlay = new GuiFrameOverlay(rightSprite, -8, 0);
+```
+
+Brief datagen example for using that custom theme type:
+
+```java
+new BookThemeModel()
+    .withId(Identifier.fromNamespaceAndPath("yourmod", "eldritch"))
+    .withType(Identifier.fromNamespaceAndPath("yourmod", "eldritch_theme"));
+```
+
+The datagen model selects the custom theme type. The actual overlay offsets are defined in that theme class, not in `theme.json`.
 
 ## Advanced: Custom theme types
 
