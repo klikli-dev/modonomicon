@@ -1,0 +1,161 @@
+version = 1
+SPDX-PackageName = "modonomicon"
+SPDX-PackageSupplier = "klikli-dev"
+SPDX-PackageDownloadLocation = "https://github.com/klikli-dev/modonomicon"
+
+[[annotations]]
+path = "common/src/main/resources/assets/modonomicon/textures/font/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 Kristiāns Micītis"
+SPDX-License-Identifier = "MIT"
+SPDX-FileComment = "https://github.com/latvian-dev/slightly-improved-font"
+
+[[annotations]]
+path = [
+    "common/src/main/resources/assets/modonomicon/textures/gui/parallax/flow/**",
+    "common/src/main/resources/assets/modonomicon/textures/gui/parallax/nightsky/**",
+    "common/src/main/resources/assets/modonomicon/textures/gui/sprites/modonomicon/themes/default/frame/**",
+    "common/src/main/resources/assets/modonomicon/textures/gui/sprites/modonomicon/themes/default/content/buttons/category/category_button_normal.png",
+]
+precedence = "override"
+SPDX-FileCopyrightText = "2022 Arcana Team"
+SPDX-License-Identifier = "CC-BY-4.0"
+SPDX-FileComment = "https://github.com/ArcanaMod/Arcana"
+
+[[annotations]]
+path = "common/src/main/resources/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 klikli-dev"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = "common/src/generated/resources/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 klikli-dev"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = "fabric/src/main/resources/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 klikli-dev"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = "fabric/src/generated/resources/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 klikli-dev"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = "neo/src/main/resources/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 klikli-dev"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = "neo/src/generated/resources/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 klikli-dev"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = "forge/src/main/resources/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 klikli-dev"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = "forge/src/generated/resources/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 klikli-dev"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = ".github/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 klikli-dev"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = ".gitattributes"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 klikli-dev"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = ".gitignore"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 klikli-dev"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "settings.gradle"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 klikli-dev"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "build.gradle"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 klikli-dev"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "common/build.gradle"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 klikli-dev"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "fabric/build.gradle"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 klikli-dev"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "neo/build.gradle"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 klikli-dev"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "forge/build.gradle"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 klikli-dev"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "gradle.properties"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 klikli-dev"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = ".gitpod.**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 klikli-dev"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "gradle/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2015 the original author or authors."
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "gradlew**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2015 the original author or authors."
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "CHANGELOG.md"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 klikli-dev"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "AGENTS.md"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 klikli-dev"
+SPDX-License-Identifier = "CC0-1.0"
