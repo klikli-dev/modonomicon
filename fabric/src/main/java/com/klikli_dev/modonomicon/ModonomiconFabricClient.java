@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
+import com.klikli_dev.modonomicon.client.render.pip.GuiDirectEntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.render.pip.GuiMultiblockRenderer;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
@@ -83,6 +84,7 @@ public class ModonomiconFabricClient implements ClientModInitializer {
         );
 
         PictureInPictureRendererRegistry.register((ctx) -> new GuiMultiblockRenderer(ctx.bufferSource()));
+        PictureInPictureRendererRegistry.register((ctx) -> new GuiDirectEntryConnectionRenderer(ctx.bufferSource()));
 
         //book geometry loader
         //done in MixinModelManager, because we have no event in Fabric

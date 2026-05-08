@@ -243,6 +243,11 @@ public class DefaultBookTheme implements BookTheme {
     };
     private final BookNodeTheme node = new BookNodeTheme() {
         @Override
+        public BookNodeSettings settings() {
+            return DefaultBookTheme.this.data.node();
+        }
+
+        @Override
         public GuiSprite smallCurveLeftDown() {
             return DefaultBookTheme.this.smallCurveLeftDown;
         }

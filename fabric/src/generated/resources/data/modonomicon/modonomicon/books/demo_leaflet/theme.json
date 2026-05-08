@@ -13,6 +13,9 @@
     "search_button_x_offset": 0,
     "search_button_y_offset": 0
   },
+  "node": {
+    "connection_renderer": "sprite"
+  },
   "palette": {
     "default_text_color": -16777216,
     "default_title_color": -16777216

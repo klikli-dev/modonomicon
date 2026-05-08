@@ -8,7 +8,6 @@ package com.klikli_dev.modonomicon.api.datagen.book;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
-import com.klikli_dev.modonomicon.client.gui.book.theme.BookThemeData;
 import net.minecraft.resources.Identifier;
 
 import java.util.function.Consumer;
@@ -19,40 +18,70 @@ public class BookThemeModel {
     protected Identifier type = ModonomiconConstants.Data.Theme.DEFAULT_THEME_TYPE;
     protected BookThemeLayoutModel layout = new BookThemeLayoutModel();
     protected BookThemePaletteModel palette = new BookThemePaletteModel();
+    protected BookNodeSettingsModel node = new BookNodeSettingsModel();
     protected boolean generateJson;
 
-    public BookThemeData toData() {
-        return new BookThemeData(this.id, this.type, this.layout.toData(), this.palette.toData());
-    }
-
+    /**
+     * Serializes this theme model to the generated JSON form.
+     */
     public JsonObject toJson() {
-        return this.toData().toJson();
+        JsonObject json = new JsonObject();
+        json.addProperty("id", this.id.toString());
+        json.addProperty("type", this.type.toString());
+        json.add("layout", this.layout.toJson());
+        json.add("palette", this.palette.toJson());
+        json.add("node", this.node.toJson());
+        return json;
     }
 
+    /**
+     * Returns whether this model should emit a generated theme JSON file.
+     */
     public boolean shouldGenerateJson() {
         return this.generateJson;
     }
 
+    /**
+     * Sets the generated theme id.
+     */
     public BookThemeModel withId(Identifier id) {
         this.id = id;
         this.generateJson = true;
         return this;
     }
 
+    /**
+     * Sets the registered theme type used to construct the runtime theme.
+     */
     public BookThemeModel withType(Identifier type) {
         this.type = type;
         this.generateJson = true;
         return this;
     }
 
+    /**
+     * Configures theme layout offsets and scaling.
+     */
     public BookThemeModel withLayout(Consumer<BookThemeLayoutModel> consumer) {
         consumer.accept(this.layout);
         this.generateJson = true;
         return this;
     }
 
+    /**
+     * Configures theme palette colors.
+     */
     public BookThemeModel withPalette(Consumer<BookThemePaletteModel> consumer) {
         consumer.accept(this.palette);
+        this.generateJson = true;
+        return this;
+    }
+
+    /**
+     * Configures node-screen connection rendering settings.
+     */
+    public BookThemeModel withNode(Consumer<BookNodeSettingsModel> consumer) {
+        consumer.accept(this.node);
         this.generateJson = true;
         return this;
     }
