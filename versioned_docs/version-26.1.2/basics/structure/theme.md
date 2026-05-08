@@ -209,16 +209,18 @@ Base ARGB color used when both ends are visible but not yet settled.
 new BookThemeModel()
     .withId(Identifier.fromNamespaceAndPath("yourmod", "eldritch"))
     .withType(ModonomiconConstants.Data.Theme.DEFAULT_THEME_TYPE)
-    .withConnectionRenderer(NodeConnectionRendererType.DIRECT)
-    .withDirectConnectionWidth(2.25F)
-    .withDirectConnectionOpacity(0.75F)
-    .withDirectConnectionBrightness(1.75F)
-    .withDirectConnectionOscillation(true)
-    .withDirectConnectionOscillationAmplitude(5.0F)
-    .withDirectConnectionOscillationSpeed(1.0F)
-    .withDirectConnectionConnectedColor(0xBFFFFFFF)
-    .withDirectConnectionAvailableColor(0xFF00FF00)
-    .withDirectConnectionDiscoveredColor(0xFF0000FF);
+    .withNode(node -> node
+        .withConnectionRenderer(NodeConnectionRendererType.DIRECT)
+        .withDirectConnections(directConnections -> directConnections
+            .withWidth(2.25F)
+            .withOpacity(0.75F)
+            .withBrightness(1.75F)
+            .withOscillation(true)
+            .withOscillationAmplitude(5.0F)
+            .withOscillationSpeed(1.0F)
+            .withConnectedColor(0xBFFFFFFF)
+            .withAvailableColor(0xFF00FF00)
+            .withDiscoveredColor(0xFF0000FF)));
 ```
 
 ## Simple custom themes
