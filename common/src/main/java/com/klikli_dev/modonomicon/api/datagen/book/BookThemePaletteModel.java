@@ -17,11 +17,17 @@ public class BookThemePaletteModel {
         return new BookThemePalette(this.defaultTitleColor, this.defaultTextColor);
     }
 
+    /**
+     * Sets the default title color used by theme-aware content.
+     */
     public BookThemePaletteModel withDefaultTitleColor(int value) {
         this.defaultTitleColor = value;
         return this;
     }
 
+    /**
+     * Sets the default body text color used by theme-aware content.
+     */
     public BookThemePaletteModel withDefaultTextColor(int value) {
         this.defaultTextColor = value;
         return this;
