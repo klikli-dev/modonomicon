@@ -346,6 +346,9 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             return;
         }
 
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().scale(this.currentZoom, this.currentZoom);
+
         for (var entry : this.category.getEntries().values()) {
             var entryDisplayState = this.getEntryDisplayState(entry);
             if (entryDisplayState == EntryDisplayState.HIDDEN) {
@@ -364,6 +367,8 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                 guiGraphics.pose().popMatrix();
             }
         }
+
+        guiGraphics.pose().popMatrix();
     }
 
     private void scroll(double pDragX, double pDragY) {
