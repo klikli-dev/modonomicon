@@ -15,6 +15,8 @@ import java.util.List;
 public record GuiDirectEntryConnectionRenderState(
         List<Connection> connections,
         float animationTime,
+        float lineWidth,
+        float visibilityMultiplier,
         int x0,
         int y0,
         int x1,
@@ -27,6 +29,8 @@ public record GuiDirectEntryConnectionRenderState(
     public GuiDirectEntryConnectionRenderState(
             List<Connection> connections,
             float animationTime,
+            float lineWidth,
+            float visibilityMultiplier,
             int x0,
             int y0,
             int x1,
@@ -34,7 +38,7 @@ public record GuiDirectEntryConnectionRenderState(
             float scale,
             @Nullable ScreenRectangle scissorArea
     ) {
-        this(connections, animationTime, x0, y0, x1, y1, scale, scissorArea,
+        this(connections, animationTime, lineWidth, visibilityMultiplier, x0, y0, x1, y1, scale, scissorArea,
                 PictureInPictureRenderState.getBounds(x0, y0, x1, y1, scissorArea));
     }
 

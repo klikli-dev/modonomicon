@@ -17,10 +17,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DirectEntryConnectionRenderer {
+    private final float lineWidth;
+    private final float visibilityMultiplier;
     private static final int CONNECTED_COLOR = ARGB.colorFromFloat(1.0F, 0.1F, 0.1F, 0.1F);
     private static final int AVAILABLE_COLOR = ARGB.colorFromFloat(1.0F, 0.0F, 1.0F, 0.0F);
     private static final int DISCOVERED_COLOR = ARGB.colorFromFloat(1.0F, 0.0F, 0.0F, 1.0F);
     private static final float ENTRY_CENTER_OFFSET = BookCategoryNodeScreen.ENTRY_GAP + BookCategoryNodeScreen.ENTRY_WIDTH / 2.0F;
+
+    public DirectEntryConnectionRenderer(float lineWidth, float visibilityMultiplier) {
+        this.lineWidth = lineWidth;
+        this.visibilityMultiplier = visibilityMultiplier;
+    }
 
     public void render(GuiGraphicsExtractor guiGraphics, BookCategoryNodeScreen screen) {
         int innerX = screen.getInnerX();
@@ -87,6 +94,8 @@ public class DirectEntryConnectionRenderer {
         guiGraphics.guiRenderState.addPicturesInPictureState(new GuiDirectEntryConnectionRenderState(
                 List.copyOf(connections),
                 ClientTicks.total,
+                this.lineWidth,
+                this.visibilityMultiplier,
                 innerX,
                 innerY,
                 innerX + innerWidth,

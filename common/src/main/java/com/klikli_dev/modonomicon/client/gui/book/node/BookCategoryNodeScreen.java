@@ -38,6 +38,8 @@ import java.util.ArrayList;
 
 
 public class BookCategoryNodeScreen implements BookCategoryScreen {
+    private static final float DIRECT_CONNECTION_LINE_WIDTH = 4.5F;
+    private static final float DIRECT_CONNECTION_VISIBILITY_MULTIPLIER = 1.75F;
 
     public static final int ENTRY_GRID_SCALE = 30;
     public static final int ENTRY_GAP = 2;
@@ -58,7 +60,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         this.bookParentScreen = bookOverviewScreen;
         this.category = category;
 
-        this.connectionRenderer = new DirectEntryConnectionRenderer();
+        this.connectionRenderer = new DirectEntryConnectionRenderer(DIRECT_CONNECTION_LINE_WIDTH, DIRECT_CONNECTION_VISIBILITY_MULTIPLIER);
 
         this.targetZoom = 0.7f;
         this.currentZoom = this.targetZoom;

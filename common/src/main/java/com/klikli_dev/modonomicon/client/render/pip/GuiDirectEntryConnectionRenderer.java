@@ -16,8 +16,6 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
 public class GuiDirectEntryConnectionRenderer extends PictureInPictureRenderer<GuiDirectEntryConnectionRenderState> {
-    private static final float LINE_WIDTH = 3.0F;
-
     public GuiDirectEntryConnectionRenderer(MultiBufferSource.BufferSource bufferSource) {
         super(bufferSource);
     }
@@ -33,11 +31,11 @@ public class GuiDirectEntryConnectionRenderer extends PictureInPictureRenderer<G
         PoseStack.Pose pose = poseStack.last();
 
         for (var connection : state.connections()) {
-            this.drawLine(buffer, pose, connection, state.animationTime());
+            this.drawLine(buffer, pose, connection, state.animationTime(), state.lineWidth(), state.visibilityMultiplier());
         }
     }
 
-    private void drawLine(VertexConsumer buffer, PoseStack.Pose pose, GuiDirectEntryConnectionRenderState.Connection connection, float time) {
+    private void drawLine(VertexConsumer buffer, PoseStack.Pose pose, GuiDirectEntryConnectionRenderState.Connection connection, float time, float lineWidth, float visibilityMultiplier) {
         double d3 = connection.startX() - connection.endX();
         double d4 = connection.startY() - connection.endY();
         float dist = Mth.sqrt((float) (d3 * d3 + d4 * d4));
@@ -73,13 +71,13 @@ public class GuiDirectEntryConnectionRenderer extends PictureInPictureRenderer<G
                 alpha *= phase;
             }
 
-            color = ARGB.color(alpha, ARGB.transparent(color));
+            color = this.applyVisibility(color, alpha, visibilityMultiplier);
 
             float x = (a == inc ? connection.endX() : currentX) + mx;
             float y = (a == inc ? connection.endY() : currentY) + my;
 
             if (hasPrevious) {
-                this.drawSegment(buffer, pose, previousX, previousY, x, y, previousColor, color);
+                this.drawSegment(buffer, pose, previousX, previousY, x, y, previousColor, color, lineWidth);
             }
 
             previousX = x;
@@ -98,7 +96,15 @@ public class GuiDirectEntryConnectionRenderer extends PictureInPictureRenderer<G
         }
     }
 
-    private void drawSegment(VertexConsumer buffer, PoseStack.Pose pose, float startX, float startY, float endX, float endY, int startColor, int endColor) {
+    private int applyVisibility(int color, float alpha, float visibilityMultiplier) {
+        int rgb = ARGB.transparent(color);
+        if (visibilityMultiplier > 1.0F) {
+            rgb = ARGB.scaleRGB(rgb, visibilityMultiplier, visibilityMultiplier, visibilityMultiplier);
+        }
+        return ARGB.color(Math.min(alpha * visibilityMultiplier, 1.0F), rgb);
+    }
+
+    private void drawSegment(VertexConsumer buffer, PoseStack.Pose pose, float startX, float startY, float endX, float endY, int startColor, int endColor, float lineWidth) {
         float nx = endX - startX;
         float ny = endY - startY;
         float length = Mth.sqrt(nx * nx + ny * ny);
@@ -112,11 +118,11 @@ public class GuiDirectEntryConnectionRenderer extends PictureInPictureRenderer<G
         buffer.addVertex(pose, startX, startY, 0.0F)
                 .setColor(startColor)
                 .setNormal(pose, nx, ny, 0.0F)
-                .setLineWidth(LINE_WIDTH);
+                .setLineWidth(lineWidth);
         buffer.addVertex(pose, endX, endY, 0.0F)
                 .setColor(endColor)
                 .setNormal(pose, nx, ny, 0.0F)
-                .setLineWidth(LINE_WIDTH);
+                .setLineWidth(lineWidth);
     }
 
     @Override
