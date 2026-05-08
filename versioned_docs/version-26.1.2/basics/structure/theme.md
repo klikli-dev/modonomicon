@@ -99,6 +99,69 @@ These are Java integer color values. Generated JSON commonly uses signed decimal
 
 :::
 
+### **node** (JSON Object, _optional_)
+
+Controls how node-screen entry connections are rendered.
+
+#### **connection_renderer** (String, _optional_)
+Default value: `"sprite"`.
+
+Selects which renderer should be used for node-screen connections.
+
+Valid values:
+
+- `sprite` — the default routed sprite-based connection renderer
+- `direct` — the direct line renderer
+
+#### **direct_connections** (JSON Object, _optional_)
+
+Configures the direct line renderer.
+
+#### **width** (Float, _optional_)
+Default value: `2.25`.
+
+Sets the line width used by direct connections.
+
+#### **opacity** (Float, _optional_)
+Default value: `1.0`.
+
+Multiplies the alpha of direct connections after their state color is chosen.
+
+#### **brightness** (Float, _optional_)
+Default value: `1.75`.
+
+Multiplies the RGB intensity of direct connections to improve visibility on darker backgrounds.
+
+#### **oscillation** (Boolean, _optional_)
+Default value: `true`.
+
+Enables the animated offset effect for unsettled direct connections.
+
+#### **oscillation_amplitude** (Float, _optional_)
+Default value: `5.0`.
+
+Controls the peak pixel offset used by the animated offset effect.
+
+#### **oscillation_speed** (Float, _optional_)
+Default value: `1.0`.
+
+Controls how quickly the animated offset effect advances over time.
+
+#### **connected_color** (Integer, _optional_)
+Default value: `-1073741825`.
+
+Base ARGB color for settled direct connections.
+
+#### **available_color** (Integer, _optional_)
+Default value: `-16711936`.
+
+Base ARGB color used when the parent is available but the child is not yet settled.
+
+#### **discovered_color** (Integer, _optional_)
+Default value: `-16776961`.
+
+Base ARGB color used when both ends are visible but not yet settled.
+
 ## Usage Example
 
 `/data/<mod_id>/modonomicon/books/<book_id>/theme.json`:
@@ -122,8 +185,40 @@ These are Java integer color values. Generated JSON commonly uses signed decimal
   "palette": {
     "default_title_color": -1,
     "default_text_color": -16777216
+  },
+  "node": {
+    "connection_renderer": "direct",
+    "direct_connections": {
+      "width": 2.25,
+      "opacity": 0.75,
+      "brightness": 1.75,
+      "oscillation": true,
+      "oscillation_amplitude": 5.0,
+      "oscillation_speed": 1.0,
+      "connected_color": -1073741825,
+      "available_color": -16711936,
+      "discovered_color": -16776961
+    }
   }
 }
+```
+
+## Datagen Example
+
+```java
+new BookThemeModel()
+    .withId(Identifier.fromNamespaceAndPath("yourmod", "eldritch"))
+    .withType(ModonomiconConstants.Data.Theme.DEFAULT_THEME_TYPE)
+    .withConnectionRenderer(NodeConnectionRendererType.DIRECT)
+    .withDirectConnectionWidth(2.25F)
+    .withDirectConnectionOpacity(0.75F)
+    .withDirectConnectionBrightness(1.75F)
+    .withDirectConnectionOscillation(true)
+    .withDirectConnectionOscillationAmplitude(5.0F)
+    .withDirectConnectionOscillationSpeed(1.0F)
+    .withDirectConnectionConnectedColor(0xBFFFFFFF)
+    .withDirectConnectionAvailableColor(0xFF00FF00)
+    .withDirectConnectionDiscoveredColor(0xFF0000FF);
 ```
 
 ## Simple custom themes
