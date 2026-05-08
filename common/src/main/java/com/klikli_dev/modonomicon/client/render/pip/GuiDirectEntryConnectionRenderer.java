@@ -50,6 +50,9 @@ public class GuiDirectEntryConnectionRenderer extends PictureInPictureRenderer<G
         } else {
             dy *= 2.0F;
         }
+        float decayFactor = 1.0F - 1.0F / inc * 3.0F / 2.0F;
+        float currentX = connection.startX();
+        float currentY = connection.startY();
 
         float previousX = 0.0F;
         float previousY = 0.0F;
@@ -72,8 +75,8 @@ public class GuiDirectEntryConnectionRenderer extends PictureInPictureRenderer<G
 
             color = ARGB.color(alpha, ARGB.transparent(color));
 
-            float x = connection.startX() - dx * a + mx;
-            float y = connection.startY() - dy * a + my;
+            float x = (a == inc ? connection.endX() : currentX) + mx;
+            float y = (a == inc ? connection.endY() : currentY) + my;
 
             if (hasPrevious) {
                 this.drawSegment(buffer, pose, previousX, previousY, x, y, previousColor, color);
@@ -84,10 +87,13 @@ public class GuiDirectEntryConnectionRenderer extends PictureInPictureRenderer<G
             previousColor = color;
             hasPrevious = true;
 
+            currentX -= dx;
+            currentY -= dy;
+
             if (dominantX) {
-                dx *= 1.0F - 1.0F / inc * 3.0F / 2.0F;
+                dx *= decayFactor;
             } else {
-                dy *= 1.0F - 1.0F / inc * 3.0F / 2.0F;
+                dy *= decayFactor;
             }
         }
     }
