@@ -54,16 +54,6 @@ public record BookThemeData(Identifier id, Identifier type, BookThemeLayout layo
         );
     }
 
-    public JsonObject toJson() {
-        JsonObject json = new JsonObject();
-        json.addProperty("id", this.id.toString());
-        json.addProperty("type", this.type.toString());
-        json.add("layout", this.layout.toJson());
-        json.add("palette", this.palette.toJson());
-        json.add("node", this.node.toJson());
-        return json;
-    }
-
     public void toNetwork(RegistryFriendlyByteBuf buffer) {
         buffer.writeIdentifier(this.id);
         buffer.writeIdentifier(this.type);

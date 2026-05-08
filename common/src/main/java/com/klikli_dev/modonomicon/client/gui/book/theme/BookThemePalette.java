@@ -25,13 +25,6 @@ public record BookThemePalette(int defaultTitleColor, int defaultTextColor) impl
         );
     }
 
-    public JsonObject toJson() {
-        JsonObject json = new JsonObject();
-        json.addProperty("default_title_color", this.defaultTitleColor);
-        json.addProperty("default_text_color", this.defaultTextColor);
-        return json;
-    }
-
     public static BookThemePalette fromNetwork(RegistryFriendlyByteBuf buffer) {
         return new BookThemePalette(buffer.readInt(), buffer.readInt());
     }

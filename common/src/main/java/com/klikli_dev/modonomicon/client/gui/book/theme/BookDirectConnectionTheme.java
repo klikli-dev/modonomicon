@@ -60,20 +60,6 @@ public record BookDirectConnectionTheme(
         );
     }
 
-    public JsonObject toJson() {
-        JsonObject json = new JsonObject();
-        json.addProperty("width", this.width);
-        json.addProperty("opacity", this.opacity);
-        json.addProperty("brightness", this.brightness);
-        json.addProperty("oscillation", this.oscillation);
-        json.addProperty("oscillation_amplitude", this.oscillationAmplitude);
-        json.addProperty("oscillation_speed", this.oscillationSpeed);
-        json.addProperty("connected_color", this.connectedColor);
-        json.addProperty("available_color", this.availableColor);
-        json.addProperty("discovered_color", this.discoveredColor);
-        return json;
-    }
-
     public static BookDirectConnectionTheme fromNetwork(RegistryFriendlyByteBuf buffer) {
         return new BookDirectConnectionTheme(
                 buffer.readFloat(),

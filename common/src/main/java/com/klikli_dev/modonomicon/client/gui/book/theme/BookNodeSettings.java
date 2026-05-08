@@ -26,13 +26,6 @@ public record BookNodeSettings(NodeConnectionRendererType connectionRenderer, Bo
         );
     }
 
-    public JsonObject toJson() {
-        JsonObject json = new JsonObject();
-        json.addProperty("connection_renderer", this.connectionRenderer.serializedName());
-        json.add("direct_connections", this.directConnections.toJson());
-        return json;
-    }
-
     public static BookNodeSettings fromNetwork(RegistryFriendlyByteBuf buffer) {
         return new BookNodeSettings(
                 buffer.readEnum(NodeConnectionRendererType.class),
