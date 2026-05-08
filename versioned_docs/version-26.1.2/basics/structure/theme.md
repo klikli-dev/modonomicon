@@ -273,6 +273,31 @@ So you can override only the files you care about and keep the default look for 
 
 This also means you can start with a tiny theme and expand it over time.
 
+## FAQ
+
+### My frame overlays are the right size now, but they still render in the wrong place. How do I fix that?
+
+The default theme uses built-in overlay offsets that were tuned for the original frame overlay sprites.
+If you replace `frame/top_overlay.png`, `frame/bottom_overlay.png`, `frame/left_overlay.png`, or `frame/right_overlay.png` with art that has different dimensions or padding, you may also need to adjust those offsets.
+
+For the current default frame overlay positioning, these are the offset values used:
+
+```java
+this.topOverlay = new GuiFrameOverlay(this.sprite("frame/top_overlay.png", -1, -1), 0, 8);
+this.bottomOverlay = new GuiFrameOverlay(this.sprite("frame/bottom_overlay.png", -1, -1), 0, -10);
+this.leftOverlay = new GuiFrameOverlay(this.sprite("frame/left_overlay.png", -1, -1), 8, 0);
+this.rightOverlay = new GuiFrameOverlay(this.sprite("frame/right_overlay.png", -1, -1), -8, 0);
+```
+
+In practice, moving an overlay further inside the frame means:
+
+- increase the top overlay `frameYOffset`
+- decrease the bottom overlay `frameYOffset`
+- increase the left overlay `frameXOffset`
+- decrease the right overlay `frameXOffset`
+
+If you need offsets different from the built-in default theme behavior, create a custom `BookTheme` implementation or extend the default one and override the `GuiFrameOverlay` setup.
+
 ## Advanced: Custom theme types
 
 If the default sprite-based theme is not enough, create your own `BookTheme` implementation and register it with a custom theme type.
