@@ -97,11 +97,12 @@ public class GuiDirectEntryConnectionRenderer extends PictureInPictureRenderer<G
     }
 
     private int applyVisibility(int color, float alpha, float visibilityMultiplier) {
+        float baseAlpha = ARGB.alphaFloat(color);
         int rgb = ARGB.transparent(color);
         if (visibilityMultiplier > 1.0F) {
             rgb = ARGB.scaleRGB(rgb, visibilityMultiplier, visibilityMultiplier, visibilityMultiplier);
         }
-        return ARGB.color(Math.min(alpha * visibilityMultiplier, 1.0F), rgb);
+        return ARGB.color(Math.min(alpha * baseAlpha, 1.0F), rgb);
     }
 
     private void drawSegment(VertexConsumer buffer, PoseStack.Pose pose, float startX, float startY, float endX, float endY, int startColor, int endColor, float lineWidth) {
