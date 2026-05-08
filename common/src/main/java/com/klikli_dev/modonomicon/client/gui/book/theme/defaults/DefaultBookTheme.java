@@ -396,10 +396,10 @@ public class DefaultBookTheme implements BookTheme {
         this.rightArrow = this.sprite("node/connections/right_arrow.png", 30, 30);
         this.leftArrow = this.sprite("node/connections/left_arrow.png", 30, 30);
         this.frameSprite = this.sprite("frame/frame.png", 140, 140);
-        this.topOverlay = new GuiFrameOverlay(this.sprite("frame/top_overlay.png", 72, 7), 0, 4);
-        this.bottomOverlay = new GuiFrameOverlay(this.sprite("frame/bottom_overlay.png", 72, 8), 0, -4);
-        this.leftOverlay = new GuiFrameOverlay(this.sprite("frame/left_overlay.png", 7, 70), 3, 0);
-        this.rightOverlay = new GuiFrameOverlay(this.sprite("frame/right_overlay.png", 8, 70), -4, 0);
+        this.topOverlay = new GuiFrameOverlay(this.sprite("frame/top_overlay.png", -1, -1), 0, 4);
+        this.bottomOverlay = new GuiFrameOverlay(this.sprite("frame/bottom_overlay.png", -1, -1), 0, -4);
+        this.leftOverlay = new GuiFrameOverlay(this.sprite("frame/left_overlay.png", -1, -1), 3, 0);
+        this.rightOverlay = new GuiFrameOverlay(this.sprite("frame/right_overlay.png", -1, -1), -4, 0);
     }
 
     @Override
