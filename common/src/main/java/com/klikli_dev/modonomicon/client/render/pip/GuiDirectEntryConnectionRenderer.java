@@ -31,11 +31,11 @@ public class GuiDirectEntryConnectionRenderer extends PictureInPictureRenderer<G
         PoseStack.Pose pose = poseStack.last();
 
         for (var connection : state.connections()) {
-            this.drawLine(buffer, pose, connection, state.animationTime(), state.lineWidth(), state.visibilityMultiplier());
+            this.drawLine(buffer, pose, connection, state.animationTime(), state.lineWidth(), state.opacity(), state.brightness(), state.oscillationAmplitude(), state.oscillationSpeed());
         }
     }
 
-    private void drawLine(VertexConsumer buffer, PoseStack.Pose pose, GuiDirectEntryConnectionRenderState.Connection connection, float time, float lineWidth, float visibilityMultiplier) {
+    private void drawLine(VertexConsumer buffer, PoseStack.Pose pose, GuiDirectEntryConnectionRenderState.Connection connection, float time, float lineWidth, float opacity, float brightness, float oscillationAmplitude, float oscillationSpeed) {
         double d3 = connection.startX() - connection.endX();
         double d4 = connection.startY() - connection.endY();
         float dist = Mth.sqrt((float) (d3 * d3 + d4 * d4));
@@ -65,13 +65,13 @@ public class GuiDirectEntryConnectionRenderer extends PictureInPictureRenderer<G
             int color = connection.color();
 
             if (connection.wiggle()) {
-                mx = Mth.sin((time + a) / 7.0F) * 5.0F * (1.0F - phase);
-                my = Mth.sin((time + a) / 5.0F) * 5.0F * (1.0F - phase);
+                mx = Mth.sin((time * oscillationSpeed + a) / 7.0F) * oscillationAmplitude * (1.0F - phase);
+                my = Mth.sin((time * oscillationSpeed + a) / 5.0F) * oscillationAmplitude * (1.0F - phase);
                 color = ARGB.scaleRGB(color, 1.0F - phase);
                 alpha *= phase;
             }
 
-            color = this.applyVisibility(color, alpha, visibilityMultiplier);
+            color = this.applyVisibility(color, alpha, opacity, brightness);
 
             float x = (a == inc ? connection.endX() : currentX) + mx;
             float y = (a == inc ? connection.endY() : currentY) + my;
@@ -96,13 +96,13 @@ public class GuiDirectEntryConnectionRenderer extends PictureInPictureRenderer<G
         }
     }
 
-    private int applyVisibility(int color, float alpha, float visibilityMultiplier) {
+    private int applyVisibility(int color, float alpha, float opacity, float brightness) {
         float baseAlpha = ARGB.alphaFloat(color);
         int rgb = ARGB.transparent(color);
-        if (visibilityMultiplier > 1.0F) {
-            rgb = ARGB.scaleRGB(rgb, visibilityMultiplier, visibilityMultiplier, visibilityMultiplier);
+        if (brightness != 1.0F) {
+            rgb = ARGB.scaleRGB(rgb, brightness, brightness, brightness);
         }
-        return ARGB.color(Math.min(alpha * baseAlpha, 1.0F), rgb);
+        return ARGB.color(Math.min(alpha * baseAlpha * opacity, 1.0F), rgb);
     }
 
     private void drawSegment(VertexConsumer buffer, PoseStack.Pose pose, float startX, float startY, float endX, float endY, int startColor, int endColor, float lineWidth) {

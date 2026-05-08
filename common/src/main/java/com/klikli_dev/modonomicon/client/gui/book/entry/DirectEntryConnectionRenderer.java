@@ -9,24 +9,19 @@ package com.klikli_dev.modonomicon.client.gui.book.entry;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.book.node.BookCategoryNodeScreen;
+import com.klikli_dev.modonomicon.client.gui.book.theme.BookDirectConnectionTheme;
 import com.klikli_dev.modonomicon.client.render.state.pip.GuiDirectEntryConnectionRenderState;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.util.ARGB;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DirectEntryConnectionRenderer {
-    private final float lineWidth;
-    private final float visibilityMultiplier;
-    private static final int CONNECTED_COLOR = ARGB.colorFromFloat(0.75F, 1.0F, 1.0F, 1.0F);
-    private static final int AVAILABLE_COLOR = ARGB.colorFromFloat(1.0F, 0.0F, 1.0F, 0.0F);
-    private static final int DISCOVERED_COLOR = ARGB.colorFromFloat(1.0F, 0.0F, 0.0F, 1.0F);
+    private final BookDirectConnectionTheme theme;
     private static final float ENTRY_CENTER_OFFSET = BookCategoryNodeScreen.ENTRY_GAP + BookCategoryNodeScreen.ENTRY_WIDTH / 2.0F;
 
-    public DirectEntryConnectionRenderer(float lineWidth, float visibilityMultiplier) {
-        this.lineWidth = lineWidth;
-        this.visibilityMultiplier = visibilityMultiplier;
+    public DirectEntryConnectionRenderer(BookDirectConnectionTheme theme) {
+        this.theme = theme;
     }
 
     public void render(GuiGraphicsExtractor guiGraphics, BookCategoryNodeScreen screen) {
@@ -82,7 +77,7 @@ public class DirectEntryConnectionRenderer {
                         endX,
                         endY,
                         this.getConnectionColor(entryDisplayState, parentDisplayState),
-                        entryDisplayState != EntryDisplayState.UNLOCKED
+                        this.theme.oscillation() && entryDisplayState != EntryDisplayState.UNLOCKED
                 ));
             }
         }
@@ -94,8 +89,11 @@ public class DirectEntryConnectionRenderer {
         guiGraphics.guiRenderState.addPicturesInPictureState(new GuiDirectEntryConnectionRenderState(
                 List.copyOf(connections),
                 ClientTicks.total,
-                this.lineWidth,
-                this.visibilityMultiplier,
+                this.theme.width(),
+                this.theme.opacity(),
+                this.theme.brightness(),
+                this.theme.oscillationAmplitude(),
+                this.theme.oscillationSpeed(),
                 innerX,
                 innerY,
                 innerX + innerWidth,
@@ -107,12 +105,12 @@ public class DirectEntryConnectionRenderer {
 
     private int getConnectionColor(EntryDisplayState entryDisplayState, EntryDisplayState parentDisplayState) {
         if (entryDisplayState == EntryDisplayState.UNLOCKED) {
-            return CONNECTED_COLOR;
+            return this.theme.connectedColor();
         }
         if (parentDisplayState == EntryDisplayState.UNLOCKED) {
-            return AVAILABLE_COLOR;
+            return this.theme.availableColor();
         }
-        return DISCOVERED_COLOR;
+        return this.theme.discoveredColor();
     }
 
     private float getScreenCenterX(BookEntry entry, float xOffset, float zoom) {

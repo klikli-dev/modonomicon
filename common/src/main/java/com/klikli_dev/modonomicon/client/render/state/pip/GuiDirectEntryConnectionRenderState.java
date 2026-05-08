@@ -16,7 +16,10 @@ public record GuiDirectEntryConnectionRenderState(
         List<Connection> connections,
         float animationTime,
         float lineWidth,
-        float visibilityMultiplier,
+        float opacity,
+        float brightness,
+        float oscillationAmplitude,
+        float oscillationSpeed,
         int x0,
         int y0,
         int x1,
@@ -30,7 +33,10 @@ public record GuiDirectEntryConnectionRenderState(
             List<Connection> connections,
             float animationTime,
             float lineWidth,
-            float visibilityMultiplier,
+            float opacity,
+            float brightness,
+            float oscillationAmplitude,
+            float oscillationSpeed,
             int x0,
             int y0,
             int x1,
@@ -38,7 +44,7 @@ public record GuiDirectEntryConnectionRenderState(
             float scale,
             @Nullable ScreenRectangle scissorArea
     ) {
-        this(connections, animationTime, lineWidth, visibilityMultiplier, x0, y0, x1, y1, scale, scissorArea,
+        this(connections, animationTime, lineWidth, opacity, brightness, oscillationAmplitude, oscillationSpeed, x0, y0, x1, y1, scale, scissorArea,
                 PictureInPictureRenderState.getBounds(x0, y0, x1, y1, scissorArea));
     }
 

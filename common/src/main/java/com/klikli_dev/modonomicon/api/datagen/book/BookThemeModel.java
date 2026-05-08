@@ -19,10 +19,11 @@ public class BookThemeModel {
     protected Identifier type = ModonomiconConstants.Data.Theme.DEFAULT_THEME_TYPE;
     protected BookThemeLayoutModel layout = new BookThemeLayoutModel();
     protected BookThemePaletteModel palette = new BookThemePaletteModel();
+    protected BookNodeSettingsModel node = new BookNodeSettingsModel();
     protected boolean generateJson;
 
     public BookThemeData toData() {
-        return new BookThemeData(this.id, this.type, this.layout.toData(), this.palette.toData());
+        return new BookThemeData(this.id, this.type, this.layout.toData(), this.palette.toData(), this.node.toData());
     }
 
     public JsonObject toJson() {
@@ -53,6 +54,12 @@ public class BookThemeModel {
 
     public BookThemeModel withPalette(Consumer<BookThemePaletteModel> consumer) {
         consumer.accept(this.palette);
+        this.generateJson = true;
+        return this;
+    }
+
+    public BookThemeModel withNode(Consumer<BookNodeSettingsModel> consumer) {
+        consumer.accept(this.node);
         this.generateJson = true;
         return this;
     }
