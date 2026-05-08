@@ -397,8 +397,8 @@ public class DefaultBookTheme implements BookTheme {
         this.leftArrow = this.sprite("node/connections/left_arrow.png", 30, 30);
         this.frameSprite = this.sprite("frame/frame.png", 140, 140);
         this.topOverlay = new GuiFrameOverlay(this.sprite("frame/top_overlay.png", -1, -1), 0, 8);
-        this.bottomOverlay = new GuiFrameOverlay(this.sprite("frame/bottom_overlay.png", -1, -1), 0, -8);
-        this.leftOverlay = new GuiFrameOverlay(this.sprite("frame/left_overlay.png", -1, -1), 7, 0);
+        this.bottomOverlay = new GuiFrameOverlay(this.sprite("frame/bottom_overlay.png", -1, -1), 0, -10);
+        this.leftOverlay = new GuiFrameOverlay(this.sprite("frame/left_overlay.png", -1, -1), 8, 0);
         this.rightOverlay = new GuiFrameOverlay(this.sprite("frame/right_overlay.png", -1, -1), -8, 0);
     }
 
