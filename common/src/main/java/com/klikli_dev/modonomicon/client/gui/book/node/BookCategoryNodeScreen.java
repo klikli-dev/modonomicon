@@ -38,7 +38,7 @@ import java.util.ArrayList;
 
 
 public class BookCategoryNodeScreen implements BookCategoryScreen {
-    private static final float DIRECT_CONNECTION_LINE_WIDTH = 4.5F;
+    private static final float DIRECT_CONNECTION_LINE_WIDTH = 2.25F;
     private static final float DIRECT_CONNECTION_VISIBILITY_MULTIPLIER = 1.75F;
 
     public static final int ENTRY_GRID_SCALE = 30;
