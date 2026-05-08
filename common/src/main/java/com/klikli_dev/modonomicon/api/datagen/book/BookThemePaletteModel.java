@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.api.datagen.book;
 
+import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.client.gui.book.theme.BookThemePalette;
 
 public class BookThemePaletteModel {
@@ -13,8 +14,11 @@ public class BookThemePaletteModel {
     protected int defaultTitleColor = BookThemePalette.DEFAULT.defaultTitleColor();
     protected int defaultTextColor = BookThemePalette.DEFAULT.defaultTextColor();
 
-    public BookThemePalette toData() {
-        return new BookThemePalette(this.defaultTitleColor, this.defaultTextColor);
+    public JsonObject toJson() {
+        JsonObject json = new JsonObject();
+        json.addProperty("default_title_color", this.defaultTitleColor);
+        json.addProperty("default_text_color", this.defaultTextColor);
+        return json;
     }
 
     /**
