@@ -20,7 +20,9 @@ public class BookNodeSettingsModel {
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("connection_renderer", this.connectionRenderer.serializedName());
-        json.add("direct_connections", this.directConnections.toJson());
+        if (this.connectionRenderer == NodeConnectionRendererType.DIRECT) {
+            json.add("direct_connections", this.directConnections.toJson());
+        }
         return json;
     }
 

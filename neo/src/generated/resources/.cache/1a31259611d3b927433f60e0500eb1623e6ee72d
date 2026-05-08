@@ -1,4 +1,4 @@
-// 26.1.2	2026-04-28T23:35:26.8316671	Books: modonomicon
+// 26.1.2	2026-05-08T16:57:48.9236089	Books: modonomicon
 d6c88984d61217ab21b7aa94dbbdd80a4678386c data/modonomicon/modonomicon/books/demo/book.json
 72a7a847c4b291606e6075578a8cf6aa9540c30a data/modonomicon/modonomicon/books/demo/categories/conditional.json
 9b5eef503d92419730b83b644fc687dcdbec2956 data/modonomicon/modonomicon/books/demo/categories/features.json
@@ -28,8 +28,8 @@ ff3e935f645422be323ea1ffcef42a2dab315569 data/modonomicon/modonomicon/books/demo
 6a7b9da07fbad22c9199673ec53c3b1cddef4adf data/modonomicon/modonomicon/books/demo/entries/formatting/link.json
 784ea5a40a5dbb453ab2cef247f2481301587b52 data/modonomicon/modonomicon/books/demo/entries/index_mode/demo1.json
 f2e6d4908868323593adebae767c43ff13206166 data/modonomicon/modonomicon/books/demo/entries/index_mode/demo2.json
-b694782d41e94166db44c7f5e17dac47c32c7f2d data/modonomicon/modonomicon/books/demo/theme.json
+2be306f2de5293335c0bc2393d489062245e948b data/modonomicon/modonomicon/books/demo/theme.json
 4fcf019d1418409032e315d28c6b2b040eb6d9e6 data/modonomicon/modonomicon/books/demo_leaflet/book.json
 c41ddff5e00a9e091c57e77214a904691f303f6e data/modonomicon/modonomicon/books/demo_leaflet/categories/leaflet.json
 b7a277c163a759cbea8e32887a3a69464437d48f data/modonomicon/modonomicon/books/demo_leaflet/entries/leaflet/leaflet.json
-b694782d41e94166db44c7f5e17dac47c32c7f2d data/modonomicon/modonomicon/books/demo_leaflet/theme.json
+2be306f2de5293335c0bc2393d489062245e948b data/modonomicon/modonomicon/books/demo_leaflet/theme.json
