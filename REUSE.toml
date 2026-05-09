@@ -16,6 +16,14 @@ path = [
     "common/src/main/resources/assets/modonomicon/textures/gui/parallax/nightsky/**",
     "common/src/main/resources/assets/modonomicon/textures/gui/sprites/modonomicon/themes/default/frame/**",
     "common/src/main/resources/assets/modonomicon/textures/gui/sprites/modonomicon/themes/default/content/buttons/category/category_button_normal.png",
+    "common/src/main/resources/assets/modonomicon/textures/gui/sprites/modonomicon/themes/default/content/buttons/category/category_button_golden.png",
+    "common/src/main/resources/assets/modonomicon/textures/gui/sprites/modonomicon/themes/default/content/buttons/collection/collection_button_normal.png",
+    "common/src/main/resources/assets/modonomicon/textures/gui/sprites/modonomicon/themes/default/content/buttons/collection/collection_button_golden.png",
+    "common/src/main/resources/assets/modonomicon/textures/gui/sprites/modonomicon/themes/default/content/buttons/collection/search_icon.png",
+    "common/src/main/resources/assets/modonomicon/textures/gui/sprites/modonomicon/themes/default/content/buttons/collection/unlocked_icon.png",
+    "common/src/main/resources/assets/modonomicon/textures/gui/sprites/modonomicon/themes/default/content/buttons/collection/show_bookmarks_icon.png",
+    "common/src/main/resources/assets/modonomicon/textures/gui/sprites/modonomicon/themes/default/content/buttons/collection/add_bookmarks_icon.png",
+    "common/src/main/resources/assets/modonomicon/textures/gui/sprites/modonomicon/themes/default/content/buttons/collection/remove_bookmarks_icon.png",
 ]
 precedence = "override"
 SPDX-FileCopyrightText = "2022 Arcana Team"
