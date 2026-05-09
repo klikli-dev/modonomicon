@@ -27,14 +27,15 @@ public final class BookSideButtonRenderer {
         int absoluteScissorX = scissorX + xOffset;
         int renderX = widgetX - BUTTON_SLIDE_OFFSET;
         int scissorWidth = widgetWidth + (widgetX - scissorX);
-        int scissorY = screenHeight - widgetY - widgetHeight - 1;
+        int scissorY = widgetY;
+        int scissorHeight = widgetHeight;
 
         if (hovered) {
             renderX += 1;
             scissorWidth -= 1;
         }
 
-        guiGraphics.enableScissor(absoluteScissorX, scissorY, absoluteScissorX + scissorWidth, scissorY + 1000);
+        guiGraphics.enableScissor(absoluteScissorX, scissorY, absoluteScissorX + scissorWidth - 1, scissorY + scissorHeight - 1);
         background.extractRenderState(guiGraphics, renderX, widgetY, widgetWidth, widgetHeight);
         renderRightIcon(guiGraphics, icon, renderX, widgetY, widgetWidth);
         guiGraphics.disableScissor();
