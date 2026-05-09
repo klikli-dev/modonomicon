@@ -8,7 +8,6 @@ package com.klikli_dev.modonomicon.client.gui.book.theme;
 
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.util.GsonHelper;
 
 public record BookThemeContentData(GuiSprite defaultCategoryButtonSprite) {
 

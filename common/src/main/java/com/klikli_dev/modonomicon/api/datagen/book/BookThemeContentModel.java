@@ -9,18 +9,20 @@ package com.klikli_dev.modonomicon.api.datagen.book;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.Nullable;
 
 public class BookThemeContentModel {
 
-    protected GuiSprite defaultCategoryButtonSprite = GuiSprite.EMPTY;
+    @Nullable
+    protected GuiSprite defaultCategoryButtonSprite = null;
 
     public boolean isEmpty() {
-        return this.defaultCategoryButtonSprite.isEmpty();
+        return this.defaultCategoryButtonSprite == null;
     }
 
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
-        if (!this.defaultCategoryButtonSprite.isEmpty()) {
+        if (this.defaultCategoryButtonSprite != null) {
             json.add("default_category_button_sprite", this.defaultCategoryButtonSprite.toJson());
         }
         return json;
@@ -29,7 +31,7 @@ public class BookThemeContentModel {
     /**
      * Sets the default sprite used for category buttons.
      */
-    public BookThemeContentModel withDefaultCategoryButtonSprite(GuiSprite sprite) {
+    public BookThemeContentModel withDefaultCategoryButtonSprite(@Nullable GuiSprite sprite) {
         this.defaultCategoryButtonSprite = sprite;
         return this;
     }

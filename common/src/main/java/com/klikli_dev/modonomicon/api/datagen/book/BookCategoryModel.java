@@ -63,7 +63,8 @@ public class BookCategoryModel {
     @Nullable
     protected BookConditionModel<?> condition = null;
     protected boolean showCategoryButton = true;
-    protected GuiSprite categoryButtonSprite = GuiSprite.EMPTY;
+    @Nullable
+    protected GuiSprite categoryButtonSprite = null;
 
     /**
      * The entry to open when this category is opened.
@@ -134,7 +135,7 @@ public class BookCategoryModel {
             json.add("condition", this.condition.toJson(this.getId(), provider));
         }
         json.addProperty("show_category_button", this.showCategoryButton);
-        if (!this.categoryButtonSprite.isEmpty()) {
+        if (this.categoryButtonSprite != null) {
             json.add("category_button_sprite", this.categoryButtonSprite.toJson());
         }
         if (this.entryToOpen != null) {
@@ -421,7 +422,7 @@ public class BookCategoryModel {
     /**
      * Sets the sprite used to render this category button.
      */
-    public BookCategoryModel withCategoryButtonSprite(GuiSprite sprite) {
+    public BookCategoryModel withCategoryButtonSprite(@Nullable GuiSprite sprite) {
         this.categoryButtonSprite = sprite;
         return this;
     }
