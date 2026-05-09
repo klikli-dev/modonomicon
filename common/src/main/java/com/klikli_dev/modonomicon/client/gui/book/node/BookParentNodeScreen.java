@@ -305,16 +305,6 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
         int scissorX = this.getFrameWidth() + this.getFrameThicknessW() * 2 + 2; //this is the render location of our frame so our search button never overlaps
         int rightButtonX = BookSideButtonRenderer.anchoredButtonX(scissorX);
-        int readAllButtonX = rightButtonX;
-        int readAllButtonYOffset = 30 + this.getBook().theme().layout().readAllButtonYOffset();
-
-        int readAllButtonY = (this.height - this.getFrameHeight()) / 2 + ReadAllButton.HEIGHT / 2 + readAllButtonYOffset;
-
-        var readAllButton = new ReadAllButton(this, readAllButtonX, readAllButtonY, scissorX, () -> this.hasUnreadUnlockedEntries, //if we have unlocked entries that are not read -> blue
-                this::canSeeReadAllButton, //display condition -> if we have any unlocked entries -> grey
-                (b) -> this.onReadAllButtonClick((ReadAllButton) b));
-
-        this.addRenderableWidget(readAllButton);
 
         int searchButtonYOffset = -30 + this.getBook().theme().layout().searchButtonYOffset();
         int searchButtonX = rightButtonX;
@@ -348,6 +338,13 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
                     Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_RECENTLY_UNLOCKED)));
             this.addRenderableWidget(showRecentlyUnlockedButton);
         }
+
+        int readAllButtonY = searchButtonY - buttonHeight - 2;
+        var readAllButton = new ReadAllButton(this, rightButtonX, readAllButtonY, scissorX, () -> this.hasUnreadUnlockedEntries, //if we have unlocked entries that are not read -> blue
+                this::canSeeReadAllButton, //display condition -> if we have any unlocked entries -> grey
+                (b) -> this.onReadAllButtonClick((ReadAllButton) b));
+
+        this.addRenderableWidget(readAllButton);
     }
 
     protected void updateCategoryButtons(int buttonX, int buttonY, int buttonWidth, int buttonHeight, int buttonSpacing) {

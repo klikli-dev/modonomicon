@@ -351,16 +351,6 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
 
         int scissorX = this.bookLeft + FULL_WIDTH;//this is the render location of our frame so our search button never overlaps
-        int readAllButtonX = BookSideButtonRenderer.anchoredButtonX(scissorX);
-        int readAllButtonY = this.bookTop + ReadAllButton.HEIGHT + 15;
-
-        var readAllButton = new ReadAllButton(this, readAllButtonX, readAllButtonY, scissorX,
-                () -> this.hasUnreadUnlockedEntries, //if we have unlocked entries that are not read -> blue
-                this::canSeeReadAllButton, //display condition -> if we have any unlocked entries -> grey
-                (b) -> this.onReadAllButtonClick((ReadAllButton) b));
-
-        this.addRenderableWidget(readAllButton);
-
         int buttonHeight = this.getBook().theme().content().searchButton().normal().height();
         int searchButtonX = BookSideButtonRenderer.anchoredButtonX(scissorX);
         int searchButtonY = this.bookTop + FULL_HEIGHT - 30;
@@ -392,6 +382,14 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
                     Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_RECENTLY_UNLOCKED)));
             this.addRenderableWidget(showRecentlyUnlockedButton);
         }
+
+        int readAllButtonY = searchButtonY - buttonHeight - 2;
+        var readAllButton = new ReadAllButton(this, searchButtonX, readAllButtonY, scissorX,
+                () -> this.hasUnreadUnlockedEntries, //if we have unlocked entries that are not read -> blue
+                this::canSeeReadAllButton, //display condition -> if we have any unlocked entries -> grey
+                (b) -> this.onReadAllButtonClick((ReadAllButton) b));
+
+        this.addRenderableWidget(readAllButton);
     }
 
     protected void onSearchButtonClick(SearchButton button) {
