@@ -303,9 +303,8 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
         this.updateCategoryButtons(buttonX, buttonY, buttonWidth, buttonHeight, buttonSpacing);
 
-        int searchButtonXOffset = BookSideButtonRenderer.NODE_BUTTON_X;
         int scissorX = this.getFrameWidth() + this.getFrameThicknessW() * 2 + 2; //this is the render location of our frame so our search button never overlaps
-        int rightButtonX = this.getFrameWidth() + this.getFrameThicknessW() + ReadAllButton.WIDTH / 2 + searchButtonXOffset;
+        int rightButtonX = BookSideButtonRenderer.anchoredButtonX(scissorX);
         int readAllButtonX = rightButtonX;
         int readAllButtonYOffset = 30 + this.getBook().theme().layout().readAllButtonYOffset();
 

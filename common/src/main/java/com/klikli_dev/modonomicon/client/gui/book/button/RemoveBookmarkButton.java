@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -33,9 +34,18 @@ public class RemoveBookmarkButton extends Button {
             BookSideButtonRenderer.renderSlidingButton(guiGraphics, xOffset, this.getX(), this.getY(), this.width, this.height,
                     this.scissorX, this.parent.height, this.isHovered(),
                     background,
-                    BookSideButtonRenderer.collectionIconOrEmpty(background,
-                            this.parent.getBook().theme().content().collectionButtonNormal(),
-                            this.parent.getBook().theme().content().removeBookmarkButtonIcon()));
+                    GuiSprite.EMPTY);
+
+            var icon = BookSideButtonRenderer.collectionIconOrEmpty(background,
+                    this.parent.getBook().theme().content().collectionButtonNormal(),
+                    this.parent.getBook().theme().content().removeBookmarkButtonIcon());
+            if (!icon.isEmpty()) {
+                guiGraphics.pose().pushMatrix();
+                guiGraphics.pose().translate(xOffset, 0);
+                int renderX = this.getX() - BookSideButtonRenderer.BUTTON_SLIDE_OFFSET + (this.isHovered() ? 1 : 0);
+                BookSideButtonRenderer.renderRightIcon(guiGraphics, icon, renderX, this.getY(), this.width, 2f / 3f, -4);
+                guiGraphics.pose().popMatrix();
+            }
         }
     }
 }

@@ -350,9 +350,9 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         this.createEntryList();
 
 
-        int readAllButtonX = this.bookLeft + FULL_WIDTH + BookSideButtonRenderer.OVERVIEW_BUTTON_X;
-        int readAllButtonY = this.bookTop + ReadAllButton.HEIGHT + 15;
         int scissorX = this.bookLeft + FULL_WIDTH;//this is the render location of our frame so our search button never overlaps
+        int readAllButtonX = BookSideButtonRenderer.anchoredButtonX(scissorX);
+        int readAllButtonY = this.bookTop + ReadAllButton.HEIGHT + 15;
 
         var readAllButton = new ReadAllButton(this, readAllButtonX, readAllButtonY, scissorX,
                 () -> this.hasUnreadUnlockedEntries, //if we have unlocked entries that are not read -> blue
@@ -362,7 +362,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         this.addRenderableWidget(readAllButton);
 
         int buttonHeight = this.getBook().theme().content().searchButton().normal().height();
-        int searchButtonX = this.bookLeft + FULL_WIDTH + BookSideButtonRenderer.OVERVIEW_BUTTON_X;
+        int searchButtonX = BookSideButtonRenderer.anchoredButtonX(scissorX);
         int searchButtonY = this.bookTop + FULL_HEIGHT - 30;
         int searchButtonWidth = this.getBook().theme().content().searchButton().normal().width();
 

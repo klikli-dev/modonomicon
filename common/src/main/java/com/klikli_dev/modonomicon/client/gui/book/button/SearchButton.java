@@ -43,7 +43,7 @@ public class SearchButton extends Button {
                 guiGraphics.pose().pushMatrix();
                 guiGraphics.pose().translate(xOffset, 0);
                 int renderX = this.getX() - BookSideButtonRenderer.BUTTON_SLIDE_OFFSET + (this.isHovered() ? 1 : 0);
-                BookSideButtonRenderer.renderRightIcon(guiGraphics, icon, renderX, this.getY(), this.width, 2f / 3f);
+                BookSideButtonRenderer.renderRightIcon(guiGraphics, icon, renderX, this.getY(), this.width, 2f / 3f, -4);
                 guiGraphics.pose().popMatrix();
             }
         }

@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.client.gui.book.button;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiButtonSprites;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -80,23 +81,17 @@ public class ReadAllButton extends Button {
             sprites = this.parent.getBook().theme().content().readAllButton();
         }
 
-        int xOffset = this.parent.getBook().theme().layout().searchButtonXOffset();
-        guiGraphics.pose().translate(xOffset, 0);
+        BookSideButtonRenderer.renderSlidingButton(guiGraphics, this.parent.getBook().theme().layout().searchButtonXOffset(),
+                this.getX(), this.getY(), this.width, this.height, this.scissorX,
+                ((net.minecraft.client.gui.screens.Screen) this.parent).height, hovered,
+                this.parent.getBook().theme().content().collectionButtonGolden(),
+                GuiSprite.EMPTY);
 
-        int renderX = this.getX() - BookSideButtonRenderer.BUTTON_SLIDE_OFFSET;
-        int scissorX = this.scissorX + xOffset;
-        int scissorWidth = this.width + (this.getX() - this.scissorX);
-        int scissorY = ((net.minecraft.client.gui.screens.Screen) this.parent).height - this.getY() - this.height - 1;
-
-        if (hovered) {
-            renderX += 1;
-            scissorWidth -= 1;
-        }
-
-        guiGraphics.enableScissor(scissorX, scissorY, scissorX + scissorWidth, scissorY + 1000);
-        this.parent.getBook().theme().content().collectionButtonGolden().extractRenderState(guiGraphics, renderX, this.getY(), this.width, this.height);
-        BookSideButtonRenderer.renderRightIcon(guiGraphics, sprites.state(hovered, false), renderX, this.getY(), this.width);
-        guiGraphics.disableScissor();
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(this.parent.getBook().theme().layout().searchButtonXOffset(), 0);
+        int renderX = this.getX() - BookSideButtonRenderer.BUTTON_SLIDE_OFFSET + (hovered ? 1 : 0);
+        BookSideButtonRenderer.renderRightIcon(guiGraphics, sprites.state(hovered, false), renderX, this.getY(), this.width, 1.0f, -2);
+        guiGraphics.pose().popMatrix();
 
         guiGraphics.pose().popMatrix();
 

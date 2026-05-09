@@ -12,10 +12,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 public final class BookSideButtonRenderer {
 
     public static final int BUTTON_SLIDE_OFFSET = 16;
-    public static final int OVERVIEW_BUTTON_X = -13;
-    public static final int ENTRY_BUTTON_X = 3;
-    public static final int NODE_BUTTON_X = 1;
-    private static final int ICON_INSET_X = 8;
+    private static final int ICON_INSET_X = 14;
     private static final int ICON_INSET_Y = 2;
 
     private BookSideButtonRenderer() {
@@ -49,18 +46,26 @@ public final class BookSideButtonRenderer {
         return background.sprite().equals(expectedCollectionBackground.sprite()) ? icon : GuiSprite.EMPTY;
     }
 
+    public static int anchoredButtonX(int scissorX) {
+        return scissorX + BUTTON_SLIDE_OFFSET;
+    }
+
     public static void renderRightIcon(GuiGraphicsExtractor guiGraphics, GuiSprite icon, int buttonX, int buttonY, int buttonWidth) {
-        renderRightIcon(guiGraphics, icon, buttonX, buttonY, buttonWidth, 1.0f);
+        renderRightIcon(guiGraphics, icon, buttonX, buttonY, buttonWidth, 1.0f, 0);
     }
 
     public static void renderRightIcon(GuiGraphicsExtractor guiGraphics, GuiSprite icon, int buttonX, int buttonY, int buttonWidth, float scale) {
+        renderRightIcon(guiGraphics, icon, buttonX, buttonY, buttonWidth, scale, 0);
+    }
+
+    public static void renderRightIcon(GuiGraphicsExtractor guiGraphics, GuiSprite icon, int buttonX, int buttonY, int buttonWidth, float scale, int xOffset) {
         if (icon.isEmpty()) {
             return;
         }
 
         int iconWidth = Math.max(1, Math.round(icon.width() * scale));
         int iconHeight = Math.max(1, Math.round(icon.height() * scale));
-        int iconX = buttonX + buttonWidth - ICON_INSET_X - iconWidth;
+        int iconX = buttonX + buttonWidth - ICON_INSET_X - iconWidth + xOffset;
         int iconY = buttonY + ICON_INSET_Y + Math.max(0, (16 - iconHeight) / 2);
         icon.extractRenderState(guiGraphics, iconX, iconY, iconWidth, iconHeight);
     }
