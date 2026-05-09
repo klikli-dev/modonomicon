@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Category;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
 import com.klikli_dev.modonomicon.book.BookDisplayMode;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiButtonSprites;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import com.mojang.serialization.JsonOps;
@@ -64,7 +65,7 @@ public class BookCategoryModel {
     protected BookConditionModel<?> condition = null;
     protected boolean showCategoryButton = true;
     @Nullable
-    protected GuiSprite categoryButtonSprite = null;
+    protected GuiButtonSprites categoryButtonSprites = null;
 
     /**
      * The entry to open when this category is opened.
@@ -135,8 +136,8 @@ public class BookCategoryModel {
             json.add("condition", this.condition.toJson(this.getId(), provider));
         }
         json.addProperty("show_category_button", this.showCategoryButton);
-        if (this.categoryButtonSprite != null) {
-            json.add("category_button_sprite", this.categoryButtonSprite.toJson());
+        if (this.categoryButtonSprites != null) {
+            json.add("category_button_sprite", this.categoryButtonSpriteToJson());
         }
         if (this.entryToOpen != null) {
             //if we are in the same namespace, which we basically always should be, omit namespace
@@ -422,9 +423,30 @@ public class BookCategoryModel {
     /**
      * Sets the sprite used to render this category button.
      */
-    public BookCategoryModel withCategoryButtonSprite(@Nullable GuiSprite sprite) {
-        this.categoryButtonSprite = sprite;
+    public BookCategoryModel withCategoryButtonSprites(@Nullable GuiButtonSprites sprites) {
+        this.categoryButtonSprites = sprites;
         return this;
+    }
+
+    /**
+     * Sets the sprite used to render this category button.
+     */
+    public BookCategoryModel withCategoryButtonSprite(@Nullable GuiSprite sprite) {
+        return this.withCategoryButtonSprites(sprite == null ? null : new GuiButtonSprites(sprite, sprite));
+    }
+
+    /**
+     * Sets the sprites used to render this category button.
+     */
+    public BookCategoryModel withCategoryButtonSprites(GuiSprite normal, GuiSprite hover) {
+        return this.withCategoryButtonSprites(new GuiButtonSprites(normal, hover));
+    }
+
+    /**
+     * Sets the sprites used to render this category button.
+     */
+    public BookCategoryModel withCategoryButtonSprites(GuiSprite normal, GuiSprite hover, @Nullable GuiSprite pressed) {
+        return this.withCategoryButtonSprites(new GuiButtonSprites(normal, hover, pressed));
     }
 
     /**
@@ -432,6 +454,25 @@ public class BookCategoryModel {
      */
     public BookCategoryModel withCategoryButtonSprite(Identifier sprite, int width, int height) {
         return this.withCategoryButtonSprite(new GuiSprite(sprite, width, height));
+    }
+
+    /**
+     * Sets the sprites used to render this category button.
+     */
+    public BookCategoryModel withCategoryButtonSprites(Identifier normal, Identifier hover, int width, int height) {
+        return this.withCategoryButtonSprites(new GuiSprite(normal, width, height), new GuiSprite(hover, width, height));
+    }
+
+    private JsonObject categoryButtonSpriteToJson() {
+        JsonObject json = new JsonObject();
+        json.add("normal", this.categoryButtonSprites.normal().toJson());
+        if (this.categoryButtonSprites.hover() != this.categoryButtonSprites.normal()) {
+            json.add("hover", this.categoryButtonSprites.hover().toJson());
+        }
+        if (this.categoryButtonSprites.pressed() != null) {
+            json.add("pressed", this.categoryButtonSprites.pressed().toJson());
+        }
+        return json;
     }
 
     /**

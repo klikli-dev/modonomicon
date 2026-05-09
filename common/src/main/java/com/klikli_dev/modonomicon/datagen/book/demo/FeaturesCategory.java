@@ -96,7 +96,11 @@ public class FeaturesCategory extends CategoryProvider {
                 new BookCategoryBackgroundParallaxLayer(this.modLoc("textures/gui/parallax/flow/base.png"), 0.7f, -1),
                 new BookCategoryBackgroundParallaxLayer(this.modLoc("textures/gui/parallax/flow/1.png"), 1f, -1),
                 new BookCategoryBackgroundParallaxLayer(this.modLoc("textures/gui/parallax/flow/2.png"), 1.4f, -1)
-        ).withCategoryButtonSprite(Identifier.fromNamespaceAndPath("modonomicon", "modonomicon/themes/default/content/buttons/category/category_button_golden"), 44, 20);
+        ).withCategoryButtonSprites(
+                Identifier.fromNamespaceAndPath("modonomicon", "modonomicon/themes/default/content/buttons/category/category_button_golden"),
+                Identifier.fromNamespaceAndPath("modonomicon", "modonomicon/themes/default/content/buttons/category/category_button_golden"),
+                44, 20
+        );
     }
 
     @Override
