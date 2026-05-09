@@ -12,7 +12,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 public final class BookSideButtonRenderer {
 
     public static final int BUTTON_SLIDE_OFFSET = 16;
-    private static final int ICON_INSET_X = 14;
+    private static final int ICON_INSET_X = 11;
     private static final int ICON_INSET_Y = 2;
 
     private BookSideButtonRenderer() {
@@ -26,7 +26,7 @@ public final class BookSideButtonRenderer {
 
         int absoluteScissorX = scissorX + xOffset;
         int renderX = widgetX - BUTTON_SLIDE_OFFSET;
-        int scissorWidth = widgetWidth + (widgetX - scissorX);
+        int scissorWidth = widgetWidth + (widgetX - scissorX) + BUTTON_SLIDE_OFFSET;
         int scissorY = screenHeight - widgetY - widgetHeight - 1;
 
         if (hovered) {

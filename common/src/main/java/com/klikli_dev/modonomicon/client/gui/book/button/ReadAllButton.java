@@ -90,7 +90,7 @@ public class ReadAllButton extends Button {
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.parent.getBook().theme().layout().searchButtonXOffset(), 0);
         int renderX = this.getX() - BookSideButtonRenderer.BUTTON_SLIDE_OFFSET + (hovered ? 1 : 0);
-        BookSideButtonRenderer.renderRightIcon(guiGraphics, sprites.state(hovered, false), renderX, this.getY(), this.width, 1.0f, -2);
+        BookSideButtonRenderer.renderRightIcon(guiGraphics, sprites.state(hovered, false), renderX, this.getY(), this.width, 1.0f, 3);
         guiGraphics.pose().popMatrix();
 
         guiGraphics.pose().popMatrix();
