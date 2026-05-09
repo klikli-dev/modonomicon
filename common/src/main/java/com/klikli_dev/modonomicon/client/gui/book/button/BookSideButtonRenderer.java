@@ -47,7 +47,7 @@ public final class BookSideButtonRenderer {
     }
 
     public static int anchoredButtonX(int scissorX) {
-        return scissorX + BUTTON_SLIDE_OFFSET;
+        return scissorX;
     }
 
     public static void renderRightIcon(GuiGraphicsExtractor guiGraphics, GuiSprite icon, int buttonX, int buttonY, int buttonWidth) {
