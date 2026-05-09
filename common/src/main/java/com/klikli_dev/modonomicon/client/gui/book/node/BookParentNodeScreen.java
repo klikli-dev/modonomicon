@@ -324,7 +324,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
             this.addRenderableWidget(showRecentlyUnlockedButton);
         }
 
-        int readAllButtonY = searchButtonY - buttonHeight - 2;
+        int readAllButtonY = buttonY;
         var readAllButton = new ReadAllButton(this, rightButtonX, readAllButtonY, scissorX,
                 () -> this.hasUnreadEntries,
                 () -> this.hasUnreadUnlockedEntries,
