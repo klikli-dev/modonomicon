@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -29,13 +30,23 @@ public class ShowRecentlyUnlockedButton extends Button {
     protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
         if (this.visible) {
             int xOffset = this.parent.getBook().theme().layout().searchButtonXOffset();
-            var background = this.parent.getBook().theme().content().showRecentlyUnlockedButton().state(this.isHovered(), false);
+            boolean hovered = this.isHovered();
+            var background = this.parent.getBook().theme().content().showRecentlyUnlockedButton().state(hovered, false);
             BookSideButtonRenderer.renderSlidingButton(guiGraphics, xOffset, this.getX(), this.getY(), this.width, this.height,
-                    this.scissorX, ((net.minecraft.client.gui.screens.Screen) this.parent).height, this.isHovered(),
+                    this.scissorX, ((net.minecraft.client.gui.screens.Screen) this.parent).height, hovered,
                     background,
-                    BookSideButtonRenderer.collectionIconOrEmpty(background,
-                            this.parent.getBook().theme().content().collectionButtonNormal(),
-                            this.parent.getBook().theme().content().showRecentlyUnlockedButtonIcon()));
+                    GuiSprite.EMPTY);
+
+            var icon = BookSideButtonRenderer.collectionIconOrEmpty(background,
+                    this.parent.getBook().theme().content().collectionButtonNormal(),
+                    this.parent.getBook().theme().content().showRecentlyUnlockedButtonIcon());
+            if (!icon.isEmpty()) {
+                guiGraphics.pose().pushMatrix();
+                guiGraphics.pose().translate(xOffset, 0);
+                int renderX = this.getX() - BookSideButtonRenderer.BUTTON_SLIDE_OFFSET + (hovered ? 1 : 0);
+                BookSideButtonRenderer.renderRightIcon(guiGraphics, icon, renderX, this.getY(), this.width, 2f / 3f, -5);
+                guiGraphics.pose().popMatrix();
+            }
         }
     }
 }
