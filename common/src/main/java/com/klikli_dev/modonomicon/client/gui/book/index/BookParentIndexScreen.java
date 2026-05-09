@@ -20,6 +20,7 @@ import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.bookmarks.BookBookmarksScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryListButton;
+import com.klikli_dev.modonomicon.client.gui.book.button.BookSideButtonRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.button.ReadAllButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ShowBookmarksButton;
@@ -349,7 +350,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         this.createEntryList();
 
 
-        int readAllButtonX = this.bookLeft + FULL_WIDTH - 5;
+        int readAllButtonX = this.bookLeft + FULL_WIDTH + BookSideButtonRenderer.OVERVIEW_BUTTON_X;
         int readAllButtonY = this.bookTop + ReadAllButton.HEIGHT + 15;
         int scissorX = this.bookLeft + FULL_WIDTH;//this is the render location of our frame so our search button never overlaps
 
@@ -361,7 +362,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         this.addRenderableWidget(readAllButton);
 
         int buttonHeight = this.getBook().theme().content().searchButton().normal().height();
-        int searchButtonX = this.bookLeft + FULL_WIDTH - 5;
+        int searchButtonX = this.bookLeft + FULL_WIDTH + BookSideButtonRenderer.OVERVIEW_BUTTON_X;
         int searchButtonY = this.bookTop + FULL_HEIGHT - 30;
         int searchButtonWidth = this.getBook().theme().content().searchButton().normal().width();
 

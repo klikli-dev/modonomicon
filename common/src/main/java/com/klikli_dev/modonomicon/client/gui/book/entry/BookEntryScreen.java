@@ -20,6 +20,7 @@ import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.AddBookmarkButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.BackButton;
+import com.klikli_dev.modonomicon.client.gui.book.button.BookSideButtonRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.button.RemoveBookmarkButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
 import com.klikli_dev.modonomicon.client.gui.book.entry.linkhandler.*;
@@ -353,7 +354,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         this.narratables.removeIf(b -> b instanceof AddBookmarkButton || b instanceof RemoveBookmarkButton);
 
         int buttonHeight = this.getBook().theme().content().addBookmarkButton().normal().height();
-        int searchButtonX = this.bookLeft + FULL_WIDTH - 5;
+        int searchButtonX = this.bookLeft + FULL_WIDTH + BookSideButtonRenderer.ENTRY_BUTTON_X;
         int searchButtonY = this.bookTop + FULL_HEIGHT - 30;
         int searchButtonWidth = this.getBook().theme().content().addBookmarkButton().normal().width();
         int scissorX = this.bookLeft + FULL_WIDTH;//this is the render location of our frame so our search button never overlaps

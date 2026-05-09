@@ -80,11 +80,23 @@ public class ReadAllButton extends Button {
             sprites = this.parent.getBook().theme().content().readAllButton();
         }
 
-        BookSideButtonRenderer.renderSlidingButton(guiGraphics, this.parent.getBook().theme().layout().searchButtonXOffset(),
-                this.getX(), this.getY(), this.width, this.height, this.scissorX,
-                ((net.minecraft.client.gui.screens.Screen) this.parent).height, hovered,
-                this.parent.getBook().theme().content().collectionButtonGolden(),
-                sprites.state(hovered, false));
+        int xOffset = this.parent.getBook().theme().layout().searchButtonXOffset();
+        guiGraphics.pose().translate(xOffset, 0);
+
+        int renderX = this.getX() - BookSideButtonRenderer.BUTTON_SLIDE_OFFSET;
+        int scissorX = this.scissorX + xOffset;
+        int scissorWidth = this.width + (this.getX() - this.scissorX);
+        int scissorY = ((net.minecraft.client.gui.screens.Screen) this.parent).height - this.getY() - this.height - 1;
+
+        if (hovered) {
+            renderX += 1;
+            scissorWidth -= 1;
+        }
+
+        guiGraphics.enableScissor(scissorX, scissorY, scissorX + scissorWidth, scissorY + 1000);
+        this.parent.getBook().theme().content().collectionButtonGolden().extractRenderState(guiGraphics, renderX, this.getY(), this.width, this.height);
+        BookSideButtonRenderer.renderRightIcon(guiGraphics, sprites.state(hovered, false), renderX, this.getY(), this.width);
+        guiGraphics.disableScissor();
 
         guiGraphics.pose().popMatrix();
 

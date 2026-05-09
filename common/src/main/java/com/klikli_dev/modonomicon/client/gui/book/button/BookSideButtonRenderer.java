@@ -12,6 +12,9 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 public final class BookSideButtonRenderer {
 
     public static final int BUTTON_SLIDE_OFFSET = 16;
+    public static final int OVERVIEW_BUTTON_X = -13;
+    public static final int ENTRY_BUTTON_X = 3;
+    public static final int NODE_BUTTON_X = 1;
     private static final int ICON_INSET_X = 8;
     private static final int ICON_INSET_Y = 2;
 
@@ -47,13 +50,19 @@ public final class BookSideButtonRenderer {
     }
 
     public static void renderRightIcon(GuiGraphicsExtractor guiGraphics, GuiSprite icon, int buttonX, int buttonY, int buttonWidth) {
+        renderRightIcon(guiGraphics, icon, buttonX, buttonY, buttonWidth, 1.0f);
+    }
+
+    public static void renderRightIcon(GuiGraphicsExtractor guiGraphics, GuiSprite icon, int buttonX, int buttonY, int buttonWidth, float scale) {
         if (icon.isEmpty()) {
             return;
         }
 
-        int iconX = buttonX + buttonWidth - ICON_INSET_X - icon.width();
-        int iconY = buttonY + ICON_INSET_Y + Math.max(0, (16 - icon.height()) / 2);
-        icon.extractRenderState(guiGraphics, iconX, iconY);
+        int iconWidth = Math.max(1, Math.round(icon.width() * scale));
+        int iconHeight = Math.max(1, Math.round(icon.height() * scale));
+        int iconX = buttonX + buttonWidth - ICON_INSET_X - iconWidth;
+        int iconY = buttonY + ICON_INSET_Y + Math.max(0, (16 - iconHeight) / 2);
+        icon.extractRenderState(guiGraphics, iconX, iconY, iconWidth, iconHeight);
     }
 
     public static void renderLeftIcon(GuiGraphicsExtractor guiGraphics, GuiSprite icon, int buttonX, int buttonY) {
