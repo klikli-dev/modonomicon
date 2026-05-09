@@ -10,6 +10,8 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiButtonSprites;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
+import com.klikli_dev.modonomicon.networking.ClickReadAllButtonMessage;
+import com.klikli_dev.modonomicon.platform.Services;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -36,18 +38,28 @@ public class ReadAllButton extends Button {
     private final MutableComponent tooltipNone;
     private final MutableComponent tooltipShiftInstructions;
     private final MutableComponent tooltipShiftWarning;
-    private final Supplier<Boolean> displayCondition;
+    private final Supplier<Boolean> hasUnreadEntries;
     private final Supplier<Boolean> hasUnreadUnlockedEntries;
+    private final Supplier<Boolean> hasUnreadCategories;
+    private final Supplier<Boolean> hasUnreadUnlockedCategories;
+    private final Runnable onReadUnlocked;
+    private final Runnable onReadAll;
 
     private boolean wasHovered;
     private int tooltipMsDelay;
     private long hoveredStartTime;
 
 
-    public ReadAllButton(BookParentScreen parent, int x, int y, int scissorX, Supplier<Boolean> hasUnreadUnlockedEntries, Supplier<Boolean> displayCondition, OnPress onPress) {
+    public ReadAllButton(BookParentScreen parent, int x, int y, int scissorX,
+                         Supplier<Boolean> hasUnreadEntries,
+                         Supplier<Boolean> hasUnreadUnlockedEntries,
+                         Supplier<Boolean> hasUnreadCategories,
+                         Supplier<Boolean> hasUnreadUnlockedCategories,
+                         Runnable onReadUnlocked,
+                         Runnable onReadAll) {
         super(x, y, WIDTH, HEIGHT,
                 Component.translatable(Gui.BUTTON_READ_ALL),
-                onPress, Button.DEFAULT_NARRATION
+                ReadAllButton::onPress, Button.DEFAULT_NARRATION
         );
         this.parent = parent;
         this.scissorX = scissorX;
@@ -56,13 +68,31 @@ public class ReadAllButton extends Button {
         this.tooltipNone = Component.translatable(Gui.BUTTON_READ_ALL_TOOLTIP_NONE);
         this.tooltipShiftInstructions = Component.translatable(Gui.BUTTON_READ_ALL_TOOLTIP_SHIFT_INSTRUCTIONS);
         this.tooltipShiftWarning = Component.translatable(Gui.BUTTON_READ_ALL_TOOLTIP_SHIFT_WARNING);
+        this.hasUnreadEntries = hasUnreadEntries;
         this.hasUnreadUnlockedEntries = hasUnreadUnlockedEntries;
-        this.displayCondition = displayCondition;
+        this.hasUnreadCategories = hasUnreadCategories;
+        this.hasUnreadUnlockedCategories = hasUnreadUnlockedCategories;
+        this.onReadUnlocked = onReadUnlocked;
+        this.onReadAll = onReadAll;
+    }
+
+    private static void onPress(Button button) {
+        ((ReadAllButton) button).onPress();
+    }
+
+    private void onPress() {
+        if (this.hasUnreadUnlockedEntries.get() && !Minecraft.getInstance().hasShiftDown()) {
+            Services.NETWORK.sendToServer(new ClickReadAllButtonMessage(this.parent.getBook().getId(), false));
+            this.onReadUnlocked.run();
+        } else if (this.hasUnreadEntries.get() && Minecraft.getInstance().hasShiftDown()) {
+            Services.NETWORK.sendToServer(new ClickReadAllButtonMessage(this.parent.getBook().getId(), true));
+            this.onReadAll.run();
+        }
     }
 
     @Override
     protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
-        this.active = this.displayCondition.get();
+        this.active = this.hasUnreadEntries.get() || this.hasUnreadUnlockedEntries.get() || this.hasUnreadCategories.get() || this.hasUnreadUnlockedCategories.get();
         if (!this.active) return;
         //if focused we go to the right of our normal button (instead of down, like mc buttons do)
 
@@ -92,7 +122,7 @@ public class ReadAllButton extends Button {
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.parent.getBook().theme().layout().searchButtonXOffset(), 0);
         int renderX = this.getX() - BookSideButtonRenderer.BUTTON_SLIDE_OFFSET + (hovered ? 1 : 0);
-        BookSideButtonRenderer.renderRightIcon(guiGraphics, sprites.state(hovered, false), renderX, this.getY(), this.width, 1.0f, 3);
+        BookSideButtonRenderer.renderRightIcon(guiGraphics, sprites.state(hovered, false), renderX, this.getY(), this.width, 2f / 3f, 3);
         guiGraphics.pose().popMatrix();
 
         guiGraphics.pose().popMatrix();

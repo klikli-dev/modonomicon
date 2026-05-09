@@ -29,10 +29,8 @@ import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.recentlyunlocked.BookRecentlyUnlockedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
-import com.klikli_dev.modonomicon.networking.ClickReadAllButtonMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
-import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.util.TextRenderHelper;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -319,22 +317,6 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         return super.keyPressed(event);
     }
 
-    protected boolean canSeeReadAllButton() {
-        return this.hasUnreadEntries || this.hasUnreadUnlockedEntries || this.hasUnreadCategories || this.hasUnreadUnlockedCategories;
-    }
-
-
-    protected void onReadAllButtonClick(ReadAllButton button) {
-        if (this.hasUnreadUnlockedEntries &&
-                !this.minecraft.hasShiftDown()) {
-            Services.NETWORK.sendToServer(new ClickReadAllButtonMessage(this.book.getId(), false));
-            this.hasUnreadUnlockedEntries = false;
-        } else if (this.hasUnreadEntries && this.minecraft.hasShiftDown()) {
-            Services.NETWORK.sendToServer(new ClickReadAllButtonMessage(this.book.getId(), true));
-            this.hasUnreadEntries = false;
-        }
-    }
-
     @Override
     public void init() {
         super.init();
@@ -385,9 +367,12 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
         int readAllButtonY = searchButtonY - buttonHeight - 2;
         var readAllButton = new ReadAllButton(this, searchButtonX, readAllButtonY, scissorX,
-                () -> this.hasUnreadUnlockedEntries, //if we have unlocked entries that are not read -> blue
-                this::canSeeReadAllButton, //display condition -> if we have any unlocked entries -> grey
-                (b) -> this.onReadAllButtonClick((ReadAllButton) b));
+                () -> this.hasUnreadEntries,
+                () -> this.hasUnreadUnlockedEntries,
+                () -> this.hasUnreadCategories,
+                () -> this.hasUnreadUnlockedCategories,
+                () -> this.hasUnreadUnlockedEntries = false,
+                () -> this.hasUnreadEntries = false);
 
         this.addRenderableWidget(readAllButton);
     }
