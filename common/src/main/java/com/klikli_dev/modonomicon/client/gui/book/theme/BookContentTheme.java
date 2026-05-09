@@ -62,6 +62,8 @@ public interface BookContentTheme {
 
     GuiButtonSprites removeBookmarkButton();
 
+    GuiButtonSprites readAllButtonBackground();
+
     GuiButtonSprites readAllButton();
 
     GuiButtonSprites readNoneButton();

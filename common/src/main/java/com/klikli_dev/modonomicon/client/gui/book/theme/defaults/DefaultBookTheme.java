@@ -49,6 +49,7 @@ public class DefaultBookTheme implements BookTheme {
     private final GuiButtonSprites showRecentlyUnlockedButton;
     private final GuiButtonSprites addBookmarkButton;
     private final GuiButtonSprites removeBookmarkButton;
+    private final GuiButtonSprites readAllButtonBackground;
     private final GuiButtonSprites readAllButton;
     private final GuiButtonSprites readNoneButton;
     private final GuiButtonSprites readUnlockedButton;
@@ -216,6 +217,11 @@ public class DefaultBookTheme implements BookTheme {
         @Override
         public GuiButtonSprites removeBookmarkButton() {
             return DefaultBookTheme.this.removeBookmarkButton;
+        }
+
+        @Override
+        public GuiButtonSprites readAllButtonBackground() {
+            return DefaultBookTheme.this.readAllButtonBackground;
         }
 
         @Override
@@ -420,6 +426,7 @@ public class DefaultBookTheme implements BookTheme {
         this.showRecentlyUnlockedButton = new GuiButtonSprites(this.collectionButtonNormal, this.collectionButtonNormal);
         this.addBookmarkButton = new GuiButtonSprites(this.collectionButtonNormal, this.collectionButtonNormal);
         this.removeBookmarkButton = new GuiButtonSprites(this.collectionButtonNormal, this.collectionButtonNormal);
+        this.readAllButtonBackground = new GuiButtonSprites(this.collectionButtonGolden, this.collectionButtonGolden);
         this.readAllButton = this.button("content/buttons/read/read_all_button", 16, 14, true);
         this.readNoneButton = this.button("content/buttons/read/read_none_button", 16, 14, true);
         this.readUnlockedButton = this.button("content/buttons/read/read_unlocked_button", 16, 14, true);

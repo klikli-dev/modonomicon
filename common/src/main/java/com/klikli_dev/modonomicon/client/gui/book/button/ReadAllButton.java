@@ -15,6 +15,7 @@ import com.klikli_dev.modonomicon.platform.Services;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Util;
@@ -110,11 +111,11 @@ public class ReadAllButton extends Button {
             sprites = this.parent.getBook().theme().content().readAllButton();
         }
 
-        var background = this.parent.getBook().theme().content().searchButton().state(hovered, false);
+        var background = this.parent.getBook().theme().content().readAllButtonBackground().state(hovered, false);
 
         BookSideButtonRenderer.renderSlidingButton(guiGraphics, this.parent.getBook().theme().layout().searchButtonXOffset(),
                 this.getX(), this.getY(), this.width, this.height, this.scissorX,
-                ((net.minecraft.client.gui.screens.Screen) this.parent).height, hovered,
+                ((Screen) this.parent).height, hovered,
                 background,
                 GuiSprite.EMPTY);
 
