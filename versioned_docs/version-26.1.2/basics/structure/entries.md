@@ -97,6 +97,35 @@ Default value:
 
 As a shorthand, `background` can also be a single ResourceLocation string instead of an object. In that case it is treated as the `sprite` value and `width` / `height` default to `-1`.
 
+#### Default datagen entry backgrounds
+
+When generating entries in code, [`BookEntryModel#withEntryBackground(...)`](https://github.com/klikli-dev/modonomicon/blob/main/common/src/main/java/com/klikli_dev/modonomicon/api/datagen/book/BookEntryModel.java) accepts any `GuiSprite`, but the default theme also exposes convenience constants in `EntryBackground` for the built-in node entry backgrounds:
+
+- `EntryBackground.SQUARE_GOLD`
+- `EntryBackground.SQUARE_GRAY`
+- `EntryBackground.SQUARE_PURPLE`
+- `EntryBackground.STAR_GOLD`
+- `EntryBackground.STAR_GRAY`
+- `EntryBackground.STAR_PURPLE`
+- `EntryBackground.CIRCLE_GOLD`
+- `EntryBackground.CIRCLE_GRAY`
+- `EntryBackground.CIRCLE_PURPLE`
+- `EntryBackground.HEXAGON_GOLD`
+- `EntryBackground.HEXAGON_GRAY`
+- `EntryBackground.HEXAGON_PURPLE`
+
+Example:
+
+```java
+BookEntryModel.create(id("my_entry"), "example.book.my_entry")
+    .withCategory(category)
+    .withIcon(Items.BOOK)
+    .withLocation(0, 0)
+    .withEntryBackground(EntryBackground.HEXAGON_PURPLE);
+```
+
+`EntryBackground.DEFAULT` still points to `EntryBackground.SQUARE_GOLD`.
+
 ### **condition** (Condition, _optional_)
 
 Entries, like Categories, can be hidden until an Unlock Condition is fulfilled. Conditions are JSON objects.  
