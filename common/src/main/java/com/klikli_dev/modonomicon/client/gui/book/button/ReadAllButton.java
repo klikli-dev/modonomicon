@@ -97,7 +97,6 @@ public class ReadAllButton extends Button {
         //if focused we go to the right of our normal button (instead of down, like mc buttons do)
 
         guiGraphics.pose().pushMatrix();
-        //TODO had a +200 z here
         var hovered = this.isHovered();
 
         //by default we show green if we can read unlocked entries or gray if none
@@ -122,7 +121,7 @@ public class ReadAllButton extends Button {
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.parent.getBook().theme().layout().searchButtonXOffset(), 0);
         int renderX = this.getX() - BookSideButtonRenderer.BUTTON_SLIDE_OFFSET + (hovered ? 1 : 0);
-        BookSideButtonRenderer.renderRightIcon(guiGraphics, sprites.state(hovered, false), renderX, this.getY(), this.width, 2f / 3f, -2);
+        BookSideButtonRenderer.renderRightIcon(guiGraphics, sprites.state(hovered, false), renderX, this.getY(), this.width, 2f / 3f, -3);
         guiGraphics.pose().popMatrix();
 
         guiGraphics.pose().popMatrix();

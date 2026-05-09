@@ -30,12 +30,12 @@ public class BookContentRenderer {
 
     public static void drawLock(GuiGraphicsExtractor guiGraphics, Book book, int x, int y) {
         var sprite = book.theme().content().lockIcon();
-        sprite.extractRenderState(guiGraphics, x - 1, y);
+        sprite.extractRenderState(guiGraphics, x - 2, y);
     }
 
     public static void drawLock(GuiGraphicsExtractor guiGraphics, Book book, int x, int y, int color) {
         var sprite = book.theme().content().lockIcon();
-        sprite.extractRenderState(guiGraphics, x - 1, y, color);
+        sprite.extractRenderState(guiGraphics, x - 2, y, color);
     }
 
     public static void drawUnreadIndicator(GuiGraphicsExtractor guiGraphics, Book book, int x, int y, boolean hovered) {
