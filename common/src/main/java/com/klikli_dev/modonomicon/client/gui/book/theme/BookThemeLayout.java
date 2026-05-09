@@ -15,7 +15,7 @@ public record BookThemeLayout(int bookTextOffsetX, int bookTextOffsetY, int book
                               int searchButtonXOffset, int searchButtonYOffset,
                               int readAllButtonYOffset, float categoryButtonIconScale) implements BookLayoutTheme {
 
-    public static final BookThemeLayout DEFAULT = new BookThemeLayout(0, 0, 0, 0, 0, 0, 0, 0, 0, 1.0f);
+    public static final BookThemeLayout DEFAULT = new BookThemeLayout(0, 0, 0, 0, 0, 2, 0, 0, 0, 1.0f);
 
     public static BookThemeLayout fromJson(JsonObject json) {
         return new BookThemeLayout(

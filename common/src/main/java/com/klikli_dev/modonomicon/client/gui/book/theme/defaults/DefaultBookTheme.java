@@ -37,6 +37,13 @@ public class DefaultBookTheme implements BookTheme {
     private final GuiButtonSprites categoryScrollUpButton;
     private final GuiButtonSprites categoryScrollDownButton;
     private final GuiButtonSprites categoryButton;
+    private final GuiSprite collectionButtonNormal;
+    private final GuiSprite collectionButtonGolden;
+    private final GuiSprite searchButtonIcon;
+    private final GuiSprite showBookmarksButtonIcon;
+    private final GuiSprite showRecentlyUnlockedButtonIcon;
+    private final GuiSprite addBookmarkButtonIcon;
+    private final GuiSprite removeBookmarkButtonIcon;
     private final GuiButtonSprites searchButton;
     private final GuiButtonSprites showBookmarksButton;
     private final GuiButtonSprites showRecentlyUnlockedButton;
@@ -149,6 +156,41 @@ public class DefaultBookTheme implements BookTheme {
         @Override
         public GuiButtonSprites categoryButton() {
             return DefaultBookTheme.this.categoryButton;
+        }
+
+        @Override
+        public GuiSprite collectionButtonNormal() {
+            return DefaultBookTheme.this.collectionButtonNormal;
+        }
+
+        @Override
+        public GuiSprite collectionButtonGolden() {
+            return DefaultBookTheme.this.collectionButtonGolden;
+        }
+
+        @Override
+        public GuiSprite searchButtonIcon() {
+            return DefaultBookTheme.this.searchButtonIcon;
+        }
+
+        @Override
+        public GuiSprite showBookmarksButtonIcon() {
+            return DefaultBookTheme.this.showBookmarksButtonIcon;
+        }
+
+        @Override
+        public GuiSprite showRecentlyUnlockedButtonIcon() {
+            return DefaultBookTheme.this.showRecentlyUnlockedButtonIcon;
+        }
+
+        @Override
+        public GuiSprite addBookmarkButtonIcon() {
+            return DefaultBookTheme.this.addBookmarkButtonIcon;
+        }
+
+        @Override
+        public GuiSprite removeBookmarkButtonIcon() {
+            return DefaultBookTheme.this.removeBookmarkButtonIcon;
         }
 
         @Override
@@ -362,12 +404,22 @@ public class DefaultBookTheme implements BookTheme {
         this.visualizeButton = this.button("content/buttons/navigation/visualize_button", 11, 7, true);
         this.categoryScrollUpButton = this.button("content/buttons/category/category_scroll_up_button", 14, 10, true);
         this.categoryScrollDownButton = this.button("content/buttons/category/category_scroll_down_button", 14, 10, true);
-        this.categoryButton = this.button("content/buttons/category/category_button", 44, 20, false, false);
-        this.searchButton = this.button("content/buttons/side/search_button", 44, 20, false);
-        this.showBookmarksButton = this.button("content/buttons/side/show_bookmarks_button", 44, 20, false);
-        this.showRecentlyUnlockedButton = this.button("content/buttons/side/show_recently_unlocked_button", 44, 20, false);
-        this.addBookmarkButton = this.button("content/buttons/side/add_bookmark_button", 44, 20, false);
-        this.removeBookmarkButton = this.button("content/buttons/side/remove_bookmark_button", 44, 20, false);
+        var defaultCategoryButtonSprite = data.content().defaultCategoryButtonSprite();
+        this.categoryButton = defaultCategoryButtonSprite.isEmpty()
+                ? this.button("content/buttons/category/category_button", 44, 20, false, false)
+                : new GuiButtonSprites(defaultCategoryButtonSprite, defaultCategoryButtonSprite);
+        this.collectionButtonNormal = this.sprite("content/buttons/collection/collection_button_normal.png", 44, 20);
+        this.collectionButtonGolden = this.sprite("content/buttons/collection/collection_button_golden.png", 44, 20);
+        this.searchButtonIcon = this.sprite("content/buttons/collection/search_icon.png", 16, 16);
+        this.showBookmarksButtonIcon = this.sprite("content/buttons/collection/show_bookmarks_icon.png", 16, 16);
+        this.showRecentlyUnlockedButtonIcon = this.sprite("content/buttons/collection/unlocked_icon.png", 16, 16);
+        this.addBookmarkButtonIcon = this.sprite("content/buttons/collection/add_bookmarks_icon.png", 16, 16);
+        this.removeBookmarkButtonIcon = this.sprite("content/buttons/collection/remove_bookmarks_icon.png", 16, 16);
+        this.searchButton = this.buttonOrFallback("content/buttons/side/search_button", this.collectionButtonNormal, 44, 20, false);
+        this.showBookmarksButton = this.buttonOrFallback("content/buttons/side/show_bookmarks_button", this.collectionButtonNormal, 44, 20, false);
+        this.showRecentlyUnlockedButton = this.buttonOrFallback("content/buttons/side/show_recently_unlocked_button", this.collectionButtonNormal, 44, 20, false);
+        this.addBookmarkButton = this.buttonOrFallback("content/buttons/side/add_bookmark_button", this.collectionButtonNormal, 44, 20, false);
+        this.removeBookmarkButton = this.buttonOrFallback("content/buttons/side/remove_bookmark_button", this.collectionButtonNormal, 44, 20, false);
         this.readAllButton = this.button("content/buttons/read/read_all_button", 16, 14, true);
         this.readNoneButton = this.button("content/buttons/read/read_none_button", 16, 14, true);
         this.readUnlockedButton = this.button("content/buttons/read/read_unlocked_button", 16, 14, true);
@@ -442,6 +494,14 @@ public class DefaultBookTheme implements BookTheme {
         return new GuiButtonSprites(normal, hover, pressed);
     }
 
+    private GuiButtonSprites buttonOrFallback(String path, GuiSprite fallback, int width, int height, boolean hasHover) {
+        if (this.hasThemedTexture(path + "_normal.png")) {
+            return this.button(path, width, height, hasHover);
+        }
+
+        return new GuiButtonSprites(fallback, fallback);
+    }
+
     private Identifier texture(String relativePath) {
         Identifier themed = Identifier.fromNamespaceAndPath(this.data.id().getNamespace(), this.textureRoot + relativePath);
 
@@ -456,6 +516,20 @@ public class DefaultBookTheme implements BookTheme {
         //otherwise we fall back to the default theme.
         //on server the actual texture does not matter and should never be accessed anyway, so we serve the defaults always.
         return Modonomicon.loc(GUI_SPRITE_TEXTURE_ROOT + DEFAULT_SPRITE_ROOT + relativePath);
+    }
+
+    private boolean hasThemedTexture(String relativePath) {
+        if (Services.PLATFORM.getPhysicalSide() != PlatformHelper.PhysicalSide.CLIENT) {
+            return false;
+        }
+
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft == null || minecraft.getResourceManager() == null) {
+            return false;
+        }
+
+        Identifier themed = Identifier.fromNamespaceAndPath(this.data.id().getNamespace(), this.textureRoot + relativePath);
+        return minecraft.getResourceManager().getResource(themed).isPresent();
     }
 
     private Identifier spriteId(String relativePath) {

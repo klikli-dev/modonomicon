@@ -18,16 +18,18 @@ import net.minecraft.util.GsonHelper;
  * @param id unique identifier of the theme instance.
  * @param type registered theme factory id used to construct the runtime theme.
  * @param layout layout offsets and scaling used across the book UI.
+ * @param content content sprite overrides for theme-aware button rendering.
  * @param palette default title/text colors used by theme-aware content rendering.
  * @param node settings for node-screen connection rendering, including renderer selection and direct renderer configuration.
  */
-public record BookThemeData(Identifier id, Identifier type, BookThemeLayout layout, BookThemePalette palette, BookNodeSettings node) {
+public record BookThemeData(Identifier id, Identifier type, BookThemeLayout layout, BookThemeContentData content, BookThemePalette palette, BookNodeSettings node) {
 
     public static BookThemeData defaults() {
         return new BookThemeData(
                 ModonomiconConstants.Data.Theme.DEFAULT_THEME_ID,
                 ModonomiconConstants.Data.Theme.DEFAULT_THEME_TYPE,
                 BookThemeLayout.DEFAULT,
+                BookThemeContentData.DEFAULT,
                 BookThemePalette.DEFAULT,
                 BookNodeSettings.DEFAULT
         );
@@ -39,6 +41,7 @@ public record BookThemeData(Identifier id, Identifier type, BookThemeLayout layo
                 Identifier.parse(GsonHelper.getAsString(json, "id", defaults.id.toString())),
                 Identifier.parse(GsonHelper.getAsString(json, "type", defaults.type.toString())),
                 json.has("layout") ? BookThemeLayout.fromJson(GsonHelper.getAsJsonObject(json, "layout")) : defaults.layout,
+                json.has("content") ? BookThemeContentData.fromJson(GsonHelper.getAsJsonObject(json, "content")) : defaults.content,
                 json.has("palette") ? BookThemePalette.fromJson(GsonHelper.getAsJsonObject(json, "palette")) : defaults.palette,
                 json.has("node") ? BookNodeSettings.fromJson(GsonHelper.getAsJsonObject(json, "node")) : defaults.node
         );
@@ -49,6 +52,7 @@ public record BookThemeData(Identifier id, Identifier type, BookThemeLayout layo
                 buffer.readIdentifier(),
                 buffer.readIdentifier(),
                 BookThemeLayout.fromNetwork(buffer),
+                BookThemeContentData.fromNetwork(buffer),
                 BookThemePalette.fromNetwork(buffer),
                 BookNodeSettings.fromNetwork(buffer)
         );
@@ -58,6 +62,7 @@ public record BookThemeData(Identifier id, Identifier type, BookThemeLayout layo
         buffer.writeIdentifier(this.id);
         buffer.writeIdentifier(this.type);
         this.layout.toNetwork(buffer);
+        this.content.toNetwork(buffer);
         this.palette.toNetwork(buffer);
         this.node.toNetwork(buffer);
     }

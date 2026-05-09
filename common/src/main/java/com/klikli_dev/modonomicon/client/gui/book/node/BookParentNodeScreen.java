@@ -303,24 +303,25 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
         this.updateCategoryButtons(buttonX, buttonY, buttonWidth, buttonHeight, buttonSpacing);
 
-        int readAllButtonX = this.getFrameWidth() + this.getFrameThicknessW() + ReadAllButton.WIDTH / 2 - 3; //(this.width - this.getFrameWidth()); // / 2 - this.getFrameThicknessW() + buttonXOffset;
+        int searchButtonXOffset = 7;
+        int scissorX = this.getFrameWidth() + this.getFrameThicknessW() * 2 + 2; //this is the render location of our frame so our search button never overlaps
+        int rightButtonX = this.getFrameWidth() + this.getFrameThicknessW() + ReadAllButton.WIDTH / 2 + searchButtonXOffset;
+        int readAllButtonX = rightButtonX;
         int readAllButtonYOffset = 30 + this.getBook().theme().layout().readAllButtonYOffset();
 
         int readAllButtonY = (this.height - this.getFrameHeight()) / 2 + ReadAllButton.HEIGHT / 2 + readAllButtonYOffset;
 
-        var readAllButton = new ReadAllButton(this, readAllButtonX, readAllButtonY, () -> this.hasUnreadUnlockedEntries, //if we have unlocked entries that are not read -> blue
+        var readAllButton = new ReadAllButton(this, readAllButtonX, readAllButtonY, scissorX, () -> this.hasUnreadUnlockedEntries, //if we have unlocked entries that are not read -> blue
                 this::canSeeReadAllButton, //display condition -> if we have any unlocked entries -> grey
                 (b) -> this.onReadAllButtonClick((ReadAllButton) b));
 
         this.addRenderableWidget(readAllButton);
 
-
-        int searchButtonXOffset = 7;
         int searchButtonYOffset = -30 + this.getBook().theme().layout().searchButtonYOffset();
-        int searchButtonX = this.getFrameWidth() + this.getFrameThicknessW() + ReadAllButton.WIDTH / 2 + searchButtonXOffset;
+        int searchButtonX = rightButtonX;
         int searchButtonY = this.getFrameHeight() + this.getFrameThicknessH() - ReadAllButton.HEIGHT / 2 + searchButtonYOffset;
         int searchButtonWidth = this.getBook().theme().content().searchButton().normal().width();
-        int scissorX = this.getFrameWidth() + this.getFrameThicknessW() * 2 + 2; //this is the render location of our frame so our search button never overlaps
+        buttonHeight = this.getBook().theme().content().searchButton().normal().height();
 
         var searchButton = new SearchButton(this, searchButtonX, searchButtonY,
                 scissorX,

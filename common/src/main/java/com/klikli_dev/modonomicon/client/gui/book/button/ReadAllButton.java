@@ -23,11 +23,12 @@ import java.util.function.Supplier;
 
 public class ReadAllButton extends Button {
 
-    public static final int WIDTH = 16;
-    public static final int HEIGHT = 14;
+    public static final int WIDTH = 44;
+    public static final int HEIGHT = 20;
 
 
     private final BookParentScreen parent;
+    private final int scissorX;
 
     private final MutableComponent tooltipReadUnlocked;
     private final MutableComponent tooltipReadAll;
@@ -42,12 +43,13 @@ public class ReadAllButton extends Button {
     private long hoveredStartTime;
 
 
-    public ReadAllButton(BookParentScreen parent, int x, int y, Supplier<Boolean> hasUnreadUnlockedEntries, Supplier<Boolean> displayCondition, OnPress onPress) {
+    public ReadAllButton(BookParentScreen parent, int x, int y, int scissorX, Supplier<Boolean> hasUnreadUnlockedEntries, Supplier<Boolean> displayCondition, OnPress onPress) {
         super(x, y, WIDTH, HEIGHT,
                 Component.translatable(Gui.BUTTON_READ_ALL),
                 onPress, Button.DEFAULT_NARRATION
         );
         this.parent = parent;
+        this.scissorX = scissorX;
         this.tooltipReadUnlocked = Component.translatable(Gui.BUTTON_READ_ALL_TOOLTIP_READ_UNLOCKED);
         this.tooltipReadAll = Component.translatable(Gui.BUTTON_READ_ALL_TOOLTIP_READ_ALL);
         this.tooltipNone = Component.translatable(Gui.BUTTON_READ_ALL_TOOLTIP_NONE);
@@ -78,7 +80,11 @@ public class ReadAllButton extends Button {
             sprites = this.parent.getBook().theme().content().readAllButton();
         }
 
-        com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer.drawButton(guiGraphics, sprites, this.getX(), this.getY(), hovered);
+        BookSideButtonRenderer.renderSlidingButton(guiGraphics, this.parent.getBook().theme().layout().searchButtonXOffset(),
+                this.getX(), this.getY(), this.width, this.height, this.scissorX,
+                ((net.minecraft.client.gui.screens.Screen) this.parent).height, hovered,
+                this.parent.getBook().theme().content().collectionButtonGolden(),
+                sprites.state(hovered, false));
 
         guiGraphics.pose().popMatrix();
 

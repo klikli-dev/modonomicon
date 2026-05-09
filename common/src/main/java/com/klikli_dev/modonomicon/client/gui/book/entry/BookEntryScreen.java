@@ -348,9 +348,9 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     }
 
     protected void updateBookmarksButton() {
-        this.renderables.removeIf(b -> b instanceof AddBookmarkButton || b instanceof SearchButton);
-        this.children().removeIf(b -> b instanceof AddBookmarkButton || b instanceof SearchButton);
-        this.narratables.removeIf(b -> b instanceof AddBookmarkButton || b instanceof SearchButton);
+        this.renderables.removeIf(b -> b instanceof AddBookmarkButton || b instanceof RemoveBookmarkButton);
+        this.children().removeIf(b -> b instanceof AddBookmarkButton || b instanceof RemoveBookmarkButton);
+        this.narratables.removeIf(b -> b instanceof AddBookmarkButton || b instanceof RemoveBookmarkButton);
 
         int buttonHeight = this.getBook().theme().content().addBookmarkButton().normal().height();
         int searchButtonX = this.bookLeft + FULL_WIDTH - 5;
@@ -364,7 +364,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
                     scissorX,
                     searchButtonWidth, buttonHeight,
                     (b) -> this.onRemoveBookmarksButtonClick((RemoveBookmarkButton) b),
-                    Tooltip.create(Component.translatable(Gui.ADD_BOOKMARK)));
+                    Tooltip.create(Component.translatable(Gui.REMOVE_BOOKMARK)));
             this.addRenderableWidget(removeBookMarkButton);
         } else {
             var addBookmarkButton = new AddBookmarkButton(this, searchButtonX, searchButtonY,

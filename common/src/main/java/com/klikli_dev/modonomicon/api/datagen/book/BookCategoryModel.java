@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Category;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
 import com.klikli_dev.modonomicon.book.BookDisplayMode;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
@@ -62,6 +63,7 @@ public class BookCategoryModel {
     @Nullable
     protected BookConditionModel<?> condition = null;
     protected boolean showCategoryButton = true;
+    protected GuiSprite categoryButtonSprite = GuiSprite.EMPTY;
 
     /**
      * The entry to open when this category is opened.
@@ -132,6 +134,9 @@ public class BookCategoryModel {
             json.add("condition", this.condition.toJson(this.getId(), provider));
         }
         json.addProperty("show_category_button", this.showCategoryButton);
+        if (!this.categoryButtonSprite.isEmpty()) {
+            json.add("category_button_sprite", this.categoryButtonSprite.toJson());
+        }
         if (this.entryToOpen != null) {
             //if we are in the same namespace, which we basically always should be, omit namespace
             if (this.entryToOpen.getNamespace().equals(this.getId().getNamespace()))
@@ -411,6 +416,21 @@ public class BookCategoryModel {
     public BookCategoryModel withShowCategoryButton(boolean showCategoryButton) {
         this.showCategoryButton = showCategoryButton;
         return this;
+    }
+
+    /**
+     * Sets the sprite used to render this category button.
+     */
+    public BookCategoryModel withCategoryButtonSprite(GuiSprite sprite) {
+        this.categoryButtonSprite = sprite;
+        return this;
+    }
+
+    /**
+     * Sets the sprite used to render this category button.
+     */
+    public BookCategoryModel withCategoryButtonSprite(Identifier sprite, int width, int height) {
+        return this.withCategoryButtonSprite(new GuiSprite(sprite, width, height));
     }
 
     /**
