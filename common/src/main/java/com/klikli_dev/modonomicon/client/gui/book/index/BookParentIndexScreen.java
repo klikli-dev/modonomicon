@@ -20,6 +20,7 @@ import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.bookmarks.BookBookmarksScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryListButton;
+import com.klikli_dev.modonomicon.client.gui.book.button.BookSideButtonRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.button.ReadAllButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ShowBookmarksButton;
@@ -28,10 +29,8 @@ import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.recentlyunlocked.BookRecentlyUnlockedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
-import com.klikli_dev.modonomicon.networking.ClickReadAllButtonMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
-import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.util.TextRenderHelper;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -318,22 +317,6 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         return super.keyPressed(event);
     }
 
-    protected boolean canSeeReadAllButton() {
-        return this.hasUnreadEntries || this.hasUnreadUnlockedEntries || this.hasUnreadCategories || this.hasUnreadUnlockedCategories;
-    }
-
-
-    protected void onReadAllButtonClick(ReadAllButton button) {
-        if (this.hasUnreadUnlockedEntries &&
-                !this.minecraft.hasShiftDown()) {
-            Services.NETWORK.sendToServer(new ClickReadAllButtonMessage(this.book.getId(), false));
-            this.hasUnreadUnlockedEntries = false;
-        } else if (this.hasUnreadEntries && this.minecraft.hasShiftDown()) {
-            Services.NETWORK.sendToServer(new ClickReadAllButtonMessage(this.book.getId(), true));
-            this.hasUnreadEntries = false;
-        }
-    }
-
     @Override
     public void init() {
         super.init();
@@ -349,21 +332,11 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         this.createEntryList();
 
 
-        int readAllButtonX = this.bookLeft + FULL_WIDTH - ReadAllButton.WIDTH / 2;
-        int readAllButtonY = this.bookTop + ReadAllButton.HEIGHT + 15;
-
-        var readAllButton = new ReadAllButton(this, readAllButtonX, readAllButtonY,
-                () -> this.hasUnreadUnlockedEntries, //if we have unlocked entries that are not read -> blue
-                this::canSeeReadAllButton, //display condition -> if we have any unlocked entries -> grey
-                (b) -> this.onReadAllButtonClick((ReadAllButton) b));
-
-        this.addRenderableWidget(readAllButton);
-
-        int buttonHeight = this.getBook().theme().content().searchButton().normal().height();
-        int searchButtonX = this.bookLeft + FULL_WIDTH - 5;
-        int searchButtonY = this.bookTop + FULL_HEIGHT - 30;
-        int searchButtonWidth = this.getBook().theme().content().searchButton().normal().width() - 10;
         int scissorX = this.bookLeft + FULL_WIDTH;//this is the render location of our frame so our search button never overlaps
+        int buttonHeight = this.getBook().theme().content().searchButton().normal().height();
+        int searchButtonX = BookSideButtonRenderer.anchoredButtonX(scissorX);
+        int searchButtonY = this.bookTop + FULL_HEIGHT - 30;
+        int searchButtonWidth = this.getBook().theme().content().searchButton().normal().width();
 
         var searchButton = new SearchButton(this, searchButtonX, searchButtonY,
                 scissorX,
@@ -391,6 +364,17 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
                     Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_RECENTLY_UNLOCKED)));
             this.addRenderableWidget(showRecentlyUnlockedButton);
         }
+
+        int readAllButtonY = this.bookTop + 15;
+        var readAllButton = new ReadAllButton(this, searchButtonX, readAllButtonY, scissorX,
+                () -> this.hasUnreadEntries,
+                () -> this.hasUnreadUnlockedEntries,
+                () -> this.hasUnreadCategories,
+                () -> this.hasUnreadUnlockedCategories,
+                () -> this.hasUnreadUnlockedEntries = false,
+                () -> this.hasUnreadEntries = false);
+
+        this.addRenderableWidget(readAllButton);
     }
 
     protected void onSearchButtonClick(SearchButton button) {

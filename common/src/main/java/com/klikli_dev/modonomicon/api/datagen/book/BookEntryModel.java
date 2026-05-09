@@ -330,7 +330,24 @@ public class BookEntryModel {
     }
 
     /**
-     * Select the themed node entry background by GUI sprite id and optional dimensions.
+     * Selects the entry background sprite used in node-based category screens.
+     * <p>
+     * For the default theme, prefer the constants from {@link EntryBackground}:
+     * <ul>
+     *     <li>{@link EntryBackground#SQUARE_GOLD}</li>
+     *     <li>{@link EntryBackground#SQUARE_GRAY}</li>
+     *     <li>{@link EntryBackground#SQUARE_PURPLE}</li>
+     *     <li>{@link EntryBackground#STAR_GOLD}</li>
+     *     <li>{@link EntryBackground#STAR_GRAY}</li>
+     *     <li>{@link EntryBackground#STAR_PURPLE}</li>
+     *     <li>{@link EntryBackground#CIRCLE_GOLD}</li>
+     *     <li>{@link EntryBackground#CIRCLE_GRAY}</li>
+     *     <li>{@link EntryBackground#CIRCLE_PURPLE}</li>
+     *     <li>{@link EntryBackground#HEXAGON_GOLD}</li>
+     *     <li>{@link EntryBackground#HEXAGON_GRAY}</li>
+     *     <li>{@link EntryBackground#HEXAGON_PURPLE}</li>
+     * </ul>
+     * Custom themed backgrounds can still be supplied with any {@link GuiSprite}.
      */
     public BookEntryModel withEntryBackground(GuiSprite texture) {
         this.entryBackground = texture;

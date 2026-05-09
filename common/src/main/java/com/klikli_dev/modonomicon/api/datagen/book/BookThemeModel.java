@@ -17,6 +17,7 @@ public class BookThemeModel {
     protected Identifier id = ModonomiconConstants.Data.Theme.DEFAULT_THEME_ID;
     protected Identifier type = ModonomiconConstants.Data.Theme.DEFAULT_THEME_TYPE;
     protected BookThemeLayoutModel layout = new BookThemeLayoutModel();
+    protected BookThemeContentModel content = new BookThemeContentModel();
     protected BookThemePaletteModel palette = new BookThemePaletteModel();
     protected BookNodeSettingsModel node = new BookNodeSettingsModel();
     protected boolean generateJson;
@@ -29,6 +30,9 @@ public class BookThemeModel {
         json.addProperty("id", this.id.toString());
         json.addProperty("type", this.type.toString());
         json.add("layout", this.layout.toJson());
+        if (!this.content.isEmpty()) {
+            json.add("content", this.content.toJson());
+        }
         json.add("palette", this.palette.toJson());
         json.add("node", this.node.toJson());
         return json;
@@ -64,6 +68,15 @@ public class BookThemeModel {
      */
     public BookThemeModel withLayout(Consumer<BookThemeLayoutModel> consumer) {
         consumer.accept(this.layout);
+        this.generateJson = true;
+        return this;
+    }
+
+    /**
+     * Configures theme content sprites.
+     */
+    public BookThemeModel withContent(Consumer<BookThemeContentModel> consumer) {
+        consumer.accept(this.content);
         this.generateJson = true;
         return this;
     }

@@ -15,7 +15,7 @@ public class BookThemeLayoutModel {
     protected int bookTextOffsetWidth = 0;
     protected int bookTextOffsetHeight = 0;
     protected int categoryButtonXOffset = 0;
-    protected int categoryButtonYOffset = 0;
+    protected int categoryButtonYOffset = 2;
     protected int searchButtonXOffset = 0;
     protected int searchButtonYOffset = 0;
     protected int readAllButtonYOffset = 0;

@@ -38,6 +38,20 @@ public interface BookContentTheme {
 
     GuiButtonSprites categoryButton();
 
+    GuiSprite collectionButtonNormal();
+
+    GuiSprite collectionButtonGolden();
+
+    GuiSprite searchButtonIcon();
+
+    GuiSprite showBookmarksButtonIcon();
+
+    GuiSprite showRecentlyUnlockedButtonIcon();
+
+    GuiSprite addBookmarkButtonIcon();
+
+    GuiSprite removeBookmarkButtonIcon();
+
     GuiButtonSprites searchButton();
 
     GuiButtonSprites showBookmarksButton();
@@ -47,6 +61,8 @@ public interface BookContentTheme {
     GuiButtonSprites addBookmarkButton();
 
     GuiButtonSprites removeBookmarkButton();
+
+    GuiButtonSprites readAllButtonBackground();
 
     GuiButtonSprites readAllButton();
 

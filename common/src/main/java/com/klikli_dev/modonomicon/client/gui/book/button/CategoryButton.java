@@ -45,7 +45,10 @@ public class CategoryButton extends Button {
             int renderX = this.getX();
             int renderWidth = this.width;
             boolean selected = BookGuiManager.get().openBookCategoryScreen != null && this.category == BookGuiManager.get().openBookCategoryScreen.getCategory();
-            var sprite = this.parent.getBook().theme().content().categoryButton().state(this.isHovered(), selected);
+            var sprites = this.getCategory().getCategoryButtonSprites() != null
+                    ? this.getCategory().getCategoryButtonSprites()
+                    : this.parent.getBook().theme().content().categoryButton();
+            var sprite = sprites.state(this.isHovered(), selected);
 
             int color;
             if (selected) {

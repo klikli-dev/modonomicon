@@ -1,0 +1,15 @@
+{
+  "allow_open_book_with_invalid_links": false,
+  "auto_add_read_conditions": false,
+  "creative_tab": "modonomicon:modonomicon",
+  "description": "",
+  "display_mode": "index",
+  "font": "modonomicon:default",
+  "generate_book_item": true,
+  "model": "modonomicon:modonomicon_green",
+  "name": "book.modonomicon.demo_index.name",
+  "page_display_mode": "double_page",
+  "show_recently_unlocked": true,
+  "tooltip": "book.modonomicon.demo_index.tooltip",
+  "turn_page_sound": "modonomicon:turn_page"
+}

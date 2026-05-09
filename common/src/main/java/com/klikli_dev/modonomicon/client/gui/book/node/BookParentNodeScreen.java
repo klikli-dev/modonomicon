@@ -20,7 +20,6 @@ import com.klikli_dev.modonomicon.client.gui.book.button.*;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiFrameOverlay;
 import com.klikli_dev.modonomicon.client.gui.book.recentlyunlocked.BookRecentlyUnlockedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
-import com.klikli_dev.modonomicon.networking.ClickReadAllButtonMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
@@ -186,20 +185,6 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
         BookGuiManager.get().openCategory(button.getCategory(), BookAddress.defaultFor(button.getCategory().getBook()));
     }
 
-    protected void onReadAllButtonClick(ReadAllButton button) {
-        if (this.hasUnreadUnlockedEntries && !Minecraft.getInstance().hasShiftDown()) {
-            Services.NETWORK.sendToServer(new ClickReadAllButtonMessage(this.book.getId(), false));
-            this.hasUnreadUnlockedEntries = false;
-        } else if (this.hasUnreadEntries && Minecraft.getInstance().hasShiftDown()) {
-            Services.NETWORK.sendToServer(new ClickReadAllButtonMessage(this.book.getId(), true));
-            this.hasUnreadEntries = false;
-        }
-    }
-
-    protected boolean canSeeReadAllButton() {
-        return this.hasUnreadEntries || this.hasUnreadUnlockedEntries || this.hasUnreadCategories || this.hasUnreadUnlockedCategories;
-    }
-
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         //ignore return value, because we need our base class to handle dragging and such
@@ -303,24 +288,14 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
         this.updateCategoryButtons(buttonX, buttonY, buttonWidth, buttonHeight, buttonSpacing);
 
-        int readAllButtonX = this.getFrameWidth() + this.getFrameThicknessW() + ReadAllButton.WIDTH / 2 - 3; //(this.width - this.getFrameWidth()); // / 2 - this.getFrameThicknessW() + buttonXOffset;
-        int readAllButtonYOffset = 30 + this.getBook().theme().layout().readAllButtonYOffset();
+        int scissorX = this.getFrameWidth() + this.getFrameThicknessW() * 2 + 2; //this is the render location of our frame so our search button never overlaps
+        int rightButtonX = BookSideButtonRenderer.anchoredButtonX(scissorX);
 
-        int readAllButtonY = (this.height - this.getFrameHeight()) / 2 + ReadAllButton.HEIGHT / 2 + readAllButtonYOffset;
-
-        var readAllButton = new ReadAllButton(this, readAllButtonX, readAllButtonY, () -> this.hasUnreadUnlockedEntries, //if we have unlocked entries that are not read -> blue
-                this::canSeeReadAllButton, //display condition -> if we have any unlocked entries -> grey
-                (b) -> this.onReadAllButtonClick((ReadAllButton) b));
-
-        this.addRenderableWidget(readAllButton);
-
-
-        int searchButtonXOffset = 7;
         int searchButtonYOffset = -30 + this.getBook().theme().layout().searchButtonYOffset();
-        int searchButtonX = this.getFrameWidth() + this.getFrameThicknessW() + ReadAllButton.WIDTH / 2 + searchButtonXOffset;
+        int searchButtonX = rightButtonX;
         int searchButtonY = this.getFrameHeight() + this.getFrameThicknessH() - ReadAllButton.HEIGHT / 2 + searchButtonYOffset;
         int searchButtonWidth = this.getBook().theme().content().searchButton().normal().width();
-        int scissorX = this.getFrameWidth() + this.getFrameThicknessW() * 2 + 2; //this is the render location of our frame so our search button never overlaps
+        buttonHeight = this.getBook().theme().content().searchButton().normal().height();
 
         var searchButton = new SearchButton(this, searchButtonX, searchButtonY,
                 scissorX,
@@ -348,6 +323,17 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
                     Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_RECENTLY_UNLOCKED)));
             this.addRenderableWidget(showRecentlyUnlockedButton);
         }
+
+        int readAllButtonY = buttonY;
+        var readAllButton = new ReadAllButton(this, rightButtonX, readAllButtonY, scissorX,
+                () -> this.hasUnreadEntries,
+                () -> this.hasUnreadUnlockedEntries,
+                () -> this.hasUnreadCategories,
+                () -> this.hasUnreadUnlockedCategories,
+                () -> this.hasUnreadUnlockedEntries = false,
+                () -> this.hasUnreadEntries = false);
+
+        this.addRenderableWidget(readAllButton);
     }
 
     protected void updateCategoryButtons(int buttonX, int buttonY, int buttonWidth, int buttonHeight, int buttonSpacing) {

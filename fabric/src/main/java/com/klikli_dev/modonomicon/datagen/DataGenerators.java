@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.api.datagen.FabricBookProvider;
 import com.klikli_dev.modonomicon.api.datagen.LanguageProviderCache;
 import com.klikli_dev.modonomicon.datagen.book.AddToDemoBook;
 import com.klikli_dev.modonomicon.datagen.book.DemoBook;
+import com.klikli_dev.modonomicon.datagen.book.DemoIndexBook;
 import com.klikli_dev.modonomicon.datagen.book.DemoLeaflet;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -29,6 +30,7 @@ public class DataGenerators implements DataGeneratorEntrypoint {
         pack.addProvider(FabricBookProvider.of(
                 //Add our demo book sub provider to the book provider
                 new DemoBook(Modonomicon.MOD_ID, enUsCache),
+                new DemoIndexBook(Modonomicon.MOD_ID, enUsCache),
                 //Add our demo leaflet sub provider to the book provider
                 new DemoLeaflet(Modonomicon.MOD_ID, enUsCache)
                 //Add our addon book provider which adds to theurgy's book

@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -16,11 +17,13 @@ import net.minecraft.network.chat.Component;
 public class RemoveBookmarkButton extends Button {
 
     private final BookEntryScreen parent;
+    private final int renderWidth;
     private final int scissorX;
 
     public RemoveBookmarkButton(BookEntryScreen parent, int pX, int pY, int scissorX, int width, int height, OnPress pOnPress, Tooltip tooltip) {
-        super(pX, pY, width, height, Component.literal(""), pOnPress, Button.DEFAULT_NARRATION);
+        super(pX, pY, width - BookSideButtonRenderer.BUTTON_SLIDE_OFFSET, height, Component.literal(""), pOnPress, Button.DEFAULT_NARRATION);
         this.setTooltip(tooltip);
+        this.renderWidth = width;
         this.scissorX = scissorX;
         this.parent = parent;
     }
@@ -28,33 +31,23 @@ public class RemoveBookmarkButton extends Button {
     @Override
     protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
         if (this.visible) {
-
-            guiGraphics.pose().pushMatrix();
             int xOffset = this.parent.getBook().theme().layout().searchButtonXOffset();
-            guiGraphics.pose().translate(xOffset, 0);
+            var background = this.parent.getBook().theme().content().removeBookmarkButton().state(this.isHovered(), false);
+            BookSideButtonRenderer.renderSlidingButton(guiGraphics, xOffset, this.getX(), this.getY(), this.renderWidth, this.height,
+                    this.scissorX, this.parent.height, this.isHovered(),
+                    background,
+                    GuiSprite.EMPTY);
 
-            int scissorX = this.scissorX + xOffset;
-            var sprite = this.parent.getBook().theme().content().removeBookmarkButton().state(this.isHovered(), false);
-
-            int renderX = this.getX() - 16;
-            int scissorWidth = this.width + (this.getX() - this.scissorX);
-            int scissorY = (this.parent.height - this.getY() - this.height - 1); //from the bottom up
-
-            if (this.isHovered()) {
-                renderX += 1;
-                scissorWidth -= 1;
+            var icon = BookSideButtonRenderer.collectionIconOrEmpty(background,
+                    this.parent.getBook().theme().content().collectionButtonNormal(),
+                    this.parent.getBook().theme().content().removeBookmarkButtonIcon());
+            if (!icon.isEmpty()) {
+                guiGraphics.pose().pushMatrix();
+                guiGraphics.pose().translate(xOffset, 0);
+                int renderX = this.getX() - BookSideButtonRenderer.BUTTON_SLIDE_OFFSET + (this.isHovered() ? 1 : 0);
+                BookSideButtonRenderer.renderRightIcon(guiGraphics, icon, renderX, this.getY(), this.renderWidth, 2f / 3f, -4);
+                guiGraphics.pose().popMatrix();
             }
-
-            //as of 1.20 this causes the button to vanish behind the rendered world, so we don't use it
-            //guiGraphics.pose().translate(xOffset, 0, -1000);
-
-            //GL scissors allows us to move the button on hover without intersecting with book border
-            guiGraphics.enableScissor(scissorX, scissorY, scissorX + scissorWidth, scissorY + 1000);
-
-            sprite.extractRenderState(guiGraphics, renderX, this.getY(), this.width, this.height);
-
-            guiGraphics.disableScissor();
-            guiGraphics.pose().popMatrix();
         }
     }
 }
