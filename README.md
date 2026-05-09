@@ -14,25 +14,6 @@ Data-driven minecraft in-game documentation with progress visualization.
 
 Visit the [Documentation](https://klikli-dev.github.io/modonomicon/)!
 
-### Default datagen entry backgrounds
-
-When using the datagen API, `EntryBackground` exposes constants for all default theme node entry backgrounds:
-
-- `SQUARE_GOLD`
-- `SQUARE_GRAY`
-- `SQUARE_PURPLE`
-- `STAR_GOLD`
-- `STAR_GRAY`
-- `STAR_PURPLE`
-- `CIRCLE_GOLD`
-- `CIRCLE_GRAY`
-- `CIRCLE_PURPLE`
-- `HEXAGON_GOLD`
-- `HEXAGON_GRAY`
-- `HEXAGON_PURPLE`
-
-These can be passed to `BookEntryModel#withEntryBackground(...)`.
-
 ## Curseforge
 
 https://www.curseforge.com/minecraft/mc-mods/modonomicon
