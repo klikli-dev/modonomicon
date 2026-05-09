@@ -17,11 +17,13 @@ import net.minecraft.network.chat.Component;
 public class RemoveBookmarkButton extends Button {
 
     private final BookEntryScreen parent;
+    private final int renderWidth;
     private final int scissorX;
 
     public RemoveBookmarkButton(BookEntryScreen parent, int pX, int pY, int scissorX, int width, int height, OnPress pOnPress, Tooltip tooltip) {
-        super(pX, pY, width, height, Component.literal(""), pOnPress, Button.DEFAULT_NARRATION);
+        super(pX, pY, width - BookSideButtonRenderer.BUTTON_SLIDE_OFFSET, height, Component.literal(""), pOnPress, Button.DEFAULT_NARRATION);
         this.setTooltip(tooltip);
+        this.renderWidth = width;
         this.scissorX = scissorX;
         this.parent = parent;
     }
@@ -31,7 +33,7 @@ public class RemoveBookmarkButton extends Button {
         if (this.visible) {
             int xOffset = this.parent.getBook().theme().layout().searchButtonXOffset();
             var background = this.parent.getBook().theme().content().removeBookmarkButton().state(this.isHovered(), false);
-            BookSideButtonRenderer.renderSlidingButton(guiGraphics, xOffset, this.getX(), this.getY(), this.width, this.height,
+            BookSideButtonRenderer.renderSlidingButton(guiGraphics, xOffset, this.getX(), this.getY(), this.renderWidth, this.height,
                     this.scissorX, this.parent.height, this.isHovered(),
                     background,
                     GuiSprite.EMPTY);
@@ -43,7 +45,7 @@ public class RemoveBookmarkButton extends Button {
                 guiGraphics.pose().pushMatrix();
                 guiGraphics.pose().translate(xOffset, 0);
                 int renderX = this.getX() - BookSideButtonRenderer.BUTTON_SLIDE_OFFSET + (this.isHovered() ? 1 : 0);
-                BookSideButtonRenderer.renderRightIcon(guiGraphics, icon, renderX, this.getY(), this.width, 2f / 3f, -4);
+                BookSideButtonRenderer.renderRightIcon(guiGraphics, icon, renderX, this.getY(), this.renderWidth, 2f / 3f, -4);
                 guiGraphics.pose().popMatrix();
             }
         }

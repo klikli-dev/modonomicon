@@ -26,7 +26,7 @@ public final class BookSideButtonRenderer {
 
         int absoluteScissorX = scissorX + xOffset;
         int renderX = widgetX - BUTTON_SLIDE_OFFSET;
-        int scissorWidth = widgetWidth + (widgetX - scissorX) + BUTTON_SLIDE_OFFSET;
+        int scissorWidth = widgetWidth + (widgetX - scissorX);
         int scissorY = screenHeight - widgetY - widgetHeight - 1;
 
         if (hovered) {
