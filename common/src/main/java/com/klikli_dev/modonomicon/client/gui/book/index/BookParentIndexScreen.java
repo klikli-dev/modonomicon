@@ -365,7 +365,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
             this.addRenderableWidget(showRecentlyUnlockedButton);
         }
 
-        int readAllButtonY = searchButtonY - buttonHeight - 2;
+        int readAllButtonY = this.bookTop + 15;
         var readAllButton = new ReadAllButton(this, searchButtonX, readAllButtonY, scissorX,
                 () -> this.hasUnreadEntries,
                 () -> this.hasUnreadUnlockedEntries,
