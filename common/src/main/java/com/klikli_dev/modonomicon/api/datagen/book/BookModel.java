@@ -78,6 +78,11 @@ public class BookModel {
     protected List<BookCategoryModel> categories = new ArrayList<>();
     protected List<BookCommandModel> commands = new ArrayList<>();
 
+    /**
+     * Datagen-only convenience flag.
+     * If true, generated entry JSON receives explicit read conditions derived from parent links.
+     * This flag is never serialized into runtime book.json and is not read at runtime.
+     */
     protected boolean autoAddReadConditions = false;
 
     /**
@@ -207,18 +212,13 @@ public class BookModel {
         json.addProperty("font", this.font.toString());
         json.addProperty("turn_page_sound", this.turnPageSound.toString());
 
-        json.addProperty("auto_add_read_conditions", this.autoAddReadConditions);
         json.addProperty("generate_book_item", this.generateBookItem);
         if (this.customBookItem != null) {
             json.addProperty("custom_book_item", this.customBookItem.toString());
         }
 
         if (this.leafletEntry != null) {
-            //if we are in the same namespace, which we basically always should be, omit namespace
-            if (this.leafletEntry.getNamespace().equals(this.getId().getNamespace()))
-                json.addProperty("leaflet_entry", this.leafletEntry.getPath());
-            else
-                json.addProperty("leaflet_entry", this.leafletEntry.toString());
+            json.addProperty("leaflet_entry", this.leafletEntry.toString());
         }
 
         json.addProperty("page_display_mode", this.pageDisplayMode.getSerializedName());

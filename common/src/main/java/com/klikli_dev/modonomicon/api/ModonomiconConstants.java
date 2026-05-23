@@ -22,11 +22,6 @@ public class ModonomiconConstants {
             public static final int DEFAULT_TEXT_COLOR = 0xFF000000;
         }
 
-        public static class Theme {
-            public static final Identifier DEFAULT_THEME_ID = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "default");
-            public static final Identifier DEFAULT_THEME_TYPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "default");
-        }
-
         public static class Category {
             public static final String DEFAULT_ICON = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "modonomicon_purple").toString();
             public static final String DEFAULT_BACKGROUND = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/dark_slate_seamless.png").toString();
@@ -46,46 +41,6 @@ public class ModonomiconConstants {
             public static final int DEFAULT_MAX_USES = 1;
         }
 
-        public static class EntryType {
-            public static final Identifier CONTENT = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "content");
-            public static final Identifier CATEGORY_LINK = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "category_link");
-            public static final Identifier ENTRY_LINK = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "entry_link");
-        }
-
-        public static class Page {
-            public static final Identifier TEXT = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "text");
-            public static final Identifier MULTIBLOCK = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "multiblock");
-            public static final Identifier CRAFTING_RECIPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "crafting_recipe");
-            public static final Identifier SMOKING_RECIPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "smoking_recipe");
-            public static final Identifier SMELTING_RECIPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "smelting_recipe");
-            public static final Identifier BLASTING_RECIPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "blasting_recipe");
-            public static final Identifier CAMPFIRE_COOKING_RECIPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "campfire_cooking_recipe");
-            public static final Identifier STONECUTTING_RECIPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "stonecutting_recipe");
-            public static final Identifier SMITHING_RECIPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "smithing_recipe");
-            public static final Identifier SPOTLIGHT = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "spotlight");
-            public static final Identifier EMPTY = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "empty");
-            public static final Identifier ENTITY = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "entity");
-            public static final Identifier IMAGE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "image");
-        }
-
-        public static class Condition {
-
-            public static final Identifier NONE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "none");
-            public static final Identifier ADVANCEMENT = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "advancement");
-            public static final Identifier MOD_LOADED = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "mod_loaded");
-            public static final Identifier OR = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "or");
-            public static final Identifier AND = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "and");
-
-            public static final Identifier TRUE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "true");
-
-            public static final Identifier FALSE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "false");
-
-            public static final Identifier ENTRY_UNLOCKED = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "entry_unlocked");
-
-            public static final Identifier ENTRY_READ = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "entry_read");
-
-            public static final Identifier CATEGORY_HAS_VISIBLE_ENTRIES = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "category_has_visible_entries");
-        }
     }
 
     public static class I18n {

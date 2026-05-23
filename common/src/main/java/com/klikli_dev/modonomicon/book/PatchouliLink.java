@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.book;
 
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
+import com.klikli_dev.modonomicon.util.Codecs;
 import net.minecraft.resources.Identifier;
 import org.apache.commons.lang3.StringUtils;
 
@@ -34,7 +35,7 @@ public class PatchouliLink {
         linkText = linkText.substring(PROTOCOL_PATCHOULI.length());
         var bookLink = new PatchouliLink();
         var bookAndEntry = linkText.split("//", 2);
-        bookLink.bookId = Identifier.tryParse(bookAndEntry[0]);
+        bookLink.bookId = parseIdentifier(bookAndEntry[0], "book", linkText);
 
         //unlike book link we're not verifying patchouli link book ids, as we don't control the loading cycle
         // and may parse this link before patchouli is available
@@ -52,7 +53,7 @@ public class PatchouliLink {
             var postHash = entryId.substring(lastHashIndex);
             var path = StringUtils.removeEnd(entryId.substring(0, lastHashIndex), "/"); //remove trailing /
 
-            bookLink.entryId = path.contains(":") ? Identifier.tryParse(path) : Identifier.fromNamespaceAndPath(bookLink.bookId.getNamespace(), path);
+            bookLink.entryId = parseIdentifier(path, "entry", linkText);
 
             //We're not verifying patchouli link entry ids either
 
@@ -68,7 +69,7 @@ public class PatchouliLink {
 
         //handle no page number/anchor
         //We're not verifying patchouli link entry ids here either
-        bookLink.entryId = entryId.contains(":") ? Identifier.tryParse(entryId) : Identifier.fromNamespaceAndPath(bookLink.bookId.getNamespace(), entryId);
+        bookLink.entryId = parseIdentifier(entryId, "entry", linkText);
 
         return bookLink;
     }
@@ -83,5 +84,13 @@ public class PatchouliLink {
 
     public static boolean isPatchouliLink(String linkText) {
         return linkText.toLowerCase().startsWith(PROTOCOL_PATCHOULI);
+    }
+
+    private static Identifier parseIdentifier(String value, String kind, String linkText) {
+        var id = Codecs.tryParseStrictIdentifier(value);
+        if (id == null) {
+            throw new IllegalArgumentException("Invalid " + kind + " id in patchouli link, expected fully qualified identifier: " + linkText);
+        }
+        return id;
     }
 }

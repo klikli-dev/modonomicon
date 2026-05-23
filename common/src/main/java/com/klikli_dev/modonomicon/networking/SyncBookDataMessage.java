@@ -12,7 +12,6 @@ import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCommand;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.data.BookDataManager;
-import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
@@ -56,8 +55,7 @@ public class SyncBookDataMessage implements Message {
 
                 buf.writeVarInt(category.getEntries().size());
                 for (var entry : category.getEntries().values()) {
-                    buf.writeIdentifier(entry.getType());
-                    entry.toNetwork(buf);
+                    BookEntry.toNetwork(entry, buf);
                 }
             }
 
@@ -87,8 +85,7 @@ public class SyncBookDataMessage implements Message {
 
                 int entryCount = buf.readVarInt();
                 for (int k = 0; k < entryCount; k++) {
-                    Identifier entryTypeId = buf.readIdentifier();
-                    BookEntry entry = LoaderRegistry.getEntryNetworkLoader(entryTypeId).fromNetwork(buf);
+                    BookEntry entry = BookEntry.fromNetwork(buf);
 
                     //link entry and category
                     category.addEntry(entry);

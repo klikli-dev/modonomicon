@@ -16,6 +16,7 @@ import com.klikli_dev.modonomicon.client.gui.book.theme.GuiButtonSprites;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
+import com.klikli_dev.modonomicon.util.Codecs;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.HolderLookup;
@@ -118,10 +119,7 @@ public class BookCategory {
 
         Identifier entryToOpen = null;
         if (json.has("entry_to_open")) {
-            var entryToOpenPath = GsonHelper.getAsString(json, "entry_to_open");
-            entryToOpen = entryToOpenPath.contains(":") ?
-                    Identifier.parse(entryToOpenPath) :
-                    Identifier.fromNamespaceAndPath(id.getNamespace(), entryToOpenPath);
+            entryToOpen = Codecs.parseStrictIdentifier(GsonHelper.getAsString(json, "entry_to_open"));
         }
         boolean openEntryOnlyOnce = GsonHelper.getAsBoolean(json, "open_entry_to_open_only_once", true);
 

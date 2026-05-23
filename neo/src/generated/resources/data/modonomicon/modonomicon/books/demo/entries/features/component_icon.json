@@ -1,41 +1,40 @@
 {
+  "type": "modonomicon:content",
   "background": {
     "height": 26,
     "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
     "width": 26
   },
-  "category": "features",
+  "category": "modonomicon:features",
+  "condition": {
+    "type": "modonomicon:entry_read",
+    "entry_id": "modonomicon:features/spotlight"
+  },
   "description": "book.modonomicon.demo.features.component_icon.description",
-  "hide_while_locked": false,
   "icon": {
     "components": {
       "minecraft:dyed_color": 1481884
     },
     "id": "minecraft:leather_helmet"
   },
+  "id": "modonomicon:features/component_icon",
   "name": "book.modonomicon.demo.features.component_icon.name",
   "pages": [
     {
       "type": "modonomicon:text",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.features.component_icon.intro.text",
-      "title": "book.modonomicon.demo.features.component_icon.intro.title",
-      "use_markdown_in_title": false
+      "title": "book.modonomicon.demo.features.component_icon.intro.title"
     }
   ],
   "parents": [
     {
-      "draw_arrow": true,
-      "entry": "features/spotlight",
-      "line_enabled": true,
-      "line_reversed": false
+      "entry": "modonomicon:features/spotlight"
     }
   ],
-  "show_when_any_parent_unlocked": false,
   "sort_number": 8,
   "x": -8,
   "y": 3

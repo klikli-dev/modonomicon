@@ -6,14 +6,20 @@
 
 package com.klikli_dev.modonomicon.book.page;
 
-import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
-import net.minecraft.core.HolderLookup;
+import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.data.BookPageType;
+import com.klikli_dev.modonomicon.registry.BookPageTypeRegistry;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.CampfireCookingRecipe;
 
 public class BookCampfireCookingRecipePage extends BookProcessingRecipePage<CampfireCookingRecipe> {
+
+    public static final Identifier ID = Modonomicon.loc("campfire_cooking_recipe");
+    public static final MapCodec<BookCampfireCookingRecipePage> CODEC = codec(BookCampfireCookingRecipePage::new);
+    public static final StreamCodec<RegistryFriendlyByteBuf, BookCampfireCookingRecipePage> STREAM_CODEC = streamCodec(BookCampfireCookingRecipePage::new);
 
     public BookCampfireCookingRecipePage(JsonDataHolder common) {
         super(common);
@@ -23,18 +29,8 @@ public class BookCampfireCookingRecipePage extends BookProcessingRecipePage<Camp
         super(common);
     }
 
-    public static BookCampfireCookingRecipePage fromJson(Identifier entryId, JsonObject json, HolderLookup.Provider provider) {
-        var common = BookRecipePage.commonFromJson(entryId, json, provider);
-        return new BookCampfireCookingRecipePage(common);
-    }
-
-    public static BookCampfireCookingRecipePage fromNetwork(RegistryFriendlyByteBuf buffer) {
-        var common = BookRecipePage.commonFromNetwork(buffer);
-        return new BookCampfireCookingRecipePage(common);
-    }
-
     @Override
-    public Identifier getType() {
-        return Page.CAMPFIRE_COOKING_RECIPE;
+    public BookPageType<?> type() {
+        return BookPageTypeRegistry.CAMPFIRE_COOKING_RECIPE;
     }
 }

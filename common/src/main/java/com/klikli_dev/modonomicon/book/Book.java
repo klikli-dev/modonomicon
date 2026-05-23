@@ -7,15 +7,16 @@
 package com.klikli_dev.modonomicon.book;
 
 import com.google.gson.JsonObject;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.theme.BookThemeData;
 import com.klikli_dev.modonomicon.client.gui.book.theme.BookTheme;
-import com.klikli_dev.modonomicon.client.gui.book.theme.ThemeRegistry;
-import com.klikli_dev.modonomicon.data.BookEntryJsonLoader;
+import com.klikli_dev.modonomicon.registry.ThemeRegistry;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
+import com.klikli_dev.modonomicon.util.Codecs;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.HolderLookup;
@@ -45,7 +46,6 @@ public class Book {
     protected Map<Identifier, BookCommand> commands;
 
 
-    protected boolean autoAddReadConditions;
     protected boolean generateBookItem;
     @Nullable
     protected Identifier customBookItem;
@@ -78,13 +78,12 @@ public class Book {
     protected boolean showRecentlyUnlocked;
 
     /**
-     * A map of macros. This is filled automatically based on LoaderRegistry#dynamicTextMacroLoaders, not loaded from JSON.
+     * A map of macros. This is filled automatically based on DynamicTextMacroRegistry registrations, not loaded from JSON.
      */
     protected final Map<String, String> textMacros = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 
     public Book(Identifier id, String name, BookTextHolder description, String tooltip, Identifier model, BookDisplayMode displayMode, boolean generateBookItem,
-                @Nullable Identifier customBookItem, String creativeTab, Identifier font, Identifier turnPageSound,
-                boolean autoAddReadConditions, Identifier leafletEntry,
+                @Nullable Identifier customBookItem, String creativeTab, Identifier font, Identifier turnPageSound, Identifier leafletEntry,
                 PageDisplayMode pageDisplayMode, boolean allowOpenBooksWithInvalidLinks, boolean showRecentlyUnlocked,
                 BookThemeData themeData) {
         this.id = id;
@@ -98,7 +97,6 @@ public class Book {
         this.creativeTab = creativeTab;
         this.font = font;
         this.turnPageSound = turnPageSound;
-        this.autoAddReadConditions = autoAddReadConditions;
         this.categories = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
         this.entries = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
         this.commands = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
@@ -121,7 +119,7 @@ public class Book {
         var name = GsonHelper.getAsString(json, "name");
         var description = BookGsonHelper.getAsBookTextHolder(json, "description", BookTextHolder.EMPTY, provider);
         var tooltip = GsonHelper.getAsString(json, "tooltip", "");
-        var model = Identifier.parse(GsonHelper.getAsString(json, "model", com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Book.DEFAULT_MODEL));
+        var model = Identifier.parse(GsonHelper.getAsString(json, "model", ModonomiconConstants.Data.Book.DEFAULT_MODEL));
         var generateBookItem = GsonHelper.getAsBoolean(json, "generate_book_item", true);
         var displayMode = BookDisplayMode.byName(GsonHelper.getAsString(json, "display_mode", BookDisplayMode.NODE.getSerializedName()));
         var customBookItem = json.has("custom_book_item") ?
@@ -129,18 +127,12 @@ public class Book {
                 null;
         var creativeTab = GsonHelper.getAsString(json, "creative_tab", "misc");
 
-        var font = Identifier.parse(GsonHelper.getAsString(json, "font", com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Book.DEFAULT_FONT));
+        var font = Identifier.parse(GsonHelper.getAsString(json, "font", ModonomiconConstants.Data.Book.DEFAULT_FONT));
 
-        var turnPageSound = Identifier.parse(GsonHelper.getAsString(json, "turn_page_sound", com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Book.DEFAULT_PAGE_TURN_SOUND));
-        var autoAddReadConditions = GsonHelper.getAsBoolean(json, "auto_add_read_conditions", false);
-
+        var turnPageSound = Identifier.parse(GsonHelper.getAsString(json, "turn_page_sound", ModonomiconConstants.Data.Book.DEFAULT_PAGE_TURN_SOUND));
         Identifier leafletEntry = null;
         if (json.has("leaflet_entry")) {
-            var leafletEntryPath = GsonHelper.getAsString(json, "leaflet_entry");
-            //leaflet entries can be without a namespace, in which case we use the book namespace.
-            leafletEntry = leafletEntryPath.contains(":") ?
-                    Identifier.parse(leafletEntryPath) :
-                    Identifier.fromNamespaceAndPath(id.getNamespace(), leafletEntryPath);
+            leafletEntry = Codecs.parseStrictIdentifier(GsonHelper.getAsString(json, "leaflet_entry"));
         }
 
         var pageDisplayMode = PageDisplayMode.byName(GsonHelper.getAsString(json, "page_display_mode", PageDisplayMode.DOUBLE_PAGE.getSerializedName()));
@@ -150,7 +142,7 @@ public class Book {
         var showRecentlyUnlocked = GsonHelper.getAsBoolean(json, "show_recently_unlocked", true);
 
         return new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font,
-                turnPageSound, autoAddReadConditions, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, themeData);
+                turnPageSound, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, themeData);
     }
 
 
@@ -169,8 +161,6 @@ public class Book {
         var font = buffer.readIdentifier();
 
         var turnPageSound = buffer.readIdentifier();
-        var autoAddReadConditions = buffer.readBoolean();
-
         var leafletEntry = buffer.readNullable(FriendlyByteBuf::readIdentifier);
 
         var pageDisplayMode = PageDisplayMode.byId(buffer.readByte());
@@ -181,7 +171,7 @@ public class Book {
 
         var textMacros = buffer.readMap((b) -> b.readUtf(), (b) -> b.readUtf()); //necessary because using lambda causes ambiguous reference in Neo with their IFriendlyByteBufExtension#readMap
         var book = new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font,
-                turnPageSound, autoAddReadConditions, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, themeData);
+                turnPageSound, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, themeData);
 
         book.textMacros().putAll(textMacros);
 
@@ -247,8 +237,6 @@ public class Book {
         buffer.writeIdentifier(this.font);
 
         buffer.writeIdentifier(this.turnPageSound);
-        buffer.writeBoolean(this.autoAddReadConditions);
-
         buffer.writeNullable(this.leafletEntry, FriendlyByteBuf::writeIdentifier);
 
         buffer.writeByte(this.pageDisplayMode.ordinal());
@@ -256,10 +244,6 @@ public class Book {
         buffer.writeBoolean(this.allowOpenBooksWithInvalidLinks);
         buffer.writeBoolean(this.showRecentlyUnlocked);
         buffer.writeMap(this.textMacros, (b, v) -> b.writeUtf(v), (b, v) -> b.writeUtf(v));  //necessary because using lambda causes ambiguous reference in Neo with their IFriendlyByteBufExtension#writeMap
-    }
-
-    public boolean autoAddReadConditions() {
-        return this.autoAddReadConditions;
     }
 
     public Identifier getTurnPageSound() {

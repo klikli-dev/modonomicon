@@ -10,9 +10,19 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.datagen.CategoryEntryMap;
 import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookAndConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryReadConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookNoneConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
+import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
+import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
+import com.klikli_dev.modonomicon.book.entries.BookEntry;
+import com.klikli_dev.modonomicon.book.entries.CategoryLinkBookEntry;
+import com.klikli_dev.modonomicon.book.entries.EntryLinkBookEntry;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
+import com.google.gson.JsonParseException;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ItemLike;
@@ -20,6 +30,7 @@ import net.minecraft.world.phys.Vec2;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BookEntryModel {
     protected Identifier id;
@@ -56,68 +67,52 @@ public class BookEntryModel {
     }
 
     public JsonObject toJson(HolderLookup.Provider provider) {
-        JsonObject json = new JsonObject();
+        var data = new BookEntry.BookEntryData(
+                this.category.getId(),
+                this.parents.stream().map(parent -> parent.toBookEntryParent(this.getId(), provider)).collect(Collectors.toList()),
+                this.x,
+                this.y,
+                this.name,
+                this.description,
+                this.icon.toBookIcon(),
+                this.entryBackground,
+                this.effectiveCondition().toBookCondition(provider),
+                this.hideWhileLocked,
+                this.showWhenAnyParentUnlocked,
+                this.sortNumber
+        );
 
-        //if we are in the same namespace, which we basically always should be, omit namespace
-        if (this.category.getId().getNamespace().equals(this.getId().getNamespace()))
-            json.addProperty("category", this.category.id.getPath());
-        else
-            json.addProperty("category", this.category.getId().toString());
-
-        json.addProperty("name", this.name);
-        json.addProperty("description", this.description);
-        json.add("icon", this.icon.toJson(provider));
-        json.addProperty("x", this.x);
-        json.addProperty("y", this.y);
-        json.add("background", this.entryBackground.toJson());
-        json.addProperty("hide_while_locked", this.hideWhileLocked);
-        json.addProperty("show_when_any_parent_unlocked", this.showWhenAnyParentUnlocked);
-
-        if (!this.parents.isEmpty()) {
-            var parentsArray = new JsonArray();
-            for (var parent : this.parents) {
-                parentsArray.add(parent.toJson(this.getId(), provider));
-            }
-            json.add("parents", parentsArray);
-        }
-
-        if (!this.pages.isEmpty()) {
-            var pagesArray = new JsonArray();
-            for (var page : this.pages) {
-                pagesArray.add(page.toJson(this.getId(), provider));
-            }
-            json.add("pages", pagesArray);
-        }
-
-        if (this.condition != null) {
-            json.add("condition", this.condition.toJson(this.getId(), provider));
-        }
-
+        BookEntry entry;
         if (this.categoryToOpen != null) {
-            //if we are in the same namespace, which we basically always should be, omit namespace
-            if (this.categoryToOpen.getNamespace().equals(this.getId().getNamespace()))
-                json.addProperty("category_to_open", this.categoryToOpen.getPath());
-            else
-                json.addProperty("category_to_open", this.categoryToOpen.toString());
-        }
-        if (this.commandToRunOnFirstRead != null) {
-            //if we are in the same namespace, which we basically always should be, omit namespace
-            if (this.commandToRunOnFirstRead.getNamespace().equals(this.getId().getNamespace()))
-                json.addProperty("command_to_run_on_first_read", this.commandToRunOnFirstRead.getPath());
-            else
-                json.addProperty("command_to_run_on_first_read", this.commandToRunOnFirstRead.toString());
-        }
-        if (this.entryToOpen != null) {
-            //if we are in the same namespace, which we basically always should be, omit namespace
-            if (this.entryToOpen.getNamespace().equals(this.getId().getNamespace()))
-                json.addProperty("entry_to_open", this.entryToOpen.getPath());
-            else
-                json.addProperty("entry_to_open", this.entryToOpen.toString());
+            entry = new CategoryLinkBookEntry(this.id, data, this.commandToRunOnFirstRead, this.categoryToOpen);
+        } else if (this.entryToOpen != null) {
+            entry = new EntryLinkBookEntry(this.id, data, this.commandToRunOnFirstRead, this.entryToOpen);
+        } else {
+            entry = new BookContentEntry(this.id, data, this.commandToRunOnFirstRead,
+                    this.pages.stream().map(page -> page.toBookPage(provider)).collect(Collectors.toList()));
         }
 
-        json.addProperty("sort_number", this.sortNumber);
+        return BookEntry.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), entry)
+                .getOrThrow(JsonParseException::new)
+                .getAsJsonObject();
+    }
 
-        return json;
+    protected BookConditionModel<?> effectiveCondition() {
+        if (this.condition != null) {
+            return this.condition;
+        }
+
+        if (!this.category.getBook().autoAddReadConditions() || this.parents.isEmpty()) {
+            return BookNoneConditionModel.create();
+        }
+
+        if (this.parents.size() == 1) {
+            return BookEntryReadConditionModel.create().withEntry(this.parents.get(0).getEntryId());
+        }
+
+        return BookAndConditionModel.create().withChildren(this.parents.stream()
+                .map(parent -> BookEntryReadConditionModel.create().withEntry(parent.getEntryId()))
+                .toArray(BookConditionModel[]::new));
     }
 
     public GuiSprite getEntryBackground() {

@@ -11,8 +11,9 @@ import com.google.gson.JsonSyntaxException;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
-import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,10 +35,43 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 public abstract class AbstractMultiblock implements Multiblock {
+
+    protected static final Codec<Vec3i> OFFSET_CODEC = Codec.INT.listOf().comapFlatMap(values -> {
+        if (values.size() != 3) {
+            return DataResult.error(() -> "Expected offset array of size 3, got " + values.size());
+        }
+        return DataResult.success(new Vec3i(values.get(0), values.get(1), values.get(2)));
+    }, offset -> List.of(offset.getX(), offset.getY(), offset.getZ()));
+
+    protected static final Codec<BlockPos> BLOCK_POS_CODEC = Codec.INT.listOf().comapFlatMap(values -> {
+        if (values.size() != 3) {
+            return DataResult.error(() -> "Expected block position array of size 3, got " + values.size());
+        }
+        return DataResult.success(new BlockPos(values.get(0), values.get(1), values.get(2)));
+    }, pos -> List.of(pos.getX(), pos.getY(), pos.getZ()));
+
+    protected static final Codec<Map<Character, StateMatcher>> MAPPING_CODEC = Codec.unboundedMap(Codec.STRING, StateMatcher.CODEC).comapFlatMap(values -> {
+        Map<Character, StateMatcher> mapping = new LinkedHashMap<>();
+        for (var entry : values.entrySet()) {
+            if (entry.getKey().length() != 1) {
+                return DataResult.error(() -> "Mapping key needs to be only 1 character: " + entry.getKey());
+            }
+            mapping.put(entry.getKey().charAt(0), entry.getValue());
+        }
+        return DataResult.success(mapping);
+    }, values -> {
+        Map<String, StateMatcher> mapping = new LinkedHashMap<>();
+        for (var entry : values.entrySet()) {
+            mapping.put(String.valueOf(entry.getKey()), entry.getValue());
+        }
+        return mapping;
+    });
 
     private final Map<BlockPos, BlockEntity> blockEntityCache = new Object2ObjectOpenHashMap<>();
     public Identifier id;
@@ -53,8 +87,7 @@ public abstract class AbstractMultiblock implements Multiblock {
                 throw new JsonSyntaxException("Mapping key needs to be only 1 character");
             char key = entry.getKey().charAt(0);
             var value = entry.getValue().getAsJsonObject();
-            var stateMatcherType = Identifier.tryParse(GsonHelper.getAsString(value, "type"));
-            var stateMatcher = LoaderRegistry.getStateMatcherJsonLoader(stateMatcherType).fromJson(value, provider);
+            var stateMatcher = StateMatcher.fromJson(value, provider);
             mapping.put(key, stateMatcher);
         }
 

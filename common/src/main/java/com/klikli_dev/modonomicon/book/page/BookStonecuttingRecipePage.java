@@ -6,22 +6,20 @@
 
 package com.klikli_dev.modonomicon.book.page;
 
-import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
-import com.klikli_dev.modonomicon.book.BookTextHolder;
-import com.klikli_dev.modonomicon.book.conditions.BookCondition;
-import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
-import net.minecraft.core.HolderLookup;
+import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.data.BookPageType;
+import com.klikli_dev.modonomicon.registry.BookPageTypeRegistry;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
-import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
-import org.jetbrains.annotations.Nullable;
 
 public class BookStonecuttingRecipePage extends BookProcessingRecipePage<StonecutterRecipe> {
+
+    public static final Identifier ID = Modonomicon.loc("stonecutting_recipe");
+    public static final MapCodec<BookStonecuttingRecipePage> CODEC = codec(BookStonecuttingRecipePage::new);
+    public static final StreamCodec<RegistryFriendlyByteBuf, BookStonecuttingRecipePage> STREAM_CODEC = streamCodec(BookStonecuttingRecipePage::new);
 
     public BookStonecuttingRecipePage(JsonDataHolder common) {
         super(common);
@@ -31,18 +29,8 @@ public class BookStonecuttingRecipePage extends BookProcessingRecipePage<Stonecu
         super(common);
     }
 
-    public static BookStonecuttingRecipePage fromJson(Identifier entryId, JsonObject json, HolderLookup.Provider provider) {
-        var common = BookRecipePage.commonFromJson(entryId, json, provider);
-        return new BookStonecuttingRecipePage(common);
-    }
-
-    public static BookStonecuttingRecipePage fromNetwork(RegistryFriendlyByteBuf buffer) {
-        var common = BookRecipePage.commonFromNetwork(buffer);
-        return new BookStonecuttingRecipePage(common);
-    }
-
     @Override
-    public Identifier getType() {
-        return Page.STONECUTTING_RECIPE;
+    public BookPageType<?> type() {
+        return BookPageTypeRegistry.STONECUTTING_RECIPE;
     }
 }

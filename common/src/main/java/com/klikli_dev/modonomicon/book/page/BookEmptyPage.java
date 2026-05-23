@@ -6,39 +6,40 @@
 
 package com.klikli_dev.modonomicon.book.page;
 
-import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
-import net.minecraft.core.HolderLookup;
+import com.klikli_dev.modonomicon.data.BookPageType;
+import com.klikli_dev.modonomicon.registry.BookPageTypeRegistry;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 
 public class BookEmptyPage extends BookPage {
+
+    public static final Identifier ID = Modonomicon.loc("empty");
+    public static final MapCodec<BookEmptyPage> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.STRING.optionalFieldOf("anchor", "").forGetter(BookPage::getAnchor),
+            BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition)
+    ).apply(instance, BookEmptyPage::new));
+    public static final StreamCodec<RegistryFriendlyByteBuf, BookEmptyPage> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8, BookPage::getAnchor,
+            BookCondition.STREAM_CODEC, BookPage::getCondition,
+            BookEmptyPage::new
+    );
 
     public BookEmptyPage(String anchor, BookCondition condition) {
         super(anchor, condition);
     }
 
-    public static BookEmptyPage fromJson(Identifier entryId, JsonObject json, HolderLookup.Provider provider) {
-        var anchor = GsonHelper.getAsString(json, "anchor", "");
-        var condition = json.has("condition")
-                ? BookCondition.fromJson(entryId, json.getAsJsonObject("condition"), provider)
-                : new BookNoneCondition();
-        return new BookEmptyPage(anchor, condition);
-    }
-
-    public static BookEmptyPage fromNetwork(RegistryFriendlyByteBuf buffer) {
-        var anchor = buffer.readUtf();
-        var condition = BookCondition.fromNetwork(buffer);
-        return new BookEmptyPage(anchor, condition);
-    }
-
     @Override
-    public Identifier getType() {
-        return Page.EMPTY;
+    public BookPageType<?> type() {
+        return BookPageTypeRegistry.EMPTY;
     }
 
     @Override

@@ -7,6 +7,8 @@
 package com.klikli_dev.modonomicon.api.datagen.book;
 
 import com.google.gson.JsonObject;
+import com.klikli_dev.modonomicon.book.BookEntryParent;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 
@@ -30,17 +32,15 @@ public class BookEntryParentModel {
      */
     public JsonObject toJson(Identifier ownerEntryId, HolderLookup.Provider provider) {
         JsonObject json = new JsonObject();
-
-        //if we are in the same namespace, which we basically always should be, omit namespace
-        if (this.entryId.getNamespace().equals(ownerEntryId.getNamespace()))
-            json.addProperty("entry", this.entryId.getPath());
-        else
-            json.addProperty("entry", this.entryId.toString());
-
+        json.addProperty("entry", this.entryId.toString());
         json.addProperty("draw_arrow", this.drawArrow);
         json.addProperty("line_enabled", this.lineEnabled);
         json.addProperty("line_reversed", this.lineReversed);
         return json;
+    }
+
+    public BookEntryParent toBookEntryParent(Identifier ownerEntryId, HolderLookup.Provider provider) {
+        return BookEntryParent.CODEC.parse(JsonOps.INSTANCE, this.toJson(ownerEntryId, provider)).getOrThrow();
     }
 
     public Identifier getEntryId() {

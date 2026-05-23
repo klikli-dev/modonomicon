@@ -8,22 +8,36 @@ package com.klikli_dev.modonomicon.book.conditions;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
-import com.klikli_dev.modonomicon.data.BookConditionJsonLoader;
-import com.klikli_dev.modonomicon.data.LoaderRegistry;
-import com.klikli_dev.modonomicon.platform.Services;
+import com.klikli_dev.modonomicon.data.BookConditionType;
+import com.klikli_dev.modonomicon.registry.BookConditionTypeRegistry;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
 
 public abstract class BookCondition {
+
+    public static final Codec<BookCondition> CODEC = Codec.lazyInitialized(() -> BookConditionTypeRegistry.codec().dispatch(
+            "type",
+            BookCondition::type,
+            BookConditionType::codec
+    ));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, BookCondition> STREAM_CODEC = StreamCodec.recursive(codec ->
+            BookConditionTypeRegistry.streamCodec()
+                    .dispatch(
+                            BookCondition::type,
+                            BookConditionType::streamCodec
+                    ));
 
     protected Component tooltip;
 
@@ -34,37 +48,41 @@ public abstract class BookCondition {
     public static MutableComponent tooltipFromJson(JsonObject json, HolderLookup.Provider provider) {
         if (json.has("tooltip")) {
             var tooltipElement = json.get("tooltip");
-            if (tooltipElement.isJsonPrimitive())
+            if (tooltipElement.isJsonPrimitive()) {
                 return Component.translatable(tooltipElement.getAsString());
+            }
 
-            Component.literal("").append(ComponentSerialization.CODEC.parse(provider.createSerializationContext(JsonOps.INSTANCE), tooltipElement).getOrThrow());
+            return Component.literal("").append(ComponentSerialization.CODEC.parse(provider.createSerializationContext(JsonOps.INSTANCE), tooltipElement).getOrThrow());
         }
         return null;
     }
 
     public static BookCondition fromJson(Identifier conditionParentId, JsonObject json, HolderLookup.Provider provider) {
-        var type = Identifier.parse(GsonHelper.getAsString(json, "type"));
-        var loader = LoaderRegistry.getConditionJsonLoader(type);
-        return loader.fromJson(conditionParentId, json, provider);
+        return CODEC.parse(provider.createSerializationContext(JsonOps.INSTANCE), json)
+                .getOrThrow(error -> new IllegalArgumentException("Failed to decode condition for " + conditionParentId + ": " + error));
     }
 
     public static BookCondition fromNetwork(RegistryFriendlyByteBuf buf) {
-        var type = buf.readIdentifier();
-        var loader = LoaderRegistry.getConditionNetworkLoader(type);
-        return loader.fromNetwork(buf);
+        return STREAM_CODEC.decode(buf);
     }
 
     public static void toNetwork(BookCondition condition, RegistryFriendlyByteBuf buf) {
-        buf.writeIdentifier(condition.getType());
-        condition.toNetwork(buf);
+        STREAM_CODEC.encode(buf, condition);
     }
 
-    public abstract Identifier getType();
+    public abstract BookConditionType<?> type();
 
     /**
      * Always write type before calling, ideally call {@link #toNetwork(BookCondition, RegistryFriendlyByteBuf)}
      */
-    public abstract void toNetwork(RegistryFriendlyByteBuf buffer);
+    @SuppressWarnings("unchecked")
+    public void toNetwork(RegistryFriendlyByteBuf buffer) {
+        ((StreamCodec<RegistryFriendlyByteBuf, BookCondition>) this.type().streamCodec().cast()).encode(buffer, this);
+    }
+
+    public Identifier getType() {
+        return this.type().id();
+    }
 
     /**
      * Use this to test the condition for the given player at runtime
@@ -93,5 +111,9 @@ public abstract class BookCondition {
 
     public List<Component> getTooltip(Player player, BookConditionContext context) {
         return this.tooltip != null ? List.of(this.tooltip) : List.of();
+    }
+
+    public Component tooltip() {
+        return this.tooltip;
     }
 }

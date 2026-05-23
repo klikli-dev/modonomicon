@@ -6,36 +6,40 @@
 
 package com.klikli_dev.modonomicon.multiblock.matcher;
 
-import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.commands.arguments.blocks.BlockStateParser;
+import com.klikli_dev.modonomicon.data.StateMatcherType;
+import com.klikli_dev.modonomicon.registry.StateMatcherTypeRegistry;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Matches a block, ignoring the BlockState properties.
  */
 public class BlockMatcher implements StateMatcher {
-    public static final Identifier TYPE = Modonomicon.loc("block");
-
+    public static final Identifier ID = Modonomicon.loc("block");
+    public static final MapCodec<BlockMatcher> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            DisplayOnlyMatcher.DISPLAY_STATE_CODEC.optionalFieldOf("display").forGetter(m -> Optional.ofNullable(m.displayState)),
+            StateMatcher.BLOCK_CODEC.fieldOf("block").forGetter(BlockMatcher::block)
+    ).apply(instance, (displayState, block) -> new BlockMatcher(displayState.orElse(null), block)));
+    public static final StreamCodec<RegistryFriendlyByteBuf, BlockMatcher> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC.codec());
     private final BlockState displayState;
     private final Block block;
     private final TriPredicate<BlockGetter, BlockPos, BlockState> predicate;
 
-    protected BlockMatcher(BlockState displayState, Block block) {
+    public BlockMatcher(BlockState displayState, Block block) {
         this.displayState = displayState;
         this.block = block;
         this.predicate = (blockGetter, blockPos, blockState) ->
@@ -50,42 +54,17 @@ public class BlockMatcher implements StateMatcher {
         return new BlockMatcher(displayState, block);
     }
 
-    public static BlockMatcher fromJson(JsonObject json, HolderLookup.Provider provider) {
-        BlockState displayState = null;
-        if (json.has("display")) {
-            try {
-                displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(GsonHelper.getAsString(json, "display")), false).blockState();
-            } catch (CommandSyntaxException e) {
-                throw new IllegalArgumentException("Failed to parse BlockState from json member \"display\" for BlockMatcher.", e);
-            }
-        }
-
-        try {
-            var blockRL = Identifier.tryParse(GsonHelper.getAsString(json, "block"));
-            var block = BuiltInRegistries.BLOCK.getValue(blockRL);
-
-            return new BlockMatcher(displayState, block);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to parse Block from json member \"block\" for BlockMatcher", e);
-        }
-    }
-
-    public static BlockMatcher fromNetwork(FriendlyByteBuf buffer) {
-        try {
-            BlockState displayState = null;
-            if (buffer.readBoolean())
-                displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(buffer.readUtf()), false).blockState();
-
-            var block = BuiltInRegistries.BLOCK.getValue(buffer.readIdentifier());
-            return new BlockMatcher(displayState, block);
-        } catch (CommandSyntaxException e) {
-            throw new IllegalArgumentException("Failed to parse BlockMatcher from network.", e);
-        }
-    }
-
     @Override
-    public Identifier getType() {
-        return TYPE;
+    public StateMatcherType<?> type() {
+        return StateMatcherTypeRegistry.BLOCK;
+    }
+
+    public BlockState displayState() {
+        return this.displayState;
+    }
+
+    public Block block() {
+        return this.block;
     }
 
     @Override
@@ -96,14 +75,6 @@ public class BlockMatcher implements StateMatcher {
     @Override
     public TriPredicate<BlockGetter, BlockPos, BlockState> getStatePredicate() {
         return this.predicate;
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buffer) {
-        buffer.writeBoolean(this.displayState != null);
-        if (this.displayState != null)
-            buffer.writeUtf(BlockStateParser.serialize(this.displayState));
-        buffer.writeIdentifier(BuiltInRegistries.BLOCK.getKey(this.block));
     }
 
     @Override

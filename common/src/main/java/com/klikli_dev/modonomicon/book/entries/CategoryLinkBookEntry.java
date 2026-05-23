@@ -6,20 +6,42 @@
 
 package com.klikli_dev.modonomicon.book.entries;
 
-import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.network.FriendlyByteBuf;
+import com.klikli_dev.modonomicon.data.BookEntryType;
+import com.klikli_dev.modonomicon.registry.BookEntryTypeRegistry;
+import com.klikli_dev.modonomicon.util.Codecs;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 
+import java.util.Optional;
+
 public class CategoryLinkBookEntry extends BookEntry {
+
+    public static final Identifier ID = Modonomicon.loc("category_link");
+
+    public static final MapCodec<CategoryLinkBookEntry> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Identifier.CODEC.fieldOf("id").forGetter(BookEntry::getId),
+            BookEntry.BookEntryData.CODEC.forGetter(entry -> entry.data),
+            Identifier.CODEC.optionalFieldOf("command_to_run_on_first_read").forGetter(entry -> Optional.ofNullable(entry.commandToRunOnFirstReadId)),
+            Identifier.CODEC.fieldOf("category_to_open").forGetter(CategoryLinkBookEntry::categoryToOpenId)
+    ).apply(instance, (id, data, commandToRunOnFirstReadId, categoryToOpenId) -> new CategoryLinkBookEntry(id, data, commandToRunOnFirstReadId.orElse(null), categoryToOpenId)));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, CategoryLinkBookEntry> STREAM_CODEC = StreamCodec.composite(
+            Identifier.STREAM_CODEC, BookEntry::getId,
+            BookEntry.BookEntryData.STREAM_CODEC, entry -> entry.data,
+            ByteBufCodecs.optional(Identifier.STREAM_CODEC), entry -> Optional.ofNullable(entry.commandToRunOnFirstReadId),
+            Identifier.STREAM_CODEC, CategoryLinkBookEntry::categoryToOpenId,
+            (id, data, commandToRunOnFirstReadId, categoryToOpenId) -> new CategoryLinkBookEntry(id, data, commandToRunOnFirstReadId.orElse(null), categoryToOpenId)
+    );
 
     /**
      * The category to open on click
@@ -32,42 +54,9 @@ public class CategoryLinkBookEntry extends BookEntry {
         this.categoryToOpenId = categoryToOpenId;
     }
 
-    public static CategoryLinkBookEntry fromJson(Identifier id, JsonObject json, boolean autoAddReadConditions, HolderLookup.Provider provider) {
-        BookEntryData data = BookEntryData.fromJson(id, json, autoAddReadConditions, provider);
-
-        Identifier commandToRunOnFirstReadId = null;
-        if (json.has("command_to_run_on_first_read")) {
-            commandToRunOnFirstReadId = Identifier.parse(GsonHelper.getAsString(json, "command_to_run_on_first_read"));
-        }
-
-        var categoryToOpenIdPath = GsonHelper.getAsString(json, "category_to_open");
-        var categoryToOpenId = categoryToOpenIdPath.contains(":") ?
-                Identifier.parse(categoryToOpenIdPath) :
-                Identifier.fromNamespaceAndPath(id.getNamespace(), categoryToOpenIdPath);
-
-        return new CategoryLinkBookEntry(id, data, commandToRunOnFirstReadId, categoryToOpenId);
-    }
-
-    public static CategoryLinkBookEntry fromNetwork(RegistryFriendlyByteBuf buffer) {
-        var id = buffer.readIdentifier();
-        BookEntryData data = BookEntryData.fromNetwork(buffer);
-        Identifier commandToRunOnFirstReadId = buffer.readNullable(FriendlyByteBuf::readIdentifier);
-        Identifier categoryToOpen = buffer.readNullable(FriendlyByteBuf::readIdentifier); //can be set to null in #build, if the category was not found
-
-        return new CategoryLinkBookEntry(id, data, commandToRunOnFirstReadId, categoryToOpen);
-    }
-
     @Override
-    public Identifier getType() {
-        return ModonomiconConstants.Data.EntryType.CATEGORY_LINK;
-    }
-
-    @Override
-    public void toNetwork(RegistryFriendlyByteBuf buffer) {
-        buffer.writeIdentifier(this.id);
-        this.data.toNetwork(buffer);
-        buffer.writeNullable(this.commandToRunOnFirstReadId, FriendlyByteBuf::writeIdentifier);
-        buffer.writeNullable(this.categoryToOpenId, FriendlyByteBuf::writeIdentifier); //can be set to null in #build, if the category was not found
+    public BookEntryType<?> type() {
+        return BookEntryTypeRegistry.CATEGORY_LINK;
     }
 
     @Override
@@ -86,6 +75,10 @@ public class CategoryLinkBookEntry extends BookEntry {
 
     public BookCategory getCategoryToOpen() {
         return this.categoryToOpen;
+    }
+
+    public Identifier categoryToOpenId() {
+        return this.categoryToOpenId;
     }
 
     @Override

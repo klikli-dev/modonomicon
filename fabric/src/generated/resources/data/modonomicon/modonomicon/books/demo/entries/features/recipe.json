@@ -1,121 +1,95 @@
 {
+  "type": "modonomicon:content",
   "background": {
     "height": 26,
     "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
     "width": 26
   },
-  "category": "features",
+  "category": "modonomicon:features",
+  "condition": {
+    "type": "modonomicon:none"
+  },
   "description": "book.modonomicon.demo.features.recipe.description",
-  "hide_while_locked": false,
   "icon": {
     "id": "minecraft:crafting_table"
   },
+  "id": "modonomicon:features/recipe",
   "name": "book.modonomicon.demo.features.recipe.name",
   "pages": [
     {
       "type": "modonomicon:text",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.features.recipe.intro.text",
-      "title": "book.modonomicon.demo.features.recipe.intro.title",
-      "use_markdown_in_title": false
+      "title": "book.modonomicon.demo.features.recipe.intro.title"
     },
     {
       "type": "modonomicon:crafting_recipe",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
       "recipe_id_1": "minecraft:iron_axe",
       "recipe_id_2": "minecraft:oak_planks",
       "text": "book.modonomicon.demo.features.recipe.crafting.text",
-      "title1": "",
       "title2": "test.test.test"
     },
     {
       "type": "modonomicon:smelting_recipe",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
       "recipe_id_1": "minecraft:charcoal",
       "recipe_id_2": "minecraft:cooked_beef",
-      "text": "book.modonomicon.demo.features.recipe.smelting.text",
-      "title1": "",
-      "title2": ""
+      "text": "book.modonomicon.demo.features.recipe.smelting.text"
     },
     {
       "type": "modonomicon:smoking_recipe",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
       "recipe_id_1": "minecraft:cooked_beef_from_smoking",
-      "text": "book.modonomicon.demo.features.recipe.smoking.text",
-      "title1": "",
-      "title2": ""
+      "text": "book.modonomicon.demo.features.recipe.smoking.text"
     },
     {
       "type": "modonomicon:blasting_recipe",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
-      "recipe_id_2": "minecraft:iron_ingot_from_blasting_iron_ore",
-      "text": "",
-      "title1": "",
-      "title2": ""
+      "recipe_id_2": "minecraft:iron_ingot_from_blasting_iron_ore"
     },
     {
       "type": "modonomicon:campfire_cooking_recipe",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
-      "recipe_id_1": "minecraft:cooked_beef_from_campfire_cooking",
-      "text": "",
-      "title1": "",
-      "title2": ""
+      "recipe_id_1": "minecraft:cooked_beef_from_campfire_cooking"
     },
     {
       "type": "modonomicon:stonecutting_recipe",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
-      "recipe_id_1": "minecraft:andesite_slab_from_andesite_stonecutting",
-      "text": "",
-      "title1": "",
-      "title2": ""
+      "recipe_id_1": "minecraft:andesite_slab_from_andesite_stonecutting"
     },
     {
       "type": "modonomicon:smithing_recipe",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
       "recipe_id_1": "minecraft:netherite_axe_smithing",
       "recipe_id_2": "minecraft:netherite_chestplate_smithing",
-      "text": "",
-      "title1": "book.modonomicon.demo.features.recipe.smithing.title",
-      "title2": ""
+      "title1": "book.modonomicon.demo.features.recipe.smithing.title"
     },
     {
       "type": "modonomicon:smithing_recipe",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
-      "recipe_id_1": "minecraft:netherite_axe_smithing_does_not_exist",
-      "text": "",
-      "title1": "",
-      "title2": ""
+      "recipe_id_1": "minecraft:netherite_axe_smithing_does_not_exist"
     }
   ],
-  "show_when_any_parent_unlocked": false,
   "sort_number": 6,
   "x": -8,
   "y": -1

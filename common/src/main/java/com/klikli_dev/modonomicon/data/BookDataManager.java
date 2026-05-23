@@ -17,9 +17,7 @@ import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCommand;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
-import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
-import com.klikli_dev.modonomicon.book.entries.CategoryLinkBookEntry;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.theme.BookThemeData;
@@ -27,16 +25,19 @@ import com.klikli_dev.modonomicon.networking.Message;
 import com.klikli_dev.modonomicon.networking.SyncBookDataMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
+import com.klikli_dev.modonomicon.registry.DynamicTextMacroRegistry;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.Level;
 
@@ -46,9 +47,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
-public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
+public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElement> {
     public static final String FOLDER = Data.MODONOMICON_DATA_PATH;
-    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
     private static final BookDataManager instance = new BookDataManager();
 
@@ -58,7 +58,7 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
     private HolderLookup.Provider registries;
 
     private BookDataManager() {
-        super(GSON, FOLDER);
+        super(ExtraCodecs.JSON, FileToIdConverter.json(FOLDER));
     }
 
     public static BookDataManager get() {
@@ -182,7 +182,7 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
 
     public void resolveMacros(){
         this.getBooks().forEach((id, book) -> {
-            var macroLoaders = LoaderRegistry.getDynamicTextMacroLoaders(id);
+            var macroLoaders = DynamicTextMacroRegistry.getLoaders(id);
             macroLoaders.forEach(loader -> loader.load().forEach(book::addMacro));
         });
     }
@@ -203,19 +203,8 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
         return BookCategory.fromJson(key, value, provider);
     }
 
-    private BookEntry loadEntry(Identifier id, JsonObject value, boolean autoAddReadConditions, HolderLookup.Provider provider) {
-        if (value.has("type")) {
-            Identifier typeId = Identifier.tryParse(value.get("type").getAsString());
-            return LoaderRegistry.getEntryJsonLoader(typeId).fromJson(id, value, autoAddReadConditions, provider);
-        }
-
-        // This part here is for backwards compatibility and simplicity
-        // If an entry does not have a type specified, ContentEntry is assumed
-        // unless it has a property called "category_to_open" (CategoryLinkEntry)
-        if (value.has("category_to_open")) {
-            return CategoryLinkBookEntry.fromJson(id, value, autoAddReadConditions, provider);
-        }
-        return BookContentEntry.fromJson(id, value, autoAddReadConditions, provider);
+    private BookEntry loadEntry(JsonObject value, HolderLookup.Provider provider) {
+        return BookEntry.fromJson(value, provider);
     }
 
     private BookCommand loadCommand(Identifier key, JsonObject value) {
@@ -360,15 +349,16 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
                 BookErrorManager.get().setCurrentBookId(bookId);
 
                 //entry id skips the book id and the entries directory, but keeps category so it is unique
-                var entryId = Identifier.fromNamespaceAndPath(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
+                var sourceEntryId = Identifier.fromNamespaceAndPath(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
 
-                BookErrorManager.get().getContextHelper().entryId = entryId;
+                BookErrorManager.get().getContextHelper().entryId = sourceEntryId;
                 //test if we should load the category at all
-                if (!this.testConditionOnLoad(entryId, entry.getValue(), this.registries)) {
+                if (!this.testConditionOnLoad(sourceEntryId, entry.getValue(), this.registries)) {
                     continue;
                 }
 
-                var bookEntry = this.loadEntry(entryId, entry.getValue(), this.books.get(bookId).autoAddReadConditions(), this.registries);
+                var bookEntry = this.loadEntry(entry.getValue(), this.registries);
+                BookErrorManager.get().getContextHelper().entryId = bookEntry.getId();
 
                 //link entry and category
                 var book = this.books.get(bookId);
@@ -413,7 +403,7 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
         this.onLoadingComplete();
     }
 
-    public static class Client extends LegacySimpleJsonResourceReloadListener {
+    public static class Client extends SimpleJsonResourceReloadListener<JsonElement> {
 
         private static final Client instance = new Client();
 
@@ -427,7 +417,7 @@ public class BookDataManager extends LegacySimpleJsonResourceReloadListener {
         private boolean isFontInitialized;
 
         public Client() {
-            super(GSON, FOLDER);
+            super(ExtraCodecs.JSON, FileToIdConverter.json(FOLDER));
             this.bookTextHolderScaleCache.defaultReturnValue(-1f);
         }
 

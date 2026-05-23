@@ -1,31 +1,33 @@
 {
+  "type": "modonomicon:content",
   "background": {
     "height": 26,
     "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
     "width": 26
   },
-  "category": "features",
+  "category": "modonomicon:features",
+  "condition": {
+    "type": "modonomicon:entry_read",
+    "entry_id": "modonomicon:features/empty"
+  },
   "description": "book.modonomicon.demo.features.image.description",
-  "hide_while_locked": false,
   "icon": {
     "id": "minecraft:item_frame"
   },
+  "id": "modonomicon:features/image",
   "name": "book.modonomicon.demo.features.image.name",
   "pages": [
     {
       "type": "modonomicon:text",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.features.image.intro.text",
-      "title": "book.modonomicon.demo.features.image.intro.title",
-      "use_markdown_in_title": false
+      "title": "book.modonomicon.demo.features.image.intro.title"
     },
     {
       "type": "modonomicon:image",
-      "anchor": "",
       "border": true,
       "condition": {
         "type": "modonomicon:none"
@@ -35,12 +37,10 @@
         "modonomicon:textures/gui/dark_slate_seamless.png"
       ],
       "text": "book.modonomicon.demo.features.image.image.text",
-      "title": "book.modonomicon.demo.features.image.image.title",
-      "use_legacy_rendering": false
+      "title": "book.modonomicon.demo.features.image.image.title"
     },
     {
       "type": "modonomicon:spotlight",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
@@ -50,7 +50,6 @@
     },
     {
       "type": "modonomicon:image",
-      "anchor": "",
       "border": true,
       "condition": {
         "type": "modonomicon:none"
@@ -60,19 +59,14 @@
         "modonomicon:textures/gui/dark_slate_seamless.png"
       ],
       "text": "book.modonomicon.demo.features.image.test_image.text",
-      "title": "book.modonomicon.demo.features.image.test_image.title",
-      "use_legacy_rendering": false
+      "title": "book.modonomicon.demo.features.image.test_image.title"
     }
   ],
   "parents": [
     {
-      "draw_arrow": true,
-      "entry": "features/empty",
-      "line_enabled": true,
-      "line_reversed": false
+      "entry": "modonomicon:features/empty"
     }
   ],
-  "show_when_any_parent_unlocked": false,
   "sort_number": 12,
   "x": 8,
   "y": 0

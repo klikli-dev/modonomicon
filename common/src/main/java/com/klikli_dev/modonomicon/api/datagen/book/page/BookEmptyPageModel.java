@@ -6,15 +6,22 @@
 
 package com.klikli_dev.modonomicon.api.datagen.book.page;
 
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
+import com.klikli_dev.modonomicon.book.page.BookEmptyPage;
+import com.klikli_dev.modonomicon.book.page.BookPage;
+import net.minecraft.core.HolderLookup;
 
 public class BookEmptyPageModel extends BookPageModel<BookEmptyPageModel> {
 
     protected BookEmptyPageModel() {
-        super(Page.EMPTY);
+        super(BookEmptyPage.ID);
     }
 
     public static BookEmptyPageModel create() {
         return new BookEmptyPageModel();
+    }
+
+    @Override
+    public BookPage toBookPage(HolderLookup.Provider provider) {
+        return new BookEmptyPage(this.anchor, this.condition(provider));
     }
 }

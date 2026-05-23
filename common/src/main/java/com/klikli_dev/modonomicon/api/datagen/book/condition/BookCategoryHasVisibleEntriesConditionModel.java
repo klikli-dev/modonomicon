@@ -9,7 +9,9 @@
 package com.klikli_dev.modonomicon.api.datagen.book.condition;
 
 import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import com.klikli_dev.modonomicon.book.conditions.BookCategoryHasVisibleEntriesCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -18,7 +20,7 @@ public class BookCategoryHasVisibleEntriesConditionModel extends BookConditionMo
     private Identifier categoryId;
 
     protected BookCategoryHasVisibleEntriesConditionModel() {
-        super(Condition.CATEGORY_HAS_VISIBLE_ENTRIES);
+        super(BookCategoryHasVisibleEntriesCondition.ID);
     }
 
     public static BookCategoryHasVisibleEntriesConditionModel create() {
@@ -27,15 +29,12 @@ public class BookCategoryHasVisibleEntriesConditionModel extends BookConditionMo
 
 
     @Override
-    public JsonObject toJson(Identifier conditionParentId, HolderLookup.Provider provider) {
-        var json = super.toJson(conditionParentId, provider);
-
-        if (this.categoryId.getNamespace().equals(conditionParentId.getNamespace()))
-            json.addProperty("category_id", this.categoryId.getPath());
-        else
-            json.addProperty("category_id", this.categoryId.toString());
-
-        return json;
+    public BookCondition toBookCondition(HolderLookup.Provider provider) {
+        var tooltip = this.tooltipComponent();
+        if (tooltip == null) {
+            tooltip = Component.translatable(ModonomiconConstants.I18n.Tooltips.CONDITION_CATEGORY_HAS_VISIBLE_ENTRIES, this.categoryId.toLanguageKey());
+        }
+        return new BookCategoryHasVisibleEntriesCondition(tooltip, this.categoryId);
     }
 
     public Identifier getCategoryId() {

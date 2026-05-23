@@ -15,6 +15,8 @@ import net.minecraft.resources.Identifier;
 
 public class DefaultBookTheme implements BookTheme {
 
+    public static final Identifier ID = Modonomicon.loc("default");
+
     private static final String GUI_SPRITE_TEXTURE_ROOT = "textures/gui/sprites/";
     private static final String DEFAULT_SPRITE_ROOT = "modonomicon/themes/default/";
 

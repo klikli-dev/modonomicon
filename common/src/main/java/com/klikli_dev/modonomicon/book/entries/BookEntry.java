@@ -9,9 +9,7 @@ package com.klikli_dev.modonomicon.book.entries;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.book.*;
-import com.klikli_dev.modonomicon.book.conditions.BookAndCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
-import com.klikli_dev.modonomicon.book.conditions.BookEntryReadCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
@@ -20,18 +18,37 @@ import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
-import com.klikli_dev.modonomicon.data.LoaderRegistry;
+import com.klikli_dev.modonomicon.data.BookEntryType;
+import com.klikli_dev.modonomicon.registry.BookEntryTypeRegistry;
+import com.klikli_dev.modonomicon.util.Codecs;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class BookEntry {
+
+    public static final Codec<BookEntry> CODEC = Codec.lazyInitialized(() -> BookEntryTypeRegistry.codec().dispatch(
+            "type",
+            BookEntry::type,
+            BookEntryType::codec
+    ));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, BookEntry> STREAM_CODEC = StreamCodec.recursive(codec -> BookEntryTypeRegistry.streamCodec()
+                    .dispatch(
+                            BookEntry::type,
+                            BookEntryType::streamCodec
+                    ));
 
     protected final BookEntryData data;
     protected Identifier id;
@@ -60,7 +77,24 @@ public abstract class BookEntry {
         return this.data.y;
     }
 
-    public abstract Identifier getType();
+    public static BookEntry fromJson(JsonObject json, HolderLookup.Provider provider) {
+        return CODEC.parse(provider.createSerializationContext(com.mojang.serialization.JsonOps.INSTANCE), json)
+                .getOrThrow(error -> new IllegalArgumentException("Failed to decode entry: " + error));
+    }
+
+    public static BookEntry fromNetwork(RegistryFriendlyByteBuf buf) {
+        return STREAM_CODEC.decode(buf);
+    }
+
+    public static void toNetwork(BookEntry entry, RegistryFriendlyByteBuf buf) {
+        STREAM_CODEC.encode(buf, entry);
+    }
+
+    public abstract BookEntryType<?> type();
+
+    public Identifier getType() {
+        return this.type().id();
+    }
 
     public abstract void openEntry(BookAddress address);
 
@@ -205,117 +239,64 @@ public abstract class BookEntry {
         return this.data.sortNumber;
     }
 
-    public abstract void toNetwork(RegistryFriendlyByteBuf buf);
+    protected BookEntryData data() {
+        return this.data;
+    }
+
+    public Identifier commandToRunOnFirstReadId() {
+        return this.commandToRunOnFirstReadId;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void toNetwork(RegistryFriendlyByteBuf buf) {
+        ((StreamCodec<RegistryFriendlyByteBuf, BookEntry>) this.type().streamCodec().cast()).encode(buf, this);
+    }
 
     /**
      * The entry background is selected by GUI sprite id.
      */
     public record BookEntryData(Identifier categoryId, List<BookEntryParent> parents, int x, int y, String name,
-                                String description, BookIcon icon, GuiSprite entryBackground,
-                                BookCondition condition, boolean hideWhileLocked, boolean showWhenAnyParentUnlocked,
-                                int sortNumber) {
+                                 String description, BookIcon icon, GuiSprite entryBackground,
+                                 BookCondition condition, boolean hideWhileLocked, boolean showWhenAnyParentUnlocked,
+                                 int sortNumber) {
 
-        public static BookEntryData fromJson(Identifier id, JsonObject json, boolean autoAddReadConditions, HolderLookup.Provider provider) {
-            var categoryIdPath = GsonHelper.getAsString(json, "category");
-            var categoryId = categoryIdPath.contains(":") ?
-                    Identifier.parse(categoryIdPath) :
-                    Identifier.fromNamespaceAndPath(id.getNamespace(), categoryIdPath);
+        public static final MapCodec<BookEntryData> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                Codecs.STRICT_IDENTIFIER.fieldOf("category").forGetter(BookEntryData::categoryId),
+                Codec.list(BookEntryParent.CODEC).optionalFieldOf("parents", List.of()).forGetter(BookEntryData::parents),
+                Codec.INT.fieldOf("x").forGetter(BookEntryData::x),
+                Codec.INT.fieldOf("y").forGetter(BookEntryData::y),
+                Codec.STRING.fieldOf("name").forGetter(BookEntryData::name),
+                Codec.STRING.optionalFieldOf("description", "").forGetter(BookEntryData::description),
+                BookIcon.CODEC.fieldOf("icon").forGetter(BookEntryData::icon),
+                GuiSprite.CODEC.optionalFieldOf("background", GuiSprite.EMPTY).forGetter(BookEntryData::entryBackground),
+                BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookEntryData::condition),
+                Codec.BOOL.optionalFieldOf("hide_while_locked", false).forGetter(BookEntryData::hideWhileLocked),
+                Codec.BOOL.optionalFieldOf("show_when_any_parent_unlocked", false).forGetter(BookEntryData::showWhenAnyParentUnlocked),
+                Codec.INT.optionalFieldOf("sort_number", -1).forGetter(BookEntryData::sortNumber)
+        ).apply(instance, BookEntryData::new));
 
-            var x = GsonHelper.getAsInt(json, "x");
-            var y = GsonHelper.getAsInt(json, "y");
-
-            var parents = new ArrayList<BookEntryParent>();
-            if (json.has("parents")) {
-                for (var parent : GsonHelper.getAsJsonArray(json, "parents")) {
-                    parents.add(BookEntryParent.fromJson(id, parent.getAsJsonObject()));
-                }
-            }
-
-            var pages = new ArrayList<BookPage>();
-            if (json.has("pages")) {
-                for (var pageElem : GsonHelper.getAsJsonArray(json, "pages")) {
-                    BookErrorManager.get().setContext("Page Index: {}", pages.size());
-                    var pageJson = GsonHelper.convertToJsonObject(pageElem, "page");
-                    var type = Identifier.parse(GsonHelper.getAsString(pageJson, "type"));
-                    var loader = LoaderRegistry.getPageJsonLoader(type);
-
-                    var page = loader.fromJson(id, pageJson, provider);
-                    pages.add(page);
-                }
-            }
-
-            var name = GsonHelper.getAsString(json, "name");
-            var description = GsonHelper.getAsString(json, "description", "");
-            var icon = BookIcon.fromJson(json.get("icon"), provider);
-            var entryBackground = json.has("background") ? GuiSprite.fromJson(json.get("background")) : GuiSprite.EMPTY;
-
-            BookCondition condition = new BookNoneCondition(); //default to unlocked
-            if (json.has("condition")) {
-                condition = BookCondition.fromJson(id, json.getAsJsonObject("condition"), provider);
-            } else if (autoAddReadConditions) {
-                if (parents.size() == 1) {
-                    condition = new BookEntryReadCondition(null, parents.get(0).getEntryId());
-                } else if (parents.size() > 1) {
-                    var conditions = parents.stream().map(parent -> new BookEntryReadCondition(null, parent.getEntryId())).toList();
-                    condition = new BookAndCondition(null, conditions.toArray(new BookEntryReadCondition[0]));
-                }
-            }
-            var hideWhileLocked = GsonHelper.getAsBoolean(json, "hide_while_locked", false);
-
-            /**
-             * If true, the entry will show (locked) as soon as any parent is unlocked.
-             * If false, the entry will only show (locked) as soon as all parents are unlocked.
-             */
-            var showWhenAnyParentUnlocked = GsonHelper.getAsBoolean(json, "show_when_any_parent_unlocked", false);
-
-            var sortNumber = GsonHelper.getAsInt(json, "sort_number", -1);
-
-            return new BookEntryData(categoryId, parents, x, y, name, description, icon, entryBackground, condition, hideWhileLocked, showWhenAnyParentUnlocked, sortNumber);
-        }
+        public static final StreamCodec<RegistryFriendlyByteBuf, BookEntryData> STREAM_CODEC = StreamCodec.composite(
+                Identifier.STREAM_CODEC, BookEntryData::categoryId,
+                ByteBufCodecs.collection(size -> new ArrayList<BookEntryParent>(size), BookEntryParent.STREAM_CODEC), BookEntryData::parents,
+                ByteBufCodecs.INT, BookEntryData::x,
+                ByteBufCodecs.INT, BookEntryData::y,
+                ByteBufCodecs.STRING_UTF8, BookEntryData::name,
+                ByteBufCodecs.STRING_UTF8, BookEntryData::description,
+                BookIcon.STREAM_CODEC, BookEntryData::icon,
+                GuiSprite.STREAM_CODEC, BookEntryData::entryBackground,
+                BookCondition.STREAM_CODEC, BookEntryData::condition,
+                ByteBufCodecs.BOOL, BookEntryData::hideWhileLocked,
+                ByteBufCodecs.BOOL, BookEntryData::showWhenAnyParentUnlocked,
+                ByteBufCodecs.INT, BookEntryData::sortNumber,
+                BookEntryData::new
+        );
 
         public static BookEntryData fromNetwork(RegistryFriendlyByteBuf buffer) {
-            var categoryId = buffer.readIdentifier();
-            var name = buffer.readUtf();
-            var description = buffer.readUtf();
-            var icon = BookIcon.fromNetwork(buffer);
-            var x = buffer.readVarInt();
-            var y = buffer.readVarInt();
-            var entryBackground = GuiSprite.fromNetwork(buffer);
-            var hideWhileLocked = buffer.readBoolean();
-            var showWhenAnyParentUnlocked = buffer.readBoolean();
-            var condition = BookCondition.fromNetwork(buffer);
-
-            var parentEntries = new ArrayList<BookEntryParent>();
-            var parentCount = buffer.readVarInt();
-            for (var i = 0; i < parentCount; i++) {
-                parentEntries.add(BookEntryParent.fromNetwork(buffer));
-            }
-
-            var sortNumber = buffer.readVarInt();
-
-            return new BookEntryData(categoryId, parentEntries, x, y, name, description, icon, entryBackground, condition, hideWhileLocked, showWhenAnyParentUnlocked, sortNumber);
+            return STREAM_CODEC.decode(buffer);
         }
 
         public void toNetwork(RegistryFriendlyByteBuf buffer) {
-            buffer.writeIdentifier(this.categoryId);
-            buffer.writeUtf(this.name);
-            buffer.writeUtf(this.description);
-            this.icon.toNetwork(buffer);
-            buffer.writeVarInt(this.x);
-            buffer.writeVarInt(this.y);
-            this.entryBackground.toNetwork(buffer);
-            buffer.writeBoolean(this.hideWhileLocked);
-            buffer.writeBoolean(this.showWhenAnyParentUnlocked);
-
-            buffer.writeIdentifier(this.condition.getType());
-            this.condition.toNetwork(buffer);
-
-            buffer.writeVarInt(this.parents.size());
-            for (var parent : this.parents) {
-                parent.toNetwork(buffer);
-            }
-
-            buffer.writeVarInt(this.sortNumber);
+            STREAM_CODEC.encode(buffer, this);
         }
     }
 }

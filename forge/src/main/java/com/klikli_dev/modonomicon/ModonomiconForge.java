@@ -19,7 +19,6 @@ import com.klikli_dev.modonomicon.client.render.state.pip.GuiMultiblockRenderSta
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.config.ServerConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
-import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
 import com.klikli_dev.modonomicon.integration.LecternIntegration;
@@ -27,6 +26,7 @@ import com.klikli_dev.modonomicon.item.IsBookOpen;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
+import com.klikli_dev.modonomicon.registry.RegistryBootstrap;
 import com.mojang.blaze3d.framegraph.FramePass;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -148,7 +148,7 @@ public class ModonomiconForge {
     public void onCommonSetup(FMLCommonSetupEvent event) {
         Networking.registerMessages();
 
-        LoaderRegistry.registerLoaders();
+        RegistryBootstrap.bootstrap();
 
         PlayerInteractEvent.RightClickBlock.BUS.addListener((PlayerInteractEvent.RightClickBlock e) -> {
             var result = LecternIntegration.rightClick(e.getEntity(), e.getLevel(), e.getHand(), e.getHitVec());

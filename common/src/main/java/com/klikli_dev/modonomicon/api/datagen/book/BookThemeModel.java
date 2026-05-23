@@ -7,15 +7,15 @@
 package com.klikli_dev.modonomicon.api.datagen.book;
 
 import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import com.klikli_dev.modonomicon.client.gui.book.theme.defaults.DefaultBookTheme;
 import net.minecraft.resources.Identifier;
 
 import java.util.function.Consumer;
 
 public class BookThemeModel {
 
-    protected Identifier id = ModonomiconConstants.Data.Theme.DEFAULT_THEME_ID;
-    protected Identifier type = ModonomiconConstants.Data.Theme.DEFAULT_THEME_TYPE;
+    protected Identifier id = DefaultBookTheme.ID;
+    protected Identifier type = DefaultBookTheme.ID;
     protected BookThemeLayoutModel layout = new BookThemeLayoutModel();
     protected BookThemeContentModel content = new BookThemeContentModel();
     protected BookThemePaletteModel palette = new BookThemePaletteModel();

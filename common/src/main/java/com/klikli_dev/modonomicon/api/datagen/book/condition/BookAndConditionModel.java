@@ -10,16 +10,19 @@ package com.klikli_dev.modonomicon.api.datagen.book.condition;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
+import com.klikli_dev.modonomicon.book.conditions.BookAndCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
+
+import java.util.Arrays;
 
 public class BookAndConditionModel extends BookConditionModel<BookAndConditionModel> {
 
     protected BookConditionModel<?>[] children;
 
     protected BookAndConditionModel() {
-        super(Condition.AND);
+        super(BookAndCondition.ID);
     }
 
     public static BookAndConditionModel create() {
@@ -31,15 +34,10 @@ public class BookAndConditionModel extends BookConditionModel<BookAndConditionMo
     }
 
     @Override
-    public JsonObject toJson(Identifier conditionParentId, HolderLookup.Provider provider) {
-        var json = super.toJson(conditionParentId, provider);
-
-        var children = new JsonArray();
-        for (var child : this.children) {
-            children.add(child.toJson(conditionParentId, provider));
-        }
-        json.add("children", children);
-        return json;
+    public BookCondition toBookCondition(HolderLookup.Provider provider) {
+        return new BookAndCondition(this.tooltipComponent(), Arrays.stream(this.children)
+                .map(child -> child.toBookCondition(provider))
+                .toArray(BookCondition[]::new));
     }
 
     public BookAndConditionModel withChildren(BookConditionModel<?>... children) {

@@ -64,4 +64,8 @@ public class BookIconModel {
             return (JsonObject) ItemStackTemplate.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), this.itemStack).getOrThrow();
         }
     }
+
+    public BookIcon toBookIcon() {
+        return this.texture != null ? new BookIcon(this.texture, this.width, this.height) : new BookIcon(this.itemStack);
+    }
 }

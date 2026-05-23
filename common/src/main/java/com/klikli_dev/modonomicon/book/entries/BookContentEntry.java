@@ -6,8 +6,7 @@
 
 package com.klikli_dev.modonomicon.book.entries;
 
-import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
@@ -15,19 +14,41 @@ import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
-import com.klikli_dev.modonomicon.data.LoaderRegistry;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.network.FriendlyByteBuf;
+import com.klikli_dev.modonomicon.data.BookEntryType;
+import com.klikli_dev.modonomicon.registry.BookEntryTypeRegistry;
+import com.klikli_dev.modonomicon.util.Codecs;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class BookContentEntry extends BookEntry {
+
+    public static final Identifier ID = Modonomicon.loc("content");
+
+    public static final MapCodec<BookContentEntry> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Identifier.CODEC.fieldOf("id").forGetter(BookEntry::getId),
+            BookEntry.BookEntryData.CODEC.forGetter(entry -> entry.data),
+            Identifier.CODEC.optionalFieldOf("command_to_run_on_first_read").forGetter(entry -> Optional.ofNullable(entry.commandToRunOnFirstReadId)),
+            BookPage.CODEC.listOf().fieldOf("pages").forGetter(entry -> entry.pages)
+    ).apply(instance, (id, data, commandToRunOnFirstReadId, pages) -> new BookContentEntry(id, data, commandToRunOnFirstReadId.orElse(null), pages)));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, BookContentEntry> STREAM_CODEC = StreamCodec.composite(
+            Identifier.STREAM_CODEC, BookEntry::getId,
+            BookEntry.BookEntryData.STREAM_CODEC, entry -> entry.data,
+            ByteBufCodecs.optional(Identifier.STREAM_CODEC), entry -> Optional.ofNullable(entry.commandToRunOnFirstReadId),
+            BookPage.STREAM_CODEC.apply(ByteBufCodecs.list()), entry -> entry.pages,
+            (id, data, commandToRunOnFirstReadId, pages) -> new BookContentEntry(id, data, commandToRunOnFirstReadId.orElse(null), pages)
+    );
 
     protected List<BookPage> pages;
 
@@ -36,68 +57,9 @@ public class BookContentEntry extends BookEntry {
         this.pages = pages;
     }
 
-    public static BookContentEntry fromJson(Identifier id, JsonObject json, boolean autoAddReadConditions, HolderLookup.Provider provider) {
-        BookEntryData data = BookEntryData.fromJson(id, json, autoAddReadConditions, provider);
-
-        Identifier commandToRunOnFirstReadId = null;
-        if (json.has("command_to_run_on_first_read")) {
-            var commandToRunOnFirstReadIdPath = GsonHelper.getAsString(json, "command_to_run_on_first_read");
-            commandToRunOnFirstReadId = commandToRunOnFirstReadIdPath.contains(":") ?
-                    Identifier.parse(commandToRunOnFirstReadIdPath) :
-                    Identifier.fromNamespaceAndPath(id.getNamespace(), commandToRunOnFirstReadIdPath);
-        }
-
-        var pages = new ArrayList<BookPage>();
-        if (json.has("pages")) {
-            var jsonPages = GsonHelper.getAsJsonArray(json, "pages");
-            for (var pageElem : jsonPages) {
-                BookErrorManager.get().setContext("Page Index: {}", pages.size());
-                var pageJson = GsonHelper.convertToJsonObject(pageElem, "page");
-                var type = Identifier.parse(GsonHelper.getAsString(pageJson, "type"));
-                var loader = LoaderRegistry.getPageJsonLoader(type);
-
-                var page = loader.fromJson(id, pageJson, provider);
-                pages.add(page);
-
-            }
-        }
-
-        return new BookContentEntry(id, data, commandToRunOnFirstReadId, pages);
-    }
-
-    public static BookContentEntry fromNetwork(RegistryFriendlyByteBuf buffer) {
-        var id = buffer.readIdentifier();
-        BookEntryData data = BookEntryData.fromNetwork(buffer);
-        Identifier commandToRunOnFirstReadId = buffer.readNullable(FriendlyByteBuf::readIdentifier);
-
-        var pages = new ArrayList<BookPage>();
-        var pageCount = buffer.readVarInt();
-        for (var i = 0; i < pageCount; i++) {
-            var type = buffer.readIdentifier();
-            var loader = LoaderRegistry.getPageNetworkLoader(type);
-            var page = loader.fromNetwork(buffer);
-            pages.add(page);
-        }
-
-        return new BookContentEntry(id, data, commandToRunOnFirstReadId, pages);
-    }
-
     @Override
-    public Identifier getType() {
-        return ModonomiconConstants.Data.EntryType.CONTENT;
-    }
-
-    @Override
-    public void toNetwork(RegistryFriendlyByteBuf buffer) {
-        buffer.writeIdentifier(this.id);
-        this.data.toNetwork(buffer);
-        buffer.writeNullable(this.commandToRunOnFirstReadId, FriendlyByteBuf::writeIdentifier);
-
-        buffer.writeVarInt(this.pages.size());
-        for (var page : this.pages) {
-            buffer.writeIdentifier(page.getType());
-            page.toNetwork(buffer);
-        }
+    public BookEntryType<?> type() {
+        return BookEntryTypeRegistry.CONTENT;
     }
 
     /**
