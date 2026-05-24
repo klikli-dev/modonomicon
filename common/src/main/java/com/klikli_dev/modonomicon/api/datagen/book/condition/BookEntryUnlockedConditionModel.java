@@ -9,7 +9,8 @@
 package com.klikli_dev.modonomicon.api.datagen.book.condition;
 
 import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
+import com.klikli_dev.modonomicon.book.conditions.BookCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookEntryUnlockedCondition;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 
@@ -17,7 +18,7 @@ public class BookEntryUnlockedConditionModel extends BookConditionModel<BookEntr
     protected Identifier entryId;
 
     protected BookEntryUnlockedConditionModel() {
-        super(Condition.ENTRY_UNLOCKED);
+        super(BookEntryUnlockedCondition.ID);
     }
 
     public static BookEntryUnlockedConditionModel create() {
@@ -29,15 +30,8 @@ public class BookEntryUnlockedConditionModel extends BookConditionModel<BookEntr
     }
 
     @Override
-    public JsonObject toJson(Identifier conditionParentId, HolderLookup.Provider provider) {
-        var json = super.toJson(conditionParentId, provider);
-
-        if (this.entryId.getNamespace().equals(conditionParentId.getNamespace()))
-            json.addProperty("entry_id", this.entryId.getPath());
-        else
-            json.addProperty("entry_id", this.entryId.toString());
-
-        return json;
+    public BookCondition toBookCondition(HolderLookup.Provider provider) {
+        return new BookEntryUnlockedCondition(this.tooltipComponent(), this.entryId);
     }
 
     public BookEntryUnlockedConditionModel withEntry(Identifier entryId) {

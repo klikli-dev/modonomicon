@@ -6,23 +6,39 @@
 
 package com.klikli_dev.modonomicon.book.conditions;
 
-import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
-import net.minecraft.core.HolderLookup;
+import com.klikli_dev.modonomicon.data.BookConditionType;
+import com.klikli_dev.modonomicon.registry.BookConditionTypeRegistry;
+import com.klikli_dev.modonomicon.util.Codecs;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
+import java.util.Optional;
 
 public class BookEntryReadCondition extends BookCondition {
+
+    public static final Identifier ID = Modonomicon.loc("entry_read");
+    public static final MapCodec<BookEntryReadCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            ComponentSerialization.CODEC.optionalFieldOf("tooltip").forGetter(condition -> Optional.ofNullable(condition.tooltip())),
+            Codecs.STRICT_IDENTIFIER.fieldOf("entry_id").forGetter(condition -> condition.entryId)
+    ).apply(instance, (tooltip, entryId) -> new BookEntryReadCondition(tooltip.orElse(null), entryId)));
+    public static final StreamCodec<RegistryFriendlyByteBuf, BookEntryReadCondition> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.optional(ComponentSerialization.TRUSTED_STREAM_CODEC), condition -> Optional.ofNullable(condition.tooltip()),
+            Identifier.STREAM_CODEC, condition -> condition.entryId,
+            (tooltip, entryId) -> new BookEntryReadCondition(tooltip.orElse(null), entryId)
+    );
 
     protected Identifier entryId;
 
@@ -31,35 +47,9 @@ public class BookEntryReadCondition extends BookCondition {
         this.entryId = entryId;
     }
 
-    public static BookEntryReadCondition fromJson(Identifier conditionParentId, JsonObject json, HolderLookup.Provider provider) {
-        var entryPath = GsonHelper.getAsString(json, "entry_id");
-        var entryId = entryPath.contains(":") ?
-                Identifier.parse(entryPath) :
-                Identifier.fromNamespaceAndPath(conditionParentId.getNamespace(), entryPath);
-
-        var tooltip = tooltipFromJson(json, provider);
-
-        return new BookEntryReadCondition(tooltip, entryId);
-    }
-
-    public static BookEntryReadCondition fromNetwork(RegistryFriendlyByteBuf buffer) {
-        var tooltip = buffer.readBoolean() ? ComponentSerialization.STREAM_CODEC.decode(buffer) : null;
-        var entryId = buffer.readIdentifier();
-        return new BookEntryReadCondition(tooltip, entryId);
-    }
-
     @Override
-    public Identifier getType() {
-        return Condition.ENTRY_READ;
-    }
-
-    @Override
-    public void toNetwork(RegistryFriendlyByteBuf buffer) {
-        buffer.writeBoolean(this.tooltip != null);
-        if (this.tooltip != null) {
-            ComponentSerialization.STREAM_CODEC.encode(buffer, this.tooltip);
-        }
-        buffer.writeIdentifier(this.entryId);
+    public BookConditionType<?> type() {
+        return BookConditionTypeRegistry.ENTRY_READ;
     }
 
     @Override

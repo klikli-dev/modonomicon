@@ -140,12 +140,7 @@ public class BookCategoryModel {
             json.add("category_button_sprite", this.categoryButtonSpriteToJson());
         }
         if (this.entryToOpen != null) {
-            //if we are in the same namespace, which we basically always should be, omit namespace
-            if (this.entryToOpen.getNamespace().equals(this.getId().getNamespace()))
-                json.addProperty("entry_to_open", this.entryToOpen.getPath());
-            else
-                json.addProperty("entry_to_open", this.entryToOpen.toString());
-
+            json.addProperty("entry_to_open", this.entryToOpen.toString());
             json.addProperty("open_entry_to_open_only_once", this.openEntryToOpenOnlyOnce);
         }
         return json;

@@ -35,7 +35,7 @@
     },
     "G": {
       "type": "modonomicon:tag",
-      "tag": "minecraft:candles",
+      "tag": "#minecraft:candles",
       "display": "minecraft:white_candle"
     },
     "D": {

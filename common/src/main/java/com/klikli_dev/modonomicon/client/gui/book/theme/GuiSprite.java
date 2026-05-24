@@ -8,18 +8,40 @@ package com.klikli_dev.modonomicon.client.gui.book.theme;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
+
+import java.util.function.Function;
 
 public class GuiSprite {
 
     public static final GuiSprite EMPTY = new GuiSprite(Identifier.fromNamespaceAndPath("minecraft", "missingno"), 0, 0);
+    private static final Codec<GuiSprite> SIZED_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Identifier.CODEC.fieldOf("sprite").forGetter(GuiSprite::sprite),
+            Codec.INT.optionalFieldOf("width", -1).forGetter(GuiSprite::rawWidth),
+            Codec.INT.optionalFieldOf("height", -1).forGetter(GuiSprite::rawHeight)
+    ).apply(instance, (sprite, width, height) -> new GuiSprite(sprite, width, height)));
+    public static final Codec<GuiSprite> CODEC = Codec.either(
+            Identifier.CODEC,
+            SIZED_CODEC
+    ).xmap(value -> value.map(sprite -> new GuiSprite(sprite, -1, -1), Function.identity()), sprite -> {
+        if (sprite.rawWidth() < 0 && sprite.rawHeight() < 0) {
+            return Either.left(sprite.sprite());
+        }
+        return Either.right(sprite);
+    });
+    public static final StreamCodec<RegistryFriendlyByteBuf, GuiSprite> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC);
 
     private final Identifier sprite;
     private final int tint;
@@ -58,13 +80,11 @@ public class GuiSprite {
     }
 
     public static GuiSprite fromNetwork(RegistryFriendlyByteBuf buffer) {
-        return new GuiSprite(buffer.readIdentifier(), buffer.readVarInt(), buffer.readVarInt());
+        return STREAM_CODEC.decode(buffer);
     }
 
     public void toNetwork(RegistryFriendlyByteBuf buffer) {
-        buffer.writeIdentifier(this.sprite);
-        buffer.writeVarInt(this.width);
-        buffer.writeVarInt(this.height);
+        STREAM_CODEC.encode(buffer, this);
     }
 
     public Identifier sprite() {
@@ -91,6 +111,14 @@ public class GuiSprite {
 
     public boolean isEmpty() {
         return this.width() <= 0 || this.height() <= 0;
+    }
+
+    public int rawWidth() {
+        return this.width;
+    }
+
+    public int rawHeight() {
+        return this.height;
     }
 
     public void extractRenderState(GuiGraphicsExtractor guiGraphics, int x, int y) {

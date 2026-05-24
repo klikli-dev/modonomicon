@@ -1,31 +1,33 @@
 {
+  "type": "modonomicon:content",
   "background": {
     "height": 26,
     "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
     "width": 26
   },
-  "category": "features",
+  "category": "modonomicon:features",
+  "condition": {
+    "type": "modonomicon:entry_read",
+    "entry_id": "modonomicon:features/recipe"
+  },
   "description": "book.modonomicon.demo.features.spotlight.description",
-  "hide_while_locked": false,
   "icon": {
     "id": "minecraft:beacon"
   },
+  "id": "modonomicon:features/spotlight",
   "name": "book.modonomicon.demo.features.spotlight.name",
   "pages": [
     {
       "type": "modonomicon:text",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.features.spotlight.intro.text",
-      "title": "book.modonomicon.demo.features.spotlight.intro.title",
-      "use_markdown_in_title": false
+      "title": "book.modonomicon.demo.features.spotlight.intro.title"
     },
     {
       "type": "modonomicon:spotlight",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
@@ -35,7 +37,6 @@
     },
     {
       "type": "modonomicon:spotlight",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
@@ -45,7 +46,6 @@
     },
     {
       "type": "modonomicon:spotlight",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
@@ -60,7 +60,6 @@
     },
     {
       "type": "modonomicon:spotlight",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
@@ -77,7 +76,6 @@
     },
     {
       "type": "modonomicon:spotlight",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
@@ -97,13 +95,10 @@
   ],
   "parents": [
     {
-      "draw_arrow": true,
-      "entry": "features/recipe",
-      "line_enabled": true,
+      "entry": "modonomicon:features/recipe",
       "line_reversed": true
     }
   ],
-  "show_when_any_parent_unlocked": false,
   "sort_number": 7,
   "x": -8,
   "y": 1

@@ -8,38 +8,48 @@ package com.klikli_dev.modonomicon.multiblock.matcher;
 
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
-import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
+import com.klikli_dev.modonomicon.data.StateMatcherType;
+import com.klikli_dev.modonomicon.registry.StateMatcherTypeRegistry;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
  * Matches against the given tag, and optionally checks for the given BlockState properties.
  */
 public class TagMatcher implements StateMatcher {
-    public static final Identifier TYPE = Modonomicon.loc("tag");
-
+    public static final Identifier ID = Modonomicon.loc("tag");
+    public static final MapCodec<TagMatcher> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            DisplayOnlyMatcher.DISPLAY_STATE_CODEC.optionalFieldOf("display").forGetter(m -> Optional.ofNullable(m.displayState)),
+            Codec.STRING.fieldOf("tag").forGetter(TagMatcher::tagString)
+    ).apply(instance, (displayState, tagString) -> fromEncoded(displayState.orElse(null), tagString)));
+    public static final StreamCodec<RegistryFriendlyByteBuf, TagMatcher> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC.codec());
     private final BlockState displayState;
     private final Supplier<TagKey<Block>> tag;
     private final Supplier<Map<String, String>> props;
@@ -49,33 +59,23 @@ public class TagMatcher implements StateMatcher {
         this(null, tag, props);
     }
 
-    protected TagMatcher(BlockState displayState, Supplier<TagKey<Block>> tag, Supplier<Map<String, String>> props) {
+    public TagMatcher(BlockState displayState, Supplier<TagKey<Block>> tag, Supplier<Map<String, String>> props) {
         this.displayState = displayState;
         this.tag = tag;
         this.props = props;
         this.predicate = (blockGetter, blockPos, blockState) -> blockState.is(this.tag.get()) && checkProps(blockState, this.props);
     }
 
-    public static TagMatcher fromJson(JsonObject json, HolderLookup.Provider provider) {
-        BlockState displayState = null;
-        if (json.has("display")) {
-            try {
-                displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(GsonHelper.getAsString(json, "display")), false).blockState();
-            } catch (CommandSyntaxException e) {
-                throw new IllegalArgumentException("Failed to parse BlockState from json member \"display\" for TagStateMatcher.", e);
-            }
-        }
-
-
-        //testing=true enables tag parsing
-        //last param = allowNBT
-        var tagString = GsonHelper.getAsString(json, "tag");
+    private static String normalizeTagString(String tagString) {
         if (!tagString.startsWith("#")) {
             tagString = "#" + tagString;
         }
 
+        return tagString;
+    }
 
-        String finalTagString = tagString;
+    public static TagMatcher fromEncoded(BlockState displayState, String tagString) {
+        String finalTagString = normalizeTagString(tagString);
         Supplier<TagKey<Block>> tagSupplier = Suppliers.memoize(() -> {
             try {
                 var parserResult = BlockStateParser.parseForTesting(BuiltInRegistries.BLOCK, new StringReader(finalTagString), true).right().orElseThrow();
@@ -97,23 +97,6 @@ public class TagMatcher implements StateMatcher {
         });
 
         return new TagMatcher(displayState, tagSupplier, propsSupplier);
-
-    }
-
-    public static TagMatcher fromNetwork(FriendlyByteBuf buffer) {
-        try {
-            BlockState displayState = null;
-            if (buffer.readBoolean()) {
-                displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(buffer.readUtf()), false).blockState();
-            }
-
-            var tag = TagKey.create(Registries.BLOCK, buffer.readIdentifier());
-            var props = buffer.readMap((b) -> b.readUtf(), (b) -> b.readUtf());
-
-            return new TagMatcher(displayState, () -> tag, () -> props);
-        } catch (CommandSyntaxException e) {
-            throw new IllegalArgumentException("Failed to parse TagMatcher from network.", e);
-        }
     }
 
     public static boolean checkProps(BlockState state, Supplier<Map<String, String>> props) {
@@ -135,9 +118,38 @@ public class TagMatcher implements StateMatcher {
         return true;
     }
 
+    public String tagString() {
+        StringBuilder builder = new StringBuilder("#").append(this.tag.get().location());
+        if (!this.props.get().isEmpty()) {
+            builder.append('[');
+            boolean first = true;
+            for (var entry : this.props.get().entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.naturalOrder())).toList()) {
+                if (!first) {
+                    builder.append(',');
+                }
+                builder.append(entry.getKey()).append('=').append(entry.getValue());
+                first = false;
+            }
+            builder.append(']');
+        }
+        return builder.toString();
+    }
+
     @Override
-    public Identifier getType() {
-        return TYPE;
+    public StateMatcherType<?> type() {
+        return StateMatcherTypeRegistry.TAG;
+    }
+
+    public BlockState displayState() {
+        return this.displayState;
+    }
+
+    public Supplier<TagKey<Block>> tag() {
+        return this.tag;
+    }
+
+    public Supplier<Map<String, String>> props() {
+        return this.props;
     }
 
     @Override
@@ -158,16 +170,6 @@ public class TagMatcher implements StateMatcher {
     @Override
     public TriPredicate<BlockGetter, BlockPos, BlockState> getStatePredicate() {
         return this.predicate;
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buffer) {
-        buffer.writeBoolean(this.displayState != null);
-        if (this.displayState != null) {
-            buffer.writeUtf(BlockStateParser.serialize(this.displayState));
-        }
-        buffer.writeIdentifier(this.tag.get().location());
-        buffer.writeMap(this.props.get(), (b, v) -> b.writeUtf(v), (b, v) -> b.writeUtf(v));
     }
 
     @Override

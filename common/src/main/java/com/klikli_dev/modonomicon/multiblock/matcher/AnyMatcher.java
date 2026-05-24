@@ -6,11 +6,14 @@
 
 package com.klikli_dev.modonomicon.multiblock.matcher;
 
-import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.network.FriendlyByteBuf;
+import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
+import com.klikli_dev.modonomicon.data.StateMatcherType;
+import com.klikli_dev.modonomicon.registry.StateMatcherTypeRegistry;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Blocks;
 
@@ -19,26 +22,16 @@ import net.minecraft.world.level.block.Blocks;
  */
 public class AnyMatcher extends DisplayOnlyMatcher {
 
-    public static final Identifier TYPE = Modonomicon.loc("any");
+    public static final Identifier ID = Modonomicon.loc("any");
+    public static final MapCodec<AnyMatcher> CODEC = MapCodec.unit(new AnyMatcher());
+    public static final StreamCodec<RegistryFriendlyByteBuf, AnyMatcher> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC.codec());
 
     protected AnyMatcher() {
         super(Blocks.AIR.defaultBlockState());
     }
 
-    public static AnyMatcher fromJson(JsonObject json, HolderLookup.Provider provider) {
-        return Matchers.ANY;
-    }
-
-    public static AnyMatcher fromNetwork(RegistryFriendlyByteBuf buffer) {
-        return Matchers.ANY;
-    }
-
     @Override
-    public Identifier getType() {
-        return TYPE;
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buffer) {
+    public StateMatcherType<?> type() {
+        return StateMatcherTypeRegistry.ANY;
     }
 }

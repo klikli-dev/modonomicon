@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.util.Codecs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.FriendlyByteBuf;
@@ -88,7 +89,7 @@ public class BookCommand {
         Set<Identifier> allowedEntries = new HashSet<>();
         if (json.has("allowed_entries")) {
             for (var e : GsonHelper.getAsJsonArray(json, "allowed_entries")) {
-                allowedEntries.add(Identifier.parse(e.getAsString()));
+                allowedEntries.add(Codecs.parseStrictIdentifier(e.getAsString()));
             }
         }
         return new BookCommand(id, command, maxUses, suppressOutput, failureMessage, successMessage, allowedEntries);

@@ -6,20 +6,42 @@
 
 package com.klikli_dev.modonomicon.book.entries;
 
-import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.network.FriendlyByteBuf;
+import com.klikli_dev.modonomicon.data.BookEntryType;
+import com.klikli_dev.modonomicon.registry.BookEntryTypeRegistry;
+import com.klikli_dev.modonomicon.util.Codecs;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 
+import java.util.Optional;
+
 public class EntryLinkBookEntry extends BookEntry {
+
+    public static final Identifier ID = Modonomicon.loc("entry_link");
+
+    public static final MapCodec<EntryLinkBookEntry> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Identifier.CODEC.fieldOf("id").forGetter(BookEntry::getId),
+            BookEntry.BookEntryData.CODEC.forGetter(entry -> entry.data),
+            Identifier.CODEC.optionalFieldOf("command_to_run_on_first_read").forGetter(entry -> Optional.ofNullable(entry.commandToRunOnFirstReadId)),
+            Identifier.CODEC.fieldOf("entry_to_open").forGetter(EntryLinkBookEntry::entryToOpenId)
+    ).apply(instance, (id, data, commandToRunOnFirstReadId, entryToOpenId) -> new EntryLinkBookEntry(id, data, commandToRunOnFirstReadId.orElse(null), entryToOpenId)));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, EntryLinkBookEntry> STREAM_CODEC = StreamCodec.composite(
+            Identifier.STREAM_CODEC, BookEntry::getId,
+            BookEntry.BookEntryData.STREAM_CODEC, entry -> entry.data,
+            ByteBufCodecs.optional(Identifier.STREAM_CODEC), entry -> Optional.ofNullable(entry.commandToRunOnFirstReadId),
+            Identifier.STREAM_CODEC, EntryLinkBookEntry::entryToOpenId,
+            (id, data, commandToRunOnFirstReadId, entryToOpenId) -> new EntryLinkBookEntry(id, data, commandToRunOnFirstReadId.orElse(null), entryToOpenId)
+    );
 
     /**
      * The entry to open on click
@@ -32,42 +54,9 @@ public class EntryLinkBookEntry extends BookEntry {
         this.entryToOpenId = entryToOpenId;
     }
 
-    public static EntryLinkBookEntry fromJson(Identifier id, JsonObject json, boolean autoAddReadConditions, HolderLookup.Provider provider) {
-        BookEntryData data = BookEntryData.fromJson(id, json, autoAddReadConditions, provider);
-
-        Identifier commandToRunOnFirstReadId = null;
-        if (json.has("command_to_run_on_first_read")) {
-            commandToRunOnFirstReadId = Identifier.parse(GsonHelper.getAsString(json, "command_to_run_on_first_read"));
-        }
-
-        var entryToOpenIdPath = GsonHelper.getAsString(json, "entry_to_open");
-        var entryToOpenId = entryToOpenIdPath.contains(":") ?
-                Identifier.parse(entryToOpenIdPath) :
-                Identifier.fromNamespaceAndPath(id.getNamespace(), entryToOpenIdPath);
-
-        return new EntryLinkBookEntry(id, data, commandToRunOnFirstReadId, entryToOpenId);
-    }
-
-    public static EntryLinkBookEntry fromNetwork(RegistryFriendlyByteBuf buffer) {
-        var id = buffer.readIdentifier();
-        BookEntryData data = BookEntryData.fromNetwork(buffer);
-        Identifier commandToRunOnFirstReadId = buffer.readNullable(FriendlyByteBuf::readIdentifier);
-        Identifier entryToOpen = buffer.readIdentifier();
-
-        return new EntryLinkBookEntry(id, data, commandToRunOnFirstReadId, entryToOpen);
-    }
-
     @Override
-    public Identifier getType() {
-        return ModonomiconConstants.Data.EntryType.ENTRY_LINK;
-    }
-
-    @Override
-    public void toNetwork(RegistryFriendlyByteBuf buffer) {
-        buffer.writeIdentifier(this.id);
-        this.data.toNetwork(buffer);
-        buffer.writeNullable(this.commandToRunOnFirstReadId, FriendlyByteBuf::writeIdentifier);
-        buffer.writeIdentifier(this.entryToOpenId);
+    public BookEntryType<?> type() {
+        return BookEntryTypeRegistry.ENTRY_LINK;
     }
 
     @Override
@@ -86,6 +75,10 @@ public class EntryLinkBookEntry extends BookEntry {
 
     public BookEntry getEntryToOpen() {
         return this.entryToOpen;
+    }
+
+    public Identifier entryToOpenId() {
+        return this.entryToOpenId;
     }
 
     @Override

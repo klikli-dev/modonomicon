@@ -10,8 +10,8 @@ import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.config.ServerConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
-import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
+import com.klikli_dev.modonomicon.registry.RegistryBootstrap;
 import com.klikli_dev.modonomicon.integration.LecternIntegration;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
@@ -52,7 +52,7 @@ public class ModonomiconFabric implements ModInitializer {
         Networking.registerMessages();
         Networking.registerReceivers();
 
-        LoaderRegistry.registerLoaders();
+        RegistryBootstrap.bootstrap();
 
         //register data managers as reload listeners
         ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(Modonomicon.loc("book_data_manager"), (sharedState, exectutor, barrier, applyExectutor) -> {

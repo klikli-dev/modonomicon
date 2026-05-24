@@ -7,8 +7,8 @@
 package com.klikli_dev.modonomicon.api.datagen.book.page;
 
 import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.api.datagen.book.BookTextHolderModel;
+import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.book.page.BookSpotlightPage;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.JsonOps;
@@ -27,7 +27,7 @@ public class BookSpotlightPageModel extends BookPageModel<BookSpotlightPageModel
     protected BookTextHolderModel text = new BookTextHolderModel("");
 
     protected BookSpotlightPageModel() {
-        super(Page.SPOTLIGHT);
+        super(BookSpotlightPage.ID);
     }
 
     public static BookSpotlightPageModel create() {
@@ -47,14 +47,8 @@ public class BookSpotlightPageModel extends BookPageModel<BookSpotlightPageModel
     }
 
     @Override
-    public JsonObject toJson(Identifier entryId, HolderLookup.Provider provider) {
-        var json = super.toJson(entryId, provider);
-        json.add("title", this.title.toJson(provider));
-        json.add("item",
-                BookSpotlightPage.ITEM_CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), this.item).getOrThrow()
-        );
-        json.add("text", this.text.toJson(provider));
-        return json;
+    public BookPage toBookPage(HolderLookup.Provider provider) {
+        return new BookSpotlightPage(this.title.toBookTextHolder(), this.text.toBookTextHolder(), this.item, this.anchor, this.condition(provider));
     }
 
     public BookSpotlightPageModel withTitle(String title) {

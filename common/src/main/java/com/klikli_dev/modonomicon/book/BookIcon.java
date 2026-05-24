@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.book;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -19,11 +20,15 @@ import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+
+import java.util.function.Function;
 
 public class BookIcon {
 
@@ -35,6 +40,29 @@ public class BookIcon {
             Codec.INT.optionalFieldOf("count", 1).forGetter(ItemStack::getCount),
             DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(ItemStack::getComponentsPatch)
     ).apply(builder, ItemStack::new));
+    private static final Codec<BookIcon> TEXTURE_CODEC = RecordCodecBuilder.create(builder -> builder.group(
+            Identifier.CODEC.fieldOf("texture").forGetter(BookIcon::texture),
+            Codec.INT.optionalFieldOf("width", ModonomiconConstants.Data.Icon.DEFAULT_WIDTH).forGetter(BookIcon::width),
+            Codec.INT.optionalFieldOf("height", ModonomiconConstants.Data.Icon.DEFAULT_HEIGHT).forGetter(BookIcon::height)
+    ).apply(builder, (texture, width, height) -> new BookIcon(texture, width, height)));
+    public static final Codec<BookIcon> CODEC = Codec.either(
+            Identifier.CODEC,
+            Codec.either(
+                    TEXTURE_CODEC,
+                    ItemStackTemplate.CODEC
+            )
+    ).xmap(value -> value.map(BookIcon::fromString, inner -> inner.map(Function.identity(), BookIcon::new)), icon -> {
+        if (icon.texture != null && icon.width == ModonomiconConstants.Data.Icon.DEFAULT_WIDTH && icon.height == ModonomiconConstants.Data.Icon.DEFAULT_HEIGHT) {
+            return Either.left(icon.texture);
+        }
+
+        if (icon.texture != null) {
+            return Either.right(Either.left(icon));
+        }
+
+        return Either.right(Either.right(icon.itemStackTemplate));
+    });
+    public static final StreamCodec<RegistryFriendlyByteBuf, BookIcon> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC);
 
     private final ItemStackTemplate itemStackTemplate;
     private ItemStack cachedItemStack;
@@ -90,15 +118,7 @@ public class BookIcon {
     }
 
     public static BookIcon fromNetwork(RegistryFriendlyByteBuf buffer) {
-        if (buffer.readBoolean()) {
-            Identifier texture = buffer.readIdentifier();
-            int width = buffer.readVarInt();
-            int height = buffer.readVarInt();
-            return new BookIcon(texture, width, height);
-        }
-
-        var stack = ItemStackTemplate.STREAM_CODEC.decode(buffer);
-        return new BookIcon(stack);
+        return STREAM_CODEC.decode(buffer);
     }
 
     public void render(GuiGraphicsExtractor guiGraphics, int x, int y) {
@@ -124,13 +144,22 @@ public class BookIcon {
     }
 
     public void toNetwork(RegistryFriendlyByteBuf buffer) {
-        buffer.writeBoolean(this.texture != null);
-        if (this.texture != null) {
-            buffer.writeIdentifier(this.texture);
-            buffer.writeVarInt(this.width);
-            buffer.writeVarInt(this.height);
-        } else {
-            ItemStackTemplate.STREAM_CODEC.encode(buffer, this.itemStackTemplate);
-        }
+        STREAM_CODEC.encode(buffer, this);
+    }
+
+    public ItemStackTemplate itemStackTemplate() {
+        return this.itemStackTemplate;
+    }
+
+    public Identifier texture() {
+        return this.texture;
+    }
+
+    public int width() {
+        return this.width;
+    }
+
+    public int height() {
+        return this.height;
     }
 }

@@ -35,6 +35,8 @@ neoForge {
         client {
             client()
             programArguments.add "--username=Modonomicon"
+            programArguments.add "--quickPlaySingleplayer"
+            programArguments.add "New World"
         }
 
         server {

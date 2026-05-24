@@ -1,93 +1,82 @@
 {
+  "type": "modonomicon:content",
   "background": {
     "height": 26,
     "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/star_gold",
     "width": 26
   },
-  "category": "formatting",
+  "category": "modonomicon:formatting",
+  "condition": {
+    "type": "modonomicon:entry_read",
+    "entry_id": "modonomicon:formatting/basic"
+  },
   "description": "book.modonomicon.demo.formatting.advanced.description",
-  "hide_while_locked": false,
   "icon": {
     "id": "minecraft:feather"
   },
+  "id": "modonomicon:formatting/advanced",
   "name": "book.modonomicon.demo.formatting.advanced.name",
   "pages": [
     {
       "type": "modonomicon:text",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.formatting.advanced.page1.text",
-      "title": "book.modonomicon.demo.formatting.advanced.page1.title",
-      "use_markdown_in_title": false
+      "title": "book.modonomicon.demo.formatting.advanced.page1.title"
     },
     {
       "type": "modonomicon:text",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.formatting.advanced.page2.text",
-      "title": "",
-      "use_markdown_in_title": false
+      "title": ""
     },
     {
       "type": "modonomicon:text",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.formatting.advanced.page3.text",
-      "title": "book.modonomicon.demo.formatting.advanced.page3.title",
-      "use_markdown_in_title": false
+      "title": "book.modonomicon.demo.formatting.advanced.page3.title"
     },
     {
       "type": "modonomicon:text",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.formatting.advanced.page4.text",
-      "title": "book.modonomicon.demo.formatting.advanced.page4.title",
-      "use_markdown_in_title": false
+      "title": "book.modonomicon.demo.formatting.advanced.page4.title"
     },
     {
       "type": "modonomicon:text",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.formatting.advanced.list_test.text",
-      "title": "",
-      "use_markdown_in_title": false
+      "title": ""
     },
     {
       "type": "modonomicon:text",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.formatting.advanced.dynamic_macro.text",
-      "title": "book.modonomicon.demo.formatting.advanced.dynamic_macro.title",
-      "use_markdown_in_title": false
+      "title": "book.modonomicon.demo.formatting.advanced.dynamic_macro.title"
     }
   ],
   "parents": [
     {
-      "draw_arrow": true,
-      "entry": "formatting/basic",
-      "line_enabled": true,
-      "line_reversed": false
+      "entry": "modonomicon:formatting/basic"
     }
   ],
-  "show_when_any_parent_unlocked": false,
   "sort_number": 1,
   "x": -4,
   "y": -1

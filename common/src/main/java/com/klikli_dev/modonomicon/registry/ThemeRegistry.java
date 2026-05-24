@@ -4,9 +4,11 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.client.gui.book.theme;
+package com.klikli_dev.modonomicon.registry;
 
-import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import com.klikli_dev.modonomicon.client.gui.book.theme.BookTheme;
+import com.klikli_dev.modonomicon.client.gui.book.theme.BookThemeData;
+import com.klikli_dev.modonomicon.client.gui.book.theme.BookThemeFactory;
 import com.klikli_dev.modonomicon.client.gui.book.theme.defaults.DefaultBookTheme;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -14,16 +16,20 @@ import net.minecraft.resources.Identifier;
 
 import java.util.Map;
 
-public class ThemeRegistry {
+public final class ThemeRegistry {
 
     private static final Map<Identifier, BookThemeFactory> THEME_FACTORIES = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+    public static final BookThemeFactory DEFAULT = register(DefaultBookTheme.ID, DefaultBookTheme::new);
 
-    public static void registerThemes() {
-        registerTheme(ModonomiconConstants.Data.Theme.DEFAULT_THEME_TYPE, DefaultBookTheme::new);
+    private ThemeRegistry() {
     }
 
-    public static void registerTheme(Identifier id, BookThemeFactory factory) {
+    public static void bootstrap() {
+    }
+
+    public static BookThemeFactory register(Identifier id, BookThemeFactory factory) {
         THEME_FACTORIES.put(id, factory);
+        return factory;
     }
 
     public static BookThemeFactory getThemeFactory(Identifier id) {

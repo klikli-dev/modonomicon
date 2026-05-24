@@ -1,60 +1,55 @@
 {
+  "type": "modonomicon:content",
   "background": {
     "height": 26,
     "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/circle_gold",
     "width": 26
   },
-  "category": "formatting",
+  "category": "modonomicon:formatting",
+  "condition": {
+    "type": "modonomicon:entry_read",
+    "entry_id": "modonomicon:formatting/advanced"
+  },
   "description": "book.modonomicon.demo.formatting.link.description",
-  "hide_while_locked": false,
   "icon": {
     "id": "minecraft:writable_book"
   },
+  "id": "modonomicon:formatting/link",
   "name": "book.modonomicon.demo.formatting.link.name",
   "pages": [
     {
       "type": "modonomicon:text",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.formatting.link.page1.text",
-      "title": "book.modonomicon.demo.formatting.link.page1.title",
-      "use_markdown_in_title": false
+      "title": "book.modonomicon.demo.formatting.link.page1.title"
     },
     {
       "type": "modonomicon:text",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.formatting.link.page2.text",
-      "title": "book.modonomicon.demo.formatting.link.page2.title",
-      "use_markdown_in_title": false
+      "title": "book.modonomicon.demo.formatting.link.page2.title"
     },
     {
       "type": "modonomicon:text",
-      "anchor": "",
       "condition": {
         "type": "modonomicon:none"
       },
       "show_title_separator": true,
       "text": "book.modonomicon.demo.formatting.link.invalidLink.text",
-      "title": "book.modonomicon.demo.formatting.link.invalidLink.title",
-      "use_markdown_in_title": false
+      "title": "book.modonomicon.demo.formatting.link.invalidLink.title"
     }
   ],
   "parents": [
     {
-      "draw_arrow": true,
-      "entry": "formatting/advanced",
-      "line_enabled": true,
-      "line_reversed": false
+      "entry": "modonomicon:formatting/advanced"
     }
   ],
-  "show_when_any_parent_unlocked": false,
   "sort_number": 2,
   "x": 0,
   "y": 0

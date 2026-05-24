@@ -6,26 +6,41 @@
 
 package com.klikli_dev.modonomicon.book.conditions;
 
-import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
+import com.klikli_dev.modonomicon.data.BookConditionType;
 import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.klikli_dev.modonomicon.registry.BookConditionTypeRegistry;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.klikli_dev.modonomicon.networking.RequestAdvancementMessage;
 import com.klikli_dev.modonomicon.platform.Services;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.resources.Identifier;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
+import java.util.Optional;
 
 public class BookAdvancementCondition extends BookCondition {
+
+    public static final Identifier ID = Modonomicon.loc("advancement");
+    public static final MapCodec<BookAdvancementCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            ComponentSerialization.CODEC.optionalFieldOf("tooltip").forGetter(condition -> Optional.ofNullable(condition.tooltip())),
+            Identifier.CODEC.fieldOf("advancement_id").forGetter(condition -> condition.advancementId)
+    ).apply(instance, (tooltip, advancementId) -> new BookAdvancementCondition(tooltip.orElse(null), advancementId)));
+    public static final StreamCodec<RegistryFriendlyByteBuf, BookAdvancementCondition> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.optional(ComponentSerialization.TRUSTED_STREAM_CODEC), condition -> Optional.ofNullable(condition.tooltip()),
+            Identifier.STREAM_CODEC, condition -> condition.advancementId,
+            (tooltip, advancementId) -> new BookAdvancementCondition(tooltip.orElse(null), advancementId)
+    );
 
     protected Identifier advancementId;
 
@@ -34,38 +49,9 @@ public class BookAdvancementCondition extends BookCondition {
         this.advancementId = advancementId;
     }
 
-    public static BookAdvancementCondition fromJson(Identifier conditionParentId, JsonObject json, HolderLookup.Provider provider) {
-        var advancementId = Identifier.parse(GsonHelper.getAsString(json, "advancement_id"));
-
-
-        //default tooltip is null because we construct it on the fly from the advancement id
-        Component tooltip = null;
-
-        if (json.has("tooltip")) {
-            tooltip = tooltipFromJson(json, provider);
-        }
-
-        return new BookAdvancementCondition(tooltip, advancementId);
-    }
-
-    public static BookAdvancementCondition fromNetwork(RegistryFriendlyByteBuf buffer) {
-        var tooltip = buffer.readBoolean() ? ComponentSerialization.STREAM_CODEC.decode(buffer) : null;
-        var advancementId = buffer.readIdentifier();
-        return new BookAdvancementCondition(tooltip, advancementId);
-    }
-
     @Override
-    public Identifier getType() {
-        return Condition.ADVANCEMENT;
-    }
-
-    @Override
-    public void toNetwork(RegistryFriendlyByteBuf buffer) {
-        buffer.writeBoolean(this.tooltip != null);
-        if (this.tooltip != null) {
-            ComponentSerialization.STREAM_CODEC.encode(buffer, this.tooltip);
-        }
-        buffer.writeIdentifier(this.advancementId);
+    public BookConditionType<?> type() {
+        return BookConditionTypeRegistry.ADVANCEMENT;
     }
 
     @Override

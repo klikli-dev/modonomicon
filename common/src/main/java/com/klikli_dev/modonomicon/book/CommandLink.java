@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.book;
 
 import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.klikli_dev.modonomicon.util.Codecs;
 import net.minecraft.resources.Identifier;
 
 public class CommandLink {
@@ -22,40 +23,24 @@ public class CommandLink {
         //strip protocol
         linkText = linkText.substring(PROTOCOL_COMMAND.length());
         var commandLink = new CommandLink();
-
-        if (linkText.contains(":")) {
-            //with book id
-            var parts = linkText.split("/", 2);
-            commandLink.bookId = Identifier.tryParse(parts[0]);
-            var book = BookDataManager.get().getBook(commandLink.bookId);
-            if (book == null) {
-                throw new IllegalArgumentException("Invalid command link, book not found: " + linkText);
-            }
-
-            if (parts.length == 1) //we only got a book id
-                throw new IllegalArgumentException("Invalid command link, does not contain any command id: " + linkText);
-
-            commandLink.commandId = Identifier.fromNamespaceAndPath(commandLink.bookId.getNamespace(), parts[1]);
-            var command = book.getCommand(commandLink.commandId);
-            if (command == null) {
-                throw new IllegalArgumentException("Invalid command link, command not found in book: " + linkText);
-            }
-
-            return commandLink;
-        } else {
-            //without book id
-            commandLink.bookId = fromBook.getId();
-            if (linkText.isEmpty())
-                throw new IllegalArgumentException("Invalid command link, does not contain any command id, because it is empty: " + linkText);
-
-            commandLink.commandId = Identifier.fromNamespaceAndPath(commandLink.bookId.getNamespace(), linkText);
-            var command = fromBook.getCommand(commandLink.commandId);
-            if (command == null) {
-                throw new IllegalArgumentException("Invalid command link, command not found in book: " + linkText);
-            }
-
-            return commandLink;
+        var parts = linkText.split("/", 2);
+        if (parts.length < 2) {
+            throw new IllegalArgumentException("Invalid command link, expected fully qualified book and command ids: " + linkText);
         }
+
+        commandLink.bookId = parseIdentifier(parts[0], "book", linkText);
+        var book = BookDataManager.get().getBook(commandLink.bookId);
+        if (book == null) {
+            throw new IllegalArgumentException("Invalid command link, book not found: " + linkText);
+        }
+
+        commandLink.commandId = parseIdentifier(parts[1], "command", linkText);
+        var command = book.getCommand(commandLink.commandId);
+        if (command == null) {
+            throw new IllegalArgumentException("Invalid command link, command not found in book: " + linkText);
+        }
+
+        return commandLink;
     }
 
     public static CommandLink from(Book fromBook, String linkText) {
@@ -71,5 +56,13 @@ public class CommandLink {
 
     public static boolean isCommandLink(String linkText) {
         return linkText.toLowerCase().startsWith(PROTOCOL_COMMAND);
+    }
+
+    private static Identifier parseIdentifier(String value, String kind, String linkText) {
+        var id = Codecs.tryParseStrictIdentifier(value);
+        if (id == null) {
+            throw new IllegalArgumentException("Invalid " + kind + " id in link, expected fully qualified identifier: " + linkText);
+        }
+        return id;
     }
 }

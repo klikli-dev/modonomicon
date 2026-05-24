@@ -9,7 +9,8 @@
 package com.klikli_dev.modonomicon.api.datagen.book.condition;
 
 import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
+import com.klikli_dev.modonomicon.book.conditions.BookAdvancementCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
@@ -18,7 +19,7 @@ public class BookAdvancementConditionModel extends BookConditionModel<BookAdvanc
     private Identifier advancementId;
 
     protected BookAdvancementConditionModel() {
-        super(Condition.ADVANCEMENT);
+        super(BookAdvancementCondition.ID);
     }
 
     public static BookAdvancementConditionModel create() {
@@ -26,10 +27,8 @@ public class BookAdvancementConditionModel extends BookConditionModel<BookAdvanc
     }
 
     @Override
-    public JsonObject toJson(Identifier conditionParentId, HolderLookup.Provider provider) {
-        var json = super.toJson(conditionParentId, provider);
-        json.addProperty("advancement_id", this.advancementId.toString());
-        return json;
+    public BookCondition toBookCondition(HolderLookup.Provider provider) {
+        return new BookAdvancementCondition(this.tooltipComponent(), this.advancementId);
     }
 
     public Identifier getAdvancementId() {

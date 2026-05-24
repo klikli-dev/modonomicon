@@ -7,7 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.theme;
 
 import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import com.klikli_dev.modonomicon.client.gui.book.theme.defaults.DefaultBookTheme;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
@@ -26,8 +26,8 @@ public record BookThemeData(Identifier id, Identifier type, BookThemeLayout layo
 
     public static BookThemeData defaults() {
         return new BookThemeData(
-                ModonomiconConstants.Data.Theme.DEFAULT_THEME_ID,
-                ModonomiconConstants.Data.Theme.DEFAULT_THEME_TYPE,
+                DefaultBookTheme.ID,
+                DefaultBookTheme.ID,
                 BookThemeLayout.DEFAULT,
                 BookThemeContentData.DEFAULT,
                 BookThemePalette.DEFAULT,

@@ -19,7 +19,6 @@ import com.klikli_dev.modonomicon.client.render.state.pip.GuiMultiblockRenderSta
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.config.ServerConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
-import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
 import com.klikli_dev.modonomicon.integration.LecternIntegration;
@@ -27,6 +26,7 @@ import com.klikli_dev.modonomicon.item.IsBookOpen;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
+import com.klikli_dev.modonomicon.registry.RegistryBootstrap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperties;
 import net.minecraft.resources.Identifier;
@@ -149,7 +149,7 @@ public class ModonomiconNeo {
     }
 
     public void onCommonSetup(FMLCommonSetupEvent event) {
-        LoaderRegistry.registerLoaders();
+        RegistryBootstrap.bootstrap();
 
         NeoForge.EVENT_BUS.addListener((PlayerInteractEvent.RightClickBlock e) -> {
             var result = LecternIntegration.rightClick(e.getEntity(), e.getLevel(), e.getHand(), e.getHitVec());

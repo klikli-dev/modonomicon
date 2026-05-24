@@ -8,8 +8,9 @@ package com.klikli_dev.modonomicon.api.datagen.book.page;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.api.datagen.book.BookTextHolderModel;
+import com.klikli_dev.modonomicon.book.page.BookImagePage;
+import com.klikli_dev.modonomicon.book.page.BookPage;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -27,7 +28,7 @@ public class BookImagePageModel extends BookPageModel<BookImagePageModel> {
     protected boolean useLegacyRendering = false;
 
     protected BookImagePageModel() {
-        super(Page.IMAGE);
+        super(BookImagePage.ID);
     }
 
     public static BookImagePageModel create() {
@@ -51,20 +52,8 @@ public class BookImagePageModel extends BookPageModel<BookImagePageModel> {
     }
 
     @Override
-    public JsonObject toJson(Identifier entryId, HolderLookup.Provider provider) {
-        var json = super.toJson(entryId, provider);
-        json.add("title", this.title.toJson(provider));
-        json.add("text", this.text.toJson(provider));
-        json.addProperty("border", this.border);
-        json.addProperty("use_legacy_rendering", this.useLegacyRendering);
-
-        var imagesArray = new JsonArray();
-        for (int i = 0; i < this.images.length; i++) {
-            imagesArray.add(this.images[i].toString());
-        }
-        json.add("images", imagesArray);
-
-        return json;
+    public BookPage toBookPage(HolderLookup.Provider provider) {
+        return new BookImagePage(this.title.toBookTextHolder(), this.text.toBookTextHolder(), this.images, this.border, this.useLegacyRendering, this.anchor, this.condition(provider));
     }
 
     public BookImagePageModel withTitle(String title) {

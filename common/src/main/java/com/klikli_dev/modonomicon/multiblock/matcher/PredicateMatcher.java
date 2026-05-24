@@ -8,32 +8,40 @@ package com.klikli_dev.modonomicon.multiblock.matcher;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
-import com.klikli_dev.modonomicon.data.LoaderRegistry;
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.commands.arguments.blocks.BlockStateParser;
+import com.klikli_dev.modonomicon.data.StateMatcherType;
+import com.klikli_dev.modonomicon.registry.PredicateRegistry;
+import com.klikli_dev.modonomicon.registry.StateMatcherTypeRegistry;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.Optional;
 
 import java.util.Objects;
 
 /**
  * Matches against the predicate with the given id. Predicates are stored in {@link
- * LoaderRegistry}
+ * PredicateRegistry}
  */
 public class PredicateMatcher implements StateMatcher {
 
-    public static final Identifier TYPE = Modonomicon.loc("predicate");
+    public static final Identifier ID = Modonomicon.loc("predicate");
+    public static final MapCodec<PredicateMatcher> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            DisplayOnlyMatcher.DISPLAY_STATE_CODEC.optionalFieldOf("display").forGetter(m -> Optional.ofNullable(m.displayState)),
+            Identifier.CODEC.fieldOf("predicate").forGetter(PredicateMatcher::getPredicateId),
+            Codec.BOOL.optionalFieldOf("counts_towards_total_blocks", true).forGetter(PredicateMatcher::countsTowardsTotalBlocks)
+    ).apply(instance, (displayState, predicateId, counts) -> new PredicateMatcher(displayState.orElse(null), predicateId, counts)));
+    public static final StreamCodec<RegistryFriendlyByteBuf, PredicateMatcher> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC.codec());
 
     private final BlockState displayState;
     private final Identifier predicateId;
@@ -41,33 +49,11 @@ public class PredicateMatcher implements StateMatcher {
 
     private final boolean countsTowardsTotalBlocks;
 
-    protected PredicateMatcher(BlockState displayState, Identifier predicateId, boolean countsTowardsTotalBlocks) {
+    public PredicateMatcher(BlockState displayState, Identifier predicateId, boolean countsTowardsTotalBlocks) {
         this.displayState = displayState;
         this.predicateId = predicateId;
-        this.predicate = Suppliers.memoize(() -> LoaderRegistry.getPredicate(this.predicateId));
+        this.predicate = Suppliers.memoize(() -> PredicateRegistry.get(this.predicateId));
         this.countsTowardsTotalBlocks = countsTowardsTotalBlocks;
-    }
-
-    public static PredicateMatcher fromJson(JsonObject json, HolderLookup.Provider provider) {
-        try {
-            var displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(GsonHelper.getAsString(json, "display")), false).blockState();
-            var predicateId = Identifier.parse(GsonHelper.getAsString(json, "predicate"));
-            var countsTowardsTotalBlocks = GsonHelper.getAsBoolean(json, "counts_towards_total_blocks", true);
-            return new PredicateMatcher(displayState, predicateId, countsTowardsTotalBlocks);
-        } catch (CommandSyntaxException e) {
-            throw new IllegalArgumentException("Failed to parse BlockState from json member \"display\" for PredicateMatcher.", e);
-        }
-    }
-
-    public static PredicateMatcher fromNetwork(FriendlyByteBuf buffer) {
-        try {
-            var displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(buffer.readUtf()), false).blockState();
-            var predicateId = buffer.readIdentifier();
-            var countsTowardsTotalBlocks = buffer.readBoolean();
-            return new PredicateMatcher(displayState, predicateId, countsTowardsTotalBlocks);
-        } catch (CommandSyntaxException e) {
-            throw new IllegalArgumentException("Failed to parse PredicateMatcher from network.", e);
-        }
     }
 
     public Identifier getPredicateId() {
@@ -75,8 +61,12 @@ public class PredicateMatcher implements StateMatcher {
     }
 
     @Override
-    public Identifier getType() {
-        return TYPE;
+    public StateMatcherType<?> type() {
+        return StateMatcherTypeRegistry.PREDICATE;
+    }
+
+    public BlockState displayState() {
+        return this.displayState;
     }
 
     @Override
@@ -87,13 +77,6 @@ public class PredicateMatcher implements StateMatcher {
     @Override
     public TriPredicate<BlockGetter, BlockPos, BlockState> getStatePredicate() {
         return this.predicate.get();
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buffer) {
-        buffer.writeUtf(BlockStateParser.serialize(this.displayState));
-        buffer.writeUtf(this.predicateId.toString());
-        buffer.writeBoolean(this.countsTowardsTotalBlocks);
     }
 
     @Override

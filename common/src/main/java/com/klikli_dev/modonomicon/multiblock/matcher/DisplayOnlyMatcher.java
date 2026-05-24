@@ -6,19 +6,21 @@
 
 package com.klikli_dev.modonomicon.multiblock.matcher;
 
-import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.commands.arguments.blocks.BlockStateParser;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
+import com.klikli_dev.modonomicon.data.StateMatcherType;
+import com.klikli_dev.modonomicon.registry.StateMatcherTypeRegistry;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.Optional;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -29,37 +31,33 @@ import java.util.Objects;
  * Matches any block, including air, but displays a block in the multiblock preview.
  */
 public class DisplayOnlyMatcher implements StateMatcher {
-    public static final Identifier TYPE = Modonomicon.loc("display");
-
+    public static final Identifier ID = Modonomicon.loc("display");
+    static final Codec<BlockState> DISPLAY_STATE_CODEC = Codec.STRING.comapFlatMap(input -> {
+        try {
+            return DataResult.success(StateMatcher.parseBlockState(input));
+        } catch (IllegalArgumentException e) {
+            return DataResult.error(e::getMessage);
+        }
+    }, StateMatcher::serializeBlockState);
+    public static final MapCodec<DisplayOnlyMatcher> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            DISPLAY_STATE_CODEC.optionalFieldOf("display").forGetter(matcher -> Optional.ofNullable(matcher.displayState))
+    ).apply(instance, optional -> new DisplayOnlyMatcher(optional.orElse(null))));
+    public static final StreamCodec<RegistryFriendlyByteBuf, DisplayOnlyMatcher> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC.codec());
     private final BlockState displayState;
     private final TriPredicate<BlockGetter, BlockPos, BlockState> predicate;
 
-    protected DisplayOnlyMatcher(BlockState displayState) {
+    public DisplayOnlyMatcher(BlockState displayState) {
         this.displayState = displayState;
         this.predicate = (blockGetter, blockPos, blockState) -> true;
     }
 
-    public static DisplayOnlyMatcher fromJson(JsonObject json, HolderLookup.Provider provider) {
-        try {
-            var displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(GsonHelper.getAsString(json, "display")), false).blockState();
-            return new DisplayOnlyMatcher(displayState);
-        } catch (CommandSyntaxException e) {
-            throw new IllegalArgumentException("Failed to parse BlockState from json member \"display\" for DisplayOnlyMatcher.", e);
-        }
-    }
-
-    public static DisplayOnlyMatcher fromNetwork(FriendlyByteBuf buffer) {
-        try {
-            var displayState = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(buffer.readUtf()), false).blockState();
-            return new DisplayOnlyMatcher(displayState);
-        } catch (CommandSyntaxException e) {
-            throw new IllegalArgumentException("Failed to parse DisplayOnlyMatcher from network.", e);
-        }
-    }
-
     @Override
-    public Identifier getType() {
-        return TYPE;
+    public StateMatcherType<?> type() {
+        return StateMatcherTypeRegistry.DISPLAY;
+    }
+
+    public BlockState displayState() {
+        return this.displayState;
     }
 
     @Override
@@ -70,11 +68,6 @@ public class DisplayOnlyMatcher implements StateMatcher {
     @Override
     public TriPredicate<BlockGetter, BlockPos, BlockState> getStatePredicate() {
         return this.predicate;
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buffer) {
-        buffer.writeUtf(BlockStateParser.serialize(this.displayState));
     }
 
     @Override
