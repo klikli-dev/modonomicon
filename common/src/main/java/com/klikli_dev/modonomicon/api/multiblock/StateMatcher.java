@@ -90,13 +90,6 @@ public interface StateMatcher {
     StateMatcherType<?> type();
 
     /**
-     * The state matcher type Id for serialization.
-     */
-    default Identifier getType() {
-        return this.type().id();
-    }
-
-    /**
      * Gets the state displayed by this state matcher for rendering the multiblock page type and the in-world preview.
      *
      * @param ticks World ticks, to allow cycling the state shown.
