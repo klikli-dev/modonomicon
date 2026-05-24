@@ -19,6 +19,7 @@ import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
+import com.klikli_dev.modonomicon.book.runtime.RuntimeBookContentManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.theme.BookThemeData;
 import com.klikli_dev.modonomicon.networking.Message;
@@ -32,8 +33,11 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -42,8 +46,12 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.Level;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -56,6 +64,9 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
     private boolean loaded;
     private boolean booksBuilt;
     private HolderLookup.Provider registries;
+    private MinecraftServer server;
+    private boolean loadingFromSyncPacket;
+    private ResourceKey<Level> buildDimension = Level.OVERWORLD;
 
     private BookDataManager() {
         super(ExtraCodecs.JSON, FileToIdConverter.json(FOLDER));
@@ -86,17 +97,36 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
         return new SyncBookDataMessage(this.books);
     }
 
+    public Message getSyncMessage(Set<Identifier> bookIds) {
+        var books = new LinkedHashMap<Identifier, Book>();
+        for (var bookId : bookIds) {
+            var book = this.books.get(bookId);
+            if (book != null) {
+                books.put(bookId, book);
+            }
+        }
+        return new SyncBookDataMessage(books, false);
+    }
+
     public boolean areBooksBuilt() {
         return this.booksBuilt;
     }
 
     public void onDatapackSyncPacket(SyncBookDataMessage message) {
-        this.preLoad();
-        this.books.putAll(message.books);
-        this.onLoadingComplete();
+        this.loadingFromSyncPacket = true;
+        try {
+            if (message.replaceAll) {
+                this.preLoad();
+            }
+            this.books.putAll(message.books);
+            this.onLoadingComplete();
+        } finally {
+            this.loadingFromSyncPacket = false;
+        }
     }
 
     public void onDatapackSync(ServerPlayer player) {
+        this.server = player.level().getServer();
 
         this.tryBuildBooks(player.level()); //lazily build books when first client connects
 
@@ -116,6 +146,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
     }
 
     public void preLoad() {
+        RuntimeBookContentManager.get().onBooksPreLoad();
         this.booksBuilt = false;
         this.loaded = false;
         this.books.clear();
@@ -123,7 +154,11 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
     }
 
     public void buildBooks(Level level) {
-        for (var book : this.books.values()) {
+        this.buildBooks(this.books.values(), level);
+    }
+
+    public void buildBooks(Collection<Book> books, Level level) {
+        for (var book : books) {
             BookErrorManager.get().getContextHelper().reset();
             BookErrorManager.get().setCurrentBookId(book.getId());
             try {
@@ -136,8 +171,12 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
     }
 
     public void prerenderMarkdown(HolderLookup.Provider provider) {
+        this.prerenderMarkdown(this.books.values(), provider);
+    }
+
+    public void prerenderMarkdown(Collection<Book> books, HolderLookup.Provider provider) {
         Modonomicon.LOG.info("Pre-rendering markdown ...");
-        for (var book : this.books.values()) {
+        for (var book : books) {
 
             BookErrorManager.get().getContextHelper().reset();
             BookErrorManager.get().setCurrentBookId(book.getId());
@@ -170,6 +209,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
         }
 
         if(!level.isClientSide()){
+            this.server = level.getServer();
+            this.buildDimension = level.dimension();
             this.resolveMacros(); //macros are only resolved serverside, the resolved macros are then stored in the book.
         }
 
@@ -189,6 +230,62 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
 
     protected void onLoadingComplete() {
         this.loaded = true;
+        if (!this.loadingFromSyncPacket) {
+            RuntimeBookContentManager.get().onBooksLoaded();
+        }
+    }
+
+    public void rebuildBooks(Set<Identifier> bookIds) {
+        if (this.server == null || bookIds.isEmpty()) {
+            return;
+        }
+
+        var books = this.getBooks(bookIds);
+        if (books.isEmpty()) {
+            return;
+        }
+
+        var level = this.server.getLevel(this.buildDimension);
+        if (level == null) {
+            level = this.server.overworld();
+        }
+
+        this.buildBooks(books, level);
+        this.prerenderMarkdown(books, this.server.registryAccess());
+    }
+
+    public void syncBooks(Set<Identifier> bookIds) {
+        if (this.server == null || bookIds.isEmpty()) {
+            return;
+        }
+
+        Message syncMessage = this.getSyncMessage(bookIds);
+        for (var player : this.server.getPlayerList().getPlayers()) {
+            if (player.connection.connection.isMemoryConnection()) {
+                continue;
+            }
+
+            Services.NETWORK.sendToSplit(player, syncMessage);
+        }
+    }
+
+    private Set<Book> getBooks(Set<Identifier> bookIds) {
+        var books = new LinkedHashSet<Book>();
+        for (var bookId : bookIds) {
+            var book = this.books.get(bookId);
+            if (book != null) {
+                books.add(book);
+            }
+        }
+        return books;
+    }
+
+    public RegistryAccess registryAccess() {
+        if (this.registries instanceof RegistryAccess registryAccess) {
+            return registryAccess;
+        }
+
+        return RegistryAccess.EMPTY;
     }
 
     private Book loadBook(Identifier key, JsonObject value, BookThemeData themeData, HolderLookup.Provider provider) {

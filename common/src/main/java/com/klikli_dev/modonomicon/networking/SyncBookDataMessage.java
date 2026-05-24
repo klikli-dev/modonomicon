@@ -32,10 +32,16 @@ public class SyncBookDataMessage implements Message {
 
     //We use an array map here because we are not actually doing any lookups, we just iterate over the values
     public Map<Identifier, Book> books = new Object2ObjectArrayMap<>();
+    public boolean replaceAll = true;
 
     public SyncBookDataMessage(Map<Identifier, Book> books) {
+        this(books, true);
+    }
+
+    public SyncBookDataMessage(Map<Identifier, Book> books, boolean replaceAll) {
         //We use an array map here because we are not actually doing any lookups, we just iterate over the values
         this.books = new Object2ObjectArrayMap<>(books);
+        this.replaceAll = replaceAll;
     }
 
     public SyncBookDataMessage(RegistryFriendlyByteBuf buf) {
@@ -43,6 +49,7 @@ public class SyncBookDataMessage implements Message {
     }
 
     private void encode(RegistryFriendlyByteBuf buf) {
+        buf.writeBoolean(this.replaceAll);
         buf.writeVarInt(this.books.size());
         for (var book : this.books.values()) {
             buf.writeIdentifier(book.getId());
@@ -68,6 +75,7 @@ public class SyncBookDataMessage implements Message {
     }
 
     private void decode(RegistryFriendlyByteBuf buf) {
+        this.replaceAll = buf.readBoolean();
         //build books
         int bookCount = buf.readVarInt();
         for (int i = 0; i < bookCount; i++) {
