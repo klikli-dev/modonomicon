@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-1.143.0] - 2026-05-24
+### :sparkles: New Features
+- [`61af600`](https://github.com/klikli-dev/modonomicon/commit/61af600ed5803a7fff0b6b3932b233d3032eb421) - update content types to load from codecs *(PR [#359](https://github.com/klikli-dev/modonomicon/pull/359) by [@klikli-dev](https://github.com/klikli-dev))*
+- [`8cce233`](https://github.com/klikli-dev/modonomicon/commit/8cce23308a838a33d38f93168c4b2bc4e06fc047) - add runtime book content addition api *(PR [#360](https://github.com/klikli-dev/modonomicon/pull/360) by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`51779e2`](https://github.com/klikli-dev/modonomicon/commit/51779e2f6e0fe2be5163e084bf59245ff423c470) - update fabric *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.2-1.142.0] - 2026-05-09
 ### :sparkles: New Features
 - [`07fd46c`](https://github.com/klikli-dev/modonomicon/commit/07fd46c1e9595c577d04d1bd6272918f6d4a3c5f) - new beautiful skin thanks to https://github.com/ArcanaMod/Arcana *(PR [#357](https://github.com/klikli-dev/modonomicon/pull/357) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2198,3 +2207,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-1.140.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.140.0...release/v26.1.2-1.140.1
 [release/v26.1.2-1.141.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.140.1...release/v26.1.2-1.141.0
 [release/v26.1.2-1.142.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.141.0...release/v26.1.2-1.142.0
+[release/v26.1.2-1.143.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.142.0...release/v26.1.2-1.143.0
