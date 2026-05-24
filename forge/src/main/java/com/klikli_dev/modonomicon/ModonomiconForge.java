@@ -18,6 +18,7 @@ import com.klikli_dev.modonomicon.client.render.state.pip.GuiDirectEntryConnecti
 import com.klikli_dev.modonomicon.client.render.state.pip.GuiMultiblockRenderState;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.config.ServerConfig;
+import com.klikli_dev.modonomicon.book.runtime.DemoRuntimeBookContent;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
@@ -149,6 +150,7 @@ public class ModonomiconForge {
         Networking.registerMessages();
 
         RegistryBootstrap.bootstrap();
+        DemoRuntimeBookContent.register();
 
         PlayerInteractEvent.RightClickBlock.BUS.addListener((PlayerInteractEvent.RightClickBlock e) -> {
             var result = LecternIntegration.rightClick(e.getEntity(), e.getLevel(), e.getHand(), e.getHitVec());

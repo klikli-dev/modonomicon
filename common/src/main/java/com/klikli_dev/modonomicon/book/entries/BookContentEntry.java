@@ -54,7 +54,7 @@ public class BookContentEntry extends BookEntry {
 
     public BookContentEntry(Identifier id, BookEntryData data, Identifier commandToRunOnFirstReadId, List<BookPage> pages) {
         super(id, data, commandToRunOnFirstReadId);
-        this.pages = pages;
+        this.pages = new ArrayList<>(pages);
     }
 
     @Override
@@ -91,6 +91,10 @@ public class BookContentEntry extends BookEntry {
     @Override
     public List<BookPage> getPages() {
         return this.pages;
+    }
+
+    public void addPage(BookPage page) {
+        this.pages.add(page);
     }
 
     @Override

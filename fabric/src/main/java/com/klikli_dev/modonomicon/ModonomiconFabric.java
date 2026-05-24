@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon;
 
+import com.klikli_dev.modonomicon.book.runtime.DemoRuntimeBookContent;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.config.ServerConfig;
@@ -53,6 +54,7 @@ public class ModonomiconFabric implements ModInitializer {
         Networking.registerReceivers();
 
         RegistryBootstrap.bootstrap();
+        DemoRuntimeBookContent.register();
 
         //register data managers as reload listeners
         ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(Modonomicon.loc("book_data_manager"), (sharedState, exectutor, barrier, applyExectutor) -> {
