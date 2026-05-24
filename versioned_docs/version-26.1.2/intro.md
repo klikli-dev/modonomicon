@@ -5,8 +5,7 @@ title: Introduction
 
 :::tip
 
-If you are upgrading an older book, launch right into **[Updating from 1.21.1 to 26.1.2](./getting-started/updating-from-1.21.1-to-26.1.2/updating-from-1.21.1-to-26.1.2)**. 
-
+If you are upgrading an older book, launch right into **[Updating from 1.21.1 to 26.1.2](./getting-started/updating-from-1.21.1-to-26.1.2/updating-from-1.21.1-to-26.1.2.md)**. 
 :::
 
 
