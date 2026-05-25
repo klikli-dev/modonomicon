@@ -47,7 +47,7 @@ public class LinkFormattingEntry extends EntryProvider {
                         {0} \\
                         {1} \\
                         {2} \\
-                        [Fully qualified link](entry://modonomicon:demo/modonomicon:formatting/basic) \\
+                        [Fully qualified link](entry://modonomicon:demo/formatting/basic) \\
                         {3} \\
                         {4}
                         """,

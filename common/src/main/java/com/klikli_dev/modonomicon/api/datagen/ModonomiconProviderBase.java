@@ -140,14 +140,14 @@ public abstract class ModonomiconProviderBase {
      * Create a link to an entry in the same book.
      */
     protected String entryLink(String text, String category, String entry) {
-        return this.format("[{0}](entry://{1}/{2})", text, this.modLoc(this.context().bookId()), this.modLoc(category, entry));
+        return this.format("[{0}](entry://{1}/{2}/{3})", text, this.modLoc(this.context().bookId()), category, entry);
     }
 
     /**
      * Create a link to a category in the same book.
      */
     protected String categoryLink(String text, String category) {
-        return this.format("[{0}](category://{1}/{2})", text, this.modLoc(this.context().bookId()), this.modLoc(category));
+        return this.format("[{0}](category://{1}/{2})", text, this.modLoc(this.context().bookId()), category);
     }
 
     /**
