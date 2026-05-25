@@ -52,6 +52,7 @@ import net.minecraft.world.level.Level;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -529,7 +530,9 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
      * Pages without a matching inline ID are inserted at sort_number position (default: end of list).
      */
     private void mergePageJsons(Map<Identifier, JsonObject> pageJsons) {
-        for (var entry : pageJsons.entrySet()) {
+        var sortedEntries = new ArrayList<>(pageJsons.entrySet());
+        sortedEntries.sort(Comparator.comparing(e -> e.getKey().toString()));
+        for (var entry : sortedEntries) {
             try {
                 var path = entry.getKey();
                 var pathParts = path.getPath().split("/");
@@ -551,11 +554,15 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
 
                 var bookId = Identifier.fromNamespaceAndPath(path.getNamespace(), pathParts[0]);
 
-                // Category: first segment after "entries"
-                var categoryId = Identifier.fromNamespaceAndPath(path.getNamespace(), pathParts[2]);
+                // Category: all segments between "entries" and "pages" minus the entry name
+                var categoryPath = Arrays.stream(pathParts)
+                        .skip(2)
+                        .limit(pagesIdx - 3)
+                        .collect(Collectors.joining("/"));
+                var categoryId = Identifier.fromNamespaceAndPath(path.getNamespace(), categoryPath);
 
-                // Entry ID: category + "/" + entry name (part just before "pages")
-                var entryPath = pathParts[2] + "/" + pathParts[pagesIdx - 1];
+                // Entry ID: category path + "/" + entry name (part just before "pages")
+                var entryPath = categoryPath + "/" + pathParts[pagesIdx - 1];
                 var entryId = Identifier.fromNamespaceAndPath(path.getNamespace(), entryPath);
 
                 BookErrorManager.get().setCurrentBookId(bookId);
@@ -588,10 +595,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
                 var page = BookPage.fromJson(entryId, entry.getValue(), this.registries);
 
                 // Read sort_number if present (default: -1 = append at end)
-                var sortNumber = -1;
-                if (entry.getValue().has("sort_number")) {
-                    sortNumber = entry.getValue().get("sort_number").getAsInt();
-                }
+                var sortNumber = GsonHelper.getAsInt(entry.getValue(), "sort_number", -1);
 
                 // Merge: replace inline page with same ID, or insert at sort_number
                 this.mergePageIntoEntry(contentEntry, page, sortNumber);
