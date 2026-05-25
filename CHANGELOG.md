@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-1.145.0] - 2026-05-25
+### :sparkles: New Features
+- [`9f8d75d`](https://github.com/klikli-dev/modonomicon/commit/9f8d75dd2face87cfc2753efe172f2ddba497aef) - allow pages to be supplied as separate JSON files *(PR [#362](https://github.com/klikli-dev/modonomicon/pull/362) by [@klikli-dev](https://github.com/klikli-dev))*
+- [`cfae3e8`](https://github.com/klikli-dev/modonomicon/commit/cfae3e89ab94a44542d89aa53fec762c35954d49) - add layout helper to datagen *(PR [#364](https://github.com/klikli-dev/modonomicon/pull/364) by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.2-1.144.0] - 2026-05-25
 ### :bug: Bug Fixes
 - [`f0e4d8e`](https://github.com/klikli-dev/modonomicon/commit/f0e4d8e368d0f8d31cdd7b8711acdd457230ecaf) - simplify book entry link format *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2217,3 +2223,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-1.142.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.141.0...release/v26.1.2-1.142.0
 [release/v26.1.2-1.143.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.142.0...release/v26.1.2-1.143.0
 [release/v26.1.2-1.144.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.143.0...release/v26.1.2-1.144.0
+[release/v26.1.2-1.145.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.144.0...release/v26.1.2-1.145.0
