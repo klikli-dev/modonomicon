@@ -350,10 +350,19 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
                     themeJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
                 }
                 case "entries" -> {
-                    entryJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
-                }
-                case "pages" -> {
-                    pageJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
+                    // Check if this is a page file (path contains "pages" directory)
+                    boolean isPageFile = false;
+                    for (int i = 2; i < pathParts.length - 1; i++) {
+                        if ("pages".equals(pathParts[i])) {
+                            isPageFile = true;
+                            break;
+                        }
+                    }
+                    if (isPageFile) {
+                        pageJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
+                    } else {
+                        entryJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
+                    }
                 }
                 case "categories" -> {
                     categoryJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
@@ -535,19 +544,18 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
                     }
                 }
 
-                if (pagesIdx < 3) {
+                if (pagesIdx < 4) {
                     BookErrorManager.get().error("Invalid page file path structure: " + path);
                     continue;
                 }
 
                 var bookId = Identifier.fromNamespaceAndPath(path.getNamespace(), pathParts[0]);
 
-                // Category: parts from index 2 (skip book and "entries") to pagesIdx - 1
-                var categoryPath = Arrays.stream(pathParts).skip(2).limit(pagesIdx - 2).collect(Collectors.joining("/"));
-                var categoryId = Identifier.fromNamespaceAndPath(path.getNamespace(), categoryPath);
+                // Category: first segment after "entries"
+                var categoryId = Identifier.fromNamespaceAndPath(path.getNamespace(), pathParts[2]);
 
-                // Entry ID: part just before "pages"
-                var entryPath = pathParts[pagesIdx - 1];
+                // Entry ID: category + "/" + entry name (part just before "pages")
+                var entryPath = pathParts[2] + "/" + pathParts[pagesIdx - 1];
                 var entryId = Identifier.fromNamespaceAndPath(path.getNamespace(), entryPath);
 
                 BookErrorManager.get().setCurrentBookId(bookId);
