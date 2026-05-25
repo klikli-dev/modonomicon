@@ -175,7 +175,7 @@ public abstract class BookEntry {
         return this.data.name().toLowerCase().contains(query);
     }
 
-    public int getPageNumberForAnchor(String anchor) {
+    public int getPageNumberForId(String id) {
         return -1;
     }
 

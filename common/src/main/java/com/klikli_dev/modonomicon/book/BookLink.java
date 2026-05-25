@@ -95,7 +95,7 @@ public class BookLink {
             }
 
             bookLink.pageAnchor = postAt;
-            if (entry.getPageNumberForAnchor(bookLink.pageAnchor) == -1) {
+            if (entry.getPageNumberForId(bookLink.pageAnchor) == -1) {
                 throw new IllegalArgumentException("Invalid entry link, anchor not found in entry: " + linkText);
             }
 

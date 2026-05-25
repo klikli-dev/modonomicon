@@ -39,7 +39,7 @@ public class BookContentEntry extends BookEntry {
             Identifier.CODEC.fieldOf("id").forGetter(BookEntry::getId),
             BookEntry.BookEntryData.CODEC.forGetter(entry -> entry.data),
             Identifier.CODEC.optionalFieldOf("command_to_run_on_first_read").forGetter(entry -> Optional.ofNullable(entry.commandToRunOnFirstReadId)),
-            BookPage.CODEC.listOf().fieldOf("pages").forGetter(entry -> entry.pages)
+            BookPage.CODEC.listOf().optionalFieldOf("pages", List.of()).forGetter(entry -> entry.pages)
     ).apply(instance, (id, data, commandToRunOnFirstReadId, pages) -> new BookContentEntry(id, data, commandToRunOnFirstReadId.orElse(null), pages)));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BookContentEntry> STREAM_CODEC = StreamCodec.composite(
@@ -104,11 +104,11 @@ public class BookContentEntry extends BookEntry {
     }
 
     @Override
-    public int getPageNumberForAnchor(String anchor) {
+    public int getPageNumberForId(String id) {
         var pages = this.getPages();
         for (int i = 0; i < pages.size(); i++) {
             var page = pages.get(i);
-            if (anchor.equals(page.getId())) {
+            if (id.equals(page.getId())) {
                 return i;
             }
         }

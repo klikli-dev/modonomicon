@@ -44,7 +44,7 @@ public class BookLinkHandler extends LinkHandler {
 
             Integer page = link.pageNumber;
             if (link.pageAnchor != null) {
-                page = entry.getPageNumberForAnchor(link.pageAnchor);
+                page = entry.getPageNumberForId(link.pageAnchor);
             }
 
             if (page != null && !BookUnlockStateManager.get().isUnlockedFor(this.player(), entry.getPages().get(page))) {
