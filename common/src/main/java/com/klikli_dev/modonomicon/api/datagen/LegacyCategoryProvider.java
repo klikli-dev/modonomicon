@@ -37,6 +37,7 @@ public abstract class LegacyCategoryProvider extends CategoryProviderBase {
     public LegacyCategoryProvider(ModonomiconProviderBase parent, String categoryId) {
         super(parent, parent.modId(), parent.lang(), parent.langsAsMapOfBiConsumers(), parent.context(), parent.condition());
         this.entryMap = new CategoryEntryMap();
+        this.layout = CategoryLayout.relativeEntryLayout();
         this.category = null;
         this.currentSortIndex = 0;
         this.categoryId = categoryId;
@@ -49,6 +50,11 @@ public abstract class LegacyCategoryProvider extends CategoryProviderBase {
 
     public CategoryEntryMap entryMap() {
         return this.entryMap;
+    }
+
+    @Override
+    public CategoryLayout layout() {
+        return this.layout;
     }
 
     @Override
@@ -144,6 +150,7 @@ public abstract class LegacyCategoryProvider extends CategoryProviderBase {
         this.context().category(this.categoryId);
         this.entryMap().setMap(this.generateEntryMap());
         this.category = this.generateCategory();
+        this.configureLayout(this.layout());
         this.generateEntries();
         return this.category;
     }
@@ -165,4 +172,7 @@ public abstract class LegacyCategoryProvider extends CategoryProviderBase {
      * Context already is set to this category.
      */
     protected abstract BookCategoryModel generateCategory();
+
+    protected void configureLayout(CategoryLayout layout) {
+    }
 }

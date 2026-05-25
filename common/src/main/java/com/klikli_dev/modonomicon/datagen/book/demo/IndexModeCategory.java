@@ -21,13 +21,6 @@ public class IndexModeCategory extends CategoryProvider {
     }
 
     @Override
-    protected String[] generateEntryMap() {
-        //Index mode categories don't need an entry map.
-        //However, make sure not to query it either, otherwise you will get an unhappy surprise!
-        return new String[0];
-    }
-
-    @Override
     protected void generateEntries() {
         this.add(new Demo1IndexEntry(this).generate());
         this.add(new Demo2IndexEntry(this).generate());

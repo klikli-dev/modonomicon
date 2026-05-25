@@ -26,12 +26,18 @@ public abstract class CategoryProvider extends CategoryProviderBase {
     public CategoryProvider(ModonomiconProviderBase parent) {
         super(parent, parent.modId(), parent.lang(), parent.langsAsMapOfBiConsumers(), parent.context(), parent.condition());
         this.entryMap = new CategoryEntryMap();
+        this.layout = CategoryLayout.relativeEntryLayout();
         this.category = null;
         this.currentSortIndex = 0;
     }
 
     public CategoryEntryMap entryMap() {
         return this.entryMap;
+    }
+
+    @Override
+    public CategoryLayout layout() {
+        return this.layout;
     }
 
     @Override
@@ -87,14 +93,18 @@ public abstract class CategoryProvider extends CategoryProviderBase {
         category.withIcon(this.categoryIcon());
 
         this.category = this.additionalSetup(category);
+        this.configureLayout(this.layout());
         this.generateEntries();
         return this.category;
     }
 
     /**
-     * Implement this and return your entry map String to be used in the CategoryEntryMap
+     * Legacy string-grid entry layout.
+     * Prefer {@link #configureLayout(CategoryLayout)} for new code.
      */
-    protected abstract String[] generateEntryMap();
+    protected String[] generateEntryMap() {
+        return new String[0];
+    }
 
     /**
      * Implement this and in it generate, link (= set parents and conditions) and .add() your entries.
@@ -109,6 +119,9 @@ public abstract class CategoryProvider extends CategoryProviderBase {
      */
     protected BookCategoryModel additionalSetup(BookCategoryModel category) {
         return category;
+    }
+
+    protected void configureLayout(CategoryLayout layout) {
     }
 
     /**

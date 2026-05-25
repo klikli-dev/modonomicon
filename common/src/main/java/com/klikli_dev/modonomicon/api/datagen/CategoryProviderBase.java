@@ -13,6 +13,7 @@ import java.util.function.BiConsumer;
 
 public abstract class CategoryProviderBase extends ModonomiconProviderBase {
     protected final ModonomiconProviderBase parent;
+    protected CategoryLayout layout;
 
     protected CategoryProviderBase(ModonomiconProviderBase parent, String modId, BiConsumer<String, String> lang, Map<String, BiConsumer<String, String>> translations, BookContextHelper context, ConditionHelper conditionHelper) {
         super(modId, lang, translations, context, conditionHelper);
@@ -25,6 +26,10 @@ public abstract class CategoryProviderBase extends ModonomiconProviderBase {
     }
 
     public abstract String categoryId();
+
+    public CategoryLayout layout() {
+        return this.layout;
+    }
 
     public abstract CategoryEntryMap entryMap();
 

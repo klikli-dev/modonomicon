@@ -4,6 +4,7 @@
 
 package com.klikli_dev.modonomicon.datagen.book.demo;
 
+import com.klikli_dev.modonomicon.api.datagen.CategoryLayout;
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.SingleBookSubProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
@@ -22,27 +23,24 @@ public class FormattingCategory extends CategoryProvider {
     }
 
     @Override
-    protected String[] generateEntryMap() {
-        return new String[]{
-                "_____________________",
-                "__b___a______________",
-                "__________l_____x____",
-                "_____________________",
-                "_____________________"
-        };
+    protected void configureLayout(CategoryLayout layout) {
+        layout.entry(BasicFormattingEntry.ID).at(-8, -1);
+        layout.entry(AdvancedFormattingEntry.ID).rightOf(BasicFormattingEntry.ID, 4);
+        layout.entry(LinkFormattingEntry.ID).rightOf(AdvancedFormattingEntry.ID, 4).below(1);
+        layout.entry(AlwaysLockedEntry.ID).rightOf(LinkFormattingEntry.ID, 6);
     }
 
     @Override
     protected void generateEntries() {
-        var basicFormattingEntry = this.add(new BasicFormattingEntry(this).generate('b'));
+        var basicFormattingEntry = this.add(new BasicFormattingEntry(this).generate());
 
-        var advancedFormattingEntry = this.add(new AdvancedFormattingEntry(this).generate('a'))
+        var advancedFormattingEntry = this.add(new AdvancedFormattingEntry(this).generate())
                 .withParent(this.parent(basicFormattingEntry));
 
-        var linkFormattingEntry = this.add(new LinkFormattingEntry(this).generate('l'))
+        var linkFormattingEntry = this.add(new LinkFormattingEntry(this).generate())
                 .withParent(advancedFormattingEntry);
 
-        var alwaysLockedEntry = this.add(new AlwaysLockedEntry(this).generate('x'));
+        var alwaysLockedEntry = this.add(new AlwaysLockedEntry(this).generate());
     }
 
     @Override

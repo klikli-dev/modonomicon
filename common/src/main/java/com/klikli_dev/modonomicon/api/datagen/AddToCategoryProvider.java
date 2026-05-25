@@ -36,6 +36,7 @@ public abstract class AddToCategoryProvider extends CategoryProvider {
         );
         this.category.withDontGenerateJson(true);
 
+        this.configureLayout(this.layout());
         this.generateEntries();
         return this.category;
     }
