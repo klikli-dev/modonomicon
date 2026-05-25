@@ -142,6 +142,39 @@ A parent connection does not imply an unlock condition or any logical dependency
 
 Pages are JSON Objects that define the actual book content. See [Page Types](../page-types/page-types.md) for the available types of pages.
 
+#### Pages as Files
+
+By default, pages are generated as separate JSON files instead of being inline in the entry JSON. This makes it easier to manage large entries with many pages.
+
+**File structure:**
+
+The entry JSON lives alongside a `pages/` subdirectory that shares the entry's name:
+```
+data/<mod_id>/modonomicon/books/<book_id>/entries/
+  <category_id>/
+    <entry_name>.json          ← entry definition (no inline pages)
+    <entry_name>/
+      pages/
+        <page_id>.json         ← individual page files
+```
+
+For example, the entry `data/modonomicon/modonomicon/books/demo/entries/features/custom_icon.json` 
+has its pages in `data/modonomicon/modonomicon/books/demo/entries/features/custom_icon/pages/`.
+
+Each page file contains a single page JSON object:
+```json
+{
+  "id": "intro",
+  "type": "modonomicon:text",
+  "title": "book.modonomicon.demo.features.custom_icon.intro.title",
+  "text": "book.modonomicon.demo.features.custom_icon.intro.text"
+}
+```
+
+The `id` attribute uniquely identifies the page within the entry and is used to match page files to the entry during loading. The `type` attribute determines how the page renders (e.g., `modonomicon:text`, `modonomicon:spotlight`).
+
+**Datagen:** Pages-as-files is the default behavior. Use `BookEntryModel#withGeneratePagesAsFiles(false)` to generate pages inline in the entry JSON instead.
+
 ### **category_to_open** (ResourceLocation, _optional_)
 
 The resource location to the category that should be opened when this entry is clicked. 

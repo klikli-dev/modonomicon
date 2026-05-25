@@ -11,7 +11,11 @@ The following attributes are available for all page types
 ### **type** (String, _mandatory_)
 
 The type of page, it determines which loader is used to load the json data and how the page will be displayed.
-Needs to be fully qualified `domain:name`, e.g. `modonomicon:text`. 
+Needs to be fully qualified `domain:name`, e.g. `modonomicon:text`.
+
+### **id** (String, _optional_)
+
+A string to uniquely identify the page within the entry it belongs to. Used when pages are defined as separate files to match the page to its entry. Also allows linking to specific pages and is more robust than using the page's array index when pages are reordered or removed.
 
 ### **anchor** (String, _optional_)
 
