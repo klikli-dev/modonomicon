@@ -16,17 +16,6 @@
   },
   "id": "modonomicon:features/empty",
   "name": "book.modonomicon.demo.features.empty.name",
-  "pages": [
-    {
-      "type": "modonomicon:text",
-      "condition": {
-        "type": "modonomicon:none"
-      },
-      "show_title_separator": true,
-      "text": "book.modonomicon.demo.features.empty.intro.text",
-      "title": "book.modonomicon.demo.features.empty.intro.title"
-    }
-  ],
   "parents": [
     {
       "entry": "modonomicon:features/spotlight"

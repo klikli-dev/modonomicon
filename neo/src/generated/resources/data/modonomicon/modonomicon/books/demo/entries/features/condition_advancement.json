@@ -16,27 +16,6 @@
   },
   "id": "modonomicon:features/condition_advancement",
   "name": "book.modonomicon.demo.features.condition_advancement.name",
-  "pages": [
-    {
-      "type": "modonomicon:text",
-      "condition": {
-        "type": "modonomicon:none"
-      },
-      "show_title_separator": true,
-      "text": "book.modonomicon.demo.features.condition_advancement.info.text",
-      "title": "book.modonomicon.demo.features.condition_advancement.info.title"
-    },
-    {
-      "type": "modonomicon:text",
-      "condition": {
-        "type": "modonomicon:advancement",
-        "advancement_id": "minecraft:story/mine_stone"
-      },
-      "show_title_separator": true,
-      "text": "book.modonomicon.demo.features.condition_advancement.conditional_page.text",
-      "title": "book.modonomicon.demo.features.condition_advancement.conditional_page.title"
-    }
-  ],
   "sort_number": 2,
   "x": 3,
   "y": -4

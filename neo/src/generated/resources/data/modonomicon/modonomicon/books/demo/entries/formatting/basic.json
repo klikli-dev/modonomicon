@@ -15,26 +15,6 @@
   },
   "id": "modonomicon:formatting/basic",
   "name": "book.modonomicon.demo.formatting.basic.name",
-  "pages": [
-    {
-      "type": "modonomicon:text",
-      "condition": {
-        "type": "modonomicon:none"
-      },
-      "show_title_separator": true,
-      "text": "book.modonomicon.demo.formatting.basic.page1.text",
-      "title": "book.modonomicon.demo.formatting.basic.page1.title"
-    },
-    {
-      "type": "modonomicon:text",
-      "condition": {
-        "type": "modonomicon:none"
-      },
-      "show_title_separator": true,
-      "text": "book.modonomicon.demo.formatting.basic.page2.text",
-      "title": ""
-    }
-  ],
   "sort_number": 0,
   "x": -8,
   "y": -1

@@ -7,6 +7,7 @@ package com.klikli_dev.modonomicon.datagen.book.demo.features;
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
+import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.*;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
@@ -20,10 +21,13 @@ public class RecipeEntry extends EntryProvider {
     }
 
     @Override
-    protected void generatePages() {
-        // Generate pages inline (in the entry's JSON) instead of as separate files
-        this.generatePagesAsFiles(false);
+    protected BookEntryModel additionalSetup(BookEntryModel entry) {
+        entry.withGeneratePagesAsFiles(false); //generate pages inline to demo that
+        return super.additionalSetup(entry);
+    }
 
+    @Override
+    protected void generatePages() {
         this.page("intro", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText())

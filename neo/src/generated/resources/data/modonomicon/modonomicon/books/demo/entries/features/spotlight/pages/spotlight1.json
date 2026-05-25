@@ -1,0 +1,10 @@
+{
+  "type": "modonomicon:spotlight",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "spotlight1",
+  "item": "minecraft:apple",
+  "text": "book.modonomicon.demo.features.spotlight.spotlight1.text",
+  "title": "book.modonomicon.demo.features.spotlight.spotlight1.title"
+}

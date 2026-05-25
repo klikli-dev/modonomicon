@@ -1,0 +1,10 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "intro",
+  "show_title_separator": true,
+  "text": "book.modonomicon.demo.features.multiblock.intro.text",
+  "title": "book.modonomicon.demo.features.multiblock.intro.title"
+}

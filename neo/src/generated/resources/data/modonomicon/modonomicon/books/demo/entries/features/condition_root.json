@@ -15,17 +15,6 @@
   },
   "id": "modonomicon:features/condition_root",
   "name": "book.modonomicon.demo.features.condition_root.name",
-  "pages": [
-    {
-      "type": "modonomicon:text",
-      "condition": {
-        "type": "modonomicon:none"
-      },
-      "show_title_separator": true,
-      "text": "book.modonomicon.demo.features.condition_root.info.text",
-      "title": "book.modonomicon.demo.features.condition_root.info.title"
-    }
-  ],
   "sort_number": 1,
   "x": 0,
   "y": -2

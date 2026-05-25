@@ -15,36 +15,6 @@
   },
   "id": "modonomicon:features/entity",
   "name": "book.modonomicon.demo.features.entity.name",
-  "pages": [
-    {
-      "type": "modonomicon:text",
-      "condition": {
-        "type": "modonomicon:none"
-      },
-      "show_title_separator": true,
-      "text": "book.modonomicon.demo.features.entity.entity.text",
-      "title": "book.modonomicon.demo.features.entity.entity.title"
-    },
-    {
-      "type": "modonomicon:entity",
-      "condition": {
-        "type": "modonomicon:none"
-      },
-      "entity_id": "minecraft:ender_dragon",
-      "entity_name": "book.modonomicon.demo.features.entity.entity1.title",
-      "scale": 0.5,
-      "text": ""
-    },
-    {
-      "type": "modonomicon:entity",
-      "condition": {
-        "type": "modonomicon:none"
-      },
-      "entity_id": "minecraft:spider",
-      "entity_name": "",
-      "text": "book.modonomicon.demo.features.entity.entity2.text"
-    }
-  ],
   "sort_number": 11,
   "x": 7,
   "y": -3
