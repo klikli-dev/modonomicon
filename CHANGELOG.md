@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-1.144.0] - 2026-05-25
+### :bug: Bug Fixes
+- [`f0e4d8e`](https://github.com/klikli-dev/modonomicon/commit/f0e4d8e368d0f8d31cdd7b8711acdd457230ecaf) - simplify book entry link format *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`87e31fc`](https://github.com/klikli-dev/modonomicon/commit/87e31fc3aa611b055f0a7e369ac27e21ad0e62e7) - cleanup *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.2-1.143.0] - 2026-05-24
 ### :sparkles: New Features
 - [`61af600`](https://github.com/klikli-dev/modonomicon/commit/61af600ed5803a7fff0b6b3932b233d3032eb421) - update content types to load from codecs *(PR [#359](https://github.com/klikli-dev/modonomicon/pull/359) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2208,3 +2216,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-1.141.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.140.1...release/v26.1.2-1.141.0
 [release/v26.1.2-1.142.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.141.0...release/v26.1.2-1.142.0
 [release/v26.1.2-1.143.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.142.0...release/v26.1.2-1.143.0
+[release/v26.1.2-1.144.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.143.0...release/v26.1.2-1.144.0
