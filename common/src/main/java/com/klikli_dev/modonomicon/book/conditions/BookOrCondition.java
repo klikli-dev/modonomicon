@@ -42,8 +42,8 @@ public class BookOrCondition extends BookCondition {
 
     protected List<Component> tooltips;
 
-    public BookOrCondition(Component component, BookCondition[] children) {
-        super(component);
+    public BookOrCondition(Component tooltip, BookCondition[] children) {
+        super(tooltip);
         if (children == null || children.length == 0)
             throw new IllegalArgumentException("OrCondition must have at least one child.");
 

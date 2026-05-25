@@ -45,18 +45,6 @@ public abstract class BookCondition {
         this.tooltip = tooltip;
     }
 
-    public static MutableComponent tooltipFromJson(JsonObject json, HolderLookup.Provider provider) {
-        if (json.has("tooltip")) {
-            var tooltipElement = json.get("tooltip");
-            if (tooltipElement.isJsonPrimitive()) {
-                return Component.translatable(tooltipElement.getAsString());
-            }
-
-            return Component.literal("").append(ComponentSerialization.CODEC.parse(provider.createSerializationContext(JsonOps.INSTANCE), tooltipElement).getOrThrow());
-        }
-        return null;
-    }
-
     public static BookCondition fromJson(Identifier conditionParentId, JsonObject json, HolderLookup.Provider provider) {
         return CODEC.parse(provider.createSerializationContext(JsonOps.INSTANCE), json)
                 .getOrThrow(error -> new IllegalArgumentException("Failed to decode condition for " + conditionParentId + ": " + error));
