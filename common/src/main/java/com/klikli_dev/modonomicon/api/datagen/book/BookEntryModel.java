@@ -53,6 +53,13 @@ public class BookEntryModel {
 
     protected int sortNumber = -1;
 
+    /**
+     * If true (default), pages are generated as separate JSON files in
+     * `entries/&lt;entry-id&gt;/pages/&lt;page-id&gt;.json`.
+     * If false, pages are included inline in the entry's JSON (legacy behavior).
+     */
+    protected boolean generatePagesAsFiles = true;
+
     protected BookEntryModel(Identifier id, String name) {
         this.id = id;
         this.name = name;
@@ -88,8 +95,10 @@ public class BookEntryModel {
         } else if (this.entryToOpen != null) {
             entry = new EntryLinkBookEntry(this.id, data, this.commandToRunOnFirstRead, this.entryToOpen);
         } else {
-            entry = new BookContentEntry(this.id, data, this.commandToRunOnFirstRead,
-                    this.pages.stream().map(page -> page.toBookPage(provider)).collect(Collectors.toList()));
+            List<BookPage> pagesToEncode = this.generatePagesAsFiles
+                    ? List.of()
+                    : this.pages.stream().map(page -> page.toBookPage(provider)).collect(Collectors.toList());
+            entry = new BookContentEntry(this.id, data, this.commandToRunOnFirstRead, pagesToEncode);
         }
 
         return BookEntry.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), entry)
@@ -376,6 +385,26 @@ public class BookEntryModel {
      */
     public BookEntryModel withSortNumber(int sortNumber) {
         this.sortNumber = sortNumber;
+        return this;
+    }
+
+    /**
+     * Returns whether pages should be generated as separate JSON files.
+     * Default is {@code true}.
+     */
+    public boolean generatePagesAsFiles() {
+        return this.generatePagesAsFiles;
+    }
+
+    /**
+     * Controls whether pages are written as separate files.
+     * <p>
+     * If {@code true} (default), each page is written to its own file at
+     * {@code entries/<entry-id>/pages/<page-id>.json}.
+     * If {@code false}, pages are included inline in the entry's JSON (legacy behavior).
+     */
+    public BookEntryModel withGeneratePagesAsFiles(boolean generatePagesAsFiles) {
+        this.generatePagesAsFiles = generatePagesAsFiles;
         return this;
     }
 

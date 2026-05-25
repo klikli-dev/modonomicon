@@ -21,6 +21,9 @@ public class RecipeEntry extends EntryProvider {
 
     @Override
     protected void generatePages() {
+        // Generate pages inline (in the entry's JSON) instead of as separate files
+        this.generatePagesAsFiles(false);
+
         this.page("intro", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText())

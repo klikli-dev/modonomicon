@@ -90,6 +90,15 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
         return this.add(model);
     }
 
+    /**
+     * Controls whether pages for this entry are generated as separate JSON files.
+     * Default is {@code true} (separate files).
+     * Set to {@code false} to include pages inline in the entry's JSON (legacy behavior).
+     */
+    protected void generatePagesAsFiles(boolean generatePagesAsFiles) {
+        this.entry.withGeneratePagesAsFiles(generatePagesAsFiles);
+    }
+
     protected <T extends BookPageModel<?>> T add(T page) {
         this.entry.withPage(page);
         return page;
