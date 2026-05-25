@@ -419,7 +419,7 @@ public class BookEntryModel {
                 pages.get(i).withSortNumber(i);
             }
         }
-        this.pages = pages;
+        this.pages = new ArrayList<>(pages);
         return this;
     }
 
