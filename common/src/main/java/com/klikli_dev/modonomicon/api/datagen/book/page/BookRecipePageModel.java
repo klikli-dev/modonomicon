@@ -60,7 +60,7 @@ public abstract class BookRecipePageModel<T extends BookRecipePageModel<T>> exte
                 this.title2.toBookTextHolder(),
                 this.recipeId2 == null || this.recipeId2.isEmpty() ? null : ResourceKey.create(Registries.RECIPE, Identifier.parse(this.recipeId2)),
                 this.text.toBookTextHolder(),
-                this.anchor,
+                this.id,
                 this.condition(provider)
         ));
     }

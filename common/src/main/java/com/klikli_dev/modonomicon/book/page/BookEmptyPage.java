@@ -24,17 +24,17 @@ public class BookEmptyPage extends BookPage {
 
     public static final Identifier ID = Modonomicon.loc("empty");
     public static final MapCodec<BookEmptyPage> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.STRING.optionalFieldOf("anchor", "").forGetter(BookPage::getAnchor),
+            Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
             BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition)
     ).apply(instance, BookEmptyPage::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, BookEmptyPage> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.STRING_UTF8, BookPage::getAnchor,
+            ByteBufCodecs.STRING_UTF8, BookPage::getId,
             BookCondition.STREAM_CODEC, BookPage::getCondition,
             BookEmptyPage::new
     );
 
-    public BookEmptyPage(String anchor, BookCondition condition) {
-        super(anchor, condition);
+    public BookEmptyPage(String id, BookCondition condition) {
+        super(id, condition);
     }
 
     @Override

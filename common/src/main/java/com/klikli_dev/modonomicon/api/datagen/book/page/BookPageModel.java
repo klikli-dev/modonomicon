@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class BookPageModel<T extends BookPageModel<T>> {
 
     protected Identifier type;
-    protected String anchor = "";
+    protected String id = "";
     protected BookConditionModel<?> condition = BookNoneConditionModel.create();
 
     protected BookPageModel(Identifier type) {
@@ -33,8 +33,8 @@ public abstract class BookPageModel<T extends BookPageModel<T>> {
         return this.type;
     }
 
-    public String getAnchor() {
-        return this.anchor;
+    public String getId() {
+        return this.id;
     }
 
     /**
@@ -52,8 +52,8 @@ public abstract class BookPageModel<T extends BookPageModel<T>> {
 
     public abstract BookPage toBookPage(HolderLookup.Provider provider);
     
-    public T withAnchor(@NotNull String anchor) {
-        this.anchor = anchor;
+    public T withId(@NotNull String id) {
+        this.id = id;
         //noinspection unchecked
         return (T) this;
     }

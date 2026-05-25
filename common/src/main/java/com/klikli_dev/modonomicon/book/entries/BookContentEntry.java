@@ -108,7 +108,7 @@ public class BookContentEntry extends BookEntry {
         var pages = this.getPages();
         for (int i = 0; i < pages.size(); i++) {
             var page = pages.get(i);
-            if (anchor.equals(page.getAnchor())) {
+            if (anchor.equals(page.getId())) {
                 return i;
             }
         }

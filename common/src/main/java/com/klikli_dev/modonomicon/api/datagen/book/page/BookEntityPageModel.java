@@ -61,7 +61,7 @@ public class BookEntityPageModel extends BookPageModel<BookEntityPageModel> {
 
     @Override
     public BookPage toBookPage(HolderLookup.Provider provider) {
-        return new BookEntityPage(this.entityName.toBookTextHolder(), this.text.toBookTextHolder(), this.entityId, this.scale, this.offset, this.rotate, this.defaultRotation, this.anchor, this.condition(provider));
+        return new BookEntityPage(this.entityName.toBookTextHolder(), this.text.toBookTextHolder(), this.entityId, this.scale, this.offset, this.rotate, this.defaultRotation, this.id, this.condition(provider));
     }
 
     public BookEntityPageModel withEntityName(String name) {

@@ -46,7 +46,7 @@ public class BookTextPageModel extends BookPageModel<BookTextPageModel> {
 
     @Override
     public BookPage toBookPage(HolderLookup.Provider provider) {
-        return new BookTextPage(this.title.toBookTextHolder(), this.text.toBookTextHolder(), this.useMarkdownInTitle, this.showTitleSeparator, this.anchor, this.condition(provider));
+        return new BookTextPage(this.title.toBookTextHolder(), this.text.toBookTextHolder(), this.useMarkdownInTitle, this.showTitleSeparator, this.id, this.condition(provider));
     }
 
     public BookTextPageModel withTitle(String title) {

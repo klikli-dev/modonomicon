@@ -48,15 +48,15 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
             BookTextHolder.CODEC.optionalFieldOf("title2", BookTextHolder.EMPTY).forGetter(JsonDataHolder::title2),
             ResourceKey.codec(Registries.RECIPE).optionalFieldOf("recipe_id_2").forGetter(holder -> Optional.ofNullable(holder.recipeId2())),
             BookTextHolder.CODEC.optionalFieldOf("text", BookTextHolder.EMPTY).forGetter(JsonDataHolder::text),
-            Codec.STRING.optionalFieldOf("anchor", "").forGetter(JsonDataHolder::anchor),
+            Codec.STRING.fieldOf("id").forGetter(JsonDataHolder::id),
             BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(JsonDataHolder::condition)
-    ).apply(instance, (title1, recipeKey1, title2, recipeKey2, text, anchor, condition) -> new JsonDataHolder(
+    ).apply(instance, (title1, recipeKey1, title2, recipeKey2, text, id, condition) -> new JsonDataHolder(
             title1,
             recipeKey1.orElse(null),
             title2,
             recipeKey2.orElse(null),
             text,
-            anchor,
+            id,
             condition
     )));
 
@@ -68,9 +68,9 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
             ByteBufCodecs.optional(ResourceKey.streamCodec(Registries.RECIPE)), holder -> Optional.ofNullable(holder.recipeKey2()),
             ByteBufCodecs.optional(RecipeDisplayEntry.STREAM_CODEC), holder -> Optional.ofNullable(holder.recipeDisplayEntry2()),
             BookTextHolder.STREAM_CODEC, NetworkDataHolder::text,
-            ByteBufCodecs.STRING_UTF8, NetworkDataHolder::anchor,
+            ByteBufCodecs.STRING_UTF8, NetworkDataHolder::id,
             BookCondition.STREAM_CODEC, NetworkDataHolder::condition,
-            (title1, recipeKey1, recipeDisplayEntry1, title2, recipeKey2, recipeDisplayEntry2, text, anchor, condition) -> new NetworkDataHolder(
+            (title1, recipeKey1, recipeDisplayEntry1, title2, recipeKey2, recipeDisplayEntry2, text, id, condition) -> new NetworkDataHolder(
                     title1,
                     recipeKey1.orElse(null),
                     recipeDisplayEntry1.orElse(null),
@@ -78,7 +78,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
                     recipeKey2.orElse(null),
                     recipeDisplayEntry2.orElse(null),
                     text,
-                    anchor,
+                    id,
                     condition
             )
     );
@@ -104,15 +104,15 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
     protected BookTextHolder text;
 
     public BookRecipePage(JsonDataHolder common) {
-        this(common.title1(), common.recipeId1(), common.title2(), common.recipeId2(), common.text(), common.anchor(), common.condition());
+        this(common.title1(), common.recipeId1(), common.title2(), common.recipeId2(), common.text(), common.id(), common.condition());
     }
 
     public BookRecipePage(NetworkDataHolder common) {
-        this(common.title1(), common.recipeKey1(), common.recipeDisplayEntry1(), common.title2(), common.recipeKey2(), common.recipeDisplayEntry2(), common.text(), common.anchor(), common.condition());
+        this(common.title1(), common.recipeKey1(), common.recipeDisplayEntry1(), common.title2(), common.recipeKey2(), common.recipeDisplayEntry2(), common.text(), common.id(), common.condition());
     }
 
-    private BookRecipePage(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1, BookTextHolder title2, ResourceKey<Recipe<?>> recipeKey2, BookTextHolder text, String anchor, BookCondition condition) {
-        super(anchor, condition);
+    private BookRecipePage(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1, BookTextHolder title2, ResourceKey<Recipe<?>> recipeKey2, BookTextHolder text, String id, BookCondition condition) {
+        super(id, condition);
         this.title1 = title1;
         this.recipeKey1 = recipeKey1;
         this.title2 = title2;
@@ -120,8 +120,8 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
         this.text = text;
     }
 
-    private BookRecipePage(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1, @Nullable RecipeDisplayEntry recipeDisplayEntry1, BookTextHolder title2, ResourceKey<Recipe<?>> recipeKey2, @Nullable RecipeDisplayEntry recipeDisplayEntry2, BookTextHolder text, String anchor, BookCondition condition) {
-        super(anchor, condition);
+    private BookRecipePage(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1, @Nullable RecipeDisplayEntry recipeDisplayEntry1, BookTextHolder title2, ResourceKey<Recipe<?>> recipeKey2, @Nullable RecipeDisplayEntry recipeDisplayEntry2, BookTextHolder text, String id, BookCondition condition) {
+        super(id, condition);
         this.title1 = title1;
         this.recipeKey1 = recipeKey1;
         this.recipeDisplayEntry1 = recipeDisplayEntry1;
@@ -141,11 +141,11 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
     }
 
     protected JsonDataHolder toJsonDataHolder() {
-        return new JsonDataHolder(this.title1, this.recipeKey1, this.title2, this.recipeKey2, this.text, this.anchor, this.condition);
+        return new JsonDataHolder(this.title1, this.recipeKey1, this.title2, this.recipeKey2, this.text, this.id, this.condition);
     }
 
     protected NetworkDataHolder toNetworkDataHolder() {
-        return new NetworkDataHolder(this.title1, this.recipeKey1, this.recipeDisplayEntry1, this.title2, this.recipeKey2, this.recipeDisplayEntry2, this.text, this.anchor, this.condition);
+        return new NetworkDataHolder(this.title1, this.recipeKey1, this.recipeDisplayEntry1, this.title2, this.recipeKey2, this.recipeDisplayEntry2, this.text, this.id, this.condition);
     }
 
     public BookTextHolder getTitle1() {
@@ -297,14 +297,14 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
                 || this.text.getString().toLowerCase().contains(query);
     }
 
-    public record JsonDataHolder(BookTextHolder title1, ResourceKey<Recipe<?>> recipeId1, BookTextHolder title2,
-                                 ResourceKey<Recipe<?>> recipeId2, BookTextHolder text, String anchor,
-                                 BookCondition condition) {
+   public record JsonDataHolder(BookTextHolder title1, ResourceKey<Recipe<?>> recipeId1, BookTextHolder title2,
+                                  ResourceKey<Recipe<?>> recipeId2, BookTextHolder text, String id,
+                                  BookCondition condition) {
     }
 
-    public record NetworkDataHolder(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1,
-                                    RecipeDisplayEntry recipeDisplayEntry1, BookTextHolder title2,
-                                    ResourceKey<Recipe<?>> recipeKey2, RecipeDisplayEntry recipeDisplayEntry2,
-                                    BookTextHolder text, String anchor, BookCondition condition) {
+  public record NetworkDataHolder(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1,
+                                     RecipeDisplayEntry recipeDisplayEntry1, BookTextHolder title2,
+                                     ResourceKey<Recipe<?>> recipeKey2, RecipeDisplayEntry recipeDisplayEntry2,
+                                     BookTextHolder text, String id, BookCondition condition) {
     }
 }

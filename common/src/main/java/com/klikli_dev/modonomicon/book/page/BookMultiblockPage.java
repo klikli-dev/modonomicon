@@ -36,7 +36,7 @@ public class BookMultiblockPage extends BookPage {
             BookTextHolder.CODEC.fieldOf("text").forGetter(BookMultiblockPage::getText),
             Identifier.CODEC.fieldOf("multiblock_id").forGetter(BookMultiblockPage::getMultiblockId),
             Codec.BOOL.optionalFieldOf("show_visualize_button", false).forGetter(BookMultiblockPage::showVisualizeButton),
-            Codec.STRING.optionalFieldOf("anchor", "").forGetter(BookPage::getAnchor),
+            Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
             BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition)
     ).apply(instance, BookMultiblockPage::new));
 
@@ -45,7 +45,7 @@ public class BookMultiblockPage extends BookPage {
             BookTextHolder.STREAM_CODEC, BookMultiblockPage::getText,
             Identifier.STREAM_CODEC, BookMultiblockPage::getMultiblockId,
             ByteBufCodecs.BOOL, BookMultiblockPage::showVisualizeButton,
-            ByteBufCodecs.STRING_UTF8, BookPage::getAnchor,
+            ByteBufCodecs.STRING_UTF8, BookPage::getId,
             BookCondition.STREAM_CODEC, BookPage::getCondition,
             BookMultiblockPage::new
     );
@@ -57,8 +57,8 @@ public class BookMultiblockPage extends BookPage {
 
     protected Multiblock multiblock;
 
-    public BookMultiblockPage(BookTextHolder multiblockName, BookTextHolder text, Identifier multiblockId, boolean showVisualizeButton, String anchor, BookCondition condition) {
-        super(anchor, condition);
+    public BookMultiblockPage(BookTextHolder multiblockName, BookTextHolder text, Identifier multiblockId, boolean showVisualizeButton, String id, BookCondition condition) {
+        super(id, condition);
         this.multiblockName = multiblockName;
         this.text = text;
         this.multiblockId = multiblockId;

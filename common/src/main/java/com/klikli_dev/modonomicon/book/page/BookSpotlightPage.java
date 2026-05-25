@@ -40,14 +40,14 @@ public class BookSpotlightPage extends BookPage {
             BookTextHolder.CODEC.fieldOf("title").forGetter(BookSpotlightPage::getTitle),
             BookTextHolder.CODEC.fieldOf("text").forGetter(BookSpotlightPage::getText),
             ITEM_CODEC.fieldOf("item").forGetter(BookSpotlightPage::getItem),
-            Codec.STRING.optionalFieldOf("anchor", "").forGetter(BookPage::getAnchor),
+            Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
             BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition)
     ).apply(instance, BookSpotlightPage::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, BookSpotlightPage> STREAM_CODEC = StreamCodec.composite(
             BookTextHolder.STREAM_CODEC, BookSpotlightPage::getTitle,
             BookTextHolder.STREAM_CODEC, BookSpotlightPage::getText,
             ITEM_STREAM_CODEC, BookSpotlightPage::getItem,
-            ByteBufCodecs.STRING_UTF8, BookPage::getAnchor,
+            ByteBufCodecs.STRING_UTF8, BookPage::getId,
             BookCondition.STREAM_CODEC, BookPage::getCondition,
             BookSpotlightPage::new
     );
@@ -56,8 +56,8 @@ public class BookSpotlightPage extends BookPage {
     protected Either<ItemStackTemplate, Ingredient> item;
     private ItemStack cachedItemStack;
 
-    public BookSpotlightPage(BookTextHolder title, BookTextHolder text, Either<ItemStackTemplate, Ingredient> item, String anchor, BookCondition condition) {
-        super(anchor, condition);
+    public BookSpotlightPage(BookTextHolder title, BookTextHolder text, Either<ItemStackTemplate, Ingredient> item, String id, BookCondition condition) {
+        super(id, condition);
         this.title = title;
         this.text = text;
         this.item = item;
