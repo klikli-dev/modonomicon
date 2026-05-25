@@ -16,35 +16,6 @@
   },
   "id": "modonomicon:formatting/link",
   "name": "book.modonomicon.demo.formatting.link.name",
-  "pages": [
-    {
-      "type": "modonomicon:text",
-      "condition": {
-        "type": "modonomicon:none"
-      },
-      "show_title_separator": true,
-      "text": "book.modonomicon.demo.formatting.link.page1.text",
-      "title": "book.modonomicon.demo.formatting.link.page1.title"
-    },
-    {
-      "type": "modonomicon:text",
-      "condition": {
-        "type": "modonomicon:none"
-      },
-      "show_title_separator": true,
-      "text": "book.modonomicon.demo.formatting.link.page2.text",
-      "title": "book.modonomicon.demo.formatting.link.page2.title"
-    },
-    {
-      "type": "modonomicon:text",
-      "condition": {
-        "type": "modonomicon:none"
-      },
-      "show_title_separator": true,
-      "text": "book.modonomicon.demo.formatting.link.invalidLink.text",
-      "title": "book.modonomicon.demo.formatting.link.invalidLink.title"
-    }
-  ],
   "parents": [
     {
       "entry": "modonomicon:formatting/advanced"

@@ -1,0 +1,10 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "page4",
+  "show_title_separator": true,
+  "text": "book.modonomicon.demo.formatting.advanced.page4.text",
+  "title": "book.modonomicon.demo.formatting.advanced.page4.title"
+}

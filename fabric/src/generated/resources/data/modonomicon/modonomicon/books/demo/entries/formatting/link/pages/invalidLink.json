@@ -1,0 +1,10 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "invalidLink",
+  "show_title_separator": true,
+  "text": "book.modonomicon.demo.formatting.link.invalidLink.text",
+  "title": "book.modonomicon.demo.formatting.link.invalidLink.title"
+}

@@ -1,0 +1,10 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "command_link",
+  "show_title_separator": true,
+  "text": "book.modonomicon.demo.features.command.command_link.text",
+  "title": "book.modonomicon.demo.features.command.command_link.title"
+}

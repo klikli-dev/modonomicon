@@ -1,0 +1,11 @@
+{
+  "type": "modonomicon:multiblock",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "demo_fluid",
+  "multiblock_id": "modonomicon:demo_fluid",
+  "multiblock_name": "",
+  "show_visualize_button": true,
+  "text": ""
+}

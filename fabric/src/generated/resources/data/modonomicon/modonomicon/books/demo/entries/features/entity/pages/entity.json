@@ -1,0 +1,10 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "entity",
+  "show_title_separator": true,
+  "text": "book.modonomicon.demo.features.entity.entity.text",
+  "title": "book.modonomicon.demo.features.entity.entity.title"
+}

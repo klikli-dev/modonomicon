@@ -1,0 +1,10 @@
+{
+  "type": "modonomicon:spotlight",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "test_spotlight",
+  "item": "minecraft:spawner",
+  "text": "book.modonomicon.demo.features.image.test_spotlight.text",
+  "title": ""
+}

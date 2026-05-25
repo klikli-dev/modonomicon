@@ -1,0 +1,17 @@
+{
+  "type": "modonomicon:spotlight",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "spotlight4",
+  "item": {
+    "components": {
+      "minecraft:potion_contents": {
+        "potion": "minecraft:healing"
+      }
+    },
+    "id": "minecraft:potion"
+  },
+  "text": "book.modonomicon.demo.features.spotlight.spotlight4.text",
+  "title": ""
+}

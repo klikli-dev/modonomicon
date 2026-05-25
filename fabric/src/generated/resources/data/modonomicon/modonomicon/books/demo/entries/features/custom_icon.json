@@ -18,17 +18,6 @@
   },
   "id": "modonomicon:features/custom_icon",
   "name": "book.modonomicon.demo.features.custom_icon.name",
-  "pages": [
-    {
-      "type": "modonomicon:text",
-      "condition": {
-        "type": "modonomicon:none"
-      },
-      "show_title_separator": true,
-      "text": "book.modonomicon.demo.features.custom_icon.intro.text",
-      "title": "book.modonomicon.demo.features.custom_icon.intro.title"
-    }
-  ],
   "parents": [
     {
       "entry": "modonomicon:features/image"
