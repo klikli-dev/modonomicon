@@ -5,6 +5,7 @@
   },
   "id": "spotlight2",
   "item": "minecraft:diamond",
+  "sort_number": 2,
   "text": "book.modonomicon.demo.features.spotlight.spotlight2.text",
   "title": ""
 }

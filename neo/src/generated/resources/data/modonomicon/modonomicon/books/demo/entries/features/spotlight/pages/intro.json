@@ -5,6 +5,7 @@
   },
   "id": "intro",
   "show_title_separator": true,
+  "sort_number": 0,
   "text": "book.modonomicon.demo.features.spotlight.intro.text",
   "title": "book.modonomicon.demo.features.spotlight.intro.title"
 }

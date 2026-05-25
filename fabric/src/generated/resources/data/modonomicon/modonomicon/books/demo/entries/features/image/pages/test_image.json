@@ -9,6 +9,7 @@
     "modonomicon:textures/gui/default_background.png",
     "modonomicon:textures/gui/dark_slate_seamless.png"
   ],
+  "sort_number": 3,
   "text": "book.modonomicon.demo.features.image.test_image.text",
   "title": "book.modonomicon.demo.features.image.test_image.title"
 }

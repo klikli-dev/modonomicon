@@ -5,6 +5,7 @@
   },
   "id": "page2",
   "show_title_separator": true,
+  "sort_number": 1,
   "text": "book.modonomicon.demo.formatting.basic.page2.text",
   "title": ""
 }

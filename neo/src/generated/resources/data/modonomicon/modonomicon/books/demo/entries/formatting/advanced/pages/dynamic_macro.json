@@ -5,6 +5,7 @@
   },
   "id": "dynamic_macro",
   "show_title_separator": true,
+  "sort_number": 5,
   "text": "book.modonomicon.demo.formatting.advanced.dynamic_macro.text",
   "title": "book.modonomicon.demo.formatting.advanced.dynamic_macro.title"
 }

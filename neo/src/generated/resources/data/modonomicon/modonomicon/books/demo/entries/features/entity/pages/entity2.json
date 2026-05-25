@@ -6,5 +6,6 @@
   "entity_id": "minecraft:spider",
   "entity_name": "",
   "id": "entity2",
+  "sort_number": 2,
   "text": "book.modonomicon.demo.features.entity.entity2.text"
 }

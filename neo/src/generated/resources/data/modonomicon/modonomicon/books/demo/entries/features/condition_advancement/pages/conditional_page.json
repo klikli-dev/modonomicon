@@ -6,6 +6,7 @@
   },
   "id": "conditional_page",
   "show_title_separator": true,
+  "sort_number": 1,
   "text": "book.modonomicon.demo.features.condition_advancement.conditional_page.text",
   "title": "book.modonomicon.demo.features.condition_advancement.conditional_page.title"
 }

@@ -5,6 +5,7 @@
   },
   "id": "invalidLink",
   "show_title_separator": true,
+  "sort_number": 2,
   "text": "book.modonomicon.demo.formatting.link.invalidLink.text",
   "title": "book.modonomicon.demo.formatting.link.invalidLink.title"
 }
