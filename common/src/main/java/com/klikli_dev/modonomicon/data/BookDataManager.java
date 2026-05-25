@@ -524,16 +524,31 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
             try {
                 var path = entry.getKey();
                 var pathParts = path.getPath().split("/");
-                // Path: modonomicon/<book>/entries/<category>/<entry-id>/pages/<page-id>.json
-                if (pathParts.length < 6) {
-                    BookErrorManager.get().error("Invalid page file path: " + path);
+
+                // Path: modonomicon/<book>/entries/<category...>/<entry-id>/pages/<page-id>.json
+                // Find the "pages" segment to correctly handle nested categories and entry IDs
+                int pagesIdx = -1;
+                for (int i = 0; i < pathParts.length; i++) {
+                    if ("pages".equals(pathParts[i])) {
+                        pagesIdx = i;
+                        break;
+                    }
+                }
+
+                if (pagesIdx < 3) {
+                    BookErrorManager.get().error("Invalid page file path structure: " + path);
                     continue;
                 }
 
                 var bookId = Identifier.fromNamespaceAndPath(path.getNamespace(), pathParts[0]);
-                var categoryId = Identifier.fromNamespaceAndPath(path.getNamespace(), pathParts[2]);
-                var entryId = Identifier.fromNamespaceAndPath(path.getNamespace(), pathParts[3]);
-                var pageId = pathParts[5].replace(".json", "");
+
+                // Category: parts from index 2 (skip book and "entries") to pagesIdx - 1
+                var categoryPath = Arrays.stream(pathParts).skip(2).limit(pagesIdx - 2).collect(Collectors.joining("/"));
+                var categoryId = Identifier.fromNamespaceAndPath(path.getNamespace(), categoryPath);
+
+                // Entry ID: part just before "pages"
+                var entryPath = pathParts[pagesIdx - 1];
+                var entryId = Identifier.fromNamespaceAndPath(path.getNamespace(), entryPath);
 
                 BookErrorManager.get().setCurrentBookId(bookId);
                 BookErrorManager.get().getContextHelper().entryId = entryId;
@@ -571,7 +586,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
                 }
 
                 // Merge: replace inline page with same ID, or insert at sort_number
-                this.mergePageIntoEntry(contentEntry, page, pageId, sortNumber);
+                this.mergePageIntoEntry(contentEntry, page, sortNumber);
 
                 BookErrorManager.get().reset();
             } catch (Exception e) {
@@ -585,14 +600,18 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
      * Merges a single page into a BookContentEntry's page list.
      * If an inline page has the same ID, it is replaced.
      * Otherwise, the page is inserted at the given sortNumber position (default -1 = append at end).
+     * Uses the page's own ID (page.getId()) as the authoritative identifier for the merge check.
      */
-    private void mergePageIntoEntry(BookContentEntry contentEntry, BookPage page, String pageId, int sortNumber) {
+    private void mergePageIntoEntry(BookContentEntry contentEntry, BookPage page, int sortNumber) {
         var pages = contentEntry.getPages();
         // Try to find and replace an inline page with the same ID
         for (int i = 0; i < pages.size(); i++) {
             var existing = pages.get(i);
             var existingId = existing.getId();
-            if (existingId != null && existingId.equals(pageId)) {
+            if (existingId == null) {
+                continue;
+            }
+            if (existingId.equals(page.getId())) {
                 pages.set(i, page);
                 return;
             }

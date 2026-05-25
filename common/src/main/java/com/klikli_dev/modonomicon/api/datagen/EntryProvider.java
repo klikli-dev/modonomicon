@@ -86,6 +86,7 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
     protected <T extends BookPageModel<?>> T page(String page, Supplier<T> modelSupplier) {
         this.context().page(page);
         var model = modelSupplier.get();
+        model.withId(page);
         return this.add(model);
     }
 
