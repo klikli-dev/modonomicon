@@ -15,17 +15,6 @@
   },
   "id": "modonomicon:index_mode/demo2",
   "name": "book.modonomicon.demo.index_mode.demo2.name",
-  "pages": [
-    {
-      "type": "modonomicon:text",
-      "condition": {
-        "type": "modonomicon:none"
-      },
-      "show_title_separator": true,
-      "text": "book.modonomicon.demo.index_mode.demo2.intro.text",
-      "title": "book.modonomicon.demo.index_mode.demo2.intro.title"
-    }
-  ],
   "sort_number": 1,
   "x": 0,
   "y": 0

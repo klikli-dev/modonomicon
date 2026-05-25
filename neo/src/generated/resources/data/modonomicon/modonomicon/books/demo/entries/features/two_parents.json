@@ -25,17 +25,6 @@
   },
   "id": "modonomicon:features/two_parents",
   "name": "book.modonomicon.demo.features.two_parents.name",
-  "pages": [
-    {
-      "type": "modonomicon:text",
-      "condition": {
-        "type": "modonomicon:none"
-      },
-      "show_title_separator": true,
-      "text": "book.modonomicon.demo.features.two_parents.intro.text",
-      "title": "book.modonomicon.demo.features.two_parents.intro.title"
-    }
-  ],
   "parents": [
     {
       "entry": "modonomicon:features/condition_root",

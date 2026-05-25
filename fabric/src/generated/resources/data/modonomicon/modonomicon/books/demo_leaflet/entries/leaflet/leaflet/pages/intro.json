@@ -1,0 +1,11 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "intro",
+  "show_title_separator": true,
+  "sort_number": 0,
+  "text": "book.modonomicon.demo_leaflet.leaflet.leaflet.intro.text",
+  "title": "book.modonomicon.demo_leaflet.leaflet.leaflet.intro.title"
+}

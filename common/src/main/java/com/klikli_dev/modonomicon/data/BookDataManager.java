@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data;
 import com.klikli_dev.modonomicon.book.Book;
@@ -17,7 +18,9 @@ import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCommand;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
+ import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
+import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.runtime.RuntimeBookContentManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
@@ -34,6 +37,7 @@ import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
@@ -45,11 +49,14 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.Level;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -324,12 +331,13 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
     }
 
 
-    private void categorizeContent(Map<Identifier, JsonElement> content,
-                                   HashMap<Identifier, JsonObject> bookJsons,
-                                   HashMap<Identifier, JsonObject> themeJsons,
-                                   HashMap<Identifier, JsonObject> categoryJsons,
-                                   HashMap<Identifier, JsonObject> entryJsons,
-                                   HashMap<Identifier, JsonObject> commandJsons
+   private void categorizeContent(Map<Identifier, JsonElement> content,
+                                    HashMap<Identifier, JsonObject> bookJsons,
+                                    HashMap<Identifier, JsonObject> themeJsons,
+                                    HashMap<Identifier, JsonObject> categoryJsons,
+                                    HashMap<Identifier, JsonObject> entryJsons,
+                                    HashMap<Identifier, JsonObject> commandJsons,
+                                    HashMap<Identifier, JsonObject> pageJsons
     ) {
         for (var entry : content.entrySet()) {
             var pathParts = entry.getKey().getPath().split("/");
@@ -343,7 +351,19 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
                     themeJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
                 }
                 case "entries" -> {
-                    entryJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
+                    // Check if this is a page file (path contains "pages" directory)
+                    boolean isPageFile = false;
+                    for (int i = 2; i < pathParts.length - 1; i++) {
+                        if ("pages".equals(pathParts[i])) {
+                            isPageFile = true;
+                            break;
+                        }
+                    }
+                    if (isPageFile) {
+                        pageJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
+                    } else {
+                        entryJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
+                    }
                 }
                 case "categories" -> {
                     categoryJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
@@ -353,9 +373,9 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
                 }
                 default -> {
                     Modonomicon.LOG.warn("Found unknown content for book '{}': '{}'. " +
-                            "Should be one of: [File: book.json, File: theme.json, Directory: entries/, Directory: categories/, Directory: commands/]", bookId, entry.getKey());
+                            "Should be one of: [File: book.json, File: theme.json, Directory: entries/, Directory: entries/<category>/<entry>/pages/, Directory: categories/, Directory: commands/]", bookId, entry.getKey());
                     BookErrorManager.get().error(bookId, "Found unknown content for book '" + bookId + "': '" + entry.getKey() + "'. " +
-                            "Should be one of: [File: book.json, File: theme.json, Directory: entries/, Directory: categories/, Directory: commands/]");
+                            "Should be one of: [File: book.json, File: theme.json, Directory: entries/, Directory: entries/<category>/<entry>/pages/, Directory: categories/, Directory: commands/]");
                 }
             }
         }
@@ -373,7 +393,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
         var categoryJsons = new HashMap<Identifier, JsonObject>();
         var entryJsons = new HashMap<Identifier, JsonObject>();
         var commandJsons = new HashMap<Identifier, JsonObject>();
-        this.categorizeContent(content, bookJsons, themeJsons, categoryJsons, entryJsons, commandJsons);
+        var pageJsons = new HashMap<Identifier, JsonObject>();
+        this.categorizeContent(content, bookJsons, themeJsons, categoryJsons, entryJsons, commandJsons, pageJsons);
 
         var themeDataByBook = new HashMap<Identifier, BookThemeData>();
         for (var entry : themeJsons.entrySet()) {
@@ -469,6 +490,9 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
             }
         }
 
+        //Merge per-page JSON files into BookContentEntry inline page lists
+        this.mergePageJsons(pageJsons);
+
         //load commands
         for (var entry : commandJsons.entrySet()) {
             try {
@@ -498,6 +522,120 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
         BookErrorManager.get().reset();
 
         this.onLoadingComplete();
+    }
+
+    /**
+     * Merges per-page JSON files into BookContentEntry inline page lists.
+     * Pages in a file replace inline pages with the same ID.
+     * Pages without a matching inline ID are inserted at sort_number position (default: end of list).
+     */
+    private void mergePageJsons(Map<Identifier, JsonObject> pageJsons) {
+        var sortedEntries = new ArrayList<>(pageJsons.entrySet());
+        sortedEntries.sort(Comparator.comparing(e -> e.getKey().toString()));
+        for (var entry : sortedEntries) {
+            try {
+                var path = entry.getKey();
+                var pathParts = path.getPath().split("/");
+
+                // Path: modonomicon/<book>/entries/<category...>/<entry-id>/pages/<page-id>.json
+                // Find the "pages" segment to correctly handle nested categories and entry IDs
+                int pagesIdx = -1;
+                for (int i = 0; i < pathParts.length; i++) {
+                    if ("pages".equals(pathParts[i])) {
+                        pagesIdx = i;
+                        break;
+                    }
+                }
+
+                if (pagesIdx < 4) {
+                    BookErrorManager.get().error("Invalid page file path structure: " + path);
+                    continue;
+                }
+
+                var bookId = Identifier.fromNamespaceAndPath(path.getNamespace(), pathParts[0]);
+
+                // Category: all segments between "entries" and "pages" minus the entry name
+                var categoryPath = Arrays.stream(pathParts)
+                        .skip(2)
+                        .limit(pagesIdx - 3)
+                        .collect(Collectors.joining("/"));
+                var categoryId = Identifier.fromNamespaceAndPath(path.getNamespace(), categoryPath);
+
+                // Entry ID: category path + "/" + entry name (part just before "pages")
+                var entryPath = categoryPath + "/" + pathParts[pagesIdx - 1];
+                var entryId = Identifier.fromNamespaceAndPath(path.getNamespace(), entryPath);
+
+                BookErrorManager.get().setCurrentBookId(bookId);
+                BookErrorManager.get().getContextHelper().entryId = entryId;
+
+                var book = this.books.get(bookId);
+                if (book == null) {
+                    BookErrorManager.get().error("Page file references unknown book: " + bookId);
+                    continue;
+                }
+
+                var category = book.getCategory(categoryId);
+                if (category == null) {
+                    BookErrorManager.get().error("Page file references unknown category: " + categoryId);
+                    continue;
+                }
+
+                var bookEntry = category.getEntry(entryId);
+                if (bookEntry == null) {
+                    BookErrorManager.get().error("Page file references unknown entry: " + entryId);
+                    continue;
+                }
+
+                if (!(bookEntry instanceof BookContentEntry contentEntry)) {
+                    BookErrorManager.get().error("Page file references non-content entry: " + entryId);
+                    continue;
+                }
+
+                // Parse the page JSON
+                var page = BookPage.fromJson(entryId, entry.getValue(), this.registries);
+
+                // Read sort_number if present (default: -1 = append at end)
+                var sortNumber = GsonHelper.getAsInt(entry.getValue(), "sort_number", -1);
+
+                // Merge: replace inline page with same ID, or insert at sort_number
+                this.mergePageIntoEntry(contentEntry, page, sortNumber);
+
+                BookErrorManager.get().reset();
+            } catch (Exception e) {
+                BookErrorManager.get().error("Failed to load page file '" + entry.getKey() + "'", e);
+                BookErrorManager.get().reset();
+            }
+        }
+    }
+
+    /**
+     * Merges a single page into a BookContentEntry's page list.
+     * If an inline page has the same ID, it is replaced.
+     * Otherwise, the page is inserted at the given sortNumber position (default -1 = append at end).
+     * Uses the page's own ID (page.getId()) as the authoritative identifier for the merge check.
+     */
+    private void mergePageIntoEntry(BookContentEntry contentEntry, BookPage page, int sortNumber) {
+        var pages = contentEntry.getPages();
+        // Try to find and replace an inline page with the same ID
+        for (int i = 0; i < pages.size(); i++) {
+            var existing = pages.get(i);
+            var existingId = existing.getId();
+            if (existingId == null) {
+                continue;
+            }
+            if (existingId.equals(page.getId())) {
+                pages.set(i, page);
+                return;
+            }
+        }
+
+        // No matching ID — insert at sortNumber position or append
+        if (sortNumber < 0) {
+            pages.add(page);
+        } else {
+            var insertIndex = Math.min(sortNumber, pages.size());
+            pages.add(insertIndex, page);
+        }
     }
 
     public static class Client extends SimpleJsonResourceReloadListener<JsonElement> {

@@ -20,6 +20,7 @@ import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.entries.CategoryLinkBookEntry;
 import com.klikli_dev.modonomicon.book.entries.EntryLinkBookEntry;
+import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.google.gson.JsonParseException;
 import com.mojang.serialization.JsonOps;
@@ -52,6 +53,13 @@ public class BookEntryModel {
     protected Identifier entryToOpen;
 
     protected int sortNumber = -1;
+
+    /**
+     * If true (default), pages are generated as separate JSON files in
+     * `entries/&lt;entry-id&gt;/pages/&lt;page-id&gt;.json`.
+     * If false, pages are included inline in the entry's JSON (legacy behavior).
+     */
+    protected boolean generatePagesAsFiles = true;
 
     protected BookEntryModel(Identifier id, String name) {
         this.id = id;
@@ -88,8 +96,10 @@ public class BookEntryModel {
         } else if (this.entryToOpen != null) {
             entry = new EntryLinkBookEntry(this.id, data, this.commandToRunOnFirstRead, this.entryToOpen);
         } else {
-            entry = new BookContentEntry(this.id, data, this.commandToRunOnFirstRead,
-                    this.pages.stream().map(page -> page.toBookPage(provider)).collect(Collectors.toList()));
+            List<BookPage> pagesToEncode = this.generatePagesAsFiles
+                    ? List.of()
+                    : this.pages.stream().map(page -> page.toBookPage(provider)).collect(Collectors.toList());
+            entry = new BookContentEntry(this.id, data, this.commandToRunOnFirstRead, pagesToEncode);
         }
 
         return BookEntry.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), entry)
@@ -380,25 +390,61 @@ public class BookEntryModel {
     }
 
     /**
+     * Returns whether pages should be generated as separate JSON files.
+     * Default is {@code true}.
+     */
+    public boolean generatePagesAsFiles() {
+        return this.generatePagesAsFiles;
+    }
+
+    /**
+     * Controls whether pages are written as separate files.
+     * <p>
+     * If {@code true} (default), each page is written to its own file at
+     * {@code entries/<entry-id>/pages/<page-id>.json}.
+     * If {@code false}, pages are included inline in the entry's JSON (legacy behavior).
+     */
+    public BookEntryModel withGeneratePagesAsFiles(boolean generatePagesAsFiles) {
+        this.generatePagesAsFiles = generatePagesAsFiles;
+        return this;
+    }
+
+    /**
      * Replaces the entry's pages with the given list.
+     * Each page's sort number is automatically set to its position in the list if not already set.
      */
     public BookEntryModel withPages(List<BookPageModel<?>> pages) {
-        this.pages = pages;
+        for (int i = 0; i < pages.size(); i++) {
+            if (pages.get(i).getSortNumber() < 0) {
+                pages.get(i).withSortNumber(i);
+            }
+        }
+        this.pages = new ArrayList<>(pages);
         return this;
     }
 
     /**
      * Adds the given pages to the entry's pages.
+     * Each page's sort number is automatically set to its position in the list if not already set.
      */
     public BookEntryModel withPages(BookPageModel<?>... pages) {
-        this.pages.addAll(List.of(pages));
+        for (var page : pages) {
+            if (page.getSortNumber() < 0) {
+                page.withSortNumber(this.pages.size());
+            }
+            this.pages.add(page);
+        }
         return this;
     }
 
     /**
      * Adds the given page to the entry's pages.
+     * The page's sort number is automatically set to its position in the list if not already set.
      */
     public BookEntryModel withPage(BookPageModel<?> page) {
+        if (page.getSortNumber() < 0) {
+            page.withSortNumber(this.pages.size());
+        }
         this.pages.add(page);
         return this;
     }

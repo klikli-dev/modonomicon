@@ -206,7 +206,7 @@ public interface ContentRenderingScreen {
 
                                 Integer page = link.pageNumber;
                                 if (link.pageAnchor != null) {
-                                    page = entry.getPageNumberForAnchor(link.pageAnchor);
+                                    page = entry.getPageNumberForId(link.pageAnchor);
                                 }
 
                                 //if locked, append lock warning

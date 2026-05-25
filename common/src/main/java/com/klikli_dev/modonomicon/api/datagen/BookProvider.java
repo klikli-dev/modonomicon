@@ -10,7 +10,8 @@ package com.klikli_dev.modonomicon.api.datagen;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCommandModel;
-import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
+ import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.HolderLookup;
@@ -99,6 +100,18 @@ public class BookProvider implements DataProvider {
                 .resolve(id.getPath() + ".json");
     }
 
+    protected Path getPagePath(Path dataFolder, BookEntryModel bookEntryModel, String pageId) {
+        Identifier id = bookEntryModel.getId();
+        return dataFolder
+                .resolve(id.getNamespace())
+                .resolve(ModonomiconConstants.Data.MODONOMICON_DATA_PATH)
+                .resolve(bookEntryModel.getCategory().getBook().getId().getPath())
+                .resolve("entries")
+                .resolve(id.getPath())
+                .resolve("pages")
+                .resolve(pageId + ".json");
+    }
+
     @Override
     public @NotNull CompletableFuture<?> run(@NotNull CachedOutput cache) {
         return this.registries.thenCompose(registries -> {
@@ -130,6 +143,17 @@ public class BookProvider implements DataProvider {
                     for (var bookEntryModel : bookCategoryModel.getEntries()) {
                         Path bookEntryPath = this.getPath(dataFolder, bookEntryModel);
                         futures.add(DataProvider.saveStable(cache, bookEntryModel.toJson(registries), bookEntryPath));
+
+                        if (bookEntryModel.generatePagesAsFiles()) {
+                            for (var pageModel : bookEntryModel.getPages()) {
+                                String pageId = pageModel.getId();
+                                if (pageId == null || pageId.isEmpty()) {
+                                    throw new IllegalStateException("Page in entry " + bookEntryModel.getId() + " has an empty ID, but generatePagesAsFiles is enabled.");
+                                }
+                                Path pagePath = this.getPagePath(dataFolder, bookEntryModel, pageId);
+                                futures.add(DataProvider.saveStable(cache, pageModel.toJson(bookEntryModel.getId(), registries), pagePath));
+                            }
+                        }
                     }
                 }
 

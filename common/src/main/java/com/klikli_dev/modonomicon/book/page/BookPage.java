@@ -40,11 +40,11 @@ public abstract class BookPage {
     protected BookContentEntry parentEntry;
     protected int pageNumber;
 
-    protected String anchor;
+    protected String id;
     protected BookCondition condition;
 
-    public BookPage(String anchor, BookCondition condition) {
-        this.anchor = anchor;
+    public BookPage(String id, BookCondition condition) {
+        this.id = id;
         this.condition = condition;
     }
 
@@ -61,8 +61,8 @@ public abstract class BookPage {
         STREAM_CODEC.encode(buffer, page);
     }
 
-    public String getAnchor() {
-        return this.anchor;
+    public String getId() {
+        return this.id;
     }
 
     public BookCondition getCondition() {

@@ -32,7 +32,7 @@ public class BookTextPage extends BookPage {
             BookTextHolder.CODEC.fieldOf("text").forGetter(BookTextPage::getText),
             Codec.BOOL.optionalFieldOf("use_markdown_in_title", false).forGetter(BookTextPage::useMarkdownInTitle),
             Codec.BOOL.optionalFieldOf("show_title_separator", false).forGetter(BookTextPage::showTitleSeparator),
-            Codec.STRING.optionalFieldOf("anchor", "").forGetter(BookPage::getAnchor),
+            Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
             BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition)
     ).apply(instance, BookTextPage::new));
 
@@ -41,17 +41,17 @@ public class BookTextPage extends BookPage {
             BookTextHolder.STREAM_CODEC, BookTextPage::getText,
             ByteBufCodecs.BOOL, BookTextPage::useMarkdownInTitle,
             ByteBufCodecs.BOOL, BookTextPage::showTitleSeparator,
-            ByteBufCodecs.STRING_UTF8, BookPage::getAnchor,
+            ByteBufCodecs.STRING_UTF8, BookPage::getId,
             BookCondition.STREAM_CODEC, BookPage::getCondition,
-            (title, text, useMarkdownInTitle, showTitleSeparator, anchor, condition) -> new BookTextPage(title, text, useMarkdownInTitle, showTitleSeparator, anchor, condition)
+            (title, text, useMarkdownInTitle, showTitleSeparator, id, condition) -> new BookTextPage(title, text, useMarkdownInTitle, showTitleSeparator, id, condition)
     );
     protected BookTextHolder title;
     protected boolean useMarkdownInTitle;
     protected boolean showTitleSeparator;
     protected BookTextHolder text;
 
-    public BookTextPage(BookTextHolder title, BookTextHolder text, boolean useMarkdownInTitle, boolean showTitleSeparator, String anchor, BookCondition condition) {
-        super(anchor, condition);
+    public BookTextPage(BookTextHolder title, BookTextHolder text, boolean useMarkdownInTitle, boolean showTitleSeparator, String id, BookCondition condition) {
+        super(id, condition);
         this.title = title;
         this.text = text;
         this.useMarkdownInTitle = useMarkdownInTitle;

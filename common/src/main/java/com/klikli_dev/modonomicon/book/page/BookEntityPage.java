@@ -38,7 +38,7 @@ public class BookEntityPage extends BookPage {
             Codec.FLOAT.optionalFieldOf("offset", 0f).forGetter(BookEntityPage::getOffset),
             Codec.BOOL.optionalFieldOf("rotate", true).forGetter(BookEntityPage::doesRotate),
             Codec.FLOAT.optionalFieldOf("default_rotation", -45f).forGetter(BookEntityPage::getDefaultRotation),
-            Codec.STRING.optionalFieldOf("anchor", "").forGetter(BookPage::getAnchor),
+            Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
             BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition)
     ).apply(instance, BookEntityPage::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, BookEntityPage> STREAM_CODEC = StreamCodec.composite(
@@ -49,7 +49,7 @@ public class BookEntityPage extends BookPage {
             ByteBufCodecs.FLOAT, BookEntityPage::getOffset,
             ByteBufCodecs.BOOL, BookEntityPage::doesRotate,
             ByteBufCodecs.FLOAT, BookEntityPage::getDefaultRotation,
-            ByteBufCodecs.STRING_UTF8, BookPage::getAnchor,
+            ByteBufCodecs.STRING_UTF8, BookPage::getId,
             BookCondition.STREAM_CODEC, BookPage::getCondition,
             BookEntityPage::new
     );
@@ -65,8 +65,8 @@ public class BookEntityPage extends BookPage {
     protected float defaultRotation = -45f;
 
 
-    public BookEntityPage(BookTextHolder entityName, BookTextHolder text, String entityId, float scale, float offset, boolean rotate, float defaultRotation, String anchor, BookCondition condition) {
-        super(anchor, condition);
+    public BookEntityPage(BookTextHolder entityName, BookTextHolder text, String entityId, float scale, float offset, boolean rotate, float defaultRotation, String id, BookCondition condition) {
+        super(id, condition);
         this.entityName = entityName;
         this.text = text;
         this.entityId = entityId;

@@ -142,7 +142,7 @@ public class BookLink {
             throw new IllegalArgumentException("Invalid entry link, book not found: " + linkText);
         }
 
-        var pathParts = Arrays.copyOfRange(parts, entryStartIndex, parts.length);
+       var pathParts = Arrays.copyOfRange(parts, entryStartIndex, parts.length);
         if (pathParts.length < 2) {
             throw new IllegalArgumentException("Invalid entry link, expected category path and entry path: " + linkText);
         }
@@ -161,7 +161,7 @@ public class BookLink {
             throw new IllegalArgumentException("Invalid entry link, entry not found in book: " + linkText);
         }
 
-        if (bookLink.pageAnchor != null && entry.getPageNumberForAnchor(bookLink.pageAnchor) == -1) {
+        if (bookLink.pageAnchor != null && entry.getPageNumberForId(bookLink.pageAnchor) == -1) {
             throw new IllegalArgumentException("Invalid entry link, anchor not found in entry: " + linkText);
         }
 

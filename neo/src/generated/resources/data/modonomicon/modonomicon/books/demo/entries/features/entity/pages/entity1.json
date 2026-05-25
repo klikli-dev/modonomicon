@@ -1,0 +1,12 @@
+{
+  "type": "modonomicon:entity",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "entity_id": "minecraft:ender_dragon",
+  "entity_name": "book.modonomicon.demo.features.entity.entity1.title",
+  "id": "entity1",
+  "scale": 0.5,
+  "sort_number": 1,
+  "text": ""
+}

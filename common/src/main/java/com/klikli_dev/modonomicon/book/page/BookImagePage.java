@@ -37,18 +37,18 @@ public class BookImagePage extends BookPage {
             IMAGE_LIST_CODEC.fieldOf("images").forGetter(BookImagePage::imagesAsList),
             Codec.BOOL.optionalFieldOf("border", false).forGetter(BookImagePage::hasBorder),
             Codec.BOOL.optionalFieldOf("use_legacy_rendering", false).forGetter(BookImagePage::useLegacyRendering),
-            Codec.STRING.optionalFieldOf("anchor", "").forGetter(BookPage::getAnchor),
+            Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
             BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition)
-    ).apply(instance, (title, text, images, border, useLegacyRendering, anchor, condition) -> new BookImagePage(title, text, images.toArray(Identifier[]::new), border, useLegacyRendering, anchor, condition)));
+    ).apply(instance, (title, text, images, border, useLegacyRendering, id, condition) -> new BookImagePage(title, text, images.toArray(Identifier[]::new), border, useLegacyRendering, id, condition)));
     public static final StreamCodec<RegistryFriendlyByteBuf, BookImagePage> STREAM_CODEC = StreamCodec.composite(
             BookTextHolder.STREAM_CODEC, BookImagePage::getTitle,
             BookTextHolder.STREAM_CODEC, BookImagePage::getText,
             Identifier.STREAM_CODEC.apply(ByteBufCodecs.list()), BookImagePage::imagesAsList,
             ByteBufCodecs.BOOL, BookImagePage::hasBorder,
             ByteBufCodecs.BOOL, BookImagePage::useLegacyRendering,
-            ByteBufCodecs.STRING_UTF8, BookPage::getAnchor,
+            ByteBufCodecs.STRING_UTF8, BookPage::getId,
             BookCondition.STREAM_CODEC, BookPage::getCondition,
-            (title, text, images, border, useLegacyRendering, anchor, condition) -> new BookImagePage(title, text, images.toArray(Identifier[]::new), border, useLegacyRendering, anchor, condition)
+            (title, text, images, border, useLegacyRendering, id, condition) -> new BookImagePage(title, text, images.toArray(Identifier[]::new), border, useLegacyRendering, id, condition)
     );
     protected BookTextHolder title;
     protected BookTextHolder text;
@@ -56,8 +56,8 @@ public class BookImagePage extends BookPage {
     protected boolean border;
     protected boolean useLegacyRendering;
 
-    public BookImagePage(BookTextHolder title, BookTextHolder text, Identifier[] images, boolean border, boolean useLegacyRendering, String anchor, BookCondition condition) {
-        super(anchor, condition);
+    public BookImagePage(BookTextHolder title, BookTextHolder text, Identifier[] images, boolean border, boolean useLegacyRendering, String id, BookCondition condition) {
+        super(id, condition);
         this.title = title;
         this.text = text;
         this.images = images;
