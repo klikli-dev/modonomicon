@@ -113,10 +113,16 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
      * Call this in your CategoryProvider to get the entry.
      * Will automatically add the entry to the parent category.
      * <p>
-     * This overload should only be used in index mode, where no location is needed.
+     * This overload first tries to resolve a location from {@link #entryId()} via the
+     * parent category's {@code layout()} helper. If none exists, it starts at {@link Vec2#ZERO},
+     * which allows later post-generation layout mutation via {@code this.layout().entry(model)...}.
      */
     public BookEntryModel generate() {
-        return this.generate(Vec2.ZERO);
+        try {
+            return this.generate(this.parent.layout().get(this.entryId()));
+        } catch (IllegalArgumentException ignored) {
+            return this.generate(Vec2.ZERO);
+        }
     }
 
     /**
