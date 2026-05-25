@@ -147,10 +147,11 @@ public class BookProvider implements DataProvider {
                         if (bookEntryModel.generatePagesAsFiles()) {
                             for (var pageModel : bookEntryModel.getPages()) {
                                 String pageId = pageModel.getId();
-                                if (pageId != null && !pageId.isEmpty()) {
-                                    Path pagePath = this.getPagePath(dataFolder, bookEntryModel, pageId);
-                                    futures.add(DataProvider.saveStable(cache, pageModel.toJson(bookEntryModel.getId(), registries), pagePath));
+                                if (pageId == null || pageId.isEmpty()) {
+                                    throw new IllegalStateException("Page in entry " + bookEntryModel.getId() + " has an empty ID, but generatePagesAsFiles is enabled.");
                                 }
+                                Path pagePath = this.getPagePath(dataFolder, bookEntryModel, pageId);
+                                futures.add(DataProvider.saveStable(cache, pageModel.toJson(bookEntryModel.getId(), registries), pagePath));
                             }
                         }
                     }
