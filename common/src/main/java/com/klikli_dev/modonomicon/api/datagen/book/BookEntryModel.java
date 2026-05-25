@@ -411,24 +411,40 @@ public class BookEntryModel {
 
     /**
      * Replaces the entry's pages with the given list.
+     * Each page's sort number is automatically set to its position in the list if not already set.
      */
     public BookEntryModel withPages(List<BookPageModel<?>> pages) {
+        for (int i = 0; i < pages.size(); i++) {
+            if (pages.get(i).getSortNumber() < 0) {
+                pages.get(i).withSortNumber(i);
+            }
+        }
         this.pages = pages;
         return this;
     }
 
     /**
      * Adds the given pages to the entry's pages.
+     * Each page's sort number is automatically set to its position in the list if not already set.
      */
     public BookEntryModel withPages(BookPageModel<?>... pages) {
-        this.pages.addAll(List.of(pages));
+        for (var page : pages) {
+            if (page.getSortNumber() < 0) {
+                page.withSortNumber(this.pages.size());
+            }
+            this.pages.add(page);
+        }
         return this;
     }
 
     /**
      * Adds the given page to the entry's pages.
+     * The page's sort number is automatically set to its position in the list if not already set.
      */
     public BookEntryModel withPage(BookPageModel<?> page) {
+        if (page.getSortNumber() < 0) {
+            page.withSortNumber(this.pages.size());
+        }
         this.pages.add(page);
         return this;
     }

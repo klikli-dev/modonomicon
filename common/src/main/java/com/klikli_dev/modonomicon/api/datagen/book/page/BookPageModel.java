@@ -24,6 +24,7 @@ public abstract class BookPageModel<T extends BookPageModel<T>> {
     protected Identifier type;
     protected String id = "";
     protected BookConditionModel<?> condition = BookNoneConditionModel.create();
+    protected int sortNumber = -1;
 
     protected BookPageModel(Identifier type) {
         this.type = type;
@@ -41,9 +42,13 @@ public abstract class BookPageModel<T extends BookPageModel<T>> {
      * Serializes the model to json.
      */
     public JsonObject toJson(Identifier entryId, HolderLookup.Provider provider) {
-        return BookPage.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), this.toBookPage(provider))
+        JsonObject json = BookPage.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), this.toBookPage(provider))
                 .getOrThrow(JsonParseException::new)
                 .getAsJsonObject();
+        if (this.sortNumber >= 0) {
+            json.addProperty("sort_number", this.sortNumber);
+        }
+        return json;
     }
 
     protected BookCondition condition(HolderLookup.Provider provider) {
@@ -60,6 +65,21 @@ public abstract class BookPageModel<T extends BookPageModel<T>> {
 
     public T withCondition(@NotNull BookConditionModel<?> condition) {
         this.condition = condition;
+        //noinspection unchecked
+        return (T) this;
+    }
+
+    public int getSortNumber() {
+        return this.sortNumber;
+    }
+
+    /**
+     * Sets the page's sort number.
+     * Pages with a lower sort number will be displayed first.
+     * If no sort number is set (default -1), the page is appended at the end.
+     */
+    public T withSortNumber(int sortNumber) {
+        this.sortNumber = sortNumber;
         //noinspection unchecked
         return (T) this;
     }
