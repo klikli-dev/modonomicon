@@ -13,13 +13,16 @@ The following attributes are available for all page types
 The type of page, it determines which loader is used to load the json data and how the page will be displayed.
 Needs to be fully qualified `domain:name`, e.g. `modonomicon:text`.
 
-### **id** (String, _optional_)
+### **id** (String, _mandatory_)
 
-A string to uniquely identify the page within the entry it belongs to. Used when pages are defined as separate files to match the page to its entry. Also allows linking to specific pages and is more robust than using the page's array index when pages are reordered or removed.
+A string to uniquely identify the page within the entry it belongs to.
+This is used when pages are defined as separate files, when page files are merged into inline pages, and when linking to a specific page.
+Using page ids is more robust than using the page's array index when pages are reordered or removed.
 
-### **anchor** (String, _optional_)
+### **condition** (Condition, _optional_)
 
-A string to uniquely identify the page within the entry it belongs to. Allows to link to specific pages even if the number of pages changes.
+Like entries and categories, pages can be hidden until an Unlock Condition is fulfilled.
+See **[Unlock Conditions](../unlock-conditions)** for details.
 
 ### A note on texts
 

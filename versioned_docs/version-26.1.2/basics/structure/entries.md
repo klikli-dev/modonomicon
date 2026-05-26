@@ -9,6 +9,23 @@ Entries are defined in json files placed in the `/data/<mod_id>/modonomicon/book
 
 ## Attributes
 
+### **type** (ResourceLocation, _mandatory_)
+
+The entry type.
+
+Builtin entry types are:
+
+- `modonomicon:content` for normal entries with `pages`
+- `modonomicon:category_link` for entries that open another category via `category_to_open`
+- `modonomicon:entry_link` for entries that open another entry via `entry_to_open`
+
+### **id** (ResourceLocation, _mandatory_)
+
+The unique id of this entry within the book.
+
+This is the id used by links and parent references.
+For entries stored in `entries/<category_id>/`, this is typically the full path including the category folder, for example `yourmod:features/my_entry`.
+
 ### **category** (ResourceLocation, _mandatory_)
 
 The ResourceLocation of the category this entry should be placed in. 
@@ -140,7 +157,9 @@ A parent connection does not imply an unlock condition or any logical dependency
 
 ### **pages** (Page[], _optional_)
 
-Pages are JSON Objects that define the actual book content. See [Page Types](../page-types/page-types.md) for the available types of pages.
+Pages are JSON Objects that define the actual book content.
+This is used by `modonomicon:content` entries.
+See [Page Types](../page-types/page-types.md) for the available types of pages.
 
 #### Pages as Files
 
@@ -171,7 +190,13 @@ Each page file contains a single page JSON object:
 }
 ```
 
-The `id` attribute uniquely identifies the page within the entry and is used to match page files to the entry during loading. The `type` attribute determines how the page renders (e.g., `modonomicon:text`, `modonomicon:spotlight`).
+The `id` attribute is mandatory. It uniquely identifies the page within the entry and is used for page-file loading, page replacement/merging, and entry links that target a specific page.
+There is no separate page `anchor` property anymore; the `@...` part of an entry link resolves against the page `id`.
+
+The `type` attribute determines how the page renders (e.g., `modonomicon:text`, `modonomicon:spotlight`).
+
+Page files can also include an optional `sort_number` integer.
+If present, pages without a matching inline page id are inserted at that position during merge; otherwise they are appended.
 
 **Datagen:** Pages-as-files is the default behavior. Use `BookEntryModel#withGeneratePagesAsFiles(false)` to generate pages inline in the entry JSON instead.
 
@@ -179,6 +204,8 @@ The `id` attribute uniquely identifies the page within the entry and is used to 
 
 The resource location to the category that should be opened when this entry is clicked. 
 If this is set, the entry will never show it's pages, but instead open the category directly.
+
+Use this on entries with `"type": "modonomicon:category_link"`.
 
 :::tip
 
@@ -201,6 +228,8 @@ This can be used to e.g. give rewards to players for reaching a certain part of 
 
 The resource location to the entry that should be opened when this entry is clicked. This allows to place one entry in multiple categories by referring to it multiple times.
 If this is set, the entry will never show it's pages, but instead open the target entry.
+
+Use this on entries with `"type": "modonomicon:entry_link"`.
 
 ## Parents 
 
@@ -231,6 +260,8 @@ This does not affect the direction of the arrow.
 
 ```json 
 {
+  "type": "modonomicon:content",
+  "id": "modonomicon:test_category/multiblock",
   "name": "multiblock",
   "description": "modonomicon.test.entries.test_category.multiblock.description",
   "icon": "minecraft:chest",

@@ -81,6 +81,20 @@ Moves the read-all button vertically.
 Default value: `1.0`.
 Scales category icons.
 
+### **content** (JSON Object, _optional_)
+
+Controls theme content sprites.
+
+#### **default_category_button_sprite** (Sprite JSON Object, _optional_)
+
+Overrides the default sprite used for category buttons when a category does not provide its own `category_button_sprite`.
+
+The sprite JSON object uses the normal sprite structure:
+
+- `sprite` (ResourceLocation, mandatory)
+- `width` (Integer, optional)
+- `height` (Integer, optional)
+
 ### **palette** (JSON Object, _optional_)
 
 Controls theme colors.
@@ -181,6 +195,13 @@ Base ARGB color used when both ends are visible but not yet settled.
     "search_button_y_offset": 0,
     "read_all_button_y_offset": 0,
     "category_button_icon_scale": 1.0
+  },
+  "content": {
+    "default_category_button_sprite": {
+      "sprite": "yourmod:modonomicon/themes/eldritch/content/buttons/category_button",
+      "width": 24,
+      "height": 24
+    }
   },
   "palette": {
     "default_title_color": -1,

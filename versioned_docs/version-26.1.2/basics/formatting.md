@@ -152,10 +152,10 @@ If `<book-id>` is ommitted the current book is assumed.
   
 #### Entry Link
 
-Opens an entry (in the same book, or in another book), optionally at either a given page number or page anchor.
+Opens an entry (in the same book, or in another book), optionally at either a given page number or page id.
 Syntax: 
-- `[display text](entry://<book-id>/<entry-id>[#page-number][@page-anchor])`.
-- `[display text](entry://<entry-id>[#page-number][@page-anchor])`.
+- `[display text](entry://<book-id>/<entry-id>[#page-number][@page-id])`.
+- `[display text](entry://<entry-id>[#page-number][@page-id])`.
 
 :::tip 
 

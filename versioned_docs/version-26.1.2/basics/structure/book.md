@@ -80,20 +80,6 @@ Default value: `misc`.
 The creative tab for the automatically generated book item.
 Ignored if `generate_book_item` is `false`.
 
-### **auto_add_read_conditions** (Boolean, _optional_)
-
-Default value: `false`.
-If true, the book automatically generates an entry-read condition for each entry.
-This is useful if you want players to read the book in order.
-
-See also [Unlock Conditions](../unlock-conditions/) for details.
-
-:::tip
-
-Categories are not affected by this. Category conditions still need to be added manually.
-
-:::
-
 ### **font** (ResourceLocation, _optional_)
 
 Default value: `modonomicon:default`.
@@ -186,7 +172,6 @@ The following settings used to live in `book.json`, but now belong in **[theme.j
   "font": "modonomicon:default",
   "page_display_mode": "double_page",
   "turn_page_sound": "minecraft:turn_page",
-  "auto_add_read_conditions": false,
   "allow_open_book_with_invalid_links": false,
   "show_recently_unlocked": true
 }
