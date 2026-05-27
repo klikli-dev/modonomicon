@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-1.145.2] - 2026-05-27
+### :bug: Bug Fixes
+- [`524156e`](https://github.com/klikli-dev/modonomicon/commit/524156ef2f88954cb0cb52c7b16b41d4eccd6299) - invalid link parser safety *(PR [#367](https://github.com/klikli-dev/modonomicon/pull/367) by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.2-1.145.1] - 2026-05-27
 ### :bug: Bug Fixes
 - [`7b5bb10`](https://github.com/klikli-dev/modonomicon/commit/7b5bb10a0f043200305180f60d6786aaad694e68) - tighten datagen layout resolution and add javadoc *(PR [#365](https://github.com/klikli-dev/modonomicon/pull/365) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2232,3 +2237,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-1.144.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.143.0...release/v26.1.2-1.144.0
 [release/v26.1.2-1.145.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.144.0...release/v26.1.2-1.145.0
 [release/v26.1.2-1.145.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.145.0...release/v26.1.2-1.145.1
+[release/v26.1.2-1.145.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.145.1...release/v26.1.2-1.145.2
