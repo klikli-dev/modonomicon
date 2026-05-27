@@ -28,10 +28,6 @@ dependencies {
     compileOnly group: 'org.spongepowered', name: 'mixin', version: "${mixin_version}"
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: "${jsr305_version}"
 
-    testImplementation platform('org.junit:junit-bom:5.10.2')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
 //    Jei
     compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
 
@@ -46,10 +42,6 @@ import net.fabricmc.loom.task.AbstractRemapJarTask
 
 tasks.withType(AbstractRemapJarTask).each {
     it.targetNamespace = "named"
-}
-
-test {
-    useJUnitPlatform()
 }
 
 

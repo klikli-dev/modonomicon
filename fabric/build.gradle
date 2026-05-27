@@ -14,11 +14,6 @@ base {
     archivesName = "${mod_id}-${minecraft_version}-fabric"
 }
 
-test {
-    //for some reason fabric discovers a test directory, but because none exists, it then does not find tests and fails.
-    failOnNoDiscoveredTests = false
-}
-
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
 

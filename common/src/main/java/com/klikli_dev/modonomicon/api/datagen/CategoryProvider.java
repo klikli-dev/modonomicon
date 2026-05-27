@@ -26,18 +26,12 @@ public abstract class CategoryProvider extends CategoryProviderBase {
     public CategoryProvider(ModonomiconProviderBase parent) {
         super(parent, parent.modId(), parent.lang(), parent.langsAsMapOfBiConsumers(), parent.context(), parent.condition());
         this.entryMap = new CategoryEntryMap();
-        this.layout = CategoryLayout.relativeEntryLayout();
         this.category = null;
         this.currentSortIndex = 0;
     }
 
     public CategoryEntryMap entryMap() {
         return this.entryMap;
-    }
-
-    @Override
-    public CategoryLayout layout() {
-        return this.layout;
     }
 
     @Override

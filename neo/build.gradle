@@ -81,11 +81,6 @@ dependencies {
     jarJar(group: 'org.commonmark', name: 'commonmark-ext-ins', version: "[${commonmark_version},)")
 }
 
-//Disable test compilation as a) we are not using tests and b) it fails due to not being able to access jei in common
-compileTestJava {
-    enabled = false
-}
-
 // NeoGradle compiles the game, but we don't want to add our common code to the game's code
 TaskCollection.metaClass.excludingNeoTasks = { ->
     delegate.matching { !it.name.startsWith("neo") }
