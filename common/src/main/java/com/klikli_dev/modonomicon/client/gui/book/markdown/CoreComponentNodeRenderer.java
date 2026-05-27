@@ -6,10 +6,13 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
+import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.internal.renderer.BulletListHolder;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.internal.renderer.OrderedListHolder;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
@@ -101,25 +104,52 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
 
     @Override
     public void visit(Link link) {
-        for (var renderer : this.context.getLinkRenderers()) {
-            if (renderer.visit(link, this::visitChildren, this.context)) {
-                return;
+        try {
+            for (var renderer : this.context.getLinkRenderers()) {
+                if (renderer.visit(link, this::visitChildren, this.context)) {
+                    return;
+                }
             }
-        }
 
-        //if no link renderer, we just do a http link
+            //if no link renderer, we just do a http link
+            var currentColor = this.context.getCurrentStyle().getColor();
+            var hoverComponent = Component.translatable(Gui.HOVER_HTTP_LINK, link.getDestination());
+            //if we have a color we use it, otherwise we use link default.
+            this.context.setCurrentStyle(this.context.getCurrentStyle()
+                    .withColor(currentColor == null ? this.context.getLinkColor() : currentColor)
+                    .withClickEvent(new ClickEvent.OpenUrl(URI.create(link.getDestination())))
+                    .withHoverEvent(new HoverEvent.ShowText(hoverComponent))
+            );
+
+            this.visitChildren(link);
+
+            //at the end of the link we reset to our previous color.
+            this.context.setCurrentStyle(this.context.getCurrentStyle()
+                    .withColor(currentColor)
+                    .withClickEvent(null)
+                    .withHoverEvent(null)
+            );
+        } catch (Exception e) {
+            this.renderBrokenLink(link, e);
+        }
+    }
+
+    private void renderBrokenLink(Link link, Exception exception) {
+        var blocksOpening = !this.context.getBook().allowOpenBooksWithInvalidLinks();
+        BookErrorManager.get().error("Failed to parse markdown link '" + link.getDestination() + "'", exception, blocksOpening);
+        Modonomicon.LOG.error("Failed to parse markdown link. allowOpenBooksWithInvalidLinks = {}, blocksOpening = {}. Original error:",
+                this.context.getBook().allowOpenBooksWithInvalidLinks(), blocksOpening, exception);
+
         var currentColor = this.context.getCurrentStyle().getColor();
-        var hoverComponent = Component.translatable(Gui.HOVER_HTTP_LINK, link.getDestination());
-        //if we have a color we use it, otherwise we use link default.
+        var hoverComponent = Component.translatable(Gui.HOVER_LINK_ERROR, link.getDestination()).withStyle(ChatFormatting.RED);
         this.context.setCurrentStyle(this.context.getCurrentStyle()
-                .withColor(currentColor == null ? this.context.getLinkColor() : currentColor)
-                .withClickEvent(new ClickEvent.OpenUrl(URI.create(link.getDestination())))
+                .withColor(ChatFormatting.RED)
+                .withClickEvent(null)
                 .withHoverEvent(new HoverEvent.ShowText(hoverComponent))
         );
 
         this.visitChildren(link);
 
-        //at the end of the link we reset to our previous color.
         this.context.setCurrentStyle(this.context.getCurrentStyle()
                 .withColor(currentColor)
                 .withClickEvent(null)
