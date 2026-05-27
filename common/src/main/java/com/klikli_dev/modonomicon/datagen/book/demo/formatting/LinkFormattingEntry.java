@@ -77,7 +77,7 @@ public class LinkFormattingEntry extends EntryProvider {
         this.pageText("""
                 {0}
                 """,
-                this.entryLink("It has an invalid Link", "a_cat", "an_entry")
+                this.entryLink("This is an invalid link.", "a_cat", "an_entry")
         );
     }
 
