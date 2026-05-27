@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.book;
 
+import com.mojang.datafixers.util.Either;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -18,6 +19,12 @@ public class RenderedBookTextHolder extends BookTextHolder {
     private final List<MutableComponent> renderedText;
 
     public RenderedBookTextHolder(BookTextHolder original, List<MutableComponent> renderedText) {
+        if (original == null) {
+            throw new IllegalArgumentException("original cannot be null");
+        }
+        if (renderedText == null) {
+            throw new IllegalArgumentException("renderedText cannot be null");
+        }
         this.original = original;
         this.renderedText = renderedText;
     }
@@ -49,5 +56,10 @@ public class RenderedBookTextHolder extends BookTextHolder {
     @Override
     public void toNetwork(RegistryFriendlyByteBuf buffer) {
         this.original.toNetwork(buffer);
+    }
+
+    @Override
+    protected Either<String, Component> toSerializableValue() {
+        return this.original.toSerializableValue();
     }
 }
