@@ -38,7 +38,7 @@ public class BookErrorScreen extends Screen {
 
     public void renderError(GuiGraphicsExtractor guiGraphics, Component text, int x, int y, int width) {
         for (FormattedCharSequence formattedcharsequence : this.font.split(text, width)) {
-            guiGraphics.text(this.font, formattedcharsequence, x, y, 1, false);
+            guiGraphics.text(this.font, formattedcharsequence, x, y, 0xFF000000, false);
             y += this.font.lineHeight;
         }
     }
