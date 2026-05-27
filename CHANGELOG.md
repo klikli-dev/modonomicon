@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-1.145.1] - 2026-05-27
+### :bug: Bug Fixes
+- [`7b5bb10`](https://github.com/klikli-dev/modonomicon/commit/7b5bb10a0f043200305180f60d6786aaad694e68) - tighten datagen layout resolution and add javadoc *(PR [#365](https://github.com/klikli-dev/modonomicon/pull/365) by [@klikli-dev](https://github.com/klikli-dev))*
+- [`df721ad`](https://github.com/klikli-dev/modonomicon/commit/df721add88465f87a29be553fe483d17a4214d3f) - default generated entries to zero layout *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`43f7704`](https://github.com/klikli-dev/modonomicon/commit/43f770436525645e083cbccceeb2d1bb51dea6d0) - disable test build *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.2-1.145.0] - 2026-05-25
 ### :sparkles: New Features
 - [`9f8d75d`](https://github.com/klikli-dev/modonomicon/commit/9f8d75dd2face87cfc2753efe172f2ddba497aef) - allow pages to be supplied as separate JSON files *(PR [#362](https://github.com/klikli-dev/modonomicon/pull/362) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2224,3 +2231,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-1.143.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.142.0...release/v26.1.2-1.143.0
 [release/v26.1.2-1.144.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.143.0...release/v26.1.2-1.144.0
 [release/v26.1.2-1.145.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.144.0...release/v26.1.2-1.145.0
+[release/v26.1.2-1.145.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.145.0...release/v26.1.2-1.145.1
