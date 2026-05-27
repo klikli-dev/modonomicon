@@ -116,11 +116,11 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
      * This overload resolves a location from {@link #entryId()} via the parent category's
      * {@code layout()} helper.
      * <p>
-     * If no layout position exists for the entry id, datagen fails fast with an
-     * {@link IllegalArgumentException} so misconfigured layouts are caught immediately.
+     * If no explicit layout position exists yet, the entry starts at {@link Vec2#ZERO}, which allows later
+     * post-generation layout mutation via {@code this.layout().entry(model)...}.
      */
     public BookEntryModel generate() {
-        return this.generate(this.parent.layout().get(this.entryId()));
+        return this.generate(this.parent.layout().getOrDefault(this.entryId(), Vec2.ZERO));
     }
 
     /**

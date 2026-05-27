@@ -79,10 +79,26 @@ public class CategoryLayout {
     }
 
     /**
+     * Returns the configured screen-space position for the given entry id, or {@code fallback} if the layout
+     * does not currently define one.
+     */
+    public Vec2 getOrDefault(String id, Vec2 fallback) {
+        return this.entries.getOrDefault(id, fallback);
+    }
+
+    /**
      * Returns the explicitly configured screen-space position for the given provider's entry id.
      */
     public Vec2 get(EntryProvider provider) {
         return this.get(provider.entryId());
+    }
+
+    /**
+     * Returns the configured screen-space position for the given provider's entry id, or {@code fallback} if
+     * the layout does not currently define one.
+     */
+    public Vec2 getOrDefault(EntryProvider provider, Vec2 fallback) {
+        return this.getOrDefault(provider.entryId(), fallback);
     }
 
     /**
