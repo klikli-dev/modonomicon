@@ -52,12 +52,21 @@ public class BookErrorManager {
         return holder != null && !holder.getErrors().isEmpty();
     }
 
+    public boolean hasBlockingErrors(Identifier book) {
+        var holder = this.booksErrors.get(book);
+        return holder != null && holder.hasBlockingErrors();
+    }
+
     public void error(String message) {
         this.error(new BookErrorInfo(message, null, this.currentContext));
     }
 
     public void error(String message, Exception exception) {
         this.error(new BookErrorInfo(message, exception, this.currentContext));
+    }
+
+    public void error(String message, Exception exception, boolean blocksOpening) {
+        this.error(new BookErrorInfo(message, exception, this.currentContext, blocksOpening));
     }
 
     public void error(BookErrorInfo error) {
@@ -70,6 +79,10 @@ public class BookErrorManager {
 
     public void error(Identifier book, String message, Exception exception) {
         this.error(book, new BookErrorInfo(message, exception, this.currentContext));
+    }
+
+    public void error(Identifier book, String message, Exception exception, boolean blocksOpening) {
+        this.error(book, new BookErrorInfo(message, exception, this.currentContext, blocksOpening));
     }
 
     public void error(Identifier book, BookErrorInfo error) {

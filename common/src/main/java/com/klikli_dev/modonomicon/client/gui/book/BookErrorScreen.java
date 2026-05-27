@@ -38,7 +38,7 @@ public class BookErrorScreen extends Screen {
 
     public void renderError(GuiGraphicsExtractor guiGraphics, Component text, int x, int y, int width) {
         for (FormattedCharSequence formattedcharsequence : this.font.split(text, width)) {
-            guiGraphics.text(this.font, formattedcharsequence, x, y, 1, false);
+            guiGraphics.text(this.font, formattedcharsequence, x, y, 0xFF000000, false);
             y += this.font.lineHeight;
         }
     }
@@ -49,7 +49,10 @@ public class BookErrorScreen extends Screen {
             this.errorText = Component.translatable(Gui.NO_ERRORS_FOUND);
             Modonomicon.LOG.warn("No errors found for book {}, but error screen was opened!", this.book.getId());
         } else {
-            var firstError = errorHolder.getErrors().get(0);
+            var firstError = errorHolder.getFirstBlockingError();
+            if (firstError == null) {
+                firstError = errorHolder.getErrors().get(0);
+            }
 
             var errorString = firstError.toString();
             if (errorHolder.getErrors().size() > 1) {

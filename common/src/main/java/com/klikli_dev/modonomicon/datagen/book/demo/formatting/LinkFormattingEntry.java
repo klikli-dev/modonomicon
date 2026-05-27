@@ -69,7 +69,7 @@ public class LinkFormattingEntry extends EntryProvider {
 //        );
 
 
-        this.page("invalidLink", () -> BookTextPageModel.create()
+        this.page("invalid_link", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText())
         );
@@ -77,7 +77,7 @@ public class LinkFormattingEntry extends EntryProvider {
         this.pageText("""
                 {0}
                 """,
-                this.entryLink("It has an invalid Link", "a_cat", "an_entry")
+                this.entryLink("This is an invalid link.", "a_cat", "an_entry")
         );
     }
 

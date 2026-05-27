@@ -72,7 +72,7 @@ public class BookGuiManager {
     }
 
     protected boolean showErrorScreen(Identifier bookId) {
-        if (BookErrorManager.get().hasErrors(bookId)) {
+        if (BookErrorManager.get().hasBlockingErrors(bookId)) {
             var book = BookDataManager.get().getBook(bookId);
             Minecraft.getInstance().setScreen(new BookErrorScreen(book));
             return true;
@@ -425,6 +425,7 @@ public class BookGuiManager {
         }
 
         if (this.showErrorScreen(bookId)) {
+            return;
         }
 
         this.keepMousePosition(() -> {
