@@ -491,7 +491,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
         }
 
         //Merge per-page JSON files into BookContentEntry inline page lists
-        this.mergePageJsons(pageJsons);
+        this.mergePageJsons(pageJsons, categoryJsons, entryJsons);
 
         //load commands
         for (var entry : commandJsons.entrySet()) {
@@ -529,7 +529,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
      * Pages in a file replace inline pages with the same ID.
      * Pages without a matching inline ID are inserted at sort_number position (default: end of list).
      */
-    private void mergePageJsons(Map<Identifier, JsonObject> pageJsons) {
+    private void mergePageJsons(Map<Identifier, JsonObject> pageJsons, Map<Identifier, JsonObject> categoryJsons, Map<Identifier, JsonObject> entryJsons) {
         var sortedEntries = new ArrayList<>(pageJsons.entrySet());
         sortedEntries.sort(Comparator.comparing(e -> e.getKey().toString()));
         for (var entry : sortedEntries) {
@@ -564,9 +564,21 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
                 // Entry ID: category path + "/" + entry name (part just before "pages")
                 var entryPath = categoryPath + "/" + pathParts[pagesIdx - 1];
                 var entryId = Identifier.fromNamespaceAndPath(path.getNamespace(), entryPath);
+                var categoryJsonKey = Identifier.fromNamespaceAndPath(path.getNamespace(), pathParts[0] + "/categories/" + categoryId.getPath());
+                var entryJsonKey = Identifier.fromNamespaceAndPath(path.getNamespace(), pathParts[0] + "/entries/" + entryId.getPath());
 
                 BookErrorManager.get().setCurrentBookId(bookId);
                 BookErrorManager.get().getContextHelper().entryId = entryId;
+
+                var categoryJson = categoryJsons.get(categoryJsonKey);
+                if (categoryJson != null && !this.testConditionOnLoad(categoryId, categoryJson, this.registries)) {
+                    continue;
+                }
+
+                var entryJson = entryJsons.get(entryJsonKey);
+                if (entryJson != null && !this.testConditionOnLoad(entryId, entryJson, this.registries)) {
+                    continue;
+                }
 
                 var book = this.books.get(bookId);
                 if (book == null) {
