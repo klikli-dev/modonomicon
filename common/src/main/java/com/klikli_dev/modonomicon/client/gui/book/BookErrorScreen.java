@@ -49,7 +49,10 @@ public class BookErrorScreen extends Screen {
             this.errorText = Component.translatable(Gui.NO_ERRORS_FOUND);
             Modonomicon.LOG.warn("No errors found for book {}, but error screen was opened!", this.book.getId());
         } else {
-            var firstError = errorHolder.getErrors().get(0);
+            var firstError = errorHolder.getFirstBlockingError();
+            if (firstError == null) {
+                firstError = errorHolder.getErrors().get(0);
+            }
 
             var errorString = firstError.toString();
             if (errorHolder.getErrors().size() > 1) {

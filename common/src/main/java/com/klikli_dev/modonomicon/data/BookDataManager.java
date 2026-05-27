@@ -191,7 +191,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
             //TODO: allow modders to configure this renderer
             var textRenderer = new BookTextRenderer(book, provider);
 
-            if (!BookErrorManager.get().hasErrors(book.getId())) {
+            if (!BookErrorManager.get().hasBlockingErrors(book.getId())) {
                 try {
                     book.prerenderMarkdown(textRenderer);
                 } catch (Exception e) {
