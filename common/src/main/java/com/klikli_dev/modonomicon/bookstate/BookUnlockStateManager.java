@@ -108,6 +108,11 @@ public class BookUnlockStateManager {
         this.syncFor(player);
     }
 
+    public void clearResearchBackedUnlocksFor(ServerPlayer player) {
+        this.getStateFor(player).clearResearchBackedUnlocks();
+        this.saveData.setDirty();
+    }
+
     public boolean isUnlockedFor(Player player, BookCategory category) {
         return this.getStateFor(player).isUnlocked(category);
     }

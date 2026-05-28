@@ -25,6 +25,8 @@ import com.klikli_dev.modonomicon.datagen.DataGenerators;
 import com.klikli_dev.modonomicon.integration.LecternIntegration;
 import com.klikli_dev.modonomicon.item.IsBookOpen;
 import com.klikli_dev.modonomicon.network.Networking;
+import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
+import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
 import com.klikli_dev.modonomicon.registry.RegistryBootstrap;
@@ -85,6 +87,8 @@ public class ModonomiconNeo {
 
             MultiblockDataManager.get().registries(e.getRegistryAccess());
             e.addListener(Modonomicon.loc("multiblock_data_manager"), MultiblockDataManager.get());
+
+            e.addListener(Modonomicon.loc("research_data_manager"), ResearchDataManager.get());
         });
 
         //register commands
@@ -100,6 +104,7 @@ public class ModonomiconNeo {
             if (e.getPlayer() != null) {
                 BookDataManager.get().onDatapackSync(e.getPlayer());
                 MultiblockDataManager.get().onDatapackSync(e.getPlayer());
+                ResearchStateManager.get().onDatapackSync(e.getPlayer());
             }
         });
 
@@ -108,6 +113,7 @@ public class ModonomiconNeo {
             if (e.getEntity() instanceof ServerPlayer player) {
                 BookUnlockStateManager.get().updateAndSyncFor(player);
                 BookVisualStateManager.get().syncFor(player);
+                ResearchStateManager.get().onDatapackSync(player);
             }
         });
 
@@ -118,6 +124,7 @@ public class ModonomiconNeo {
             if (e.getLevel() instanceof Level level && level.dimension() == Level.OVERWORLD) {
                 BookUnlockStateManager.get().saveData = null;
                 BookVisualStateManager.get().saveData = null;
+                ResearchStateManager.get().clearCachedSaveData();
             }
         });
 
@@ -128,6 +135,7 @@ public class ModonomiconNeo {
         //We use server tick to flush the queue of players that need a book state sync
         NeoForge.EVENT_BUS.addListener(((ServerTickEvent.Post e) -> {
             BookUnlockStateManager.get().onServerTickEnd(e.getServer());
+            ResearchStateManager.get().onServerTickEnd(e.getServer());
         }));
 
         //Datagen

@@ -14,6 +14,7 @@ import com.klikli_dev.modonomicon.datagen.book.AddToDemoBook;
 import com.klikli_dev.modonomicon.datagen.book.DemoBook;
 import com.klikli_dev.modonomicon.datagen.book.DemoIndexBook;
 import com.klikli_dev.modonomicon.datagen.book.DemoLeaflet;
+import com.klikli_dev.modonomicon.research.data.ResearchDataProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.data.event.GatherDataEvent;
 
@@ -55,5 +56,6 @@ public class DataGenerators {
         var blockTagsProvider = new BlockTagsProvider(generator.getPackOutput(), event.getLookupProvider(), event.getExistingFileHelper());
         generator.addProvider(event.includeClient(), blockTagsProvider);
         generator.addProvider(event.includeClient(), new ItemTagsProvider(generator.getPackOutput(), event.getLookupProvider(), event.getExistingFileHelper()));
+        generator.addProvider(event.includeServer(), new ResearchDataProvider(generator.getPackOutput()));
     }
 }

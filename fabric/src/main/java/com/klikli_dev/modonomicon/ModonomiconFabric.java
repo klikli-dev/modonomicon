@@ -12,6 +12,8 @@ import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.config.ServerConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
+import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
+import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
 import com.klikli_dev.modonomicon.registry.RegistryBootstrap;
 import com.klikli_dev.modonomicon.integration.LecternIntegration;
 import com.klikli_dev.modonomicon.network.Networking;
@@ -65,6 +67,7 @@ public class ModonomiconFabric implements ModInitializer {
             MultiblockDataManager.get().registries(sharedState.get(ResourceLoader.REGISTRY_LOOKUP_KEY));
             return MultiblockDataManager.get().reload(sharedState, exectutor, barrier, applyExectutor);
         });
+        ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(Modonomicon.loc("research_data_manager"), (sharedState, exectutor, barrier, applyExectutor) -> ResearchDataManager.get().reload(sharedState, exectutor, barrier, applyExectutor));
 
         //register commands
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
@@ -76,12 +79,14 @@ public class ModonomiconFabric implements ModInitializer {
         ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {
             BookDataManager.get().onDatapackSync(player);
             MultiblockDataManager.get().onDatapackSync(player);
+            ResearchStateManager.get().onDatapackSync(player);
         });
 
         //sync book state on player join
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             BookUnlockStateManager.get().updateAndSyncFor(handler.getPlayer());
             BookVisualStateManager.get().syncFor(handler.getPlayer());
+            ResearchStateManager.get().onDatapackSync(handler.getPlayer());
         });
 
         //on overworld unload clear the save data reference in the state manager
@@ -91,6 +96,7 @@ public class ModonomiconFabric implements ModInitializer {
             if (level.dimension() == Level.OVERWORLD) {
                 BookUnlockStateManager.get().saveData = null;
                 BookVisualStateManager.get().saveData = null;
+                ResearchStateManager.get().clearCachedSaveData();
             }
         });
 
@@ -99,6 +105,7 @@ public class ModonomiconFabric implements ModInitializer {
         //We use server tick to flush the queue of players that need a book state sync
         ServerTickEvents.END_SERVER_TICK.register((server) -> {
             BookUnlockStateManager.get().onServerTickEnd(server);
+            ResearchStateManager.get().onServerTickEnd(server);
         });
 
         //Advancement event handling for condition/unlock system

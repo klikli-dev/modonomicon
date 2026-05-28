@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.datagen.book.AddToDemoBook;
 import com.klikli_dev.modonomicon.datagen.book.DemoBook;
 import com.klikli_dev.modonomicon.datagen.book.DemoIndexBook;
 import com.klikli_dev.modonomicon.datagen.book.DemoLeaflet;
+import com.klikli_dev.modonomicon.research.data.ResearchDataProvider;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
@@ -51,5 +52,6 @@ public class DataGenerators implements DataGeneratorEntrypoint {
         pack.addProvider(ModonomiconModelProvider::new);
 
         pack.addProvider(ItemTagsProvider::new);
+        pack.addProvider((FabricPackOutput output) -> new ResearchDataProvider(output));
     }
 }

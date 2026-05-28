@@ -13,6 +13,7 @@ public class ModonomiconConstants {
     public static class Data {
         public static final String MODONOMICON_DATA_PATH = ModonomiconAPI.ID + "/books";
         public static final String MULTIBLOCK_DATA_PATH = ModonomiconAPI.ID + "/multiblocks";
+        public static final String RESEARCH_DATA_PATH = ModonomiconAPI.ID + "/research";
 
         public static class Book {
             public static final String DEFAULT_FONT = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "default").toString();
@@ -131,6 +132,7 @@ public class ModonomiconConstants {
             public static final String CONDITION_ADVANCEMENT_HIDDEN = CONDITION_ADVANCEMENT + ".hidden";
             public static final String CONDITION_MOD_LOADED = CONDITION_PREFIX + "mod_loaded";
             public static final String CONDITION_ENTRY_UNLOCKED = CONDITION_PREFIX + "entry_unlocked";
+            public static final String CONDITION_RESEARCH_NODE_UNLOCKED = CONDITION_PREFIX + "research_node_unlocked";
             public static final String CONDITION_CATEGORY_HAS_VISIBLE_ENTRIES = CONDITION_PREFIX + "has_visible_entries";
             public static final String CONDITION_ENTRY_READ = CONDITION_PREFIX + "entry_read";
             public static final String RECIPE_PREFIX = PREFIX + "recipe.";
@@ -150,6 +152,7 @@ public class ModonomiconConstants {
             public static final String ERROR_LOAD_PROGRESS_CLIENT = ERROR_PREFIX + "load_progress_client";
             public static final String SUCCESS_PREFIX = PREFIX + "success.";
             public static final String SUCCESS_RESET_BOOK = SUCCESS_PREFIX + "reset_book";
+            public static final String SUCCESS_RESET_RESEARCH = SUCCESS_PREFIX + "reset_research";
             public static final String SUCCESS_SAVE_PROGRESS = SUCCESS_PREFIX + "save_progress";
             public static final String SUCCESS_LOAD_PROGRESS = SUCCESS_PREFIX + "load_progress";
             public static final String RELOAD_SUCCESS = SUCCESS_PREFIX + "reload_requested";

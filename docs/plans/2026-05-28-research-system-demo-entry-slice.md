@@ -472,11 +472,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.Identifier;
 
-public record ResearchHookDefinition(Identifier id, TriggerType triggerType, Identifier eventTargetId, Identifier factId) {
+public record ResearchHookDefinition(Identifier id, TriggerType triggerType, Identifier triggerTargetId, Identifier factId) {
     public static final Codec<ResearchHookDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Identifier.CODEC.fieldOf("id").forGetter(ResearchHookDefinition::id),
             TriggerType.CODEC.fieldOf("trigger_type").forGetter(ResearchHookDefinition::triggerType),
-            Identifier.CODEC.fieldOf("event_target_id").forGetter(ResearchHookDefinition::eventTargetId),
+            Identifier.CODEC.fieldOf("event_target_id").forGetter(ResearchHookDefinition::triggerTargetId),
             Identifier.CODEC.fieldOf("fact_id").forGetter(ResearchHookDefinition::factId)
     ).apply(instance, ResearchHookDefinition::new));
 
@@ -547,7 +547,7 @@ public record ResearchData(
                 .toList();
 
         var groupedHooks = hooks.stream()
-                .collect(Collectors.groupingBy(ResearchHookDefinition::eventTargetId));
+                .collect(Collectors.groupingBy(ResearchHookDefinition::triggerTargetId));
 
         return new ResearchData(Set.copyOf(factIds), nodeRules, groupedHooks);
     }

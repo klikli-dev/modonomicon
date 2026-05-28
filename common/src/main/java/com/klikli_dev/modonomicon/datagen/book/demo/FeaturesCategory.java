@@ -50,13 +50,13 @@ public class FeaturesCategory extends CategoryProvider {
 
         //the condition for the level 1 entry to depend on the root entry is set up here so we can access the entry. We could also do it in the entry provider and either hand over a reference, or use the ID as resource location to reference it
         var conditionLevel1Entry = this.add(new ConditionLevel1Entry(this).generate())
-                .withCondition(this.condition().entryRead(conditionRootEntry))
+                .withCondition(this.condition().researchNodeUnlocked(this.modLoc("demo/condition_level_1")))
                 //here we use this.parent() to get access to the parent settings
                 .withParent(this.parent(conditionRootEntry).withLineReversed(true));
         this.layout().entry(conditionLevel1Entry).rightOf(conditionRootEntry, 5).below(2);
 
         var conditionLevel2Entry = this.add(new ConditionLevel2Entry(this).generate())
-                .withCondition(this.condition().entryRead(conditionLevel1Entry))
+                .withCondition(this.condition().researchNodeUnlocked(this.modLoc("demo/condition_level_2")))
                 //here we want a default parent so we can just hand over the entry
                 .withParent(conditionLevel1Entry);
         this.layout().entry(conditionLevel2Entry).below(conditionRootEntry, 2);

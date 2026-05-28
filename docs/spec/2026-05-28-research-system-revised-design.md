@@ -244,7 +244,7 @@ An interaction hook definition must answer:
 
 - what event happened
 - which fact or value is mutated
-- the explicit target id
+- the explicit trigger target id
 - when the event fires
 
 Interaction hooks are not:

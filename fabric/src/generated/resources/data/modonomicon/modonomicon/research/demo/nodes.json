@@ -1,0 +1,14 @@
+[
+  {
+    "id": "modonomicon:demo/condition_level_1",
+    "required_facts": [
+      "modonomicon:demo/condition_root_viewed"
+    ]
+  },
+  {
+    "id": "modonomicon:demo/condition_level_2",
+    "required_facts": [
+      "modonomicon:demo/condition_level_1_viewed"
+    ]
+  }
+]

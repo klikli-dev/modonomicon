@@ -28,6 +28,7 @@ import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
 import com.klikli_dev.modonomicon.registry.RegistryBootstrap;
+import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import com.mojang.blaze3d.framegraph.FramePass;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -83,6 +84,8 @@ public class ModonomiconForge {
 
             MultiblockDataManager.get().registries(e.getRegistries());
             e.addListener(MultiblockDataManager.get());
+
+            e.addListener(ResearchDataManager.get());
         });
 
         //register commands

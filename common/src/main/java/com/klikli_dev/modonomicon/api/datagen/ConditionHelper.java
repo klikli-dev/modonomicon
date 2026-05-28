@@ -39,6 +39,14 @@ public class ConditionHelper {
         return BookCategoryHasVisibleEntriesConditionModel.create().withCategory(entry.getId());
     }
 
+    public BookResearchNodeUnlockedConditionModel researchNodeUnlocked(Identifier nodeId) {
+        return BookResearchNodeUnlockedConditionModel.create().withNode(nodeId);
+    }
+
+    public BookResearchNodeUnlockedConditionModel researchNodeUnlockedBuilder(Identifier nodeId) {
+        return BookResearchNodeUnlockedConditionModel.create().withNode(nodeId);
+    }
+
     public BookAndConditionModel and(BookConditionModel... children) {
         return BookAndConditionModel.create().withChildren(children);
     }
