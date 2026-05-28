@@ -7,7 +7,7 @@
 package com.klikli_dev.modonomicon.networking;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -46,8 +46,8 @@ public class BookCategoryReadMessage implements Message {
         var book = BookDataManager.get().getBook(this.bookId);
         if (book != null) {
             var category = book.getCategory(this.categoryId);
-            if (category != null && BookUnlockStateManager.get().readCategoryFor(player, category)) {
-                BookUnlockStateManager.get().updateAndSyncFor(player);
+            if (category != null && BookServices.interaction().markCategoryRead(player, category)) {
+                BookServices.stateAccess().updateAndSync(player);
             }
         }
     }

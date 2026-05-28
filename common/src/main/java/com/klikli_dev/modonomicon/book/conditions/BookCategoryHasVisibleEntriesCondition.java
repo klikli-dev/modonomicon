@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.data.BookConditionType;
 import com.klikli_dev.modonomicon.registry.BookConditionTypeRegistry;
 import com.klikli_dev.modonomicon.util.Codecs;
@@ -69,7 +70,7 @@ public class BookCategoryHasVisibleEntriesCondition extends BookCondition {
         }
 
         for(var entry : category.getEntries().values()) {
-            if(entry.getEntryDisplayState(player).isVisible()) {
+            if (BookServices.visibility().isVisible(player, entry)) {
                 return true;
             }
         }

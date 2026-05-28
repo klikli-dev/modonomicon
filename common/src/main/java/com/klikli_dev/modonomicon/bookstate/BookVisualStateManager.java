@@ -48,12 +48,30 @@ public class BookVisualStateManager {
         return this.getStateFor(player).getEntryState(entry);
     }
 
+    public boolean isEntryUnreadFor(Player player, BookEntry entry) {
+        return this.getStateFor(player).isEntryUnread(entry);
+    }
+
+    public boolean isCategoryUnreadFor(Player player, BookCategory category) {
+        return this.getStateFor(player).isCategoryUnread(category);
+    }
+
     public List<BookAddress> getBookmarksFor(Player player, Book book) {
         return this.getStateFor(player).getBookmarks(book);
     }
 
     public void setEntryStateFor(ServerPlayer player, BookEntry entry, EntryVisualState state) {
         this.getStateFor(player).setEntryState(entry, state);
+        this.saveData.setDirty();
+    }
+
+    public void setEntryUnreadFor(ServerPlayer player, BookEntry entry, boolean unread) {
+        this.getStateFor(player).setEntryUnread(entry, unread);
+        this.saveData.setDirty();
+    }
+
+    public void setCategoryUnreadFor(ServerPlayer player, BookCategory category, boolean unread) {
+        this.getStateFor(player).setCategoryUnread(category, unread);
         this.saveData.setDirty();
     }
 

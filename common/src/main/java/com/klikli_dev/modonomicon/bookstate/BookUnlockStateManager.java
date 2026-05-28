@@ -25,6 +25,8 @@ import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -67,9 +69,25 @@ public class BookUnlockStateManager {
 
     public void updateAndSyncFor(ServerPlayer player) {
         if (BookDataManager.get().areBooksBuilt()) {
-            this.getStateFor(player).update(player);
+            var state = this.getStateFor(player);
+            var bookIdToUnlockedEntriesBefore = new HashMap<Identifier, Set<Identifier>>();
+            var bookIdToUnlockedCategoriesBefore = new HashMap<Identifier, Set<Identifier>>();
+            state.unlockedEntries.forEach((bookId, entries) -> bookIdToUnlockedEntriesBefore.put(bookId, new HashSet<>(entries)));
+            state.unlockedCategories.forEach((bookId, categories) -> bookIdToUnlockedCategoriesBefore.put(bookId, new HashSet<>(categories)));
+
+            state.update(player);
+
+            state.unlockedEntries.forEach((bookId, entries) -> {
+                var before = bookIdToUnlockedEntriesBefore.getOrDefault(bookId, java.util.Set.of());
+                entries.stream().filter(entryId -> !before.contains(entryId)).forEach(entryId -> BookVisualStateManager.get().setEntryUnreadFor(player, BookDataManager.get().getBook(bookId).getEntry(entryId), true));
+            });
+            state.unlockedCategories.forEach((bookId, categories) -> {
+                var before = bookIdToUnlockedCategoriesBefore.getOrDefault(bookId, java.util.Set.of());
+                categories.stream().filter(categoryId -> !before.contains(categoryId)).forEach(categoryId -> BookVisualStateManager.get().setCategoryUnreadFor(player, BookDataManager.get().getBook(bookId).getCategory(categoryId), true));
+            });
             this.saveData.setDirty();
             this.syncFor(player);
+            BookVisualStateManager.get().syncFor(player);
         } else {
             this.syncRequestedPlayers.add(player.getUUID());
             this.wasLoaded = false;

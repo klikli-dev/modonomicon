@@ -11,7 +11,7 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
@@ -60,7 +60,7 @@ public class BookRecentlyUnlockedScreen extends BookPaginatedScreen {
 
     public void handleButtonEntry(Button button) {
         if (button instanceof EntryListButton entry) {
-            if (!BookUnlockStateManager.get().isUnlockedFor(Minecraft.getInstance().player, entry.getEntry())) {
+            if (!BookServices.stateAccess().isUnlocked(Minecraft.getInstance().player, entry.getEntry())) {
                 return;
             }
 
@@ -260,7 +260,7 @@ public class BookRecentlyUnlockedScreen extends BookPaginatedScreen {
 
         //get recently unlocked entries sorted by timestamp desc, with unread entries prioritized
         Book book = this.getBook();
-        Map<Identifier, Long> timestamps = BookUnlockStateManager.get().getUnlockTimestampsFor(this.minecraft.player, book);
+        Map<Identifier, Long> timestamps = BookServices.stateAccess().getUnlockTimestamps(this.minecraft.player, book);
 
         record EntryWithTimestamp(BookEntry entry, long timestamp, boolean unread) {}
 
@@ -269,7 +269,7 @@ public class BookRecentlyUnlockedScreen extends BookPaginatedScreen {
         for (BookEntry entry : book.getEntries().values()) {
             Long ts = timestamps.get(entry.getId());
             if (ts != null) {
-                boolean unread = !BookUnlockStateManager.get().isReadFor(this.minecraft.player, entry);
+                boolean unread = BookServices.stateAccess().isEntryUnread(this.minecraft.player, entry);
                 entriesWithTs.add(new EntryWithTimestamp(entry, ts, unread));
             }
         }

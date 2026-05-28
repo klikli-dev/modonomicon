@@ -61,6 +61,22 @@ public class BookVisualStates {
         return this.getCategoryState(entry.getCategory()).entryStates.computeIfAbsent(entry.getId(), (id) -> new EntryVisualState());
     }
 
+    public boolean isEntryUnread(BookEntry entry) {
+        return this.getEntryState(entry).unread;
+    }
+
+    public boolean isCategoryUnread(BookCategory category) {
+        return this.getCategoryState(category).unread;
+    }
+
+    public void setEntryUnread(BookEntry entry, boolean unread) {
+        this.getEntryState(entry).setUnread(unread);
+    }
+
+    public void setCategoryUnread(BookCategory category, boolean unread) {
+        this.getCategoryState(category).setUnread(unread);
+    }
+
     public List<BookAddress> getBookmarks(Book book) {
         return this.bookBookmarks.computeIfAbsent(book.getId(), (id) -> new ArrayList<>());
     }

@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.networking;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.events.EntryFirstReadEvent;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.events.ModonomiconEvents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -47,8 +47,8 @@ public class BookEntryReadMessage implements Message {
     public void onServerReceived(MinecraftServer minecraftServer, ServerPlayer player) {
         var entry = BookDataManager.get().getBook(this.bookId).getEntry(this.entryId);
         //unlock page, then update the unlock capability, finally sync.
-        if (BookUnlockStateManager.get().readFor(player, entry)) {
-            BookUnlockStateManager.get().updateAndSyncFor(player);
+        if (BookServices.interaction().markEntryRead(player, entry)) {
+            BookServices.stateAccess().updateAndSync(player);
             ModonomiconEvents.server().entryFirstRead(new EntryFirstReadEvent(entry.getBook().getId(), entry.getId()));
         }
     }

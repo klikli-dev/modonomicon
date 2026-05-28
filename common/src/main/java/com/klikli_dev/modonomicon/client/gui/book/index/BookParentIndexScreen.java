@@ -11,7 +11,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.bookstate.visual.BookVisualState;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
@@ -75,18 +75,18 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
     protected void updateUnreadEntriesState() {
         //check if ANY entry is unread
-        this.hasUnreadEntries = this.book.getEntries().values().stream().anyMatch(e -> !BookUnlockStateManager.get().isReadFor(this.minecraft.player, e));
+        this.hasUnreadEntries = this.book.getEntries().values().stream().anyMatch(e -> BookServices.stateAccess().isEntryUnread(this.minecraft.player, e));
 
         //check if any currently unlocked entry is unread
         this.hasUnreadUnlockedEntries = this.book.getEntries().values().stream().anyMatch(e ->
-                BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e) &&
-                        !BookUnlockStateManager.get().isReadFor(this.minecraft.player, e));
+                BookServices.stateAccess().isUnlocked(this.minecraft.player, e) &&
+                        BookServices.stateAccess().isEntryUnread(this.minecraft.player, e));
 
         //check if ANY category is unread
-        this.hasUnreadCategories = this.book.getCategories().values().stream().anyMatch(c -> !BookUnlockStateManager.get().isCategoryReadFor(this.minecraft.player, c));
+        this.hasUnreadCategories = this.book.getCategories().values().stream().anyMatch(c -> BookServices.interaction().isCategoryUnread(this.minecraft.player, c));
 
         //check if any currently unlocked category is unread
-        this.hasUnreadUnlockedCategories = this.book.getCategories().values().stream().anyMatch(c -> BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, c) && !BookUnlockStateManager.get().isCategoryReadFor(this.minecraft.player, c));
+        this.hasUnreadUnlockedCategories = this.book.getCategories().values().stream().anyMatch(c -> BookServices.stateAccess().isUnlocked(this.minecraft.player, c) && BookServices.interaction().isCategoryUnread(this.minecraft.player, c));
     }
 
     public void handleButtonEntry(Button button) {
@@ -323,8 +323,8 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
         //we filter out entries that are locked or in locked categories
         this.allEntries = this.getEntries().stream().filter(e ->
-                        BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e) &&
-                                BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e)
+                        BookServices.stateAccess().isUnlocked(this.minecraft.player, e) &&
+                                BookServices.stateAccess().isUnlocked(this.minecraft.player, e)
                 ).sorted(Comparator.comparingInt(BookCategory::getSortNumber)
                         .thenComparing(a -> I18n.get(a.getName())))
                 .toList();

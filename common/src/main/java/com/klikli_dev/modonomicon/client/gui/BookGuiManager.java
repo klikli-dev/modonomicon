@@ -15,7 +15,7 @@ import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.entries.CategoryLinkBookEntry;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.BookCategoryScreen;
@@ -148,7 +148,7 @@ public class BookGuiManager {
         //If we do not have a saved entry, check if we have an entry to open specified in the category definition
         if (savedEntry == null && category.getEntryToOpen() != null) {
             var entryToOpen = category.getEntry(category.getEntryToOpen());
-            if (!category.openEntryToOpenOnlyOnce() || !BookUnlockStateManager.get().isReadFor(Minecraft.getInstance().player, entryToOpen)) {
+            if (!category.openEntryToOpenOnlyOnce() || !BookServices.interaction().isEntryRead(Minecraft.getInstance().player, entryToOpen)) {
                 return entryToOpen;
             }
         }
@@ -228,7 +228,7 @@ public class BookGuiManager {
         }
 
         //Mark category as read if not already read
-        if (!BookUnlockStateManager.get().isCategoryReadFor(this.player(), category)) {
+        if (!BookServices.interaction().isCategoryRead(this.player(), category)) {
             Services.NETWORK.sendToServer(new BookCategoryReadMessage(category.getBook().getId(), category.getId()));
         }
 
@@ -349,7 +349,7 @@ public class BookGuiManager {
 
     @ApiStatus.Internal
     public void openEntry(BookEntry entry, BookAddress address) {
-        if (!BookUnlockStateManager.get().isReadFor(this.player(), entry)) {
+        if (!BookServices.interaction().isEntryRead(this.player(), entry)) {
             Services.NETWORK.sendToServer(new BookEntryReadMessage(entry.getBook().getId(), entry.getId()));
             ModonomiconEvents.client().entryFirstRead(new EntryFirstReadEvent(entry.getBook().getId(), entry.getId()));
         }

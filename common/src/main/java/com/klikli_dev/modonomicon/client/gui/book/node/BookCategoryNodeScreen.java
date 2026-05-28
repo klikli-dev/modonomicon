@@ -11,7 +11,7 @@ import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.bookstate.visual.CategoryVisualState;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
@@ -273,7 +273,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             guiGraphics.pose().popMatrix();
 
             //render unread icon
-            if (displayState == EntryDisplayState.UNLOCKED && !BookUnlockStateManager.get().isReadFor(Minecraft.getInstance().player, entry)) {
+            if (displayState == EntryDisplayState.UNLOCKED && BookServices.stateAccess().isEntryUnread(Minecraft.getInstance().player, entry)) {
                 BookContentRenderer.drawUnreadIndicator(guiGraphics, this.bookParentScreen.getBook(),
                         entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 16 + 2,
                         entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP - 2, isHovered);
