@@ -9,6 +9,8 @@ SPDX-License-Identifier: MIT
 Date: 2026-05-28
 Branch: `feat/research-system-revised`
 
+> Archived: implemented and squash-merged into `feat/research-system/main` as commit `2edffa40`.
+
 ## Summary
 
 This document defines the first implementation slice for the revised research system.

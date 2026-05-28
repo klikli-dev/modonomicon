@@ -340,6 +340,29 @@ Phase 1 should include minimal sugar only.
 
 It should not include book-first auto-generation, inferred ids, or helper systems that silently create research data from book structure.
 
+## Implementation Status
+
+Status as of 2026-05-28 on `feat/research-system/main`.
+
+Completed so far:
+
+- Phase 1 foundation for facts, nodes, hooks, persistence, and validation
+- trigger type `entry_viewed_once`
+- book condition type `research_node_unlocked`
+- demo entry slice for:
+  - `modonomicon:features/condition_root`
+  - `modonomicon:features/condition_level_1`
+  - `modonomicon:features/condition_level_2`
+- nested admin reset command: `modonomicon research reset`
+
+Not completed yet:
+
+- migrating the `conditional` demo category
+- additional trigger families such as `item_crafted` and `item_acquired`
+- values in a real authored scenario
+- broader content migration
+- authoring sugar / bridge / typed refs / patch-merge work
+
 ## Roadmap
 
 ### Phase 1: Foundation
@@ -357,6 +380,11 @@ Included:
 - explicit interaction-hook dataset
 - trigger type `entry_viewed_once`
 - strict validation for phase-1 resources only
+
+Current status:
+
+- completed for the initial demo-entry slice
+- proven only for the migrated demo entry chain, not for all existing content
 
 Not part of phase 1:
 

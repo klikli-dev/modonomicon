@@ -1,5 +1,7 @@
 # Research System Demo Entry Slice Implementation Plan
 
+> Archived: implemented and squash-merged into `feat/research-system/main` as commit `2edffa40`.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add the first research-backed progression slice beside the legacy book unlock system, limited to the demo entry chain `condition_root -> condition_level_1 -> condition_level_2`.
