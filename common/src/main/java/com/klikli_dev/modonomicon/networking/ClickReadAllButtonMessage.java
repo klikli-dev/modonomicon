@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.networking;
 
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -44,13 +45,13 @@ public class ClickReadAllButtonMessage implements Message {
             //unlock pages, then update the unlock capability, finally sync.
             var anyRead = false;
             for (var entry : book.getEntries().values()) {
-                if ((this.readAll || BookUnlockStateManager.get().isUnlockedFor(player, entry)) && BookUnlockStateManager.get().readFor(player, entry)) {
+                if ((this.readAll || BookServices.stateAccess().isUnlocked(player, entry)) && BookServices.interaction().markEntryRead(player, entry)) {
                     anyRead = true;
                 }
             }
 
             for (var category : book.getCategories().values()) {
-                if ((this.readAll || BookUnlockStateManager.get().isUnlockedFor(player, category)) && BookUnlockStateManager.get().readCategoryFor(player, category)) {
+                if ((this.readAll || BookServices.stateAccess().isUnlocked(player, category)) && BookServices.interaction().markCategoryRead(player, category)) {
                     anyRead = true;
                 }
             }
