@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-1.146.0] - 2026-05-28
+### :sparkles: New Features
+- [`b485ac0`](https://github.com/klikli-dev/modonomicon/commit/b485ac02b332da6d78acf0a29d5d484fe2986e7e) - architecture cleanup for future research system *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`47b7fac`](https://github.com/klikli-dev/modonomicon/commit/47b7fac7fe7ea0f0dd2b95c4ad8c0b831f96ff25) - route read-all through interaction service *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.2-1.145.3] - 2026-05-27
 ### :bug: Bug Fixes
 - [`1a09148`](https://github.com/klikli-dev/modonomicon/commit/1a09148e7a46c9acb7d86dacf5c0117519e58702) - skip unloaded entry page files *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2244,3 +2252,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-1.145.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.145.0...release/v26.1.2-1.145.1
 [release/v26.1.2-1.145.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.145.1...release/v26.1.2-1.145.2
 [release/v26.1.2-1.145.3]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.145.2...release/v26.1.2-1.145.3
+[release/v26.1.2-1.146.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.145.3...release/v26.1.2-1.146.0
