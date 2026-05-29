@@ -10,7 +10,6 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.platform.services.NetworkHelper;
 import com.klikli_dev.modonomicon.platform.services.PatchouliHelper;
 import com.klikli_dev.modonomicon.platform.services.PlatformHelper;
-import com.klikli_dev.modonomicon.platform.services.ServerConfigHelper;
 
 import java.util.ServiceLoader;
 
@@ -22,7 +21,6 @@ public class Services {
     public static final PlatformHelper PLATFORM = load(PlatformHelper.class);
     public static final NetworkHelper NETWORK = load(NetworkHelper.class);
     public static final PatchouliHelper PATCHOULI = load(PatchouliHelper.class);
-    public static final ServerConfigHelper SERVER_CONFIG = load(ServerConfigHelper.class);
 
     // This code is used to load a service for the current environment. Your implementation of the service must be defined
     // manually by including a text file in META-INF/services named with the fully qualified class name of the service.

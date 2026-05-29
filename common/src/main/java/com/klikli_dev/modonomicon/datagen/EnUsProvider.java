@@ -143,9 +143,6 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.addConfig("enableSmoothZoom", "Enable Smooth Zoom");
         this.addConfig("storeLastOpenPageWhenClosingEntry", "Store Last Open Page When Closing Entry");
         this.addConfig("fontFallbackLocales", "Font Fallback Locales");
-
-        this.addConfig("unlock", "Unlock Settings");
-        this.addConfig("disableAdvancementLocking", "Disable Advancement Locking");
     }
 
     private void addConfig(String key, String name){

@@ -23,7 +23,6 @@ public class Networking {
         ServerPlayNetworking.registerGlobalReceiver(SendUnlockCodeToServerMessage.TYPE, new ServerMessageHandler<>());
         ServerPlayNetworking.registerGlobalReceiver(ReloadResourcesDoneMessage.TYPE, new ServerMessageHandler<>());
         ServerPlayNetworking.registerGlobalReceiver(RequestSyncBookStatesMessage.TYPE, new ServerMessageHandler<>());
-        ServerPlayNetworking.registerGlobalReceiver(RequestAdvancementMessage.TYPE, new ServerMessageHandler<>());
         ServerPlayNetworking.registerGlobalReceiver(AddBookmarkMessage.TYPE, new ServerMessageHandler<>());
         ServerPlayNetworking.registerGlobalReceiver(RemoveBookmarkMessage.TYPE, new ServerMessageHandler<>());
     }
@@ -40,7 +39,6 @@ public class Networking {
         PayloadTypeRegistry.serverboundPlay().register(SendUnlockCodeToServerMessage.TYPE, SendUnlockCodeToServerMessage.STREAM_CODEC);
         PayloadTypeRegistry.serverboundPlay().register(ReloadResourcesDoneMessage.TYPE, ReloadResourcesDoneMessage.STREAM_CODEC);
         PayloadTypeRegistry.serverboundPlay().register(RequestSyncBookStatesMessage.TYPE, RequestSyncBookStatesMessage.STREAM_CODEC);
-        PayloadTypeRegistry.serverboundPlay().register(RequestAdvancementMessage.TYPE, RequestAdvancementMessage.STREAM_CODEC);
         PayloadTypeRegistry.serverboundPlay().register(AddBookmarkMessage.TYPE, AddBookmarkMessage.STREAM_CODEC);
         PayloadTypeRegistry.serverboundPlay().register(RemoveBookmarkMessage.TYPE, RemoveBookmarkMessage.STREAM_CODEC);
         PayloadTypeRegistry.serverboundPlay().register(BookClosedMessage.TYPE, BookClosedMessage.STREAM_CODEC);
@@ -52,7 +50,6 @@ public class Networking {
         PayloadTypeRegistry.clientboundPlay().register(SyncBookVisualStatesMessage.TYPE, SyncBookVisualStatesMessage.STREAM_CODEC);
         PayloadTypeRegistry.clientboundPlay().register(SyncMultiblockDataMessage.TYPE, SyncMultiblockDataMessage.STREAM_CODEC);
         PayloadTypeRegistry.clientboundPlay().register(ReloadResourcesOnClientMessage.TYPE, ReloadResourcesOnClientMessage.STREAM_CODEC);
-        PayloadTypeRegistry.clientboundPlay().register(SendAdvancementToClientMessage.TYPE, SendAdvancementToClientMessage.STREAM_CODEC);
         PayloadTypeRegistry.clientboundPlay().register(OpenBookOnClientMessage.TYPE, OpenBookOnClientMessage.STREAM_CODEC);
     }
 }

@@ -23,17 +23,7 @@ import java.nio.file.StandardOpenOption;
 
 public class ServerConfig {
 
-    public static PropertyMirror<Boolean> disableAdvancementLocking = PropertyMirror.create(ConfigTypes.BOOLEAN);
-
     private static final ConfigTree CONFIG = ConfigTree.builder()
-            .fork("unlock")
-            .withComment("Unlock Settings")
-            .beginValue("disableAdvancementLocking", ConfigTypes.BOOLEAN, false)
-            .withComment("If true, advancement-based unlock conditions will always return true, " +
-                    "effectively disabling advancement-gated progression in all books. " +
-                    "Other unlock conditions (e.g. entry read, mod loaded) are not affected.")
-            .finishValue(disableAdvancementLocking::mirror)
-            .finishBranch()
             .build();
 
     public static void init() {
