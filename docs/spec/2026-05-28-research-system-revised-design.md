@@ -528,3 +528,11 @@ The intended implementation path is:
 1. prove the explicit runtime model
 2. expand the explicit trigger model
 3. add authoring convenience only after the foundation is proven
+
+## Advancement Event-Only Caveat
+
+An advancement-backed research ingress path may use pure server-side advancement-earned events without an immediate replay or reconciliation pass for already-completed advancements.
+
+That keeps the runtime architecture cleaner, but it means some operations such as research reset may not automatically reconstruct advancement-backed research state from the player's current advancement progress.
+
+If that gap proves user-visible, a later slice should add a narrow research-owned reconciliation path for already-completed advancements on the relevant lifecycle boundaries such as reset or login.
