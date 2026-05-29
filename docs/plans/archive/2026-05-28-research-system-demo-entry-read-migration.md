@@ -1,5 +1,7 @@
 # Research System Demo `entry_read` Migration Implementation Plan
 
+> Archived: implemented and squash-merged into `feat/research-system/main` as commit `a8c98e71`.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Migrate all demo-book `entry_read`-based progression to research-backed progression while keeping legacy runtime support in place.

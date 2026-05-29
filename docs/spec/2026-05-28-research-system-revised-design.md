@@ -353,14 +353,18 @@ Completed so far:
   - `modonomicon:features/condition_root`
   - `modonomicon:features/condition_level_1`
   - `modonomicon:features/condition_level_2`
+- full demo-book `entry_read` migration for:
+  - formatting progression
+  - features progression chain
+  - composite `two_parents`
+  - conditional category migration
 - nested admin reset command: `modonomicon research reset`
 
 Not completed yet:
 
-- migrating the `conditional` demo category
 - additional trigger families such as `item_crafted` and `item_acquired`
 - values in a real authored scenario
-- broader content migration
+- broader non-demo content migration
 - authoring sugar / bridge / typed refs / patch-merge work
 
 ## Roadmap
@@ -384,7 +388,8 @@ Included:
 Current status:
 
 - completed for the initial demo-entry slice
-- proven only for the migrated demo entry chain, not for all existing content
+- completed for the full demo-book `entry_read` migration slice
+- proven for the migrated demo book, not yet for broader non-demo content
 
 Not part of phase 1:
 
@@ -404,6 +409,12 @@ Included:
 - trigger type `item_acquired`
 - expanded explicit validation and diagnostics for hooks/resources
 - any admin/debug improvements that naturally extend the explicit runtime model
+
+Recommended first slice in phase 2:
+
+- add `item_crafted` only
+- keep it explicit and fact-backed
+- defer `item_acquired` and value-based progression until after `item_crafted` is proven stable
 
 Not part of phase 2 unless strictly needed:
 
