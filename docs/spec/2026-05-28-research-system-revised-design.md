@@ -443,6 +443,10 @@ A future slice may add a research-side optional-dependency predicate or function
 
 That is not part of the current condition cutover and does not change the rule that `mod_loaded` remains a book-local/environment condition.
 
+A future slice may also need a sanctioned way to skip or bypass research in narrowly-defined scenarios where mandatory research progression is not desirable.
+
+That work must be designed explicitly as a research-owned mechanism and must not revive legacy advancement-locking behavior or reintroduce book-local progression authority.
+
 ## Validation
 
 Validation grows by phase.
