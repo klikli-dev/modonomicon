@@ -25,6 +25,7 @@ import com.klikli_dev.modonomicon.datagen.DataGenerators;
 import com.klikli_dev.modonomicon.integration.LecternIntegration;
 import com.klikli_dev.modonomicon.item.IsBookOpen;
 import com.klikli_dev.modonomicon.network.Networking;
+import com.klikli_dev.modonomicon.research.ResearchServices;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
@@ -130,7 +131,12 @@ public class ModonomiconNeo {
 
 
         //Advancement event handling for condition/unlock system
-        NeoForge.EVENT_BUS.addListener((AdvancementEvent.AdvancementEarnEvent e) -> BookUnlockStateManager.get().onAdvancement((ServerPlayer) e.getEntity()));
+        NeoForge.EVENT_BUS.addListener((AdvancementEvent.AdvancementEarnEvent e) -> {
+            var player = (ServerPlayer) e.getEntity();
+            if (ResearchServices.advancements().onAdvancement(player, e.getAdvancement().id())) {
+                BookUnlockStateManager.get().onAdvancement(player);
+            }
+        });
 
         //We use server tick to flush the queue of players that need a book state sync
         NeoForge.EVENT_BUS.addListener(((ServerTickEvent.Post e) -> {

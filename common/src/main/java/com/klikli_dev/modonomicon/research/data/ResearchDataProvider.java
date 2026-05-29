@@ -40,7 +40,9 @@ public class ResearchDataProvider implements DataProvider {
                         new ResearchFactDefinition(Identifier.parse("modonomicon:demo/features_spotlight_viewed")),
                         new ResearchFactDefinition(Identifier.parse("modonomicon:demo/features_component_icon_viewed")),
                         new ResearchFactDefinition(Identifier.parse("modonomicon:demo/features_empty_viewed")),
-                        new ResearchFactDefinition(Identifier.parse("modonomicon:demo/features_image_viewed"))
+                        new ResearchFactDefinition(Identifier.parse("modonomicon:demo/features_image_viewed")),
+                        new ResearchFactDefinition(Identifier.parse("modonomicon:demo/advancement_mine_stone_completed")),
+                        new ResearchFactDefinition(Identifier.parse("modonomicon:demo/advancement_ride_boat_with_goat_completed"))
                 )), root.resolve("data/modonomicon/modonomicon/research/demo/facts.json")),
                 DataProvider.saveStable(cache, list(ResearchNodeDefinition.CODEC, List.of(
                         new ResearchNodeDefinition(Identifier.parse("modonomicon:demo/condition_level_1"), List.of(Identifier.parse("modonomicon:demo/condition_root_viewed"))),
@@ -53,7 +55,9 @@ public class ResearchDataProvider implements DataProvider {
                         new ResearchNodeDefinition(Identifier.parse("modonomicon:demo/features_image"), List.of(Identifier.parse("modonomicon:demo/features_empty_viewed"))),
                         new ResearchNodeDefinition(Identifier.parse("modonomicon:demo/features_custom_icon"), List.of(Identifier.parse("modonomicon:demo/features_image_viewed"))),
                         new ResearchNodeDefinition(Identifier.parse("modonomicon:demo/features_two_parents_root"), List.of(Identifier.parse("modonomicon:demo/condition_root_viewed"))),
-                        new ResearchNodeDefinition(Identifier.parse("modonomicon:demo/features_two_parents_level_2"), List.of(Identifier.parse("modonomicon:demo/condition_level_2_viewed")))
+                        new ResearchNodeDefinition(Identifier.parse("modonomicon:demo/features_two_parents_level_2"), List.of(Identifier.parse("modonomicon:demo/condition_level_2_viewed"))),
+                        new ResearchNodeDefinition(Identifier.parse("modonomicon:demo/advancement_mine_stone"), List.of(Identifier.parse("modonomicon:demo/advancement_mine_stone_completed"))),
+                        new ResearchNodeDefinition(Identifier.parse("modonomicon:demo/advancement_ride_boat_with_goat"), List.of(Identifier.parse("modonomicon:demo/advancement_ride_boat_with_goat_completed")))
                 )), root.resolve("data/modonomicon/modonomicon/research/demo/nodes.json")),
                 DataProvider.saveStable(cache, list(ResearchHookDefinition.CODEC, List.of(
                         new ResearchHookDefinition(Identifier.parse("modonomicon:demo/condition_root_viewed_once"), ResearchHookDefinition.TriggerType.ENTRY_VIEWED_ONCE, Identifier.parse("modonomicon:features/condition_root"), Identifier.parse("modonomicon:demo/condition_root_viewed")),
@@ -66,7 +70,19 @@ public class ResearchDataProvider implements DataProvider {
                         new ResearchHookDefinition(Identifier.parse("modonomicon:demo/features_component_icon_viewed_once"), ResearchHookDefinition.TriggerType.ENTRY_VIEWED_ONCE, Identifier.parse("modonomicon:features/component_icon"), Identifier.parse("modonomicon:demo/features_component_icon_viewed")),
                         new ResearchHookDefinition(Identifier.parse("modonomicon:demo/features_empty_viewed_once"), ResearchHookDefinition.TriggerType.ENTRY_VIEWED_ONCE, Identifier.parse("modonomicon:features/empty"), Identifier.parse("modonomicon:demo/features_empty_viewed")),
                         new ResearchHookDefinition(Identifier.parse("modonomicon:demo/features_image_viewed_once"), ResearchHookDefinition.TriggerType.ENTRY_VIEWED_ONCE, Identifier.parse("modonomicon:features/image"), Identifier.parse("modonomicon:demo/features_image_viewed"))
-                )), root.resolve("data/modonomicon/modonomicon/research/demo/hooks.json"))
+                )), root.resolve("data/modonomicon/modonomicon/research/demo/hooks.json")),
+                DataProvider.saveStable(cache, list(AdvancementResearchHookDefinition.CODEC, List.of(
+                        new AdvancementResearchHookDefinition(
+                                Identifier.parse("modonomicon:demo/advancement_mine_stone_completed_hook"),
+                                Identifier.parse("minecraft:story/mine_stone"),
+                                Identifier.parse("modonomicon:demo/advancement_mine_stone_completed")
+                        ),
+                        new AdvancementResearchHookDefinition(
+                                Identifier.parse("modonomicon:demo/advancement_ride_boat_with_goat_completed_hook"),
+                                Identifier.parse("minecraft:husbandry/ride_a_boat_with_a_goat"),
+                                Identifier.parse("modonomicon:demo/advancement_ride_boat_with_goat_completed")
+                        )
+                )), root.resolve("data/modonomicon/modonomicon/research/demo/advancement_hooks.json"))
         );
     }
 

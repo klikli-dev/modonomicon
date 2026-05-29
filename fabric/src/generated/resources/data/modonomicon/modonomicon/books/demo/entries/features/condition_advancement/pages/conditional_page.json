@@ -1,8 +1,8 @@
 {
   "type": "modonomicon:text",
   "condition": {
-    "type": "modonomicon:advancement",
-    "advancement_id": "minecraft:story/mine_stone"
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:demo/advancement_mine_stone"
   },
   "id": "conditional_page",
   "show_title_separator": true,

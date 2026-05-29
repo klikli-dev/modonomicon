@@ -12,7 +12,6 @@ import com.klikli_dev.modonomicon.api.datagen.CategoryEntryMap;
 import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookAndConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
-import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryReadConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookNoneConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
@@ -112,17 +111,7 @@ public class BookEntryModel {
             return this.condition;
         }
 
-        if (!this.category.getBook().autoAddReadConditions() || this.parents.isEmpty()) {
-            return BookNoneConditionModel.create();
-        }
-
-        if (this.parents.size() == 1) {
-            return BookEntryReadConditionModel.create().withEntry(this.parents.get(0).getEntryId());
-        }
-
-        return BookAndConditionModel.create().withChildren(this.parents.stream()
-                .map(parent -> BookEntryReadConditionModel.create().withEntry(parent.getEntryId()))
-                .toArray(BookConditionModel[]::new));
+        return BookNoneConditionModel.create();
     }
 
     public GuiSprite getEntryBackground() {

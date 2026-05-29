@@ -25,7 +25,6 @@ public class DemoIndexBook extends SingleBookSubProvider {
     @Override
     protected BookModel additionalSetup(BookModel book) {
         return book.withDisplayMode(BookDisplayMode.INDEX)
-                .withAutoAddReadConditions(true)
                 .withModel(Identifier.parse("modonomicon:modonomicon_green"))
                 .withTheme(theme -> theme.withLayout(layout -> layout
                         .withBookTextOffsetX(5)

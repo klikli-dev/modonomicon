@@ -1,6 +1,4 @@
 {
-  "advancement.minecraft.husbandry.ride_a_boat_with_a_goat.title": "Ride a Boat with a Goat",
-  "advancement.minecraft.story.mine_stone.title": "Mine Stone",
   "book.modonomicon.demo.conditional.always_locked.description": "Used to demonstrate linking to locked entries",
   "book.modonomicon.demo.conditional.always_locked.name": "Always Locked Entry",
   "book.modonomicon.demo.conditional.name": "Conditional Category",
@@ -226,11 +224,6 @@
   "modonomicon.multiblock.remove_blocks": " (Clear blocks marked in red)",
   "modonomicon.subtitle.turn_page": "Turn Page",
   "test.test.test": "Book of Binding: Afrit (Bound)",
-  "tooltip.modonomicon.condition.advancement": "Requires Advancement: %s",
-  "tooltip.modonomicon.condition.advancement.hidden": "Hidden Advancement",
-  "tooltip.modonomicon.condition.advancement.loading": "Loading ...",
-  "tooltip.modonomicon.condition.entry_read": "Requires read Entry: %s\nHint: Mark all entries as read with the \"eye\" button at the top right.",
-  "tooltip.modonomicon.condition.entry_unlocked": "Requires unlocked Entry: %s",
   "tooltip.modonomicon.condition.has_visible_entries": "Requires that category %s has visible entries",
   "tooltip.modonomicon.condition.mod_loaded": "Requires loaded mod: %s",
   "tooltip.modonomicon.fluid.amount": "%s mb",

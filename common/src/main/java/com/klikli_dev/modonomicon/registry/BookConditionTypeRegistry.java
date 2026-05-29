@@ -7,12 +7,9 @@
 package com.klikli_dev.modonomicon.registry;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
-import com.klikli_dev.modonomicon.book.conditions.BookAdvancementCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookAndCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookCategoryHasVisibleEntriesCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
-import com.klikli_dev.modonomicon.book.conditions.BookEntryReadCondition;
-import com.klikli_dev.modonomicon.book.conditions.BookEntryUnlockedCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookFalseCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookModLoadedCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
@@ -32,12 +29,6 @@ public final class BookConditionTypeRegistry {
     private static final DispatchCodecRegistry<BookConditionType<?>> TYPES = new DispatchCodecRegistry<>(BookConditionType::id, "condition type");
 
     public static final BookConditionType<BookNoneCondition> NONE = register(BookNoneCondition.ID, BookNoneCondition.CODEC, BookNoneCondition.STREAM_CODEC);
-
-    public static final BookConditionType<BookAdvancementCondition> ADVANCEMENT = register(BookAdvancementCondition.ID, BookAdvancementCondition.CODEC, BookAdvancementCondition.STREAM_CODEC);
-
-    public static final BookConditionType<BookEntryUnlockedCondition> ENTRY_UNLOCKED = register(BookEntryUnlockedCondition.ID, BookEntryUnlockedCondition.CODEC, BookEntryUnlockedCondition.STREAM_CODEC);
-
-    public static final BookConditionType<BookEntryReadCondition> ENTRY_READ = register(BookEntryReadCondition.ID, BookEntryReadCondition.CODEC, BookEntryReadCondition.STREAM_CODEC);
 
     public static final BookConditionType<BookOrCondition> OR = register(BookOrCondition.ID, BookOrCondition.CODEC, BookOrCondition.STREAM_CODEC);
 

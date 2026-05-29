@@ -437,6 +437,12 @@ Planned later work:
 
 All later convenience must compile to the same canonical explicit model introduced in phase 1.
 
+## Additional Future Work Note
+
+A future slice may add a research-side optional-dependency predicate or function for research content that belongs to an optional dependency mod.
+
+That is not part of the current condition cutover and does not change the rule that `mod_loaded` remains a book-local/environment condition.
+
 ## Validation
 
 Validation grows by phase.

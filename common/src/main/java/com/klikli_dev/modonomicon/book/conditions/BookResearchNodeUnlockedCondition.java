@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
 import com.klikli_dev.modonomicon.data.BookConditionType;
 import com.klikli_dev.modonomicon.research.ResearchServices;
+import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import com.klikli_dev.modonomicon.registry.BookConditionTypeRegistry;
 import com.klikli_dev.modonomicon.util.Codecs;
 import com.mojang.serialization.MapCodec;
@@ -54,6 +55,9 @@ public class BookResearchNodeUnlockedCondition extends BookCondition {
 
     @Override
     public boolean test(BookConditionContext context, Player player) {
+        if (!ResearchDataManager.get().data().nodeIds().contains(this.nodeId)) {
+            throw new IllegalArgumentException("Unknown research node '" + this.nodeId + "' referenced by book condition '" + ID + "'.");
+        }
         return ResearchServices.state().isNodeUnlocked(player, this.nodeId);
     }
 

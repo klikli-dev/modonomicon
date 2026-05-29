@@ -14,10 +14,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public record ResearchData(Set<Identifier> factIds, List<NodeRule> nodeRules, Map<Identifier, List<ResearchHookDefinition>> entryViewedOnceHooks) {
+public record ResearchData(Set<Identifier> factIds, Set<Identifier> nodeIds, List<NodeRule> nodeRules,
+                           Map<Identifier, List<ResearchHookDefinition>> entryViewedOnceHooks,
+                           Map<Identifier, List<AdvancementResearchHookDefinition>> advancementHooks) {
 
-    public static ResearchData validate(Set<ResearchFactDefinition> facts, List<ResearchNodeDefinition> nodes, List<ResearchHookDefinition> hooks) {
+    public static ResearchData validate(Set<ResearchFactDefinition> facts, List<ResearchNodeDefinition> nodes,
+                                        List<ResearchHookDefinition> hooks,
+                                        List<AdvancementResearchHookDefinition> advancementHooks) {
         var factIds = facts.stream().map(ResearchFactDefinition::id).collect(Collectors.toSet());
+        var nodeIds = nodes.stream().map(ResearchNodeDefinition::id).collect(Collectors.toSet());
 
         for (var node : nodes) {
             for (var factId : node.requiredFacts()) {
@@ -33,9 +38,16 @@ public record ResearchData(Set<Identifier> factIds, List<NodeRule> nodeRules, Ma
             }
         }
 
+        for (var hook : advancementHooks) {
+            if (!factIds.contains(hook.factId())) {
+                throw new IllegalArgumentException("Unknown fact '" + hook.factId() + "' referenced by advancement hook '" + hook.id() + "'");
+            }
+        }
+
         var nodeRules = nodes.stream().map(node -> new NodeRule(node.id(), node.requiredFacts())).toList();
         var groupedHooks = hooks.stream().collect(Collectors.groupingBy(ResearchHookDefinition::triggerTargetId));
-        return new ResearchData(Set.copyOf(factIds), nodeRules, groupedHooks);
+        var groupedAdvancementHooks = advancementHooks.stream().collect(Collectors.groupingBy(AdvancementResearchHookDefinition::advancementId));
+        return new ResearchData(Set.copyOf(factIds), Set.copyOf(nodeIds), nodeRules, groupedHooks, groupedAdvancementHooks);
     }
 
     public record NodeRule(Identifier nodeId, List<Identifier> requiredFactIds) {

@@ -9,10 +9,8 @@ import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
-import com.klikli_dev.modonomicon.api.datagen.book.condition.BookAdvancementConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
-import net.minecraft.util.Util;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
 
@@ -35,12 +33,7 @@ public class ConditionAdvancementEntry extends EntryProvider {
                 """);
 
         //set up a condition for a conditional page
-        var pageCondition = BookAdvancementConditionModel.create()
-                .withAdvancementId(Identifier.parse("minecraft:story/mine_stone"));
-        this.lang().add(
-                Util.makeDescriptionId("advancement", pageCondition.getAdvancementId()) + ".title",
-                "Mine Stone"
-        );
+        var pageCondition = this.condition().researchNodeUnlocked(Identifier.parse("modonomicon:demo/advancement_mine_stone"));
 
         this.page("conditional_page", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
@@ -56,13 +49,7 @@ public class ConditionAdvancementEntry extends EntryProvider {
     @Override
     protected BookEntryModel additionalSetup(BookEntryModel entry) {
         //Set up the condition for the entry.
-        var advancementCondition = this.condition().advancement(Identifier.parse("minecraft:husbandry/ride_a_boat_with_a_goat"));
-        this.lang().add(
-                Util.makeDescriptionId("advancement", advancementCondition.getAdvancementId()) + ".title",
-                "Ride a Boat with a Goat"
-        );
-
-        return entry.withCondition(advancementCondition);
+        return entry.withCondition(this.condition().researchNodeUnlocked(Identifier.parse("modonomicon:demo/advancement_ride_boat_with_goat")));
     }
 
     @Override

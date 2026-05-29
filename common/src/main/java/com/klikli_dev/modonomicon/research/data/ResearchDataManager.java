@@ -27,7 +27,7 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
 
     private static final ResearchDataManager INSTANCE = new ResearchDataManager();
 
-    private ResearchData data = new ResearchData(Set.of(), List.of(), Map.of());
+    private ResearchData data = new ResearchData(Set.of(), Set.of(), List.of(), Map.of(), Map.of());
 
     private ResearchDataManager() {
         super(ExtraCodecs.JSON, FileToIdConverter.json(FOLDER));
@@ -50,18 +50,22 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
         Set<ResearchFactDefinition> facts = Set.of();
         List<ResearchNodeDefinition> nodes = List.of();
         List<ResearchHookDefinition> hooks = List.of();
+        List<AdvancementResearchHookDefinition> advancementHooks = List.of();
 
         for (var entry : elements.entrySet()) {
             var path = entry.getKey().getPath();
-            if (path.endsWith("facts")) {
+            var fileName = path.substring(path.lastIndexOf('/') + 1);
+            if (fileName.equals("facts")) {
                 facts = Set.copyOf(ResearchFactDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow());
-            } else if (path.endsWith("nodes")) {
+            } else if (fileName.equals("nodes")) {
                 nodes = new ArrayList<>(ResearchNodeDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow());
-            } else if (path.endsWith("hooks")) {
+            } else if (fileName.equals("advancement_hooks")) {
+                advancementHooks = new ArrayList<>(AdvancementResearchHookDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow());
+            } else if (fileName.equals("hooks")) {
                 hooks = new ArrayList<>(ResearchHookDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow());
             }
         }
 
-        this.data = ResearchData.validate(facts, nodes, hooks);
+        this.data = ResearchData.validate(facts, nodes, hooks, advancementHooks);
     }
 }

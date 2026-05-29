@@ -79,13 +79,6 @@ public class BookModel {
     protected List<BookCommandModel> commands = new ArrayList<>();
 
     /**
-     * Datagen-only convenience flag.
-     * If true, generated entry JSON receives explicit read conditions derived from parent links.
-     * This flag is never serialized into runtime book.json and is not read at runtime.
-     */
-    protected boolean autoAddReadConditions = false;
-
-    /**
      * If this entry is set the book will ignore all other content and just display this entry.
      * Note that the entry still needs to be in a valid category, even if the category is not displayed.
      *
@@ -122,10 +115,6 @@ public class BookModel {
      */
     public static BookModel create(Identifier id, String name) {
         return new BookModel(id, name);
-    }
-
-    public boolean autoAddReadConditions() {
-        return this.autoAddReadConditions;
     }
 
     public Identifier getTurnPageSound() {
@@ -323,11 +312,6 @@ public class BookModel {
     public BookModel withCommand(BookCommandModel command) {
         command.book = this;
         this.commands.add(command);
-        return this;
-    }
-
-    public BookModel withAutoAddReadConditions(boolean autoAddReadConditions) {
-        this.autoAddReadConditions = autoAddReadConditions;
         return this;
     }
 

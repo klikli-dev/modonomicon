@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.research;
 
+import com.klikli_dev.modonomicon.research.hook.AdvancementResearchHookService;
 import com.klikli_dev.modonomicon.research.hook.ResearchHookService;
 import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
 
@@ -13,6 +14,7 @@ public final class ResearchServices {
 
     private static final ResearchStateManager STATE = ResearchStateManager.get();
     private static final ResearchHookService HOOKS = new ResearchHookService(STATE);
+    private static final AdvancementResearchHookService ADVANCEMENTS = new AdvancementResearchHookService(STATE);
 
     private ResearchServices() {
     }
@@ -23,5 +25,9 @@ public final class ResearchServices {
 
     public static ResearchHookService hooks() {
         return HOOKS;
+    }
+
+    public static AdvancementResearchHookService advancements() {
+        return ADVANCEMENTS;
     }
 }
