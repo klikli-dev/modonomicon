@@ -66,8 +66,8 @@ public class FeaturesCategory extends CategoryProvider {
                 .withParent(this.parent(conditionRootEntry).withLineReversed(true))
                 .withParent(conditionLevel2Entry)
                 .withCondition(this.condition().and(
-                        this.condition().entryRead(conditionRootEntry),
-                        this.condition().entryRead(conditionLevel2Entry)
+                        this.condition().researchNodeUnlocked(this.modLoc("demo/features_two_parents_root")),
+                        this.condition().researchNodeUnlocked(this.modLoc("demo/features_two_parents_level_2"))
                 ));
         this.layout().entry(twoParentsEntry).above(conditionRootEntry, 1).leftOf(1);
 
@@ -75,14 +75,17 @@ public class FeaturesCategory extends CategoryProvider {
         this.layout().entry(recipeEntry).at(-8, -1);
 
         var spotlightEntry = this.add(new SpotlightEntry(this).generate())
+                .withCondition(this.condition().researchNodeUnlocked(this.modLoc("demo/features_spotlight")))
                 .withParent(this.parent(recipeEntry).withLineReversed(true));
         this.layout().entry(spotlightEntry).below(recipeEntry, 2);
 
         var componentIconEntry = this.add(new EntryWithComponentIcon(this).generate())
+                .withCondition(this.condition().researchNodeUnlocked(this.modLoc("demo/features_component_icon")))
                 .withParent(spotlightEntry);
         this.layout().entry(componentIconEntry).below(spotlightEntry, 2);
 
         var emptyEntry = this.add(new EmptyPageEntry(this).generate())
+                .withCondition(this.condition().researchNodeUnlocked(this.modLoc("demo/features_empty")))
                 .withParent(spotlightEntry);
         this.layout().entry(emptyEntry).rightOf(spotlightEntry, 6);
 
@@ -93,6 +96,7 @@ public class FeaturesCategory extends CategoryProvider {
         this.layout().entry(entityEntry).at(7, -3);
 
         var imageEntry = new ImageEntry(this).generate();
+        imageEntry.withCondition(this.condition().researchNodeUnlocked(this.modLoc("demo/features_image")));
         imageEntry.withParent(this.parent(emptyEntry));
         this.layout().entry(imageEntry).at(8, 0);
 
@@ -100,6 +104,7 @@ public class FeaturesCategory extends CategoryProvider {
         this.layout().entry(redirectEntry).at(-3, -4);
 
         var customIconEntry = this.add(new CustomIconEntry(this).generate())
+                .withCondition(this.condition().researchNodeUnlocked(this.modLoc("demo/features_custom_icon")))
                 .withParent(imageEntry);
         this.layout().entry(customIconEntry).below(imageEntry, 2);
     }

@@ -35,9 +35,11 @@ public class FormattingCategory extends CategoryProvider {
         var basicFormattingEntry = this.add(new BasicFormattingEntry(this).generate());
 
         var advancedFormattingEntry = this.add(new AdvancedFormattingEntry(this).generate())
+                .withCondition(this.condition().researchNodeUnlocked(this.modLoc("demo/formatting_advanced")))
                 .withParent(this.parent(basicFormattingEntry));
 
         var linkFormattingEntry = this.add(new LinkFormattingEntry(this).generate())
+                .withCondition(this.condition().researchNodeUnlocked(this.modLoc("demo/formatting_link")))
                 .withParent(advancedFormattingEntry);
 
         var alwaysLockedEntry = this.add(new AlwaysLockedEntry(this).generate());

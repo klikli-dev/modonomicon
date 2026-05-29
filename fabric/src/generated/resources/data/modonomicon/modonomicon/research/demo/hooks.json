@@ -10,5 +10,53 @@
     "fact_id": "modonomicon:demo/condition_level_1_viewed",
     "id": "modonomicon:demo/condition_level_1_viewed_once",
     "trigger_type": "entry_viewed_once"
+  },
+  {
+    "event_target_id": "modonomicon:features/condition_level_2",
+    "fact_id": "modonomicon:demo/condition_level_2_viewed",
+    "id": "modonomicon:demo/condition_level_2_viewed_once",
+    "trigger_type": "entry_viewed_once"
+  },
+  {
+    "event_target_id": "modonomicon:formatting/basic",
+    "fact_id": "modonomicon:demo/formatting_basic_viewed",
+    "id": "modonomicon:demo/formatting_basic_viewed_once",
+    "trigger_type": "entry_viewed_once"
+  },
+  {
+    "event_target_id": "modonomicon:formatting/advanced",
+    "fact_id": "modonomicon:demo/formatting_advanced_viewed",
+    "id": "modonomicon:demo/formatting_advanced_viewed_once",
+    "trigger_type": "entry_viewed_once"
+  },
+  {
+    "event_target_id": "modonomicon:features/recipe",
+    "fact_id": "modonomicon:demo/features_recipe_viewed",
+    "id": "modonomicon:demo/features_recipe_viewed_once",
+    "trigger_type": "entry_viewed_once"
+  },
+  {
+    "event_target_id": "modonomicon:features/spotlight",
+    "fact_id": "modonomicon:demo/features_spotlight_viewed",
+    "id": "modonomicon:demo/features_spotlight_viewed_once",
+    "trigger_type": "entry_viewed_once"
+  },
+  {
+    "event_target_id": "modonomicon:features/component_icon",
+    "fact_id": "modonomicon:demo/features_component_icon_viewed",
+    "id": "modonomicon:demo/features_component_icon_viewed_once",
+    "trigger_type": "entry_viewed_once"
+  },
+  {
+    "event_target_id": "modonomicon:features/empty",
+    "fact_id": "modonomicon:demo/features_empty_viewed",
+    "id": "modonomicon:demo/features_empty_viewed_once",
+    "trigger_type": "entry_viewed_once"
+  },
+  {
+    "event_target_id": "modonomicon:features/image",
+    "fact_id": "modonomicon:demo/features_image_viewed",
+    "id": "modonomicon:demo/features_image_viewed_once",
+    "trigger_type": "entry_viewed_once"
   }
 ]

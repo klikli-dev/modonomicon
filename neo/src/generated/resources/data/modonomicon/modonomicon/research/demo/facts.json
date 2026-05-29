@@ -4,5 +4,29 @@
   },
   {
     "id": "modonomicon:demo/condition_level_1_viewed"
+  },
+  {
+    "id": "modonomicon:demo/condition_level_2_viewed"
+  },
+  {
+    "id": "modonomicon:demo/formatting_basic_viewed"
+  },
+  {
+    "id": "modonomicon:demo/formatting_advanced_viewed"
+  },
+  {
+    "id": "modonomicon:demo/features_recipe_viewed"
+  },
+  {
+    "id": "modonomicon:demo/features_spotlight_viewed"
+  },
+  {
+    "id": "modonomicon:demo/features_component_icon_viewed"
+  },
+  {
+    "id": "modonomicon:demo/features_empty_viewed"
+  },
+  {
+    "id": "modonomicon:demo/features_image_viewed"
   }
 ]

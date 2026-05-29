@@ -7,8 +7,8 @@
   },
   "category": "modonomicon:formatting",
   "condition": {
-    "type": "modonomicon:entry_read",
-    "entry_id": "modonomicon:formatting/advanced"
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:demo/formatting_link"
   },
   "description": "book.modonomicon.demo.formatting.link.description",
   "icon": {

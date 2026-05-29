@@ -47,11 +47,15 @@ public class BookEntryReadMessage implements Message {
     @Override
     public void onServerReceived(MinecraftServer minecraftServer, ServerPlayer player) {
         var entry = BookDataManager.get().getBook(this.bookId).getEntry(this.entryId);
-        //unlock page, then update the unlock capability, finally sync.
-        if (BookServices.interaction().markEntryRead(player, entry)) {
-            ResearchServices.hooks().onEntryViewedOnce(player, entry.getId());
+        // mark read if needed, always replay the view hook so research can be rebuilt after a research reset,
+        // then update the unlock capability and sync if anything changed.
+        var firstRead = BookServices.interaction().markEntryRead(player, entry);
+        var researchChanged = ResearchServices.hooks().onEntryViewedOnce(player, entry.getId());
+        if (firstRead || researchChanged) {
             BookServices.stateAccess().updateAndSync(player);
-            ModonomiconEvents.server().entryFirstRead(new EntryFirstReadEvent(entry.getBook().getId(), entry.getId()));
+            if (firstRead) {
+                ModonomiconEvents.server().entryFirstRead(new EntryFirstReadEvent(entry.getBook().getId(), entry.getId()));
+            }
         }
     }
 }

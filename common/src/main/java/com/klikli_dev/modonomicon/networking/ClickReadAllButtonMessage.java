@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.klikli_dev.modonomicon.research.ResearchServices;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -42,11 +43,13 @@ public class ClickReadAllButtonMessage implements Message {
     public void onServerReceived(MinecraftServer minecraftServer, ServerPlayer player) {
         var book = BookDataManager.get().getBook(this.bookId);
         if (book != null) {
-            //unlock pages, then update the unlock capability, finally sync.
+            // mark currently eligible entries read, replay their view hooks, then update unlock state once.
             var anyRead = false;
+            var anyResearchChanged = false;
             for (var entry : book.getEntries().values()) {
                 if ((this.readAll || BookServices.stateAccess().isUnlocked(player, entry)) && BookServices.interaction().markEntryRead(player, entry)) {
                     anyRead = true;
+                    anyResearchChanged |= ResearchServices.hooks().onEntryViewedOnce(player, entry.getId());
                 }
             }
 
@@ -56,7 +59,7 @@ public class ClickReadAllButtonMessage implements Message {
                 }
             }
 
-            if (anyRead) {
+            if (anyRead || anyResearchChanged) {
                 BookUnlockStateManager.get().updateAndSyncFor(player);
             }
         }

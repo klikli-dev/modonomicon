@@ -63,7 +63,7 @@ public class DemoBook extends SingleBookSubProvider {
         var formattingCategory = this.add(new FormattingCategory(this).generate());
 
         var conditionalCategory = this.add(new ConditionalCategory(this).generate())
-                .withCondition(this.condition().entryRead(this.modLoc(FeaturesCategory.ID, ConditionRootEntry.ID)));
+                .withCondition(this.condition().researchNodeUnlocked(this.modLoc("demo/condition_level_1")));
 
         var indexModeCategory = this.add(new IndexModeCategory(this).generate());
     }

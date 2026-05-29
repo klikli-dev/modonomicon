@@ -7,8 +7,8 @@
   },
   "category": "modonomicon:features",
   "condition": {
-    "type": "modonomicon:entry_read",
-    "entry_id": "modonomicon:features/empty"
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:demo/features_image"
   },
   "description": "book.modonomicon.demo.features.image.description",
   "icon": {
