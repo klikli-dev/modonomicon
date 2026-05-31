@@ -342,7 +342,7 @@ It should not include book-first auto-generation, inferred ids, or helper system
 
 ## Implementation Status
 
-Status as of 2026-05-28 on `feat/research-system/main`.
+Status as of 2026-05-31 on `feat/research-system/main`.
 
 Completed so far:
 
@@ -359,12 +359,21 @@ Completed so far:
   - composite `two_parents`
   - conditional category migration
 - nested admin reset command: `modonomicon research reset`
+- condition-surface cutover for legacy progression conditions:
+  - `entry_read` removed
+  - `entry_unlocked` removed
+  - `advancement` removed
+- explicit advancement-backed research ingress
+- computed visibility/access cutover for categories, entries, and pages
+- removal of persisted book unlock state as progression authority
+- legacy advancement networking/config cleanup
+- research progress button replacing the old read-all progression shortcut
 
 Not completed yet:
 
 - additional trigger families such as `item_crafted` and `item_acquired`
 - values in a real authored scenario
-- broader non-demo content migration
+- broader non-demo authored-content migration and validation beyond the demo/cutover slices already completed
 - authoring sugar / bridge / typed refs / patch-merge work
 
 ## Roadmap
@@ -389,7 +398,10 @@ Current status:
 
 - completed for the initial demo-entry slice
 - completed for the full demo-book `entry_read` migration slice
-- proven for the migrated demo book, not yet for broader non-demo content
+- completed for the legacy progression-condition cutover and advancement-backed replacement path
+- completed for the runtime visibility/access cutover; book visibility is now computed rather than progression-persisted
+- completed for the immediate legacy-advancement cleanup and post-cutover research-progress button follow-up
+- still not proven for broader non-demo authored content
 
 Not part of phase 1:
 
@@ -414,6 +426,7 @@ Recommended first slice in phase 2:
 
 - add `item_crafted` only
 - keep it explicit and fact-backed
+- prove it in one narrow authored scenario before adding `item_acquired`
 - defer `item_acquired` and value-based progression until after `item_crafted` is proven stable
 
 Not part of phase 2 unless strictly needed:
