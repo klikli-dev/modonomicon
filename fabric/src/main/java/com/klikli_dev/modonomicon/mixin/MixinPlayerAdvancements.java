@@ -6,8 +6,9 @@
 
 package com.klikli_dev.modonomicon.mixin;
 
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.research.ResearchServices;
+import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,7 +27,8 @@ public abstract class MixinPlayerAdvancements {
     @Inject(at = @At("TAIL"), method = "award(Lnet/minecraft/advancements/AdvancementHolder;Ljava/lang/String;)Z")
     private void award(AdvancementHolder pAdvancement, String pCriterionKey, CallbackInfoReturnable<?> info) {
         if (ResearchServices.advancements().onAdvancement(this.getPlayer(), pAdvancement.id())) {
-            BookUnlockStateManager.get().onAdvancement(this.getPlayer());
+            ResearchStateManager.get().syncFor(this.getPlayer());
+            BookVisualStateManager.get().syncFor(this.getPlayer());
         }
     }
 }

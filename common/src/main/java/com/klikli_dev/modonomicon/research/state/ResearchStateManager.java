@@ -6,10 +6,11 @@
 
 package com.klikli_dev.modonomicon.research.state;
 
-import com.klikli_dev.modonomicon.networking.RequestSyncBookStatesMessage;
+import com.klikli_dev.modonomicon.networking.RequestSyncResearchStateMessage;
+import com.klikli_dev.modonomicon.networking.SyncResearchStateMessage;
 import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -66,8 +67,14 @@ public class ResearchStateManager {
     public void resetFor(ServerPlayer player) {
         this.getStateFor(player).reset();
         this.saveData.setDirty();
-        BookUnlockStateManager.get().clearResearchBackedUnlocksFor(player);
-        BookUnlockStateManager.get().updateAndSyncFor(player);
+    }
+
+    public void syncFor(ServerPlayer player) {
+        Services.NETWORK.sendTo(player, new SyncResearchStateMessage(this.getStateFor(player)));
+    }
+
+    public void installClientState(Player player, PlayerResearchState state) {
+        this.saveData = new ResearchStatesSaveData(Object2ObjectMaps.singleton(player.getUUID(), state));
     }
 
     public void clearCachedSaveData() {
@@ -87,7 +94,7 @@ public class ResearchStateManager {
                 this.saveData = serverPlayer.level().getServer().overworld().getDataStorage().computeIfAbsent(ResearchStatesSaveData.TYPE);
             } else {
                 this.saveData = new ResearchStatesSaveData();
-                Services.NETWORK.sendToServer(RequestSyncBookStatesMessage.INSTANCE);
+                Services.NETWORK.sendToServer(RequestSyncResearchStateMessage.INSTANCE);
             }
         }
     }

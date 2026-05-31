@@ -21,20 +21,18 @@ public class Networking {
         registrar.playToServer(BookEntryReadMessage.TYPE, BookEntryReadMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToServer(BookCategoryReadMessage.TYPE, BookCategoryReadMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToServer(ClickCommandLinkMessage.TYPE, ClickCommandLinkMessage.STREAM_CODEC, MessageHandler::handle);
-        registrar.playToServer(ClickReadAllButtonMessage.TYPE, ClickReadAllButtonMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToServer(ClickResearchProgressButtonMessage.TYPE, ClickResearchProgressButtonMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToServer(SaveBookStateMessage.TYPE, SaveBookStateMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToServer(SaveCategoryStateMessage.TYPE, SaveCategoryStateMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToServer(SaveEntryStateMessage.TYPE, SaveEntryStateMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToServer(ReloadResourcesDoneMessage.TYPE, ReloadResourcesDoneMessage.STREAM_CODEC, MessageHandler::handle);
-        registrar.playToServer(RequestSyncBookStatesMessage.TYPE, RequestSyncBookStatesMessage.STREAM_CODEC, MessageHandler::handle);
-        registrar.playToServer(SendUnlockCodeToServerMessage.TYPE, SendUnlockCodeToServerMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToServer(RequestSyncResearchStateMessage.TYPE, RequestSyncResearchStateMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToServer(AddBookmarkMessage.TYPE, AddBookmarkMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToServer(RemoveBookmarkMessage.TYPE, RemoveBookmarkMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToServer(BookClosedMessage.TYPE, BookClosedMessage.STREAM_CODEC, MessageHandler::handle);
 
-        registrar.playToClient(SendUnlockCodeToClientMessage.TYPE, SendUnlockCodeToClientMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToClient(SyncBookDataMessage.TYPE, SyncBookDataMessage.STREAM_CODEC, MessageHandler::handle);
-        registrar.playToClient(SyncBookUnlockStatesMessage.TYPE, SyncBookUnlockStatesMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToClient(SyncResearchStateMessage.TYPE, SyncResearchStateMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToClient(SyncBookVisualStatesMessage.TYPE, SyncBookVisualStatesMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToClient(SyncMultiblockDataMessage.TYPE, SyncMultiblockDataMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToClient(ReloadResourcesOnClientMessage.TYPE, ReloadResourcesOnClientMessage.STREAM_CODEC, MessageHandler::handle);

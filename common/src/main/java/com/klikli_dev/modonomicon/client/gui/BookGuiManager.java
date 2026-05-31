@@ -227,10 +227,7 @@ public class BookGuiManager {
             BookGuiManager.get().closeCategoryScreen(this.openBookCategoryScreen);
         }
 
-        //Mark category as read if not already read
-        if (!BookServices.interaction().isCategoryRead(this.player(), category)) {
-            Services.NETWORK.sendToServer(new BookCategoryReadMessage(category.getBook().getId(), category.getId()));
-        }
+        Services.NETWORK.sendToServer(new BookCategoryReadMessage(category.getBook().getId(), category.getId()));
 
         var displayMode = category.getDisplayMode();
         //if the book is in index mode, force all categories into index mode too!
@@ -349,8 +346,9 @@ public class BookGuiManager {
 
     @ApiStatus.Internal
     public void openEntry(BookEntry entry, BookAddress address) {
-        if (!BookServices.interaction().isEntryRead(this.player(), entry)) {
-            Services.NETWORK.sendToServer(new BookEntryReadMessage(entry.getBook().getId(), entry.getId()));
+        var firstRead = !BookServices.interaction().isEntryRead(this.player(), entry);
+        Services.NETWORK.sendToServer(new BookEntryReadMessage(entry.getBook().getId(), entry.getId()));
+        if (firstRead) {
             ModonomiconEvents.client().entryFirstRead(new EntryFirstReadEvent(entry.getBook().getId(), entry.getId()));
         }
 

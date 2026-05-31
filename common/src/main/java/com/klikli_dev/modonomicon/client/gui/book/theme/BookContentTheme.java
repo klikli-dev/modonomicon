@@ -62,13 +62,13 @@ public interface BookContentTheme {
 
     GuiButtonSprites removeBookmarkButton();
 
-    GuiButtonSprites readAllButtonBackground();
+    GuiButtonSprites researchProgressButtonBackground();
 
-    GuiButtonSprites readAllButton();
+    GuiButtonSprites researchAllButton();
 
-    GuiButtonSprites readNoneButton();
+    GuiButtonSprites researchNoneButton();
 
-    GuiButtonSprites readUnlockedButton();
+    GuiButtonSprites researchVisibleButton();
 
     GuiSprite searchFieldBackground();
 

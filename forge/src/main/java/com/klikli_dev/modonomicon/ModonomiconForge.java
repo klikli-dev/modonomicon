@@ -6,7 +6,6 @@
 
 package com.klikli_dev.modonomicon;
 
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.client.BookModel;
 import com.klikli_dev.modonomicon.client.ClientTicks;
@@ -28,7 +27,9 @@ import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
 import com.klikli_dev.modonomicon.registry.RegistryBootstrap;
+import com.klikli_dev.modonomicon.research.ResearchServices;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
+import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
 import com.mojang.blaze3d.framegraph.FramePass;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -107,8 +108,8 @@ public class ModonomiconForge {
         //sync book state on player join
         EntityJoinLevelEvent.BUS.addListener((EntityJoinLevelEvent e) -> {
             if (e.getEntity() instanceof ServerPlayer player) {
-                BookUnlockStateManager.get().updateAndSyncFor(player);
                 BookVisualStateManager.get().syncFor(player);
+                ResearchStateManager.get().onDatapackSync(player);
             }
         });
 
@@ -117,18 +118,24 @@ public class ModonomiconForge {
         // instead of bleeding in from the previous level
         LevelEvent.Unload.BUS.addListener((LevelEvent.Unload e) -> {
             if (e.getLevel() instanceof Level level && level.dimension() == Level.OVERWORLD) {
-                BookUnlockStateManager.get().saveData = null;
                 BookVisualStateManager.get().saveData = null;
+                ResearchStateManager.get().clearCachedSaveData();
             }
         });
 
 
         //Advancement event handling for condition/unlock system
-        AdvancementEvent.AdvancementEarnEvent.BUS.addListener((AdvancementEvent.AdvancementEarnEvent e) -> BookUnlockStateManager.get().onAdvancement((ServerPlayer) e.getEntity()));
+        AdvancementEvent.AdvancementEarnEvent.BUS.addListener((AdvancementEvent.AdvancementEarnEvent e) -> {
+            var player = (ServerPlayer) e.getEntity();
+            if (ResearchServices.advancements().onAdvancement(player, e.getAdvancement().id())) {
+                ResearchStateManager.get().syncFor(player);
+                BookVisualStateManager.get().syncFor(player);
+            }
+        });
 
         //We use server tick to flush the queue of players that need a book state sync
         TickEvent.ServerTickEvent.Post.BUS.addListener(((TickEvent.ServerTickEvent.Post e) -> {
-            BookUnlockStateManager.get().onServerTickEnd(e.server());
+            ResearchStateManager.get().onServerTickEnd(e.server());
         }));
 
         //Datagen

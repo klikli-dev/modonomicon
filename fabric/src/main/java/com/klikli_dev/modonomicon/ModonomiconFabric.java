@@ -7,7 +7,6 @@
 package com.klikli_dev.modonomicon;
 
 import com.klikli_dev.modonomicon.book.runtime.DemoRuntimeBookContent;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.config.ServerConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
@@ -84,7 +83,6 @@ public class ModonomiconFabric implements ModInitializer {
 
         //sync book state on player join
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            BookUnlockStateManager.get().updateAndSyncFor(handler.getPlayer());
             BookVisualStateManager.get().syncFor(handler.getPlayer());
             ResearchStateManager.get().onDatapackSync(handler.getPlayer());
         });
@@ -94,7 +92,6 @@ public class ModonomiconFabric implements ModInitializer {
         // instead of bleeding in from the previous level
         ServerLevelEvents.UNLOAD.register((server, level) -> {
             if (level.dimension() == Level.OVERWORLD) {
-                BookUnlockStateManager.get().saveData = null;
                 BookVisualStateManager.get().saveData = null;
                 ResearchStateManager.get().clearCachedSaveData();
             }
@@ -104,7 +101,6 @@ public class ModonomiconFabric implements ModInitializer {
 
         //We use server tick to flush the queue of players that need a book state sync
         ServerTickEvents.END_SERVER_TICK.register((server) -> {
-            BookUnlockStateManager.get().onServerTickEnd(server);
             ResearchStateManager.get().onServerTickEnd(server);
         });
 

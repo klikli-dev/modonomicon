@@ -7,11 +7,8 @@
 package com.klikli_dev.modonomicon.registry;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.command.LoadUnlocksCommand;
 import com.klikli_dev.modonomicon.command.ReloadBooksCommand;
-import com.klikli_dev.modonomicon.command.ResetBookUnlocksCommand;
 import com.klikli_dev.modonomicon.command.ResetResearchCommand;
-import com.klikli_dev.modonomicon.command.SaveUnlocksCommand;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.commands.CommandSourceStack;
@@ -24,8 +21,6 @@ public class CommandRegistry {
                 Commands.literal(Modonomicon.MOD_ID)
                         .then(Commands.literal("research")
                                 .then(ResetResearchCommand.register(dispatcher)))
-                        .then(ResetBookUnlocksCommand.register(dispatcher))
-                        .then(SaveUnlocksCommand.register(dispatcher))
                         .then(ReloadBooksCommand.register(dispatcher))
         );
 
@@ -36,7 +31,6 @@ public class CommandRegistry {
 
         LiteralCommandNode<CommandSourceStack> modonomiconCommand = dispatcher.register(
                 Commands.literal(Modonomicon.MOD_ID)
-                        .then(LoadUnlocksCommand.register(dispatcher))
         );
 
         dispatcher.register(Commands.literal(Modonomicon.MOD_ID).redirect(modonomiconCommand));

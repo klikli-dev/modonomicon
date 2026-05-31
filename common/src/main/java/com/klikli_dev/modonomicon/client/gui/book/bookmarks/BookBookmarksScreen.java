@@ -11,7 +11,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
@@ -58,7 +58,7 @@ public class BookBookmarksScreen extends BookPaginatedScreen {
 
     public void handleButtonEntry(Button button) {
         if (button instanceof EntryListButton entry) {
-            if (!BookUnlockStateManager.get().isUnlockedFor(Minecraft.getInstance().player, entry.getEntry())) {
+            if (!BookServices.visibility().isAccessible(Minecraft.getInstance().player, entry.getEntry())) {
                 return;
             }
 

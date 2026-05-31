@@ -7,7 +7,6 @@
 package com.klikli_dev.modonomicon.registry;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.commands.FabricLoadUnlocksCommand;
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -18,7 +17,6 @@ public class FabricClientCommandRegistry {
 
         var modonomiconCommand = dispatcher.register(
                 ClientCommands.literal(Modonomicon.MOD_ID + "-client")
-                        .then(FabricLoadUnlocksCommand.register(dispatcher))
         );
 
         dispatcher.register(ClientCommands.literal(Modonomicon.MOD_ID + "-client").redirect(modonomiconCommand));

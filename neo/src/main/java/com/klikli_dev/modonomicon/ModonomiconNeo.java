@@ -6,7 +6,6 @@
 
 package com.klikli_dev.modonomicon;
 
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.book.runtime.DemoRuntimeBookContent;
 import com.klikli_dev.modonomicon.client.BookModel;
@@ -112,7 +111,6 @@ public class ModonomiconNeo {
         //sync book state on player join
         NeoForge.EVENT_BUS.addListener((EntityJoinLevelEvent e) -> {
             if (e.getEntity() instanceof ServerPlayer player) {
-                BookUnlockStateManager.get().updateAndSyncFor(player);
                 BookVisualStateManager.get().syncFor(player);
                 ResearchStateManager.get().onDatapackSync(player);
             }
@@ -123,7 +121,6 @@ public class ModonomiconNeo {
         // instead of bleeding in from the previous level
         NeoForge.EVENT_BUS.addListener((LevelEvent.Unload e) -> {
             if (e.getLevel() instanceof Level level && level.dimension() == Level.OVERWORLD) {
-                BookUnlockStateManager.get().saveData = null;
                 BookVisualStateManager.get().saveData = null;
                 ResearchStateManager.get().clearCachedSaveData();
             }
@@ -134,13 +131,13 @@ public class ModonomiconNeo {
         NeoForge.EVENT_BUS.addListener((AdvancementEvent.AdvancementEarnEvent e) -> {
             var player = (ServerPlayer) e.getEntity();
             if (ResearchServices.advancements().onAdvancement(player, e.getAdvancement().id())) {
-                BookUnlockStateManager.get().onAdvancement(player);
+                ResearchStateManager.get().syncFor(player);
+                BookVisualStateManager.get().syncFor(player);
             }
         });
 
         //We use server tick to flush the queue of players that need a book state sync
         NeoForge.EVENT_BUS.addListener(((ServerTickEvent.Post e) -> {
-            BookUnlockStateManager.get().onServerTickEnd(e.getServer());
             ResearchStateManager.get().onServerTickEnd(e.getServer());
         }));
 

@@ -31,12 +31,12 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Gui.BUTTON_EXIT, "Exit");
         this.add(Gui.BUTTON_VISUALIZE, "Show Multiblock Preview");
         this.add(Gui.BUTTON_VISUALIZE_TOOLTIP, "Show Multiblock Preview");
-        this.add(Gui.BUTTON_READ_ALL, "Mark all entries as read");
-        this.add(Gui.BUTTON_READ_ALL_TOOLTIP_READ_UNLOCKED, "Mark all §aunlocked§r entries as read.");
-        this.add(Gui.BUTTON_READ_ALL_TOOLTIP_SHIFT_INSTRUCTIONS, "Shift-Click to mark §call§r (even locked) entries as read.");
-        this.add(Gui.BUTTON_READ_ALL_TOOLTIP_READ_ALL, "Mark §call§r (even locked) entries as read.");
-        this.add(Gui.BUTTON_READ_ALL_TOOLTIP_SHIFT_WARNING, "§l§cWarning:§r This may make it harder to read progress-oriented books.");
-        this.add(Gui.BUTTON_READ_ALL_TOOLTIP_NONE, "There are currently §lno unread§r unlocked entries.");
+        this.add(Gui.BUTTON_VIEWED_ONCE_RESEARCH, "Mark entries as viewed to unlock progress.");
+        this.add(Gui.BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_VISIBLE, "Mark §avisible§r entries as §eviewed at least once§r to unlock reading-based progress, without removing the \"unread\" icons. Will not unlock other progress types.");
+        this.add(Gui.BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_SHIFT_INSTRUCTIONS, "Shift-Click to mark all entries in this book as §eviewed at least once§r to unlock all reading-based progress.");
+        this.add(Gui.BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_ALL, "Mark all entries in this book as §eviewed at least once§r to unlock all reading-based progress.");
+        this.add(Gui.BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_SHIFT_WARNING, "§l§cWarning:§r This will unlock viewed-at-least-once research for entries you have not opened yet.");
+        this.add(Gui.BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_NONE, "There are currently no entries in this book whose viewed-at-least-once research can be progressed by this action.");
 
         this.add(Gui.HOVER_BOOK_LINK, "Go to: %s");
         this.add(Gui.HOVER_BOOK_LINK_ERROR, "Invalid link: %s. Please contact the author of the book or the translator to fix this. More information can be found in the log with the context \"Failed to parse book link.\".");

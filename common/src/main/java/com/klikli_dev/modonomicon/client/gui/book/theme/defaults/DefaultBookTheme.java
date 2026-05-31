@@ -222,22 +222,22 @@ public class DefaultBookTheme implements BookTheme {
         }
 
         @Override
-        public GuiButtonSprites readAllButtonBackground() {
+        public GuiButtonSprites researchProgressButtonBackground() {
             return DefaultBookTheme.this.readAllButtonBackground;
         }
 
         @Override
-        public GuiButtonSprites readAllButton() {
+        public GuiButtonSprites researchAllButton() {
             return DefaultBookTheme.this.readAllButton;
         }
 
         @Override
-        public GuiButtonSprites readNoneButton() {
+        public GuiButtonSprites researchNoneButton() {
             return DefaultBookTheme.this.readNoneButton;
         }
 
         @Override
-        public GuiButtonSprites readUnlockedButton() {
+        public GuiButtonSprites researchVisibleButton() {
             return DefaultBookTheme.this.readUnlockedButton;
         }
 

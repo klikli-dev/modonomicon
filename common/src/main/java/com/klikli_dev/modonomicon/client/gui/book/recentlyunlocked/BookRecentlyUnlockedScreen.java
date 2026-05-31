@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.bookstate.BookServices;
+import com.klikli_dev.modonomicon.bookstate.visual.BookVisibilitySnapshots;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
@@ -60,7 +61,7 @@ public class BookRecentlyUnlockedScreen extends BookPaginatedScreen {
 
     public void handleButtonEntry(Button button) {
         if (button instanceof EntryListButton entry) {
-            if (!BookServices.stateAccess().isUnlocked(Minecraft.getInstance().player, entry.getEntry())) {
+            if (!BookServices.visibility().isAccessible(Minecraft.getInstance().player, entry.getEntry())) {
                 return;
             }
 
@@ -260,6 +261,7 @@ public class BookRecentlyUnlockedScreen extends BookPaginatedScreen {
 
         //get recently unlocked entries sorted by timestamp desc, with unread entries prioritized
         Book book = this.getBook();
+        BookVisibilitySnapshots.collect(this.minecraft.player, book);
         Map<Identifier, Long> timestamps = BookServices.stateAccess().getUnlockTimestamps(this.minecraft.player, book);
 
         record EntryWithTimestamp(BookEntry entry, long timestamp, boolean unread) {}

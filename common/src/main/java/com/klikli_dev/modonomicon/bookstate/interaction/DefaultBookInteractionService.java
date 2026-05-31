@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.bookstate.interaction;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.bookstate.access.BookStateAccess;
+import com.klikli_dev.modonomicon.bookstate.visual.BookVisibilitySnapshots;
 import com.klikli_dev.modonomicon.bookstate.visual.EntryVisualState;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -23,22 +24,16 @@ public class DefaultBookInteractionService implements BookInteractionService {
 
     @Override
     public boolean markEntryRead(ServerPlayer player, BookEntry entry) {
-        if (!this.stateAccess.markEntryRead(player, entry)) {
-            return false;
-        }
-
+        var firstRead = this.stateAccess.markEntryRead(player, entry);
         this.stateAccess.setEntryUnread(player, entry, false);
-        return true;
+        return firstRead;
     }
 
     @Override
     public boolean markCategoryRead(ServerPlayer player, BookCategory category) {
-        if (!this.stateAccess.markCategoryRead(player, category)) {
-            return false;
-        }
-
+        var firstRead = this.stateAccess.markCategoryRead(player, category);
         this.stateAccess.setCategoryUnread(player, category, false);
-        return true;
+        return firstRead;
     }
 
     @Override
@@ -59,5 +54,10 @@ public class DefaultBookInteractionService implements BookInteractionService {
     @Override
     public boolean isEntryUnread(Player player, BookEntry entry) {
         return this.stateAccess.isEntryUnread(player, entry);
+    }
+
+    public void updateVisibilityDrivenUnread(ServerPlayer player, com.klikli_dev.modonomicon.book.Book book, BookVisibilitySnapshots before, BookVisibilitySnapshots after) {
+        after.entries().stream().filter(entryId -> !before.entries().contains(entryId)).forEach(entryId -> this.stateAccess.setEntryUnread(player, book.getEntry(entryId), true));
+        after.categories().stream().filter(categoryId -> !before.categories().contains(categoryId)).forEach(categoryId -> this.stateAccess.setCategoryUnread(player, book.getCategory(categoryId), true));
     }
 }

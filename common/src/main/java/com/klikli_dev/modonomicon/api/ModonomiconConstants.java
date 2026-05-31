@@ -59,12 +59,12 @@ public class ModonomiconConstants {
             public static final String BUTTON_VISUALIZE = PREFIX + "button.visualize";
             public static final String BUTTON_VISUALIZE_TOOLTIP = PREFIX + "button.visualize.tooltip";
 
-            public static final String BUTTON_READ_ALL = PREFIX + "button.read_all";
-            public static final String BUTTON_READ_ALL_TOOLTIP_READ_UNLOCKED = PREFIX + "button.read_all.tooltip.read_unlocked";
-            public static final String BUTTON_READ_ALL_TOOLTIP_READ_ALL = PREFIX + "button.read_all.tooltip.read_all";
-            public static final String BUTTON_READ_ALL_TOOLTIP_NONE = PREFIX + "button.read_all.tooltip.none";
-            public static final String BUTTON_READ_ALL_TOOLTIP_SHIFT_INSTRUCTIONS = PREFIX + "button.read_all.tooltip.shift";
-            public static final String BUTTON_READ_ALL_TOOLTIP_SHIFT_WARNING = PREFIX + "button.read_all.tooltip.shift_warning";
+            public static final String BUTTON_VIEWED_ONCE_RESEARCH = PREFIX + "button.viewed_once_research";
+            public static final String BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_VISIBLE = PREFIX + "button.viewed_once_research.tooltip.visible";
+            public static final String BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_ALL = PREFIX + "button.viewed_once_research.tooltip.all";
+            public static final String BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_NONE = PREFIX + "button.viewed_once_research.tooltip.none";
+            public static final String BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_SHIFT_INSTRUCTIONS = PREFIX + "button.viewed_once_research.tooltip.shift";
+            public static final String BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_SHIFT_WARNING = PREFIX + "button.viewed_once_research.tooltip.shift_warning";
 
             public static final String HOVER_BOOK_LINK = PREFIX + "hover.book_link";
             public static final String HOVER_BOOK_LINK_ERROR = PREFIX + "hover.book_link.error";

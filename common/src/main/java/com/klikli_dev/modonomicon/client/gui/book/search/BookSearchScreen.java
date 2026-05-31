@@ -12,7 +12,7 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedScreen;
@@ -287,8 +287,8 @@ public class BookSearchScreen extends BookPaginatedScreen {
 
         //we filter out entries that are locked or in locked categories
         this.allEntries = this.getEntries().stream().filter(e ->
-                BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e.getCategory()) &&
-                        BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e)
+                BookServices.visibility().isVisible(this.minecraft.player, e.getCategory()) &&
+                        BookServices.visibility().isAccessible(this.minecraft.player, e)
         ).sorted(Comparator.comparing(a -> I18n.get(a.getName()))).toList();
 
         //TODO: should we NOT filter out locked but visible entries and display them with a lock?
