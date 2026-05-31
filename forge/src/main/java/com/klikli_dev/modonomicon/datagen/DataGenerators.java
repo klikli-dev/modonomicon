@@ -9,12 +9,13 @@ package com.klikli_dev.modonomicon.datagen;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.datagen.AddToModonomiconLanguageProvider;
 import com.klikli_dev.modonomicon.api.datagen.ForgeBookProvider;
+import com.klikli_dev.modonomicon.api.datagen.ForgeResearchProvider;
 import com.klikli_dev.modonomicon.api.datagen.LanguageProviderCache;
 import com.klikli_dev.modonomicon.datagen.book.AddToDemoBook;
 import com.klikli_dev.modonomicon.datagen.book.DemoBook;
 import com.klikli_dev.modonomicon.datagen.book.DemoIndexBook;
 import com.klikli_dev.modonomicon.datagen.book.DemoLeaflet;
-import com.klikli_dev.modonomicon.research.data.ResearchDataProvider;
+import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.data.event.GatherDataEvent;
 
@@ -56,6 +57,6 @@ public class DataGenerators {
         var blockTagsProvider = new BlockTagsProvider(generator.getPackOutput(), event.getLookupProvider(), event.getExistingFileHelper());
         generator.addProvider(event.includeClient(), blockTagsProvider);
         generator.addProvider(event.includeClient(), new ItemTagsProvider(generator.getPackOutput(), event.getLookupProvider(), event.getExistingFileHelper()));
-        generator.addProvider(event.includeServer(), new ResearchDataProvider(generator.getPackOutput()));
+        generator.addProvider(event.includeServer(), ForgeResearchProvider.of(event, new DemoResearch(Modonomicon.MOD_ID)));
     }
 }

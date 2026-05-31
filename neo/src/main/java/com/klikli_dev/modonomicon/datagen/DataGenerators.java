@@ -10,11 +10,12 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.datagen.AddToModonomiconLanguageProvider;
 import com.klikli_dev.modonomicon.api.datagen.LanguageProviderCache;
 import com.klikli_dev.modonomicon.api.datagen.NeoBookProvider;
+import com.klikli_dev.modonomicon.api.datagen.NeoResearchProvider;
 import com.klikli_dev.modonomicon.datagen.book.AddToDemoBook;
 import com.klikli_dev.modonomicon.datagen.book.DemoBook;
 import com.klikli_dev.modonomicon.datagen.book.DemoIndexBook;
 import com.klikli_dev.modonomicon.datagen.book.DemoLeaflet;
-import com.klikli_dev.modonomicon.research.data.ResearchDataProvider;
+import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.data.DataGenerator;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
@@ -57,6 +58,6 @@ public class DataGenerators {
         var blockTagsProvider = new BlockTagsProvider(generator.getPackOutput(), event.getLookupProvider());
         generator.addProvider(true,blockTagsProvider);
         generator.addProvider(true, new ItemTagsProvider(generator.getPackOutput(), event.getLookupProvider()));
-        generator.addProvider(true, new ResearchDataProvider(generator.getPackOutput()));
+        generator.addProvider(true, NeoResearchProvider.of(event, new DemoResearch(Modonomicon.MOD_ID)));
     }
 }

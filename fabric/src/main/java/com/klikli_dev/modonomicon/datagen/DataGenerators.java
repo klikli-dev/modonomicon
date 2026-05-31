@@ -7,12 +7,13 @@ package com.klikli_dev.modonomicon.datagen;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.datagen.AddToModonomiconLanguageProvider;
 import com.klikli_dev.modonomicon.api.datagen.FabricBookProvider;
+import com.klikli_dev.modonomicon.api.datagen.FabricResearchProvider;
 import com.klikli_dev.modonomicon.api.datagen.LanguageProviderCache;
 import com.klikli_dev.modonomicon.datagen.book.AddToDemoBook;
 import com.klikli_dev.modonomicon.datagen.book.DemoBook;
 import com.klikli_dev.modonomicon.datagen.book.DemoIndexBook;
 import com.klikli_dev.modonomicon.datagen.book.DemoLeaflet;
-import com.klikli_dev.modonomicon.research.data.ResearchDataProvider;
+import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
@@ -52,6 +53,6 @@ public class DataGenerators implements DataGeneratorEntrypoint {
         pack.addProvider(ModonomiconModelProvider::new);
 
         pack.addProvider(ItemTagsProvider::new);
-        pack.addProvider((FabricPackOutput output) -> new ResearchDataProvider(output));
+        pack.addProvider(FabricResearchProvider.of(new DemoResearch(Modonomicon.MOD_ID)));
     }
 }
