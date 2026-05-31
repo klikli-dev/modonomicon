@@ -340,6 +340,21 @@ Phase 1 should include minimal sugar only.
 
 It should not include book-first auto-generation, inferred ids, or helper systems that silently create research data from book structure.
 
+### Later-Phase Authoring Rule
+
+Later authoring convenience should start on the research side first.
+
+The preferred order is:
+
+1. research-side datagen glue and authoring sugar
+2. book-side glue only after the research-side sugar is proven
+
+Typed refs should be part of that later authoring-convenience work.
+
+They are an authoring-time/datagen-time safety feature only and must compile down to the same explicit canonical ids/resources.
+
+They must not become runtime progression authority or hidden runtime lookup semantics.
+
 ## Implementation Status
 
 Status as of 2026-05-31 on `feat/research-system/main`.
@@ -411,6 +426,14 @@ Not part of phase 1:
 - bridge/compiler layer
 - datapack patch/merge semantics
 
+Recommended next slice before trigger expansion:
+
+- add research-side datagen glue and authoring sugar only
+- include typed research refs as an authoring-time safety feature
+- keep emitted resources fully explicit and canonical
+- do not add book-side glue in the same slice
+- do not change runtime semantics in the same slice
+
 ### Phase 2: Explicit Trigger Expansion
 
 Phase 2 broadens the explicit model without introducing major sugar.
@@ -441,7 +464,7 @@ Only after the explicit runtime model is proven should later convenience arrive.
 
 Planned later work:
 
-- typed references
+- typed references for authoring/datagen safety that compile to explicit ids
 - datagen bridge/compiler layer
 - optional book-first generated progression
 - convenience helpers around viewed-once and later triggers
