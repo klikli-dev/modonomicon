@@ -50,13 +50,11 @@ public class FeaturesCategory extends CategoryProvider {
 
         //the condition for the level 1 entry to depend on the root entry is set up here so we can access the entry. We could also do it in the entry provider and either hand over a reference, or use the ID as resource location to reference it
         var conditionLevel1Entry = this.add(new ConditionLevel1Entry(this).generate())
-                .withCondition(this.condition().researchNodeUnlocked(this.modLoc("demo/condition_level_1")))
                 //here we use this.parent() to get access to the parent settings
                 .withParent(this.parent(conditionRootEntry).withLineReversed(true));
         this.layout().entry(conditionLevel1Entry).rightOf(conditionRootEntry, 5).below(2);
 
         var conditionLevel2Entry = this.add(new ConditionLevel2Entry(this).generate())
-                .withCondition(this.condition().researchNodeUnlocked(this.modLoc("demo/condition_level_2")))
                 //here we want a default parent so we can just hand over the entry
                 .withParent(conditionLevel1Entry);
         this.layout().entry(conditionLevel2Entry).below(conditionRootEntry, 2);
@@ -64,28 +62,21 @@ public class FeaturesCategory extends CategoryProvider {
         var twoParentsEntry = this.add(new TwoParentEntry(this).generate())
                 .showWhenAnyParentUnlocked(true)
                 .withParent(this.parent(conditionRootEntry).withLineReversed(true))
-                .withParent(conditionLevel2Entry)
-                .withCondition(this.condition().and(
-                        this.condition().researchNodeUnlocked(this.modLoc("demo/features_two_parents_root")),
-                        this.condition().researchNodeUnlocked(this.modLoc("demo/features_two_parents_level_2"))
-                ));
+                .withParent(conditionLevel2Entry);
         this.layout().entry(twoParentsEntry).above(conditionRootEntry, 1).leftOf(1);
 
         var recipeEntry = this.add(new RecipeEntry(this).generate());
         this.layout().entry(recipeEntry).at(-8, -1);
 
         var spotlightEntry = this.add(new SpotlightEntry(this).generate())
-                .withCondition(this.condition().researchNodeUnlocked(this.modLoc("demo/features_spotlight")))
                 .withParent(this.parent(recipeEntry).withLineReversed(true));
         this.layout().entry(spotlightEntry).below(recipeEntry, 2);
 
         var componentIconEntry = this.add(new EntryWithComponentIcon(this).generate())
-                .withCondition(this.condition().researchNodeUnlocked(this.modLoc("demo/features_component_icon")))
                 .withParent(spotlightEntry);
         this.layout().entry(componentIconEntry).below(spotlightEntry, 2);
 
         var emptyEntry = this.add(new EmptyPageEntry(this).generate())
-                .withCondition(this.condition().researchNodeUnlocked(this.modLoc("demo/features_empty")))
                 .withParent(spotlightEntry);
         this.layout().entry(emptyEntry).rightOf(spotlightEntry, 6);
 
@@ -96,7 +87,6 @@ public class FeaturesCategory extends CategoryProvider {
         this.layout().entry(entityEntry).at(7, -3);
 
         var imageEntry = new ImageEntry(this).generate();
-        imageEntry.withCondition(this.condition().researchNodeUnlocked(this.modLoc("demo/features_image")));
         imageEntry.withParent(this.parent(emptyEntry));
         this.layout().entry(imageEntry).at(8, 0);
 
@@ -104,7 +94,6 @@ public class FeaturesCategory extends CategoryProvider {
         this.layout().entry(redirectEntry).at(-3, -4);
 
         var customIconEntry = this.add(new CustomIconEntry(this).generate())
-                .withCondition(this.condition().researchNodeUnlocked(this.modLoc("demo/features_custom_icon")))
                 .withParent(imageEntry);
         this.layout().entry(customIconEntry).below(imageEntry, 2);
     }

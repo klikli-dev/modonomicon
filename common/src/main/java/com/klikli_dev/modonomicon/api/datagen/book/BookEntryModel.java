@@ -13,6 +13,8 @@ import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookAndConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookNoneConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookResearchNodeUnlockedConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeRef;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
@@ -120,6 +122,10 @@ public class BookEntryModel {
 
     public BookConditionModel<?> getCondition() {
         return this.condition;
+    }
+
+    public boolean hasCondition() {
+        return this.condition != null;
     }
 
     public Identifier getCategoryToOpen() {
@@ -446,6 +452,10 @@ public class BookEntryModel {
     public BookEntryModel withCondition(BookConditionModel<?> condition) {
         this.condition = condition;
         return this;
+    }
+
+    public BookEntryModel withCondition(ResearchNodeRef nodeRef) {
+        return this.withCondition(BookResearchNodeUnlockedConditionModel.create().withNode(nodeRef.id()));
     }
 
     /**

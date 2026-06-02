@@ -7,22 +7,16 @@
 package com.klikli_dev.modonomicon.datagen.book;
 
 import com.klikli_dev.modonomicon.api.datagen.AddToBookSubProvider;
-import com.klikli_dev.modonomicon.api.datagen.ModonomiconLanguageProvider;
 import com.klikli_dev.modonomicon.datagen.book.addtodemo.AddToGettingStartedCategory;
 import com.klikli_dev.modonomicon.datagen.book.addtodemo.NewCategory;
-import com.klikli_dev.modonomicon.datagen.book.demo.ConditionalCategory;
-import com.klikli_dev.modonomicon.datagen.book.demo.FeaturesCategory;
-import com.klikli_dev.modonomicon.datagen.book.demo.FormattingCategory;
-import com.klikli_dev.modonomicon.datagen.book.demo.IndexModeCategory;
-import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionRootEntry;
 import net.minecraft.resources.Identifier;
 
 public class AddToDemoBook extends AddToBookSubProvider {
 
     public static final Identifier TARGET_BOOK_ID = Identifier.fromNamespaceAndPath("theurgy", "the_hermetica");
 
-    public AddToDemoBook(ModonomiconLanguageProvider lang) {
-        super(TARGET_BOOK_ID, lang);
+    public AddToDemoBook() {
+        super(TARGET_BOOK_ID);
     }
 
     @Override

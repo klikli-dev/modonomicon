@@ -61,6 +61,18 @@ public final class ResearchDataBuilder {
     }
 
     /**
+     * Declares one explicit research node definition for an already-known typed ref and returns that
+     * same ref.
+     *
+     * This overload lets higher-level authoring code centralize node ids in a typed ref catalog
+     * while still compiling to the same canonical node definition output.
+     */
+    public ResearchNodeRef node(ResearchNodeRef ref, ResearchFactRef... requiredFacts) {
+        this.nodes.add(new ResearchNodeSpec(ref, List.of(requiredFacts)));
+        return ref;
+    }
+
+    /**
      * Declares an explicit {@code entry_viewed_once} research ingress hook.
      *
      * The generated hook means: when the specified book entry is viewed once, grant the specified

@@ -25,19 +25,16 @@ public abstract class SingleBookSubProvider extends ModonomiconProviderBase impl
     protected int currentSortIndex;
 
     /**
-     * @param defaultLang The LanguageProvider to fill with this book provider. IMPORTANT: the Language Provider needs to be added to the DataGenerator AFTER the BookProvider.
+     * Creates a subprovider for a single book.
+     * <p>
+     * Language access is provided via setup injection at generate time.
+     *
+     * @param bookId the book id
+     * @param modId  the mod id
      */
-    public SingleBookSubProvider(String bookId, String modId, BiConsumer<String, String> defaultLang) {
-        this(bookId, modId, defaultLang, Map.of());
-    }
-
-    /**
-     * @param defaultLang The LanguageProvider to fill with this book provider. IMPORTANT: the Language Provider needs to be added to the DataGenerator AFTER the BookProvider.
-     */
-    public SingleBookSubProvider(String bookId, String modId, BiConsumer<String, String> defaultLang, Map<String, BiConsumer<String, String>> translations) {
-        super(modId, defaultLang, translations, new BookContextHelper(modId), new ConditionHelper());
+    public SingleBookSubProvider(String bookId, String modId) {
+        super(modId, null, Map.of(), new BookContextHelper(modId), new ConditionHelper());
         this.book = null;
-
         this.bookId = bookId;
         this.currentSortIndex = 0;
     }

@@ -1,0 +1,63 @@
+[
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/features_condition_level_1",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_root"
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/features_condition_level_2",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_level_1"
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/features_two_parents",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_root",
+      "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_level_2"
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/features_spotlight",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/features_recipe"
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/features_component_icon",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/features_spotlight"
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/features_empty",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/features_spotlight"
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/features_image",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/features_empty"
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/features_custom_icon",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/features_image"
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/formatting_advanced",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/formatting_basic"
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/formatting_link",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/formatting_advanced"
+    ]
+  }
+]

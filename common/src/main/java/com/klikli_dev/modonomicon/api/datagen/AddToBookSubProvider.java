@@ -26,21 +26,15 @@ public abstract class AddToBookSubProvider extends ModonomiconProviderBase imple
     protected int currentSortIndex;
 
     /**
-     * @param targetBook  The Identifier (modid and book name) of the book to add to.
-     * @param defaultLang The LanguageProvider to fill with this book provider. IMPORTANT: the Language Provider needs to be added to the DataGenerator AFTER the BookProvider.
+     * Creates a subprovider for adding content to an existing book.
+     * <p>
+     * Language access is provided via setup injection at generate time.
+     *
+     * @param targetBook the Identifier (modid and book name) of the book to add to
      */
-    public AddToBookSubProvider(Identifier targetBook, BiConsumer<String, String> defaultLang) {
-        this(targetBook, defaultLang, Map.of());
-    }
-
-    /**
-     * @param targetBook  The Identifier (modid and book name) of the book to add to.
-     * @param defaultLang The LanguageProvider to fill with this book provider. IMPORTANT: the Language Provider needs to be added to the DataGenerator AFTER the BookProvider.
-     */
-    public AddToBookSubProvider(Identifier targetBook, BiConsumer<String, String> defaultLang, Map<String, BiConsumer<String, String>> translations) {
-        super(targetBook.getNamespace(), defaultLang, translations, new BookContextHelper(targetBook.getNamespace()), new ConditionHelper());
+    public AddToBookSubProvider(Identifier targetBook) {
+        super(targetBook.getNamespace(), null, Map.of(), new BookContextHelper(targetBook.getNamespace()), new ConditionHelper());
         this.book = null;
-
         this.bookId = targetBook.getPath();
         this.currentSortIndex = 0;
     }

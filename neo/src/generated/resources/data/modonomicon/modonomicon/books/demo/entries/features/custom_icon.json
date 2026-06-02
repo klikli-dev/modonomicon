@@ -8,7 +8,7 @@
   "category": "modonomicon:features",
   "condition": {
     "type": "modonomicon:research_node_unlocked",
-    "node_id": "modonomicon:demo/features_custom_icon"
+    "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/features_custom_icon"
   },
   "description": "book.modonomicon.demo.features.custom_icon.description",
   "icon": {

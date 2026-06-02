@@ -8,7 +8,7 @@
   "category": "modonomicon:formatting",
   "condition": {
     "type": "modonomicon:research_node_unlocked",
-    "node_id": "modonomicon:demo/formatting_link"
+    "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/formatting_link"
   },
   "description": "book.modonomicon.demo.formatting.link.description",
   "icon": {

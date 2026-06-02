@@ -104,6 +104,11 @@ public class BookModel {
      */
     protected boolean dontGenerateJson = false;
 
+    /**
+     * If true, the book provider will generate canonical research for eligible entry parent links.
+     */
+    protected boolean generateEntryHierarchyResearch = false;
+
     protected BookModel(Identifier id, String name) {
         this.id = id;
         this.name = name;
@@ -188,6 +193,10 @@ public class BookModel {
 
     public boolean dontGenerateJson() {
         return this.dontGenerateJson;
+    }
+
+    public boolean generateEntryHierarchyResearch() {
+        return this.generateEntryHierarchyResearch;
     }
 
     public JsonObject toJson(HolderLookup.Provider provider) {
@@ -368,6 +377,11 @@ public class BookModel {
      */
     public BookModel withDontGenerateJson(boolean value) {
         this.dontGenerateJson = value;
+        return this;
+    }
+
+    public BookModel withGenerateEntryHierarchyResearch(boolean value) {
+        this.generateEntryHierarchyResearch = value;
         return this;
     }
 }

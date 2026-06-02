@@ -6,7 +6,7 @@
 
 package com.klikli_dev.modonomicon.datagen.book;
 
-import com.klikli_dev.modonomicon.api.datagen.ModonomiconLanguageProvider;
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.datagen.SingleBookSubProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCommandModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
@@ -15,14 +15,15 @@ import com.klikli_dev.modonomicon.datagen.book.demo.FeaturesCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.FormattingCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.IndexModeCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionRootEntry;
+import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.resources.Identifier;
 
 public class DemoBook extends SingleBookSubProvider {
 
     public static final String ID = "demo";
 
-    public DemoBook(String modid, ModonomiconLanguageProvider lang) {
-        super(ID, modid, lang);
+    public DemoBook() {
+        super(ID, Modonomicon.MOD_ID);
     }
 
     @Override
@@ -47,7 +48,8 @@ public class DemoBook extends SingleBookSubProvider {
                         .withBookTextOffsetWidth(-5)))
                 .withCommand(commandEntryCommand)
                 .withCommand(commandEntryLinkCommand)
-                .withAllowOpenBooksWithInvalidLinks(true);
+                .withAllowOpenBooksWithInvalidLinks(true)
+                .withGenerateEntryHierarchyResearch(true);
     }
 
     @Override
@@ -62,7 +64,7 @@ public class DemoBook extends SingleBookSubProvider {
         var formattingCategory = this.add(new FormattingCategory(this).generate());
 
         var conditionalCategory = this.add(new ConditionalCategory(this).generate())
-                .withCondition(this.condition().researchNodeUnlocked(this.modLoc("demo/condition_level_1")));
+                .withCondition(DemoResearch.CONDITION_LEVEL_1);
 
         var indexModeCategory = this.add(new IndexModeCategory(this).generate());
     }

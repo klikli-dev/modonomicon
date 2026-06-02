@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.api.datagen.research;
 
+import com.klikli_dev.modonomicon.api.datagen.ModonomiconLanguageProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 
@@ -19,6 +20,7 @@ public abstract class ResearchProviderBase {
     protected final String modId;
     private HolderLookup.Provider registries;
     private ResearchDataBuilder research;
+    private ModonomiconLanguageProvider injectedLang;
 
     /**
      * Creates a research provider base for content authored under the given mod id.
@@ -65,6 +67,15 @@ public abstract class ResearchProviderBase {
     }
 
     /**
+     * Creates a namespaced identifier under the minecraft namespace.
+     *
+     * This is a plain id helper. It does not create research content by itself.
+     */
+    protected Identifier mcLoc(String path) {
+        return Identifier.withDefaultNamespace(path);
+    }
+
+    /**
      * Declares a research fact in the active research bundle and returns a typed ref to it.
      *
      * Facts are primitive durable research inputs. They are granted by explicit research ingress
@@ -85,10 +96,38 @@ public abstract class ResearchProviderBase {
     }
 
     /**
+     * Declares a research node for an already-known typed node ref and returns that same ref.
+     */
+    protected ResearchNodeRef node(ResearchNodeRef ref, ResearchFactRef... requiredFacts) {
+        return this.research.node(ref, requiredFacts);
+    }
+
+    /**
      * Returns a fluent helper for authoring research ingress from external events into primitive
      * research fact grants.
      */
     protected ResearchIngressHelper ingress() {
         return new ResearchIngressHelper(this.research);
+    }
+
+    /**
+     * Injects a language provider. Called by {@link ResearchProvider} during generation.
+     */
+    public void injectLang(ModonomiconLanguageProvider lang) {
+        this.injectedLang = lang;
+    }
+
+    /**
+     * Returns the injected language provider for adding translations.
+     */
+    protected ModonomiconLanguageProvider lang() {
+        return this.injectedLang;
+    }
+
+    /**
+     * Add translation to the injected language provider.
+     */
+    protected void add(String key, String value) {
+        this.injectedLang.add(key, value);
     }
 }

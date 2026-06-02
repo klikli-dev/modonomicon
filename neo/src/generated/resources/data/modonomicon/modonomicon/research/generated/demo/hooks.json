@@ -1,0 +1,56 @@
+[
+  {
+    "event_target_id": "modonomicon:features/condition_root",
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_root",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_root_hook",
+    "trigger_type": "entry_viewed_once"
+  },
+  {
+    "event_target_id": "modonomicon:features/condition_level_1",
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_level_1",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_level_1_hook",
+    "trigger_type": "entry_viewed_once"
+  },
+  {
+    "event_target_id": "modonomicon:features/condition_level_2",
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_level_2",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_level_2_hook",
+    "trigger_type": "entry_viewed_once"
+  },
+  {
+    "event_target_id": "modonomicon:features/recipe",
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/features_recipe",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/features_recipe_hook",
+    "trigger_type": "entry_viewed_once"
+  },
+  {
+    "event_target_id": "modonomicon:features/spotlight",
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/features_spotlight",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/features_spotlight_hook",
+    "trigger_type": "entry_viewed_once"
+  },
+  {
+    "event_target_id": "modonomicon:features/empty",
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/features_empty",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/features_empty_hook",
+    "trigger_type": "entry_viewed_once"
+  },
+  {
+    "event_target_id": "modonomicon:features/image",
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/features_image",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/features_image_hook",
+    "trigger_type": "entry_viewed_once"
+  },
+  {
+    "event_target_id": "modonomicon:formatting/basic",
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/formatting_basic",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/formatting_basic_hook",
+    "trigger_type": "entry_viewed_once"
+  },
+  {
+    "event_target_id": "modonomicon:formatting/advanced",
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/formatting_advanced",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/formatting_advanced_hook",
+    "trigger_type": "entry_viewed_once"
+  }
+]

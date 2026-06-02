@@ -11,7 +11,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
-import net.minecraft.resources.Identifier;
+import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.world.item.Items;
 
 public class ConditionAdvancementEntry extends EntryProvider {
@@ -33,7 +33,7 @@ public class ConditionAdvancementEntry extends EntryProvider {
                 """);
 
         //set up a condition for a conditional page
-        var pageCondition = this.condition().researchNodeUnlocked(Identifier.parse("modonomicon:demo/advancement_mine_stone"));
+        var pageCondition = this.condition().researchNodeUnlocked(DemoResearch.ADVANCEMENT_MINE_STONE);
 
         this.page("conditional_page", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
@@ -49,7 +49,7 @@ public class ConditionAdvancementEntry extends EntryProvider {
     @Override
     protected BookEntryModel additionalSetup(BookEntryModel entry) {
         //Set up the condition for the entry.
-        return entry.withCondition(this.condition().researchNodeUnlocked(Identifier.parse("modonomicon:demo/advancement_ride_boat_with_goat")));
+        return entry.withCondition(DemoResearch.ADVANCEMENT_RIDE_BOAT_WITH_GOAT);
     }
 
     @Override

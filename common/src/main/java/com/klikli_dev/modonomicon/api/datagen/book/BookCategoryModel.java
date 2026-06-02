@@ -10,6 +10,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Category;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookResearchNodeUnlockedConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeRef;
 import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
 import com.klikli_dev.modonomicon.book.BookDisplayMode;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiButtonSprites;
@@ -403,6 +405,10 @@ public class BookCategoryModel {
     public BookCategoryModel withCondition(BookConditionModel<?> condition) {
         this.condition = condition;
         return this;
+    }
+
+    public BookCategoryModel withCondition(ResearchNodeRef nodeRef) {
+        return this.withCondition(BookResearchNodeUnlockedConditionModel.create().withNode(nodeRef.id()));
     }
 
     /**

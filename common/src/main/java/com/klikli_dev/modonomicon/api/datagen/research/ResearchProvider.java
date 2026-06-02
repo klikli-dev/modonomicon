@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.api.datagen.research;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import com.klikli_dev.modonomicon.api.datagen.LanguageProviderCache;
 import com.klikli_dev.modonomicon.research.data.AdvancementResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchFactDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
@@ -42,15 +43,33 @@ public class ResearchProvider implements DataProvider {
     private final CompletableFuture<HolderLookup.Provider> registries;
     private final List<ResearchSubProvider> subProviders;
     private final Map<Identifier, ResearchBundle> bundles = new Object2ObjectOpenHashMap<>();
+    private final ResearchCache researchCache;
+    private final LanguageProviderCache langCache;
 
     /**
      * Creates a research provider for the given mod id and research subproviders.
      */
     public ResearchProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries, String modId, List<ResearchSubProvider> subProviders) {
+        this(packOutput, registries, modId, subProviders, null, null);
+    }
+
+    /**
+     * Creates a research provider wired to the given research cache.
+     */
+    public ResearchProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries, String modId, List<ResearchSubProvider> subProviders, ResearchCache researchCache) {
+        this(packOutput, registries, modId, subProviders, researchCache, null);
+    }
+
+    /**
+     * Creates a research provider wired to the given research cache and language cache.
+     */
+    public ResearchProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries, String modId, List<ResearchSubProvider> subProviders, ResearchCache researchCache, LanguageProviderCache langCache) {
         this.packOutput = packOutput;
         this.registries = registries;
         this.modId = modId;
         this.subProviders = subProviders;
+        this.researchCache = researchCache;
+        this.langCache = langCache;
     }
 
     /**
@@ -60,6 +79,21 @@ public class ResearchProvider implements DataProvider {
     public @NotNull CompletableFuture<?> run(@NotNull CachedOutput cache) {
         return this.registries.thenCompose(registries -> {
             this.bundles.clear();
+
+            if (this.researchCache != null) {
+                for (var entry : this.researchCache.build().entrySet()) {
+                    this.bundles.put(entry.getKey(), new ResearchBundle(entry.getValue()));
+                }
+            }
+
+            if (this.langCache != null) {
+                for (var subProvider : this.subProviders) {
+                    if (subProvider instanceof ResearchProviderBase base) {
+                        base.injectLang(this.langCache);
+                    }
+                }
+            }
+
             this.subProviders.forEach(subProvider -> subProvider.generate(this::add, registries));
 
             var futures = new ArrayList<CompletableFuture<?>>();

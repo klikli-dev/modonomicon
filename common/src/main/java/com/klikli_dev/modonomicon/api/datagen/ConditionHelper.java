@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.api.datagen;
 
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.*;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeRef;
 import net.minecraft.resources.Identifier;
 
 public class ConditionHelper {
@@ -19,8 +20,16 @@ public class ConditionHelper {
         return BookResearchNodeUnlockedConditionModel.create().withNode(nodeId);
     }
 
+    public BookResearchNodeUnlockedConditionModel researchNodeUnlocked(ResearchNodeRef nodeRef) {
+        return this.researchNodeUnlocked(nodeRef.id());
+    }
+
     public BookResearchNodeUnlockedConditionModel researchNodeUnlockedBuilder(Identifier nodeId) {
         return BookResearchNodeUnlockedConditionModel.create().withNode(nodeId);
+    }
+
+    public BookResearchNodeUnlockedConditionModel researchNodeUnlockedBuilder(ResearchNodeRef nodeRef) {
+        return this.researchNodeUnlockedBuilder(nodeRef.id());
     }
 
     public BookAndConditionModel and(BookConditionModel... children) {

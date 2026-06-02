@@ -47,22 +47,22 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
 
     @Override
     protected void apply(Map<Identifier, JsonElement> elements, ResourceManager resourceManager, ProfilerFiller profiler) {
-        Set<ResearchFactDefinition> facts = Set.of();
-        List<ResearchNodeDefinition> nodes = List.of();
-        List<ResearchHookDefinition> hooks = List.of();
-        List<AdvancementResearchHookDefinition> advancementHooks = List.of();
+        var facts = new ArrayList<ResearchFactDefinition>();
+        var nodes = new ArrayList<ResearchNodeDefinition>();
+        var hooks = new ArrayList<ResearchHookDefinition>();
+        var advancementHooks = new ArrayList<AdvancementResearchHookDefinition>();
 
         for (var entry : elements.entrySet()) {
             var path = entry.getKey().getPath();
             var fileName = path.substring(path.lastIndexOf('/') + 1);
             if (fileName.equals("facts")) {
-                facts = Set.copyOf(ResearchFactDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow());
+                facts.addAll(ResearchFactDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow());
             } else if (fileName.equals("nodes")) {
-                nodes = new ArrayList<>(ResearchNodeDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow());
+                nodes.addAll(ResearchNodeDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow());
             } else if (fileName.equals("advancement_hooks")) {
-                advancementHooks = new ArrayList<>(AdvancementResearchHookDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow());
+                advancementHooks.addAll(AdvancementResearchHookDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow());
             } else if (fileName.equals("hooks")) {
-                hooks = new ArrayList<>(ResearchHookDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow());
+                hooks.addAll(ResearchHookDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow());
             }
         }
 
