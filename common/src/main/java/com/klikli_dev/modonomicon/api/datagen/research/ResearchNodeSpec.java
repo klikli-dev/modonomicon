@@ -7,9 +7,11 @@
 package com.klikli_dev.modonomicon.api.datagen.research;
 
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
+import com.klikli_dev.modonomicon.research.data.ResearchToastDefinition;
 import net.minecraft.resources.Identifier;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Authoring-time node declaration that compiles into the canonical research node resource shape.
@@ -17,11 +19,13 @@ import java.util.List;
  * @param ref the typed node ref being declared
  * @param requiredFacts the fact refs that act as this node's fact unlock requirements
  * @param requiredValues the value requirements that must be met for this node to unlock
+ * @param toast optional toast display data
  */
 public record ResearchNodeSpec(
         ResearchNodeRef ref,
         List<ResearchFactRef> requiredFacts,
-        List<ValueRequirement> requiredValues
+        List<ValueRequirement> requiredValues,
+        Optional<ResearchToastDefinition> toast
 ) {
     /**
      * Value requirement for a research node.
@@ -36,7 +40,14 @@ public record ResearchNodeSpec(
      * Creates a node spec with only fact requirements.
      */
     public static ResearchNodeSpec factsOnly(ResearchNodeRef ref, List<ResearchFactRef> requiredFacts) {
-        return new ResearchNodeSpec(ref, requiredFacts, List.of());
+        return new ResearchNodeSpec(ref, requiredFacts, List.of(), Optional.empty());
+    }
+
+    /**
+     * Adds toast display data to this node spec.
+     */
+    public ResearchNodeSpec toast(ResearchToastDefinition toast) {
+        return new ResearchNodeSpec(this.ref, this.requiredFacts, this.requiredValues, Optional.of(toast));
     }
 
     /**
@@ -48,7 +59,8 @@ public record ResearchNodeSpec(
                 this.requiredFacts.stream().map(ResearchFactRef::id).toList(),
                 this.requiredValues.stream().map(req ->
                         new ResearchNodeDefinition.ValueRequirement(req.valueRef.id(), req.threshold())
-                ).toList()
+                ).toList(),
+                this.toast
         );
     }
 }

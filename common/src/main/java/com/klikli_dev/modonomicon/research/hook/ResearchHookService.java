@@ -10,6 +10,8 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.bookstate.visual.BookVisibilitySnapshots;
 import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.klikli_dev.modonomicon.networking.ResearchToastMessage;
+import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
@@ -41,6 +43,7 @@ public class ResearchHookService {
 
     public boolean onEntryViewedOnce(ServerPlayer player, Identifier entryId) {
         var before = BookDataManager.get().getBooks().values().stream().collect(java.util.stream.Collectors.toMap(Book::getId, book -> BookVisibilitySnapshots.collect(player, book)));
+        ResearchStateManager.beginToastCollection();
         boolean changed = false;
         for (var hook : this.entryViewedOnceLookup.apply(entryId)) {
             if (hook.factId() != null) {
@@ -50,6 +53,10 @@ public class ResearchHookService {
             }
         }
         changed |= this.stateManager.reevaluate(player);
+        var triggers = ResearchStateManager.endToastCollection();
+        if (!triggers.isEmpty()) {
+            Services.NETWORK.sendTo(player, new ResearchToastMessage(triggers));
+        }
         if (changed) {
             for (var book : BookDataManager.get().getBooks().values()) {
                 BookVisualStateManager.get().updateVisibilityDrivenUnread(player, book, before.get(book.getId()), BookVisibilitySnapshots.collect(player, book));
@@ -70,6 +77,7 @@ public class ResearchHookService {
 
     public boolean onItemCrafted(ServerPlayer player, ItemStack itemStack) {
         var before = BookDataManager.get().getBooks().values().stream().collect(java.util.stream.Collectors.toMap(Book::getId, book -> BookVisibilitySnapshots.collect(player, book)));
+        ResearchStateManager.beginToastCollection();
         boolean changed = false;
         for (var hook : this.itemCraftedLookup.apply(itemStack)) {
             if (hook.factId() != null) {
@@ -79,6 +87,10 @@ public class ResearchHookService {
             }
         }
         changed |= this.stateManager.reevaluate(player);
+        var triggers = ResearchStateManager.endToastCollection();
+        if (!triggers.isEmpty()) {
+            Services.NETWORK.sendTo(player, new ResearchToastMessage(triggers));
+        }
         if (changed) {
             for (var book : BookDataManager.get().getBooks().values()) {
                 BookVisualStateManager.get().updateVisibilityDrivenUnread(player, book, before.get(book.getId()), BookVisibilitySnapshots.collect(player, book));
@@ -89,6 +101,7 @@ public class ResearchHookService {
 
     public boolean onItemAcquired(ServerPlayer player, ItemStack itemStack) {
         var before = BookDataManager.get().getBooks().values().stream().collect(java.util.stream.Collectors.toMap(Book::getId, book -> BookVisibilitySnapshots.collect(player, book)));
+        ResearchStateManager.beginToastCollection();
         boolean changed = false;
         for (var hook : this.itemAcquiredLookup.apply(itemStack)) {
             if (hook.factId() != null) {
@@ -98,6 +111,10 @@ public class ResearchHookService {
             }
         }
         changed |= this.stateManager.reevaluate(player);
+        var triggers = ResearchStateManager.endToastCollection();
+        if (!triggers.isEmpty()) {
+            Services.NETWORK.sendTo(player, new ResearchToastMessage(triggers));
+        }
         if (changed) {
             for (var book : BookDataManager.get().getBooks().values()) {
                 BookVisualStateManager.get().updateVisibilityDrivenUnread(player, book, before.get(book.getId()), BookVisibilitySnapshots.collect(player, book));

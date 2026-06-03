@@ -48,5 +48,6 @@ public class Networking {
         PayloadTypeRegistry.clientboundPlay().register(SyncMultiblockDataMessage.TYPE, SyncMultiblockDataMessage.STREAM_CODEC);
         PayloadTypeRegistry.clientboundPlay().register(ReloadResourcesOnClientMessage.TYPE, ReloadResourcesOnClientMessage.STREAM_CODEC);
         PayloadTypeRegistry.clientboundPlay().register(OpenBookOnClientMessage.TYPE, OpenBookOnClientMessage.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(ResearchToastMessage.TYPE, ResearchToastMessage.STREAM_CODEC);
     }
 }

@@ -11,15 +11,20 @@ import com.klikli_dev.modonomicon.networking.SyncResearchStateMessage;
 import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
+import com.klikli_dev.modonomicon.research.networking.ResearchToastTrigger;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ResearchStateManager {
 
     private static final ResearchStateManager INSTANCE = new ResearchStateManager();
+    private static final ThreadLocal<List<ResearchToastTrigger>> TOAST_TRIGGER_COLLECTOR = ThreadLocal.withInitial(() -> null);
 
     public ResearchStatesSaveData saveData;
 
@@ -36,6 +41,10 @@ public class ResearchStateManager {
         boolean changed = this.getStateFor(player).grantFact(factId);
         if (changed) {
             this.saveData.setDirty();
+            var collector = TOAST_TRIGGER_COLLECTOR.get();
+            if (collector != null && ResearchDataManager.get().data().factToasts().containsKey(factId)) {
+                collector.add(new ResearchToastTrigger(ResearchToastTrigger.ToastTriggerType.FACT_GRANTED, factId, 0));
+            }
         }
         return changed;
     }
@@ -52,6 +61,10 @@ public class ResearchStateManager {
         var state = this.getStateFor(player);
         state.incrementValue(valueId, amount);
         this.saveData.setDirty();
+        var collector = TOAST_TRIGGER_COLLECTOR.get();
+        if (collector != null && ResearchDataManager.get().data().valueToasts().containsKey(valueId)) {
+            collector.add(new ResearchToastTrigger(ResearchToastTrigger.ToastTriggerType.VALUE_INCREMENTED, valueId, state.getValue(valueId)));
+        }
         return true;
     }
 
@@ -96,7 +109,14 @@ public class ResearchStateManager {
                 continue;
             }
 
-            changed |= state.unlockNode(rule.nodeId());
+            boolean nodeChanged = state.unlockNode(rule.nodeId());
+            if (nodeChanged) {
+                var collector = TOAST_TRIGGER_COLLECTOR.get();
+                if (collector != null && ResearchDataManager.get().data().nodeToasts().containsKey(rule.nodeId())) {
+                    collector.add(new ResearchToastTrigger(ResearchToastTrigger.ToastTriggerType.NODE_UNLOCKED, rule.nodeId(), 0));
+                }
+            }
+            changed |= nodeChanged;
         }
         if (changed) {
             this.saveData.setDirty();
@@ -127,6 +147,30 @@ public class ResearchStateManager {
 
     public void onDatapackSync(Player player) {
         this.getSaveDataIfNecessary(player);
+    }
+
+    /**
+     * Begins toast trigger collection for the current thread.
+     * Call this before a batch of state mutations to collect toast triggers.
+     */
+    public static void beginToastCollection() {
+        TOAST_TRIGGER_COLLECTOR.set(new ArrayList<>());
+    }
+
+    /**
+     * Ends toast trigger collection and returns the collected triggers.
+     * Returns an empty list if collection was not active.
+     */
+    public static List<ResearchToastTrigger> endToastCollection() {
+        var collector = TOAST_TRIGGER_COLLECTOR.get();
+        List<ResearchToastTrigger> triggers;
+        if (collector == null) {
+            triggers = List.of();
+        } else {
+            triggers = List.copyOf(collector);
+            TOAST_TRIGGER_COLLECTOR.set(null);
+        }
+        return triggers;
     }
 
     public void onServerTickEnd(MinecraftServer server) {

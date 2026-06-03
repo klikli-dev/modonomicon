@@ -10,12 +10,14 @@ import com.klikli_dev.modonomicon.research.data.AdvancementResearchHookDefinitio
 import com.klikli_dev.modonomicon.research.data.ResearchFactDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
+import com.klikli_dev.modonomicon.research.data.ResearchToastDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchValueDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStackTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Low-level research authoring collector that compiles typed authoring input into canonical research
@@ -49,7 +51,7 @@ public final class ResearchDataBuilder {
      */
     public ResearchFactRef fact(String path) {
         var ref = ResearchFactRef.of(Identifier.fromNamespaceAndPath(this.namespace, path));
-        this.facts.add(new ResearchFactSpec(ref));
+        this.facts.add(ResearchFactSpec.of(ref));
         return ref;
     }
 
@@ -60,7 +62,7 @@ public final class ResearchDataBuilder {
      */
     public ResearchValueRef value(String path) {
         var ref = ResearchValueRef.of(Identifier.fromNamespaceAndPath(this.namespace, path));
-        this.values.add(new ResearchValueSpec(ref));
+        this.values.add(ResearchValueSpec.of(ref));
         return ref;
     }
 
@@ -92,8 +94,47 @@ public final class ResearchDataBuilder {
      * Declares a research node with both fact and value requirements.
      */
     public ResearchNodeRef node(ResearchNodeRef ref, List<ResearchFactRef> requiredFacts, List<ResearchNodeSpec.ValueRequirement> requiredValues) {
-        this.nodes.add(new ResearchNodeSpec(ref, requiredFacts, requiredValues));
+        this.nodes.add(new ResearchNodeSpec(ref, requiredFacts, requiredValues, Optional.empty()));
         return ref;
+    }
+
+    /**
+     * Adds toast display data to an existing fact.
+     */
+    public void toast(ResearchFactRef factRef, ResearchToastDefinition toast) {
+        for (int i = 0; i < this.facts.size(); i++) {
+            var spec = this.facts.get(i);
+            if (spec.ref().id().equals(factRef.id())) {
+                this.facts.set(i, spec.toast(toast));
+                break;
+            }
+        }
+    }
+
+    /**
+     * Adds toast display data to an existing value.
+     */
+    public void toast(ResearchValueRef valueRef, ResearchToastDefinition toast) {
+        for (int i = 0; i < this.values.size(); i++) {
+            var spec = this.values.get(i);
+            if (spec.ref().id().equals(valueRef.id())) {
+                this.values.set(i, spec.toast(toast));
+                break;
+            }
+        }
+    }
+
+    /**
+     * Adds toast display data to an existing node.
+     */
+    public void toast(ResearchNodeRef nodeRef, ResearchToastDefinition toast) {
+        for (int i = 0; i < this.nodes.size(); i++) {
+            var spec = this.nodes.get(i);
+            if (spec.ref().id().equals(nodeRef.id())) {
+                this.nodes.set(i, spec.toast(toast));
+                break;
+            }
+        }
     }
 
     /**

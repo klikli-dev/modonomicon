@@ -30,7 +30,7 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
 
     private static final ResearchDataManager INSTANCE = new ResearchDataManager();
 
-    private ResearchData data = new ResearchData(Set.of(), Set.of(), Set.of(), List.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of());
+    private ResearchData data = new ResearchData(Set.of(), Set.of(), Set.of(), List.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of());
 
     private ResearchDataManager() {
         super(ExtraCodecs.JSON, FileToIdConverter.json(FOLDER));

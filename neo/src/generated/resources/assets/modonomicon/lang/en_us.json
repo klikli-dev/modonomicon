@@ -271,5 +271,9 @@
   "tooltip.modonomicon.fluid.amount": "%s mb",
   "tooltip.modonomicon.fluid.amount_and_capacity": "%s / %s mb",
   "tooltip.modonomicon.no_book_found_for_stack": "No book found for this item in the modonomicon book database! Nbt: %s",
-  "tooltip.modonomicon.recipe.crafting_shapeless": "Shapeless"
+  "tooltip.modonomicon.recipe.crafting_shapeless": "Shapeless",
+  "gui.modonomicon.research.fact": "Research Fact",
+  "gui.modonomicon.research.value": "Research Progress",
+  "gui.modonomicon.research.node": "Research Unlocked",
+  "modonomicon.configuration.showResearchToasts": "Show Research Toasts"
 }

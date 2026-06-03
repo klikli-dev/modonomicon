@@ -10,6 +10,8 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.bookstate.visual.BookVisibilitySnapshots;
 import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.klikli_dev.modonomicon.networking.ResearchToastMessage;
+import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
 import net.minecraft.resources.Identifier;
@@ -83,6 +85,7 @@ public class AdvancementResearchHookService {
 
     public boolean onAdvancement(ServerPlayer player, Identifier advancementId) {
         var before = BookDataManager.get().getBooks().values().stream().collect(java.util.stream.Collectors.toMap(Book::getId, book -> BookVisibilitySnapshots.collect(player, book)));
+        ResearchStateManager.beginToastCollection();
         boolean changed = false;
         for (var hook : ResearchDataManager.get().data().advancementHooks().getOrDefault(advancementId, List.of())) {
             if (hook.factId() != null) {
@@ -90,6 +93,10 @@ public class AdvancementResearchHookService {
             } else if (hook.valueId() != null) {
                 changed |= this.stateManager.incrementValue(player, hook.valueId(), hook.increment());
             }
+        }
+        var triggers = ResearchStateManager.endToastCollection();
+        if (!triggers.isEmpty()) {
+            Services.NETWORK.sendTo(player, new ResearchToastMessage(triggers));
         }
         if (changed) {
             changed |= this.stateManager.reevaluate(player);

@@ -27,6 +27,12 @@ import java.util.stream.Collectors;
  * @param itemCraftedHooks hooks grouped by item id
  * @param itemAcquiredHooks hooks grouped by item id
  * @param advancementHooks hooks grouped by advancement id
+ * @param graphFactIds graph index for facts by graph id
+ * @param graphNodeIds graph index for nodes by graph id
+ * @param graphValueIds graph index for values by graph id
+ * @param factToasts toast definitions indexed by fact id
+ * @param valueToasts toast definitions indexed by value id
+ * @param nodeToasts toast definitions indexed by node id
  */
 public record ResearchData(
         Set<Identifier> factIds,
@@ -39,7 +45,10 @@ public record ResearchData(
         Map<Identifier, List<AdvancementResearchHookDefinition>> advancementHooks,
         Map<Identifier, Set<Identifier>> graphFactIds,
         Map<Identifier, Set<Identifier>> graphNodeIds,
-        Map<Identifier, Set<Identifier>> graphValueIds
+        Map<Identifier, Set<Identifier>> graphValueIds,
+        Map<Identifier, ResearchToastDefinition> factToasts,
+        Map<Identifier, ResearchToastDefinition> valueToasts,
+        Map<Identifier, ResearchToastDefinition> nodeToasts
 ) {
 
     public static ResearchData validate(
@@ -123,6 +132,18 @@ public record ResearchData(
                 .filter(h -> h.triggerType() == TriggerTypeRegistry.ITEM_ACQUIRED)
                 .collect(Collectors.groupingBy(ResearchHookDefinition::triggerTargetId));
         var groupedAdvancementHooks = advancementHooks.stream().collect(Collectors.groupingBy(AdvancementResearchHookDefinition::advancementId));
+
+        // Build toast lookup maps
+        var factToasts = facts.stream()
+                .filter(f -> f.toast().isPresent())
+                .collect(Collectors.toMap(f -> f.id(), f -> f.toast().get()));
+        var valueToasts = values.stream()
+                .filter(v -> v.toast().isPresent())
+                .collect(Collectors.toMap(v -> v.id(), v -> v.toast().get()));
+        var nodeToasts = nodes.stream()
+                .filter(n -> n.toast().isPresent())
+                .collect(Collectors.toMap(n -> n.id(), n -> n.toast().get()));
+
         return new ResearchData(
                 Set.copyOf(factIds),
                 Set.copyOf(nodeIds),
@@ -134,7 +155,10 @@ public record ResearchData(
                 groupedAdvancementHooks,
                 graphFactIds,
                 graphNodeIds,
-                graphValueIds
+                graphValueIds,
+                Map.copyOf(factToasts),
+                Map.copyOf(valueToasts),
+                Map.copyOf(nodeToasts)
         );
     }
 
