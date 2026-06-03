@@ -54,7 +54,6 @@ import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.player.AdvancementEvent;
-import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
@@ -152,20 +151,6 @@ public class ModonomiconNeo {
             var crafting = e.getCrafting();
             if (!crafting.isEmpty()) {
                 if (ResearchServices.hooks().onItemCrafted(player, crafting)) {
-                    ResearchStateManager.get().syncFor(player);
-                    BookVisualStateManager.get().syncFor(player);
-                }
-            }
-        });
-
-        //Item acquired event handling for research progression
-        NeoForge.EVENT_BUS.addListener((ItemEntityPickupEvent.Post e) -> {
-            if(!(e.getPlayer() instanceof ServerPlayer player))
-                return;
-
-            var originalStack = e.getOriginalStack();
-            if (!originalStack.isEmpty()) {
-                if (ResearchServices.hooks().onItemAcquired(player, originalStack)) {
                     ResearchStateManager.get().syncFor(player);
                     BookVisualStateManager.get().syncFor(player);
                 }
