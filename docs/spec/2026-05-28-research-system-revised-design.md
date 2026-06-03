@@ -390,6 +390,7 @@ Completed so far:
 - values demo scenario (collector: 3 incrementing entries + 1 threshold-gated entry)
 - item crafted demo scenario (crafting stick → unlock entry)
 - item acquired demo scenario (acquire cobblestone → unlock entry)
+- advancement reconciliation: replay completed advancement hooks after reset and on player login
 - typed refs: `ResearchFactRef`, `ResearchNodeRef`, `ResearchValueRef`
 - research-side datagen builder API (`ResearchDataBuilder`, `ResearchIngressHelper`)
 - `ingress()` fluent helper with `onEntryViewedOnce`, `onAdvancementEarned`, `onItemCrafted`, `onItemAcquired`, `declareFact`, `grantFact`
@@ -405,7 +406,6 @@ Not completed yet:
 - datapack patch/merge semantics
 - research-side optional-dependency predicate for optional dependency mods
 - sanctioned research skip/bypass mechanism for narrow scenarios
-- advancement reconciliation on reset/login (replay already-completed advancements)
 
 ## Roadmap
 
