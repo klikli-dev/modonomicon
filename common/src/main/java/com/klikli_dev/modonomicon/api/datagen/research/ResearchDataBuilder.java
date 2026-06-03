@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.research.data.AdvancementResearchHookDefinitio
 import com.klikli_dev.modonomicon.research.data.ResearchFactDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
+import com.klikli_dev.modonomicon.research.data.ResearchValueDefinition;
 import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import java.util.List;
 public final class ResearchDataBuilder {
     private final String namespace;
     private final List<ResearchFactSpec> facts = new ArrayList<>();
+    private final List<ResearchValueSpec> values = new ArrayList<>();
     private final List<ResearchNodeSpec> nodes = new ArrayList<>();
     private final List<EntryViewedOnceHookSpec> entryViewedOnceHooks = new ArrayList<>();
     private final List<AdvancementHookSpec> advancementHooks = new ArrayList<>();
@@ -49,6 +51,17 @@ public final class ResearchDataBuilder {
     }
 
     /**
+     * Declares one explicit research value definition and returns a typed ref to it.
+     *
+     * Values are numeric counters that hooks can increment and nodes can require reaching a threshold.
+     */
+    public ResearchValueRef value(String path) {
+        var ref = ResearchValueRef.of(Identifier.fromNamespaceAndPath(this.namespace, path));
+        this.values.add(new ResearchValueSpec(ref));
+        return ref;
+    }
+
+    /**
      * Declares one explicit research node definition and returns a typed ref to it.
      *
      * In the current implementation, the given fact refs become the node's required facts in the
@@ -56,7 +69,7 @@ public final class ResearchDataBuilder {
      */
     public ResearchNodeRef node(String path, ResearchFactRef... requiredFacts) {
         var ref = ResearchNodeRef.of(Identifier.fromNamespaceAndPath(this.namespace, path));
-        this.nodes.add(new ResearchNodeSpec(ref, List.of(requiredFacts)));
+        this.nodes.add(ResearchNodeSpec.factsOnly(ref, List.of(requiredFacts)));
         return ref;
     }
 
@@ -68,18 +81,26 @@ public final class ResearchDataBuilder {
      * while still compiling to the same canonical node definition output.
      */
     public ResearchNodeRef node(ResearchNodeRef ref, ResearchFactRef... requiredFacts) {
-        this.nodes.add(new ResearchNodeSpec(ref, List.of(requiredFacts)));
+        this.nodes.add(ResearchNodeSpec.factsOnly(ref, List.of(requiredFacts)));
         return ref;
     }
 
     /**
-     * Declares an explicit {@code entry_viewed_once} research ingress hook.
+     * Declares a research node with both fact and value requirements.
+     */
+    public ResearchNodeRef node(ResearchNodeRef ref, List<ResearchFactRef> requiredFacts, List<ResearchNodeSpec.ValueRequirement> requiredValues) {
+        this.nodes.add(new ResearchNodeSpec(ref, requiredFacts, requiredValues));
+        return ref;
+    }
+
+    /**
+     * Declares an explicit {@code entry_viewed_once} research ingress hook that grants a fact.
      *
      * The generated hook means: when the specified book entry is viewed once, grant the specified
      * research fact. That fact can then participate in research-node unlocking.
      */
     public void grantFactOnEntryViewedOnce(String path, Identifier entryId, ResearchFactRef factRef) {
-        this.entryViewedOnceHooks.add(new EntryViewedOnceHookSpec(
+        this.entryViewedOnceHooks.add(EntryViewedOnceHookSpec.grantFact(
                 Identifier.fromNamespaceAndPath(this.namespace, path),
                 entryId,
                 factRef
@@ -87,16 +108,40 @@ public final class ResearchDataBuilder {
     }
 
     /**
-     * Declares an explicit advancement-earned research ingress hook.
+     * Declares an explicit {@code entry_viewed_once} research ingress hook that increments a value.
+     */
+    public void incrementValueOnEntryViewedOnce(String path, Identifier entryId, ResearchValueRef valueRef, int increment) {
+        this.entryViewedOnceHooks.add(EntryViewedOnceHookSpec.incrementValue(
+                Identifier.fromNamespaceAndPath(this.namespace, path),
+                entryId,
+                valueRef,
+                increment
+        ));
+    }
+
+    /**
+     * Declares an explicit advancement-earned research ingress hook that grants a fact.
      *
      * The generated hook means: when the specified advancement is earned, grant the specified
      * research fact. That fact can then participate in research-node unlocking.
      */
     public void grantFactOnAdvancementEarned(String path, Identifier advancementId, ResearchFactRef factRef) {
-        this.advancementHooks.add(new AdvancementHookSpec(
+        this.advancementHooks.add(AdvancementHookSpec.grantFact(
                 Identifier.fromNamespaceAndPath(this.namespace, path),
                 advancementId,
                 factRef
+        ));
+    }
+
+    /**
+     * Declares an explicit advancement-earned research ingress hook that increments a value.
+     */
+    public void incrementValueOnAdvancementEarned(String path, Identifier advancementId, ResearchValueRef valueRef, int increment) {
+        this.advancementHooks.add(AdvancementHookSpec.incrementValue(
+                Identifier.fromNamespaceAndPath(this.namespace, path),
+                advancementId,
+                valueRef,
+                increment
         ));
     }
 
@@ -105,6 +150,13 @@ public final class ResearchDataBuilder {
      */
     public List<ResearchFactDefinition> factDefinitions() {
         return this.facts.stream().map(ResearchFactSpec::toDefinition).toList();
+    }
+
+    /**
+     * Returns the compiled canonical value definitions collected so far.
+     */
+    public List<ResearchValueDefinition> valueDefinitions() {
+        return this.values.stream().map(ResearchValueSpec::toDefinition).toList();
     }
 
     /**

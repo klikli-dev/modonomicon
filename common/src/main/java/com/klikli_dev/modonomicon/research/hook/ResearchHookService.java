@@ -38,7 +38,11 @@ public class ResearchHookService {
         var before = BookDataManager.get().getBooks().values().stream().collect(java.util.stream.Collectors.toMap(Book::getId, book -> BookVisibilitySnapshots.collect(player, book)));
         boolean changed = false;
         for (var hook : this.entryViewedOnceLookup.apply(entryId)) {
-            changed |= this.stateManager.grantFact(player, hook.factId());
+            if (hook.factId() != null) {
+                changed |= this.stateManager.grantFact(player, hook.factId());
+            } else if (hook.valueId() != null) {
+                changed |= this.stateManager.incrementValue(player, hook.valueId(), hook.increment());
+            }
         }
         changed |= this.stateManager.reevaluate(player);
         if (changed) {
@@ -52,7 +56,7 @@ public class ResearchHookService {
     public boolean canProgressEntryViewedOnce(Player player, Identifier entryId) {
         var state = this.stateManager.getStateFor(player);
         for (var hook : this.entryViewedOnceLookup.apply(entryId)) {
-            if (!state.hasFact(hook.factId())) {
+            if (hook.factId() != null && !state.hasFact(hook.factId())) {
                 return true;
             }
         }

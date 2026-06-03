@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.networking.RequestSyncResearchStateMessage;
 import com.klikli_dev.modonomicon.networking.SyncResearchStateMessage;
 import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
+import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
@@ -39,20 +40,40 @@ public class ResearchStateManager {
         return changed;
     }
 
+    public boolean incrementValue(ServerPlayer player, Identifier valueId, int amount) {
+        var state = this.getStateFor(player);
+        state.incrementValue(valueId, amount);
+        this.saveData.setDirty();
+        return true;
+    }
+
     public boolean reevaluate(ServerPlayer player) {
         var state = this.getStateFor(player);
         boolean changed = false;
         for (var rule : ResearchDataManager.get().data().nodeRules()) {
-            boolean unlocked = true;
+            boolean factsMet = true;
             for (var factId : rule.requiredFactIds()) {
                 if (!state.hasFact(factId)) {
-                    unlocked = false;
+                    factsMet = false;
                     break;
                 }
             }
-            if (unlocked) {
-                changed |= state.unlockNode(rule.nodeId());
+            if (!factsMet) {
+                continue;
             }
+
+            boolean valuesMet = true;
+            for (var valueReq : rule.requiredValueRequirements()) {
+                if (state.getValue(valueReq.valueId()) < valueReq.threshold()) {
+                    valuesMet = false;
+                    break;
+                }
+            }
+            if (!valuesMet) {
+                continue;
+            }
+
+            changed |= state.unlockNode(rule.nodeId());
         }
         if (changed) {
             this.saveData.setDirty();

@@ -14,6 +14,7 @@ import com.klikli_dev.modonomicon.research.data.AdvancementResearchHookDefinitio
 import com.klikli_dev.modonomicon.research.data.ResearchFactDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
+import com.klikli_dev.modonomicon.research.data.ResearchValueDefinition;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -105,6 +106,7 @@ public class ResearchProvider implements DataProvider {
                 var base = dataFolder.resolve(id.getNamespace()).resolve(ModonomiconConstants.Data.RESEARCH_DATA_PATH).resolve(id.getPath());
 
                 futures.add(this.save(cache, ResearchFactDefinition.CODEC, data.factDefinitions(), base.resolve("facts.json")));
+                futures.add(this.save(cache, ResearchValueDefinition.CODEC, data.valueDefinitions(), base.resolve("values.json")));
                 futures.add(this.save(cache, ResearchNodeDefinition.CODEC, data.nodeDefinitions(), base.resolve("nodes.json")));
                 futures.add(this.save(cache, ResearchHookDefinition.CODEC, data.hookDefinitions(), base.resolve("hooks.json")));
                 futures.add(this.save(cache, AdvancementResearchHookDefinition.CODEC, data.advancementHookDefinitions(), base.resolve("advancement_hooks.json")));

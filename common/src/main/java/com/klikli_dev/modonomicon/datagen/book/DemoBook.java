@@ -14,6 +14,7 @@ import com.klikli_dev.modonomicon.datagen.book.demo.ConditionalCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.FeaturesCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.FormattingCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.IndexModeCategory;
+import com.klikli_dev.modonomicon.datagen.book.demo.ValuesCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionRootEntry;
 import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.resources.Identifier;
@@ -67,6 +68,8 @@ public class DemoBook extends SingleBookSubProvider {
                 .withCondition(DemoResearch.CONDITION_LEVEL_1);
 
         var indexModeCategory = this.add(new IndexModeCategory(this).generate());
+
+        var valuesCategory = this.add(new ValuesCategory(this).generate());
     }
 
     @Override

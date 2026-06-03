@@ -12,8 +12,8 @@ import net.minecraft.resources.Identifier;
  * Fluent helper for authoring research ingress.
  *
  * Ingress is the boundary where external events such as book entry views or advancement completion
- * are translated into primitive research mutations. In the current model, ingress grants facts;
- * research nodes then unlock from those granted facts.
+ * are translated into primitive research mutations. Ingress can grant facts or increment values;
+ * research nodes then unlock from those granted facts and value thresholds.
  */
 public final class ResearchIngressHelper {
     private final ResearchDataBuilder research;
@@ -72,6 +72,25 @@ public final class ResearchIngressHelper {
         public void grantFact(String hookPath, ResearchFactRef factRef) {
             this.research.grantFactOnEntryViewedOnce(hookPath, this.entryId, factRef);
         }
+
+        /**
+         * Declares a new research value and authors a corresponding ingress hook that increments it.
+         *
+         * The declared value uses the provided value path. The generated hook id is derived by
+         * appending {@code _hook} to that value path.
+         */
+        public ResearchValueRef declareValue(String valuePath, int increment) {
+            var valueRef = this.research.value(valuePath);
+            this.incrementValue(valuePath + "_hook", valueRef, increment);
+            return valueRef;
+        }
+
+        /**
+         * Authors an explicit ingress hook that increments the given already-declared value.
+         */
+        public void incrementValue(String hookPath, ResearchValueRef valueRef, int increment) {
+            this.research.incrementValueOnEntryViewedOnce(hookPath, this.entryId, valueRef, increment);
+        }
     }
 
     /**
@@ -106,6 +125,22 @@ public final class ResearchIngressHelper {
          */
         public void grantFact(String hookPath, ResearchFactRef factRef) {
             this.research.grantFactOnAdvancementEarned(hookPath, this.advancementId, factRef);
+        }
+
+        /**
+         * Declares a new research value and authors a corresponding ingress hook that increments it.
+         */
+        public ResearchValueRef declareValue(String valuePath, int increment) {
+            var valueRef = this.research.value(valuePath);
+            this.incrementValue(valuePath + "_hook", valueRef, increment);
+            return valueRef;
+        }
+
+        /**
+         * Authors an explicit ingress hook that increments the given already-declared value.
+         */
+        public void incrementValue(String hookPath, ResearchValueRef valueRef, int increment) {
+            this.research.incrementValueOnAdvancementEarned(hookPath, this.advancementId, valueRef, increment);
         }
     }
 }

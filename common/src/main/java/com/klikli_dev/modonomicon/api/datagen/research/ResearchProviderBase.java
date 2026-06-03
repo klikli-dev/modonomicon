@@ -10,6 +10,8 @@ import com.klikli_dev.modonomicon.api.datagen.ModonomiconLanguageProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 
+import java.util.List;
+
 /**
  * Shared base for research-side datagen authoring helpers.
  *
@@ -86,6 +88,15 @@ public abstract class ResearchProviderBase {
     }
 
     /**
+     * Declares a research value in the active research bundle and returns a typed ref to it.
+     *
+     * Values are numeric counters that hooks can increment and nodes can require reaching a threshold.
+     */
+    protected ResearchValueRef value(String path) {
+        return this.research.value(path);
+    }
+
+    /**
      * Declares a research node in the active research bundle and returns a typed ref to it.
      *
      * In the current runtime model, a node is an authored durable milestone that unlocks when all
@@ -100,6 +111,13 @@ public abstract class ResearchProviderBase {
      */
     protected ResearchNodeRef node(ResearchNodeRef ref, ResearchFactRef... requiredFacts) {
         return this.research.node(ref, requiredFacts);
+    }
+
+    /**
+     * Declares a research node with both fact and value requirements.
+     */
+    protected ResearchNodeRef node(ResearchNodeRef ref, List<ResearchFactRef> requiredFacts, List<ResearchNodeSpec.ValueRequirement> requiredValues) {
+        return this.research.node(ref, requiredFacts, requiredValues);
     }
 
     /**

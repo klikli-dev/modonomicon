@@ -27,7 +27,7 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
 
     private static final ResearchDataManager INSTANCE = new ResearchDataManager();
 
-    private ResearchData data = new ResearchData(Set.of(), Set.of(), List.of(), Map.of(), Map.of());
+    private ResearchData data = new ResearchData(Set.of(), Set.of(), Set.of(), List.of(), Map.of(), Map.of());
 
     private ResearchDataManager() {
         super(ExtraCodecs.JSON, FileToIdConverter.json(FOLDER));
@@ -49,6 +49,7 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
     protected void apply(Map<Identifier, JsonElement> elements, ResourceManager resourceManager, ProfilerFiller profiler) {
         var facts = new ArrayList<ResearchFactDefinition>();
         var nodes = new ArrayList<ResearchNodeDefinition>();
+        var values = new ArrayList<ResearchValueDefinition>();
         var hooks = new ArrayList<ResearchHookDefinition>();
         var advancementHooks = new ArrayList<AdvancementResearchHookDefinition>();
 
@@ -59,6 +60,8 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
                 facts.addAll(ResearchFactDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow());
             } else if (fileName.equals("nodes")) {
                 nodes.addAll(ResearchNodeDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow());
+            } else if (fileName.equals("values")) {
+                values.addAll(ResearchValueDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow());
             } else if (fileName.equals("advancement_hooks")) {
                 advancementHooks.addAll(AdvancementResearchHookDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow());
             } else if (fileName.equals("hooks")) {
@@ -66,6 +69,6 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
             }
         }
 
-        this.data = ResearchData.validate(facts, nodes, hooks, advancementHooks);
+        this.data = ResearchData.validate(facts, nodes, values, hooks, advancementHooks);
     }
 }
