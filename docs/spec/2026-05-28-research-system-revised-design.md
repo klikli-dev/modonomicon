@@ -366,6 +366,7 @@ Completed so far:
 - trigger type registry (extensible trigger type infrastructure)
 - trigger type `item_crafted` (manual crafting only, output item ID)
 - trigger type `item_acquired` (inventory change, item ID)
+- data component matching for item triggers (partial matching via ItemStackTemplate)
 - book condition type `research_node_unlocked`
 - demo entry slice for:
   - `modonomicon:features/condition_root`
@@ -474,6 +475,7 @@ Current status:
 - completed for platform wiring (NeoForge events, Forge events, Fabric mixins)
 - completed for datagen hook specs, ingress helpers, and builder methods
 - completed for demo scenarios (crafting stick, acquiring cobblestone)
+- completed for data component matching (partial matching via ItemStackTemplate, matchComponents flag)
 
 Not part of phase 2 unless strictly needed:
 
