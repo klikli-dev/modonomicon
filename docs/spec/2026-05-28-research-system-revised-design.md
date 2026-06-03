@@ -400,6 +400,10 @@ Completed so far:
 - book-side research glue: `withCondition(ResearchNodeRef)` on entries, categories, and pages
 - `ConditionHelper` with `researchNodeUnlocked` typed-ref methods
 - `BookHierarchyResearchCompiler` for per-book opt-in generated entry-hierarchy progression
+- expanded research commands: `reset book`, `reset graph`, `grant fact`, `revoke fact`, `unlock node`, `lock node`, `set value`
+- graph index built from resource folder structure for graph-scoped operations
+- research suggestion providers for all argument types
+- moderator permission level on all research commands
 
 Not completed yet:
 
@@ -450,6 +454,7 @@ Completed post-phase-1 slices (completed out of original order):
 - research values runtime + demo scenario
 - trigger type registry infrastructure
 - `ModonomiconDataGenSetup` elimination
+- expanded research commands with book/graph/fact/node/value operations
 
 ### Phase 2: Explicit Trigger Expansion
 
