@@ -54,6 +54,8 @@ import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.player.AdvancementEvent;
+import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -136,6 +138,34 @@ public class ModonomiconNeo {
             }
         });
 
+        //Item crafted event handling for research progression
+        NeoForge.EVENT_BUS.addListener((PlayerEvent.ItemCraftedEvent e) -> {
+            if(!(e.getEntity() instanceof ServerPlayer player))
+                return;
+
+            var itemId = e.getCrafting().getItem().builtInRegistryHolder().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElse(null);
+            if (itemId != null) {
+                if (ResearchServices.hooks().onItemCrafted(player, itemId)) {
+                    ResearchStateManager.get().syncFor(player);
+                    BookVisualStateManager.get().syncFor(player);
+                }
+            }
+        });
+
+        //Item acquired event handling for research progression
+        NeoForge.EVENT_BUS.addListener((ItemEntityPickupEvent.Post e) -> {
+            if(!(e.getPlayer() instanceof ServerPlayer player))
+                return;
+
+            var itemId = e.getOriginalStack().getItem().builtInRegistryHolder().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElse(null);
+            if (itemId != null) {
+                if (ResearchServices.hooks().onItemAcquired(player, itemId)) {
+                    ResearchStateManager.get().syncFor(player);
+                    BookVisualStateManager.get().syncFor(player);
+                }
+            }
+        });
+
         //We use server tick to flush the queue of players that need a book state sync
         NeoForge.EVENT_BUS.addListener(((ServerTickEvent.Post e) -> {
             ResearchStateManager.get().onServerTickEnd(e.getServer());
@@ -171,6 +201,17 @@ public class ModonomiconNeo {
                 e.setCancellationResult(result);
             }
         });
+    }
+
+    private static net.minecraft.resources.Identifier extractItemId(net.minecraft.world.item.crafting.display.SlotDisplay display) {
+        if (display instanceof net.minecraft.world.item.crafting.display.SlotDisplay.ItemSlotDisplay itemDisplay) {
+            return itemDisplay.item().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElse(null);
+        } else if (display instanceof net.minecraft.world.item.crafting.display.SlotDisplay.ItemStackSlotDisplay itemStackDisplay) {
+            return itemStackDisplay.stack().item().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElse(null);
+        } else if (display instanceof net.minecraft.world.item.crafting.display.SlotDisplay.Composite composite && !composite.contents().isEmpty()) {
+            return extractItemId(composite.contents().getFirst());
+        }
+        return null;
     }
 
     public static class Client {

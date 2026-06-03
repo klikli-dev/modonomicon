@@ -1,12 +1,23 @@
-// 26.1.2	2026-06-02T19:24:56.8156215	Books: modonomicon
+// 26.1.2	2026-06-03T12:28:32.8512036	Books: modonomicon
 2c29f1887c5c375e76d6813e5c5ef689936ec4e2 data/modonomicon/modonomicon/books/demo/book.json
+a40738cde71e2783fc7ebf4102a27a937c00761e data/modonomicon/modonomicon/books/demo/categories/acquiring.json
 66e880d8ad62910ce9caf891021f84308950452c data/modonomicon/modonomicon/books/demo/categories/conditional.json
+fd9ac3d5056975c4cff37c6dfbae49cec00b4014 data/modonomicon/modonomicon/books/demo/categories/crafting.json
 34ef6525cfc8712df616a8d5bc02dbf69bdb0405 data/modonomicon/modonomicon/books/demo/categories/features.json
 b29e406fe72f2408fe9ee346129e22beef36aa49 data/modonomicon/modonomicon/books/demo/categories/formatting.json
 8d52f958318b4d31df8b202303b7a99cc1003323 data/modonomicon/modonomicon/books/demo/categories/index_mode.json
+0cc1006d6cc6dc11bc2ff7345e1268086c8e32c6 data/modonomicon/modonomicon/books/demo/categories/values.json
 65547d99ebfabe04813e616983debe3d25cc3afd data/modonomicon/modonomicon/books/demo/commands/test_command.json
 3e71981f6288e40f2bd7e9f4abf02c8d2992fb16 data/modonomicon/modonomicon/books/demo/commands/test_command2.json
+dc0e24791b316b2cd8bca3e889075e78f0105f1b data/modonomicon/modonomicon/books/demo/entries/acquiring/acquiring_cobblestone.json
+8c4837b4a4a726b95b810d83de27076deb7550fc data/modonomicon/modonomicon/books/demo/entries/acquiring/acquiring_cobblestone/pages/info.json
+28bf9d1249b1c38aba13d91ba2e1dff6a6dd5c09 data/modonomicon/modonomicon/books/demo/entries/acquiring/acquiring_intro.json
+8a03fe6a53e34e3eb6cb173c060949bc0c9db0b4 data/modonomicon/modonomicon/books/demo/entries/acquiring/acquiring_intro/pages/info.json
 c1ec036e2452f94e8f68b337e186f62b180f1ab0 data/modonomicon/modonomicon/books/demo/entries/conditional/always_locked.json
+7cc18bc9267526ee85f7129c1e81e3befc229ef6 data/modonomicon/modonomicon/books/demo/entries/crafting/crafting_intro.json
+74ebafbbe25c8c35ab9ef7d3f598b212ba3cf47a data/modonomicon/modonomicon/books/demo/entries/crafting/crafting_intro/pages/info.json
+f3fdfc06ab7649e8ef6fdfb764eb8fb161a73308 data/modonomicon/modonomicon/books/demo/entries/crafting/crafting_stick.json
+e7bb0eb72379cdc048353ba21760dfbba81b5e42 data/modonomicon/modonomicon/books/demo/entries/crafting/crafting_stick/pages/info.json
 c134e1915c3977126425daca4e4f2269d4911c15 data/modonomicon/modonomicon/books/demo/entries/features/command.json
 fbc3d7db5ffeef6383cc190947b13ed37d3d6f48 data/modonomicon/modonomicon/books/demo/entries/features/command/pages/command_link.json
 6268b21fff3055727f38e7302326f29ffd4b505c data/modonomicon/modonomicon/books/demo/entries/features/command/pages/intro.json
@@ -71,6 +82,14 @@ af235cf77ebe3c5c1e7a8160749cc50f72bddb1f data/modonomicon/modonomicon/books/demo
 986efaebe5a085d4b6276e107f421299ca06e010 data/modonomicon/modonomicon/books/demo/entries/index_mode/demo1/pages/intro.json
 97bd7a9ec03cfa9fec0ae562f160eb779403b5d4 data/modonomicon/modonomicon/books/demo/entries/index_mode/demo2.json
 7f27f28e0865385516fc3a18e79909a36dd35e30 data/modonomicon/modonomicon/books/demo/entries/index_mode/demo2/pages/intro.json
+616975b6fc18db318845c9bac988cbc48e9dc77c data/modonomicon/modonomicon/books/demo/entries/values/collector_a.json
+46e550b131f173b4411f495f6cd574816ee1e6a8 data/modonomicon/modonomicon/books/demo/entries/values/collector_a/pages/info.json
+a6ca3565a6c1a1644600532f63c690779a569b20 data/modonomicon/modonomicon/books/demo/entries/values/collector_b.json
+5950ab9feecb4aeb1b0107720222830d9781eaba data/modonomicon/modonomicon/books/demo/entries/values/collector_b/pages/info.json
+fb9befaa35d5e69fb1ef8bab8ee7cdc984c1c6f2 data/modonomicon/modonomicon/books/demo/entries/values/collector_c.json
+67bbf31c2a036a42fafa825be0d6efea21aee7fa data/modonomicon/modonomicon/books/demo/entries/values/collector_complete.json
+845c7cf4a4b9ba9f605a50ad978a8ffbde76f235 data/modonomicon/modonomicon/books/demo/entries/values/collector_complete/pages/info.json
+f55bfdc7635a56f77fe36cfab6582474132016d5 data/modonomicon/modonomicon/books/demo/entries/values/collector_c/pages/info.json
 61b9f9e7a8acad9a67ed7342ff30b8cd0f488a9c data/modonomicon/modonomicon/books/demo/theme.json
 fad1a723baf704488eaa2aaee420b50c5a7a53a3 data/modonomicon/modonomicon/books/demo_index/book.json
 9013d6f07c501a22e7671ab093c04f7bda67c26c data/modonomicon/modonomicon/books/demo_index/categories/conditional.json

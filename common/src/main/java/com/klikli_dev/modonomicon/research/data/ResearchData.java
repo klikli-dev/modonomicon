@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.research.data;
 
+import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
 import com.klikli_dev.modonomicon.research.state.PlayerResearchState;
 import net.minecraft.resources.Identifier;
 
@@ -23,6 +24,8 @@ import java.util.stream.Collectors;
  * @param valueIds set of all known value ids
  * @param nodeRules node unlock rules (facts + values)
  * @param entryViewedOnceHooks hooks grouped by trigger target entry id
+ * @param itemCraftedHooks hooks grouped by item id
+ * @param itemAcquiredHooks hooks grouped by item id
  * @param advancementHooks hooks grouped by advancement id
  */
 public record ResearchData(
@@ -31,6 +34,8 @@ public record ResearchData(
         Set<Identifier> valueIds,
         List<NodeRule> nodeRules,
         Map<Identifier, List<ResearchHookDefinition>> entryViewedOnceHooks,
+        Map<Identifier, List<ResearchHookDefinition>> itemCraftedHooks,
+        Map<Identifier, List<ResearchHookDefinition>> itemAcquiredHooks,
         Map<Identifier, List<AdvancementResearchHookDefinition>> advancementHooks
 ) {
 
@@ -102,14 +107,24 @@ public record ResearchData(
                 List.copyOf(node.requiredFacts()),
                 List.copyOf(node.requiredValues())
         )).toList();
-        var groupedHooks = hooks.stream().collect(Collectors.groupingBy(ResearchHookDefinition::triggerTargetId));
+        var groupedEntryViewedOnceHooks = hooks.stream()
+                .filter(h -> h.triggerType() == TriggerTypeRegistry.ENTRY_VIEWED_ONCE)
+                .collect(Collectors.groupingBy(ResearchHookDefinition::triggerTargetId));
+        var groupedItemCraftedHooks = hooks.stream()
+                .filter(h -> h.triggerType() == TriggerTypeRegistry.ITEM_CRAFTED)
+                .collect(Collectors.groupingBy(ResearchHookDefinition::triggerTargetId));
+        var groupedItemAcquiredHooks = hooks.stream()
+                .filter(h -> h.triggerType() == TriggerTypeRegistry.ITEM_ACQUIRED)
+                .collect(Collectors.groupingBy(ResearchHookDefinition::triggerTargetId));
         var groupedAdvancementHooks = advancementHooks.stream().collect(Collectors.groupingBy(AdvancementResearchHookDefinition::advancementId));
         return new ResearchData(
                 Set.copyOf(factIds),
                 Set.copyOf(nodeIds),
                 Set.copyOf(valueIds),
                 nodeRules,
-                groupedHooks,
+                groupedEntryViewedOnceHooks,
+                groupedItemCraftedHooks,
+                groupedItemAcquiredHooks,
                 groupedAdvancementHooks
         );
     }

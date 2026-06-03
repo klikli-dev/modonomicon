@@ -40,6 +40,20 @@ public final class ResearchIngressHelper {
     }
 
     /**
+     * Starts authoring ingress from the {@code item_crafted} trigger family.
+     */
+    public ItemCraftedIngress onItemCrafted(Identifier itemId) {
+        return new ItemCraftedIngress(this.research, itemId);
+    }
+
+    /**
+     * Starts authoring ingress from the {@code item_acquired} trigger family.
+     */
+    public ItemAcquiredIngress onItemAcquired(Identifier itemId) {
+        return new ItemAcquiredIngress(this.research, itemId);
+    }
+
+    /**
      * Trigger-specific ingress authoring step for {@code entry_viewed_once}.
      */
     public static final class EntryViewedOnceIngress {
@@ -141,6 +155,114 @@ public final class ResearchIngressHelper {
          */
         public void incrementValue(String hookPath, ResearchValueRef valueRef, int increment) {
             this.research.incrementValueOnAdvancementEarned(hookPath, this.advancementId, valueRef, increment);
+        }
+    }
+
+    /**
+     * Trigger-specific ingress authoring step for {@code item_crafted}.
+     */
+    public static final class ItemCraftedIngress {
+        private final ResearchDataBuilder research;
+        private final Identifier itemId;
+
+        /**
+         * Creates an item-crafted ingress step bound to one specific item id.
+         */
+        public ItemCraftedIngress(ResearchDataBuilder research, Identifier itemId) {
+            this.research = research;
+            this.itemId = itemId;
+        }
+
+        /**
+         * Declares a new research fact and authors a corresponding ingress hook that grants it.
+         *
+         * The declared fact uses the provided fact path. The generated hook id is derived by
+         * appending {@code _hook} to that fact path.
+         */
+        public ResearchFactRef declareFact(String factPath) {
+            var factRef = this.research.fact(factPath);
+            this.grantFact(factPath + "_hook", factRef);
+            return factRef;
+        }
+
+        /**
+         * Authors an explicit ingress hook that grants the given already-declared fact.
+         */
+        public void grantFact(String hookPath, ResearchFactRef factRef) {
+            this.research.grantFactOnItemCrafted(hookPath, this.itemId, factRef);
+        }
+
+        /**
+         * Declares a new research value and authors a corresponding ingress hook that increments it.
+         *
+         * The declared value uses the provided value path. The generated hook id is derived by
+         * appending {@code _hook} to that value path.
+         */
+        public ResearchValueRef declareValue(String valuePath, int increment) {
+            var valueRef = this.research.value(valuePath);
+            this.incrementValue(valuePath + "_hook", valueRef, increment);
+            return valueRef;
+        }
+
+        /**
+         * Authors an explicit ingress hook that increments the given already-declared value.
+         */
+        public void incrementValue(String hookPath, ResearchValueRef valueRef, int increment) {
+            this.research.incrementValueOnItemCrafted(hookPath, this.itemId, valueRef, increment);
+        }
+    }
+
+    /**
+     * Trigger-specific ingress authoring step for {@code item_acquired}.
+     */
+    public static final class ItemAcquiredIngress {
+        private final ResearchDataBuilder research;
+        private final Identifier itemId;
+
+        /**
+         * Creates an item-acquired ingress step bound to one specific item id.
+         */
+        public ItemAcquiredIngress(ResearchDataBuilder research, Identifier itemId) {
+            this.research = research;
+            this.itemId = itemId;
+        }
+
+        /**
+         * Declares a new research fact and authors a corresponding ingress hook that grants it.
+         *
+         * The declared fact uses the provided fact path. The generated hook id is derived by
+         * appending {@code _hook} to that fact path.
+         */
+        public ResearchFactRef declareFact(String factPath) {
+            var factRef = this.research.fact(factPath);
+            this.grantFact(factPath + "_hook", factRef);
+            return factRef;
+        }
+
+        /**
+         * Authors an explicit ingress hook that grants the given already-declared fact.
+         */
+        public void grantFact(String hookPath, ResearchFactRef factRef) {
+            this.research.grantFactOnItemAcquired(hookPath, this.itemId, factRef);
+        }
+
+        /**
+         * Declares a new research value and authors a corresponding ingress hook that increments it.
+         *
+         * The declared value uses the provided value path. The generated hook id is derived by
+         * appending {@code _hook} to that value path.
+         */
+        public ResearchValueRef declareValue(String valuePath, int increment) {
+            var valueRef = this.research.value(valuePath);
+            this.incrementValue(valuePath + "_hook", valueRef, increment);
+            return valueRef;
+        }
+
+        /**
+         * Authors an explicit ingress hook that increments the given already-declared value.
+         */
+        public void incrementValue(String hookPath, ResearchValueRef valueRef, int increment) {
+            this.research.incrementValueOnItemAcquired(hookPath, this.itemId, valueRef, increment);
         }
     }
 }

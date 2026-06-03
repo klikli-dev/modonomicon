@@ -1,0 +1,11 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "info",
+  "show_title_separator": true,
+  "sort_number": 0,
+  "text": "book.modonomicon.demo.crafting.crafting_stick.info.text",
+  "title": "book.modonomicon.demo.crafting.crafting_stick.info.title"
+}

@@ -27,7 +27,7 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
 
     private static final ResearchDataManager INSTANCE = new ResearchDataManager();
 
-    private ResearchData data = new ResearchData(Set.of(), Set.of(), Set.of(), List.of(), Map.of(), Map.of());
+    private ResearchData data = new ResearchData(Set.of(), Set.of(), Set.of(), List.of(), Map.of(), Map.of(), Map.of(), Map.of());
 
     private ResearchDataManager() {
         super(ExtraCodecs.JSON, FileToIdConverter.json(FOLDER));
@@ -43,6 +43,14 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
 
     public List<ResearchHookDefinition> entryViewedOnceHooksFor(Identifier entryId) {
         return this.data.entryViewedOnceHooks().getOrDefault(entryId, List.of());
+    }
+
+    public List<ResearchHookDefinition> itemCraftedHooksFor(Identifier itemId) {
+        return this.data.itemCraftedHooks().getOrDefault(itemId, List.of());
+    }
+
+    public List<ResearchHookDefinition> itemAcquiredHooksFor(Identifier itemId) {
+        return this.data.itemAcquiredHooks().getOrDefault(itemId, List.of());
     }
 
     @Override

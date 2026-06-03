@@ -23,6 +23,8 @@ public class DemoResearch extends SingleResearchSubProvider {
     public static final ResearchNodeRef ADVANCEMENT_MINE_STONE = node("demo/advancement_mine_stone");
     public static final ResearchNodeRef ADVANCEMENT_RIDE_BOAT_WITH_GOAT = node("demo/advancement_ride_boat_with_goat");
     public static final ResearchNodeRef COLLECTOR_COMPLETE = node("demo/collector_complete");
+    public static final ResearchNodeRef CRAFTING_STICK = node("demo/crafting_stick");
+    public static final ResearchNodeRef ACQUIRE_COBBLESTONE = node("demo/acquire_cobblestone");
 
     /**
      * Creates the demo research subprovider under the {@code modonomicon:demo} bundle id.
@@ -65,6 +67,16 @@ public class DemoResearch extends SingleResearchSubProvider {
         this.node(COLLECTOR_COMPLETE, List.of(), List.of(
                 new ResearchNodeSpec.ValueRequirement(collectorCount, 3)
         ));
+
+        var stickCrafted = this.ingress()
+                .onItemCrafted(this.mcLoc("stick"))
+                .declareFact("demo/stick_crafted");
+        this.node(CRAFTING_STICK, stickCrafted);
+
+        var cobbleAcquired = this.ingress()
+                .onItemAcquired(this.mcLoc("cobblestone"))
+                .declareFact("demo/cobblestone_acquired");
+        this.node(ACQUIRE_COBBLESTONE, cobbleAcquired);
     }
 
     static ResearchNodeRef node(String path) {

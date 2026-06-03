@@ -24,14 +24,18 @@ public class ResearchHookService {
 
     private final ResearchStateManager stateManager;
     private final Function<Identifier, List<ResearchHookDefinition>> entryViewedOnceLookup;
+    private final Function<Identifier, List<ResearchHookDefinition>> itemCraftedLookup;
+    private final Function<Identifier, List<ResearchHookDefinition>> itemAcquiredLookup;
 
     public ResearchHookService(ResearchStateManager stateManager) {
-        this(stateManager, ResearchDataManager.get()::entryViewedOnceHooksFor);
+        this(stateManager, ResearchDataManager.get()::entryViewedOnceHooksFor, ResearchDataManager.get()::itemCraftedHooksFor, ResearchDataManager.get()::itemAcquiredHooksFor);
     }
 
-    public ResearchHookService(ResearchStateManager stateManager, Function<Identifier, List<ResearchHookDefinition>> entryViewedOnceLookup) {
+    public ResearchHookService(ResearchStateManager stateManager, Function<Identifier, List<ResearchHookDefinition>> entryViewedOnceLookup, Function<Identifier, List<ResearchHookDefinition>> itemCraftedLookup, Function<Identifier, List<ResearchHookDefinition>> itemAcquiredLookup) {
         this.stateManager = stateManager;
         this.entryViewedOnceLookup = entryViewedOnceLookup;
+        this.itemCraftedLookup = itemCraftedLookup;
+        this.itemAcquiredLookup = itemAcquiredLookup;
     }
 
     public boolean onEntryViewedOnce(ServerPlayer player, Identifier entryId) {
@@ -61,5 +65,43 @@ public class ResearchHookService {
             }
         }
         return false;
+    }
+
+    public boolean onItemCrafted(ServerPlayer player, Identifier itemId) {
+        var before = BookDataManager.get().getBooks().values().stream().collect(java.util.stream.Collectors.toMap(Book::getId, book -> BookVisibilitySnapshots.collect(player, book)));
+        boolean changed = false;
+        for (var hook : this.itemCraftedLookup.apply(itemId)) {
+            if (hook.factId() != null) {
+                changed |= this.stateManager.grantFact(player, hook.factId());
+            } else if (hook.valueId() != null) {
+                changed |= this.stateManager.incrementValue(player, hook.valueId(), hook.increment());
+            }
+        }
+        changed |= this.stateManager.reevaluate(player);
+        if (changed) {
+            for (var book : BookDataManager.get().getBooks().values()) {
+                BookVisualStateManager.get().updateVisibilityDrivenUnread(player, book, before.get(book.getId()), BookVisibilitySnapshots.collect(player, book));
+            }
+        }
+        return changed;
+    }
+
+    public boolean onItemAcquired(ServerPlayer player, Identifier itemId) {
+        var before = BookDataManager.get().getBooks().values().stream().collect(java.util.stream.Collectors.toMap(Book::getId, book -> BookVisibilitySnapshots.collect(player, book)));
+        boolean changed = false;
+        for (var hook : this.itemAcquiredLookup.apply(itemId)) {
+            if (hook.factId() != null) {
+                changed |= this.stateManager.grantFact(player, hook.factId());
+            } else if (hook.valueId() != null) {
+                changed |= this.stateManager.incrementValue(player, hook.valueId(), hook.increment());
+            }
+        }
+        changed |= this.stateManager.reevaluate(player);
+        if (changed) {
+            for (var book : BookDataManager.get().getBooks().values()) {
+                BookVisualStateManager.get().updateVisibilityDrivenUnread(player, book, before.get(book.getId()), BookVisibilitySnapshots.collect(player, book));
+            }
+        }
+        return changed;
     }
 }

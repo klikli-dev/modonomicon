@@ -1,0 +1,22 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gray",
+    "width": 26
+  },
+  "category": "modonomicon:values",
+  "condition": {
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:demo/collector_complete"
+  },
+  "description": "book.modonomicon.demo.values.collector_complete.description",
+  "icon": {
+    "id": "minecraft:gold_ingot"
+  },
+  "id": "modonomicon:values/collector_complete",
+  "name": "book.modonomicon.demo.values.collector_complete.name",
+  "sort_number": 3,
+  "x": 1,
+  "y": 1
+}

@@ -16,5 +16,26 @@
     "required_facts": [
       "modonomicon:demo/advancement_ride_boat_with_goat_completed"
     ]
+  },
+  {
+    "id": "modonomicon:demo/collector_complete",
+    "required_values": [
+      {
+        "threshold": 3,
+        "value_id": "modonomicon:demo/collector_count"
+      }
+    ]
+  },
+  {
+    "id": "modonomicon:demo/crafting_stick",
+    "required_facts": [
+      "modonomicon:demo/stick_crafted"
+    ]
+  },
+  {
+    "id": "modonomicon:demo/acquire_cobblestone",
+    "required_facts": [
+      "modonomicon:demo/cobblestone_acquired"
+    ]
   }
 ]

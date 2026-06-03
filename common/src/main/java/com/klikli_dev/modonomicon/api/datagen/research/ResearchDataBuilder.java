@@ -29,6 +29,8 @@ public final class ResearchDataBuilder {
     private final List<ResearchValueSpec> values = new ArrayList<>();
     private final List<ResearchNodeSpec> nodes = new ArrayList<>();
     private final List<EntryViewedOnceHookSpec> entryViewedOnceHooks = new ArrayList<>();
+    private final List<ItemCraftedHookSpec> itemCraftedHooks = new ArrayList<>();
+    private final List<ItemAcquiredHookSpec> itemAcquiredHooks = new ArrayList<>();
     private final List<AdvancementHookSpec> advancementHooks = new ArrayList<>();
 
     /**
@@ -146,6 +148,58 @@ public final class ResearchDataBuilder {
     }
 
     /**
+     * Declares an explicit {@code item_crafted} research ingress hook that grants a fact.
+     *
+     * The generated hook means: when the specified item is crafted, grant the specified
+     * research fact. That fact can then participate in research-node unlocking.
+     */
+    public void grantFactOnItemCrafted(String path, Identifier itemId, ResearchFactRef factRef) {
+        this.itemCraftedHooks.add(ItemCraftedHookSpec.grantFact(
+                Identifier.fromNamespaceAndPath(this.namespace, path),
+                itemId,
+                factRef
+        ));
+    }
+
+    /**
+     * Declares an explicit {@code item_crafted} research ingress hook that increments a value.
+     */
+    public void incrementValueOnItemCrafted(String path, Identifier itemId, ResearchValueRef valueRef, int increment) {
+        this.itemCraftedHooks.add(ItemCraftedHookSpec.incrementValue(
+                Identifier.fromNamespaceAndPath(this.namespace, path),
+                itemId,
+                valueRef,
+                increment
+        ));
+    }
+
+    /**
+     * Declares an explicit {@code item_acquired} research ingress hook that grants a fact.
+     *
+     * The generated hook means: when the specified item is acquired, grant the specified
+     * research fact. That fact can then participate in research-node unlocking.
+     */
+    public void grantFactOnItemAcquired(String path, Identifier itemId, ResearchFactRef factRef) {
+        this.itemAcquiredHooks.add(ItemAcquiredHookSpec.grantFact(
+                Identifier.fromNamespaceAndPath(this.namespace, path),
+                itemId,
+                factRef
+        ));
+    }
+
+    /**
+     * Declares an explicit {@code item_acquired} research ingress hook that increments a value.
+     */
+    public void incrementValueOnItemAcquired(String path, Identifier itemId, ResearchValueRef valueRef, int increment) {
+        this.itemAcquiredHooks.add(ItemAcquiredHookSpec.incrementValue(
+                Identifier.fromNamespaceAndPath(this.namespace, path),
+                itemId,
+                valueRef,
+                increment
+        ));
+    }
+
+    /**
      * Returns the compiled canonical fact definitions collected so far.
      */
     public List<ResearchFactDefinition> factDefinitions() {
@@ -178,5 +232,19 @@ public final class ResearchDataBuilder {
      */
     public List<AdvancementResearchHookDefinition> advancementHookDefinitions() {
         return this.advancementHooks.stream().map(AdvancementHookSpec::toDefinition).toList();
+    }
+
+    /**
+     * Returns the compiled canonical item-crafted research hook definitions collected so far.
+     */
+    public List<ResearchHookDefinition> itemCraftedHookDefinitions() {
+        return this.itemCraftedHooks.stream().map(ItemCraftedHookSpec::toDefinition).toList();
+    }
+
+    /**
+     * Returns the compiled canonical item-acquired research hook definitions collected so far.
+     */
+    public List<ResearchHookDefinition> itemAcquiredHookDefinitions() {
+        return this.itemAcquiredHooks.stream().map(ItemAcquiredHookSpec::toDefinition).toList();
     }
 }

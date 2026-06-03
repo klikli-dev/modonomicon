@@ -108,7 +108,14 @@ public class ResearchProvider implements DataProvider {
                 futures.add(this.save(cache, ResearchFactDefinition.CODEC, data.factDefinitions(), base.resolve("facts.json")));
                 futures.add(this.save(cache, ResearchValueDefinition.CODEC, data.valueDefinitions(), base.resolve("values.json")));
                 futures.add(this.save(cache, ResearchNodeDefinition.CODEC, data.nodeDefinitions(), base.resolve("nodes.json")));
-                futures.add(this.save(cache, ResearchHookDefinition.CODEC, data.hookDefinitions(), base.resolve("hooks.json")));
+
+                // Merge all hook types into a single list for hooks.json (trigger type dispatch handles routing at load time)
+                var allHooks = new ArrayList<ResearchHookDefinition>();
+                allHooks.addAll(data.hookDefinitions());       // entry_viewed_once
+                allHooks.addAll(data.itemCraftedHookDefinitions());
+                allHooks.addAll(data.itemAcquiredHookDefinitions());
+                futures.add(this.save(cache, ResearchHookDefinition.CODEC, allHooks, base.resolve("hooks.json")));
+
                 futures.add(this.save(cache, AdvancementResearchHookDefinition.CODEC, data.advancementHookDefinitions(), base.resolve("advancement_hooks.json")));
             }
 

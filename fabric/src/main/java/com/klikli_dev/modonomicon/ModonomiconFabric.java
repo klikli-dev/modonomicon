@@ -24,6 +24,8 @@ import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLevelEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.ItemEvents;
+import net.fabricmc.fabric.api.event.player.PlayerPickItemEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
@@ -103,6 +105,7 @@ public class ModonomiconFabric implements ModInitializer {
         ServerTickEvents.END_SERVER_TICK.register((server) -> {
             ResearchStateManager.get().onServerTickEnd(server);
         });
+
 
         //Advancement event handling for condition/unlock system
         //done in MixinPlayerAdvancements, because we have no event in Fabric

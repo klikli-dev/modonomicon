@@ -25,6 +25,18 @@ public final class TriggerTypeRegistry {
             Identifier.STREAM_CODEC.cast()
     );
 
+    public static final TriggerType ITEM_CRAFTED = register(
+            Modonomicon.loc("item_crafted"),
+            Identifier.CODEC.fieldOf(""),
+            Identifier.STREAM_CODEC.cast()
+    );
+
+    public static final TriggerType ITEM_ACQUIRED = register(
+            Modonomicon.loc("item_acquired"),
+            Identifier.CODEC.fieldOf(""),
+            Identifier.STREAM_CODEC.cast()
+    );
+
     private TriggerTypeRegistry() {
     }
 

@@ -10,6 +10,8 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.datagen.SingleBookSubProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCommandModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
+import com.klikli_dev.modonomicon.datagen.book.demo.AcquiringCategory;
+import com.klikli_dev.modonomicon.datagen.book.demo.CraftingCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.ConditionalCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.FeaturesCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.FormattingCategory;
@@ -70,6 +72,9 @@ public class DemoBook extends SingleBookSubProvider {
         var indexModeCategory = this.add(new IndexModeCategory(this).generate());
 
         var valuesCategory = this.add(new ValuesCategory(this).generate());
+
+        var craftingCategory = this.add(new CraftingCategory(this).generate());
+        var acquiringCategory = this.add(new AcquiringCategory(this).generate());
     }
 
     @Override

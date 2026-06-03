@@ -357,12 +357,13 @@ They must not become runtime progression authority or hidden runtime lookup sema
 
 ## Implementation Status
 
-Status as of 2026-05-31 on `feat/research-system/main`.
+Status as of 2026-06-03 on `feat/research-system/main`.
 
 Completed so far:
 
 - Phase 1 foundation for facts, nodes, hooks, persistence, and validation
 - trigger type `entry_viewed_once`
+- trigger type registry (extensible trigger type infrastructure)
 - book condition type `research_node_unlocked`
 - demo entry slice for:
   - `modonomicon:features/condition_root`
@@ -383,13 +384,26 @@ Completed so far:
 - removal of persisted book unlock state as progression authority
 - legacy advancement networking/config cleanup
 - research progress button replacing the old read-all progression shortcut
+- research values (numeric counters) with hook increment and node threshold support
+- values demo scenario (collector: 3 incrementing entries + 1 threshold-gated entry)
+- typed refs: `ResearchFactRef`, `ResearchNodeRef`, `ResearchValueRef`
+- research-side datagen builder API (`ResearchDataBuilder`, `ResearchIngressHelper`)
+- `ingress()` fluent helper with `onEntryViewedOnce`, `onAdvancementEarned`, `declareFact`, `grantFact`
+- `ResearchProvider` / `ResearchSubProvider` / `SingleResearchSubProvider` datagen API
+- platform datagen wrappers and registrations
+- elimination of `ModonomiconDataGenSetup` orchestrator; direct cache passing
+- book-side research glue: `withCondition(ResearchNodeRef)` on entries, categories, and pages
+- `ConditionHelper` with `researchNodeUnlocked` typed-ref methods
+- `BookHierarchyResearchCompiler` for per-book opt-in generated entry-hierarchy progression
 
 Not completed yet:
 
 - additional trigger families such as `item_crafted` and `item_acquired`
-- values in a real authored scenario
 - broader non-demo authored-content migration and validation beyond the demo/cutover slices already completed
-- authoring sugar / bridge / typed refs / patch-merge work
+- datapack patch/merge semantics
+- research-side optional-dependency predicate for optional dependency mods
+- sanctioned research skip/bypass mechanism for narrow scenarios
+- advancement reconciliation on reset/login (replay already-completed advancements)
 
 ## Roadmap
 
@@ -416,23 +430,29 @@ Current status:
 - completed for the legacy progression-condition cutover and advancement-backed replacement path
 - completed for the runtime visibility/access cutover; book visibility is now computed rather than progression-persisted
 - completed for the immediate legacy-advancement cleanup and post-cutover research-progress button follow-up
+- completed for research values with collector demo scenario
+- completed for research-side datagen glue, typed refs, and ingress helper
+- completed for `ResearchProvider` / subprovider datagen API
+- completed for book-side research glue and `BookHierarchyResearchCompiler`
+- completed for elimination of `ModonomiconDataGenSetup` orchestrator
 - still not proven for broader non-demo authored content
 
 Not part of phase 1:
 
-- book-defined research helpers
-- generated research from book hierarchy
-- typed refs
-- bridge/compiler layer
 - datapack patch/merge semantics
 
-Recommended next slice before trigger expansion:
+Completed post-phase-1 slices (completed out of original order):
 
-- add research-side datagen glue and authoring sugar only
-- include typed research refs as an authoring-time safety feature
-- keep emitted resources fully explicit and canonical
-- do not add book-side glue in the same slice
-- do not change runtime semantics in the same slice
+- research-side datagen glue and authoring sugar with typed refs
+- `ResearchProvider` / subprovider datagen API restructuring
+- book-side research glue and generated entry-hierarchy progression compiler
+- research values runtime + demo scenario
+- trigger type registry infrastructure
+- `ModonomiconDataGenSetup` elimination
+
+Recommended next slice:
+
+- add `item_crafted` trigger type (Phase 2)
 
 ### Phase 2: Explicit Trigger Expansion
 
@@ -450,7 +470,8 @@ Recommended first slice in phase 2:
 - add `item_crafted` only
 - keep it explicit and fact-backed
 - prove it in one narrow authored scenario before adding `item_acquired`
-- defer `item_acquired` and value-based progression until after `item_crafted` is proven stable
+
+Note: value-based progression was completed ahead of phase 2 and is already proven stable.
 
 Not part of phase 2 unless strictly needed:
 
@@ -462,13 +483,17 @@ Not part of phase 2 unless strictly needed:
 
 Only after the explicit runtime model is proven should later convenience arrive.
 
-Planned later work:
+Completed:
 
-- typed references for authoring/datagen safety that compile to explicit ids
-- datagen bridge/compiler layer
-- optional book-first generated progression
+- typed references (`ResearchFactRef`, `ResearchNodeRef`, `ResearchValueRef`) for authoring/datagen safety
+- datagen bridge/compiler layer (`BookHierarchyResearchCompiler`)
+- optional book-first generated progression (per-book opt-in entry-hierarchy progression)
+- `ResearchProvider` / subprovider datagen API
+
+Still planned:
+
 - convenience helpers around viewed-once and later triggers
-- broader trigger families
+- broader trigger families (`item_crafted`, `item_acquired`, etc.)
 - datapack patch/merge semantics
 
 All later convenience must compile to the same canonical explicit model introduced in phase 1.

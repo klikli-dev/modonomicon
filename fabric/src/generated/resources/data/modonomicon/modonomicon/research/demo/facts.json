@@ -7,5 +7,11 @@
   },
   {
     "id": "modonomicon:demo/advancement_ride_boat_with_goat_completed"
+  },
+  {
+    "id": "modonomicon:demo/stick_crafted"
+  },
+  {
+    "id": "modonomicon:demo/cobblestone_acquired"
   }
 ]
