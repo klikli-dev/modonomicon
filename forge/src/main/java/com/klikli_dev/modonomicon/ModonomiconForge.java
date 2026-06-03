@@ -110,6 +110,12 @@ public class ModonomiconForge {
             if (e.getEntity() instanceof ServerPlayer player) {
                 BookVisualStateManager.get().syncFor(player);
                 ResearchStateManager.get().onDatapackSync(player);
+                // Replay advancement-backed hooks if research state is stale (e.g. reset while offline).
+                if (ResearchServices.advancements().needsAdvancementReplay(player)) {
+                    ResearchServices.advancements().replayAll(player);
+                    ResearchStateManager.get().syncFor(player);
+                    BookVisualStateManager.get().syncFor(player);
+                }
             }
         });
 

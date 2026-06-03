@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.config.ServerConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
+import com.klikli_dev.modonomicon.research.ResearchServices;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
 import com.klikli_dev.modonomicon.registry.RegistryBootstrap;
@@ -32,6 +33,7 @@ import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 
 public class ModonomiconFabric implements ModInitializer {
@@ -87,6 +89,14 @@ public class ModonomiconFabric implements ModInitializer {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             BookVisualStateManager.get().syncFor(handler.getPlayer());
             ResearchStateManager.get().onDatapackSync(handler.getPlayer());
+            // Replay advancement-backed hooks if research state is stale (e.g. reset while offline).
+            if (handler.getPlayer() instanceof ServerPlayer player) {
+                if (ResearchServices.advancements().needsAdvancementReplay(player)) {
+                    ResearchServices.advancements().replayAll(player);
+                    ResearchStateManager.get().syncFor(player);
+                    BookVisualStateManager.get().syncFor(player);
+                }
+            }
         });
 
         //on overworld unload clear the save data reference in the state manager

@@ -364,6 +364,8 @@ Completed so far:
 - Phase 1 foundation for facts, nodes, hooks, persistence, and validation
 - trigger type `entry_viewed_once`
 - trigger type registry (extensible trigger type infrastructure)
+- trigger type `item_crafted` (manual crafting only, output item ID)
+- trigger type `item_acquired` (inventory change, item ID)
 - book condition type `research_node_unlocked`
 - demo entry slice for:
   - `modonomicon:features/condition_root`
@@ -386,9 +388,12 @@ Completed so far:
 - research progress button replacing the old read-all progression shortcut
 - research values (numeric counters) with hook increment and node threshold support
 - values demo scenario (collector: 3 incrementing entries + 1 threshold-gated entry)
+- item crafted demo scenario (crafting stick → unlock entry)
+- item acquired demo scenario (acquire cobblestone → unlock entry)
+- advancement reconciliation: replay completed advancement hooks after reset and on player login
 - typed refs: `ResearchFactRef`, `ResearchNodeRef`, `ResearchValueRef`
 - research-side datagen builder API (`ResearchDataBuilder`, `ResearchIngressHelper`)
-- `ingress()` fluent helper with `onEntryViewedOnce`, `onAdvancementEarned`, `declareFact`, `grantFact`
+- `ingress()` fluent helper with `onEntryViewedOnce`, `onAdvancementEarned`, `onItemCrafted`, `onItemAcquired`, `declareFact`, `grantFact`
 - `ResearchProvider` / `ResearchSubProvider` / `SingleResearchSubProvider` datagen API
 - platform datagen wrappers and registrations
 - elimination of `ModonomiconDataGenSetup` orchestrator; direct cache passing
@@ -398,12 +403,9 @@ Completed so far:
 
 Not completed yet:
 
-- additional trigger families such as `item_crafted` and `item_acquired`
-- broader non-demo authored-content migration and validation beyond the demo/cutover slices already completed
 - datapack patch/merge semantics
 - research-side optional-dependency predicate for optional dependency mods
 - sanctioned research skip/bypass mechanism for narrow scenarios
-- advancement reconciliation on reset/login (replay already-completed advancements)
 
 ## Roadmap
 
@@ -435,7 +437,6 @@ Current status:
 - completed for `ResearchProvider` / subprovider datagen API
 - completed for book-side research glue and `BookHierarchyResearchCompiler`
 - completed for elimination of `ModonomiconDataGenSetup` orchestrator
-- still not proven for broader non-demo authored content
 
 Not part of phase 1:
 
@@ -450,10 +451,6 @@ Completed post-phase-1 slices (completed out of original order):
 - trigger type registry infrastructure
 - `ModonomiconDataGenSetup` elimination
 
-Recommended next slice:
-
-- add `item_crafted` trigger type (Phase 2)
-
 ### Phase 2: Explicit Trigger Expansion
 
 Phase 2 broadens the explicit model without introducing major sugar.
@@ -465,13 +462,13 @@ Included:
 - expanded explicit validation and diagnostics for hooks/resources
 - any admin/debug improvements that naturally extend the explicit runtime model
 
-Recommended first slice in phase 2:
+Current status:
 
-- add `item_crafted` only
-- keep it explicit and fact-backed
-- prove it in one narrow authored scenario before adding `item_acquired`
-
-Note: value-based progression was completed ahead of phase 2 and is already proven stable.
+- completed for `item_crafted` trigger type (manual crafting only, output item ID)
+- completed for `item_acquired` trigger type (inventory change, item ID)
+- completed for platform wiring (NeoForge events, Forge events, Fabric mixins)
+- completed for datagen hook specs, ingress helpers, and builder methods
+- completed for demo scenarios (crafting stick, acquiring cobblestone)
 
 Not part of phase 2 unless strictly needed:
 
@@ -493,7 +490,7 @@ Completed:
 Still planned:
 
 - convenience helpers around viewed-once and later triggers
-- broader trigger families (`item_crafted`, `item_acquired`, etc.)
+- broader trigger families beyond Phase 2 (e.g. `dimension_visited`, `custom_api_trigger`)
 - datapack patch/merge semantics
 
 All later convenience must compile to the same canonical explicit model introduced in phase 1.
