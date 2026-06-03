@@ -12,6 +12,8 @@ import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeSpec;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchValueRef;
 import com.klikli_dev.modonomicon.api.datagen.research.SingleResearchSubProvider;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ItemStackTemplate;
 
 import java.util.List;
 
@@ -69,12 +71,12 @@ public class DemoResearch extends SingleResearchSubProvider {
         ));
 
         var stickCrafted = this.ingress()
-                .onItemCrafted(this.mcLoc("stick"))
+                .onItemCrafted(new ItemStackTemplate(Items.STICK))
                 .declareFact("demo/stick_crafted");
         this.node(CRAFTING_STICK, stickCrafted);
 
         var cobbleAcquired = this.ingress()
-                .onItemAcquired(this.mcLoc("cobblestone"))
+                .onItemAcquired(new ItemStackTemplate(Items.COBBLESTONE))
                 .declareFact("demo/cobblestone_acquired");
         this.node(ACQUIRE_COBBLESTONE, cobbleAcquired);
     }

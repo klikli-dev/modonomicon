@@ -36,12 +36,9 @@ public abstract class MixinItemEntity {
             var itemStack = self.getItem().copyWithCount(orgCount);
             originalStackFromEntity.setCount(originalStackFromEntityCount);
 
-            var itemId = itemStack.getItem().builtInRegistryHolder().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElse(null);
-            if (itemId != null) {
-                if (ResearchServices.hooks().onItemAcquired(serverPlayer, itemId)) {
-                    ResearchStateManager.get().syncFor(serverPlayer);
-                    BookVisualStateManager.get().syncFor(serverPlayer);
-                }
+            if (ResearchServices.hooks().onItemAcquired(serverPlayer, itemStack)) {
+                ResearchStateManager.get().syncFor(serverPlayer);
+                BookVisualStateManager.get().syncFor(serverPlayer);
             }
         }
     }

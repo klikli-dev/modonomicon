@@ -25,12 +25,18 @@
   },
   {
     "event_target_id": "minecraft:stick",
+    "event_target_item": {
+      "id": "minecraft:stick"
+    },
     "fact_id": "modonomicon:demo/stick_crafted",
     "id": "modonomicon:demo/stick_crafted_hook",
     "trigger_type": "modonomicon:item_crafted"
   },
   {
     "event_target_id": "minecraft:cobblestone",
+    "event_target_item": {
+      "id": "minecraft:cobblestone"
+    },
     "fact_id": "modonomicon:demo/cobblestone_acquired",
     "id": "modonomicon:demo/cobblestone_acquired_hook",
     "trigger_type": "modonomicon:item_acquired"

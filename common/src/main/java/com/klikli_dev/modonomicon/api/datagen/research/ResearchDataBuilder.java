@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchValueDefinition;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStackTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -153,23 +154,48 @@ public final class ResearchDataBuilder {
      * The generated hook means: when the specified item is crafted, grant the specified
      * research fact. That fact can then participate in research-node unlocking.
      */
-    public void grantFactOnItemCrafted(String path, Identifier itemId, ResearchFactRef factRef) {
+    public void grantFactOnItemCrafted(String path, ItemStackTemplate targetItem, ResearchFactRef factRef) {
         this.itemCraftedHooks.add(ItemCraftedHookSpec.grantFact(
                 Identifier.fromNamespaceAndPath(this.namespace, path),
-                itemId,
+                targetItem,
                 factRef
+        ));
+    }
+
+    /**
+     * Declares an explicit {@code item_crafted} research ingress hook that grants a fact with component matching.
+     */
+    public void grantFactOnItemCrafted(String path, ItemStackTemplate targetItem, ResearchFactRef factRef, boolean matchComponents) {
+        this.itemCraftedHooks.add(ItemCraftedHookSpec.grantFact(
+                Identifier.fromNamespaceAndPath(this.namespace, path),
+                targetItem,
+                factRef,
+                matchComponents
         ));
     }
 
     /**
      * Declares an explicit {@code item_crafted} research ingress hook that increments a value.
      */
-    public void incrementValueOnItemCrafted(String path, Identifier itemId, ResearchValueRef valueRef, int increment) {
+    public void incrementValueOnItemCrafted(String path, ItemStackTemplate targetItem, ResearchValueRef valueRef, int increment) {
         this.itemCraftedHooks.add(ItemCraftedHookSpec.incrementValue(
                 Identifier.fromNamespaceAndPath(this.namespace, path),
-                itemId,
+                targetItem,
                 valueRef,
                 increment
+        ));
+    }
+
+    /**
+     * Declares an explicit {@code item_crafted} research ingress hook that increments a value with component matching.
+     */
+    public void incrementValueOnItemCrafted(String path, ItemStackTemplate targetItem, ResearchValueRef valueRef, int increment, boolean matchComponents) {
+        this.itemCraftedHooks.add(ItemCraftedHookSpec.incrementValue(
+                Identifier.fromNamespaceAndPath(this.namespace, path),
+                targetItem,
+                valueRef,
+                increment,
+                matchComponents
         ));
     }
 
@@ -179,23 +205,48 @@ public final class ResearchDataBuilder {
      * The generated hook means: when the specified item is acquired, grant the specified
      * research fact. That fact can then participate in research-node unlocking.
      */
-    public void grantFactOnItemAcquired(String path, Identifier itemId, ResearchFactRef factRef) {
+    public void grantFactOnItemAcquired(String path, ItemStackTemplate targetItem, ResearchFactRef factRef) {
         this.itemAcquiredHooks.add(ItemAcquiredHookSpec.grantFact(
                 Identifier.fromNamespaceAndPath(this.namespace, path),
-                itemId,
+                targetItem,
                 factRef
+        ));
+    }
+
+    /**
+     * Declares an explicit {@code item_acquired} research ingress hook that grants a fact with component matching.
+     */
+    public void grantFactOnItemAcquired(String path, ItemStackTemplate targetItem, ResearchFactRef factRef, boolean matchComponents) {
+        this.itemAcquiredHooks.add(ItemAcquiredHookSpec.grantFact(
+                Identifier.fromNamespaceAndPath(this.namespace, path),
+                targetItem,
+                factRef,
+                matchComponents
         ));
     }
 
     /**
      * Declares an explicit {@code item_acquired} research ingress hook that increments a value.
      */
-    public void incrementValueOnItemAcquired(String path, Identifier itemId, ResearchValueRef valueRef, int increment) {
+    public void incrementValueOnItemAcquired(String path, ItemStackTemplate targetItem, ResearchValueRef valueRef, int increment) {
         this.itemAcquiredHooks.add(ItemAcquiredHookSpec.incrementValue(
                 Identifier.fromNamespaceAndPath(this.namespace, path),
-                itemId,
+                targetItem,
                 valueRef,
                 increment
+        ));
+    }
+
+    /**
+     * Declares an explicit {@code item_acquired} research ingress hook that increments a value with component matching.
+     */
+    public void incrementValueOnItemAcquired(String path, ItemStackTemplate targetItem, ResearchValueRef valueRef, int increment, boolean matchComponents) {
+        this.itemAcquiredHooks.add(ItemAcquiredHookSpec.incrementValue(
+                Identifier.fromNamespaceAndPath(this.namespace, path),
+                targetItem,
+                valueRef,
+                increment,
+                matchComponents
         ));
     }
 

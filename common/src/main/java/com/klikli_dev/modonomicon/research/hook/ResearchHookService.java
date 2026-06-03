@@ -16,6 +16,7 @@ import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 import java.util.function.Function;
@@ -24,14 +25,14 @@ public class ResearchHookService {
 
     private final ResearchStateManager stateManager;
     private final Function<Identifier, List<ResearchHookDefinition>> entryViewedOnceLookup;
-    private final Function<Identifier, List<ResearchHookDefinition>> itemCraftedLookup;
-    private final Function<Identifier, List<ResearchHookDefinition>> itemAcquiredLookup;
+    private final Function<ItemStack, List<ResearchHookDefinition>> itemCraftedLookup;
+    private final Function<ItemStack, List<ResearchHookDefinition>> itemAcquiredLookup;
 
     public ResearchHookService(ResearchStateManager stateManager) {
         this(stateManager, ResearchDataManager.get()::entryViewedOnceHooksFor, ResearchDataManager.get()::itemCraftedHooksFor, ResearchDataManager.get()::itemAcquiredHooksFor);
     }
 
-    public ResearchHookService(ResearchStateManager stateManager, Function<Identifier, List<ResearchHookDefinition>> entryViewedOnceLookup, Function<Identifier, List<ResearchHookDefinition>> itemCraftedLookup, Function<Identifier, List<ResearchHookDefinition>> itemAcquiredLookup) {
+    public ResearchHookService(ResearchStateManager stateManager, Function<Identifier, List<ResearchHookDefinition>> entryViewedOnceLookup, Function<ItemStack, List<ResearchHookDefinition>> itemCraftedLookup, Function<ItemStack, List<ResearchHookDefinition>> itemAcquiredLookup) {
         this.stateManager = stateManager;
         this.entryViewedOnceLookup = entryViewedOnceLookup;
         this.itemCraftedLookup = itemCraftedLookup;
@@ -67,10 +68,10 @@ public class ResearchHookService {
         return false;
     }
 
-    public boolean onItemCrafted(ServerPlayer player, Identifier itemId) {
+    public boolean onItemCrafted(ServerPlayer player, ItemStack itemStack) {
         var before = BookDataManager.get().getBooks().values().stream().collect(java.util.stream.Collectors.toMap(Book::getId, book -> BookVisibilitySnapshots.collect(player, book)));
         boolean changed = false;
-        for (var hook : this.itemCraftedLookup.apply(itemId)) {
+        for (var hook : this.itemCraftedLookup.apply(itemStack)) {
             if (hook.factId() != null) {
                 changed |= this.stateManager.grantFact(player, hook.factId());
             } else if (hook.valueId() != null) {
@@ -86,10 +87,10 @@ public class ResearchHookService {
         return changed;
     }
 
-    public boolean onItemAcquired(ServerPlayer player, Identifier itemId) {
+    public boolean onItemAcquired(ServerPlayer player, ItemStack itemStack) {
         var before = BookDataManager.get().getBooks().values().stream().collect(java.util.stream.Collectors.toMap(Book::getId, book -> BookVisibilitySnapshots.collect(player, book)));
         boolean changed = false;
-        for (var hook : this.itemAcquiredLookup.apply(itemId)) {
+        for (var hook : this.itemAcquiredLookup.apply(itemStack)) {
             if (hook.factId() != null) {
                 changed |= this.stateManager.grantFact(player, hook.factId());
             } else if (hook.valueId() != null) {

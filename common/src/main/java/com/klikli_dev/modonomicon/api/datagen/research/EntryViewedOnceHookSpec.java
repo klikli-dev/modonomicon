@@ -51,7 +51,9 @@ public record EntryViewedOnceHookSpec(
                 this.entryId,
                 this.factRef != null ? this.factRef.id() : null,
                 this.valueRef != null ? this.valueRef.id() : null,
-                this.increment
+                this.increment,
+                null,
+                false
         );
     }
 }

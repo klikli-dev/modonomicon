@@ -30,12 +30,9 @@ public abstract class MixinResultSlot {
         if (carried.isEmpty()) return;
         var player = this.modonomicon$getPlayer();
         if (player instanceof ServerPlayer serverPlayer) {
-            var itemId = carried.getItem().builtInRegistryHolder().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElse(null);
-            if (itemId != null) {
-                if (ResearchServices.hooks().onItemCrafted(serverPlayer, itemId)) {
-                    ResearchStateManager.get().syncFor(serverPlayer);
-                    BookVisualStateManager.get().syncFor(serverPlayer);
-                }
+            if (ResearchServices.hooks().onItemCrafted(serverPlayer, carried)) {
+                ResearchStateManager.get().syncFor(serverPlayer);
+                BookVisualStateManager.get().syncFor(serverPlayer);
             }
         }
     }

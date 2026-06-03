@@ -149,9 +149,9 @@ public class ModonomiconNeo {
             if(!(e.getEntity() instanceof ServerPlayer player))
                 return;
 
-            var itemId = e.getCrafting().getItem().builtInRegistryHolder().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElse(null);
-            if (itemId != null) {
-                if (ResearchServices.hooks().onItemCrafted(player, itemId)) {
+            var crafting = e.getCrafting();
+            if (!crafting.isEmpty()) {
+                if (ResearchServices.hooks().onItemCrafted(player, crafting)) {
                     ResearchStateManager.get().syncFor(player);
                     BookVisualStateManager.get().syncFor(player);
                 }
@@ -163,9 +163,9 @@ public class ModonomiconNeo {
             if(!(e.getPlayer() instanceof ServerPlayer player))
                 return;
 
-            var itemId = e.getOriginalStack().getItem().builtInRegistryHolder().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElse(null);
-            if (itemId != null) {
-                if (ResearchServices.hooks().onItemAcquired(player, itemId)) {
+            var originalStack = e.getOriginalStack();
+            if (!originalStack.isEmpty()) {
+                if (ResearchServices.hooks().onItemAcquired(player, originalStack)) {
                     ResearchStateManager.get().syncFor(player);
                     BookVisualStateManager.get().syncFor(player);
                 }

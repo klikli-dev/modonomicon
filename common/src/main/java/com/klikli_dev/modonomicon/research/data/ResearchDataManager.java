@@ -15,6 +15,8 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,12 +48,38 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
         return this.data.entryViewedOnceHooks().getOrDefault(entryId, List.of());
     }
 
-    public List<ResearchHookDefinition> itemCraftedHooksFor(Identifier itemId) {
-        return this.data.itemCraftedHooks().getOrDefault(itemId, List.of());
+    public List<ResearchHookDefinition> itemCraftedHooksFor(ItemStack itemStack) {
+        var itemId = itemStack.getItem().builtInRegistryHolder().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElse(null);
+        if (itemId == null) {
+            return List.of();
+        }
+        return this.data.itemCraftedHooks().getOrDefault(itemId, List.of()).stream()
+                .filter(h -> !h.matchComponents() || h.targetItem() == null || matchesComponents(itemStack, h.targetItem()))
+                .toList();
     }
 
-    public List<ResearchHookDefinition> itemAcquiredHooksFor(Identifier itemId) {
-        return this.data.itemAcquiredHooks().getOrDefault(itemId, List.of());
+    public List<ResearchHookDefinition> itemAcquiredHooksFor(ItemStack itemStack) {
+        var itemId = itemStack.getItem().builtInRegistryHolder().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElse(null);
+        if (itemId == null) {
+            return List.of();
+        }
+        return this.data.itemAcquiredHooks().getOrDefault(itemId, List.of()).stream()
+                .filter(h -> !h.matchComponents() || h.targetItem() == null || matchesComponents(itemStack, h.targetItem()))
+                .toList();
+    }
+
+    private static boolean matchesComponents(ItemStack stack, ItemStackTemplate template) {
+        for (var entry : template.components().entrySet()) {
+            var type = entry.getKey();
+            var templateValue = entry.getValue();
+            if (templateValue.isPresent()) {
+                var stackValue = stack.get(type);
+                if (stackValue == null || !stackValue.equals(templateValue.get())) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override

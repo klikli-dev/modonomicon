@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.api.datagen.research;
 
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStackTemplate;
 
 /**
  * Fluent helper for authoring research ingress.
@@ -42,15 +43,15 @@ public final class ResearchIngressHelper {
     /**
      * Starts authoring ingress from the {@code item_crafted} trigger family.
      */
-    public ItemCraftedIngress onItemCrafted(Identifier itemId) {
-        return new ItemCraftedIngress(this.research, itemId);
+    public ItemCraftedIngress onItemCrafted(ItemStackTemplate targetItem) {
+        return new ItemCraftedIngress(this.research, targetItem);
     }
 
     /**
      * Starts authoring ingress from the {@code item_acquired} trigger family.
      */
-    public ItemAcquiredIngress onItemAcquired(Identifier itemId) {
-        return new ItemAcquiredIngress(this.research, itemId);
+    public ItemAcquiredIngress onItemAcquired(ItemStackTemplate targetItem) {
+        return new ItemAcquiredIngress(this.research, targetItem);
     }
 
     /**
@@ -163,14 +164,14 @@ public final class ResearchIngressHelper {
      */
     public static final class ItemCraftedIngress {
         private final ResearchDataBuilder research;
-        private final Identifier itemId;
+        private final ItemStackTemplate targetItem;
 
         /**
-         * Creates an item-crafted ingress step bound to one specific item id.
+         * Creates an item-crafted ingress step bound to one specific item.
          */
-        public ItemCraftedIngress(ResearchDataBuilder research, Identifier itemId) {
+        public ItemCraftedIngress(ResearchDataBuilder research, ItemStackTemplate targetItem) {
             this.research = research;
-            this.itemId = itemId;
+            this.targetItem = targetItem;
         }
 
         /**
@@ -189,7 +190,7 @@ public final class ResearchIngressHelper {
          * Authors an explicit ingress hook that grants the given already-declared fact.
          */
         public void grantFact(String hookPath, ResearchFactRef factRef) {
-            this.research.grantFactOnItemCrafted(hookPath, this.itemId, factRef);
+            this.research.grantFactOnItemCrafted(hookPath, this.targetItem, factRef);
         }
 
         /**
@@ -208,7 +209,7 @@ public final class ResearchIngressHelper {
          * Authors an explicit ingress hook that increments the given already-declared value.
          */
         public void incrementValue(String hookPath, ResearchValueRef valueRef, int increment) {
-            this.research.incrementValueOnItemCrafted(hookPath, this.itemId, valueRef, increment);
+            this.research.incrementValueOnItemCrafted(hookPath, this.targetItem, valueRef, increment);
         }
     }
 
@@ -217,14 +218,14 @@ public final class ResearchIngressHelper {
      */
     public static final class ItemAcquiredIngress {
         private final ResearchDataBuilder research;
-        private final Identifier itemId;
+        private final ItemStackTemplate targetItem;
 
         /**
-         * Creates an item-acquired ingress step bound to one specific item id.
+         * Creates an item-acquired ingress step bound to one specific item.
          */
-        public ItemAcquiredIngress(ResearchDataBuilder research, Identifier itemId) {
+        public ItemAcquiredIngress(ResearchDataBuilder research, ItemStackTemplate targetItem) {
             this.research = research;
-            this.itemId = itemId;
+            this.targetItem = targetItem;
         }
 
         /**
@@ -243,7 +244,7 @@ public final class ResearchIngressHelper {
          * Authors an explicit ingress hook that grants the given already-declared fact.
          */
         public void grantFact(String hookPath, ResearchFactRef factRef) {
-            this.research.grantFactOnItemAcquired(hookPath, this.itemId, factRef);
+            this.research.grantFactOnItemAcquired(hookPath, this.targetItem, factRef);
         }
 
         /**
@@ -262,7 +263,7 @@ public final class ResearchIngressHelper {
          * Authors an explicit ingress hook that increments the given already-declared value.
          */
         public void incrementValue(String hookPath, ResearchValueRef valueRef, int increment) {
-            this.research.incrementValueOnItemAcquired(hookPath, this.itemId, valueRef, increment);
+            this.research.incrementValueOnItemAcquired(hookPath, this.targetItem, valueRef, increment);
         }
     }
 }
