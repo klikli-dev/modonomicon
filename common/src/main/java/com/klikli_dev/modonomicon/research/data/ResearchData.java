@@ -36,7 +36,10 @@ public record ResearchData(
         Map<Identifier, List<ResearchHookDefinition>> entryViewedOnceHooks,
         Map<Identifier, List<ResearchHookDefinition>> itemCraftedHooks,
         Map<Identifier, List<ResearchHookDefinition>> itemAcquiredHooks,
-        Map<Identifier, List<AdvancementResearchHookDefinition>> advancementHooks
+        Map<Identifier, List<AdvancementResearchHookDefinition>> advancementHooks,
+        Map<Identifier, Set<Identifier>> graphFactIds,
+        Map<Identifier, Set<Identifier>> graphNodeIds,
+        Map<Identifier, Set<Identifier>> graphValueIds
 ) {
 
     public static ResearchData validate(
@@ -44,7 +47,10 @@ public record ResearchData(
             List<ResearchNodeDefinition> nodes,
             List<ResearchValueDefinition> values,
             List<ResearchHookDefinition> hooks,
-            List<AdvancementResearchHookDefinition> advancementHooks
+            List<AdvancementResearchHookDefinition> advancementHooks,
+            Map<Identifier, Set<Identifier>> graphFactIds,
+            Map<Identifier, Set<Identifier>> graphNodeIds,
+            Map<Identifier, Set<Identifier>> graphValueIds
     ) {
         var factIds = uniqueIds(facts.stream().map(ResearchFactDefinition::id).toList(), "fact");
         var nodeIds = uniqueIds(nodes.stream().map(ResearchNodeDefinition::id).toList(), "node");
@@ -125,7 +131,10 @@ public record ResearchData(
                 groupedEntryViewedOnceHooks,
                 groupedItemCraftedHooks,
                 groupedItemAcquiredHooks,
-                groupedAdvancementHooks
+                groupedAdvancementHooks,
+                graphFactIds,
+                graphNodeIds,
+                graphValueIds
         );
     }
 

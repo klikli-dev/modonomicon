@@ -17,6 +17,7 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.profiling.ProfilerFiller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,7 +28,7 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
 
     private static final ResearchDataManager INSTANCE = new ResearchDataManager();
 
-    private ResearchData data = new ResearchData(Set.of(), Set.of(), Set.of(), List.of(), Map.of(), Map.of(), Map.of(), Map.of());
+    private ResearchData data = new ResearchData(Set.of(), Set.of(), Set.of(), List.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of());
 
     private ResearchDataManager() {
         super(ExtraCodecs.JSON, FileToIdConverter.json(FOLDER));
@@ -61,15 +62,33 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
         var hooks = new ArrayList<ResearchHookDefinition>();
         var advancementHooks = new ArrayList<AdvancementResearchHookDefinition>();
 
+        var graphFacts = new HashMap<Identifier, List<Identifier>>();
+        var graphNodes = new HashMap<Identifier, List<Identifier>>();
+        var graphValues = new HashMap<Identifier, List<Identifier>>();
+
         for (var entry : elements.entrySet()) {
             var path = entry.getKey().getPath();
             var fileName = path.substring(path.lastIndexOf('/') + 1);
+
+            // Extract graph ID from folder path: strip "generated/" prefix if present
+            var folderPath = path.substring(0, path.lastIndexOf('/'));
+            if (folderPath.startsWith("generated/")) {
+                folderPath = folderPath.substring("generated/".length());
+            }
+            var graphId = Identifier.fromNamespaceAndPath(entry.getKey().getNamespace(), folderPath);
+
             if (fileName.equals("facts")) {
-                facts.addAll(ResearchFactDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow());
+                var parsed = ResearchFactDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow();
+                facts.addAll(parsed);
+                graphFacts.computeIfAbsent(graphId, k -> new ArrayList<>()).addAll(parsed.stream().map(ResearchFactDefinition::id).toList());
             } else if (fileName.equals("nodes")) {
-                nodes.addAll(ResearchNodeDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow());
+                var parsed = ResearchNodeDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow();
+                nodes.addAll(parsed);
+                graphNodes.computeIfAbsent(graphId, k -> new ArrayList<>()).addAll(parsed.stream().map(ResearchNodeDefinition::id).toList());
             } else if (fileName.equals("values")) {
-                values.addAll(ResearchValueDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow());
+                var parsed = ResearchValueDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow();
+                values.addAll(parsed);
+                graphValues.computeIfAbsent(graphId, k -> new ArrayList<>()).addAll(parsed.stream().map(ResearchValueDefinition::id).toList());
             } else if (fileName.equals("advancement_hooks")) {
                 advancementHooks.addAll(AdvancementResearchHookDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow());
             } else if (fileName.equals("hooks")) {
@@ -77,6 +96,14 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
             }
         }
 
-        this.data = ResearchData.validate(facts, nodes, values, hooks, advancementHooks);
+        // Build immutable graph index maps
+        var graphFactIds = new HashMap<Identifier, Set<Identifier>>();
+        graphFacts.forEach((k, v) -> graphFactIds.put(k, Set.copyOf(v)));
+        var graphNodeIds = new HashMap<Identifier, Set<Identifier>>();
+        graphNodes.forEach((k, v) -> graphNodeIds.put(k, Set.copyOf(v)));
+        var graphValueIds = new HashMap<Identifier, Set<Identifier>>();
+        graphValues.forEach((k, v) -> graphValueIds.put(k, Set.copyOf(v)));
+
+        this.data = ResearchData.validate(facts, nodes, values, hooks, advancementHooks, graphFactIds, graphNodeIds, graphValueIds);
     }
 }

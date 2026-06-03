@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.registry;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.command.ReloadBooksCommand;
-import com.klikli_dev.modonomicon.command.ResetResearchCommand;
+import com.klikli_dev.modonomicon.command.ResearchCommand;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.commands.CommandSourceStack;
@@ -19,8 +19,7 @@ public class CommandRegistry {
     public static void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralCommandNode<CommandSourceStack> modonomiconCommand = dispatcher.register(
                 Commands.literal(Modonomicon.MOD_ID)
-                        .then(Commands.literal("research")
-                                .then(ResetResearchCommand.register(dispatcher)))
+                        .then(ResearchCommand.register(dispatcher))
                         .then(ReloadBooksCommand.register(dispatcher))
         );
 

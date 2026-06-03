@@ -51,6 +51,10 @@ public class PlayerResearchState {
         return this.factIds.add(factId);
     }
 
+    public boolean revokeFact(Identifier factId) {
+        return this.factIds.remove(factId);
+    }
+
     public boolean hasFact(Identifier factId) {
         return this.factIds.contains(factId);
     }
@@ -59,8 +63,17 @@ public class PlayerResearchState {
         return this.unlockedNodeIds.add(nodeId);
     }
 
+    public boolean lockNode(Identifier nodeId) {
+        return this.unlockedNodeIds.remove(nodeId);
+    }
+
     public boolean isNodeUnlocked(Identifier nodeId) {
         return this.unlockedNodeIds.contains(nodeId);
+    }
+
+    public int setValue(Identifier valueId, int amount) {
+        this.internalValues.put(valueId, amount);
+        return amount;
     }
 
     public int incrementValue(Identifier valueId, int amount) {

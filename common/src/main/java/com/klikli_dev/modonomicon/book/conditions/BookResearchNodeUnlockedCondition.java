@@ -43,6 +43,10 @@ public class BookResearchNodeUnlockedCondition extends BookCondition {
 
     protected Identifier nodeId;
 
+    public Identifier nodeId() {
+        return this.nodeId;
+    }
+
     public BookResearchNodeUnlockedCondition(Component tooltip, Identifier nodeId) {
         super(tooltip);
         this.nodeId = nodeId;

@@ -40,11 +40,34 @@ public class ResearchStateManager {
         return changed;
     }
 
+    public boolean revokeFact(ServerPlayer player, Identifier factId) {
+        boolean changed = this.getStateFor(player).revokeFact(factId);
+        if (changed) {
+            this.saveData.setDirty();
+        }
+        return changed;
+    }
+
     public boolean incrementValue(ServerPlayer player, Identifier valueId, int amount) {
         var state = this.getStateFor(player);
         state.incrementValue(valueId, amount);
         this.saveData.setDirty();
         return true;
+    }
+
+    public int setValue(ServerPlayer player, Identifier valueId, int amount) {
+        var state = this.getStateFor(player);
+        int newValue = state.setValue(valueId, amount);
+        this.saveData.setDirty();
+        return newValue;
+    }
+
+    public boolean lockNode(ServerPlayer player, Identifier nodeId) {
+        boolean changed = this.getStateFor(player).lockNode(nodeId);
+        if (changed) {
+            this.saveData.setDirty();
+        }
+        return changed;
     }
 
     public boolean reevaluate(ServerPlayer player) {
