@@ -28,64 +28,55 @@ import net.minecraft.world.entity.player.Player;
 import java.util.List;
 import java.util.Optional;
 
-public class BookResearchNodeUnlockedCondition extends BookCondition {
+public class BookResearchStageCompletedCondition extends BookCondition {
 
-    public static final Identifier ID = Modonomicon.loc("research_node_unlocked");
-    public static final MapCodec<BookResearchNodeUnlockedCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+    public static final Identifier ID = Modonomicon.loc("research_stage_completed");
+    public static final MapCodec<BookResearchStageCompletedCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ComponentSerialization.CODEC.optionalFieldOf("tooltip").forGetter(condition -> Optional.ofNullable(condition.tooltip())),
-            Codecs.STRICT_IDENTIFIER.fieldOf("node_id").forGetter(condition -> condition.nodeId)
-    ).apply(instance, (tooltip, nodeId) -> new BookResearchNodeUnlockedCondition(tooltip.orElse(null), nodeId)));
-    public static final StreamCodec<RegistryFriendlyByteBuf, BookResearchNodeUnlockedCondition> STREAM_CODEC = StreamCodec.composite(
+            Codecs.STRICT_IDENTIFIER.fieldOf("node_id").forGetter(condition -> condition.nodeId),
+            Codecs.STRICT_IDENTIFIER.fieldOf("stage_id").forGetter(condition -> condition.stageId)
+    ).apply(instance, (tooltip, nodeId, stageId) -> new BookResearchStageCompletedCondition(tooltip.orElse(null), nodeId, stageId)));
+    public static final StreamCodec<RegistryFriendlyByteBuf, BookResearchStageCompletedCondition> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.optional(ComponentSerialization.TRUSTED_STREAM_CODEC), condition -> Optional.ofNullable(condition.tooltip()),
             Identifier.STREAM_CODEC, condition -> condition.nodeId,
-            (tooltip, nodeId) -> new BookResearchNodeUnlockedCondition(tooltip.orElse(null), nodeId)
+            Identifier.STREAM_CODEC, condition -> condition.stageId,
+            (tooltip, nodeId, stageId) -> new BookResearchStageCompletedCondition(tooltip.orElse(null), nodeId, stageId)
     );
 
     protected Identifier nodeId;
+    protected Identifier stageId;
 
     public Identifier nodeId() {
         return this.nodeId;
     }
 
-    public BookResearchNodeUnlockedCondition(Component tooltip, Identifier nodeId) {
+    public Identifier stageId() {
+        return this.stageId;
+    }
+
+    public BookResearchStageCompletedCondition(Component tooltip, Identifier nodeId, Identifier stageId) {
         super(tooltip);
         this.nodeId = nodeId;
+        this.stageId = stageId;
     }
 
     @Override
     public BookConditionType<?> type() {
-        return BookConditionTypeRegistry.RESEARCH_NODE_UNLOCKED;
+        return BookConditionTypeRegistry.RESEARCH_STAGE_COMPLETED;
     }
 
     @Override
     public boolean test(BookConditionContext context, Player player) {
-        if (!ResearchDataManager.get().data().nodeIds().contains(this.nodeId)) {
-            throw new IllegalArgumentException("Unknown research node '" + this.nodeId + "' referenced by book condition '" + ID + "'.");
+        if (!ResearchDataManager.get().data().stageIds().contains(this.stageId)) {
+            throw new IllegalArgumentException("Unknown stage '" + this.stageId + "' referenced by book condition '" + ID + "'.");
         }
-        var state = ResearchServices.state().getStateFor(player);
-        if (!state.isNodeUnlocked(this.nodeId)) {
-            return false;
-        }
-        // For multi-stage nodes, all stages must be complete
-        var data = ResearchDataManager.get().data();
-        int totalStages = 0;
-        for (var rule : data.nodeStageRules()) {
-            if (rule.nodeId().equals(this.nodeId)) {
-                totalStages++;
-            }
-        }
-        if (totalStages > 0) {
-            // Multi-stage: stageIndex > totalStages means all stages complete
-            return state.getNodeStageIndex(this.nodeId) > totalStages;
-        }
-        // Single-stage: unlocked = complete
-        return true;
+        return ResearchServices.state().isStageCompleted(player, this.nodeId, this.stageId);
     }
 
     @Override
     public List<Component> getTooltip(Player player, BookConditionContext context) {
         if (this.tooltip == null && context instanceof BookConditionEntryContext entryContext) {
-            this.tooltip = Component.translatable(Tooltips.CONDITION_RESEARCH_NODE_UNLOCKED, Component.literal(this.nodeId.toString()));
+            this.tooltip = Component.translatable(Tooltips.CONDITION_RESEARCH_STAGE_COMPLETED, Component.literal(this.nodeId.toString()), Component.literal(this.stageId.toString()));
         }
         return super.getTooltip(player, context);
     }

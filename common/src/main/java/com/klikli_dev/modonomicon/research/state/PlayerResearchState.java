@@ -24,7 +24,8 @@ public class PlayerResearchState {
     public static final Codec<PlayerResearchState> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codecs.set(Identifier.CODEC).optionalFieldOf("facts", Set.of()).forGetter(PlayerResearchState::factIds),
             Codecs.set(Identifier.CODEC).optionalFieldOf("unlocked_nodes", Set.of()).forGetter(PlayerResearchState::unlockedNodeIds),
-            Codecs.identifierIntMap().optionalFieldOf("values", Map.of()).forGetter(PlayerResearchState::valuesMap)
+            Codecs.identifierIntMap().optionalFieldOf("values", Map.of()).forGetter(PlayerResearchState::valuesMap),
+            Codecs.identifierIntMap().optionalFieldOf("node_stages", Map.of()).forGetter(PlayerResearchState::nodeStagesMap)
     ).apply(instance, PlayerResearchState::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PlayerResearchState> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC);
@@ -32,19 +33,25 @@ public class PlayerResearchState {
     private final Set<Identifier> factIds;
     private final Set<Identifier> unlockedNodeIds;
     private final Object2IntOpenHashMap<Identifier> internalValues;
+    private final Object2IntOpenHashMap<Identifier> nodeStageIndexes;
 
     public PlayerResearchState() {
-        this(Set.of(), Set.of(), Map.of());
+        this(Set.of(), Set.of(), Map.of(), Map.of());
     }
 
     public PlayerResearchState(Set<Identifier> factIds, Set<Identifier> unlockedNodeIds) {
-        this(factIds, unlockedNodeIds, Map.of());
+        this(factIds, unlockedNodeIds, Map.of(), Map.of());
     }
 
     public PlayerResearchState(Set<Identifier> factIds, Set<Identifier> unlockedNodeIds, Map<Identifier, Integer> values) {
+        this(factIds, unlockedNodeIds, values, Map.of());
+    }
+
+    public PlayerResearchState(Set<Identifier> factIds, Set<Identifier> unlockedNodeIds, Map<Identifier, Integer> values, Map<Identifier, Integer> nodeStages) {
         this.factIds = new ObjectOpenHashSet<>(factIds);
         this.unlockedNodeIds = new ObjectOpenHashSet<>(unlockedNodeIds);
         this.internalValues = new Object2IntOpenHashMap<>(values);
+        this.nodeStageIndexes = new Object2IntOpenHashMap<>(nodeStages);
     }
 
     public boolean grantFact(Identifier factId) {
@@ -86,10 +93,38 @@ public class PlayerResearchState {
         return this.internalValues.getInt(valueId);
     }
 
+    /**
+     * Returns the current stage index for a node.
+     * 0 = node not started, N = stage N-1 completed (currently on stage N).
+     * A value greater than the node's stage count means the node is fully complete.
+     */
+    public int getNodeStageIndex(Identifier nodeId) {
+        return this.nodeStageIndexes.getInt(nodeId);
+    }
+
+    /**
+     * Sets the stage index for a node.
+     */
+    public void setNodeStageIndex(Identifier nodeId, int stageIndex) {
+        this.nodeStageIndexes.put(nodeId, stageIndex);
+    }
+
+    /**
+     * Returns true if the node has completed the given stage index (0-based).
+     * Stage index 0 completed means nodeStageIndex > 0.
+     */
+    public boolean isStageCompleted(Identifier nodeId, int stageIndex) {
+        return this.nodeStageIndexes.getInt(nodeId) > stageIndex;
+    }
+
+    /**
+     * Resets all research state including stage indexes.
+     */
     public void reset() {
         this.factIds.clear();
         this.unlockedNodeIds.clear();
         this.internalValues.clear();
+        this.nodeStageIndexes.clear();
     }
 
     public Set<Identifier> factIds() {
@@ -103,6 +138,12 @@ public class PlayerResearchState {
     public Map<Identifier, Integer> valuesMap() {
         var copy = new java.util.HashMap<Identifier, Integer>();
         this.internalValues.forEach((k, v) -> copy.put(k, v));
+        return Map.copyOf(copy);
+    }
+
+    public Map<Identifier, Integer> nodeStagesMap() {
+        var copy = new java.util.HashMap<Identifier, Integer>();
+        this.nodeStageIndexes.forEach((k, v) -> copy.put(k, v));
         return Map.copyOf(copy);
     }
 }

@@ -202,6 +202,7 @@
   "modonomicon.command.success.reset_research": "Successfully reset all research.",
   "modonomicon.command.success.revoke_fact": "Revoked fact: %s",
   "modonomicon.command.success.save_progress": "Saved progress for book: %s. The unlock code has been copied to your clipboard.",
+  "modonomicon.command.stage.set": "Set stage of node %2$s for player %1$s to %3$d",
   "modonomicon.command.success.set_value": "Set value %s to %d",
   "modonomicon.command.success.unlock_node": "Unlocked node: %s",
   "modonomicon.command.test_command.success": "You got an apple, because reading is cool!",
@@ -267,6 +268,7 @@
   "modonomicon.subtitle.turn_page": "Turn Page",
   "test.test.test": "Book of Binding: Afrit (Bound)",
   "tooltip.modonomicon.condition.has_visible_entries": "Requires that category %s has visible entries",
+  "tooltip.modonomicon.condition.research_stage_completed": "Requires stage %2$s of research node %1$s to be completed",
   "tooltip.modonomicon.condition.mod_loaded": "Requires loaded mod: %s",
   "tooltip.modonomicon.fluid.amount": "%s mb",
   "tooltip.modonomicon.fluid.amount_and_capacity": "%s / %s mb",
@@ -275,5 +277,6 @@
   "gui.modonomicon.research.fact": "Research Fact",
   "gui.modonomicon.research.value": "Research Progress",
   "gui.modonomicon.research.node": "Research Unlocked",
+  "gui.modonomicon.research.stage": "Research Stage",
   "modonomicon.configuration.showResearchToasts": "Show Research Toasts"
 }

@@ -59,6 +59,7 @@ public class ResearchToastMessage implements Message {
                 case FACT_GRANTED -> toastDef = data.factToasts().get(trigger.elementId());
                 case VALUE_INCREMENTED -> toastDef = data.valueToasts().get(trigger.elementId());
                 case NODE_UNLOCKED -> toastDef = data.nodeToasts().get(trigger.elementId());
+                case NODE_STAGE_COMPLETED -> toastDef = data.stageToasts().get(trigger.elementId());
             }
 
             if (toastDef == null) {
@@ -95,6 +96,9 @@ public class ResearchToastMessage implements Message {
             }
             case NODE_UNLOCKED -> {
                 return Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "research.node");
+            }
+            case NODE_STAGE_COMPLETED -> {
+                return Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "research.stage");
             }
             default -> {
                 return Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "research");

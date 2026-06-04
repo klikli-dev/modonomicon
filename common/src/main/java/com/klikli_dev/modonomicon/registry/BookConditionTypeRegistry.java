@@ -15,6 +15,7 @@ import com.klikli_dev.modonomicon.book.conditions.BookModLoadedCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookOrCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookResearchNodeUnlockedCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookResearchStageCompletedCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookTrueCondition;
 import com.klikli_dev.modonomicon.data.BookConditionType;
 import com.klikli_dev.modonomicon.data.DispatchCodecRegistry;
@@ -43,6 +44,8 @@ public final class BookConditionTypeRegistry {
     public static final BookConditionType<BookCategoryHasVisibleEntriesCondition> CATEGORY_HAS_VISIBLE_ENTRIES = register(BookCategoryHasVisibleEntriesCondition.ID, BookCategoryHasVisibleEntriesCondition.CODEC, BookCategoryHasVisibleEntriesCondition.STREAM_CODEC);
 
     public static final BookConditionType<BookResearchNodeUnlockedCondition> RESEARCH_NODE_UNLOCKED = register(BookResearchNodeUnlockedCondition.ID, BookResearchNodeUnlockedCondition.CODEC, BookResearchNodeUnlockedCondition.STREAM_CODEC);
+
+    public static final BookConditionType<BookResearchStageCompletedCondition> RESEARCH_STAGE_COMPLETED = register(BookResearchStageCompletedCondition.ID, BookResearchStageCompletedCondition.CODEC, BookResearchStageCompletedCondition.STREAM_CODEC);
 
     private BookConditionTypeRegistry() {
     }

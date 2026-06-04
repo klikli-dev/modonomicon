@@ -129,6 +129,7 @@ public class ModonomiconConstants {
             public static final String CONDITION_PREFIX = PREFIX + "condition.";
             public static final String CONDITION_MOD_LOADED = CONDITION_PREFIX + "mod_loaded";
             public static final String CONDITION_RESEARCH_NODE_UNLOCKED = CONDITION_PREFIX + "research_node_unlocked";
+            public static final String CONDITION_RESEARCH_STAGE_COMPLETED = CONDITION_PREFIX + "research_stage_completed";
             public static final String CONDITION_CATEGORY_HAS_VISIBLE_ENTRIES = CONDITION_PREFIX + "has_visible_entries";
             public static final String RECIPE_PREFIX = PREFIX + "recipe.";
             public static final String RECIPE_CRAFTING_SHAPELESS = RECIPE_PREFIX + "crafting_shapeless";
@@ -146,6 +147,7 @@ public class ModonomiconConstants {
             public static final String ERROR_UNKNOWN_FACT = ERROR_PREFIX + "unknown_fact";
             public static final String ERROR_UNKNOWN_NODE = ERROR_PREFIX + "unknown_node";
             public static final String ERROR_UNKNOWN_VALUE = ERROR_PREFIX + "unknown_value";
+            public static final String ERROR_UNKNOWN_STAGE = ERROR_PREFIX + "unknown_stage";
             public static final String ERROR_LOAD_PROGRESS = ERROR_PREFIX + "load_progress";
             public static final String ERROR_LOAD_PROGRESS_CLIENT = ERROR_PREFIX + "load_progress_client";
             public static final String SUCCESS_PREFIX = PREFIX + "success.";

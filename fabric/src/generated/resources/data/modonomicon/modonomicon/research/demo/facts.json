@@ -13,5 +13,11 @@
   },
   {
     "id": "modonomicon:demo/cobblestone_acquired"
+  },
+  {
+    "id": "modonomicon:demo/stages_stage_1_viewed"
+  },
+  {
+    "id": "modonomicon:demo/stages_stage_2_viewed"
   }
 ]

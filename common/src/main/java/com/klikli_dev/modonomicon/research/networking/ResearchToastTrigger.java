@@ -26,7 +26,8 @@ public record ResearchToastTrigger(
     public enum ToastTriggerType {
         FACT_GRANTED,
         VALUE_INCREMENTED,
-        NODE_UNLOCKED
+        NODE_UNLOCKED,
+        NODE_STAGE_COMPLETED
     }
 
     private static final StreamCodec<RegistryFriendlyByteBuf, ToastTriggerType> TYPE_STREAM_CODEC = new StreamCodec<RegistryFriendlyByteBuf, ToastTriggerType>() {

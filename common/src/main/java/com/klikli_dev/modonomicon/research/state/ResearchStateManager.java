@@ -10,7 +10,7 @@ import com.klikli_dev.modonomicon.networking.RequestSyncResearchStateMessage;
 import com.klikli_dev.modonomicon.networking.SyncResearchStateMessage;
 import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
-import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
+import com.klikli_dev.modonomicon.research.data.ResearchData;
 import com.klikli_dev.modonomicon.research.networking.ResearchToastTrigger;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import net.minecraft.resources.Identifier;
@@ -83,10 +83,35 @@ public class ResearchStateManager {
         return changed;
     }
 
+    /**
+     * Sets the stage index for a node. Used by admin commands.
+     */
+    public void setNodeStage(ServerPlayer player, Identifier nodeId, int stageIndex) {
+        var state = this.getStateFor(player);
+        state.setNodeStageIndex(nodeId, stageIndex);
+        this.saveData.setDirty();
+    }
+
+    /**
+     * Returns true if the player has completed the given stage of a node.
+     * Resolves the stage id to its location via stageLocations.
+     */
+    public boolean isStageCompleted(Player player, Identifier nodeId, Identifier stageId) {
+        var state = this.getStateFor(player);
+        var location = ResearchDataManager.get().data().stageLocations().get(stageId);
+        if (location == null || !location.nodeId().equals(nodeId)) {
+            return false;
+        }
+        return state.isStageCompleted(nodeId, location.stageIndex());
+    }
+
     public boolean reevaluate(ServerPlayer player) {
         var state = this.getStateFor(player);
+        var data = ResearchDataManager.get().data();
         boolean changed = false;
-        for (var rule : ResearchDataManager.get().data().nodeRules()) {
+
+        for (var rule : data.nodeRules()) {
+            // Check base fact requirements
             boolean factsMet = true;
             for (var factId : rule.requiredFactIds()) {
                 if (!state.hasFact(factId)) {
@@ -98,6 +123,7 @@ public class ResearchStateManager {
                 continue;
             }
 
+            // Check base value requirements
             boolean valuesMet = true;
             for (var valueReq : rule.requiredValueRequirements()) {
                 if (state.getValue(valueReq.valueId()) < valueReq.threshold()) {
@@ -109,19 +135,110 @@ public class ResearchStateManager {
                 continue;
             }
 
+            // Check stage dependencies on other nodes
+            boolean stageDepsMet = true;
+            for (var stageDep : rule.requiredStageDependencies()) {
+                var location = data.stageLocations().get(stageDep.stageId());
+                if (location == null || !location.nodeId().equals(stageDep.nodeId())) {
+                    stageDepsMet = false;
+                    break;
+                }
+                if (!state.isStageCompleted(location.nodeId(), location.stageIndex())) {
+                    stageDepsMet = false;
+                    break;
+                }
+            }
+            if (!stageDepsMet) {
+                continue;
+            }
+
+            // Base requirements met - activate the node
             boolean nodeChanged = state.unlockNode(rule.nodeId());
             if (nodeChanged) {
                 var collector = TOAST_TRIGGER_COLLECTOR.get();
-                if (collector != null && ResearchDataManager.get().data().nodeToasts().containsKey(rule.nodeId())) {
+                if (collector != null && data.nodeToasts().containsKey(rule.nodeId())) {
                     collector.add(new ResearchToastTrigger(ResearchToastTrigger.ToastTriggerType.NODE_UNLOCKED, rule.nodeId(), 0));
                 }
             }
             changed |= nodeChanged;
+
+            // Set initial stage index if not started
+            if (state.getNodeStageIndex(rule.nodeId()) == 0) {
+                state.setNodeStageIndex(rule.nodeId(), 1);
+                changed = true;
+            }
+
+            // Advance through stages
+            changed |= advanceStages(state, rule.nodeId(), data.nodeStageRules(), data.stageLocations(), data.stageToasts());
         }
+
         if (changed) {
             this.saveData.setDirty();
         }
         return changed;
+    }
+
+    private boolean advanceStages(PlayerResearchState state, Identifier nodeId, List<ResearchData.NodeStageRule> stageRules, java.util.Map<Identifier, ResearchData.StageLocation> stageLocations, java.util.Map<Identifier, com.klikli_dev.modonomicon.research.data.ResearchToastDefinition> stageToasts) {
+        boolean advanced;
+        do {
+            advanced = false;
+            int currentStage = state.getNodeStageIndex(nodeId);
+            int nextStageIndex = currentStage - 1;
+            ResearchData.NodeStageRule nextRule = null;
+            for (var rule : stageRules) {
+                if (rule.nodeId().equals(nodeId) && rule.stageIndex() == nextStageIndex) {
+                    nextRule = rule;
+                    break;
+                }
+            }
+            if (nextRule == null) {
+                break;
+            }
+
+            // Check stage fact requirements
+            boolean factsMet = true;
+            for (var factId : nextRule.requiredFactIds()) {
+                if (!state.hasFact(factId)) {
+                    factsMet = false;
+                    break;
+                }
+            }
+            if (!factsMet) {
+                break;
+            }
+
+            // Check stage value requirements
+            boolean valuesMet = true;
+            for (var valueReq : nextRule.requiredValueRequirements()) {
+                if (state.getValue(valueReq.valueId()) < valueReq.threshold()) {
+                    valuesMet = false;
+                    break;
+                }
+            }
+            if (!valuesMet) {
+                break;
+            }
+
+            // Advance to next stage
+            state.setNodeStageIndex(nodeId, currentStage + 1);
+            advanced = true;
+
+            // Emit stage completion toast trigger
+            var collector = TOAST_TRIGGER_COLLECTOR.get();
+            if (collector != null) {
+                // Find the stage id for the stage we just completed
+                for (var entry : stageLocations.entrySet()) {
+                    if (entry.getValue().nodeId().equals(nodeId) && entry.getValue().stageIndex() == nextStageIndex) {
+                        Identifier stageId = entry.getKey();
+                        if (stageToasts.containsKey(stageId)) {
+                            collector.add(new ResearchToastTrigger(ResearchToastTrigger.ToastTriggerType.NODE_STAGE_COMPLETED, stageId, 0));
+                        }
+                        break;
+                    }
+                }
+            }
+        } while (advanced);
+        return advanced;
     }
 
     public boolean isNodeUnlocked(Player player, Identifier nodeId) {

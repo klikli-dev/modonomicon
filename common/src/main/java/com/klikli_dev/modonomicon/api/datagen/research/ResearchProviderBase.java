@@ -121,6 +121,26 @@ public abstract class ResearchProviderBase {
     }
 
     /**
+     * Creates a typed stage ref for use in node stage declarations.
+     */
+    protected ResearchStageRef stageRef(String path) {
+        return this.research.stageRef(path);
+    }
+
+    /**
+     * Declares a research node with stages and stage dependencies.
+     */
+    protected ResearchNodeRef node(
+            ResearchNodeRef ref,
+            List<ResearchFactRef> requiredFacts,
+            List<ResearchNodeSpec.ValueRequirement> requiredValues,
+            List<ResearchStageSpec> stages,
+            List<ResearchNodeSpec.StageDependencySpec> requiredStages
+    ) {
+        return this.research.node(ref, requiredFacts, requiredValues, stages, requiredStages);
+    }
+
+    /**
      * Returns a fluent helper for authoring research ingress from external events into primitive
      * research fact grants.
      */

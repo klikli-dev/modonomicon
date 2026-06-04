@@ -94,7 +94,29 @@ public final class ResearchDataBuilder {
      * Declares a research node with both fact and value requirements.
      */
     public ResearchNodeRef node(ResearchNodeRef ref, List<ResearchFactRef> requiredFacts, List<ResearchNodeSpec.ValueRequirement> requiredValues) {
-        this.nodes.add(new ResearchNodeSpec(ref, requiredFacts, requiredValues, Optional.empty()));
+        this.nodes.add(new ResearchNodeSpec(ref, requiredFacts, requiredValues, List.of(), List.of(), Optional.empty()));
+        return ref;
+    }
+
+    /**
+     * Creates a typed stage ref for use in node stage declarations.
+     * The stage itself is defined inline in the node spec.
+     */
+    public ResearchStageRef stageRef(String path) {
+        return ResearchStageRef.of(Identifier.fromNamespaceAndPath(this.namespace, path));
+    }
+
+    /**
+     * Declares a research node with stages and stage dependencies.
+     */
+    public ResearchNodeRef node(
+            ResearchNodeRef ref,
+            List<ResearchFactRef> requiredFacts,
+            List<ResearchNodeSpec.ValueRequirement> requiredValues,
+            List<ResearchStageSpec> stages,
+            List<ResearchNodeSpec.StageDependencySpec> requiredStages
+    ) {
+        this.nodes.add(ResearchNodeSpec.of(ref, requiredFacts, requiredValues, stages, requiredStages, Optional.empty()));
         return ref;
     }
 

@@ -24,6 +24,24 @@
     "value_id": "modonomicon:demo/collector_count"
   },
   {
+    "event_target_id": "modonomicon:stages/stage_1_content",
+    "fact_id": "modonomicon:demo/stages_stage_1_viewed",
+    "id": "modonomicon:demo/stages_stage_1_viewed_hook",
+    "trigger_type": "modonomicon:entry_viewed_once"
+  },
+  {
+    "event_target_id": "modonomicon:stages/stage_2_content",
+    "fact_id": "modonomicon:demo/stages_stage_2_viewed",
+    "id": "modonomicon:demo/stages_stage_2_viewed_hook",
+    "trigger_type": "modonomicon:entry_viewed_once"
+  },
+  {
+    "event_target_id": "modonomicon:stages/collector_entry",
+    "id": "modonomicon:demo/stages_collector_hook",
+    "trigger_type": "modonomicon:entry_viewed_once",
+    "value_id": "modonomicon:demo/stages_collector"
+  },
+  {
     "event_target_id": "minecraft:stick",
     "event_target_item": {
       "id": "minecraft:stick"

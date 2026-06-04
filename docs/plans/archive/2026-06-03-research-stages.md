@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Add stages as an optional, ordered sequence of sub-goals within a research node, supporting node-to-node stage dependencies so players progressively unlock more content as they advance.
+**Goal:** Add stages as an optional, ordered sequence of sub-goals within a research node, supporting node-to-node stage dependencies so players progressively unlock more content as they advance. Stages integrate with the existing toast notification system.
 
-**Architecture:** Stages are defined inline in `ResearchNodeDefinition`. Each stage has its own fact/value requirements. Nodes can depend on other nodes reaching specific stages. Automatic advancement on requirement satisfaction. New `BookResearchStageCompletedCondition` gates book entries on stage completion.
+**Architecture:** Stages are defined inline in `ResearchNodeDefinition`. Each stage has its own fact/value requirements and optional toast. Nodes can depend on other nodes reaching specific stages. Automatic advancement on requirement satisfaction. New `BookResearchStageCompletedCondition` gates book entries on stage completion. `NODE_STAGE_COMPLETED` toast trigger notifies players of stage advancement.
 
 **Tech Stack:** Java 21, Minecraft 26.x NeoForge/Fabric, Mojang Codec/StreamCodec, fastutil collections
 
@@ -14,24 +14,28 @@
 
 | File | Responsibility |
 |---|---|
-| `research/data/ResearchStageDefinition.java` | **NEW** — Stage data model (id, requiredFacts, requiredValues) |
-| `research/data/ResearchNodeDefinition.java` | ADD `stages` + `requiredStages` fields, codec, StageDependency record |
-| `research/data/ResearchData.java` | ADD `nodeStageRules`, modify `NodeRule` with `requiredStageDependencies`, validation, `stageLocations` |
+| `research/data/ResearchStageDefinition.java` | **NEW** — Stage data model (id, requiredFacts, requiredValues, toast) |
+| `research/data/ResearchNodeDefinition.java` | ADD `stages` + `requiredStages` fields, keep existing `toast` field, codec, StageDependency record |
+| `research/data/ResearchData.java` | ADD `nodeStageRules`, `stageToasts`, `stageLocations`, modify `NodeRule` with `requiredStageDependencies`, validation |
 | `research/state/PlayerResearchState.java` | ADD `nodeStageIndexes` map + accessor/mutator methods |
-| `research/state/ResearchStateManager.java` | ADD stage advancement in `reevaluate()`, `isStageCompleted()`, `setNodeStage()` |
+| `research/state/ResearchStateManager.java` | ADD stage advancement in `reevaluate()`, `isStageCompleted()`, `setNodeStage()`, stage toast emission |
 | `research/data/ResearchDataManager.java` | Update default instance for new ResearchData fields |
+| `research/networking/ResearchToastTrigger.java` | ADD `NODE_STAGE_COMPLETED` enum value |
+| `networking/ResearchToastMessage.java` | ADD `NODE_STAGE_COMPLETED` case in switch + default description key |
 | `book/conditions/BookResearchStageCompletedCondition.java` | **NEW** — Condition gating entries on stage completion |
 | `book/conditions/BookResearchNodeUnlockedCondition.java` | MODIFY to check all stages complete for multi-stage nodes |
 | `registry/BookConditionTypeRegistry.java` | ADD registration of stage completed condition |
 | `api/datagen/research/ResearchStageRef.java` | **NEW** — Typed authoring ref for stages |
-| `api/datagen/research/ResearchStageSpec.java` | **NEW** — Authoring-time stage declaration |
-| `api/datagen/research/ResearchNodeSpec.java` | ADD `stages` field, `requiredStages` field, `toDefinition()` update |
+| `api/datagen/research/ResearchStageSpec.java` | **NEW** — Authoring-time stage declaration (with toast) |
+| `api/datagen/research/ResearchNodeSpec.java` | ADD `stages` field, `requiredStages` field, keep existing `toast`, `toDefinition()` update |
 | `api/datagen/research/ResearchDataBuilder.java` | ADD `stageRef()`, `node()` overloads for stages |
 | `api/datagen/research/ResearchProviderBase.java` | ADD `stageRef()` and `node()` with stages convenience methods |
 | `api/datagen/book/condition/BookResearchStageCompletedConditionModel.java` | **NEW** — Datagen model for stage condition |
-| `api/ModonomiconConstants.java` | ADD tooltip + command i18n keys |
+| `api/ModonomiconConstants.java` | ADD tooltip, command i18n keys, and toast i18n key |
 | `command/SetStageCommand.java` | **NEW** — Command to set node stage index |
 | `command/ResearchCommand.java` | ADD `set stage` subcommand |
+| `command/LockNodeCommand.java` | ADD stage index reset on lock |
+| `command/ResetBookResearchCommand.java` | ADD stage condition collection + stage index reset |
 | `datagen/research/DemoResearch.java` | ADD stages demo scenario |
 
 ---
@@ -41,7 +45,7 @@
 **Files:**
 - Create: `common/src/main/java/com/klikli_dev/modonomicon/research/data/ResearchStageDefinition.java`
 
-A stage is an ordered sub-goal within a node. Each stage has its own fact/value requirements. When met, the player auto-advances.
+A stage is an ordered sub-goal within a node. Each stage has its own fact/value requirements and optional toast notification.
 
 - [ ] **Step 1: Create ResearchStageDefinition record**
 
@@ -59,6 +63,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.Identifier;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Defines one sequential stage within a multi-stage research node.
@@ -66,16 +71,23 @@ import java.util.List;
  * @param id unique identifier for this stage (used by conditions and stage dependencies)
  * @param requiredFacts fact ids that must be granted to advance past this stage
  * @param requiredValues value requirements that must be met to advance past this stage
+ * @param toast optional toast display data for stage completion
  */
 public record ResearchStageDefinition(
         Identifier id,
         List<Identifier> requiredFacts,
-        List<ResearchNodeDefinition.ValueRequirement> requiredValues
+        List<ResearchNodeDefinition.ValueRequirement> requiredValues,
+        Optional<ResearchToastDefinition> toast
 ) {
+    public Optional<ResearchToastDefinition> toastOrEmpty() {
+        return this.toast;
+    }
+
     public static final Codec<ResearchStageDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Identifier.CODEC.fieldOf("id").forGetter(ResearchStageDefinition::id),
             Identifier.CODEC.listOf().optionalFieldOf("required_facts", List.of()).forGetter(ResearchStageDefinition::requiredFacts),
-            ResearchNodeDefinition.ValueRequirement.CODEC.listOf().optionalFieldOf("required_values", List.of()).forGetter(ResearchStageDefinition::requiredValues)
+            ResearchNodeDefinition.ValueRequirement.CODEC.listOf().optionalFieldOf("required_values", List.of()).forGetter(ResearchStageDefinition::requiredValues),
+            ResearchToastDefinition.CODEC.optionalFieldOf("toast").forGetter(ResearchStageDefinition::toastOrEmpty)
     ).apply(instance, ResearchStageDefinition::new));
 }
 ```
@@ -89,7 +101,7 @@ Expected: PASS (no errors)
 
 ```bash
 git add common/src/main/java/com/klikli_dev/modonomicon/research/data/ResearchStageDefinition.java
-git commit -m "feat(research): add ResearchStageDefinition data model"
+git commit -m "feat(research): add ResearchStageDefinition data model with toast support"
 ```
 
 ---
@@ -99,7 +111,7 @@ git commit -m "feat(research): add ResearchStageDefinition data model"
 **Files:**
 - Modify: `common/src/main/java/com/klikli_dev/modonomicon/research/data/ResearchNodeDefinition.java`
 
-Nodes gain two new fields: `stages` (ordered sub-goals) and `requiredStages` (dependencies on other nodes reaching specific stages). A `StageDependency` references another node's stage.
+Nodes gain two new fields: `stages` (ordered sub-goals) and `requiredStages` (dependencies on other nodes reaching specific stages). The existing `toast` field is preserved for the node's completion toast.
 
 - [ ] **Step 1: Replace ResearchNodeDefinition with stage-aware version**
 
@@ -117,6 +129,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.Identifier;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Defines a research node that unlocks when all required facts are present
@@ -132,13 +145,15 @@ import java.util.List;
  * @param requiredValues value requirements that must be met for this node to activate
  * @param stages ordered stages; empty list means single-stage (node activates = complete)
  * @param requiredStages dependencies on other nodes reaching specific stages
+ * @param toast optional toast display data for full node completion
  */
 public record ResearchNodeDefinition(
         Identifier id,
         List<Identifier> requiredFacts,
         List<ValueRequirement> requiredValues,
         List<ResearchStageDefinition> stages,
-        List<StageDependency> requiredStages
+        List<StageDependency> requiredStages,
+        Optional<ResearchToastDefinition> toast
 ) {
 
     /**
@@ -161,12 +176,17 @@ public record ResearchNodeDefinition(
         ).apply(instance, ValueRequirement::new));
     }
 
+    public Optional<ResearchToastDefinition> toastOrEmpty() {
+        return this.toast;
+    }
+
     public static final Codec<ResearchNodeDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Identifier.CODEC.fieldOf("id").forGetter(ResearchNodeDefinition::id),
             Identifier.CODEC.listOf().optionalFieldOf("required_facts", List.of()).forGetter(ResearchNodeDefinition::requiredFacts),
             ValueRequirement.CODEC.listOf().optionalFieldOf("required_values", List.of()).forGetter(ResearchNodeDefinition::requiredValues),
             ResearchStageDefinition.CODEC.listOf().optionalFieldOf("stages", List.of()).forGetter(ResearchNodeDefinition::stages),
-            StageDependency.CODEC.listOf().optionalFieldOf("required_stages", List.of()).forGetter(ResearchNodeDefinition::requiredStages)
+            StageDependency.CODEC.listOf().optionalFieldOf("required_stages", List.of()).forGetter(ResearchNodeDefinition::requiredStages),
+            ResearchToastDefinition.CODEC.optionalFieldOf("toast").forGetter(ResearchNodeDefinition::toastOrEmpty)
     ).apply(instance, ResearchNodeDefinition::new));
 }
 ```
@@ -185,12 +205,12 @@ git commit -m "feat(research): add stages and stage dependencies to ResearchNode
 
 ---
 
-## Task 3: ResearchData — Stage Rules, Stage Locations, and Validation
+## Task 3: ResearchData — Stage Rules, Stage Locations, Stage Toasts, and Validation
 
 **Files:**
 - Modify: `common/src/main/java/com/klikli_dev/modonomicon/research/data/ResearchData.java`
 
-Add `NodeStageRule` for stage advancement rules, `StageDependency` reference in `NodeRule`, `StageLocation` for fast stage ID lookup, and validation for stage IDs and cross-references.
+Add `NodeStageRule` for stage advancement rules, `StageDependency` reference in `NodeRule`, `StageLocation` for fast stage ID lookup, `stageToasts` map for toast lookups, and validation for stage IDs and cross-references.
 
 - [ ] **Step 1: Replace ResearchData with stage-aware version**
 
@@ -230,6 +250,10 @@ import java.util.stream.Collectors;
  * @param graphFactIds facts grouped by graph id
  * @param graphNodeIds nodes grouped by graph id
  * @param graphValueIds values grouped by graph id
+ * @param factToasts toast definitions indexed by fact id
+ * @param valueToasts toast definitions indexed by value id
+ * @param nodeToasts toast definitions indexed by node id
+ * @param stageToasts toast definitions indexed by stage id
  * @param stageLocations maps stage id to its owning node and index for fast lookup
  */
 public record ResearchData(
@@ -246,6 +270,10 @@ public record ResearchData(
         Map<Identifier, Set<Identifier>> graphFactIds,
         Map<Identifier, Set<Identifier>> graphNodeIds,
         Map<Identifier, Set<Identifier>> graphValueIds,
+        Map<Identifier, ResearchToastDefinition> factToasts,
+        Map<Identifier, ResearchToastDefinition> valueToasts,
+        Map<Identifier, ResearchToastDefinition> nodeToasts,
+        Map<Identifier, ResearchToastDefinition> stageToasts,
         Map<Identifier, StageLocation> stageLocations
 ) {
 
@@ -314,6 +342,7 @@ public record ResearchData(
         var nodeRules = new ArrayList<NodeRule>();
         var nodeStageRules = new ArrayList<NodeStageRule>();
         var stageLocations = new HashMap<Identifier, ResearchData.StageLocation>();
+        var stageToasts = new HashMap<Identifier, ResearchToastDefinition>();
 
         for (var node : nodes) {
             // Validate base fact requirements
@@ -337,10 +366,13 @@ public record ResearchData(
                     throw new IllegalArgumentException("Unknown stage '" + stageDep.stageId() + "' referenced by stage dependency in node '" + node.id() + "'");
                 }
             }
-            // Validate stage requirements
+            // Validate stage requirements and build stage rules
             for (int i = 0; i < node.stages().size(); i++) {
                 var stage = node.stages().get(i);
                 stageLocations.put(stage.id(), new ResearchData.StageLocation(node.id(), i));
+                if (stage.toast().isPresent()) {
+                    stageToasts.put(stage.id(), stage.toast().get());
+                }
                 for (var factId : stage.requiredFacts()) {
                     if (!factIds.contains(factId)) {
                         throw new IllegalArgumentException("Unknown fact '" + factId + "' referenced by stage '" + stage.id() + "' in node '" + node.id() + "'");
@@ -378,6 +410,17 @@ public record ResearchData(
                 .collect(Collectors.groupingBy(ResearchHookDefinition::triggerTargetId));
         var groupedAdvancementHooks = advancementHooks.stream().collect(Collectors.groupingBy(AdvancementResearchHookDefinition::advancementId));
 
+        // Build toast lookup maps
+        var factToasts = facts.stream()
+                .filter(f -> f.toast().isPresent())
+                .collect(Collectors.toMap(f -> f.id(), f -> f.toast().get()));
+        var valueToasts = values.stream()
+                .filter(v -> v.toast().isPresent())
+                .collect(Collectors.toMap(v -> v.id(), v -> v.toast().get()));
+        var nodeToasts = nodes.stream()
+                .filter(n -> n.toast().isPresent())
+                .collect(Collectors.toMap(n -> n.id(), n -> n.toast().get()));
+
         return new ResearchData(
                 Set.copyOf(factIds),
                 Set.copyOf(nodeIds),
@@ -392,6 +435,10 @@ public record ResearchData(
                 graphFactIds,
                 graphNodeIds,
                 graphValueIds,
+                Map.copyOf(factToasts),
+                Map.copyOf(valueToasts),
+                Map.copyOf(nodeToasts),
+                Map.copyOf(stageToasts),
                 Map.copyOf(stageLocations)
         );
     }
@@ -453,7 +500,7 @@ Expected: PASS (ResearchDataManager default instance will need updating next)
 
 ```bash
 git add common/src/main/java/com/klikli_dev/modonomicon/research/data/ResearchData.java
-git commit -m "feat(research): add stage rules, stage locations, and validation to ResearchData"
+git commit -m "feat(research): add stage rules, stage locations, stage toasts, and validation to ResearchData"
 ```
 
 ---
@@ -633,12 +680,12 @@ git commit -m "feat(research): add node stage index tracking to PlayerResearchSt
 
 ---
 
-## Task 5: ResearchStateManager — Stage Advancement and Dependency Checking
+## Task 5: ResearchStateManager — Stage Advancement, Dependency Checking, and Toast Emission
 
 **Files:**
 - Modify: `common/src/main/java/com/klikli_dev/modonomicon/research/state/ResearchStateManager.java`
 
-Extend `reevaluate()` to handle stage advancement and stage dependencies. Add `isStageCompleted()` that resolves stage ID to index via `stageLocations`. Add `setNodeStage()` for commands.
+Extend `reevaluate()` to handle stage advancement and stage dependencies. Add `isStageCompleted()` that resolves stage ID to index via `stageLocations`. Add `setNodeStage()` for commands. Emit `NODE_STAGE_COMPLETED` toast triggers when stages advance.
 
 - [ ] **Step 1: Replace ResearchStateManager with stage-aware version**
 
@@ -656,15 +703,20 @@ import com.klikli_dev.modonomicon.networking.SyncResearchStateMessage;
 import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import com.klikli_dev.modonomicon.research.data.ResearchData;
+import com.klikli_dev.modonomicon.research.networking.ResearchToastTrigger;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ResearchStateManager {
 
     private static final ResearchStateManager INSTANCE = new ResearchStateManager();
+    private static final ThreadLocal<List<ResearchToastTrigger>> TOAST_TRIGGER_COLLECTOR = ThreadLocal.withInitial(() -> null);
 
     public ResearchStatesSaveData saveData;
 
@@ -681,6 +733,10 @@ public class ResearchStateManager {
         boolean changed = this.getStateFor(player).grantFact(factId);
         if (changed) {
             this.saveData.setDirty();
+            var collector = TOAST_TRIGGER_COLLECTOR.get();
+            if (collector != null && ResearchDataManager.get().data().factToasts().containsKey(factId)) {
+                collector.add(new ResearchToastTrigger(ResearchToastTrigger.ToastTriggerType.FACT_GRANTED, factId, 0));
+            }
         }
         return changed;
     }
@@ -697,6 +753,10 @@ public class ResearchStateManager {
         var state = this.getStateFor(player);
         state.incrementValue(valueId, amount);
         this.saveData.setDirty();
+        var collector = TOAST_TRIGGER_COLLECTOR.get();
+        if (collector != null && ResearchDataManager.get().data().valueToasts().containsKey(valueId)) {
+            collector.add(new ResearchToastTrigger(ResearchToastTrigger.ToastTriggerType.VALUE_INCREMENTED, valueId, state.getValue(valueId)));
+        }
         return true;
     }
 
@@ -785,7 +845,14 @@ public class ResearchStateManager {
             }
 
             // Base requirements met - activate the node
-            changed |= state.unlockNode(rule.nodeId());
+            boolean nodeChanged = state.unlockNode(rule.nodeId());
+            if (nodeChanged) {
+                var collector = TOAST_TRIGGER_COLLECTOR.get();
+                if (collector != null && data.nodeToasts().containsKey(rule.nodeId())) {
+                    collector.add(new ResearchToastTrigger(ResearchToastTrigger.ToastTriggerType.NODE_UNLOCKED, rule.nodeId(), 0));
+                }
+            }
+            changed |= nodeChanged;
 
             // Set initial stage index if not started
             if (state.getNodeStageIndex(rule.nodeId()) == 0) {
@@ -794,7 +861,7 @@ public class ResearchStateManager {
             }
 
             // Advance through stages
-            changed |= advanceStages(state, rule.nodeId(), data.nodeStageRules());
+            changed |= advanceStages(state, rule.nodeId(), data.nodeStageRules(), data.stageLocations(), data.stageToasts());
         }
 
         if (changed) {
@@ -803,7 +870,7 @@ public class ResearchStateManager {
         return changed;
     }
 
-    private boolean advanceStages(PlayerResearchState state, Identifier nodeId, java.util.List<ResearchData.NodeStageRule> stageRules) {
+    private boolean advanceStages(PlayerResearchState state, Identifier nodeId, List<ResearchData.NodeStageRule> stageRules, java.util.Map<Identifier, ResearchData.StageLocation> stageLocations, java.util.Map<Identifier, ResearchToastDefinition> stageToasts) {
         boolean advanced;
         do {
             advanced = false;
@@ -847,6 +914,21 @@ public class ResearchStateManager {
             // Advance to next stage
             state.setNodeStageIndex(nodeId, currentStage + 1);
             advanced = true;
+
+            // Emit stage completion toast trigger
+            var collector = TOAST_TRIGGER_COLLECTOR.get();
+            if (collector != null) {
+                // Find the stage id for the stage we just completed
+                for (var entry : stageLocations.entrySet()) {
+                    if (entry.getValue().nodeId().equals(nodeId) && entry.getValue().stageIndex() == nextStageIndex) {
+                        Identifier stageId = entry.getKey();
+                        if (stageToasts.containsKey(stageId)) {
+                            collector.add(new ResearchToastTrigger(ResearchToastTrigger.ToastTriggerType.NODE_STAGE_COMPLETED, stageId, 0));
+                        }
+                        break;
+                    }
+                }
+            }
         } while (advanced);
         return advanced;
     }
@@ -876,6 +958,30 @@ public class ResearchStateManager {
         this.getSaveDataIfNecessary(player);
     }
 
+    /**
+     * Begins toast trigger collection for the current thread.
+     * Call this before a batch of state mutations to collect toast triggers.
+     */
+    public static void beginToastCollection() {
+        TOAST_TRIGGER_COLLECTOR.set(new ArrayList<>());
+    }
+
+    /**
+     * Ends toast trigger collection and returns the collected triggers.
+     * Returns an empty list if collection was not active.
+     */
+    public static List<ResearchToastTrigger> endToastCollection() {
+        var collector = TOAST_TRIGGER_COLLECTOR.get();
+        List<ResearchToastTrigger> triggers;
+        if (collector == null) {
+            triggers = List.of();
+        } else {
+            triggers = List.copyOf(collector);
+            TOAST_TRIGGER_COLLECTOR.set(null);
+        }
+        return triggers;
+    }
+
     public void onServerTickEnd(MinecraftServer server) {
     }
 
@@ -901,7 +1007,7 @@ Expected: PASS
 
 ```bash
 git add common/src/main/java/com/klikli_dev/modonomicon/research/state/ResearchStateManager.java
-git commit -m "feat(research): implement stage advancement and stage dependency checking"
+git commit -m "feat(research): implement stage advancement, dependency checking, and toast emission"
 ```
 
 ---
@@ -1082,14 +1188,14 @@ git commit -m "feat(research): add BookResearchStageCompletedCondition and updat
 **Files:**
 - Modify: `common/src/main/java/com/klikli_dev/modonomicon/research/data/ResearchDataManager.java`
 
-Update the default `ResearchData` instance to include the new fields.
+Update the default `ResearchData` instance to include the new fields (`stageIds`, `nodeStageRules`, `stageToasts`, `stageLocations`).
 
 - [ ] **Step 1: Update the default data instance**
 
 In `ResearchDataManager.java`, replace the default instance:
 
 ```java
-private ResearchData data = new ResearchData(Set.of(), Set.of(), Set.of(), Set.of(), List.of(), List.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of());
+private ResearchData data = new ResearchData(Set.of(), Set.of(), Set.of(), Set.of(), List.of(), List.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of());
 ```
 
 - [ ] **Step 2: Compile check**
@@ -1153,9 +1259,11 @@ package com.klikli_dev.modonomicon.api.datagen.research;
 
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchStageDefinition;
+import com.klikli_dev.modonomicon.research.data.ResearchToastDefinition;
 import net.minecraft.resources.Identifier;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Authoring-time stage declaration that compiles into the canonical stage definition.
@@ -1163,22 +1271,31 @@ import java.util.List;
  * @param ref the typed stage ref being declared
  * @param requiredFacts the fact refs required to advance past this stage
  * @param requiredValues the value requirements required to advance past this stage
+ * @param toast optional toast display data for stage completion
  */
 public record ResearchStageSpec(
         ResearchStageRef ref,
         List<ResearchFactRef> requiredFacts,
-        List<ResearchNodeSpec.ValueRequirement> requiredValues
+        List<ResearchNodeSpec.ValueRequirement> requiredValues,
+        Optional<ResearchToastDefinition> toast
 ) {
     public static ResearchStageSpec factsOnly(ResearchStageRef ref, List<ResearchFactRef> requiredFacts) {
-        return new ResearchStageSpec(ref, requiredFacts, List.of());
+        return new ResearchStageSpec(ref, requiredFacts, List.of(), Optional.empty());
     }
 
     public static ResearchStageSpec valuesOnly(ResearchStageRef ref, List<ResearchNodeSpec.ValueRequirement> requiredValues) {
-        return new ResearchStageSpec(ref, List.of(), requiredValues);
+        return new ResearchStageSpec(ref, List.of(), requiredValues, Optional.empty());
     }
 
     public static ResearchStageSpec none(ResearchStageRef ref) {
-        return new ResearchStageSpec(ref, List.of(), List.of());
+        return new ResearchStageSpec(ref, List.of(), List.of(), Optional.empty());
+    }
+
+    /**
+     * Adds toast display data to this stage spec.
+     */
+    public ResearchStageSpec toast(ResearchToastDefinition toast) {
+        return new ResearchStageSpec(this.ref, this.requiredFacts, this.requiredValues, Optional.of(toast));
     }
 
     public ResearchStageDefinition toDefinition() {
@@ -1187,7 +1304,8 @@ public record ResearchStageSpec(
                 this.requiredFacts.stream().map(ResearchFactRef::id).toList(),
                 this.requiredValues.stream().map(req ->
                         new ResearchNodeDefinition.ValueRequirement(req.valueRef.id(), req.threshold())
-                ).toList()
+                ).toList(),
+                this.toast
         );
     }
 }
@@ -1205,9 +1323,11 @@ public record ResearchStageSpec(
 package com.klikli_dev.modonomicon.api.datagen.research;
 
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
+import com.klikli_dev.modonomicon.research.data.ResearchToastDefinition;
 import net.minecraft.resources.Identifier;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Authoring-time node declaration that compiles into the canonical research node resource shape.
@@ -1217,13 +1337,15 @@ import java.util.List;
  * @param requiredValues the value requirements that must be met for this node to unlock
  * @param stages ordered stage specs; empty means single-stage
  * @param requiredStages dependencies on other nodes reaching specific stages
+ * @param toast optional toast display data for full node completion
  */
 public record ResearchNodeSpec(
         ResearchNodeRef ref,
         List<ResearchFactRef> requiredFacts,
         List<ValueRequirement> requiredValues,
         List<ResearchStageSpec> stages,
-        List<StageDependencySpec> requiredStages
+        List<StageDependencySpec> requiredStages,
+        Optional<ResearchToastDefinition> toast
 ) {
     public record ValueRequirement(ResearchValueRef valueRef, int threshold) {
     }
@@ -1238,7 +1360,7 @@ public record ResearchNodeSpec(
     }
 
     public static ResearchNodeSpec factsOnly(ResearchNodeRef ref, List<ResearchFactRef> requiredFacts) {
-        return new ResearchNodeSpec(ref, requiredFacts, List.of(), List.of(), List.of());
+        return new ResearchNodeSpec(ref, requiredFacts, List.of(), List.of(), List.of(), Optional.empty());
     }
 
     public static ResearchNodeSpec of(
@@ -1246,9 +1368,17 @@ public record ResearchNodeSpec(
             List<ResearchFactRef> requiredFacts,
             List<ValueRequirement> requiredValues,
             List<ResearchStageSpec> stages,
-            List<StageDependencySpec> requiredStages
+            List<StageDependencySpec> requiredStages,
+            Optional<ResearchToastDefinition> toast
     ) {
-        return new ResearchNodeSpec(ref, requiredFacts, requiredValues, stages, requiredStages);
+        return new ResearchNodeSpec(ref, requiredFacts, requiredValues, stages, requiredStages, toast);
+    }
+
+    /**
+     * Adds toast display data to this node spec.
+     */
+    public ResearchNodeSpec toast(ResearchToastDefinition toast) {
+        return new ResearchNodeSpec(this.ref, this.requiredFacts, this.requiredValues, this.stages, this.requiredStages, Optional.of(toast));
     }
 
     public ResearchNodeDefinition toDefinition() {
@@ -1261,7 +1391,8 @@ public record ResearchNodeSpec(
                 this.stages.stream().map(ResearchStageSpec::toDefinition).toList(),
                 this.requiredStages.stream().map(dep ->
                         new ResearchNodeDefinition.StageDependency(dep.nodeId().id(), dep.stageId().id())
-                ).toList()
+                ).toList(),
+                this.toast
         );
     }
 }
@@ -1290,7 +1421,7 @@ public ResearchNodeRef node(
         List<ResearchStageSpec> stages,
         List<ResearchNodeSpec.StageDependencySpec> requiredStages
 ) {
-    this.nodes.add(ResearchNodeSpec.of(ref, requiredFacts, requiredValues, stages, requiredStages));
+    this.nodes.add(ResearchNodeSpec.of(ref, requiredFacts, requiredValues, stages, requiredStages, Optional.empty()));
     return ref;
 }
 ```
@@ -1334,7 +1465,7 @@ git add common/src/main/java/com/klikli_dev/modonomicon/api/datagen/research/Res
         common/src/main/java/com/klikli_dev/modonomicon/api/datagen/research/ResearchNodeSpec.java \
         common/src/main/java/com/klikli_dev/modonomicon/api/datagen/research/ResearchDataBuilder.java \
         common/src/main/java/com/klikli_dev/modonomicon/api/datagen/research/ResearchProviderBase.java
-git commit -m "feat(research): add stage datagen API with typed refs and specs"
+git commit -m "feat(research): add stage datagen API with typed refs, specs, and toast support"
 ```
 
 ---
@@ -1424,11 +1555,13 @@ git commit -m "chore(i18n): add stage condition and command error keys"
 
 ---
 
-## Task 12: Commands — Set Stage
+## Task 12: Commands — Set Stage, Lock Node, and Reset Book
 
 **Files:**
 - Create: `common/src/main/java/com/klikli_dev/modonomicon/command/SetStageCommand.java`
 - Modify: `common/src/main/java/com/klikli_dev/modonomicon/command/ResearchCommand.java`
+- Modify: `common/src/main/java/com/klikli_dev/modonomicon/command/LockNodeCommand.java`
+- Modify: `common/src/main/java/com/klikli_dev/modonomicon/command/ResetBookResearchCommand.java`
 
 - [ ] **Step 1: Create SetStageCommand**
 
@@ -1525,6 +1658,75 @@ public static ArgumentBuilder<CommandSourceStack, ?> register(CommandDispatcher<
 }
 ```
 
+- [ ] **Step 3: Update LockNodeCommand — reset stage index on lock**
+
+In `LockNodeCommand.run()`, after `state.lockNode(nodeId)`, add:
+```java
+state.setNodeStageIndex(nodeId, 0);
+```
+
+- [ ] **Step 4: Update ResetBookResearchCommand — collect stage conditions + reset stages**
+
+In `collectNodeIdsFromCondition()`, add case for `BookResearchStageCompletedCondition`:
+```java
+if (condition instanceof BookResearchStageCompletedCondition stageCondition) {
+    nodeIds.add(stageCondition.nodeId());
+}
+```
+
+In the reset loop, after `state.lockNode(nodeId)`, add:
+```java
+state.setNodeStageIndex(nodeId, 0);
+```
+
+- [ ] **Step 5: Compile check**
+
+Run: `./gradlew.bat compileJava`
+Expected: PASS
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add common/src/main/java/com/klikli_dev/modonomicon/command/SetStageCommand.java \
+        common/src/main/java/com/klikli_dev/modonomicon/command/ResearchCommand.java \
+        common/src/main/java/com/klikli_dev/modonomicon/command/LockNodeCommand.java \
+        common/src/main/java/com/klikli_dev/modonomicon/command/ResetBookResearchCommand.java
+git commit -m "feat(research): add set stage command and add stage awareness to lock/reset commands"
+```
+
+---
+
+## Task 13: Toast System — Stage Completion Trigger
+
+**Files:**
+- Modify: `common/src/main/java/com/klikli_dev/modonomicon/research/networking/ResearchToastTrigger.java`
+- Modify: `common/src/main/java/com/klikli_dev/modonomicon/networking/ResearchToastMessage.java`
+
+Add `NODE_STAGE_COMPLETED` toast trigger type and client-side handling.
+
+- [ ] **Step 1: Add NODE_STAGE_COMPLETED to ResearchToastTrigger**
+
+Add to the enum in `ResearchToastTrigger.ToastTriggerType`:
+```java
+NODE_STAGE_COMPLETED
+```
+
+No change needed to the STREAM_CODEC — the existing ordinal-based codec handles new enum values automatically.
+
+- [ ] **Step 2: Handle NODE_STAGE_COMPLETED in ResearchToastMessage**
+
+Add case in the switch (after `NODE_UNLOCKED`) in `onClientReceived()`:
+```java
+case NODE_STAGE_COMPLETED -> toastDef = data.stageToasts().get(trigger.elementId());
+```
+
+Add default description case in `defaultDescriptionId()`:
+```java
+case NODE_STAGE_COMPLETED -> {
+    return Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "research.stage");
+}
+```
+
 - [ ] **Step 3: Compile check**
 
 Run: `./gradlew.bat compileJava`
@@ -1533,14 +1735,14 @@ Expected: PASS
 - [ ] **Step 4: Commit**
 
 ```bash
-git add common/src/main/java/com/klikli_dev/modonomicon/command/SetStageCommand.java \
-        common/src/main/java/com/klikli_dev/modonomicon/command/ResearchCommand.java
-git commit -m "feat(research): add /modonomicon research set stage command"
+git add common/src/main/java/com/klikli_dev/modonomicon/research/networking/ResearchToastTrigger.java \
+        common/src/main/java/com/klikli_dev/modonomicon/networking/ResearchToastMessage.java
+git commit -m "feat(research): add NODE_STAGE_COMPLETED toast trigger type and client handling"
 ```
 
 ---
 
-## Task 13: Demo Content — Stages Scenario
+## Task 14: Demo Content — Stages Scenario
 
 **Files:**
 - Modify: `common/src/main/java/com/klikli_dev/modonomicon/datagen/research/DemoResearch.java`
@@ -1578,9 +1780,9 @@ this.ingress()
 
 // Multi-stage node: requires conditionRootViewed to start, then 3 stages
 this.node(STAGES_DEMO, List.of(conditionRootViewed), List.of(), List.of(
-        new ResearchStageSpec(stagesDemoStage1, List.of(stagesFact1), List.of()),
-        new ResearchStageSpec(stagesDemoStage2, List.of(stagesFact2), List.of()),
-        new ResearchStageSpec(stagesDemoStage3, List.of(), List.of(
+        ResearchStageSpec.factsOnly(stagesDemoStage1, List.of(stagesFact1)),
+        ResearchStageSpec.factsOnly(stagesDemoStage2, List.of(stagesFact2)),
+        ResearchStageSpec.valuesOnly(stagesDemoStage3, List.of(
                 new ResearchNodeSpec.ValueRequirement(stagesCollector, 2)
         ))
 ), List.of());
@@ -1612,7 +1814,7 @@ git commit -m "feat(research): add stages demo scenario"
 
 ---
 
-## Task 14: Language Files
+## Task 15: Language Files
 
 **Files:**
 - Modify: `common/src/main/resources/data/modonomicon/lang/en_us.json` (or equivalent generated lang file)
@@ -1623,7 +1825,8 @@ Add to the English language file:
 ```json
 {
   "tooltip.modonomicon.condition.research_stage_completed": "Requires stage %2$s of research node %1$s to be completed",
-  "modonomicon.command.stage.set": "Set stage of node %2$s for player %1$s to %3$d"
+  "modonomicon.command.stage.set": "Set stage of node %2$s for player %1$s to %3$d",
+  "gui.modonomicon.research.stage": "Research Stage"
 }
 ```
 
@@ -1631,12 +1834,12 @@ Add to the English language file:
 
 ```bash
 git add common/src/main/resources/data/modonomicon/lang/en_us.json
-git commit -m "chore(i18n): add stage condition and command translations"
+git commit -m "chore(i18n): add stage condition, command, and toast translations"
 ```
 
 ---
 
-## Task 15: Integration Compile and Verify
+## Task 16: Integration Compile and Verify
 
 **Files:** All modified files
 
@@ -1653,7 +1856,7 @@ Expected: Completes without errors, generates research JSON with stages
 - [ ] **Step 3: Verify generated research JSON**
 
 Check that the generated research JSON files include:
-- `stages` arrays in node definitions with `id`, `required_facts`, `required_values`
+- `stages` arrays in node definitions with `id`, `required_facts`, `required_values`, `toast`
 - `required_stages` arrays with `node_id` and `stage_id` entries
 
 - [ ] **Step 4: Run client briefly**
@@ -1665,7 +1868,7 @@ Expected: Client starts without crashes, demo book loads
 
 ```bash
 git add -A
-git commit -m "feat(research): finalize stages implementation with demo content"
+git commit -m "feat(research): finalize stages implementation with demo content and toast integration"
 ```
 
 ---
@@ -1679,6 +1882,9 @@ git commit -m "feat(research): finalize stages implementation with demo content"
 - [x] Book entries gated on stage completion via conditions
 - [x] Backward compatible (nodes without stages work as before)
 - [x] Data model, runtime, conditions, networking, datagen API, commands, demo
+- [x] Toast system integration (NODE_STAGE_COMPLETED trigger, stage toasts)
+- [x] Lock/reset commands clear stage progress
+- [x] ResearchToastMessage handles stage triggers
 
 ### Placeholder Scan
 - No TBDs, TODOs, or vague instructions found
@@ -1687,14 +1893,20 @@ git commit -m "feat(research): finalize stages implementation with demo content"
 
 ### Type Consistency
 - `ResearchStageDefinition` reuses `ResearchNodeDefinition.ValueRequirement` (consistent with existing pattern)
+- `ResearchStageDefinition.toast` uses `Optional<ResearchToastDefinition>` (consistent with fact/value/node pattern)
 - `ResearchNodeDefinition.StageDependency` uses `Identifier` for both nodeId and stageId
 - `NodeRule.requiredStageDependencies` uses `ResearchNodeDefinition.StageDependency`
 - `PlayerResearchState.nodeStageIndexes` uses `Object2IntOpenHashMap<Identifier>` (consistent with `internalValues`)
 - `ResearchData.stageLocations` maps `Identifier` (stageId) to `StageLocation(nodeId, stageIndex)`
+- `ResearchData.stageToasts` maps `Identifier` (stageId) to `ResearchToastDefinition`
 - Datagen `ResearchStageSpec` compiles to `ResearchStageDefinition`
 - Datagen `ResearchNodeSpec.StageDependencySpec` compiles to `ResearchNodeDefinition.StageDependency`
+- `ResearchToastTrigger.ToastTriggerType.NODE_STAGE_COMPLETED` added to existing enum
 
 ### Notes
 - `BookResearchNodeUnlockedCondition` now checks all stages complete for multi-stage nodes. Backward compatible for single-stage nodes.
 - Stage advancement is automatic during `reevaluate()`, called after any fact/value mutation.
 - The `stageLocations` map enables O(1) stage ID to `(nodeId, stageIndex)` lookup for dependency and condition checking.
+- Stage toast triggers use `NODE_STAGE_COMPLETED` type, with `elementId` = stage ID, which works with the existing toast token dedup (each stage ID is unique, so SimpleToastToken provides correct per-stage deduplication).
+- Lock and reset commands clear stage indexes to prevent stale stage progress.
+- The toast system's collect-then-send pattern is preserved; stage toast emission happens inside `advanceStages()`.

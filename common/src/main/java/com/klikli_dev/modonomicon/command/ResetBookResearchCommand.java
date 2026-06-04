@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.book.conditions.BookAndCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookOrCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookResearchNodeUnlockedCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookResearchStageCompletedCondition;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.bookstate.visual.BookVisibilitySnapshots;
 import com.klikli_dev.modonomicon.data.BookDataManager;
@@ -62,6 +63,7 @@ public class ResetBookResearchCommand implements com.mojang.brigadier.Command<Co
 
         for (var nodeId : nodeIdsToReset) {
             state.lockNode(nodeId);
+            state.setNodeStageIndex(nodeId, 0);
 
             // Find the node rule to revoke related facts and reset values
             for (var rule : ResearchDataManager.get().data().nodeRules()) {
@@ -100,6 +102,8 @@ public class ResetBookResearchCommand implements com.mojang.brigadier.Command<Co
     private void collectNodeIdsFromCondition(BookCondition condition, Set<Identifier> nodeIds) {
         if (condition instanceof BookResearchNodeUnlockedCondition researchCondition) {
             nodeIds.add(researchCondition.nodeId());
+        } else if (condition instanceof BookResearchStageCompletedCondition stageCondition) {
+            nodeIds.add(stageCondition.nodeId());
         } else if (condition instanceof BookAndCondition andCondition) {
             for (var child : andCondition.children()) {
                 collectNodeIdsFromCondition(child, nodeIds);

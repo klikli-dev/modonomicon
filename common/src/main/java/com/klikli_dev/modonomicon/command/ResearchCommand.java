@@ -37,6 +37,8 @@ public class ResearchCommand {
                                 .then(LockNodeCommand.register(dispatcher))))
                 .then(Commands.literal("set")
                         .then(Commands.literal("value")
-                                .then(SetValueCommand.register(dispatcher))));
+                                .then(SetValueCommand.register(dispatcher)))
+                        .then(Commands.literal("stage")
+                                .then(SetStageCommand.register(dispatcher))));
     }
 }

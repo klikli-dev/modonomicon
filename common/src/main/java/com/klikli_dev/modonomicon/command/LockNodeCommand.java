@@ -52,6 +52,7 @@ public class LockNodeCommand implements com.mojang.brigadier.Command<CommandSour
 
         var state = ResearchServices.state().getStateFor(player);
         state.lockNode(nodeId);
+        state.setNodeStageIndex(nodeId, 0);
 
         // Revoke required facts and reset values so the node stays locked
         for (var rule : ResearchDataManager.get().data().nodeRules()) {
