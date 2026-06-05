@@ -8,7 +8,15 @@
   "category": "modonomicon:features",
   "condition": {
     "type": "modonomicon:research_node_unlocked",
-    "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/features_condition_level_2"
+    "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/features_condition_level_2",
+    "tooltip": {
+      "translate": "tooltip.modonomicon.condition.entry_unlocked",
+      "with": [
+        {
+          "translate": "book.modonomicon.demo.features.condition_level_2.name"
+        }
+      ]
+    }
   },
   "description": "book.modonomicon.demo.features.condition_level_2.description",
   "icon": {

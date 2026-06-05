@@ -103,6 +103,9 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         //Tooltip
         this.add(Tooltips.CONDITION_CATEGORY_HAS_VISIBLE_ENTRIES, "Requires that category %s has visible entries");
         this.add(Tooltips.CONDITION_MOD_LOADED, "Requires loaded mod: %s");
+        this.add(Tooltips.CONDITION_RESEARCH_NODE_UNLOCKED, "Requires research node %s to be unlocked");
+        this.add(Tooltips.CONDITION_RESEARCH_STAGE_COMPLETED, "Requires research node %s stage %s to be completed");
+        this.add(Tooltips.CONDITION_ENTRY_UNLOCKED, "Requires entry %s to be unlocked");
         this.add(Tooltips.ITEM_NO_BOOK_FOUND_FOR_STACK, "No book found for this item in the modonomicon book database! Nbt: %s");
         this.add(Tooltips.RECIPE_CRAFTING_SHAPELESS, "Shapeless");
         this.add(Tooltips.FLUID_AMOUNT, "%s mb");

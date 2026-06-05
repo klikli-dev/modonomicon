@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.api.datagen;
 
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookResearchNodeUnlockedConditionModel;
@@ -14,6 +15,7 @@ import com.klikli_dev.modonomicon.api.datagen.research.ResearchDataBuilder;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchFactRef;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchIngressHelper;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeRef;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
@@ -42,13 +44,21 @@ public final class BookHierarchyResearchCompiler {
                     requiredFacts.add(fact);
                 }
                 ResearchNodeRef node = research.node(nodePath(book, entry), requiredFacts.toArray(ResearchFactRef[]::new));
-                entry.withCondition(BookResearchNodeUnlockedConditionModel.create().withNode(node.id()));
+                entry.withCondition(
+                        BookResearchNodeUnlockedConditionModel.create()
+                                .withNode(node.id())
+                                .withTooltip(Component.translatable(Tooltips.CONDITION_ENTRY_UNLOCKED,
+                                        Component.translatable(entry.getName())))
+                );
                 generatedEntries.add(entry);
             }
         }
 
         if (generatedEntries.isEmpty()) return Optional.empty();
-        return Optional.of(new CompiledBookResearch(Identifier.fromNamespaceAndPath(book.getId().getNamespace(), bundleId(book)), research));
+        return Optional.of(new CompiledBookResearch(
+                Identifier.fromNamespaceAndPath(book.getId().getNamespace(), bundleId(book)),
+                research
+        ));
     }
 
     private String bundleId(BookModel book) { return "generated/" + book.getId().getPath(); }

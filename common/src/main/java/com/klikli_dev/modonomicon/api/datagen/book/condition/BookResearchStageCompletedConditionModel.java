@@ -9,7 +9,9 @@ package com.klikli_dev.modonomicon.api.datagen.book.condition;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookResearchStageCompletedCondition;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 
 public class BookResearchStageCompletedConditionModel extends BookConditionModel<BookResearchStageCompletedConditionModel> {
     protected Identifier nodeId;
@@ -35,6 +37,18 @@ public class BookResearchStageCompletedConditionModel extends BookConditionModel
 
     public BookResearchStageCompletedConditionModel withStage(Identifier stageId) {
         this.stageId = stageId;
+        return this;
+    }
+
+    /**
+     * Sets the tooltip to reference the stage's description id translation key.
+     * <p>
+     * This generates translation keys following the pattern
+     * {@code block.<namespace>.<path>.description} for both the node and stage.
+     * Ensure matching translations exist, otherwise the raw keys will be displayed.
+     */
+    public BookResearchStageCompletedConditionModel withStageName() {
+        this.tooltip = Component.translatable(Util.makeDescriptionId("research_stage", this.stageId));
         return this;
     }
 }

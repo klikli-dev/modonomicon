@@ -23,6 +23,7 @@ import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
@@ -75,8 +76,10 @@ public class BookResearchStageCompletedCondition extends BookCondition {
 
     @Override
     public List<Component> getTooltip(Player player, BookConditionContext context) {
-        if (this.tooltip == null && context instanceof BookConditionEntryContext entryContext) {
-            this.tooltip = Component.translatable(Tooltips.CONDITION_RESEARCH_STAGE_COMPLETED, Component.literal(this.nodeId.toString()), Component.literal(this.stageId.toString()));
+        if (this.tooltip == null && context instanceof BookConditionEntryContext) {
+            this.tooltip = Component.translatable(Tooltips.CONDITION_RESEARCH_STAGE_COMPLETED,
+                    Component.translatable(Util.makeDescriptionId("research_node", this.nodeId)),
+                    Component.translatable(Util.makeDescriptionId("research_stage", this.stageId)));
         }
         return super.getTooltip(player, context);
     }

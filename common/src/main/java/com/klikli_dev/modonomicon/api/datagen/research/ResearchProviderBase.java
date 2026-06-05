@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.api.datagen.research;
 import com.klikli_dev.modonomicon.api.datagen.ModonomiconLanguageProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 
 import java.util.List;
 
@@ -167,5 +168,63 @@ public abstract class ResearchProviderBase {
      */
     protected void add(String key, String value) {
         this.injectedLang.add(key, value);
+    }
+
+    /**
+     * Returns the description id for a research node, suitable for use as a translation key.
+     * <p>
+     * The resulting key follows the pattern {@code block.<namespace>.<path>.description}, e.g.
+     * {@code block.mymod.demo/crafting_stick.description}. Use this to add a human-readable name
+     * for the node that will appear in condition tooltips:
+     * <pre>{@code
+     * this.add(this.researchNodeDescriptionId(myNode), "Crafting Stick");
+     * }</pre>
+     */
+    protected String researchNodeDescriptionId(Identifier nodeId) {
+        return Util.makeDescriptionId("research_node", nodeId);
+    }
+
+    /**
+     * Returns the description id for a research node ref.
+     */
+    protected String researchNodeDescriptionId(ResearchNodeRef nodeRef) {
+        return this.researchNodeDescriptionId(nodeRef.id());
+    }
+
+    /**
+     * Returns the description id for a research stage, suitable for use as a translation key.
+     * <p>
+     * The resulting key follows the pattern {@code block.<namespace>.<path>.description}. Use this
+     * to add a human-readable name for the stage that will appear in condition tooltips:
+     * <pre>{@code
+     * this.add(this.researchStageDescriptionId(myStage), "First Planks Crafted");
+     * }</pre>
+     */
+    protected String researchStageDescriptionId(Identifier stageId) {
+        return Util.makeDescriptionId("research_stage", stageId);
+    }
+
+    /**
+     * Returns the description id for a research stage ref.
+     */
+    protected String researchStageDescriptionId(ResearchStageRef stageRef) {
+        return this.researchStageDescriptionId(stageRef.id());
+    }
+
+    /**
+     * Convenience method that generates the description id and immediately registers the translation.
+     * <pre>{@code
+     * this.researchNodeName(myNode, "Crafting Stick");
+     * }</pre>
+     */
+    protected void researchNodeName(ResearchNodeRef nodeRef, String name) {
+        this.add(this.researchNodeDescriptionId(nodeRef), name);
+    }
+
+    /**
+     * Convenience method that generates the description id and immediately registers the translation.
+     */
+    protected void researchStageName(ResearchStageRef stageRef, String name) {
+        this.add(this.researchStageDescriptionId(stageRef), name);
     }
 }

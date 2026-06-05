@@ -146,6 +146,19 @@ public class DemoResearch extends SingleResearchSubProvider {
         this.node(STAGES_DEPENDENT, List.of(), List.of(), List.of(), List.of(
                 ResearchNodeSpec.StageDependencySpec.of(STAGES_DEMO, stagesDemoStage2)
         ));
+
+        // Research node and stage display names for condition tooltips
+        this.researchNodeName(CONDITION_LEVEL_1, "Condition Level 1");
+        this.researchNodeName(ADVANCEMENT_MINE_STONE, "Mine Stone Advancement");
+        this.researchNodeName(ADVANCEMENT_RIDE_BOAT_WITH_GOAT, "Ride a Boat with a Goat");
+        this.researchNodeName(COLLECTOR_COMPLETE, "Collector Complete");
+        this.researchNodeName(CRAFTING_STICK, "Stick Crafting");
+        this.researchNodeName(ACQUIRE_COBBLESTONE, "Cobblestone Acquisition");
+        this.researchNodeName(STAGES_DEMO, "Plank Crafting Progress");
+        this.researchNodeName(STAGES_DEPENDENT, "Stages Dependent");
+        this.researchStageName(stagesDemoStage1, "First Planks");
+        this.researchStageName(stagesDemoStage2, "More Planks");
+        this.researchStageName(stagesDemoStage3, "All Planks");
     }
 
     static ResearchNodeRef node(String path) {

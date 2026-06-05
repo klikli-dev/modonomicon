@@ -8,7 +8,15 @@
   "category": "modonomicon:formatting",
   "condition": {
     "type": "modonomicon:research_node_unlocked",
-    "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/formatting_link"
+    "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/formatting_link",
+    "tooltip": {
+      "translate": "tooltip.modonomicon.condition.entry_unlocked",
+      "with": [
+        {
+          "translate": "book.modonomicon.demo.formatting.link.name"
+        }
+      ]
+    }
   },
   "description": "book.modonomicon.demo.formatting.link.description",
   "icon": {
