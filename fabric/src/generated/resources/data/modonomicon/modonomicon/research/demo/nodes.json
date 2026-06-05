@@ -30,13 +30,27 @@
     "id": "modonomicon:demo/crafting_stick",
     "required_facts": [
       "modonomicon:demo/stick_crafted"
-    ]
+    ],
+    "toast": {
+      "description": "modonomicon:stick_crafted.title",
+      "icon": {
+        "id": "minecraft:stick"
+      },
+      "title": "modonomicon:research_unlocked"
+    }
   },
   {
     "id": "modonomicon:demo/acquire_cobblestone",
     "required_facts": [
       "modonomicon:demo/cobblestone_acquired"
-    ]
+    ],
+    "toast": {
+      "description": "modonomicon:cobblestone_acquired.title",
+      "icon": {
+        "id": "minecraft:cobblestone"
+      },
+      "title": "modonomicon:research_unlocked"
+    }
   },
   {
     "id": "modonomicon:demo/stages_demo",
@@ -51,7 +65,14 @@
             "threshold": 1,
             "value_id": "modonomicon:demo/stages_planks_crafted"
           }
-        ]
+        ],
+        "toast": {
+          "description": "modonomicon:stages_demo_stage_1.title",
+          "icon": {
+            "id": "minecraft:oak_planks"
+          },
+          "title": "modonomicon:stage_progress"
+        }
       },
       {
         "id": "modonomicon:demo/stages_demo_stage_2",
@@ -69,7 +90,14 @@
             "threshold": 5,
             "value_id": "modonomicon:demo/stages_planks_crafted"
           }
-        ]
+        ],
+        "toast": {
+          "description": "modonomicon:stages_demo_stage_3.title",
+          "icon": {
+            "id": "minecraft:diamond"
+          },
+          "title": "modonomicon:stage_complete"
+        }
       }
     ]
   },

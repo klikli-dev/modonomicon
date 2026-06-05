@@ -19,6 +19,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
@@ -72,18 +73,22 @@ public class ResearchToastMessage implements Message {
                 args.add(Component.literal(String.valueOf(trigger.currentValue())));
             }
 
-            Component title = Component.translatable(toastDef.title().toString(), args.toArray());
+            Component title = Component.translatable(toTranslationKey(toastDef.title()), args.toArray());
 
             // Resolve description
             Identifier descId = toastDef.description() != null
                     ? toastDef.description()
                     : defaultDescriptionId(trigger.type());
 
-            Component description = Component.translatable(descId.toString());
+            Component description = Component.translatable(toTranslationKey(descId));
 
             var toast = new ResearchToast(description, title, toastDef.icon(), trigger.type(), trigger.elementId(), trigger.currentValue());
             toastManager.addToast(toast);
         }
+    }
+
+    private static String toTranslationKey(Identifier id) {
+        return Util.makeDescriptionId("research_toast", id);
     }
 
     private static Identifier defaultDescriptionId(ResearchToastTrigger.ToastTriggerType type) {

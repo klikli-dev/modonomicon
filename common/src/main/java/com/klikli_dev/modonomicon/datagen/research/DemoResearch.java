@@ -13,7 +13,10 @@ import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageRef;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageSpec;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchValueRef;
 import com.klikli_dev.modonomicon.api.datagen.research.SingleResearchSubProvider;
+import com.klikli_dev.modonomicon.book.BookIcon;
+import com.klikli_dev.modonomicon.research.data.ResearchToastDefinition;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStackTemplate;
 
@@ -78,11 +81,29 @@ public class DemoResearch extends SingleResearchSubProvider {
                 .onItemCrafted(new ItemStackTemplate(Items.STICK))
                 .declareFact("demo/stick_crafted");
         this.node(CRAFTING_STICK, stickCrafted);
+        Identifier stickTitleId = this.modLoc("stick_crafted.title");
+        this.research().toast(CRAFTING_STICK, new ResearchToastDefinition(
+                this.modLoc("research_unlocked"),
+                List.of(),
+                stickTitleId,
+                new BookIcon(new ItemStackTemplate(Items.STICK))
+        ));
+        this.add(Util.makeDescriptionId("research_toast", stickTitleId), "Stick Crafted");
 
         var cobbleAcquired = this.ingress()
                 .onItemAcquired(new ItemStackTemplate(Items.COBBLESTONE))
                 .declareFact("demo/cobblestone_acquired");
         this.node(ACQUIRE_COBBLESTONE, cobbleAcquired);
+        Identifier cobbleTitleId = this.modLoc("cobblestone_acquired.title");
+        Identifier researchUnlockedId = this.modLoc("research_unlocked");
+        this.research().toast(ACQUIRE_COBBLESTONE, new ResearchToastDefinition(
+                researchUnlockedId,
+                List.of(),
+                cobbleTitleId,
+                new BookIcon(new ItemStackTemplate(Items.COBBLESTONE))
+        ));
+        this.add(Util.makeDescriptionId("research_toast", researchUnlockedId), "Research Unlocked");
+        this.add(Util.makeDescriptionId("research_toast", cobbleTitleId), "Cobblestone Acquired");
 
         // Stage refs for the demo multi-stage node
         var stagesDemoStage1 = this.stageRef("demo/stages_demo_stage_1");
@@ -96,17 +117,35 @@ public class DemoResearch extends SingleResearchSubProvider {
                 .incrementValue("demo/stages_planks_hook", planksCrafted, 1);
 
         // Multi-stage node: requires conditionRootViewed to start, then 3 value-based stages
+        Identifier stageProgressId = this.modLoc("stage_progress");
+        Identifier stage1TitleId = this.modLoc("stages_demo_stage_1.title");
+        Identifier stageCompleteId = this.modLoc("stage_complete");
+        Identifier stage3TitleId = this.modLoc("stages_demo_stage_3.title");
         this.node(STAGES_DEMO, List.of(conditionRootViewed), List.of(), List.of(
                 ResearchStageSpec.valuesOnly(stagesDemoStage1, List.of(
                         new ResearchNodeSpec.ValueRequirement(planksCrafted, 1)
+                )).toast(new ResearchToastDefinition(
+                        stageProgressId,
+                        List.of(),
+                        stage1TitleId,
+                        new BookIcon(new ItemStackTemplate(Items.OAK_PLANKS))
                 )),
                 ResearchStageSpec.valuesOnly(stagesDemoStage2, List.of(
                         new ResearchNodeSpec.ValueRequirement(planksCrafted, 3)
                 )),
                 ResearchStageSpec.valuesOnly(stagesDemoStage3, List.of(
                         new ResearchNodeSpec.ValueRequirement(planksCrafted, 5)
+                )).toast(new ResearchToastDefinition(
+                        stageCompleteId,
+                        List.of(),
+                        stage3TitleId,
+                        new BookIcon(new ItemStackTemplate(Items.DIAMOND))
                 ))
         ), List.of());
+        this.add(Util.makeDescriptionId("research_toast", stageProgressId), "Stage Progress");
+        this.add(Util.makeDescriptionId("research_toast", stageCompleteId), "Stage Complete");
+        this.add(Util.makeDescriptionId("research_toast", stage1TitleId), "First Planks Crafted");
+        this.add(Util.makeDescriptionId("research_toast", stage3TitleId), "All Stages Complete");
 
         // Node that depends on stages_demo reaching stage 2
         this.node(STAGES_DEPENDENT, List.of(), List.of(), List.of(), List.of(
