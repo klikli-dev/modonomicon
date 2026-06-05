@@ -73,40 +73,36 @@ public class ResearchToastMessage implements Message {
                 args.add(Component.literal(String.valueOf(trigger.currentValue())));
             }
 
-            Component title = Component.translatable(toTranslationKey(toastDef.title()), args.toArray());
+            Component title = Component.translatable(toastDef.title(), args.toArray());
 
             // Resolve description
-            Identifier descId = toastDef.description() != null
+            String descKey = toastDef.description() != null
                     ? toastDef.description()
-                    : defaultDescriptionId(trigger.type());
+                    : defaultDescriptionKey(trigger.type());
 
-            Component description = Component.translatable(toTranslationKey(descId));
+            Component description = Component.translatable(descKey);
 
             var toast = new ResearchToast(description, title, toastDef.icon(), trigger.type(), trigger.elementId(), trigger.currentValue());
             toastManager.addToast(toast);
         }
     }
 
-    private static String toTranslationKey(Identifier id) {
-        return Util.makeDescriptionId("research_toast", id);
-    }
-
-    private static Identifier defaultDescriptionId(ResearchToastTrigger.ToastTriggerType type) {
+    private static String defaultDescriptionKey(ResearchToastTrigger.ToastTriggerType type) {
         switch (type) {
             case FACT_GRANTED -> {
-                return Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "research.fact");
+                return Util.makeDescriptionId("research_toast", Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "research.fact"));
             }
             case VALUE_INCREMENTED -> {
-                return Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "research.value");
+                return Util.makeDescriptionId("research_toast", Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "research.value"));
             }
             case NODE_UNLOCKED -> {
-                return Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "research.node");
+                return Util.makeDescriptionId("research_toast", Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "research.node"));
             }
             case NODE_STAGE_COMPLETED -> {
-                return Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "research.stage");
+                return Util.makeDescriptionId("research_toast", Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "research.stage"));
             }
             default -> {
-                return Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "research");
+                return Util.makeDescriptionId("research_toast", Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "research"));
             }
         }
     }

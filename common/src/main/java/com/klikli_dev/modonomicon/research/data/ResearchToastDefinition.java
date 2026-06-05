@@ -14,7 +14,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,22 +27,22 @@ import java.util.Optional;
  * @param icon optional icon to render; null means no icon
  */
 public record ResearchToastDefinition(
-        Identifier title,
+        String title,
         List<Component> titleArgs,
-        Identifier description,
+        String description,
         BookIcon icon
 ) {
     public static final Codec<ResearchToastDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Identifier.CODEC.fieldOf("title").forGetter(ResearchToastDefinition::title),
+            Codec.STRING.fieldOf("title").forGetter(ResearchToastDefinition::title),
             ComponentSerialization.CODEC.listOf().optionalFieldOf("title_args", List.of()).forGetter(ResearchToastDefinition::titleArgs),
-            Identifier.CODEC.optionalFieldOf("description").forGetter(ResearchToastDefinition::descriptionOrEmpty),
+            Codec.STRING.optionalFieldOf("description").forGetter(ResearchToastDefinition::descriptionOrEmpty),
             BookIcon.CODEC.optionalFieldOf("icon").forGetter(ResearchToastDefinition::iconOrEmpty)
     ).apply(instance, (title, titleArgs, description, icon) -> new ResearchToastDefinition(title, titleArgs, description.orElse(null), icon.orElse(null))));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ResearchToastDefinition> STREAM_CODEC =
             ByteBufCodecs.fromCodecWithRegistries(CODEC);
 
-    public Optional<Identifier> descriptionOrEmpty() {
+    public Optional<String> descriptionOrEmpty() {
         return Optional.ofNullable(this.description);
     }
 
