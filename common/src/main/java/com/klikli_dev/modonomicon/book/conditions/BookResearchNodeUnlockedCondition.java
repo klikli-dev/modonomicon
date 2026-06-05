@@ -75,8 +75,8 @@ public class BookResearchNodeUnlockedCondition extends BookCondition {
             }
         }
         if (totalStages > 0) {
-            // Multi-stage: stageIndex > totalStages means all stages complete
-            return state.getNodeStageIndex(this.nodeId) > totalStages;
+            // Multi-stage: stageIndex >= totalStages means all stages complete
+            return state.getNodeStageIndex(this.nodeId) >= totalStages;
         }
         // Single-stage: unlocked = complete
         return true;

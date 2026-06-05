@@ -33,6 +33,15 @@
     "trigger_type": "modonomicon:item_crafted"
   },
   {
+    "event_target_id": "minecraft:oak_planks",
+    "event_target_item": {
+      "id": "minecraft:oak_planks"
+    },
+    "id": "modonomicon:demo/stages_planks_hook",
+    "trigger_type": "modonomicon:item_crafted",
+    "value_id": "modonomicon:demo/stages_planks_crafted"
+  },
+  {
     "event_target_id": "minecraft:cobblestone",
     "event_target_item": {
       "id": "minecraft:cobblestone"

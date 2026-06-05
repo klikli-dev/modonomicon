@@ -1,4 +1,4 @@
-// 26.1.2	2026-06-03T12:28:32.8512036	Books: modonomicon
+// 26.1.2	2026-06-05T14:40:53.1367794	Books: modonomicon
 2c29f1887c5c375e76d6813e5c5ef689936ec4e2 data/modonomicon/modonomicon/books/demo/book.json
 a40738cde71e2783fc7ebf4102a27a937c00761e data/modonomicon/modonomicon/books/demo/categories/acquiring.json
 66e880d8ad62910ce9caf891021f84308950452c data/modonomicon/modonomicon/books/demo/categories/conditional.json
@@ -6,6 +6,7 @@ fd9ac3d5056975c4cff37c6dfbae49cec00b4014 data/modonomicon/modonomicon/books/demo
 34ef6525cfc8712df616a8d5bc02dbf69bdb0405 data/modonomicon/modonomicon/books/demo/categories/features.json
 b29e406fe72f2408fe9ee346129e22beef36aa49 data/modonomicon/modonomicon/books/demo/categories/formatting.json
 8d52f958318b4d31df8b202303b7a99cc1003323 data/modonomicon/modonomicon/books/demo/categories/index_mode.json
+19e246213a969fdf8cb8fe4893af60dff73a1662 data/modonomicon/modonomicon/books/demo/categories/stages.json
 0cc1006d6cc6dc11bc2ff7345e1268086c8e32c6 data/modonomicon/modonomicon/books/demo/categories/values.json
 65547d99ebfabe04813e616983debe3d25cc3afd data/modonomicon/modonomicon/books/demo/commands/test_command.json
 3e71981f6288e40f2bd7e9f4abf02c8d2992fb16 data/modonomicon/modonomicon/books/demo/commands/test_command2.json
@@ -82,6 +83,13 @@ af235cf77ebe3c5c1e7a8160749cc50f72bddb1f data/modonomicon/modonomicon/books/demo
 986efaebe5a085d4b6276e107f421299ca06e010 data/modonomicon/modonomicon/books/demo/entries/index_mode/demo1/pages/intro.json
 97bd7a9ec03cfa9fec0ae562f160eb779403b5d4 data/modonomicon/modonomicon/books/demo/entries/index_mode/demo2.json
 7f27f28e0865385516fc3a18e79909a36dd35e30 data/modonomicon/modonomicon/books/demo/entries/index_mode/demo2/pages/intro.json
+ca94275cdd052239659df2c06b5cc22263e997f7 data/modonomicon/modonomicon/books/demo/entries/stages/stage_complete.json
+0eb1d2030239d2e65da0917cc04b5593ad5cd3f5 data/modonomicon/modonomicon/books/demo/entries/stages/stage_complete/pages/info.json
+f4edd1663f3c029ea4acf7ffa7d589991b439780 data/modonomicon/modonomicon/books/demo/entries/stages/stage_progression.json
+0a23f8670a783c19c9ae8c28b388615aeab1f3d5 data/modonomicon/modonomicon/books/demo/entries/stages/stage_progression/pages/intro.json
+e279a864e650497454cf4588ffc729b761f80fb7 data/modonomicon/modonomicon/books/demo/entries/stages/stage_progression/pages/stage_1.json
+3561b2bd0063845b5eb3b958581997a3a2f31bb0 data/modonomicon/modonomicon/books/demo/entries/stages/stage_progression/pages/stage_2.json
+92f0790d6fc179525e8323c86d03be7d5d3a918e data/modonomicon/modonomicon/books/demo/entries/stages/stage_progression/pages/stage_3.json
 616975b6fc18db318845c9bac988cbc48e9dc77c data/modonomicon/modonomicon/books/demo/entries/values/collector_a.json
 46e550b131f173b4411f495f6cd574816ee1e6a8 data/modonomicon/modonomicon/books/demo/entries/values/collector_a/pages/info.json
 a6ca3565a6c1a1644600532f63c690779a569b20 data/modonomicon/modonomicon/books/demo/entries/values/collector_b.json

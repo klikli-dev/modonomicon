@@ -89,26 +89,22 @@ public class DemoResearch extends SingleResearchSubProvider {
         var stagesDemoStage2 = this.stageRef("demo/stages_demo_stage_2");
         var stagesDemoStage3 = this.stageRef("demo/stages_demo_stage_3");
 
-        // Facts granted by viewing stage content entries
-        var stagesFact1 = this.ingress()
-                .onEntryViewedOnce(this.modLoc("stages/stage_1_content"))
-                .declareFact("demo/stages_stage_1_viewed");
-        var stagesFact2 = this.ingress()
-                .onEntryViewedOnce(this.modLoc("stages/stage_2_content"))
-                .declareFact("demo/stages_stage_2_viewed");
-
-        // Value incremented by viewing collector entries
-        var stagesCollector = this.value("demo/stages_collector");
+        // Value incremented each time a plank is crafted; stages unlock at thresholds
+        var planksCrafted = this.value("demo/stages_planks_crafted");
         this.ingress()
-                .onEntryViewedOnce(this.modLoc("stages/collector_entry"))
-                .incrementValue("demo/stages_collector_hook", stagesCollector, 1);
+                .onItemCrafted(new ItemStackTemplate(Items.OAK_PLANKS))
+                .incrementValue("demo/stages_planks_hook", planksCrafted, 1);
 
-        // Multi-stage node: requires conditionRootViewed to start, then 3 stages
+        // Multi-stage node: requires conditionRootViewed to start, then 3 value-based stages
         this.node(STAGES_DEMO, List.of(conditionRootViewed), List.of(), List.of(
-                ResearchStageSpec.factsOnly(stagesDemoStage1, List.of(stagesFact1)),
-                ResearchStageSpec.factsOnly(stagesDemoStage2, List.of(stagesFact2)),
+                ResearchStageSpec.valuesOnly(stagesDemoStage1, List.of(
+                        new ResearchNodeSpec.ValueRequirement(planksCrafted, 1)
+                )),
+                ResearchStageSpec.valuesOnly(stagesDemoStage2, List.of(
+                        new ResearchNodeSpec.ValueRequirement(planksCrafted, 3)
+                )),
                 ResearchStageSpec.valuesOnly(stagesDemoStage3, List.of(
-                        new ResearchNodeSpec.ValueRequirement(stagesCollector, 2)
+                        new ResearchNodeSpec.ValueRequirement(planksCrafted, 5)
                 ))
         ), List.of());
 

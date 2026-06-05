@@ -37,5 +37,49 @@
     "required_facts": [
       "modonomicon:demo/cobblestone_acquired"
     ]
+  },
+  {
+    "id": "modonomicon:demo/stages_demo",
+    "required_facts": [
+      "modonomicon:demo/condition_root_viewed"
+    ],
+    "stages": [
+      {
+        "id": "modonomicon:demo/stages_demo_stage_1",
+        "required_values": [
+          {
+            "threshold": 1,
+            "value_id": "modonomicon:demo/stages_planks_crafted"
+          }
+        ]
+      },
+      {
+        "id": "modonomicon:demo/stages_demo_stage_2",
+        "required_values": [
+          {
+            "threshold": 3,
+            "value_id": "modonomicon:demo/stages_planks_crafted"
+          }
+        ]
+      },
+      {
+        "id": "modonomicon:demo/stages_demo_stage_3",
+        "required_values": [
+          {
+            "threshold": 5,
+            "value_id": "modonomicon:demo/stages_planks_crafted"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "modonomicon:demo/stages_dependent",
+    "required_stages": [
+      {
+        "node_id": "modonomicon:demo/stages_demo",
+        "stage_id": "modonomicon:demo/stages_demo_stage_2"
+      }
+    ]
   }
 ]

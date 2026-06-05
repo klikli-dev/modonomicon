@@ -46,22 +46,28 @@
     "stages": [
       {
         "id": "modonomicon:demo/stages_demo_stage_1",
-        "required_facts": [
-          "modonomicon:demo/stages_stage_1_viewed"
+        "required_values": [
+          {
+            "threshold": 1,
+            "value_id": "modonomicon:demo/stages_planks_crafted"
+          }
         ]
       },
       {
         "id": "modonomicon:demo/stages_demo_stage_2",
-        "required_facts": [
-          "modonomicon:demo/stages_stage_2_viewed"
+        "required_values": [
+          {
+            "threshold": 3,
+            "value_id": "modonomicon:demo/stages_planks_crafted"
+          }
         ]
       },
       {
         "id": "modonomicon:demo/stages_demo_stage_3",
         "required_values": [
           {
-            "threshold": 2,
-            "value_id": "modonomicon:demo/stages_collector"
+            "threshold": 5,
+            "value_id": "modonomicon:demo/stages_planks_crafted"
           }
         ]
       }
