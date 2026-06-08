@@ -34,6 +34,7 @@ public class ClientConfig {
         public final ModConfigSpec.BooleanValue storeLastOpenPageWhenClosingEntry;
 
         public final ModConfigSpec.ConfigValue<List<? extends String>> fontFallbackLocales;
+        public final ModConfigSpec.BooleanValue pauseGameWhenOpen;
 
         public QoLCategory(ModConfigSpec.Builder builder) {
             builder.comment("Quality of Life Settings").push("qol");
@@ -46,6 +47,9 @@ public class ClientConfig {
             var fontFallbackLocalesDefault = new ArrayList<>(List.of("zh_cn", "ja_jp", "ko_kr")); //wrap in arraylist because immutable lists cause issues with the config system
             this.fontFallbackLocales = builder.comment("If your locale is not supported by the default Modonomicon font, indicated by the book just rendering blocky shapes instead of characters, add your locale to this list to fall back to the builtin Minecraft font.")
                     .defineList("fontFallbackLocales", fontFallbackLocalesDefault, () -> "", (e) -> true);
+
+            this.pauseGameWhenOpen = builder.comment("If true, the game will pause when a Modonomicon book is open (singleplayer only).")
+                    .define("pauseGameWhenOpen", true);
 
             builder.pop();
         }
