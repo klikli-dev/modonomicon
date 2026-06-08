@@ -121,6 +121,28 @@ public final class ResearchDataBuilder {
     }
 
     /**
+     * Declares a research node with stages, stage dependencies, and optional toast.
+     */
+    public ResearchNodeRef node(
+            ResearchNodeRef ref,
+            List<ResearchFactRef> requiredFacts,
+            List<ResearchNodeSpec.ValueRequirement> requiredValues,
+            List<ResearchStageSpec> stages,
+            List<ResearchNodeSpec.StageDependencySpec> requiredStages,
+            ResearchToastDefinition toast
+    ) {
+        this.nodes.add(ResearchNodeSpec.of(ref, requiredFacts, requiredValues, stages, requiredStages, Optional.ofNullable(toast)));
+        return ref;
+    }
+
+    /**
+     * Creates a fluent builder for authoring a complex research node.
+     */
+    public ResearchNodeBuilder nodeBuilder(ResearchNodeRef ref) {
+        return new ResearchNodeBuilder(this, ref);
+    }
+
+    /**
      * Adds toast display data to an existing fact.
      */
     public void toast(ResearchFactRef factRef, ResearchToastDefinition toast) {

@@ -116,36 +116,37 @@ public class DemoResearch extends SingleResearchSubProvider {
                 .incrementValue("demo/stages_planks_hook", planksCrafted, 1);
 
         // Multi-stage node: requires conditionRootViewed to start, then 3 value-based stages
-        this.node(STAGES_DEMO, List.of(conditionRootViewed), List.of(), List.of(
-                ResearchStageSpec.valuesOnly(stagesDemoStage1, List.of(
+        this.nodeBuilder(STAGES_DEMO)
+                .withFact(conditionRootViewed)
+                .withStage(ResearchStageSpec.valuesOnly(stagesDemoStage1, List.of(
                         new ResearchNodeSpec.ValueRequirement(planksCrafted, 1)
                 )).toast(new ResearchToastDefinition(
                         toastKey("stage_progress"),
                         List.of(),
                         toastKey("stages_demo_stage_1.title"),
                         new BookIcon(new ItemStackTemplate(Items.OAK_PLANKS))
-                )),
-                ResearchStageSpec.valuesOnly(stagesDemoStage2, List.of(
+                )))
+                .withStage(ResearchStageSpec.valuesOnly(stagesDemoStage2, List.of(
                         new ResearchNodeSpec.ValueRequirement(planksCrafted, 3)
-                )),
-                ResearchStageSpec.valuesOnly(stagesDemoStage3, List.of(
+                )))
+                .withStage(ResearchStageSpec.valuesOnly(stagesDemoStage3, List.of(
                         new ResearchNodeSpec.ValueRequirement(planksCrafted, 5)
                 )).toast(new ResearchToastDefinition(
                         toastKey("stage_complete"),
                         List.of(),
                         toastKey("stages_demo_stage_3.title"),
                         new BookIcon(new ItemStackTemplate(Items.DIAMOND))
-                ))
-        ), List.of());
+                )))
+                .build();
         this.add(toastKey("stage_progress"), "Stage Progress");
         this.add(toastKey("stage_complete"), "Stage Complete");
         this.add(toastKey("stages_demo_stage_1.title"), "First Planks Crafted");
         this.add(toastKey("stages_demo_stage_3.title"), "All Stages Complete");
 
         // Node that depends on stages_demo reaching stage 2
-        this.node(STAGES_DEPENDENT, List.of(), List.of(), List.of(), List.of(
-                ResearchNodeSpec.StageDependencySpec.of(STAGES_DEMO, stagesDemoStage2)
-        ));
+        this.nodeBuilder(STAGES_DEPENDENT)
+                .withStageDependency(STAGES_DEMO, stagesDemoStage2)
+                .build();
 
         // Research node and stage display names for condition tooltips
         this.researchNodeName(CONDITION_LEVEL_1, "Condition Level 1");

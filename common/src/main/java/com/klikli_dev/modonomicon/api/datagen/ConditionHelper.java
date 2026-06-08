@@ -25,27 +25,11 @@ public class ConditionHelper {
         return this.researchNodeUnlocked(nodeRef.id());
     }
 
-    public BookResearchNodeUnlockedConditionModel researchNodeUnlockedBuilder(Identifier nodeId) {
-        return BookResearchNodeUnlockedConditionModel.create().withNode(nodeId);
-    }
-
-    public BookResearchNodeUnlockedConditionModel researchNodeUnlockedBuilder(ResearchNodeRef nodeRef) {
-        return this.researchNodeUnlockedBuilder(nodeRef.id());
-    }
-
     public BookAndConditionModel and(BookConditionModel... children) {
         return BookAndConditionModel.create().withChildren(children);
     }
 
-    public BookAndConditionModel andBuilder(BookConditionModel... children) {
-        return BookAndConditionModel.create().withChildren(children);
-    }
-
     public BookOrConditionModel or(BookConditionModel... children) {
-        return BookOrConditionModel.create().withChildren(children);
-    }
-
-    public BookOrConditionModel orBuilder(BookConditionModel... children) {
         return BookOrConditionModel.create().withChildren(children);
     }
 

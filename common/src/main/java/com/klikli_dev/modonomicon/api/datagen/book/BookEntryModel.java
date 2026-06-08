@@ -14,7 +14,9 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookAndConditionMod
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookNoneConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookResearchNodeUnlockedConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookResearchStageCompletedConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeRef;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageRef;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
@@ -456,6 +458,11 @@ public class BookEntryModel {
 
     public BookEntryModel withCondition(ResearchNodeRef nodeRef) {
         return this.withCondition(BookResearchNodeUnlockedConditionModel.create().withNode(nodeRef.id()));
+    }
+
+    public BookEntryModel withCondition(ResearchNodeRef nodeRef, ResearchStageRef stageRef) {
+        return this.withCondition(BookResearchStageCompletedConditionModel.create()
+                .withNode(nodeRef.id()).withStage(stageRef.id()));
     }
 
     /**

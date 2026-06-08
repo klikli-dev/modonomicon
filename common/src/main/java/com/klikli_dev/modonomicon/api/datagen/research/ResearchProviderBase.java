@@ -142,6 +142,23 @@ public abstract class ResearchProviderBase {
     }
 
     /**
+     * Creates a fluent builder for authoring a complex research node with stages, stage dependencies,
+     * and optional toast. Call {@link ResearchNodeBuilder#build()} to register the node.
+     *
+     * <p>Example usage:
+     * <pre>{@code
+     * this.nodeBuilder(STAGES_DEMO)
+     *     .withFact(conditionRootViewed)
+     *     .withStage(ResearchStageSpec.valuesOnly(stage1, List.of(...)))
+     *     .withStage(ResearchStageSpec.valuesOnly(stage2, List.of(...)))
+     *     .build();
+     * }</pre>
+     */
+    protected ResearchNodeBuilder nodeBuilder(ResearchNodeRef ref) {
+        return this.research.nodeBuilder(ref);
+    }
+
+    /**
      * Returns a fluent helper for authoring research ingress from external events into primitive
      * research fact grants.
      */
