@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-1.147.1] - 2026-06-08
+### :bug: Bug Fixes
+- [`8f1edc0`](https://github.com/klikli-dev/modonomicon/commit/8f1edc032ff796b3f7d2abb5f0e5676e50358482) - page order *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.2-1.147.0] - 2026-06-02
 ### :sparkles: New Features
 - [`d7bed44`](https://github.com/klikli-dev/modonomicon/commit/d7bed44fb12ae7023e15dc7a725f7dcc6ce57783) - update to stable neo *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2259,3 +2264,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-1.145.3]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.145.2...release/v26.1.2-1.145.3
 [release/v26.1.2-1.146.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.145.3...release/v26.1.2-1.146.0
 [release/v26.1.2-1.147.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.146.0...release/v26.1.2-1.147.0
+[release/v26.1.2-1.147.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.147.0...release/v26.1.2-1.147.1
