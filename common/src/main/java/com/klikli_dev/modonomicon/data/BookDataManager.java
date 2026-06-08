@@ -527,9 +527,14 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
     /**
      * Merges per-page JSON files into BookContentEntry inline page lists.
      * Pages in a file replace inline pages with the same ID.
-     * Pages without a matching inline ID are inserted at sort_number position (default: end of list).
+     * Pages without a matching inline ID are appended in sort_number order.
      */
     private void mergePageJsons(Map<Identifier, JsonObject> pageJsons, Map<Identifier, JsonObject> categoryJsons, Map<Identifier, JsonObject> entryJsons) {
+        // First pass: parse all page files and collect them, grouped by entry
+        // We use a LinkedHashMap to preserve insertion order while grouping
+        record ParsedPage(BookContentEntry contentEntry, BookPage page, int sortNumber) {}
+        var pagesByEntry = new LinkedHashMap<BookContentEntry, List<ParsedPage>>();
+
         var sortedEntries = new ArrayList<>(pageJsons.entrySet());
         sortedEntries.sort(Comparator.comparing(e -> e.getKey().toString()));
         for (var entry : sortedEntries) {
@@ -609,8 +614,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
                 // Read sort_number if present (default: -1 = append at end)
                 var sortNumber = GsonHelper.getAsInt(entry.getValue(), "sort_number", -1);
 
-                // Merge: replace inline page with same ID, or insert at sort_number
-                this.mergePageIntoEntry(contentEntry, page, sortNumber);
+                pagesByEntry.computeIfAbsent(contentEntry, k -> new ArrayList<>())
+                        .add(new ParsedPage(contentEntry, page, sortNumber));
 
                 BookErrorManager.get().reset();
             } catch (Exception e) {
@@ -618,13 +623,23 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
                 BookErrorManager.get().reset();
             }
         }
+
+        // Second pass: merge pages into entries, sorted by sort_number within each entry
+        for (var entry : pagesByEntry.entrySet()) {
+            var contentEntry = entry.getKey();
+            var pages = entry.getValue();
+            pages.sort(Comparator.comparingInt(ParsedPage::sortNumber));
+            for (var parsedPage : pages) {
+                this.mergePageIntoEntry(contentEntry, parsedPage.page(), parsedPage.sortNumber());
+            }
+        }
     }
 
     /**
      * Merges a single page into a BookContentEntry's page list.
-     * If an inline page has the same ID, it is replaced.
-     * Otherwise, the page is inserted at the given sortNumber position (default -1 = append at end).
-     * Uses the page's own ID (page.getId()) as the authoritative identifier for the merge check.
+     * If an inline page has the same ID, it is replaced in-place.
+     * Otherwise, the page is appended to the end.
+     * Pages must be merged in sort_number order to ensure correct positioning.
      */
     private void mergePageIntoEntry(BookContentEntry contentEntry, BookPage page, int sortNumber) {
         var pages = contentEntry.getPages();
@@ -641,13 +656,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
             }
         }
 
-        // No matching ID — insert at sortNumber position or append
-        if (sortNumber < 0) {
-            pages.add(page);
-        } else {
-            var insertIndex = Math.min(sortNumber, pages.size());
-            pages.add(insertIndex, page);
-        }
+        // No matching ID — pages are merged in sort_number order, so appending preserves correct ordering
+        pages.add(page);
     }
 
     public static class Client extends SimpleJsonResourceReloadListener<JsonElement> {
