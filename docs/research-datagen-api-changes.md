@@ -276,7 +276,7 @@ Top-level datagen orchestrator. Collects bundles from `ResearchSubProvider`s and
 |-------------|-------------|
 | `ResearchProvider(PackOutput, CompletableFuture<Provider>, String modId, List<ResearchSubProvider>)` | Basic constructor |
 | `(..., ResearchCache)` | With research cache for merging book-generated research |
-| `(..., ResearchCache, LanguageProviderCache)` | Also with language cache |
+| `(..., ResearchCache, LanguageProviderCache)` | Also with language cache for translation injection |
 
 ### Generated Files Per Bundle
 - `facts.json` - All fact definitions
@@ -284,6 +284,31 @@ Top-level datagen orchestrator. Collects bundles from `ResearchSubProvider`s and
 - `nodes.json` - All node definitions
 - `hooks.json` - Merged hook definitions (entry_viewed_once + item_crafted + item_acquired)
 - `advancement_hooks.json` - Advancement hook definitions
+
+---
+
+## `BookProvider`
+
+**Path:** `com.klikli_dev.modonomicon.api.datagen.BookProvider`
+
+Top-level datagen orchestrator for book content. Collects bundles from `BookSubProvider`s, writes book/category/entry/page JSON files, and compiles entry hierarchy research.
+
+### Constructors
+| Constructor | Description |
+|-------------|-------------|
+| `BookProvider(PackOutput, CompletableFuture<HolderLookup.Provider>, String modId, List<BookSubProvider>)` | Basic constructor — research is written directly to disk |
+| `(..., LanguageProviderCache langCache, ResearchCache researchCache)` | Full constructor — book-generated research is forwarded to the `ResearchCache` for merging with authored research |
+
+### Research Orchestration
+During `run()`, the provider:
+1. Calls each `BookSubProvider` to collect `BookModel`s.
+2. For each book, runs `BookHierarchyResearchCompiler.compile(book)` to produce a `CompiledBookResearch` (if `generateEntryHierarchyResearch` is true).
+3. If a `ResearchCache` was provided, forwards the compiled research to `researchCache.accept(bundleId, research)`. Otherwise writes it directly to disk via `writeResearchBundle()`.
+4. Writes book, category, entry, page, and command JSON files.
+
+### Generated Files Per Book
+- Book JSON, category JSONs, entry JSONs, page JSONs, command JSONs
+- Research bundle (if `generateEntryHierarchyResearch` is true and no `ResearchCache`): `facts.json`, `hooks.json`, `nodes.json`
 
 ---
 
@@ -321,38 +346,197 @@ void generate(BiConsumer<Identifier, ResearchBundle> consumer, HolderLookup.Prov
 
 ---
 
+## `SingleResearchSubProvider`
+
+**Path:** `com.klikli_dev.modonomicon.api.datagen.research.SingleResearchSubProvider`
+
+Abstract base class for authoring one research bundle. Mirrors `SingleBookSubProvider` on the book side. Extend this instead of implementing `ResearchSubProvider` directly when you author a single research bundle.
+
+### Constructor
+| Parameter | Description |
+|-----------|-------------|
+| `String researchId` | The path segment for this research bundle (e.g. `"demo"`) |
+| `String modId` | The mod ID namespace |
+
+### Key Methods
+| Method | Description |
+|--------|-------------|
+| `researchId()` | Returns the research ID passed to the constructor |
+| `generateResearch()` | **Abstract** — subclasses implement this to author facts, nodes, and ingress mappings |
+| Inherited from `ResearchProviderBase` | `fact()`, `value()`, `node()`, `nodeBuilder()`, `ingress()`, `lang()`, `add()`, `modLoc()`, `mcLoc()`, `stageRef()`, `researchNodeName()`, `researchStageName()` |
+
+The `generate()` method (from `ResearchSubProvider`) creates a `ResearchDataBuilder`, calls `this.research(research)` to inject it, then calls `this.generateResearch()`, and submits the resulting `ResearchBundle` under the key `modLoc(researchId)`.
+
+---
+
 ## Book Condition Changes
 
-### `BookResearchNodeUnlockedCondition` (runtime)
+### Removed Condition Types
+
+The following condition types and their datagen models have been **deleted entirely**. They will throw at deserialization time if encountered in saved data.
+
+#### `BookEntryReadCondition` (DELETED)
+- **Was:** `com.klikli_dev.modonomicon.book.conditions.BookEntryReadCondition`
+- **Condition type ID:** `modonomicon:entry_read`
+- **Was used for:** Checking if a specific book entry had been read by the player.
+- **Runtime behavior was:** `BookUnlockStateManager.get().isReadFor(player, entry)`
+- **Replacement:** Use `BookResearchNodeUnlockedCondition` backed by a research node that is triggered via an `entry_viewed_once` hook. If you were using `autoAddReadConditions`, see the `BookHierarchyResearchCompiler` section below.
+
+#### `BookEntryReadConditionModel` (DELETED)
+- **Was:** `com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryReadConditionModel`
+- **Methods lost:** `withEntry(Identifier)`, `withEntry(String)`
+
+#### `BookEntryUnlockedCondition` (DELETED)
+- **Was:** `com.klikli_dev.modonomicon.book.conditions.BookEntryUnlockedCondition`
+- **Condition type ID:** `modonomicon:entry_unlocked`
+- **Was used for:** Checking if a specific book entry was unlocked (visible, regardless of read status).
+- **Runtime behavior was:** `BookUnlockStateManager.get().isUnlockedFor(player, entry)`
+- **Replacement:** Use `BookResearchNodeUnlockedCondition` backed by the research node that governs that entry's unlock milestone.
+
+#### `BookEntryUnlockedConditionModel` (DELETED)
+- **Was:** `com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryUnlockedConditionModel`
+- **Methods lost:** `withEntry(Identifier)`, `withEntry(String)`
+
+#### `BookAdvancementCondition` (DELETED)
+- **Was:** `com.klikli_dev.modonomicon.book.conditions.BookAdvancementCondition`
+- **Condition type ID:** `modonomicon:advancement`
+- **Was used for:** Checking if a vanilla advancement was completed.
+- **Runtime behavior was:** `serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()`
+- **Replacement:** Use `AdvancementHookSpec` in your research datagen to grant a fact when the advancement is earned, then gate the entry on a `BookResearchNodeUnlockedCondition` backed by a node requiring that fact.
+
+#### `BookAdvancementConditionModel` (DELETED)
+- **Was:** `com.klikli_dev.modonomicon.api.datagen.book.condition.BookAdvancementConditionModel`
+- **Methods lost:** `withAdvancementId(Identifier)`, `withAdvancementId(String)`, `withAdvancement(AdvancementHolder)`
+
+### `BookCondition.fromJson` — Hard Rejection of Removed Types
+
+**Path:** `com.klikli_dev.modonomicon.book.conditions.BookCondition`
+
+`fromJson` now throws an `IllegalArgumentException` with a descriptive message if it encounters any of the removed condition type IDs:
+- `modonomicon:entry_read` → _"Book condition type 'modonomicon:entry_read' is no longer supported. Model this progression through explicit research hooks and research nodes instead."_
+- `modonomicon:entry_unlocked` → _"Book condition type 'modonomicon:entry_unlocked' is no longer supported. Replace it with the authoritative research node for the referenced progression milestone."_
+- `modonomicon:advancement` → _"Book condition type 'modonomicon:advancement' is no longer supported. Model this progression through explicit research hooks and research nodes instead."_
+
+### New Condition Types
+
+#### `BookResearchNodeUnlockedCondition` (runtime, NEW)
 **Path:** `com.klikli_dev.modonomicon.book.conditions.BookResearchNodeUnlockedCondition`
-- Now handles multi-stage nodes: checks if `stageIndex >= totalStages` for full completion.
+- Condition type ID: `modonomicon:research_node_unlocked`
+- Handles multi-stage nodes: checks if `stageIndex >= totalStages` for full completion.
 - Auto-generates tooltip using `Util.makeDescriptionId("research_node", nodeId)` if none provided.
 
-### `BookResearchNodeUnlockedConditionModel` (datagen)
+#### `BookResearchNodeUnlockedConditionModel` (datagen, NEW)
 **Path:** `com.klikli_dev.modonomicon.api.datagen.book.condition.BookResearchNodeUnlockedConditionModel`
-- Added `withNodeName()` - auto-sets tooltip from node's description ID translation key.
-- Added `withNode(String nodeId)` overload accepting a string.
+- Factory: `BookResearchNodeUnlockedConditionModel.create()`
+- `withNode(Identifier nodeId)` — set the node to check.
+- `withNode(String nodeId)` — parse-and-set overload.
+- `withNodeName()` — auto-sets tooltip from the node's description ID translation key.
 
-### `BookResearchStageCompletedCondition` (runtime)
+#### `BookResearchStageCompletedCondition` (runtime, NEW)
 **Path:** `com.klikli_dev.modonomicon.book.conditions.BookResearchStageCompletedCondition`
-- New condition type: `research_stage_completed`.
+- Condition type ID: `modonomicon:research_stage_completed`
 - Requires both `node_id` and `stage_id`.
 - Auto-generates tooltip using description IDs for both node and stage.
 
-### `BookResearchStageCompletedConditionModel` (datagen)
+#### `BookResearchStageCompletedConditionModel` (datagen, NEW)
 **Path:** `com.klikli_dev.modonomicon.api.datagen.book.condition.BookResearchStageCompletedConditionModel`
-- New condition model.
-- Methods: `withNode(Identifier)`, `withStage(Identifier)`, `withStageName()` (auto-tooltip).
+- Factory: `BookResearchStageCompletedConditionModel.create()`
+- `withNode(Identifier)`, `withStage(Identifier)`
+- `withStageName()` — auto-sets tooltip from the stage's description ID translation key.
 
 ### `ConditionHelper`
+
 **Path:** `com.klikli_dev.modonomicon.api.datagen.ConditionHelper`
-- Added `researchNodeUnlocked(ResearchNodeRef)` - accepts typed ref.
-- Added `researchStageCompleted(ResearchNodeRef, ResearchStageRef)` - new stage condition.
+
+#### Removed Methods
+| Old Method | Replacement |
+|------------|-------------|
+| `advancement(Identifier)` | Use `AdvancementHookSpec` in research datagen, then gate with `researchNodeUnlocked(...)` |
+| `advancementBuilder(Identifier)` | Same as above |
+| `entryRead(Identifier)` | `researchNodeUnlocked(Identifier)` or `BookEntryModel.withCondition(ResearchNodeRef)` |
+| `entryReadBuilder(Identifier)` | Same as above |
+| `entryRead(BookEntryModel)` | `researchNodeUnlocked(...)` or `BookEntryModel.withCondition(ResearchNodeRef)` |
+| `entryReadBuilder(BookEntryModel)` | Same as above |
+| `andBuilder(...)` | `and(...)` (builder variant removed; `and(...)` still exists) |
+| `orBuilder(...)` | `or(...)` (builder variant removed; `or(...)` still exists) |
+
+#### Added Methods
+| New Method | Description |
+|------------|-------------|
+| `researchNodeUnlocked(Identifier nodeId)` | Condition: research node is fully completed |
+| `researchNodeUnlocked(ResearchNodeRef nodeRef)` | Same, typed ref variant |
+| `researchStageCompleted(Identifier nodeId, Identifier stageId)` | Condition: specific stage of a node is completed |
+| `researchStageCompleted(ResearchNodeRef, ResearchStageRef)` | Same, typed ref variant |
+
+### `BookCategoryModel`
+
+**Path:** `com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel`
+
+#### Added Methods
+| New Method | Description |
+|------------|-------------|
+| `withCondition(ResearchNodeRef nodeRef)` | Shorthand for `BookResearchNodeUnlockedConditionModel` — gates the category behind a research node |
+
+### `BookPageModel`
+
+**Path:** `com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel`
+
+#### Added Methods
+| New Method | Description |
+|------------|-------------|
+| `withCondition(ResearchNodeRef nodeRef)` | Shorthand for `BookResearchNodeUnlockedConditionModel` — gates the page behind a research node |
 
 ### `BookEntryModel`
+
 **Path:** `com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel`
-- Added `withCondition(ResearchNodeRef)` - convenience for node-unlocked condition.
-- Added `withCondition(ResearchNodeRef, ResearchStageRef)` - convenience for stage-completed condition.
+
+#### Removed Behavior: `autoAddReadConditions`
+The old `effectiveCondition()` method would, if no explicit condition was set and `autoAddReadConditions` was true, automatically wrap parent entries in `BookEntryReadCondition` instances:
+```java
+// OLD behavior (now removed):
+// effectiveCondition() returned:
+//   BookEntryReadConditionModel.create().withEntry(parents.get(0).getEntryId())
+// or:
+//   BookAndConditionModel with all parents as BookEntryReadCondition
+```
+
+This logic has been removed. `effectiveCondition()` now returns `BookNoneConditionModel.create()` when no explicit condition is set. Parent-to-child progression is instead modeled through the research system (`BookHierarchyResearchCompiler`).
+
+#### Added Methods
+| New Method | Description |
+|------------|-------------|
+| `withCondition(ResearchNodeRef nodeRef)` | Shorthand for `BookResearchNodeUnlockedConditionModel` |
+| `withCondition(ResearchNodeRef, ResearchStageRef)` | Shorthand for `BookResearchStageCompletedConditionModel` |
+| `hasCondition()` | Returns `true` if an explicit condition has been set |
+
+### `BookModel`
+
+**Path:** `com.klikli_dev.modonomicon.api.datagen.book.BookModel`
+
+#### Removed
+- Field: `autoAddReadConditions` (boolean)
+- Method: `autoAddReadConditions()`
+- Method: `withAutoAddReadConditions(boolean)`
+
+#### Added
+- Field: `generateEntryHierarchyResearch` (boolean)
+- Method: `generateEntryHierarchyResearch()`
+- Method: `withGenerateEntryHierarchyResearch(boolean)` — When true, the book provider will generate canonical research for eligible entry parent links via `BookHierarchyResearchCompiler`.
+
+### `BookUnlockStateManager` (DELETED)
+
+**Was:** `com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager`
+
+The entire class has been removed. The old entry-level unlock/read state tracking system is replaced by the research system's `ResearchStateManager`. Key methods that no longer exist:
+- `isReadFor(Player, BookEntry)`
+- `isUnlockedFor(Player, BookEntry)`
+- `isUnlockedFor(Player, BookCategory)`
+- `getUnlockCodeFor(Player, Book)` / `applyUnlockCodeFor(ServerPlayer, String)`
+- `readFor(ServerPlayer, BookEntry)`
+- `resetFor(ServerPlayer, Book)`
+- `onAdvancement(ServerPlayer)`
+
+All of these are now handled through research facts, values, hooks, and node state.
 
 ---
 
@@ -376,6 +560,305 @@ New i18n keys added (in `en_us.json`):
 - `research_toast.modonomicon.research.stage` - Default toast description for stage completions
 - Various research node/stage display names for demo content
 - Condition tooltip translations for research-based conditions
+
+---
+
+## Platform Registration (NeoForge / Fabric)
+
+### `NeoBookProvider`
+
+**Path:** `com.klikli_dev.modonomicon.api.datagen.NeoBookProvider`
+
+NeoForge-specific factory for `BookProvider`. The `of()` method now requires `LanguageProviderCache` and `ResearchCache` parameters:
+
+```java
+public static BookProvider of(GatherDataEvent event, LanguageProviderCache langCache,
+        ResearchCache researchCache, BookSubProvider... subProviders)
+```
+
+### `NeoResearchProvider`
+
+**Path:** `com.klikli_dev.modonomicon.api.datagen.NeoResearchProvider`
+
+NeoForge-specific factory for `ResearchProvider`. **New class** in this branch.
+
+```java
+public static ResearchProvider of(GatherDataEvent event, LanguageProviderCache langCache,
+        ResearchCache researchCache, ResearchSubProvider... subProviders)
+```
+
+### `FabricBookProvider`
+
+**Path:** `com.klikli_dev.modonomicon.fabric.api.datagen.FabricBookProvider`
+
+Fabric equivalent of `NeoBookProvider`. Same signature change — requires `LanguageProviderCache` and `ResearchCache`.
+
+### `FabricResearchProvider`
+
+**Path:** `com.klikli_dev.modonomicon.fabric.api.datagen.FabricResearchProvider`
+
+**New class** — Fabric equivalent of `NeoResearchProvider`.
+
+### `ForgeBookProvider`
+
+**Path:** `com.klikli_dev.modonomicon.forge.api.datagen.ForgeBookProvider`
+
+Forge equivalent — same signature change.
+
+### `ForgeResearchProvider`
+
+**Path:** `com.klikli_dev.modonomicon.forge.api.datagen.ForgeResearchProvider`
+
+**New class** — Forge equivalent.
+
+### DataGenerators Wiring
+
+The `DataGenerators.gatherData` method on each platform now:
+1. Creates a shared `LanguageProviderCache` and `ResearchCache`.
+2. Passes both caches to `NeoBookProvider.of(...)` (or platform equivalent).
+3. Registers a `NeoResearchProvider.of(...)` (or platform equivalent) with the same caches.
+4. Registers the language provider (e.g. `EnUsProvider`) **after** the book provider so it can read texts added by the book provider from the cache.
+
+```java
+var langCache = new LanguageProviderCache("en_us");
+var researchCache = new ResearchCache();
+
+generator.addProvider(true, NeoBookProvider.of(event, langCache, researchCache,
+    new DemoBook(),
+    new DemoIndexBook(),
+    new DemoLeaflet()
+));
+generator.addProvider(true, NeoResearchProvider.of(event, langCache, researchCache, new DemoResearch(Modonomicon.MOD_ID)));
+generator.addProvider(true, new EnUsProvider(generator.getPackOutput(), langCache));
+```
+
+---
+
+## Config Changes
+
+### Removed: `ServerConfig.disableAdvancementLocking`
+
+The server config option `unlock.disableAdvancementLocking` has been **deleted**. The old option made advancement-based conditions always return true. Since the research system replaces advancement conditions entirely, this bypass is no longer relevant.
+
+### Added: `ClientConfig.showResearchToasts`
+
+**Path:** `com.klikli_dev.modonomicon.config.ClientConfig` → `qolCategory.showResearchToasts`
+
+New client config option (default: `true`). Controls whether toast notifications are shown when research facts are granted, values are incremented, or nodes/stages are unlocked.
+
+---
+
+## Generated JSON File Structure
+
+Research datagen produces the following JSON files per bundle under `data/<namespace>/modonomicon/research/<bundle_path>/`:
+
+### `facts.json`
+Array of fact definitions:
+```json
+[
+  { "id": "mymod/my_fact" },
+  { "id": "mymod/another_fact" }
+]
+```
+
+### `values.json`
+Array of value definitions:
+```json
+[
+  { "id": "mymod/my_counter" }
+]
+```
+
+### `nodes.json`
+Array of node definitions:
+```json
+[
+  {
+    "id": "mymod/my_node",
+    "required_facts": ["mymod/my_fact"],
+    "required_values": [
+      { "value_id": "mymod/my_counter", "threshold": 5 }
+    ],
+    "stages": [
+      {
+        "id": "mymod/my_node_stage_1",
+        "required_values": [
+          { "value_id": "mymod/my_counter", "threshold": 1 }
+        ]
+      }
+    ],
+    "required_stages": [
+      { "node_id": "mymod/other_node", "stage_id": "mymod/other_node_stage_1" }
+    ],
+    "toast": {
+      "title": "research_toast.mymod.node_unlocked",
+      "description": "research_toast.modonomicon.research.node",
+      "icon": { "id": "minecraft:diamond" }
+    }
+  }
+]
+```
+
+### `hooks.json`
+Merged array of all non-advancement hooks (entry_viewed_once + item_crafted + item_acquired):
+```json
+[
+  {
+    "id": "mymod/my_hook",
+    "trigger_type": "modonomicon:entry_viewed_once",
+    "event_target_id": "mymod:some_entry",
+    "fact_id": "mymod/my_fact"
+  },
+  {
+    "id": "mymod/item_hook",
+    "trigger_type": "modonomicon:item_crafted",
+    "event_target_id": "minecraft:stick",
+    "event_target_item": { "id": "minecraft:stick" },
+    "value_id": "mymod/my_counter"
+  }
+]
+```
+
+### `advancement_hooks.json`
+Array of advancement-triggered hooks:
+```json
+[
+  {
+    "id": "mymod/advancement_hook",
+    "advancement_id": "minecraft:story/mine_stone",
+    "fact_id": "mymod/my_fact"
+  }
+]
+```
+
+### Book-Generated Research
+
+When `generateEntryHierarchyResearch` is true on a `BookModel` and a `ResearchCache` is provided, the `BookProvider` writes generated research under `data/<namespace>/modonomicon/research/generated/<book_path>/` with auto-generated entry_viewed_once hooks and nodes for parent→child entry progression. If no `ResearchCache` is provided, these files are written directly to disk by the `BookProvider`.
+
+---
+
+## Migration Guide
+
+### Users on `autoAddReadConditions` (most common case)
+
+If you had `withAutoAddReadConditions(true)` on your `BookModel`, the old system auto-wrapped every parent link in a `BookEntryReadCondition`. The migration path:
+
+**Before (old):**
+```java
+BookModel.create(bookId, name)
+    .withAutoAddReadConditions(true);
+```
+
+**After (new):**
+```java
+BookModel.create(bookId, name)
+    .withGenerateEntryHierarchyResearch(true);
+```
+
+The `BookHierarchyResearchCompiler` will automatically:
+1. Generate `entry_viewed_once` hooks for each entry with parents.
+2. Generate research nodes gated by those hooks.
+3. Produce the correct `BookResearchNodeUnlockedCondition` on each entry.
+
+No manual condition work is needed for simple parent→child progression.
+
+### Users with explicit `entryRead` conditions on entries
+
+If you were manually setting `entryRead` conditions via `ConditionHelper` or `BookEntryReadConditionModel`:
+
+**Before (old):**
+```java
+entry.withCondition(
+    this.conditionHelper().entryRead(parentEntry.getId())
+);
+// or:
+entry.withCondition(
+    BookEntryReadConditionModel.create().withEntry(parentEntry.getId())
+);
+```
+
+**After (new) — Option A: automatic hierarchy**
+If the condition just gates on "parent was read", use `withGenerateEntryHierarchyResearch(true)` on the book and remove the explicit condition entirely. The hierarchy compiler handles it.
+
+**After (new) — Option B: explicit research node**
+If you need fine-grained control, create a research node + hook manually:
+```java
+// In your ResearchSubProvider:
+var fact = researchData.fact("mymod/my_gate");
+researchData.grantFactOnEntryViewedOnce("mymod/my_hook", parentEntryId, fact);
+var node = researchData.node("mymod/my_gate_node", fact);
+
+// In your entry datagen:
+entry.withCondition(node);
+```
+
+### Users with `entryUnlocked` conditions
+
+**Before (old):**
+```java
+entry.withCondition(
+    BookEntryUnlockedConditionModel.create().withEntry(someEntry.getId())
+);
+```
+
+**After (new):**
+Identify the research node that represents the unlock milestone for that entry, then:
+```java
+entry.withCondition(researchNodeRef);
+// or for a specific stage:
+entry.withCondition(researchNodeRef, researchStageRef);
+```
+
+### Users with `advancement` conditions
+
+**Before (old):**
+```java
+entry.withCondition(
+    this.conditionHelper().advancement(advancementId)
+);
+// or:
+entry.withCondition(
+    BookAdvancementConditionModel.create().withAdvancementId(advancementId)
+);
+```
+
+**After (new):**
+Model the advancement gate through the research system:
+```java
+// In your ResearchSubProvider:
+var fact = researchData.fact("mymod/advancement_gate");
+researchData.grantFactOnAdvancementEarned("mymod/advancement_hook", advancementId, fact);
+var node = researchData.node("mymod/advancement_gate_node", fact);
+
+// In your entry datagen:
+entry.withCondition(node);
+```
+
+### Users with complex `and`/`or` condition combinations
+
+The `and(...)` and `or(...)` combinators on `ConditionHelper` still exist. You can combine research-based conditions the same way:
+
+```java
+entry.withCondition(
+    this.conditionHelper().and(
+        this.conditionHelper().researchNodeUnlocked(nodeA),
+        this.conditionHelper().researchStageCompleted(nodeB, stageB)
+    )
+);
+```
+
+Note: `andBuilder(...)` and `orBuilder(...)` have been removed. Use `and(...)` / `or(...)` directly.
+
+### `BookUnlockStateManager` API consumers
+
+If your mod directly called `BookUnlockStateManager.get()` methods (e.g. `isReadFor`, `isUnlockedFor`, `resetFor`), these no longer exist. Use `ResearchStateManager` instead:
+
+| Old API | New API |
+|---------|---------|
+| `BookUnlockStateManager.get().isReadFor(player, entry)` | Check if the entry's corresponding research node is completed via `ResearchStateManager` |
+| `BookUnlockStateManager.get().isUnlockedFor(player, entry)` | Check if the entry's research node is unlocked |
+| `BookUnlockStateManager.get().resetFor(player, book)` | `ResetBookResearchCommand` or `ResearchStateManager` reset |
+| `BookUnlockStateManager.get().onAdvancement(player)` | Research hooks fire automatically via `AdvancementResearchHookService` |
 
 ---
 
