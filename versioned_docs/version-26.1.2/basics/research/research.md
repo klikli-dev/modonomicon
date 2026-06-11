@@ -59,4 +59,3 @@ The `ResearchStateManager` tracks per-player research state. Research hooks fire
 - [Research Conditions](./conditions) — unlocking entries and categories via research nodes
 - [Research Scenarios](./scenarios) — common patterns for advancement gating, item crafting, and more
 - [Research Datagen](./datagen) — authoring research content via datagen
-- [Research Datagen API changes](../../../../docs/research-datagen-api-changes.md) — full API reference
