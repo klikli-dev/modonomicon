@@ -91,8 +91,8 @@ public class ModonomiconFabric implements ModInitializer {
             ResearchStateManager.get().onDatapackSync(handler.getPlayer());
             // Replay advancement-backed hooks if research state is stale (e.g. reset while offline).
             if (handler.getPlayer() instanceof ServerPlayer player) {
-                if (ResearchServices.advancements().needsAdvancementReplay(player)) {
-                    ResearchServices.advancements().replayAll(player);
+                if (ResearchServices.hooks().needsAdvancementReplay(player)) {
+                    ResearchServices.hooks().replayAdvancements(player);
                     ResearchStateManager.get().syncFor(player);
                     BookVisualStateManager.get().syncFor(player);
                 }

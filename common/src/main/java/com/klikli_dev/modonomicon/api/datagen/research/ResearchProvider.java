@@ -10,7 +10,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.datagen.LanguageProviderCache;
-import com.klikli_dev.modonomicon.research.data.AdvancementResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchFactDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
@@ -109,14 +108,8 @@ public class ResearchProvider implements DataProvider {
                 futures.add(this.save(cache, ResearchValueDefinition.CODEC, data.valueDefinitions(), base.resolve("values.json")));
                 futures.add(this.save(cache, ResearchNodeDefinition.CODEC, data.nodeDefinitions(), base.resolve("nodes.json")));
 
-                // Merge all hook types into a single list for hooks.json (trigger type dispatch handles routing at load time)
-                var allHooks = new ArrayList<ResearchHookDefinition>();
-                allHooks.addAll(data.hookDefinitions());       // entry_viewed_once
-                allHooks.addAll(data.itemCraftedHookDefinitions());
-                allHooks.addAll(data.itemAcquiredHookDefinitions());
-                futures.add(this.save(cache, ResearchHookDefinition.CODEC, allHooks, base.resolve("hooks.json")));
-
-                futures.add(this.save(cache, AdvancementResearchHookDefinition.CODEC, data.advancementHookDefinitions(), base.resolve("advancement_hooks.json")));
+                // All hooks (all trigger types) go into a single hooks.json
+                futures.add(this.save(cache, ResearchHookDefinition.CODEC, data.hookDefinitions(), base.resolve("hooks.json")));
             }
 
             return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));

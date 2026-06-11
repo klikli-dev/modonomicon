@@ -6,7 +6,8 @@
 
 package com.klikli_dev.modonomicon.api.datagen.research;
 
-import com.klikli_dev.modonomicon.research.data.AdvancementResearchHookDefinition;
+import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
+import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import net.minecraft.resources.Identifier;
 
 /**
@@ -41,15 +42,18 @@ public record AdvancementHookSpec(
     }
 
     /**
-     * Compiles this ingress declaration into the canonical advancement-hook record.
+     * Compiles this ingress declaration into the canonical research hook record.
      */
-    public AdvancementResearchHookDefinition toDefinition() {
-        return new AdvancementResearchHookDefinition(
+    public ResearchHookDefinition toDefinition() {
+        return new ResearchHookDefinition(
                 this.id,
+                TriggerTypeRegistry.ADVANCEMENT,
                 this.advancementId,
                 this.factRef != null ? this.factRef.id() : null,
                 this.valueRef != null ? this.valueRef.id() : null,
-                this.increment
+                this.increment,
+                null,
+                false
         );
     }
 }

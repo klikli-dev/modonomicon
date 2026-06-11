@@ -6,7 +6,7 @@
 
 package com.klikli_dev.modonomicon.api.datagen.research;
 
-import com.klikli_dev.modonomicon.research.data.AdvancementResearchHookDefinition;
+import com.klikli_dev.modonomicon.data.TriggerType;
 import com.klikli_dev.modonomicon.research.data.ResearchFactDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
@@ -31,10 +31,7 @@ public final class ResearchDataBuilder {
     private final List<ResearchFactSpec> facts = new ArrayList<>();
     private final List<ResearchValueSpec> values = new ArrayList<>();
     private final List<ResearchNodeSpec> nodes = new ArrayList<>();
-    private final List<EntryViewedOnceHookSpec> entryViewedOnceHooks = new ArrayList<>();
-    private final List<ItemCraftedHookSpec> itemCraftedHooks = new ArrayList<>();
-    private final List<ItemAcquiredHookSpec> itemAcquiredHooks = new ArrayList<>();
-    private final List<AdvancementHookSpec> advancementHooks = new ArrayList<>();
+    private final List<ResearchHookSpec> hooks = new ArrayList<>();
 
     /**
      * Creates a builder that will namespace authored relative paths under the given namespace.
@@ -181,69 +178,68 @@ public final class ResearchDataBuilder {
         }
     }
 
+    // --- Generic hook ingress ---
+
+    /**
+     * Grants a fact when the specified trigger type fires for the given target id.
+     * This is the generic entry point for third-party trigger types.
+     */
+    public void grantFact(String hookPath, TriggerType triggerType, Identifier targetId, ResearchFactRef factRef) {
+        this.hooks.add(new ResearchHookSpec(
+                Identifier.fromNamespaceAndPath(this.namespace, hookPath),
+                triggerType, targetId, factRef, null, 1, null, false
+        ));
+    }
+
+    /**
+     * Increments a value when the specified trigger type fires for the given target id.
+     * This is the generic entry point for third-party trigger types.
+     */
+    public void incrementValue(String hookPath, TriggerType triggerType, Identifier targetId, ResearchValueRef valueRef, int increment) {
+        this.hooks.add(new ResearchHookSpec(
+                Identifier.fromNamespaceAndPath(this.namespace, hookPath),
+                triggerType, targetId, null, valueRef, increment, null, false
+        ));
+    }
+
+    // --- Convenience sugar (delegate to generic) ---
+
     /**
      * Declares an explicit {@code entry_viewed_once} research ingress hook that grants a fact.
-     *
-     * The generated hook means: when the specified book entry is viewed once, grant the specified
-     * research fact. That fact can then participate in research-node unlocking.
      */
     public void grantFactOnEntryViewedOnce(String path, Identifier entryId, ResearchFactRef factRef) {
-        this.entryViewedOnceHooks.add(EntryViewedOnceHookSpec.grantFact(
-                Identifier.fromNamespaceAndPath(this.namespace, path),
-                entryId,
-                factRef
-        ));
+        this.grantFact(path, com.klikli_dev.modonomicon.registry.TriggerTypeRegistry.ENTRY_VIEWED_ONCE, entryId, factRef);
     }
 
     /**
      * Declares an explicit {@code entry_viewed_once} research ingress hook that increments a value.
      */
     public void incrementValueOnEntryViewedOnce(String path, Identifier entryId, ResearchValueRef valueRef, int increment) {
-        this.entryViewedOnceHooks.add(EntryViewedOnceHookSpec.incrementValue(
-                Identifier.fromNamespaceAndPath(this.namespace, path),
-                entryId,
-                valueRef,
-                increment
-        ));
+        this.incrementValue(path, com.klikli_dev.modonomicon.registry.TriggerTypeRegistry.ENTRY_VIEWED_ONCE, entryId, valueRef, increment);
     }
 
     /**
      * Declares an explicit advancement-earned research ingress hook that grants a fact.
-     *
-     * The generated hook means: when the specified advancement is earned, grant the specified
-     * research fact. That fact can then participate in research-node unlocking.
      */
     public void grantFactOnAdvancementEarned(String path, Identifier advancementId, ResearchFactRef factRef) {
-        this.advancementHooks.add(AdvancementHookSpec.grantFact(
-                Identifier.fromNamespaceAndPath(this.namespace, path),
-                advancementId,
-                factRef
-        ));
+        this.grantFact(path, com.klikli_dev.modonomicon.registry.TriggerTypeRegistry.ADVANCEMENT, advancementId, factRef);
     }
 
     /**
      * Declares an explicit advancement-earned research ingress hook that increments a value.
      */
     public void incrementValueOnAdvancementEarned(String path, Identifier advancementId, ResearchValueRef valueRef, int increment) {
-        this.advancementHooks.add(AdvancementHookSpec.incrementValue(
-                Identifier.fromNamespaceAndPath(this.namespace, path),
-                advancementId,
-                valueRef,
-                increment
-        ));
+        this.incrementValue(path, com.klikli_dev.modonomicon.registry.TriggerTypeRegistry.ADVANCEMENT, advancementId, valueRef, increment);
     }
 
     /**
      * Declares an explicit {@code item_crafted} research ingress hook that grants a fact.
-     *
-     * The generated hook means: when the specified item is crafted, grant the specified
-     * research fact. That fact can then participate in research-node unlocking.
      */
     public void grantFactOnItemCrafted(String path, ItemStackTemplate targetItem, ResearchFactRef factRef) {
-        this.itemCraftedHooks.add(ItemCraftedHookSpec.grantFact(
+        this.hooks.add(ResearchHookSpec.grantFact(
                 Identifier.fromNamespaceAndPath(this.namespace, path),
-                targetItem,
-                factRef
+                com.klikli_dev.modonomicon.registry.TriggerTypeRegistry.ITEM_CRAFTED,
+                targetItem
         ));
     }
 
@@ -251,10 +247,10 @@ public final class ResearchDataBuilder {
      * Declares an explicit {@code item_crafted} research ingress hook that grants a fact with component matching.
      */
     public void grantFactOnItemCrafted(String path, ItemStackTemplate targetItem, ResearchFactRef factRef, boolean matchComponents) {
-        this.itemCraftedHooks.add(ItemCraftedHookSpec.grantFact(
+        this.hooks.add(ResearchHookSpec.grantFact(
                 Identifier.fromNamespaceAndPath(this.namespace, path),
+                com.klikli_dev.modonomicon.registry.TriggerTypeRegistry.ITEM_CRAFTED,
                 targetItem,
-                factRef,
                 matchComponents
         ));
     }
@@ -263,8 +259,9 @@ public final class ResearchDataBuilder {
      * Declares an explicit {@code item_crafted} research ingress hook that increments a value.
      */
     public void incrementValueOnItemCrafted(String path, ItemStackTemplate targetItem, ResearchValueRef valueRef, int increment) {
-        this.itemCraftedHooks.add(ItemCraftedHookSpec.incrementValue(
+        this.hooks.add(ResearchHookSpec.incrementValue(
                 Identifier.fromNamespaceAndPath(this.namespace, path),
+                com.klikli_dev.modonomicon.registry.TriggerTypeRegistry.ITEM_CRAFTED,
                 targetItem,
                 valueRef,
                 increment
@@ -275,8 +272,9 @@ public final class ResearchDataBuilder {
      * Declares an explicit {@code item_crafted} research ingress hook that increments a value with component matching.
      */
     public void incrementValueOnItemCrafted(String path, ItemStackTemplate targetItem, ResearchValueRef valueRef, int increment, boolean matchComponents) {
-        this.itemCraftedHooks.add(ItemCraftedHookSpec.incrementValue(
+        this.hooks.add(ResearchHookSpec.incrementValue(
                 Identifier.fromNamespaceAndPath(this.namespace, path),
+                com.klikli_dev.modonomicon.registry.TriggerTypeRegistry.ITEM_CRAFTED,
                 targetItem,
                 valueRef,
                 increment,
@@ -286,15 +284,12 @@ public final class ResearchDataBuilder {
 
     /**
      * Declares an explicit {@code item_acquired} research ingress hook that grants a fact.
-     *
-     * The generated hook means: when the specified item is acquired, grant the specified
-     * research fact. That fact can then participate in research-node unlocking.
      */
     public void grantFactOnItemAcquired(String path, ItemStackTemplate targetItem, ResearchFactRef factRef) {
-        this.itemAcquiredHooks.add(ItemAcquiredHookSpec.grantFact(
+        this.hooks.add(ResearchHookSpec.grantFact(
                 Identifier.fromNamespaceAndPath(this.namespace, path),
-                targetItem,
-                factRef
+                com.klikli_dev.modonomicon.registry.TriggerTypeRegistry.ITEM_ACQUIRED,
+                targetItem
         ));
     }
 
@@ -302,10 +297,10 @@ public final class ResearchDataBuilder {
      * Declares an explicit {@code item_acquired} research ingress hook that grants a fact with component matching.
      */
     public void grantFactOnItemAcquired(String path, ItemStackTemplate targetItem, ResearchFactRef factRef, boolean matchComponents) {
-        this.itemAcquiredHooks.add(ItemAcquiredHookSpec.grantFact(
+        this.hooks.add(ResearchHookSpec.grantFact(
                 Identifier.fromNamespaceAndPath(this.namespace, path),
+                com.klikli_dev.modonomicon.registry.TriggerTypeRegistry.ITEM_ACQUIRED,
                 targetItem,
-                factRef,
                 matchComponents
         ));
     }
@@ -314,8 +309,9 @@ public final class ResearchDataBuilder {
      * Declares an explicit {@code item_acquired} research ingress hook that increments a value.
      */
     public void incrementValueOnItemAcquired(String path, ItemStackTemplate targetItem, ResearchValueRef valueRef, int increment) {
-        this.itemAcquiredHooks.add(ItemAcquiredHookSpec.incrementValue(
+        this.hooks.add(ResearchHookSpec.incrementValue(
                 Identifier.fromNamespaceAndPath(this.namespace, path),
+                com.klikli_dev.modonomicon.registry.TriggerTypeRegistry.ITEM_ACQUIRED,
                 targetItem,
                 valueRef,
                 increment
@@ -326,14 +322,17 @@ public final class ResearchDataBuilder {
      * Declares an explicit {@code item_acquired} research ingress hook that increments a value with component matching.
      */
     public void incrementValueOnItemAcquired(String path, ItemStackTemplate targetItem, ResearchValueRef valueRef, int increment, boolean matchComponents) {
-        this.itemAcquiredHooks.add(ItemAcquiredHookSpec.incrementValue(
+        this.hooks.add(ResearchHookSpec.incrementValue(
                 Identifier.fromNamespaceAndPath(this.namespace, path),
+                com.klikli_dev.modonomicon.registry.TriggerTypeRegistry.ITEM_ACQUIRED,
                 targetItem,
                 valueRef,
                 increment,
                 matchComponents
         ));
     }
+
+    // --- Definition compilation ---
 
     /**
      * Returns the compiled canonical fact definitions collected so far.
@@ -357,30 +356,9 @@ public final class ResearchDataBuilder {
     }
 
     /**
-     * Returns the compiled canonical entry-viewed research hook definitions collected so far.
+     * Returns ALL compiled hook definitions (all trigger types in one list).
      */
     public List<ResearchHookDefinition> hookDefinitions() {
-        return this.entryViewedOnceHooks.stream().map(EntryViewedOnceHookSpec::toDefinition).toList();
-    }
-
-    /**
-     * Returns the compiled canonical advancement research hook definitions collected so far.
-     */
-    public List<AdvancementResearchHookDefinition> advancementHookDefinitions() {
-        return this.advancementHooks.stream().map(AdvancementHookSpec::toDefinition).toList();
-    }
-
-    /**
-     * Returns the compiled canonical item-crafted research hook definitions collected so far.
-     */
-    public List<ResearchHookDefinition> itemCraftedHookDefinitions() {
-        return this.itemCraftedHooks.stream().map(ItemCraftedHookSpec::toDefinition).toList();
-    }
-
-    /**
-     * Returns the compiled canonical item-acquired research hook definitions collected so far.
-     */
-    public List<ResearchHookDefinition> itemAcquiredHookDefinitions() {
-        return this.itemAcquiredHooks.stream().map(ItemAcquiredHookSpec::toDefinition).toList();
+        return this.hooks.stream().map(ResearchHookSpec::toDefinition).toList();
     }
 }

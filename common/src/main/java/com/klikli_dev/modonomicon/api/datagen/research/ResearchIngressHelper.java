@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.api.datagen.research;
 
+import com.klikli_dev.modonomicon.data.TriggerType;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStackTemplate;
 
@@ -45,6 +46,14 @@ public final class ResearchIngressHelper {
      */
     public ItemCraftedIngress onItemCrafted(ItemStackTemplate targetItem) {
         return new ItemCraftedIngress(this.research, targetItem);
+    }
+
+    /**
+     * Starts authoring ingress from a custom trigger type.
+     * This is the generic entry point for third-party trigger types.
+     */
+    public GenericIngress on(TriggerType triggerType, Identifier targetId) {
+        return new GenericIngress(this.research, triggerType, targetId);
     }
 
     /**
@@ -264,6 +273,56 @@ public final class ResearchIngressHelper {
          */
         public void incrementValue(String hookPath, ResearchValueRef valueRef, int increment) {
             this.research.incrementValueOnItemAcquired(hookPath, this.targetItem, valueRef, increment);
+        }
+    }
+
+    /**
+     * Generic trigger-specific ingress authoring step for custom trigger types.
+     */
+    public static final class GenericIngress {
+        private final ResearchDataBuilder research;
+        private final TriggerType triggerType;
+        private final Identifier targetId;
+
+        /**
+         * Creates a generic ingress step bound to one specific trigger type and target id.
+         */
+        public GenericIngress(ResearchDataBuilder research, TriggerType triggerType, Identifier targetId) {
+            this.research = research;
+            this.triggerType = triggerType;
+            this.targetId = targetId;
+        }
+
+        /**
+         * Declares a new research fact and authors a corresponding ingress hook that grants it.
+         */
+        public ResearchFactRef declareFact(String factPath) {
+            var factRef = this.research.fact(factPath);
+            this.grantFact(factPath + "_hook", factRef);
+            return factRef;
+        }
+
+        /**
+         * Authors an explicit ingress hook that grants the given already-declared fact.
+         */
+        public void grantFact(String hookPath, ResearchFactRef factRef) {
+            this.research.grantFact(hookPath, this.triggerType, this.targetId, factRef);
+        }
+
+        /**
+         * Declares a new research value and authors a corresponding ingress hook that increments it.
+         */
+        public ResearchValueRef declareValue(String valuePath, int increment) {
+            var valueRef = this.research.value(valuePath);
+            this.incrementValue(valuePath + "_hook", valueRef, increment);
+            return valueRef;
+        }
+
+        /**
+         * Authors an explicit ingress hook that increments the given already-declared value.
+         */
+        public void incrementValue(String hookPath, ResearchValueRef valueRef, int increment) {
+            this.research.incrementValue(hookPath, this.triggerType, this.targetId, valueRef, increment);
         }
     }
 }

@@ -27,6 +27,7 @@ import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.research.ResearchServices;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
+import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
 import com.klikli_dev.modonomicon.registry.RegistryBootstrap;
@@ -130,8 +131,8 @@ public class ModonomiconNeo {
                 BookVisualStateManager.get().syncFor(player);
                 ResearchStateManager.get().onDatapackSync(player);
                 // Replay advancement-backed hooks if research state is stale (e.g. reset while offline).
-                if (ResearchServices.advancements().needsAdvancementReplay(player)) {
-                    ResearchServices.advancements().replayAll(player);
+                if (ResearchServices.hooks().needsAdvancementReplay(player)) {
+                    ResearchServices.hooks().replayAdvancements(player);
                     ResearchStateManager.get().syncFor(player);
                     BookVisualStateManager.get().syncFor(player);
                 }
@@ -152,7 +153,7 @@ public class ModonomiconNeo {
         //Advancement event handling for condition/unlock system
         NeoForge.EVENT_BUS.addListener((AdvancementEvent.AdvancementEarnEvent e) -> {
             var player = (ServerPlayer) e.getEntity();
-            if (ResearchServices.advancements().onAdvancement(player, e.getAdvancement().id())) {
+            if (ResearchServices.hooks().onAdvancement(player, e.getAdvancement().id())) {
                 ResearchStateManager.get().syncFor(player);
                 BookVisualStateManager.get().syncFor(player);
             }

@@ -9,15 +9,22 @@ package com.klikli_dev.modonomicon.registry;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.data.DispatchCodecRegistry;
 import com.klikli_dev.modonomicon.data.TriggerType;
+import com.klikli_dev.modonomicon.research.hook.TriggerHandler;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public final class TriggerTypeRegistry {
 
     private static final DispatchCodecRegistry<TriggerType> TYPES = new DispatchCodecRegistry<>(TriggerType::id, "trigger type");
+    private static final Map<TriggerType, TriggerHandler> HANDLERS = new HashMap<>();
 
     public static final TriggerType ENTRY_VIEWED_ONCE = register(
             Modonomicon.loc("entry_viewed_once"),
@@ -37,6 +44,12 @@ public final class TriggerTypeRegistry {
             Identifier.STREAM_CODEC.cast()
     );
 
+    public static final TriggerType ADVANCEMENT = register(
+            Modonomicon.loc("advancement"),
+            Identifier.CODEC.fieldOf(""),
+            Identifier.STREAM_CODEC.cast()
+    );
+
     private TriggerTypeRegistry() {
     }
 
@@ -44,7 +57,20 @@ public final class TriggerTypeRegistry {
     }
 
     public static TriggerType register(Identifier id, MapCodec<?> codec, StreamCodec<RegistryFriendlyByteBuf, ?> streamCodec) {
-        return TYPES.register(id, new TriggerType(id, codec, streamCodec));
+        return register(id, codec, streamCodec, null);
+    }
+
+    public static TriggerType register(Identifier id, MapCodec<?> codec, StreamCodec<RegistryFriendlyByteBuf, ?> streamCodec,
+                                       @Nullable TriggerHandler handler) {
+        var type = TYPES.register(id, new TriggerType(id, codec, streamCodec));
+        if (handler != null) {
+            HANDLERS.put(type, handler);
+        }
+        return type;
+    }
+
+    public static TriggerHandler handler(TriggerType type) {
+        return HANDLERS.getOrDefault(type, (player, targetId) -> List.of());
     }
 
     public static Codec<TriggerType> codec() {

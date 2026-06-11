@@ -36,7 +36,7 @@ public class ResetResearchCommand implements com.mojang.brigadier.Command<Comman
         var before = BookDataManager.get().getBooks().values().stream().collect(java.util.stream.Collectors.toMap(Book::getId, book -> BookVisibilitySnapshots.collect(player, book)));
         ResearchServices.state().resetFor(player);
         // Replay advancement-backed hooks so advancement-earned research is restored immediately.
-        ResearchServices.advancements().replayAll(player);
+        ResearchServices.hooks().replayAdvancements(player);
         for (var book : BookDataManager.get().getBooks().values()) {
             BookVisualStateManager.get().updateVisibilityDrivenUnread(player, book, before.get(book.getId()), BookVisibilitySnapshots.collect(player, book));
         }

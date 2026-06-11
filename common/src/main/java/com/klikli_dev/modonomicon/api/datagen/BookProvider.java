@@ -11,7 +11,6 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchCache;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.klikli_dev.modonomicon.research.data.AdvancementResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchFactDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
@@ -209,8 +208,7 @@ public class BookProvider implements DataProvider {
         return CompletableFuture.allOf(
                 this.save(cache, ResearchFactDefinition.CODEC, data.factDefinitions(), base.resolve("facts.json")),
                 this.save(cache, ResearchNodeDefinition.CODEC, data.nodeDefinitions(), base.resolve("nodes.json")),
-                this.save(cache, ResearchHookDefinition.CODEC, data.hookDefinitions(), base.resolve("hooks.json")),
-                this.save(cache, AdvancementResearchHookDefinition.CODEC, data.advancementHookDefinitions(), base.resolve("advancement_hooks.json"))
+                this.save(cache, ResearchHookDefinition.CODEC, data.hookDefinitions(), base.resolve("hooks.json"))
         );
     }
 

@@ -26,7 +26,7 @@ public abstract class MixinPlayerAdvancements {
 
     @Inject(at = @At("TAIL"), method = "award(Lnet/minecraft/advancements/AdvancementHolder;Ljava/lang/String;)Z")
     private void award(AdvancementHolder pAdvancement, String pCriterionKey, CallbackInfoReturnable<?> info) {
-        if (ResearchServices.advancements().onAdvancement(this.getPlayer(), pAdvancement.id())) {
+        if (ResearchServices.hooks().onAdvancement(this.getPlayer(), pAdvancement.id())) {
             ResearchStateManager.get().syncFor(this.getPlayer());
             BookVisualStateManager.get().syncFor(this.getPlayer());
         }

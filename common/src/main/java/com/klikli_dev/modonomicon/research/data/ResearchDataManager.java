@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.research.data;
 
 import com.google.gson.JsonElement;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data;
+import com.klikli_dev.modonomicon.data.TriggerType;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
@@ -30,7 +31,7 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
 
     private static final ResearchDataManager INSTANCE = new ResearchDataManager();
 
-    private ResearchData data = new ResearchData(Set.of(), Set.of(), Set.of(), Set.of(), List.of(), List.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of());
+    private ResearchData data = new ResearchData(Set.of(), Set.of(), Set.of(), Set.of(), List.of(), List.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of());
 
     private ResearchDataManager() {
         super(ExtraCodecs.JSON, FileToIdConverter.json(FOLDER));
@@ -44,26 +45,29 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
         return this.data;
     }
 
-    public List<ResearchHookDefinition> entryViewedOnceHooksFor(Identifier entryId) {
-        return this.data.entryViewedOnceHooks().getOrDefault(entryId, List.of());
+    /**
+     * Returns hooks for a specific trigger type and target id.
+     */
+    public List<ResearchHookDefinition> hooksFor(TriggerType type, Identifier targetId) {
+        return this.data.hooksFor(type, targetId);
     }
 
-    public List<ResearchHookDefinition> itemCraftedHooksFor(ItemStack itemStack) {
+    /**
+     * Returns all hooks for a specific trigger type.
+     */
+    public List<ResearchHookDefinition> hooksForType(TriggerType type) {
+        return this.data.hooksForType(type);
+    }
+
+    /**
+     * Returns hooks for an item stack with optional component matching.
+     */
+    public List<ResearchHookDefinition> itemHooksFor(TriggerType type, ItemStack itemStack) {
         var itemId = itemStack.getItem().builtInRegistryHolder().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElse(null);
         if (itemId == null) {
             return List.of();
         }
-        return this.data.itemCraftedHooks().getOrDefault(itemId, List.of()).stream()
-                .filter(h -> !h.matchComponents() || h.targetItem() == null || matchesComponents(itemStack, h.targetItem()))
-                .toList();
-    }
-
-    public List<ResearchHookDefinition> itemAcquiredHooksFor(ItemStack itemStack) {
-        var itemId = itemStack.getItem().builtInRegistryHolder().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElse(null);
-        if (itemId == null) {
-            return List.of();
-        }
-        return this.data.itemAcquiredHooks().getOrDefault(itemId, List.of()).stream()
+        return this.data.hooksFor(type, itemId).stream()
                 .filter(h -> !h.matchComponents() || h.targetItem() == null || matchesComponents(itemStack, h.targetItem()))
                 .toList();
     }
@@ -88,7 +92,6 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
         var nodes = new ArrayList<ResearchNodeDefinition>();
         var values = new ArrayList<ResearchValueDefinition>();
         var hooks = new ArrayList<ResearchHookDefinition>();
-        var advancementHooks = new ArrayList<AdvancementResearchHookDefinition>();
 
         var graphFacts = new HashMap<Identifier, List<Identifier>>();
         var graphNodes = new HashMap<Identifier, List<Identifier>>();
@@ -117,8 +120,6 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
                 var parsed = ResearchValueDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow();
                 values.addAll(parsed);
                 graphValues.computeIfAbsent(graphId, k -> new ArrayList<>()).addAll(parsed.stream().map(ResearchValueDefinition::id).toList());
-            } else if (fileName.equals("advancement_hooks")) {
-                advancementHooks.addAll(AdvancementResearchHookDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow());
             } else if (fileName.equals("hooks")) {
                 hooks.addAll(ResearchHookDefinition.CODEC.listOf().parse(JsonOps.INSTANCE, entry.getValue()).getOrThrow());
             }
@@ -132,6 +133,6 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
         var graphValueIds = new HashMap<Identifier, Set<Identifier>>();
         graphValues.forEach((k, v) -> graphValueIds.put(k, Set.copyOf(v)));
 
-        this.data = ResearchData.validate(facts, nodes, values, hooks, advancementHooks, graphFactIds, graphNodeIds, graphValueIds);
+        this.data = ResearchData.validate(facts, nodes, values, hooks, graphFactIds, graphNodeIds, graphValueIds);
     }
 }

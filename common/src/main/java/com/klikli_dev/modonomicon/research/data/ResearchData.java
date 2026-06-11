@@ -6,7 +6,7 @@
 
 package com.klikli_dev.modonomicon.research.data;
 
-import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
+import com.klikli_dev.modonomicon.data.TriggerType;
 import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
@@ -26,10 +26,7 @@ import java.util.stream.Collectors;
  * @param stageIds set of all known stage ids
  * @param nodeRules node activation rules (facts + values + stage dependencies)
  * @param nodeStageRules stage advancement rules per node
- * @param entryViewedOnceHooks hooks grouped by trigger target entry id
- * @param itemCraftedHooks hooks grouped by item id
- * @param itemAcquiredHooks hooks grouped by item id
- * @param advancementHooks hooks grouped by advancement id
+ * @param hooksByTypeAndTarget hooks grouped by trigger type, then by trigger target id
  * @param graphFactIds facts grouped by graph id
  * @param graphNodeIds nodes grouped by graph id
  * @param graphValueIds values grouped by graph id
@@ -46,10 +43,7 @@ public record ResearchData(
         Set<Identifier> stageIds,
         List<NodeRule> nodeRules,
         List<NodeStageRule> nodeStageRules,
-        Map<Identifier, List<ResearchHookDefinition>> entryViewedOnceHooks,
-        Map<Identifier, List<ResearchHookDefinition>> itemCraftedHooks,
-        Map<Identifier, List<ResearchHookDefinition>> itemAcquiredHooks,
-        Map<Identifier, List<AdvancementResearchHookDefinition>> advancementHooks,
+        Map<TriggerType, Map<Identifier, List<ResearchHookDefinition>>> hooksByTypeAndTarget,
         Map<Identifier, Set<Identifier>> graphFactIds,
         Map<Identifier, Set<Identifier>> graphNodeIds,
         Map<Identifier, Set<Identifier>> graphValueIds,
@@ -60,12 +54,28 @@ public record ResearchData(
         Map<Identifier, StageLocation> stageLocations
 ) {
 
+    /**
+     * Returns hooks for a specific trigger type and target id.
+     */
+    public List<ResearchHookDefinition> hooksFor(TriggerType type, Identifier targetId) {
+        return this.hooksByTypeAndTarget.getOrDefault(type, Map.of())
+                .getOrDefault(targetId, List.of());
+    }
+
+    /**
+     * Returns all hooks for a specific trigger type.
+     */
+    public List<ResearchHookDefinition> hooksForType(TriggerType type) {
+        return this.hooksByTypeAndTarget.getOrDefault(type, Map.of()).values().stream()
+                .flatMap(List::stream)
+                .toList();
+    }
+
     public static ResearchData validate(
             List<ResearchFactDefinition> facts,
             List<ResearchNodeDefinition> nodes,
             List<ResearchValueDefinition> values,
             List<ResearchHookDefinition> hooks,
-            List<AdvancementResearchHookDefinition> advancementHooks,
             Map<Identifier, Set<Identifier>> graphFactIds,
             Map<Identifier, Set<Identifier>> graphNodeIds,
             Map<Identifier, Set<Identifier>> graphValueIds
@@ -74,7 +84,6 @@ public record ResearchData(
         var nodeIds = uniqueIds(nodes.stream().map(ResearchNodeDefinition::id).toList(), "node");
         var valueIds = uniqueIds(values.stream().map(ResearchValueDefinition::id).toList(), "value");
         ensureUniqueIds(hooks.stream().map(ResearchHookDefinition::id).toList(), "hook");
-        ensureUniqueIds(advancementHooks.stream().map(AdvancementResearchHookDefinition::id).toList(), "advancement hook");
 
         // Collect and validate stage ids
         var allStageIds = new ArrayList<Identifier>();
@@ -100,24 +109,6 @@ public record ResearchData(
             }
             if (hasValue && !valueIds.contains(hook.valueId())) {
                 throw new IllegalArgumentException("Unknown value '" + hook.valueId() + "' referenced by hook '" + hook.id() + "'");
-            }
-        }
-
-        // Validate advancement hooks
-        for (var hook : advancementHooks) {
-            boolean hasFact = hook.factId() != null;
-            boolean hasValue = hook.valueId() != null;
-            if (!hasFact && !hasValue) {
-                throw new IllegalArgumentException("Advancement hook '" + hook.id() + "' must have exactly one of fact_id or value_id");
-            }
-            if (hasFact && hasValue) {
-                throw new IllegalArgumentException("Advancement hook '" + hook.id() + "' cannot have both fact_id and value_id");
-            }
-            if (hasFact && !factIds.contains(hook.factId())) {
-                throw new IllegalArgumentException("Unknown fact '" + hook.factId() + "' referenced by advancement hook '" + hook.id() + "'");
-            }
-            if (hasValue && !valueIds.contains(hook.valueId())) {
-                throw new IllegalArgumentException("Unknown value '" + hook.valueId() + "' referenced by advancement hook '" + hook.id() + "'");
             }
         }
 
@@ -182,16 +173,13 @@ public record ResearchData(
             ));
         }
 
-        var groupedEntryViewedOnceHooks = hooks.stream()
-                .filter(h -> h.triggerType() == TriggerTypeRegistry.ENTRY_VIEWED_ONCE)
-                .collect(Collectors.groupingBy(ResearchHookDefinition::triggerTargetId));
-        var groupedItemCraftedHooks = hooks.stream()
-                .filter(h -> h.triggerType() == TriggerTypeRegistry.ITEM_CRAFTED)
-                .collect(Collectors.groupingBy(ResearchHookDefinition::triggerTargetId));
-        var groupedItemAcquiredHooks = hooks.stream()
-                .filter(h -> h.triggerType() == TriggerTypeRegistry.ITEM_ACQUIRED)
-                .collect(Collectors.groupingBy(ResearchHookDefinition::triggerTargetId));
-        var groupedAdvancementHooks = advancementHooks.stream().collect(Collectors.groupingBy(AdvancementResearchHookDefinition::advancementId));
+        // Group all hooks by trigger type, then by target id
+        var grouped = new HashMap<TriggerType, Map<Identifier, List<ResearchHookDefinition>>>();
+        for (var hook : hooks) {
+            grouped.computeIfAbsent(hook.triggerType(), k -> new HashMap<>())
+                    .computeIfAbsent(hook.triggerTargetId(), k -> new ArrayList<>())
+                    .add(hook);
+        }
 
         // Build toast lookup maps
         var factToasts = facts.stream()
@@ -211,10 +199,7 @@ public record ResearchData(
                 Set.copyOf(stageIds),
                 nodeRules,
                 nodeStageRules,
-                groupedEntryViewedOnceHooks,
-                groupedItemCraftedHooks,
-                groupedItemAcquiredHooks,
-                groupedAdvancementHooks,
+                grouped,
                 graphFactIds,
                 graphNodeIds,
                 graphValueIds,

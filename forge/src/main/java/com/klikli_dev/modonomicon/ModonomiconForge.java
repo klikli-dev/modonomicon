@@ -30,6 +30,7 @@ import com.klikli_dev.modonomicon.registry.RegistryBootstrap;
 import com.klikli_dev.modonomicon.research.ResearchServices;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
+import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
 import com.mojang.blaze3d.framegraph.FramePass;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -111,8 +112,8 @@ public class ModonomiconForge {
                 BookVisualStateManager.get().syncFor(player);
                 ResearchStateManager.get().onDatapackSync(player);
                 // Replay advancement-backed hooks if research state is stale (e.g. reset while offline).
-                if (ResearchServices.advancements().needsAdvancementReplay(player)) {
-                    ResearchServices.advancements().replayAll(player);
+                if (ResearchServices.hooks().needsAdvancementReplay(player)) {
+                    ResearchServices.hooks().replayAdvancements(player);
                     ResearchStateManager.get().syncFor(player);
                     BookVisualStateManager.get().syncFor(player);
                 }
@@ -133,7 +134,7 @@ public class ModonomiconForge {
         //Advancement event handling for condition/unlock system
         AdvancementEvent.AdvancementEarnEvent.BUS.addListener((AdvancementEvent.AdvancementEarnEvent e) -> {
             var player = (ServerPlayer) e.getEntity();
-            if (ResearchServices.advancements().onAdvancement(player, e.getAdvancement().id())) {
+            if (ResearchServices.hooks().onAdvancement(player, e.getAdvancement().id())) {
                 ResearchStateManager.get().syncFor(player);
                 BookVisualStateManager.get().syncFor(player);
             }
