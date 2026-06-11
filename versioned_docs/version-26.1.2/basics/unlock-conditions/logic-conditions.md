@@ -6,6 +6,12 @@ sidebar_position: 40
 
 Logic conditions allow you to combine or invert other conditions to create complex unlock logic.
 
+:::tip
+
+While it is possible to combine multiple research conditions with `and`/`or`, it is usually better to model the combined logic as a single research node with multiple required facts or values. This keeps the condition tree simpler and gives players a single progress point to track.
+
+:::
+
 ## True Condition
 
 **Condition type:** `modonomicon:true`
@@ -75,12 +81,13 @@ The conditions that need to be met cumulatively to unlock this entry.
       "type": "modonomicon:and",
       "children": [
           {
-              "type": "modonomicon:advancement",
-              "advancement_id": "occultism:occultism/craft_dimensional_matrix"
+              "type": "modonomicon:research_node_unlocked",
+              "node_id": "mymod:features/advanced_progression"
           },
           {
-              "type": "modonomicon:entry_unlocked",
-              "entry_id": "modonomicon:features/condition_root"
+              "type": "modonomicon:research_stage_completed",
+              "node_id": "mymod:features/my_node",
+              "stage_id": "mymod:features/my_node/stage_1"
           }
       ]
   },
@@ -111,12 +118,12 @@ The conditions that need to be met alternatively to unlock this entry.
       "type": "modonomicon:or",
       "children": [
           {
-              "type": "modonomicon:advancement",
-              "advancement_id": "occultism:occultism/craft_dimensional_matrix"
+              "type": "modonomicon:research_node_unlocked",
+              "node_id": "mymod:features/path_a"
           },
           {
-              "type": "modonomicon:entry_unlocked",
-              "entry_id": "modonomicon:features/condition_root"
+              "type": "modonomicon:research_node_unlocked",
+              "node_id": "mymod:features/path_b"
           }
       ]
   },

@@ -2,28 +2,46 @@
 sidebar_position: 30
 ---
 
-# Advancement Condition
+# Advancement Gating via Research
 
-**Condition type:** `modonomicon:advancement`
+Advancement-based gating is modeled through the research system. A research fact is granted when a vanilla advancement is earned, and the entry is gated on a research node requiring that fact.
 
-This condition will be met, if the player has the specified advancement. 
+## Datagen Example
 
-## Attributes
+```java
+// In your ResearchSubProvider:
+var fact = researchData.fact("mymod/advancement_gate");
+researchData.grantFactOnAdvancementEarned("mymod/advancement_hook", advancementId, fact);
+var node = researchData.node("mymod/advancement_gate_node", fact);
 
-### **advancement_id** (ResourceLocation, _mandatory_)
+// In your entry datagen:
+entry.withCondition(node);
+```
 
-The ResourceLocation of the advancement that the player needs to have to unlock this entry.
+## Generated JSON
 
-## Usage Examples
+The generated condition uses `modonomicon:research_node_unlocked`:
 
-`<my-entry>.json` 
 ```json
 {
-  ...
   "condition": {
-      "type": "modonomicon:advancement",
-      "advancement_id": "occultism:occultism/craft_dimensional_matrix"
-  },
-  ...
+      "type": "modonomicon:research_node_unlocked",
+      "node_id": "mymod:advancement_gate_node"
+  }
 }
 ```
+
+## Available Hook Types
+
+Research hooks support the following triggers:
+
+| Hook | Description |
+|------|-------------|
+| `grantFactOnAdvancementEarned` | Grants a fact when a vanilla advancement is earned |
+| `incrementValueOnAdvancementEarned` | Increments a value when a vanilla advancement is earned |
+| `grantFactOnEntryViewedOnce` | Grants a fact when a book entry is viewed |
+| `incrementValueOnEntryViewedOnce` | Increments a value when a book entry is viewed |
+| `grantFactOnItemCrafted` | Grants a fact when an item is crafted |
+| `incrementValueOnItemCrafted` | Increments a value when an item is crafted |
+| `grantFactOnItemAcquired` | Grants a fact when an item is acquired |
+| `incrementValueOnItemAcquired` | Increments a value when an item is acquired |

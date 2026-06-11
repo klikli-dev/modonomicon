@@ -151,7 +151,7 @@ See **[Unlock Conditions](../unlock-conditions)** for details.
 ### **parents** (Parent[], _optional_)
 
 Entry Parents are JSON Objects that define Entries this Entry should be connected to. See [Parents](#parents) for details.
-A parent connection does not imply an unlock condition or any logical dependency, by default it is just a visual connection, however it can be used to automatically define unlock conditions. See [`auto_add_read_conditions`](./book#auto_add_read_conditions-boolean-optional) in [Book.json](../structure/book#attributes).
+A parent connection does not imply an unlock condition or any logical dependency, by default it is just a visual connection. When using datagen, `BookModel.withGenerateEntryHierarchyResearch(true)` automatically generates research nodes and hooks for parent→child entry progression.
 
 ### **pages** (Page[], _optional_)
 
@@ -245,7 +245,7 @@ Default value: `true`. If false, the line connecting parent and this entry will 
 
 #### **line_enabled** (Boolean, _optional_)
 
-Default value: `true`. If false, there will be no connecting line. This is useful if you want to use the parent connection to define an automatic unlock condition via [`auto_add_read_conditions`](./book#auto_add_read_conditions-boolean-optional), but don't want to show the line.
+Default value: `true`. If false, there will be no connecting line. This is useful if you want to use the parent connection to define an automatic unlock condition via datagen, but don't want to show the line.
 
 #### **line_reversed** (Boolean, _optional_)
 
