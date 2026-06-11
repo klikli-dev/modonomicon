@@ -8,9 +8,9 @@ All in-game texts should be supplied as DescriptionIds (= Translation Keys) with
 
 ## Key Principles
 
-1. **Always use DescriptionIds** for page texts (title, text, name, etc.) — never inline raw strings in JSON.
-2. **One language file per locale** — place it in `/assets/<mod_id>/lang/<locale>.json`.
-3. **Datagen recommended** — use `AbstractModonomiconLanguageProvider` to generate translations with access to formatting helpers.
+1. **Offer primary language texts directly in the provider** — use `this.pageTitle()`, `this.pageText()`, `this.entryName()`, etc. to register English texts inline. This is the most convenient approach and keeps text together with the content it belongs to.
+2. **Provide translations via language files** — for other languages, add entries to `/assets/<mod_id>/lang/<locale>.json` (or use additional language provider caches).
+3. **Never inline raw strings in JSON** — always use DescriptionIds so the translation system can pick up the text.
 
 ## How It Works
 
@@ -22,13 +22,38 @@ When a page references a DescriptionId like `"book.example.entry.page0.text"`, M
 }
 ```
 
-## Datagen Approach
+## Datagen Approach (Recommended)
 
-In datagen, use `this.add(helper.pageText(), "my.text.key", "The actual text content");` to both register the text and add it to the language provider cache.
+In datagen, provide your primary language (English) texts directly in the entry/category provider using helper methods. The texts are automatically registered as DescriptionIds and added to the language provider cache.
+
+Here is an example from the demo book:
+
+```java
+@Override
+protected void generatePages() {
+    this.page("page1", () -> BookTextPageModel.create()
+            .withTitle(this.context().pageTitle())
+            .withText(this.context().pageText())
+    );
+
+    this.pageTitle("Basic Formatting");
+    // \s tells java to keep the spaces at the end of the line.
+    // Due to markdown using multiple spaces to indicate a line break, we need to keep the spaces.
+    this.pageText("""
+            **This is bold**    \s 
+            *This is italics*    \s
+            ++This is underlined++
+            """);
+}
+```
+
+`this.pageTitle()` and `this.pageText()` both register the text as a DescriptionId **and** return it for use in the page model. The same pattern applies to `this.entryName()` and `this.entryDescription()` for entry-level texts.
+
+### Providing Translations
 
 For non-English languages, use:
 - `this.add(this.lang("ru_ru"), "my.text.key", "Русский текст");`
-- Or create additional language provider caches.
+- Or create additional language provider caches and hand them to the book sub provider.
 
 ## Tips
 
@@ -38,4 +63,4 @@ For non-English languages, use:
 
 ## Reference
 
-See [AdvancedFormattingEntry.java](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/formatting/AdvancedFormattingEntry.java) for a complete datagen example.
+See [AdvancedFormattingEntry.java](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/formatting/AdvancedFormattingEntry.java) and [BasicFormattingEntry.java](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/formatting/BasicFormattingEntry.java) for complete datagen examples.
