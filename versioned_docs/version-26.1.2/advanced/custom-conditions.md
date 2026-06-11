@@ -6,48 +6,86 @@ sidebar_position: 40
 
 Mods can add custom conditions that can be used to lock entries or categories. To this end you need to:
 
-1. Create ResourceLocation for the new condition (e.g. "mymod:my_condition")
-2. Create a custom condition class
-3. Register the custom condition 
+1. Create a `ResourceLocation` ID for the new condition (e.g. `mymod:my_condition`)
+2. Create a custom condition class with `ID`, `CODEC`, and `STREAM_CODEC`
+3. Register the condition via a dedicated registry class
 4. For datagen: create a condition model class
 5. Finally use the condition in your book
 
 :::tip
 
-The ResourceLocation is what you will use in your entries and categories to gate them behind your custom condition. 
+The `ResourceLocation` is what you will use in your entries and categories to gate them behind your custom condition.
 
 :::
 
 ## Condition Class
 
-Conditions need to extend `BookCondition` in the package `com.klikli_dev.modonomicon.book.conditions`.   
-In addition to implementing the interface methods that your IDE will suggest you need two static methods `fromJson` and `fromNetwork` which you will need when registering the condition.
+Conditions need to extend `BookCondition` in the package `com.klikli_dev.modonomicon.book.conditions`.
 
-in `getType()` return your ResourceLocation.
+Each condition class must declare three static fields:
 
-See https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/book/conditions/BookAdvancementCondition.java for an example condition.
+- `ID` — a `ResourceLocation` (use `Modonomicon.loc(...)` or `new ResourceLocation("mymod", "my_condition")`)
+- `CODEC` — a `MapCodec<T>` for JSON deserialization, typically built with `RecordCodecBuilder.mapCodec(...)`
+- `STREAM_CODEC` — a `StreamCodec<RegistryFriendlyByteBuf, T>` for network serialization, typically built with `StreamCodec.composite(...)`
+
+You must also override `type()` to return the corresponding `BookConditionType<T>` from your registry class.
+
+See these example conditions for reference:
+- [`BookModLoadedCondition`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/book/conditions/BookModLoadedCondition.java)
+- [`BookFalseCondition`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/book/conditions/BookFalseCondition.java)
+- [`BookResearchNodeUnlockedCondition`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/book/conditions/BookResearchNodeUnlockedCondition.java)
 
 ## Condition Registration
 
-To register the condition call LoaderRegistry.registerConditionLoader(...).   
-For the BookAdvancementCondition this call looks as follows: `registerConditionLoader(Condition.ADVANCEMENT, BookAdvancementCondition::fromJson, BookAdvancementCondition::fromNetwork);`
+Create a dedicated registry class to hold your condition registrations. Use `public static final` fields initialized via `BookConditionTypeRegistry.register(...)`, and provide an empty `bootstrap()` method to trigger class loading:
 
-This needs to be called from both the client and server side mod initialization.   
-In Fabric: Call in `onInitialize` in your `ModInitializer`.   
-In (Neo)Forge: Call in `onCommonSetup` (your `FMLCommonSetupEvent` handler).	
+```java
+public final class MyModModonomiconConditionRegistry {
+
+    public static final BookConditionType<BookMyCustomCondition> MY_CUSTOM =
+        BookConditionTypeRegistry.register(
+            BookMyCustomCondition.ID,
+            BookMyCustomCondition.CODEC,
+            BookMyCustomCondition.STREAM_CODEC
+        );
+
+    private MyModModonomiconConditionRegistry() {
+    }
+
+    public static void bootstrap() {
+    }
+}
+```
+
+Then call `bootstrap()` during `FMLCommonSetupEvent` (NeoForge) or your `ModInitializer.onInitialize` (Fabric):
+
+```java
+// NeoForge
+public void onCommonSetup(FMLCommonSetupEvent event) {
+    MyModModonomiconConditionRegistry.bootstrap();
+}
+
+// Fabric
+@Override
+public void onInitialize() {
+    MyModModonomiconConditionRegistry.bootstrap();
+}
+```
 
 ## Condition Datagen Model
 
-The model class helps you to generate the condition json files via DataGen. 
+The model class helps you to generate the condition JSON files via DataGen.
 
-See https://github.com/klikli-dev/modonomicon/blob/2a067357bacaf3e15a5f490520a4headaf64807fe83e/common/src/main/java/com/klikli_dev/modonomicon/api/datagen/book/condition/BookAdvancementConditionModel.java for a reference model class.
+Extend `BookConditionModel<T>` and override `toBookCondition(HolderLookup.Provider)` to return the runtime condition instance. Pass the condition's `ID` to the `super(...)` constructor.
 
-(On 1.20.1 it looks a bit more complicated: 
-https://github.com/klikli-dev/modonomicon/blob/bdf639c835908393198f695999c70f2ac53e154c/common/src/main/java/com/klikli_dev/modonomicon/api/datagen/book/condition/BookAdvancementConditionModel.java )
+See these example models for reference:
+- [`BookModLoadedConditionModel`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/api/datagen/book/condition/BookModLoadedConditionModel.java)
+- [`BookFalseConditionModel`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/api/datagen/book/condition/BookFalseConditionModel.java)
+- [`BookResearchNodeUnlockedConditionModel`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/api/datagen/book/condition/BookResearchNodeUnlockedConditionModel.java)
 
-:::tip 
+:::tip
 You need not register the model.
-::: 
+:::
 
 ## Usage
 
@@ -61,6 +99,6 @@ On your entry or category, add:
   },
   ...
 }
-```	
+```
 
 See also [Unlock Conditions](../basics/unlock-conditions) for more information on how to use conditions.

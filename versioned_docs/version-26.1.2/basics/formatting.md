@@ -260,14 +260,12 @@ Macro instructions (ab)use the link syntax as follows: to start a macro use `[{}
 [{}](my.dynamic.key) could be replaced to show a config value!
 ```
 
-To register that macro call the following code during server setup:
+To register that macro call the following code during `FMLCommonSetupEvent` (NeoForge) or your `ModInitializer.onInitialize` (Fabric):
 
 ```java
-LoaderRegistry.registerDynamicTextMacroLoader(<my-book-id>, () -> {
-    return Map.of(
-            "my.dynamic.key", MyConfig.SOME_VALUE.get()
-    );
-});
+DynamicTextMacroRegistry.register(myBookId, () -> Map.of(
+        "my.dynamic.key", MyConfig.SOME_VALUE.get()
+));
 ```
 
 :::info 

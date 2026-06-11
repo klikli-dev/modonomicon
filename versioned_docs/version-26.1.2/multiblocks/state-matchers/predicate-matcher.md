@@ -4,22 +4,19 @@ sidebar_position: 50
 
 # Predicate Matchers
 
-# Tag Matcher
-
 **Type:** `modonomicon:predicate`
 
-Predicate matchers can use advanced logic to match blocks. The matching logic must be provided as Java Code and registerd with a Resource Location ID.
-Tag matchers will check if the placed block is part of the provided tag. Additionally BlockState properties can be provided to match against, in that case the matcher will only match if the block is in the tag, and has the provided properties.
+Predicate matchers can use advanced logic to match blocks. The matching logic must be provided as Java code and registered with a `ResourceLocation` ID.
 
 ## Attributes
 
 ### **predicate** (ResourceLocation, _mandatory_)
-  
+
   The ID of the predicate to use for the matcher.
 
-### **display** (BlockState, _mandatory_)
-  
-  The block to display in the multiblock preview. 
+### **display** (BlockState, _optional_)
+
+  The block to display in the multiblock preview.
 
   :::info
 
@@ -29,33 +26,54 @@ Tag matchers will check if the placed block is part of the provided tag. Additio
 
 ### **counts_towards_total_blocks** (boolean, _optional_, default: `true`)
 
-  If set to `false` the block will not count towards the total number of blocks required to complete the multiblock.   
+  If set to `false` the block will not count towards the total number of blocks required to complete the multiblock.
   E.g. for the `modonomicon:air` predicate you would set this to `false`.
   If set to `true` the block will count towards the total number of blocks required to complete the multiblock, which in the case of air and air-like blocks would lead to an insane number of blocks shown as still required to complete.
 
 ## Registering Predicates
 
-Predicates are registered in the `FMLCommonSetupEvent`: 
+Create a dedicated registry class and register your predicates via `PredicateRegistry.register(...)`:
 
-```java 
-public void onCommonSetup(FMLCommonSetupEvent event) {
-    LoaderRegistry.registerPredicate(new ResourceLocation("modonomicon:air"), (getter, pos, state) -> state.isAir());
+```java
+public final class MyModModonomiconPredicateRegistry {
+
+    public static final PredicateType MY_PREDICATE = PredicateRegistry.register(
+        new ResourceLocation("mymod", "my_predicate"),
+        (getter, pos, state) -> state.isSolid() && pos.getY() > 64
+    );
+
+    private MyModModonomiconPredicateRegistry() {
+    }
+
+    public static void bootstrap() {
+    }
 }
 ```
 
-You can of course define any predicate you like that fits a 
-```java 
-TriPredicate<BlockGetter, BlockPos, BlockState>
+The predicate lambda must match the `TriPredicate<BlockGetter, BlockPos, BlockState>` signature.
+
+Then call `bootstrap()` during `FMLCommonSetupEvent` (NeoForge) or your `ModInitializer.onInitialize` (Fabric):
+
+```java
+// NeoForge
+public void onCommonSetup(FMLCommonSetupEvent event) {
+    MyModModonomiconPredicateRegistry.bootstrap();
+}
+
+// Fabric
+@Override
+public void onInitialize() {
+    MyModModonomiconPredicateRegistry.bootstrap();
+}
 ```
-:::caution 
 
-To access the `LoaderRegistry` you need to define a dependency on the full modonomicon jar in your `build.gralde` (See **[Maven Dependencies](../../getting-started/maven-dependencies)**)
-If you then call `LoaderRegistry.registerPredicate` in your `FMLCommonSetupEvent` like above you effectively create a hard dependency on Modonomicon. 
-You can avoid this by calling `LoaderRegistry.registerPredicate` in a separate class, and only call that classes Methods if Modonomicon is loaded.
+:::caution
 
-::: 
+To access `PredicateRegistry` you need to define a dependency on the full modonomicon jar in your `build.gradle` (See **[Maven Dependencies](../../getting-started/maven-dependencies)**).
 
-<!-- TODO: Link to an article that explains in detail how to guard against no class def -->
+If you then call `PredicateRegistry.register(...)` directly you effectively create a hard dependency on Modonomicon. You can avoid this by calling `PredicateRegistry.register(...)` in a separate class, and only calling that class's methods if Modonomicon is loaded.
+
+:::
 
 ## Builtin Predicates
 
@@ -65,9 +83,15 @@ You can avoid this by calling `LoaderRegistry.registerPredicate` in a separate c
 
 Matches air blocks. Requires players to remove any blocks in the location of this matcher.
 
+### Non-Solid Predicate
+
+**Predicate ID:** `modonomicon:non_solid`
+
+Matches blocks that are not solid.
+
 ## Usage Examples
 
-Match air predicate and display .. nothing
+Match air predicate and display nothing:
 
 ```json
 {
