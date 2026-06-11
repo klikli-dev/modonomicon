@@ -4,6 +4,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-1.148.1] - 2026-06-10
+### :wrench: Chores
+- [`0e48022`](https://github.com/klikli-dev/modonomicon/commit/0e48022457f4e2e181ce0531be8108bf0f904eb7) - disable missing recipe book category log *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.148.0] - 2026-06-08
+### :sparkles: New Features
+- [`4966d0f`](https://github.com/klikli-dev/modonomicon/commit/4966d0f52eb91ca558e43855fc54a4d093467186) - add config to pause game if book is open *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`6df838d`](https://github.com/klikli-dev/modonomicon/commit/6df838d8a7c9effaabcf5354703805f8a045ab97) - implement getCreatorModId/Namespace *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`750f6e4`](https://github.com/klikli-dev/modonomicon/commit/750f6e4e9b2f6629129931ea71280860f02d67e2) - update deprecated Neo api *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.147.1] - 2026-06-08
+### :bug: Bug Fixes
+- [`8f1edc0`](https://github.com/klikli-dev/modonomicon/commit/8f1edc032ff796b3f7d2abb5f0e5676e50358482) - page order *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.147.0] - 2026-06-02
+### :sparkles: New Features
+- [`d7bed44`](https://github.com/klikli-dev/modonomicon/commit/d7bed44fb12ae7023e15dc7a725f7dcc6ce57783) - update to stable neo *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.146.0] - 2026-05-28
+### :sparkles: New Features
+- [`b485ac0`](https://github.com/klikli-dev/modonomicon/commit/b485ac02b332da6d78acf0a29d5d484fe2986e7e) - architecture cleanup for future research system *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`47b7fac`](https://github.com/klikli-dev/modonomicon/commit/47b7fac7fe7ea0f0dd2b95c4ad8c0b831f96ff25) - route read-all through interaction service *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.2-1.145.3] - 2026-05-27
 ### :bug: Bug Fixes
 - [`1a09148`](https://github.com/klikli-dev/modonomicon/commit/1a09148e7a46c9acb7d86dacf5c0117519e58702) - skip unloaded entry page files *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2244,3 +2276,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-1.145.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.145.0...release/v26.1.2-1.145.1
 [release/v26.1.2-1.145.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.145.1...release/v26.1.2-1.145.2
 [release/v26.1.2-1.145.3]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.145.2...release/v26.1.2-1.145.3
+[release/v26.1.2-1.146.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.145.3...release/v26.1.2-1.146.0
+[release/v26.1.2-1.147.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.146.0...release/v26.1.2-1.147.0
+[release/v26.1.2-1.147.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.147.0...release/v26.1.2-1.147.1
+[release/v26.1.2-1.148.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.147.1...release/v26.1.2-1.148.0
+[release/v26.1.2-1.148.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.148.0...release/v26.1.2-1.148.1

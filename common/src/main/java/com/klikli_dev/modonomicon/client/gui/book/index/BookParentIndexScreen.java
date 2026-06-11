@@ -404,6 +404,6 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
     @Override
     public boolean isPauseScreen() {
-        return false;
+        return ClientServices.CLIENT_CONFIG.pauseGameWhenOpen();
     }
 }

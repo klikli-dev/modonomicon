@@ -34,6 +34,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperties;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
@@ -50,6 +51,7 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
+import net.neoforged.neoforge.resource.ContextAwareReloadListener;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
@@ -58,6 +60,9 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 @Mod(Modonomicon.MOD_ID)
 public class ModonomiconNeo {
@@ -83,11 +88,21 @@ public class ModonomiconNeo {
 
         //register data managers as reload listeners
         NeoForge.EVENT_BUS.addListener((AddServerReloadListenersEvent e) -> {
-            BookDataManager.get().registries(e.getRegistryAccess());
-            e.addListener(Modonomicon.loc("book_data_manager"), BookDataManager.get());
+            e.addListener(Modonomicon.loc("book_data_manager"), new ContextAwareReloadListener() {
+                @Override
+                public CompletableFuture<Void> reload(PreparableReloadListener.SharedState currentReload, Executor taskExecutor, PreparableReloadListener.PreparationBarrier preparationBarrier, Executor reloadExecutor) {
+                    BookDataManager.get().registries(this.getRegistryLookup());
+                    return BookDataManager.get().reload(currentReload, taskExecutor, preparationBarrier, reloadExecutor);
+                }
+            });
 
-            MultiblockDataManager.get().registries(e.getRegistryAccess());
-            e.addListener(Modonomicon.loc("multiblock_data_manager"), MultiblockDataManager.get());
+            e.addListener(Modonomicon.loc("multiblock_data_manager"), new ContextAwareReloadListener() {
+                @Override
+                public CompletableFuture<Void> reload(PreparableReloadListener.SharedState currentReload, Executor taskExecutor, PreparableReloadListener.PreparationBarrier preparationBarrier, Executor reloadExecutor) {
+                    MultiblockDataManager.get().registries(this.getRegistryLookup());
+                    return MultiblockDataManager.get().reload(currentReload, taskExecutor, preparationBarrier, reloadExecutor);
+                }
+            });
 
             e.addListener(Modonomicon.loc("research_data_manager"), ResearchDataManager.get());
         });

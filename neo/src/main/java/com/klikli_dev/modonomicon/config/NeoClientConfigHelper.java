@@ -30,4 +30,9 @@ public class NeoClientConfigHelper implements ClientConfigHelper {
     public boolean shouldShowResearchToasts() {
         return ClientConfig.get().qolCategory.showResearchToasts.get();
     }
+
+    @Override
+    public boolean pauseGameWhenOpen() {
+        return ClientConfig.get().qolCategory.pauseGameWhenOpen.get();
+    }
 }

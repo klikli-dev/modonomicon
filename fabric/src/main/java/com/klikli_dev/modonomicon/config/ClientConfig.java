@@ -28,6 +28,7 @@ public class ClientConfig {
     public static PropertyMirror<Boolean> storeLastOpenPageWhenClosingEntry = PropertyMirror.create(ConfigTypes.BOOLEAN);
     public static PropertyMirror<Boolean> showResearchToasts = PropertyMirror.create(ConfigTypes.BOOLEAN);
     public static PropertyMirror<List<String>> fontFallbackLocales = PropertyMirror.create(ConfigTypes.makeList(ConfigTypes.STRING));
+    public static PropertyMirror<Boolean> pauseGameWhenOpen = PropertyMirror.create(ConfigTypes.BOOLEAN);
 
     private static final ConfigTree CONFIG = ConfigTree.builder()
             .fork("qol")
@@ -45,6 +46,9 @@ public class ClientConfig {
             .beginValue("fontFallbackLocales", ConfigTypes.makeList(ConfigTypes.STRING), List.of("zh_cn", "ja_jp", "ko_kr"))
             .withComment("If your locale is not supported by the default Modonomicon font, indicated by the book just rendering blocky shapes instead of characters, add your locale to this list to fall back to the builtin Minecraft font.")
             .finishValue(fontFallbackLocales::mirror)
+            .beginValue("pauseGameWhenOpen", ConfigTypes.BOOLEAN, true)
+            .withComment("If true, the game will pause when a Modonomicon book is open (singleplayer only).")
+            .finishValue(pauseGameWhenOpen::mirror)
             .finishBranch()
             .build();
 

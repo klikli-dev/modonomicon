@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.gui;
 
+import com.klikli_dev.modonomicon.platform.ClientServices;
 import net.minecraft.CrashReport;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ComponentPath;
@@ -75,7 +76,7 @@ public class FabricMultiLayerScreen extends Screen {
 
     @Override
     public boolean isPauseScreen() {
-        return this.guiLayers.peek().isPauseScreen();
+        return ClientServices.CLIENT_CONFIG.pauseGameWhenOpen();
     }
 
 

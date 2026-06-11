@@ -216,7 +216,8 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
             // Try to get the key from registry - returns empty if not registered
             var categoryKey = BuiltInRegistries.RECIPE_BOOK_CATEGORY.getKey(category);
             if (categoryKey == null) {
-                Modonomicon.LOG.warn("Recipe {} has unregistered recipe book category {}, using fallback CRAFTING_MISC.", key, category);
+                //disable this log as this situation is super common and entirely harmless.
+//                Modonomicon.LOG.warn("Recipe {} has unregistered recipe book category {}, using fallback CRAFTING_MISC.", key, category);
                 entry = new RecipeDisplayEntry(
                         entry.id(), entry.display(), entry.group(),
                         RecipeBookCategories.CRAFTING_MISC, entry.craftingRequirements()
