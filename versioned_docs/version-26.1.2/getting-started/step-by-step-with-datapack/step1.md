@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 10
 ---
 
 # Step 1: Download and extract demo content

@@ -33,7 +33,7 @@ In this case the styling attributes, such as the background (see below) are stil
 
 :::tip
 
-To use a texture make sure the ResourceLocation includes the file endinge `.png` as seen in the example above.
+To use a texture make sure the ResourceLocation includes the file ending `.png` as seen in the example above.
 
 ::: 
 
@@ -43,7 +43,7 @@ Defaults to `-1`.
 Category "Bookmark"-Buttos on the left side of the Book will be sorted by this number.
 Similarly, in index mode, the categories will be sorted in the list by this number.
 
-When using datagen and no sort nubmer is provided, the BookProvider will automatically assign a sort number based on the order the categories are added when using `.add()`.
+When using datagen and no sort number is provided, the BookProvider will automatically assign a sort number based on the order the categories are added when using `.add()`.
 
 ### **condition** (Condition, _optional_)
 

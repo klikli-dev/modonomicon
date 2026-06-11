@@ -44,7 +44,7 @@ Tag matchers will check if the placed block is part of the provided tag. Additio
 
 ```json
 {
-    "type": "modonomicon:block",
+    "type": "modonomicon:tag",
     "display": "minecraft:oak_stairs[facing=west]",
     "tag": "#minecraft:wooden_stairs[facing=west]"
 }

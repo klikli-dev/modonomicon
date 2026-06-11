@@ -2,7 +2,7 @@
 sidebar_position: 80
 ---
 
-# Entry Unlocked Condition
+# Category Has Visible Entries Condition
 
 **Condition type:** `modonomicon:category_has_visible_entries`
 

@@ -4,7 +4,7 @@ sidebar_position: 20
 
 # Step 2: A first look at the Demo Book
 
-##File Structure
+## File Structure
 
 First, take a minute to look at the folder structure relevant for demo book, either locally if you downloaded it in the previous step, or on [GitHub](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book).
 ```
@@ -82,7 +82,7 @@ If you copied the demo book datagen classes you can just copy-paste most of the 
 You can also skip the language provider cache system. Instead:
 1. Create your e.g. neoforge language provider and let it implement `ModonomiconLanguageProvider`. 
 2. In it implement `accept(String, String)` to call `this.add(String, String)`.
-3. Create an instance of your langauge provider in the data generator registration but don't register it yet.
+3. Create an instance of your language provider in the data generator registration but don't register it yet.
 4. Create and register your book sub provider and hand over your language provider.
 5. Finally register your language provider.
 

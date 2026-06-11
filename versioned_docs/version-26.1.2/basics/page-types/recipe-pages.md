@@ -26,33 +26,9 @@ Each page type only supports recipes of the matching recipe type. If you want to
 
 ## Attributes
 
-### **title1** (DescriptionId or Component JSON, _optional_)
-
-The title for the first recipe. Will not parse markdown, instead it uses the default title color as defined in the `book.json`.   
-See [Book.json](../structure/book) for details.
-
-:::tip
-
-If ommited, the recipe output's name will be used.
-
-:::
-
-
 ### **recipe_id_1** (ResourceLocation, _mandatory_)
 
 The ResourceLocation of the first recipe to display. Make sure to match the recipe type to the page type.
-
-### **title2** (DescriptionId or Component JSON, _optional_)
-
-The title for the second recipe. Will not parse markdown, instead it uses the default title color as defined in the `book.json`.   
-See [Book.json](../structure/book) for details.
-
-:::tip
-
-If ommited, the recipe output's name will be used.
-
-:::
-
 
 ### **recipe_id_2** (ResourceLocation, _optional_)
 
@@ -72,7 +48,6 @@ The page text. Can be styled using markdown.
   "pages": [
      {
       "type": "modonomicon:crafting_recipe",
-      "anchor": "",
       "recipe_id_1": "minecraft:crafting_table",
       "recipe_id_2": "minecraft:oak_planks",
       "text": "book.modonomicon.demo.features.recipe.crafting.text",
@@ -81,7 +56,6 @@ The page text. Can be styled using markdown.
     },
     {
       "type": "modonomicon:smelting_recipe",
-      "anchor": "",
       "recipe_id_1": "minecraft:charcoal",
       "recipe_id_2": "minecraft:cooked_beef",
       "text": "",
@@ -90,7 +64,6 @@ The page text. Can be styled using markdown.
     },
     {
       "type": "modonomicon:smoking_recipe",
-      "anchor": "",
       "recipe_id_1": "minecraft:cooked_beef_from_smoking",
       "text": "book.modonomicon.demo.features.recipe.smoking.text",
       "title1": "",
@@ -98,7 +71,6 @@ The page text. Can be styled using markdown.
     },
     {
       "type": "modonomicon:blasting_recipe",
-      "anchor": "",
       "recipe_id_2": "minecraft:iron_ingot_from_blasting_iron_ore",
       "text": "",
       "title1": "",
@@ -106,7 +78,6 @@ The page text. Can be styled using markdown.
     },
     {
       "type": "modonomicon:campfire_cooking_recipe",
-      "anchor": "",
       "recipe_id_1": "minecraft:cooked_beef_from_campfire_cooking",
       "text": "",
       "title1": "",
@@ -114,7 +85,6 @@ The page text. Can be styled using markdown.
     },
     {
       "type": "modonomicon:stonecutting_recipe",
-      "anchor": "",
       "recipe_id_1": "minecraft:andesite_slab_from_andesite_stonecutting",
       "text": "",
       "title1": "",
@@ -122,7 +92,6 @@ The page text. Can be styled using markdown.
     },
     {
       "type": "modonomicon:smithing_recipe",
-      "anchor": "",
       "recipe_id_1": "minecraft:netherite_axe_smithing",
       "text": "",
       "title1": "",

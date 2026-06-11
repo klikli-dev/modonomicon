@@ -1,5 +1,5 @@
 ---
-sidebar_position: 10
+sidebar_position: 5
 ---
 
 # Defining Multiblocks
@@ -36,7 +36,7 @@ Every multiblock needs one `0` in the pattern. See also [Multiblock Center](#mul
 
 ## Mapping
 
-The mapping is defined in the `mapping` field of the multiblock definition. It is a JSON object that consists of key-value pairs. They key is a character that will be used in the pattern to represent the block, and the value is a [Block Matcher](../state-matchers/) that defines how the block is matched.
+The mapping defines how each character in the pattern is matched to a block in the world using [State Matchers](../state-matchers/). Each key is a single character, and the value is a state matcher JSON object.
 
 You can use any character you want as a key, however you may only use one character per key, not multiple. Additionally you should be careful with [Default Mappings and Special Characters](#default-mappings-and-special-characters).
 
@@ -57,9 +57,7 @@ A mapping can look something like this:
 }
 ```
 
-In this case the character `N` will be used to represent a north-facing oak stair, and `S` will be used to represent a south-facing oak stair in the pattern. Both will be matched based on their BlockState, meaning that BlockState properties, such as in this case the facing, will be checked. If you place a stair in the world that is facing the wrong direction, the multiblock will not be recognized as valid.
-
-Make sure to familiarize yourself with the available **[State Matchers](../state-matchers/)** to find the best way to define your multiblock.
+Make sure to familiarize yourself with the available **[State Matchers](../state-matchers/)** to find the best way to define your mapping.
 
 :::tip
 

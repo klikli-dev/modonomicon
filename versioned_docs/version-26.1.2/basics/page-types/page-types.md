@@ -1,5 +1,5 @@
 ---
-sidebar_position: 20
+sidebar_position: 10
 ---
 
 # Page Types
@@ -23,6 +23,12 @@ Using page ids is more robust than using the page's array index when pages are r
 
 Like entries and categories, pages can be hidden until an Unlock Condition is fulfilled.
 See **[Unlock Conditions](../unlock-conditions)** for details.
+
+### **title / name / multiblock_name** (DescriptionId or Component JSON, _optional_)
+
+Page titles will not parse markdown by default; they use the default title color as defined in [theme.json](../structure/theme). Some page types offer a `use_markdown_title` option to override this behavior.
+
+**Fallback names:** When a title or name attribute is omitted, the page's primary content name is used as fallback (e.g., the ingredient name for spotlight pages, the entity name for entity pages, the recipe output name for recipe pages).
 
 ### A note on texts
 

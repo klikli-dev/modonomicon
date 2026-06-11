@@ -78,7 +78,11 @@ In normal markdown you would simply add three spaces at the end of your text lin
 
 
 
-<!-- TODO Mention the book/render setting that makes soft linebreaks act as hard line breaks -->
+:::tip
+
+You can set `hardLineBreaks` to `true` in `theme.json` under the `content` section to make soft linebreaks (single newlines) act as hard line breaks, eliminating the need for three trailing spaces.
+
+:::
 
 ## Lists
 
@@ -146,7 +150,7 @@ Syntax:
 
 :::tip 
 
-If `<book-id>` is ommitted the current book is assumed.
+If `<book-id>` is omitted the current book is assumed.
 
 ::: 
   
@@ -159,7 +163,7 @@ Syntax:
 
 :::tip 
 
-If `<book-id>` is ommitted the current book is assumed.   
+If `<book-id>` is omitted the current book is assumed.   
 This is the recommended way to link to entries.   
 
 ::: 
@@ -208,7 +212,7 @@ Example:
 
 :::caution 
 
-Note the double `//` separating the book id from the entry id. This is required, because both book and entry ids may contain one or multile  `/` characters if the files are in subdirectories.
+Note the double `//` separating the book id from the entry id. This is required, because both book and entry ids may contain one or multiple  `/` characters if the files are in subdirectories.
 ::: 
 
 :::tip 

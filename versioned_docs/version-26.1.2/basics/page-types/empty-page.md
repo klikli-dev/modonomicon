@@ -23,8 +23,7 @@ None.
   ...
   "pages": [
     {
-      "type": "modonomicon:empty",
-      "anchor": ""
+      "type": "modonomicon:empty"
     }
   ]
 }
