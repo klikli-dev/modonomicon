@@ -73,12 +73,14 @@ this.ingress().onAdvancementEarned(advancementId)
 
 ### Generic Ingress
 
-For custom trigger types, use the generic ingress entry point:
+For custom trigger types, use the generic ingress entry point with typed targets:
 
 ```java
-this.ingress().on(myTriggerType, targetId)
+this.ingress().on(myTriggerType, target)
     .declareFact("mymod/my_hook");
 ```
+
+The target type must match the trigger type's target type (e.g. `Identifier` for entry/advancement triggers, `ItemStackTemplate` for item triggers).
 
 See [Custom Research Hooks](../../advanced/custom-hooks) for details.
 

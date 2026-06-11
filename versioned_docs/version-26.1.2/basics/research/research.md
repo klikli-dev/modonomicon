@@ -27,16 +27,16 @@ A node represents a milestone in the research tree. Nodes require facts and/or v
 
 ### Hooks
 
-Hooks connect external events to research progress. Each hook triggers on an event and either grants a fact or increments a value.
+Hooks connect external events to research progress. Each hook triggers on an event and either grants a fact or increments a value. Item-based hooks use `ItemStackTemplate` targets — component matching is implicit in the template.
 
-| Hook Type | Event |
-|-----------|-------|
-| `entry_viewed_once` | A book entry is viewed for the first time |
-| `item_crafted` | A specific item is crafted |
-| `item_acquired` | A specific item appears in inventory |
-| `advancement` | A vanilla advancement is earned |
+| Hook Type | Event | Target Type |
+|-----------|-------|-------------|
+| `entry_viewed_once` | A book entry is viewed for the first time | `Identifier` (entry id) |
+| `item_crafted` | A specific item is crafted | `ItemStackTemplate` (item + optional components) |
+| `item_acquired` | A specific item appears in inventory | `ItemStackTemplate` (item + optional components) |
+| `advancement` | A vanilla advancement is earned | `Identifier` (advancement id) |
 
-Third-party mods can register custom trigger types via `TriggerTypeRegistry.register()`.
+Third-party mods can register custom trigger types with arbitrary target and context types via `TriggerTypeRegistry.register()`.
 See [Custom Research Hooks](../../advanced/custom-hooks) for details.
 
 ### Toast Notifications
