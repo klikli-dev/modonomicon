@@ -12,17 +12,6 @@ Displays an Entity and optionally a custom name and text.
 
 ## Attributes
 
-### **name** (DescriptionId or Component JSON, _optional_)
-
-The entity name. Will not parse markdown, instead it uses the default title color as defined in the `book.json`.    
-See [Book.json](../structure/book) for details.
-
-:::tip
-
-If ommited, the entity's default name will be used.
-
-:::
-
 ### **entity_id** (ResourceLocation, _mandatory_)
 
 ResourceLocations of the entity to display.
@@ -63,7 +52,6 @@ Defaults to `-45.0`. Default rotation to show the entity at (in degrees).
   "pages": [
     {
       "type": "modonomicon:entity",
-      "anchor": "",
       "default_rotation": -45.0,
       "entity_id": "minecraft:ender_dragon",
       "name": "book.modonomicon.demo.features.entity.entity1.title",

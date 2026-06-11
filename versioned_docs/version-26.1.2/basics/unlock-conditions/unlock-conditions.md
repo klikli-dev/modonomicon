@@ -15,7 +15,7 @@ Conditions are JSON Objects that can be set as value for the "condition" field o
 },
 ``` 
 
-Note that only one condition can be supplied per entry or category. If you want to combine multiple conditions, you can use the [`modonomicon:and`](./and-condition) or [`modonomicon:or`](./or-condition) condition types.
+Note that only one condition can be supplied per entry or category. If you want to combine multiple conditions, you can use the [`modonomicon:and`](./logic-conditions#and-condition) or [`modonomicon:or`](./logic-conditions#or-condition) condition types.
 
 ## Common Attributes
 

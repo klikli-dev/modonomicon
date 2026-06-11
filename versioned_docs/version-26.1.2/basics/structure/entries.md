@@ -51,7 +51,7 @@ The entry description, will be shown below the name when hovering over the Entry
 
 :::tip
 
-To use a texture make sure the ResourceLocation includes the file endinge `.png` as seen in the example above.
+To use a texture make sure the ResourceLocation includes the file ending `.png` as seen in the example above.
 
 ::: 
 
@@ -67,7 +67,7 @@ The y coordinate (vertical) of the entry in the category.
 Defaults to `-1`.
 
 If the category of this entry is in "index" mode, then the sort number will be used to order the entries (instead of using x/y to place the entry on the 2d node grid).   
-When using datagen and no sort nubmer is provided, the CategorProvider will automatically assign a sort number based on the order the entries are added when using `.add()`.
+When using datagen and no sort number is provided, the CategorProvider will automatically assign a sort number based on the order the entries are added when using `.add()`.
 
 ### **hide_while_locked** (Boolean, _optional_)
 
@@ -151,9 +151,7 @@ See **[Unlock Conditions](../unlock-conditions)** for details.
 ### **parents** (Parent[], _optional_)
 
 Entry Parents are JSON Objects that define Entries this Entry should be connected to. See [Parents](#parents) for details.
-A parent connection does not imply an unlock condition or any logical dependency, by default it is just a visual connection, however it can be used to automatically define unlock conditions. See `auto_add_read_conditions` in [Book.json](../structure/book#attributes).
-
-<!-- TODO: link to the book setting that creates read connections -->
+A parent connection does not imply an unlock condition or any logical dependency, by default it is just a visual connection, however it can be used to automatically define unlock conditions. See [`auto_add_read_conditions`](./book#auto_add_read_conditions-boolean-optional) in [Book.json](../structure/book#attributes).
 
 ### **pages** (Page[], _optional_)
 
@@ -247,7 +245,7 @@ Default value: `true`. If false, the line connecting parent and this entry will 
 
 #### **line_enabled** (Boolean, _optional_)
 
-Default value: `true`. If false, there will be no connecting line. This is useful if you want to use the parent connection to define an automatic unlock condition, but don't want to show the line. <!-- TODO: link to the book setting that creates read connections -->
+Default value: `true`. If false, there will be no connecting line. This is useful if you want to use the parent connection to define an automatic unlock condition via [`auto_add_read_conditions`](./book#auto_add_read_conditions-boolean-optional), but don't want to show the line.
 
 #### **line_reversed** (Boolean, _optional_)
 

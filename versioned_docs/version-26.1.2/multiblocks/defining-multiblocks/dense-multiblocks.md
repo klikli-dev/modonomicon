@@ -49,7 +49,7 @@ It could look something like this:
 
 ## Usage Examples
 
-<!-- TODO: link to state matchers -->
+Make sure to familiarize yourself with the available **[State Matchers](../state-matchers/)** to find the best way to define your mapping.
 
 The Multiblock with the id `<modid>:blockentity` would be placed in `resources/data/<modid>/modonomicon/multiblocks/blockentity.json` as follows:
 ```json

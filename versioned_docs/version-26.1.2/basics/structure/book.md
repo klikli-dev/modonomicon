@@ -133,6 +133,14 @@ It opens a paginated view of unlocked entries, with unread entries first and the
 
 Set it to `false` to hide the button.
 
+### **auto_add_read_conditions** (Boolean, _optional_)
+
+Default value: `false`.
+When true, Modonomicon automatically adds `modonomicon:entry_read` conditions for entries connected via parent relationships.
+This means a child entry will only unlock after its parent has been read.
+
+See [Entry Read Condition](../unlock-conditions/entry-read-condition) for details.
+
 ## Moved to `theme.json`
 
 The following settings used to live in `book.json`, but now belong in **[theme.json](./theme)**:
