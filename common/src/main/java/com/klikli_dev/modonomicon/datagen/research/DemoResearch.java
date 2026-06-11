@@ -115,9 +115,8 @@ public class DemoResearch extends SingleResearchSubProvider {
                 .onItemCrafted(new ItemStackTemplate(Items.OAK_PLANKS))
                 .incrementValue("demo/stages_planks_hook", planksCrafted, 1);
 
-        // Multi-stage node: requires conditionRootViewed to start, then 3 value-based stages
+        // Multi-stage node: 3 value-based stages unlocked directly by crafting planks
         this.nodeBuilder(STAGES_DEMO)
-                .withFact(conditionRootViewed)
                 .withStage(ResearchStageSpec.valuesOnly(stagesDemoStage1, List.of(
                         new ResearchNodeSpec.ValueRequirement(planksCrafted, 1)
                 )).toast(new ResearchToastDefinition(

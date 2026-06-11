@@ -54,9 +54,6 @@
   },
   {
     "id": "modonomicon:demo/stages_demo",
-    "required_facts": [
-      "modonomicon:demo/condition_root_viewed"
-    ],
     "stages": [
       {
         "id": "modonomicon:demo/stages_demo_stage_1",

@@ -1,53 +1,62 @@
 [
   {
-    "event_target_id": "modonomicon:features/condition_root",
     "fact_id": "modonomicon:demo/condition_root_viewed",
     "id": "modonomicon:demo/condition_root_viewed_hook",
+    "trigger_target": "modonomicon:features/condition_root",
     "trigger_type": "modonomicon:entry_viewed_once"
   },
   {
-    "event_target_id": "modonomicon:values/collector_a",
+    "fact_id": "modonomicon:demo/advancement_mine_stone_completed",
+    "id": "modonomicon:demo/advancement_mine_stone_completed_hook",
+    "trigger_target": "minecraft:story/mine_stone",
+    "trigger_type": "modonomicon:advancement"
+  },
+  {
+    "fact_id": "modonomicon:demo/advancement_ride_boat_with_goat_completed",
+    "id": "modonomicon:demo/advancement_ride_boat_with_goat_completed_hook",
+    "trigger_target": "minecraft:husbandry/ride_a_boat_with_a_goat",
+    "trigger_type": "modonomicon:advancement"
+  },
+  {
     "id": "modonomicon:demo/collector_a_hook",
+    "trigger_target": "modonomicon:values/collector_a",
     "trigger_type": "modonomicon:entry_viewed_once",
     "value_id": "modonomicon:demo/collector_count"
   },
   {
-    "event_target_id": "modonomicon:values/collector_b",
     "id": "modonomicon:demo/collector_b_hook",
+    "trigger_target": "modonomicon:values/collector_b",
     "trigger_type": "modonomicon:entry_viewed_once",
     "value_id": "modonomicon:demo/collector_count"
   },
   {
-    "event_target_id": "modonomicon:values/collector_c",
     "id": "modonomicon:demo/collector_c_hook",
+    "trigger_target": "modonomicon:values/collector_c",
     "trigger_type": "modonomicon:entry_viewed_once",
     "value_id": "modonomicon:demo/collector_count"
   },
   {
-    "event_target_id": "minecraft:stick",
-    "event_target_item": {
-      "id": "minecraft:stick"
-    },
     "fact_id": "modonomicon:demo/stick_crafted",
     "id": "modonomicon:demo/stick_crafted_hook",
+    "trigger_target": {
+      "id": "minecraft:stick"
+    },
     "trigger_type": "modonomicon:item_crafted"
   },
   {
-    "event_target_id": "minecraft:oak_planks",
-    "event_target_item": {
-      "id": "minecraft:oak_planks"
-    },
-    "id": "modonomicon:demo/stages_planks_hook",
-    "trigger_type": "modonomicon:item_crafted",
-    "value_id": "modonomicon:demo/stages_planks_crafted"
-  },
-  {
-    "event_target_id": "minecraft:cobblestone",
-    "event_target_item": {
-      "id": "minecraft:cobblestone"
-    },
     "fact_id": "modonomicon:demo/cobblestone_acquired",
     "id": "modonomicon:demo/cobblestone_acquired_hook",
+    "trigger_target": {
+      "id": "minecraft:cobblestone"
+    },
     "trigger_type": "modonomicon:item_acquired"
+  },
+  {
+    "id": "modonomicon:demo/stages_planks_hook",
+    "trigger_target": {
+      "id": "minecraft:oak_planks"
+    },
+    "trigger_type": "modonomicon:item_crafted",
+    "value_id": "modonomicon:demo/stages_planks_crafted"
   }
 ]

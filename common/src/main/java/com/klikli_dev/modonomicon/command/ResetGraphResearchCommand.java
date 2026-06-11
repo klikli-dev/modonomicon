@@ -56,6 +56,7 @@ public class ResetGraphResearchCommand implements com.mojang.brigadier.Command<C
         // Lock all nodes in this graph
         for (var nodeId : data.graphNodeIds().getOrDefault(graphId, java.util.Set.of())) {
             state.lockNode(nodeId);
+            state.setNodeStageIndex(nodeId, 0);
         }
 
         // Revoke all facts in this graph

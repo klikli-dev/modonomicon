@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.research.data;
 
 import com.klikli_dev.modonomicon.data.TriggerType;
+import com.klikli_dev.modonomicon.research.hook.TriggerContext;
 import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
  * @param stageIds set of all known stage ids
  * @param nodeRules node activation rules (facts + values + stage dependencies)
  * @param nodeStageRules stage advancement rules per node
- * @param hooksByTypeAndTarget hooks grouped by trigger type, then by trigger target id
+ * @param hooksByType hooks indexed by trigger type
  * @param graphFactIds facts grouped by graph id
  * @param graphNodeIds nodes grouped by graph id
  * @param graphValueIds values grouped by graph id
@@ -43,7 +44,7 @@ public record ResearchData(
         Set<Identifier> stageIds,
         List<NodeRule> nodeRules,
         List<NodeStageRule> nodeStageRules,
-        Map<TriggerType, Map<Identifier, List<ResearchHookDefinition>>> hooksByTypeAndTarget,
+        Map<TriggerType<?, ?>, List<ResearchHookDefinition<?>>> hooksByType,
         Map<Identifier, Set<Identifier>> graphFactIds,
         Map<Identifier, Set<Identifier>> graphNodeIds,
         Map<Identifier, Set<Identifier>> graphValueIds,
@@ -55,27 +56,47 @@ public record ResearchData(
 ) {
 
     /**
-     * Returns hooks for a specific trigger type and target id.
+     * Returns hooks for a specific trigger type that match the given context.
+     * Uses the handler's indexKey for fast-path lookup when available.
      */
-    public List<ResearchHookDefinition> hooksFor(TriggerType type, Identifier targetId) {
-        return this.hooksByTypeAndTarget.getOrDefault(type, Map.of())
-                .getOrDefault(targetId, List.of());
+    public <TTarget, TContext extends TriggerContext> List<ResearchHookDefinition<TTarget>> hooksFor(
+            TriggerType<TTarget, TContext> type,
+            TContext context
+    ) {
+        @SuppressWarnings("unchecked")
+        List<ResearchHookDefinition<TTarget>> allHooks = (List<ResearchHookDefinition<TTarget>>) (List) this.hooksByType.getOrDefault(type, List.of());
+        var handler = type.handler();
+
+        var contextKey = handler.indexKey(context);
+        if (contextKey != null) {
+            return allHooks.stream()
+                    .filter(h -> {
+                        var targetKey = handler.indexKey(h.triggerTarget());
+                        return targetKey != null && targetKey.equals(contextKey)
+                                && handler.matches(h.triggerTarget(), context);
+                    })
+                    .toList();
+        }
+
+        return allHooks.stream()
+                .filter(h -> handler.matches(h.triggerTarget(), context))
+                .toList();
     }
 
     /**
      * Returns all hooks for a specific trigger type.
      */
-    public List<ResearchHookDefinition> hooksForType(TriggerType type) {
-        return this.hooksByTypeAndTarget.getOrDefault(type, Map.of()).values().stream()
-                .flatMap(List::stream)
-                .toList();
+    public <TTarget> List<ResearchHookDefinition<TTarget>> hooksForType(TriggerType<TTarget, ?> type) {
+        @SuppressWarnings("unchecked")
+        List<ResearchHookDefinition<TTarget>> result = (List<ResearchHookDefinition<TTarget>>) (List) this.hooksByType.getOrDefault(type, List.of());
+        return result;
     }
 
     public static ResearchData validate(
             List<ResearchFactDefinition> facts,
             List<ResearchNodeDefinition> nodes,
             List<ResearchValueDefinition> values,
-            List<ResearchHookDefinition> hooks,
+            List<ResearchHookDefinition<?>> hooks,
             Map<Identifier, Set<Identifier>> graphFactIds,
             Map<Identifier, Set<Identifier>> graphNodeIds,
             Map<Identifier, Set<Identifier>> graphValueIds
@@ -173,11 +194,10 @@ public record ResearchData(
             ));
         }
 
-        // Group all hooks by trigger type, then by target id
-        var grouped = new HashMap<TriggerType, Map<Identifier, List<ResearchHookDefinition>>>();
+        // Group all hooks by trigger type
+        Map<TriggerType<?, ?>, List<ResearchHookDefinition<?>>> grouped = new HashMap<>();
         for (var hook : hooks) {
-            grouped.computeIfAbsent(hook.triggerType(), k -> new HashMap<>())
-                    .computeIfAbsent(hook.triggerTargetId(), k -> new ArrayList<>())
+            grouped.computeIfAbsent(hook.triggerType(), k -> new ArrayList<>())
                     .add(hook);
         }
 

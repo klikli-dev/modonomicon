@@ -17,7 +17,6 @@ import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
 import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -36,28 +35,36 @@ public class ResearchHookService {
     // --- Generic API ---
 
     /**
-     * Fire hooks for a specific event.
+     * Fire hooks for a specific event context.
      */
-    public boolean fire(ServerPlayer player, TriggerType triggerType, Identifier targetId) {
-        var handler = TriggerTypeRegistry.handler(triggerType);
-        return this.applyHooks(player, handler.resolve(player, targetId));
+    public <TTarget, TContext extends TriggerContext> boolean fire(
+            TriggerType<TTarget, TContext> triggerType,
+            TContext context
+    ) {
+        var hooks = triggerType.handler().resolve(triggerType, context.player(), context);
+        return this.applyHooks(context.player(), hooks);
     }
 
     /**
      * Replay all hooks of a trigger type (for login / reset).
      */
-    public boolean replayAll(ServerPlayer player, TriggerType triggerType) {
-        var handler = TriggerTypeRegistry.handler(triggerType);
+    public <TTarget, TContext extends TriggerContext> boolean replayAll(
+            TriggerType<TTarget, TContext> triggerType,
+            ServerPlayer player
+    ) {
+        var handler = triggerType.handler();
         return handler.replayAll(player, this.stateManager);
     }
 
     /**
-     * Check if any hook of this type can still progress for this target.
+     * Check if any hook of this type can still progress for this context.
      */
-    public boolean canProgress(ServerPlayer player, TriggerType triggerType, Identifier targetId) {
-        var handler = TriggerTypeRegistry.handler(triggerType);
-        var hooks = handler.resolve(player, targetId);
-        var state = this.stateManager.getStateFor(player);
+    public <TTarget, TContext extends TriggerContext> boolean canProgress(
+            TriggerType<TTarget, TContext> triggerType,
+            TContext context
+    ) {
+        var hooks = triggerType.handler().resolve(triggerType, context.player(), context);
+        var state = this.stateManager.getStateFor(context.player());
         for (var hook : hooks) {
             if (hook.factId() != null && !state.hasFact(hook.factId())) {
                 return true;
@@ -70,8 +77,8 @@ public class ResearchHookService {
      * Check if any hook of this type can still progress for this target.
      * This overload accepts Player (for client-side use) and looks up hooks directly from data.
      */
-    private boolean canProgressByType(Player player, TriggerType triggerType, Identifier targetId) {
-        var hooks = com.klikli_dev.modonomicon.research.data.ResearchDataManager.get().hooksFor(triggerType, targetId);
+    private boolean canProgressByType(Player player, TriggerType<?, ?> triggerType) {
+        var hooks = com.klikli_dev.modonomicon.research.data.ResearchDataManager.get().hooksForType(triggerType);
         var state = this.stateManager.getStateFor(player);
         for (var hook : hooks) {
             if (hook.factId() != null && !state.hasFact(hook.factId())) {
@@ -84,49 +91,43 @@ public class ResearchHookService {
     // --- Convenience sugar (delegate to generic) ---
 
     public boolean onEntryViewedOnce(ServerPlayer player, Identifier entryId) {
-        return this.fire(player, TriggerTypeRegistry.ENTRY_VIEWED_ONCE, entryId);
+        return this.fire(TriggerTypeRegistry.ENTRY_VIEWED_ONCE,
+                new EntryViewedContext(player, entryId));
     }
 
     public boolean canProgressEntryViewedOnce(Player player, Identifier entryId) {
-        return this.canProgressByType(player, TriggerTypeRegistry.ENTRY_VIEWED_ONCE, entryId);
+        return this.canProgressByType(player, TriggerTypeRegistry.ENTRY_VIEWED_ONCE);
     }
 
     public boolean onItemCrafted(ServerPlayer player, ItemStack itemStack) {
-        var itemId = itemStack.getItem().builtInRegistryHolder().unwrapKey()
-                .map(ResourceKey::identifier).orElse(null);
-        if (itemId == null) return false;
-        return this.fire(player, TriggerTypeRegistry.ITEM_CRAFTED, itemId);
+        return this.fire(TriggerTypeRegistry.ITEM_CRAFTED,
+                new ItemCraftedContext(player, itemStack));
     }
 
     public boolean onItemAcquired(ServerPlayer player, ItemStack itemStack) {
-        var itemId = itemStack.getItem().builtInRegistryHolder().unwrapKey()
-                .map(ResourceKey::identifier).orElse(null);
-        if (itemId == null) return false;
-        return this.fire(player, TriggerTypeRegistry.ITEM_ACQUIRED, itemId);
+        return this.fire(TriggerTypeRegistry.ITEM_ACQUIRED,
+                new ItemAcquiredContext(player, itemStack));
     }
 
     public boolean onAdvancement(ServerPlayer player, Identifier advancementId) {
-        return this.fire(player, TriggerTypeRegistry.ADVANCEMENT, advancementId);
+        return this.fire(TriggerTypeRegistry.ADVANCEMENT,
+                new AdvancementContext(player, advancementId));
     }
 
     /**
      * Replays all advancement-backed hooks against the player's current advancement progress.
      */
     public boolean replayAdvancements(ServerPlayer player) {
-        return this.replayAll(player, TriggerTypeRegistry.ADVANCEMENT);
+        return this.replayAll(TriggerTypeRegistry.ADVANCEMENT, player);
     }
 
     /**
      * Checks whether the player's research state is missing any advancement-backed facts.
      */
     public boolean needsAdvancementReplay(ServerPlayer player) {
-        return this.canProgress(player, TriggerTypeRegistry.ADVANCEMENT, null)
-                || this.hasStaleAdvancementFacts(player);
-    }
-
-    private boolean hasStaleAdvancementFacts(ServerPlayer player) {
         var state = this.stateManager.getStateFor(player);
-        for (var hook : com.klikli_dev.modonomicon.research.data.ResearchDataManager.get().hooksForType(TriggerTypeRegistry.ADVANCEMENT)) {
+        for (var hook : com.klikli_dev.modonomicon.research.data.ResearchDataManager.get()
+                .hooksForType(TriggerTypeRegistry.ADVANCEMENT)) {
             if (hook.factId() != null && !state.hasFact(hook.factId())) {
                 return true;
             }
@@ -136,7 +137,7 @@ public class ResearchHookService {
 
     // --- Shared apply logic ---
 
-    private boolean applyHooks(ServerPlayer player, List<ResearchHookDefinition> hooks) {
+    private <TTarget> boolean applyHooks(ServerPlayer player, List<ResearchHookDefinition<TTarget>> hooks) {
         var before = BookDataManager.get().getBooks().values().stream()
                 .collect(Collectors.toMap(Book::getId, book -> BookVisibilitySnapshots.collect(player, book)));
         ResearchStateManager.beginToastCollection();

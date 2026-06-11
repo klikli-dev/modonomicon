@@ -20,58 +20,39 @@ import net.minecraft.world.item.ItemStackTemplate;
  * @param factRef the fact granted when that ingress event occurs (null if incrementing a value)
  * @param valueRef the value incremented when that ingress event occurs (null if granting a fact)
  * @param increment the amount to add to the target value (default 1, ignored for fact hooks)
- * @param matchComponents whether to check components on the acquired item (default false)
  */
 public record ItemAcquiredHookSpec(
         Identifier id,
         ItemStackTemplate targetItem,
         ResearchFactRef factRef,
         ResearchValueRef valueRef,
-        int increment,
-        boolean matchComponents
+        int increment
 ) {
     /**
      * Creates a hook spec that grants a fact.
      */
     public static ItemAcquiredHookSpec grantFact(Identifier id, ItemStackTemplate targetItem, ResearchFactRef factRef) {
-        return new ItemAcquiredHookSpec(id, targetItem, factRef, null, 1, false);
-    }
-
-    /**
-     * Creates a hook spec that grants a fact with component matching.
-     */
-    public static ItemAcquiredHookSpec grantFact(Identifier id, ItemStackTemplate targetItem, ResearchFactRef factRef, boolean matchComponents) {
-        return new ItemAcquiredHookSpec(id, targetItem, factRef, null, 1, matchComponents);
+        return new ItemAcquiredHookSpec(id, targetItem, factRef, null, 1);
     }
 
     /**
      * Creates a hook spec that increments a value.
      */
     public static ItemAcquiredHookSpec incrementValue(Identifier id, ItemStackTemplate targetItem, ResearchValueRef valueRef, int increment) {
-        return new ItemAcquiredHookSpec(id, targetItem, null, valueRef, increment, false);
-    }
-
-    /**
-     * Creates a hook spec that increments a value with component matching.
-     */
-    public static ItemAcquiredHookSpec incrementValue(Identifier id, ItemStackTemplate targetItem, ResearchValueRef valueRef, int increment, boolean matchComponents) {
-        return new ItemAcquiredHookSpec(id, targetItem, null, valueRef, increment, matchComponents);
+        return new ItemAcquiredHookSpec(id, targetItem, null, valueRef, increment);
     }
 
     /**
      * Compiles this ingress declaration into the canonical research hook record.
      */
-    public ResearchHookDefinition toDefinition() {
-        var itemId = this.targetItem.item().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElseThrow();
-        return new ResearchHookDefinition(
+    public ResearchHookDefinition<ItemStackTemplate> toDefinition() {
+        return new ResearchHookDefinition<>(
                 this.id,
                 TriggerTypeRegistry.ITEM_ACQUIRED,
-                itemId,
+                this.targetItem,
                 this.factRef != null ? this.factRef.id() : null,
                 this.valueRef != null ? this.valueRef.id() : null,
-                this.increment,
-                this.targetItem,
-                this.matchComponents
+                this.increment
         );
     }
 }

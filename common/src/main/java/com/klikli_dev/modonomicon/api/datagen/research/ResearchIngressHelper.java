@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.api.datagen.research;
 
 import com.klikli_dev.modonomicon.data.TriggerType;
+import com.klikli_dev.modonomicon.research.hook.NoTriggerTarget;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStackTemplate;
 
@@ -52,8 +53,15 @@ public final class ResearchIngressHelper {
      * Starts authoring ingress from a custom trigger type.
      * This is the generic entry point for third-party trigger types.
      */
-    public GenericIngress on(TriggerType triggerType, Identifier targetId) {
-        return new GenericIngress(this.research, triggerType, targetId);
+    public <TTarget> GenericIngress<TTarget> on(TriggerType<TTarget, ?> triggerType, TTarget target) {
+        return new GenericIngress<>(this.research, triggerType, target);
+    }
+
+    /**
+     * Starts authoring ingress from a custom trigger type without authored target data.
+     */
+    public GenericIngress<NoTriggerTarget> on(TriggerType<NoTriggerTarget, ?> triggerType) {
+        return new GenericIngress<>(this.research, triggerType, NoTriggerTarget.INSTANCE);
     }
 
     /**
@@ -279,18 +287,18 @@ public final class ResearchIngressHelper {
     /**
      * Generic trigger-specific ingress authoring step for custom trigger types.
      */
-    public static final class GenericIngress {
+    public static final class GenericIngress<TTarget> {
         private final ResearchDataBuilder research;
-        private final TriggerType triggerType;
-        private final Identifier targetId;
+        private final TriggerType<TTarget, ?> triggerType;
+        private final TTarget target;
 
         /**
-         * Creates a generic ingress step bound to one specific trigger type and target id.
+         * Creates a generic ingress step bound to one specific trigger type and target.
          */
-        public GenericIngress(ResearchDataBuilder research, TriggerType triggerType, Identifier targetId) {
+        public GenericIngress(ResearchDataBuilder research, TriggerType<TTarget, ?> triggerType, TTarget target) {
             this.research = research;
             this.triggerType = triggerType;
-            this.targetId = targetId;
+            this.target = target;
         }
 
         /**
@@ -306,7 +314,7 @@ public final class ResearchIngressHelper {
          * Authors an explicit ingress hook that grants the given already-declared fact.
          */
         public void grantFact(String hookPath, ResearchFactRef factRef) {
-            this.research.grantFact(hookPath, this.triggerType, this.targetId, factRef);
+            this.research.grantFact(hookPath, this.triggerType, this.target, factRef);
         }
 
         /**
@@ -322,7 +330,7 @@ public final class ResearchIngressHelper {
          * Authors an explicit ingress hook that increments the given already-declared value.
          */
         public void incrementValue(String hookPath, ResearchValueRef valueRef, int increment) {
-            this.research.incrementValue(hookPath, this.triggerType, this.targetId, valueRef, increment);
+            this.research.incrementValue(hookPath, this.triggerType, this.target, valueRef, increment);
         }
     }
 }

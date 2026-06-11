@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.research.data;
 import com.google.gson.JsonElement;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data;
 import com.klikli_dev.modonomicon.data.TriggerType;
+import com.klikli_dev.modonomicon.research.hook.TriggerContext;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
@@ -16,8 +17,6 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,44 +45,18 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
     }
 
     /**
-     * Returns hooks for a specific trigger type and target id.
+     * Returns hooks for a specific trigger type that match the given context.
      */
-    public List<ResearchHookDefinition> hooksFor(TriggerType type, Identifier targetId) {
-        return this.data.hooksFor(type, targetId);
+    public <TTarget, TContext extends TriggerContext> List<ResearchHookDefinition<TTarget>> hooksFor(
+            TriggerType<TTarget, TContext> type, TContext context) {
+        return this.data.hooksFor(type, context);
     }
 
     /**
      * Returns all hooks for a specific trigger type.
      */
-    public List<ResearchHookDefinition> hooksForType(TriggerType type) {
+    public <TTarget> List<ResearchHookDefinition<TTarget>> hooksForType(TriggerType<TTarget, ?> type) {
         return this.data.hooksForType(type);
-    }
-
-    /**
-     * Returns hooks for an item stack with optional component matching.
-     */
-    public List<ResearchHookDefinition> itemHooksFor(TriggerType type, ItemStack itemStack) {
-        var itemId = itemStack.getItem().builtInRegistryHolder().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElse(null);
-        if (itemId == null) {
-            return List.of();
-        }
-        return this.data.hooksFor(type, itemId).stream()
-                .filter(h -> !h.matchComponents() || h.targetItem() == null || matchesComponents(itemStack, h.targetItem()))
-                .toList();
-    }
-
-    private static boolean matchesComponents(ItemStack stack, ItemStackTemplate template) {
-        for (var entry : template.components().entrySet()) {
-            var type = entry.getKey();
-            var templateValue = entry.getValue();
-            if (templateValue.isPresent()) {
-                var stackValue = stack.get(type);
-                if (stackValue == null || !stackValue.equals(templateValue.get())) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     @Override
@@ -91,7 +64,7 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
         var facts = new ArrayList<ResearchFactDefinition>();
         var nodes = new ArrayList<ResearchNodeDefinition>();
         var values = new ArrayList<ResearchValueDefinition>();
-        var hooks = new ArrayList<ResearchHookDefinition>();
+        var hooks = new ArrayList<ResearchHookDefinition<?>>();
 
         var graphFacts = new HashMap<Identifier, List<Identifier>>();
         var graphNodes = new HashMap<Identifier, List<Identifier>>();

@@ -19,68 +19,81 @@ import javax.annotation.Nullable;
  *
  * @param id the canonical hook id
  * @param triggerType the trigger type for this hook
- * @param triggerTargetId the target id (entry id, item id, advancement id, etc.)
+ * @param triggerTarget the typed target condition (e.g. Identifier for entry/advancement, ItemStackTemplate for items)
  * @param factRef the fact granted when the trigger fires (null if incrementing a value)
  * @param valueRef the value incremented when the trigger fires (null if granting a fact)
  * @param increment the amount to add to the target value (default 1, ignored for fact hooks)
- * @param targetItem optional item stack template for component matching (null for non-item hooks)
- * @param matchComponents whether to check components when targetItem is set (default false)
  */
-public record ResearchHookSpec(
+public record ResearchHookSpec<TTarget>(
         Identifier id,
-        TriggerType triggerType,
-        Identifier triggerTargetId,
+        TriggerType<TTarget, ?> triggerType,
+        TTarget triggerTarget,
         @Nullable ResearchFactRef factRef,
         @Nullable ResearchValueRef valueRef,
-        int increment,
-        @Nullable ItemStackTemplate targetItem,
-        boolean matchComponents
+        int increment
 ) {
     /**
      * Creates a hook spec for an item-based trigger type that grants a fact.
      */
-    public static ResearchHookSpec grantFact(Identifier id, TriggerType triggerType, ItemStackTemplate targetItem) {
-        var itemId = targetItem.item().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElseThrow();
-        return new ResearchHookSpec(id, triggerType, itemId, null, null, 1, targetItem, false);
-    }
-
-    /**
-     * Creates a hook spec for an item-based trigger type that grants a fact with component matching.
-     */
-    public static ResearchHookSpec grantFact(Identifier id, TriggerType triggerType, ItemStackTemplate targetItem, boolean matchComponents) {
-        var itemId = targetItem.item().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElseThrow();
-        return new ResearchHookSpec(id, triggerType, itemId, null, null, 1, targetItem, matchComponents);
+    public static ResearchHookSpec<ItemStackTemplate> grantFact(
+            Identifier id, TriggerType<ItemStackTemplate, ?> triggerType,
+            ItemStackTemplate targetItem, ResearchFactRef factRef
+    ) {
+        return new ResearchHookSpec<>(id, triggerType, targetItem, factRef, null, 1);
     }
 
     /**
      * Creates a hook spec for an item-based trigger type that increments a value.
      */
-    public static ResearchHookSpec incrementValue(Identifier id, TriggerType triggerType, ItemStackTemplate targetItem, ResearchValueRef valueRef, int increment) {
-        var itemId = targetItem.item().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElseThrow();
-        return new ResearchHookSpec(id, triggerType, itemId, null, valueRef, increment, targetItem, false);
+    public static ResearchHookSpec<ItemStackTemplate> incrementValue(
+            Identifier id, TriggerType<ItemStackTemplate, ?> triggerType,
+            ItemStackTemplate targetItem, ResearchValueRef valueRef, int increment
+    ) {
+        return new ResearchHookSpec<>(id, triggerType, targetItem, null, valueRef, increment);
     }
 
     /**
-     * Creates a hook spec for an item-based trigger type that increments a value with component matching.
+     * Creates a hook spec for an Identifier-based trigger type that grants a fact.
      */
-    public static ResearchHookSpec incrementValue(Identifier id, TriggerType triggerType, ItemStackTemplate targetItem, ResearchValueRef valueRef, int increment, boolean matchComponents) {
-        var itemId = targetItem.item().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElseThrow();
-        return new ResearchHookSpec(id, triggerType, itemId, null, valueRef, increment, targetItem, matchComponents);
+    public static ResearchHookSpec<Identifier> grantFact(
+            Identifier id, TriggerType<Identifier, ?> triggerType,
+            Identifier targetId, ResearchFactRef factRef
+    ) {
+        return new ResearchHookSpec<>(id, triggerType, targetId, factRef, null, 1);
+    }
+
+    /**
+     * Creates a hook spec for an Identifier-based trigger type that increments a value.
+     */
+    public static ResearchHookSpec<Identifier> incrementValue(
+            Identifier id, TriggerType<Identifier, ?> triggerType,
+            Identifier targetId, ResearchValueRef valueRef, int increment
+    ) {
+        return new ResearchHookSpec<>(id, triggerType, targetId, null, valueRef, increment);
+    }
+
+    /**
+     * Generic factory for arbitrary target types.
+     */
+    public static <TTarget> ResearchHookSpec<TTarget> of(
+            Identifier id, TriggerType<TTarget, ?> triggerType,
+            TTarget target, @Nullable ResearchFactRef factRef,
+            @Nullable ResearchValueRef valueRef, int increment
+    ) {
+        return new ResearchHookSpec<>(id, triggerType, target, factRef, valueRef, increment);
     }
 
     /**
      * Compiles this ingress declaration into the canonical research hook record.
      */
-    public ResearchHookDefinition toDefinition() {
-        return new ResearchHookDefinition(
+    public ResearchHookDefinition<TTarget> toDefinition() {
+        return new ResearchHookDefinition<>(
                 this.id,
                 this.triggerType,
-                this.triggerTargetId,
+                this.triggerTarget,
                 this.factRef != null ? this.factRef.id() : null,
                 this.valueRef != null ? this.valueRef.id() : null,
-                this.increment,
-                this.targetItem,
-                this.matchComponents
+                this.increment
         );
     }
 }

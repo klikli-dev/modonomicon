@@ -44,16 +44,14 @@ public record EntryViewedOnceHookSpec(
     /**
      * Compiles this ingress declaration into the canonical research hook record.
      */
-    public ResearchHookDefinition toDefinition() {
-        return new ResearchHookDefinition(
+    public ResearchHookDefinition<Identifier> toDefinition() {
+        return new ResearchHookDefinition<>(
                 this.id,
                 TriggerTypeRegistry.ENTRY_VIEWED_ONCE,
                 this.entryId,
                 this.factRef != null ? this.factRef.id() : null,
                 this.valueRef != null ? this.valueRef.id() : null,
-                this.increment,
-                null,
-                false
+                this.increment
         );
     }
 }

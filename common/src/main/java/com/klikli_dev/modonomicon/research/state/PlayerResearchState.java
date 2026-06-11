@@ -111,10 +111,10 @@ public class PlayerResearchState {
 
     /**
      * Returns true if the node has completed the given stage index (0-based).
-     * Stage index 0 completed means nodeStageIndex > 0.
+     * Stage index 0 completed means nodeStageIndex > 1.
      */
     public boolean isStageCompleted(Identifier nodeId, int stageIndex) {
-        return this.nodeStageIndexes.getInt(nodeId) > stageIndex;
+        return this.nodeStageIndexes.getInt(nodeId) > stageIndex + 1;
     }
 
     /**

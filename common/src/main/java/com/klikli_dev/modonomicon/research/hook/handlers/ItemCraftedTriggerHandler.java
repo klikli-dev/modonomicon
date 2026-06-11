@@ -6,24 +6,45 @@
 
 package com.klikli_dev.modonomicon.research.hook.handlers;
 
+import com.klikli_dev.modonomicon.data.TriggerType;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
-import com.klikli_dev.modonomicon.research.hook.TriggerHandler;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
-import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
-import net.minecraft.resources.Identifier;
+import com.klikli_dev.modonomicon.research.hook.ItemCraftedContext;
+import com.klikli_dev.modonomicon.research.hook.TriggerHandler;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
-/**
- * Trigger handler for item_crafted hooks.
- * Supports component matching. No replay needed — crafting is a one-shot event.
- */
-public class ItemCraftedTriggerHandler implements TriggerHandler {
+public class ItemCraftedTriggerHandler implements TriggerHandler<ItemStackTemplate, ItemCraftedContext> {
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @Override
+    public List<ResearchHookDefinition<ItemStackTemplate>> resolve(
+            TriggerType<ItemStackTemplate, ItemCraftedContext> type,
+            ServerPlayer player,
+            ItemCraftedContext context
+    ) {
+        return (List) ResearchDataManager.get().hooksForType(type).stream()
+                .filter(h -> matches((ItemStackTemplate) h.triggerTarget(), context))
+                .toList();
+    }
 
     @Override
-    public List<ResearchHookDefinition> resolve(ServerPlayer player, Identifier itemId) {
-        return ResearchDataManager.get().hooksFor(TriggerTypeRegistry.ITEM_CRAFTED, itemId);
+    public boolean matches(ItemStackTemplate target, ItemCraftedContext context) {
+        return target.item().equals(context.stack().getItem().builtInRegistryHolder());
+    }
+
+    @Override
+    public @Nullable Object indexKey(ItemStackTemplate target) {
+        return target.item().unwrapKey().map(ResourceKey::identifier).orElse(null);
+    }
+
+    @Override
+    public @Nullable Object indexKey(ItemCraftedContext context) {
+        return context.stack().getItem().builtInRegistryHolder().unwrapKey()
+                .map(ResourceKey::identifier).orElse(null);
     }
 }

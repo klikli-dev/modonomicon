@@ -179,6 +179,7 @@ public class ResearchStateManager {
     }
 
     private boolean advanceStages(PlayerResearchState state, Identifier nodeId, List<ResearchData.NodeStageRule> stageRules, java.util.Map<Identifier, ResearchData.StageLocation> stageLocations, java.util.Map<Identifier, com.klikli_dev.modonomicon.research.data.ResearchToastDefinition> stageToasts) {
+        boolean changed = false;
         boolean advanced;
         do {
             advanced = false;
@@ -222,6 +223,7 @@ public class ResearchStateManager {
             // Advance to next stage
             state.setNodeStageIndex(nodeId, currentStage + 1);
             advanced = true;
+            changed = true;
 
             // Emit stage completion toast trigger
             var collector = TOAST_TRIGGER_COLLECTOR.get();
@@ -238,7 +240,7 @@ public class ResearchStateManager {
                 }
             }
         } while (advanced);
-        return advanced;
+        return changed;
     }
 
     public boolean isNodeUnlocked(Player player, Identifier nodeId) {

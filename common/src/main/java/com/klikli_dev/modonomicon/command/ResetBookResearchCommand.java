@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookOrCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookResearchNodeUnlockedCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookResearchStageCompletedCondition;
+import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.bookstate.visual.BookVisibilitySnapshots;
 import com.klikli_dev.modonomicon.data.BookDataManager;
@@ -95,6 +96,11 @@ public class ResetBookResearchCommand implements com.mojang.brigadier.Command<Co
         var nodeIds = new HashSet<Identifier>();
         for (var entry : book.getEntries().values()) {
             collectNodeIdsFromCondition(entry.getCondition(), nodeIds);
+            if (entry instanceof BookContentEntry contentEntry) {
+                for (var page : contentEntry.getPages()) {
+                    collectNodeIdsFromCondition(page.getCondition(), nodeIds);
+                }
+            }
         }
         return nodeIds;
     }
