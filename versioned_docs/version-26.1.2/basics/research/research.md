@@ -36,6 +36,9 @@ Hooks connect external events to research progress. Each hook triggers on an eve
 | `item_acquired` | A specific item appears in inventory |
 | `advancement` | A vanilla advancement is earned |
 
+Third-party mods can register custom trigger types via `TriggerTypeRegistry.register()`.
+See [Custom Research Hooks](../../advanced/custom-hooks) for details.
+
 ### Toast Notifications
 
 Research facts, values, nodes, and stages can show toast notifications when triggered. Toasts are defined with a title key, optional description key, optional icon, and optional static arguments.
@@ -47,15 +50,15 @@ Research datagen produces these files per bundle:
 - `facts.json` — array of `{ "id": "namespace/path" }`
 - `values.json` — array of `{ "id": "namespace/path" }`
 - `nodes.json` — node definitions with required_facts, required_values, stages, required_stages, and optional toast
-- `hooks.json` — merged entry_viewed_once, item_crafted, and item_acquired hooks
-- `advancement_hooks.json` — advancement-triggered hooks
+- `hooks.json` — all hooks (all trigger types in one file)
 
 ## Runtime
 
-The `ResearchStateManager` tracks per-player research state. Research hooks fire automatically via dedicated services (e.g. `AdvancementResearchHookService`). Toast notifications are sent from server to client via `ResearchToastMessage`.
+The `ResearchStateManager` tracks per-player research state. Research hooks fire automatically via `ResearchHookService`. Toast notifications are sent from server to client via `ResearchToastMessage`.
 
 ## Further reading
 
 - [Research Conditions](./conditions) — unlocking entries and categories via research nodes
 - [Research Scenarios](./scenarios) — common patterns for advancement gating, item crafting, and more
 - [Research Datagen](./datagen) — authoring research content via datagen
+- [Custom Research Hooks](../../advanced/custom-hooks) — registering new trigger types for third-party mods

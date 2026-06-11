@@ -71,6 +71,17 @@ this.ingress().onAdvancementEarned(advancementId)
     .declareFact("mymod/advancement_fact");
 ```
 
+### Generic Ingress
+
+For custom trigger types, use the generic ingress entry point:
+
+```java
+this.ingress().on(myTriggerType, targetId)
+    .declareFact("mymod/my_hook");
+```
+
+See [Custom Research Hooks](../../advanced/custom-hooks) for details.
+
 ## Multi-stage nodes
 
 ```java

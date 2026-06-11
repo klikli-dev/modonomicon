@@ -231,3 +231,8 @@ While it is possible to combine multiple research conditions with `and`/`or`, it
   }
 }
 ```
+
+## Custom trigger types
+
+Need a trigger type not covered above (e.g. entity killed, biome entered)?
+See [Custom Research Hooks](../../advanced/custom-hooks).
