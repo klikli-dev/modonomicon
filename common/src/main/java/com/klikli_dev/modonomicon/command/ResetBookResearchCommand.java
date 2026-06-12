@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.command;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Command;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.conditions.BookAndCondition;
@@ -31,6 +32,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class ResetBookResearchCommand implements com.mojang.brigadier.Command<CommandSourceStack> {
@@ -60,24 +62,25 @@ public class ResetBookResearchCommand implements com.mojang.brigadier.Command<Co
                 .collect(java.util.stream.Collectors.toMap(Book::getId, b -> BookVisibilitySnapshots.collect(player, b)));
 
         var nodeIdsToReset = collectNodeIdsFromBook(book);
+        var graphIdsToReset = collectGraphIdsFromNodes(nodeIdsToReset);
         var state = ResearchServices.state().getStateFor(player);
 
-        for (var nodeId : nodeIdsToReset) {
-            state.lockNode(nodeId);
-            state.setNodeStageIndex(nodeId, 0);
+        for (var graphId : graphIdsToReset) {
+            for (var nodeId : ResearchDataManager.get().data().graphNodeIds().getOrDefault(graphId, Set.of())) {
+                state.lockNode(nodeId);
+                state.setNodeStageIndex(nodeId, 0);
+            }
 
-            // Find the node rule to revoke related facts and reset values
-            for (var rule : ResearchDataManager.get().data().nodeRules()) {
-                if (rule.nodeId().equals(nodeId)) {
-                    for (var factId : rule.requiredFactIds()) {
-                        state.revokeFact(factId);
-                    }
-                    for (var valueReq : rule.requiredValueRequirements()) {
-                        state.setValue(valueReq.valueId(), 0);
-                    }
-                }
+            for (var factId : ResearchDataManager.get().data().graphFactIds().getOrDefault(graphId, Set.of())) {
+                state.revokeFact(factId);
+            }
+
+            for (var valueId : ResearchDataManager.get().data().graphValueIds().getOrDefault(graphId, Set.of())) {
+                state.setValue(valueId, 0);
             }
         }
+
+        Modonomicon.LOG.info("Reset book research for {}: graphs={}, referencedNodes={}", bookId, graphIdsToReset, nodeIdsToReset);
 
         ResearchServices.state().reevaluate(player);
 
@@ -103,6 +106,19 @@ public class ResetBookResearchCommand implements com.mojang.brigadier.Command<Co
             }
         }
         return nodeIds;
+    }
+
+    private Set<Identifier> collectGraphIdsFromNodes(Set<Identifier> nodeIds) {
+        var graphIds = new LinkedHashSet<Identifier>();
+        for (var entry : ResearchDataManager.get().data().graphNodeIds().entrySet()) {
+            for (var nodeId : nodeIds) {
+                if (entry.getValue().contains(nodeId)) {
+                    graphIds.add(entry.getKey());
+                    break;
+                }
+            }
+        }
+        return graphIds;
     }
 
     private void collectNodeIdsFromCondition(BookCondition condition, Set<Identifier> nodeIds) {

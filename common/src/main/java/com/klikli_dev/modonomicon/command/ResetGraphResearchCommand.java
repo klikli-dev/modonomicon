@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.command;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Command;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
@@ -68,6 +69,14 @@ public class ResetGraphResearchCommand implements com.mojang.brigadier.Command<C
         for (var valueId : data.graphValueIds().getOrDefault(graphId, java.util.Set.of())) {
             state.setValue(valueId, 0);
         }
+
+        Modonomicon.LOG.info(
+                "Reset graph research for {}: nodes={}, facts={}, values={}",
+                graphId,
+                data.graphNodeIds().getOrDefault(graphId, java.util.Set.of()),
+                data.graphFactIds().getOrDefault(graphId, java.util.Set.of()),
+                data.graphValueIds().getOrDefault(graphId, java.util.Set.of())
+        );
 
         ResearchServices.state().reevaluate(player);
 
