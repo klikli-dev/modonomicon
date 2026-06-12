@@ -9,7 +9,7 @@ and translate them into research progression (fact grants or value increments).
 
 To this end you need to:
 
-1. Create a `ResourceLocation` ID for the new trigger type (e.g. `mymod:entity_killed`)
+1. Create an `Identifier` ID for the new trigger type (e.g. `mymod:entity_killed`)
 2. Define a target type and a context type for your trigger
 3. Implement `TriggerHandler` to resolve hooks, match targets, and optionally support replay
 4. Register the trigger type via `TriggerTypeRegistry.register()`
@@ -182,7 +182,7 @@ public final class MyModTriggerRegistry {
     public static final TriggerType<Identifier, EntityKilledContext> ENTITY_KILLED =
         TriggerTypeRegistry.register(
             Identifier.fromNamespaceAndPath("mymod", "entity_killed"),
-            Identifier.CODEC.fieldOf(""),
+            Identifier.CODEC,
             Identifier.STREAM_CODEC.cast(),
             new EntityKilledTriggerHandler()
         );
