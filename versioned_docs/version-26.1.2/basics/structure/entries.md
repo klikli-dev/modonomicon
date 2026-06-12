@@ -9,7 +9,7 @@ Entries are defined in json files placed in the `/data/<mod_id>/modonomicon/book
 
 ## Attributes
 
-### **type** (ResourceLocation, _mandatory_)
+### **type** (Identifier, _mandatory_)
 
 The entry type.
 
@@ -19,16 +19,16 @@ Builtin entry types are:
 - `modonomicon:category_link` for entries that open another category via `category_to_open`
 - `modonomicon:entry_link` for entries that open another entry via `entry_to_open`
 
-### **id** (ResourceLocation, _mandatory_)
+### **id** (Identifier, _mandatory_)
 
 The unique id of this entry within the book.
 
 This is the id used by links and parent references.
 For entries stored in `entries/<category_id>/`, this is typically the full path including the category folder, for example `yourmod:features/my_entry`.
 
-### **category** (ResourceLocation, _mandatory_)
+### **category** (Identifier, _mandatory_)
 
-The ResourceLocation of the category this entry should be placed in. 
+The Identifier of the category this entry should be placed in. 
 
 :::tip
 
@@ -44,14 +44,14 @@ The entry name, will be shown in **bold** when hovering over the Entry. Will not
 
 The entry description, will be shown below the name when hovering over the Entry. Will not parse markdown.
 
-### **icon** (ResourceLocation, _mandatory_)
+### **icon** (Identifier, _mandatory_)
 
-**Either** an item/block ResourceLocation that should be used as icon. E.g.:  `minecraft:nether_star` or `minecraft:chest`.  
-**Or** the ResourceLocation to a texture. The texture must be 16x16 pixels. E.g.:  `modonomicon:textures/gui/some_random_icon.png`. 
+**Either** an item/block Identifier that should be used as icon. E.g.:  `minecraft:nether_star` or `minecraft:chest`.  
+**Or** the Identifier to a texture. The texture must be 16x16 pixels. E.g.:  `modonomicon:textures/gui/some_random_icon.png`. 
 
 :::tip
 
-To use a texture make sure the ResourceLocation includes the file ending `.png` as seen in the example above.
+To use a texture make sure the Identifier includes the file ending `.png` as seen in the example above.
 
 ::: 
 
@@ -108,11 +108,11 @@ Default value:
 
 #### Attributes
 
-- `sprite` (ResourceLocation, mandatory): The sprite to use for the entry background.
+- `sprite` (Identifier, mandatory): The sprite to use for the entry background.
 - `width` (Integer, optional): The background width. If omitted, defaults to `-1`.
 - `height` (Integer, optional): The background height. If omitted, defaults to `-1`.
 
-As a shorthand, `background` can also be a single ResourceLocation string instead of an object. In that case it is treated as the `sprite` value and `width` / `height` default to `-1`.
+As a shorthand, `background` can also be a single Identifier string instead of an object. In that case it is treated as the `sprite` value and `width` / `height` default to `-1`.
 
 #### Default datagen entry backgrounds
 
@@ -198,7 +198,7 @@ If present, pages without a matching inline page id are inserted at that positio
 
 **Datagen:** Pages-as-files is the default behavior. Use `BookEntryModel#withGeneratePagesAsFiles(false)` to generate pages inline in the entry JSON instead.
 
-### **category_to_open** (ResourceLocation, _optional_)
+### **category_to_open** (Identifier, _optional_)
 
 The resource location to the category that should be opened when this entry is clicked. 
 If this is set, the entry will never show it's pages, but instead open the category directly.
@@ -211,7 +211,7 @@ This allows to create "sub-category" that does not show up in the category navig
 
 ::: 
 
-### **command_to_run_on_first_read** (ResourceLocation, _optional_)
+### **command_to_run_on_first_read** (Identifier, _optional_)
 
 The resource location to the command that should be opened when this entry is read/opened for the first time.
 See [Commands](./commands.md) on how to create the command.
@@ -222,7 +222,7 @@ This can be used to e.g. give rewards to players for reaching a certain part of 
 
 ::: 
 
-### **entry_to_open** (ResourceLocation, _optional_)
+### **entry_to_open** (Identifier, _optional_)
 
 The resource location to the entry that should be opened when this entry is clicked. This allows to place one entry in multiple categories by referring to it multiple times.
 If this is set, the entry will never show it's pages, but instead open the target entry.
@@ -235,9 +235,9 @@ Entry Parents define which entry comes visually before this entry in the book, a
 
 ### Attributes
 
-#### **entry** (ResourceLocation, _mandatory_)
+#### **entry** (Identifier, _mandatory_)
 
-The ResourceLocation of the parent entry. This is the main attribute.
+The Identifier of the parent entry. This is the main attribute.
 
 #### **draw_arrow** (Boolean, _optional_)
 

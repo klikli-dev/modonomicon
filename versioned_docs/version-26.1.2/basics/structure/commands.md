@@ -8,7 +8,7 @@ Commands are defined in json files placed in the `/data/<mod_id>/modonomicon/boo
 They are intended to give book creators more flexibility. Commands can be triggered either via a [Command Link](../formatting.md#command-link) or when an entry is first read/openend(See [Entry - command_to_run_on_first_read](./entries.md#attributes)).  
 
 Commands are guarded against abuse and by default can only be run once per player per world (even if the player resets the book).  
-In the book you need to specify the command's id (ResourceLocation) instead of the actual minecraft command.
+In the book you need to specify the command's id (Identifier) instead of the actual minecraft command.
 
 ## Command IDs
 
@@ -24,7 +24,7 @@ For `/data/<mod_id>/modonomicon/books/my_book/commands/rewards/apple` the id wou
 
 The minecraft command to run. Commands will be run with the player as "sender", so take that into account.
 
-### **allowed_entries** (List of ResourceLocations, _optional_)
+### **allowed_entries** (List of Identifiers, _optional_)
 
 A list of full entry ids that this command is allowed to be run from, for example `yourmod:features/my_entry`.
 Please specify all entries in which you plan to include a command link to this command.

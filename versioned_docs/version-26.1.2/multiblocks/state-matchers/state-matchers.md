@@ -14,7 +14,7 @@ All state matchers need to have the following attributes:
 
 ### **type** (State Matcher Type, _mandatory_)
 
-A ResourceLocation identifying the type of state matcher to use.   
+A Identifier identifying the type of state matcher to use.   
 Example: `modonomicon:block` 
 
 ## Attribute Types
@@ -23,7 +23,7 @@ Besides standard JSON types, state matchers support the following attributes:
 
 ### **Block** (String)
 
-  A ResourceLocation for a block, in the format `modid:block`.  
+  A Identifier for a block, in the format `modid:block`.  
   Example: `minecraft:stone` 
 
 ### **BlockState** (String)

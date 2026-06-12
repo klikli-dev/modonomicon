@@ -12,7 +12,7 @@ The book will be treated as a book in index mode (that means, no big "node view"
 ## Creating a leaflet
 
 To create a leaflet book, you need a normal book structure including `book.json`, a single category, and within that category an entry.
-The book needs to have `leaflet_entry` set to the ResourceLocation of the single entry in the single category. 
+The book needs to have `leaflet_entry` set to the Identifier of the single entry in the single category. 
 Additional content can be added to the book, but will not be displayed. 
 
 The best way to create a leaflet is to use the leaflet datagen. It is demonstrated in (and can be copied from) https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/DemoLeaflet.java

@@ -6,7 +6,7 @@ sidebar_position: 40
 
 Mods can add custom conditions that can be used to lock entries or categories. To this end you need to:
 
-1. Create a `ResourceLocation` ID for the new condition (e.g. `mymod:my_condition`)
+1. Create an `Identifier` ID for the new condition (e.g. `mymod:my_condition`)
 2. Create a custom condition class with `ID`, `CODEC`, and `STREAM_CODEC`
 3. Register the condition via a dedicated registry class
 4. For datagen: create a condition model class
@@ -14,7 +14,7 @@ Mods can add custom conditions that can be used to lock entries or categories. T
 
 :::tip
 
-The `ResourceLocation` is what you will use in your entries and categories to gate them behind your custom condition.
+The `Identifier` is what you will use in your entries and categories to gate them behind your custom condition.
 
 :::
 
@@ -24,7 +24,7 @@ Conditions need to extend `BookCondition` in the package `com.klikli_dev.modonom
 
 Each condition class must declare three static fields:
 
-- `ID` — a `ResourceLocation` (use `Modonomicon.loc(...)` or `new ResourceLocation("mymod", "my_condition")`)
+- `ID` — an `Identifier` (use `Modonomicon.loc(...)` or `new Identifier("mymod", "my_condition")`)
 - `CODEC` — a `MapCodec<T>` for JSON deserialization, typically built with `RecordCodecBuilder.mapCodec(...)`
 - `STREAM_CODEC` — a `StreamCodec<RegistryFriendlyByteBuf, T>` for network serialization, typically built with `StreamCodec.composite(...)`
 

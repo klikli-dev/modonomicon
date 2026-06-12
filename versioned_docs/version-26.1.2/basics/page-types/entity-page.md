@@ -12,9 +12,9 @@ Displays an Entity and optionally a custom name and text.
 
 ## Attributes
 
-### **entity_id** (ResourceLocation, _mandatory_)
+### **entity_id** (Identifier, _mandatory_)
 
-ResourceLocations of the entity to display.
+Identifiers of the entity to display.
 
 :::tip
 

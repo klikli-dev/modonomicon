@@ -10,9 +10,9 @@ This condition will be met, if the category with the specified ID has any visibl
 
 ## Attributes
 
-### **category_id** (ResourceLocation, _mandatory_)
+### **category_id** (Identifier, _mandatory_)
 
-The ResourceLocation of the category that needs to have any visible (locked & unlocked, but not hidden) entries or no entries at all, to unlock this entry.
+The Identifier of the category that needs to have any visible (locked & unlocked, but not hidden) entries or no entries at all, to unlock this entry.
 
 ## Usage Examples
 

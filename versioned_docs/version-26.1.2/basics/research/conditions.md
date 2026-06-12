@@ -14,9 +14,9 @@ This condition is met when the specified research node is fully completed (all s
 
 ### Attributes
 
-#### **node_id** (ResourceLocation, _mandatory_)
+#### **node_id** (Identifier, _mandatory_)
 
-The ResourceLocation of the research node that must be fully completed.
+The Identifier of the research node that must be fully completed.
 
 #### **tooltip** (DescriptionId or Component JSON, _optional_)
 
@@ -41,13 +41,13 @@ This condition is met when a specific stage within a research node is completed 
 
 ### Attributes
 
-#### **node_id** (ResourceLocation, _mandatory_)
+#### **node_id** (Identifier, _mandatory_)
 
-The ResourceLocation of the research node containing the stage.
+The Identifier of the research node containing the stage.
 
-#### **stage_id** (ResourceLocation, _mandatory_)
+#### **stage_id** (Identifier, _mandatory_)
 
-The ResourceLocation of the stage that must be completed.
+The Identifier of the stage that must be completed.
 
 #### **tooltip** (DescriptionId or Component JSON, _optional_)
 

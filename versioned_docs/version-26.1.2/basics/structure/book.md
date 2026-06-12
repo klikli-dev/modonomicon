@@ -50,7 +50,7 @@ If `generate_book_item` is `false`, `custom_book_item` needs to be set.
 
 :::
 
-### **model** (ResourceLocation, _optional_)
+### **model** (Identifier, _optional_)
 
 Default value: `modonomicon:modonomicon_purple`.
 The item model to use for the generated book item.
@@ -69,9 +69,9 @@ That means it either needs to belong to an existing item, or it must be explicit
 
 :::
 
-### **custom_book_item** (ResourceLocation, _mandatory_ if `generate_book_item` is `false`)
+### **custom_book_item** (Identifier, _mandatory_ if `generate_book_item` is `false`)
 
-The ResourceLocation for your custom book item.
+The Identifier for your custom book item.
 This is your custom item instance that will open the book.
 
 ### **creative_tab** (String, _optional_)
@@ -80,7 +80,7 @@ Default value: `misc`.
 The creative tab for the automatically generated book item.
 Ignored if `generate_book_item` is `false`.
 
-### **font** (ResourceLocation, _optional_)
+### **font** (Identifier, _optional_)
 
 Default value: `modonomicon:default`.
 The font to use in the book.
@@ -100,13 +100,13 @@ Can be `single_page` or `double_page`.
 This controls how entries are rendered.
 Categories and books in index mode always use double page display.
 
-### **turn_page_sound** (ResourceLocation, _optional_)
+### **turn_page_sound** (Identifier, _optional_)
 
 Default value: `minecraft:turn_page`.
 The sound event to play when turning a page.
 The sound must be a loaded sound event defined in `/assets/<mod_id>/sounds.json`.
 
-### **leaflet_entry** (ResourceLocation, _optional_)
+### **leaflet_entry** (Identifier, _optional_)
 
 If set, the book will ignore its normal navigation structure and directly display this one entry.
 The entry still needs to be part of a valid category, even if that category is not shown.

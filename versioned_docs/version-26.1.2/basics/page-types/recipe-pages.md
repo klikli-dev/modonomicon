@@ -26,13 +26,13 @@ Each page type only supports recipes of the matching recipe type. If you want to
 
 ## Attributes
 
-### **recipe_id_1** (ResourceLocation, _mandatory_)
+### **recipe_id_1** (Identifier, _mandatory_)
 
-The ResourceLocation of the first recipe to display. Make sure to match the recipe type to the page type.
+The Identifier of the first recipe to display. Make sure to match the recipe type to the page type.
 
-### **recipe_id_2** (ResourceLocation, _optional_)
+### **recipe_id_2** (Identifier, _optional_)
 
-The ResourceLocation of the second recipe to display. Make sure to match the recipe type to the page type.
+The Identifier of the second recipe to display. Make sure to match the recipe type to the page type.
 
 ### **text** (DescriptionId or Component JSON, _optional_)
 

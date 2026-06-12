@@ -6,11 +6,11 @@ sidebar_position: 50
 
 **Type:** `modonomicon:predicate`
 
-Predicate matchers can use advanced logic to match blocks. The matching logic must be provided as Java code and registered with a `ResourceLocation` ID.
+Predicate matchers can use advanced logic to match blocks. The matching logic must be provided as Java code and registered with an `Identifier` ID.
 
 ## Attributes
 
-### **predicate** (ResourceLocation, _mandatory_)
+### **predicate** (Identifier, _mandatory_)
 
   The ID of the predicate to use for the matcher.
 
@@ -38,7 +38,7 @@ Create a dedicated registry class and register your predicates via `PredicateReg
 public final class MyModModonomiconPredicateRegistry {
 
     public static final PredicateType MY_PREDICATE = PredicateRegistry.register(
-        new ResourceLocation("mymod", "my_predicate"),
+        new Identifier("mymod", "my_predicate"),
         (getter, pos, state) -> state.isSolid() && pos.getY() > 64
     );
 

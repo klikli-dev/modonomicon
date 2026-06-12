@@ -26,14 +26,14 @@ Node mode ("thaumonomicon-style") will display a "tree/quest/progress" view of t
 The category can be in "index" mode, despite the book being in "node" mode if you have contents that are better suited for a list.   
 In this case the styling attributes, such as the background (see below) are still applied, but only to provide a consistent look for the book rendered behind the category view.
 
-### **icon** (ResourceLocation, _mandatory_)
+### **icon** (Identifier, _mandatory_)
 
-**Either** an item/block ResourceLocation that should be used as icon. E.g.:  `minecraft:nether_star` or `minecraft:chest`.  
-**Or** the ResourceLocation to a texture. The texture must be 16x16 pixels. E.g.:  `modonomicon:textures/gui/some_random_icon.png`. 
+**Either** an item/block Identifier that should be used as icon. E.g.:  `minecraft:nether_star` or `minecraft:chest`.  
+**Or** the Identifier to a texture. The texture must be 16x16 pixels. E.g.:  `modonomicon:textures/gui/some_random_icon.png`. 
 
 :::tip
 
-To use a texture make sure the ResourceLocation includes the file ending `.png` as seen in the example above.
+To use a texture make sure the Identifier includes the file ending `.png` as seen in the example above.
 
 ::: 
 
@@ -50,10 +50,10 @@ When using datagen and no sort number is provided, the BookProvider will automat
 Categories, like Entries, can be hidden until an Unlock Condition is fulfilled. Conditions are JSON objects.  
 See **[Unlock Conditions](../unlock-conditions)** for details.
 
-### **background** (ResourceLocation, _optional_)
+### **background** (Identifier, _optional_)
 
 Defaults to `modonomicon:textures/gui/dark_slate_seamless.png`.   
-The ResourceLocation for the Background texture to use for this category. The texture must be 512px by 512px.
+The Identifier for the Background texture to use for this category. The texture must be 512px by 512px.
 
 
 ### **background_parallax_layers** (JSON Array of JSON Objects, _optional_)
@@ -164,7 +164,7 @@ Multi-state example:
 }
 ```
 
-### **entry_to_open** (ResourceLocation, _optional_)
+### **entry_to_open** (Identifier, _optional_)
 
 The entry to directly open when this category is opened. If not set, no entry will be opened.
 

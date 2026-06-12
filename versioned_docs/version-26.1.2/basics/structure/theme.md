@@ -10,7 +10,7 @@ If this file is missing, Modonomicon uses the default theme.
 
 ## Attributes
 
-### **id** (ResourceLocation, _optional_)
+### **id** (Identifier, _optional_)
 
 Default value: `modonomicon:default`.
 
@@ -24,7 +24,7 @@ For a theme id like `yourmod:eldritch`, Modonomicon looks for theme files in:
 
 If the id path contains folders, those folders are preserved.
 
-### **type** (ResourceLocation, _optional_)
+### **type** (Identifier, _optional_)
 
 Default value: `modonomicon:default`.
 
@@ -91,7 +91,7 @@ Overrides the default sprite used for category buttons when a category does not 
 
 The sprite JSON object uses the normal sprite structure:
 
-- `sprite` (ResourceLocation, mandatory)
+- `sprite` (Identifier, mandatory)
 - `width` (Integer, optional)
 - `height` (Integer, optional)
 

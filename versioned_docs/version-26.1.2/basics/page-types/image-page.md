@@ -12,9 +12,9 @@ Displays an image and optionally a title and text.
 
 ## Attributes
 
-### **images** (ResourceLocation[], _mandatory_)
+### **images** (Identifier[], _mandatory_)
 
-Array of ResourceLocations of the textures to display.   
+Array of Identifiers of the textures to display.   
 By default an image of any size can be used and will be rendered entirely. See `use_legacy_rendering` for more information.
 
 
