@@ -1,4 +1,4 @@
-// 26.1.2	2026-06-12T13:21:24.3692556	Books: modonomicon
+// 26.1.2	2026-06-21T10:07:20.2362372	Books: modonomicon
 2c29f1887c5c375e76d6813e5c5ef689936ec4e2 data/modonomicon/modonomicon/books/demo/book.json
 a40738cde71e2783fc7ebf4102a27a937c00761e data/modonomicon/modonomicon/books/demo/categories/acquiring.json
 66e880d8ad62910ce9caf891021f84308950452c data/modonomicon/modonomicon/books/demo/categories/conditional.json
@@ -27,9 +27,9 @@ faed37da900fcfb9d4ef7dcb1f1a77e18e1c0332 data/modonomicon/modonomicon/books/demo
 918c4e69231232827fdd17b9b2842fde176a1e64 data/modonomicon/modonomicon/books/demo/entries/features/condition_advancement.json
 4cc3bb9d2457f4c09ceb6a5d8ea524ef6151f35f data/modonomicon/modonomicon/books/demo/entries/features/condition_advancement/pages/conditional_page.json
 850b604478aafbf915d1a0f277bef2ee8748bcef data/modonomicon/modonomicon/books/demo/entries/features/condition_advancement/pages/info.json
-fa9de06c04e39457394beda565fc214a5230340c data/modonomicon/modonomicon/books/demo/entries/features/condition_level_1.json
+2e03d83ce7a3d2be63e51eac8fe0f5053fe16d4e data/modonomicon/modonomicon/books/demo/entries/features/condition_level_1.json
 48c5d2543faf83bb7530fbd49407250f0e500497 data/modonomicon/modonomicon/books/demo/entries/features/condition_level_1/pages/info.json
-aea3a7250af29250ca952fc865589d7c165cd897 data/modonomicon/modonomicon/books/demo/entries/features/condition_level_2.json
+fa14917626f63eace5e8cf5150bbb6fe9da1be69 data/modonomicon/modonomicon/books/demo/entries/features/condition_level_2.json
 5f31fa0914704e2cbd62345bcc8c2ea2b5b38e12 data/modonomicon/modonomicon/books/demo/entries/features/condition_level_2/pages/info.json
 b8fbcc5545f0b75fa6e21f8688251f292c10c63c data/modonomicon/modonomicon/books/demo/entries/features/condition_root.json
 f1c9c270213819c913e92fdd9f17b9168a56f4f3 data/modonomicon/modonomicon/books/demo/entries/features/condition_root/pages/info.json

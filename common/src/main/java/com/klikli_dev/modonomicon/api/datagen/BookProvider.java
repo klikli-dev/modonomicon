@@ -147,8 +147,17 @@ public class BookProvider implements DataProvider {
 
             this.subProviders.forEach(subProvider -> subProvider.generate(this.bookModels::put, registries));
 
+            // Build a map of book id → generated research store from subproviders
+            var researchStores = new Object2ObjectOpenHashMap<Identifier, GeneratedBookResearchStore>();
+            for (var subProvider : this.subProviders) {
+                if (subProvider instanceof SingleBookSubProvider singleBook) {
+                    researchStores.put(Identifier.fromNamespaceAndPath(this.modId, singleBook.bookId()), singleBook.getGeneratedResearchStore());
+                }
+            }
+
             for (var bookModel : this.bookModels.values()) {
-                var compiledResearch = this.researchCompiler.compile(bookModel);
+                var store = researchStores.get(bookModel.getId());
+                var compiledResearch = this.researchCompiler.compile(bookModel, store);
                 if (compiledResearch.isPresent()) {
                     if (this.researchCache != null) {
                         this.researchCache.accept(compiledResearch.get().bundleId(), compiledResearch.get().research());

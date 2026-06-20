@@ -27,7 +27,7 @@ public abstract class ModonomiconProviderBase {
     protected final Map<String, ModonomiconLanguageProvider> langs;
     protected final Map<String, BiConsumer<String, String>> langsAsBiConsumers;
     protected final BookContextHelper context;
-    protected final ConditionHelper conditionHelper;
+    protected ConditionHelper conditionHelper;
     private final Map<String, String> macros = new Object2ObjectOpenHashMap<>();
 
     private HolderLookup.Provider registries;

@@ -1,14 +1,14 @@
 [
   {
-    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_root",
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_root_hook",
-    "trigger_target": "modonomicon:features/condition_root",
-    "trigger_type": "modonomicon:entry_viewed_once"
-  },
-  {
     "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_level_1",
     "id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_level_1_hook",
     "trigger_target": "modonomicon:features/condition_level_1",
+    "trigger_type": "modonomicon:entry_viewed_once"
+  },
+  {
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_root",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_root_hook",
+    "trigger_target": "modonomicon:features/condition_root",
     "trigger_type": "modonomicon:entry_viewed_once"
   },
   {

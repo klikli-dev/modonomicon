@@ -30,6 +30,11 @@ public final class ResearchIngressHelper {
 
     /**
      * Starts authoring ingress from the {@code entry_viewed_once} trigger family.
+     *
+     * @param entryId the full entry resource location, e.g. {@code modonomicon:features/condition_root}.
+     *                This must match the ID passed to {@link com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel#create(net.minecraft.resources.Identifier, String)}.
+     *                Typically constructed as {@code this.modLoc(CategoryId.ID + "/" + EntryId.ID)},
+     *                using the category provider's {@code ID} and entry provider's {@code ID} constants.
      */
     public EntryViewedOnceIngress onEntryViewedOnce(Identifier entryId) {
         return new EntryViewedOnceIngress(this.research, entryId);

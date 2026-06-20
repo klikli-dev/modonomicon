@@ -14,6 +14,12 @@ import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageSpec;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchValueRef;
 import com.klikli_dev.modonomicon.api.datagen.research.SingleResearchSubProvider;
 import com.klikli_dev.modonomicon.book.BookIcon;
+import com.klikli_dev.modonomicon.datagen.book.demo.FeaturesCategory;
+import com.klikli_dev.modonomicon.datagen.book.demo.ValuesCategory;
+import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionRootEntry;
+import com.klikli_dev.modonomicon.datagen.book.demo.values.CollectorAEntry;
+import com.klikli_dev.modonomicon.datagen.book.demo.values.CollectorBEntry;
+import com.klikli_dev.modonomicon.datagen.book.demo.values.CollectorCEntry;
 import com.klikli_dev.modonomicon.research.data.ResearchToastDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
@@ -50,7 +56,7 @@ public class DemoResearch extends SingleResearchSubProvider {
     @Override
     protected void generateResearch() {
         var conditionRootViewed = this.ingress()
-                .onEntryViewedOnce(this.modLoc("features/condition_root"))
+                .onEntryViewedOnce(this.modLoc(FeaturesCategory.ID + "/" + ConditionRootEntry.ID))
                 .declareFact("demo/condition_root_viewed");
         var advancementMineStoneCompleted = this.ingress()
                 .onAdvancementEarned(this.mcLoc("story/mine_stone"))
@@ -66,13 +72,13 @@ public class DemoResearch extends SingleResearchSubProvider {
         var collectorCount = this.value("demo/collector_count");
 
         this.ingress()
-                .onEntryViewedOnce(this.modLoc("values/collector_a"))
+                .onEntryViewedOnce(this.modLoc(ValuesCategory.ID + "/" + CollectorAEntry.ID))
                 .incrementValue("demo/collector_a_hook", collectorCount, 1);
         this.ingress()
-                .onEntryViewedOnce(this.modLoc("values/collector_b"))
+                .onEntryViewedOnce(this.modLoc(ValuesCategory.ID + "/" + CollectorBEntry.ID))
                 .incrementValue("demo/collector_b_hook", collectorCount, 1);
         this.ingress()
-                .onEntryViewedOnce(this.modLoc("values/collector_c"))
+                .onEntryViewedOnce(this.modLoc(ValuesCategory.ID + "/" + CollectorCEntry.ID))
                 .incrementValue("demo/collector_c_hook", collectorCount, 1);
 
         this.node(COLLECTOR_COMPLETE, List.of(), List.of(

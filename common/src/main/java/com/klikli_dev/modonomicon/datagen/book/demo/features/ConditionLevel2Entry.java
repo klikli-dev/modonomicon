@@ -27,7 +27,8 @@ public class ConditionLevel2Entry extends EntryProvider {
         );
         this.pageTitle("Condition Level 2");
         this.pageText("""
-                Condition Level 2
+                This entry depends on Condition Level 1 being read.
+                The research node was generated automatically via entryViewedOnce().
                 """);
     }
 
@@ -38,7 +39,7 @@ public class ConditionLevel2Entry extends EntryProvider {
 
     @Override
     protected String entryDescription() {
-        return "Depends on Condition Level 1 Entry being unlocked.";
+        return "Depends on Condition Level 1 Entry being viewed. Research auto-generated.";
     }
 
     @Override

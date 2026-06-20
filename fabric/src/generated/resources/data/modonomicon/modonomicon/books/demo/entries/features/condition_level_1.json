@@ -8,12 +8,12 @@
   "category": "modonomicon:features",
   "condition": {
     "type": "modonomicon:research_node_unlocked",
-    "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/features_condition_level_1",
+    "node_id": "modonomicon:demo/condition_level_1",
     "tooltip": {
       "translate": "tooltip.modonomicon.condition.entry_unlocked",
       "with": [
         {
-          "translate": "book.modonomicon.demo.features.condition_level_1.name"
+          "translate": "book.modonomicon.demo.features.condition_root.name"
         }
       ]
     }

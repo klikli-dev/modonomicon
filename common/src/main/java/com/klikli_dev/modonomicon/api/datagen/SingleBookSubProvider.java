@@ -23,6 +23,7 @@ public abstract class SingleBookSubProvider extends ModonomiconProviderBase impl
     protected BookModel book;
     protected String bookId;
     protected int currentSortIndex;
+    protected final GeneratedBookResearchStore generatedResearchStore;
 
     /**
      * Creates a subprovider for a single book.
@@ -37,6 +38,15 @@ public abstract class SingleBookSubProvider extends ModonomiconProviderBase impl
         this.book = null;
         this.bookId = bookId;
         this.currentSortIndex = 0;
+        this.generatedResearchStore = new GeneratedBookResearchStore(modId, bookId);
+        this.conditionHelper = new ConditionHelper(this.context, this.generatedResearchStore);
+    }
+
+    /**
+     * Returns the generated research store for this book, so the compiler can consume its requests.
+     */
+    public GeneratedBookResearchStore getGeneratedResearchStore() {
+        return this.generatedResearchStore;
     }
 
     public String bookId() {
