@@ -26,6 +26,10 @@ import java.util.List;
 
 public abstract class BookCondition {
 
+    private static final Identifier REMOVED_ENTRY_READ = Identifier.parse("modonomicon:entry_read");
+    private static final Identifier REMOVED_ENTRY_UNLOCKED = Identifier.parse("modonomicon:entry_unlocked");
+    private static final Identifier REMOVED_ADVANCEMENT = Identifier.parse("modonomicon:advancement");
+
     public static final Codec<BookCondition> CODEC = Codec.lazyInitialized(() -> BookConditionTypeRegistry.codec().dispatch(
             "type",
             BookCondition::type,
@@ -46,6 +50,18 @@ public abstract class BookCondition {
     }
 
     public static BookCondition fromJson(Identifier conditionParentId, JsonObject json, HolderLookup.Provider provider) {
+        if (json.has("type")) {
+            var type = Identifier.parse(json.get("type").getAsString());
+            if (type.equals(REMOVED_ENTRY_READ)) {
+                throw new IllegalArgumentException("Book condition type 'modonomicon:entry_read' is no longer supported. Model this progression through explicit research hooks and research nodes instead.");
+            }
+            if (type.equals(REMOVED_ENTRY_UNLOCKED)) {
+                throw new IllegalArgumentException("Book condition type 'modonomicon:entry_unlocked' is no longer supported. Replace it with the authoritative research node for the referenced progression milestone.");
+            }
+            if (type.equals(REMOVED_ADVANCEMENT)) {
+                throw new IllegalArgumentException("Book condition type 'modonomicon:advancement' is no longer supported. Model this progression through explicit research hooks and research nodes instead.");
+            }
+        }
         return CODEC.parse(provider.createSerializationContext(JsonOps.INSTANCE), json)
                 .getOrThrow(error -> new IllegalArgumentException("Failed to decode condition for " + conditionParentId + ": " + error));
     }
@@ -90,8 +106,7 @@ public abstract class BookCondition {
     /**
      * If true then this condition needs to be tested multiple times during BookUnlockStates#update
      * This should be true if the condition depends on ANOTHER unlock condition.
-     * Usually that is the case for BookEntryUnlockedCondition, BookAndCondition and BookOrCondition.
-     * The latter two because they may contain the former.
+     * Usually that is the case for BookAndCondition and BookOrCondition.
      */
     public boolean requiresMultiPassUnlockTest() {
         return false;

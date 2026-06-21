@@ -20,9 +20,9 @@ import com.klikli_dev.modonomicon.client.gui.book.button.*;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiFrameOverlay;
 import com.klikli_dev.modonomicon.client.gui.book.recentlyunlocked.BookRecentlyUnlockedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
-import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
+import com.klikli_dev.modonomicon.research.ResearchServices;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
@@ -52,7 +52,6 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
     private boolean hasUnreadUnlockedEntries;
     private boolean hasUnreadCategories;
     private boolean hasUnreadUnlockedCategories;
-
     private int categoryButtonRenderOffset = 0;
 
     public BookParentNodeScreen(Book book) {
@@ -77,13 +76,24 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
         this.hasUnreadEntries = this.book.getEntries().values().stream().anyMatch(e -> BookServices.stateAccess().isEntryUnread(this.minecraft.player, e));
 
         //check if any currently unlocked entry is unread
-        this.hasUnreadUnlockedEntries = this.book.getEntries().values().stream().anyMatch(e -> BookServices.stateAccess().isUnlocked(this.minecraft.player, e) && BookServices.stateAccess().isEntryUnread(this.minecraft.player, e));
+        this.hasUnreadUnlockedEntries = this.book.getEntries().values().stream().anyMatch(e -> BookServices.visibility().isVisible(this.minecraft.player, e) && BookServices.stateAccess().isEntryUnread(this.minecraft.player, e));
 
         //check if ANY category is unread
         this.hasUnreadCategories = this.book.getCategories().values().stream().anyMatch(c -> BookServices.interaction().isCategoryUnread(this.minecraft.player, c));
 
         //check if any currently unlocked category is unread
-        this.hasUnreadUnlockedCategories = this.book.getCategories().values().stream().anyMatch(c -> BookServices.stateAccess().isUnlocked(this.minecraft.player, c) && BookServices.interaction().isCategoryUnread(this.minecraft.player, c));
+        this.hasUnreadUnlockedCategories = this.book.getCategories().values().stream().anyMatch(c -> BookServices.visibility().isVisible(this.minecraft.player, c) && BookServices.interaction().isCategoryUnread(this.minecraft.player, c));
+    }
+
+    private boolean hasVisibleResearchProgress() {
+        return this.book.getEntries().values().stream().anyMatch(e ->
+                BookServices.visibility().isVisible(this.minecraft.player, e)
+                        && ResearchServices.hooks().canProgressEntryViewedOnce(this.minecraft.player, e.getId()));
+    }
+
+    private boolean hasAnyResearchProgress() {
+        return this.book.getEntries().values().stream().anyMatch(e ->
+                ResearchServices.hooks().canProgressEntryViewedOnce(this.minecraft.player, e.getId()));
     }
 
     public BookCategoryNodeScreen getCurrentCategoryScreen() {
@@ -267,13 +277,6 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
     }
 
     @Override
-    public void onSyncBookUnlockStatesMessage(SyncBookUnlockStatesMessage message) {
-        //this leads to re-init of the category buttons after a potential unlock
-        this.rebuildWidgets();
-        this.updateUnreadEntriesState();
-    }
-
-    @Override
     protected void init() {
         super.init();
 
@@ -293,7 +296,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
         int searchButtonYOffset = -30 + this.getBook().theme().layout().searchButtonYOffset();
         int searchButtonX = rightButtonX;
-        int searchButtonY = this.getFrameHeight() + this.getFrameThicknessH() - ReadAllButton.HEIGHT / 2 + searchButtonYOffset;
+        int searchButtonY = this.getFrameHeight() + this.getFrameThicknessH() - ResearchProgressButton.HEIGHT / 2 + searchButtonYOffset;
         int searchButtonWidth = this.getBook().theme().content().searchButton().normal().width();
         buttonHeight = this.getBook().theme().content().searchButton().normal().height();
 
@@ -325,15 +328,13 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
         }
 
         int readAllButtonY = buttonY;
-        var readAllButton = new ReadAllButton(this, rightButtonX, readAllButtonY, scissorX,
-                () -> this.hasUnreadEntries,
-                () -> this.hasUnreadUnlockedEntries,
-                () -> this.hasUnreadCategories,
-                () -> this.hasUnreadUnlockedCategories,
-                () -> this.hasUnreadUnlockedEntries = false,
-                () -> this.hasUnreadEntries = false);
+        var researchProgressButton = new ResearchProgressButton(this, rightButtonX, readAllButtonY, scissorX,
+                this::hasVisibleResearchProgress,
+                this::hasAnyResearchProgress,
+                () -> {},
+                () -> {});
 
-        this.addRenderableWidget(readAllButton);
+        this.addRenderableWidget(researchProgressButton);
     }
 
     protected void updateCategoryButtons(int buttonX, int buttonY, int buttonWidth, int buttonHeight, int buttonSpacing) {
@@ -342,7 +343,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
             if (buttonCount >= MAX_CATEGORY_BUTTONS) {
                 break; // Stop adding buttons once we reach the maximum
             }
-            if (this.categories.get(i).showCategoryButton() && BookServices.stateAccess().isUnlocked(this.minecraft.player, this.categories.get(i))) {
+            if (this.categories.get(i).showCategoryButton()) {
                 var button = new CategoryButton(this, this.categories.get(i),
                         buttonX, buttonY + (buttonHeight + buttonSpacing) * buttonCount, buttonWidth, buttonHeight,
                         (b) -> this.onBookCategoryButtonClick((CategoryButton) b),
@@ -370,7 +371,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
         // Add the bottom scroll button if there are more categories than can be displayed
         if (this.categories.size() > this.categoryButtonRenderOffset + MAX_CATEGORY_BUTTONS) {
-            int bottomScrollButtonY= this.getFrameHeight() + this.getFrameThicknessH() - ReadAllButton.HEIGHT / 2 - 3;
+            int bottomScrollButtonY= this.getFrameHeight() + this.getFrameThicknessH() - ResearchProgressButton.HEIGHT / 2 - 3;
 
             var bottomScrollButton = new CategoryScrollButton(this, buttonX, bottomScrollButtonY, true,
                     () -> this.categories.size() > this.categoryButtonRenderOffset + MAX_CATEGORY_BUTTONS,

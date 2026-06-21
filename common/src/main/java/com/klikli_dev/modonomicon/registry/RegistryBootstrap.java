@@ -20,5 +20,6 @@ public final class RegistryBootstrap {
         StateMatcherTypeRegistry.bootstrap();
         MultiblockTypeRegistry.bootstrap();
         DynamicTextMacroRegistry.bootstrap();
+        TriggerTypeRegistry.bootstrap();
     }
 }

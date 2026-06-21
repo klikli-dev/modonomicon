@@ -11,8 +11,11 @@ import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.resources.Identifier;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -52,6 +55,10 @@ public class Codecs {
 
     public static <V> Codec<Set<V>> setFromList(Codec<List<V>> listCodec) {
         return listCodec.xmap(ObjectOpenHashSet::new, ArrayList::new);
+    }
+
+    public static Codec<Map<Identifier, Integer>> identifierIntMap() {
+        return Codec.unboundedMap(Identifier.CODEC, Codec.INT).xmap(LinkedHashMap::new, LinkedHashMap::new);
     }
 
 }

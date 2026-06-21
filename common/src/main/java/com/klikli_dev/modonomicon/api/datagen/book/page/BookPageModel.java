@@ -8,6 +8,8 @@ package com.klikli_dev.modonomicon.api.datagen.book.page;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookResearchNodeUnlockedConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeRef;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookNoneConditionModel;
@@ -67,6 +69,10 @@ public abstract class BookPageModel<T extends BookPageModel<T>> {
         this.condition = condition;
         //noinspection unchecked
         return (T) this;
+    }
+
+    public T withCondition(@NotNull ResearchNodeRef nodeRef) {
+        return this.withCondition(BookResearchNodeUnlockedConditionModel.create().withNode(nodeRef.id()));
     }
 
     public int getSortNumber() {

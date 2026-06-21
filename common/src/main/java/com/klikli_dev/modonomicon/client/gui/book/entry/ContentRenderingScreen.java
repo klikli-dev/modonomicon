@@ -9,7 +9,7 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookLink;
 import com.klikli_dev.modonomicon.book.CommandLink;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.fluid.FluidHolder;
@@ -212,7 +212,7 @@ public interface ContentRenderingScreen {
                                 //if locked, append lock warning
                                 //handleComponentClicked will prevent the actual click
 
-                                if (!BookUnlockStateManager.get().isUnlockedFor(Minecraft.getInstance().player, entry)) {
+                                if (!BookServices.visibility().isAccessible(Minecraft.getInstance().player, entry)) {
 
                                     var newComponent = Component.translatable(
                                             ModonomiconConstants.I18n.Gui.HOVER_BOOK_LINK_LOCKED,
@@ -230,7 +230,7 @@ public interface ContentRenderingScreen {
                                     );
 
                                     newStyle = style.withHoverEvent(new HoverEvent.ShowText(newComponent));
-                                } else if (page != null && !BookUnlockStateManager.get().isUnlockedFor(Minecraft.getInstance().player, entry.getPages().get(page))) {
+                                } else if (page != null && !BookServices.visibility().isAccessible(Minecraft.getInstance().player, entry.getPages().get(page))) {
 
                                     var newComponent = Component.translatable(
                                             ModonomiconConstants.I18n.Gui.HOVER_BOOK_LINK_LOCKED,
@@ -264,7 +264,7 @@ public interface ContentRenderingScreen {
                             if (link.commandId != null) {
                                 var command = book.getCommand(link.commandId);
 
-                                if (!BookUnlockStateManager.get().canRunFor(Minecraft.getInstance().player, command)) {
+                                if (!BookServices.stateAccess().canRun(Minecraft.getInstance().player, command)) {
                                     var hoverComponent = Component.translatable(ModonomiconConstants.I18n.Gui.HOVER_COMMAND_LINK_UNAVAILABLE).withStyle(ChatFormatting.RED);
                                     newStyle = style.withHoverEvent(new HoverEvent.ShowText(hoverComponent));
                                     oldComponent = hoverComponent;

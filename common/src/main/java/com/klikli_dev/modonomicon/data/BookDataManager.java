@@ -33,7 +33,6 @@ import com.klikli_dev.modonomicon.registry.DynamicTextMacroRegistry;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
@@ -665,10 +664,6 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
         private static final Client instance = new Client();
 
         private static final Identifier fallbackFont = Identifier.fromNamespaceAndPath("minecraft", "default");
-        /**
-         * Our local advancement cache, because we cannot just store random advancement in ClientAdvancements -> they get rejected
-         */
-        private final Map<Identifier, AdvancementHolder> advancements = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
         private final Object2FloatOpenHashMap<BookTextHolder.ScaleCacheKey> bookTextHolderScaleCache = new Object2FloatOpenHashMap<>();
         private boolean isFallbackLocale;
         private boolean isFontInitialized;
@@ -701,10 +696,6 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
             return this.useFallbackFont() ? fallbackFont : requested;
         }
 
-        public AdvancementHolder getAdvancement(Identifier id) {
-            return this.advancements.get(id);
-        }
-
         public void putScale(BookTextHolder holder, int width, int height, float scale) {
             this.bookTextHolderScaleCache.put(new BookTextHolder.ScaleCacheKey(holder, width, height), scale);
         }
@@ -716,15 +707,10 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
             return this.bookTextHolderScaleCache.getFloat(new BookTextHolder.ScaleCacheKey(holder, width, height));
         }
 
-        public void addAdvancement(AdvancementHolder advancement) {
-            this.advancements.put(advancement.id(), advancement);
-        }
-
         @Override
         protected void apply(Map<Identifier, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profiler) {
             //reset on reload
             this.resetUseFallbackFont();
-            this.advancements.clear();
             this.bookTextHolderScaleCache.clear();
         }
     }

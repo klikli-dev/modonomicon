@@ -46,8 +46,12 @@ public class BookCategoryReadMessage implements Message {
         var book = BookDataManager.get().getBook(this.bookId);
         if (book != null) {
             var category = book.getCategory(this.categoryId);
-            if (category != null && BookServices.interaction().markCategoryRead(player, category)) {
-                BookServices.stateAccess().updateAndSync(player);
+            if (category != null) {
+                var wasUnread = BookServices.interaction().isCategoryUnread(player, category);
+                var firstRead = BookServices.interaction().markCategoryRead(player, category);
+                if (firstRead || wasUnread) {
+                    com.klikli_dev.modonomicon.bookstate.BookVisualStateManager.get().syncFor(player);
+                }
             }
         }
     }

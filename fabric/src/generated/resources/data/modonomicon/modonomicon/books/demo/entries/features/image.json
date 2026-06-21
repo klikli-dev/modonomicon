@@ -7,8 +7,16 @@
   },
   "category": "modonomicon:features",
   "condition": {
-    "type": "modonomicon:entry_read",
-    "entry_id": "modonomicon:features/empty"
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/features_image",
+    "tooltip": {
+      "translate": "tooltip.modonomicon.condition.entry_unlocked",
+      "with": [
+        {
+          "translate": "book.modonomicon.demo.features.image.name"
+        }
+      ]
+    }
   },
   "description": "book.modonomicon.demo.features.image.description",
   "icon": {

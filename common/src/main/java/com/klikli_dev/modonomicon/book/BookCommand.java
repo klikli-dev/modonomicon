@@ -9,7 +9,7 @@ package com.klikli_dev.modonomicon.book;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.util.Codecs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -161,7 +161,7 @@ public class BookCommand {
     }
 
     public void execute(ServerPlayer player) {
-        if (!BookUnlockStateManager.get().canRunFor(player, this)) {
+        if (!BookServices.stateAccess().canRun(player, this)) {
             var failureMessage = this.failureMessage == null ? ModonomiconConstants.I18n.Command.DEFAULT_FAILURE_MESSAGE : this.failureMessage;
 
             player.sendSystemMessage(Component.translatable(failureMessage).withStyle(ChatFormatting.RED));
@@ -175,7 +175,7 @@ public class BookCommand {
             }
             commandSourceStack = commandSourceStack.withCallback((success, result) -> {
                 if (success) {
-                    BookUnlockStateManager.get().setRunFor(player, this);
+                    BookServices.stateAccess().setRun(player, this);
                     if (this.successMessage != null) {
                         player.sendSystemMessage(Component.translatable(this.successMessage).withStyle(ChatFormatting.GREEN));
                     }
@@ -194,7 +194,6 @@ public class BookCommand {
         //Even if the command fails we sync the capability.
         //This allows us to "Pretend" success clientside and disable the command source (button/link/etc) so the player cannot spam-click it.
         //spam-clicking would not allow abuse anyway, but would lead to error messages sent back to the player.
-        BookUnlockStateManager.get().syncFor(player);
     }
 
     public boolean isEntryAllowed(Identifier entry) {

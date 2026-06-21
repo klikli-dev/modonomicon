@@ -6,23 +6,28 @@
 
 package com.klikli_dev.modonomicon.datagen.book;
 
-import com.klikli_dev.modonomicon.api.datagen.ModonomiconLanguageProvider;
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.datagen.SingleBookSubProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCommandModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
+import com.klikli_dev.modonomicon.datagen.book.demo.AcquiringCategory;
+import com.klikli_dev.modonomicon.datagen.book.demo.CraftingCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.ConditionalCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.FeaturesCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.FormattingCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.IndexModeCategory;
+import com.klikli_dev.modonomicon.datagen.book.demo.StagesCategory;
+import com.klikli_dev.modonomicon.datagen.book.demo.ValuesCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionRootEntry;
+import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.resources.Identifier;
 
 public class DemoBook extends SingleBookSubProvider {
 
     public static final String ID = "demo";
 
-    public DemoBook(String modid, ModonomiconLanguageProvider lang) {
-        super(ID, modid, lang);
+    public DemoBook() {
+        super(ID, Modonomicon.MOD_ID);
     }
 
     @Override
@@ -41,14 +46,14 @@ public class DemoBook extends SingleBookSubProvider {
         this.add(commandEntryLinkCommand.getSuccessMessage(), "You got wheat, because clicking is cool!");
 
         return book.withModel(Identifier.parse("modonomicon:modonomicon_green"))
-                .withAutoAddReadConditions(true)
                 .withTheme(theme -> theme.withLayout(layout -> layout
                         .withBookTextOffsetX(5)
                         .withBookTextOffsetY(0)
                         .withBookTextOffsetWidth(-5)))
                 .withCommand(commandEntryCommand)
                 .withCommand(commandEntryLinkCommand)
-                .withAllowOpenBooksWithInvalidLinks(true);
+                .withAllowOpenBooksWithInvalidLinks(true)
+                .withGenerateEntryHierarchyResearch(true);
     }
 
     @Override
@@ -63,9 +68,15 @@ public class DemoBook extends SingleBookSubProvider {
         var formattingCategory = this.add(new FormattingCategory(this).generate());
 
         var conditionalCategory = this.add(new ConditionalCategory(this).generate())
-                .withCondition(this.condition().entryRead(this.modLoc(FeaturesCategory.ID, ConditionRootEntry.ID)));
+                .withCondition(DemoResearch.CONDITION_LEVEL_1);
 
         var indexModeCategory = this.add(new IndexModeCategory(this).generate());
+
+        var valuesCategory = this.add(new ValuesCategory(this).generate());
+
+        var craftingCategory = this.add(new CraftingCategory(this).generate());
+        var acquiringCategory = this.add(new AcquiringCategory(this).generate());
+        var stagesCategory = this.add(new StagesCategory(this).generate());
     }
 
     @Override

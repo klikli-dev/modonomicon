@@ -27,10 +27,11 @@ public abstract class ModonomiconProviderBase {
     protected final Map<String, ModonomiconLanguageProvider> langs;
     protected final Map<String, BiConsumer<String, String>> langsAsBiConsumers;
     protected final BookContextHelper context;
-    protected final ConditionHelper conditionHelper;
+    protected ConditionHelper conditionHelper;
     private final Map<String, String> macros = new Object2ObjectOpenHashMap<>();
 
     private HolderLookup.Provider registries;
+    private ModonomiconLanguageProvider injectedLang;
 
     protected ModonomiconProviderBase(String modId, BiConsumer<String, String> lang, Map<String, BiConsumer<String, String>> langs, BookContextHelper context, ConditionHelper conditionHelper) {
         this.modId = modId;
@@ -49,12 +50,8 @@ public abstract class ModonomiconProviderBase {
     }
 
     public static ModonomiconLanguageProvider toLanguageProvider(BiConsumer<String, String> consumer) {
-        return new ModonomiconLanguageProvider() {
-            @Override
-            public void accept(String s, String s2) {
-                consumer.accept(s, s2);
-            }
-        };
+        if (consumer == null) return null;
+        return consumer::accept;
     }
 
     protected String modId() {
@@ -69,8 +66,16 @@ public abstract class ModonomiconProviderBase {
         this.registries = registries;
     }
 
+    /**
+     * Injects a language provider. Called by {@link com.klikli_dev.modonomicon.api.datagen.BookProvider}
+     * during generation.
+     */
+    public void injectLang(ModonomiconLanguageProvider lang) {
+        this.injectedLang = lang;
+    }
+
     protected ModonomiconLanguageProvider lang() {
-        return this.lang;
+        return this.injectedLang != null ? this.injectedLang : this.lang;
     }
 
     protected ModonomiconLanguageProvider lang(String locale) {

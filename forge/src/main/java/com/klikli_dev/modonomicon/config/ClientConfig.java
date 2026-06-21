@@ -32,6 +32,7 @@ public class ClientConfig {
     public static class QoLCategory {
         public final BooleanValue enableSmoothZoom;
         public final BooleanValue storeLastOpenPageWhenClosingEntry;
+        public final BooleanValue showResearchToasts;
 
         public final ForgeConfigSpec.ConfigValue<List<String>> fontFallbackLocales;
         public final BooleanValue pauseGameWhenOpen;
@@ -43,6 +44,8 @@ public class ClientConfig {
             this.storeLastOpenPageWhenClosingEntry = builder.comment("Enable keeping the last open page stored when closing an entry. " +
                             "Regardless of this setting it will be stored when closing the entire book with Esc.")
                     .define("storeLastOpenPageWhenClosingEntry", false);
+            this.showResearchToasts = builder.comment("Show toast notifications when research facts are granted, values are incremented, or nodes are unlocked.")
+                    .define("showResearchToasts", true);
 
             var fontFallbackLocalesDefault = new ArrayList<>(List.of("zh_cn", "ja_jp", "ko_kr")); //wrap in arraylist because immutable lists cause issues with the config system
             this.fontFallbackLocales = builder.comment("If your locale is not supported by the default Modonomicon font, indicated by the book just rendering blocky shapes instead of characters, add your locale to this list to fall back to the builtin Minecraft font.")

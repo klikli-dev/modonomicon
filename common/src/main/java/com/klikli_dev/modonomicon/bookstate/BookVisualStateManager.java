@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
+import com.klikli_dev.modonomicon.bookstate.visual.BookVisibilitySnapshots;
 import com.klikli_dev.modonomicon.bookstate.visual.BookVisualState;
 import com.klikli_dev.modonomicon.bookstate.visual.CategoryVisualState;
 import com.klikli_dev.modonomicon.bookstate.visual.EntryVisualState;
@@ -34,6 +35,11 @@ public class BookVisualStateManager {
     private BookVisualStates getStateFor(Player player) {
         this.getSaveDataIfNecessary(player);
         return this.saveData.getVisualStates(player.getUUID());
+    }
+
+    public BookStatesSaveData getSaveDataFor(Player player) {
+        this.getSaveDataIfNecessary(player);
+        return this.saveData;
     }
 
     public BookVisualState getBookStateFor(Player player, Book book) {
@@ -93,6 +99,12 @@ public class BookVisualStateManager {
     public void addBookmarkFor(Player player, Book book, BookAddress bookmark) {
         this.getStateFor(player).addBookmark(book, bookmark);
         this.saveData.setDirty();
+    }
+
+    public void updateVisibilityDrivenUnread(ServerPlayer player, Book book, BookVisibilitySnapshots before, BookVisibilitySnapshots after) {
+        this.getSaveDataFor(player).stampVisibleEntries(player.getUUID(), book, after.entries(), System.currentTimeMillis());
+        after.entries().stream().filter(entryId -> !before.entries().contains(entryId)).forEach(entryId -> this.setEntryUnreadFor(player, book.getEntry(entryId), true));
+        after.categories().stream().filter(categoryId -> !before.categories().contains(categoryId)).forEach(categoryId -> this.setCategoryUnreadFor(player, book.getCategory(categoryId), true));
     }
 
     public boolean removeBookmarkFor(Player player, Book book, BookAddress bookmark) {

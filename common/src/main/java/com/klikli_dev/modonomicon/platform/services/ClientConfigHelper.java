@@ -15,5 +15,7 @@ public interface ClientConfigHelper {
 
     List<String> fontFallbackLocales();
 
+    boolean shouldShowResearchToasts();
+
     boolean pauseGameWhenOpen();
 }

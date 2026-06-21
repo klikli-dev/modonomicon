@@ -6,7 +6,6 @@
 
 package com.klikli_dev.modonomicon;
 
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.book.runtime.DemoRuntimeBookContent;
 import com.klikli_dev.modonomicon.client.BookModel;
@@ -25,6 +24,10 @@ import com.klikli_dev.modonomicon.datagen.DataGenerators;
 import com.klikli_dev.modonomicon.integration.LecternIntegration;
 import com.klikli_dev.modonomicon.item.IsBookOpen;
 import com.klikli_dev.modonomicon.network.Networking;
+import com.klikli_dev.modonomicon.research.ResearchServices;
+import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
+import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
+import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
 import com.klikli_dev.modonomicon.registry.RegistryBootstrap;
@@ -54,6 +57,7 @@ import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.player.AdvancementEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -100,6 +104,8 @@ public class ModonomiconNeo {
                     return MultiblockDataManager.get().reload(currentReload, taskExecutor, preparationBarrier, reloadExecutor);
                 }
             });
+
+            e.addListener(Modonomicon.loc("research_data_manager"), ResearchDataManager.get());
         });
 
         //register commands
@@ -115,14 +121,21 @@ public class ModonomiconNeo {
             if (e.getPlayer() != null) {
                 BookDataManager.get().onDatapackSync(e.getPlayer());
                 MultiblockDataManager.get().onDatapackSync(e.getPlayer());
+                ResearchStateManager.get().onDatapackSync(e.getPlayer());
             }
         });
 
         //sync book state on player join
         NeoForge.EVENT_BUS.addListener((EntityJoinLevelEvent e) -> {
             if (e.getEntity() instanceof ServerPlayer player) {
-                BookUnlockStateManager.get().updateAndSyncFor(player);
                 BookVisualStateManager.get().syncFor(player);
+                ResearchStateManager.get().onDatapackSync(player);
+                // Replay advancement-backed hooks if research state is stale (e.g. reset while offline).
+                if (ResearchServices.hooks().needsAdvancementReplay(player)) {
+                    ResearchServices.hooks().replayAdvancements(player);
+                    ResearchStateManager.get().syncFor(player);
+                    BookVisualStateManager.get().syncFor(player);
+                }
             }
         });
 
@@ -131,18 +144,38 @@ public class ModonomiconNeo {
         // instead of bleeding in from the previous level
         NeoForge.EVENT_BUS.addListener((LevelEvent.Unload e) -> {
             if (e.getLevel() instanceof Level level && level.dimension() == Level.OVERWORLD) {
-                BookUnlockStateManager.get().saveData = null;
                 BookVisualStateManager.get().saveData = null;
+                ResearchStateManager.get().clearCachedSaveData();
             }
         });
 
 
         //Advancement event handling for condition/unlock system
-        NeoForge.EVENT_BUS.addListener((AdvancementEvent.AdvancementEarnEvent e) -> BookUnlockStateManager.get().onAdvancement((ServerPlayer) e.getEntity()));
+        NeoForge.EVENT_BUS.addListener((AdvancementEvent.AdvancementEarnEvent e) -> {
+            var player = (ServerPlayer) e.getEntity();
+            if (ResearchServices.hooks().onAdvancement(player, e.getAdvancement().id())) {
+                ResearchStateManager.get().syncFor(player);
+                BookVisualStateManager.get().syncFor(player);
+            }
+        });
+
+        //Item crafted event handling for research progression
+        NeoForge.EVENT_BUS.addListener((PlayerEvent.ItemCraftedEvent e) -> {
+            if(!(e.getEntity() instanceof ServerPlayer player))
+                return;
+
+            var crafting = e.getCrafting();
+            if (!crafting.isEmpty()) {
+                if (ResearchServices.hooks().onItemCrafted(player, crafting)) {
+                    ResearchStateManager.get().syncFor(player);
+                    BookVisualStateManager.get().syncFor(player);
+                }
+            }
+        });
 
         //We use server tick to flush the queue of players that need a book state sync
         NeoForge.EVENT_BUS.addListener(((ServerTickEvent.Post e) -> {
-            BookUnlockStateManager.get().onServerTickEnd(e.getServer());
+            ResearchStateManager.get().onServerTickEnd(e.getServer());
         }));
 
         //Datagen
@@ -175,6 +208,17 @@ public class ModonomiconNeo {
                 e.setCancellationResult(result);
             }
         });
+    }
+
+    private static net.minecraft.resources.Identifier extractItemId(net.minecraft.world.item.crafting.display.SlotDisplay display) {
+        if (display instanceof net.minecraft.world.item.crafting.display.SlotDisplay.ItemSlotDisplay itemDisplay) {
+            return itemDisplay.item().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElse(null);
+        } else if (display instanceof net.minecraft.world.item.crafting.display.SlotDisplay.ItemStackSlotDisplay itemStackDisplay) {
+            return itemStackDisplay.stack().item().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElse(null);
+        } else if (display instanceof net.minecraft.world.item.crafting.display.SlotDisplay.Composite composite && !composite.contents().isEmpty()) {
+            return extractItemId(composite.contents().getFirst());
+        }
+        return null;
     }
 
     public static class Client {

@@ -13,6 +13,7 @@ public class ModonomiconConstants {
     public static class Data {
         public static final String MODONOMICON_DATA_PATH = ModonomiconAPI.ID + "/books";
         public static final String MULTIBLOCK_DATA_PATH = ModonomiconAPI.ID + "/multiblocks";
+        public static final String RESEARCH_DATA_PATH = ModonomiconAPI.ID + "/research";
 
         public static class Book {
             public static final String DEFAULT_FONT = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "default").toString();
@@ -58,12 +59,12 @@ public class ModonomiconConstants {
             public static final String BUTTON_VISUALIZE = PREFIX + "button.visualize";
             public static final String BUTTON_VISUALIZE_TOOLTIP = PREFIX + "button.visualize.tooltip";
 
-            public static final String BUTTON_READ_ALL = PREFIX + "button.read_all";
-            public static final String BUTTON_READ_ALL_TOOLTIP_READ_UNLOCKED = PREFIX + "button.read_all.tooltip.read_unlocked";
-            public static final String BUTTON_READ_ALL_TOOLTIP_READ_ALL = PREFIX + "button.read_all.tooltip.read_all";
-            public static final String BUTTON_READ_ALL_TOOLTIP_NONE = PREFIX + "button.read_all.tooltip.none";
-            public static final String BUTTON_READ_ALL_TOOLTIP_SHIFT_INSTRUCTIONS = PREFIX + "button.read_all.tooltip.shift";
-            public static final String BUTTON_READ_ALL_TOOLTIP_SHIFT_WARNING = PREFIX + "button.read_all.tooltip.shift_warning";
+            public static final String BUTTON_VIEWED_ONCE_RESEARCH = PREFIX + "button.viewed_once_research";
+            public static final String BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_VISIBLE = PREFIX + "button.viewed_once_research.tooltip.visible";
+            public static final String BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_ALL = PREFIX + "button.viewed_once_research.tooltip.all";
+            public static final String BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_NONE = PREFIX + "button.viewed_once_research.tooltip.none";
+            public static final String BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_SHIFT_INSTRUCTIONS = PREFIX + "button.viewed_once_research.tooltip.shift";
+            public static final String BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_SHIFT_WARNING = PREFIX + "button.viewed_once_research.tooltip.shift_warning";
 
             public static final String HOVER_BOOK_LINK = PREFIX + "hover.book_link";
             public static final String HOVER_BOOK_LINK_ERROR = PREFIX + "hover.book_link.error";
@@ -126,13 +127,11 @@ public class ModonomiconConstants {
         public static class Tooltips {
             public static final String PREFIX = "tooltip." + ModonomiconAPI.ID + ".";
             public static final String CONDITION_PREFIX = PREFIX + "condition.";
-            public static final String CONDITION_ADVANCEMENT = CONDITION_PREFIX + "advancement";
-            public static final String CONDITION_ADVANCEMENT_LOADING = CONDITION_ADVANCEMENT + ".loading";
-            public static final String CONDITION_ADVANCEMENT_HIDDEN = CONDITION_ADVANCEMENT + ".hidden";
             public static final String CONDITION_MOD_LOADED = CONDITION_PREFIX + "mod_loaded";
-            public static final String CONDITION_ENTRY_UNLOCKED = CONDITION_PREFIX + "entry_unlocked";
+            public static final String CONDITION_RESEARCH_NODE_UNLOCKED = CONDITION_PREFIX + "research_node_unlocked";
+            public static final String CONDITION_RESEARCH_STAGE_COMPLETED = CONDITION_PREFIX + "research_stage_completed";
             public static final String CONDITION_CATEGORY_HAS_VISIBLE_ENTRIES = CONDITION_PREFIX + "has_visible_entries";
-            public static final String CONDITION_ENTRY_READ = CONDITION_PREFIX + "entry_read";
+            public static final String CONDITION_ENTRY_UNLOCKED = CONDITION_PREFIX + "entry_unlocked";
             public static final String RECIPE_PREFIX = PREFIX + "recipe.";
             public static final String RECIPE_CRAFTING_SHAPELESS = RECIPE_PREFIX + "crafting_shapeless";
             public static final String ITEM_NO_BOOK_FOUND_FOR_STACK = PREFIX + "no_book_found_for_stack";
@@ -146,10 +145,20 @@ public class ModonomiconConstants {
 
             public static final String ERROR_PREFIX = PREFIX + "error.";
             public static final String ERROR_UNKNOWN_BOOK = ERROR_PREFIX + "unknown_book";
+            public static final String ERROR_UNKNOWN_FACT = ERROR_PREFIX + "unknown_fact";
+            public static final String ERROR_UNKNOWN_NODE = ERROR_PREFIX + "unknown_node";
+            public static final String ERROR_UNKNOWN_VALUE = ERROR_PREFIX + "unknown_value";
+            public static final String ERROR_UNKNOWN_STAGE = ERROR_PREFIX + "unknown_stage";
             public static final String ERROR_LOAD_PROGRESS = ERROR_PREFIX + "load_progress";
             public static final String ERROR_LOAD_PROGRESS_CLIENT = ERROR_PREFIX + "load_progress_client";
             public static final String SUCCESS_PREFIX = PREFIX + "success.";
             public static final String SUCCESS_RESET_BOOK = SUCCESS_PREFIX + "reset_book";
+            public static final String SUCCESS_RESET_RESEARCH = SUCCESS_PREFIX + "reset_research";
+            public static final String SUCCESS_GRANT_FACT = SUCCESS_PREFIX + "grant_fact";
+            public static final String SUCCESS_REVOKE_FACT = SUCCESS_PREFIX + "revoke_fact";
+            public static final String SUCCESS_UNLOCK_NODE = SUCCESS_PREFIX + "unlock_node";
+            public static final String SUCCESS_LOCK_NODE = SUCCESS_PREFIX + "lock_node";
+            public static final String SUCCESS_SET_VALUE = SUCCESS_PREFIX + "set_value";
             public static final String SUCCESS_SAVE_PROGRESS = SUCCESS_PREFIX + "save_progress";
             public static final String SUCCESS_LOAD_PROGRESS = SUCCESS_PREFIX + "load_progress";
             public static final String RELOAD_SUCCESS = SUCCESS_PREFIX + "reload_requested";

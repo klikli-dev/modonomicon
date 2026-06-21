@@ -21,7 +21,7 @@ import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.bookmarks.BookBookmarksScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryListButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.BookSideButtonRenderer;
-import com.klikli_dev.modonomicon.client.gui.book.button.ReadAllButton;
+import com.klikli_dev.modonomicon.client.gui.book.button.ResearchProgressButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ShowBookmarksButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ShowRecentlyUnlockedButton;
@@ -29,8 +29,8 @@ import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.recentlyunlocked.BookRecentlyUnlockedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
-import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
+import com.klikli_dev.modonomicon.research.ResearchServices;
 import com.klikli_dev.modonomicon.util.TextRenderHelper;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -66,7 +66,6 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
     private boolean hasUnreadUnlockedEntries;
     private boolean hasUnreadCategories;
     private boolean hasUnreadUnlockedCategories;
-
     public BookParentIndexScreen(Book book) {
         super(Component.translatable(book.getName()));
 
@@ -79,14 +78,24 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
         //check if any currently unlocked entry is unread
         this.hasUnreadUnlockedEntries = this.book.getEntries().values().stream().anyMatch(e ->
-                BookServices.stateAccess().isUnlocked(this.minecraft.player, e) &&
-                        BookServices.stateAccess().isEntryUnread(this.minecraft.player, e));
+                BookServices.visibility().isVisible(this.minecraft.player, e) && BookServices.stateAccess().isEntryUnread(this.minecraft.player, e));
 
         //check if ANY category is unread
         this.hasUnreadCategories = this.book.getCategories().values().stream().anyMatch(c -> BookServices.interaction().isCategoryUnread(this.minecraft.player, c));
 
         //check if any currently unlocked category is unread
-        this.hasUnreadUnlockedCategories = this.book.getCategories().values().stream().anyMatch(c -> BookServices.stateAccess().isUnlocked(this.minecraft.player, c) && BookServices.interaction().isCategoryUnread(this.minecraft.player, c));
+        this.hasUnreadUnlockedCategories = this.book.getCategories().values().stream().anyMatch(c -> BookServices.visibility().isVisible(this.minecraft.player, c) && BookServices.interaction().isCategoryUnread(this.minecraft.player, c));
+    }
+
+    private boolean hasVisibleResearchProgress() {
+        return this.book.getEntries().values().stream().anyMatch(e ->
+                BookServices.visibility().isVisible(this.minecraft.player, e)
+                        && ResearchServices.hooks().canProgressEntryViewedOnce(this.minecraft.player, e.getId()));
+    }
+
+    private boolean hasAnyResearchProgress() {
+        return this.book.getEntries().values().stream().anyMatch(e ->
+                ResearchServices.hooks().canProgressEntryViewedOnce(this.minecraft.player, e.getId()));
     }
 
     public void handleButtonEntry(Button button) {
@@ -292,14 +301,6 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
     }
 
     @Override
-    public void onSyncBookUnlockStatesMessage(SyncBookUnlockStatesMessage message) {
-        //this leads to re-init of the category buttons after a potential unlock
-        this.rebuildWidgets();
-
-        this.updateUnreadEntriesState();
-    }
-
-    @Override
     public boolean keyPressed(KeyEvent event) {
         if (event.key() == GLFW.GLFW_KEY_ESCAPE) {
             BookGuiManager.get().closeScreenStack(this);
@@ -322,10 +323,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         super.init();
 
         //we filter out entries that are locked or in locked categories
-        this.allEntries = this.getEntries().stream().filter(e ->
-                        BookServices.stateAccess().isUnlocked(this.minecraft.player, e) &&
-                                BookServices.stateAccess().isUnlocked(this.minecraft.player, e)
-                ).sorted(Comparator.comparingInt(BookCategory::getSortNumber)
+        this.allEntries = this.getEntries().stream().sorted(Comparator.comparingInt(BookCategory::getSortNumber)
                         .thenComparing(a -> I18n.get(a.getName())))
                 .toList();
 
@@ -366,15 +364,13 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         }
 
         int readAllButtonY = this.bookTop + 15;
-        var readAllButton = new ReadAllButton(this, searchButtonX, readAllButtonY, scissorX,
-                () -> this.hasUnreadEntries,
-                () -> this.hasUnreadUnlockedEntries,
-                () -> this.hasUnreadCategories,
-                () -> this.hasUnreadUnlockedCategories,
-                () -> this.hasUnreadUnlockedEntries = false,
-                () -> this.hasUnreadEntries = false);
+        var researchProgressButton = new ResearchProgressButton(this, searchButtonX, readAllButtonY, scissorX,
+                this::hasVisibleResearchProgress,
+                this::hasAnyResearchProgress,
+                () -> {},
+                () -> {});
 
-        this.addRenderableWidget(readAllButton);
+        this.addRenderableWidget(researchProgressButton);
     }
 
     protected void onSearchButtonClick(SearchButton button) {

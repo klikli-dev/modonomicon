@@ -5,13 +5,14 @@
 package com.klikli_dev.modonomicon.datagen;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.api.datagen.AddToModonomiconLanguageProvider;
 import com.klikli_dev.modonomicon.api.datagen.FabricBookProvider;
+import com.klikli_dev.modonomicon.api.datagen.FabricResearchProvider;
 import com.klikli_dev.modonomicon.api.datagen.LanguageProviderCache;
-import com.klikli_dev.modonomicon.datagen.book.AddToDemoBook;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchCache;
 import com.klikli_dev.modonomicon.datagen.book.DemoBook;
 import com.klikli_dev.modonomicon.datagen.book.DemoIndexBook;
 import com.klikli_dev.modonomicon.datagen.book.DemoLeaflet;
+import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
@@ -20,36 +21,21 @@ public class DataGenerators implements DataGeneratorEntrypoint {
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
         FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
+        var langCache = new LanguageProviderCache("en_us");
+        var researchCache = new ResearchCache();
 
-        //We use a language cache that the book provider can write into
-        var enUsCache = new LanguageProviderCache("en_us");
-
-        //If extending an existing book in another mod, we create a separate cache for that (as that will be saved in another mod id)
-        var addToLangCache = new LanguageProviderCache("en_us");
-
-        pack.addProvider(FabricBookProvider.of(
-                //Add our demo book sub provider to the book provider
-                new DemoBook(Modonomicon.MOD_ID, enUsCache),
-                new DemoIndexBook(Modonomicon.MOD_ID, enUsCache),
-                //Add our demo leaflet sub provider to the book provider
-                new DemoLeaflet(Modonomicon.MOD_ID, enUsCache)
-                //Add our addon book provider which adds to theurgy's book
-//                new AddToDemoBook(addToLangCache)
+        pack.addProvider(FabricBookProvider.of(Modonomicon.MOD_ID, langCache, researchCache,
+                new DemoBook(),
+                new DemoIndexBook(),
+                new DemoLeaflet()
         ));
-        //Important: lang provider needs to be added after the book provider, so it can read the texts added by the book provider out of the cache
-        pack.addProvider((FabricPackOutput output) -> new EnUsProvider(output, enUsCache));
-
-        //For our addon book we can use the AddToModonomiconLanguageProvider class which just writes the cache to the target modid
-//        pack.addProvider((FabricDataOutput output) -> new AddToModonomiconLanguageProvider(output, "theurgy", "en_us", addToLangCache));
-
-        //Sample of a legacy book provider registration
-//        pack.addProvider(FabricBookProvider.of(
-//                (output, registries) -> new MyLegacyBookProvider("bookId", output, "modId", enUsCache)
-//        ));
-
+        // a NeoResearchProvider is required, even if no explicit research is generated.
+        // E.g. if entryViewedOnce() conditions are used.
+        // the book provider queues generated research into researchCache, and the research provider writes those generated nodes/hooks/facts.
+        pack.addProvider(FabricResearchProvider.of(Modonomicon.MOD_ID, langCache, researchCache, new DemoResearch(Modonomicon.MOD_ID)));
+        pack.addProvider((FabricPackOutput output) -> new EnUsProvider(output, langCache));
         pack.addProvider((FabricPackOutput output) -> new DemoMultiblockProvider(output, Modonomicon.MOD_ID));
         pack.addProvider(ModonomiconModelProvider::new);
-
         pack.addProvider(ItemTagsProvider::new);
     }
 }

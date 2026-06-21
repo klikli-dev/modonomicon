@@ -10,7 +10,6 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCommand;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
-import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.bookstate.visual.BookVisualState;
 import com.klikli_dev.modonomicon.bookstate.visual.CategoryVisualState;
 import com.klikli_dev.modonomicon.bookstate.visual.EntryVisualState;
@@ -22,14 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface BookStateAccess {
-
-    boolean isUnlocked(Player player, BookCategory category);
-
-    boolean isUnlocked(Player player, BookEntry entry);
-
-    boolean isUnlocked(Player player, BookPage page);
-
-    List<BookPage> getUnlockedPages(Player player, BookEntry entry);
 
     boolean isEntryRead(Player player, BookEntry entry);
 

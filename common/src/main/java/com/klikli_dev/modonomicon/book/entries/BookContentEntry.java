@@ -10,7 +10,7 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
@@ -99,8 +99,7 @@ public class BookContentEntry extends BookEntry {
 
     @Override
     public List<BookPage> getUnlockedPagesFor(Player player) {
-        BookUnlockStateManager unlockManager = BookUnlockStateManager.get();
-        return unlockManager.getUnlockedPagesFor(player, this);
+        return BookServices.visibility().getVisiblePages(player, this);
     }
 
     @Override

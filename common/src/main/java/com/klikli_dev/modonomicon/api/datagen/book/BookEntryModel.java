@@ -12,8 +12,11 @@ import com.klikli_dev.modonomicon.api.datagen.CategoryEntryMap;
 import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookAndConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
-import com.klikli_dev.modonomicon.api.datagen.book.condition.BookEntryReadConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookNoneConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookResearchNodeUnlockedConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookResearchStageCompletedConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeRef;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageRef;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
@@ -112,17 +115,7 @@ public class BookEntryModel {
             return this.condition;
         }
 
-        if (!this.category.getBook().autoAddReadConditions() || this.parents.isEmpty()) {
-            return BookNoneConditionModel.create();
-        }
-
-        if (this.parents.size() == 1) {
-            return BookEntryReadConditionModel.create().withEntry(this.parents.get(0).getEntryId());
-        }
-
-        return BookAndConditionModel.create().withChildren(this.parents.stream()
-                .map(parent -> BookEntryReadConditionModel.create().withEntry(parent.getEntryId()))
-                .toArray(BookConditionModel[]::new));
+        return BookNoneConditionModel.create();
     }
 
     public GuiSprite getEntryBackground() {
@@ -131,6 +124,10 @@ public class BookEntryModel {
 
     public BookConditionModel<?> getCondition() {
         return this.condition;
+    }
+
+    public boolean hasCondition() {
+        return this.condition != null;
     }
 
     public Identifier getCategoryToOpen() {
@@ -457,6 +454,15 @@ public class BookEntryModel {
     public BookEntryModel withCondition(BookConditionModel<?> condition) {
         this.condition = condition;
         return this;
+    }
+
+    public BookEntryModel withCondition(ResearchNodeRef nodeRef) {
+        return this.withCondition(BookResearchNodeUnlockedConditionModel.create().withNode(nodeRef.id()));
+    }
+
+    public BookEntryModel withCondition(ResearchNodeRef nodeRef, ResearchStageRef stageRef) {
+        return this.withCondition(BookResearchStageCompletedConditionModel.create()
+                .withNode(nodeRef.id()).withStage(stageRef.id()));
     }
 
     /**

@@ -7,8 +7,8 @@
   },
   "category": "modonomicon:features",
   "condition": {
-    "type": "modonomicon:advancement",
-    "advancement_id": "minecraft:husbandry/ride_a_boat_with_a_goat"
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:demo/advancement_ride_boat_with_goat"
   },
   "description": "book.modonomicon.demo.features.condition_advancement.description",
   "icon": {

@@ -10,7 +10,7 @@ package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.BookCategory;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
@@ -57,7 +57,7 @@ public class CategoryListButton extends Button {
 
             float time = Math.max(0, Math.min(ANIM_TIME, this.timeHovered + (this.isHovered() ? partialTicks : -partialTicks)));
             float widthFract = time / ANIM_TIME;
-            boolean locked = !BookUnlockStateManager.get().isUnlockedFor(Minecraft.getInstance().player, this.category);
+            boolean locked = !BookServices.visibility().isVisible(Minecraft.getInstance().player, this.category);
 
             guiGraphics.pose().pushMatrix();
             guiGraphics.pose().scale(0.5F, 0.5F);
@@ -99,7 +99,7 @@ public class CategoryListButton extends Button {
             guiGraphics.pose().popMatrix();
 
             //render unread category indicator
-            if (!locked && !BookUnlockStateManager.get().isCategoryReadFor(Minecraft.getInstance().player, this.category)) {
+            if (!locked && BookServices.interaction().isCategoryUnread(Minecraft.getInstance().player, this.category)) {
                 guiGraphics.pose().pushMatrix();
                 guiGraphics.pose().scale(0.5F, 0.5F);
                 BookContentRenderer.drawUnreadIndicator(guiGraphics, this.category.getBook(),

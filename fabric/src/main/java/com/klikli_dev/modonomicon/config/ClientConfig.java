@@ -26,6 +26,7 @@ public class ClientConfig {
 
     public static PropertyMirror<Boolean> enableSmoothZoom = PropertyMirror.create(ConfigTypes.BOOLEAN);
     public static PropertyMirror<Boolean> storeLastOpenPageWhenClosingEntry = PropertyMirror.create(ConfigTypes.BOOLEAN);
+    public static PropertyMirror<Boolean> showResearchToasts = PropertyMirror.create(ConfigTypes.BOOLEAN);
     public static PropertyMirror<List<String>> fontFallbackLocales = PropertyMirror.create(ConfigTypes.makeList(ConfigTypes.STRING));
     public static PropertyMirror<Boolean> pauseGameWhenOpen = PropertyMirror.create(ConfigTypes.BOOLEAN);
 
@@ -39,6 +40,9 @@ public class ClientConfig {
             .withComment("Enable keeping the last open page stored when closing an entry. " +
                     "Regardless of this setting it will be stored when closing the entire book with Esc.")
             .finishValue(storeLastOpenPageWhenClosingEntry::mirror)
+            .beginValue("showResearchToasts", ConfigTypes.BOOLEAN, true)
+            .withComment("Show toast notifications when research facts are granted, values are incremented, or nodes are unlocked.")
+            .finishValue(showResearchToasts::mirror)
             .beginValue("fontFallbackLocales", ConfigTypes.makeList(ConfigTypes.STRING), List.of("zh_cn", "ja_jp", "ko_kr"))
             .withComment("If your locale is not supported by the default Modonomicon font, indicated by the book just rendering blocky shapes instead of characters, add your locale to this list to fall back to the builtin Minecraft font.")
             .finishValue(fontFallbackLocales::mirror)

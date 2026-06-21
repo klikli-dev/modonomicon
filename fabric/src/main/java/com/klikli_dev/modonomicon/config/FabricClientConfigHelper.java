@@ -27,6 +27,11 @@ public class FabricClientConfigHelper implements ClientConfigHelper {
     }
 
     @Override
+    public boolean shouldShowResearchToasts() {
+        return ClientConfig.showResearchToasts.getValue();
+    }
+
+    @Override
     public boolean pauseGameWhenOpen() {
         return ClientConfig.pauseGameWhenOpen.getValue();
     }

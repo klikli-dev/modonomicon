@@ -5,7 +5,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.entry.linkhandler;
 
 import com.klikli_dev.modonomicon.book.BookLink;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.data.BookDataManager;
@@ -37,7 +37,7 @@ public class BookLinkHandler extends LinkHandler {
         if (link.entryId != null) {
             var entry = book.getEntry(link.entryId);
 
-            if (!BookUnlockStateManager.get().isUnlockedFor(this.player(), entry)) {
+            if (!BookServices.visibility().isAccessible(this.player(), entry)) {
                 //renderComponentHoverEffect will render a warning that it is locked so it is fine to exit here
                 return ClickResult.FAILURE;
             }
@@ -47,7 +47,7 @@ public class BookLinkHandler extends LinkHandler {
                 page = entry.getPageNumberForId(link.pageAnchor);
             }
 
-            if (page != null && !BookUnlockStateManager.get().isUnlockedFor(this.player(), entry.getPages().get(page))) {
+            if (page != null && !BookServices.visibility().isAccessible(this.player(), entry.getPages().get(page))) {
                 return ClickResult.UNHANDLED;
             } else if (page == null) {
                 page = 0;

@@ -12,7 +12,7 @@ import com.klikli_dev.modonomicon.api.events.EntryClickedEvent;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.bookstate.visual.CategoryVisualState;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookCategoryScreen;
@@ -319,8 +319,8 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
 
         //we filter out entries that are locked or in locked categories
         this.allEntries = this.getEntries().stream().filter(e ->
-                        BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e.getCategory()) &&
-                                BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e)
+                        BookServices.visibility().isVisible(this.minecraft.player, e.getCategory()) &&
+                                BookServices.visibility().isAccessible(this.minecraft.player, e)
                 ).sorted(Comparator.comparingInt(BookEntry::getSortNumber)
                         .thenComparing(a -> I18n.get(a.getName())))
                 .toList();

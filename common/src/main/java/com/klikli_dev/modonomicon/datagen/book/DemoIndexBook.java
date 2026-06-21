@@ -6,7 +6,7 @@
 
 package com.klikli_dev.modonomicon.datagen.book;
 
-import com.klikli_dev.modonomicon.api.datagen.ModonomiconLanguageProvider;
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.datagen.SingleBookSubProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
 import com.klikli_dev.modonomicon.book.BookDisplayMode;
@@ -18,14 +18,13 @@ public class DemoIndexBook extends SingleBookSubProvider {
 
     public static final String ID = "demo_index";
 
-    public DemoIndexBook(String modid, ModonomiconLanguageProvider lang) {
-        super(ID, modid, lang);
+    public DemoIndexBook() {
+        super(ID, Modonomicon.MOD_ID);
     }
 
     @Override
     protected BookModel additionalSetup(BookModel book) {
         return book.withDisplayMode(BookDisplayMode.INDEX)
-                .withAutoAddReadConditions(true)
                 .withModel(Identifier.parse("modonomicon:modonomicon_green"))
                 .withTheme(theme -> theme.withLayout(layout -> layout
                         .withBookTextOffsetX(5)

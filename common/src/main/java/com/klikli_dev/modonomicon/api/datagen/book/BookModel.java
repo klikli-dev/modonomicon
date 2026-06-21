@@ -79,13 +79,6 @@ public class BookModel {
     protected List<BookCommandModel> commands = new ArrayList<>();
 
     /**
-     * Datagen-only convenience flag.
-     * If true, generated entry JSON receives explicit read conditions derived from parent links.
-     * This flag is never serialized into runtime book.json and is not read at runtime.
-     */
-    protected boolean autoAddReadConditions = false;
-
-    /**
      * If this entry is set the book will ignore all other content and just display this entry.
      * Note that the entry still needs to be in a valid category, even if the category is not displayed.
      *
@@ -111,6 +104,11 @@ public class BookModel {
      */
     protected boolean dontGenerateJson = false;
 
+    /**
+     * If true, the book provider will generate canonical research for eligible entry parent links.
+     */
+    protected boolean generateEntryHierarchyResearch = false;
+
     protected BookModel(Identifier id, String name) {
         this.id = id;
         this.name = name;
@@ -122,10 +120,6 @@ public class BookModel {
      */
     public static BookModel create(Identifier id, String name) {
         return new BookModel(id, name);
-    }
-
-    public boolean autoAddReadConditions() {
-        return this.autoAddReadConditions;
     }
 
     public Identifier getTurnPageSound() {
@@ -199,6 +193,10 @@ public class BookModel {
 
     public boolean dontGenerateJson() {
         return this.dontGenerateJson;
+    }
+
+    public boolean generateEntryHierarchyResearch() {
+        return this.generateEntryHierarchyResearch;
     }
 
     public JsonObject toJson(HolderLookup.Provider provider) {
@@ -326,11 +324,6 @@ public class BookModel {
         return this;
     }
 
-    public BookModel withAutoAddReadConditions(boolean autoAddReadConditions) {
-        this.autoAddReadConditions = autoAddReadConditions;
-        return this;
-    }
-
     public BookModel withTheme(Consumer<BookThemeModel> consumer) {
         consumer.accept(this.theme());
         return this;
@@ -384,6 +377,11 @@ public class BookModel {
      */
     public BookModel withDontGenerateJson(boolean value) {
         this.dontGenerateJson = value;
+        return this;
+    }
+
+    public BookModel withGenerateEntryHierarchyResearch(boolean value) {
+        this.generateEntryHierarchyResearch = value;
         return this;
     }
 }

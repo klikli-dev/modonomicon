@@ -10,8 +10,7 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCommand;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
-import com.klikli_dev.modonomicon.book.page.BookPage;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookStatesSaveData;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.bookstate.visual.BookVisualState;
 import com.klikli_dev.modonomicon.bookstate.visual.CategoryVisualState;
@@ -20,74 +19,56 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
-import java.util.List;
 import java.util.Map;
 
 public class DefaultBookStateAccess implements BookStateAccess {
 
-    @Override
-    public boolean isUnlocked(Player player, BookCategory category) {
-        return BookUnlockStateManager.get().isUnlockedFor(player, category);
-    }
-
-    @Override
-    public boolean isUnlocked(Player player, BookEntry entry) {
-        return BookUnlockStateManager.get().isUnlockedFor(player, entry);
-    }
-
-    @Override
-    public boolean isUnlocked(Player player, BookPage page) {
-        return BookUnlockStateManager.get().isUnlockedFor(player, page);
-    }
-
-    @Override
-    public List<BookPage> getUnlockedPages(Player player, BookEntry entry) {
-        return BookUnlockStateManager.get().getUnlockedPagesFor(player, entry);
+    private BookStatesSaveData saveData(Player player) {
+        return BookVisualStateManager.get().getSaveDataFor(player);
     }
 
     @Override
     public boolean isEntryRead(Player player, BookEntry entry) {
-        return BookUnlockStateManager.get().isReadFor(player, entry);
+        return this.saveData(player).isEntryRead(player.getUUID(), entry);
     }
 
     @Override
     public boolean isCategoryRead(Player player, BookCategory category) {
-        return BookUnlockStateManager.get().isCategoryReadFor(player, category);
+        return this.saveData(player).isCategoryRead(player.getUUID(), category);
     }
 
-    @Override
     public boolean canRun(Player player, BookCommand command) {
-        return BookUnlockStateManager.get().canRunFor(player, command);
+        return this.saveData(player).canRunCommand(player.getUUID(), command);
     }
 
     @Override
     public void setRun(Player player, BookCommand command) {
-        BookUnlockStateManager.get().setRunFor(player, command);
+        this.saveData(player).incrementCommandUses(player.getUUID(), command);
     }
 
     @Override
     public boolean markEntryRead(ServerPlayer player, BookEntry entry) {
-        return BookUnlockStateManager.get().readFor(player, entry);
+        return this.saveData(player).markEntryRead(player.getUUID(), entry);
     }
 
     @Override
     public boolean markCategoryRead(ServerPlayer player, BookCategory category) {
-        return BookUnlockStateManager.get().readCategoryFor(player, category);
-    }
-
-    @Override
-    public void updateAndSync(ServerPlayer player) {
-        BookUnlockStateManager.get().updateAndSyncFor(player);
+        return this.saveData(player).markCategoryRead(player.getUUID(), category);
     }
 
     @Override
     public void sync(ServerPlayer player) {
-        BookUnlockStateManager.get().syncFor(player);
+        BookVisualStateManager.get().syncFor(player);
+    }
+
+    @Override
+    public void updateAndSync(ServerPlayer player) {
+        this.sync(player);
     }
 
     @Override
     public Map<Identifier, Long> getUnlockTimestamps(Player player, Book book) {
-        return BookUnlockStateManager.get().getUnlockTimestampsFor(player, book);
+        return this.saveData(player).getUnlockTimestamps(player.getUUID(), book);
     }
 
     @Override
