@@ -1,12 +1,12 @@
 ---
-sidebar_position: 30
+sidebar_position: 55
 ---
 
 # Unlock Conditions
 
 Conditions can be used to keep pages, entries or whole categories hidden until the condition is met. This is useful to give players a sense of progression.
 
-Most progression is now handled through the [Research System](../research/research). The condition types below cover the remaining non-research conditions.
+Most progression is now handled through the [Research System](../research). The condition types below cover the remaining non-research conditions.
 
 Conditions are JSON Objects that can be set as value for the "condition" field on page, entry or category JSONs as follows:
 

@@ -7,7 +7,7 @@ title: Research system and datagen
 
 26.1.2 introduces a research system that provides research nodes with multi-stage progression, numeric research values, toast notifications, and multiple trigger types for research ingress.
 
-See [Research System](../../basics/research/research) for full documentation.
+See [Research System](../../basics/research) for full documentation.
 
 ## Migration notes
 
