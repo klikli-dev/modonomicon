@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.book.conditions;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
+import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
 import com.klikli_dev.modonomicon.data.BookConditionType;
@@ -61,7 +62,11 @@ public class BookResearchNodeUnlockedCondition extends BookCondition {
     @Override
     public boolean test(BookConditionContext context, Player player) {
         if (!ResearchDataManager.get().data().nodeIds().contains(this.nodeId)) {
-            throw new IllegalArgumentException("Unknown research node '" + this.nodeId + "' referenced by book condition '" + ID + "'.");
+            var message = "Unknown research node '" + this.nodeId + "' referenced by book condition '" + ID + "' in book '"
+                    + context.getBook().getId() + "'.";
+            BookErrorManager.get().error(context.getBook().getId(), message, null, true);
+            Modonomicon.LOG.error(message);
+            return false;
         }
         var state = ResearchServices.state().getStateFor(player);
         if (!state.isNodeUnlocked(this.nodeId)) {

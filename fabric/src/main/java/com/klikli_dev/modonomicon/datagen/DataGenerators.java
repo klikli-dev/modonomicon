@@ -29,6 +29,9 @@ public class DataGenerators implements DataGeneratorEntrypoint {
                 new DemoIndexBook(),
                 new DemoLeaflet()
         ));
+        // a NeoResearchProvider is required, even if no explicit research is generated.
+        // E.g. if entryViewedOnce() conditions are used.
+        // the book provider queues generated research into researchCache, and the research provider writes those generated nodes/hooks/facts.
         pack.addProvider(FabricResearchProvider.of(Modonomicon.MOD_ID, langCache, researchCache, new DemoResearch(Modonomicon.MOD_ID)));
         pack.addProvider((FabricPackOutput output) -> new EnUsProvider(output, langCache));
         pack.addProvider((FabricPackOutput output) -> new DemoMultiblockProvider(output, Modonomicon.MOD_ID));

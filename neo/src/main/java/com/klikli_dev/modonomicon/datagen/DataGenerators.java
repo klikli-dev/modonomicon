@@ -30,6 +30,9 @@ public class DataGenerators {
                 new DemoIndexBook(),
                 new DemoLeaflet()
         ));
+        // a NeoResearchProvider is required, even if no explicit research is generated.
+        // E.g. if entryViewedOnce() conditions are used.
+        // the book provider queues generated research into researchCache, and the research provider writes those generated nodes/hooks/facts.
         generator.addProvider(true, NeoResearchProvider.of(event, langCache, researchCache, new DemoResearch(Modonomicon.MOD_ID)));
         generator.addProvider(true, new EnUsProvider(generator.getPackOutput(), langCache));
         generator.addProvider(true, new DemoMultiblockProvider(generator.getPackOutput(), Modonomicon.MOD_ID));
