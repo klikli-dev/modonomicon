@@ -458,6 +458,12 @@ public class BookGuiManager {
             ClientServices.GUI.popGuiLayer();
         this.openBookEntryScreen = null;
 
+        // A normal entry close should clear the persisted open-entry marker immediately.
+        // Full book closes use closeScreenStack(BookEntryScreen) and set it again on purpose.
+        var categoryState = BookVisualStateManager.get().getCategoryStateFor(this.player(), screen.getEntry().getCategory());
+        categoryState.openEntry = null;
+        Services.NETWORK.sendToServer(new SaveCategoryStateMessage(screen.getEntry().getCategory(), categoryState));
+
         var state = BookVisualStateManager.get().getEntryStateFor(this.player(), screen.getEntry());
         //if we close "normally" without Esc we respect the config setting
         //for ESC closing we always save the page (see below #onEsc())
