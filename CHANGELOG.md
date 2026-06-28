@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-2.1.1] - 2026-06-28
+### :bug: Bug Fixes
+- [`489bd4e`](https://github.com/klikli-dev/modonomicon/commit/489bd4e8ace582c51797864e12b73829aa625493) - clear saved open entry on normal close *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.2-2.1.0] - 2026-06-28
 ### :sparkles: New Features
 - [`db9f5ee`](https://github.com/klikli-dev/modonomicon/commit/db9f5ee588fb75720bea1330a8e28d367db70e1b) - always sync research definitions to clients *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2293,3 +2298,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-1.148.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.148.0...release/v26.1.2-1.148.1
 [release/v26.1.2-2.0.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.148.1...release/v26.1.2-2.0.0
 [release/v26.1.2-2.1.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.0.0...release/v26.1.2-2.1.0
+[release/v26.1.2-2.1.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.1.0...release/v26.1.2-2.1.1
