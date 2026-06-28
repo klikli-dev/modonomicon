@@ -121,6 +121,7 @@ public class ModonomiconNeo {
             if (e.getPlayer() != null) {
                 BookDataManager.get().onDatapackSync(e.getPlayer());
                 MultiblockDataManager.get().onDatapackSync(e.getPlayer());
+                ResearchDataManager.get().onDatapackSync(e.getPlayer());
                 ResearchStateManager.get().onDatapackSync(e.getPlayer());
             }
         });

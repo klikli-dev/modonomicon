@@ -32,6 +32,7 @@ public class Networking {
         registrar.playToServer(BookClosedMessage.TYPE, BookClosedMessage.STREAM_CODEC, MessageHandler::handle);
 
         registrar.playToClient(SyncBookDataMessage.TYPE, SyncBookDataMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToClient(SyncResearchDataMessage.TYPE, SyncResearchDataMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToClient(SyncResearchStateMessage.TYPE, SyncResearchStateMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToClient(SyncBookVisualStatesMessage.TYPE, SyncBookVisualStatesMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToClient(SyncMultiblockDataMessage.TYPE, SyncMultiblockDataMessage.STREAM_CODEC, MessageHandler::handle);

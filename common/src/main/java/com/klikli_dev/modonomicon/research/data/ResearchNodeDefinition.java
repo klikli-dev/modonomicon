@@ -8,8 +8,12 @@ package com.klikli_dev.modonomicon.research.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,6 +53,14 @@ public record ResearchNodeDefinition(
                 Identifier.CODEC.fieldOf("node_id").forGetter(StageDependency::nodeId),
                 Identifier.CODEC.fieldOf("stage_id").forGetter(StageDependency::stageId)
         ).apply(instance, StageDependency::new));
+        public static final StreamCodec<RegistryFriendlyByteBuf, StageDependency> STREAM_CODEC =
+                StreamCodec.composite(
+                        Identifier.STREAM_CODEC,
+                        StageDependency::nodeId,
+                        Identifier.STREAM_CODEC,
+                        StageDependency::stageId,
+                        StageDependency::new
+                );
     }
 
     public record ValueRequirement(Identifier valueId, int threshold) {
@@ -56,6 +68,14 @@ public record ResearchNodeDefinition(
                 Identifier.CODEC.fieldOf("value_id").forGetter(ValueRequirement::valueId),
                 Codec.intRange(1, Integer.MAX_VALUE).fieldOf("threshold").forGetter(ValueRequirement::threshold)
         ).apply(instance, ValueRequirement::new));
+        public static final StreamCodec<RegistryFriendlyByteBuf, ValueRequirement> STREAM_CODEC =
+                StreamCodec.composite(
+                        Identifier.STREAM_CODEC,
+                        ValueRequirement::valueId,
+                        ByteBufCodecs.VAR_INT,
+                        ValueRequirement::threshold,
+                        ValueRequirement::new
+                );
     }
 
     public Optional<ResearchToastDefinition> toastOrEmpty() {
@@ -70,4 +90,20 @@ public record ResearchNodeDefinition(
             StageDependency.CODEC.listOf().optionalFieldOf("required_stages", List.of()).forGetter(ResearchNodeDefinition::requiredStages),
             ResearchToastDefinition.CODEC.optionalFieldOf("toast").forGetter(ResearchNodeDefinition::toastOrEmpty)
     ).apply(instance, ResearchNodeDefinition::new));
+    public static final StreamCodec<RegistryFriendlyByteBuf, ResearchNodeDefinition> STREAM_CODEC =
+            StreamCodec.composite(
+                    Identifier.STREAM_CODEC,
+                    ResearchNodeDefinition::id,
+                    ByteBufCodecs.collection(ArrayList::new, Identifier.STREAM_CODEC),
+                    ResearchNodeDefinition::requiredFacts,
+                    ByteBufCodecs.collection(ArrayList::new, ValueRequirement.STREAM_CODEC),
+                    ResearchNodeDefinition::requiredValues,
+                    ByteBufCodecs.collection(ArrayList::new, ResearchStageDefinition.STREAM_CODEC),
+                    ResearchNodeDefinition::stages,
+                    ByteBufCodecs.collection(ArrayList::new, StageDependency.STREAM_CODEC),
+                    ResearchNodeDefinition::requiredStages,
+                    ByteBufCodecs.optional(ResearchToastDefinition.STREAM_CODEC),
+                    ResearchNodeDefinition::toast,
+                    ResearchNodeDefinition::new
+            );
 }

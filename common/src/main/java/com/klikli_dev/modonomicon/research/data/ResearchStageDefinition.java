@@ -8,8 +8,12 @@ package com.klikli_dev.modonomicon.research.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +31,19 @@ public record ResearchStageDefinition(
         List<ResearchNodeDefinition.ValueRequirement> requiredValues,
         Optional<ResearchToastDefinition> toast
 ) {
+    public static final StreamCodec<RegistryFriendlyByteBuf, ResearchStageDefinition> STREAM_CODEC =
+            StreamCodec.composite(
+                    Identifier.STREAM_CODEC,
+                    ResearchStageDefinition::id,
+                    ByteBufCodecs.collection(ArrayList::new, Identifier.STREAM_CODEC),
+                    ResearchStageDefinition::requiredFacts,
+                    ByteBufCodecs.collection(ArrayList::new, ResearchNodeDefinition.ValueRequirement.STREAM_CODEC),
+                    ResearchStageDefinition::requiredValues,
+                    ByteBufCodecs.optional(ResearchToastDefinition.STREAM_CODEC),
+                    ResearchStageDefinition::toast,
+                    ResearchStageDefinition::new
+            );
+
     public Optional<ResearchToastDefinition> toastOrEmpty() {
         return this.toast;
     }

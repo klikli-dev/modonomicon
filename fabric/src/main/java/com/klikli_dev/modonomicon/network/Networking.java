@@ -43,6 +43,7 @@ public class Networking {
 
         //to client
         PayloadTypeRegistry.clientboundPlay().register(SyncBookDataMessage.TYPE, SyncBookDataMessage.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(SyncResearchDataMessage.TYPE, SyncResearchDataMessage.STREAM_CODEC);
         PayloadTypeRegistry.clientboundPlay().register(SyncResearchStateMessage.TYPE, SyncResearchStateMessage.STREAM_CODEC);
         PayloadTypeRegistry.clientboundPlay().register(SyncBookVisualStatesMessage.TYPE, SyncBookVisualStatesMessage.STREAM_CODEC);
         PayloadTypeRegistry.clientboundPlay().register(SyncMultiblockDataMessage.TYPE, SyncMultiblockDataMessage.STREAM_CODEC);

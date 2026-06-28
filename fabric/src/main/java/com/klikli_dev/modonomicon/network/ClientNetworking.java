@@ -13,6 +13,7 @@ public class ClientNetworking {
 
     public static void registerReceivers() {
         ClientPlayNetworking.registerGlobalReceiver(SyncBookDataMessage.TYPE, new ClientMessageHandler<>());
+        ClientPlayNetworking.registerGlobalReceiver(SyncResearchDataMessage.TYPE, new ClientMessageHandler<>());
         ClientPlayNetworking.registerGlobalReceiver(SyncResearchStateMessage.TYPE, new ClientMessageHandler<>());
         ClientPlayNetworking.registerGlobalReceiver(SyncBookVisualStatesMessage.TYPE, new ClientMessageHandler<>());
         ClientPlayNetworking.registerGlobalReceiver(SyncMultiblockDataMessage.TYPE, new ClientMessageHandler<>());

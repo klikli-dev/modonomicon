@@ -14,6 +14,8 @@ import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.MapLike;
 import com.mojang.serialization.RecordBuilder;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
@@ -81,6 +83,21 @@ public record ResearchHookDefinition<TTarget>(
     };
 
     public static final Codec<ResearchHookDefinition<?>> CODEC = MAP_CODEC.codec();
+    public static final StreamCodec<RegistryFriendlyByteBuf, ResearchHookDefinition<?>> STREAM_CODEC = new StreamCodec<>() {
+        @Override
+        public ResearchHookDefinition<?> decode(RegistryFriendlyByteBuf buf) {
+            var id = Identifier.STREAM_CODEC.decode(buf);
+            var triggerType = TriggerTypeRegistry.streamCodec().decode(buf);
+            return decodeTyped(buf, id, triggerType);
+        }
+
+        @Override
+        public void encode(RegistryFriendlyByteBuf buf, ResearchHookDefinition<?> value) {
+            Identifier.STREAM_CODEC.encode(buf, value.id());
+            TriggerTypeRegistry.streamCodec().encode(buf, value.triggerType());
+            encodeTyped(buf, castDefinition(value));
+        }
+    };
 
     private static <T, TTarget> DataResult<ResearchHookDefinition<?>> decodeTyped(
             DynamicOps<T> ops,
@@ -106,6 +123,18 @@ public record ResearchHookDefinition<TTarget>(
         );
     }
 
+    private static <TTarget> ResearchHookDefinition<?> decodeTyped(
+            RegistryFriendlyByteBuf buf,
+            Identifier id,
+            TriggerType<TTarget, ?> triggerType
+    ) {
+        var triggerTarget = triggerType.targetStreamCodec().decode(buf);
+        Identifier factId = buf.readBoolean() ? Identifier.STREAM_CODEC.decode(buf) : null;
+        Identifier valueId = buf.readBoolean() ? Identifier.STREAM_CODEC.decode(buf) : null;
+        int increment = buf.readVarInt();
+        return new ResearchHookDefinition<>(id, triggerType, triggerTarget, factId, valueId, increment);
+    }
+
     private static <T, TTarget> RecordBuilder<T> encodeTyped(
             ResearchHookDefinition<?> input,
             DynamicOps<T> ops,
@@ -125,6 +154,25 @@ public record ResearchHookDefinition<TTarget>(
         return prefix;
     }
 
+    private static <TTarget> void encodeTyped(
+            RegistryFriendlyByteBuf buf,
+            ResearchHookDefinition<TTarget> value
+    ) {
+        value.triggerType().targetStreamCodec().encode(buf, value.triggerTarget());
+
+        buf.writeBoolean(value.factId() != null);
+        if (value.factId() != null) {
+            Identifier.STREAM_CODEC.encode(buf, value.factId());
+        }
+
+        buf.writeBoolean(value.valueId() != null);
+        if (value.valueId() != null) {
+            Identifier.STREAM_CODEC.encode(buf, value.valueId());
+        }
+
+        buf.writeVarInt(value.increment());
+    }
+
     private static <T, A> DataResult<A> decodeRequired(MapCodec<A> codec, DynamicOps<T> ops, MapLike<T> input) {
         return codec.decode(ops, input);
     }
@@ -140,6 +188,11 @@ public record ResearchHookDefinition<TTarget>(
 
     @SuppressWarnings("unchecked")
     private static <TTarget> ResearchHookDefinition<TTarget> cast(ResearchHookDefinition<?> input) {
+        return (ResearchHookDefinition<TTarget>) Objects.requireNonNull(input);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <TTarget> ResearchHookDefinition<TTarget> castDefinition(ResearchHookDefinition<?> input) {
         return (ResearchHookDefinition<TTarget>) Objects.requireNonNull(input);
     }
 }

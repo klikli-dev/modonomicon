@@ -82,6 +82,7 @@ public class ModonomiconFabric implements ModInitializer {
         ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {
             BookDataManager.get().onDatapackSync(player);
             MultiblockDataManager.get().onDatapackSync(player);
+            ResearchDataManager.get().onDatapackSync(player);
             ResearchStateManager.get().onDatapackSync(player);
         });
 
