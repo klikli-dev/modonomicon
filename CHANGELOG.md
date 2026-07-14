@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.1-1.120.3] - 2026-07-14
+### :bug: Bug Fixes
+- [`47a6d94`](https://github.com/klikli-dev/modonomicon/commit/47a6d9472301f8b16ee24ee6130bd1b681806db0) - switch to fillGradient for multiblock hud progress bar rendering *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.1-1.120.2] - 2026-07-14
 ### :sparkles: New Features
 - [`fc97982`](https://github.com/klikli-dev/modonomicon/commit/fc9798233309d01f4314066cfdd683df719eb4da) - allow neo and forge book providers to take custom registry providers *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2413,3 +2418,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.1-1.120.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.119.0...release/v1.21.1-1.120.0
 [release/v1.21.1-1.120.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.120.0...release/v1.21.1-1.120.1
 [release/v1.21.1-1.120.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.11-1.121.0...release/v1.21.1-1.120.2
+[release/v1.21.1-1.120.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.120.2...release/v1.21.1-1.120.3
