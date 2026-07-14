@@ -127,6 +127,7 @@ public class MultiblockPreviewRenderer {
                 guiGraphics.drawString(mc.font, s, (int) (x - mc.font.width(s) / 2.0F), top + height - 10, 0x00FF00, false);
                 guiGraphics.pose().popPose();
             }
+            guiGraphics.pose().pushPose();
 
             guiGraphics.fill(left - 1, top - 1, left + width + 1, top + height + 1, 0xFF000000);
             drawGradientRect(guiGraphics, left, top, left + width, top + height, 0xFF666666, 0xFF555555);
@@ -136,6 +137,8 @@ public class MultiblockPreviewRenderer {
             int color = Mth.hsvToRgb(fract / 3.0F, 1.0F, 1.0F) | 0xFF000000;
             int color2 = new Color(color).darker().getRGB();
             drawGradientRect(guiGraphics, left, top, left + progressWidth, top + height, color, color2);
+
+            guiGraphics.pose().popPose();
 
             if (!isAnchored) {
                 String s = I18n.get(ModonomiconConstants.I18n.Multiblock.NOT_ANCHORED);
