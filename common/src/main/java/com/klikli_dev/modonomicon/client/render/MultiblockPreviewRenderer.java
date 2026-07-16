@@ -250,8 +250,10 @@ public class MultiblockPreviewRenderer {
         ms.pushPose();
         ms.translate(-renderPosX, -renderPosY, -renderPosZ);
 
+		var mainBuffers = mc.renderBuffers().bufferSource();
+		mainBuffers.endBatch(); // when we do initBuffers we keep the buffers but dont know if were still batching, so it doesnt properly end in the getBuffer call and breaks stuff
         if (buffers == null) {
-            buffers = initBuffers(mc.renderBuffers().bufferSource());
+            buffers = initBuffers(mainBuffers);
         }
 
         BlockPos checkPos = null;
