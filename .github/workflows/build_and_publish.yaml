@@ -117,13 +117,14 @@ jobs:
           commit_message: 'docs: update CHANGELOG.md and mod_version for ${{ github.ref_name }} [skip ci]'
           file_pattern: CHANGELOG.md gradle.properties
       - name: Upload Neo Version to Mod Platforms
-        uses: Kir-Antipov/mc-publish@v3.3.0
+        uses: Kir-Antipov/mc-publish@v3
         if: ${{ steps.get_release_type.outputs.result != 'test' && steps.check_artifacts.outputs.neo_exists == 'true' }}
         with:
           modrinth-id: 692GClaE
           modrinth-token: ${{ secrets.MODRINTH_API_KEY }}
           curseforge-id: 538392
           curseforge-token: ${{ secrets.CURSEFORGE_API_KEY }}
+          environment: client | server
 
           files: |
             neo/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-neoforge-${{ steps.get_version.outputs.result }}.jar
@@ -143,13 +144,14 @@ jobs:
           dependencies: |
             jei(optional)
       - name: Upload Forge Version to Mod Platforms
-        uses: Kir-Antipov/mc-publish@v3.3.0
+        uses: Kir-Antipov/mc-publish@v3
         if: ${{ steps.get_release_type.outputs.result != 'test' && steps.check_artifacts.outputs.forge_exists == 'true' }}
         with:
           modrinth-id: 692GClaE
           modrinth-token: ${{ secrets.MODRINTH_API_KEY }}
           curseforge-id: 538392
           curseforge-token: ${{ secrets.CURSEFORGE_API_KEY }}
+          environment: client | server
 
           files: |
             forge/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-forge-${{ steps.get_version.outputs.result }}.jar
@@ -169,13 +171,14 @@ jobs:
           dependencies: |
             jei(optional)
       - name: Upload Fabric Version to Mod Platforms
-        uses: Kir-Antipov/mc-publish@v3.3.0
+        uses: Kir-Antipov/mc-publish@v3
         if: ${{ steps.get_release_type.outputs.result != 'test' && steps.check_artifacts.outputs.fabric_exists == 'true' }}
         with:
           modrinth-id: 692GClaE
           modrinth-token: ${{ secrets.MODRINTH_API_KEY }}
           curseforge-id: 538392
           curseforge-token: ${{ secrets.CURSEFORGE_API_KEY }}
+          environment: client | server
 
           files: |
             fabric/build/libs/modonomicon-${{ steps.get_mc_version.outputs.result }}-fabric-${{ steps.get_version.outputs.result }}.jar
