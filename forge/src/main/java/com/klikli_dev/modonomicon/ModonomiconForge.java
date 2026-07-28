@@ -6,18 +6,19 @@
 
 package com.klikli_dev.modonomicon;
 
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.client.BookModel;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
+import com.klikli_dev.modonomicon.client.render.pip.GuiDirectEntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.render.pip.GuiMultiblockRenderer;
+import com.klikli_dev.modonomicon.client.render.state.pip.GuiDirectEntryConnectionRenderState;
 import com.klikli_dev.modonomicon.client.render.state.pip.GuiMultiblockRenderState;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.config.ServerConfig;
+import com.klikli_dev.modonomicon.book.runtime.DemoRuntimeBookContent;
 import com.klikli_dev.modonomicon.data.BookDataManager;
-import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
 import com.klikli_dev.modonomicon.integration.LecternIntegration;
@@ -25,6 +26,11 @@ import com.klikli_dev.modonomicon.item.IsBookOpen;
 import com.klikli_dev.modonomicon.network.Networking;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
+import com.klikli_dev.modonomicon.registry.RegistryBootstrap;
+import com.klikli_dev.modonomicon.research.ResearchServices;
+import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
+import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
+import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
 import com.mojang.blaze3d.framegraph.FramePass;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -80,6 +86,8 @@ public class ModonomiconForge {
 
             MultiblockDataManager.get().registries(e.getRegistries());
             e.addListener(MultiblockDataManager.get());
+
+            e.addListener(ResearchDataManager.get());
         });
 
         //register commands
@@ -101,8 +109,14 @@ public class ModonomiconForge {
         //sync book state on player join
         EntityJoinLevelEvent.BUS.addListener((EntityJoinLevelEvent e) -> {
             if (e.getEntity() instanceof ServerPlayer player) {
-                BookUnlockStateManager.get().updateAndSyncFor(player);
                 BookVisualStateManager.get().syncFor(player);
+                ResearchStateManager.get().onDatapackSync(player);
+                // Replay advancement-backed hooks if research state is stale (e.g. reset while offline).
+                if (ResearchServices.hooks().needsAdvancementReplay(player)) {
+                    ResearchServices.hooks().replayAdvancements(player);
+                    ResearchStateManager.get().syncFor(player);
+                    BookVisualStateManager.get().syncFor(player);
+                }
             }
         });
 
@@ -111,18 +125,24 @@ public class ModonomiconForge {
         // instead of bleeding in from the previous level
         LevelEvent.Unload.BUS.addListener((LevelEvent.Unload e) -> {
             if (e.getLevel() instanceof Level level && level.dimension() == Level.OVERWORLD) {
-                BookUnlockStateManager.get().saveData = null;
                 BookVisualStateManager.get().saveData = null;
+                ResearchStateManager.get().clearCachedSaveData();
             }
         });
 
 
         //Advancement event handling for condition/unlock system
-        AdvancementEvent.AdvancementEarnEvent.BUS.addListener((AdvancementEvent.AdvancementEarnEvent e) -> BookUnlockStateManager.get().onAdvancement((ServerPlayer) e.getEntity()));
+        AdvancementEvent.AdvancementEarnEvent.BUS.addListener((AdvancementEvent.AdvancementEarnEvent e) -> {
+            var player = (ServerPlayer) e.getEntity();
+            if (ResearchServices.hooks().onAdvancement(player, e.getAdvancement().id())) {
+                ResearchStateManager.get().syncFor(player);
+                BookVisualStateManager.get().syncFor(player);
+            }
+        });
 
         //We use server tick to flush the queue of players that need a book state sync
         TickEvent.ServerTickEvent.Post.BUS.addListener(((TickEvent.ServerTickEvent.Post e) -> {
-            BookUnlockStateManager.get().onServerTickEnd(e.server());
+            ResearchStateManager.get().onServerTickEnd(e.server());
         }));
 
         //Datagen
@@ -146,7 +166,8 @@ public class ModonomiconForge {
     public void onCommonSetup(FMLCommonSetupEvent event) {
         Networking.registerMessages();
 
-        LoaderRegistry.registerLoaders();
+        RegistryBootstrap.bootstrap();
+        DemoRuntimeBookContent.register();
 
         PlayerInteractEvent.RightClickBlock.BUS.addListener((PlayerInteractEvent.RightClickBlock e) -> {
             var result = LecternIntegration.rightClick(e.getEntity(), e.getLevel(), e.getHand(), e.getHitVec());
@@ -232,6 +253,9 @@ public class ModonomiconForge {
 //        }
 
         public static void onRegisterPipRenderers(RegisterPictureInPictureRendererEvent event) {
+            event.register(
+                    new GuiDirectEntryConnectionRenderer(event.getBufferSource())
+            );
             event.register(
                     new GuiMultiblockRenderer(event.getBufferSource())
             );

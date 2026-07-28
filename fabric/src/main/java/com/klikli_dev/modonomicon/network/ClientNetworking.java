@@ -12,13 +12,13 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 public class ClientNetworking {
 
     public static void registerReceivers() {
-        ClientPlayNetworking.registerGlobalReceiver(SendUnlockCodeToClientMessage.TYPE, new ClientMessageHandler<>());
         ClientPlayNetworking.registerGlobalReceiver(SyncBookDataMessage.TYPE, new ClientMessageHandler<>());
-        ClientPlayNetworking.registerGlobalReceiver(SyncBookUnlockStatesMessage.TYPE, new ClientMessageHandler<>());
+        ClientPlayNetworking.registerGlobalReceiver(SyncResearchDataMessage.TYPE, new ClientMessageHandler<>());
+        ClientPlayNetworking.registerGlobalReceiver(SyncResearchStateMessage.TYPE, new ClientMessageHandler<>());
         ClientPlayNetworking.registerGlobalReceiver(SyncBookVisualStatesMessage.TYPE, new ClientMessageHandler<>());
         ClientPlayNetworking.registerGlobalReceiver(SyncMultiblockDataMessage.TYPE, new ClientMessageHandler<>());
         ClientPlayNetworking.registerGlobalReceiver(ReloadResourcesOnClientMessage.TYPE, new ClientMessageHandler<>());
-        ClientPlayNetworking.registerGlobalReceiver(SendAdvancementToClientMessage.TYPE, new ClientMessageHandler<>());
         ClientPlayNetworking.registerGlobalReceiver(OpenBookOnClientMessage.TYPE, new ClientMessageHandler<>());
+        ClientPlayNetworking.registerGlobalReceiver(ResearchToastMessage.TYPE, new ClientMessageHandler<>());
     }
 }

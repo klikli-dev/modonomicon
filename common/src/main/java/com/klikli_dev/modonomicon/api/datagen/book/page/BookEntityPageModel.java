@@ -7,8 +7,9 @@
 package com.klikli_dev.modonomicon.api.datagen.book.page;
 
 import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.api.datagen.book.BookTextHolderModel;
+import com.klikli_dev.modonomicon.book.page.BookEntityPage;
+import com.klikli_dev.modonomicon.book.page.BookPage;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -23,7 +24,7 @@ public class BookEntityPageModel extends BookPageModel<BookEntityPageModel> {
     protected float defaultRotation = -45f;
 
     protected BookEntityPageModel() {
-        super(Page.ENTITY);
+        super(BookEntityPage.ID);
     }
 
     public static BookEntityPageModel create() {
@@ -59,17 +60,8 @@ public class BookEntityPageModel extends BookPageModel<BookEntityPageModel> {
     }
 
     @Override
-    public JsonObject toJson(Identifier entryId, HolderLookup.Provider provider) {
-        var json = super.toJson(entryId, provider);
-        json.add("name", this.entityName.toJson(provider));
-        json.add("text", this.text.toJson(provider));
-        json.addProperty("entity_id", this.entityId);
-        json.addProperty("scale", this.scale);
-        json.addProperty("offset", this.offset);
-        json.addProperty("rotate", this.rotate);
-        json.addProperty("default_rotation", this.defaultRotation);
-
-        return json;
+    public BookPage toBookPage(HolderLookup.Provider provider) {
+        return new BookEntityPage(this.entityName.toBookTextHolder(), this.text.toBookTextHolder(), this.entityId, this.scale, this.offset, this.rotate, this.defaultRotation, this.id, this.condition(provider));
     }
 
     public BookEntityPageModel withEntityName(String name) {

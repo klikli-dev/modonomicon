@@ -11,7 +11,8 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
+import com.klikli_dev.modonomicon.bookstate.visual.BookVisibilitySnapshots;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
@@ -22,7 +23,7 @@ import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.platform.ClientServices;
-import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
+import com.klikli_dev.modonomicon.util.TextRenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -60,7 +61,7 @@ public class BookRecentlyUnlockedScreen extends BookPaginatedScreen {
 
     public void handleButtonEntry(Button button) {
         if (button instanceof EntryListButton entry) {
-            if (!BookUnlockStateManager.get().isUnlockedFor(Minecraft.getInstance().player, entry.getEntry())) {
+            if (!BookServices.visibility().isAccessible(Minecraft.getInstance().player, entry.getEntry())) {
                 return;
             }
 
@@ -84,7 +85,7 @@ public class BookRecentlyUnlockedScreen extends BookPaginatedScreen {
     }
 
     public void drawCenteredStringNoShadow(GuiGraphicsExtractor guiGraphics, Component s, int x, int y, int color, float scale) {
-        GuiGraphicsExt.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
+        TextRenderHelper.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
     }
 
     public BookParentScreen getParentScreen() {
@@ -194,16 +195,16 @@ public class BookRecentlyUnlockedScreen extends BookPaginatedScreen {
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
 
-        BookContentRenderer.renderBookBackground(guiGraphics, this.getBook().getBookContentTexture());
+        BookContentRenderer.renderBookBackground(guiGraphics, this.getBook());
 
 
         if (this.openPagesIndex == 0) {
             this.drawCenteredStringNoShadow(guiGraphics, this.getTitle(),
                     BookEntryScreen.LEFT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING,
-                    this.parentScreen.getBook().getDefaultTitleColor());
+                    this.parentScreen.getBook().theme().palette().defaultTitleColor());
             this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.RECENTLY_UNLOCKED_ENTRY_LIST_TITLE),
                     BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING,
-                    this.parentScreen.getBook().getDefaultTitleColor());
+                    this.parentScreen.getBook().theme().palette().defaultTitleColor());
 
             BookContentRenderer.drawTitleSeparator(guiGraphics, this.parentScreen.getBook(),
                     BookEntryScreen.LEFT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING + 12);
@@ -212,7 +213,7 @@ public class BookRecentlyUnlockedScreen extends BookPaginatedScreen {
 
             BookPageRenderer.renderBookTextHolder(guiGraphics, this.infoText, this.font,
                     BookEntryScreen.LEFT_PAGE_X, BookEntryScreen.TOP_PADDING + 22, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - (BookEntryScreen.TOP_PADDING + 22),
-                    this.parentScreen.getBook().getDefaultTextColor());
+                    this.parentScreen.getBook().theme().palette().defaultTextColor());
         }
 
         if (this.visibleEntries.isEmpty()) {
@@ -260,7 +261,8 @@ public class BookRecentlyUnlockedScreen extends BookPaginatedScreen {
 
         //get recently unlocked entries sorted by timestamp desc, with unread entries prioritized
         Book book = this.getBook();
-        Map<Identifier, Long> timestamps = BookUnlockStateManager.get().getUnlockTimestampsFor(this.minecraft.player, book);
+        BookVisibilitySnapshots.collect(this.minecraft.player, book);
+        Map<Identifier, Long> timestamps = BookServices.stateAccess().getUnlockTimestamps(this.minecraft.player, book);
 
         record EntryWithTimestamp(BookEntry entry, long timestamp, boolean unread) {}
 
@@ -269,7 +271,7 @@ public class BookRecentlyUnlockedScreen extends BookPaginatedScreen {
         for (BookEntry entry : book.getEntries().values()) {
             Long ts = timestamps.get(entry.getId());
             if (ts != null) {
-                boolean unread = !BookUnlockStateManager.get().isReadFor(this.minecraft.player, entry);
+                boolean unread = BookServices.stateAccess().isEntryUnread(this.minecraft.player, entry);
                 entriesWithTs.add(new EntryWithTimestamp(entry, ts, unread));
             }
         }

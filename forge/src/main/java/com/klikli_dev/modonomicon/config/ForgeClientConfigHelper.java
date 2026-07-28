@@ -26,5 +26,13 @@ public class ForgeClientConfigHelper implements ClientConfigHelper {
         return ClientConfig.get().qolCategory.fontFallbackLocales.get();
     }
 
+    @Override
+    public boolean shouldShowResearchToasts() {
+        return ClientConfig.get().qolCategory.showResearchToasts.get();
+    }
 
+    @Override
+    public boolean pauseGameWhenOpen() {
+        return ClientConfig.get().qolCategory.pauseGameWhenOpen.get();
+    }
 }

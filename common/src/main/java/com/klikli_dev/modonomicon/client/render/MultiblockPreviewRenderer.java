@@ -17,7 +17,8 @@ import com.klikli_dev.modonomicon.client.render.fakelevel.GhostRenderState;
 import com.klikli_dev.modonomicon.multiblock.AbstractMultiblock;
 import com.klikli_dev.modonomicon.multiblock.matcher.DisplayOnlyMatcher;
 import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
-import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
+import com.klikli_dev.modonomicon.registry.StateMatcherTypeRegistry;
+import com.klikli_dev.modonomicon.util.TextRenderHelper;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -32,7 +33,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.block.BlockQuadOutput;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
@@ -67,6 +67,10 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+
+import java.util.IdentityHashMap;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
 import org.joml.Vector4f;
 import org.jspecify.annotations.NonNull;
 
@@ -86,7 +90,7 @@ public class MultiblockPreviewRenderer {
     private static final List<BlockEntityRenderState> blockEntityRenderStates = new ArrayList<>();
     private static final ByteBufferBuilder BUFFER_BUILDER = new ByteBufferBuilder(RenderType.TRANSIENT_BUFFER_SIZE);
 
-    private static final Map<RenderType, RenderType> GHOST_RENDER_TYPE_CACHE = new java.util.IdentityHashMap<>();
+    private static final Map<RenderType, RenderType> GHOST_RENDER_TYPE_CACHE = new IdentityHashMap<>();
     public static boolean hasMultiblock;
     private static Multiblock multiblock;
     private static Component name;
@@ -162,7 +166,7 @@ public class MultiblockPreviewRenderer {
             int x = mc.getWindow().getGuiScaledWidth() / 2;
             int y = 12;
 
-            GuiGraphicsExt.drawString(guiGraphics, mc.font, name, x - mc.font.width(name) / 2.0F, y, -1, false);
+            TextRenderHelper.drawString(guiGraphics, mc.font, name, x - mc.font.width(name) / 2.0F, y, -1, false);
 
             int width = 180;
             int height = 9;
@@ -401,7 +405,7 @@ public class MultiblockPreviewRenderer {
                 alpha = 0.6F + (float) (Math.sin(ClientTicks.total * 0.3F) + 1F) * 0.1F;
             }
 
-            if (!r.stateMatcher().equals(Matchers.ANY) && r.stateMatcher().getType() != DisplayOnlyMatcher.TYPE) {
+            if (!r.stateMatcher().equals(Matchers.ANY) && r.stateMatcher().type() != StateMatcherTypeRegistry.DISPLAY) {
                 boolean air = !r.stateMatcher().countsTowardsTotalBlocks();
                 if (!air) {
                     blocks++;
@@ -543,9 +547,9 @@ public class MultiblockPreviewRenderer {
         try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(
                 () -> "modonomicon_multiblock_preview",
                 target.getColorTextureView(),
-                java.util.OptionalInt.empty(),
+                OptionalInt.empty(),
                 target.getDepthTextureView(),
-                java.util.OptionalDouble.empty()
+                OptionalDouble.empty()
         )) {
             renderPass.setPipeline(pipeline);
             RenderSystem.bindDefaultUniforms(renderPass);

@@ -1,0 +1,11 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "page3",
+  "show_title_separator": true,
+  "sort_number": 2,
+  "text": "book.modonomicon.demo.formatting.advanced.page3.text",
+  "title": "book.modonomicon.demo.formatting.advanced.page3.title"
+}

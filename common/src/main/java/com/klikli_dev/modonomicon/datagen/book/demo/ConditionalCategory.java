@@ -4,6 +4,7 @@
 
 package com.klikli_dev.modonomicon.datagen.book.demo;
 
+import com.klikli_dev.modonomicon.api.datagen.CategoryLayout;
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.SingleBookSubProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
@@ -20,19 +21,13 @@ public class ConditionalCategory extends CategoryProvider {
     }
 
     @Override
-    protected String[] generateEntryMap() {
-        return new String[]{
-                "_____________________",
-                "_____________________",
-                "__________l__________",
-                "_____________________",
-                "_____________________"
-        };
+    protected void configureLayout(CategoryLayout layout) {
+        layout.entry(AlwaysLockedEntry.ID).at(0, 0);
     }
 
     @Override
     protected void generateEntries() {
-        var alwaysLockedEntry = this.add(new AlwaysLockedEntry(this).generate('l'));
+        var alwaysLockedEntry = this.add(new AlwaysLockedEntry(this).generate());
     }
 
     @Override

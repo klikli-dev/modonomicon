@@ -12,8 +12,11 @@ import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiButtonSprites;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
+import com.klikli_dev.modonomicon.util.Codecs;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.HolderLookup;
@@ -50,10 +53,10 @@ public class BookCategory {
      */
     protected float backgroundTextureZoomMultiplier;
     protected List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers;
-    protected Identifier entryTextures;
     protected Map<Identifier, BookEntry> entries;
     protected BookCondition condition;
     protected boolean showCategoryButton;
+    protected GuiButtonSprites categoryButtonSprites;
     /**
      * The entry to open when this category is opened.
      * If null, no entry will be opened.
@@ -65,7 +68,7 @@ public class BookCategory {
      */
     protected boolean openEntryToOpenOnlyOnce;
 
-    public BookCategory(Identifier id, String name, BookTextHolder description, int sortNumber, BookCondition condition, boolean showCategoryButton, BookIcon icon, BookDisplayMode displayMode, Identifier background, int backgroundWidth, int backgroundHeight, int maxScrollX, int maxScrollY, float backgroundTextureZoomMultiplier, List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers, Identifier entryTextures, Identifier entryToOpen, boolean openEntryOnlyOnce) {
+    public BookCategory(Identifier id, String name, BookTextHolder description, int sortNumber, BookCondition condition, boolean showCategoryButton, BookIcon icon, BookDisplayMode displayMode, Identifier background, int backgroundWidth, int backgroundHeight, int maxScrollX, int maxScrollY, float backgroundTextureZoomMultiplier, List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers, GuiButtonSprites categoryButtonSprites, Identifier entryToOpen, boolean openEntryOnlyOnce) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -81,8 +84,8 @@ public class BookCategory {
         this.maxScrollY = maxScrollY;
         this.backgroundTextureZoomMultiplier = backgroundTextureZoomMultiplier;
         this.backgroundParallaxLayers = backgroundParallaxLayers;
-        this.entryTextures = entryTextures;
         this.entries = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+        this.categoryButtonSprites = categoryButtonSprites;
         this.entryToOpen = entryToOpen;
         this.openEntryToOpenOnlyOnce = openEntryOnlyOnce;
     }
@@ -100,8 +103,10 @@ public class BookCategory {
         var defaultMaxScrollY = GsonHelper.getAsInt(json, "max_scroll_y", Category.DEFAULT_MAX_SCROLL_Y);
 
         var backgroundTextureZoomMultiplier = GsonHelper.getAsFloat(json, "background_texture_zoom_multiplier", Category.DEFAULT_BACKGROUND_TEXTURE_ZOOM_MULTIPLIER);
-        var entryTextures = Identifier.parse(GsonHelper.getAsString(json, "entry_textures", Category.DEFAULT_ENTRY_TEXTURES));
         var showCategoryButton = GsonHelper.getAsBoolean(json, "show_category_button", true);
+        var categoryButtonSprites = json.has("category_button_sprite")
+                ? categoryButtonSpritesFromJson(json.getAsJsonObject("category_button_sprite"))
+                : null;
 
         BookCondition condition = new BookNoneCondition(); //default to unlocked
         if (json.has("condition")) {
@@ -114,15 +119,12 @@ public class BookCategory {
 
         Identifier entryToOpen = null;
         if (json.has("entry_to_open")) {
-            var entryToOpenPath = GsonHelper.getAsString(json, "entry_to_open");
-            entryToOpen = entryToOpenPath.contains(":") ?
-                    Identifier.parse(entryToOpenPath) :
-                    Identifier.fromNamespaceAndPath(id.getNamespace(), entryToOpenPath);
+            entryToOpen = Codecs.parseStrictIdentifier(GsonHelper.getAsString(json, "entry_to_open"));
         }
         boolean openEntryOnlyOnce = GsonHelper.getAsBoolean(json, "open_entry_to_open_only_once", true);
 
         return new BookCategory(id, name, description, sortNumber, condition, showCategoryButton, icon, displayMode, background, backgroundWidth, backgroundHeight,
-                defaultMaxScrollX, defaultMaxScrollY, backgroundTextureZoomMultiplier, backgroundParallaxLayers, entryTextures, entryToOpen, openEntryOnlyOnce);
+                defaultMaxScrollX, defaultMaxScrollY, backgroundTextureZoomMultiplier, backgroundParallaxLayers, categoryButtonSprites, entryToOpen, openEntryOnlyOnce);
     }
 
     public static BookCategory fromNetwork(Identifier id, RegistryFriendlyByteBuf buffer) {
@@ -138,13 +140,13 @@ public class BookCategory {
         var defaultMaxScrollY = buffer.readVarInt();
         var backgroundTextureZoomMultiplier = buffer.readFloat();
         var backgroundParallaxLayers = buffer.readList(BookCategoryBackgroundParallaxLayer::fromNetwork);
-        var entryTextures = buffer.readIdentifier();
         var condition = BookCondition.fromNetwork(buffer);
         var showCategoryButton = buffer.readBoolean();
+        var categoryButtonSprites = readOptionalButtonSprites(buffer);
         var entryToOpen = buffer.readNullable(FriendlyByteBuf::readIdentifier);
         var openEntryOnlyOnce = buffer.readBoolean();
         return new BookCategory(id, name, description, sortNumber, condition, showCategoryButton, icon, displayMode, background, backgroundWidth, backgroundHeight,
-                defaultMaxScrollX, defaultMaxScrollY, backgroundTextureZoomMultiplier, backgroundParallaxLayers, entryTextures, entryToOpen, openEntryOnlyOnce);
+                defaultMaxScrollX, defaultMaxScrollY, backgroundTextureZoomMultiplier, backgroundParallaxLayers, categoryButtonSprites, entryToOpen, openEntryOnlyOnce);
     }
 
     public void toNetwork(RegistryFriendlyByteBuf buffer) {
@@ -160,11 +162,51 @@ public class BookCategory {
         buffer.writeVarInt(this.maxScrollY);
         buffer.writeFloat(this.backgroundTextureZoomMultiplier);
         buffer.writeCollection(this.backgroundParallaxLayers, (buf, layer) -> layer.toNetwork(buf));
-        buffer.writeIdentifier(this.entryTextures);
         BookCondition.toNetwork(this.condition, buffer);
         buffer.writeBoolean(this.showCategoryButton);
+        writeOptionalButtonSprites(buffer, this.categoryButtonSprites);
         buffer.writeNullable(this.entryToOpen, FriendlyByteBuf::writeIdentifier);
         buffer.writeBoolean(this.openEntryToOpenOnlyOnce);
+    }
+
+    private static GuiButtonSprites categoryButtonSpritesFromJson(JsonObject json) {
+        if (json.has("normal") || json.has("hover") || json.has("pressed")) {
+            GuiSprite normal = GuiSprite.fromJson(json.get("normal"));
+            GuiSprite hover = json.has("hover") ? GuiSprite.fromJson(json.get("hover")) : normal;
+            GuiSprite pressed = json.has("pressed") ? GuiSprite.fromJson(json.get("pressed")) : null;
+            return new GuiButtonSprites(normal, hover, pressed);
+        }
+
+        GuiSprite normal = GuiSprite.fromJson(json);
+        return new GuiButtonSprites(normal, normal, null);
+    }
+
+    private static GuiButtonSprites readOptionalButtonSprites(RegistryFriendlyByteBuf buffer) {
+        if (!buffer.readBoolean()) {
+            return null;
+        }
+
+        GuiSprite normal = GuiSprite.fromNetwork(buffer);
+        GuiSprite hover = buffer.readBoolean() ? GuiSprite.fromNetwork(buffer) : normal;
+        GuiSprite pressed = buffer.readBoolean() ? GuiSprite.fromNetwork(buffer) : null;
+        return new GuiButtonSprites(normal, hover, pressed);
+    }
+
+    private static void writeOptionalButtonSprites(RegistryFriendlyByteBuf buffer, GuiButtonSprites sprites) {
+        buffer.writeBoolean(sprites != null);
+        if (sprites == null) {
+            return;
+        }
+
+        sprites.normal().toNetwork(buffer);
+        buffer.writeBoolean(sprites.hover() != sprites.normal());
+        if (sprites.hover() != sprites.normal()) {
+            sprites.hover().toNetwork(buffer);
+        }
+        buffer.writeBoolean(sprites.pressed() != null);
+        if (sprites.pressed() != null) {
+            sprites.pressed().toNetwork(buffer);
+        }
     }
 
     /**
@@ -263,10 +305,6 @@ public class BookCategory {
         return this.backgroundParallaxLayers;
     }
 
-    public Identifier getEntryTextures() {
-        return this.entryTextures;
-    }
-
     public Map<Identifier, BookEntry> getEntries() {
         return this.entries;
     }
@@ -294,5 +332,9 @@ public class BookCategory {
 
     public boolean showCategoryButton() {
         return this.showCategoryButton;
+    }
+
+    public GuiButtonSprites getCategoryButtonSprites() {
+        return this.categoryButtonSprites;
     }
 }

@@ -6,25 +6,53 @@
 
 package com.klikli_dev.modonomicon.book.page;
 
-import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
+import com.klikli_dev.modonomicon.data.BookPageType;
+import com.klikli_dev.modonomicon.registry.BookPageTypeRegistry;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import com.klikli_dev.modonomicon.util.EntityUtil;
-import net.minecraft.core.HolderLookup;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 
 public class BookEntityPage extends BookPage {
+    public static final Identifier ID = Modonomicon.loc("entity");
+    public static final MapCodec<BookEntityPage> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            BookTextHolder.CODEC.fieldOf("entity_name").forGetter(BookEntityPage::getEntityName),
+            BookTextHolder.CODEC.fieldOf("text").forGetter(BookEntityPage::getText),
+            Codec.STRING.fieldOf("entity_id").forGetter(BookEntityPage::getEntityId),
+            Codec.FLOAT.optionalFieldOf("scale", 1.0f).forGetter(BookEntityPage::getScale),
+            Codec.FLOAT.optionalFieldOf("offset", 0f).forGetter(BookEntityPage::getOffset),
+            Codec.BOOL.optionalFieldOf("rotate", true).forGetter(BookEntityPage::doesRotate),
+            Codec.FLOAT.optionalFieldOf("default_rotation", -45f).forGetter(BookEntityPage::getDefaultRotation),
+            Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
+            BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition)
+    ).apply(instance, BookEntityPage::new));
+    public static final StreamCodec<RegistryFriendlyByteBuf, BookEntityPage> STREAM_CODEC = StreamCodec.composite(
+            BookTextHolder.STREAM_CODEC, BookEntityPage::getEntityName,
+            BookTextHolder.STREAM_CODEC, BookEntityPage::getText,
+            ByteBufCodecs.STRING_UTF8, BookEntityPage::getEntityId,
+            ByteBufCodecs.FLOAT, BookEntityPage::getScale,
+            ByteBufCodecs.FLOAT, BookEntityPage::getOffset,
+            ByteBufCodecs.BOOL, BookEntityPage::doesRotate,
+            ByteBufCodecs.FLOAT, BookEntityPage::getDefaultRotation,
+            ByteBufCodecs.STRING_UTF8, BookPage::getId,
+            BookCondition.STREAM_CODEC, BookPage::getCondition,
+            BookEntityPage::new
+    );
 
     protected BookTextHolder entityName;
     protected BookTextHolder text;
@@ -37,8 +65,8 @@ public class BookEntityPage extends BookPage {
     protected float defaultRotation = -45f;
 
 
-    public BookEntityPage(BookTextHolder entityName, BookTextHolder text, String entityId, float scale, float offset, boolean rotate, float defaultRotation, String anchor, BookCondition condition) {
-        super(anchor, condition);
+    public BookEntityPage(BookTextHolder entityName, BookTextHolder text, String entityId, float scale, float offset, boolean rotate, float defaultRotation, String id, BookCondition condition) {
+        super(id, condition);
         this.entityName = entityName;
         this.text = text;
         this.entityId = entityId;
@@ -46,35 +74,6 @@ public class BookEntityPage extends BookPage {
         this.offset = offset;
         this.rotate = rotate;
         this.defaultRotation = defaultRotation;
-    }
-
-    public static BookEntityPage fromJson(Identifier entryId, JsonObject json, HolderLookup.Provider provider) {
-        var entityName = BookGsonHelper.getAsBookTextHolder(json, "name", BookTextHolder.EMPTY, provider);
-        var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY, provider);
-        var entityId = GsonHelper.getAsString(json, "entity_id");
-        var scale = GsonHelper.getAsFloat(json, "scale", 1.0f);
-        var offset = GsonHelper.getAsFloat(json, "offset", 0.0f);
-        var rotate = GsonHelper.getAsBoolean(json, "rotate", true);
-        var defaultRotation = GsonHelper.getAsFloat(json, "default_rotation", -45.0f);
-
-        var anchor = GsonHelper.getAsString(json, "anchor", "");
-        var condition = json.has("condition")
-                ? BookCondition.fromJson(entryId, json.getAsJsonObject("condition"), provider)
-                : new BookNoneCondition();
-        return new BookEntityPage(entityName, text, entityId, scale, offset, rotate, defaultRotation, anchor, condition);
-    }
-
-    public static BookEntityPage fromNetwork(RegistryFriendlyByteBuf buffer) {
-        var entityName = BookTextHolder.fromNetwork(buffer);
-        var text = BookTextHolder.fromNetwork(buffer);
-        var entityId = buffer.readUtf();
-        var scale = buffer.readFloat();
-        var offset = buffer.readFloat();
-        var rotate = buffer.readBoolean();
-        var defaultRotation = buffer.readFloat();
-        var anchor = buffer.readUtf();
-        var condition = BookCondition.fromNetwork(buffer);
-        return new BookEntityPage(entityName, text, entityId, scale, offset, rotate, defaultRotation, anchor, condition);
     }
 
     public String getEntityId() {
@@ -106,8 +105,8 @@ public class BookEntityPage extends BookPage {
     }
 
     @Override
-    public Identifier getType() {
-        return Page.ENTITY;
+    public BookPageType<?> type() {
+        return BookPageTypeRegistry.ENTITY;
     }
 
     @Override
@@ -119,7 +118,7 @@ public class BookEntityPage extends BookPage {
             this.entityName = new BookTextHolder(Component.translatable(EntityUtil.getEntityName(this.entityId))
                     .withStyle(Style.EMPTY
                             .withBold(true)
-                            .withColor(this.getParentEntry().getBook().getDefaultTitleColor())
+                            .withColor(this.getParentEntry().getBook().themeData().palette().defaultTitleColor())
                     ));
         }
     }
@@ -132,23 +131,11 @@ public class BookEntityPage extends BookPage {
             this.entityName = new BookTextHolder(Component.translatable(this.entityName.getKey())
                     .withStyle(Style.EMPTY
                             .withBold(true)
-                            .withColor(this.getParentEntry().getBook().getDefaultTitleColor())));
+                            .withColor(this.getParentEntry().getBook().themeData().palette().defaultTitleColor())));
         }
         if (!this.text.hasComponent()) {
             this.text = new RenderedBookTextHolder(this.text, textRenderer.render(this.text.getString()));
         }
-    }
-
-    @Override
-    public void toNetwork(RegistryFriendlyByteBuf buffer) {
-        this.entityName.toNetwork(buffer);
-        this.text.toNetwork(buffer);
-        buffer.writeUtf(this.entityId);
-        buffer.writeFloat(this.scale);
-        buffer.writeFloat(this.offset);
-        buffer.writeBoolean(this.rotate);
-        buffer.writeFloat(this.defaultRotation);
-        super.toNetwork(buffer);
     }
 
     @Override

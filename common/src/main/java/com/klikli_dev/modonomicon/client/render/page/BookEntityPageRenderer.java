@@ -109,7 +109,7 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
 
         int x = BookEntryScreen.PAGE_WIDTH / 2 - 53;
         int y = 7;
-       BookContentRenderer.drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, this.getPage().getBook(), x, y, 405, 149, 106, 106);
+        BookContentRenderer.drawSprite(guiGraphics, this.getPage().getBook().theme().content().mediaFrame(), x, y);
 
         if (this.errored) {
             guiGraphics.text(this.font, Component.translatable(Gui.PAGE_ENTITY_LOADING_ERROR), 58, 60, 0xFF0000, true);

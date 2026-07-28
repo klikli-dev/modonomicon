@@ -7,8 +7,9 @@
 package com.klikli_dev.modonomicon.api.datagen.book.page;
 
 import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.api.datagen.book.BookTextHolderModel;
+import com.klikli_dev.modonomicon.book.page.BookMultiblockPage;
+import com.klikli_dev.modonomicon.book.page.BookPage;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -20,7 +21,7 @@ public class BookMultiblockPageModel extends BookPageModel<BookMultiblockPageMod
     protected boolean showVisualizeButton = true;
 
     protected BookMultiblockPageModel() {
-        super(Page.MULTIBLOCK);
+        super(BookMultiblockPage.ID);
     }
 
     public static BookMultiblockPageModel create() {
@@ -44,19 +45,8 @@ public class BookMultiblockPageModel extends BookPageModel<BookMultiblockPageMod
     }
 
     @Override
-    public JsonObject toJson(Identifier entryId, HolderLookup.Provider provider) {
-        var json = super.toJson(entryId, provider);
-        json.add("multiblock_name", this.multiblockName.toJson(provider));
-        json.add("text", this.text.toJson(provider));
-        json.addProperty("show_visualize_button", this.showVisualizeButton);
-
-        //if we are in the same namespace, which we basically always should be, omit namespace
-        if (this.multiblockId.getNamespace().equals(entryId.getNamespace()))
-            json.addProperty("multiblock_id", this.multiblockId.getPath());
-        else
-            json.addProperty("multiblock_id", this.multiblockId.toString());
-
-        return json;
+    public BookPage toBookPage(HolderLookup.Provider provider) {
+        return new BookMultiblockPage(this.multiblockName.toBookTextHolder(), this.text.toBookTextHolder(), this.multiblockId, this.showVisualizeButton, this.id, this.condition(provider));
     }
 
     public BookMultiblockPageModel withMultiblockName(String title) {

@@ -80,10 +80,10 @@ public class Networking {
                 .consumerNetworkThread((BiConsumer<ClickCommandLinkMessage, CustomPayloadEvent.Context>) MessageHandler::handle)
                 .add();
 
-        INSTANCE.messageBuilder(ClickReadAllButtonMessage.class)
-                .encoder(encoder(ClickReadAllButtonMessage.STREAM_CODEC))
-                .decoder(decoder(ClickReadAllButtonMessage.STREAM_CODEC))
-                .consumerNetworkThread((BiConsumer<ClickReadAllButtonMessage, CustomPayloadEvent.Context>) MessageHandler::handle)
+        INSTANCE.messageBuilder(ClickResearchProgressButtonMessage.class)
+                .encoder(encoder(ClickResearchProgressButtonMessage.STREAM_CODEC))
+                .decoder(decoder(ClickResearchProgressButtonMessage.STREAM_CODEC))
+                .consumerNetworkThread((BiConsumer<ClickResearchProgressButtonMessage, CustomPayloadEvent.Context>) MessageHandler::handle)
                 .add();
 
         INSTANCE.messageBuilder(SaveBookStateMessage.class)
@@ -105,22 +105,10 @@ public class Networking {
                 .consumerNetworkThread((BiConsumer<SaveEntryStateMessage, CustomPayloadEvent.Context>) MessageHandler::handle)
                 .add();
 
-        INSTANCE.messageBuilder(SendUnlockCodeToClientMessage.class)
-                .encoder(encoder(SendUnlockCodeToClientMessage.STREAM_CODEC))
-                .decoder(decoder(SendUnlockCodeToClientMessage.STREAM_CODEC))
-                .consumerNetworkThread((BiConsumer<SendUnlockCodeToClientMessage, CustomPayloadEvent.Context>) MessageHandler::handle)
-                .add();
-
         INSTANCE.messageBuilder(OpenBookOnClientMessage.class)
                 .encoder(encoder(OpenBookOnClientMessage.STREAM_CODEC))
                 .decoder(decoder(OpenBookOnClientMessage.STREAM_CODEC))
                 .consumerNetworkThread((BiConsumer<OpenBookOnClientMessage, CustomPayloadEvent.Context>) MessageHandler::handle)
-                .add();
-
-        INSTANCE.messageBuilder(SendUnlockCodeToServerMessage.class)
-                .encoder(encoder(SendUnlockCodeToServerMessage.STREAM_CODEC))
-                .decoder(decoder(SendUnlockCodeToServerMessage.STREAM_CODEC))
-                .consumerNetworkThread((BiConsumer<SendUnlockCodeToServerMessage, CustomPayloadEvent.Context>) MessageHandler::handle)
                 .add();
 
 
@@ -134,12 +122,6 @@ public class Networking {
                 .encoder(encoder(SyncBookDataMessage.STREAM_CODEC))
                 .decoder(decoder(SyncBookDataMessage.STREAM_CODEC))
                 .consumerNetworkThread((BiConsumer<SyncBookDataMessage, CustomPayloadEvent.Context>) MessageHandler::handle)
-                .add();
-
-        INSTANCE.messageBuilder(SyncBookUnlockStatesMessage.class)
-                .encoder(encoder(SyncBookUnlockStatesMessage.STREAM_CODEC))
-                .decoder(decoder(SyncBookUnlockStatesMessage.STREAM_CODEC))
-                .consumerNetworkThread((BiConsumer<SyncBookUnlockStatesMessage, CustomPayloadEvent.Context>) MessageHandler::handle)
                 .add();
 
         INSTANCE.messageBuilder(SyncBookVisualStatesMessage.class)

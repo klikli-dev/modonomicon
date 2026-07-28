@@ -1,0 +1,21 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gray",
+    "width": 26
+  },
+  "category": "modonomicon:stages",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "description": "book.modonomicon.demo.stages.stage_progression.description",
+  "icon": {
+    "id": "minecraft:oak_planks"
+  },
+  "id": "modonomicon:stages/stage_progression",
+  "name": "book.modonomicon.demo.stages.stage_progression.name",
+  "sort_number": 0,
+  "x": 0,
+  "y": 0
+}

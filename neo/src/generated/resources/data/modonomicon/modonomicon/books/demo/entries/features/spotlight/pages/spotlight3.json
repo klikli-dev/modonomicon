@@ -1,0 +1,16 @@
+{
+  "type": "modonomicon:spotlight",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "spotlight3",
+  "item": {
+    "components": {
+      "minecraft:dyed_color": 1481884
+    },
+    "id": "minecraft:leather_helmet"
+  },
+  "sort_number": 3,
+  "text": "book.modonomicon.demo.features.spotlight.spotlight3.text",
+  "title": ""
+}

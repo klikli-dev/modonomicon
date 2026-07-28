@@ -124,7 +124,7 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
         //TODO we had -1000z here //push the page background to the front. Otherwise the entries render over it.
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
-        BookContentRenderer.renderBookBackground(guiGraphics, this.bookContentTexture);
+        BookContentRenderer.renderBookBackground(guiGraphics, this.getBook());
         guiGraphics.pose().popMatrix();
         guiGraphics.nextStratum();
 

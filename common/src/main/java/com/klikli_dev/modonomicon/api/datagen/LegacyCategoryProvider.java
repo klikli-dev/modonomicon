@@ -144,6 +144,7 @@ public abstract class LegacyCategoryProvider extends CategoryProviderBase {
         this.context().category(this.categoryId);
         this.entryMap().setMap(this.generateEntryMap());
         this.category = this.generateCategory();
+        this.configureLayout(this.layout());
         this.generateEntries();
         return this.category;
     }
@@ -165,4 +166,7 @@ public abstract class LegacyCategoryProvider extends CategoryProviderBase {
      * Context already is set to this category.
      */
     protected abstract BookCategoryModel generateCategory();
+
+    protected void configureLayout(CategoryLayout layout) {
+    }
 }

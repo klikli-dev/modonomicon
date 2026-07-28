@@ -9,21 +9,23 @@ package com.klikli_dev.modonomicon.multiblock;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
-import com.klikli_dev.modonomicon.data.LoaderRegistry;
+import com.klikli_dev.modonomicon.data.MultiblockType;
 import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
+import com.klikli_dev.modonomicon.registry.MultiblockTypeRegistry;
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -37,16 +39,21 @@ import java.util.Map;
 
 public class DenseMultiblock extends AbstractMultiblock {
 
-    public static final Identifier TYPE = Modonomicon.loc("dense");
+    static final Codec<List<List<String>>> PATTERN_CODEC = Codec.list(Codec.list(Codec.STRING));
 
-    private static final Gson GSON = new GsonBuilder().create();
+    public static final Identifier ID = Modonomicon.loc("dense");
+    public static final MapCodec<DenseMultiblock> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            PATTERN_CODEC.fieldOf("pattern").forGetter(DenseMultiblock::patternAsList),
+            MAPPING_CODEC.fieldOf("mapping").forGetter(DenseMultiblock::targets)
+    ).apply(instance, (pattern, targets) -> new DenseMultiblock(toPatternArray(pattern), targets)));
+    public static final StreamCodec<RegistryFriendlyByteBuf, DenseMultiblock> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC.codec());
 
-    private final String[][] pattern;
-    private final Vec3i size;
+    final String[][] pattern;
+    final Vec3i size;
     /**
      * Keep only for serialization
      */
-    private final Map<Character, StateMatcher> targets;
+    final Map<Character, StateMatcher> targets;
     private StateMatcher[][][] stateMatchers;
 
     public DenseMultiblock(String[][] pattern, Map<Character, StateMatcher> targets) {
@@ -66,48 +73,24 @@ public class DenseMultiblock extends AbstractMultiblock {
         this.size = this.build(targets, getPatternDimensions(pattern));
     }
 
-    public static DenseMultiblock fromNetwork(RegistryFriendlyByteBuf buffer) {
-        var symmetrical = buffer.readBoolean();
-        var offX = buffer.readVarInt();
-        var offY = buffer.readVarInt();
-        var offZ = buffer.readVarInt();
-        var viewOffX = buffer.readVarInt();
-        var viewOffY = buffer.readVarInt();
-        var viewOffZ = buffer.readVarInt();
-
-        var sizeX = buffer.readVarInt();
-        var sizeY = buffer.readVarInt();
-        var pattern = new String[sizeY][sizeX];
-        for (int y = 0; y < sizeY; y++) {
-            for (int x = 0; x < sizeX; x++) {
-                pattern[y][x] = buffer.readUtf();
-            }
+    static String[][] toPatternArray(List<List<String>> pattern) {
+        String[][] array = new String[pattern.size()][];
+        for (int i = 0; i < pattern.size(); i++) {
+            array[i] = pattern.get(i).toArray(String[]::new);
         }
-
-        var targets = new Object2ObjectOpenHashMap<Character, StateMatcher>();
-        var targetCount = buffer.readVarInt();
-        for (int i = 0; i < targetCount; i++) {
-            var key = buffer.readChar();
-            var type = buffer.readIdentifier();
-            var stateMatcher = LoaderRegistry.getStateMatcherNetworkLoader(type).fromNetwork(buffer);
-            targets.put(key, stateMatcher);
-        }
-
-        var multiblock = new DenseMultiblock(pattern, targets);
-        multiblock.setSymmetrical(symmetrical);
-        multiblock.setOffset(offX, offY, offZ);
-        multiblock.setViewOffset(viewOffX, viewOffY, viewOffZ);
-        return multiblock;
+        return array;
     }
 
-    public static DenseMultiblock fromJson(JsonObject json, HolderLookup.Provider provider) {
-        var pattern = GSON.fromJson(json.get("pattern"), String[][].class);
+    List<List<String>> patternAsList() {
+        List<List<String>> list = new ArrayList<>(this.pattern.length);
+        for (var row : this.pattern) {
+            list.add(List.of(row));
+        }
+        return list;
+    }
 
-        var jsonMapping = GsonHelper.getAsJsonObject(json, "mapping");
-        var mapping = mappingFromJson(jsonMapping, provider);
-
-        var multiblock = new DenseMultiblock(pattern, mapping);
-        return additionalPropertiesFromJson(multiblock, json);
+    Map<Character, StateMatcher> targets() {
+        return this.targets;
     }
 
     private static Vec3i getPatternDimensions(String[][] pattern) {
@@ -170,8 +153,8 @@ public class DenseMultiblock extends AbstractMultiblock {
     }
 
     @Override
-    public Identifier getType() {
-        return TYPE;
+    public MultiblockType<?> type() {
+        return MultiblockTypeRegistry.DENSE;
     }
 
     @Override
@@ -209,32 +192,6 @@ public class DenseMultiblock extends AbstractMultiblock {
         BlockState state = level.getBlockState(checkPos).rotate(rotation);
 
         return pred.test(level, checkPos, state);
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buffer) {
-        buffer.writeBoolean(this.symmetrical);
-        buffer.writeVarInt(this.offX);
-        buffer.writeVarInt(this.offY);
-        buffer.writeVarInt(this.offZ);
-        buffer.writeVarInt(this.viewOffX);
-        buffer.writeVarInt(this.viewOffY);
-        buffer.writeVarInt(this.viewOffZ);
-
-        buffer.writeVarInt(this.size.getX());
-        buffer.writeVarInt(this.size.getY());
-        for (int y = 0; y < this.size.getY(); y++) {
-            for (int x = 0; x < this.size.getX(); x++) {
-                buffer.writeUtf(this.pattern[y][x]);
-            }
-        }
-
-        buffer.writeVarInt(this.targets.size());
-        for (var entry : this.targets.entrySet()) {
-            buffer.writeChar(entry.getKey());
-            buffer.writeIdentifier(entry.getValue().getType());
-            entry.getValue().toNetwork(buffer);
-        }
     }
 
     @Override

@@ -6,7 +6,6 @@
 
 package com.klikli_dev.modonomicon.book.page;
 
-import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
@@ -14,28 +13,75 @@ import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
-import com.klikli_dev.modonomicon.util.BookGsonHelper;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
 import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.function.Function;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
+
+    protected static final MapCodec<JsonDataHolder> JSON_COMMON_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            BookTextHolder.CODEC.optionalFieldOf("title1", BookTextHolder.EMPTY).forGetter(JsonDataHolder::title1),
+            ResourceKey.codec(Registries.RECIPE).optionalFieldOf("recipe_id_1").forGetter(holder -> Optional.ofNullable(holder.recipeId1())),
+            BookTextHolder.CODEC.optionalFieldOf("title2", BookTextHolder.EMPTY).forGetter(JsonDataHolder::title2),
+            ResourceKey.codec(Registries.RECIPE).optionalFieldOf("recipe_id_2").forGetter(holder -> Optional.ofNullable(holder.recipeId2())),
+            BookTextHolder.CODEC.optionalFieldOf("text", BookTextHolder.EMPTY).forGetter(JsonDataHolder::text),
+            Codec.STRING.fieldOf("id").forGetter(JsonDataHolder::id),
+            BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(JsonDataHolder::condition)
+    ).apply(instance, (title1, recipeKey1, title2, recipeKey2, text, id, condition) -> new JsonDataHolder(
+            title1,
+            recipeKey1.orElse(null),
+            title2,
+            recipeKey2.orElse(null),
+            text,
+            id,
+            condition
+    )));
+
+    protected static final StreamCodec<RegistryFriendlyByteBuf, NetworkDataHolder> NETWORK_COMMON_STREAM_CODEC = StreamCodec.composite(
+            BookTextHolder.STREAM_CODEC, NetworkDataHolder::title1,
+            ByteBufCodecs.optional(ResourceKey.streamCodec(Registries.RECIPE)), holder -> Optional.ofNullable(holder.recipeKey1()),
+            ByteBufCodecs.optional(RecipeDisplayEntry.STREAM_CODEC), holder -> Optional.ofNullable(holder.recipeDisplayEntry1()),
+            BookTextHolder.STREAM_CODEC, NetworkDataHolder::title2,
+            ByteBufCodecs.optional(ResourceKey.streamCodec(Registries.RECIPE)), holder -> Optional.ofNullable(holder.recipeKey2()),
+            ByteBufCodecs.optional(RecipeDisplayEntry.STREAM_CODEC), holder -> Optional.ofNullable(holder.recipeDisplayEntry2()),
+            BookTextHolder.STREAM_CODEC, NetworkDataHolder::text,
+            ByteBufCodecs.STRING_UTF8, NetworkDataHolder::id,
+            BookCondition.STREAM_CODEC, NetworkDataHolder::condition,
+            (title1, recipeKey1, recipeDisplayEntry1, title2, recipeKey2, recipeDisplayEntry2, text, id, condition) -> new NetworkDataHolder(
+                    title1,
+                    recipeKey1.orElse(null),
+                    recipeDisplayEntry1.orElse(null),
+                    title2,
+                    recipeKey2.orElse(null),
+                    recipeDisplayEntry2.orElse(null),
+                    text,
+                    id,
+                    condition
+            )
+    );
 
     protected BookTextHolder title1;
     protected ResourceKey<Recipe<?>> recipeKey1;
@@ -58,15 +104,15 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
     protected BookTextHolder text;
 
     public BookRecipePage(JsonDataHolder common) {
-        this(common.title1(), common.recipeId1(), common.title2(), common.recipeId2(), common.text(), common.anchor(), common.condition());
+        this(common.title1(), common.recipeId1(), common.title2(), common.recipeId2(), common.text(), common.id(), common.condition());
     }
 
     public BookRecipePage(NetworkDataHolder common) {
-        this(common.title1(), common.recipeKey1(), common.recipeDisplayEntry1(), common.title2(), common.recipeKey2(), common.recipeDisplayEntry2(), common.text(), common.anchor(), common.condition());
+        this(common.title1(), common.recipeKey1(), common.recipeDisplayEntry1(), common.title2(), common.recipeKey2(), common.recipeDisplayEntry2(), common.text(), common.id(), common.condition());
     }
 
-    private BookRecipePage(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1, BookTextHolder title2, ResourceKey<Recipe<?>> recipeKey2, BookTextHolder text, String anchor, BookCondition condition) {
-        super(anchor, condition);
+    private BookRecipePage(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1, BookTextHolder title2, ResourceKey<Recipe<?>> recipeKey2, BookTextHolder text, String id, BookCondition condition) {
+        super(id, condition);
         this.title1 = title1;
         this.recipeKey1 = recipeKey1;
         this.title2 = title2;
@@ -74,8 +120,8 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
         this.text = text;
     }
 
-    private BookRecipePage(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1, @Nullable RecipeDisplayEntry recipeDisplayEntry1, BookTextHolder title2, ResourceKey<Recipe<?>> recipeKey2, @Nullable RecipeDisplayEntry recipeDisplayEntry2, BookTextHolder text, String anchor, BookCondition condition) {
-        super(anchor, condition);
+    private BookRecipePage(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1, @Nullable RecipeDisplayEntry recipeDisplayEntry1, BookTextHolder title2, ResourceKey<Recipe<?>> recipeKey2, @Nullable RecipeDisplayEntry recipeDisplayEntry2, BookTextHolder text, String id, BookCondition condition) {
+        super(id, condition);
         this.title1 = title1;
         this.recipeKey1 = recipeKey1;
         this.recipeDisplayEntry1 = recipeDisplayEntry1;
@@ -86,40 +132,20 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
 
     }
 
-    public static JsonDataHolder commonFromJson(Identifier entryId, JsonObject json, HolderLookup.Provider provider) {
-        var title1 = BookGsonHelper.getAsBookTextHolder(json, "title1", BookTextHolder.EMPTY, provider);
-        Identifier recipeId1 = json.has("recipe_id_1") ? Identifier.tryParse(GsonHelper.getAsString(json, "recipe_id_1")) : null;
-        var recipeKey1 = recipeId1 != null ? ResourceKey.create(Registries.RECIPE, recipeId1) : null;
-
-        var title2 = BookGsonHelper.getAsBookTextHolder(json, "title2", BookTextHolder.EMPTY, provider);
-        Identifier recipeId2 = json.has("recipe_id_2") ? Identifier.tryParse(GsonHelper.getAsString(json, "recipe_id_2")) : null;
-        var recipeKey2 = recipeId2 != null ? ResourceKey.create(Registries.RECIPE, recipeId2) : null;
-
-        var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY, provider);
-
-        var anchor = GsonHelper.getAsString(json, "anchor", "");
-        var condition = json.has("condition")
-                ? BookCondition.fromJson(entryId, json.getAsJsonObject("condition"), provider)
-                : new BookNoneCondition();
-
-        return new JsonDataHolder(title1, recipeKey1, title2, recipeKey2, text, anchor, condition);
+    protected static <P extends BookRecipePage<?>> MapCodec<P> codec(Function<JsonDataHolder, P> factory) {
+        return JSON_COMMON_CODEC.xmap(factory, BookRecipePage::toJsonDataHolder);
     }
 
-    public static NetworkDataHolder commonFromNetwork(RegistryFriendlyByteBuf buffer) {
-        var title1 = BookTextHolder.fromNetwork(buffer);
-        var recipeKey1 = buffer.readBoolean() ? buffer.readResourceKey(Registries.RECIPE) : null;
-        var recipeDisplayEntry1 = buffer.readBoolean() ? RecipeDisplayEntry.STREAM_CODEC.decode(buffer) : null;
+    protected static <P extends BookRecipePage<?>> StreamCodec<RegistryFriendlyByteBuf, P> streamCodec(Function<NetworkDataHolder, P> factory) {
+        return NETWORK_COMMON_STREAM_CODEC.map(factory, BookRecipePage::toNetworkDataHolder);
+    }
 
-        var title2 = BookTextHolder.fromNetwork(buffer);
-        var recipeKey2 = buffer.readBoolean() ? buffer.readResourceKey(Registries.RECIPE) : null;
-        var recipeDisplayEntry2 = buffer.readBoolean() ? RecipeDisplayEntry.STREAM_CODEC.decode(buffer) : null;
+    protected JsonDataHolder toJsonDataHolder() {
+        return new JsonDataHolder(this.title1, this.recipeKey1, this.title2, this.recipeKey2, this.text, this.id, this.condition);
+    }
 
-        var text = BookTextHolder.fromNetwork(buffer);
-
-        var anchor = buffer.readUtf();
-        var condition = BookCondition.fromNetwork(buffer);
-
-        return new NetworkDataHolder(title1, recipeKey1, recipeDisplayEntry1, title2, recipeKey2, recipeDisplayEntry2, text, anchor, condition);
+    protected NetworkDataHolder toNetworkDataHolder() {
+        return new NetworkDataHolder(this.title1, this.recipeKey1, this.recipeDisplayEntry1, this.title2, this.recipeKey2, this.recipeDisplayEntry2, this.text, this.id, this.condition);
     }
 
     public BookTextHolder getTitle1() {
@@ -174,6 +200,29 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
 
         if (entry == null) {
             Modonomicon.LOG.warn("Recipe {} not found.", key);
+            return null;
+        }
+
+        // Fix for recipes with null or unregistered category - use a fallback category to avoid encoding errors.
+        // Some mods create RecipeBookCategory instances without registering them in the registry.
+        var category = entry.category();
+        if (category == null) {
+            Modonomicon.LOG.warn("Recipe {} has null recipe book category, using fallback CRAFTING_MISC.", key);
+            entry = new RecipeDisplayEntry(
+                    entry.id(), entry.display(), entry.group(),
+                    RecipeBookCategories.CRAFTING_MISC, entry.craftingRequirements()
+            );
+        } else {
+            // Try to get the key from registry - returns empty if not registered
+            var categoryKey = BuiltInRegistries.RECIPE_BOOK_CATEGORY.getKey(category);
+            if (categoryKey == null) {
+                //disable this log as this situation is super common and entirely harmless.
+//                Modonomicon.LOG.warn("Recipe {} has unregistered recipe book category {}, using fallback CRAFTING_MISC.", key, category);
+                entry = new RecipeDisplayEntry(
+                        entry.id(), entry.display(), entry.group(),
+                        RecipeBookCategories.CRAFTING_MISC, entry.craftingRequirements()
+                );
+            }
         }
 
         return entry;
@@ -202,7 +251,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
             this.title1 = new BookTextHolder((this.getRecipeOutput(level, this.recipeDisplayEntry1).getHoverName().copy())
                     .withStyle(Style.EMPTY
                             .withBold(true)
-                            .withColor(this.getParentEntry().getBook().getDefaultTitleColor())
+                            .withColor(this.getParentEntry().getBook().themeData().palette().defaultTitleColor())
                     ));
         }
 
@@ -211,7 +260,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
             this.title2 = new BookTextHolder((this.getRecipeOutput(level, this.recipeDisplayEntry2).getHoverName().copy())
                     .withStyle(Style.EMPTY
                             .withBold(true)
-                            .withColor(this.getParentEntry().getBook().getDefaultTitleColor())
+                            .withColor(this.getParentEntry().getBook().themeData().palette().defaultTitleColor())
                     ));
         }
 
@@ -228,45 +277,18 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
             this.title1 = new BookTextHolder(Component.translatable(this.title1.getKey())
                     .withStyle(Style.EMPTY
                             .withBold(true)
-                            .withColor(this.getParentEntry().getCategory().getBook().getDefaultTitleColor())));
+                            .withColor(this.getParentEntry().getCategory().getBook().themeData().palette().defaultTitleColor())));
         }
         if (!this.title2.hasComponent()) {
             this.title2 = new BookTextHolder(Component.translatable(this.title2.getKey())
                     .withStyle(Style.EMPTY
                             .withBold(true)
-                            .withColor(this.getParentEntry().getCategory().getBook().getDefaultTitleColor())));
+                            .withColor(this.getParentEntry().getCategory().getBook().themeData().palette().defaultTitleColor())));
         }
 
         if (!this.text.hasComponent()) {
             this.text = new RenderedBookTextHolder(this.text, textRenderer.render(this.text.getString()));
         }
-    }
-
-    @Override
-    public void toNetwork(RegistryFriendlyByteBuf buffer) {
-        this.title1.toNetwork(buffer);
-        buffer.writeBoolean(this.recipeKey1 != null);
-        if (this.recipeKey1 != null) {
-            buffer.writeResourceKey(this.recipeKey1);
-        }
-        buffer.writeBoolean(this.recipeDisplayEntry1 != null);
-        if (this.recipeDisplayEntry1 != null) {
-            RecipeDisplayEntry.STREAM_CODEC.encode(buffer, this.recipeDisplayEntry1);
-        }
-
-        this.title2.toNetwork(buffer);
-        buffer.writeBoolean(this.recipeKey2 != null);
-        if (this.recipeKey2 != null) {
-            buffer.writeResourceKey(this.recipeKey2);
-        }
-        buffer.writeBoolean(this.recipeDisplayEntry2 != null);
-        if (this.recipeDisplayEntry2 != null) {
-            RecipeDisplayEntry.STREAM_CODEC.encode(buffer, this.recipeDisplayEntry2);
-        }
-
-        this.text.toNetwork(buffer);
-
-        super.toNetwork(buffer);
     }
 
     @Override
@@ -276,14 +298,14 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
                 || this.text.getString().toLowerCase().contains(query);
     }
 
-    public record JsonDataHolder(BookTextHolder title1, ResourceKey<Recipe<?>> recipeId1, BookTextHolder title2,
-                                 ResourceKey<Recipe<?>> recipeId2, BookTextHolder text, String anchor,
-                                 BookCondition condition) {
+   public record JsonDataHolder(BookTextHolder title1, ResourceKey<Recipe<?>> recipeId1, BookTextHolder title2,
+                                  ResourceKey<Recipe<?>> recipeId2, BookTextHolder text, String id,
+                                  BookCondition condition) {
     }
 
-    public record NetworkDataHolder(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1,
-                                    RecipeDisplayEntry recipeDisplayEntry1, BookTextHolder title2,
-                                    ResourceKey<Recipe<?>> recipeKey2, RecipeDisplayEntry recipeDisplayEntry2,
-                                    BookTextHolder text, String anchor, BookCondition condition) {
+  public record NetworkDataHolder(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1,
+                                     RecipeDisplayEntry recipeDisplayEntry1, BookTextHolder title2,
+                                     ResourceKey<Recipe<?>> recipeKey2, RecipeDisplayEntry recipeDisplayEntry2,
+                                     BookTextHolder text, String id, BookCondition condition) {
     }
 }

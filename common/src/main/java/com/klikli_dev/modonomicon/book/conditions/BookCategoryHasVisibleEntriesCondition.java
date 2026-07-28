@@ -6,26 +6,46 @@
 
 package com.klikli_dev.modonomicon.book.conditions;
 
-import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
-import net.minecraft.core.HolderLookup;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
+import com.klikli_dev.modonomicon.data.BookConditionType;
+import com.klikli_dev.modonomicon.registry.BookConditionTypeRegistry;
+import com.klikli_dev.modonomicon.util.Codecs;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This BookCondition evaluates to true
  * if a category has at least
  */
 public class BookCategoryHasVisibleEntriesCondition extends BookCondition {
-    
+    public static final Identifier ID = Modonomicon.loc("category_has_visible_entries");
+
+    public static final MapCodec<BookCategoryHasVisibleEntriesCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            ComponentSerialization.CODEC.optionalFieldOf("tooltip").forGetter(condition -> Optional.ofNullable(condition.tooltip)),
+            Identifier.CODEC.fieldOf("category_id").forGetter(condition -> condition.categoryId)
+    ).apply(instance, (tooltip, categoryId) -> new BookCategoryHasVisibleEntriesCondition(tooltip.orElse(null), categoryId)));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, BookCategoryHasVisibleEntriesCondition> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.optional(ComponentSerialization.TRUSTED_STREAM_CODEC), condition -> Optional.ofNullable(condition.tooltip),
+            Identifier.STREAM_CODEC, condition -> condition.categoryId,
+            (tooltip, categoryId) -> new BookCategoryHasVisibleEntriesCondition(tooltip.orElse(null), categoryId)
+    );
+
     protected Identifier categoryId;
     
     public BookCategoryHasVisibleEntriesCondition(Component tooltip, Identifier categoryId) {
@@ -33,34 +53,9 @@ public class BookCategoryHasVisibleEntriesCondition extends BookCondition {
         this.categoryId = categoryId;
     }
     
-    public static BookCategoryHasVisibleEntriesCondition fromJson(Identifier conditionParentId, JsonObject json, HolderLookup.Provider provider) {
-        var categoryPath = GsonHelper.getAsString(json, "category_id");
-        var categoryId = categoryPath.contains(":") ?
-                Identifier.parse(categoryPath) :
-                Identifier.fromNamespaceAndPath(conditionParentId.getNamespace(), categoryPath);
-
-        Component tooltip = Component.translatable(ModonomiconConstants.I18n.Tooltips.CONDITION_CATEGORY_HAS_VISIBLE_ENTRIES, categoryId.toLanguageKey());
-        return new BookCategoryHasVisibleEntriesCondition(tooltip, categoryId);
-    }
-
     @Override
-    public void toNetwork(RegistryFriendlyByteBuf buffer) {
-        buffer.writeBoolean(this.tooltip != null);
-        if (this.tooltip != null) {
-            ComponentSerialization.STREAM_CODEC.encode(buffer, this.tooltip);
-        }
-        buffer.writeIdentifier(this.categoryId);
-    }
-    
-    public static BookCategoryHasVisibleEntriesCondition fromNetwork(RegistryFriendlyByteBuf buffer) {
-        var tooltip = buffer.readBoolean() ? ComponentSerialization.STREAM_CODEC.decode(buffer) : null;
-        var entryId = buffer.readIdentifier();
-        return new BookCategoryHasVisibleEntriesCondition(tooltip, entryId);
-    }
-    
-    @Override
-    public Identifier getType() {
-        return ModonomiconConstants.Data.Condition.CATEGORY_HAS_VISIBLE_ENTRIES;
+    public BookConditionType<?> type() {
+        return BookConditionTypeRegistry.CATEGORY_HAS_VISIBLE_ENTRIES;
     }
     
     @Override
@@ -75,7 +70,7 @@ public class BookCategoryHasVisibleEntriesCondition extends BookCondition {
         }
 
         for(var entry : category.getEntries().values()) {
-            if(entry.getEntryDisplayState(player).isVisible()) {
+            if (BookServices.visibility().isVisible(player, entry)) {
                 return true;
             }
         }

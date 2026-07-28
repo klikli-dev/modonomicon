@@ -23,15 +23,19 @@ dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
 
     implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    implementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: "${jsr305_version}"
     implementation project(":common")
+
+//    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0"))
+//    include "io.github.llamalad7:mixinextras-fabric:0.5.0"
+//    implementation "io.github.llamalad7:mixinextras-fabric:0.5.0"
     //implementation project(path: ":common", configuration: "namedElements")
 
     //Jei
-//    modCompileOnlyApi ("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
-//    modCompileOnlyApi ("mezz.jei:jei-${minecraft_version}-fabric-api:${jei_version}")
-//    modRuntimeOnly ("mezz.jei:jei-${minecraft_version}-fabric:${jei_version}")
+    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+    compileOnly "mezz.jei:jei-${minecraft_version}-fabric-api:${jei_version}"
+    runtimeOnly "mezz.jei:jei-${minecraft_version}-fabric:${jei_version}"
 
     //commonmark
     //make it available for compile/runtime classpath
@@ -85,7 +89,7 @@ loom {
 
 sourceSets.main.resources.srcDir 'src/generated/resources'
 
-tasks.withType(JavaCompile).configureEach {
+tasks.named("compileJava", JavaCompile).configure {
     source(project(":common").sourceSets.main.allSource)
 }
 

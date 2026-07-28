@@ -12,7 +12,6 @@ import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCommand;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.data.BookDataManager;
-import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
@@ -33,10 +32,16 @@ public class SyncBookDataMessage implements Message {
 
     //We use an array map here because we are not actually doing any lookups, we just iterate over the values
     public Map<Identifier, Book> books = new Object2ObjectArrayMap<>();
+    public boolean replaceAll = true;
 
     public SyncBookDataMessage(Map<Identifier, Book> books) {
+        this(books, true);
+    }
+
+    public SyncBookDataMessage(Map<Identifier, Book> books, boolean replaceAll) {
         //We use an array map here because we are not actually doing any lookups, we just iterate over the values
         this.books = new Object2ObjectArrayMap<>(books);
+        this.replaceAll = replaceAll;
     }
 
     public SyncBookDataMessage(RegistryFriendlyByteBuf buf) {
@@ -44,6 +49,7 @@ public class SyncBookDataMessage implements Message {
     }
 
     private void encode(RegistryFriendlyByteBuf buf) {
+        buf.writeBoolean(this.replaceAll);
         buf.writeVarInt(this.books.size());
         for (var book : this.books.values()) {
             buf.writeIdentifier(book.getId());
@@ -56,8 +62,7 @@ public class SyncBookDataMessage implements Message {
 
                 buf.writeVarInt(category.getEntries().size());
                 for (var entry : category.getEntries().values()) {
-                    buf.writeIdentifier(entry.getType());
-                    entry.toNetwork(buf);
+                    BookEntry.toNetwork(entry, buf);
                 }
             }
 
@@ -70,6 +75,7 @@ public class SyncBookDataMessage implements Message {
     }
 
     private void decode(RegistryFriendlyByteBuf buf) {
+        this.replaceAll = buf.readBoolean();
         //build books
         int bookCount = buf.readVarInt();
         for (int i = 0; i < bookCount; i++) {
@@ -87,8 +93,7 @@ public class SyncBookDataMessage implements Message {
 
                 int entryCount = buf.readVarInt();
                 for (int k = 0; k < entryCount; k++) {
-                    Identifier entryTypeId = buf.readIdentifier();
-                    BookEntry entry = LoaderRegistry.getEntryNetworkLoader(entryTypeId).fromNetwork(buf);
+                    BookEntry entry = BookEntry.fromNetwork(buf);
 
                     //link entry and category
                     category.addEntry(entry);

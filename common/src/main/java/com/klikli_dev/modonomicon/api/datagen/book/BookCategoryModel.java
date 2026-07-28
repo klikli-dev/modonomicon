@@ -10,8 +10,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Category;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookResearchNodeUnlockedConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeRef;
 import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
 import com.klikli_dev.modonomicon.book.BookDisplayMode;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiButtonSprites;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
@@ -57,12 +61,13 @@ public class BookCategoryModel {
      */
     protected float backgroundTextureZoomMultiplier = Category.DEFAULT_BACKGROUND_TEXTURE_ZOOM_MULTIPLIER;
     protected List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers = new ArrayList<>();
-    protected Identifier entryTextures = Identifier.parse(Category.DEFAULT_ENTRY_TEXTURES);
     protected List<BookEntryModel> entries = new ArrayList<>();
 
     @Nullable
     protected BookConditionModel<?> condition = null;
     protected boolean showCategoryButton = true;
+    @Nullable
+    protected GuiButtonSprites categoryButtonSprites = null;
 
     /**
      * The entry to open when this category is opened.
@@ -129,18 +134,15 @@ public class BookCategoryModel {
                         .map(layer -> BookCategoryBackgroundParallaxLayer.CODEC.encodeStart(JsonOps.INSTANCE, layer)
                                 .getOrThrow())
                         .collect(JsonArray::new, JsonArray::add, JsonArray::addAll));
-        json.addProperty("entry_textures", this.entryTextures.toString());
         if (this.condition != null) {
             json.add("condition", this.condition.toJson(this.getId(), provider));
         }
         json.addProperty("show_category_button", this.showCategoryButton);
+        if (this.categoryButtonSprites != null) {
+            json.add("category_button_sprite", this.categoryButtonSpriteToJson());
+        }
         if (this.entryToOpen != null) {
-            //if we are in the same namespace, which we basically always should be, omit namespace
-            if (this.entryToOpen.getNamespace().equals(this.getId().getNamespace()))
-                json.addProperty("entry_to_open", this.entryToOpen.getPath());
-            else
-                json.addProperty("entry_to_open", this.entryToOpen.toString());
-
+            json.addProperty("entry_to_open", this.entryToOpen.toString());
             json.addProperty("open_entry_to_open_only_once", this.openEntryToOpenOnlyOnce);
         }
         return json;
@@ -192,10 +194,6 @@ public class BookCategoryModel {
 
     public List<BookCategoryBackgroundParallaxLayer> getBackgroundParallaxLayers() {
         return this.backgroundParallaxLayers;
-    }
-
-    public Identifier getEntryTextures() {
-        return this.entryTextures;
     }
 
     public boolean dontGenerateJson() {
@@ -368,17 +366,6 @@ public class BookCategoryModel {
     }
 
     /**
-     * Sets the category's entry textures.
-     * The texture must be a 256x256 png file.
-     * This texture is used to display the entry background icons as well as the arrows connecting entries.
-     * Default value is {@link Category#DEFAULT_ENTRY_TEXTURES}
-     */
-    public BookCategoryModel withEntryTextures(Identifier entryTextures) {
-        this.entryTextures = entryTextures;
-        return this;
-    }
-
-    /**
      * Replaces the current list of entries with the given list.
      */
     public BookCategoryModel withEntries(List<BookEntryModel> entries) {
@@ -420,6 +407,10 @@ public class BookCategoryModel {
         return this;
     }
 
+    public BookCategoryModel withCondition(ResearchNodeRef nodeRef) {
+        return this.withCondition(BookResearchNodeUnlockedConditionModel.create().withNode(nodeRef.id()));
+    }
+
     /**
      * Sets whether the category button should be shown in the book.
      * Default value is true.
@@ -428,6 +419,61 @@ public class BookCategoryModel {
     public BookCategoryModel withShowCategoryButton(boolean showCategoryButton) {
         this.showCategoryButton = showCategoryButton;
         return this;
+    }
+
+    /**
+     * Sets the sprite used to render this category button.
+     */
+    public BookCategoryModel withCategoryButtonSprites(@Nullable GuiButtonSprites sprites) {
+        this.categoryButtonSprites = sprites;
+        return this;
+    }
+
+    /**
+     * Sets the sprite used to render this category button.
+     */
+    public BookCategoryModel withCategoryButtonSprite(@Nullable GuiSprite sprite) {
+        return this.withCategoryButtonSprites(sprite == null ? null : new GuiButtonSprites(sprite, sprite));
+    }
+
+    /**
+     * Sets the sprites used to render this category button.
+     */
+    public BookCategoryModel withCategoryButtonSprites(GuiSprite normal, GuiSprite hover) {
+        return this.withCategoryButtonSprites(new GuiButtonSprites(normal, hover));
+    }
+
+    /**
+     * Sets the sprites used to render this category button.
+     */
+    public BookCategoryModel withCategoryButtonSprites(GuiSprite normal, GuiSprite hover, @Nullable GuiSprite pressed) {
+        return this.withCategoryButtonSprites(new GuiButtonSprites(normal, hover, pressed));
+    }
+
+    /**
+     * Sets the sprite used to render this category button.
+     */
+    public BookCategoryModel withCategoryButtonSprite(Identifier sprite, int width, int height) {
+        return this.withCategoryButtonSprite(new GuiSprite(sprite, width, height));
+    }
+
+    /**
+     * Sets the sprites used to render this category button.
+     */
+    public BookCategoryModel withCategoryButtonSprites(Identifier normal, Identifier hover, int width, int height) {
+        return this.withCategoryButtonSprites(new GuiSprite(normal, width, height), new GuiSprite(hover, width, height));
+    }
+
+    private JsonObject categoryButtonSpriteToJson() {
+        JsonObject json = new JsonObject();
+        json.add("normal", this.categoryButtonSprites.normal().toJson());
+        if (this.categoryButtonSprites.hover() != this.categoryButtonSprites.normal()) {
+            json.add("hover", this.categoryButtonSprites.hover().toJson());
+        }
+        if (this.categoryButtonSprites.pressed() != null) {
+            json.add("pressed", this.categoryButtonSprites.pressed().toJson());
+        }
+        return json;
     }
 
     /**

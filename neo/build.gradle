@@ -34,14 +34,15 @@ neoForge {
 
         client {
             client()
-            systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
             programArguments.add "--username=Modonomicon"
+            programArguments.add "--quickPlaySingleplayer"
+            programArguments.add "New World"
         }
 
         server {
             server()
-            systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
         }
+
 
         clientData {
             clientData()
@@ -63,9 +64,9 @@ dependencies {
     compileOnly project(":common")
 
     //Jei
-//    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
-//    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
-//    localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+    localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 
 //    implementation "vazkii.patchouli:Patchouli:${minecraft_version}-${patchouli_version}-FORGE"
 

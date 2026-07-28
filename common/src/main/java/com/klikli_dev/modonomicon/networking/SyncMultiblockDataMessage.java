@@ -8,7 +8,6 @@ package com.klikli_dev.modonomicon.networking;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
-import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
@@ -40,18 +39,16 @@ public class SyncMultiblockDataMessage implements Message {
     private void encode(RegistryFriendlyByteBuf buf) {
         buf.writeVarInt(this.multiblocks.size());
         for (var multiblock : this.multiblocks.values()) {
-            buf.writeIdentifier(multiblock.getType());
             buf.writeIdentifier(multiblock.getId());
-            multiblock.toNetwork(buf);
+            Multiblock.toNetwork(multiblock, buf);
         }
     }
 
     private void decode(RegistryFriendlyByteBuf buf) {
         int multiblockCount = buf.readVarInt();
         for (int i = 0; i < multiblockCount; i++) {
-            var type = buf.readIdentifier();
             var id = buf.readIdentifier();
-            var multiblock = LoaderRegistry.getMultiblockNetworkLoader(type).fromNetwork(buf);
+            var multiblock = Multiblock.fromNetwork(buf);
             multiblock.setId(id);
             this.multiblocks.put(multiblock.getId(), multiblock);
         }

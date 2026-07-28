@@ -10,13 +10,14 @@ package com.klikli_dev.modonomicon.api.datagen.book.condition;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.Identifier;
 
-public class BookConditionModel<T extends BookConditionModel<T>> {
+public abstract class BookConditionModel<T extends BookConditionModel<T>> {
     protected Component tooltip = null;
     protected String tooltipString = null;
 
@@ -39,15 +40,19 @@ public class BookConditionModel<T extends BookConditionModel<T>> {
     }
 
     public JsonObject toJson(Identifier conditionParentId, HolderLookup.Provider provider) {
-        JsonObject json = new JsonObject();
-        json.addProperty("type", this.getType().toString());
-        if (this.tooltipString != null)
-            json.addProperty("tooltip", this.tooltipString);
-        if (this.tooltip != null)
-            json.add("tooltip",
-                    ComponentSerialization.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), this.tooltip).getOrThrow(JsonParseException::new));
-        return json;
+        return BookCondition.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), this.toBookCondition(provider))
+                .getOrThrow(JsonParseException::new)
+                .getAsJsonObject();
     }
+
+    protected Component tooltipComponent() {
+        if (this.tooltip != null) {
+            return this.tooltip;
+        }
+        return this.tooltipString != null ? Component.translatable(this.tooltipString) : null;
+    }
+
+    public abstract BookCondition toBookCondition(HolderLookup.Provider provider);
 
     public T withTooltip(Component tooltip) {
         this.tooltip = tooltip;

@@ -9,37 +9,47 @@ package com.klikli_dev.modonomicon.multiblock;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
-import com.klikli_dev.modonomicon.data.LoaderRegistry;
+import com.klikli_dev.modonomicon.data.MultiblockType;
 import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
+import com.klikli_dev.modonomicon.registry.MultiblockTypeRegistry;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 public class SparseMultiblock extends AbstractMultiblock {
 
-    public static final Identifier TYPE = Modonomicon.loc("sparse");
+    static final Codec<Map<String, List<BlockPos>>> PATTERN_CODEC = Codec.unboundedMap(Codec.STRING, Codec.list(BLOCK_POS_CODEC));
 
-    private final Map<BlockPos, StateMatcher> stateMatchers;
+    public static final Identifier ID = Modonomicon.loc("sparse");
+    private static final Codec<Map<String, StateMatcher>> SPARSE_MAPPING_CODEC = Codec.unboundedMap(Codec.STRING, StateMatcher.CODEC);
+    public static final MapCodec<SparseMultiblock> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            PATTERN_CODEC.fieldOf("pattern").forGetter(SparseMultiblock::serializedPattern),
+            SPARSE_MAPPING_CODEC.fieldOf("mapping").forGetter(SparseMultiblock::serializedMapping)
+    ).apply(instance, (pattern, mapping) -> new SparseMultiblock(deserializeStateMatchers(pattern, mapping))));
+    public static final StreamCodec<RegistryFriendlyByteBuf, SparseMultiblock> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC.codec());
+
+    final Map<BlockPos, StateMatcher> stateMatchers;
     private final Vec3i size;
 
     public SparseMultiblock(Map<BlockPos, StateMatcher> stateMatchers) {
@@ -50,74 +60,55 @@ public class SparseMultiblock extends AbstractMultiblock {
         this.size = this.calculateSize();
     }
 
-    public static SparseMultiblock fromJson(JsonObject json, HolderLookup.Provider provider) {
-        var jsonMapping = GsonHelper.getAsJsonObject(json, "mapping");
-        var mapping = mappingFromJson(jsonMapping, provider);
+    private record SerializedMatcherData(Map<String, List<BlockPos>> pattern, Map<String, StateMatcher> mapping) {}
 
-        //        "pattern": {
-//            "N": [
-//            [-1, 0, -2], [0, 0, -2], [1, 0, -2]
-//          ],
-//            "S": [
-//            [-1, 0, 2], [0, 0, 2], [1, 0, 2]
-//          ],
-//            "W": [
-//            [-2, 0, -1], [-2, 0, 0], [-2, 0, 1]
-//          ],
-//            "E": [
-//            [2, 0, -1], [2, 0, 0], [2, 0, 1]
-//          ]
-//        }
-
-        var jsonPattern = GsonHelper.getAsJsonObject(json, "pattern");
-
+    static Map<BlockPos, StateMatcher> deserializeStateMatchers(Map<String, List<BlockPos>> pattern, Map<String, StateMatcher> mapping) {
         Map<BlockPos, StateMatcher> stateMatchers = new Object2ObjectOpenHashMap<>();
-        for (Entry<String, JsonElement> entry : jsonPattern.entrySet()) {
-            if (entry.getKey().length() != 1)
-                throw new JsonSyntaxException("Pattern key needs to be only 1 character");
-
-            var matcher = mapping.get(entry.getKey().charAt(0));
-
-            var jsonPositions = GsonHelper.convertToJsonArray(entry.getValue(), entry.getKey());
-            for (JsonElement jsonPosition : jsonPositions) {
-                var jsonPos = GsonHelper.convertToJsonArray(jsonPosition, entry.getKey());
-                if (jsonPos.size() != 3) {
-                    throw new JsonSyntaxException("Each matcher position needs to be an array of 3 integers");
-                }
-                stateMatchers.put(
-                        new BlockPos(jsonPos.get(0).getAsInt(), jsonPos.get(1).getAsInt(), jsonPos.get(2).getAsInt()),
-                        matcher);
+        for (var entry : pattern.entrySet()) {
+            if (entry.getKey().length() != 1) {
+                throw new IllegalArgumentException("Pattern key needs to be only 1 character: " + entry.getKey());
+            }
+            var matcher = mapping.get(entry.getKey());
+            if (matcher == null) {
+                throw new IllegalArgumentException("Missing matcher mapping for key " + entry.getKey());
+            }
+            for (var pos : entry.getValue()) {
+                stateMatchers.put(pos, matcher);
             }
         }
-
-        var multiblock = new SparseMultiblock(stateMatchers);
-
-        return additionalPropertiesFromJson(multiblock, json);
+        return stateMatchers;
     }
 
-    public static SparseMultiblock fromNetwork(RegistryFriendlyByteBuf buffer) {
-        var symmetrical = buffer.readBoolean();
-        var offX = buffer.readVarInt();
-        var offY = buffer.readVarInt();
-        var offZ = buffer.readVarInt();
-        var viewOffX = buffer.readVarInt();
-        var viewOffY = buffer.readVarInt();
-        var viewOffZ = buffer.readVarInt();
+    private SerializedMatcherData serializeMatcherData() {
+        Map<StateMatcher, List<BlockPos>> grouped = new LinkedHashMap<>();
+        this.stateMatchers.entrySet().stream()
+                .sorted((left, right) -> {
+                    int compareX = Integer.compare(left.getKey().getX(), right.getKey().getX());
+                    if (compareX != 0) return compareX;
+                    int compareY = Integer.compare(left.getKey().getY(), right.getKey().getY());
+                    if (compareY != 0) return compareY;
+                    return Integer.compare(left.getKey().getZ(), right.getKey().getZ());
+                })
+                .forEach(entry -> grouped.computeIfAbsent(entry.getValue(), ignored -> new ArrayList<>()).add(entry.getKey()));
 
-        var size = buffer.readVarInt();
-        var stateMatchers = new Object2ObjectOpenHashMap<BlockPos, StateMatcher>();
-        for (int i = 0; i < size; i++) {
-            var pos = buffer.readBlockPos();
-            var type = buffer.readIdentifier();
-            var matcher = LoaderRegistry.getStateMatcherNetworkLoader(type).fromNetwork(buffer);
-            stateMatchers.put(pos, matcher);
+        Map<String, List<BlockPos>> pattern = new LinkedHashMap<>();
+        Map<String, StateMatcher> mapping = new LinkedHashMap<>();
+        int index = 0;
+        for (var entry : grouped.entrySet()) {
+            char key = (char) (33 + index++);
+            String stringKey = String.valueOf(key);
+            pattern.put(stringKey, entry.getValue());
+            mapping.put(stringKey, entry.getKey());
         }
+        return new SerializedMatcherData(pattern, mapping);
+    }
 
-        var multiblock = new SparseMultiblock(stateMatchers);
-        multiblock.setSymmetrical(symmetrical);
-        multiblock.setOffset(offX, offY, offZ);
-        multiblock.setViewOffset(viewOffX, viewOffY, viewOffZ);
-        return multiblock;
+    Map<String, List<BlockPos>> serializedPattern() {
+        return this.serializeMatcherData().pattern();
+    }
+
+    Map<String, StateMatcher> serializedMapping() {
+        return this.serializeMatcherData().mapping();
     }
 
     private Vec3i calculateSize() {
@@ -136,8 +127,8 @@ public class SparseMultiblock extends AbstractMultiblock {
     }
 
     @Override
-    public Identifier getType() {
-        return TYPE;
+    public MultiblockType<?> type() {
+        return MultiblockTypeRegistry.SPARSE;
     }
 
     @Override
@@ -166,24 +157,6 @@ public class SparseMultiblock extends AbstractMultiblock {
         BlockState state = world.getBlockState(checkPos).rotate(AbstractMultiblock.fixHorizontal(rotation));
         StateMatcher matcher = this.stateMatchers.getOrDefault(new BlockPos(x, y, z), Matchers.ANY);
         return matcher.getStatePredicate().test(world, checkPos, state);
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buffer) {
-        buffer.writeBoolean(this.symmetrical);
-        buffer.writeVarInt(this.offX);
-        buffer.writeVarInt(this.offY);
-        buffer.writeVarInt(this.offZ);
-        buffer.writeVarInt(this.viewOffX);
-        buffer.writeVarInt(this.viewOffY);
-        buffer.writeVarInt(this.viewOffZ);
-
-        buffer.writeVarInt(this.stateMatchers.size());
-        for (Entry<BlockPos, StateMatcher> entry : this.stateMatchers.entrySet()) {
-            buffer.writeBlockPos(entry.getKey());
-            buffer.writeIdentifier(entry.getValue().getType());
-            entry.getValue().toNetwork(buffer);
-        }
     }
 
     @Override

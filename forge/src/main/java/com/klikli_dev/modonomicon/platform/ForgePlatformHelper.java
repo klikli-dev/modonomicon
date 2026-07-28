@@ -6,7 +6,9 @@
 
 package com.klikli_dev.modonomicon.platform;
 
+import com.klikli_dev.modonomicon.item.ModonomiconItem;
 import com.klikli_dev.modonomicon.platform.services.PlatformHelper;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -32,5 +34,10 @@ public class ForgePlatformHelper implements PlatformHelper {
     @Override
     public PhysicalSide getPhysicalSide() {
         return FMLEnvironment.dist == Dist.CLIENT ? PhysicalSide.CLIENT : PhysicalSide.DEDICATED_SERVER;
+    }
+
+    @Override
+    public ModonomiconItem createModonomiconItem(Item.Properties properties) {
+        return new ModonomiconItem(properties);
     }
 }

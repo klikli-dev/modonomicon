@@ -1,11 +1,14 @@
 {
-  "background_u_index": 0,
-  "background_v_index": 0,
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
   "category": "features",
   "description": "book.modonomicon.demo.features.recipe.description",
   "hide_while_locked": false,
   "icon": {
-    "item": "minecraft:crafting_table"
+    "id": "minecraft:crafting_table"
   },
   "name": "book.modonomicon.demo.features.recipe.name",
   "pages": [
@@ -114,6 +117,6 @@
   ],
   "show_when_any_parent_unlocked": false,
   "sort_number": 6,
-  "x": -14,
+  "x": -8,
   "y": -1
 }

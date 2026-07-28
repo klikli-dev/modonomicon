@@ -4,7 +4,7 @@
 
 package com.klikli_dev.modonomicon.api.datagen;
 
-import com.mojang.datafixers.util.Pair;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 
 public abstract class IndexModeEntryProvider extends EntryProvider{
 
@@ -13,10 +13,11 @@ public abstract class IndexModeEntryProvider extends EntryProvider{
     }
 
     /**
-     * Implement this and return the U/V coordinates of the entry background. See also @link{BookEntryModel#withEntryBackground(int, int)}
+     * Implement this and return the GUI texture used for the entry background.
      */
-    protected Pair<Integer, Integer> entryBackground(){
+    protected GuiSprite entryBackground(){
         //index mode rendering does not use this
         return EntryBackground.DEFAULT;
     }
 }
+

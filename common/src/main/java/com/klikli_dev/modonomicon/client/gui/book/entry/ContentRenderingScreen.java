@@ -9,7 +9,7 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookLink;
 import com.klikli_dev.modonomicon.book.CommandLink;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.fluid.FluidHolder;
@@ -19,6 +19,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.texture.SpriteContents;
+import net.minecraft.client.resources.metadata.gui.GuiSpriteScaling;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -27,6 +30,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
+import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -109,7 +113,7 @@ public interface ContentRenderingScreen {
         }
 
         guiGraphics.pose().pushMatrix();
-        ClientServices.FLUID.drawFluid(guiGraphics, 18, 18, stack, capacity, x, y);
+        drawFluid(guiGraphics, 18, 18, stack, capacity, x, y);
         guiGraphics.pose().popMatrix();
 
         if (this.isMouseInRange(mouseX, mouseY, x, y, 18, 18)) {
@@ -125,6 +129,54 @@ public interface ContentRenderingScreen {
         var filteredStacks = PageRendererRegistry.filterRenderableFluidStacks(stacks);
         if (filteredStacks.size() > 0) {
             this.renderFluidStack(guiGraphics, x, y, mouseX, mouseY, filteredStacks.get((this.getTicksInBook() / 20) % filteredStacks.size()), capacity);
+        }
+    }
+
+    private static void drawFluid(GuiGraphicsExtractor guiGraphics, int width, int height, FluidHolder fluidHolder, int capacity, int x, int y) {
+        if (fluidHolder.isEmpty() || fluidHolder.getFluid().value().isSame(Fluids.EMPTY) || capacity <= 0) {
+            return;
+        }
+
+        var fluidModel = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluidHolder.getFluid().value().defaultFluidState());
+        var sprite = fluidModel.stillMaterial().sprite();
+        if (sprite == null) {
+            return;
+        }
+
+        int amount = fluidHolder.getAmount();
+        int scaledAmount = (amount * height) / capacity;
+        if (amount > 0 && scaledAmount < 1) {
+            scaledAmount = 1;
+        }
+        if (scaledAmount > height) {
+            scaledAmount = height;
+        }
+        if (scaledAmount <= 0) {
+            return;
+        }
+
+        SpriteContents spriteContents = sprite.contents();
+
+        int renderY = y + height - scaledAmount;
+        guiGraphics.enableScissor(x, renderY, x + width, renderY + scaledAmount);
+        try {
+            guiGraphics.blitTiledSprite(
+                    RenderPipelines.GUI_TEXTURED,
+                    sprite,
+                    x,
+                    renderY,
+                    width,
+                    scaledAmount,
+                    0,
+                    0,
+                    spriteContents.width(),
+                    spriteContents.height(),
+                    spriteContents.width(),
+                    spriteContents.height(),
+                    ClientServices.FLUID.getColorTint(fluidHolder)
+            );
+        } finally {
+            guiGraphics.disableScissor();
         }
     }
 
@@ -154,13 +206,13 @@ public interface ContentRenderingScreen {
 
                                 Integer page = link.pageNumber;
                                 if (link.pageAnchor != null) {
-                                    page = entry.getPageNumberForAnchor(link.pageAnchor);
+                                    page = entry.getPageNumberForId(link.pageAnchor);
                                 }
 
                                 //if locked, append lock warning
                                 //handleComponentClicked will prevent the actual click
 
-                                if (!BookUnlockStateManager.get().isUnlockedFor(Minecraft.getInstance().player, entry)) {
+                                if (!BookServices.visibility().isAccessible(Minecraft.getInstance().player, entry)) {
 
                                     var newComponent = Component.translatable(
                                             ModonomiconConstants.I18n.Gui.HOVER_BOOK_LINK_LOCKED,
@@ -178,7 +230,7 @@ public interface ContentRenderingScreen {
                                     );
 
                                     newStyle = style.withHoverEvent(new HoverEvent.ShowText(newComponent));
-                                } else if (page != null && !BookUnlockStateManager.get().isUnlockedFor(Minecraft.getInstance().player, entry.getPages().get(page))) {
+                                } else if (page != null && !BookServices.visibility().isAccessible(Minecraft.getInstance().player, entry.getPages().get(page))) {
 
                                     var newComponent = Component.translatable(
                                             ModonomiconConstants.I18n.Gui.HOVER_BOOK_LINK_LOCKED,
@@ -212,7 +264,7 @@ public interface ContentRenderingScreen {
                             if (link.commandId != null) {
                                 var command = book.getCommand(link.commandId);
 
-                                if (!BookUnlockStateManager.get().canRunFor(Minecraft.getInstance().player, command)) {
+                                if (!BookServices.stateAccess().canRun(Minecraft.getInstance().player, command)) {
                                     var hoverComponent = Component.translatable(ModonomiconConstants.I18n.Gui.HOVER_COMMAND_LINK_UNAVAILABLE).withStyle(ChatFormatting.RED);
                                     newStyle = style.withHoverEvent(new HoverEvent.ShowText(hoverComponent));
                                     oldComponent = hoverComponent;

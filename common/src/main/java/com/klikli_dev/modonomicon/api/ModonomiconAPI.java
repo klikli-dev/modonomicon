@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.api;
 
 import com.google.common.base.Suppliers;
+import com.klikli_dev.modonomicon.api.book.runtime.RuntimeBookContentBatch;
 import com.klikli_dev.modonomicon.api.datagen.BookContextHelper;
 import com.klikli_dev.modonomicon.api.datagen.CategoryEntryMap;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
@@ -48,6 +49,8 @@ public interface ModonomiconAPI {
     CategoryEntryMap getEntryMap();
 
     Multiblock getMultiblock(Identifier id);
+
+    RuntimeBookContentBatch openRuntimeContentBatch();
 
     /**
      * Gets the multiblock currently previewed by the player, or null if none.

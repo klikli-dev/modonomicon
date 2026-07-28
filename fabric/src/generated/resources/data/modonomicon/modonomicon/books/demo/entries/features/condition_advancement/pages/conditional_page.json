@@ -1,0 +1,12 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:demo/advancement_mine_stone"
+  },
+  "id": "conditional_page",
+  "show_title_separator": true,
+  "sort_number": 1,
+  "text": "book.modonomicon.demo.features.condition_advancement.conditional_page.text",
+  "title": "book.modonomicon.demo.features.condition_advancement.conditional_page.title"
+}

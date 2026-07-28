@@ -14,4 +14,8 @@ public interface ClientConfigHelper {
     boolean storeLastOpenPageWhenClosingEntry();
 
     List<String> fontFallbackLocales();
+
+    boolean shouldShowResearchToasts();
+
+    boolean pauseGameWhenOpen();
 }

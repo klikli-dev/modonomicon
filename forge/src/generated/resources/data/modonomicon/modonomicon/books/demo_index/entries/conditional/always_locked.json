@@ -1,0 +1,21 @@
+{
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/star_gold",
+    "width": 26
+  },
+  "category": "conditional",
+  "condition": {
+    "type": "modonomicon:false"
+  },
+  "description": "book.modonomicon.demo_index.conditional.always_locked.description",
+  "hide_while_locked": false,
+  "icon": {
+    "id": "minecraft:nether_star"
+  },
+  "name": "book.modonomicon.demo_index.conditional.always_locked.name",
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 0,
+  "x": 0,
+  "y": 0
+}

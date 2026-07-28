@@ -31,15 +31,16 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Gui.BUTTON_EXIT, "Exit");
         this.add(Gui.BUTTON_VISUALIZE, "Show Multiblock Preview");
         this.add(Gui.BUTTON_VISUALIZE_TOOLTIP, "Show Multiblock Preview");
-        this.add(Gui.BUTTON_READ_ALL, "Mark all entries as read");
-        this.add(Gui.BUTTON_READ_ALL_TOOLTIP_READ_UNLOCKED, "Mark all §aunlocked§r entries as read.");
-        this.add(Gui.BUTTON_READ_ALL_TOOLTIP_SHIFT_INSTRUCTIONS, "Shift-Click to mark §call§r (even locked) entries as read.");
-        this.add(Gui.BUTTON_READ_ALL_TOOLTIP_READ_ALL, "Mark §call§r (even locked) entries as read.");
-        this.add(Gui.BUTTON_READ_ALL_TOOLTIP_SHIFT_WARNING, "§l§cWarning:§r This may make it harder to read progress-oriented books.");
-        this.add(Gui.BUTTON_READ_ALL_TOOLTIP_NONE, "There are currently §lno unread§r unlocked entries.");
+        this.add(Gui.BUTTON_VIEWED_ONCE_RESEARCH, "Mark entries as viewed to unlock progress.");
+        this.add(Gui.BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_VISIBLE, "Mark §avisible§r entries as §eviewed at least once§r to unlock reading-based progress, without removing the \"unread\" icons. Will not unlock other progress types.");
+        this.add(Gui.BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_SHIFT_INSTRUCTIONS, "Shift-Click to mark all entries in this book as §eviewed at least once§r to unlock all reading-based progress.");
+        this.add(Gui.BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_ALL, "Mark all entries in this book as §eviewed at least once§r to unlock all reading-based progress.");
+        this.add(Gui.BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_SHIFT_WARNING, "§l§cWarning:§r This will unlock viewed-at-least-once research for entries you have not opened yet.");
+        this.add(Gui.BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_NONE, "There are currently no entries in this book whose viewed-at-least-once research can be progressed by this action.");
 
         this.add(Gui.HOVER_BOOK_LINK, "Go to: %s");
         this.add(Gui.HOVER_BOOK_LINK_ERROR, "Invalid link: %s. Please contact the author of the book or the translator to fix this. More information can be found in the log with the context \"Failed to parse book link.\".");
+        this.add(Gui.HOVER_LINK_ERROR, "Invalid link: %s. Please contact the author of the book or the translator to fix this. More information can be found in the log.");
         this.add(Gui.HOVER_BOOK_LINK_LOCKED, "%s.\n%s");
         this.add(Gui.HOVER_BOOK_ENTRY_LINK_LOCKED_INFO, "You need to unlock this entry before you can open the link!");
         this.add(Gui.HOVER_BOOK_ENTRY_LINK_LOCKED_INFO_HINT, "Hint: The entry is in the Category: %s");
@@ -100,13 +101,11 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Gui.RECIPE_PAGE_RECIPE_MISSING, "Recipe %s was not found! This may be an issue with the mod, or the modpack may have disabled it.");
 
         //Tooltip
-        this.add(Tooltips.CONDITION_ADVANCEMENT, "Requires Advancement: %s");
-        this.add(Tooltips.CONDITION_ADVANCEMENT_LOADING, "Loading ...");
-        this.add(Tooltips.CONDITION_ADVANCEMENT_HIDDEN, "Hidden Advancement");
-        this.add(Tooltips.CONDITION_ENTRY_UNLOCKED, "Requires unlocked Entry: %s");
         this.add(Tooltips.CONDITION_CATEGORY_HAS_VISIBLE_ENTRIES, "Requires that category %s has visible entries");
         this.add(Tooltips.CONDITION_MOD_LOADED, "Requires loaded mod: %s");
-        this.add(Tooltips.CONDITION_ENTRY_READ, "Requires read Entry: %s\nHint: Mark all entries as read with the \"eye\" button at the top right.");
+        this.add(Tooltips.CONDITION_RESEARCH_NODE_UNLOCKED, "Requires research node %s to be unlocked");
+        this.add(Tooltips.CONDITION_RESEARCH_STAGE_COMPLETED, "Requires research node %s stage %s to be completed");
+        this.add(Tooltips.CONDITION_ENTRY_UNLOCKED, "Requires entry %s to be unlocked");
         this.add(Tooltips.ITEM_NO_BOOK_FOUND_FOR_STACK, "No book found for this item in the modonomicon book database! Nbt: %s");
         this.add(Tooltips.RECIPE_CRAFTING_SHAPELESS, "Shapeless");
         this.add(Tooltips.FLUID_AMOUNT, "%s mb");
@@ -147,9 +146,6 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.addConfig("enableSmoothZoom", "Enable Smooth Zoom");
         this.addConfig("storeLastOpenPageWhenClosingEntry", "Store Last Open Page When Closing Entry");
         this.addConfig("fontFallbackLocales", "Font Fallback Locales");
-
-        this.addConfig("unlock", "Unlock Settings");
-        this.addConfig("disableAdvancementLocking", "Disable Advancement Locking");
     }
 
     private void addConfig(String key, String name){

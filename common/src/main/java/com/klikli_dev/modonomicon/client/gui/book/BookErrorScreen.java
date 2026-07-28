@@ -14,17 +14,13 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderPipelines;
-
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 
 public class BookErrorScreen extends Screen {
 
     public static final int BOOK_BACKGROUND_WIDTH = 272;
     public static final int BOOK_BACKGROUND_HEIGHT = 178;
-    private static final Identifier BOOK_CONTENT_TEXTURE = Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "textures/gui/book_content.png");
     private final Book book;
     private int bookLeft;
     private int bookTop;
@@ -37,15 +33,12 @@ public class BookErrorScreen extends Screen {
     }
 
     public void renderBookBackground(GuiGraphicsExtractor guiGraphics) {
-        int x = 0;
-        int y = 0;
-
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BOOK_CONTENT_TEXTURE, x, y, 0, 0, 272, 178, 512, 256);
+        BookContentRenderer.renderBookBackground(guiGraphics, this.book);
     }
 
     public void renderError(GuiGraphicsExtractor guiGraphics, Component text, int x, int y, int width) {
         for (FormattedCharSequence formattedcharsequence : this.font.split(text, width)) {
-            guiGraphics.text(this.font, formattedcharsequence, x, y, 1, false);
+            guiGraphics.text(this.font, formattedcharsequence, x, y, 0xFF000000, false);
             y += this.font.lineHeight;
         }
     }
@@ -56,7 +49,10 @@ public class BookErrorScreen extends Screen {
             this.errorText = Component.translatable(Gui.NO_ERRORS_FOUND);
             Modonomicon.LOG.warn("No errors found for book {}, but error screen was opened!", this.book.getId());
         } else {
-            var firstError = errorHolder.getErrors().get(0);
+            var firstError = errorHolder.getFirstBlockingError();
+            if (firstError == null) {
+                firstError = errorHolder.getErrors().get(0);
+            }
 
             var errorString = firstError.toString();
             if (errorHolder.getErrors().size() > 1) {

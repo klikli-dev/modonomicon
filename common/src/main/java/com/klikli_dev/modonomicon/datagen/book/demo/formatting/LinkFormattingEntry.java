@@ -5,6 +5,7 @@
 package com.klikli_dev.modonomicon.datagen.book.demo.formatting;
 
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
+import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
@@ -12,7 +13,7 @@ import com.klikli_dev.modonomicon.datagen.book.demo.FeaturesCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.FormattingCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionLevel1Entry;
 import com.klikli_dev.modonomicon.datagen.book.demo.features.MultiblockEntry;
-import com.mojang.datafixers.util.Pair;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.world.item.Items;
 
 public class LinkFormattingEntry extends EntryProvider {
@@ -46,7 +47,7 @@ public class LinkFormattingEntry extends EntryProvider {
                         {0} \\
                         {1} \\
                         {2} \\
-                        [Link without book id](entry://formatting/basic) \\
+                        [Fully qualified link](entry://modonomicon:demo/formatting/basic) \\
                         {3} \\
                         {4}
                         """,
@@ -68,7 +69,7 @@ public class LinkFormattingEntry extends EntryProvider {
 //        );
 
 
-        this.page("invalidLink", () -> BookTextPageModel.create()
+        this.page("invalid_link", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText())
         );
@@ -76,7 +77,7 @@ public class LinkFormattingEntry extends EntryProvider {
         this.pageText("""
                 {0}
                 """,
-                this.entryLink("It has an invalid Link", "a_cat", "an_entry")
+                this.entryLink("This is an invalid link.", "a_cat", "an_entry")
         );
     }
 
@@ -91,8 +92,8 @@ public class LinkFormattingEntry extends EntryProvider {
     }
 
     @Override
-    protected Pair<Integer, Integer> entryBackground() {
-        return Pair.of(0, 2);
+    protected GuiSprite entryBackground() {
+        return EntryBackground.LINK;
     }
 
     @Override
@@ -105,3 +106,4 @@ public class LinkFormattingEntry extends EntryProvider {
         return ID;
     }
 }
+

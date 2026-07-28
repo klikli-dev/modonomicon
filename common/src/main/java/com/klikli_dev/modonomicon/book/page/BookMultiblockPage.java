@@ -7,8 +7,7 @@
 
 package com.klikli_dev.modonomicon.book.page;
 
-import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
@@ -17,16 +16,39 @@ import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
-import com.klikli_dev.modonomicon.util.BookGsonHelper;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import com.klikli_dev.modonomicon.data.BookPageType;
+import com.klikli_dev.modonomicon.registry.BookPageTypeRegistry;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.Level;
 
 public class BookMultiblockPage extends BookPage {
+    public static final Identifier ID = Modonomicon.loc("multiblock");
+    public static final MapCodec<BookMultiblockPage> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            BookTextHolder.CODEC.fieldOf("multiblock_name").forGetter(BookMultiblockPage::getMultiblockName),
+            BookTextHolder.CODEC.fieldOf("text").forGetter(BookMultiblockPage::getText),
+            Identifier.CODEC.fieldOf("multiblock_id").forGetter(BookMultiblockPage::getMultiblockId),
+            Codec.BOOL.optionalFieldOf("show_visualize_button", false).forGetter(BookMultiblockPage::showVisualizeButton),
+            Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
+            BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition)
+    ).apply(instance, BookMultiblockPage::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, BookMultiblockPage> STREAM_CODEC = StreamCodec.composite(
+            BookTextHolder.STREAM_CODEC, BookMultiblockPage::getMultiblockName,
+            BookTextHolder.STREAM_CODEC, BookMultiblockPage::getText,
+            Identifier.STREAM_CODEC, BookMultiblockPage::getMultiblockId,
+            ByteBufCodecs.BOOL, BookMultiblockPage::showVisualizeButton,
+            ByteBufCodecs.STRING_UTF8, BookPage::getId,
+            BookCondition.STREAM_CODEC, BookPage::getCondition,
+            BookMultiblockPage::new
+    );
 
     protected BookTextHolder multiblockName;
     protected BookTextHolder text;
@@ -35,41 +57,12 @@ public class BookMultiblockPage extends BookPage {
 
     protected Multiblock multiblock;
 
-    public BookMultiblockPage(BookTextHolder multiblockName, BookTextHolder text, Identifier multiblockId, boolean showVisualizeButton, String anchor, BookCondition condition) {
-        super(anchor, condition);
+    public BookMultiblockPage(BookTextHolder multiblockName, BookTextHolder text, Identifier multiblockId, boolean showVisualizeButton, String id, BookCondition condition) {
+        super(id, condition);
         this.multiblockName = multiblockName;
         this.text = text;
         this.multiblockId = multiblockId;
         this.showVisualizeButton = showVisualizeButton;
-    }
-
-    public static BookMultiblockPage fromJson(Identifier entryId, JsonObject json, HolderLookup.Provider provider) {
-        var multiblockName = BookGsonHelper.getAsBookTextHolder(json, "multiblock_name", BookTextHolder.EMPTY, provider);
-
-
-        var multiblockPath = GsonHelper.getAsString(json, "multiblock_id");
-        //leaflet entries can be without a namespace, in which case we use the book namespace.
-        var multiblockId = multiblockPath.contains(":") ?
-                Identifier.parse(multiblockPath) :
-                Identifier.fromNamespaceAndPath(entryId.getNamespace(), multiblockPath);
-
-        var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY, provider);
-        var showVisualizeButton = GsonHelper.getAsBoolean(json, "show_visualize_button", true);
-        var anchor = GsonHelper.getAsString(json, "anchor", "");
-        var condition = json.has("condition")
-                ? BookCondition.fromJson(entryId, json.getAsJsonObject("condition"), provider)
-                : new BookNoneCondition();
-        return new BookMultiblockPage(multiblockName, text, multiblockId, showVisualizeButton, anchor, condition);
-    }
-
-    public static BookMultiblockPage fromNetwork(RegistryFriendlyByteBuf buffer) {
-        var multiblockName = BookTextHolder.fromNetwork(buffer);
-        var multiblockId = buffer.readIdentifier();
-        var text = BookTextHolder.fromNetwork(buffer);
-        var showVisualizeButton = buffer.readBoolean();
-        var anchor = buffer.readUtf();
-        var condition = BookCondition.fromNetwork(buffer);
-        return new BookMultiblockPage(multiblockName, text, multiblockId, showVisualizeButton, anchor, condition);
     }
 
     public boolean showVisualizeButton() {
@@ -88,9 +81,13 @@ public class BookMultiblockPage extends BookPage {
         return this.text;
     }
 
+    public Identifier getMultiblockId() {
+        return this.multiblockId;
+    }
+
     @Override
-    public Identifier getType() {
-        return Page.MULTIBLOCK;
+    public BookPageType<?> type() {
+        return BookPageTypeRegistry.MULTIBLOCK;
     }
 
     @Override
@@ -112,20 +109,11 @@ public class BookMultiblockPage extends BookPage {
             this.multiblockName = new BookTextHolder(Component.translatable(this.multiblockName.getKey())
                     .withStyle(Style.EMPTY
                             .withBold(true)
-                            .withColor(this.getParentEntry().getCategory().getBook().getDefaultTitleColor())));
+                            .withColor(this.getParentEntry().getCategory().getBook().themeData().palette().defaultTitleColor())));
         }
         if (!this.text.hasComponent()) {
             this.text = new RenderedBookTextHolder(this.text, textRenderer.render(this.text.getString()));
         }
-    }
-
-    @Override
-    public void toNetwork(RegistryFriendlyByteBuf buffer) {
-        this.multiblockName.toNetwork(buffer);
-        buffer.writeIdentifier(this.multiblockId);
-        this.text.toNetwork(buffer);
-        buffer.writeBoolean(this.showVisualizeButton);
-        super.toNetwork(buffer);
     }
 
     @Override

@@ -20,4 +20,12 @@ public class BookErrorHolder {
     public List<BookErrorInfo> getErrors() {
         return this.errors;
     }
+
+    public boolean hasBlockingErrors() {
+        return this.errors.stream().anyMatch(BookErrorInfo::blocksOpening);
+    }
+
+    public BookErrorInfo getFirstBlockingError() {
+        return this.errors.stream().filter(BookErrorInfo::blocksOpening).findFirst().orElse(null);
+    }
 }

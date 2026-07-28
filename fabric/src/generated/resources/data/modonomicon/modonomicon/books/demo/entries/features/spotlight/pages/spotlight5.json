@@ -1,0 +1,20 @@
+{
+  "type": "modonomicon:spotlight",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "spotlight5",
+  "item": {
+    "components": {
+      "minecraft:bundle_contents": [
+        {
+          "id": "minecraft:apple"
+        }
+      ]
+    },
+    "id": "minecraft:bundle"
+  },
+  "sort_number": 5,
+  "text": "book.modonomicon.demo.features.spotlight.spotlight5.text",
+  "title": ""
+}

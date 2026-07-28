@@ -1,0 +1,28 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gray",
+    "width": 26
+  },
+  "category": "modonomicon:stages",
+  "condition": {
+    "type": "modonomicon:research_stage_completed",
+    "node_id": "modonomicon:demo/stages_demo",
+    "stage_id": "modonomicon:demo/stages_demo_stage_3"
+  },
+  "description": "book.modonomicon.demo.stages.stage_complete.description",
+  "icon": {
+    "id": "minecraft:nether_star"
+  },
+  "id": "modonomicon:stages/stage_complete",
+  "name": "book.modonomicon.demo.stages.stage_complete.name",
+  "parents": [
+    {
+      "entry": "modonomicon:stages/stage_progression"
+    }
+  ],
+  "sort_number": 1,
+  "x": 0,
+  "y": 2
+}

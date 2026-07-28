@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
+import com.klikli_dev.modonomicon.bookstate.visual.BookVisibilitySnapshots;
 import com.klikli_dev.modonomicon.bookstate.visual.BookVisualState;
 import com.klikli_dev.modonomicon.bookstate.visual.CategoryVisualState;
 import com.klikli_dev.modonomicon.bookstate.visual.EntryVisualState;
@@ -36,6 +37,11 @@ public class BookVisualStateManager {
         return this.saveData.getVisualStates(player.getUUID());
     }
 
+    public BookStatesSaveData getSaveDataFor(Player player) {
+        this.getSaveDataIfNecessary(player);
+        return this.saveData;
+    }
+
     public BookVisualState getBookStateFor(Player player, Book book) {
         return this.getStateFor(player).getBookState(book);
     }
@@ -48,12 +54,30 @@ public class BookVisualStateManager {
         return this.getStateFor(player).getEntryState(entry);
     }
 
+    public boolean isEntryUnreadFor(Player player, BookEntry entry) {
+        return this.getStateFor(player).isEntryUnread(entry);
+    }
+
+    public boolean isCategoryUnreadFor(Player player, BookCategory category) {
+        return this.getStateFor(player).isCategoryUnread(category);
+    }
+
     public List<BookAddress> getBookmarksFor(Player player, Book book) {
         return this.getStateFor(player).getBookmarks(book);
     }
 
     public void setEntryStateFor(ServerPlayer player, BookEntry entry, EntryVisualState state) {
         this.getStateFor(player).setEntryState(entry, state);
+        this.saveData.setDirty();
+    }
+
+    public void setEntryUnreadFor(ServerPlayer player, BookEntry entry, boolean unread) {
+        this.getStateFor(player).setEntryUnread(entry, unread);
+        this.saveData.setDirty();
+    }
+
+    public void setCategoryUnreadFor(ServerPlayer player, BookCategory category, boolean unread) {
+        this.getStateFor(player).setCategoryUnread(category, unread);
         this.saveData.setDirty();
     }
 
@@ -75,6 +99,12 @@ public class BookVisualStateManager {
     public void addBookmarkFor(Player player, Book book, BookAddress bookmark) {
         this.getStateFor(player).addBookmark(book, bookmark);
         this.saveData.setDirty();
+    }
+
+    public void updateVisibilityDrivenUnread(ServerPlayer player, Book book, BookVisibilitySnapshots before, BookVisibilitySnapshots after) {
+        this.getSaveDataFor(player).stampVisibleEntries(player.getUUID(), book, after.entries(), System.currentTimeMillis());
+        after.entries().stream().filter(entryId -> !before.entries().contains(entryId)).forEach(entryId -> this.setEntryUnreadFor(player, book.getEntry(entryId), true));
+        after.categories().stream().filter(categoryId -> !before.categories().contains(categoryId)).forEach(categoryId -> this.setCategoryUnreadFor(player, book.getCategory(categoryId), true));
     }
 
     public boolean removeBookmarkFor(Player player, Book book, BookAddress bookmark) {

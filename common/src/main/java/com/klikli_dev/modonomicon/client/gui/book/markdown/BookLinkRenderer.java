@@ -6,7 +6,6 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
-import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.BookLink;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
@@ -31,7 +30,6 @@ public class BookLinkRenderer implements LinkRenderer {
                     link.getDestination(),
                     BookErrorManager.get().getContextHelper()
             );
-
             try {
                 var bookLink = BookLink.from(context.getBook(), link.getDestination());
                 var book = BookDataManager.get().getBook(bookLink.bookId);
@@ -63,34 +61,10 @@ public class BookLinkRenderer implements LinkRenderer {
                         .withClickEvent(null)
                         .withHoverEvent(null)
                 );
-            } catch (Exception e) {
-                if (context.getBook().allowOpenBooksWithInvalidLinks()) {
-                    Modonomicon.LOG.error("Failed to parse book link. allowOpenBooksWithInvalidLinks = true, so book parsing continues. Original error:", e);
-
-                    //Render error message as tooltip in red
-                    var hoverComponent = Component.translatable(Gui.HOVER_BOOK_LINK_ERROR, link.getDestination()).withStyle(ChatFormatting.RED);
-
-                    //Render link in red
-                    context.setCurrentStyle(context.getCurrentStyle()
-                            .withColor(ChatFormatting.RED)
-                            .withHoverEvent(new HoverEvent.ShowText(hoverComponent))
-                    );
-
-                    visitChildren.accept(link);
-
-                    //links are not style instructions, so we reset to our previous color.
-                    context.setCurrentStyle(context.getCurrentStyle()
-                            .withColor(currentColor)
-                            .withClickEvent(null)
-                            .withHoverEvent(null)
-                    );
-                } else {
-                    throw e;
-                }
+                return true;
+            } finally {
+                BookErrorManager.get().setContext(null);
             }
-
-            BookErrorManager.get().setContext(null);
-            return true;
         }
         return false;
 

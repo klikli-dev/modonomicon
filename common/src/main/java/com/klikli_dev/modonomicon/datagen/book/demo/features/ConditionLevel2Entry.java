@@ -9,7 +9,7 @@ import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
-import com.mojang.datafixers.util.Pair;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.world.item.Items;
 
 public class ConditionLevel2Entry extends EntryProvider {
@@ -27,7 +27,8 @@ public class ConditionLevel2Entry extends EntryProvider {
         );
         this.pageTitle("Condition Level 2");
         this.pageText("""
-                Condition Level 2
+                This entry depends on Condition Level 1 being read.
+                The research node was generated automatically via entryViewedOnce().
                 """);
     }
 
@@ -38,11 +39,11 @@ public class ConditionLevel2Entry extends EntryProvider {
 
     @Override
     protected String entryDescription() {
-        return "Depends on Condition Level 1 Entry being unlocked.";
+        return "Depends on Condition Level 1 Entry being viewed. Research auto-generated.";
     }
 
     @Override
-    protected Pair<Integer, Integer> entryBackground() {
+    protected GuiSprite entryBackground() {
         return EntryBackground.DEFAULT;
     }
 
@@ -56,3 +57,4 @@ public class ConditionLevel2Entry extends EntryProvider {
         return ID;
     }
 }
+

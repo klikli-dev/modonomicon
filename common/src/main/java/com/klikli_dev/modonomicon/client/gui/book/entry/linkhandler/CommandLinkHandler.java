@@ -5,7 +5,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.entry.linkhandler;
 
 import com.klikli_dev.modonomicon.book.CommandLink;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.networking.ClickCommandLinkMessage;
@@ -50,7 +50,7 @@ public class CommandLinkHandler extends LinkHandler {
             return ClickResult.FAILURE;
         }
 
-        if (BookUnlockStateManager.get().canRunFor(this.player(), command)) {
+        if (BookServices.stateAccess().canRun(this.player(), command)) {
             Services.NETWORK.sendToServer(new ClickCommandLinkMessage(link.bookId, link.commandId, entryId));
 
             //we immediately count up the usage client side -> to avoid spamming the server
@@ -58,7 +58,7 @@ public class CommandLinkHandler extends LinkHandler {
             //We should only do that on the client connected to a dedicated server, because on the integrated server we would count usage twice
             //that means, for singleplayer clients OR clients that share to lan we dont call the setRunFor
             if (Minecraft.getInstance().getSingleplayerServer() == null)
-                BookUnlockStateManager.get().setRunFor(this.player(), command);
+                BookServices.stateAccess().setRun(this.player(), command);
 
             return ClickResult.SUCCESS;
         }

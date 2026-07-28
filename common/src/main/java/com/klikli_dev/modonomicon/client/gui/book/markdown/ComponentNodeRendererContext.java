@@ -100,6 +100,11 @@ public interface ComponentNodeRendererContext {
     TextColor getLinkColor();
 
     /**
+     * The default text color for the book.
+     */
+    TextColor getDefaultTextColor();
+
+    /**
      * Gets the link renderers for the component renderer. These are used to create additional markdown functionality by
      * (ab)using the link syntax.
      */

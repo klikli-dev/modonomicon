@@ -17,7 +17,7 @@ This project uses third party software and assets that may be distributed under 
 
 Usage: 
 - Rendering code is based on Arcana's Book rendering.
-- Parallax background textures from Arcana are included in Modonomicon.
+- Parallax background textures as well as the book frame and button textures from Arcana are included in Modonomicon.
 
 Version: [b19ef47d7d5fa5626d68993d39fa2786be1889fd](https://github.com/ArcanaMod/Arcana/commit/b19ef47d7d5fa5626d68993d39fa2786be1889fd)
 
