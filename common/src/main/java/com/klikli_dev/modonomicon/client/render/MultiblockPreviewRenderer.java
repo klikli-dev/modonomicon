@@ -192,9 +192,9 @@ public class MultiblockPreviewRenderer {
         }
     }
 
-    public static void submitRenderFeatures(LevelRenderState levelRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector) {
+    public static void submitRenderFeatures(LevelRenderState levelRenderState, SubmitNodeCollector submitNodeCollector) {
         if (hasMultiblock && multiblock != null) {
-            renderMultiblock(levelRenderState, poseStack, submitNodeCollector);
+            renderMultiblock(levelRenderState, submitNodeCollector);
         }
     }
 
@@ -312,9 +312,8 @@ public class MultiblockPreviewRenderer {
      * This should be called during the actual rendering phase with the levelRenderState.
      *
      * @param levelRenderState The level render state containing extracted data
-     * @param ms               The pose stack for rendering
      */
-    public static void renderMultiblock(LevelRenderState levelRenderState, PoseStack ms, SubmitNodeCollector submitNodeCollector) {
+    public static void renderMultiblock(LevelRenderState levelRenderState, SubmitNodeCollector submitNodeCollector) {
         if (!hasMultiblock || multiblock == null) {
             return;
         }
@@ -366,7 +365,7 @@ public class MultiblockPreviewRenderer {
 
                 if (!r.test(level, facingRotation)) {
                     BlockState displayedState = r.stateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
-                    renderBlock(level, displayedState, r.worldPosition(), alpha, blockRenderer, ms, submitNodeCollector);
+                    renderBlock(level, displayedState, r.worldPosition(), alpha, blockRenderer, submitNodeCollector);
 
                     if (air) {
                         airFilled++;
@@ -382,32 +381,33 @@ public class MultiblockPreviewRenderer {
         double renderPosX = erd.camera.position().x();
         double renderPosY = erd.camera.position().y();
         double renderPosZ = erd.camera.position().z();
-        ms.pushPose();
-        ms.translate(-renderPosX, -renderPosY, -renderPosZ);
+        PoseStack poseStack = new PoseStack();
+        poseStack.pushPose();
+        poseStack.translate(-renderPosX, -renderPosY, -renderPosZ);
 
         var dispatcher = Minecraft.getInstance().getBlockEntityRenderDispatcher();
         var cameraRenderState = new CameraRenderState();
 
         for (var blockEntityRenderState : blockEntityRenderStates) {
-            ms.pushPose();
+            poseStack.pushPose();
 
-            ms.translate(blockEntityRenderState.blockPos.getX(),
+            poseStack.translate(blockEntityRenderState.blockPos.getX(),
                     blockEntityRenderState.blockPos.getY(),
                     blockEntityRenderState.blockPos.getZ());
 
-            dispatcher.submit(blockEntityRenderState, ms, submitNodeCollector, cameraRenderState);
+            dispatcher.submit(blockEntityRenderState, poseStack, submitNodeCollector, cameraRenderState);
 
-            ms.popPose();
+            poseStack.popPose();
         }
 
-        ms.popPose();
+        poseStack.popPose();
 
         if (!isAnchored) {
             blocks = blocksDone = 0;
         }
     }
 
-    public static void renderBlock(Level world, BlockState state, BlockPos pos, float alpha, ModelBlockRenderer blockRenderer, PoseStack poseStack, SubmitNodeCollector submitNodeCollector) {
+    public static void renderBlock(Level world, BlockState state, BlockPos pos, float alpha, ModelBlockRenderer blockRenderer, SubmitNodeCollector submitNodeCollector) {
         if (pos == null) return;
 
         Minecraft mc = Minecraft.getInstance();
@@ -417,7 +417,7 @@ public class MultiblockPreviewRenderer {
         Vec3 cameraPos = mc.gameRenderer.mainCamera().position();
         Vec3 offset = Vec3.atLowerCornerOf(pos).subtract(cameraPos);
 
-        poseStack.pushPose();
+        PoseStack poseStack = new PoseStack();
         poseStack.translate(offset.x + .5, offset.y + .5, offset.z + .5);
 
         if (state.getBlock() == Blocks.AIR) {
@@ -440,7 +440,6 @@ public class MultiblockPreviewRenderer {
             blockRenderer.tesselateBlock(output, 0, 0, 0, renderState, pos, renderedState, model, 0);
         });
 
-        poseStack.popPose();
     }
 
     @Nullable

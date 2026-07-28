@@ -253,7 +253,7 @@ public class ModonomiconNeo {
 
             // Submit before vanilla executes its feature frame. Rendering a second frame during a render stage is invalid.
             NeoForge.EVENT_BUS.addListener((SubmitCustomGeometryEvent e) -> {
-                MultiblockPreviewRenderer.submitRenderFeatures(e.getLevelRenderState(), e.getPoseStack(), e.getSubmitNodeCollector());
+                MultiblockPreviewRenderer.submitRenderFeatures(e.getLevelRenderState(), e.getSubmitNodeCollector());
             });
 
             //register item model properties
