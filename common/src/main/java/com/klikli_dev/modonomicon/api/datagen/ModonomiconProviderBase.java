@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookOrConditionModel;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Style;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -194,7 +195,7 @@ public abstract class ModonomiconProviderBase {
     }
 
     protected String color(String text, ChatFormatting color) {
-        return this.color(text, color.getColor());
+        return this.color(text, Style.EMPTY.withColor(color).getColor().getValue());
     }
 
     protected String color(String text, int rgb) {

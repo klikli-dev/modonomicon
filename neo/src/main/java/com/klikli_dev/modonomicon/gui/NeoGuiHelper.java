@@ -23,6 +23,6 @@ public class NeoGuiHelper implements GuiHelper {
 
     @Override
     public Screen getCurrentScreen() {
-        return Minecraft.getInstance().screen;
+        return Minecraft.getInstance().gui.screen();
     }
 }
