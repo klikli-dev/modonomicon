@@ -10,6 +10,7 @@ package com.klikli_dev.modonomicon.client.render.pip;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.client.ClientTicks;
+import com.klikli_dev.modonomicon.client.render.GhostVertexConsumer;
 import com.klikli_dev.modonomicon.client.render.fakelevel.GhostRenderState;
 import com.klikli_dev.modonomicon.client.render.state.pip.GuiMultiblockRenderState;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -18,8 +19,6 @@ import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockQuadOutput;
@@ -27,6 +26,7 @@ import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -36,14 +36,6 @@ import org.joml.Vector4f;
 import org.jspecify.annotations.NonNull;
 
 public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultiblockRenderState> {
-
-    MultiBufferSource.BufferSource bufferSource;
-
-    public GuiMultiblockRenderer(MultiBufferSource.BufferSource bufferSource) {
-        super();
-
-        this.bufferSource = bufferSource;
-    }
 
     @Override
     public @NonNull Class<GuiMultiblockRenderState> getRenderStateClass() {
@@ -100,8 +92,6 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
         eye.div(eye.w);
         Vec3 eye3 = new Vec3(eye.x(), eye.y(), eye.z());
 
-        MultiBufferSource.BufferSource buffers = this.bufferSource;
-
         BlockPos checkPos = null;
         if (mc.hitResult instanceof BlockHitResult blockRes) {
             checkPos = blockRes.getBlockPos().relative(blockRes.getDirection());
@@ -120,7 +110,7 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
             BlockState displayedBlockState = r.stateMatcher().getDisplayedState(ClientTicks.ticks).rotate(state.facingRotation());
 
             // Render block (via platform service)
-            this.renderBlock(level, displayedBlockState, r.worldPosition(), alpha, poseStack);
+            this.renderBlock(level, displayedBlockState, r.worldPosition(), alpha, poseStack, submitNodeCollector);
 
             if (displayedBlockState.getBlock() instanceof EntityBlock eb) {
                 var cache = state.blockEntityCache();
@@ -149,11 +139,9 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
                             var renderState = renderer.createRenderState();
                             //Note: we cannot use Minecraft.getInstance().getBlockEntityRenderDispatcher().tryExtractRenderState because that takes the camera eye position of the in-world camera
                             renderer.extractRenderState(be, renderState, ClientTicks.partialTicks, eye3, null);
-                            renderState.lightCoords = LevelRenderer.getLightCoords(level, bePos);
-                            var featureDispatcher = Minecraft.getInstance().gameRenderer.getFeatureRenderDispatcher();
+                            renderState.lightCoords = LightCoordsUtil.getLightCoords(level, bePos);
                             var cameraRenderState = new CameraRenderState();
-                            dispatcher.submit(renderState, poseStack, featureDispatcher.getSubmitNodeStorage(), cameraRenderState);
-                            featureDispatcher.renderAllFeatures();
+                            dispatcher.submit(renderState, poseStack, submitNodeCollector, cameraRenderState);
                         }
                     } catch (Exception e) {
                         errored.add(be);
@@ -166,27 +154,26 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
         poseStack.popPose();
     }
 
-    private void renderBlock(ClientLevel level, BlockState state, BlockPos pos, float alpha, PoseStack ps) {
+    private void renderBlock(ClientLevel level, BlockState state, BlockPos pos, float alpha, PoseStack ps, SubmitNodeCollector submitNodeCollector) {
         if (pos != null) {
             ps.pushPose();
             ps.translate(pos.getX(), pos.getY(), pos.getZ());
 
             Minecraft minecraft = Minecraft.getInstance();
             BlockStateModel model = minecraft.getModelManager().getBlockStateModelSet().get(state);
-            PoseStack.Pose pose = ps.last();
-            int lightCoords = LevelRenderer.getLightCoords(LevelRenderer.BrightnessGetter.DEFAULT, level, state, pos);
+            int lightCoords = LightCoordsUtil.getLightCoords(LightCoordsUtil.BrightnessGetter.DEFAULT, level, state, pos);
 
             var renderType = model.hasMaterialFlag(net.minecraft.client.resources.model.geometry.BakedQuad.FLAG_TRANSLUCENT) ? Sheets.translucentBlockItemSheet() : Sheets.cutoutBlockItemSheet();
-            VertexConsumer buffer = this.bufferSource.getBuffer(renderType);
-
-            BlockQuadOutput output = (_, _, _, quad, instance) ->
-            {
-                instance.setLightCoords(lightCoords);
-                buffer.putBakedQuad(pose, quad, instance);
-            };
             ModelBlockRenderer blockRenderer = new ModelBlockRenderer(minecraft.options.ambientOcclusion().get(), false, minecraft.getBlockColors());
             GhostRenderState renderState = new GhostRenderState(level, pos, state);
-            blockRenderer.tesselateBlock(output, 0, 0, 0, renderState, pos, state, model, 0);
+            submitNodeCollector.submitCustomGeometry(ps, renderType, (pose, buffer) -> {
+                VertexConsumer ghostBuffer = new GhostVertexConsumer(buffer, (int) (alpha * 255.0F));
+                BlockQuadOutput output = (_, _, _, quad, instance) -> {
+                    instance.setLightCoords(lightCoords);
+                    ghostBuffer.putBakedQuad(pose, quad, instance);
+                };
+                blockRenderer.tesselateBlock(output, 0, 0, 0, renderState, pos, state, model, 0);
+            });
 
             ps.popPose();
 

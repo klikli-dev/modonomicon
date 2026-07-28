@@ -81,7 +81,7 @@ public class ModonomiconFabricClient implements ClientModInitializer {
                 IsBookOpen.MAP_CODEC
         );
 
-        PictureInPictureRendererRegistry.register((ctx) -> new GuiMultiblockRenderer(ctx.bufferSource()));
+        PictureInPictureRendererRegistry.register((ctx) -> new GuiMultiblockRenderer());
         PictureInPictureRendererRegistry.register((ctx) -> new GuiDirectEntryConnectionRenderer());
 
         //book geometry loader

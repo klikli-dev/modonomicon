@@ -257,7 +257,7 @@ public class ModonomiconForge {
                     new GuiDirectEntryConnectionRenderer()
             );
             event.register(
-                    new GuiMultiblockRenderer(event.getBufferSource())
+                    new GuiMultiblockRenderer()
             );
         }
     }
