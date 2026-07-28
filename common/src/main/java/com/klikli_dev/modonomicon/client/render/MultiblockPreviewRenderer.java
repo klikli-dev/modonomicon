@@ -72,7 +72,6 @@ import java.util.IdentityHashMap;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import org.joml.Vector4f;
-import org.jspecify.annotations.NonNull;
 
 import java.awt.*;
 import java.util.*;
@@ -443,13 +442,9 @@ public class MultiblockPreviewRenderer {
         var originalBufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
 
         int ghostAlpha = (int) (0.6f * 255);
-        var ghostBufferSource = new MultiBufferSource.BufferSource(originalBufferSource.sharedBuffer, originalBufferSource.fixedBuffers) {
-            @Override
-            public @NonNull VertexConsumer getBuffer(@NonNull RenderType renderType) {
-                var ghostType = getGhostRenderType(renderType);
-                return new GhostVertexConsumer(originalBufferSource.getBuffer(ghostType), ghostAlpha);
-            }
-        };
+        MultiBufferSource ghostBufferSource = renderType -> new GhostVertexConsumer(
+                originalBufferSource.getBuffer(getGhostRenderType(renderType)), ghostAlpha
+        );
 
         var cameraRenderState = new CameraRenderState();
         var customSubmitStorage = new SubmitNodeStorage();
