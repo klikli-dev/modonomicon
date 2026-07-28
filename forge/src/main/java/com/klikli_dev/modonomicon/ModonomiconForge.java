@@ -254,7 +254,7 @@ public class ModonomiconForge {
 
         public static void onRegisterPipRenderers(RegisterPictureInPictureRendererEvent event) {
             event.register(
-                    new GuiDirectEntryConnectionRenderer(event.getBufferSource())
+                    new GuiDirectEntryConnectionRenderer()
             );
             event.register(
                     new GuiMultiblockRenderer(event.getBufferSource())

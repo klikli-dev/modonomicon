@@ -82,7 +82,7 @@ public class ModonomiconFabricClient implements ClientModInitializer {
         );
 
         PictureInPictureRendererRegistry.register((ctx) -> new GuiMultiblockRenderer(ctx.bufferSource()));
-        PictureInPictureRendererRegistry.register((ctx) -> new GuiDirectEntryConnectionRenderer(ctx.bufferSource()));
+        PictureInPictureRendererRegistry.register((ctx) -> new GuiDirectEntryConnectionRenderer());
 
         //book geometry loader
         //done in MixinModelManager, because we have no event in Fabric

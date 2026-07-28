@@ -10,29 +10,24 @@ import com.klikli_dev.modonomicon.client.render.state.pip.GuiDirectEntryConnecti
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
 public class GuiDirectEntryConnectionRenderer extends PictureInPictureRenderer<GuiDirectEntryConnectionRenderState> {
-    public GuiDirectEntryConnectionRenderer(MultiBufferSource.BufferSource bufferSource) {
-        super(bufferSource);
-    }
-
     @Override
     public Class<GuiDirectEntryConnectionRenderState> getRenderStateClass() {
         return GuiDirectEntryConnectionRenderState.class;
     }
 
     @Override
-    protected void renderToTexture(GuiDirectEntryConnectionRenderState state, PoseStack poseStack) {
-        VertexConsumer buffer = this.bufferSource.getBuffer(RenderTypes.linesTranslucent());
-        PoseStack.Pose pose = poseStack.last();
-
-        for (var connection : state.connections()) {
-            this.drawLine(buffer, pose, connection, state.animationTime(), state.lineWidth(), state.opacity(), state.brightness(), state.oscillationAmplitude(), state.oscillationSpeed());
-        }
+    protected void renderToTexture(GuiDirectEntryConnectionRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector) {
+        submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.linesTranslucent(), (pose, buffer) -> {
+            for (var connection : state.connections()) {
+                this.drawLine(buffer, pose, connection, state.animationTime(), state.lineWidth(), state.opacity(), state.brightness(), state.oscillationAmplitude(), state.oscillationSpeed());
+            }
+        });
     }
 
     private void drawLine(VertexConsumer buffer, PoseStack.Pose pose, GuiDirectEntryConnectionRenderState.Connection connection, float time, float lineWidth, float opacity, float brightness, float oscillationAmplitude, float oscillationSpeed) {
