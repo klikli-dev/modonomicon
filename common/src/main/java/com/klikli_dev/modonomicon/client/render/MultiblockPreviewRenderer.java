@@ -19,32 +19,22 @@ import com.klikli_dev.modonomicon.multiblock.matcher.DisplayOnlyMatcher;
 import com.klikli_dev.modonomicon.multiblock.matcher.Matchers;
 import com.klikli_dev.modonomicon.registry.StateMatcherTypeRegistry;
 import com.klikli_dev.modonomicon.util.TextRenderHelper;
-import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.systems.RenderPass;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.block.BlockQuadOutput;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
@@ -68,11 +58,6 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-import java.util.IdentityHashMap;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
-import org.joml.Vector4f;
-
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -87,9 +72,6 @@ public class MultiblockPreviewRenderer {
     private static final Map<BlockPos, BlockEntity> blockEntityCache = new Object2ObjectOpenHashMap<>();
     private static final Set<BlockEntity> erroredBlockEntities = Collections.newSetFromMap(new WeakHashMap<>());
     private static final List<BlockEntityRenderState> blockEntityRenderStates = new ArrayList<>();
-    private static final ByteBufferBuilder BUFFER_BUILDER = new ByteBufferBuilder(RenderType.TRANSIENT_BUFFER_SIZE);
-
-    private static final Map<RenderType, RenderType> GHOST_RENDER_TYPE_CACHE = new IdentityHashMap<>();
     public static boolean hasMultiblock;
     private static Multiblock multiblock;
     private static Component name;
@@ -101,31 +83,6 @@ public class MultiblockPreviewRenderer {
     private static int timeComplete;
     private static BlockState lookingState;
     private static BlockPos lookingPos;
-
-    private static RenderType getGhostRenderType(RenderType original) {
-        if (original.pipeline().getColorTargetState().blendFunction().isPresent()) {
-            return original;
-        }
-
-        return GHOST_RENDER_TYPE_CACHE.computeIfAbsent(original, rt -> {
-
-            if (rt.hasBlending())
-                return rt;
-
-            //should never happen, but if there is some weird custom stuff going on we just not ghost it
-            if (rt.state.textures.isEmpty())
-                return rt;
-
-            var sampler0 = rt.state.textures.get("Sampler0");
-
-            //again, should not happen, but non-vanilla RTs might do whatever.
-            //we could fall back onto any other texture, but let's only do that if something concrete is reported.
-            if (sampler0 == null)
-                return rt;
-
-            return RenderTypes.entityTranslucent(sampler0.location());
-        });
-    }
 
     public static void setMultiblock(Multiblock multiblock, Component name, boolean flip) {
         setMultiblock(multiblock, name, flip, pos -> pos);
@@ -380,10 +337,8 @@ public class MultiblockPreviewRenderer {
             return;
         }
 
-        RenderType movingBlockRenderType = RenderTypes.translucentMovingBlock();
-        RenderPipeline pipeline = movingBlockRenderType.pipeline();
-        BufferBuilder buffer = new BufferBuilder(BUFFER_BUILDER, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
         ModelBlockRenderer blockRenderer = new ModelBlockRenderer(mc.options.ambientOcclusion().get(), false, mc.getBlockColors());
+        SubmitNodeStorage submitNodeStorage = new SubmitNodeStorage();
 
         BlockPos checkPos = null;
         if (mc.hitResult instanceof BlockHitResult blockRes) {
@@ -412,7 +367,7 @@ public class MultiblockPreviewRenderer {
 
                 if (!r.test(level, facingRotation)) {
                     BlockState displayedState = r.stateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
-                    renderBlock(level, displayedState, r.worldPosition(), alpha, blockRenderer, ms, buffer);
+                    renderBlock(level, displayedState, r.worldPosition(), alpha, blockRenderer, ms, submitNodeStorage);
 
                     if (air) {
                         airFilled++;
@@ -420,13 +375,6 @@ public class MultiblockPreviewRenderer {
                 } else if (!air) {
                     blocksDone++;
                 }
-            }
-        }
-
-        MeshData meshData = buffer.build();
-        if (meshData != null) {
-            try (meshData) {
-                uploadAndDraw(pipeline, mc.getMainRenderTarget(), meshData);
             }
         }
 
@@ -439,25 +387,7 @@ public class MultiblockPreviewRenderer {
         ms.translate(-renderPosX, -renderPosY, -renderPosZ);
 
         var dispatcher = Minecraft.getInstance().getBlockEntityRenderDispatcher();
-        var originalBufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
-
-        int ghostAlpha = (int) (0.6f * 255);
-        MultiBufferSource ghostBufferSource = renderType -> new GhostVertexConsumer(
-                originalBufferSource.getBuffer(getGhostRenderType(renderType)), ghostAlpha
-        );
-
         var cameraRenderState = new CameraRenderState();
-        var customSubmitStorage = new SubmitNodeStorage();
-        var ghostFeatureDispatcher = new FeatureRenderDispatcher(
-                customSubmitStorage,
-                Minecraft.getInstance().getModelManager(),
-                ghostBufferSource,
-                Minecraft.getInstance().getAtlasManager(),
-                Minecraft.getInstance().renderBuffers().outlineBufferSource(),
-                Minecraft.getInstance().renderBuffers().crumblingBufferSource(),
-                Minecraft.getInstance().font,
-                Minecraft.getInstance().gameRenderer.getGameRenderState()
-        );
 
         for (var blockEntityRenderState : blockEntityRenderStates) {
             ms.pushPose();
@@ -466,13 +396,12 @@ public class MultiblockPreviewRenderer {
                     blockEntityRenderState.blockPos.getY(),
                     blockEntityRenderState.blockPos.getZ());
 
-            dispatcher.submit(blockEntityRenderState, ms, ghostFeatureDispatcher.getSubmitNodeStorage(), cameraRenderState);
+            dispatcher.submit(blockEntityRenderState, ms, submitNodeStorage, cameraRenderState);
 
             ms.popPose();
         }
 
-        ghostFeatureDispatcher.renderAllFeatures();
-        ghostFeatureDispatcher.close(); // Clean up if required
+        mc.gameRenderer.featureRenderDispatcher().renderAllFeatures(submitNodeStorage);
 
         ms.popPose();
 
@@ -481,19 +410,15 @@ public class MultiblockPreviewRenderer {
         }
     }
 
-    public static void renderBlock(Level world, BlockState state, BlockPos pos, float alpha, ModelBlockRenderer blockRenderer, PoseStack poseStack, BufferBuilder buffer) {
+    public static void renderBlock(Level world, BlockState state, BlockPos pos, float alpha, ModelBlockRenderer blockRenderer, PoseStack poseStack, SubmitNodeStorage submitNodeStorage) {
         if (pos == null) return;
 
         Minecraft mc = Minecraft.getInstance();
         if (!(world instanceof ClientLevel clientLevel)) {
             return;
         }
-        Vec3 cameraPos = mc.gameRenderer.getMainCamera().position();
+        Vec3 cameraPos = mc.gameRenderer.mainCamera().position();
         Vec3 offset = Vec3.atLowerCornerOf(pos).subtract(cameraPos);
-
-        VertexConsumer consumer = new GhostVertexConsumer(buffer, (int) (alpha * 255.0f));
-        BlockQuadOutput output = (levelIn, stateIn, posIn, quad, instance) ->
-                consumer.putBakedQuad(poseStack.last(), quad, instance);
 
         poseStack.pushPose();
         poseStack.translate(offset.x + .5, offset.y + .5, offset.z + .5);
@@ -510,54 +435,15 @@ public class MultiblockPreviewRenderer {
 
         BlockStateModel model = mc.getModelManager().getBlockStateModelSet().get(state);
         GhostRenderState renderState = new GhostRenderState(clientLevel, pos, state);
-        blockRenderer.tesselateBlock(output, 0, 0, 0, renderState, pos, state, model, 0);
+        BlockState renderedState = state;
+        RenderType renderType = RenderTypes.translucentMovingBlock();
+        submitNodeStorage.submitCustomGeometry(poseStack, renderType, (pose, buffer) -> {
+            VertexConsumer consumer = new GhostVertexConsumer(buffer, (int) (alpha * 255.0F));
+            BlockQuadOutput output = (levelIn, stateIn, posIn, quad, instance) -> consumer.putBakedQuad(pose, quad, instance);
+            blockRenderer.tesselateBlock(output, 0, 0, 0, renderState, pos, renderedState, model, 0);
+        });
 
         poseStack.popPose();
-    }
-
-    private static void uploadAndDraw(RenderPipeline pipeline, RenderTarget target, MeshData meshData) {
-        meshData.sortQuads(BUFFER_BUILDER, RenderSystem.getProjectionType().vertexSorting());
-        VertexFormat vertexFormat = pipeline.getVertexFormat();
-        GpuBuffer vertexBuffer = vertexFormat.uploadImmediateVertexBuffer(meshData.vertexBuffer());
-        GpuBuffer indexBuffer;
-        VertexFormat.IndexType indexType;
-
-        if (meshData.indexBuffer() != null) {
-            indexBuffer = vertexFormat.uploadImmediateIndexBuffer(meshData.indexBuffer());
-            indexType = meshData.drawState().indexType();
-        } else {
-            RenderSystem.AutoStorageIndexBuffer autoIndexBuffer = RenderSystem.getSequentialBuffer(meshData.drawState().mode());
-            indexBuffer = autoIndexBuffer.getBuffer(meshData.drawState().indexCount());
-            indexType = autoIndexBuffer.type();
-        }
-
-        GpuBufferSlice dynamicUniforms = RenderSystem.getDynamicUniforms()
-                .writeTransform(
-                        RenderSystem.getModelViewMatrixCopy(),
-                        new Vector4f(1.0F, 1.0F, 1.0F, 1.0F),
-                        new Vector3f(),
-                        new Matrix4f()
-                );
-
-        try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(
-                () -> "modonomicon_multiblock_preview",
-                target.getColorTextureView(),
-                OptionalInt.empty(),
-                target.getDepthTextureView(),
-                OptionalDouble.empty()
-        )) {
-            renderPass.setPipeline(pipeline);
-            RenderSystem.bindDefaultUniforms(renderPass);
-            renderPass.setUniform("DynamicTransforms", dynamicUniforms);
-            renderPass.setVertexBuffer(0, vertexBuffer);
-            renderPass.setIndexBuffer(indexBuffer, indexType);
-
-            renderPass.bindTexture("Sampler0", Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_BLOCKS).getTextureView(), RenderSystem.getSamplerCache().getRepeat(FilterMode.NEAREST));
-            renderPass.bindTexture("Sampler1", null, null);
-            renderPass.bindTexture("Sampler2", Minecraft.getInstance().gameRenderer.lightmap(), RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR));
-
-            renderPass.drawIndexed(0, 0, meshData.drawState().indexCount(), 1);
-        }
     }
 
     @Nullable
