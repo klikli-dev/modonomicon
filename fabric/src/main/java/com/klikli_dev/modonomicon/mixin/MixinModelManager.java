@@ -27,11 +27,11 @@ public class MixinModelManager {
      * This mixes into the synthethic method created for the lambda "bakedStateResults.thenCombine(bakedModelsFuture, (bakingResult, bakedModels) -> {...}" at the very end of ModelManager#loadModels. There we can access the finished bakingResult.
      */
     @Inject(
-            method = "lambda$loadModels$1(Lnet/minecraft/client/resources/model/sprite/MaterialBaker;Lit/unimi/dsi/fastutil/objects/Object2IntMap;Lnet/minecraft/client/model/geom/EntityModelSet;Lnet/minecraft/client/resources/model/ModelBakery$BakingResult;Ljava/util/Map;)Lnet/minecraft/client/resources/model/ModelManager$ReloadState;",
+            method = "lambda$loadModels$1(Lnet/minecraft/client/resources/model/sprite/MaterialBaker;Lnet/minecraft/client/resources/model/sprite/MaterialBaker;Lit/unimi/dsi/fastutil/objects/Object2IntMap;Lnet/minecraft/client/model/geom/EntityModelSet;Lnet/minecraft/client/resources/model/ModelBakery$BakingResult;Ljava/util/Map;)Lnet/minecraft/client/resources/model/ModelManager$ReloadState;",
             at = @At("HEAD")
     )
     private static void onLambdaLoadModels1(
-            MaterialBaker materialBaker, Object2IntMap<BlockState> modelGroups, EntityModelSet entityModelSet, ModelBakery.BakingResult bakingResult, Map bakedModels, CallbackInfoReturnable<ModelManager.ReloadState> cir
+            MaterialBaker blockMaterialBaker, MaterialBaker itemMaterialBaker, Object2IntMap<BlockState> modelGroups, EntityModelSet entityModelSet, ModelBakery.BakingResult bakingResult, Map bakedModels, CallbackInfoReturnable<ModelManager.ReloadState> cir
     ) {
         BookModel.replace(bakingResult.itemStackModels());
     }
