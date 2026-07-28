@@ -36,11 +36,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
 
-public class FabricMultiLayerScreen extends Screen {
+public class MultiLayerScreen extends Screen {
 
     public final Stack<Screen> guiLayers = new Stack<>();
 
-    protected FabricMultiLayerScreen() {
+    protected MultiLayerScreen() {
         super(Component.empty());
     }
 
