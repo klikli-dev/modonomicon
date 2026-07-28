@@ -25,7 +25,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockQuadOutput;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
@@ -192,9 +192,9 @@ public class MultiblockPreviewRenderer {
         }
     }
 
-    public static void onRenderLevelLastEvent(LevelRenderState levelRenderState, PoseStack poseStack) {
+    public static void submitRenderFeatures(LevelRenderState levelRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector) {
         if (hasMultiblock && multiblock != null) {
-            renderMultiblock(levelRenderState, poseStack);
+            renderMultiblock(levelRenderState, poseStack, submitNodeCollector);
         }
     }
 
@@ -314,7 +314,7 @@ public class MultiblockPreviewRenderer {
      * @param levelRenderState The level render state containing extracted data
      * @param ms               The pose stack for rendering
      */
-    public static void renderMultiblock(LevelRenderState levelRenderState, PoseStack ms) {
+    public static void renderMultiblock(LevelRenderState levelRenderState, PoseStack ms, SubmitNodeCollector submitNodeCollector) {
         if (!hasMultiblock || multiblock == null) {
             return;
         }
@@ -338,7 +338,6 @@ public class MultiblockPreviewRenderer {
         }
 
         ModelBlockRenderer blockRenderer = new ModelBlockRenderer(mc.options.ambientOcclusion().get(), false, mc.getBlockColors());
-        SubmitNodeStorage submitNodeStorage = new SubmitNodeStorage();
 
         BlockPos checkPos = null;
         if (mc.hitResult instanceof BlockHitResult blockRes) {
@@ -367,7 +366,7 @@ public class MultiblockPreviewRenderer {
 
                 if (!r.test(level, facingRotation)) {
                     BlockState displayedState = r.stateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
-                    renderBlock(level, displayedState, r.worldPosition(), alpha, blockRenderer, ms, submitNodeStorage);
+                    renderBlock(level, displayedState, r.worldPosition(), alpha, blockRenderer, ms, submitNodeCollector);
 
                     if (air) {
                         airFilled++;
@@ -396,12 +395,10 @@ public class MultiblockPreviewRenderer {
                     blockEntityRenderState.blockPos.getY(),
                     blockEntityRenderState.blockPos.getZ());
 
-            dispatcher.submit(blockEntityRenderState, ms, submitNodeStorage, cameraRenderState);
+            dispatcher.submit(blockEntityRenderState, ms, submitNodeCollector, cameraRenderState);
 
             ms.popPose();
         }
-
-        mc.gameRenderer.featureRenderDispatcher().renderAllFeatures(submitNodeStorage);
 
         ms.popPose();
 
@@ -410,7 +407,7 @@ public class MultiblockPreviewRenderer {
         }
     }
 
-    public static void renderBlock(Level world, BlockState state, BlockPos pos, float alpha, ModelBlockRenderer blockRenderer, PoseStack poseStack, SubmitNodeStorage submitNodeStorage) {
+    public static void renderBlock(Level world, BlockState state, BlockPos pos, float alpha, ModelBlockRenderer blockRenderer, PoseStack poseStack, SubmitNodeCollector submitNodeCollector) {
         if (pos == null) return;
 
         Minecraft mc = Minecraft.getInstance();
@@ -437,7 +434,7 @@ public class MultiblockPreviewRenderer {
         GhostRenderState renderState = new GhostRenderState(clientLevel, pos, state);
         BlockState renderedState = state;
         RenderType renderType = RenderTypes.translucentMovingBlock();
-        submitNodeStorage.submitCustomGeometry(poseStack, renderType, (pose, buffer) -> {
+        submitNodeCollector.submitCustomGeometry(poseStack, renderType, (pose, buffer) -> {
             VertexConsumer consumer = new GhostVertexConsumer(buffer, (int) (alpha * 255.0F));
             BlockQuadOutput output = (levelIn, stateIn, posIn, quad, instance) -> consumer.putBakedQuad(pose, quad, instance);
             blockRenderer.tesselateBlock(output, 0, 0, 0, renderState, pos, renderedState, model, 0);

@@ -60,10 +60,6 @@ public class ModonomiconFabricClient implements ClientModInitializer {
         LevelRenderEvents.END_EXTRACTION.register(context -> {
             MultiblockPreviewRenderer.extractRenderState(context.levelState());
         });
-        //Render multiblock preview - Phase 2: Render with extracted state
-        LevelRenderEvents.END_MAIN.register(context -> {
-            MultiblockPreviewRenderer.onRenderLevelLastEvent(context.levelState(), context.poseStack());
-        });
 
         //render multiblock hud
         HudElementRegistry.addLast(Modonomicon.loc("multiblock_preview_hud"), (context, tickCounter) -> {
