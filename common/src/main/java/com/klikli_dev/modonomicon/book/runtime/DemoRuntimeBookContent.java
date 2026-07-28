@@ -24,7 +24,6 @@ import com.klikli_dev.modonomicon.datagen.book.demo.features.CommandEntry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.WeatheringCopper.WeatherState;
 
 import java.util.List;
 
@@ -63,7 +62,7 @@ public final class DemoRuntimeBookContent {
                 500,
                 new BookNoneCondition(),
                 true,
-                new BookIcon(new ItemStackTemplate(Items.LIGHTNING_ROD.get(WeatherState.UNAFFECTED))),
+                new BookIcon(new ItemStackTemplate(Items.LIGHTNING_ROD.weathering().unaffected())),
                 BookDisplayMode.NODE,
                 Identifier.parse(ModonomiconConstants.Data.Category.DEFAULT_BACKGROUND),
                 ModonomiconConstants.Data.Category.DEFAULT_BACKGROUND_WIDTH,

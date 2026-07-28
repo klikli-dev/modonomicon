@@ -62,7 +62,7 @@ public class ResearchToastMessage implements Message {
                 return;
             }
 
-            var toastManager = minecraft.getToastManager();
+            var toastManager = minecraft.gui.toastManager();
             var data = ResearchDataManager.get().data();
 
             for (var trigger : message.triggers) {
