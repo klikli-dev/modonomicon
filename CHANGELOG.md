@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.1-1.120.4] - 2026-07-29
+### :bug: Bug Fixes
+- [`9ec9fe5`](https://github.com/klikli-dev/modonomicon/commit/9ec9fe54eb422ff519a9a4af961faf8efc11f1a3) - incorrect buffer batching in multiblock preview rendering on 1.21.1 *(PR [#376](https://github.com/klikli-dev/modonomicon/pull/376) by [@kawaiixissa13](https://github.com/kawaiixissa13))*
+
+
 ## [release/v1.21.1-1.120.3] - 2026-07-14
 ### :bug: Bug Fixes
 - [`47a6d94`](https://github.com/klikli-dev/modonomicon/commit/47a6d9472301f8b16ee24ee6130bd1b681806db0) - switch to fillGradient for multiblock hud progress bar rendering *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2419,3 +2424,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.1-1.120.1]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.120.0...release/v1.21.1-1.120.1
 [release/v1.21.1-1.120.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.11-1.121.0...release/v1.21.1-1.120.2
 [release/v1.21.1-1.120.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.120.2...release/v1.21.1-1.120.3
+[release/v1.21.1-1.120.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.120.3...release/v1.21.1-1.120.4
