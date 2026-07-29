@@ -1,4 +1,4 @@
-// 26.2	2026-07-29T14:33:34.5391735	Books: modonomicon
+// 26.2	-999999999-01-01T00:00:00	Modonomicon/Books: modonomicon
 2c29f1887c5c375e76d6813e5c5ef689936ec4e2 data/modonomicon/modonomicon/books/demo/book.json
 a40738cde71e2783fc7ebf4102a27a937c00761e data/modonomicon/modonomicon/books/demo/categories/acquiring.json
 66e880d8ad62910ce9caf891021f84308950452c data/modonomicon/modonomicon/books/demo/categories/conditional.json
@@ -95,9 +95,9 @@ e279a864e650497454cf4588ffc729b761f80fb7 data/modonomicon/modonomicon/books/demo
 a6ca3565a6c1a1644600532f63c690779a569b20 data/modonomicon/modonomicon/books/demo/entries/values/collector_b.json
 5950ab9feecb4aeb1b0107720222830d9781eaba data/modonomicon/modonomicon/books/demo/entries/values/collector_b/pages/info.json
 fb9befaa35d5e69fb1ef8bab8ee7cdc984c1c6f2 data/modonomicon/modonomicon/books/demo/entries/values/collector_c.json
+f55bfdc7635a56f77fe36cfab6582474132016d5 data/modonomicon/modonomicon/books/demo/entries/values/collector_c/pages/info.json
 67bbf31c2a036a42fafa825be0d6efea21aee7fa data/modonomicon/modonomicon/books/demo/entries/values/collector_complete.json
 845c7cf4a4b9ba9f605a50ad978a8ffbde76f235 data/modonomicon/modonomicon/books/demo/entries/values/collector_complete/pages/info.json
-f55bfdc7635a56f77fe36cfab6582474132016d5 data/modonomicon/modonomicon/books/demo/entries/values/collector_c/pages/info.json
 61b9f9e7a8acad9a67ed7342ff30b8cd0f488a9c data/modonomicon/modonomicon/books/demo/theme.json
 fad1a723baf704488eaa2aaee420b50c5a7a53a3 data/modonomicon/modonomicon/books/demo_index/book.json
 9013d6f07c501a22e7671ab093c04f7bda67c26c data/modonomicon/modonomicon/books/demo_index/categories/conditional.json

@@ -42,6 +42,7 @@ public class EntityEntry extends EntryProvider {
                 .withText(this.context().pageText())
                 .withEntityId("minecraft:spider")
                 .withScale(1f)
+                .withOffset(-0.5f)
         );
         this.pageText("A sample entity page with automatic title.");
     }
