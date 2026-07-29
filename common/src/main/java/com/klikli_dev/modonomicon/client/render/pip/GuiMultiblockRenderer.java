@@ -10,11 +10,9 @@ package com.klikli_dev.modonomicon.client.render.pip;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.client.ClientTicks;
-import com.klikli_dev.modonomicon.client.render.GhostVertexConsumer;
 import com.klikli_dev.modonomicon.client.render.fakelevel.GhostRenderState;
 import com.klikli_dev.modonomicon.client.render.state.pip.GuiMultiblockRenderState;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
@@ -167,10 +165,9 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
             ModelBlockRenderer blockRenderer = new ModelBlockRenderer(minecraft.options.ambientOcclusion().get(), false, minecraft.getBlockColors());
             GhostRenderState renderState = new GhostRenderState(level, pos, state);
             submitNodeCollector.submitCustomGeometry(ps, renderType, (pose, buffer) -> {
-                VertexConsumer ghostBuffer = new GhostVertexConsumer(buffer, (int) (alpha * 255.0F));
                 BlockQuadOutput output = (_, _, _, quad, instance) -> {
                     instance.setLightCoords(lightCoords);
-                    ghostBuffer.putBakedQuad(pose, quad, instance);
+                    buffer.putBakedQuad(pose, quad, instance);
                 };
                 blockRenderer.tesselateBlock(output, 0, 0, 0, renderState, pos, state, model, 0);
             });
