@@ -1,11 +1,14 @@
 {
-  "background_u_index": 0,
-  "background_v_index": 0,
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
   "category": "features",
   "description": "book.modonomicon.demo.features.entity.description",
   "hide_while_locked": false,
   "icon": {
-    "item": "minecraft:spider_eye"
+    "id": "minecraft:spider_eye"
   },
   "name": "book.modonomicon.demo.features.entity.name",
   "pages": [
@@ -51,6 +54,6 @@
   ],
   "show_when_any_parent_unlocked": false,
   "sort_number": 11,
-  "x": 1,
+  "x": 7,
   "y": -3
 }

@@ -6,29 +6,36 @@
 
 package com.klikli_dev.modonomicon;
 
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
+import com.klikli_dev.modonomicon.book.runtime.DemoRuntimeBookContent;
 import com.klikli_dev.modonomicon.client.BookModel;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
+import com.klikli_dev.modonomicon.client.render.pip.GuiDirectEntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.render.pip.GuiMultiblockRenderer;
+import com.klikli_dev.modonomicon.client.render.state.pip.GuiDirectEntryConnectionRenderState;
 import com.klikli_dev.modonomicon.client.render.state.pip.GuiMultiblockRenderState;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.config.ServerConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
-import com.klikli_dev.modonomicon.data.LoaderRegistry;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
 import com.klikli_dev.modonomicon.integration.LecternIntegration;
 import com.klikli_dev.modonomicon.item.IsBookOpen;
 import com.klikli_dev.modonomicon.network.Networking;
+import com.klikli_dev.modonomicon.research.ResearchServices;
+import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
+import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
+import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
 import com.klikli_dev.modonomicon.registry.CommandRegistry;
 import com.klikli_dev.modonomicon.registry.CreativeModeTabRegistry;
+import com.klikli_dev.modonomicon.registry.RegistryBootstrap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperties;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
@@ -45,13 +52,18 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
+import net.neoforged.neoforge.resource.ContextAwareReloadListener;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.player.AdvancementEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 @Mod(Modonomicon.MOD_ID)
 public class ModonomiconNeo {
@@ -77,11 +89,23 @@ public class ModonomiconNeo {
 
         //register data managers as reload listeners
         NeoForge.EVENT_BUS.addListener((AddServerReloadListenersEvent e) -> {
-            BookDataManager.get().registries(e.getRegistryAccess());
-            e.addListener(Modonomicon.loc("book_data_manager"), BookDataManager.get());
+            e.addListener(Modonomicon.loc("book_data_manager"), new ContextAwareReloadListener() {
+                @Override
+                public CompletableFuture<Void> reload(PreparableReloadListener.SharedState currentReload, Executor taskExecutor, PreparableReloadListener.PreparationBarrier preparationBarrier, Executor reloadExecutor) {
+                    BookDataManager.get().registries(this.getRegistryLookup());
+                    return BookDataManager.get().reload(currentReload, taskExecutor, preparationBarrier, reloadExecutor);
+                }
+            });
 
-            MultiblockDataManager.get().registries(e.getRegistryAccess());
-            e.addListener(Modonomicon.loc("multiblock_data_manager"), MultiblockDataManager.get());
+            e.addListener(Modonomicon.loc("multiblock_data_manager"), new ContextAwareReloadListener() {
+                @Override
+                public CompletableFuture<Void> reload(PreparableReloadListener.SharedState currentReload, Executor taskExecutor, PreparableReloadListener.PreparationBarrier preparationBarrier, Executor reloadExecutor) {
+                    MultiblockDataManager.get().registries(this.getRegistryLookup());
+                    return MultiblockDataManager.get().reload(currentReload, taskExecutor, preparationBarrier, reloadExecutor);
+                }
+            });
+
+            e.addListener(Modonomicon.loc("research_data_manager"), ResearchDataManager.get());
         });
 
         //register commands
@@ -97,14 +121,22 @@ public class ModonomiconNeo {
             if (e.getPlayer() != null) {
                 BookDataManager.get().onDatapackSync(e.getPlayer());
                 MultiblockDataManager.get().onDatapackSync(e.getPlayer());
+                ResearchDataManager.get().onDatapackSync(e.getPlayer());
+                ResearchStateManager.get().onDatapackSync(e.getPlayer());
             }
         });
 
         //sync book state on player join
         NeoForge.EVENT_BUS.addListener((EntityJoinLevelEvent e) -> {
             if (e.getEntity() instanceof ServerPlayer player) {
-                BookUnlockStateManager.get().updateAndSyncFor(player);
                 BookVisualStateManager.get().syncFor(player);
+                ResearchStateManager.get().onDatapackSync(player);
+                // Replay advancement-backed hooks if research state is stale (e.g. reset while offline).
+                if (ResearchServices.hooks().needsAdvancementReplay(player)) {
+                    ResearchServices.hooks().replayAdvancements(player);
+                    ResearchStateManager.get().syncFor(player);
+                    BookVisualStateManager.get().syncFor(player);
+                }
             }
         });
 
@@ -113,18 +145,38 @@ public class ModonomiconNeo {
         // instead of bleeding in from the previous level
         NeoForge.EVENT_BUS.addListener((LevelEvent.Unload e) -> {
             if (e.getLevel() instanceof Level level && level.dimension() == Level.OVERWORLD) {
-                BookUnlockStateManager.get().saveData = null;
                 BookVisualStateManager.get().saveData = null;
+                ResearchStateManager.get().clearCachedSaveData();
             }
         });
 
 
         //Advancement event handling for condition/unlock system
-        NeoForge.EVENT_BUS.addListener((AdvancementEvent.AdvancementEarnEvent e) -> BookUnlockStateManager.get().onAdvancement((ServerPlayer) e.getEntity()));
+        NeoForge.EVENT_BUS.addListener((AdvancementEvent.AdvancementEarnEvent e) -> {
+            var player = (ServerPlayer) e.getEntity();
+            if (ResearchServices.hooks().onAdvancement(player, e.getAdvancement().id())) {
+                ResearchStateManager.get().syncFor(player);
+                BookVisualStateManager.get().syncFor(player);
+            }
+        });
+
+        //Item crafted event handling for research progression
+        NeoForge.EVENT_BUS.addListener((PlayerEvent.ItemCraftedEvent e) -> {
+            if(!(e.getEntity() instanceof ServerPlayer player))
+                return;
+
+            var crafting = e.getCrafting();
+            if (!crafting.isEmpty()) {
+                if (ResearchServices.hooks().onItemCrafted(player, crafting)) {
+                    ResearchStateManager.get().syncFor(player);
+                    BookVisualStateManager.get().syncFor(player);
+                }
+            }
+        });
 
         //We use server tick to flush the queue of players that need a book state sync
         NeoForge.EVENT_BUS.addListener(((ServerTickEvent.Post e) -> {
-            BookUnlockStateManager.get().onServerTickEnd(e.getServer());
+            ResearchStateManager.get().onServerTickEnd(e.getServer());
         }));
 
         //Datagen
@@ -147,7 +199,8 @@ public class ModonomiconNeo {
     }
 
     public void onCommonSetup(FMLCommonSetupEvent event) {
-        LoaderRegistry.registerLoaders();
+        RegistryBootstrap.bootstrap();
+        DemoRuntimeBookContent.register();
 
         NeoForge.EVENT_BUS.addListener((PlayerInteractEvent.RightClickBlock e) -> {
             var result = LecternIntegration.rightClick(e.getEntity(), e.getLevel(), e.getHand(), e.getHitVec());
@@ -156,6 +209,17 @@ public class ModonomiconNeo {
                 e.setCancellationResult(result);
             }
         });
+    }
+
+    private static net.minecraft.resources.Identifier extractItemId(net.minecraft.world.item.crafting.display.SlotDisplay display) {
+        if (display instanceof net.minecraft.world.item.crafting.display.SlotDisplay.ItemSlotDisplay itemDisplay) {
+            return itemDisplay.item().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElse(null);
+        } else if (display instanceof net.minecraft.world.item.crafting.display.SlotDisplay.ItemStackSlotDisplay itemStackDisplay) {
+            return itemStackDisplay.stack().item().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElse(null);
+        } else if (display instanceof net.minecraft.world.item.crafting.display.SlotDisplay.Composite composite && !composite.contents().isEmpty()) {
+            return extractItemId(composite.contents().getFirst());
+        }
+        return null;
     }
 
     public static class Client {
@@ -187,18 +251,10 @@ public class ModonomiconNeo {
                 MultiblockPreviewRenderer.extractRenderState(e.getRenderState());
             });
 
-//            //Render multiblock preview - Phase 2: Render with extracted state
-            NeoForge.EVENT_BUS.addListener((RenderLevelStageEvent.AfterTranslucentParticles e) -> {
-                //After translucent causes block entities to error out on render in preview so we use after tripwire.
-                MultiblockPreviewRenderer.onRenderLevelLastEvent(e.getLevelRenderState(), e.getPoseStack());
+            // Submit before vanilla executes its feature frame. Rendering a second frame during a render stage is invalid.
+            NeoForge.EVENT_BUS.addListener((SubmitCustomGeometryEvent e) -> {
+                MultiblockPreviewRenderer.submitRenderFeatures(e.getLevelRenderState(), e.getSubmitNodeCollector());
             });
-
-            //Render multiblock preview - Phase 2: Render with extracted state
-            //Note: for now we are rendering both blocks and BEs in the RLSE, but we might have to move some or all of it to SCGE because it is better for this purpose (earlier in the render pipeine)
-//            NeoForge.EVENT_BUS.addListener((SubmitCustomGeometryEvent e) -> {
-//                //After translucent causes block entities to error out on render in preview so we use after tripwire.
-//                MultiblockPreviewRenderer.onRenderLevelLastEvent(e.getLevelRenderState(), e.getPoseStack());
-//            });
 
             //register item model properties
             event.enqueueWork(() -> {
@@ -227,6 +283,10 @@ public class ModonomiconNeo {
             event.register(
                     GuiMultiblockRenderState.class,
                     GuiMultiblockRenderer::new
+            );
+            event.register(
+                    GuiDirectEntryConnectionRenderState.class,
+                    GuiDirectEntryConnectionRenderer::new
             );
         }
     }

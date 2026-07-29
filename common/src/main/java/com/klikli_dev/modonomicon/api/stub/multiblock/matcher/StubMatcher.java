@@ -8,8 +8,11 @@ package com.klikli_dev.modonomicon.api.stub.multiblock.matcher;
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.api.multiblock.StateMatcher;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
+import com.klikli_dev.modonomicon.data.StateMatcherType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
@@ -20,6 +23,11 @@ public final class StubMatcher implements StateMatcher {
     public static final Identifier TYPE = Identifier.parse(ModonomiconAPI.ID + ":stub");
 
     public static final StubMatcher INSTANCE = new StubMatcher();
+    private static final StateMatcherType<StubMatcher> MATCHER_TYPE = new StateMatcherType<>(
+            TYPE,
+            com.mojang.serialization.MapCodec.unit(INSTANCE),
+            StreamCodec.unit(INSTANCE)
+    );
 
     private final BlockState state = Blocks.AIR.defaultBlockState();
 
@@ -27,8 +35,8 @@ public final class StubMatcher implements StateMatcher {
     }
 
     @Override
-    public Identifier getType() {
-        return TYPE;
+    public StateMatcherType<?> type() {
+        return MATCHER_TYPE;
     }
 
     @Override
@@ -43,7 +51,7 @@ public final class StubMatcher implements StateMatcher {
 
     @Override
     public void toNetwork(FriendlyByteBuf buffer) {
-
+        StateMatcher.toNetwork(this, (RegistryFriendlyByteBuf) buffer);
     }
 
     @Override

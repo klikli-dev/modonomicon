@@ -6,8 +6,12 @@
 
 package com.klikli_dev.modonomicon.book;
 
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -16,6 +20,9 @@ import org.jetbrains.annotations.NotNull;
 public class BookTextHolder {
 
     public static final BookTextHolder EMPTY = new BookTextHolder("");
+    public static final Codec<BookTextHolder> CODEC = Codec.either(Codec.STRING, ComponentSerialization.CODEC)
+            .xmap(value -> value.map(BookTextHolder::new, BookTextHolder::new), BookTextHolder::toSerializableValue);
+    public static final StreamCodec<RegistryFriendlyByteBuf, BookTextHolder> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC);
 
     private Component component;
     private String string;
@@ -32,11 +39,7 @@ public class BookTextHolder {
     }
 
     public static BookTextHolder fromNetwork(RegistryFriendlyByteBuf buffer) {
-        if (buffer.readBoolean()) {
-            return new BookTextHolder(ComponentSerialization.STREAM_CODEC.decode(buffer));
-        } else {
-            return new BookTextHolder(buffer.readUtf());
-        }
+        return STREAM_CODEC.decode(buffer);
     }
 
     public String getString() {
@@ -67,12 +70,11 @@ public class BookTextHolder {
     }
 
     public void toNetwork(RegistryFriendlyByteBuf buffer) {
-        buffer.writeBoolean(this.hasComponent());
-        if (this.hasComponent()) {
-            ComponentSerialization.STREAM_CODEC.encode(buffer, this.component);
-        } else {
-            buffer.writeUtf(this.string);
-        }
+        STREAM_CODEC.encode(buffer, this);
+    }
+
+    protected Either<String, Component> toSerializableValue() {
+        return this.hasComponent() ? Either.right(this.component) : Either.left(this.string);
     }
 
     @Override

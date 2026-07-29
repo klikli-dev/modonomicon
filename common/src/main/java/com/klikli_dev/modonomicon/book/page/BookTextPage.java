@@ -6,56 +6,56 @@
 
 package com.klikli_dev.modonomicon.book.page;
 
-import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
-import com.klikli_dev.modonomicon.util.BookGsonHelper;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import com.klikli_dev.modonomicon.data.BookPageType;
+import com.klikli_dev.modonomicon.registry.BookPageTypeRegistry;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 
 public class BookTextPage extends BookPage {
+    public static final Identifier ID = Modonomicon.loc("text");
+    public static final MapCodec<BookTextPage> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            BookTextHolder.CODEC.fieldOf("title").forGetter(BookTextPage::getTitle),
+            BookTextHolder.CODEC.fieldOf("text").forGetter(BookTextPage::getText),
+            Codec.BOOL.optionalFieldOf("use_markdown_in_title", false).forGetter(BookTextPage::useMarkdownInTitle),
+            Codec.BOOL.optionalFieldOf("show_title_separator", false).forGetter(BookTextPage::showTitleSeparator),
+            Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
+            BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition)
+    ).apply(instance, BookTextPage::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, BookTextPage> STREAM_CODEC = StreamCodec.composite(
+            BookTextHolder.STREAM_CODEC, BookTextPage::getTitle,
+            BookTextHolder.STREAM_CODEC, BookTextPage::getText,
+            ByteBufCodecs.BOOL, BookTextPage::useMarkdownInTitle,
+            ByteBufCodecs.BOOL, BookTextPage::showTitleSeparator,
+            ByteBufCodecs.STRING_UTF8, BookPage::getId,
+            BookCondition.STREAM_CODEC, BookPage::getCondition,
+            (title, text, useMarkdownInTitle, showTitleSeparator, id, condition) -> new BookTextPage(title, text, useMarkdownInTitle, showTitleSeparator, id, condition)
+    );
     protected BookTextHolder title;
     protected boolean useMarkdownInTitle;
     protected boolean showTitleSeparator;
     protected BookTextHolder text;
 
-    public BookTextPage(BookTextHolder title, BookTextHolder text, boolean useMarkdownInTitle, boolean showTitleSeparator, String anchor, BookCondition condition) {
-        super(anchor, condition);
+    public BookTextPage(BookTextHolder title, BookTextHolder text, boolean useMarkdownInTitle, boolean showTitleSeparator, String id, BookCondition condition) {
+        super(id, condition);
         this.title = title;
         this.text = text;
         this.useMarkdownInTitle = useMarkdownInTitle;
         this.showTitleSeparator = showTitleSeparator;
-    }
-
-    public static BookTextPage fromJson(Identifier entryId, JsonObject json, HolderLookup.Provider provider) {
-        var title = BookGsonHelper.getAsBookTextHolder(json, "title", BookTextHolder.EMPTY, provider);
-        var useMarkdownInTitle = GsonHelper.getAsBoolean(json, "use_markdown_title", false);
-        var showTitleSeparator = GsonHelper.getAsBoolean(json, "show_title_separator", true);
-        var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY, provider);
-        var anchor = GsonHelper.getAsString(json, "anchor", "");
-        var condition = json.has("condition")
-                ? BookCondition.fromJson(entryId, json.getAsJsonObject("condition"), provider)
-                : new BookNoneCondition();
-        return new BookTextPage(title, text, useMarkdownInTitle, showTitleSeparator, anchor, condition);
-    }
-
-    public static BookTextPage fromNetwork(RegistryFriendlyByteBuf buffer) {
-        var title = BookTextHolder.fromNetwork(buffer);
-        var useMarkdownInTitle = buffer.readBoolean();
-        var showTitleSeparator = buffer.readBoolean();
-        var text = BookTextHolder.fromNetwork(buffer);
-        var anchor = buffer.readUtf();
-        var condition = BookCondition.fromNetwork(buffer);
-        return new BookTextPage(title, text, useMarkdownInTitle, showTitleSeparator, anchor, condition);
     }
 
     public boolean useMarkdownInTitle() {
@@ -79,8 +79,8 @@ public class BookTextPage extends BookPage {
     }
 
     @Override
-    public Identifier getType() {
-        return Page.TEXT;
+    public BookPageType<?> type() {
+        return BookPageTypeRegistry.TEXT;
     }
 
     @Override
@@ -94,24 +94,13 @@ public class BookTextPage extends BookPage {
                 this.title = new BookTextHolder(Component.translatable(this.title.getKey())
                         .withStyle(Style.EMPTY
                                 .withBold(true)
-                                .withColor(this.getParentEntry().getCategory().getBook().getDefaultTitleColor())));
+                                .withColor(this.getParentEntry().getCategory().getBook().themeData().palette().defaultTitleColor())));
             }
         }
         if (!this.text.hasComponent()) {
             this.text = new RenderedBookTextHolder(this.text, textRenderer.render(this.text.getString()));
         }
     }
-
-
-    @Override
-    public void toNetwork(RegistryFriendlyByteBuf buffer) {
-        this.title.toNetwork(buffer);
-        buffer.writeBoolean(this.useMarkdownInTitle);
-        buffer.writeBoolean(this.showTitleSeparator);
-        this.text.toNetwork(buffer);
-        super.toNetwork(buffer);
-    }
-
     @Override
     public boolean matchesQuery(String query, Level level) {
         return this.title.getString().toLowerCase().contains(query)

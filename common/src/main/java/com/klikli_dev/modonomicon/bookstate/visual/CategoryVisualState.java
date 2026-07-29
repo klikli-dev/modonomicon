@@ -25,7 +25,8 @@ public class CategoryVisualState {
             Codec.FLOAT.fieldOf("scrollY").forGetter((state) -> state.scrollY),
             Codec.FLOAT.fieldOf("targetZoom").forGetter((state) -> state.targetZoom),
             Identifier.CODEC.optionalFieldOf("openEntry").forGetter((state) -> Optional.ofNullable(state.openEntry)),
-            Codec.INT.fieldOf("openPagesIndex").forGetter((state) -> state.openPagesIndex)
+            Codec.INT.fieldOf("openPagesIndex").forGetter((state) -> state.openPagesIndex),
+            Codec.BOOL.optionalFieldOf("unread", false).forGetter((state) -> state.unread)
     ).apply(instance, CategoryVisualState::new));
 
     public Map<Identifier, EntryVisualState> entryStates;
@@ -36,21 +37,28 @@ public class CategoryVisualState {
 
     public Identifier openEntry;
 
+    public boolean unread;
+
     /**
      * For categories in index mode
      */
     public int openPagesIndex;
 
     public CategoryVisualState() {
-        this(Object2ObjectMaps.emptyMap(), 0, 0, 0.7f, Optional.empty(), 0);
+        this(Object2ObjectMaps.emptyMap(), 0, 0, 0.7f, Optional.empty(), 0, false);
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public CategoryVisualState(Map<Identifier, EntryVisualState> entryStates, float scrollX, float scrollY, float targetZoom, Optional<Identifier> openEntry, int openPagesIndex) {
+    public CategoryVisualState(Map<Identifier, EntryVisualState> entryStates, float scrollX, float scrollY, float targetZoom, Optional<Identifier> openEntry, int openPagesIndex, boolean unread) {
         this.entryStates = new Object2ObjectOpenHashMap<>(entryStates);
         this.scrollX = scrollX;
         this.scrollY = scrollY;
         this.targetZoom = targetZoom;
         this.openEntry = openEntry.orElse(null);
+        this.unread = unread;
+    }
+
+    public void setUnread(boolean unread) {
+        this.unread = unread;
     }
 }

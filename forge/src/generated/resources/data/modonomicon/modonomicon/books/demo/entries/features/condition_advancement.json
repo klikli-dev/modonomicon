@@ -1,6 +1,9 @@
 {
-  "background_u_index": 1,
-  "background_v_index": 0,
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gray",
+    "width": 26
+  },
   "category": "features",
   "condition": {
     "type": "modonomicon:advancement",
@@ -9,7 +12,7 @@
   "description": "book.modonomicon.demo.features.condition_advancement.description",
   "hide_while_locked": false,
   "icon": {
-    "item": "minecraft:nether_star"
+    "id": "minecraft:nether_star"
   },
   "name": "book.modonomicon.demo.features.condition_advancement.name",
   "pages": [
@@ -39,6 +42,6 @@
   ],
   "show_when_any_parent_unlocked": false,
   "sort_number": 2,
-  "x": -3,
+  "x": 3,
   "y": -4
 }

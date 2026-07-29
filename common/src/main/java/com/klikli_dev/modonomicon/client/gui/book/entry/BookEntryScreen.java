@@ -20,6 +20,7 @@ import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.AddBookmarkButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.BackButton;
+import com.klikli_dev.modonomicon.client.gui.book.button.BookSideButtonRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.button.RemoveBookmarkButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
 import com.klikli_dev.modonomicon.client.gui.book.entry.linkhandler.*;
@@ -43,7 +44,6 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
@@ -68,7 +68,6 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
 
     protected final BookParentScreen parentScreen;
     protected final BookContentEntry entry;
-    protected final Identifier bookContentTexture;
 
     protected int ticksInBook;
     protected List<BookPage> unlockedPages;
@@ -89,9 +88,6 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         this.parentScreen = parentScreen;
 
         this.entry = entry;
-
-        this.bookContentTexture = this.parentScreen.getBook().getBookContentTexture();
-
         //We're doing that here to ensure unlockedPages is available for state modification during loading
         this.unlockedPages = this.entry.getUnlockedPagesFor(this.minecraft.player);
 
@@ -353,15 +349,15 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     }
 
     protected void updateBookmarksButton() {
-        this.renderables.removeIf(b -> b instanceof AddBookmarkButton || b instanceof SearchButton);
-        this.children().removeIf(b -> b instanceof AddBookmarkButton || b instanceof SearchButton);
-        this.narratables.removeIf(b -> b instanceof AddBookmarkButton || b instanceof SearchButton);
+        this.renderables.removeIf(b -> b instanceof AddBookmarkButton || b instanceof RemoveBookmarkButton);
+        this.children().removeIf(b -> b instanceof AddBookmarkButton || b instanceof RemoveBookmarkButton);
+        this.narratables.removeIf(b -> b instanceof AddBookmarkButton || b instanceof RemoveBookmarkButton);
 
-        int buttonHeight = 20;
-        int searchButtonX = this.bookLeft + FULL_WIDTH - 5;
+        int buttonHeight = this.getBook().theme().content().addBookmarkButton().normal().height();
         int searchButtonY = this.bookTop + FULL_HEIGHT - 30;
-        int searchButtonWidth = 44; //width in png
+        int searchButtonWidth = this.getBook().theme().content().addBookmarkButton().normal().width();
         int scissorX = this.bookLeft + FULL_WIDTH;//this is the render location of our frame so our search button never overlaps
+        int searchButtonX = BookSideButtonRenderer.anchoredButtonX(scissorX);
 
 
         if (this.isBookmarked()) {
@@ -369,7 +365,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
                     scissorX,
                     searchButtonWidth, buttonHeight,
                     (b) -> this.onRemoveBookmarksButtonClick((RemoveBookmarkButton) b),
-                    Tooltip.create(Component.translatable(Gui.ADD_BOOKMARK)));
+                    Tooltip.create(Component.translatable(Gui.REMOVE_BOOKMARK)));
             this.addRenderableWidget(removeBookMarkButton);
         } else {
             var addBookmarkButton = new AddBookmarkButton(this, searchButtonX, searchButtonY,

@@ -6,6 +6,11 @@
 
 package com.klikli_dev.modonomicon.platform.services;
 
+import com.klikli_dev.modonomicon.item.ModonomiconItem;
+import net.minecraft.world.item.Item;
+
+import java.util.function.Function;
+
 public interface PlatformHelper {
 
     /**
@@ -41,6 +46,16 @@ public interface PlatformHelper {
     }
 
     PhysicalSide getPhysicalSide();
+
+    /**
+     * Creates a ModonomiconItem for the given properties.
+     * On NeoForge, this returns an item that implements IItemExtension#getCreatorModId.
+     * On Fabric, this returns an item that implements FabricItem#getCreatorNamespace.
+     *
+     * @param properties the item properties
+     * @return a new ModonomiconItem instance
+     */
+    ModonomiconItem createModonomiconItem(Item.Properties properties);
 
     enum PhysicalSide {
         CLIENT,

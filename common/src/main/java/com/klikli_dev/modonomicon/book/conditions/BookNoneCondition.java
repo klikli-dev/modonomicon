@@ -6,20 +6,35 @@
 
 package com.klikli_dev.modonomicon.book.conditions;
 
-import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
-import net.minecraft.core.HolderLookup;
+import com.klikli_dev.modonomicon.data.BookConditionType;
+import com.klikli_dev.modonomicon.registry.BookConditionTypeRegistry;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
+
+import java.util.Optional;
 
 /**
  * The default condition - equivalent to the True condition, but will be replaced by AddAutoReadConditions
  */
 public class BookNoneCondition extends BookCondition {
+
+    public static final Identifier ID = Modonomicon.loc("none");
+    public static final MapCodec<BookNoneCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            ComponentSerialization.CODEC.optionalFieldOf("tooltip").forGetter(condition -> Optional.ofNullable(condition.tooltip()))
+    ).apply(instance, tooltip -> new BookNoneCondition(tooltip.orElse(null))));
+    public static final StreamCodec<RegistryFriendlyByteBuf, BookNoneCondition> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.optional(ComponentSerialization.TRUSTED_STREAM_CODEC), condition -> Optional.ofNullable(condition.tooltip()),
+            tooltip -> new BookNoneCondition(tooltip.orElse(null))
+    );
 
     public BookNoneCondition() {
         this(null);
@@ -29,27 +44,9 @@ public class BookNoneCondition extends BookCondition {
         super(component);
     }
 
-    public static BookNoneCondition fromJson(Identifier conditionParentId, JsonObject json, HolderLookup.Provider provider) {
-        var tooltip = tooltipFromJson(json, provider);
-        return new BookNoneCondition(tooltip);
-    }
-
-    public static BookNoneCondition fromNetwork(RegistryFriendlyByteBuf buffer) {
-        var tooltip = buffer.readBoolean() ? ComponentSerialization.STREAM_CODEC.decode(buffer) : null;
-        return new BookNoneCondition(tooltip);
-    }
-
     @Override
-    public Identifier getType() {
-        return Condition.NONE;
-    }
-
-    @Override
-    public void toNetwork(RegistryFriendlyByteBuf buffer) {
-        buffer.writeBoolean(this.tooltip != null);
-        if (this.tooltip != null) {
-            ComponentSerialization.STREAM_CODEC.encode(buffer, this.tooltip);
-        }
+    public BookConditionType<?> type() {
+        return BookConditionTypeRegistry.NONE;
     }
 
     @Override

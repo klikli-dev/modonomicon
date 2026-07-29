@@ -6,17 +6,32 @@
 
 package com.klikli_dev.modonomicon.book.conditions;
 
-import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
-import net.minecraft.core.HolderLookup;
+import com.klikli_dev.modonomicon.data.BookConditionType;
+import com.klikli_dev.modonomicon.registry.BookConditionTypeRegistry;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.Optional;
+
 public class BookTrueCondition extends BookCondition {
+
+    public static final Identifier ID = Modonomicon.loc("true");
+    public static final MapCodec<BookTrueCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            ComponentSerialization.CODEC.optionalFieldOf("tooltip").forGetter(condition -> Optional.ofNullable(condition.tooltip()))
+    ).apply(instance, tooltip -> new BookTrueCondition(tooltip.orElse(null))));
+    public static final StreamCodec<RegistryFriendlyByteBuf, BookTrueCondition> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.optional(ComponentSerialization.TRUSTED_STREAM_CODEC), condition -> Optional.ofNullable(condition.tooltip()),
+            tooltip -> new BookTrueCondition(tooltip.orElse(null))
+    );
 
     public BookTrueCondition() {
         this(null);
@@ -26,29 +41,9 @@ public class BookTrueCondition extends BookCondition {
         super(component);
     }
 
-    public static BookTrueCondition fromJson(Identifier conditionParentId, JsonObject json, HolderLookup.Provider provider) {
-        var tooltip = tooltipFromJson(json, provider);
-        return new BookTrueCondition(tooltip);
-    }
-
-    public static BookTrueCondition fromNetwork(RegistryFriendlyByteBuf buffer) {
-        var tooltip = buffer.readBoolean() ?
-                ComponentSerialization.STREAM_CODEC.decode(buffer)
-                : null;
-        return new BookTrueCondition(tooltip);
-    }
-
     @Override
-    public Identifier getType() {
-        return Condition.TRUE;
-    }
-
-    @Override
-    public void toNetwork(RegistryFriendlyByteBuf buffer) {
-        buffer.writeBoolean(this.tooltip != null);
-        if (this.tooltip != null) {
-            ComponentSerialization.STREAM_CODEC.encode(buffer, this.tooltip);
-        }
+    public BookConditionType<?> type() {
+        return BookConditionTypeRegistry.TRUE;
     }
 
     @Override

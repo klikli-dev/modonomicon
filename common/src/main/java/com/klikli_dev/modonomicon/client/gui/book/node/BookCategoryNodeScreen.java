@@ -11,22 +11,22 @@ import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.bookstate.visual.CategoryVisualState;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.BookCategoryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
+import com.klikli_dev.modonomicon.client.gui.book.entry.DirectEntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
+import com.klikli_dev.modonomicon.client.gui.book.theme.NodeConnectionRendererType;
 import com.klikli_dev.modonomicon.events.ModonomiconEvents;
 import com.klikli_dev.modonomicon.platform.ClientServices;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -34,15 +34,12 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
-import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 
 public class BookCategoryNodeScreen implements BookCategoryScreen {
-
     public static final int ENTRY_GRID_SCALE = 30;
     public static final int ENTRY_GAP = 2;
 
@@ -51,7 +48,8 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     private final BookParentNodeScreen bookParentScreen;
     private final BookCategory category;
-    private final EntryConnectionRenderer connectionRenderer;
+    private final DirectEntryConnectionRenderer directConnectionRenderer;
+    private final EntryConnectionRenderer spriteConnectionRenderer;
     private float scrollX = 0;
     private float scrollY = 0;
     private boolean isScrolling;
@@ -62,7 +60,8 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         this.bookParentScreen = bookOverviewScreen;
         this.category = category;
 
-        this.connectionRenderer = new EntryConnectionRenderer(category.getEntryTextures());
+        this.directConnectionRenderer = new DirectEntryConnectionRenderer(category.getBook().theme().node().settings().directConnections());
+        this.spriteConnectionRenderer = new EntryConnectionRenderer(category.getBook().theme().node());
 
         this.targetZoom = 0.7f;
         this.currentZoom = this.targetZoom;
@@ -79,6 +78,26 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     public float getYOffset() {
         return ((this.bookParentScreen.getInnerHeight() / 2f) * (1 / this.currentZoom)) - this.scrollY / 2;
+    }
+
+    public float getCurrentZoom() {
+        return this.currentZoom;
+    }
+
+    public int getInnerX() {
+        return this.bookParentScreen.getInnerX();
+    }
+
+    public int getInnerY() {
+        return this.bookParentScreen.getInnerY();
+    }
+
+    public int getInnerWidth() {
+        return this.bookParentScreen.getInnerWidth();
+    }
+
+    public int getInnerHeight() {
+        return this.bookParentScreen.getInnerHeight();
     }
 
     public void render(GuiGraphicsExtractor guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
@@ -206,6 +225,8 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         float xOffset = this.getXOffset();
         float yOffset = this.getYOffset();
 
+        this.renderConnections(guiGraphics, xOffset, yOffset);
+
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().scale(this.currentZoom, this.currentZoom);
 
@@ -216,8 +237,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             if (displayState == EntryDisplayState.HIDDEN)
                 continue;
 
-            int texX = entry.getEntryBackgroundVIndex() * ENTRY_HEIGHT;
-            int texY = entry.getEntryBackgroundUIndex() * ENTRY_WIDTH;
+            var entryBackground = entry.getEntryBackground();
 
             guiGraphics.pose().pushMatrix();
             //we translate instead of applying the offset to the entry x/y to avoid jittering when moving
@@ -241,7 +261,9 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                 color = ARGB.colorFromFloat(1f, 0.8F, 0.8F, 0.8F);
             }
             //render entry background
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.category.getEntryTextures(), entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP, texX, texY, ENTRY_WIDTH, ENTRY_HEIGHT, 256, 256, color);
+            entryBackground.extractRenderState(guiGraphics,
+                    entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP,
+                    ENTRY_WIDTH, ENTRY_HEIGHT, color);
 
             guiGraphics.pose().pushMatrix();
 
@@ -251,15 +273,13 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             guiGraphics.pose().popMatrix();
 
             //render unread icon
-            if (displayState == EntryDisplayState.UNLOCKED && !BookUnlockStateManager.get().isReadFor(Minecraft.getInstance().player, entry)) {
+            if (displayState == EntryDisplayState.UNLOCKED && BookServices.stateAccess().isEntryUnread(Minecraft.getInstance().player, entry)) {
                 BookContentRenderer.drawUnreadIndicator(guiGraphics, this.bookParentScreen.getBook(),
                         entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 16 + 2,
                         entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP - 2, isHovered);
             }
 
             guiGraphics.pose().popMatrix();
-
-            this.renderConnections(guiGraphics, entry, xOffset, yOffset);
         }
         guiGraphics.pose().popMatrix();
     }
@@ -320,19 +340,35 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         }
     }
 
-    private void renderConnections(GuiGraphicsExtractor guiGraphics, BookEntry entry, float xOffset, float yOffset) {
-        //our arrows are aliased and need blending
-
-        for (var parent : entry.getParents()) {
-            var parentDisplayState = this.getEntryDisplayState(parent.getEntry());
-            if (parentDisplayState == EntryDisplayState.HIDDEN)
-                continue;
-
-            guiGraphics.pose().pushMatrix();
-            guiGraphics.pose().translate(xOffset, yOffset);
-            this.connectionRenderer.render(guiGraphics, entry, parent);
-            guiGraphics.pose().popMatrix();
+    private void renderConnections(GuiGraphicsExtractor guiGraphics, float xOffset, float yOffset) {
+        if (this.category.getBook().theme().node().settings().connectionRenderer() == NodeConnectionRendererType.DIRECT) {
+            this.directConnectionRenderer.render(guiGraphics, this);
+            return;
         }
+
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().scale(this.currentZoom, this.currentZoom);
+
+        for (var entry : this.category.getEntries().values()) {
+            var entryDisplayState = this.getEntryDisplayState(entry);
+            if (entryDisplayState == EntryDisplayState.HIDDEN) {
+                continue;
+            }
+
+            for (var parent : entry.getParents()) {
+                var parentDisplayState = this.getEntryDisplayState(parent.getEntry());
+                if (parentDisplayState == EntryDisplayState.HIDDEN) {
+                    continue;
+                }
+
+                guiGraphics.pose().pushMatrix();
+                guiGraphics.pose().translate(xOffset, yOffset);
+                this.spriteConnectionRenderer.render(guiGraphics, entry, parent);
+                guiGraphics.pose().popMatrix();
+            }
+        }
+
+        guiGraphics.pose().popMatrix();
     }
 
     private void scroll(double pDragX, double pDragY) {

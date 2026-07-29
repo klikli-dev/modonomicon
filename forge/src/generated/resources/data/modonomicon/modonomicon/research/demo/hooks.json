@@ -1,0 +1,11 @@
+[{
+  "id": "modonomicon:demo/condition_root_viewed_once",
+  "trigger_type": "entry_viewed_once",
+  "event_target_id": "modonomicon:features/condition_root",
+  "fact_id": "modonomicon:demo/condition_root_viewed"
+}, {
+  "id": "modonomicon:demo/condition_level_1_viewed_once",
+  "trigger_type": "entry_viewed_once",
+  "event_target_id": "modonomicon:features/condition_level_1",
+  "fact_id": "modonomicon:demo/condition_level_1_viewed"
+}]

@@ -7,10 +7,12 @@
 package com.klikli_dev.modonomicon.apiimpl;
 
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
+import com.klikli_dev.modonomicon.api.book.runtime.RuntimeBookContentBatch;
 import com.klikli_dev.modonomicon.api.datagen.BookContextHelper;
 import com.klikli_dev.modonomicon.api.datagen.CategoryEntryMap;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.multiblock.MultiblockPreviewData;
+import com.klikli_dev.modonomicon.book.runtime.RuntimeBookContentBatchImpl;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import net.minecraft.resources.Identifier;
@@ -34,6 +36,11 @@ public class ModonomiconAPIImpl implements ModonomiconAPI {
     @Override
     public Multiblock getMultiblock(Identifier id) {
         return MultiblockDataManager.get().getMultiblock(id);
+    }
+
+    @Override
+    public RuntimeBookContentBatch openRuntimeContentBatch() {
+        return new RuntimeBookContentBatchImpl();
     }
 
     @Override

@@ -6,23 +6,37 @@
 
 package com.klikli_dev.modonomicon.book.conditions;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
-import net.minecraft.core.HolderLookup;
+import com.klikli_dev.modonomicon.data.BookConditionType;
+import com.klikli_dev.modonomicon.registry.BookConditionTypeRegistry;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class BookAndCondition extends BookCondition {
+
+    public static final Identifier ID = Modonomicon.loc("and");
+    public static final MapCodec<BookAndCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            ComponentSerialization.CODEC.optionalFieldOf("tooltip").forGetter(condition -> Optional.ofNullable(condition.tooltip())),
+            BookCondition.CODEC.listOf().fieldOf("children").forGetter(condition -> Arrays.asList(condition.children))
+    ).apply(instance, (tooltip, children) -> new BookAndCondition(tooltip.orElse(null), children.toArray(BookCondition[]::new))));
+    public static final StreamCodec<RegistryFriendlyByteBuf, BookAndCondition> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.optional(ComponentSerialization.TRUSTED_STREAM_CODEC), condition -> Optional.ofNullable(condition.tooltip()),
+            BookCondition.STREAM_CODEC.apply(ByteBufCodecs.list()), condition -> Arrays.asList(condition.children),
+            (tooltip, children) -> new BookAndCondition(tooltip.orElse(null), children.toArray(BookCondition[]::new))
+    );
 
     protected BookCondition[] children;
 
@@ -35,30 +49,9 @@ public class BookAndCondition extends BookCondition {
         this.children = children;
     }
 
-    public static BookAndCondition fromJson(Identifier conditionParentId, JsonObject json, HolderLookup.Provider provider) {
-        var children = new ArrayList<BookCondition>();
-        for (var j : GsonHelper.getAsJsonArray(json, "children")) {
-            if (!j.isJsonObject())
-                throw new JsonSyntaxException("Condition children must be an array of JsonObjects.");
-            children.add(BookCondition.fromJson(conditionParentId, j.getAsJsonObject(), provider));
-        }
-        var tooltip = tooltipFromJson(json, provider);
-        return new BookAndCondition(tooltip, children.toArray(new BookCondition[0]));
-    }
-
-    public static BookAndCondition fromNetwork(RegistryFriendlyByteBuf buffer) {
-        var tooltip = buffer.readBoolean() ? ComponentSerialization.STREAM_CODEC.decode(buffer) : null;
-        var childCount = buffer.readVarInt();
-        var children = new BookCondition[childCount];
-        for (var i = 0; i < childCount; i++) {
-            children[i] = BookCondition.fromNetwork(buffer);
-        }
-        return new BookAndCondition(tooltip, children);
-    }
-
     @Override
-    public Identifier getType() {
-        return Condition.AND;
+    public BookConditionType<?> type() {
+        return BookConditionTypeRegistry.AND;
     }
 
     @Override
@@ -68,18 +61,6 @@ public class BookAndCondition extends BookCondition {
 
     public BookCondition[] children() {
         return this.children;
-    }
-
-    @Override
-    public void toNetwork(RegistryFriendlyByteBuf buffer) {
-        buffer.writeBoolean(this.tooltip != null);
-        if (this.tooltip != null) {
-            ComponentSerialization.STREAM_CODEC.encode(buffer, this.tooltip);
-        }
-        buffer.writeVarInt(this.children.length);
-        for (var child : this.children) {
-            BookCondition.toNetwork(child, buffer);
-        }
     }
 
     @Override

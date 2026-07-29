@@ -1,15 +1,21 @@
 {
-  "background_u_index": 1,
-  "background_v_index": 1,
-  "category": "features",
-  "category_to_open": "index_mode",
+  "type": "modonomicon:category_link",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/star_gray",
+    "width": 26
+  },
+  "category": "modonomicon:features",
+  "category_to_open": "modonomicon:index_mode",
+  "condition": {
+    "type": "modonomicon:none"
+  },
   "description": "book.modonomicon.demo.features.redirect.description",
-  "hide_while_locked": false,
   "icon": {
     "id": "minecraft:ender_pearl"
   },
+  "id": "modonomicon:features/redirect",
   "name": "book.modonomicon.demo.features.redirect.name",
-  "show_when_any_parent_unlocked": false,
   "sort_number": 13,
   "x": -3,
   "y": -4

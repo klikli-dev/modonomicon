@@ -7,17 +7,15 @@
 
 package com.klikli_dev.modonomicon.api.datagen;
 
-import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
 
 /**
- * A book sup provider that is oriented on the legacy book provider API for easier migration.
+ * A book sub provider that is oriented on the legacy book provider API for easier migration.
  * It still needs to be handed over to a book provider!
  */
 public abstract class LegacyBookProvider extends ModonomiconProviderBase implements BookSubProvider {
@@ -26,26 +24,16 @@ public abstract class LegacyBookProvider extends ModonomiconProviderBase impleme
     protected int currentSortIndex;
 
     /**
-     * Copy of the old constructor to keep compatibility, despite not needing all parameters.
+     * Creates a legacy book subprovider.
+     * <p>
+     * Language access is provided via setup injection at generate time.
+     *
+     * @param bookId the book id
+     * @param modId  the mod id
      */
-    public LegacyBookProvider(String bookId, PackOutput packOutput, String modId, ModonomiconLanguageProvider defaultLang) {
-        this(bookId, modId, defaultLang);
-    }
-
-    /**
-     * @param defaultLang The LanguageProvider to fill with this book provider. IMPORTANT: the Language Provider needs to be added to the DataGenerator AFTER the BookProvider.
-     */
-    public LegacyBookProvider(String bookId, String modId, BiConsumer<String, String> defaultLang) {
-        this(bookId, modId, defaultLang, Map.of());
-    }
-
-    /**
-     * @param defaultLang The LanguageProvider to fill with this book provider. IMPORTANT: the Language Provider needs to be added to the DataGenerator AFTER the BookProvider.
-     */
-    public LegacyBookProvider(String bookId, String modId, BiConsumer<String, String> defaultLang, Map<String, BiConsumer<String, String>> translations) {
-        super(modId, defaultLang, translations, new BookContextHelper(modId), new ConditionHelper());
+    public LegacyBookProvider(String bookId, String modId) {
+        super(modId, null, Map.of(), new BookContextHelper(modId), new ConditionHelper());
         this.book = null;
-
         this.bookId = bookId;
         this.currentSortIndex = 0;
     }

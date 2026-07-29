@@ -8,9 +8,14 @@ package com.klikli_dev.modonomicon.api.datagen.book.page;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.datagen.book.BookTextHolderModel;
+import com.klikli_dev.modonomicon.book.page.BookPage;
+import com.klikli_dev.modonomicon.book.page.BookRecipePage;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.crafting.Recipe;
 
 public abstract class BookRecipePageModel<T extends BookRecipePageModel<T>> extends BookPageModel<T> {
 
@@ -48,19 +53,19 @@ public abstract class BookRecipePageModel<T extends BookRecipePageModel<T>> exte
     }
 
     @Override
-    public JsonObject toJson(Identifier entryId, HolderLookup.Provider provider) {
-        var json = super.toJson(entryId, provider);
-        json.add("title1", this.title1.toJson(provider));
-        if (this.recipeId1 != null && !this.recipeId1.isEmpty()) {
-            json.addProperty("recipe_id_1", this.recipeId1);
-        }
-        json.add("title2", this.title2.toJson(provider));
-        if (this.recipeId2 != null && !this.recipeId2.isEmpty()) {
-            json.addProperty("recipe_id_2", this.recipeId2);
-        }
-        json.add("text", this.text.toJson(provider));
-        return json;
+    public BookPage toBookPage(HolderLookup.Provider provider) {
+        return this.createPage(new BookRecipePage.JsonDataHolder(
+                this.title1.toBookTextHolder(),
+                this.recipeId1 == null || this.recipeId1.isEmpty() ? null : ResourceKey.create(Registries.RECIPE, Identifier.parse(this.recipeId1)),
+                this.title2.toBookTextHolder(),
+                this.recipeId2 == null || this.recipeId2.isEmpty() ? null : ResourceKey.create(Registries.RECIPE, Identifier.parse(this.recipeId2)),
+                this.text.toBookTextHolder(),
+                this.id,
+                this.condition(provider)
+        ));
     }
+
+    protected abstract BookPage createPage(BookRecipePage.JsonDataHolder common);
 
     public T withTitle1(String title) {
         this.title1 = new BookTextHolderModel(title);

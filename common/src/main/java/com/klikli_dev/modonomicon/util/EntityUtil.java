@@ -15,6 +15,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntitySpawnRequest;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.ValueInput;
@@ -67,7 +68,11 @@ public class EntityUtil {
         return (world) -> {
             Entity entity;
             try {
-                entity = type.get().value().create(world, EntitySpawnReason.LOAD);
+                entity = type.get().value().create(world, new EntitySpawnRequest(EntitySpawnReason.LOAD, true));
+                // Set the entity ID to -1, matching BaseSpawner's pattern for display entities.
+                // Without this, getId() throws "Tried to access entity ID before ID assignment"
+                // because ClientLevel.getNextEntityId() returns 0 (INVALID_ENTITY_ID).
+                entity.setId(-1);
                 if (useNbt != null) {
                     ValueInput readView = TagValueInput.create(new ProblemReporter.Collector(), world.registryAccess(), useNbt);
                     entity.load(readView);

@@ -11,6 +11,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.klikli_dev.modonomicon.api.multiblock.TriPredicate;
+import com.klikli_dev.modonomicon.registry.PredicateRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -154,7 +155,7 @@ public abstract class MultiblockProvider implements DataProvider {
 
         /**
          * Creates a block matcher that will match the predicate with the given id.
-         * Predicates are registered via {@link com.klikli_dev.modonomicon.data.LoaderRegistry#registerPredicate(Identifier, TriPredicate)}
+         * Predicates are registered via {@link PredicateRegistry#register(Identifier, TriPredicate)}
          *
          * @param c                        the character
          * @param predicateId              the id of the predicate to match
@@ -167,7 +168,7 @@ public abstract class MultiblockProvider implements DataProvider {
 
         /**
          * Creates a block matcher that will match the predicate with the given id.
-         * Predicates are registered via {@link com.klikli_dev.modonomicon.data.LoaderRegistry#registerPredicate(Identifier, TriPredicate)}
+         * Predicates are registered via {@link PredicateRegistry#register(Identifier, TriPredicate)}
          *
          * @param c                        the character
          * @param predicateId              the id of the predicate to match

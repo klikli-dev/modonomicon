@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.arguments.item.ItemInput;
 import net.minecraft.commands.arguments.item.ItemParser;
 import net.minecraft.network.chat.ClickEvent;
@@ -51,15 +52,15 @@ public class ItemLinkRenderer implements LinkRenderer {
 
 
             var itemParser = new ItemParser(context.getProvider());
-            var itemStack = ItemStack.EMPTY;
+            var itemId = link.getDestination().substring(PROTOCOL_ITEM_LENGTH);
+            var reader = new StringReader(itemId);
+            ItemStack itemStack;
             try {
-                var itemId = link.getDestination().substring(PROTOCOL_ITEM_LENGTH);
-                var reader = new StringReader(itemId);
                 var itemResult = itemParser.parse(reader);
                 var itemInput = new ItemInput(itemResult.item(), itemResult.components());
                 itemStack = itemInput.createItemStack(1);
-            } catch (Exception e) {
-                BookErrorManager.get().error("Failed to parse item link.", e);
+            } catch (CommandSyntaxException e) {
+                throw new RuntimeException(e);
             }
 
 

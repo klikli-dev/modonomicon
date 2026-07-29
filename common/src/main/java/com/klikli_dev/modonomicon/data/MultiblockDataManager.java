@@ -17,19 +17,19 @@ import com.klikli_dev.modonomicon.platform.Services;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
-import net.minecraft.util.GsonHelper;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.profiling.ProfilerFiller;
 
 import java.util.Map;
 
 
-public class MultiblockDataManager extends LegacySimpleJsonResourceReloadListener {
+public class MultiblockDataManager extends SimpleJsonResourceReloadListener<JsonElement> {
     public static final String FOLDER = Data.MULTIBLOCK_DATA_PATH;
-    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
     private static final MultiblockDataManager instance = new MultiblockDataManager();
 
@@ -38,7 +38,7 @@ public class MultiblockDataManager extends LegacySimpleJsonResourceReloadListene
     private HolderLookup.Provider registries;
 
     private MultiblockDataManager() {
-        super(GSON, FOLDER);
+        super(ExtraCodecs.JSON, FileToIdConverter.json(FOLDER));
     }
 
     public static MultiblockDataManager get() {
@@ -74,7 +74,7 @@ public class MultiblockDataManager extends LegacySimpleJsonResourceReloadListene
 
     public void onDatapackSync(ServerPlayer player) {
         //If integrated server and host (= SP or lan host), don't send as we already have it
-        if(player.connection.connection.isMemoryConnection())
+        if (player.connection.connection.isMemoryConnection())
             return;
 
 
@@ -97,9 +97,8 @@ public class MultiblockDataManager extends LegacySimpleJsonResourceReloadListene
         this.preLoad();
 
         for (var entry : content.entrySet()) {
-            var json = GsonHelper.convertToJsonObject(entry.getValue(), "multiblock json file");
-            var type = Identifier.tryParse(GsonHelper.getAsString(json, "type"));
-            var multiblock = LoaderRegistry.getMultiblockJsonLoader(type).fromJson(json, this.registries);
+            var json = entry.getValue().getAsJsonObject();
+            var multiblock = Multiblock.fromJson(json, this.registries);
             multiblock.setId(entry.getKey());
             this.multiblocks.put(multiblock.getId(), multiblock);
         }

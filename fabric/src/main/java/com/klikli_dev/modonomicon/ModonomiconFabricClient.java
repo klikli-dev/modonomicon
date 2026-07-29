@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
+import com.klikli_dev.modonomicon.client.render.pip.GuiDirectEntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.render.pip.GuiMultiblockRenderer;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
@@ -60,11 +61,6 @@ public class ModonomiconFabricClient implements ClientModInitializer {
             MultiblockPreviewRenderer.extractRenderState(context.levelState());
         });
 
-        //Render multiblock preview - Phase 2: Render with extracted state
-        LevelRenderEvents.END_MAIN.register(context -> {
-            MultiblockPreviewRenderer.onRenderLevelLastEvent(context.levelState(), context.poseStack());
-        });
-
         //render multiblock hud
         HudElementRegistry.addLast(Modonomicon.loc("multiblock_preview_hud"), (context, tickCounter) -> {
             MultiblockPreviewRenderer.onRenderHUD(context, tickCounter.getGameTimeDeltaPartialTick(true));
@@ -81,7 +77,8 @@ public class ModonomiconFabricClient implements ClientModInitializer {
                 IsBookOpen.MAP_CODEC
         );
 
-        PictureInPictureRendererRegistry.register((ctx) -> new GuiMultiblockRenderer(ctx.bufferSource()));
+        PictureInPictureRendererRegistry.register((ctx) -> new GuiMultiblockRenderer());
+        PictureInPictureRendererRegistry.register((ctx) -> new GuiDirectEntryConnectionRenderer());
 
         //book geometry loader
         //done in MixinModelManager, because we have no event in Fabric

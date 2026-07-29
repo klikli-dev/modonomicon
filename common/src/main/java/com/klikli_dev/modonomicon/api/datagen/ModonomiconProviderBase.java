@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookOrConditionModel;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Style;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -27,10 +28,11 @@ public abstract class ModonomiconProviderBase {
     protected final Map<String, ModonomiconLanguageProvider> langs;
     protected final Map<String, BiConsumer<String, String>> langsAsBiConsumers;
     protected final BookContextHelper context;
-    protected final ConditionHelper conditionHelper;
+    protected ConditionHelper conditionHelper;
     private final Map<String, String> macros = new Object2ObjectOpenHashMap<>();
 
     private HolderLookup.Provider registries;
+    private ModonomiconLanguageProvider injectedLang;
 
     protected ModonomiconProviderBase(String modId, BiConsumer<String, String> lang, Map<String, BiConsumer<String, String>> langs, BookContextHelper context, ConditionHelper conditionHelper) {
         this.modId = modId;
@@ -49,12 +51,8 @@ public abstract class ModonomiconProviderBase {
     }
 
     public static ModonomiconLanguageProvider toLanguageProvider(BiConsumer<String, String> consumer) {
-        return new ModonomiconLanguageProvider() {
-            @Override
-            public void accept(String s, String s2) {
-                consumer.accept(s, s2);
-            }
-        };
+        if (consumer == null) return null;
+        return consumer::accept;
     }
 
     protected String modId() {
@@ -69,8 +67,16 @@ public abstract class ModonomiconProviderBase {
         this.registries = registries;
     }
 
+    /**
+     * Injects a language provider. Called by {@link com.klikli_dev.modonomicon.api.datagen.BookProvider}
+     * during generation.
+     */
+    public void injectLang(ModonomiconLanguageProvider lang) {
+        this.injectedLang = lang;
+    }
+
     protected ModonomiconLanguageProvider lang() {
-        return this.lang;
+        return this.injectedLang != null ? this.injectedLang : this.lang;
     }
 
     protected ModonomiconLanguageProvider lang(String locale) {
@@ -140,14 +146,14 @@ public abstract class ModonomiconProviderBase {
      * Create a link to an entry in the same book.
      */
     protected String entryLink(String text, String category, String entry) {
-        return this.format("[{0}](entry://{1}/{2})", text, category, entry);
+        return this.format("[{0}](entry://{1}/{2}/{3})", text, this.modLoc(this.context().bookId()), category, entry);
     }
 
     /**
      * Create a link to a category in the same book.
      */
     protected String categoryLink(String text, String category) {
-        return this.format("[{0}](category://{1})", text, category);
+        return this.format("[{0}](category://{1}/{2})", text, this.modLoc(this.context().bookId()), category);
     }
 
     /**
@@ -169,7 +175,7 @@ public abstract class ModonomiconProviderBase {
      * Create a command link for the command with the given id.
      */
     protected String commandLink(String text, String commandId) {
-        return this.format("[{0}](command://{1})", text, commandId);
+        return this.format("[{0}](command://{1}/{2})", text, this.modLoc(this.context().bookId()), this.modLoc(commandId));
     }
 
     /**
@@ -189,7 +195,7 @@ public abstract class ModonomiconProviderBase {
     }
 
     protected String color(String text, ChatFormatting color) {
-        return this.color(text, color.getColor());
+        return this.color(text, Style.EMPTY.withColor(color).getColor().getValue());
     }
 
     protected String color(String text, int rgb) {

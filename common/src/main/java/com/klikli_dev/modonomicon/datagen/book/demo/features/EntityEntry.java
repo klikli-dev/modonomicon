@@ -10,7 +10,7 @@ import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookEntityPageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
-import com.mojang.datafixers.util.Pair;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.world.item.Items;
 
 public class EntityEntry extends EntryProvider {
@@ -42,6 +42,7 @@ public class EntityEntry extends EntryProvider {
                 .withText(this.context().pageText())
                 .withEntityId("minecraft:spider")
                 .withScale(1f)
+                .withOffset(-0.5f)
         );
         this.pageText("A sample entity page with automatic title.");
     }
@@ -57,7 +58,7 @@ public class EntityEntry extends EntryProvider {
     }
 
     @Override
-    protected Pair<Integer, Integer> entryBackground() {
+    protected GuiSprite entryBackground() {
         return EntryBackground.DEFAULT;
     }
 
@@ -71,3 +72,4 @@ public class EntityEntry extends EntryProvider {
         return ID;
     }
 }
+

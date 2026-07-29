@@ -12,7 +12,7 @@ import net.minecraft.client.gui.screens.Screen;
 
 public class FabricGuiHelper implements GuiHelper {
 
-    private static FabricMultiLayerScreen multiLayerScreen;
+    private static MultiLayerScreen multiLayerScreen;
 
     public static float getGuiFarPlane() {
         // 11000 units for the overlay background,
@@ -31,7 +31,7 @@ public class FabricGuiHelper implements GuiHelper {
         var oldScreen = minecraft.gui.screen();
 
         if(multiLayerScreen == null)
-            multiLayerScreen = new FabricMultiLayerScreen();
+            multiLayerScreen = new MultiLayerScreen();
 
         if (oldScreen != multiLayerScreen) {
             //if our layer screen is not the current screen then some other mod or vanilla/loader code has set a screen or null

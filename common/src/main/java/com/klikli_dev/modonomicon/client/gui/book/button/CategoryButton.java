@@ -7,16 +7,14 @@
 package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.book.BookCategory;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.node.BookParentNodeScreen;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.renderer.RenderPipelines;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
@@ -41,17 +39,19 @@ public class CategoryButton extends Button {
     protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
         if (this.visible) {
             guiGraphics.pose().pushMatrix();
-            int xOffset = this.getCategory().getBook().getCategoryButtonXOffset();
+            int xOffset = this.getCategory().getBook().theme().layout().categoryButtonXOffset();
             guiGraphics.pose().translate(xOffset, 0);
-
-            int texX = 0;
-            int texY = 145;
 
             int renderX = this.getX();
             int renderWidth = this.width;
+            boolean selected = BookGuiManager.get().openBookCategoryScreen != null && this.category == BookGuiManager.get().openBookCategoryScreen.getCategory();
+            var sprites = this.getCategory().getCategoryButtonSprites() != null
+                    ? this.getCategory().getCategoryButtonSprites()
+                    : this.parent.getBook().theme().content().categoryButton();
+            var sprite = sprites.state(this.isHovered(), selected);
 
             int color;
-            if (BookGuiManager.get().openBookCategoryScreen != null && this.category == BookGuiManager.get().openBookCategoryScreen.getCategory()) {
+            if (selected) {
                 renderX -= 3;
                 renderWidth += 3;
                 color = ARGB.colorFromFloat(1.0f, 1.0F, 1.0F, 1.0F);
@@ -64,13 +64,12 @@ public class CategoryButton extends Button {
             }
 
             //draw category button background
-//            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.parent.getBookOverviewTexture(), renderX, this.getY(), texX, texY, renderWidth, this.height, 256, 256, color);
+            sprite.extractRenderState(guiGraphics, renderX, this.getY(), renderWidth, this.height, color);
 
             //then draw icon
             int iconSize = 16;
             int centerIconOffset = iconSize / 2;
-            float scale = this.getCategory().getBook().getCategoryButtonIconScale();
+            float scale = this.getCategory().getBook().theme().layout().categoryButtonIconScale();
 
             guiGraphics.pose().pushMatrix();
             //TODO had a +100 z here
@@ -90,7 +89,8 @@ public class CategoryButton extends Button {
             guiGraphics.pose().popMatrix();
 
             //render unread category indicator
-            if (!BookUnlockStateManager.get().isCategoryReadFor(Minecraft.getInstance().player, this.category)) {
+            if (BookServices.visibility().isVisible(Minecraft.getInstance().player, this.category)
+                    && BookServices.interaction().isCategoryUnread(Minecraft.getInstance().player, this.category)) {
                 BookContentRenderer.drawUnreadIndicator(guiGraphics, this.category.getBook(),
                         renderX + renderWidth - 11 + 2, this.getY() - 2, this.isHovered());
             }
@@ -99,3 +99,4 @@ public class CategoryButton extends Button {
         }
     }
 }
+

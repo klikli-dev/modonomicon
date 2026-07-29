@@ -70,7 +70,7 @@ public class BookImagePageRenderer extends BookPageRenderer<BookImagePage> imple
         guiGraphics.pose().popMatrix();
 
         if (this.page.hasBorder()) {
-            BookContentRenderer.drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, this.getPage().getBook(), x, y, 405, 149, 106, 106);
+            BookContentRenderer.drawSprite(guiGraphics, this.getPage().getBook().theme().content().mediaFrame(), x, y);
         }
 
         if (this.page.getImages().length > 1 && this.page.hasBorder()) {

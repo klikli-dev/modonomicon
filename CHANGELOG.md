@@ -22,6 +22,203 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### :wrench: Chores
 - [`c13984b`](https://github.com/klikli-dev/modonomicon/commit/c13984b7745e093c18229c7a4589e78053b02ebe) - update action versions *(commit by [@klikli-dev](https://github.com/klikli-dev))*
 - [`a5f6948`](https://github.com/klikli-dev/modonomicon/commit/a5f6948c2b865eb2bcb2473b4d7508c437cd12b4) - improve logging *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+## [release/v26.1.2-2.1.1] - 2026-06-28
+### :bug: Bug Fixes
+- [`489bd4e`](https://github.com/klikli-dev/modonomicon/commit/489bd4e8ace582c51797864e12b73829aa625493) - clear saved open entry on normal close *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-2.1.0] - 2026-06-28
+### :sparkles: New Features
+- [`db9f5ee`](https://github.com/klikli-dev/modonomicon/commit/db9f5ee588fb75720bea1330a8e28d367db70e1b) - always sync research definitions to clients *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-2.0.0] - 2026-06-21
+### :sparkles: New Features
+- [`db3ce21`](https://github.com/klikli-dev/modonomicon/commit/db3ce2115b3b5d181c504c0059ce53bbd153df34) - research system *(PR [#374](https://github.com/klikli-dev/modonomicon/pull/374) by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.148.1] - 2026-06-10
+### :wrench: Chores
+- [`0e48022`](https://github.com/klikli-dev/modonomicon/commit/0e48022457f4e2e181ce0531be8108bf0f904eb7) - disable missing recipe book category log *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.148.0] - 2026-06-08
+### :sparkles: New Features
+- [`4966d0f`](https://github.com/klikli-dev/modonomicon/commit/4966d0f52eb91ca558e43855fc54a4d093467186) - add config to pause game if book is open *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`6df838d`](https://github.com/klikli-dev/modonomicon/commit/6df838d8a7c9effaabcf5354703805f8a045ab97) - implement getCreatorModId/Namespace *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`750f6e4`](https://github.com/klikli-dev/modonomicon/commit/750f6e4e9b2f6629129931ea71280860f02d67e2) - update deprecated Neo api *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.147.1] - 2026-06-08
+### :bug: Bug Fixes
+- [`8f1edc0`](https://github.com/klikli-dev/modonomicon/commit/8f1edc032ff796b3f7d2abb5f0e5676e50358482) - page order *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.147.0] - 2026-06-02
+### :sparkles: New Features
+- [`d7bed44`](https://github.com/klikli-dev/modonomicon/commit/d7bed44fb12ae7023e15dc7a725f7dcc6ce57783) - update to stable neo *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.146.0] - 2026-05-28
+### :sparkles: New Features
+- [`b485ac0`](https://github.com/klikli-dev/modonomicon/commit/b485ac02b332da6d78acf0a29d5d484fe2986e7e) - architecture cleanup for future research system *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`47b7fac`](https://github.com/klikli-dev/modonomicon/commit/47b7fac7fe7ea0f0dd2b95c4ad8c0b831f96ff25) - route read-all through interaction service *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.145.3] - 2026-05-27
+### :bug: Bug Fixes
+- [`1a09148`](https://github.com/klikli-dev/modonomicon/commit/1a09148e7a46c9acb7d86dacf5c0117519e58702) - skip unloaded entry page files *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.145.2] - 2026-05-27
+### :bug: Bug Fixes
+- [`524156e`](https://github.com/klikli-dev/modonomicon/commit/524156ef2f88954cb0cb52c7b16b41d4eccd6299) - invalid link parser safety *(PR [#367](https://github.com/klikli-dev/modonomicon/pull/367) by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.145.1] - 2026-05-27
+### :bug: Bug Fixes
+- [`7b5bb10`](https://github.com/klikli-dev/modonomicon/commit/7b5bb10a0f043200305180f60d6786aaad694e68) - tighten datagen layout resolution and add javadoc *(PR [#365](https://github.com/klikli-dev/modonomicon/pull/365) by [@klikli-dev](https://github.com/klikli-dev))*
+- [`df721ad`](https://github.com/klikli-dev/modonomicon/commit/df721add88465f87a29be553fe483d17a4214d3f) - default generated entries to zero layout *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`43f7704`](https://github.com/klikli-dev/modonomicon/commit/43f770436525645e083cbccceeb2d1bb51dea6d0) - disable test build *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.145.0] - 2026-05-25
+### :sparkles: New Features
+- [`9f8d75d`](https://github.com/klikli-dev/modonomicon/commit/9f8d75dd2face87cfc2753efe172f2ddba497aef) - allow pages to be supplied as separate JSON files *(PR [#362](https://github.com/klikli-dev/modonomicon/pull/362) by [@klikli-dev](https://github.com/klikli-dev))*
+- [`cfae3e8`](https://github.com/klikli-dev/modonomicon/commit/cfae3e89ab94a44542d89aa53fec762c35954d49) - add layout helper to datagen *(PR [#364](https://github.com/klikli-dev/modonomicon/pull/364) by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.144.0] - 2026-05-25
+### :bug: Bug Fixes
+- [`f0e4d8e`](https://github.com/klikli-dev/modonomicon/commit/f0e4d8e368d0f8d31cdd7b8711acdd457230ecaf) - simplify book entry link format *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`87e31fc`](https://github.com/klikli-dev/modonomicon/commit/87e31fc3aa611b055f0a7e369ac27e21ad0e62e7) - cleanup *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.143.0] - 2026-05-24
+### :sparkles: New Features
+- [`61af600`](https://github.com/klikli-dev/modonomicon/commit/61af600ed5803a7fff0b6b3932b233d3032eb421) - update content types to load from codecs *(PR [#359](https://github.com/klikli-dev/modonomicon/pull/359) by [@klikli-dev](https://github.com/klikli-dev))*
+- [`8cce233`](https://github.com/klikli-dev/modonomicon/commit/8cce23308a838a33d38f93168c4b2bc4e06fc047) - add runtime book content addition api *(PR [#360](https://github.com/klikli-dev/modonomicon/pull/360) by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`51779e2`](https://github.com/klikli-dev/modonomicon/commit/51779e2f6e0fe2be5163e084bf59245ff423c470) - update fabric *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.142.0] - 2026-05-09
+### :sparkles: New Features
+- [`07fd46c`](https://github.com/klikli-dev/modonomicon/commit/07fd46c1e9595c577d04d1bd6272918f6d4a3c5f) - new beautiful skin thanks to https://github.com/ArcanaMod/Arcana *(PR [#357](https://github.com/klikli-dev/modonomicon/pull/357) by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.141.0] - 2026-05-08
+### :sparkles: New Features
+- [`e278b30`](https://github.com/klikli-dev/modonomicon/commit/e278b30192628998b4e9ca20c78c5d6f5db4752d) - Add a new node connection render mode: Direct *(PR [#356](https://github.com/klikli-dev/modonomicon/pull/356) by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.140.1] - 2026-05-02
+### :bug: Bug Fixes
+- [`3f72834`](https://github.com/klikli-dev/modonomicon/commit/3f72834ead119269680d54c0f24a3675d66a2074) - ModonomiconBookItem extensibility *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.140.0] - 2026-05-01
+### :recycle: Refactors
+- [`798bf0f`](https://github.com/klikli-dev/modonomicon/commit/798bf0fd6f0ce5c956f520e3cf46de941111ae04) - fluid and gui frame rendering *(PR [#355](https://github.com/klikli-dev/modonomicon/pull/355) by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.139.1] - 2026-04-29
+### :bug: Bug Fixes
+- [`53e0fc2`](https://github.com/klikli-dev/modonomicon/commit/53e0fc21147f907e5640eb5f8a0070f7928ed1f6) - sprite sizes *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.139.0] - 2026-04-29
+### :recycle: Refactors
+- [`0446e46`](https://github.com/klikli-dev/modonomicon/commit/0446e4606e2d57143069042124c154000e065b2d) - delegate sprite rendering to sprite itself *(PR [#354](https://github.com/klikli-dev/modonomicon/pull/354) by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.138.1] - 2026-04-29
+### :bug: Bug Fixes
+- [`a721625`](https://github.com/klikli-dev/modonomicon/commit/a7216252e9b0e0a7c6ebf66c4b61fb8ebe105d8c) - default entry bg *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.138.0] - 2026-04-29
+### :recycle: Refactors
+- [`475388b`](https://github.com/klikli-dev/modonomicon/commit/475388b640f3e924fa6c50bd631af56828edda42) - unify gui sprite type *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.137.0] - 2026-04-29
+### :sparkles: New Features
+- [`9baa251`](https://github.com/klikli-dev/modonomicon/commit/9baa2515c5422088984acc9f53ab018d7a4db76a) - expose book theme crafting recipe sprites *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`93156e4`](https://github.com/klikli-dev/modonomicon/commit/93156e48bc52caa8a61b386d30eb4cf859cc83d1) - rename *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.136.0] - 2026-04-28
+### :sparkles: New Features
+- [`27ab22e`](https://github.com/klikli-dev/modonomicon/commit/27ab22e495772098087d8e9a8029f545c540ec25) - book themes *(PR [#352](https://github.com/klikli-dev/modonomicon/pull/352) by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.135.0] - 2026-04-25
+### :sparkles: New Features
+- [`5ea9fc5`](https://github.com/klikli-dev/modonomicon/commit/5ea9fc54aea843eaffe12f14bde86c0f0eb87ad5) - add AGENTS.md *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`1996c21`](https://github.com/klikli-dev/modonomicon/commit/1996c210ec4495031e7559e80ba884475823ade5) - restore search screen text alpha *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`ab0b28e`](https://github.com/klikli-dev/modonomicon/commit/ab0b28e34d5be2b6ef85dfa28de99f1db49367c0) - improve AGENTS.md *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.134.3] - 2026-04-15
+### :bug: Bug Fixes
+- [`4960a2c`](https://github.com/klikli-dev/modonomicon/commit/4960a2cb79025e5ced768ecace1c06329aab9f16) - handle null and unregistered recipe book categories *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.134.2] - 2026-04-14
+### :bug: Bug Fixes
+- [`5a59cd0`](https://github.com/klikli-dev/modonomicon/commit/5a59cd04dc30a6ca63566e56e91720b8fb6b8a1d) - restore index overview widget layout *(PR [#350](https://github.com/klikli-dev/modonomicon/pull/350) by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`36c8809`](https://github.com/klikli-dev/modonomicon/commit/36c8809fb8701cfe0b2e50b2b1dfd9d3906ecfe5) - remove unused var *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`a4eb922`](https://github.com/klikli-dev/modonomicon/commit/a4eb922eb4564472f507ff342e58c81662aa4f22) - bump fabric loader version *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.2-1.134.1] - 2026-04-10
+### :bug: Bug Fixes
+- [`8b52b40`](https://github.com/klikli-dev/modonomicon/commit/8b52b405dc7b2f1bf56ac46417194cb178ae4479) - compiler error on testcompile *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.1-1.132.3] - 2026-04-09
+### :bug: Bug Fixes
+- [`dfbd197`](https://github.com/klikli-dev/modonomicon/commit/dfbd1974ee1b27b0995b15ad4d51a263c8d7110f) - multiblock preview rendering BE lighting *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.1-1.132.2] - 2026-04-08
+### :bug: Bug Fixes
+- [`934d466`](https://github.com/klikli-dev/modonomicon/commit/934d4661a5d48efbe28b49097038983bbc81c694) - correctly call render state extraction on fabric *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`e7b5942`](https://github.com/klikli-dev/modonomicon/commit/e7b59420fa4ab5a2ab7b8343cf484a5995467a38) - clean up comments *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.1-1.132.1] - 2026-04-08
+### :bug: Bug Fixes
+- [`d35e42c`](https://github.com/klikli-dev/modonomicon/commit/d35e42c2cbd9bca3aa34e50964ecde3bb3f6a2b8) - multiblock preview block entity rendering in fabric *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.1-1.132.0] - 2026-04-08
+### :bug: Bug Fixes
+- [`f579d5b`](https://github.com/klikli-dev/modonomicon/commit/f579d5bc36c7cc2f3a65059c7e83be199df278c8) - model manager mixin *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`c7a64e5`](https://github.com/klikli-dev/modonomicon/commit/c7a64e5041f96c7bdf4165e14ec4f7e74def0520) - multiblock preview rendering *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
+## [release/v26.1.1-1.131.0] - 2026-04-08
+### :sparkles: New Features
+- [`d80dfe0`](https://github.com/klikli-dev/modonomicon/commit/d80dfe05f1fc222c875d936d111d193d1eafa758) - update to 26.1.1 *(commit by [@klikli-dev](https://github.com/klikli-dev))*
 
 
 ## [release/v26.1-1.130.0] - 2026-04-03
@@ -2089,3 +2286,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1-1.130.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1-1.129.0...release/v26.1-1.130.0
 [release/v26.2-1.133.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.2-0.0.0...release/v26.2-1.133.0
 [release/v26.2-1.133.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.2-1.133.0...release/v26.2-1.133.1
+[release/v26.1.1-1.131.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.1-0.0.0...release/v26.1.1-1.131.0
+[release/v26.1.1-1.132.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.1-1.131.0...release/v26.1.1-1.132.0
+[release/v26.1.1-1.132.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.1-1.132.0...release/v26.1.1-1.132.1
+[release/v26.1.1-1.132.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.1-1.132.1...release/v26.1.1-1.132.2
+[release/v26.1.1-1.132.3]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.1-1.132.2...release/v26.1.1-1.132.3
+[release/v26.1.2-1.134.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.134.0...release/v26.1.2-1.134.1
+[release/v26.1.2-1.134.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.134.1...release/v26.1.2-1.134.2
+[release/v26.1.2-1.134.3]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.134.2...release/v26.1.2-1.134.3
+[release/v26.1.2-1.135.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.134.3...release/v26.1.2-1.135.0
+[release/v26.1.2-1.136.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.135.0...release/v26.1.2-1.136.0
+[release/v26.1.2-1.137.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.136.0...release/v26.1.2-1.137.0
+[release/v26.1.2-1.138.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.137.0...release/v26.1.2-1.138.0
+[release/v26.1.2-1.138.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.138.0...release/v26.1.2-1.138.1
+[release/v26.1.2-1.139.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.138.1...release/v26.1.2-1.139.0
+[release/v26.1.2-1.139.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.139.0...release/v26.1.2-1.139.1
+[release/v26.1.2-1.140.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.139.1...release/v26.1.2-1.140.0
+[release/v26.1.2-1.140.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.140.0...release/v26.1.2-1.140.1
+[release/v26.1.2-1.141.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.140.1...release/v26.1.2-1.141.0
+[release/v26.1.2-1.142.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.141.0...release/v26.1.2-1.142.0
+[release/v26.1.2-1.143.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.142.0...release/v26.1.2-1.143.0
+[release/v26.1.2-1.144.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.143.0...release/v26.1.2-1.144.0
+[release/v26.1.2-1.145.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.144.0...release/v26.1.2-1.145.0
+[release/v26.1.2-1.145.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.145.0...release/v26.1.2-1.145.1
+[release/v26.1.2-1.145.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.145.1...release/v26.1.2-1.145.2
+[release/v26.1.2-1.145.3]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.145.2...release/v26.1.2-1.145.3
+[release/v26.1.2-1.146.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.145.3...release/v26.1.2-1.146.0
+[release/v26.1.2-1.147.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.146.0...release/v26.1.2-1.147.0
+[release/v26.1.2-1.147.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.147.0...release/v26.1.2-1.147.1
+[release/v26.1.2-1.148.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.147.1...release/v26.1.2-1.148.0
+[release/v26.1.2-1.148.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.148.0...release/v26.1.2-1.148.1
+[release/v26.1.2-2.0.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-1.148.1...release/v26.1.2-2.0.0
+[release/v26.1.2-2.1.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.0.0...release/v26.1.2-2.1.0
+[release/v26.1.2-2.1.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.1.0...release/v26.1.2-2.1.1

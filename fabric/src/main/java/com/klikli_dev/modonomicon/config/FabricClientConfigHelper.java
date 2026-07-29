@@ -25,4 +25,14 @@ public class FabricClientConfigHelper implements ClientConfigHelper {
     public List<String> fontFallbackLocales() {
         return ClientConfig.fontFallbackLocales.getValue();
     }
+
+    @Override
+    public boolean shouldShowResearchToasts() {
+        return ClientConfig.showResearchToasts.getValue();
+    }
+
+    @Override
+    public boolean pauseGameWhenOpen() {
+        return ClientConfig.pauseGameWhenOpen.getValue();
+    }
 }

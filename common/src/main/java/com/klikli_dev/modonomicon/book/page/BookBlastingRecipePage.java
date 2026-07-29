@@ -6,14 +6,20 @@
 
 package com.klikli_dev.modonomicon.book.page;
 
-import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
-import net.minecraft.core.HolderLookup;
+import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.data.BookPageType;
+import com.klikli_dev.modonomicon.registry.BookPageTypeRegistry;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.BlastingRecipe;
 
 public class BookBlastingRecipePage extends BookProcessingRecipePage<BlastingRecipe> {
+
+    public static final Identifier ID = Modonomicon.loc("blasting_recipe");
+    public static final MapCodec<BookBlastingRecipePage> CODEC = codec(BookBlastingRecipePage::new);
+    public static final StreamCodec<RegistryFriendlyByteBuf, BookBlastingRecipePage> STREAM_CODEC = streamCodec(BookBlastingRecipePage::new);
 
     public BookBlastingRecipePage(JsonDataHolder common) {
         super(common);
@@ -23,18 +29,8 @@ public class BookBlastingRecipePage extends BookProcessingRecipePage<BlastingRec
         super(common);
     }
 
-    public static BookBlastingRecipePage fromJson(Identifier entryId, JsonObject json, HolderLookup.Provider provider) {
-        var common = BookRecipePage.commonFromJson(entryId, json, provider);
-        return new BookBlastingRecipePage(common);
-    }
-
-    public static BookBlastingRecipePage fromNetwork(RegistryFriendlyByteBuf buffer) {
-        var common = BookRecipePage.commonFromNetwork(buffer);
-        return new BookBlastingRecipePage(common);
-    }
-
     @Override
-    public Identifier getType() {
-        return Page.BLASTING_RECIPE;
+    public BookPageType<?> type() {
+        return BookPageTypeRegistry.BLASTING_RECIPE;
     }
 }

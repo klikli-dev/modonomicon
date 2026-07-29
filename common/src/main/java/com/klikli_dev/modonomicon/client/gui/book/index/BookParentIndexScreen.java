@@ -11,7 +11,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.bookstate.visual.BookVisualState;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
@@ -20,7 +20,8 @@ import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.bookmarks.BookBookmarksScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryListButton;
-import com.klikli_dev.modonomicon.client.gui.book.button.ReadAllButton;
+import com.klikli_dev.modonomicon.client.gui.book.button.BookSideButtonRenderer;
+import com.klikli_dev.modonomicon.client.gui.book.button.ResearchProgressButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ShowBookmarksButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ShowRecentlyUnlockedButton;
@@ -28,17 +29,12 @@ import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.recentlyunlocked.BookRecentlyUnlockedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
-import com.klikli_dev.modonomicon.networking.ClickReadAllButtonMessage;
-import com.klikli_dev.modonomicon.networking.SyncBookUnlockStatesMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
-import com.klikli_dev.modonomicon.platform.Services;
-import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
-import net.minecraft.client.Minecraft;
+import com.klikli_dev.modonomicon.research.ResearchServices;
+import com.klikli_dev.modonomicon.util.TextRenderHelper;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -70,7 +66,6 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
     private boolean hasUnreadUnlockedEntries;
     private boolean hasUnreadCategories;
     private boolean hasUnreadUnlockedCategories;
-
     public BookParentIndexScreen(Book book) {
         super(Component.translatable(book.getName()));
 
@@ -79,18 +74,28 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
     protected void updateUnreadEntriesState() {
         //check if ANY entry is unread
-        this.hasUnreadEntries = this.book.getEntries().values().stream().anyMatch(e -> !BookUnlockStateManager.get().isReadFor(this.minecraft.player, e));
+        this.hasUnreadEntries = this.book.getEntries().values().stream().anyMatch(e -> BookServices.stateAccess().isEntryUnread(this.minecraft.player, e));
 
         //check if any currently unlocked entry is unread
         this.hasUnreadUnlockedEntries = this.book.getEntries().values().stream().anyMatch(e ->
-                BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e) &&
-                        !BookUnlockStateManager.get().isReadFor(this.minecraft.player, e));
+                BookServices.visibility().isVisible(this.minecraft.player, e) && BookServices.stateAccess().isEntryUnread(this.minecraft.player, e));
 
         //check if ANY category is unread
-        this.hasUnreadCategories = this.book.getCategories().values().stream().anyMatch(c -> !BookUnlockStateManager.get().isCategoryReadFor(this.minecraft.player, c));
+        this.hasUnreadCategories = this.book.getCategories().values().stream().anyMatch(c -> BookServices.interaction().isCategoryUnread(this.minecraft.player, c));
 
         //check if any currently unlocked category is unread
-        this.hasUnreadUnlockedCategories = this.book.getCategories().values().stream().anyMatch(c -> BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, c) && !BookUnlockStateManager.get().isCategoryReadFor(this.minecraft.player, c));
+        this.hasUnreadUnlockedCategories = this.book.getCategories().values().stream().anyMatch(c -> BookServices.visibility().isVisible(this.minecraft.player, c) && BookServices.interaction().isCategoryUnread(this.minecraft.player, c));
+    }
+
+    private boolean hasVisibleResearchProgress() {
+        return this.book.getEntries().values().stream().anyMatch(e ->
+                BookServices.visibility().isVisible(this.minecraft.player, e)
+                        && ResearchServices.hooks().canProgressEntryViewedOnce(this.minecraft.player, e.getId()));
+    }
+
+    private boolean hasAnyResearchProgress() {
+        return this.book.getEntries().values().stream().anyMatch(e ->
+                ResearchServices.hooks().canProgressEntryViewedOnce(this.minecraft.player, e.getId()));
     }
 
     public void handleButtonEntry(Button button) {
@@ -100,6 +105,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
     }
 
     protected void drawTitle(GuiGraphicsExtractor guiGraphics, int x, int y){
+        guiGraphics.pose().pushMatrix();
         var scale = Math.min(1.0f, (float) BookEntryScreen.MAX_TITLE_WIDTH / (float) this.font.width(this.getTitle()));
         if (scale < 1) {
             guiGraphics.pose().translate(x - x * scale, y - y * scale);
@@ -107,7 +113,8 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         }
 
         //we use scale 1 because our scale translation handling in there is off a bit. the above translation code is better
-        this.drawCenteredStringNoShadow(guiGraphics, this.getTitle(), x, y, this.getBook().getDefaultTitleColor(), 1);
+        this.drawCenteredStringNoShadow(guiGraphics, this.getTitle(), x, y, this.getBook().theme().palette().defaultTitleColor(), 1);
+        guiGraphics.pose().popMatrix();
     }
 
     public void drawCenteredStringNoShadow(GuiGraphicsExtractor guiGraphics, Component s, int x, int y, int color) {
@@ -115,7 +122,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
     }
 
     public void drawCenteredStringNoShadow(GuiGraphicsExtractor guiGraphics, Component s, int x, int y, int color, float scale) {
-        GuiGraphicsExt.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
+        TextRenderHelper.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
     }
 
     @Override
@@ -228,11 +235,10 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
         this.resetTooltip();
 
-        //we need to modify blit offset (now: z pose) to not draw over toasts
-        //TODO we had -1300z here
+        guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
 
-        BookContentRenderer.renderBookBackground(guiGraphics, this.getBook().getBookContentTexture());
+        BookContentRenderer.renderBookBackground(guiGraphics, this.getBook());
 
 
         if (this.openPagesIndex == 0) {
@@ -248,7 +254,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
                 this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.CATEGORY_INDEX_LIST_TITLE),
                         BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING,
-                        this.getBook().getDefaultTitleColor());
+                        this.getBook().theme().palette().defaultTitleColor());
 
                 BookContentRenderer.drawTitleSeparator(guiGraphics, this.getBook(),
                         BookEntryScreen.LEFT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING + 12);
@@ -257,9 +263,11 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
                 BookPageRenderer.renderBookTextHolder(guiGraphics, this.book.getDescription(), this.font,
                         BookEntryScreen.LEFT_PAGE_X, BookEntryScreen.TOP_PADDING + 22, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - (BookEntryScreen.TOP_PADDING + 22),
-                        this.book.getDefaultTextColor());
+                        this.book.theme().palette().defaultTextColor());
             }
         }
+
+        guiGraphics.pose().popMatrix();
 
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
@@ -293,14 +301,6 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
     }
 
     @Override
-    public void onSyncBookUnlockStatesMessage(SyncBookUnlockStatesMessage message) {
-        //this leads to re-init of the category buttons after a potential unlock
-        this.rebuildWidgets();
-
-        this.updateUnreadEntriesState();
-    }
-
-    @Override
     public boolean keyPressed(KeyEvent event) {
         if (event.key() == GLFW.GLFW_KEY_ESCAPE) {
             BookGuiManager.get().closeScreenStack(this);
@@ -318,52 +318,23 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         return super.keyPressed(event);
     }
 
-    protected boolean canSeeReadAllButton() {
-        return this.hasUnreadEntries || this.hasUnreadUnlockedEntries || this.hasUnreadCategories || this.hasUnreadUnlockedCategories;
-    }
-
-
-    protected void onReadAllButtonClick(ReadAllButton button) {
-        if (this.hasUnreadUnlockedEntries &&
-                !this.minecraft.hasShiftDown()) {
-            Services.NETWORK.sendToServer(new ClickReadAllButtonMessage(this.book.getId(), false));
-            this.hasUnreadUnlockedEntries = false;
-        } else if (this.hasUnreadEntries && this.minecraft.hasShiftDown()) {
-            Services.NETWORK.sendToServer(new ClickReadAllButtonMessage(this.book.getId(), true));
-            this.hasUnreadEntries = false;
-        }
-    }
-
     @Override
     public void init() {
         super.init();
 
         //we filter out entries that are locked or in locked categories
-        this.allEntries = this.getEntries().stream().filter(e ->
-                        BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e) &&
-                                BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e)
-                ).sorted(Comparator.comparingInt(BookCategory::getSortNumber)
+        this.allEntries = this.getEntries().stream().sorted(Comparator.comparingInt(BookCategory::getSortNumber)
                         .thenComparing(a -> I18n.get(a.getName())))
                 .toList();
 
         this.createEntryList();
 
 
-        int readAllButtonX = this.bookLeft + FULL_WIDTH - ReadAllButton.WIDTH / 2;
-        int readAllButtonY = this.bookTop + ReadAllButton.HEIGHT + 15;
-
-        var readAllButton = new ReadAllButton(this, readAllButtonX, readAllButtonY,
-                () -> this.hasUnreadUnlockedEntries, //if we have unlocked entries that are not read -> blue
-                this::canSeeReadAllButton, //display condition -> if we have any unlocked entries -> grey
-                (b) -> this.onReadAllButtonClick((ReadAllButton) b));
-
-        this.addRenderableWidget(readAllButton);
-
-        int buttonHeight = 20;
-        int searchButtonX = this.bookLeft + FULL_WIDTH - 5;
-        int searchButtonY = this.bookTop + FULL_HEIGHT - 30;
-        int searchButtonWidth = 44-10; //width in png
         int scissorX = this.bookLeft + FULL_WIDTH;//this is the render location of our frame so our search button never overlaps
+        int buttonHeight = this.getBook().theme().content().searchButton().normal().height();
+        int searchButtonX = BookSideButtonRenderer.anchoredButtonX(scissorX);
+        int searchButtonY = this.bookTop + FULL_HEIGHT - 30;
+        int searchButtonWidth = this.getBook().theme().content().searchButton().normal().width();
 
         var searchButton = new SearchButton(this, searchButtonX, searchButtonY,
                 scissorX,
@@ -391,6 +362,15 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
                     Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_RECENTLY_UNLOCKED)));
             this.addRenderableWidget(showRecentlyUnlockedButton);
         }
+
+        int readAllButtonY = this.bookTop + 15;
+        var researchProgressButton = new ResearchProgressButton(this, searchButtonX, readAllButtonY, scissorX,
+                this::hasVisibleResearchProgress,
+                this::hasAnyResearchProgress,
+                () -> {},
+                () -> {});
+
+        this.addRenderableWidget(researchProgressButton);
     }
 
     protected void onSearchButtonClick(SearchButton button) {
@@ -424,6 +404,6 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
     @Override
     public boolean isPauseScreen() {
-        return false;
+        return ClientServices.CLIENT_CONFIG.pauseGameWhenOpen();
     }
 }

@@ -29,6 +29,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.function.Consumer;
 
@@ -81,9 +82,8 @@ public class ModonomiconItem extends Item {
         itemInHand.set(DataComponentRegistry.BOOK_OPEN.get(), true);
 
         if (pLevel.isClientSide()) {
-            if (itemInHand.get(DataComponentRegistry.BOOK_ID.get()) != null) {
-                var book = getBook(itemInHand);
-
+            var book = this.getBookFor(itemInHand);
+            if (book != null) {
                 BookGuiManager.get().openBook(BookAddress.defaultFor(book));
             } else {
                 Modonomicon.LOG.error("ModonomiconItem: ItemStack has no tag!");
@@ -94,7 +94,7 @@ public class ModonomiconItem extends Item {
     }
 
     @Override
-    public Component getName(ItemStack pStack) {
+    public @NonNull Component getName(@NonNull ItemStack pStack) {
         Book book = this.getBookFor(pStack);
         if (book != null) {
             return Component.translatable(book.getName());
@@ -108,7 +108,7 @@ public class ModonomiconItem extends Item {
     public void appendHoverText(@NotNull ItemStack itemStack, @NotNull TooltipContext tooltipContext, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> consumer, @NotNull TooltipFlag tooltipFlag) {
         super.appendHoverText(itemStack, tooltipContext, tooltipDisplay, consumer, tooltipFlag);
 
-        Book book = getBook(itemStack);
+        Book book = this.getBookFor(itemStack);
         if (book != null) {
             if (tooltipFlag.isAdvanced()) {
                 consumer.accept(Component.literal("Book ID: ").withStyle(ChatFormatting.DARK_GRAY)

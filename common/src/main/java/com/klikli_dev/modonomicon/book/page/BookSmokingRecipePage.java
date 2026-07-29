@@ -6,23 +6,20 @@
 
 package com.klikli_dev.modonomicon.book.page;
 
-import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
-import com.klikli_dev.modonomicon.book.BookTextHolder;
-import com.klikli_dev.modonomicon.book.conditions.BookCondition;
-import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
-import net.minecraft.core.HolderLookup;
+import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.data.BookPageType;
+import com.klikli_dev.modonomicon.registry.BookPageTypeRegistry;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmokingRecipe;
-import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
-import org.jetbrains.annotations.Nullable;
 
 public class BookSmokingRecipePage extends BookProcessingRecipePage<SmokingRecipe> {
+
+    public static final Identifier ID = Modonomicon.loc("smoking_recipe");
+    public static final MapCodec<BookSmokingRecipePage> CODEC = codec(BookSmokingRecipePage::new);
+    public static final StreamCodec<RegistryFriendlyByteBuf, BookSmokingRecipePage> STREAM_CODEC = streamCodec(BookSmokingRecipePage::new);
 
     public BookSmokingRecipePage(JsonDataHolder common) {
         super(common);
@@ -32,18 +29,8 @@ public class BookSmokingRecipePage extends BookProcessingRecipePage<SmokingRecip
         super(common);
     }
 
-    public static BookSmokingRecipePage fromJson(Identifier entryId, JsonObject json, HolderLookup.Provider provider) {
-        var common = BookRecipePage.commonFromJson(entryId, json, provider);
-        return new BookSmokingRecipePage(common);
-    }
-
-    public static BookSmokingRecipePage fromNetwork(RegistryFriendlyByteBuf buffer) {
-        var common = BookRecipePage.commonFromNetwork(buffer);
-        return new BookSmokingRecipePage(common);
-    }
-
     @Override
-    public Identifier getType() {
-        return Page.SMOKING_RECIPE;
+    public BookPageType<?> type() {
+        return BookPageTypeRegistry.SMOKING_RECIPE;
     }
 }

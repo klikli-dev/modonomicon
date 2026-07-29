@@ -6,10 +6,19 @@
 
 package com.klikli_dev.modonomicon.api.multiblock;
 
+import com.google.gson.JsonObject;
+import com.klikli_dev.modonomicon.data.MultiblockType;
+import com.klikli_dev.modonomicon.registry.MultiblockTypeRegistry;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.BlockAndLightGetter;
 import net.minecraft.world.level.Level;
@@ -28,6 +37,33 @@ import java.util.Collection;
  * all the features in the mod.
  */
 public interface Multiblock extends BlockAndLightGetter {
+
+    Codec<Multiblock> CODEC = Codec.lazyInitialized(() -> MultiblockTypeRegistry.codec().dispatch(
+            "type",
+            Multiblock::type,
+            type -> (MapCodec<? extends Multiblock>) type.codec()
+    ));
+
+    @SuppressWarnings("unchecked")
+    StreamCodec<RegistryFriendlyByteBuf, Multiblock> STREAM_CODEC = StreamCodec.recursive(codec ->
+            (StreamCodec<RegistryFriendlyByteBuf, Multiblock>) (StreamCodec<?, ?>) MultiblockTypeRegistry.streamCodec()
+                    .dispatch(
+                            Multiblock::type,
+                            type -> (StreamCodec<? super RegistryFriendlyByteBuf, ? extends Multiblock>) type.streamCodec()
+                    ));
+
+    static Multiblock fromJson(JsonObject json, HolderLookup.Provider provider) {
+        return CODEC.parse(provider.createSerializationContext(JsonOps.INSTANCE), json)
+                .getOrThrow(error -> new IllegalArgumentException("Failed to decode multiblock: " + error));
+    }
+
+    static Multiblock fromNetwork(RegistryFriendlyByteBuf buffer) {
+        return STREAM_CODEC.decode(buffer);
+    }
+
+    static void toNetwork(Multiblock multiblock, RegistryFriendlyByteBuf buffer) {
+        STREAM_CODEC.encode(buffer, multiblock);
+    }
 
     // ================================================================================================
     // Builder methods
@@ -63,6 +99,8 @@ public interface Multiblock extends BlockAndLightGetter {
     // Getters
     // ================================================================================================
 
+    MultiblockType<?> type();
+
     Identifier getId();
 
     /**
@@ -74,7 +112,9 @@ public interface Multiblock extends BlockAndLightGetter {
     /**
      * The multiblock type id for serialization.
      */
-    Identifier getType();
+    default Identifier getType() {
+        return this.type().id();
+    }
 
     /**
      * Sets the level the multiblock should use for e.g registry access
@@ -131,7 +171,9 @@ public interface Multiblock extends BlockAndLightGetter {
     /**
      * Serializes multiblock to the given buffer.
      */
-    void toNetwork(FriendlyByteBuf buffer);
+    default void toNetwork(FriendlyByteBuf buffer) {
+        Multiblock.toNetwork(this, (RegistryFriendlyByteBuf) buffer);
+    }
 
     interface SimulateResult {
         /**

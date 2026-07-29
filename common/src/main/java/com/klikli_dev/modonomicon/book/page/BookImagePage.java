@@ -6,31 +6,58 @@
 
 package com.klikli_dev.modonomicon.book.page;
 
-import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
-import com.klikli_dev.modonomicon.util.BookGsonHelper;
-import net.minecraft.core.HolderLookup;
+import com.klikli_dev.modonomicon.data.BookPageType;
+import com.klikli_dev.modonomicon.registry.BookPageTypeRegistry;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.Level;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class BookImagePage extends BookPage {
+    public static final Identifier ID = Modonomicon.loc("image");
+    private static final Codec<List<Identifier>> IMAGE_LIST_CODEC = Codec.list(Identifier.CODEC);
+    public static final MapCodec<BookImagePage> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            BookTextHolder.CODEC.fieldOf("title").forGetter(BookImagePage::getTitle),
+            BookTextHolder.CODEC.fieldOf("text").forGetter(BookImagePage::getText),
+            IMAGE_LIST_CODEC.fieldOf("images").forGetter(BookImagePage::imagesAsList),
+            Codec.BOOL.optionalFieldOf("border", false).forGetter(BookImagePage::hasBorder),
+            Codec.BOOL.optionalFieldOf("use_legacy_rendering", false).forGetter(BookImagePage::useLegacyRendering),
+            Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
+            BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition)
+    ).apply(instance, (title, text, images, border, useLegacyRendering, id, condition) -> new BookImagePage(title, text, images.toArray(Identifier[]::new), border, useLegacyRendering, id, condition)));
+    public static final StreamCodec<RegistryFriendlyByteBuf, BookImagePage> STREAM_CODEC = StreamCodec.composite(
+            BookTextHolder.STREAM_CODEC, BookImagePage::getTitle,
+            BookTextHolder.STREAM_CODEC, BookImagePage::getText,
+            Identifier.STREAM_CODEC.apply(ByteBufCodecs.list()), BookImagePage::imagesAsList,
+            ByteBufCodecs.BOOL, BookImagePage::hasBorder,
+            ByteBufCodecs.BOOL, BookImagePage::useLegacyRendering,
+            ByteBufCodecs.STRING_UTF8, BookPage::getId,
+            BookCondition.STREAM_CODEC, BookPage::getCondition,
+            (title, text, images, border, useLegacyRendering, id, condition) -> new BookImagePage(title, text, images.toArray(Identifier[]::new), border, useLegacyRendering, id, condition)
+    );
     protected BookTextHolder title;
     protected BookTextHolder text;
     protected Identifier[] images;
     protected boolean border;
     protected boolean useLegacyRendering;
 
-    public BookImagePage(BookTextHolder title, BookTextHolder text, Identifier[] images, boolean border, boolean useLegacyRendering, String anchor, BookCondition condition) {
-        super(anchor, condition);
+    public BookImagePage(BookTextHolder title, BookTextHolder text, Identifier[] images, boolean border, boolean useLegacyRendering, String id, BookCondition condition) {
+        super(id, condition);
         this.title = title;
         this.text = text;
         this.images = images;
@@ -38,46 +65,12 @@ public class BookImagePage extends BookPage {
         this.useLegacyRendering = useLegacyRendering;
     }
 
-    public static BookImagePage fromJson(Identifier entryId, JsonObject json, HolderLookup.Provider provider) {
-        var title = BookGsonHelper.getAsBookTextHolder(json, "title", BookTextHolder.EMPTY, provider);
-        var text = BookGsonHelper.getAsBookTextHolder(json, "text", BookTextHolder.EMPTY, provider);
-
-        var imagesArray = GsonHelper.getAsJsonArray(json, "images");
-        var images = new Identifier[imagesArray.size()];
-        for (int i = 0; i < imagesArray.size(); i++) {
-            images[i] = Identifier.parse(GsonHelper.convertToString(imagesArray.get(i), "images[" + i + "]"));
-        }
-
-        var border = GsonHelper.getAsBoolean(json, "border", true);
-        var useLegacyRendering = GsonHelper.getAsBoolean(json, "use_legacy_rendering", false);
-
-        var anchor = GsonHelper.getAsString(json, "anchor", "");
-        var condition = json.has("condition")
-                ? BookCondition.fromJson(entryId, json.getAsJsonObject("condition"), provider)
-                : new BookNoneCondition();
-        return new BookImagePage(title, text, images, border, useLegacyRendering, anchor, condition);
-    }
-
-    public static BookImagePage fromNetwork(RegistryFriendlyByteBuf buffer) {
-        var title = BookTextHolder.fromNetwork(buffer);
-        var text = BookTextHolder.fromNetwork(buffer);
-
-        var count = buffer.readVarInt();
-        var images = new Identifier[count];
-        for (int i = 0; i < count; i++) {
-            images[i] = Identifier.parse(buffer.readUtf());
-        }
-
-        var border = buffer.readBoolean();
-        var useLegacyRendering = buffer.readBoolean();
-
-        var anchor = buffer.readUtf();
-        var condition = BookCondition.fromNetwork(buffer);
-        return new BookImagePage(title, text, images, border, useLegacyRendering, anchor, condition);
-    }
-
     public Identifier[] getImages() {
         return this.images;
+    }
+
+    public List<Identifier> imagesAsList() {
+        return Arrays.asList(this.images);
     }
 
     public boolean hasBorder() {
@@ -101,8 +94,8 @@ public class BookImagePage extends BookPage {
     }
 
     @Override
-    public Identifier getType() {
-        return Page.IMAGE;
+    public BookPageType<?> type() {
+        return BookPageTypeRegistry.IMAGE;
     }
 
     @Override
@@ -113,26 +106,11 @@ public class BookImagePage extends BookPage {
             this.title = new BookTextHolder(Component.translatable(this.title.getKey())
                     .withStyle(Style.EMPTY
                             .withBold(true)
-                            .withColor(this.getParentEntry().getBook().getDefaultTitleColor())));
+                            .withColor(this.getParentEntry().getBook().themeData().palette().defaultTitleColor())));
         }
         if (!this.text.hasComponent()) {
             this.text = new RenderedBookTextHolder(this.text, textRenderer.render(this.text.getString()));
         }
-    }
-
-    @Override
-    public void toNetwork(RegistryFriendlyByteBuf buffer) {
-        this.title.toNetwork(buffer);
-        this.text.toNetwork(buffer);
-
-        buffer.writeVarInt(this.images.length);
-        for (var image : this.images) {
-            buffer.writeUtf(image.toString());
-        }
-
-        buffer.writeBoolean(this.border);
-        buffer.writeBoolean(this.useLegacyRendering);
-        super.toNetwork(buffer);
     }
 
     @Override

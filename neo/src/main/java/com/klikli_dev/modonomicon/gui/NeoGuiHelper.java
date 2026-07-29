@@ -11,18 +11,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 
 public class NeoGuiHelper implements GuiHelper {
+
     @Override
     public void pushGuiLayer(Screen screen) {
-        Minecraft.getInstance().pushGuiLayer(screen);
+        Minecraft.getInstance().gui.pushScreenLayer(screen);
     }
 
     @Override
     public void popGuiLayer() {
-        Minecraft.getInstance().popGuiLayer();
+        Minecraft.getInstance().gui.popScreenLayer();
     }
 
     @Override
     public Screen getCurrentScreen() {
-        return Minecraft.getInstance().screen;
+        return Minecraft.getInstance().gui.screen();
     }
 }

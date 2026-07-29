@@ -12,7 +12,7 @@ import com.klikli_dev.modonomicon.api.events.EntryClickedEvent;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.bookstate.visual.CategoryVisualState;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookCategoryScreen;
@@ -21,10 +21,9 @@ import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.EntryListButton;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
-import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.events.ModonomiconEvents;
-import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
+import com.klikli_dev.modonomicon.util.TextRenderHelper;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -89,7 +88,7 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
         }
 
         //we use scale 1 because our scale translation handling in there is off a bit. the above translation code is better
-        this.drawCenteredStringNoShadow(guiGraphics, this.getTitle(), x, y, this.getBook().getDefaultTitleColor(), 1);
+        this.drawCenteredStringNoShadow(guiGraphics, this.getTitle(), x, y, this.getBook().theme().palette().defaultTitleColor(), 1);
         guiGraphics.pose().popMatrix();
     }
 
@@ -98,7 +97,7 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
     }
 
     public void drawCenteredStringNoShadow(GuiGraphicsExtractor guiGraphics, Component s, int x, int y, int color, float scale) {
-        GuiGraphicsExt.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
+        TextRenderHelper.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
     }
 
     public BookParentScreen getParentScreen() {
@@ -223,7 +222,7 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
 
-        BookContentRenderer.renderBookBackground(guiGraphics, this.getBook().getBookContentTexture());
+        BookContentRenderer.renderBookBackground(guiGraphics, this.getBook());
 
 
         if (this.openPagesIndex == 0) {
@@ -237,7 +236,7 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
                 this.drawTitle(guiGraphics, BookEntryScreen.LEFT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING);
                 this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.CATEGORY_INDEX_LIST_TITLE),
                         BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING,
-                        this.parentScreen.getBook().getDefaultTitleColor());
+                        this.parentScreen.getBook().theme().palette().defaultTitleColor());
 
                 BookContentRenderer.drawTitleSeparator(guiGraphics, this.parentScreen.getBook(),
                         BookEntryScreen.LEFT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING + 12);
@@ -248,7 +247,7 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
 
                 BookPageRenderer.renderBookTextHolder(guiGraphics, this.category.getDescription(), this.font,
                         BookEntryScreen.LEFT_PAGE_X, BookEntryScreen.TOP_PADDING + 22, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - (BookEntryScreen.TOP_PADDING + 22),
-                        this.parentScreen.getBook().getDefaultTextColor());
+                        this.parentScreen.getBook().theme().palette().defaultTextColor());
             }
         }
 
@@ -320,8 +319,8 @@ public class BookCategoryIndexScreen extends BookPaginatedScreen implements Book
 
         //we filter out entries that are locked or in locked categories
         this.allEntries = this.getEntries().stream().filter(e ->
-                        BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e.getCategory()) &&
-                                BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e)
+                        BookServices.visibility().isVisible(this.minecraft.player, e.getCategory()) &&
+                                BookServices.visibility().isAccessible(this.minecraft.player, e)
                 ).sorted(Comparator.comparingInt(BookEntry::getSortNumber)
                         .thenComparing(a -> I18n.get(a.getName())))
                 .toList();

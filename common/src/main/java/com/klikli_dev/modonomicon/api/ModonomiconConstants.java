@@ -6,8 +6,6 @@
 
 package com.klikli_dev.modonomicon.api;
 
-import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.book.BookFrameOverlay;
 import net.minecraft.resources.Identifier;
 
 public class ModonomiconConstants {
@@ -15,37 +13,14 @@ public class ModonomiconConstants {
     public static class Data {
         public static final String MODONOMICON_DATA_PATH = ModonomiconAPI.ID + "/books";
         public static final String MULTIBLOCK_DATA_PATH = ModonomiconAPI.ID + "/multiblocks";
+        public static final String RESEARCH_DATA_PATH = ModonomiconAPI.ID + "/research";
 
         public static class Book {
-            public static final String DEFAULT_OVERVIEW_TEXTURE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/book_overview.png").toString();
-            public static final String DEFAULT_FRAME_TEXTURE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/book_frame.png").toString();
-
-            public static final BookFrameOverlay DEFAULT_TOP_FRAME_OVERLAY = new BookFrameOverlay(
-                    Modonomicon.loc("textures/gui/book_frame_top_overlay.png"),
-                    256, 256, 72, 7, 0, 4);
-
-            public static final BookFrameOverlay DEFAULT_BOTTOM_FRAME_OVERLAY = new BookFrameOverlay(
-                    Modonomicon.loc("textures/gui/book_frame_bottom_overlay.png"),
-                    256, 256, 72, 8, 0, -4);
-
-            public static final BookFrameOverlay DEFAULT_LEFT_FRAME_OVERLAY = new BookFrameOverlay(
-                    Modonomicon.loc("textures/gui/book_frame_left_overlay.png"),
-                    256, 256, 7, 70, 3, 0);
-
-            public static final BookFrameOverlay DEFAULT_RIGHT_FRAME_OVERLAY = new BookFrameOverlay(
-                    Modonomicon.loc("textures/gui/book_frame_right_overlay.png"),
-                    256, 256, 8, 70, -4, 0);
-
-            public static final String DEFAULT_CONTENT_TEXTURE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/book_content.png").toString();
-            public static final String DEFAULT_SINGLE_PAGE_TEXTURE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/single_page_entry.png").toString();
             public static final String DEFAULT_FONT = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "default").toString();
-            public static final String DEFAULT_CRAFTING_TEXTURE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/crafting_textures.png").toString();
             public static final String DEFAULT_PAGE_TURN_SOUND = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "turn_page").toString();
             public static final String DEFAULT_MODEL = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "modonomicon_purple").toString();
             public static final int DEFAULT_TITLE_COLOR = 0xFF000000;
             public static final int DEFAULT_TEXT_COLOR = 0xFF000000;
-            public static final Identifier ITEM_ID = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "modonomicon");
-
         }
 
         public static class Category {
@@ -56,7 +31,6 @@ public class ModonomiconConstants {
             public static final int DEFAULT_MAX_SCROLL_X = 512;
             public static final int DEFAULT_MAX_SCROLL_Y = 512;
             public static final float DEFAULT_BACKGROUND_TEXTURE_ZOOM_MULTIPLIER = 1f;
-            public static final String DEFAULT_ENTRY_TEXTURES = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "textures/gui/entry_textures.png").toString();
         }
 
         public static class Icon {
@@ -68,46 +42,6 @@ public class ModonomiconConstants {
             public static final int DEFAULT_MAX_USES = 1;
         }
 
-        public static class EntryType {
-            public static final Identifier CONTENT = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "content");
-            public static final Identifier CATEGORY_LINK = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "category_link");
-            public static final Identifier ENTRY_LINK = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "entry_link");
-        }
-
-        public static class Page {
-            public static final Identifier TEXT = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "text");
-            public static final Identifier MULTIBLOCK = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "multiblock");
-            public static final Identifier CRAFTING_RECIPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "crafting_recipe");
-            public static final Identifier SMOKING_RECIPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "smoking_recipe");
-            public static final Identifier SMELTING_RECIPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "smelting_recipe");
-            public static final Identifier BLASTING_RECIPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "blasting_recipe");
-            public static final Identifier CAMPFIRE_COOKING_RECIPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "campfire_cooking_recipe");
-            public static final Identifier STONECUTTING_RECIPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "stonecutting_recipe");
-            public static final Identifier SMITHING_RECIPE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "smithing_recipe");
-            public static final Identifier SPOTLIGHT = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "spotlight");
-            public static final Identifier EMPTY = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "empty");
-            public static final Identifier ENTITY = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "entity");
-            public static final Identifier IMAGE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "image");
-        }
-
-        public static class Condition {
-
-            public static final Identifier NONE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "none");
-            public static final Identifier ADVANCEMENT = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "advancement");
-            public static final Identifier MOD_LOADED = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "mod_loaded");
-            public static final Identifier OR = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "or");
-            public static final Identifier AND = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "and");
-
-            public static final Identifier TRUE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "true");
-
-            public static final Identifier FALSE = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "false");
-
-            public static final Identifier ENTRY_UNLOCKED = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "entry_unlocked");
-
-            public static final Identifier ENTRY_READ = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "entry_read");
-
-            public static final Identifier CATEGORY_HAS_VISIBLE_ENTRIES = Identifier.fromNamespaceAndPath(ModonomiconAPI.ID, "category_has_visible_entries");
-        }
     }
 
     public static class I18n {
@@ -125,16 +59,17 @@ public class ModonomiconConstants {
             public static final String BUTTON_VISUALIZE = PREFIX + "button.visualize";
             public static final String BUTTON_VISUALIZE_TOOLTIP = PREFIX + "button.visualize.tooltip";
 
-            public static final String BUTTON_READ_ALL = PREFIX + "button.read_all";
-            public static final String BUTTON_READ_ALL_TOOLTIP_READ_UNLOCKED = PREFIX + "button.read_all.tooltip.read_unlocked";
-            public static final String BUTTON_READ_ALL_TOOLTIP_READ_ALL = PREFIX + "button.read_all.tooltip.read_all";
-            public static final String BUTTON_READ_ALL_TOOLTIP_NONE = PREFIX + "button.read_all.tooltip.none";
-            public static final String BUTTON_READ_ALL_TOOLTIP_SHIFT_INSTRUCTIONS = PREFIX + "button.read_all.tooltip.shift";
-            public static final String BUTTON_READ_ALL_TOOLTIP_SHIFT_WARNING = PREFIX + "button.read_all.tooltip.shift_warning";
+            public static final String BUTTON_VIEWED_ONCE_RESEARCH = PREFIX + "button.viewed_once_research";
+            public static final String BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_VISIBLE = PREFIX + "button.viewed_once_research.tooltip.visible";
+            public static final String BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_ALL = PREFIX + "button.viewed_once_research.tooltip.all";
+            public static final String BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_NONE = PREFIX + "button.viewed_once_research.tooltip.none";
+            public static final String BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_SHIFT_INSTRUCTIONS = PREFIX + "button.viewed_once_research.tooltip.shift";
+            public static final String BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_SHIFT_WARNING = PREFIX + "button.viewed_once_research.tooltip.shift_warning";
 
             public static final String HOVER_BOOK_LINK = PREFIX + "hover.book_link";
             public static final String HOVER_BOOK_LINK_ERROR = PREFIX + "hover.book_link.error";
             public static final String HOVER_BOOK_LINK_LOCKED = PREFIX + "hover.book_link_locked";
+            public static final String HOVER_LINK_ERROR = PREFIX + "hover.link.error";
             public static final String HOVER_BOOK_ENTRY_LINK_LOCKED_INFO = PREFIX + "hover.book_entry_link_locked_info";
             public static final String HOVER_BOOK_ENTRY_LINK_LOCKED_INFO_HINT = PREFIX + "hover.book_entry_link_locked_info.hint";
             public static final String HOVER_BOOK_PAGE_LINK_LOCKED_INFO = PREFIX + "hover.book_page_link_locked_info";
@@ -192,13 +127,11 @@ public class ModonomiconConstants {
         public static class Tooltips {
             public static final String PREFIX = "tooltip." + ModonomiconAPI.ID + ".";
             public static final String CONDITION_PREFIX = PREFIX + "condition.";
-            public static final String CONDITION_ADVANCEMENT = CONDITION_PREFIX + "advancement";
-            public static final String CONDITION_ADVANCEMENT_LOADING = CONDITION_ADVANCEMENT + ".loading";
-            public static final String CONDITION_ADVANCEMENT_HIDDEN = CONDITION_ADVANCEMENT + ".hidden";
             public static final String CONDITION_MOD_LOADED = CONDITION_PREFIX + "mod_loaded";
-            public static final String CONDITION_ENTRY_UNLOCKED = CONDITION_PREFIX + "entry_unlocked";
+            public static final String CONDITION_RESEARCH_NODE_UNLOCKED = CONDITION_PREFIX + "research_node_unlocked";
+            public static final String CONDITION_RESEARCH_STAGE_COMPLETED = CONDITION_PREFIX + "research_stage_completed";
             public static final String CONDITION_CATEGORY_HAS_VISIBLE_ENTRIES = CONDITION_PREFIX + "has_visible_entries";
-            public static final String CONDITION_ENTRY_READ = CONDITION_PREFIX + "entry_read";
+            public static final String CONDITION_ENTRY_UNLOCKED = CONDITION_PREFIX + "entry_unlocked";
             public static final String RECIPE_PREFIX = PREFIX + "recipe.";
             public static final String RECIPE_CRAFTING_SHAPELESS = RECIPE_PREFIX + "crafting_shapeless";
             public static final String ITEM_NO_BOOK_FOUND_FOR_STACK = PREFIX + "no_book_found_for_stack";
@@ -212,10 +145,20 @@ public class ModonomiconConstants {
 
             public static final String ERROR_PREFIX = PREFIX + "error.";
             public static final String ERROR_UNKNOWN_BOOK = ERROR_PREFIX + "unknown_book";
+            public static final String ERROR_UNKNOWN_FACT = ERROR_PREFIX + "unknown_fact";
+            public static final String ERROR_UNKNOWN_NODE = ERROR_PREFIX + "unknown_node";
+            public static final String ERROR_UNKNOWN_VALUE = ERROR_PREFIX + "unknown_value";
+            public static final String ERROR_UNKNOWN_STAGE = ERROR_PREFIX + "unknown_stage";
             public static final String ERROR_LOAD_PROGRESS = ERROR_PREFIX + "load_progress";
             public static final String ERROR_LOAD_PROGRESS_CLIENT = ERROR_PREFIX + "load_progress_client";
             public static final String SUCCESS_PREFIX = PREFIX + "success.";
             public static final String SUCCESS_RESET_BOOK = SUCCESS_PREFIX + "reset_book";
+            public static final String SUCCESS_RESET_RESEARCH = SUCCESS_PREFIX + "reset_research";
+            public static final String SUCCESS_GRANT_FACT = SUCCESS_PREFIX + "grant_fact";
+            public static final String SUCCESS_REVOKE_FACT = SUCCESS_PREFIX + "revoke_fact";
+            public static final String SUCCESS_UNLOCK_NODE = SUCCESS_PREFIX + "unlock_node";
+            public static final String SUCCESS_LOCK_NODE = SUCCESS_PREFIX + "lock_node";
+            public static final String SUCCESS_SET_VALUE = SUCCESS_PREFIX + "set_value";
             public static final String SUCCESS_SAVE_PROGRESS = SUCCESS_PREFIX + "save_progress";
             public static final String SUCCESS_LOAD_PROGRESS = SUCCESS_PREFIX + "load_progress";
             public static final String RELOAD_SUCCESS = SUCCESS_PREFIX + "reload_requested";

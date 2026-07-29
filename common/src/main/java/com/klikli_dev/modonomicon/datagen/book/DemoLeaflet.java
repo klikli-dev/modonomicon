@@ -6,7 +6,12 @@
 
 package com.klikli_dev.modonomicon.datagen.book;
 
-import com.klikli_dev.modonomicon.api.datagen.*;
+import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.api.datagen.BookContextHelper;
+import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
+import com.klikli_dev.modonomicon.api.datagen.ConditionHelper;
+import com.klikli_dev.modonomicon.api.datagen.LeafletEntryProvider;
+import com.klikli_dev.modonomicon.api.datagen.LeafletSubProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.book.PageDisplayMode;
@@ -15,8 +20,8 @@ import com.klikli_dev.modonomicon.registry.ItemRegistry;
 public class DemoLeaflet extends LeafletSubProvider {
     public static final String ID = "demo_leaflet";
 
-    public DemoLeaflet(String modId, ModonomiconLanguageProvider defaultLang) {
-        super(ID, modId, defaultLang);
+    public DemoLeaflet() {
+        super(ID, Modonomicon.MOD_ID);
     }
 
     @Override
@@ -63,8 +68,9 @@ public class DemoLeaflet extends LeafletSubProvider {
     @Override
     protected BookModel additionalLeafletSetup(BookModel book) {
         //e.g. set creative tab using .withCreativeTab(<Identifier>)
-        return book.withBookTextOffsetWidth(-5)
-                .withBookTextOffsetX(5)
+        return book.withTheme(theme -> theme.withLayout(layout -> layout
+                        .withBookTextOffsetWidth(-5)
+                        .withBookTextOffsetX(5)))
                 .withPageDisplayMode(PageDisplayMode.SINGLE_PAGE)
                 .withModel(ItemRegistry.LEAFLET.getId())
                 ;

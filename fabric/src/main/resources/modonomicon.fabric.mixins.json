@@ -5,11 +5,14 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "MixinPlayerAdvancements"
+    "MixinPlayerAdvancements",
+    "MixinResultSlot",
+    "MixinAbstractContainerMenu"
   ],
   "client": [
     "MixinClientPacketListener",
     "MixinGameRenderer",
+    "MixinLevelRenderer",
     "MixinModelManager"
   ],
   "server": [

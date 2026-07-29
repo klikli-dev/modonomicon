@@ -9,9 +9,24 @@ package com.klikli_dev.modonomicon.api.datagen.book;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.datagen.CategoryEntryMap;
+import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookAndConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookNoneConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookResearchNodeUnlockedConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookResearchStageCompletedConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeRef;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageRef;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
-import com.mojang.datafixers.util.Pair;
+import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
+import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
+import com.klikli_dev.modonomicon.book.entries.BookEntry;
+import com.klikli_dev.modonomicon.book.entries.CategoryLinkBookEntry;
+import com.klikli_dev.modonomicon.book.entries.EntryLinkBookEntry;
+import com.klikli_dev.modonomicon.book.page.BookPage;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
+import com.google.gson.JsonParseException;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ItemLike;
@@ -19,6 +34,7 @@ import net.minecraft.world.phys.Vec2;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BookEntryModel {
     protected Identifier id;
@@ -29,8 +45,7 @@ public class BookEntryModel {
     protected BookIconModel icon;
     protected int x;
     protected int y;
-    protected int entryBackgroundUIndex = 0;
-    protected int entryBackgroundVIndex = 0;
+    protected GuiSprite entryBackground = EntryBackground.DEFAULT;
 
     protected boolean hideWhileLocked;
     protected boolean showWhenAnyParentUnlocked;
@@ -41,6 +56,13 @@ public class BookEntryModel {
     protected Identifier entryToOpen;
 
     protected int sortNumber = -1;
+
+    /**
+     * If true (default), pages are generated as separate JSON files in
+     * `entries/&lt;entry-id&gt;/pages/&lt;page-id&gt;.json`.
+     * If false, pages are included inline in the entry's JSON (legacy behavior).
+     */
+    protected boolean generatePagesAsFiles = true;
 
     protected BookEntryModel(Identifier id, String name) {
         this.id = id;
@@ -56,81 +78,56 @@ public class BookEntryModel {
     }
 
     public JsonObject toJson(HolderLookup.Provider provider) {
-        JsonObject json = new JsonObject();
+        var data = new BookEntry.BookEntryData(
+                this.category.getId(),
+                this.parents.stream().map(parent -> parent.toBookEntryParent(this.getId(), provider)).collect(Collectors.toList()),
+                this.x,
+                this.y,
+                this.name,
+                this.description,
+                this.icon.toBookIcon(),
+                this.entryBackground,
+                this.effectiveCondition().toBookCondition(provider),
+                this.hideWhileLocked,
+                this.showWhenAnyParentUnlocked,
+                this.sortNumber
+        );
 
-        //if we are in the same namespace, which we basically always should be, omit namespace
-        if (this.category.getId().getNamespace().equals(this.getId().getNamespace()))
-            json.addProperty("category", this.category.id.getPath());
-        else
-            json.addProperty("category", this.category.getId().toString());
-
-        json.addProperty("name", this.name);
-        json.addProperty("description", this.description);
-        json.add("icon", this.icon.toJson(provider));
-        json.addProperty("x", this.x);
-        json.addProperty("y", this.y);
-        json.addProperty("background_u_index", this.entryBackgroundUIndex);
-        json.addProperty("background_v_index", this.entryBackgroundVIndex);
-        json.addProperty("hide_while_locked", this.hideWhileLocked);
-        json.addProperty("show_when_any_parent_unlocked", this.showWhenAnyParentUnlocked);
-
-        if (!this.parents.isEmpty()) {
-            var parentsArray = new JsonArray();
-            for (var parent : this.parents) {
-                parentsArray.add(parent.toJson(this.getId(), provider));
-            }
-            json.add("parents", parentsArray);
-        }
-
-        if (!this.pages.isEmpty()) {
-            var pagesArray = new JsonArray();
-            for (var page : this.pages) {
-                pagesArray.add(page.toJson(this.getId(), provider));
-            }
-            json.add("pages", pagesArray);
-        }
-
-        if (this.condition != null) {
-            json.add("condition", this.condition.toJson(this.getId(), provider));
-        }
-
+        BookEntry entry;
         if (this.categoryToOpen != null) {
-            //if we are in the same namespace, which we basically always should be, omit namespace
-            if (this.categoryToOpen.getNamespace().equals(this.getId().getNamespace()))
-                json.addProperty("category_to_open", this.categoryToOpen.getPath());
-            else
-                json.addProperty("category_to_open", this.categoryToOpen.toString());
-        }
-        if (this.commandToRunOnFirstRead != null) {
-            //if we are in the same namespace, which we basically always should be, omit namespace
-            if (this.commandToRunOnFirstRead.getNamespace().equals(this.getId().getNamespace()))
-                json.addProperty("command_to_run_on_first_read", this.commandToRunOnFirstRead.getPath());
-            else
-                json.addProperty("command_to_run_on_first_read", this.commandToRunOnFirstRead.toString());
-        }
-        if (this.entryToOpen != null) {
-            //if we are in the same namespace, which we basically always should be, omit namespace
-            if (this.entryToOpen.getNamespace().equals(this.getId().getNamespace()))
-                json.addProperty("entry_to_open", this.entryToOpen.getPath());
-            else
-                json.addProperty("entry_to_open", this.entryToOpen.toString());
+            entry = new CategoryLinkBookEntry(this.id, data, this.commandToRunOnFirstRead, this.categoryToOpen);
+        } else if (this.entryToOpen != null) {
+            entry = new EntryLinkBookEntry(this.id, data, this.commandToRunOnFirstRead, this.entryToOpen);
+        } else {
+            List<BookPage> pagesToEncode = this.generatePagesAsFiles
+                    ? List.of()
+                    : this.pages.stream().map(page -> page.toBookPage(provider)).collect(Collectors.toList());
+            entry = new BookContentEntry(this.id, data, this.commandToRunOnFirstRead, pagesToEncode);
         }
 
-        json.addProperty("sort_number", this.sortNumber);
-
-        return json;
+        return BookEntry.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), entry)
+                .getOrThrow(JsonParseException::new)
+                .getAsJsonObject();
     }
 
-    public int getEntryBackgroundUIndex() {
-        return this.entryBackgroundUIndex;
+    protected BookConditionModel<?> effectiveCondition() {
+        if (this.condition != null) {
+            return this.condition;
+        }
+
+        return BookNoneConditionModel.create();
     }
 
-    public int getEntryBackgroundVIndex() {
-        return this.entryBackgroundVIndex;
+    public GuiSprite getEntryBackground() {
+        return this.entryBackground;
     }
 
     public BookConditionModel<?> getCondition() {
         return this.condition;
+    }
+
+    public boolean hasCondition() {
+        return this.condition != null;
     }
 
     public Identifier getCategoryToOpen() {
@@ -335,26 +332,27 @@ public class BookEntryModel {
     }
 
     /**
-     * Select the entry background as found in the Category's "entry_textures" array.
-     * You need to provide the starting UV coordinates of the background - use a tool like Photoshop or Photopea to find out the pixel coordinate of the upper left corner of the desired background.
-     * U = Y Axis / Up-Down
-     * V = X Axis / Left-Right
+     * Selects the entry background sprite used in node-based category screens.
+     * <p>
+     * For the default theme, prefer the constants from {@link EntryBackground}:
+     * <ul>
+     *     <li>{@link EntryBackground#SQUARE_GOLD}</li>
+     *     <li>{@link EntryBackground#SQUARE_GRAY}</li>
+     *     <li>{@link EntryBackground#SQUARE_PURPLE}</li>
+     *     <li>{@link EntryBackground#STAR_GOLD}</li>
+     *     <li>{@link EntryBackground#STAR_GRAY}</li>
+     *     <li>{@link EntryBackground#STAR_PURPLE}</li>
+     *     <li>{@link EntryBackground#CIRCLE_GOLD}</li>
+     *     <li>{@link EntryBackground#CIRCLE_GRAY}</li>
+     *     <li>{@link EntryBackground#CIRCLE_PURPLE}</li>
+     *     <li>{@link EntryBackground#HEXAGON_GOLD}</li>
+     *     <li>{@link EntryBackground#HEXAGON_GRAY}</li>
+     *     <li>{@link EntryBackground#HEXAGON_PURPLE}</li>
+     * </ul>
+     * Custom themed backgrounds can still be supplied with any {@link GuiSprite}.
      */
-    public BookEntryModel withEntryBackground(int u, int v) {
-        this.entryBackgroundUIndex = u;
-        this.entryBackgroundVIndex = v;
-        return this;
-    }
-
-    /**
-     * Select the entry background as found in the Category's "entry_textures" array.
-     * You need to provide the starting UV coordinates of the background - use a tool like Photoshop or Photopea to find out the pixel coordinate of the upper left corner of the desired background.
-     * First = U = Y Axis / Up-Down
-     * Second = V = X Axis / Left-Right
-     */
-    public BookEntryModel withEntryBackground(Pair<Integer, Integer> uv) {
-        this.entryBackgroundUIndex = uv.getFirst();
-        this.entryBackgroundVIndex = uv.getSecond();
+    public BookEntryModel withEntryBackground(GuiSprite texture) {
+        this.entryBackground = texture;
         return this;
     }
 
@@ -389,25 +387,61 @@ public class BookEntryModel {
     }
 
     /**
+     * Returns whether pages should be generated as separate JSON files.
+     * Default is {@code true}.
+     */
+    public boolean generatePagesAsFiles() {
+        return this.generatePagesAsFiles;
+    }
+
+    /**
+     * Controls whether pages are written as separate files.
+     * <p>
+     * If {@code true} (default), each page is written to its own file at
+     * {@code entries/<entry-id>/pages/<page-id>.json}.
+     * If {@code false}, pages are included inline in the entry's JSON (legacy behavior).
+     */
+    public BookEntryModel withGeneratePagesAsFiles(boolean generatePagesAsFiles) {
+        this.generatePagesAsFiles = generatePagesAsFiles;
+        return this;
+    }
+
+    /**
      * Replaces the entry's pages with the given list.
+     * Each page's sort number is automatically set to its position in the list if not already set.
      */
     public BookEntryModel withPages(List<BookPageModel<?>> pages) {
-        this.pages = pages;
+        for (int i = 0; i < pages.size(); i++) {
+            if (pages.get(i).getSortNumber() < 0) {
+                pages.get(i).withSortNumber(i);
+            }
+        }
+        this.pages = new ArrayList<>(pages);
         return this;
     }
 
     /**
      * Adds the given pages to the entry's pages.
+     * Each page's sort number is automatically set to its position in the list if not already set.
      */
     public BookEntryModel withPages(BookPageModel<?>... pages) {
-        this.pages.addAll(List.of(pages));
+        for (var page : pages) {
+            if (page.getSortNumber() < 0) {
+                page.withSortNumber(this.pages.size());
+            }
+            this.pages.add(page);
+        }
         return this;
     }
 
     /**
      * Adds the given page to the entry's pages.
+     * The page's sort number is automatically set to its position in the list if not already set.
      */
     public BookEntryModel withPage(BookPageModel<?> page) {
+        if (page.getSortNumber() < 0) {
+            page.withSortNumber(this.pages.size());
+        }
         this.pages.add(page);
         return this;
     }
@@ -420,6 +454,15 @@ public class BookEntryModel {
     public BookEntryModel withCondition(BookConditionModel<?> condition) {
         this.condition = condition;
         return this;
+    }
+
+    public BookEntryModel withCondition(ResearchNodeRef nodeRef) {
+        return this.withCondition(BookResearchNodeUnlockedConditionModel.create().withNode(nodeRef.id()));
+    }
+
+    public BookEntryModel withCondition(ResearchNodeRef nodeRef, ResearchStageRef stageRef) {
+        return this.withCondition(BookResearchStageCompletedConditionModel.create()
+                .withNode(nodeRef.id()).withStage(stageRef.id()));
     }
 
     /**
@@ -457,3 +500,4 @@ public class BookEntryModel {
         return this;
     }
 }
+

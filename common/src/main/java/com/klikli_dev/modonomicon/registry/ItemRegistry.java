@@ -7,22 +7,19 @@
 package com.klikli_dev.modonomicon.registry;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.item.ModonomiconItem;
+import com.klikli_dev.modonomicon.platform.Services;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class ItemRegistry {
     public static final RegistrationProvider<Item> ITEMS = RegistrationProvider.get(Registries.ITEM, Modonomicon.MOD_ID);
 
     public static final RegistryObject<Item> MODONOMICON =
-            register("modonomicon", (properties) -> new ModonomiconItem(properties.stacksTo(1)));
+            register("modonomicon", (properties) -> Services.PLATFORM.createModonomiconItem(properties.stacksTo(1)));
 
     //Dummy items for default models
     public static final RegistryObject<Item> MODONOMICON_BLUE =

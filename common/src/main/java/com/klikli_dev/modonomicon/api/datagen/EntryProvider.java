@@ -9,7 +9,7 @@ package com.klikli_dev.modonomicon.api.datagen;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
-import com.mojang.datafixers.util.Pair;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.phys.Vec2;
 
@@ -86,7 +86,17 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
     protected <T extends BookPageModel<?>> T page(String page, Supplier<T> modelSupplier) {
         this.context().page(page);
         var model = modelSupplier.get();
+        model.withId(page);
         return this.add(model);
+    }
+
+    /**
+     * Controls whether pages for this entry are generated as separate JSON files.
+     * Default is {@code true} (separate files).
+     * Set to {@code false} to include pages inline in the entry's JSON (legacy behavior).
+     */
+    protected void generatePagesAsFiles(boolean generatePagesAsFiles) {
+        this.entry.withGeneratePagesAsFiles(generatePagesAsFiles);
     }
 
     protected <T extends BookPageModel<?>> T add(T page) {
@@ -103,10 +113,14 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
      * Call this in your CategoryProvider to get the entry.
      * Will automatically add the entry to the parent category.
      * <p>
-     * This overload should only be used in index mode, where no location is needed.
+     * This overload resolves a location from {@link #entryId()} via the parent category's
+     * {@code layout()} helper.
+     * <p>
+     * If no explicit layout position exists yet, the entry starts at {@link Vec2#ZERO}, which allows later
+     * post-generation layout mutation via {@code this.layout().entry(model)...}.
      */
     public BookEntryModel generate() {
-        return this.generate(Vec2.ZERO);
+        return this.generate(this.parent.layout().getOrDefault(this.entryId(), Vec2.ZERO));
     }
 
     /**
@@ -183,9 +197,9 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
     }
 
     /**
-     * Implement this and return the U/V coordinates of the entry background. See also @link{BookEntryModel#withEntryBackground(int, int)}
+     * Implement this and return the GUI texture used for the entry background.
      */
-    protected abstract Pair<Integer, Integer> entryBackground();
+    protected abstract GuiSprite entryBackground();
 
     /**
      * Implement this and return the desired icon for the entry.
@@ -199,3 +213,4 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
     protected abstract String entryId();
 
 }
+

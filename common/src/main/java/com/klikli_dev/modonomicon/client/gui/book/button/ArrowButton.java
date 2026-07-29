@@ -22,7 +22,7 @@ public class ArrowButton extends BookButton {
     public final boolean left;
 
     public ArrowButton(BookScreenWithButtons parent, int x, int y, boolean left, Supplier<Boolean> displayCondition, OnPress onPress) {
-        super(parent, x, y, U, left ? V + HEIGHT : V, WIDTH, HEIGHT, displayCondition,
+        super(parent, x, y, WIDTH, HEIGHT, theme -> left ? theme.content().previousPageButton() : theme.content().nextPageButton(), displayCondition,
                 Component.translatable(left ? Gui.BUTTON_PREVIOUS : Gui.BUTTON_NEXT),
                 onPress,
                 Component.translatable(left ? Gui.BUTTON_PREVIOUS : Gui.BUTTON_NEXT)

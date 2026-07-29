@@ -1,0 +1,110 @@
+[
+  {
+    "id": "modonomicon:demo/condition_level_1",
+    "required_facts": [
+      "modonomicon:demo/condition_root_viewed"
+    ]
+  },
+  {
+    "id": "modonomicon:demo/advancement_mine_stone",
+    "required_facts": [
+      "modonomicon:demo/advancement_mine_stone_completed"
+    ]
+  },
+  {
+    "id": "modonomicon:demo/advancement_ride_boat_with_goat",
+    "required_facts": [
+      "modonomicon:demo/advancement_ride_boat_with_goat_completed"
+    ]
+  },
+  {
+    "id": "modonomicon:demo/collector_complete",
+    "required_values": [
+      {
+        "threshold": 3,
+        "value_id": "modonomicon:demo/collector_count"
+      }
+    ]
+  },
+  {
+    "id": "modonomicon:demo/crafting_stick",
+    "required_facts": [
+      "modonomicon:demo/stick_crafted"
+    ],
+    "toast": {
+      "description": "research_toast.modonomicon.stick_crafted.title",
+      "icon": {
+        "id": "minecraft:stick"
+      },
+      "title": "research_toast.modonomicon.research_unlocked"
+    }
+  },
+  {
+    "id": "modonomicon:demo/acquire_cobblestone",
+    "required_facts": [
+      "modonomicon:demo/cobblestone_acquired"
+    ],
+    "toast": {
+      "description": "research_toast.modonomicon.cobblestone_acquired.title",
+      "icon": {
+        "id": "minecraft:cobblestone"
+      },
+      "title": "research_toast.modonomicon.research_unlocked"
+    }
+  },
+  {
+    "id": "modonomicon:demo/stages_demo",
+    "stages": [
+      {
+        "id": "modonomicon:demo/stages_demo_stage_1",
+        "required_values": [
+          {
+            "threshold": 1,
+            "value_id": "modonomicon:demo/stages_planks_crafted"
+          }
+        ],
+        "toast": {
+          "description": "research_toast.modonomicon.stages_demo_stage_1.title",
+          "icon": {
+            "id": "minecraft:oak_planks"
+          },
+          "title": "research_toast.modonomicon.stage_progress"
+        }
+      },
+      {
+        "id": "modonomicon:demo/stages_demo_stage_2",
+        "required_values": [
+          {
+            "threshold": 3,
+            "value_id": "modonomicon:demo/stages_planks_crafted"
+          }
+        ]
+      },
+      {
+        "id": "modonomicon:demo/stages_demo_stage_3",
+        "required_values": [
+          {
+            "threshold": 5,
+            "value_id": "modonomicon:demo/stages_planks_crafted"
+          }
+        ],
+        "toast": {
+          "description": "research_toast.modonomicon.stages_demo_stage_3.title",
+          "icon": {
+            "id": "minecraft:diamond"
+          },
+          "title": "research_toast.modonomicon.stage_complete"
+        }
+      }
+    ]
+  },
+  {
+    "id": "modonomicon:demo/stages_dependent",
+    "required_stages": [
+      {
+        "node_id": "modonomicon:demo/stages_demo",
+        "stage_id": "modonomicon:demo/stages_demo_stage_2"
+      }
+    ]
+  }
+]

@@ -11,7 +11,6 @@ import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
 
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
@@ -45,8 +44,8 @@ public abstract class BookProcessingRecipePageRenderer<T extends Recipe<?>> exte
             }
         }
 
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.page.getBook().getCraftingTexture(), recipeX, recipeY, 11, 71, 96, 24, 128, 256);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.page.getBook().getCraftingTexture(), recipeX, recipeY, 11, 71, 96, 24, 128, 256);
+        var background = this.page.getBook().theme().content().processingRecipeBackground();
+        background.extractRenderState(guiGraphics, recipeX, recipeY);
         //noinspection DataFlowIssue
         var context = SlotDisplayContext.fromLevel(Minecraft.getInstance().level);
         this.parentScreen.renderIngredient(guiGraphics, recipeX + 4, recipeY + 4, mouseX, mouseY, recipeDisplayEntry.craftingRequirements().map(List::getFirst).orElseThrow());
@@ -54,3 +53,4 @@ public abstract class BookProcessingRecipePageRenderer<T extends Recipe<?>> exte
         this.parentScreen.renderItemStacks(guiGraphics, recipeX + 76, recipeY + 4, mouseX, mouseY, recipeDisplayEntry.display().result().resolveForStacks(context));
     }
 }
+

@@ -1,0 +1,15 @@
+{
+  "type": "modonomicon:image",
+  "border": true,
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "image",
+  "images": [
+    "modonomicon:textures/gui/default_background.png",
+    "modonomicon:textures/gui/dark_slate_seamless.png"
+  ],
+  "sort_number": 1,
+  "text": "book.modonomicon.demo.features.image.image.text",
+  "title": "book.modonomicon.demo.features.image.image.title"
+}

@@ -12,7 +12,7 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
-import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedScreen;
@@ -22,15 +22,13 @@ import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.platform.ClientServices;
-import com.klikli_dev.modonomicon.util.GuiGraphicsExt;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.klikli_dev.modonomicon.util.TextRenderHelper;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -81,7 +79,7 @@ public class BookSearchScreen extends BookPaginatedScreen {
     }
 
     public void drawCenteredStringNoShadow(GuiGraphicsExtractor guiGraphics, Component s, int x, int y, int color, float scale) {
-        GuiGraphicsExt.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
+        TextRenderHelper.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
     }
 
     public BookParentScreen getParentScreen() {
@@ -202,16 +200,16 @@ public class BookSearchScreen extends BookPaginatedScreen {
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
 
-        BookContentRenderer.renderBookBackground(guiGraphics, this.getBook().getBookContentTexture());
+        BookContentRenderer.renderBookBackground(guiGraphics, this.getBook());
 
 
         if (this.openPagesIndex == 0) {
             this.drawCenteredStringNoShadow(guiGraphics, this.getTitle(),
                     BookEntryScreen.LEFT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING,
-                    this.parentScreen.getBook().getDefaultTitleColor());
+                    this.parentScreen.getBook().theme().palette().defaultTitleColor());
             this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.SEARCH_ENTRY_LIST_TITLE),
                     BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING,
-                    this.parentScreen.getBook().getDefaultTitleColor());
+                    this.parentScreen.getBook().theme().palette().defaultTitleColor());
 
             BookContentRenderer.drawTitleSeparator(guiGraphics, this.parentScreen.getBook(),
                     BookEntryScreen.LEFT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING + 12);
@@ -220,25 +218,25 @@ public class BookSearchScreen extends BookPaginatedScreen {
 
             BookPageRenderer.renderBookTextHolder(guiGraphics, this.infoText, this.font,
                     BookEntryScreen.LEFT_PAGE_X, BookEntryScreen.TOP_PADDING + 22, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - (BookEntryScreen.TOP_PADDING + 22),
-                    this.parentScreen.getBook().getDefaultTextColor());
+                    this.parentScreen.getBook().theme().palette().defaultTextColor());
         }
 
 
         if (!this.searchField.getValue().isEmpty()) {
             //draw search field bg
-            BookContentRenderer.drawFromContentTexture(RenderPipelines.GUI_TEXTURED, guiGraphics, this.parentScreen.getBook(), this.searchField.getX() - 8, this.searchField.getY(), 140, 183, 99, 14);
+            BookContentRenderer.drawSprite(guiGraphics, this.parentScreen.getBook().theme().content().searchFieldBackground(), this.searchField.getX() - 8, this.searchField.getY());
             var searchComponent = Component.literal(this.searchField.getValue());
-            guiGraphics.text(this.font, searchComponent, this.searchField.getX() + 7, this.searchField.getY() + 1, 0, false);
+            guiGraphics.text(this.font, searchComponent, this.searchField.getX() + 7, this.searchField.getY() + 1, 0xFF000000, false);
         }
 
         if (this.visibleEntries.isEmpty()) {
             if (!this.searchField.getValue().isEmpty()) {
-                this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.SEARCH_NO_RESULTS), BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, 80, 0x333333);
+                this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.SEARCH_NO_RESULTS), BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, 80, 0xFF333333);
                 guiGraphics.pose().scale(2F, 2F);
-                this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.SEARCH_NO_RESULTS_SAD), BookEntryScreen.RIGHT_PAGE_X / 2 + BookEntryScreen.PAGE_WIDTH / 4, 47, 0x999999);
+                this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.SEARCH_NO_RESULTS_SAD), BookEntryScreen.RIGHT_PAGE_X / 2 + BookEntryScreen.PAGE_WIDTH / 4, 47, 0xFF999999);
                 guiGraphics.pose().scale(0.5F, 0.5F);
             } else {
-                this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.SEARCH_NO_RESULTS), BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, 80, 0x333333);
+                this.drawCenteredStringNoShadow(guiGraphics, Component.translatable(Gui.SEARCH_NO_RESULTS), BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, 80, 0xFF333333);
             }
         }
         guiGraphics.pose().popMatrix();
@@ -289,8 +287,8 @@ public class BookSearchScreen extends BookPaginatedScreen {
 
         //we filter out entries that are locked or in locked categories
         this.allEntries = this.getEntries().stream().filter(e ->
-                BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e.getCategory()) &&
-                        BookUnlockStateManager.get().isUnlockedFor(this.minecraft.player, e)
+                BookServices.visibility().isVisible(this.minecraft.player, e.getCategory()) &&
+                        BookServices.visibility().isAccessible(this.minecraft.player, e)
         ).sorted(Comparator.comparing(a -> I18n.get(a.getName()))).toList();
 
         //TODO: should we NOT filter out locked but visible entries and display them with a lock?

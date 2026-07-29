@@ -7,8 +7,9 @@
 package com.klikli_dev.modonomicon.api.datagen.book.page;
 
 import com.google.gson.JsonObject;
-import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Page;
 import com.klikli_dev.modonomicon.api.datagen.book.BookTextHolderModel;
+import com.klikli_dev.modonomicon.book.page.BookPage;
+import com.klikli_dev.modonomicon.book.page.BookTextPage;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -20,7 +21,7 @@ public class BookTextPageModel extends BookPageModel<BookTextPageModel> {
     protected BookTextHolderModel text = new BookTextHolderModel("");
 
     protected BookTextPageModel() {
-        super(Page.TEXT);
+        super(BookTextPage.ID);
     }
 
     public static BookTextPageModel create() {
@@ -44,13 +45,8 @@ public class BookTextPageModel extends BookPageModel<BookTextPageModel> {
     }
 
     @Override
-    public JsonObject toJson(Identifier entryId, HolderLookup.Provider provider) {
-        var json = super.toJson(entryId, provider);
-        json.add("title", this.title.toJson(provider));
-        json.addProperty("use_markdown_in_title", this.useMarkdownInTitle);
-        json.addProperty("show_title_separator", this.showTitleSeparator);
-        json.add("text", this.text.toJson(provider));
-        return json;
+    public BookPage toBookPage(HolderLookup.Provider provider) {
+        return new BookTextPage(this.title.toBookTextHolder(), this.text.toBookTextHolder(), this.useMarkdownInTitle, this.showTitleSeparator, this.id, this.condition(provider));
     }
 
     public BookTextPageModel withTitle(String title) {
