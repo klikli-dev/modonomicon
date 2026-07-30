@@ -211,17 +211,6 @@ public class ModonomiconNeo {
         });
     }
 
-    private static net.minecraft.resources.Identifier extractItemId(net.minecraft.world.item.crafting.display.SlotDisplay display) {
-        if (display instanceof net.minecraft.world.item.crafting.display.SlotDisplay.ItemSlotDisplay itemDisplay) {
-            return itemDisplay.item().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElse(null);
-        } else if (display instanceof net.minecraft.world.item.crafting.display.SlotDisplay.ItemStackSlotDisplay itemStackDisplay) {
-            return itemStackDisplay.stack().item().unwrapKey().map(net.minecraft.resources.ResourceKey::identifier).orElse(null);
-        } else if (display instanceof net.minecraft.world.item.crafting.display.SlotDisplay.Composite composite && !composite.contents().isEmpty()) {
-            return extractItemId(composite.contents().getFirst());
-        }
-        return null;
-    }
-
     public static class Client {
         public static void onClientSetup(FMLClientSetupEvent event) {
             PageRendererRegistry.registerPageRenderers();
