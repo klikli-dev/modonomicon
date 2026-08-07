@@ -1,0 +1,21 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gray",
+    "width": 26
+  },
+  "category": "modonomicon:values",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "description": "book.modonomicon.demo.values.collector_c.description",
+  "icon": {
+    "id": "minecraft:quartz"
+  },
+  "id": "modonomicon:values/collector_c",
+  "name": "book.modonomicon.demo.values.collector_c.name",
+  "sort_number": 2,
+  "x": 2,
+  "y": 0
+}

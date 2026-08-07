@@ -13,8 +13,6 @@ import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.client.render.pip.GuiDirectEntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.render.pip.GuiMultiblockRenderer;
-import com.klikli_dev.modonomicon.client.render.state.pip.GuiDirectEntryConnectionRenderState;
-import com.klikli_dev.modonomicon.client.render.state.pip.GuiMultiblockRenderState;
 import com.klikli_dev.modonomicon.config.ClientConfig;
 import com.klikli_dev.modonomicon.config.ServerConfig;
 import com.klikli_dev.modonomicon.book.runtime.DemoRuntimeBookContent;
@@ -30,7 +28,6 @@ import com.klikli_dev.modonomicon.registry.RegistryBootstrap;
 import com.klikli_dev.modonomicon.research.ResearchServices;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
-import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
 import com.mojang.blaze3d.framegraph.FramePass;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -42,10 +39,12 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.FramePassManager;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.gui.overlay.ForgeLayeredDraw;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.*;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -103,6 +102,8 @@ public class ModonomiconForge {
             if (e.getPlayer() != null) {
                 BookDataManager.get().onDatapackSync(e.getPlayer());
                 MultiblockDataManager.get().onDatapackSync(e.getPlayer());
+                ResearchDataManager.get().onDatapackSync(e.getPlayer());
+                ResearchStateManager.get().onDatapackSync(e.getPlayer());
             }
         });
 
@@ -140,6 +141,20 @@ public class ModonomiconForge {
             }
         });
 
+        //Item crafted event handling for research progression
+        PlayerEvent.ItemCraftedEvent.BUS.addListener((PlayerEvent.ItemCraftedEvent e) -> {
+            if (!(e.getEntity() instanceof ServerPlayer player))
+                return;
+
+            var crafting = e.getCrafting();
+            if (!crafting.isEmpty()) {
+                if (ResearchServices.hooks().onItemCrafted(player, crafting)) {
+                    ResearchStateManager.get().syncFor(player);
+                    BookVisualStateManager.get().syncFor(player);
+                }
+            }
+        });
+
         //We use server tick to flush the queue of players that need a book state sync
         TickEvent.ServerTickEvent.Post.BUS.addListener(((TickEvent.ServerTickEvent.Post e) -> {
             ResearchStateManager.get().onServerTickEnd(e.server());
@@ -151,14 +166,46 @@ public class ModonomiconForge {
         //Client stuff
         if (FMLEnvironment.dist == Dist.CLIENT) {
             FMLClientSetupEvent.getBus(modBusGroup).addListener(Client::onClientSetup);
-//            modEventBus.addListener(Client::onRegisterGuiOverlays);
 
             ModelEvent.ModifyBakingResult.BUS.addListener(Client::onModifyBakingResult);
             RegisterPictureInPictureRendererEvent.BUS.addListener(Client::onRegisterPipRenderers);
 
+            //Render multiblock preview HUD (previously done via MixinGui, now via the layered draw system)
+            AddGuiOverlayLayersEvent.BUS.addListener((AddGuiOverlayLayersEvent e) -> {
+                e.getLayeredDraw().addBelow(ForgeLayeredDraw.PRE_SLEEP_STACK, Modonomicon.loc("multiblock_hud"), ForgeLayeredDraw.BOSS_OVERLAY, (guiGraphics, delta) ->
+                        MultiblockPreviewRenderer.onRenderHUD(guiGraphics, delta.getGameTimeDeltaPartialTick(true))
+                );
+            });
+
+            //Prerender markdown when recipes update (replaces the dead MixinClientPacketListener mixin).
+            //Forge discovers mixins via JAR manifest only, which doesn't work for exploded directory mods in dev.
+            RecipesUpdatedEvent.BUS.addListener((RecipesUpdatedEvent e) -> {
+                BookDataManager.get().onRecipesUpdated(Minecraft.getInstance().level);
+            });
+
             //register client side reload listener that will reset the fallback font to handle locale changes on the fly
             RegisterClientReloadListenersEvent.BUS.addListener((RegisterClientReloadListenersEvent e) -> {
                 e.registerReloadListener(BookDataManager.Client.get());
+            });
+
+            //Render multiblock preview - Phase 1: Extract render state and Phase 2: Render
+            //This must be registered during mod construction (before LevelRenderer is created), because
+            //AddFramePassEvent only fires once from the LevelRenderer constructor, which happens before
+            //FMLClientSetupEvent. Registering here ensures the frame pass exists when the frame graph is built.
+            AddFramePassEvent.BUS.addListener((AddFramePassEvent e) -> {
+                e.addPass(Modonomicon.loc("multiblock_preview"), new FramePassManager.PassDefinition() {
+                    @Override
+                    public void extracts(LevelTargetBundle bundle, FramePass pass, net.minecraft.client.DeltaTracker deltaTracker) {
+                        bundle.main = pass.readsAndWrites(bundle.main);
+                    }
+
+                    @Override
+                    public void executes(net.minecraft.client.renderer.state.level.LevelRenderState state) {
+                        MultiblockPreviewRenderer.extractRenderState(state);
+                        PoseStack ps = new PoseStack();
+                        MultiblockPreviewRenderer.onRenderLevelLastEvent(state, ps);
+                    }
+                });
             });
         }
     }
@@ -208,27 +255,6 @@ public class ModonomiconForge {
                 MultiblockPreviewRenderer.onClientTick(Minecraft.getInstance());
             });
 
-            //TODO re-enable once forge offers an API for the new two-pass approach
-//            //Render multiblock preview
-//            AddFramePassEvent.BUS.addListener((AddFramePassEvent e) -> {
-//                var mainCamera = Minecraft.getInstance().gameRenderer.getMainCamera();
-//                e.addPass(Modonomicon.loc("multiblock_preview"), (new FramePassManager.PassDefinition() {
-//                    @Override
-//                    public void targets(LevelTargetBundle bundle, FramePass pass) {
-//                        bundle.main = pass.readsAndWrites(bundle.main);
-//                    }
-//
-//                    @Override
-//                    public void executes() {
-//                        PoseStack ps = new PoseStack();
-//                        ps.translate(mainCamera.getPosition().multiply(-1, -1, -1));
-//                        ps.pushPose();
-//                        MultiblockPreviewRenderer.onRenderLevelLastEvent(ps);
-//                        ps.popPose();
-//                    }
-//                }));
-//            });
-
             //register item model properties
             event.enqueueWork(() -> {
                 ConditionalItemModelProperties.ID_MAPPER.put(
@@ -244,13 +270,6 @@ public class ModonomiconForge {
         public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
             BookModel.replace(event.getResults().itemStackModels());
         }
-
-        //Currently done in MixinGui because forge removed the event and LayeredDraw seems not up to the task yet
-//        public static void onRegisterGuiOverlays(RegisterGuiOverlaysEvent event) {
-//            event.registerBelow(VanillaGuiOverlay.BOSS_EVENT_PROGRESS.id(), "multiblock_hud", (gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
-//                MultiblockPreviewRenderer.onRenderHUD(guiGraphics, partialTick);
-//            });
-//        }
 
         public static void onRegisterPipRenderers(RegisterPictureInPictureRendererEvent event) {
             event.register(

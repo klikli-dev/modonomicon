@@ -48,10 +48,13 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
         entityrenderstate.shadowPieces.clear();
         entityrenderstate.outlineColor = 0;
 
-        // Calculate scissor bounds - entity should be centered in the 106x106 area
-        // 53 is not a magic number, it is half of the display area :)
-        int boxX = left + BookEntryScreen.PAGE_WIDTH / 2 + 53;
-        int boxY = top + 7;
+        // Calculate scissor bounds in screen-absolute coordinates
+        // The frame is drawn at page-local (9, 7) with size 106x106, so we need to
+        // convert to screen space by adding bookLeft, bookTop, page.left, page.top
+        int frameX = BookEntryScreen.PAGE_WIDTH / 2 - 53;
+        int frameY = 7;
+        int boxX = this.parentScreen.getBookLeft() + left + frameX;
+        int boxY = this.parentScreen.getBookTop() + top + frameY;
         int boxX2 = boxX + 106;
         int boxY2 = boxY + 106;
 
@@ -86,7 +89,7 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
                 this.renderOffset = Math.max(height, entitySize) * 0.5F + this.getPage().getOffset();
             } catch (Exception e) {
                 this.errored = true;
-                Modonomicon.LOG.error("Failed to load entity", e);
+                Modonomicon.LOG.error("Failed to load entity {}", this.page.getEntityId(), e);
             }
         }
     }

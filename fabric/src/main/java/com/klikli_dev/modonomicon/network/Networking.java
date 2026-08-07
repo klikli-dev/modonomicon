@@ -24,6 +24,7 @@ public class Networking {
         ServerPlayNetworking.registerGlobalReceiver(RequestSyncResearchStateMessage.TYPE, new ServerMessageHandler<>());
         ServerPlayNetworking.registerGlobalReceiver(AddBookmarkMessage.TYPE, new ServerMessageHandler<>());
         ServerPlayNetworking.registerGlobalReceiver(RemoveBookmarkMessage.TYPE, new ServerMessageHandler<>());
+        ServerPlayNetworking.registerGlobalReceiver(RequestSyncBookStatesMessage.TYPE, new ServerMessageHandler<>());
     }
 
     public static void registerMessages() {
@@ -40,6 +41,7 @@ public class Networking {
         PayloadTypeRegistry.serverboundPlay().register(AddBookmarkMessage.TYPE, AddBookmarkMessage.STREAM_CODEC);
         PayloadTypeRegistry.serverboundPlay().register(RemoveBookmarkMessage.TYPE, RemoveBookmarkMessage.STREAM_CODEC);
         PayloadTypeRegistry.serverboundPlay().register(BookClosedMessage.TYPE, BookClosedMessage.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(RequestSyncBookStatesMessage.TYPE, RequestSyncBookStatesMessage.STREAM_CODEC);
 
         //to client
         PayloadTypeRegistry.clientboundPlay().register(SyncBookDataMessage.TYPE, SyncBookDataMessage.STREAM_CODEC);
