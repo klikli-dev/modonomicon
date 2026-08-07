@@ -42,6 +42,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.FramePassManager;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.gui.overlay.ForgeLayeredDraw;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.*;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
@@ -155,6 +156,13 @@ public class ModonomiconForge {
 
             ModelEvent.ModifyBakingResult.BUS.addListener(Client::onModifyBakingResult);
             RegisterPictureInPictureRendererEvent.BUS.addListener(Client::onRegisterPipRenderers);
+
+            //Render multiblock preview HUD (previously done via MixinGui, now via the layered draw system)
+            AddGuiOverlayLayersEvent.BUS.addListener((AddGuiOverlayLayersEvent e) -> {
+                e.getLayeredDraw().addBelow(Modonomicon.loc("multiblock_hud"), ForgeLayeredDraw.BOSS_OVERLAY, (guiGraphics, delta) ->
+                        MultiblockPreviewRenderer.onRenderHUD(guiGraphics, delta.getGameTimeDeltaPartialTick(true))
+                );
+            });
 
             //register client side reload listener that will reset the fallback font to handle locale changes on the fly
             RegisterClientReloadListenersEvent.BUS.addListener((RegisterClientReloadListenersEvent e) -> {

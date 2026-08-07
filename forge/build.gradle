@@ -126,6 +126,9 @@ repositories {
 compileTestJava {
     enabled = false
 }
+test {
+    failOnNoDiscoveredTests = false
+}
 
 tasks.withType(JavaCompile).configureEach {
     source(project(":common").sourceSets.main.allSource)

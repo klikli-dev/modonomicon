@@ -12,7 +12,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.registries.DeferredRegister;
 
 import java.util.Collections;
@@ -23,17 +22,13 @@ public class ForgeRegistrationFactory implements RegistrationProvider.Factory {
 
     @Override
     public <T> RegistrationProvider<T> create(ResourceKey<? extends Registry<T>> resourceKey, String modId) {
-        final var containerOpt = ModList.get().getModContainerById(modId);
+        final var containerOpt = ModList.getModContainerById(modId);
         if (containerOpt.isEmpty())
             throw new NullPointerException("Cannot find mod container for id " + modId);
         final var cont = containerOpt.get();
-        if (cont instanceof FMLModContainer fmlModContainer) {
-            final var register = DeferredRegister.create(resourceKey, modId);
-            register.register(fmlModContainer.getModBusGroup());
-            return new Provider<>(modId, register);
-        } else {
-            throw new ClassCastException("The container of the mod " + modId + " is not a FML one!");
-        }
+        final var register = DeferredRegister.create(resourceKey, modId);
+        register.register(cont.getModBusGroup());
+        return new Provider<>(modId, register);
     }
 
     private static class Provider<T> implements RegistrationProvider<T> {
