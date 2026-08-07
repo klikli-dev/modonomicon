@@ -2,7 +2,6 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version "${forgegradle_version}"
-    id 'org.spongepowered.mixin' version '0.7.+'
     id 'java-library'
 }
 
@@ -15,35 +14,43 @@ base {
     archivesName = "${mod_id}-${minecraft_version}-forge"
 }
 
-mixin {
-    add(sourceSets.main, "${mod_id}.refmap.json")
+configurations {
+    embed {
+        transitive = false
+    }
+}
 
-    config("${mod_id}.mixins.json")
-    config("${mod_id}.forge.mixins.json")
+repositories {
+    maven {
+        name = 'MinecraftForge'
+        url = 'https://maven.minecraftforge.net/'
+    }
 }
 
 jar {
     manifest {
         attributes["MixinConfigs"] = "${mod_id}.mixins.json,${mod_id}.forge.mixins.json"
     }
+    into("META-INF/jarjar") {
+        from configurations.embed
+    }
 }
 
 minecraft {
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
     runs {
         // applies to all the run configs below
         configureEach {
-            workingDirectory project.file('run')
-            ideaModule "${rootProject.name.replace(" ", "_")}.${project.name}.main"
+            workingDir.set(project.layout.projectDirectory.dir('run'))
 
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            systemProperty 'forge.logging.console.level', 'debug'
 
             jvmArgs '-XX:+AllowEnhancedClassRedefinition', '-XX:+IgnoreUnrecognizedVMOptions'
         }
 
-        register('client'){
+        client {
+            workingDir.set(project.layout.projectDirectory.dir('run'))
+
             mods {
                 modClientRun {
                     source sourceSets.main
@@ -52,7 +59,7 @@ minecraft {
             }
         }
 
-        register('server') {
+        server {
             args '--nogui'
 
             mods {
@@ -63,8 +70,8 @@ minecraft {
             }
         }
 
-        register('data') {
-            workingDir = layout.projectDirectory.dir('run-data')
+        data {
+            workingDir.set(layout.projectDirectory.dir('run-data'))
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
             args '--mod', project.mod_id, '--all', '--output', layout.projectDirectory.dir('src/generated/resources/'), '--existing', layout.projectDirectory.dir('src/main/resources/')
@@ -82,36 +89,32 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
+    //note: no mixin annotationProcessor here. With mojmap there is no obfuscation to remap to,
+    //and the mixin AP emits "Unable to locate obfuscation mapping" errors without a gradle mixin plugin.
     implementation minecraft.dependency("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
-    annotationProcessor "org.spongepowered:mixin:0.8.6:processor"
-
-    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0"))
-    implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.5.0")) {
-        jarJar.ranged(it, "[0.5.0,)")
-    }
 
     compileOnly project(":common")
 
     //Jei
     compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
-    compileOnly "mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"
-    runtimeOnly "mezz.jei:jei-${minecraft_version}-forge:${jei_version}"
+    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+    runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 
 //    implementation "vazkii.patchouli:Patchouli:${minecraft_version}-${patchouli_version}-FORGE"
 
     //commonmark
     //mark it for forge to add to the classpath
-    minecraftLibrary "org.commonmark:commonmark:${commonmark_version}"
-    minecraftLibrary "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
-    minecraftLibrary "org.commonmark:commonmark-ext-ins:${commonmark_version}"
-    //and include it in the jar
-    jarJar(group: 'org.commonmark', name: 'commonmark', version: "[${commonmark_version},)")
-    jarJar(group: 'org.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: "[${commonmark_version},)")
-    jarJar(group: 'org.commonmark', name: 'commonmark-ext-ins', version: "[${commonmark_version},)")
+    implementation "org.commonmark:commonmark:${commonmark_version}"
+    implementation "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
+    implementation "org.commonmark:commonmark-ext-ins:${commonmark_version}"
+    //and include it in the jar via META-INF/jarjar (ForgeGradle 7 dropped jarJar)
+    embed "org.commonmark:commonmark:${commonmark_version}"
+    embed "org.commonmark:commonmark-ext-gfm-strikethrough:${commonmark_version}"
+    embed "org.commonmark:commonmark-ext-ins:${commonmark_version}"
 }
 
 repositories {
-    minecraft.mavenizer(it) // In Kotlin, it = this
+    minecraft.mavenizer(it)
     maven fg.forgeMaven
     maven fg.minecraftLibsMaven
     mavenCentral()
@@ -136,18 +139,7 @@ tasks.named("sourcesJar", Jar) {
     from(project(":common").sourceSets.main.allSource)
 }
 
-
-tasks.named('jar') {
-    archiveClassifier = "slim"
-//    finalizedBy('reobfJar')
-}
-
-tasks.named('build').configure { dependsOn('jarJar') }
-jarJar.enable()
-tasks.named('jarJar') {
-    archiveClassifier = ""
-//    finalizedBy('reobfJar')
-}
+tasks.named('build').configure { dependsOn('jar') }
 
 tasks.withType(ProcessResources).configureEach {
     //for some reason we need item textures in forge too for dev runtime, so we have to set a strategy
@@ -161,7 +153,6 @@ publishing {
             artifactId = base.archivesName.get()
 
             from components.java
-            jarJar.component(it)
 
             pom {
                 name = mod_name
@@ -181,7 +172,7 @@ publishing {
                 //once from JiJ, once as transitive dep.
                 withXml {
                     asNode().dependencies.dependency.each { dep ->
-                        if(dep.groupId.text() == 'org.commonmark') {
+                        if (dep.groupId.text() == 'org.commonmark') {
                             assert dep.parent().remove(dep)
                         }
                     }
@@ -195,7 +186,7 @@ publishing {
             url = "https://maven.cloudsmith.io/klikli-dev/mods/"
             def releasesRepoUrl = "https://maven.cloudsmith.io/klikli-dev/mods/"
             def snapshotsRepoUrl = "https://maven.cloudsmith.io/klikli-dev/mods/"
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            url = version.toString().endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             credentials {
                 username = System.getenv('MAVEN_USER')
                 password = System.getenv('MAVEN_PASS')
@@ -205,7 +196,7 @@ publishing {
 }
 
 sourceSets.each {
-    def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
+    def dir = layout.buildDirectory.dir("sourcesSets/${it.name}")
     it.output.resourcesDir = dir
     it.java.destinationDirectory = dir
 }
