@@ -36,6 +36,7 @@ public class Networking {
             .addMain(AddBookmarkMessage.TYPE, AddBookmarkMessage.STREAM_CODEC, MessageHandler::handle)
             .addMain(RemoveBookmarkMessage.TYPE, RemoveBookmarkMessage.STREAM_CODEC, MessageHandler::handle)
             .addMain(BookClosedMessage.TYPE, BookClosedMessage.STREAM_CODEC, MessageHandler::handle)
+            .addMain(RequestSyncBookStatesMessage.TYPE, RequestSyncBookStatesMessage.STREAM_CODEC, MessageHandler::handle)
             .clientbound()
             .addMain(SyncBookDataMessage.TYPE, SyncBookDataMessage.STREAM_CODEC, MessageHandler::handle)
             .addMain(SyncResearchDataMessage.TYPE, SyncResearchDataMessage.STREAM_CODEC, MessageHandler::handle)
