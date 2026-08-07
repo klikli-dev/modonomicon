@@ -187,6 +187,26 @@ public class ModonomiconForge {
             RegisterClientReloadListenersEvent.BUS.addListener((RegisterClientReloadListenersEvent e) -> {
                 e.registerReloadListener(BookDataManager.Client.get());
             });
+
+            //Render multiblock preview - Phase 1: Extract render state and Phase 2: Render
+            //This must be registered during mod construction (before LevelRenderer is created), because
+            //AddFramePassEvent only fires once from the LevelRenderer constructor, which happens before
+            //FMLClientSetupEvent. Registering here ensures the frame pass exists when the frame graph is built.
+            AddFramePassEvent.BUS.addListener((AddFramePassEvent e) -> {
+                e.addPass(Modonomicon.loc("multiblock_preview"), new FramePassManager.PassDefinition() {
+                    @Override
+                    public void extracts(LevelTargetBundle bundle, FramePass pass, net.minecraft.client.DeltaTracker deltaTracker) {
+                        bundle.main = pass.readsAndWrites(bundle.main);
+                    }
+
+                    @Override
+                    public void executes(net.minecraft.client.renderer.state.level.LevelRenderState state) {
+                        MultiblockPreviewRenderer.extractRenderState(state);
+                        PoseStack ps = new PoseStack();
+                        MultiblockPreviewRenderer.onRenderLevelLastEvent(state, ps);
+                    }
+                });
+            });
         }
     }
 
@@ -233,23 +253,6 @@ public class ModonomiconForge {
             //Tick multiblock preview
             TickEvent.ClientTickEvent.Post.BUS.addListener((TickEvent.ClientTickEvent.Post e) -> {
                 MultiblockPreviewRenderer.onClientTick(Minecraft.getInstance());
-            });
-
-            //Render multiblock preview - Phase 1: Extract render state and Phase 2: Render
-            AddFramePassEvent.BUS.addListener((AddFramePassEvent e) -> {
-                e.addPass(Modonomicon.loc("multiblock_preview"), new FramePassManager.PassDefinition() {
-                    @Override
-                    public void extracts(LevelTargetBundle bundle, FramePass pass, net.minecraft.client.DeltaTracker deltaTracker) {
-                        bundle.main = pass.readsAndWrites(bundle.main);
-                    }
-
-                    @Override
-                    public void executes(net.minecraft.client.renderer.state.level.LevelRenderState state) {
-                        MultiblockPreviewRenderer.extractRenderState(state);
-                        PoseStack ps = new PoseStack();
-                        MultiblockPreviewRenderer.onRenderLevelLastEvent(state, ps);
-                    }
-                });
             });
 
             //register item model properties
