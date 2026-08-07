@@ -1,12 +1,11 @@
 {
   "allow_open_book_with_invalid_links": false,
-  "auto_add_read_conditions": false,
   "creative_tab": "modonomicon:modonomicon",
   "description": "",
   "display_mode": "node",
   "font": "modonomicon:default",
   "generate_book_item": true,
-  "leaflet_entry": "leaflet/leaflet",
+  "leaflet_entry": "modonomicon:leaflet/leaflet",
   "model": "modonomicon:leaflet",
   "name": "book.modonomicon.demo_leaflet.name",
   "page_display_mode": "single_page",

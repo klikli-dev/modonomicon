@@ -11,18 +11,71 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 
 public class ForgeGuiHelper implements GuiHelper {
+    //Forge 65.x removed Minecraft.pushGuiLayer/popGuiLayer and has no native multi-layer screen support,
+    //so we use the same MultiLayerScreen approach as the fabric subproject.
+    private static MultiLayerScreen multiLayerScreen;
+
     @Override
     public void pushGuiLayer(Screen screen) {
-        Minecraft.getInstance().pushGuiLayer(screen);
+        var minecraft = Minecraft.getInstance();
+
+        var oldScreen = minecraft.gui.screen();
+
+        if (multiLayerScreen == null)
+            multiLayerScreen = new MultiLayerScreen();
+
+        if (oldScreen != multiLayerScreen) {
+            //if our layer screen is not the current screen then some other mod or vanilla/loader code has set a screen or null
+            //we treat that as a clean slate.
+            multiLayerScreen.guiLayers.clear();
+
+            //then we put the previous screen as the first layer
+            multiLayerScreen.guiLayers.push(oldScreen);
+        }
+
+        multiLayerScreen.guiLayers.push(screen);
+
+        if (oldScreen != multiLayerScreen) {
+            //init needs to happen after we added screens, because with an empty guiLayers stack we get errors
+            multiLayerScreen.init(minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight());
+            minecraft.gui.screen = multiLayerScreen;
+        }
+
+        screen.init(minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight());
+        minecraft.getNarrator().saySystemNow(screen.getNarrationMessage());
     }
 
     @Override
     public void popGuiLayer() {
-        Minecraft.getInstance().popGuiLayer();
+        var minecraft = Minecraft.getInstance();
+
+        if (multiLayerScreen == null)
+            return;
+
+        if (minecraft.gui.screen() != multiLayerScreen) {
+            //someone already overwrote screen, we exit
+            return;
+        }
+
+        if (multiLayerScreen.guiLayers.size() == 1) {
+            //we are at the last layer, so we close the screen
+            //we do this here because then the last screen gets the related events from mc / modloader
+            minecraft.setScreenAndShow(null);
+        }
+
+        var removed = multiLayerScreen.guiLayers.pop();
+        removed.removed();
+
+        if (!multiLayerScreen.guiLayers.isEmpty()) {
+            minecraft.getNarrator().saySystemNow(multiLayerScreen.guiLayers.peek().getNarrationMessage());
+        }
     }
 
     @Override
     public Screen getCurrentScreen() {
-        return Minecraft.getInstance().gui.screen();
+        if (multiLayerScreen == null)
+            return Minecraft.getInstance().gui.screen();
+
+        return multiLayerScreen.guiLayers.isEmpty() ? Minecraft.getInstance().gui.screen() : multiLayerScreen.guiLayers.peek();
     }
 }

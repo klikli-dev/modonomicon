@@ -1,54 +1,36 @@
 {
+  "type": "modonomicon:content",
   "background": {
     "height": 26,
     "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
     "width": 26
   },
-  "category": "features",
+  "category": "modonomicon:features",
   "condition": {
-    "type": "modonomicon:and",
-    "children": [
-      {
-        "type": "modonomicon:entry_read",
-        "entry_id": "features/condition_root"
-      },
-      {
-        "type": "modonomicon:entry_read",
-        "entry_id": "features/condition_level_2"
-      }
-    ]
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/features_two_parents",
+    "tooltip": {
+      "translate": "tooltip.modonomicon.condition.entry_unlocked",
+      "with": [
+        {
+          "translate": "book.modonomicon.demo.features.two_parents.name"
+        }
+      ]
+    }
   },
   "description": "book.modonomicon.demo.features.two_parents.description",
-  "hide_while_locked": false,
   "icon": {
     "id": "minecraft:amethyst_cluster"
   },
+  "id": "modonomicon:features/two_parents",
   "name": "book.modonomicon.demo.features.two_parents.name",
-  "pages": [
-    {
-      "type": "modonomicon:text",
-      "anchor": "",
-      "condition": {
-        "type": "modonomicon:none"
-      },
-      "show_title_separator": true,
-      "text": "book.modonomicon.demo.features.two_parents.intro.text",
-      "title": "book.modonomicon.demo.features.two_parents.intro.title",
-      "use_markdown_in_title": false
-    }
-  ],
   "parents": [
     {
-      "draw_arrow": true,
-      "entry": "features/condition_root",
-      "line_enabled": true,
+      "entry": "modonomicon:features/condition_root",
       "line_reversed": true
     },
     {
-      "draw_arrow": true,
-      "entry": "features/condition_level_2",
-      "line_enabled": true,
-      "line_reversed": false
+      "entry": "modonomicon:features/condition_level_2"
     }
   ],
   "show_when_any_parent_unlocked": true,

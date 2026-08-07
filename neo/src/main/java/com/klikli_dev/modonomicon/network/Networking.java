@@ -30,6 +30,7 @@ public class Networking {
         registrar.playToServer(AddBookmarkMessage.TYPE, AddBookmarkMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToServer(RemoveBookmarkMessage.TYPE, RemoveBookmarkMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToServer(BookClosedMessage.TYPE, BookClosedMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToServer(RequestSyncBookStatesMessage.TYPE, RequestSyncBookStatesMessage.STREAM_CODEC, MessageHandler::handle);
 
         registrar.playToClient(SyncBookDataMessage.TYPE, SyncBookDataMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToClient(SyncResearchDataMessage.TYPE, SyncResearchDataMessage.STREAM_CODEC, MessageHandler::handle);

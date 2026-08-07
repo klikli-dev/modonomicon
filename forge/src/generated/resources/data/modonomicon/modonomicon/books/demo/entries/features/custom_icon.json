@@ -1,40 +1,36 @@
 {
+  "type": "modonomicon:content",
   "background": {
     "height": 26,
     "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
     "width": 26
   },
-  "category": "features",
+  "category": "modonomicon:features",
+  "condition": {
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/features_custom_icon",
+    "tooltip": {
+      "translate": "tooltip.modonomicon.condition.entry_unlocked",
+      "with": [
+        {
+          "translate": "book.modonomicon.demo.features.custom_icon.name"
+        }
+      ]
+    }
+  },
   "description": "book.modonomicon.demo.features.custom_icon.description",
-  "hide_while_locked": false,
   "icon": {
     "height": 32,
     "texture": "modonomicon:textures/gui/big_test_icon.png",
     "width": 32
   },
+  "id": "modonomicon:features/custom_icon",
   "name": "book.modonomicon.demo.features.custom_icon.name",
-  "pages": [
-    {
-      "type": "modonomicon:text",
-      "anchor": "",
-      "condition": {
-        "type": "modonomicon:none"
-      },
-      "show_title_separator": true,
-      "text": "book.modonomicon.demo.features.custom_icon.intro.text",
-      "title": "book.modonomicon.demo.features.custom_icon.intro.title",
-      "use_markdown_in_title": false
-    }
-  ],
   "parents": [
     {
-      "draw_arrow": true,
-      "entry": "features/image",
-      "line_enabled": true,
-      "line_reversed": false
+      "entry": "modonomicon:features/image"
     }
   ],
-  "show_when_any_parent_unlocked": false,
   "sort_number": 14,
   "x": 8,
   "y": 2

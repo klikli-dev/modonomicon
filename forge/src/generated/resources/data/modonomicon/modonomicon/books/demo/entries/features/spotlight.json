@@ -1,109 +1,35 @@
 {
+  "type": "modonomicon:content",
   "background": {
     "height": 26,
     "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
     "width": 26
   },
-  "category": "features",
+  "category": "modonomicon:features",
+  "condition": {
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/features_spotlight",
+    "tooltip": {
+      "translate": "tooltip.modonomicon.condition.entry_unlocked",
+      "with": [
+        {
+          "translate": "book.modonomicon.demo.features.spotlight.name"
+        }
+      ]
+    }
+  },
   "description": "book.modonomicon.demo.features.spotlight.description",
-  "hide_while_locked": false,
   "icon": {
     "id": "minecraft:beacon"
   },
+  "id": "modonomicon:features/spotlight",
   "name": "book.modonomicon.demo.features.spotlight.name",
-  "pages": [
-    {
-      "type": "modonomicon:text",
-      "anchor": "",
-      "condition": {
-        "type": "modonomicon:none"
-      },
-      "show_title_separator": true,
-      "text": "book.modonomicon.demo.features.spotlight.intro.text",
-      "title": "book.modonomicon.demo.features.spotlight.intro.title",
-      "use_markdown_in_title": false
-    },
-    {
-      "type": "modonomicon:spotlight",
-      "anchor": "",
-      "condition": {
-        "type": "modonomicon:none"
-      },
-      "item": "minecraft:apple",
-      "text": "book.modonomicon.demo.features.spotlight.spotlight1.text",
-      "title": "book.modonomicon.demo.features.spotlight.spotlight1.title"
-    },
-    {
-      "type": "modonomicon:spotlight",
-      "anchor": "",
-      "condition": {
-        "type": "modonomicon:none"
-      },
-      "item": "minecraft:diamond",
-      "text": "book.modonomicon.demo.features.spotlight.spotlight2.text",
-      "title": ""
-    },
-    {
-      "type": "modonomicon:spotlight",
-      "anchor": "",
-      "condition": {
-        "type": "modonomicon:none"
-      },
-      "item": {
-        "components": {
-          "minecraft:dyed_color": 1481884
-        },
-        "id": "minecraft:leather_helmet"
-      },
-      "text": "book.modonomicon.demo.features.spotlight.spotlight3.text",
-      "title": ""
-    },
-    {
-      "type": "modonomicon:spotlight",
-      "anchor": "",
-      "condition": {
-        "type": "modonomicon:none"
-      },
-      "item": {
-        "components": {
-          "minecraft:potion_contents": {
-            "potion": "minecraft:healing"
-          }
-        },
-        "id": "minecraft:potion"
-      },
-      "text": "book.modonomicon.demo.features.spotlight.spotlight4.text",
-      "title": ""
-    },
-    {
-      "type": "modonomicon:spotlight",
-      "anchor": "",
-      "condition": {
-        "type": "modonomicon:none"
-      },
-      "item": {
-        "components": {
-          "minecraft:bundle_contents": [
-            {
-              "id": "minecraft:apple"
-            }
-          ]
-        },
-        "id": "minecraft:bundle"
-      },
-      "text": "book.modonomicon.demo.features.spotlight.spotlight5.text",
-      "title": ""
-    }
-  ],
   "parents": [
     {
-      "draw_arrow": true,
-      "entry": "features/recipe",
-      "line_enabled": true,
+      "entry": "modonomicon:features/recipe",
       "line_reversed": true
     }
   ],
-  "show_when_any_parent_unlocked": false,
   "sort_number": 7,
   "x": -8,
   "y": 1
