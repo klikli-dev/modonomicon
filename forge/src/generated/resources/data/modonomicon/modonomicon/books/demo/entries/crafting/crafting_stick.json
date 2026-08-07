@@ -1,0 +1,27 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gray",
+    "width": 26
+  },
+  "category": "modonomicon:crafting",
+  "condition": {
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:demo/crafting_stick"
+  },
+  "description": "book.modonomicon.demo.crafting.crafting_stick.description",
+  "icon": {
+    "id": "minecraft:stick"
+  },
+  "id": "modonomicon:crafting/crafting_stick",
+  "name": "book.modonomicon.demo.crafting.crafting_stick.name",
+  "parents": [
+    {
+      "entry": "modonomicon:crafting/crafting_intro"
+    }
+  ],
+  "sort_number": 1,
+  "x": 2,
+  "y": 0
+}

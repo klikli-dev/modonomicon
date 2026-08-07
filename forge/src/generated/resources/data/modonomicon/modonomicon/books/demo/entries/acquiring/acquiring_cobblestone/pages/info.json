@@ -1,0 +1,11 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "info",
+  "show_title_separator": true,
+  "sort_number": 0,
+  "text": "book.modonomicon.demo.acquiring.acquiring_cobblestone.info.text",
+  "title": "book.modonomicon.demo.acquiring.acquiring_cobblestone.info.title"
+}

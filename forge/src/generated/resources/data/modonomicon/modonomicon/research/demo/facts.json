@@ -1,5 +1,17 @@
-[{
-  "id": "modonomicon:demo/condition_root_viewed"
-}, {
-  "id": "modonomicon:demo/condition_level_1_viewed"
-}]
+[
+  {
+    "id": "modonomicon:demo/condition_root_viewed"
+  },
+  {
+    "id": "modonomicon:demo/advancement_mine_stone_completed"
+  },
+  {
+    "id": "modonomicon:demo/advancement_ride_boat_with_goat_completed"
+  },
+  {
+    "id": "modonomicon:demo/stick_crafted"
+  },
+  {
+    "id": "modonomicon:demo/cobblestone_acquired"
+  }
+]
