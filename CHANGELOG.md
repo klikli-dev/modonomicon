@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.2-2.3.0] - 2026-08-07
+### :sparkles: New Features
+- [`d13d12d`](https://github.com/klikli-dev/modonomicon/commit/d13d12df85c348f0e5cc9a5ed658355b6d73f490) - enable Forge support for 26.2 *(PR [#380](https://github.com/klikli-dev/modonomicon/pull/380) by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`7fad21e`](https://github.com/klikli-dev/modonomicon/commit/7fad21eb0484b56c7f426443cb7630e240ba60f7) - remove unused *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.2-2.2.0] - 2026-07-29
 ### :sparkles: New Features
 - [`312f841`](https://github.com/klikli-dev/modonomicon/commit/312f841c4e6674906d33ce77b60946bc64ba72bd) - update to 26.2 *(PR [#378](https://github.com/klikli-dev/modonomicon/pull/378) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2325,3 +2333,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-2.1.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.0.0...release/v26.1.2-2.1.0
 [release/v26.1.2-2.1.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.1.0...release/v26.1.2-2.1.1
 [release/v26.2-2.2.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.2-1.133.1...release/v26.2-2.2.0
+[release/v26.2-2.3.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.2-2.2.0...release/v26.2-2.3.0
