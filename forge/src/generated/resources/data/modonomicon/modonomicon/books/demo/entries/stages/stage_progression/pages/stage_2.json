@@ -1,0 +1,13 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:research_stage_completed",
+    "node_id": "modonomicon:demo/stages_demo",
+    "stage_id": "modonomicon:demo/stages_demo_stage_2"
+  },
+  "id": "stage_2",
+  "show_title_separator": true,
+  "sort_number": 2,
+  "text": "book.modonomicon.demo.stages.stage_progression.stage_2.text",
+  "title": "book.modonomicon.demo.stages.stage_progression.stage_2.title"
+}

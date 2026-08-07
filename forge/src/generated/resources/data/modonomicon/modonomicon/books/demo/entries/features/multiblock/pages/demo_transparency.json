@@ -1,0 +1,12 @@
+{
+  "type": "modonomicon:multiblock",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "demo_transparency",
+  "multiblock_id": "modonomicon:demo_transparency",
+  "multiblock_name": "",
+  "show_visualize_button": true,
+  "sort_number": 5,
+  "text": ""
+}
