@@ -172,9 +172,15 @@ public class ModonomiconForge {
 
             //Render multiblock preview HUD (previously done via MixinGui, now via the layered draw system)
             AddGuiOverlayLayersEvent.BUS.addListener((AddGuiOverlayLayersEvent e) -> {
-                e.getLayeredDraw().addBelow(Modonomicon.loc("multiblock_hud"), ForgeLayeredDraw.BOSS_OVERLAY, (guiGraphics, delta) ->
+                e.getLayeredDraw().addBelow(ForgeLayeredDraw.PRE_SLEEP_STACK, Modonomicon.loc("multiblock_hud"), ForgeLayeredDraw.BOSS_OVERLAY, (guiGraphics, delta) ->
                         MultiblockPreviewRenderer.onRenderHUD(guiGraphics, delta.getGameTimeDeltaPartialTick(true))
                 );
+            });
+
+            //Prerender markdown when recipes update (replaces the dead MixinClientPacketListener mixin).
+            //Forge discovers mixins via JAR manifest only, which doesn't work for exploded directory mods in dev.
+            RecipesUpdatedEvent.BUS.addListener((RecipesUpdatedEvent e) -> {
+                BookDataManager.get().onRecipesUpdated(Minecraft.getInstance().level);
             });
 
             //register client side reload listener that will reset the fallback font to handle locale changes on the fly
