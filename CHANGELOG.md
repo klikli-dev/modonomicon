@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.2-2.4.0] - 2026-08-08
+### :sparkles: New Features
+- [`6213f09`](https://github.com/klikli-dev/modonomicon/commit/6213f09f0d542365c76f60058aff214db95cb977) - update to latest neo mod info system *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.2-2.3.0] - 2026-08-07
 ### :sparkles: New Features
 - [`d13d12d`](https://github.com/klikli-dev/modonomicon/commit/d13d12df85c348f0e5cc9a5ed658355b6d73f490) - enable Forge support for 26.2 *(PR [#380](https://github.com/klikli-dev/modonomicon/pull/380) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2334,3 +2339,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-2.1.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.1.0...release/v26.1.2-2.1.1
 [release/v26.2-2.2.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.2-1.133.1...release/v26.2-2.2.0
 [release/v26.2-2.3.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.2-2.2.0...release/v26.2-2.3.0
+[release/v26.2-2.4.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.2-2.3.0...release/v26.2-2.4.0
