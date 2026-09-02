@@ -1,0 +1,16 @@
+{
+  "type": "modonomicon:image",
+  "border": true,
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "display_mode": "wide",
+  "id": "wide_image",
+  "images": [
+    "modonomicon:textures/gui/default_background_wide.png",
+    "modonomicon:textures/gui/dark_slate_seamless_wide.png"
+  ],
+  "sort_number": 4,
+  "text": "book.modonomicon.demo.features.image.wide_image.text",
+  "title": "book.modonomicon.demo.features.image.wide_image.title"
+}

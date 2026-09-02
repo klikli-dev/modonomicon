@@ -1,4 +1,4 @@
-// 26.1.2	2026-08-07T09:01:11.3086172	Books: modonomicon
+// 26.1.2	2026-09-02T19:55:32.0588033	Books: modonomicon
 2c29f1887c5c375e76d6813e5c5ef689936ec4e2 data/modonomicon/modonomicon/books/demo/book.json
 a40738cde71e2783fc7ebf4102a27a937c00761e data/modonomicon/modonomicon/books/demo/categories/acquiring.json
 66e880d8ad62910ce9caf891021f84308950452c data/modonomicon/modonomicon/books/demo/categories/conditional.json
@@ -40,12 +40,14 @@ c9958d6926e4e37fe8d22f80bbe86bfd6e4804db data/modonomicon/modonomicon/books/demo
 eeb72cb93cbd7b2dcf44ed37f5fc40713aec7b53 data/modonomicon/modonomicon/books/demo/entries/features/entity.json
 d252b5731909f23f38a8d83e225b2273d37ee4ca data/modonomicon/modonomicon/books/demo/entries/features/entity/pages/entity.json
 6295935c0aa760173cd52f5a165df865c0b30d8d data/modonomicon/modonomicon/books/demo/entries/features/entity/pages/entity1.json
-4497aee248663c8d79f892ea9cdb94d2eaf1dc1a data/modonomicon/modonomicon/books/demo/entries/features/entity/pages/entity2.json
+9849ec746b7894a8e851d3dbaed2002885e7d866 data/modonomicon/modonomicon/books/demo/entries/features/entity/pages/entity2.json
 75fdc87fc488817b332646dd2b5e0f250621d1e4 data/modonomicon/modonomicon/books/demo/entries/features/image.json
 633b0a513a1e8703acc120a4cd4a01fac239254d data/modonomicon/modonomicon/books/demo/entries/features/image/pages/image.json
 82487dbfb8ba55f3cd35ee276055a9042290179a data/modonomicon/modonomicon/books/demo/entries/features/image/pages/intro.json
+197da3592baec6a78c9d10ff3401bc9e6928182d data/modonomicon/modonomicon/books/demo/entries/features/image/pages/small_image.json
 4c8ca30e3db29e2fe25833ef60c5259ac92e9b0d data/modonomicon/modonomicon/books/demo/entries/features/image/pages/test_image.json
 0c439ed3028d23379b27a86a15f0e86541aa7ff8 data/modonomicon/modonomicon/books/demo/entries/features/image/pages/test_spotlight.json
+a498f0e9f9823ea987ba0606b17352138235ab76 data/modonomicon/modonomicon/books/demo/entries/features/image/pages/wide_image.json
 06aaec23bd628c33306c9cbea1a32dc02906fb35 data/modonomicon/modonomicon/books/demo/entries/features/multiblock.json
 86b423c9199068971db051e2c76a8e44f4f8206d data/modonomicon/modonomicon/books/demo/entries/features/multiblock/pages/demo_block_entity.json
 6be095e2710ea857e5cbada80c4aa9b64ac4d7ec data/modonomicon/modonomicon/books/demo/entries/features/multiblock/pages/demo_fluid.json
