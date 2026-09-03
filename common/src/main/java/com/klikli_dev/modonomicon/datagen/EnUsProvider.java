@@ -31,6 +31,8 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Gui.BUTTON_EXIT, "Exit");
         this.add(Gui.BUTTON_VISUALIZE, "Show Multiblock Preview");
         this.add(Gui.BUTTON_VISUALIZE_TOOLTIP, "Show Multiblock Preview");
+        this.add(Gui.BUTTON_VISUALIZE_LAYERS, "Show Layer-by-Layer Multiblock Preview");
+        this.add(Gui.BUTTON_VISUALIZE_LAYERS_TOOLTIP, "Show Multiblock Preview Layer by Layer");
         this.add(Gui.BUTTON_VIEWED_ONCE_RESEARCH, "Mark entries as viewed to unlock progress.");
         this.add(Gui.BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_VISIBLE, "Mark §avisible§r entries as §eviewed at least once§r to unlock reading-based progress, without removing the \"unread\" icons. Will not unlock other progress types.");
         this.add(Gui.BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_SHIFT_INSTRUCTIONS, "Shift-Click to mark all entries in this book as §eviewed at least once§r to unlock all reading-based progress.");
@@ -134,6 +136,7 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Multiblock.COMPLETE, "Complete!");
         this.add(Multiblock.NOT_ANCHORED, "Right-Click a Block to anchor the Structure.");
         this.add(Multiblock.REMOVE_BLOCKS, " (Clear blocks marked in red)");
+        this.add(Multiblock.LAYER_BY_LAYER, "Layer-by-layer mode: layer %s of %s");
     }
 
     private void addItems() {

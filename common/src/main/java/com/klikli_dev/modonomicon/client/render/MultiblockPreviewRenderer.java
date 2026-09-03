@@ -100,6 +100,9 @@ public class MultiblockPreviewRenderer {
     private static Function<BlockPos, BlockPos> offsetApplier;
     private static int blocks, blocksDone, airFilled;
     private static int timeComplete;
+    private static boolean layerByLayer;
+    private static int currentLayer;
+    private static int totalLayers;
     private static BlockState lookingState;
     private static BlockPos lookingPos;
 
@@ -129,21 +132,91 @@ public class MultiblockPreviewRenderer {
     }
 
     public static void setMultiblock(Multiblock multiblock, Component name, boolean flip) {
-        setMultiblock(multiblock, name, flip, pos -> pos);
+        setMultiblock(multiblock, name, flip, pos -> pos, false);
+    }
+
+    public static void setMultiblock(Multiblock multiblock, Component name, boolean flip, boolean layerByLayer) {
+        setMultiblock(multiblock, name, flip, pos -> pos, layerByLayer);
     }
 
     public static void setMultiblock(Multiblock multiblock, Component name, boolean flip, Function<BlockPos, BlockPos> offsetApplier) {
+        setMultiblock(multiblock, name, flip, offsetApplier, false);
+    }
+
+    public static void setMultiblock(Multiblock multiblock, Component name, boolean flip, Function<BlockPos, BlockPos> offsetApplier, boolean layerByLayer) {
         if (flip && hasMultiblock && MultiblockPreviewRenderer.multiblock == multiblock) {
             hasMultiblock = false;
+            MultiblockPreviewRenderer.layerByLayer = false;
+            currentLayer = 0;
+            totalLayers = 0;
         } else {
             MultiblockPreviewRenderer.multiblock = multiblock;
             MultiblockPreviewRenderer.blockEntityCache.clear();
             MultiblockPreviewRenderer.erroredBlockEntities.clear();
             MultiblockPreviewRenderer.name = name;
             MultiblockPreviewRenderer.offsetApplier = offsetApplier;
+            MultiblockPreviewRenderer.layerByLayer = layerByLayer;
+            currentLayer = 0;
+            totalLayers = 0;
             pos = null;
             hasMultiblock = multiblock != null;
             isAnchored = false;
+        }
+    }
+
+    private static boolean isPreviewRelevant(Multiblock.SimulateResult result) {
+        return !result.stateMatcher().equals(Matchers.ANY) && result.stateMatcher().type() != StateMatcherTypeRegistry.DISPLAY;
+    }
+
+    /**
+     * Computes the highest layer (world Y level) to display in layer-by-layer mode.
+     * Layers are complete bottom-up: all layers up to and including the lowest
+     * incomplete layer are displayed, higher layers stay hidden until the layers
+     * below them are fully built.
+     *
+     * @return the maximum visible Y level, or null to display all layers.
+     */
+    @Nullable
+    private static Integer getVisibleMaxY(Level level, Collection<Multiblock.SimulateResult> results, Rotation rotation) {
+        TreeMap<Integer, List<Multiblock.SimulateResult>> byLayer = new TreeMap<>();
+        for (var r : results) {
+            if (!isPreviewRelevant(r)) {
+                continue;
+            }
+            byLayer.computeIfAbsent(r.worldPosition().getY(), y -> new ArrayList<>()).add(r);
+        }
+        if (byLayer.isEmpty()) {
+            return null;
+        }
+        for (var entry : byLayer.entrySet()) {
+            boolean layerComplete = true;
+            for (var r : entry.getValue()) {
+                if (!r.test(level, rotation)) {
+                    layerComplete = false;
+                    break;
+                }
+            }
+            if (!layerComplete) {
+                return entry.getKey();
+            }
+        }
+        //all layers complete, show everything
+        return byLayer.lastKey();
+    }
+
+    private static void updateLayerProgress(Collection<Multiblock.SimulateResult> results, @Nullable Integer visibleMaxY) {
+        Set<Integer> layers = new TreeSet<>();
+        for (var r : results) {
+            if (!isPreviewRelevant(r)) {
+                continue;
+            }
+            layers.add(r.worldPosition().getY());
+        }
+        totalLayers = layers.size();
+        if (visibleMaxY == null || totalLayers == 0) {
+            currentLayer = totalLayers;
+        } else {
+            currentLayer = new ArrayList<>(layers).indexOf(visibleMaxY) + 1;
         }
     }
 
@@ -230,6 +303,11 @@ public class MultiblockPreviewRenderer {
 
                     guiGraphics.text(mc.font, progress, (int) (posx - mc.font.width(progress) / mult), posy, color, true);
                 }
+
+                if (layerByLayer && totalLayers > 0) {
+                    String layerInfo = I18n.get(ModonomiconConstants.I18n.Multiblock.LAYER_BY_LAYER, currentLayer, totalLayers);
+                    guiGraphics.text(mc.font, layerInfo, (int) (x - mc.font.width(layerInfo) / 2.0F), top + height + 18, 0xFFFFFFFF, false);
+                }
             }
 
             guiGraphics.pose().popMatrix();
@@ -259,7 +337,8 @@ public class MultiblockPreviewRenderer {
     public static void onClientTick(Minecraft mc) {
         if (Minecraft.getInstance().level == null) {
             hasMultiblock = false;
-        } else if (isAnchored && blocks == blocksDone && airFilled == 0) {
+        } else if (isAnchored && blocks == blocksDone && airFilled == 0
+                && (!layerByLayer || currentLayer >= totalLayers)) {
             timeComplete++;
             if (timeComplete == 14) {
                 Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.EXPERIENCE_ORB_PICKUP, 1.0F));
@@ -309,7 +388,11 @@ public class MultiblockPreviewRenderer {
         // Extract block entity render states from the simulated multiblock
         BlockPos startPos = getStartPos();
         Pair<BlockPos, Collection<Multiblock.SimulateResult>> sim = multiblock.simulate(level, startPos, getFacingRotation(), true, false);
+        Integer visibleMaxY = layerByLayer && isAnchored ? getVisibleMaxY(level, sim.getSecond(), getFacingRotation()) : null;
         for (Multiblock.SimulateResult r : sim.getSecond()) {
+            if (visibleMaxY != null && r.worldPosition().getY() > visibleMaxY) {
+                continue;
+            }
             try {
                 BlockState displayedState = r.stateMatcher().getDisplayedState(ClientTicks.ticks).rotate(facingRotation);
 
@@ -398,14 +481,25 @@ public class MultiblockPreviewRenderer {
         lookingPos = checkPos;
 
         Pair<BlockPos, Collection<Multiblock.SimulateResult>> sim = multiblock.simulate(level, startPos, getFacingRotation(), true, false);
+        Integer visibleMaxY = null;
+        if (layerByLayer && isAnchored) {
+            visibleMaxY = getVisibleMaxY(level, sim.getSecond(), getFacingRotation());
+            updateLayerProgress(sim.getSecond(), visibleMaxY);
+        } else {
+            currentLayer = 0;
+            totalLayers = 0;
+        }
         for (Multiblock.SimulateResult r : sim.getSecond()) {
+            if (visibleMaxY != null && r.worldPosition().getY() > visibleMaxY) {
+                continue;
+            }
             float alpha = 0.3F;
             if (r.worldPosition().equals(checkPos)) {
                 lookingState = r.stateMatcher().getDisplayedState(ClientTicks.ticks);
                 alpha = 0.6F + (float) (Math.sin(ClientTicks.total * 0.3F) + 1F) * 0.1F;
             }
 
-            if (!r.stateMatcher().equals(Matchers.ANY) && r.stateMatcher().type() != StateMatcherTypeRegistry.DISPLAY) {
+            if (isPreviewRelevant(r)) {
                 boolean air = !r.stateMatcher().countsTowardsTotalBlocks();
                 if (!air) {
                     blocks++;
@@ -579,6 +673,10 @@ public class MultiblockPreviewRenderer {
 
     public static boolean isAnchored() {
         return isAnchored;
+    }
+
+    public static boolean isLayerByLayer() {
+        return layerByLayer;
     }
 
     public static Rotation getFacingRotation() {

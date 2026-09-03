@@ -36,6 +36,7 @@ public class DefaultBookTheme implements BookTheme {
     private final GuiButtonSprites backButton;
     private final GuiButtonSprites exitButton;
     private final GuiButtonSprites visualizeButton;
+    private final GuiButtonSprites visualizeLayersButton;
     private final GuiButtonSprites categoryScrollUpButton;
     private final GuiButtonSprites categoryScrollDownButton;
     private final GuiButtonSprites categoryButton;
@@ -144,6 +145,11 @@ public class DefaultBookTheme implements BookTheme {
         @Override
         public GuiButtonSprites visualizeButton() {
             return DefaultBookTheme.this.visualizeButton;
+        }
+
+        @Override
+        public GuiButtonSprites visualizeLayersButton() {
+            return DefaultBookTheme.this.visualizeLayersButton;
         }
 
         @Override
@@ -410,6 +416,7 @@ public class DefaultBookTheme implements BookTheme {
         this.backButton = this.button("content/buttons/navigation/back_button", 18, 9, true);
         this.exitButton = this.button("content/buttons/navigation/exit_button", 12, 12, true);
         this.visualizeButton = this.button("content/buttons/navigation/visualize_button", 11, 7, true);
+        this.visualizeLayersButton = this.button("content/buttons/navigation/visualize_layers_button", 11, 7, true);
         this.categoryScrollUpButton = this.button("content/buttons/category/category_scroll_up_button", 14, 10, true);
         this.categoryScrollDownButton = this.button("content/buttons/category/category_scroll_down_button", 14, 10, true);
         var defaultCategoryButtonSprite = data.content().defaultCategoryButtonSprite();
