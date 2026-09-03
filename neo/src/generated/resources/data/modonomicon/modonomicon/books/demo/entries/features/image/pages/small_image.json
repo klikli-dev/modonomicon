@@ -1,0 +1,16 @@
+{
+  "type": "modonomicon:image",
+  "border": true,
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "display_mode": "small",
+  "id": "small_image",
+  "images": [
+    "modonomicon:textures/gui/default_background_small.png",
+    "modonomicon:textures/gui/dark_slate_seamless_small.png"
+  ],
+  "sort_number": 5,
+  "text": "book.modonomicon.demo.features.image.small_image.text",
+  "title": "book.modonomicon.demo.features.image.small_image.title"
+}

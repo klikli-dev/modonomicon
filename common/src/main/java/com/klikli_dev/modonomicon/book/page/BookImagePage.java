@@ -8,6 +8,8 @@ package com.klikli_dev.modonomicon.book.page;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
+import com.klikli_dev.modonomicon.book.ImageDisplayMode;
+import com.klikli_dev.modonomicon.book.ImageScaleMode;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
@@ -37,32 +39,40 @@ public class BookImagePage extends BookPage {
             IMAGE_LIST_CODEC.fieldOf("images").forGetter(BookImagePage::imagesAsList),
             Codec.BOOL.optionalFieldOf("border", false).forGetter(BookImagePage::hasBorder),
             Codec.BOOL.optionalFieldOf("use_legacy_rendering", false).forGetter(BookImagePage::useLegacyRendering),
+            ImageDisplayMode.CODEC.optionalFieldOf("display_mode", ImageDisplayMode.DEFAULT).forGetter(BookImagePage::getDisplayMode),
+            ImageScaleMode.CODEC.optionalFieldOf("image_scale_mode", ImageScaleMode.SCALE_TO_FIT).forGetter(BookImagePage::getImageScaleMode),
             Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
             BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition)
-    ).apply(instance, (title, text, images, border, useLegacyRendering, id, condition) -> new BookImagePage(title, text, images.toArray(Identifier[]::new), border, useLegacyRendering, id, condition)));
+    ).apply(instance, (title, text, images, border, useLegacyRendering, displayMode, imageScaleMode, id, condition) -> new BookImagePage(title, text, images.toArray(Identifier[]::new), border, useLegacyRendering, displayMode, imageScaleMode, id, condition)));
     public static final StreamCodec<RegistryFriendlyByteBuf, BookImagePage> STREAM_CODEC = StreamCodec.composite(
             BookTextHolder.STREAM_CODEC, BookImagePage::getTitle,
             BookTextHolder.STREAM_CODEC, BookImagePage::getText,
             Identifier.STREAM_CODEC.apply(ByteBufCodecs.list()), BookImagePage::imagesAsList,
             ByteBufCodecs.BOOL, BookImagePage::hasBorder,
             ByteBufCodecs.BOOL, BookImagePage::useLegacyRendering,
+            ImageDisplayMode.STREAM_CODEC, BookImagePage::getDisplayMode,
+            ImageScaleMode.STREAM_CODEC, BookImagePage::getImageScaleMode,
             ByteBufCodecs.STRING_UTF8, BookPage::getId,
             BookCondition.STREAM_CODEC, BookPage::getCondition,
-            (title, text, images, border, useLegacyRendering, id, condition) -> new BookImagePage(title, text, images.toArray(Identifier[]::new), border, useLegacyRendering, id, condition)
+            (title, text, images, border, useLegacyRendering, displayMode, imageScaleMode, id, condition) -> new BookImagePage(title, text, images.toArray(Identifier[]::new), border, useLegacyRendering, displayMode, imageScaleMode, id, condition)
     );
     protected BookTextHolder title;
     protected BookTextHolder text;
     protected Identifier[] images;
     protected boolean border;
     protected boolean useLegacyRendering;
+    protected ImageDisplayMode displayMode;
+    protected ImageScaleMode imageScaleMode;
 
-    public BookImagePage(BookTextHolder title, BookTextHolder text, Identifier[] images, boolean border, boolean useLegacyRendering, String id, BookCondition condition) {
+    public BookImagePage(BookTextHolder title, BookTextHolder text, Identifier[] images, boolean border, boolean useLegacyRendering, ImageDisplayMode displayMode, ImageScaleMode imageScaleMode, String id, BookCondition condition) {
         super(id, condition);
         this.title = title;
         this.text = text;
         this.images = images;
         this.border = border;
         this.useLegacyRendering = useLegacyRendering;
+        this.displayMode = displayMode;
+        this.imageScaleMode = imageScaleMode;
     }
 
     public Identifier[] getImages() {
@@ -79,6 +89,14 @@ public class BookImagePage extends BookPage {
 
     public boolean useLegacyRendering() {
         return this.useLegacyRendering;
+    }
+
+    public ImageDisplayMode getDisplayMode() {
+        return this.displayMode;
+    }
+
+    public ImageScaleMode getImageScaleMode() {
+        return this.imageScaleMode;
     }
 
     public BookTextHolder getTitle() {

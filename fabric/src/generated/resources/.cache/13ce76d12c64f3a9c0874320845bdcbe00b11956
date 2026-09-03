@@ -44,8 +44,10 @@ d252b5731909f23f38a8d83e225b2273d37ee4ca data/modonomicon/modonomicon/books/demo
 75fdc87fc488817b332646dd2b5e0f250621d1e4 data/modonomicon/modonomicon/books/demo/entries/features/image.json
 633b0a513a1e8703acc120a4cd4a01fac239254d data/modonomicon/modonomicon/books/demo/entries/features/image/pages/image.json
 82487dbfb8ba55f3cd35ee276055a9042290179a data/modonomicon/modonomicon/books/demo/entries/features/image/pages/intro.json
+197da3592baec6a78c9d10ff3401bc9e6928182d data/modonomicon/modonomicon/books/demo/entries/features/image/pages/small_image.json
 4c8ca30e3db29e2fe25833ef60c5259ac92e9b0d data/modonomicon/modonomicon/books/demo/entries/features/image/pages/test_image.json
 0c439ed3028d23379b27a86a15f0e86541aa7ff8 data/modonomicon/modonomicon/books/demo/entries/features/image/pages/test_spotlight.json
+a498f0e9f9823ea987ba0606b17352138235ab76 data/modonomicon/modonomicon/books/demo/entries/features/image/pages/wide_image.json
 06aaec23bd628c33306c9cbea1a32dc02906fb35 data/modonomicon/modonomicon/books/demo/entries/features/multiblock.json
 86b423c9199068971db051e2c76a8e44f4f8206d data/modonomicon/modonomicon/books/demo/entries/features/multiblock/pages/demo_block_entity.json
 6be095e2710ea857e5cbada80c4aa9b64ac4d7ec data/modonomicon/modonomicon/books/demo/entries/features/multiblock/pages/demo_fluid.json

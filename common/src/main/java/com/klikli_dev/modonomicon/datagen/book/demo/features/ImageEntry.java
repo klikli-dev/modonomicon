@@ -11,6 +11,8 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookImagePageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookSpotlightPageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
+import com.klikli_dev.modonomicon.book.ImageDisplayMode;
+import com.klikli_dev.modonomicon.book.ImageScaleMode;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
@@ -64,6 +66,32 @@ public class ImageEntry extends EntryProvider {
         );
         this.pageTitle("Test image!");
         this.pageText("A very long sample image text to test page scaling here. It is ridiculously long and I hope no one ever actually uses it like that because, please, people need to read this! What is this, a text for ants? Let's add some more text just to show that we can, because yes, we are just that good at creating text.");
+
+        this.page("wide_image", () ->
+                BookImagePageModel.create()
+                        .withText(this.context().pageText())
+                        .withTitle(this.context().pageTitle())
+                        .withImages(
+                                Identifier.parse("modonomicon:textures/gui/default_background_wide.png"),
+                                Identifier.parse("modonomicon:textures/gui/dark_slate_seamless_wide.png")
+                        )
+                        .withDisplayMode(ImageDisplayMode.WIDE)
+        );
+        this.pageTitle("Wide image!");
+        this.pageText("This image uses wide display mode.");
+
+        this.page("small_image", () ->
+                BookImagePageModel.create()
+                        .withText(this.context().pageText())
+                        .withTitle(this.context().pageTitle())
+                        .withImages(
+                                Identifier.parse("modonomicon:textures/gui/default_background_small.png"),
+                                Identifier.parse("modonomicon:textures/gui/dark_slate_seamless_small.png")
+                        )
+                        .withDisplayMode(ImageDisplayMode.SMALL)
+        );
+        this.pageTitle("Small image!");
+        this.pageText("This image uses small display mode.");
     }
 
     @Override
@@ -91,4 +119,3 @@ public class ImageEntry extends EntryProvider {
         return ID;
     }
 }
-
