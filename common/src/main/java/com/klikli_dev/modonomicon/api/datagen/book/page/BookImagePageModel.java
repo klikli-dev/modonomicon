@@ -9,6 +9,8 @@ package com.klikli_dev.modonomicon.api.datagen.book.page;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.datagen.book.BookTextHolderModel;
+import com.klikli_dev.modonomicon.book.ImageDisplayMode;
+import com.klikli_dev.modonomicon.book.ImageScaleMode;
 import com.klikli_dev.modonomicon.book.page.BookImagePage;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import net.minecraft.core.HolderLookup;
@@ -26,6 +28,16 @@ public class BookImagePageModel extends BookPageModel<BookImagePageModel> {
      * If false the full image of any size will be rendered and scaled accordingly.
      */
     protected boolean useLegacyRendering = false;
+
+    /**
+     * Controls the display size of the image on the page.
+     */
+    protected ImageDisplayMode displayMode = ImageDisplayMode.DEFAULT;
+
+    /**
+     * Controls how the image is scaled within its display area.
+     */
+    protected ImageScaleMode imageScaleMode = ImageScaleMode.SCALE_TO_FIT;
 
     protected BookImagePageModel() {
         super(BookImagePage.ID);
@@ -53,7 +65,7 @@ public class BookImagePageModel extends BookPageModel<BookImagePageModel> {
 
     @Override
     public BookPage toBookPage(HolderLookup.Provider provider) {
-        return new BookImagePage(this.title.toBookTextHolder(), this.text.toBookTextHolder(), this.images, this.border, this.useLegacyRendering, this.id, this.condition(provider));
+        return new BookImagePage(this.title.toBookTextHolder(), this.text.toBookTextHolder(), this.images, this.border, this.useLegacyRendering, this.displayMode, this.imageScaleMode, this.id, this.condition(provider));
     }
 
     public BookImagePageModel withTitle(String title) {
@@ -77,6 +89,27 @@ public class BookImagePageModel extends BookPageModel<BookImagePageModel> {
      */
     public BookImagePageModel withLegacyRendering(boolean useLegacyRendering) {
         this.useLegacyRendering = useLegacyRendering;
+        return this;
+    }
+
+    /**
+     * Sets the display mode for the image page.
+     * DEFAULT: Current behavior, 200x200 area.
+     * WIDE: Same width, half the height (200x100 area).
+     * SMALL: 1/4th the size (100x100 area), centered horizontally.
+     */
+    public BookImagePageModel withDisplayMode(ImageDisplayMode displayMode) {
+        this.displayMode = displayMode;
+        return this;
+    }
+
+    /**
+     * Sets the scale mode for the image.
+     * SCALE_TO_FIT: Image is scaled to fill the display area (default).
+     * ACTUAL_SIZE: Image is rendered at its actual pixel size.
+     */
+    public BookImagePageModel withImageScaleMode(ImageScaleMode imageScaleMode) {
+        this.imageScaleMode = imageScaleMode;
         return this;
     }
 
