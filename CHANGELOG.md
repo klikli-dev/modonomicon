@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.2-2.5.0] - 2026-09-04
+### :sparkles: New Features
+- [`d00e1ef`](https://github.com/klikli-dev/modonomicon/commit/d00e1ef7ba9b81d7985075838a08d15d64167473) - port multiblock layer-by-layer preview and preview architecture cleanup to 26.2 *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.2-2.4.1] - 2026-09-04
 ### :sparkles: New Features
 - [`4c4b6fa`](https://github.com/klikli-dev/modonomicon/commit/4c4b6faa4cf66109917fb9e3eb3660700394c3bd) - add additional image display modes to image page *(PR [#383](https://github.com/klikli-dev/modonomicon/pull/383) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2347,3 +2352,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.2-2.3.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.2-2.2.0...release/v26.2-2.3.0
 [release/v26.2-2.4.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.2-2.3.0...release/v26.2-2.4.0
 [release/v26.2-2.4.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.2-2.4.0...release/v26.2-2.4.1
+[release/v26.2-2.5.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.2-2.4.1...release/v26.2-2.5.0
