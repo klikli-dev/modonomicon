@@ -1,0 +1,70 @@
+﻿{
+  "type": "modonomicon:dense",
+  "mapping": {
+    "*": {
+      "type": "modonomicon:display",
+      "display": "minecraft:basalt"
+    },
+    "+": {
+      "type": "modonomicon:display",
+      "display": "minecraft:stone"
+    },
+    "0": {
+      "type": "modonomicon:block",
+      "block": "minecraft:dirt"
+    },
+    "C": {
+      "type": "modonomicon:block",
+      "block": "minecraft:cobblestone"
+    },
+    "D": {
+      "type": "modonomicon:block",
+      "block": "minecraft:dirt"
+    },
+    "P": {
+      "type": "modonomicon:block",
+      "block": "minecraft:oak_planks"
+    },
+    "S": {
+      "type": "modonomicon:block",
+      "block": "minecraft:sand"
+    }
+  },
+  "pattern": [
+    [
+      "_____",
+      "_SSS_",
+      "_SSS_",
+      "_SSS_",
+      "_____"
+    ],
+    [
+      "_____",
+      "_CCC_",
+      "_CCC_",
+      "_CCC_",
+      "_____"
+    ],
+    [
+      "_____",
+      "_PPP_",
+      "_PPP_",
+      "_PPP_",
+      "_____"
+    ],
+    [
+      "_____",
+      "_DDD_",
+      "_D0D_",
+      "_DDD_",
+      "_____"
+    ],
+    [
+      "*+*+*",
+      "+*+*+",
+      "*+*+*",
+      "+*+*+",
+      "*+*+*"
+    ]
+  ]
+}

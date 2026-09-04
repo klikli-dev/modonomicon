@@ -52,6 +52,12 @@ public class MultiblockEntry extends EntryProvider {
         this.page("demo_transparency", () -> BookMultiblockPageModel.create()
                 .withMultiblockId(this.modLoc("demo_transparency"))
         );
+
+        this.page("demo_layers", () -> BookMultiblockPageModel.create()
+                .withMultiblockId(this.modLoc("demo_layers"))
+                .withText(this.context().pageText())
+        );
+        this.pageText("A multiblock with four layers, perfect to try the layer-by-layer preview!");
     }
 
     @Override

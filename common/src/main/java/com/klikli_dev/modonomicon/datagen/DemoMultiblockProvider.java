@@ -124,5 +124,35 @@ public class DemoMultiblockProvider extends MultiblockProvider {
                 .block('C', () -> Blocks.IRON_CHAIN)
         );
 
+        //simple four-layer multiblock to showcase the layer-by-layer preview:
+        //bottom to top: dirt, oak planks, cobblestone, sand (first layer in the pattern is the topmost)
+        this.add(this.modLoc("demo_layers"), new DenseMultiblockBuilder()
+                .layer(
+                        "SSS",
+                        "SSS",
+                        "SSS"
+                )
+                .layer(
+                        "CCC",
+                        "CCC",
+                        "CCC"
+                )
+                .layer(
+                        "PPP",
+                        "PPP",
+                        "PPP"
+                )
+                .layer(
+                        "DDD",
+                        "D0D",
+                        "DDD"
+                )
+                .block('S', () -> Blocks.SAND)
+                .block('C', () -> Blocks.COBBLESTONE)
+                .block('P', () -> Blocks.OAK_PLANKS)
+                .block('D', () -> Blocks.DIRT)
+                .block('0', () -> Blocks.DIRT)
+        );
+
     }
 }
