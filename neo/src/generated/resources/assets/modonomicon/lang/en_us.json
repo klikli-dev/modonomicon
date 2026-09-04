@@ -74,6 +74,7 @@
   "book.modonomicon.demo.features.image.test_image.title": "Test image!",
   "book.modonomicon.demo.features.image.wide_image.text": "This image uses wide display mode.",
   "book.modonomicon.demo.features.image.wide_image.title": "Wide image!",
+  "book.modonomicon.demo.features.multiblock.demo_layers.text": "A multiblock with four layers, perfect to try the layer-by-layer preview!",
   "book.modonomicon.demo.features.multiblock.demo_tag.text": "A multiblock with tag!",
   "book.modonomicon.demo.features.multiblock.description": "An entry showcasing a multiblock.",
   "book.modonomicon.demo.features.multiblock.intro.text": "Multiblock pages allow to preview multiblocks both in the book and in the world.\n",
