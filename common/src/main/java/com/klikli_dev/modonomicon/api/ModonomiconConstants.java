@@ -58,6 +58,8 @@ public class ModonomiconConstants {
 
             public static final String BUTTON_VISUALIZE = PREFIX + "button.visualize";
             public static final String BUTTON_VISUALIZE_TOOLTIP = PREFIX + "button.visualize.tooltip";
+            public static final String BUTTON_VISUALIZE_LAYERS = PREFIX + "button.visualize_layers";
+            public static final String BUTTON_VISUALIZE_LAYERS_TOOLTIP = PREFIX + "button.visualize_layers.tooltip";
 
             public static final String BUTTON_VIEWED_ONCE_RESEARCH = PREFIX + "button.viewed_once_research";
             public static final String BUTTON_VIEWED_ONCE_RESEARCH_TOOLTIP_VISIBLE = PREFIX + "button.viewed_once_research.tooltip.visible";
@@ -117,6 +119,7 @@ public class ModonomiconConstants {
             public static final String COMPLETE = PREFIX + "complete";
             public static final String NOT_ANCHORED = PREFIX + "not_anchored";
             public static final String REMOVE_BLOCKS = PREFIX + "remove_blocks";
+            public static final String LAYER_BY_LAYER = PREFIX + "layer_by_layer";
         }
 
         public static class Subtitles {

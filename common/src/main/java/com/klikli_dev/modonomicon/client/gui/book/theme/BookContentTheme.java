@@ -32,6 +32,8 @@ public interface BookContentTheme {
 
     GuiButtonSprites visualizeButton();
 
+    GuiButtonSprites visualizeLayersButton();
+
     GuiButtonSprites categoryScrollUpButton();
 
     GuiButtonSprites categoryScrollDownButton();

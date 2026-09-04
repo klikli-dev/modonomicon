@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.button.VisualizeButton;
+import com.klikli_dev.modonomicon.client.gui.book.button.VisualizeLayersButton;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.state.pip.GuiMultiblockRenderState;
@@ -38,6 +39,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
 
     protected Pair<BlockPos, Collection<SimulateResult>> multiblockSimulation;
     protected Button visualizeButton;
+    protected Button visualizeLayersButton;
 
     public BookMultiblockPageRenderer(BookMultiblockPage page) {
         super(page);
@@ -51,6 +53,11 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
         //String entryKey =  this.parentEntry.getId().toString(); will be used for bookmark for multiblock
 //        Bookmark bookmark = new Bookmark(entryKey, pageNum / 2);
 //        parent.addBookmarkButtons();
+    }
+
+    public void handleButtonVisualizeLayers(Button button) {
+        MultiblockPreviewRenderer.setMultiblock(this.page.getMultiblock(), this.page.getMultiblockName().getComponent(), true, true);
+        BookGuiManager.get().closeScreenStack(this.parentScreen); //will cause the book to close entirely, and save the open page
     }
 
     private void renderMultiblock(GuiGraphicsExtractor guiGraphics) {
@@ -119,6 +126,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
 
         if (this.page.showVisualizeButton()) {
             this.addButton(this.visualizeButton = new VisualizeButton(this.parentScreen, 13, 102, this::handleButtonVisualize));
+            this.addButton(this.visualizeLayersButton = new VisualizeLayersButton(this.parentScreen, 26, 102, this::handleButtonVisualizeLayers));
         }
     }
 

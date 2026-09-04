@@ -1,4 +1,4 @@
-// 26.1.2	2026-09-02T19:55:32.0588033	Books: modonomicon
+// 26.1.2	2026-09-04T10:36:53.7676944	Books: modonomicon
 2c29f1887c5c375e76d6813e5c5ef689936ec4e2 data/modonomicon/modonomicon/books/demo/book.json
 a40738cde71e2783fc7ebf4102a27a937c00761e data/modonomicon/modonomicon/books/demo/categories/acquiring.json
 66e880d8ad62910ce9caf891021f84308950452c data/modonomicon/modonomicon/books/demo/categories/conditional.json
@@ -51,6 +51,7 @@ a498f0e9f9823ea987ba0606b17352138235ab76 data/modonomicon/modonomicon/books/demo
 06aaec23bd628c33306c9cbea1a32dc02906fb35 data/modonomicon/modonomicon/books/demo/entries/features/multiblock.json
 86b423c9199068971db051e2c76a8e44f4f8206d data/modonomicon/modonomicon/books/demo/entries/features/multiblock/pages/demo_block_entity.json
 6be095e2710ea857e5cbada80c4aa9b64ac4d7ec data/modonomicon/modonomicon/books/demo/entries/features/multiblock/pages/demo_fluid.json
+10c24406b0e9f41cc2ad52edb4bb649d6dedf075 data/modonomicon/modonomicon/books/demo/entries/features/multiblock/pages/demo_layers.json
 3fb4f9e906f8ea81a69ca7a9bbf31c88d7cfd040 data/modonomicon/modonomicon/books/demo/entries/features/multiblock/pages/demo_predicate.json
 d14e897ed1220d965209127b30b2995444ef8ebf data/modonomicon/modonomicon/books/demo/entries/features/multiblock/pages/demo_tag.json
 7806538dbe4e743edd7a3c836260ea0b410adfc2 data/modonomicon/modonomicon/books/demo/entries/features/multiblock/pages/demo_transparency.json
