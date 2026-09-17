@@ -38,8 +38,8 @@ public class DataGenerators {
         generator.addProvider(true, new DemoMultiblockProvider(generator.getPackOutput(), Modonomicon.MOD_ID));
         generator.addProvider(true, new ModonomiconModelProvider(generator.getPackOutput()));
 
-        var blockTagsProvider = new BlockTagsProvider(generator.getPackOutput(), event.getLookupProvider());
+        var blockTagsProvider = new BlockTagsProvider(generator.getPackOutput(), event.getReloadableLookupProvider());
         generator.addProvider(true, blockTagsProvider);
-        generator.addProvider(true, new ItemTagsProvider(generator.getPackOutput(), event.getLookupProvider()));
+        generator.addProvider(true, new ItemTagsProvider(generator.getPackOutput(), event.getReloadableLookupProvider()));
     }
 }

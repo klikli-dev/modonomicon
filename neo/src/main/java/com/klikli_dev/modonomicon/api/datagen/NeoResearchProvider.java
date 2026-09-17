@@ -26,7 +26,7 @@ public class NeoResearchProvider {
      */
     public static ResearchProvider of(GatherDataEvent event, LanguageProviderCache langCache,
             ResearchCache researchCache, ResearchSubProvider... subProviders) {
-        return new ResearchProvider(event.getGenerator().getPackOutput(), event.getLookupProvider(),
+        return new ResearchProvider(event.getGenerator().getPackOutput(), event.getReloadableLookupProvider(),
                 event.getModContainer().getModId(), java.util.List.of(subProviders), researchCache, langCache);
     }
 }

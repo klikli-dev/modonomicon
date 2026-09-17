@@ -20,7 +20,7 @@ public class NeoBookProvider {
      * @return the book provider to register on the DataGenerator
      */
     public static BookProvider of(GatherDataEvent event, LanguageProviderCache langCache, ResearchCache researchCache, BookSubProvider... subProviders) {
-        return new BookProvider(event.getGenerator().getPackOutput(), event.getLookupProvider(),
+        return new BookProvider(event.getGenerator().getPackOutput(), event.getReloadableLookupProvider(),
                 event.getModContainer().getModId(), List.of(subProviders), langCache, researchCache);
     }
 }
