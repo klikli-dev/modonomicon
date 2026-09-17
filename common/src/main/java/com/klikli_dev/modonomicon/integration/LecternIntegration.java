@@ -9,6 +9,7 @@ import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.registry.DataComponentRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -64,7 +65,7 @@ public class LecternIntegration {
             lectern.setBook(ItemStack.EMPTY);
             LecternBlock.resetBookState(player, lectern.getLevel(), lectern.getBlockPos(), lectern.getBlockState(), false);
             if (!player.getInventory().add(stack)) {
-                player.drop(stack, false);
+                player.drop(stack, false, Prediction.SERVER_ONLY);
             }
         }
     }

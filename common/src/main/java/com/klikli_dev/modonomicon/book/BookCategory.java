@@ -139,7 +139,7 @@ public class BookCategory {
         var defaultMaxScrollX = buffer.readVarInt();
         var defaultMaxScrollY = buffer.readVarInt();
         var backgroundTextureZoomMultiplier = buffer.readFloat();
-        var backgroundParallaxLayers = buffer.readList(BookCategoryBackgroundParallaxLayer::fromNetwork);
+        var backgroundParallaxLayers = readParallaxLayers(buffer);
         var condition = BookCondition.fromNetwork(buffer);
         var showCategoryButton = buffer.readBoolean();
         var categoryButtonSprites = readOptionalButtonSprites(buffer);
@@ -161,7 +161,7 @@ public class BookCategory {
         buffer.writeVarInt(this.maxScrollX);
         buffer.writeVarInt(this.maxScrollY);
         buffer.writeFloat(this.backgroundTextureZoomMultiplier);
-        buffer.writeCollection(this.backgroundParallaxLayers, (buf, layer) -> layer.toNetwork(buf));
+        writeParallaxLayers(buffer, this.backgroundParallaxLayers);
         BookCondition.toNetwork(this.condition, buffer);
         buffer.writeBoolean(this.showCategoryButton);
         writeOptionalButtonSprites(buffer, this.categoryButtonSprites);
@@ -206,6 +206,24 @@ public class BookCategory {
         buffer.writeBoolean(sprites.pressed() != null);
         if (sprites.pressed() != null) {
             sprites.pressed().toNetwork(buffer);
+        }
+    }
+
+    //FriendlyByteBuf#readList/writeCollection were removed in 26.3, so we replicate the previous wire format here
+    private static List<BookCategoryBackgroundParallaxLayer> readParallaxLayers(RegistryFriendlyByteBuf buffer) {
+        int size = buffer.readVarInt();
+        var layers = new java.util.ArrayList<BookCategoryBackgroundParallaxLayer>(size);
+        for (int i = 0; i < size; i++) {
+            layers.add(BookCategoryBackgroundParallaxLayer.fromNetwork(buffer));
+        }
+        return layers;
+    }
+
+    //FriendlyByteBuf#readList/writeCollection were removed in 26.3, so we replicate the previous wire format here
+    private static void writeParallaxLayers(RegistryFriendlyByteBuf buffer, List<BookCategoryBackgroundParallaxLayer> layers) {
+        buffer.writeVarInt(layers.size());
+        for (var layer : layers) {
+            layer.toNetwork(buffer);
         }
     }
 

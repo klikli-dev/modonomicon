@@ -169,7 +169,7 @@ public class Book {
 
         var showRecentlyUnlocked = buffer.readBoolean();
 
-        var textMacros = buffer.readMap((b) -> b.readUtf(), (b) -> b.readUtf()); //necessary because using lambda causes ambiguous reference in Neo with their IFriendlyByteBufExtension#readMap
+        var textMacros = readStringMap(buffer);
         var book = new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font,
                 turnPageSound, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, themeData);
 
@@ -243,14 +243,31 @@ public class Book {
 
         buffer.writeBoolean(this.allowOpenBooksWithInvalidLinks);
         buffer.writeBoolean(this.showRecentlyUnlocked);
-        buffer.writeMap(this.textMacros, (b, v) -> b.writeUtf(v), (b, v) -> b.writeUtf(v));  //necessary because using lambda causes ambiguous reference in Neo with their IFriendlyByteBufExtension#writeMap
+        writeStringMap(buffer, this.textMacros);
+    }
+
+    //FriendlyByteBuf#readMap/writeMap were removed in 26.3, so we replicate the previous wire format here
+    private static Map<String, String> readStringMap(RegistryFriendlyByteBuf buffer) {
+        int size = buffer.readVarInt();
+        Map<String, String> map = new java.util.HashMap<>(size);
+        for (int i = 0; i < size; i++) {
+            map.put(buffer.readUtf(), buffer.readUtf());
+        }
+        return map;
+    }
+
+    //FriendlyByteBuf#readMap/writeMap were removed in 26.3, so we replicate the previous wire format here
+    private static void writeStringMap(RegistryFriendlyByteBuf buffer, Map<String, String> map) {
+        buffer.writeVarInt(map.size());
+        for (var entry : map.entrySet()) {
+            buffer.writeUtf(entry.getKey());
+            buffer.writeUtf(entry.getValue());
+        }
     }
 
     public Identifier getTurnPageSound() {
         return this.turnPageSound;
-    }
-
-    public Identifier getId() {
+    }    public Identifier getId() {
         return this.id;
     }
 

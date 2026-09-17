@@ -12,7 +12,6 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.util.Codecs;
 import net.minecraft.ChatFormatting;
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -167,8 +166,7 @@ public class BookCommand {
             player.sendSystemMessage(Component.translatable(failureMessage).withStyle(ChatFormatting.RED));
             return;
         } else {
-            var commandSourceStack = new CommandSourceStack(player.commandSource(), player.position(), player.getRotationVector(), player.level(),
-                    LevelBasedPermissionSet.GAMEMASTER, player.getName().getString(), player.getDisplayName(), player.level().getServer(), player);
+            var commandSourceStack = player.createCommandSourceStack().withPermission(LevelBasedPermissionSet.GAMEMASTER);
 
             if (this.suppressOutput) {
                 commandSourceStack = commandSourceStack.withSuppressedOutput();
