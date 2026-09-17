@@ -38,7 +38,6 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -302,12 +301,12 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
     @Override
     public boolean keyPressed(KeyEvent event) {
-        if (event.key() == GLFW.GLFW_KEY_ESCAPE) {
+        if (event.isEscape()) {
             BookGuiManager.get().closeScreenStack(this);
             return true;
         }
 
-        if (event.key() == GLFW.GLFW_KEY_ENTER) {
+        if (event.isConfirmation()) {
             if (this.visibleEntries.size() == 1) {
                 var entry = this.visibleEntries.get(0);
                 BookGuiManager.get().openEntry(entry.getBook().getId(), entry.getId(), 0);

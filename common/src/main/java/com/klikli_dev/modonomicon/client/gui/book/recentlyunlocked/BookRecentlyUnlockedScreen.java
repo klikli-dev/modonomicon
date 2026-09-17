@@ -30,7 +30,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -240,7 +239,7 @@ public class BookRecentlyUnlockedScreen extends BookPaginatedScreen {
 
     @Override
     public boolean keyPressed(KeyEvent event) {
-        if (event.key() == GLFW.GLFW_KEY_ENTER) {
+        if (event.isConfirmation()) {
             if (this.visibleEntries.size() == 1) {
                 var entry = this.visibleEntries.get(0);
                 this.onClose();

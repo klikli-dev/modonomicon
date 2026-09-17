@@ -32,7 +32,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -261,7 +260,7 @@ public class BookSearchScreen extends BookPaginatedScreen {
     public boolean keyPressed(KeyEvent event) {
         String currQuery = this.searchField.getValue();
 
-        if (event.key() == GLFW.GLFW_KEY_ENTER) {
+        if (event.isConfirmation()) {
             if (this.visibleEntries.size() == 1) {
                 var entry = this.visibleEntries.get(0);
                 BookGuiManager.get().openEntry(entry.getBook().getId(), entry.getId(), 0);

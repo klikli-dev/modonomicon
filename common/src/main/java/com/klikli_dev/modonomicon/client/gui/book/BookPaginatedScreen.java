@@ -10,12 +10,12 @@ import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import org.lwjgl.glfw.GLFW;
 
 public abstract class BookPaginatedScreen extends Screen implements BookScreenWithButtons {
 
@@ -81,7 +81,7 @@ public abstract class BookPaginatedScreen extends Screen implements BookScreenWi
 
     @Override
     public boolean keyPressed(KeyEvent event) {
-        if (event.key() == GLFW.GLFW_KEY_BACKSPACE) {
+        if (event.key() == InputConstants.KEY_BACKSPACE) {
             this.back();
             return true;
         }
@@ -113,7 +113,7 @@ public abstract class BookPaginatedScreen extends Screen implements BookScreenWi
             return true; //need to return, otherwise a right click outside the entry causes a double-close (the whole book, due to calling .back() below)
         }
 
-        if (event.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+        if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
             this.back();
             return true;
         }

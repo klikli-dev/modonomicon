@@ -45,7 +45,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.Map;
 import java.util.Stack;
@@ -410,7 +409,7 @@ public class BookGuiManager {
     public void keepMousePosition(Runnable run) {
         var mousePos = Pair.of(Minecraft.getInstance().mouseHandler.xpos(), Minecraft.getInstance().mouseHandler.ypos());
         run.run();
-        InputConstants.grabOrReleaseMouse(Minecraft.getInstance().getWindow(), GLFW.GLFW_CURSOR_NORMAL, mousePos.getFirst(), mousePos.getSecond());
+        InputConstants.releaseMouse(Minecraft.getInstance().getWindow(), mousePos.getFirst(), mousePos.getSecond());
     }
 
     /**

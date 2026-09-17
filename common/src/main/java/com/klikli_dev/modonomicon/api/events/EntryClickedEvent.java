@@ -40,7 +40,7 @@ public class EntryClickedEvent extends ModonomiconEvent {
     /**
      * For categories in Index mode this has the X coordinate of the button that was clicked, instead of the mouse cursor that clicked it.
      * For categories in Index mode this has the Y coordinate of the button that was clicked, instead of the mouse cursor that clicked it.
-     * For categories in Index mode this always has GLFW_MOUSE_BUTTON_1 (= 0 = left mouse button).
+     * For categories in Index mode this always has the left mouse button (InputConstants.MOUSE_BUTTON_LEFT).
      */
     public MouseButtonEvent getMouseButtonEvent() {
         return this.mouseButtonEvent;

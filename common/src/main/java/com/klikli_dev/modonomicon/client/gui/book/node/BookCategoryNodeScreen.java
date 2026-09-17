@@ -34,7 +34,6 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 
@@ -406,7 +405,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
     }
 
     public boolean keyPressed(KeyEvent event) {
-        if (event.key() == GLFW.GLFW_KEY_ESCAPE) {
+        if (event.isEscape()) {
             BookGuiManager.get().closeScreenStack(this);
             return true;
         }

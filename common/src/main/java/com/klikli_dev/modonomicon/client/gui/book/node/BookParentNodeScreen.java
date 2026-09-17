@@ -31,7 +31,6 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 
 import net.minecraft.network.chat.Component;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
@@ -264,7 +263,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
         }
 
         //This is unlikely to be reached as the category screen will already handle esc
-        if (event.key() == GLFW.GLFW_KEY_ESCAPE) {
+        if (event.isEscape()) {
             BookGuiManager.get().closeScreenStack(this);
             return true;
         }
