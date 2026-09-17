@@ -47,6 +47,11 @@ public record FluidBlockVertexConsumer(VertexConsumer prior, PoseStack pose, Blo
     }
 
     @Override
+    public VertexConsumer setUv3(float u, float v) {
+        return this.prior.setUv3(u, v);
+    }
+
+    @Override
     public VertexConsumer setNormal(float f, float g, float h) {
         return this.prior.setNormal(f, g, h);
     }

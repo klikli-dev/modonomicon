@@ -158,23 +158,22 @@ public interface ContentRenderingScreen {
         SpriteContents spriteContents = sprite.contents();
 
         int renderY = y + height - scaledAmount;
+        int color = ClientServices.FLUID.getColorTint(fluidHolder);
+        int tileWidth = spriteContents.width();
+        int tileHeight = spriteContents.height();
+
         guiGraphics.enableScissor(x, renderY, x + width, renderY + scaledAmount);
         try {
-            guiGraphics.blitTiledSprite(
-                    RenderPipelines.GUI_TEXTURED,
-                    sprite,
-                    x,
-                    renderY,
-                    width,
-                    scaledAmount,
-                    0,
-                    0,
-                    spriteContents.width(),
-                    spriteContents.height(),
-                    spriteContents.width(),
-                    spriteContents.height(),
-                    ClientServices.FLUID.getColorTint(fluidHolder)
-            );
+            //blitTiledSprite is private in 26.3, so tile manually via the public tinted sprite blit.
+            //Full tiles render exactly, edge tiles are stretched slightly to fit the remainder.
+            for (int tiledX = 0; tiledX < width; tiledX += tileWidth) {
+                int tileRenderWidth = Math.min(tileWidth, width - tiledX);
+                for (int tiledY = 0; tiledY < scaledAmount; tiledY += tileHeight) {
+                    int tileRenderHeight = Math.min(tileHeight, scaledAmount - tiledY);
+                    guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite,
+                            x + tiledX, renderY + tiledY, tileRenderWidth, tileRenderHeight, color);
+                }
+            }
         } finally {
             guiGraphics.disableScissor();
         }

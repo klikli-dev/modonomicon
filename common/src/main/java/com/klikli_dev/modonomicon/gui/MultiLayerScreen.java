@@ -7,7 +7,6 @@
 package com.klikli_dev.modonomicon.gui;
 
 import com.klikli_dev.modonomicon.platform.ClientServices;
-import net.minecraft.CrashReport;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.Font;
@@ -17,6 +16,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.narration.NarrationTrigger;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
@@ -183,11 +183,6 @@ public class MultiLayerScreen extends Screen {
     }
 
     @Override
-    public void fillCrashDetails(CrashReport crashReport) {
-        this.guiLayers.peek().fillCrashDetails(crashReport);
-    }
-
-    @Override
     public Font getFont() {
         return this.guiLayers.peek().getFont();
     }
@@ -198,8 +193,8 @@ public class MultiLayerScreen extends Screen {
     }
 
     @Override
-    public void updateNarratorStatus(boolean bl) {
-        this.guiLayers.peek().updateNarratorStatus(bl);
+    public void updateNarratorStatus(boolean wasDisabled, NarrationTrigger narrationTrigger) {
+        this.guiLayers.peek().updateNarratorStatus(wasDisabled, narrationTrigger);
     }
 
     @Override

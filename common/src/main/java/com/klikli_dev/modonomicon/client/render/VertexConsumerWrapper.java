@@ -47,6 +47,12 @@ public abstract class VertexConsumerWrapper implements VertexConsumer {
     }
 
     @Override
+    public @NotNull VertexConsumer setUv3(float u, float v) {
+        this.parent.setUv3(u, v);
+        return this;
+    }
+
+    @Override
     public @NotNull VertexConsumer setNormal(float x, float y, float z) {
         this.parent.setNormal(x, y, z);
         return this;

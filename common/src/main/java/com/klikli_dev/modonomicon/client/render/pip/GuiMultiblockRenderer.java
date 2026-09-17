@@ -63,12 +63,12 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
         rotMat.identity();
 
         // Flip the structure 180° around Z-axis to correct the upside-down rendering
-        poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
+        poseStack.rotate(Axis.ZP.rotationDegrees(180F));
         rotMat.rotate(Axis.ZP.rotationDegrees(-180));
 
         // Apply isometric-style tilt: rotate around X-axis
         // Positive rotation tilts the structure for proper isometric view
-        poseStack.mulPose(Axis.XP.rotationDegrees(-30F));
+        poseStack.rotate(Axis.XP.rotationDegrees(-30F));
         rotMat.rotate(Axis.XP.rotationDegrees(30));
 
         // Calculate offsets for centering the rotation pivot point
@@ -79,9 +79,9 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
         // Translate to center, apply rotations, then translate back
         float time = state.rotationTime();
         poseStack.translate(-offX, 0, -offZ);
-        poseStack.mulPose(Axis.YP.rotationDegrees(time));
+        poseStack.rotate(Axis.YP.rotationDegrees(time));
         rotMat.rotate(Axis.YP.rotationDegrees(-time));
-        poseStack.mulPose(Axis.YP.rotationDegrees(45));
+        poseStack.rotate(Axis.YP.rotationDegrees(45));
         rotMat.rotate(Axis.YP.rotationDegrees(-45));
         poseStack.translate(offX, 0, offZ);
 
