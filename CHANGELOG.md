@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.3-2.5.0] - 2026-09-17
+### :bug: Bug Fixes
+- [`a843c0d`](https://github.com/klikli-dev/modonomicon/commit/a843c0d76ed7f341f7ef1f7f7348f143d621d817) - replace removed GLFW/LWJGL input API with SDL-based InputConstants *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`b7812f3`](https://github.com/klikli-dev/modonomicon/commit/b7812f33f4bacc186f21f7aa8a97b9bc5607973f) - adapt to 26.3 render changes (PoseStack rotate, VertexConsumer setUv3, tiled fluid blit) *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`ce2f8a3`](https://github.com/klikli-dev/modonomicon/commit/ce2f8a391abfba79ba517ec93e8acf916e4a0f7e) - adapt to 26.3 command, drop, and network buffer API changes *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`a8c2e28`](https://github.com/klikli-dev/modonomicon/commit/a8c2e286076235502963429db803fb73a4bd2ce0) - remove stale access transformer targets for 26.3 *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`d2c65f8`](https://github.com/klikli-dev/modonomicon/commit/d2c65f8e53537b1ae655df83b6881ebf49060b4b) - use reloadable lookup provider for NeoForge 26.3 datagen *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`df3c237`](https://github.com/klikli-dev/modonomicon/commit/df3c2373dae135f3b44c47daa711608a53d1bbb9) - update dependencies to 26.3 and disable forge *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`6cb4a7c`](https://github.com/klikli-dev/modonomicon/commit/6cb4a7c466efc6366c3abc74b466d921f10caef8) - update JEI to 31.0.0.5 for 26.3 *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.2-2.5.0] - 2026-09-04
 ### :sparkles: New Features
 - [`d00e1ef`](https://github.com/klikli-dev/modonomicon/commit/d00e1ef7ba9b81d7985075838a08d15d64167473) - port multiblock layer-by-layer preview and preview architecture cleanup to 26.2 *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2353,3 +2366,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.2-2.4.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.2-2.3.0...release/v26.2-2.4.0
 [release/v26.2-2.4.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.2-2.4.0...release/v26.2-2.4.1
 [release/v26.2-2.5.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.2-2.4.1...release/v26.2-2.5.0
+[release/v26.3-2.5.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-0.0.0...release/v26.3-2.5.0
