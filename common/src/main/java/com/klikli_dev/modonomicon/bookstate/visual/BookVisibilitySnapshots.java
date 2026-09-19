@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.page.BookPage;
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.bookstate.BookServices;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
@@ -27,17 +28,41 @@ public record BookVisibilitySnapshots(Set<Identifier> categories, Set<Identifier
         var entries = new HashSet<Identifier>();
         var pages = new HashMap<Identifier, Set<Integer>>();
 
+        if (book == null) {
+            Modonomicon.LOG.error("Tried to collect visibility snapshots for null book. Skipping to avoid a crash.");
+            return new BookVisibilitySnapshots(categories, entries, pages);
+        }
+
         for (BookCategory category : book.getCategories().values()) {
-            if (!BookServices.visibility().isVisible(player, category)) {
+            boolean categoryVisible;
+            try {
+                categoryVisible = BookServices.visibility().isVisible(player, category);
+            } catch (Exception e) {
+                //One broken category condition must never crash a server tick (see #385).
+                Modonomicon.LOG.error("Failed to check visibility for category '{}' in book '{}', hiding category to avoid a crash.", category.getId(), book.getId(), e);
+                continue;
+            }
+            if (!categoryVisible) {
                 continue;
             }
             categories.add(category.getId());
             for (BookEntry entry : category.getEntries().values()) {
-                if (!BookServices.visibility().isVisible(player, entry)) {
+                boolean entryVisible;
+                try {
+                    entryVisible = BookServices.visibility().isVisible(player, entry);
+                } catch (Exception e) {
+                    Modonomicon.LOG.error("Failed to check visibility for entry '{}' in book '{}', hiding entry to avoid a crash.", entry.getId(), book.getId(), e);
+                    continue;
+                }
+                if (!entryVisible) {
                     continue;
                 }
                 entries.add(entry.getId());
-                pages.put(entry.getId(), BookServices.visibility().getVisiblePages(player, entry).stream().map(BookPage::getPageNumber).collect(Collectors.toSet()));
+                try {
+                    pages.put(entry.getId(), BookServices.visibility().getVisiblePages(player, entry).stream().map(BookPage::getPageNumber).collect(Collectors.toSet()));
+                } catch (Exception e) {
+                    Modonomicon.LOG.error("Failed to collect visible pages for entry '{}' in book '{}', skipping pages to avoid a crash.", entry.getId(), book.getId(), e);
+                }
             }
         }
 

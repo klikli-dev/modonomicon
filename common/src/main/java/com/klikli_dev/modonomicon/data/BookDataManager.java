@@ -448,6 +448,11 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
 
                 //link category and book
                 var book = this.books.get(bookId);
+                if (book == null) {
+                    BookErrorManager.get().error(bookId, "Failed to load category '" + entry.getKey() + "': book '" + bookId + "' was not loaded (missing or invalid book.json). The category will be skipped.", null, true);
+                    BookErrorManager.get().reset();
+                    continue;
+                }
                 book.addCategory(category);
 
                 BookErrorManager.get().reset();
@@ -479,7 +484,17 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
 
                 //link entry and category
                 var book = this.books.get(bookId);
+                if (book == null) {
+                    BookErrorManager.get().error(bookId, "Failed to load entry '" + entry.getKey() + "': book '" + bookId + "' was not loaded (missing or invalid book.json). The entry will be skipped.", null, true);
+                    BookErrorManager.get().reset();
+                    continue;
+                }
                 var category = book.getCategory(bookEntry.getCategoryId());
+                if (category == null) {
+                    BookErrorManager.get().error(bookId, "Failed to load entry '" + entry.getKey() + "': category '" + bookEntry.getCategoryId() + "' not found in book '" + bookId + "'. The entry will be skipped.", null, true);
+                    BookErrorManager.get().reset();
+                    continue;
+                }
                 category.addEntry(bookEntry);
 
                 BookErrorManager.get().reset();
@@ -510,6 +525,11 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
 
                 //link command and book
                 var book = this.books.get(bookId);
+                if (book == null) {
+                    BookErrorManager.get().error(bookId, "Failed to load command '" + entry.getKey() + "': book '" + bookId + "' was not loaded (missing or invalid book.json). The command will be skipped.", null, true);
+                    BookErrorManager.get().reset();
+                    continue;
+                }
                 book.addCommand(command);
                 BookErrorManager.get().reset();
             } catch (Exception e) {
