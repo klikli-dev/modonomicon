@@ -104,6 +104,15 @@ public class ModonomiconForge {
                 MultiblockDataManager.get().onDatapackSync(e.getPlayer());
                 ResearchDataManager.get().onDatapackSync(e.getPlayer());
                 ResearchStateManager.get().onDatapackSync(e.getPlayer());
+            } else {
+                //getPlayer() is null on /reload (sync to all players). Without this books stay unbuilt
+                //after a reload and the next research hook crashes the server tick (see #385).
+                for (var player : e.getPlayerList().getPlayers()) {
+                    BookDataManager.get().onDatapackSync(player);
+                    MultiblockDataManager.get().onDatapackSync(player);
+                    ResearchDataManager.get().onDatapackSync(player);
+                    ResearchStateManager.get().onDatapackSync(player);
+                }
             }
         });
 
