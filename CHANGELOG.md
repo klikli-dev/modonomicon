@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.3-2.5.1] - 2026-09-19
+### :bug: Bug Fixes
+- [`83c32c5`](https://github.com/klikli-dev/modonomicon/commit/83c32c5c9ac0767c4c9f8ee31605a3de124814f8) - issue 385 reload crash (port to 26.3) *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.3-2.5.0] - 2026-09-17
 ### :bug: Bug Fixes
 - [`a843c0d`](https://github.com/klikli-dev/modonomicon/commit/a843c0d76ed7f341f7ef1f7f7348f143d621d817) - replace removed GLFW/LWJGL input API with SDL-based InputConstants *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2367,3 +2372,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.2-2.4.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.2-2.4.0...release/v26.2-2.4.1
 [release/v26.2-2.5.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.2-2.4.1...release/v26.2-2.5.0
 [release/v26.3-2.5.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-0.0.0...release/v26.3-2.5.0
+[release/v26.3-2.5.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.5.0...release/v26.3-2.5.1
