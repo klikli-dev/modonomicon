@@ -61,6 +61,11 @@ public class BookResearchNodeUnlockedCondition extends BookCondition {
 
     @Override
     public boolean test(BookConditionContext context, Player player) {
+        if (context == null || context.getBook() == null) {
+            //Can happen if the book was not (yet) built, e.g. during /reload. Never crash a server tick, fail closed.
+            Modonomicon.LOG.error("BookResearchNodeUnlockedCondition tested with null book for node '{}'. The book was likely not built yet (e.g. during /reload) or failed to load. Returning false to avoid a crash.", this.nodeId);
+            return false;
+        }
         if (!ResearchDataManager.get().data().nodeIds().contains(this.nodeId)) {
             var message = "Unknown research node '" + this.nodeId + "' referenced by book condition '" + ID + "' in book '"
                     + context.getBook().getId() + "'.";
