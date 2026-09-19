@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.research.hook;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.bookstate.visual.BookVisibilitySnapshots;
@@ -138,8 +139,25 @@ public class ResearchHookService {
     // --- Shared apply logic ---
 
     private <TTarget> boolean applyHooks(ServerPlayer player, List<ResearchHookDefinition<TTarget>> hooks) {
+        //If books are not built yet (e.g. right after /reload before datapack sync), build them lazily.
+        //Otherwise visibility snapshots below would run against unlinked books and fail.
+        if (!BookDataManager.get().areBooksBuilt()) {
+            try {
+                BookDataManager.get().tryBuildBooks(player.level());
+            } catch (Exception e) {
+                Modonomicon.LOG.error("Failed to lazily build books before applying research hooks, skipping visibility updates to avoid a crash.", e);
+            }
+        }
+
         var before = BookDataManager.get().getBooks().values().stream()
-                .collect(Collectors.toMap(Book::getId, book -> BookVisibilitySnapshots.collect(player, book)));
+                .collect(Collectors.toMap(Book::getId, book -> {
+                    try {
+                        return BookVisibilitySnapshots.collect(player, book);
+                    } catch (Exception e) {
+                        Modonomicon.LOG.error("Failed to collect visibility snapshot for book '{}', using empty snapshot to avoid a crash.", book.getId(), e);
+                        return new BookVisibilitySnapshots(java.util.Set.of(), java.util.Set.of(), java.util.Map.of());
+                    }
+                }));
         ResearchStateManager.beginToastCollection();
         boolean changed = false;
         for (var hook : hooks) {
@@ -156,7 +174,12 @@ public class ResearchHookService {
         }
         if (changed) {
             for (var book : BookDataManager.get().getBooks().values()) {
-                BookVisualStateManager.get().updateVisibilityDrivenUnread(player, book, before.get(book.getId()), BookVisibilitySnapshots.collect(player, book));
+                try {
+                    BookVisualStateManager.get().updateVisibilityDrivenUnread(player, book, before.get(book.getId()), BookVisibilitySnapshots.collect(player, book));
+                } catch (Exception e) {
+                    //One broken book must never crash a server tick (see #385).
+                    Modonomicon.LOG.error("Failed to update visibility-driven unread state for book '{}', skipping to avoid a crash.", book.getId(), e);
+                }
             }
         }
         return changed;
