@@ -21,13 +21,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(GameRenderer.class)
 public abstract class MixinGameRenderer {
 
-    @Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/client/DeltaTracker;Z)V")
-    public void renderHead(DeltaTracker deltaTracker, boolean bl, CallbackInfo info) {
-        ClientTicks.renderTickStart(deltaTracker.getGameTimeDeltaPartialTick(bl));
+    @Inject(at = @At("HEAD"), method = "extract(Lnet/minecraft/client/DeltaTracker;Z)V")
+    public void renderHead(DeltaTracker deltaTracker, boolean advanceGameTime, CallbackInfo info) {
+        ClientTicks.renderTickStart(deltaTracker.getGameTimeDeltaPartialTick(advanceGameTime));
     }
 
-    @Inject(at = @At("RETURN"), method = "render(Lnet/minecraft/client/DeltaTracker;Z)V")
-    public void renderReturn(DeltaTracker deltaTracker, boolean bl, CallbackInfo info) {
+    @Inject(at = @At("RETURN"), method = "render()V")
+    public void renderReturn(CallbackInfo info) {
         ClientTicks.renderTickEnd();
     }
 
