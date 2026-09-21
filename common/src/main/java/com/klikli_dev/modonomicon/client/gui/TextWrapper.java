@@ -109,51 +109,56 @@ public final class TextWrapper {
 			//break opportunities attach trailing whitespace and newlines to the preceding unit
 			boolean forcedBreak = normalized.plain().charAt(unitEnd - 1) == '\n';
 			int contentEnd = forcedBreak ? unitEnd - 1 : unitEnd;
+			int trimmedContentEnd = trimmedEnd(normalized, unitStart, contentEnd);
 
-			if (contentEnd > unitStart && width(normalized, unitStart, contentEnd, font) > maxWidth) {
-				//the unit does not even fit on a line of its own, so allow breaking inside it like vanilla does for
-				//unbreakable runs
+			if (trimmedContentEnd > unitStart && width(normalized, unitStart, trimmedContentEnd, font) > maxWidth) {
+				//the unit's content does not even fit on a line of its own, so allow breaking inside it like vanilla
+				//does for unbreakable runs
 				int codepointStart = unitStart;
 				while (codepointStart < contentEnd) {
 					int codepointEnd = codepointStart + Character.charCount(normalized.plain().codePointAt(codepointStart));
 					boolean isLast = codepointEnd >= contentEnd;
-					atoms.add(new Atom(
-							codepointStart,
-							codepointEnd,
-							width(normalized, codepointStart, codepointEnd, font),
-							isLast && forcedBreak,
-							isLast ? unitEnd : codepointEnd));
+					atoms.add(newAtom(normalized, codepointStart, codepointEnd, isLast && forcedBreak, isLast ? unitEnd : codepointEnd, font));
 					codepointStart = codepointEnd;
 				}
 			} else {
-				atoms.add(new Atom(unitStart, contentEnd, width(normalized, unitStart, contentEnd, font), forcedBreak, unitEnd));
+				atoms.add(newAtom(normalized, unitStart, contentEnd, forcedBreak, unitEnd, font));
 			}
 		}
 
 		List<Line> lines = new ArrayList<>();
 		int lineStart = 0;
 		int filled = 0;
-		float lineWidth = 0.0f;
+		float renderedWidth = 0.0f;
+		float pendingWidth = 0.0f;
 		boolean lineHasContent = false;
 		boolean isWrapped = false;
 		boolean lastWasForcedBreak = false;
 
 		for (Atom atom : atoms) {
-			if (lineHasContent && lineWidth + atom.width() > maxWidth) {
+			//a unit's trailing whitespace is only rendered if another unit follows it on the same line, so it must not
+			//count towards whether the next unit fits - otherwise words would wrap one word early
+			if (lineHasContent && renderedWidth + pendingWidth + atom.contentWidth() > maxWidth) {
 				lines.add(new Line(slice(normalized, lineStart, filled), isWrapped));
 				isWrapped = true;
 				lineStart = filled;
-				lineWidth = 0.0f;
+				renderedWidth = 0.0f;
+				pendingWidth = 0.0f;
 				lineHasContent = false;
 			}
 
-			if (atom.end() > atom.start()) {
-				lineWidth += atom.width();
+			//splitting an overlong unit can detach its trailing space, which then must not start the next line
+			if (!lineHasContent && isWrapped && !atom.forcedBreak()
+					&& isWhitespaceOnly(normalized, atom.start(), atom.end())) {
+				lineStart = atom.end();
 				filled = atom.end();
-				lineHasContent = true;
-			} else {
-				filled = atom.start();
+				continue;
 			}
+
+			renderedWidth = renderedWidth + pendingWidth + atom.contentWidth();
+			pendingWidth = atom.trailingWidth();
+			filled = atom.end();
+			lineHasContent = true;
 
 			if (atom.forcedBreak()) {
 				lines.add(new Line(slice(normalized, lineStart, filled), isWrapped));
@@ -161,7 +166,8 @@ public final class TextWrapper {
 				lastWasForcedBreak = true;
 				lineStart = atom.next();
 				filled = atom.next();
-				lineWidth = 0.0f;
+				renderedWidth = 0.0f;
+				pendingWidth = 0.0f;
 				lineHasContent = false;
 			}
 		}
@@ -173,6 +179,44 @@ public final class TextWrapper {
 		}
 
 		return lines;
+	}
+
+	private static Atom newAtom(NormalizedText normalized, int start, int end, boolean forcedBreak, int next, Font font) {
+		int contentEnd = trimmedEnd(normalized, start, end);
+		return new Atom(
+				start,
+				end,
+				width(normalized, start, contentEnd, font),
+				width(normalized, contentEnd, end, font),
+				forcedBreak,
+				next);
+	}
+
+	private static int trimmedEnd(NormalizedText normalized, int start, int end) {
+		int result = end;
+		while (result > start) {
+			char last = normalized.plain().charAt(result - 1);
+			if (last == ' ' || last == '\r') {
+				result--;
+			} else {
+				break;
+			}
+		}
+		return result;
+	}
+
+	private static boolean isWhitespaceOnly(NormalizedText normalized, int start, int end) {
+		if (start >= end) {
+			return false;
+		}
+
+		for (int i = start; i < end; i++) {
+			char c = normalized.plain().charAt(i);
+			if (c != ' ' && c != '\r') {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private static float width(NormalizedText normalized, int start, int end, Font font) {
@@ -204,15 +248,7 @@ public final class TextWrapper {
 
 	private static FormattedText slice(NormalizedText normalized, int start, int end) {
 		//drop the trailing whitespace the break opportunity attached to this line
-		int trimmedEnd = end;
-		while (trimmedEnd > start) {
-			char last = normalized.plain().charAt(trimmedEnd - 1);
-			if (last == ' ' || last == '\r') {
-				trimmedEnd--;
-			} else {
-				break;
-			}
-		}
+		int trimmedEnd = trimmedEnd(normalized, start, end);
 
 		List<FormattedText> parts = new ArrayList<>();
 		int cursor = 0;
@@ -281,7 +317,7 @@ public final class TextWrapper {
 
 	private record NormalizedText(String plain, List<Segment> segments) {}
 
-	private record Atom(int start, int end, float width, boolean forcedBreak, int next) {}
+	private record Atom(int start, int end, float contentWidth, float trailingWidth, boolean forcedBreak, int next) {}
 
 	private record Line(FormattedText text, boolean isWrapped) {}
 

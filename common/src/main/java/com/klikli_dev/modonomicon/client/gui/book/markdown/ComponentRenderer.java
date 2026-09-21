@@ -243,8 +243,13 @@ public class ComponentRenderer {
         }
 
         public boolean isEmptyComponent() {
+            var contents = this.getCurrentComponent().getContents();
+            if (contents instanceof ListItemContents listItemContents && listItemContents.getPrefix() != null) {
+                //a list item that only carries its number/bullet is not empty
+                return false;
+            }
             //translation contents have no content, they have a key (which doubles as content).
-            return ((TranslatableContents) this.getCurrentComponent().getContents()).getKey().isEmpty() && this.getCurrentComponent().getSiblings().isEmpty();
+            return ((TranslatableContents) contents).getKey().isEmpty() && this.getCurrentComponent().getSiblings().isEmpty();
         }
 
         public void finalizeCurrentComponent() {
