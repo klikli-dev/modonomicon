@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-2.6.0] - 2026-09-21
+### :sparkles: New Features
+- [`b32177f`](https://github.com/klikli-dev/modonomicon/commit/b32177fcecb5c6bf7ce6426188aef9a53c5145f0) - **l10n**: update Chinese translation *(PR [#392](https://github.com/klikli-dev/modonomicon/pull/392) by [@Snownee](https://github.com/Snownee))*
+
+
 ## [release/v26.1.2-2.5.1] - 2026-09-19
 ### :bug: Bug Fixes
 - [`d6bff37`](https://github.com/klikli-dev/modonomicon/commit/d6bff3703258f170c0be4b827e95dd9de7f71a7f) - issue 385 reload crash *(PR [#386](https://github.com/klikli-dev/modonomicon/pull/386) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2331,3 +2336,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-2.4.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.3.0...release/v26.1.2-2.4.0
 [release/v26.1.2-2.5.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.4.0...release/v26.1.2-2.5.0
 [release/v26.1.2-2.5.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.5.0...release/v26.1.2-2.5.1
+[release/v26.1.2-2.6.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.5.1...release/v26.1.2-2.6.0
