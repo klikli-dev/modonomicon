@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.3-2.6.0] - 2026-09-21
+### :sparkles: New Features
+- [`e6d3af8`](https://github.com/klikli-dev/modonomicon/commit/e6d3af8be20fc2aa2ea194caed00a7a1c2e87430) - **l10n**: update Chinese translation *(PR [#392](https://github.com/klikli-dev/modonomicon/pull/392) by [@Snownee](https://github.com/Snownee))*
+
+
 ## [release/v26.3-2.5.2] - 2026-09-20
 ### :bug: Bug Fixes
 - [`5080656`](https://github.com/klikli-dev/modonomicon/commit/5080656033dfe14c9461ac0e9fc93c34c0ba6e1a) - update MixinModelManager for 26.3 *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2379,3 +2384,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.3-2.5.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-0.0.0...release/v26.3-2.5.0
 [release/v26.3-2.5.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.5.0...release/v26.3-2.5.1
 [release/v26.3-2.5.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.5.1...release/v26.3-2.5.2
+[release/v26.3-2.6.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.5.2...release/v26.3-2.6.0
