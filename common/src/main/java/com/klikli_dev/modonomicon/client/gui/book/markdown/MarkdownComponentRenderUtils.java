@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
 import com.google.common.collect.Lists;
+import com.klikli_dev.modonomicon.client.gui.TextWrapper;
 import net.minecraft.client.gui.Font;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.FormattedText;
@@ -35,7 +36,7 @@ public class MarkdownComponentRenderUtils {
         }
 
         List<FormattedCharSequence> list = Lists.newArrayList();
-        font.getSplitter().splitLines(text, width, Style.EMPTY, (lineText, isWrapped) -> {
+        TextWrapper.splitLines(text, width, Style.EMPTY, font, (lineText, isWrapped) -> {
             FormattedCharSequence formattedcharsequence = Language.getInstance().getVisualOrder(lineText);
             var indent = FormattedCharSequence.EMPTY;
             if (text.getContents() instanceof ListItemContents item) {

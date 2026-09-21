@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.toast;
 
 import com.klikli_dev.modonomicon.book.BookIcon;
+import com.klikli_dev.modonomicon.client.gui.TextWrapper;
 import com.klikli_dev.modonomicon.research.networking.ResearchToastTrigger;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -71,7 +72,7 @@ public class ResearchToast implements Toast {
     public void extractRenderState(GuiGraphicsExtractor graphics, Font font, long fullyVisibleForMs) {
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_SPRITE, 0, 0, this.width(), this.height());
 
-        List<FormattedCharSequence> titleLines = font.split(this.title, 125);
+        List<FormattedCharSequence> titleLines = TextWrapper.split(this.title, 125, font);
 
         if (titleLines.size() == 1) {
             graphics.text(font, this.description, 30, 7, -256, false);

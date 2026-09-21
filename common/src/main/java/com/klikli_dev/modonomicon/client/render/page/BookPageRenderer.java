@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
+import com.klikli_dev.modonomicon.client.gui.TextWrapper;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.MarkdownComponentRenderUtils;
@@ -118,7 +119,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
     public static void renderBookTextHolder(GuiGraphicsExtractor guiGraphics, BookTextHolder text, Font font, int x, int y, int width, int height, int defaultTextColor) {
         if (text.hasComponent()) {
             //if it is a component, we draw it directly
-            for (FormattedCharSequence formattedcharsequence : font.split(text.getComponent(), width)) {
+            for (FormattedCharSequence formattedcharsequence : TextWrapper.split(text.getComponent(), width, font)) {
                 guiGraphics.text(font, formattedcharsequence, x, y, defaultTextColor, false);
                 y += font.lineHeight;
             }
@@ -281,7 +282,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
     }
 
     public void drawWrappedStringNoShadow(GuiGraphicsExtractor guiGraphics, Component s, int x, int y, int color, int width) {
-        for (FormattedCharSequence formattedcharsequence : this.font.split(s, width)) {
+        for (FormattedCharSequence formattedcharsequence : TextWrapper.split(s, width, this.font)) {
             guiGraphics.text(this.font, formattedcharsequence, x, y + (this.font.lineHeight), color, false);
             y += this.font.lineHeight;
         }
@@ -368,7 +369,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
     @Nullable
     protected Style getClickedComponentStyleAtForTextHolder(BookTextHolder text, int x, int y, int width, int height, double pMouseX, double pMouseY) {
         if (text.hasComponent()) {
-            for (FormattedCharSequence formattedcharsequence : this.font.split(text.getComponent(), width)) {
+            for (FormattedCharSequence formattedcharsequence : TextWrapper.split(text.getComponent(), width, this.font)) {
                 var style = this.findClickedStyleAtRenderedLine(formattedcharsequence, x, y, pMouseX, pMouseY);
                 if (style != null)
                     return style;
