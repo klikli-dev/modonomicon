@@ -32,294 +32,299 @@ import net.minecraft.util.StringDecomposer;
  */
 public final class TextWrapper {
 
-	private static final int CACHE_CAPACITY = 512;
+    private static final int CACHE_CAPACITY = 512;
 
-	/**
-	 * Rendering happens on the client thread, so a plain LRU is sufficient. It is cleared on resource reload because
-	 * glyph advances (and thus line breaking) can change when fonts change.
-	 */
-	private static final Map<CacheKey, List<Line>> CACHE = new LinkedHashMap<>(64, 0.75f, true) {
-		@Override
-		protected boolean removeEldestEntry(Map.Entry<CacheKey, List<Line>> eldest) {
-			return this.size() > CACHE_CAPACITY;
-		}
-	};
+    /**
+     * Rendering happens on the client thread, so a plain LRU is sufficient. It is cleared on resource reload because
+     * glyph advances (and thus line breaking) can change when fonts change.
+     */
+    private static final Map<CacheKey, List<Line>> CACHE = new LinkedHashMap<>(64, 0.75f, true) {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<CacheKey, List<Line>> eldest) {
+            return this.size() > CACHE_CAPACITY;
+        }
+    };
 
-	private TextWrapper() {
-	}
+    private TextWrapper() {
+    }
 
-	public static void clearCache() {
-		CACHE.clear();
-	}
+    public static void clearCache() {
+        CACHE.clear();
+    }
 
-	/**
-	 * Drop-in replacement for {@link Font#split(FormattedText, int)}.
-	 */
-	public static List<FormattedCharSequence> split(FormattedText text, int maxWidth, Font font) {
-		List<Line> lines = splitLines(text, maxWidth, Style.EMPTY, font);
-		List<FormattedCharSequence> result = new ArrayList<>(lines.size());
-		for (Line line : lines) {
-			result.add(Language.getInstance().getVisualOrder(line.text()));
-		}
-		return result;
-	}
+    /**
+     * Drop-in replacement for {@link Font#split(FormattedText, int)}.
+     */
+    public static List<FormattedCharSequence> split(FormattedText text, int maxWidth, Font font) {
+        List<Line> lines = splitLines(text, maxWidth, Style.EMPTY, font);
+        List<FormattedCharSequence> result = new ArrayList<>(lines.size());
+        for (Line line : lines) {
+            result.add(Language.getInstance().getVisualOrder(line.text()));
+        }
+        return result;
+    }
 
-	/**
-	 * Wraps the given text and reports each line. The wrapped flag matches vanilla
-	 * {@link net.minecraft.client.StringSplitter#splitLines(FormattedText, int, Style, BiConsumer)}: it is {@code true}
-	 * for lines created by a soft wrap, and {@code false} for the first line of the text or a line after a hard line
-	 * break.
-	 */
-	public static void splitLines(
-			FormattedText text,
-			int maxWidth,
-			Style initialStyle,
-			Font font,
-			BiConsumer<FormattedText, Boolean> output) {
-		for (Line line : splitLines(text, maxWidth, initialStyle, font)) {
-			output.accept(line.text(), line.isWrapped());
-		}
-	}
+    /**
+     * Wraps the given text and reports each line. The wrapped flag matches vanilla
+     * {@link net.minecraft.client.StringSplitter#splitLines(FormattedText, int, Style, BiConsumer)}: it is {@code true}
+     * for lines created by a soft wrap, and {@code false} for the first line of the text or a line after a hard line
+     * break.
+     */
+    public static void splitLines(
+            FormattedText text,
+            int maxWidth,
+            Style initialStyle,
+            Font font,
+            BiConsumer<FormattedText, Boolean> output) {
+        for (Line line : splitLines(text, maxWidth, initialStyle, font)) {
+            output.accept(line.text(), line.isWrapped());
+        }
+    }
 
-	private static List<Line> splitLines(FormattedText text, int maxWidth, Style initialStyle, Font font) {
-		NormalizedText normalized = normalize(text, initialStyle);
-		if (normalized.plain().isEmpty()) {
-			return List.of();
-		}
+    private static List<Line> splitLines(FormattedText text, int maxWidth, Style initialStyle, Font font) {
+        NormalizedText normalized = normalize(text, initialStyle);
+        if (normalized.plain().isEmpty()) {
+            return List.of();
+        }
 
-		CacheKey key = new CacheKey(normalized, Math.max(maxWidth, 1), initialStyle, currentLocale(), font);
-		List<Line> cached = CACHE.get(key);
-		if (cached != null) {
-			return cached;
-		}
+        CacheKey key = new CacheKey(normalized, Math.max(maxWidth, 1), initialStyle, currentLocale(), font);
+        List<Line> cached = CACHE.get(key);
+        if (cached != null) {
+            return cached;
+        }
 
-		List<Line> lines = computeLines(normalized, key.maxWidth(), key.locale(), font);
-		CACHE.put(key, lines);
-		return lines;
-	}
+        List<Line> lines = computeLines(normalized, key.maxWidth(), key.locale(), font);
+        CACHE.put(key, lines);
+        return lines;
+    }
 
-	private static List<Line> computeLines(NormalizedText normalized, int maxWidth, Locale locale, Font font) {
-		List<Atom> atoms = new ArrayList<>();
+    private static List<Line> computeLines(NormalizedText normalized, int maxWidth, Locale locale, Font font) {
+        List<Atom> atoms = new ArrayList<>();
 
-		BreakIterator boundary = BreakIterator.getLineInstance(locale);
-		boundary.setText(normalized.plain());
+        BreakIterator boundary = BreakIterator.getLineInstance(locale);
+        boundary.setText(normalized.plain());
 
-		int unitStart = boundary.first();
-		for (int unitEnd = boundary.next(); unitEnd != BreakIterator.DONE; unitStart = unitEnd, unitEnd = boundary.next()) {
-			//break opportunities attach trailing whitespace and newlines to the preceding unit
-			boolean forcedBreak = normalized.plain().charAt(unitEnd - 1) == '\n';
-			int contentEnd = forcedBreak ? unitEnd - 1 : unitEnd;
-			int trimmedContentEnd = trimmedEnd(normalized, unitStart, contentEnd);
+        int unitStart = boundary.first();
+        for (int unitEnd = boundary.next(); unitEnd != BreakIterator.DONE; unitStart = unitEnd, unitEnd = boundary.next()) {
+            //break opportunities attach trailing whitespace and newlines to the preceding unit
+            boolean forcedBreak = normalized.plain().charAt(unitEnd - 1) == '\n';
+            int contentEnd = forcedBreak ? unitEnd - 1 : unitEnd;
+            int trimmedContentEnd = trimmedEnd(normalized, unitStart, contentEnd);
 
-			if (trimmedContentEnd > unitStart && width(normalized, unitStart, trimmedContentEnd, font) > maxWidth) {
-				//the unit's content does not even fit on a line of its own, so allow breaking inside it like vanilla
-				//does for unbreakable runs
-				int codepointStart = unitStart;
-				while (codepointStart < contentEnd) {
-					int codepointEnd = codepointStart + Character.charCount(normalized.plain().codePointAt(codepointStart));
-					boolean isLast = codepointEnd >= contentEnd;
-					atoms.add(newAtom(normalized, codepointStart, codepointEnd, isLast && forcedBreak, isLast ? unitEnd : codepointEnd, font));
-					codepointStart = codepointEnd;
-				}
-			} else {
-				atoms.add(newAtom(normalized, unitStart, contentEnd, forcedBreak, unitEnd, font));
-			}
-		}
+            if (trimmedContentEnd > unitStart && width(normalized, unitStart, trimmedContentEnd, font) > maxWidth) {
+                //the unit's content does not even fit on a line of its own, so allow breaking inside it like vanilla
+                //does for unbreakable runs
+                int codepointStart = unitStart;
+                while (codepointStart < contentEnd) {
+                    int codepointEnd = codepointStart + Character.charCount(normalized.plain().codePointAt(codepointStart));
+                    boolean isLast = codepointEnd >= contentEnd;
+                    atoms.add(newAtom(
+                            normalized,
+                            codepointStart,
+                            codepointEnd,
+                            isLast && forcedBreak,
+                            isLast ? unitEnd : codepointEnd,
+                            font));
+                    codepointStart = codepointEnd;
+                }
+            } else {
+                atoms.add(newAtom(normalized, unitStart, contentEnd, forcedBreak, unitEnd, font));
+            }
+        }
 
-		List<Line> lines = new ArrayList<>();
-		int lineStart = 0;
-		int filled = 0;
-		float renderedWidth = 0.0f;
-		float pendingWidth = 0.0f;
-		boolean lineHasContent = false;
-		boolean isWrapped = false;
-		boolean lastWasForcedBreak = false;
+        List<Line> lines = new ArrayList<>();
+        int lineStart = 0;
+        int filled = 0;
+        float renderedWidth = 0.0f;
+        float pendingWidth = 0.0f;
+        boolean lineHasContent = false;
+        boolean isWrapped = false;
+        boolean lastWasForcedBreak = false;
 
-		for (Atom atom : atoms) {
-			//a unit's trailing whitespace is only rendered if another unit follows it on the same line, so it must not
-			//count towards whether the next unit fits - otherwise words would wrap one word early
-			if (lineHasContent && renderedWidth + pendingWidth + atom.contentWidth() > maxWidth) {
-				lines.add(new Line(slice(normalized, lineStart, filled), isWrapped));
-				isWrapped = true;
-				lineStart = filled;
-				renderedWidth = 0.0f;
-				pendingWidth = 0.0f;
-				lineHasContent = false;
-			}
+        for (Atom atom : atoms) {
+            //a unit's trailing whitespace is only rendered if another unit follows it on the same line, so it must not
+            //count towards whether the next unit fits - otherwise words would wrap one word early
+            if (lineHasContent && renderedWidth + pendingWidth + atom.contentWidth() > maxWidth) {
+                lines.add(new Line(slice(normalized, lineStart, filled), isWrapped));
+                isWrapped = true;
+                lineStart = filled;
+                renderedWidth = 0.0f;
+                pendingWidth = 0.0f;
+                lineHasContent = false;
+            }
 
-			//splitting an overlong unit can detach its trailing space, which then must not start the next line
-			if (!lineHasContent && isWrapped && !atom.forcedBreak()
-					&& isWhitespaceOnly(normalized, atom.start(), atom.end())) {
-				lineStart = atom.end();
-				filled = atom.end();
-				continue;
-			}
+            //splitting an overlong unit can detach its trailing space, which then must not start the next line
+            if (!lineHasContent && isWrapped && !atom.forcedBreak() && isWhitespaceOnly(normalized, atom.start(), atom.end())) {
+                lineStart = atom.end();
+                filled = atom.end();
+                continue;
+            }
 
-			renderedWidth = renderedWidth + pendingWidth + atom.contentWidth();
-			pendingWidth = atom.trailingWidth();
-			filled = atom.end();
-			lineHasContent = true;
+            renderedWidth = renderedWidth + pendingWidth + atom.contentWidth();
+            pendingWidth = atom.trailingWidth();
+            filled = atom.end();
+            lineHasContent = true;
 
-			if (atom.forcedBreak()) {
-				lines.add(new Line(slice(normalized, lineStart, filled), isWrapped));
-				isWrapped = false;
-				lastWasForcedBreak = true;
-				lineStart = atom.next();
-				filled = atom.next();
-				renderedWidth = 0.0f;
-				pendingWidth = 0.0f;
-				lineHasContent = false;
-			}
-		}
+            if (atom.forcedBreak()) {
+                lines.add(new Line(slice(normalized, lineStart, filled), isWrapped));
+                isWrapped = false;
+                lastWasForcedBreak = true;
+                lineStart = atom.next();
+                filled = atom.next();
+                renderedWidth = 0.0f;
+                pendingWidth = 0.0f;
+                lineHasContent = false;
+            }
+        }
 
-		if (lineHasContent) {
-			lines.add(new Line(slice(normalized, lineStart, filled), isWrapped));
-		} else if (lastWasForcedBreak) {
-			lines.add(new Line(FormattedText.EMPTY, false));
-		}
+        if (lineHasContent) {
+            lines.add(new Line(slice(normalized, lineStart, filled), isWrapped));
+        } else if (lastWasForcedBreak) {
+            lines.add(new Line(FormattedText.EMPTY, false));
+        }
 
-		return lines;
-	}
+        return lines;
+    }
 
-	private static Atom newAtom(NormalizedText normalized, int start, int end, boolean forcedBreak, int next, Font font) {
-		int contentEnd = trimmedEnd(normalized, start, end);
-		return new Atom(
-				start,
-				end,
-				width(normalized, start, contentEnd, font),
-				width(normalized, contentEnd, end, font),
-				forcedBreak,
-				next);
-	}
+    private static Atom newAtom(NormalizedText normalized, int start, int end, boolean forcedBreak, int next, Font font) {
+        int contentEnd = trimmedEnd(normalized, start, end);
+        return new Atom(
+                start,
+                end,
+                width(normalized, start, contentEnd, font),
+                width(normalized, contentEnd, end, font),
+                forcedBreak,
+                next);
+    }
 
-	private static int trimmedEnd(NormalizedText normalized, int start, int end) {
-		int result = end;
-		while (result > start) {
-			char last = normalized.plain().charAt(result - 1);
-			if (last == ' ' || last == '\r') {
-				result--;
-			} else {
-				break;
-			}
-		}
-		return result;
-	}
+    private static int trimmedEnd(NormalizedText normalized, int start, int end) {
+        int result = end;
+        while (result > start) {
+            char last = normalized.plain().charAt(result - 1);
+            if (last == ' ' || last == '\r') {
+                result--;
+            } else {
+                break;
+            }
+        }
+        return result;
+    }
 
-	private static boolean isWhitespaceOnly(NormalizedText normalized, int start, int end) {
-		if (start >= end) {
-			return false;
-		}
+    private static boolean isWhitespaceOnly(NormalizedText normalized, int start, int end) {
+        if (start >= end) {
+            return false;
+        }
 
-		for (int i = start; i < end; i++) {
-			char c = normalized.plain().charAt(i);
-			if (c != ' ' && c != '\r') {
-				return false;
-			}
-		}
-		return true;
-	}
+        for (int i = start; i < end; i++) {
+            char c = normalized.plain().charAt(i);
+            if (c != ' ' && c != '\r') {
+                return false;
+            }
+        }
+        return true;
+    }
 
-	private static float width(NormalizedText normalized, int start, int end, Font font) {
-		if (start >= end) {
-			return 0.0f;
-		}
+    private static float width(NormalizedText normalized, int start, int end, Font font) {
+        if (start >= end) {
+            return 0.0f;
+        }
 
-		float result = 0.0f;
-		int cursor = 0;
-		for (Segment segment : normalized.segments()) {
-			int segmentStart = cursor;
-			int segmentEnd = cursor + segment.text().length();
-			cursor = segmentEnd;
+        float result = 0.0f;
+        int cursor = 0;
+        for (Segment segment : normalized.segments()) {
+            int segmentStart = cursor;
+            int segmentEnd = cursor + segment.text().length();
+            cursor = segmentEnd;
 
-			int from = Math.max(start, segmentStart);
-			int to = Math.min(end, segmentEnd);
-			if (from < to) {
-				result += font.getSplitter().stringWidth(FormattedText.of(
-						segment.text().substring(from - segmentStart, to - segmentStart),
-						segment.style()));
-			}
+            int from = Math.max(start, segmentStart);
+            int to = Math.min(end, segmentEnd);
+            if (from < to) {
+                result += font.getSplitter().stringWidth(FormattedText.of(
+                        segment.text().substring(from - segmentStart, to - segmentStart),
+                        segment.style()));
+            }
 
-			if (segmentEnd >= end) {
-				break;
-			}
-		}
-		return result;
-	}
+            if (segmentEnd >= end) {
+                break;
+            }
+        }
+        return result;
+    }
 
-	private static FormattedText slice(NormalizedText normalized, int start, int end) {
-		//drop the trailing whitespace the break opportunity attached to this line
-		int trimmedEnd = trimmedEnd(normalized, start, end);
+    private static FormattedText slice(NormalizedText normalized, int start, int end) {
+        //drop the trailing whitespace the break opportunity attached to this line
+        int trimmedEnd = trimmedEnd(normalized, start, end);
 
-		List<FormattedText> parts = new ArrayList<>();
-		int cursor = 0;
-		for (Segment segment : normalized.segments()) {
-			int segmentStart = cursor;
-			int segmentEnd = cursor + segment.text().length();
-			cursor = segmentEnd;
+        List<FormattedText> parts = new ArrayList<>();
+        int cursor = 0;
+        for (Segment segment : normalized.segments()) {
+            int segmentStart = cursor;
+            int segmentEnd = cursor + segment.text().length();
+            cursor = segmentEnd;
 
-			int from = Math.max(start, segmentStart);
-			int to = Math.min(trimmedEnd, segmentEnd);
-			if (from < to) {
-				parts.add(FormattedText.of(segment.text().substring(from - segmentStart, to - segmentStart), segment.style()));
-			}
+            int from = Math.max(start, segmentStart);
+            int to = Math.min(trimmedEnd, segmentEnd);
+            if (from < to) {
+                parts.add(FormattedText.of(segment.text().substring(from - segmentStart, to - segmentStart), segment.style()));
+            }
 
-			if (segmentEnd >= trimmedEnd) {
-				break;
-			}
-		}
+            if (segmentEnd >= trimmedEnd) {
+                break;
+            }
+        }
 
-		if (parts.isEmpty()) {
-			return FormattedText.EMPTY;
-		}
+        if (parts.isEmpty()) {
+            return FormattedText.EMPTY;
+        }
 
-		return parts.size() == 1 ? parts.get(0) : FormattedText.composite(parts);
-	}
+        return parts.size() == 1 ? parts.get(0) : FormattedText.composite(parts);
+    }
 
-	private static NormalizedText normalize(FormattedText text, Style initialStyle) {
-		StringBuilder plain = new StringBuilder();
-		List<Segment> segments = new ArrayList<>();
-		StringBuilder current = new StringBuilder();
-		Style[] currentStyle = {null};
+    private static NormalizedText normalize(FormattedText text, Style initialStyle) {
+        StringBuilder plain = new StringBuilder();
+        List<Segment> segments = new ArrayList<>();
+        StringBuilder current = new StringBuilder();
+        Style[] currentStyle = {null};
 
-		//resolve legacy formatting codes and surrogate pairs into plain text plus per-segment styles
-		StringDecomposer.iterateFormatted(
-				text, initialStyle, (position, style, codepoint) -> {
-					if (currentStyle[0] != null && !currentStyle[0].equals(style)) {
-						segments.add(new Segment(current.toString(), currentStyle[0]));
-						current.setLength(0);
-					}
+        //resolve legacy formatting codes and surrogate pairs into plain text plus per-segment styles
+        StringDecomposer.iterateFormatted(
+                text, initialStyle, (position, style, codepoint) -> {
+                    if (currentStyle[0] != null && !currentStyle[0].equals(style)) {
+                        segments.add(new Segment(current.toString(), currentStyle[0]));
+                        current.setLength(0);
+                    }
 
-					currentStyle[0] = style;
-					String chars = new String(Character.toChars(codepoint));
-					current.append(chars);
-					plain.append(chars);
-					return true;
-				});
+                    currentStyle[0] = style;
+                    String chars = new String(Character.toChars(codepoint));
+                    current.append(chars);
+                    plain.append(chars);
+                    return true;
+                });
 
-		if (currentStyle[0] != null && !current.isEmpty()) {
-			segments.add(new Segment(current.toString(), currentStyle[0]));
-		}
+        if (currentStyle[0] != null && !current.isEmpty()) {
+            segments.add(new Segment(current.toString(), currentStyle[0]));
+        }
 
-		return new NormalizedText(plain.toString(), List.copyOf(segments));
-	}
+        return new NormalizedText(plain.toString(), List.copyOf(segments));
+    }
 
-	private static Locale currentLocale() {
-		String code = Minecraft.getInstance().getLanguageManager().getSelected();
-		if (code.isEmpty()) {
-			return Locale.ROOT;
-		}
+    private static Locale currentLocale() {
+        String code = Minecraft.getInstance().getLanguageManager().getSelected();
+        if (code.isEmpty()) {
+            return Locale.ROOT;
+        }
 
-		String[] parts = code.split("_", 2);
-		return parts.length > 1 ? Locale.of(parts[0], parts[1]) : Locale.of(parts[0]);
-	}
+        String[] parts = code.split("_", 2);
+        return parts.length > 1 ? Locale.of(parts[0], parts[1]) : Locale.of(parts[0]);
+    }
 
-	private record Segment(String text, Style style) {}
+    private record Segment(String text, Style style) {}
 
-	private record NormalizedText(String plain, List<Segment> segments) {}
+    private record NormalizedText(String plain, List<Segment> segments) {}
 
-	private record Atom(int start, int end, float contentWidth, float trailingWidth, boolean forcedBreak, int next) {}
+    private record Atom(int start, int end, float contentWidth, float trailingWidth, boolean forcedBreak, int next) {}
 
-	private record Line(FormattedText text, boolean isWrapped) {}
+    private record Line(FormattedText text, boolean isWrapped) {}
 
-	private record CacheKey(NormalizedText text, int maxWidth, Style initialStyle, Locale locale, Font font) {}
+    private record CacheKey(NormalizedText text, int maxWidth, Style initialStyle, Locale locale, Font font) {}
 }
