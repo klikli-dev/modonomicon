@@ -85,6 +85,7 @@ public class ItemLinkRenderer implements LinkRenderer {
             //links are not style instructions, so we reset to our previous color.
             context.setCurrentStyle(context.getCurrentStyle()
                     .withColor(currentColor)
+                    .withClickEvent(null)
                     .withHoverEvent(null)
             );
 

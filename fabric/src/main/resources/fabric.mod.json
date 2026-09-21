@@ -24,6 +24,9 @@
     ],
     "fabric-datagen": [
       "com.klikli_dev.modonomicon.datagen.DataGenerators"
+    ],
+    "jei_mod_plugin": [
+      "com.klikli_dev.modonomicon.integration.recipeviewer.jei.JeiRecipeViewerPlugin"
     ]
   },
   "mixins": [
