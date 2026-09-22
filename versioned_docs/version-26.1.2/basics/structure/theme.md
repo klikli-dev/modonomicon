@@ -57,6 +57,24 @@ Default value: `0`.
 Adjusts available text height.
 Negative values reduce height.
 
+#### **index_text_offset_x** (Integer, _optional_)
+Default value: `0`.
+Adds a left index screen text offset.
+
+#### **index_text_offset_y** (Integer, _optional_)
+Default value: `0`.
+Adds a top index screen text offset.
+
+#### **index_text_offset_width** (Integer, _optional_)
+Default value: `0`.
+Adjusts available index screen text width.
+Negative values reduce width.
+
+#### **index_text_offset_height** (Integer, _optional_)
+Default value: `0`.
+Adjusts available index screen text height.
+Negative values reduce height.
+
 #### **category_button_x_offset** (Integer, _optional_)
 Default value: `0`.
 Moves category buttons horizontally.
@@ -189,6 +207,10 @@ Base ARGB color used when both ends are visible but not yet settled.
     "book_text_offset_y": 0,
     "book_text_offset_width": -5,
     "book_text_offset_height": 0,
+    "index_text_offset_x": 5,
+    "index_text_offset_y": 0,
+    "index_text_offset_width": -5,
+    "index_text_offset_height": 0,
     "category_button_x_offset": 0,
     "category_button_y_offset": 0,
     "search_button_x_offset": 0,
