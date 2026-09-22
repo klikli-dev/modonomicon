@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-2.7.0] - 2026-09-22
+### :sparkles: New Features
+- [`4cdd1c3`](https://github.com/klikli-dev/modonomicon/commit/4cdd1c322b72c905093bd1988bf9cefc4a9ba76c) - CJK character line breaking *(PR [#393](https://github.com/klikli-dev/modonomicon/pull/393) by [@Snownee](https://github.com/Snownee))*
+- [`87249a1`](https://github.com/klikli-dev/modonomicon/commit/87249a111c1600b47e7c41e602c744745de5140f) - improve JEI integration *(PR [#394](https://github.com/klikli-dev/modonomicon/pull/394) by [@Snownee](https://github.com/Snownee))*
+- [`1e3decc`](https://github.com/klikli-dev/modonomicon/commit/1e3deccdb550b0dfb8a95a8e181d534227a6c2e2) - add index text offset for the index pages *(PR [#395](https://github.com/klikli-dev/modonomicon/pull/395) by [@klikli-dev](https://github.com/klikli-dev))*
+  - :arrow_lower_right: *addresses issue [#391](https://github.com/klikli-dev/modonomicon/issues/391) opened by [@klikli-dev](https://github.com/klikli-dev)*
+
+### :bug: Bug Fixes
+- [`9a76b00`](https://github.com/klikli-dev/modonomicon/commit/9a76b0002b44e57e52338231240b35a41330aaf8) - smithing recipe text y offset *(PR [#396](https://github.com/klikli-dev/modonomicon/pull/396) by [@klikli-dev](https://github.com/klikli-dev))*
+  - :arrow_lower_right: *fixes issue [#390](https://github.com/klikli-dev/modonomicon/issues/390) opened by [@klikli-dev](https://github.com/klikli-dev)*
+
+
 ## [release/v26.1.2-2.6.0] - 2026-09-21
 ### :sparkles: New Features
 - [`b32177f`](https://github.com/klikli-dev/modonomicon/commit/b32177fcecb5c6bf7ce6426188aef9a53c5145f0) - **l10n**: update Chinese translation *(PR [#392](https://github.com/klikli-dev/modonomicon/pull/392) by [@Snownee](https://github.com/Snownee))*
@@ -2337,3 +2349,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-2.5.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.4.0...release/v26.1.2-2.5.0
 [release/v26.1.2-2.5.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.5.0...release/v26.1.2-2.5.1
 [release/v26.1.2-2.6.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.5.1...release/v26.1.2-2.6.0
+[release/v26.1.2-2.7.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.6.0...release/v26.1.2-2.7.0
