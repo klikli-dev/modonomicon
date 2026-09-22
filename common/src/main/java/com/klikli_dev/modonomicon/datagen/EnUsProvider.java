@@ -50,7 +50,6 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Gui.HOVER_BOOK_PAGE_LINK_LOCKED_INFO_HINT, "Hint: The page is in the Entry %s, under the Category %s");
         this.add(Gui.HOVER_HTTP_LINK, "Visit: %s");
         this.add(Gui.HOVER_ITEM_LINK_INFO, "Click to show recipe, Shift-Click to show usage.");
-        this.add(Gui.HOVER_ITEM_LINK_INFO_LINE2, "Will not do anything, if no recipe/usage is found.");
         this.add(Gui.HOVER_ITEM_LINK_INFO_NO_RECIPE_VIEWER, "Install a recipe viewer (e.g. JEI) to show recipe/usage on click.");
 
         this.add(Gui.HOVER_COMMAND_LINK, "Click to run linked command. Hold down shift to show command.");
@@ -101,6 +100,8 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Gui.OPEN_RECENTLY_UNLOCKED, "Recently Unlocked");
 
         this.add(Gui.RECIPE_PAGE_RECIPE_MISSING, "Recipe %s was not found! This may be an issue with the mod, or the modpack may have disabled it.");
+        this.add(Gui.RECIPE_PAGE_NO_RECIPE_VIEWER, "Install a recipe viewer (e.g. JEI) to render this recipe.");
+        this.add(Gui.RECIPE_LOOKUP_NO_RESULT, "No recipe or usage found.");
 
         //Tooltip
         this.add(Tooltips.CONDITION_CATEGORY_HAS_VISIBLE_ENTRIES, "Requires that category %s has visible entries");

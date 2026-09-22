@@ -35,4 +35,14 @@ public class FabricClientConfigHelper implements ClientConfigHelper {
     public boolean pauseGameWhenOpen() {
         return ClientConfig.pauseGameWhenOpen.getValue();
     }
+
+    @Override
+    public boolean debugOverlay() {
+        return ClientConfig.debugOverlay.getValue();
+    }
+
+    @Override
+    public boolean showRecipeLookupHints() {
+        return ClientConfig.showRecipeLookupHints.getValue();
+    }
 }

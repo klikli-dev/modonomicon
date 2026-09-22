@@ -58,6 +58,8 @@ public class PageRendererRegistry {
         });
         registerPageRenderer(BookImagePage.ID, p -> new BookImagePageRenderer((BookImagePage) p) {
         });
+        registerPageRenderer(BookViewerRecipePage.ID, p -> new BookViewerRecipePageRenderer((BookViewerRecipePage) p) {
+        });
     }
 
     /**

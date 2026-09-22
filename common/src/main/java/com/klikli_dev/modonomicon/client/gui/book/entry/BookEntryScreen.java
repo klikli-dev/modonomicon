@@ -13,16 +13,17 @@ import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.bookstate.visual.EntryVisualState;
+import com.klikli_dev.modonomicon.client.debug.BookDebugOverlay;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
+import com.klikli_dev.modonomicon.client.gui.book.BookFeedback;
 import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.AddBookmarkButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.BackButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.BookSideButtonRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.button.RemoveBookmarkButton;
-import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
 import com.klikli_dev.modonomicon.client.gui.book.entry.linkhandler.*;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.fluid.FluidHolder;
@@ -221,6 +222,15 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         return false;
     }
 
+    protected boolean clickIngredientPage(BookPageRenderer<?> page, MouseButtonEvent event) {
+        if (page != null) {
+            var localEvent = new MouseButtonEvent(event.x() - this.bookLeft - page.left, event.y() - this.bookTop - page.top, event.buttonInfo());
+            return page.mouseClickedIngredient(localEvent);
+        }
+
+        return false;
+    }
+
     protected void renderPage(GuiGraphicsExtractor guiGraphics, BookPageRenderer<?> page, int pMouseX, int pMouseY, float pPartialTick) {
         if (page == null) {
             return;
@@ -229,6 +239,9 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(page.left, page.top);
         page.render(guiGraphics, pMouseX - this.bookLeft - page.left, pMouseY - this.bookTop - page.top, pPartialTick);
+        if (BookDebugOverlay.isEnabled()) {
+            page.renderDebugOverlay(guiGraphics, pMouseX - this.bookLeft - page.left, pMouseY - this.bookTop - page.top);
+        }
         guiGraphics.pose().popMatrix();
     }
 
@@ -277,15 +290,16 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     public List<Component> getTooltipFromItem(ItemStack pItemStack) {
         var tooltip = getTooltipFromItem(Minecraft.getInstance(), pItemStack);
 
-        //Any item rendered in the book can be clicked to look up its recipes/usages, so show the hint whenever a viewer is available.
-        if (RecipeViewerRegistry.isAnyAvailable()) {
-            tooltip.add(Component.literal(""));
-            tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GREEN)));
-            tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO_LINE2).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GRAY)));
-        } else if (this.isHoveringItemLink()) {
-            //item links are only clickable when a viewer is available, so explain the requirement
-            tooltip.add(Component.literal(""));
-            tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO_NO_RECIPE_VIEWER).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.RED)));
+        if (ClientServices.CLIENT_CONFIG.showRecipeLookupHints()) {
+            //Any item rendered in the book can be clicked to look up its recipes/usages, so show the hint whenever a viewer is available.
+            if (RecipeViewerRegistry.isAnyAvailable()) {
+                tooltip.add(Component.literal(""));
+                tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GREEN)));
+            } else if (this.isHoveringItemLink()) {
+                //item links are only clickable when a viewer is available, so explain the requirement
+                tooltip.add(Component.literal(""));
+                tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO_NO_RECIPE_VIEWER).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.RED)));
+            }
         }
 
         return tooltip;
@@ -294,11 +308,10 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     public List<Component> getTooltipFromFluid(FluidHolder fluidStack) {
         var tooltip = ClientServices.FLUID.getTooltip(fluidStack, FluidHolder.BUCKET_VOLUME, this.minecraft.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL, FluidHelper.TooltipMode.SHOW_AMOUNT_AND_CAPACITY);
 
-        if (this.isHoveringItemLink()) {
+        if (this.isHoveringItemLink() && ClientServices.CLIENT_CONFIG.showRecipeLookupHints()) {
             tooltip.add(Component.literal(""));
             if (RecipeViewerRegistry.isAnyAvailable()) {
                 tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GREEN)));
-                tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO_LINE2).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GRAY)));
             } else {
                 tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO_NO_RECIPE_VIEWER).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.RED)));
             }
@@ -431,6 +444,11 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
             }
         }
 
+        //Let the page handle clicks on non-item ingredients (e.g. fluids) before generic right-click navigation.
+        if (this.mouseClickedPageIngredient(event, isDoubleClick)) {
+            return true;
+        }
+
         if (super.mouseClicked(event, isDoubleClick)) {
             return true;
         }
@@ -439,7 +457,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     }
 
     private void lookupItemStack(ItemStack stack, boolean uses) {
-        BookGuiManager.get().keepMousePosition(() -> RecipeViewerRegistry.show(stack, uses));
+        BookFeedback.showLookup(stack, uses);
     }
 
     @Override
@@ -473,6 +491,16 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     protected abstract Style getClickedComponentStyleAt(double pMouseX, double pMouseY);
 
     protected abstract boolean mouseClickedPage(MouseButtonEvent event, boolean isDoubleClick);
+
+    /**
+     * Lets the displayed page(s) handle clicks on non-item ingredients before generic click handling.
+     * <p>
+     * Defaults to false, subclasses with page renderers should override this and delegate to
+     * {@link #clickIngredientPage(BookPageRenderer, MouseButtonEvent)}.
+     */
+    protected boolean mouseClickedPageIngredient(MouseButtonEvent event, boolean isDoubleClick) {
+        return false;
+    }
 
     protected abstract void beginDisplayPages();
 }

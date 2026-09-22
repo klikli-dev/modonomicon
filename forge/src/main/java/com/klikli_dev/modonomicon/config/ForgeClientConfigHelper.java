@@ -35,4 +35,14 @@ public class ForgeClientConfigHelper implements ClientConfigHelper {
     public boolean pauseGameWhenOpen() {
         return ClientConfig.get().qolCategory.pauseGameWhenOpen.get();
     }
+
+    @Override
+    public boolean debugOverlay() {
+        return ClientConfig.get().debugCategory.debugOverlay.get();
+    }
+
+    @Override
+    public boolean showRecipeLookupHints() {
+        return ClientConfig.get().qolCategory.showRecipeLookupHints.get();
+    }
 }

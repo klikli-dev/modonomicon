@@ -20,6 +20,7 @@ import com.klikli_dev.modonomicon.book.page.BookSmokingRecipePage;
 import com.klikli_dev.modonomicon.book.page.BookSpotlightPage;
 import com.klikli_dev.modonomicon.book.page.BookStonecuttingRecipePage;
 import com.klikli_dev.modonomicon.book.page.BookTextPage;
+import com.klikli_dev.modonomicon.book.page.BookViewerRecipePage;
 import com.klikli_dev.modonomicon.data.BookPageType;
 import com.klikli_dev.modonomicon.data.DispatchCodecRegistry;
 import com.mojang.serialization.Codec;
@@ -57,6 +58,8 @@ public final class BookPageTypeRegistry {
     public static final BookPageType<BookEntityPage> ENTITY = register(BookEntityPage.ID, BookEntityPage.CODEC, BookEntityPage.STREAM_CODEC);
 
     public static final BookPageType<BookImagePage> IMAGE = register(BookImagePage.ID, BookImagePage.CODEC, BookImagePage.STREAM_CODEC);
+
+    public static final BookPageType<BookViewerRecipePage> VIEWER_RECIPE = register(BookViewerRecipePage.ID, BookViewerRecipePage.CODEC, BookViewerRecipePage.STREAM_CODEC);
 
     private BookPageTypeRegistry() {
     }

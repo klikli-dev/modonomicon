@@ -5,6 +5,7 @@
 package com.klikli_dev.modonomicon.integration.recipeviewer;
 
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A bridge to a single recipe viewer mod (e.g. JEI).
@@ -27,4 +28,23 @@ public interface RecipeViewerPlugin {
      * @return the lookup result, or {@link RecipeLookupResult#FAIL} if this viewer cannot serve the request
      */
     RecipeLookupResult lookup(ItemStack stack, boolean uses);
+
+    /**
+     * The priority of this viewer when multiple viewers can render a preview for the same recipe.
+     * The viewer with the highest priority wins. Defaults to {@code 0}.
+     */
+    default float previewPriority() {
+        return 0.0f;
+    }
+
+    /**
+     * Prepares the given recipe for rendering inside a Modonomicon page.
+     *
+     * @param recipe the recipe to render
+     * @return a renderable preview, or null if this viewer cannot render the recipe
+     */
+    @Nullable
+    default RecipeViewerRecipePreview createRecipePreview(RecipeViewerRecipe recipe) {
+        return null;
+    }
 }
