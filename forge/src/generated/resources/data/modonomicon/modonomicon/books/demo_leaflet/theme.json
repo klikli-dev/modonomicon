@@ -9,6 +9,10 @@
     "category_button_icon_scale": 1.0,
     "category_button_x_offset": 0,
     "category_button_y_offset": 2,
+    "index_text_offset_height": 0,
+    "index_text_offset_width": 0,
+    "index_text_offset_x": 0,
+    "index_text_offset_y": 0,
     "read_all_button_y_offset": 0,
     "search_button_x_offset": 0,
     "search_button_y_offset": 0

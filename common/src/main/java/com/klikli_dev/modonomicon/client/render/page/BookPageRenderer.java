@@ -15,6 +15,7 @@ import com.klikli_dev.modonomicon.client.gui.TextWrapper;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.MarkdownComponentRenderUtils;
+import com.klikli_dev.modonomicon.client.gui.book.theme.BookLayoutTheme;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.util.TextRenderHelper;
 import net.minecraft.client.Minecraft;
@@ -153,6 +154,14 @@ public abstract class BookPageRenderer<T extends BookPage> {
     }
 
     /**
+     * Will render the given BookTextHolder as (left-aligned) index screen description text, applying the theme layout's index text offset. Will automatically handle markdown.
+     */
+    public static void renderIndexBookTextHolder(GuiGraphicsExtractor guiGraphics, BookTextHolder text, Font font, BookLayoutTheme layout, int x, int y, int width, int height, int defaultTextColor) {
+        var bounds = applyTextOffset(layout.indexTextOffsetX(), layout.indexTextOffsetY(), layout.indexTextOffsetWidth(), layout.indexTextOffsetHeight(), x, y, width, height);
+        renderBookTextHolder(guiGraphics, text, font, bounds.x, bounds.y, bounds.width, bounds.height, defaultTextColor);
+    }
+
+    /**
      * Call when the page is being set up to be displayed (when book content screen opens, or pages are changed)
      */
     public void onBeginDisplayPage(BookEntryScreen parentScreen, int left, int top) {
@@ -208,14 +217,19 @@ public abstract class BookPageRenderer<T extends BookPage> {
     }
 
     protected TextHolderBounds getBookTextHolderBounds(int x, int y, int width, int height) {
-        x += this.parentScreen.getBook().theme().layout().bookTextOffsetX();
-        y += this.parentScreen.getBook().theme().layout().bookTextOffsetY();
+        var layout = this.parentScreen.getBook().theme().layout();
+        return applyTextOffset(layout.bookTextOffsetX(), layout.bookTextOffsetY(), layout.bookTextOffsetWidth(), layout.bookTextOffsetHeight(), x, y, width, height);
+    }
 
-        height += this.parentScreen.getBook().theme().layout().bookTextOffsetHeight();
-        height -= this.parentScreen.getBook().theme().layout().bookTextOffsetY(); //always remove the offset y from the height to avoid overflow
+    private static TextHolderBounds applyTextOffset(int offsetX, int offsetY, int offsetWidth, int offsetHeight, int x, int y, int width, int height) {
+        x += offsetX;
+        y += offsetY;
 
-        width += this.parentScreen.getBook().theme().layout().bookTextOffsetWidth();
-        width -= this.parentScreen.getBook().theme().layout().bookTextOffsetX(); //always remove the offset x from the width to avoid overflow
+        height += offsetHeight;
+        height -= offsetY; //always remove the offset y from the height to avoid overflow
+
+        width += offsetWidth;
+        width -= offsetX; //always remove the offset x from the width to avoid overflow
 
         return new TextHolderBounds(x, y, width, height);
     }

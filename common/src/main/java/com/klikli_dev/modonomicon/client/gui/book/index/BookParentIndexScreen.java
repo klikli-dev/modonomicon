@@ -261,7 +261,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
                 BookContentRenderer.drawTitleSeparator(guiGraphics, this.getBook(),
                         BookEntryScreen.RIGHT_PAGE_X + BookEntryScreen.PAGE_WIDTH / 2, BookEntryScreen.TOP_PADDING + 12);
 
-                BookPageRenderer.renderBookTextHolder(guiGraphics, this.book.getDescription(), this.font,
+                BookPageRenderer.renderIndexBookTextHolder(guiGraphics, this.book.getDescription(), this.font, this.book.theme().layout(),
                         BookEntryScreen.LEFT_PAGE_X, BookEntryScreen.TOP_PADDING + 22, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - (BookEntryScreen.TOP_PADDING + 22),
                         this.book.theme().palette().defaultTextColor());
             }

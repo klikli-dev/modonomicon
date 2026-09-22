@@ -14,6 +14,10 @@ public class BookThemeLayoutModel {
     protected int bookTextOffsetY = 0;
     protected int bookTextOffsetWidth = 0;
     protected int bookTextOffsetHeight = 0;
+    protected int indexTextOffsetX = 0;
+    protected int indexTextOffsetY = 0;
+    protected int indexTextOffsetWidth = 0;
+    protected int indexTextOffsetHeight = 0;
     protected int categoryButtonXOffset = 0;
     protected int categoryButtonYOffset = 2;
     protected int searchButtonXOffset = 0;
@@ -27,6 +31,10 @@ public class BookThemeLayoutModel {
         json.addProperty("book_text_offset_y", this.bookTextOffsetY);
         json.addProperty("book_text_offset_width", this.bookTextOffsetWidth);
         json.addProperty("book_text_offset_height", this.bookTextOffsetHeight);
+        json.addProperty("index_text_offset_x", this.indexTextOffsetX);
+        json.addProperty("index_text_offset_y", this.indexTextOffsetY);
+        json.addProperty("index_text_offset_width", this.indexTextOffsetWidth);
+        json.addProperty("index_text_offset_height", this.indexTextOffsetHeight);
         json.addProperty("category_button_x_offset", this.categoryButtonXOffset);
         json.addProperty("category_button_y_offset", this.categoryButtonYOffset);
         json.addProperty("search_button_x_offset", this.searchButtonXOffset);
@@ -65,6 +73,38 @@ public class BookThemeLayoutModel {
      */
     public BookThemeLayoutModel withBookTextOffsetHeight(int value) {
         this.bookTextOffsetHeight = value;
+        return this;
+    }
+
+    /**
+     * Sets the horizontal offset applied to index screen text.
+     */
+    public BookThemeLayoutModel withIndexTextOffsetX(int value) {
+        this.indexTextOffsetX = value;
+        return this;
+    }
+
+    /**
+     * Sets the vertical offset applied to index screen text.
+     */
+    public BookThemeLayoutModel withIndexTextOffsetY(int value) {
+        this.indexTextOffsetY = value;
+        return this;
+    }
+
+    /**
+     * Adjusts the available width for index screen text.
+     */
+    public BookThemeLayoutModel withIndexTextOffsetWidth(int value) {
+        this.indexTextOffsetWidth = value;
+        return this;
+    }
+
+    /**
+     * Adjusts the available height for index screen text.
+     */
+    public BookThemeLayoutModel withIndexTextOffsetHeight(int value) {
+        this.indexTextOffsetHeight = value;
         return this;
     }
 
