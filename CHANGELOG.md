@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.3-2.7.0] - 2026-09-22
+### :sparkles: New Features
+- [`c3183ad`](https://github.com/klikli-dev/modonomicon/commit/c3183adbc87bdfc8053520ce399305da4f5f39bb) - CJK character line breaking *(PR [#393](https://github.com/klikli-dev/modonomicon/pull/393) by [@Snownee](https://github.com/Snownee))*
+- [`e32aa61`](https://github.com/klikli-dev/modonomicon/commit/e32aa615da0b45fea6c6ed099eaf5ef7792f8538) - improve JEI integration *(PR [#394](https://github.com/klikli-dev/modonomicon/pull/394) by [@Snownee](https://github.com/Snownee))*
+- [`e1ee65f`](https://github.com/klikli-dev/modonomicon/commit/e1ee65f696b51838911c7adb82cedd3dcbf8d91b) - add index text offset for the index pages *(PR [#395](https://github.com/klikli-dev/modonomicon/pull/395) by [@klikli-dev](https://github.com/klikli-dev))*
+  - :arrow_lower_right: *addresses issue [#391](https://github.com/klikli-dev/modonomicon/issues/391) opened by [@klikli-dev](https://github.com/klikli-dev)*
+
+### :bug: Bug Fixes
+- [`1323fae`](https://github.com/klikli-dev/modonomicon/commit/1323faebdda8ab13e660e31d94cf09743c9e36c0) - port forge multiblock frame pass to 26.3 render API *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`6c349e6`](https://github.com/klikli-dev/modonomicon/commit/6c349e62b4d440560eea1668c9a92a3a850a7cd0) - exclude transitive JEI modules from forge runtime classpath *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`769def7`](https://github.com/klikli-dev/modonomicon/commit/769def7e5dd81ca89b60e8f34d72c7d3a211aa58) - prepare forge preview frame before opening render pass *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`d74b6f2`](https://github.com/klikli-dev/modonomicon/commit/d74b6f2dbba9956182f11808f82e1a22911cb5ee) - use SDL mouse button constant for node view dragging *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`adfeb13`](https://github.com/klikli-dev/modonomicon/commit/adfeb139fbf57b5efe86e398418f8d6bd2f62942) - smithing recipe text y offset *(PR [#396](https://github.com/klikli-dev/modonomicon/pull/396) by [@klikli-dev](https://github.com/klikli-dev))*
+  - :arrow_lower_right: *fixes issue [#390](https://github.com/klikli-dev/modonomicon/issues/390) opened by [@klikli-dev](https://github.com/klikli-dev)*
+
+### :wrench: Chores
+- [`e9e7617`](https://github.com/klikli-dev/modonomicon/commit/e9e761776f5338c0fb6a0ea7bfc34b2aa67d1b00) - re-enable forge and update to 26.3-66.0.2 *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`848cbcb`](https://github.com/klikli-dev/modonomicon/commit/848cbcb30758ece44693318fce47f641b3be408a) - refresh generated resources for forge and neo on 26.3 *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.3-2.6.0] - 2026-09-21
 ### :sparkles: New Features
 - [`e6d3af8`](https://github.com/klikli-dev/modonomicon/commit/e6d3af8be20fc2aa2ea194caed00a7a1c2e87430) - **l10n**: update Chinese translation *(PR [#392](https://github.com/klikli-dev/modonomicon/pull/392) by [@Snownee](https://github.com/Snownee))*
@@ -2385,3 +2405,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.3-2.5.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.5.0...release/v26.3-2.5.1
 [release/v26.3-2.5.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.5.1...release/v26.3-2.5.2
 [release/v26.3-2.6.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.5.2...release/v26.3-2.6.0
+[release/v26.3-2.7.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.6.0...release/v26.3-2.7.0
