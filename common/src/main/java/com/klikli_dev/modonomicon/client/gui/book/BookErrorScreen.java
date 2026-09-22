@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
+import com.klikli_dev.modonomicon.client.gui.TextWrapper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -37,7 +38,7 @@ public class BookErrorScreen extends Screen {
     }
 
     public void renderError(GuiGraphicsExtractor guiGraphics, Component text, int x, int y, int width) {
-        for (FormattedCharSequence formattedcharsequence : this.font.split(text, width)) {
+        for (FormattedCharSequence formattedcharsequence : TextWrapper.split(text, width, this.font)) {
             guiGraphics.text(this.font, formattedcharsequence, x, y, 0xFF000000, false);
             y += this.font.lineHeight;
         }
