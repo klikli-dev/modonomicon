@@ -100,7 +100,13 @@ dependencies {
     //Jei
     compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
-    runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+    //The neoforge jar is fat and embeds common/lib/gui/api classes, so its transitive
+    //mezz.jei modules must be excluded: otherwise the run's module path contains the same
+    //packages twice (e.g. mezz.jei.api.constants in jei.neoforge and jei.common.api) and
+    //JPMS resolution fails with "Modules jei.neoforge and jei.common.api export package ...".
+    runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}") {
+        exclude group: "mezz.jei"
+    }
 
 //    implementation "vazkii.patchouli:Patchouli:${minecraft_version}-${patchouli_version}-FORGE"
 
