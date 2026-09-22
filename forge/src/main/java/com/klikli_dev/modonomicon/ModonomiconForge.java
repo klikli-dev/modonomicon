@@ -29,9 +29,17 @@ import com.klikli_dev.modonomicon.research.ResearchServices;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
 import com.mojang.blaze3d.framegraph.FramePass;
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.renderpearl.api.commands.RenderPass;
+import com.mojang.renderpearl.api.commands.RenderPassDescriptor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelTargetBundle;
+import net.minecraft.client.renderer.RenderBuffers;
+import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperties;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
@@ -52,6 +60,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+
+import java.util.OptionalDouble;
 
 @Mod(Modonomicon.MOD_ID)
 public class ModonomiconForge {
@@ -202,16 +212,19 @@ public class ModonomiconForge {
             //FMLClientSetupEvent. Registering here ensures the frame pass exists when the frame graph is built.
             AddFramePassEvent.BUS.addListener((AddFramePassEvent e) -> {
                 e.addPass(Modonomicon.loc("multiblock_preview"), new FramePassManager.PassDefinition() {
+                    private LevelTargetBundle bundle;
+
                     @Override
-                    public void extracts(LevelTargetBundle bundle, FramePass pass, net.minecraft.client.DeltaTracker deltaTracker) {
+                    public void extracts(LevelTargetBundle bundle, FramePass pass, LevelRenderState state) {
                         bundle.main = pass.readsAndWrites(bundle.main);
+                        this.bundle = bundle;
                     }
 
                     @Override
-                    public void executes(net.minecraft.client.renderer.state.level.LevelRenderState state) {
+                    public void executes(LevelRenderState state) {
                         MultiblockPreviewRenderer.extractRenderState(state);
                         if (MultiblockPreviewRenderer.hasMultiblock) {
-                            Client.renderMultiblockPreviewFramePass(state);
+                            Client.renderMultiblockPreviewFramePass(this.bundle, state);
                         }
                     }
                 });
@@ -289,24 +302,24 @@ public class ModonomiconForge {
             );
         }
 
-        //Forge 65.x does not expose the level's SubmitNodeCollector (NeoForge fires SubmitCustomGeometryEvent,
+        //Forge does not expose the level's SubmitNodeCollector (NeoForge fires SubmitCustomGeometryEvent,
         //Fabric injects into LevelRenderer.submitFeatures), so the multiblock preview renders into a dedicated
         //feature frame during the frame pass. It uses a separate RenderBuffers/StagedVertexBuffer so its
         //upload()/endDraw() cannot clash with the level's own feature frame.
-        private static net.minecraft.client.renderer.RenderBuffers multiblockRenderBuffers;
-        private static net.minecraft.client.renderer.feature.FeatureRenderDispatcher multiblockFeatureDispatcher;
+        private static RenderBuffers multiblockRenderBuffers;
+        private static FeatureRenderDispatcher multiblockFeatureDispatcher;
 
-        private static void renderMultiblockPreviewFramePass(net.minecraft.client.renderer.state.level.LevelRenderState state) {
+        private static void renderMultiblockPreviewFramePass(LevelTargetBundle bundle, LevelRenderState state) {
             var mc = Minecraft.getInstance();
 
-            var collector = new net.minecraft.client.renderer.SubmitNodeStorage();
+            var collector = new SubmitNodeStorage();
             MultiblockPreviewRenderer.renderMultiblock(state, collector);
 
             if (multiblockRenderBuffers == null) {
-                multiblockRenderBuffers = new net.minecraft.client.renderer.RenderBuffers(0);
+                multiblockRenderBuffers = new RenderBuffers(0);
             }
             if (multiblockFeatureDispatcher == null) {
-                multiblockFeatureDispatcher = new net.minecraft.client.renderer.feature.FeatureRenderDispatcher(
+                multiblockFeatureDispatcher = new FeatureRenderDispatcher(
                         multiblockRenderBuffers,
                         mc.getModelManager(),
                         mc.getAtlasManager(),
@@ -315,8 +328,22 @@ public class ModonomiconForge {
                 );
             }
 
-            try {
-                multiblockFeatureDispatcher.renderAllFeatures(collector);
+            //Render into the main target, loading (not clearing) color and depth so the preview
+            //depth-tests against the already rendered world. On 26.3 feature phases need an explicit
+            //RenderPass, so this runs the same phases renderAllFeatures ran on 26.2 (solid, translucent,
+            //translucent-after-terrain, always-on-top), mirroring how LevelRenderer executes them.
+            RenderTarget target = bundle.main.get();
+            RenderPassDescriptor descriptor = RenderPassDescriptor.builder(() -> "modonomicon:multiblock_preview")
+                    .withColorAttachment(target.getColorTextureView())
+                    .withDepthAttachment(target.getDepthTextureView(), OptionalDouble.empty())
+                    .build();
+            try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(descriptor);
+                 FeatureRenderDispatcher.PreparedFrame frame = multiblockFeatureDispatcher.prepareFrame(collector)) {
+                RenderSystem.bindDefaultUniforms(renderPass);
+                frame.executeSolid(renderPass);
+                frame.executeTranslucent(renderPass);
+                frame.executeTranslucentAfterTerrain(renderPass);
+                frame.executeAlwaysOnTop(renderPass);
             } finally {
                 multiblockRenderBuffers.endFrame();
             }
