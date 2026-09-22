@@ -26,7 +26,7 @@ import com.klikli_dev.modonomicon.client.gui.book.button.SearchButton;
 import com.klikli_dev.modonomicon.client.gui.book.entry.linkhandler.*;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.fluid.FluidHolder;
-import com.klikli_dev.modonomicon.integration.jei.ModonomiconJeiIntegration;
+import com.klikli_dev.modonomicon.integration.recipeviewer.RecipeViewerRegistry;
 import com.klikli_dev.modonomicon.networking.AddBookmarkMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookVisualStatesMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
@@ -277,14 +277,15 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     public List<Component> getTooltipFromItem(ItemStack pItemStack) {
         var tooltip = getTooltipFromItem(Minecraft.getInstance(), pItemStack);
 
-        if (this.isHoveringItemLink()) {
+        //Any item rendered in the book can be clicked to look up its recipes/usages, so show the hint whenever a viewer is available.
+        if (RecipeViewerRegistry.isAnyAvailable()) {
             tooltip.add(Component.literal(""));
-            if (ModonomiconJeiIntegration.get().isLoaded()) {
-                tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GREEN)));
-                tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO_LINE2).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GRAY)));
-            } else {
-                tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO_NO_JEI).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.RED)));
-            }
+            tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GREEN)));
+            tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO_LINE2).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GRAY)));
+        } else if (this.isHoveringItemLink()) {
+            //item links are only clickable when a viewer is available, so explain the requirement
+            tooltip.add(Component.literal(""));
+            tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO_NO_RECIPE_VIEWER).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.RED)));
         }
 
         return tooltip;
@@ -295,11 +296,11 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
 
         if (this.isHoveringItemLink()) {
             tooltip.add(Component.literal(""));
-            if (ModonomiconJeiIntegration.get().isLoaded()) {
+            if (RecipeViewerRegistry.isAnyAvailable()) {
                 tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GREEN)));
                 tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO_LINE2).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.GRAY)));
             } else {
-                tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO_NO_JEI).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.RED)));
+                tooltip.add(Component.translatable(Gui.HOVER_ITEM_LINK_INFO_NO_RECIPE_VIEWER).withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.RED)));
             }
         }
 
@@ -417,11 +418,28 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
             }
         }
 
+        //Any item rendered on a page can be clicked to look up its recipes/usages.
+        //Left-click shows recipes, right-click (or shift+left-click) shows usages.
+        if (this.tooltipStack != null && !this.tooltipStack.isEmpty() && RecipeViewerRegistry.isAnyAvailable()) {
+            if (event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+                this.lookupItemStack(this.tooltipStack, this.getMinecraft().hasShiftDown());
+                return true;
+            }
+            if (event.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+                this.lookupItemStack(this.tooltipStack, true);
+                return true;
+            }
+        }
+
         if (super.mouseClicked(event, isDoubleClick)) {
             return true;
         }
 
         return this.mouseClickedPage(event, isDoubleClick);
+    }
+
+    private void lookupItemStack(ItemStack stack, boolean uses) {
+        BookGuiManager.get().keepMousePosition(() -> RecipeViewerRegistry.show(stack, uses));
     }
 
     @Override
