@@ -1,4 +1,4 @@
-// 26.1.2	2026-09-22T11:03:25.2621278	Books: modonomicon
+// 26.1.2	2026-09-22T12:59:26.5432689	Books: modonomicon
 2c29f1887c5c375e76d6813e5c5ef689936ec4e2 data/modonomicon/modonomicon/books/demo/book.json
 a40738cde71e2783fc7ebf4102a27a937c00761e data/modonomicon/modonomicon/books/demo/categories/acquiring.json
 66e880d8ad62910ce9caf891021f84308950452c data/modonomicon/modonomicon/books/demo/categories/conditional.json
@@ -56,7 +56,7 @@ a498f0e9f9823ea987ba0606b17352138235ab76 data/modonomicon/modonomicon/books/demo
 d14e897ed1220d965209127b30b2995444ef8ebf data/modonomicon/modonomicon/books/demo/entries/features/multiblock/pages/demo_tag.json
 7806538dbe4e743edd7a3c836260ea0b410adfc2 data/modonomicon/modonomicon/books/demo/entries/features/multiblock/pages/demo_transparency.json
 5228874969c5004709f90600c89ef07b6c2a768f data/modonomicon/modonomicon/books/demo/entries/features/multiblock/pages/intro.json
-883579e09f6c8c86d625126e0ee62ca86f549432 data/modonomicon/modonomicon/books/demo/entries/features/recipe.json
+88a8b3cf0b1525c56c0fe1bcd430d193ef7c5995 data/modonomicon/modonomicon/books/demo/entries/features/recipe.json
 0f17e7bc7ae70b09e1396f334d68f2cdcdb7bff2 data/modonomicon/modonomicon/books/demo/entries/features/redirect.json
 01a62f27fd396b4f1d638ed3330c3c06e96475c5 data/modonomicon/modonomicon/books/demo/entries/features/spotlight.json
 e45ac06bd78969080977036a311ba4451c7a5c02 data/modonomicon/modonomicon/books/demo/entries/features/spotlight/pages/intro.json

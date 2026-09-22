@@ -78,6 +78,12 @@ public class RecipeEntry extends EntryProvider {
         );
         this.pageTitle("1.20+ Smithing Recipe");
 
+        this.page("smithing_single", () -> BookSmithingRecipePageModel.create()
+                .withRecipeId1("minecraft:netherite_axe_smithing")
+                .withText(this.context().pageText())
+        );
+        this.pageText("A smithing recipe page with one recipe and some text.");
+
         //test the missing recipe visualization
         this.page("smithing_missing", () -> BookSmithingRecipePageModel.create()
                 .withRecipeId1("minecraft:netherite_axe_smithing_does_not_exist")
