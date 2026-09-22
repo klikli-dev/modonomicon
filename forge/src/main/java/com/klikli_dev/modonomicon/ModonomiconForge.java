@@ -332,13 +332,15 @@ public class ModonomiconForge {
             //depth-tests against the already rendered world. On 26.3 feature phases need an explicit
             //RenderPass, so this runs the same phases renderAllFeatures ran on 26.2 (solid, translucent,
             //translucent-after-terrain, always-on-top), mirroring how LevelRenderer executes them.
+            //NB: prepareFrame (which uploads staged vertices via copyToBuffer) must run BEFORE the
+            //RenderPass is opened - the encoder rejects buffer copies while a pass is open.
             RenderTarget target = bundle.main.get();
             RenderPassDescriptor descriptor = RenderPassDescriptor.builder(() -> "modonomicon:multiblock_preview")
                     .withColorAttachment(target.getColorTextureView())
                     .withDepthAttachment(target.getDepthTextureView(), OptionalDouble.empty())
                     .build();
-            try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(descriptor);
-                 FeatureRenderDispatcher.PreparedFrame frame = multiblockFeatureDispatcher.prepareFrame(collector)) {
+            try (FeatureRenderDispatcher.PreparedFrame frame = multiblockFeatureDispatcher.prepareFrame(collector);
+                 RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(descriptor)) {
                 RenderSystem.bindDefaultUniforms(renderPass);
                 frame.executeSolid(renderPass);
                 frame.executeTranslucent(renderPass);
