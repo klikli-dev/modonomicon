@@ -106,6 +106,17 @@
       "condition": {
         "type": "modonomicon:none"
       },
+      "recipe_id_1": "minecraft:netherite_axe_smithing",
+      "text": "book.modonomicon.demo.features.recipe.smithing_single.text",
+      "title1": "",
+      "title2": ""
+    },
+    {
+      "type": "modonomicon:smithing_recipe",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "recipe_id_1": "minecraft:netherite_axe_smithing_does_not_exist",
       "text": "",
       "title1": "",
@@ -114,6 +125,6 @@
   ],
   "show_when_any_parent_unlocked": false,
   "sort_number": 6,
-  "x": -14,
+  "x": -8,
   "y": -1
 }

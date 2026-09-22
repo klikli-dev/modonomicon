@@ -67,6 +67,7 @@
   "book.modonomicon.demo.features.recipe.name": "Recipe Entry",
   "book.modonomicon.demo.features.recipe.smelting.text": "A sample smelting recipe page.",
   "book.modonomicon.demo.features.recipe.smithing.title": "1.20+ Smithing Recipe",
+  "book.modonomicon.demo.features.recipe.smithing_single.text": "A smithing recipe page with one recipe and some text.",
   "book.modonomicon.demo.features.recipe.smoking.text": "A smoking recipe page with one recipe and some text.",
   "book.modonomicon.demo.features.redirect.description": "Redirects to another category.",
   "book.modonomicon.demo.features.redirect.name": "Category Redirect Entry",

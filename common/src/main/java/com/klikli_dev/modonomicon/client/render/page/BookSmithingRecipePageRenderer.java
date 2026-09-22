@@ -20,18 +20,15 @@ public class BookSmithingRecipePageRenderer extends BookRecipePageRenderer<Smith
 
     @Override
     protected int getRecipeHeight() {
-        return 76;
+        return 75;
     }
 
     @Override
     protected void drawRecipe(GuiGraphics guiGraphics, RecipeHolder<SmithingRecipe> recipe, int recipeX, int recipeY, int mouseX, int mouseY, boolean second) {
 
-        recipeY += 10;
-
-
         if (!second) {
             if (!this.page.getTitle1().isEmpty()) {
-                this.renderTitle(guiGraphics, this.page.getTitle1(), false, BookEntryScreen.PAGE_WIDTH / 2, 0);
+                this.renderTitle(guiGraphics, this.page.getTitle1(), false, BookEntryScreen.PAGE_WIDTH / 2, -5);
             }
         } else {
             if (!this.page.getTitle2().isEmpty()) {
@@ -41,7 +38,7 @@ public class BookSmithingRecipePageRenderer extends BookRecipePageRenderer<Smith
         }
 
         RenderSystem.enableBlend();
-        guiGraphics.blit(this.page.getBook().getCraftingTexture(), recipeX, recipeY, 11, 178, 96, 62, 128, 256);
+        guiGraphics.blit(this.page.getBook().getCraftingTexture(), recipeX, recipeY - 2, 11, 178, 96, 62, 128, 256);
 
         Ingredient base = Ingredient.EMPTY;
         Ingredient addition = Ingredient.EMPTY;
@@ -57,10 +54,10 @@ public class BookSmithingRecipePageRenderer extends BookRecipePageRenderer<Smith
             template = trimRecipe.template;
         }
 
-        this.parentScreen.renderIngredient(guiGraphics, recipeX + 4, recipeY + 4, mouseX, mouseY, template);
-        this.parentScreen.renderIngredient(guiGraphics, recipeX + 4, recipeY + 23, mouseX, mouseY, base);
-        this.parentScreen.renderIngredient(guiGraphics, recipeX + 4, recipeY + 42, mouseX, mouseY, addition);
-        this.parentScreen.renderItemStack(guiGraphics, recipeX + 40, recipeY + 23, mouseX, mouseY, recipe.value().getToastSymbol());
-        this.parentScreen.renderItemStack(guiGraphics, recipeX + 76, recipeY + 23, mouseX, mouseY, recipe.value().getResultItem(Minecraft.getInstance().level.registryAccess()));
+        this.parentScreen.renderIngredient(guiGraphics, recipeX + 4, recipeY + 2, mouseX, mouseY, template);
+        this.parentScreen.renderIngredient(guiGraphics, recipeX + 4, recipeY + 21, mouseX, mouseY, base);
+        this.parentScreen.renderIngredient(guiGraphics, recipeX + 4, recipeY + 40, mouseX, mouseY, addition);
+        this.parentScreen.renderItemStack(guiGraphics, recipeX + 40, recipeY + 21, mouseX, mouseY, recipe.value().getToastSymbol());
+        this.parentScreen.renderItemStack(guiGraphics, recipeX + 76, recipeY + 21, mouseX, mouseY, recipe.value().getResultItem(Minecraft.getInstance().level.registryAccess()));
     }
 }

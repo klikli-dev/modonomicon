@@ -21,6 +21,7 @@
   "category_button_y_offset": 0,
   "crafting_texture": "modonomicon:textures/gui/crafting_textures.png",
   "creative_tab": "modonomicon:modonomicon",
+  "default_text_color": 0,
   "default_title_color": 0,
   "description": "",
   "display_mode": "node",
