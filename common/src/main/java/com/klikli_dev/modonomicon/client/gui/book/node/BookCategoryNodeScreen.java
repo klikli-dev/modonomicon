@@ -23,6 +23,7 @@ import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
 import com.klikli_dev.modonomicon.client.gui.book.theme.NodeConnectionRendererType;
 import com.klikli_dev.modonomicon.events.ModonomiconEvents;
 import com.klikli_dev.modonomicon.platform.ClientServices;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -127,7 +128,9 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     public boolean mouseDragged(MouseButtonEvent event, double mouseX, double mouseY) {
         //Based on advancementsscreen
-        if (event.button() != 0) {
+        //NB: since 26.3 mouse buttons are SDL 1-indexed (left = 1), so compare against
+        //InputConstants instead of a raw button index (see the 26.3 migration primer).
+        if (event.button() != InputConstants.MOUSE_BUTTON_LEFT) {
             this.isScrolling = false;
             return false;
         } else {
