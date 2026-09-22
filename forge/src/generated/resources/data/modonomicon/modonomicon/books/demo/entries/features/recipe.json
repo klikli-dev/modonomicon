@@ -95,6 +95,15 @@
       "condition": {
         "type": "modonomicon:none"
       },
+      "id": "smithing_single",
+      "recipe_id_1": "minecraft:netherite_axe_smithing",
+      "text": "book.modonomicon.demo.features.recipe.smithing_single.text"
+    },
+    {
+      "type": "modonomicon:smithing_recipe",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "id": "smithing_missing",
       "recipe_id_1": "minecraft:netherite_axe_smithing_does_not_exist"
     }
