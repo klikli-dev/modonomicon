@@ -16,6 +16,14 @@ public interface BookLayoutTheme {
 
     int bookTextOffsetHeight();
 
+    int indexTextOffsetX();
+
+    int indexTextOffsetY();
+
+    int indexTextOffsetWidth();
+
+    int indexTextOffsetHeight();
+
     int categoryButtonXOffset();
 
     int categoryButtonYOffset();
