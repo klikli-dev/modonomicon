@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.book.BookLink;
 import com.klikli_dev.modonomicon.book.CommandLink;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.bookstate.BookServices;
+import com.klikli_dev.modonomicon.client.gui.TextWrapper;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.fluid.FluidHolder;
@@ -311,7 +312,7 @@ public interface ContentRenderingScreen {
                 case HoverEvent.ShowText(Component component):
                     //there seem to be cases where tooltip overflows the screen, so we force newlines.
                     var width = this.asScreen().width;
-                    guiGraphics.setTooltipForNextFrame(this.getContentFont(), this.getContentFont().split(component, width), mouseX, mouseY);
+                    guiGraphics.setTooltipForNextFrame(this.getContentFont(), TextWrapper.split(component, width, this.getContentFont()), mouseX, mouseY);
 //                    guiGraphics.setTooltipForNextFrame(this.getContentFont(), component, mouseX, mouseY);
                     break;
                 default:

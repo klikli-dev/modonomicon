@@ -7,8 +7,10 @@
 package com.klikli_dev.modonomicon.client.gui.book.markdown;
 
 import com.google.common.collect.Lists;
+import com.klikli_dev.modonomicon.client.gui.TextWrapper;
 import net.minecraft.client.gui.Font;
 import net.minecraft.locale.Language;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -30,19 +32,39 @@ public class MarkdownComponentRenderUtils {
      * @return a list of wrapped lines ready to render via font.
      */
     public static List<FormattedCharSequence> wrapComponents(MutableComponent text, int width, int listWidth, Font font) {
-        if (text.getContents() instanceof ListItemContents) {
+        ListItemContents listItem = text.getContents() instanceof ListItemContents contents ? contents : null;
+        if (listItem != null) {
             width = listWidth;
         }
 
+        //the list number/bullet is not part of the wrapped text, so it is prepended to the first line instead. This
+        //keeps it from consuming the first line's text width, matching the indent that wrapped lines get.
+        Component prefix = listItem != null ? listItem.getPrefix() : null;
+        FormattedCharSequence indent = listItem != null
+                ? FormattedCharSequence.forward(listItem.getListHolder().getIndent() + "   ", Style.EMPTY)
+                : FormattedCharSequence.EMPTY;
+
         List<FormattedCharSequence> list = Lists.newArrayList();
-        font.getSplitter().splitLines(text, width, Style.EMPTY, (lineText, isWrapped) -> {
+        boolean[] firstLine = {true};
+        TextWrapper.splitLines(text, width, Style.EMPTY, font, (lineText, isWrapped) -> {
             FormattedCharSequence formattedcharsequence = Language.getInstance().getVisualOrder(lineText);
-            var indent = FormattedCharSequence.EMPTY;
-            if (text.getContents() instanceof ListItemContents item) {
-                indent = FormattedCharSequence.forward(item.getListHolder().getIndent() + "   ", Style.EMPTY);
+            FormattedCharSequence leading = FormattedCharSequence.EMPTY;
+            if (firstLine[0] && prefix != null) {
+                leading = Language.getInstance().getVisualOrder(prefix);
+            } else if (isWrapped) {
+                leading = indent;
             }
-            list.add(isWrapped ? FormattedCharSequence.composite(indent, formattedcharsequence) : formattedcharsequence);
+            firstLine[0] = false;
+
+            list.add(leading == FormattedCharSequence.EMPTY
+                    ? formattedcharsequence
+                    : FormattedCharSequence.composite(leading, formattedcharsequence));
         });
-        return (list.isEmpty() ? Lists.newArrayList(FormattedCharSequence.EMPTY) : list);
+
+        if (list.isEmpty()) {
+            list.add(prefix != null ? Language.getInstance().getVisualOrder(prefix) : FormattedCharSequence.EMPTY);
+        }
+
+        return list;
     }
 }

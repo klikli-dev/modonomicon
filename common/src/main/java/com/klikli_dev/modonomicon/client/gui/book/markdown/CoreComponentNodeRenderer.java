@@ -14,9 +14,9 @@ import com.klikli_dev.modonomicon.client.gui.book.markdown.internal.renderer.Ord
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import org.commonmark.node.*;
 import org.commonmark.renderer.NodeRenderer;
@@ -166,19 +166,28 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
         if (listHolder != null && listHolder instanceof OrderedListHolder orderedListHolder) {
             //List bullets/numbers will not be affected by current style
             //however, we do use the font!
-            this.context.getCurrentComponent().append(Component.translatable(
-                            orderedListHolder.getIndent() + orderedListHolder.getCounter() + orderedListHolder.getDelimiter() + " ")
-                    .withStyle(Style.EMPTY).withStyle(s -> s.withFont(this.context.getCurrentStyle().getFont())));
+            //the prefix is stored on the component instead of being appended, so it does not consume text width
+            this.setListPrefix(Component.translatable(
+                    orderedListHolder.getIndent() + orderedListHolder.getCounter() + orderedListHolder.getDelimiter() + " "));
 
             this.visitChildren(listItem);
             orderedListHolder.increaseCounter();
         } else if (listHolder != null && listHolder instanceof BulletListHolder bulletListHolder) {
             //List bullets/numbers will not be affected by current style
             //however, we do use the font!
-            this.context.getCurrentComponent().append(Component.translatable(
-                            bulletListHolder.getIndent() + bulletListHolder.getMarker() + " ")
-                    .withStyle(Style.EMPTY).withStyle(s -> s.withFont(this.context.getCurrentStyle().getFont())));
+            this.setListPrefix(Component.translatable(
+                    bulletListHolder.getIndent() + bulletListHolder.getMarker() + " "));
             this.visitChildren(listItem);
+        }
+    }
+
+    private void setListPrefix(MutableComponent prefix) {
+        var styledPrefix = prefix.withStyle(Style.EMPTY).withStyle(s -> s.withFont(this.context.getCurrentStyle().getFont()));
+        if (this.context.getCurrentComponent().getContents() instanceof ListItemContents listItemContents) {
+            listItemContents.setPrefix(styledPrefix);
+        } else {
+            //fallback to the previous behaviour if the current component is not a list item
+            this.context.getCurrentComponent().append(styledPrefix);
         }
     }
 
