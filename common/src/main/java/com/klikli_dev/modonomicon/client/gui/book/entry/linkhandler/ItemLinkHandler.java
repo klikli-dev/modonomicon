@@ -8,7 +8,7 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ItemLinkRenderer;
-import com.klikli_dev.modonomicon.integration.jei.ModonomiconJeiIntegration;
+import com.klikli_dev.modonomicon.integration.recipeviewer.RecipeViewerRegistry;
 import com.mojang.brigadier.StringReader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -42,7 +42,7 @@ public class ItemLinkHandler extends LinkHandler {
         if (!ItemLinkRenderer.isItemLink(path))
             return ClickResult.UNHANDLED;
 
-        if (!ModonomiconJeiIntegration.get().isLoaded())
+        if (!RecipeViewerRegistry.isAnyAvailable())
             return ClickResult.FAILURE;
 
 
@@ -59,21 +59,13 @@ public class ItemLinkHandler extends LinkHandler {
         }
 
         final var finalItemStack = itemStack;
-        BookGuiManager.get().keepMousePosition(() -> {
-            BookGuiManager.get().closeScreenStack(this.screen()); //will cause the book to close entirely, and save the open page
-
-            if (Minecraft.getInstance().hasShiftDown()) {
-                ModonomiconJeiIntegration.get().showUses(finalItemStack);
-            } else {
-                ModonomiconJeiIntegration.get().showRecipe(finalItemStack);
-            }
-        });
-
-
-        //TODO: Consider adding logic to restore content screen after JEI gui close
-        //      currently only the overview screen is restored (because JEI does not use Forges Gui Stack, only vanilla screen, thus only saves one parent screen)
-        //      we could fix that by listening to the Closing event from forge, and in that set the closing time
-        //      -> then on init of overview screen, if closing time is < delta, push last content screen from gui manager
+        //We deliberately do NOT close the book here:
+        //- The recipe viewer opens on top of the current screen and remembers it as its parent, so closing
+        //  the viewer (e.g. pressing ESC) returns to the book exactly where the player left off.
+        //- If the viewer finds no recipe/usage for the stack it simply does not open, leaving the book open
+        //  instead of closing all GUIs.
+        BookGuiManager.get().keepMousePosition(() ->
+                RecipeViewerRegistry.show(finalItemStack, Minecraft.getInstance().hasShiftDown()));
 
         return ClickResult.SUCCESS;
     }

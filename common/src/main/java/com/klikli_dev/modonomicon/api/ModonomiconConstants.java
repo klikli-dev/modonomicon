@@ -79,7 +79,7 @@ public class ModonomiconConstants {
             public static final String HOVER_HTTP_LINK = PREFIX + "hover.http_link";
             public static final String HOVER_ITEM_LINK_INFO = PREFIX + "hover.item_link_info";
             public static final String HOVER_ITEM_LINK_INFO_LINE2 = PREFIX + "hover.item_link_info_line2";
-            public static final String HOVER_ITEM_LINK_INFO_NO_JEI = PREFIX + "hover.item_link_info.no_jei";
+            public static final String HOVER_ITEM_LINK_INFO_NO_RECIPE_VIEWER = PREFIX + "hover.item_link_info.no_recipe_viewer";
             public static final String HOVER_COMMAND_LINK = PREFIX + "hover.command_link";
             public static final String HOVER_COMMAND_LINK_UNAVAILABLE = PREFIX + "hover.command_link.unavailable";
             public static final String NO_ERRORS_FOUND = PREFIX + "no_errors_found";

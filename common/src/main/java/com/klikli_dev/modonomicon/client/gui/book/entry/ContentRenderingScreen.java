@@ -35,6 +35,7 @@ import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface ContentRenderingScreen {
 
@@ -59,6 +60,8 @@ public interface ContentRenderingScreen {
     void setTooltipStack(ItemStack stack);
 
     void setTooltipStack(FluidHolder stack);
+
+    List<Component> getTooltipFromItem(ItemStack stack);
 
     boolean isHoveringItemLink();
 
@@ -289,14 +292,15 @@ public interface ContentRenderingScreen {
         if (style != null && style.getHoverEvent() != null) {
             switch (style.getHoverEvent()) {
                 case HoverEvent.ShowItem(ItemStackTemplate itemstack):
-                    //special handling for item link hovers -> we append another line in this.getTooltipFromItem
+                    //special handling for item link hovers -> this.getTooltipFromItem appends the recipe lookup hint
                     if (style.getClickEvent() != null)// && ItemLinkRenderer.isItemLink(style.getClickEvent().getValue()))
                         this.isHoveringItemLink(true);
 
                     //temporarily modify width to force forge to handle wrapping correctly
                     var backupWidth = this.asScreen().width;
                     this.asScreen().width = this.asScreen().width / 2; //not quite sure why exaclty / 2 works, but then forge wrapping handles it correctly on gui scale 3+4
-                    guiGraphics.setTooltipForNextFrame(this.getContentFont(), itemstack.create(), mouseX, mouseY);
+                    var hoveredStack = itemstack.create();
+                    guiGraphics.setTooltipForNextFrame(this.getContentFont(), this.getTooltipFromItem(hoveredStack), hoveredStack.getTooltipImage(), mouseX, mouseY);
                     this.asScreen().width = backupWidth;
 
                     //then we reset so other item tooltip renders are not affected
