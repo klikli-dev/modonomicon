@@ -11,11 +11,12 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.util.GsonHelper;
 
 public record BookThemeLayout(int bookTextOffsetX, int bookTextOffsetY, int bookTextOffsetWidth, int bookTextOffsetHeight,
+                              int indexTextOffsetX, int indexTextOffsetY, int indexTextOffsetWidth, int indexTextOffsetHeight,
                               int categoryButtonXOffset, int categoryButtonYOffset,
                               int searchButtonXOffset, int searchButtonYOffset,
                               int readAllButtonYOffset, float categoryButtonIconScale) implements BookLayoutTheme {
 
-    public static final BookThemeLayout DEFAULT = new BookThemeLayout(0, 0, 0, 0, 0, 2, 0, 0, 0, 1.0f);
+    public static final BookThemeLayout DEFAULT = new BookThemeLayout(0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1.0f);
 
     public static BookThemeLayout fromJson(JsonObject json) {
         return new BookThemeLayout(
@@ -23,6 +24,10 @@ public record BookThemeLayout(int bookTextOffsetX, int bookTextOffsetY, int book
                 GsonHelper.getAsInt(json, "book_text_offset_y", DEFAULT.bookTextOffsetY),
                 GsonHelper.getAsInt(json, "book_text_offset_width", DEFAULT.bookTextOffsetWidth),
                 GsonHelper.getAsInt(json, "book_text_offset_height", DEFAULT.bookTextOffsetHeight),
+                GsonHelper.getAsInt(json, "index_text_offset_x", DEFAULT.indexTextOffsetX),
+                GsonHelper.getAsInt(json, "index_text_offset_y", DEFAULT.indexTextOffsetY),
+                GsonHelper.getAsInt(json, "index_text_offset_width", DEFAULT.indexTextOffsetWidth),
+                GsonHelper.getAsInt(json, "index_text_offset_height", DEFAULT.indexTextOffsetHeight),
                 GsonHelper.getAsInt(json, "category_button_x_offset", DEFAULT.categoryButtonXOffset),
                 GsonHelper.getAsInt(json, "category_button_y_offset", DEFAULT.categoryButtonYOffset),
                 GsonHelper.getAsInt(json, "search_button_x_offset", DEFAULT.searchButtonXOffset),
@@ -43,6 +48,10 @@ public record BookThemeLayout(int bookTextOffsetX, int bookTextOffsetY, int book
                 buffer.readShort(),
                 buffer.readShort(),
                 buffer.readShort(),
+                buffer.readShort(),
+                buffer.readShort(),
+                buffer.readShort(),
+                buffer.readShort(),
                 buffer.readFloat()
         );
     }
@@ -52,6 +61,10 @@ public record BookThemeLayout(int bookTextOffsetX, int bookTextOffsetY, int book
         buffer.writeShort(this.bookTextOffsetY);
         buffer.writeShort(this.bookTextOffsetWidth);
         buffer.writeShort(this.bookTextOffsetHeight);
+        buffer.writeShort(this.indexTextOffsetX);
+        buffer.writeShort(this.indexTextOffsetY);
+        buffer.writeShort(this.indexTextOffsetWidth);
+        buffer.writeShort(this.indexTextOffsetHeight);
         buffer.writeShort(this.categoryButtonXOffset);
         buffer.writeShort(this.categoryButtonYOffset);
         buffer.writeShort(this.searchButtonXOffset);
