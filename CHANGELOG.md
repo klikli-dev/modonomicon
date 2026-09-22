@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.1-1.120.5] - 2026-09-22
+### :bug: Bug Fixes
+- [`418e637`](https://github.com/klikli-dev/modonomicon/commit/418e63787a953d852a9b03bdc17a38d38f34d539) - use crafting y offset for smithing recipe pages *(PR [#390](https://github.com/klikli-dev/modonomicon/pull/390) by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.1-1.120.4] - 2026-07-29
 ### :bug: Bug Fixes
 - [`9ec9fe5`](https://github.com/klikli-dev/modonomicon/commit/9ec9fe54eb422ff519a9a4af961faf8efc11f1a3) - incorrect buffer batching in multiblock preview rendering on 1.21.1 *(PR [#376](https://github.com/klikli-dev/modonomicon/pull/376) by [@kawaiixissa13](https://github.com/kawaiixissa13))*
@@ -2425,3 +2430,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.1-1.120.2]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.11-1.121.0...release/v1.21.1-1.120.2
 [release/v1.21.1-1.120.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.120.2...release/v1.21.1-1.120.3
 [release/v1.21.1-1.120.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.120.3...release/v1.21.1-1.120.4
+[release/v1.21.1-1.120.5]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.120.4...release/v1.21.1-1.120.5
