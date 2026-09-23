@@ -29,40 +29,64 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.Level;
 
-public class BookMultiblockPage extends BookPage {
+import java.util.Optional;
+
+public class BookMultiblockPage extends BookPage implements BookPageWithSplit {
     public static final Identifier ID = Modonomicon.loc("multiblock");
     public static final MapCodec<BookMultiblockPage> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             BookTextHolder.CODEC.fieldOf("multiblock_name").forGetter(BookMultiblockPage::getMultiblockName),
             BookTextHolder.CODEC.fieldOf("text").forGetter(BookMultiblockPage::getText),
             Identifier.CODEC.fieldOf("multiblock_id").forGetter(BookMultiblockPage::getMultiblockId),
             Codec.BOOL.optionalFieldOf("show_visualize_button", false).forGetter(BookMultiblockPage::showVisualizeButton),
+            Codec.BOOL.optionalFieldOf("auto_scale").forGetter(page -> Optional.ofNullable(page.getAutoScaleOverride())),
+            Codec.BOOL.optionalFieldOf("allow_page_split").forGetter(page -> Optional.ofNullable(page.getAllowPageSplitOverride())),
             Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
             BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition)
-    ).apply(instance, BookMultiblockPage::new));
+    ).apply(instance, (multiblockName, text, multiblockId, showVisualizeButton, autoScale, allowPageSplit, id, condition) -> new BookMultiblockPage(multiblockName, text, multiblockId, showVisualizeButton, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition)));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BookMultiblockPage> STREAM_CODEC = StreamCodec.composite(
             BookTextHolder.STREAM_CODEC, BookMultiblockPage::getMultiblockName,
             BookTextHolder.STREAM_CODEC, BookMultiblockPage::getText,
             Identifier.STREAM_CODEC, BookMultiblockPage::getMultiblockId,
             ByteBufCodecs.BOOL, BookMultiblockPage::showVisualizeButton,
+            ByteBufCodecs.optional(ByteBufCodecs.BOOL), page -> Optional.ofNullable(page.getAutoScaleOverride()),
+            ByteBufCodecs.optional(ByteBufCodecs.BOOL), page -> Optional.ofNullable(page.getAllowPageSplitOverride()),
             ByteBufCodecs.STRING_UTF8, BookPage::getId,
             BookCondition.STREAM_CODEC, BookPage::getCondition,
-            BookMultiblockPage::new
+            (multiblockName, text, multiblockId, showVisualizeButton, autoScale, allowPageSplit, id, condition) -> new BookMultiblockPage(multiblockName, text, multiblockId, showVisualizeButton, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition)
     );
 
     protected BookTextHolder multiblockName;
     protected BookTextHolder text;
     protected boolean showVisualizeButton;
     protected Identifier multiblockId;
+    protected Boolean autoScale;
+    protected Boolean allowPageSplit;
 
     protected Multiblock multiblock;
 
     public BookMultiblockPage(BookTextHolder multiblockName, BookTextHolder text, Identifier multiblockId, boolean showVisualizeButton, String id, BookCondition condition) {
+        this(multiblockName, text, multiblockId, showVisualizeButton, null, null, id, condition);
+    }
+
+    public BookMultiblockPage(BookTextHolder multiblockName, BookTextHolder text, Identifier multiblockId, boolean showVisualizeButton, Boolean autoScale, Boolean allowPageSplit, String id, BookCondition condition) {
         super(id, condition);
         this.multiblockName = multiblockName;
         this.text = text;
         this.multiblockId = multiblockId;
         this.showVisualizeButton = showVisualizeButton;
+        this.autoScale = autoScale;
+        this.allowPageSplit = allowPageSplit;
+    }
+
+    @Override
+    public Boolean getAutoScaleOverride() {
+        return this.autoScale;
+    }
+
+    @Override
+    public Boolean getAllowPageSplitOverride() {
+        return this.allowPageSplit;
     }
 
     public boolean showVisualizeButton() {

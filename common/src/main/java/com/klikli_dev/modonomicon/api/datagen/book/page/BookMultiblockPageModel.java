@@ -19,6 +19,14 @@ public class BookMultiblockPageModel extends BookPageModel<BookMultiblockPageMod
     protected BookTextHolderModel text = new BookTextHolderModel("");
     protected Identifier multiblockId = null;
     protected boolean showVisualizeButton = true;
+    /**
+     * Nullable override for auto-scaling. Null inherits the book default.
+     */
+    protected Boolean autoScale = null;
+    /**
+     * Nullable override for page splitting. Null inherits the book default.
+     */
+    protected Boolean allowPageSplit = null;
 
     protected BookMultiblockPageModel() {
         super(BookMultiblockPage.ID);
@@ -46,7 +54,7 @@ public class BookMultiblockPageModel extends BookPageModel<BookMultiblockPageMod
 
     @Override
     public BookPage toBookPage(HolderLookup.Provider provider) {
-        return new BookMultiblockPage(this.multiblockName.toBookTextHolder(), this.text.toBookTextHolder(), this.multiblockId, this.showVisualizeButton, this.id, this.condition(provider));
+        return new BookMultiblockPage(this.multiblockName.toBookTextHolder(), this.text.toBookTextHolder(), this.multiblockId, this.showVisualizeButton, this.autoScale, this.allowPageSplit, this.id, this.condition(provider));
     }
 
     public BookMultiblockPageModel withMultiblockName(String title) {
@@ -76,6 +84,23 @@ public class BookMultiblockPageModel extends BookPageModel<BookMultiblockPageMod
 
     public BookMultiblockPageModel withVisualizeButton(boolean showVisualizeButton) {
         this.showVisualizeButton = showVisualizeButton;
+        return this;
+    }
+
+    /**
+     * Nullable override for auto-scaling. Null inherits the book default.
+     * Splitting takes precedence when enabled.
+     */
+    public BookMultiblockPageModel withAutoScale(Boolean autoScale) {
+        this.autoScale = autoScale;
+        return this;
+    }
+
+    /**
+     * Nullable override for page splitting. Null inherits the book default.
+     */
+    public BookMultiblockPageModel withAllowPageSplit(Boolean allowPageSplit) {
+        this.allowPageSplit = allowPageSplit;
         return this;
     }
 }

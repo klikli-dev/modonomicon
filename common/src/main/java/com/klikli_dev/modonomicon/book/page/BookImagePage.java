@@ -29,8 +29,9 @@ import net.minecraft.world.level.Level;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-public class BookImagePage extends BookPage {
+public class BookImagePage extends BookPage implements BookPageWithSplit {
     public static final Identifier ID = Modonomicon.loc("image");
     private static final Codec<List<Identifier>> IMAGE_LIST_CODEC = Codec.list(Identifier.CODEC);
     public static final MapCodec<BookImagePage> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -41,9 +42,11 @@ public class BookImagePage extends BookPage {
             Codec.BOOL.optionalFieldOf("use_legacy_rendering", false).forGetter(BookImagePage::useLegacyRendering),
             ImageDisplayMode.CODEC.optionalFieldOf("display_mode", ImageDisplayMode.DEFAULT).forGetter(BookImagePage::getDisplayMode),
             ImageScaleMode.CODEC.optionalFieldOf("image_scale_mode", ImageScaleMode.SCALE_TO_FIT).forGetter(BookImagePage::getImageScaleMode),
+            Codec.BOOL.optionalFieldOf("auto_scale").forGetter(page -> Optional.ofNullable(page.getAutoScaleOverride())),
+            Codec.BOOL.optionalFieldOf("allow_page_split").forGetter(page -> Optional.ofNullable(page.getAllowPageSplitOverride())),
             Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
             BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition)
-    ).apply(instance, (title, text, images, border, useLegacyRendering, displayMode, imageScaleMode, id, condition) -> new BookImagePage(title, text, images.toArray(Identifier[]::new), border, useLegacyRendering, displayMode, imageScaleMode, id, condition)));
+    ).apply(instance, (title, text, images, border, useLegacyRendering, displayMode, imageScaleMode, autoScale, allowPageSplit, id, condition) -> new BookImagePage(title, text, images.toArray(Identifier[]::new), border, useLegacyRendering, displayMode, imageScaleMode, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition)));
     public static final StreamCodec<RegistryFriendlyByteBuf, BookImagePage> STREAM_CODEC = StreamCodec.composite(
             BookTextHolder.STREAM_CODEC, BookImagePage::getTitle,
             BookTextHolder.STREAM_CODEC, BookImagePage::getText,
@@ -52,9 +55,11 @@ public class BookImagePage extends BookPage {
             ByteBufCodecs.BOOL, BookImagePage::useLegacyRendering,
             ImageDisplayMode.STREAM_CODEC, BookImagePage::getDisplayMode,
             ImageScaleMode.STREAM_CODEC, BookImagePage::getImageScaleMode,
+            ByteBufCodecs.optional(ByteBufCodecs.BOOL), page -> Optional.ofNullable(page.getAutoScaleOverride()),
+            ByteBufCodecs.optional(ByteBufCodecs.BOOL), page -> Optional.ofNullable(page.getAllowPageSplitOverride()),
             ByteBufCodecs.STRING_UTF8, BookPage::getId,
             BookCondition.STREAM_CODEC, BookPage::getCondition,
-            (title, text, images, border, useLegacyRendering, displayMode, imageScaleMode, id, condition) -> new BookImagePage(title, text, images.toArray(Identifier[]::new), border, useLegacyRendering, displayMode, imageScaleMode, id, condition)
+            (title, text, images, border, useLegacyRendering, displayMode, imageScaleMode, autoScale, allowPageSplit, id, condition) -> new BookImagePage(title, text, images.toArray(Identifier[]::new), border, useLegacyRendering, displayMode, imageScaleMode, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition)
     );
     protected BookTextHolder title;
     protected BookTextHolder text;
@@ -63,8 +68,14 @@ public class BookImagePage extends BookPage {
     protected boolean useLegacyRendering;
     protected ImageDisplayMode displayMode;
     protected ImageScaleMode imageScaleMode;
+    protected Boolean autoScale;
+    protected Boolean allowPageSplit;
 
     public BookImagePage(BookTextHolder title, BookTextHolder text, Identifier[] images, boolean border, boolean useLegacyRendering, ImageDisplayMode displayMode, ImageScaleMode imageScaleMode, String id, BookCondition condition) {
+        this(title, text, images, border, useLegacyRendering, displayMode, imageScaleMode, null, null, id, condition);
+    }
+
+    public BookImagePage(BookTextHolder title, BookTextHolder text, Identifier[] images, boolean border, boolean useLegacyRendering, ImageDisplayMode displayMode, ImageScaleMode imageScaleMode, Boolean autoScale, Boolean allowPageSplit, String id, BookCondition condition) {
         super(id, condition);
         this.title = title;
         this.text = text;
@@ -73,6 +84,18 @@ public class BookImagePage extends BookPage {
         this.useLegacyRendering = useLegacyRendering;
         this.displayMode = displayMode;
         this.imageScaleMode = imageScaleMode;
+        this.autoScale = autoScale;
+        this.allowPageSplit = allowPageSplit;
+    }
+
+    @Override
+    public Boolean getAutoScaleOverride() {
+        return this.autoScale;
+    }
+
+    @Override
+    public Boolean getAllowPageSplitOverride() {
+        return this.allowPageSplit;
     }
 
     public Identifier[] getImages() {

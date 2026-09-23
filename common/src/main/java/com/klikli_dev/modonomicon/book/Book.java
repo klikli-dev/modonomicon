@@ -66,6 +66,18 @@ public class Book {
     protected PageDisplayMode pageDisplayMode = PageDisplayMode.DOUBLE_PAGE;
 
     /**
+     * If true, text that overflows a page is scaled down to fit by default.
+     * Can be overridden per page. Splitting takes precedence when enabled.
+     */
+    protected boolean defaultAutoScale = true;
+
+    /**
+     * If true, overflowing text is split into continuation fragments by default.
+     * Can be overridden per page.
+     */
+    protected boolean defaultAllowPageSplit = false;
+
+    /**
      * If true, invalid links do not show an error screen when opening the book.
      * Instead, the book and pages will open, but the link will not work.
      */
@@ -85,6 +97,7 @@ public class Book {
     public Book(Identifier id, String name, BookTextHolder description, String tooltip, Identifier model, BookDisplayMode displayMode, boolean generateBookItem,
                 @Nullable Identifier customBookItem, String creativeTab, Identifier font, Identifier turnPageSound, Identifier leafletEntry,
                 PageDisplayMode pageDisplayMode, boolean allowOpenBooksWithInvalidLinks, boolean showRecentlyUnlocked,
+                boolean defaultAutoScale, boolean defaultAllowPageSplit,
                 BookThemeData themeData) {
         this.id = id;
         this.name = name;
@@ -108,6 +121,9 @@ public class Book {
         this.allowOpenBooksWithInvalidLinks = allowOpenBooksWithInvalidLinks;
 
         this.showRecentlyUnlocked = showRecentlyUnlocked;
+
+        this.defaultAutoScale = defaultAutoScale;
+        this.defaultAllowPageSplit = defaultAllowPageSplit;
         this.themeData = themeData;
     }
 
@@ -141,8 +157,11 @@ public class Book {
 
         var showRecentlyUnlocked = GsonHelper.getAsBoolean(json, "show_recently_unlocked", true);
 
+        var defaultAutoScale = GsonHelper.getAsBoolean(json, "default_auto_scale", true);
+        var defaultAllowPageSplit = GsonHelper.getAsBoolean(json, "default_allow_page_split", false);
+
         return new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font,
-                turnPageSound, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, themeData);
+                turnPageSound, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, defaultAutoScale, defaultAllowPageSplit, themeData);
     }
 
 
@@ -169,9 +188,12 @@ public class Book {
 
         var showRecentlyUnlocked = buffer.readBoolean();
 
+        var defaultAutoScale = buffer.readBoolean();
+        var defaultAllowPageSplit = buffer.readBoolean();
+
         var textMacros = buffer.readMap((b) -> b.readUtf(), (b) -> b.readUtf()); //necessary because using lambda causes ambiguous reference in Neo with their IFriendlyByteBufExtension#readMap
         var book = new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font,
-                turnPageSound, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, themeData);
+                turnPageSound, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, defaultAutoScale, defaultAllowPageSplit, themeData);
 
         book.textMacros().putAll(textMacros);
 
@@ -243,6 +265,8 @@ public class Book {
 
         buffer.writeBoolean(this.allowOpenBooksWithInvalidLinks);
         buffer.writeBoolean(this.showRecentlyUnlocked);
+        buffer.writeBoolean(this.defaultAutoScale);
+        buffer.writeBoolean(this.defaultAllowPageSplit);
         buffer.writeMap(this.textMacros, (b, v) -> b.writeUtf(v), (b, v) -> b.writeUtf(v));  //necessary because using lambda causes ambiguous reference in Neo with their IFriendlyByteBufExtension#writeMap
     }
 
@@ -372,5 +396,13 @@ public class Book {
 
     public boolean showRecentlyUnlocked() {
         return this.showRecentlyUnlocked;
+    }
+
+    public boolean defaultAutoScale() {
+        return this.defaultAutoScale;
+    }
+
+    public boolean defaultAllowPageSplit() {
+        return this.defaultAllowPageSplit;
     }
 }

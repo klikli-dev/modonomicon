@@ -40,7 +40,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
-public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
+public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage implements BookPageWithSplit {
 
     protected static final MapCodec<JsonDataHolder> JSON_COMMON_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             BookTextHolder.CODEC.optionalFieldOf("title1", BookTextHolder.EMPTY).forGetter(JsonDataHolder::title1),
@@ -48,14 +48,18 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
             BookTextHolder.CODEC.optionalFieldOf("title2", BookTextHolder.EMPTY).forGetter(JsonDataHolder::title2),
             ResourceKey.codec(Registries.RECIPE).optionalFieldOf("recipe_id_2").forGetter(holder -> Optional.ofNullable(holder.recipeId2())),
             BookTextHolder.CODEC.optionalFieldOf("text", BookTextHolder.EMPTY).forGetter(JsonDataHolder::text),
+            Codec.BOOL.optionalFieldOf("auto_scale").forGetter(holder -> Optional.ofNullable(holder.autoScale())),
+            Codec.BOOL.optionalFieldOf("allow_page_split").forGetter(holder -> Optional.ofNullable(holder.allowPageSplit())),
             Codec.STRING.fieldOf("id").forGetter(JsonDataHolder::id),
             BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(JsonDataHolder::condition)
-    ).apply(instance, (title1, recipeKey1, title2, recipeKey2, text, id, condition) -> new JsonDataHolder(
+    ).apply(instance, (title1, recipeKey1, title2, recipeKey2, text, autoScale, allowPageSplit, id, condition) -> new JsonDataHolder(
             title1,
             recipeKey1.orElse(null),
             title2,
             recipeKey2.orElse(null),
             text,
+            autoScale.orElse(null),
+            allowPageSplit.orElse(null),
             id,
             condition
     )));
@@ -68,9 +72,11 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
             ByteBufCodecs.optional(ResourceKey.streamCodec(Registries.RECIPE)), holder -> Optional.ofNullable(holder.recipeKey2()),
             ByteBufCodecs.optional(RecipeDisplayEntry.STREAM_CODEC), holder -> Optional.ofNullable(holder.recipeDisplayEntry2()),
             BookTextHolder.STREAM_CODEC, NetworkDataHolder::text,
+            ByteBufCodecs.optional(ByteBufCodecs.BOOL), holder -> Optional.ofNullable(holder.autoScale()),
+            ByteBufCodecs.optional(ByteBufCodecs.BOOL), holder -> Optional.ofNullable(holder.allowPageSplit()),
             ByteBufCodecs.STRING_UTF8, NetworkDataHolder::id,
             BookCondition.STREAM_CODEC, NetworkDataHolder::condition,
-            (title1, recipeKey1, recipeDisplayEntry1, title2, recipeKey2, recipeDisplayEntry2, text, id, condition) -> new NetworkDataHolder(
+            (title1, recipeKey1, recipeDisplayEntry1, title2, recipeKey2, recipeDisplayEntry2, text, autoScale, allowPageSplit, id, condition) -> new NetworkDataHolder(
                     title1,
                     recipeKey1.orElse(null),
                     recipeDisplayEntry1.orElse(null),
@@ -78,6 +84,8 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
                     recipeKey2.orElse(null),
                     recipeDisplayEntry2.orElse(null),
                     text,
+                    autoScale.orElse(null),
+                    allowPageSplit.orElse(null),
                     id,
                     condition
             )
@@ -102,25 +110,29 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
     protected RecipeDisplayEntry recipeDisplayEntry2;
 
     protected BookTextHolder text;
+    protected Boolean autoScale;
+    protected Boolean allowPageSplit;
 
     public BookRecipePage(JsonDataHolder common) {
-        this(common.title1(), common.recipeId1(), common.title2(), common.recipeId2(), common.text(), common.id(), common.condition());
+        this(common.title1(), common.recipeId1(), common.title2(), common.recipeId2(), common.text(), common.autoScale(), common.allowPageSplit(), common.id(), common.condition());
     }
 
     public BookRecipePage(NetworkDataHolder common) {
-        this(common.title1(), common.recipeKey1(), common.recipeDisplayEntry1(), common.title2(), common.recipeKey2(), common.recipeDisplayEntry2(), common.text(), common.id(), common.condition());
+        this(common.title1(), common.recipeKey1(), common.recipeDisplayEntry1(), common.title2(), common.recipeKey2(), common.recipeDisplayEntry2(), common.text(), common.autoScale(), common.allowPageSplit(), common.id(), common.condition());
     }
 
-    private BookRecipePage(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1, BookTextHolder title2, ResourceKey<Recipe<?>> recipeKey2, BookTextHolder text, String id, BookCondition condition) {
+    private BookRecipePage(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1, BookTextHolder title2, ResourceKey<Recipe<?>> recipeKey2, BookTextHolder text, Boolean autoScale, Boolean allowPageSplit, String id, BookCondition condition) {
         super(id, condition);
         this.title1 = title1;
         this.recipeKey1 = recipeKey1;
         this.title2 = title2;
         this.recipeKey2 = recipeKey2;
         this.text = text;
+        this.autoScale = autoScale;
+        this.allowPageSplit = allowPageSplit;
     }
 
-    private BookRecipePage(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1, @Nullable RecipeDisplayEntry recipeDisplayEntry1, BookTextHolder title2, ResourceKey<Recipe<?>> recipeKey2, @Nullable RecipeDisplayEntry recipeDisplayEntry2, BookTextHolder text, String id, BookCondition condition) {
+    private BookRecipePage(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1, @Nullable RecipeDisplayEntry recipeDisplayEntry1, BookTextHolder title2, ResourceKey<Recipe<?>> recipeKey2, @Nullable RecipeDisplayEntry recipeDisplayEntry2, BookTextHolder text, Boolean autoScale, Boolean allowPageSplit, String id, BookCondition condition) {
         super(id, condition);
         this.title1 = title1;
         this.recipeKey1 = recipeKey1;
@@ -129,7 +141,19 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
         this.recipeKey2 = recipeKey2;
         this.recipeDisplayEntry2 = recipeDisplayEntry2;
         this.text = text;
+        this.autoScale = autoScale;
+        this.allowPageSplit = allowPageSplit;
 
+    }
+
+    @Override
+    public Boolean getAutoScaleOverride() {
+        return this.autoScale;
+    }
+
+    @Override
+    public Boolean getAllowPageSplitOverride() {
+        return this.allowPageSplit;
     }
 
     protected static <P extends BookRecipePage<?>> MapCodec<P> codec(Function<JsonDataHolder, P> factory) {
@@ -141,11 +165,11 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
     }
 
     protected JsonDataHolder toJsonDataHolder() {
-        return new JsonDataHolder(this.title1, this.recipeKey1, this.title2, this.recipeKey2, this.text, this.id, this.condition);
+        return new JsonDataHolder(this.title1, this.recipeKey1, this.title2, this.recipeKey2, this.text, this.autoScale, this.allowPageSplit, this.id, this.condition);
     }
 
     protected NetworkDataHolder toNetworkDataHolder() {
-        return new NetworkDataHolder(this.title1, this.recipeKey1, this.recipeDisplayEntry1, this.title2, this.recipeKey2, this.recipeDisplayEntry2, this.text, this.id, this.condition);
+        return new NetworkDataHolder(this.title1, this.recipeKey1, this.recipeDisplayEntry1, this.title2, this.recipeKey2, this.recipeDisplayEntry2, this.text, this.autoScale, this.allowPageSplit, this.id, this.condition);
     }
 
     public BookTextHolder getTitle1() {
@@ -299,13 +323,13 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
     }
 
    public record JsonDataHolder(BookTextHolder title1, ResourceKey<Recipe<?>> recipeId1, BookTextHolder title2,
-                                  ResourceKey<Recipe<?>> recipeId2, BookTextHolder text, String id,
-                                  BookCondition condition) {
+                                   ResourceKey<Recipe<?>> recipeId2, BookTextHolder text, Boolean autoScale, Boolean allowPageSplit, String id,
+                                   BookCondition condition) {
     }
 
   public record NetworkDataHolder(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1,
                                      RecipeDisplayEntry recipeDisplayEntry1, BookTextHolder title2,
                                      ResourceKey<Recipe<?>> recipeKey2, RecipeDisplayEntry recipeDisplayEntry2,
-                                     BookTextHolder text, String id, BookCondition condition) {
+                                     BookTextHolder text, Boolean autoScale, Boolean allowPageSplit, String id, BookCondition condition) {
     }
 }

@@ -28,7 +28,9 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 
-public class BookEntityPage extends BookPage {
+import java.util.Optional;
+
+public class BookEntityPage extends BookPage implements BookPageWithSplit {
     public static final Identifier ID = Modonomicon.loc("entity");
     public static final MapCodec<BookEntityPage> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             BookTextHolder.CODEC.fieldOf("entity_name").forGetter(BookEntityPage::getEntityName),
@@ -38,9 +40,11 @@ public class BookEntityPage extends BookPage {
             Codec.FLOAT.optionalFieldOf("offset", 0f).forGetter(BookEntityPage::getOffset),
             Codec.BOOL.optionalFieldOf("rotate", true).forGetter(BookEntityPage::doesRotate),
             Codec.FLOAT.optionalFieldOf("default_rotation", -45f).forGetter(BookEntityPage::getDefaultRotation),
+            Codec.BOOL.optionalFieldOf("auto_scale").forGetter(page -> Optional.ofNullable(page.getAutoScaleOverride())),
+            Codec.BOOL.optionalFieldOf("allow_page_split").forGetter(page -> Optional.ofNullable(page.getAllowPageSplitOverride())),
             Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
             BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition)
-    ).apply(instance, BookEntityPage::new));
+    ).apply(instance, (entityName, text, entityId, scale, offset, rotate, defaultRotation, autoScale, allowPageSplit, id, condition) -> new BookEntityPage(entityName, text, entityId, scale, offset, rotate, defaultRotation, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition)));
     public static final StreamCodec<RegistryFriendlyByteBuf, BookEntityPage> STREAM_CODEC = StreamCodec.composite(
             BookTextHolder.STREAM_CODEC, BookEntityPage::getEntityName,
             BookTextHolder.STREAM_CODEC, BookEntityPage::getText,
@@ -49,9 +53,11 @@ public class BookEntityPage extends BookPage {
             ByteBufCodecs.FLOAT, BookEntityPage::getOffset,
             ByteBufCodecs.BOOL, BookEntityPage::doesRotate,
             ByteBufCodecs.FLOAT, BookEntityPage::getDefaultRotation,
+            ByteBufCodecs.optional(ByteBufCodecs.BOOL), page -> Optional.ofNullable(page.getAutoScaleOverride()),
+            ByteBufCodecs.optional(ByteBufCodecs.BOOL), page -> Optional.ofNullable(page.getAllowPageSplitOverride()),
             ByteBufCodecs.STRING_UTF8, BookPage::getId,
             BookCondition.STREAM_CODEC, BookPage::getCondition,
-            BookEntityPage::new
+            (entityName, text, entityId, scale, offset, rotate, defaultRotation, autoScale, allowPageSplit, id, condition) -> new BookEntityPage(entityName, text, entityId, scale, offset, rotate, defaultRotation, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition)
     );
 
     protected BookTextHolder entityName;
@@ -63,9 +69,15 @@ public class BookEntityPage extends BookPage {
     protected float offset = 0f;
     protected boolean rotate = true;
     protected float defaultRotation = -45f;
+    protected Boolean autoScale;
+    protected Boolean allowPageSplit;
 
 
     public BookEntityPage(BookTextHolder entityName, BookTextHolder text, String entityId, float scale, float offset, boolean rotate, float defaultRotation, String id, BookCondition condition) {
+        this(entityName, text, entityId, scale, offset, rotate, defaultRotation, null, null, id, condition);
+    }
+
+    public BookEntityPage(BookTextHolder entityName, BookTextHolder text, String entityId, float scale, float offset, boolean rotate, float defaultRotation, Boolean autoScale, Boolean allowPageSplit, String id, BookCondition condition) {
         super(id, condition);
         this.entityName = entityName;
         this.text = text;
@@ -74,6 +86,18 @@ public class BookEntityPage extends BookPage {
         this.offset = offset;
         this.rotate = rotate;
         this.defaultRotation = defaultRotation;
+        this.autoScale = autoScale;
+        this.allowPageSplit = allowPageSplit;
+    }
+
+    @Override
+    public Boolean getAutoScaleOverride() {
+        return this.autoScale;
+    }
+
+    @Override
+    public Boolean getAllowPageSplitOverride() {
+        return this.allowPageSplit;
     }
 
     public String getEntityId() {

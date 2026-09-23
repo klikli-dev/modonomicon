@@ -27,6 +27,15 @@ public abstract class BookRecipePageModel<T extends BookRecipePageModel<T>> exte
 
     protected BookTextHolderModel text = new BookTextHolderModel("");
 
+    /**
+     * Nullable override for auto-scaling. Null inherits the book default.
+     */
+    protected Boolean autoScale = null;
+    /**
+     * Nullable override for page splitting. Null inherits the book default.
+     */
+    protected Boolean allowPageSplit = null;
+
 
     protected BookRecipePageModel(Identifier type) {
         super(type);
@@ -60,6 +69,8 @@ public abstract class BookRecipePageModel<T extends BookRecipePageModel<T>> exte
                 this.title2.toBookTextHolder(),
                 this.recipeId2 == null || this.recipeId2.isEmpty() ? null : ResourceKey.create(Registries.RECIPE, Identifier.parse(this.recipeId2)),
                 this.text.toBookTextHolder(),
+                this.autoScale,
+                this.allowPageSplit,
                 this.id,
                 this.condition(provider)
         ));
@@ -123,6 +134,25 @@ public abstract class BookRecipePageModel<T extends BookRecipePageModel<T>> exte
 
     public T withRecipeId2(Identifier recipeId) {
         this.recipeId2 = recipeId.toString();
+        //noinspection unchecked
+        return (T) this;
+    }
+
+    /**
+     * Nullable override for auto-scaling. Null inherits the book default.
+     * Splitting takes precedence when enabled.
+     */
+    public T withAutoScale(Boolean autoScale) {
+        this.autoScale = autoScale;
+        //noinspection unchecked
+        return (T) this;
+    }
+
+    /**
+     * Nullable override for page splitting. Null inherits the book default.
+     */
+    public T withAllowPageSplit(Boolean allowPageSplit) {
+        this.allowPageSplit = allowPageSplit;
         //noinspection unchecked
         return (T) this;
     }
