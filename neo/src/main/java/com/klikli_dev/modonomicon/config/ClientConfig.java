@@ -17,11 +17,13 @@ public class ClientConfig {
     private static final ClientConfig instance = new ClientConfig();
 
     public final QoLCategory qolCategory;
+    public final DebugCategory debugCategory;
     public final ModConfigSpec spec;
 
     private ClientConfig() {
         var builder = new ModConfigSpec.Builder();
         this.qolCategory = new QoLCategory(builder);
+        this.debugCategory = new DebugCategory(builder);
         this.spec = builder.build();
     }
 
@@ -36,6 +38,7 @@ public class ClientConfig {
 
         public final ModConfigSpec.ConfigValue<List<? extends String>> fontFallbackLocales;
         public final ModConfigSpec.BooleanValue pauseGameWhenOpen;
+        public final ModConfigSpec.BooleanValue showRecipeLookupHints;
 
         public QoLCategory(ModConfigSpec.Builder builder) {
             builder.comment("Quality of Life Settings").push("qol");
@@ -53,6 +56,22 @@ public class ClientConfig {
 
             this.pauseGameWhenOpen = builder.comment("If true, the game will pause when a Modonomicon book is open (singleplayer only).")
                     .define("pauseGameWhenOpen", true);
+
+            this.showRecipeLookupHints = builder.comment("Show the recipe viewer hints in item tooltips (click to show recipe, shift-click to show usage).")
+                    .define("showRecipeLookupHints", false);
+
+            builder.pop();
+        }
+    }
+
+    public static class DebugCategory {
+        public final ModConfigSpec.BooleanValue debugOverlay;
+
+        public DebugCategory(ModConfigSpec.Builder builder) {
+            builder.comment("Debug Settings").push("debug");
+            this.debugOverlay = builder.comment("Enable the book debug overlay. While a book is open, press F6 to toggle it. " +
+                            "It draws color coded outlines of the page, its content area and its text area, to help with layout offsets.")
+                    .define("debugOverlay", false);
 
             builder.pop();
         }

@@ -111,6 +111,11 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
         return this.clickPage(this.pageRenderer, event, isDoubleClick);
     }
 
+    @Override
+    protected boolean mouseClickedPageIngredient(MouseButtonEvent event, boolean isDoubleClick) {
+        return this.clickIngredientPage(this.pageRenderer, event);
+    }
+
     protected void beginDisplayPages() {
         //allow pages to clean up
         if (this.pageRenderer != null) {
