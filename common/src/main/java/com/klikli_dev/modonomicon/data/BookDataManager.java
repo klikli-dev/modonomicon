@@ -26,6 +26,7 @@ import com.klikli_dev.modonomicon.book.runtime.RuntimeBookContentManager;
 import com.klikli_dev.modonomicon.client.gui.TextWrapper;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.theme.BookThemeData;
+import com.klikli_dev.modonomicon.client.render.page.PageSplitter;
 import com.klikli_dev.modonomicon.networking.Message;
 import com.klikli_dev.modonomicon.networking.SyncBookDataMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
@@ -734,6 +735,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
             this.resetUseFallbackFont();
             this.bookTextHolderScaleCache.clear();
             TextWrapper.clearCache();
+            PageSplitter.clearCache();
         }
     }
 }

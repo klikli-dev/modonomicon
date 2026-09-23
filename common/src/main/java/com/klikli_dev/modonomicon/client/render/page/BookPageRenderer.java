@@ -36,13 +36,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BookPageRenderer<T extends BookPage> {
-    protected static final class TextHolderBounds {
+    public static final class TextHolderBounds {
         public final int x;
         public final int y;
         public final int width;
         public final int height;
 
-        protected TextHolderBounds(int x, int y, int width, int height) {
+        public TextHolderBounds(int x, int y, int width, int height) {
             this.x = x;
             this.y = y;
             this.width = width;
@@ -216,12 +216,12 @@ public abstract class BookPageRenderer<T extends BookPage> {
         renderBookTextHolder(guiGraphics, text, this.font, bounds.x, bounds.y, bounds.width, bounds.height, this.parentScreen.getBook().theme().palette().defaultTextColor());
     }
 
-    protected TextHolderBounds getBookTextHolderBounds(int x, int y, int width, int height) {
+    public TextHolderBounds getBookTextHolderBounds(int x, int y, int width, int height) {
         var layout = this.parentScreen.getBook().theme().layout();
         return applyTextOffset(layout.bookTextOffsetX(), layout.bookTextOffsetY(), layout.bookTextOffsetWidth(), layout.bookTextOffsetHeight(), x, y, width, height);
     }
 
-    private static TextHolderBounds applyTextOffset(int offsetX, int offsetY, int offsetWidth, int offsetHeight, int x, int y, int width, int height) {
+    public static TextHolderBounds applyTextOffset(int offsetX, int offsetY, int offsetWidth, int offsetHeight, int x, int y, int width, int height) {
         x += offsetX;
         y += offsetY;
 
