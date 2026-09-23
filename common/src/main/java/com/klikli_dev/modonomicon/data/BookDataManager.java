@@ -689,6 +689,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
         private final Object2FloatOpenHashMap<BookTextHolder.ScaleCacheKey> bookTextHolderScaleCache = new Object2FloatOpenHashMap<>();
         private boolean isFallbackLocale;
         private boolean isFontInitialized;
+        private long reloadGeneration;
 
         public Client() {
             super(ExtraCodecs.JSON, FileToIdConverter.json(FOLDER));
@@ -701,6 +702,15 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
 
         public void resetUseFallbackFont() {
             this.isFontInitialized = false;
+            this.reloadGeneration++;
+        }
+
+        /**
+         * Bumped on every client resource reload and font reset, so open book screens
+         * can rebuild locale- and font-dependent display state.
+         */
+        public long reloadGeneration() {
+            return this.reloadGeneration;
         }
 
         public boolean useFallbackFont() {
