@@ -194,13 +194,16 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
 
     /**
      * Builds the transient display list from the visible authored pages, expanding
-     * split-enabled pages into one entry per fragment. Afterwards re-resolves the
-     * current authored page to its first fragment instead of keeping a stale index.
+     * split-enabled pages into one entry per fragment. A still-valid current fragment
+     * is kept (e.g. init after back-history restored a continuation); only a stale
+     * fragment is re-resolved to the first fragment of its authored page.
      */
     protected void rebuildDisplayPages() {
+        int currentDisplay = -1;
         int currentAuthoredPage = -1;
         if (!this.displayPages.isEmpty() && this.openPagesIndex >= 0 && this.openPagesIndex < this.displayPages.size()) {
-            currentAuthoredPage = this.displayPages.get(this.openPagesIndex).page().getPageNumber();
+            currentDisplay = this.openPagesIndex;
+            currentAuthoredPage = this.displayPages.get(currentDisplay).page().getPageNumber();
         }
 
         var font = Minecraft.getInstance() != null ? Minecraft.getInstance().font : null;
@@ -233,7 +236,13 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         }
         this.lastSplitReloadGeneration = BookDataManager.Client.get().reloadGeneration();
 
-        if (currentAuthoredPage >= 0) {
+        if (currentDisplay >= 0 && currentDisplay < this.displayPages.size()
+                && this.displayPages.get(currentDisplay).page().getPageNumber() == currentAuthoredPage) {
+            // Split is unchanged for the current fragment: keep the exact virtual page.
+            this.openPagesIndex = currentDisplay;
+        } else if (currentAuthoredPage >= 0) {
+            // Stale fragment (e.g. split changed with the locale): fall back to the
+            // first fragment of the authored page.
             this.openPagesIndex = this.getOpenPagesIndexForPage(currentAuthoredPage);
         }
         if (this.displayPages.isEmpty()) {
