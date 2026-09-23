@@ -241,12 +241,9 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
             this.recipeDisplayEntry2 = this.getRecipeDisplayEntry(serverLevel, this.recipeKey2);
         }
 
-        if (this.recipeDisplayEntry1 == null && this.recipeDisplayEntry2 != null) {
-            this.recipeDisplayEntry1 = this.recipeDisplayEntry2;
-            this.recipeDisplayEntry2 = null;
-        }
+        this.swapRecipes();
 
-        if (this.title1.isEmpty()) {
+        if (this.recipeDisplayEntry1 != null && this.title1.isEmpty()) {
             //use recipe title if we don't have a custom one
             this.title1 = new BookTextHolder((this.getRecipeOutput(level, this.recipeDisplayEntry1).getHoverName().copy())
                     .withStyle(Style.EMPTY
@@ -266,6 +263,19 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage {
 
         if (this.title1.equals(this.title2)) {
             this.title2 = BookTextHolder.EMPTY;
+        }
+    }
+
+    /**
+     * Moves the second recipe into the first slot if only the second one is set.
+     * <p>
+     * Subclasses that can define a recipe without an id (e.g. by ingredient conditions) should override this to
+     * also consider that content.
+     */
+    protected void swapRecipes() {
+        if (this.recipeDisplayEntry1 == null && this.recipeDisplayEntry2 != null) {
+            this.recipeDisplayEntry1 = this.recipeDisplayEntry2;
+            this.recipeDisplayEntry2 = null;
         }
     }
 

@@ -11,7 +11,14 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.*;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
+
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.alchemy.Potions;
 
 public class RecipeEntry extends EntryProvider {
     public static final String ID = "recipe";
@@ -83,6 +90,29 @@ public class RecipeEntry extends EntryProvider {
                 .withText(this.context().pageText())
         );
         this.pageText("A smithing recipe page with one recipe and some text.");
+
+        this.page("viewer_recipe", () -> BookViewerRecipePageModel.create()
+                .withRecipeId1("minecraft:netherite_axe_smithing")
+                .withTitle1("Test title 1")
+                .withRecipeId2("minecraft:iron_axe")
+                .withTitle2("Test title 2")
+                .withRecipe2($ -> $.withScale(0.75F).withBackground(false))
+                .withText("Test text")
+        );
+
+        this.page(
+                "viewer_recipe2",
+                () -> BookViewerRecipePageModel.create()
+                        .withRecipe1($ -> $
+                                .withBackground(false)
+                                .withInput(new ItemStackTemplate(Items.SPLASH_POTION, DataComponentPatch.builder()
+                                        .set(DataComponents.POTION_CONTENTS, new PotionContents(this.registries().lookupOrThrow(Registries.POTION).getOrThrow(Potions.STRONG_SLOWNESS.unwrapKey().get())))
+                                        .build()))
+                                .withOutput(new ItemStackTemplate(Items.LINGERING_POTION, DataComponentPatch.builder()
+                                        .set(DataComponents.POTION_CONTENTS, new PotionContents(this.registries().lookupOrThrow(Registries.POTION).getOrThrow(Potions.STRONG_SLOWNESS.unwrapKey().get())))
+                                        .build())))
+                        .withRecipeId2("minecraft:acacia_chest_boat")
+        );
 
         //test the missing recipe visualization
         this.page("smithing_missing", () -> BookSmithingRecipePageModel.create()

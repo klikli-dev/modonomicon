@@ -5,13 +5,12 @@
 package com.klikli_dev.modonomicon.client.gui.book.entry.linkhandler;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
+import com.klikli_dev.modonomicon.client.gui.book.BookFeedback;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ItemLinkRenderer;
 import com.klikli_dev.modonomicon.integration.recipeviewer.RecipeViewerRegistry;
 import com.mojang.brigadier.StringReader;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.commands.arguments.item.ItemInput;
 import net.minecraft.commands.arguments.item.ItemParser;
 import net.minecraft.network.chat.ClickEvent;
@@ -64,8 +63,7 @@ public class ItemLinkHandler extends LinkHandler {
         //  the viewer (e.g. pressing ESC) returns to the book exactly where the player left off.
         //- If the viewer finds no recipe/usage for the stack it simply does not open, leaving the book open
         //  instead of closing all GUIs.
-        BookGuiManager.get().keepMousePosition(() ->
-                RecipeViewerRegistry.show(finalItemStack, Minecraft.getInstance().hasShiftDown()));
+        BookFeedback.showLookup(finalItemStack, Minecraft.getInstance().hasShiftDown());
 
         return ClickResult.SUCCESS;
     }

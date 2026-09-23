@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.client.gui.book;
 
+import com.klikli_dev.modonomicon.client.debug.BookDebugOverlay;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
@@ -81,6 +82,11 @@ public abstract class BookPaginatedScreen extends Screen implements BookScreenWi
 
     @Override
     public boolean keyPressed(KeyEvent event) {
+        //toggle the book debug overlay, only active if enabled in the client config
+        if (event.key() == BookDebugOverlay.TOGGLE_KEY && BookDebugOverlay.toggle()) {
+            return true;
+        }
+
         if (event.key() == InputConstants.KEY_BACKSPACE) {
             this.back();
             return true;

@@ -29,6 +29,8 @@ public class ClientConfig {
     public static PropertyMirror<Boolean> showResearchToasts = PropertyMirror.create(ConfigTypes.BOOLEAN);
     public static PropertyMirror<List<String>> fontFallbackLocales = PropertyMirror.create(ConfigTypes.makeList(ConfigTypes.STRING));
     public static PropertyMirror<Boolean> pauseGameWhenOpen = PropertyMirror.create(ConfigTypes.BOOLEAN);
+    public static PropertyMirror<Boolean> showRecipeLookupHints = PropertyMirror.create(ConfigTypes.BOOLEAN);
+    public static PropertyMirror<Boolean> debugOverlay = PropertyMirror.create(ConfigTypes.BOOLEAN);
 
     private static final ConfigTree CONFIG = ConfigTree.builder()
             .fork("qol")
@@ -49,6 +51,16 @@ public class ClientConfig {
             .beginValue("pauseGameWhenOpen", ConfigTypes.BOOLEAN, true)
             .withComment("If true, the game will pause when a Modonomicon book is open (singleplayer only).")
             .finishValue(pauseGameWhenOpen::mirror)
+            .beginValue("showRecipeLookupHints", ConfigTypes.BOOLEAN, false)
+            .withComment("Show the recipe viewer hints in item tooltips (click to show recipe, shift-click to show usage).")
+            .finishValue(showRecipeLookupHints::mirror)
+            .finishBranch()
+            .fork("debug")
+            .withComment("Debug Settings")
+            .beginValue("debugOverlay", ConfigTypes.BOOLEAN, false)
+            .withComment("Enable the book debug overlay. While a book is open, press F6 to toggle it. " +
+                    "It draws color coded outlines of the page, its content area and its text area, to help with layout offsets.")
+            .finishValue(debugOverlay::mirror)
             .finishBranch()
             .build();
 

@@ -86,6 +86,12 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
                 || this.clickPage(this.rightPageRenderer, event, isDoubleClick);
     }
 
+    @Override
+    protected boolean mouseClickedPageIngredient(MouseButtonEvent event, boolean isDoubleClick) {
+        return this.clickIngredientPage(this.leftPageRenderer, event)
+                || this.clickIngredientPage(this.rightPageRenderer, event);
+    }
+
     protected void beginDisplayPages() {
         //allow pages to clean up
         if (this.leftPageRenderer != null) {
