@@ -100,6 +100,18 @@ public class BookModel {
     protected boolean showRecentlyUnlocked = true;
 
     /**
+     * If true, overflowing text is scaled down to fit by default.
+     * Can be overridden per page with {@code auto_scale}. Splitting takes precedence when enabled.
+     */
+    protected boolean defaultAutoScale = true;
+
+    /**
+     * If true, overflowing text is split into continuation fragments by default.
+     * Can be overridden per page with {@code allow_page_split}.
+     */
+    protected boolean defaultAllowPageSplit = false;
+
+    /**
      * If true, this model will not generate a book.json file, but the categories and entries will still be generated.
      */
     protected boolean dontGenerateJson = false;
@@ -224,6 +236,10 @@ public class BookModel {
         json.addProperty("allow_open_book_with_invalid_links", this.allowOpenBooksWithInvalidLinks);
 
         json.addProperty("show_recently_unlocked", this.showRecentlyUnlocked);
+
+        json.addProperty("default_auto_scale", this.defaultAutoScale);
+
+        json.addProperty("default_allow_page_split", this.defaultAllowPageSplit);
 
         return json;
     }
@@ -369,6 +385,24 @@ public class BookModel {
      */
     public BookModel withShowRecentlyUnlocked(boolean value) {
         this.showRecentlyUnlocked = value;
+        return this;
+    }
+
+    /**
+     * Sets the book-level default for scaling overflowing text down to fit.
+     * Can be overridden per page. Splitting takes precedence when enabled.
+     */
+    public BookModel withDefaultAutoScale(boolean value) {
+        this.defaultAutoScale = value;
+        return this;
+    }
+
+    /**
+     * Sets the book-level default for splitting overflowing text into continuation fragments.
+     * Can be overridden per page.
+     */
+    public BookModel withDefaultAllowPageSplit(boolean value) {
+        this.defaultAllowPageSplit = value;
         return this;
     }
 

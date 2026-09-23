@@ -1,0 +1,13 @@
+{
+  "type": "modonomicon:text",
+  "allow_page_split": false,
+  "auto_scale": false,
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "unscaled",
+  "show_title_separator": true,
+  "sort_number": 1,
+  "text": "book.modonomicon.demo.features.page_splitting.unscaled.text",
+  "title": "book.modonomicon.demo.features.page_splitting.unscaled.title"
+}

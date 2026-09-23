@@ -25,37 +25,61 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 
-public class BookTextPage extends BookPage {
+import java.util.Optional;
+
+public class BookTextPage extends BookPage implements BookPageWithSplit {
     public static final Identifier ID = Modonomicon.loc("text");
     public static final MapCodec<BookTextPage> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             BookTextHolder.CODEC.fieldOf("title").forGetter(BookTextPage::getTitle),
             BookTextHolder.CODEC.fieldOf("text").forGetter(BookTextPage::getText),
             Codec.BOOL.optionalFieldOf("use_markdown_in_title", false).forGetter(BookTextPage::useMarkdownInTitle),
             Codec.BOOL.optionalFieldOf("show_title_separator", false).forGetter(BookTextPage::showTitleSeparator),
+            Codec.BOOL.optionalFieldOf("auto_scale").forGetter(page -> Optional.ofNullable(page.getAutoScaleOverride())),
+            Codec.BOOL.optionalFieldOf("allow_page_split").forGetter(page -> Optional.ofNullable(page.getAllowPageSplitOverride())),
             Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
             BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition)
-    ).apply(instance, BookTextPage::new));
+    ).apply(instance, (title, text, useMarkdownInTitle, showTitleSeparator, autoScale, allowPageSplit, id, condition) -> new BookTextPage(title, text, useMarkdownInTitle, showTitleSeparator, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition)));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BookTextPage> STREAM_CODEC = StreamCodec.composite(
             BookTextHolder.STREAM_CODEC, BookTextPage::getTitle,
             BookTextHolder.STREAM_CODEC, BookTextPage::getText,
             ByteBufCodecs.BOOL, BookTextPage::useMarkdownInTitle,
             ByteBufCodecs.BOOL, BookTextPage::showTitleSeparator,
+            ByteBufCodecs.optional(ByteBufCodecs.BOOL), page -> Optional.ofNullable(page.getAutoScaleOverride()),
+            ByteBufCodecs.optional(ByteBufCodecs.BOOL), page -> Optional.ofNullable(page.getAllowPageSplitOverride()),
             ByteBufCodecs.STRING_UTF8, BookPage::getId,
             BookCondition.STREAM_CODEC, BookPage::getCondition,
-            (title, text, useMarkdownInTitle, showTitleSeparator, id, condition) -> new BookTextPage(title, text, useMarkdownInTitle, showTitleSeparator, id, condition)
+            (title, text, useMarkdownInTitle, showTitleSeparator, autoScale, allowPageSplit, id, condition) -> new BookTextPage(title, text, useMarkdownInTitle, showTitleSeparator, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition)
     );
     protected BookTextHolder title;
     protected boolean useMarkdownInTitle;
     protected boolean showTitleSeparator;
     protected BookTextHolder text;
+    protected Boolean autoScale;
+    protected Boolean allowPageSplit;
 
     public BookTextPage(BookTextHolder title, BookTextHolder text, boolean useMarkdownInTitle, boolean showTitleSeparator, String id, BookCondition condition) {
+        this(title, text, useMarkdownInTitle, showTitleSeparator, null, null, id, condition);
+    }
+
+    public BookTextPage(BookTextHolder title, BookTextHolder text, boolean useMarkdownInTitle, boolean showTitleSeparator, Boolean autoScale, Boolean allowPageSplit, String id, BookCondition condition) {
         super(id, condition);
         this.title = title;
         this.text = text;
         this.useMarkdownInTitle = useMarkdownInTitle;
         this.showTitleSeparator = showTitleSeparator;
+        this.autoScale = autoScale;
+        this.allowPageSplit = allowPageSplit;
+    }
+
+    @Override
+    public Boolean getAutoScaleOverride() {
+        return this.autoScale;
+    }
+
+    @Override
+    public Boolean getAllowPageSplitOverride() {
+        return this.allowPageSplit;
     }
 
     public boolean useMarkdownInTitle() {

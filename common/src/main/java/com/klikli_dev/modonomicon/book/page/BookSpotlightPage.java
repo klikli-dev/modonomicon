@@ -32,7 +32,9 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.Level;
 
-public class BookSpotlightPage extends BookPage {
+import java.util.Optional;
+
+public class BookSpotlightPage extends BookPage implements BookPageWithSplit {
     public static final Identifier ID = Modonomicon.loc("spotlight");
     public static final Codec<Either<ItemStackTemplate, Ingredient>> ITEM_CODEC = Codec.lazyInitialized(() -> Codec.either(ItemStackTemplate.CODEC, Ingredient.CODEC));
     public static final StreamCodec<RegistryFriendlyByteBuf, Either<ItemStackTemplate, Ingredient>> ITEM_STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(ITEM_CODEC);
@@ -40,27 +42,49 @@ public class BookSpotlightPage extends BookPage {
             BookTextHolder.CODEC.fieldOf("title").forGetter(BookSpotlightPage::getTitle),
             BookTextHolder.CODEC.fieldOf("text").forGetter(BookSpotlightPage::getText),
             ITEM_CODEC.fieldOf("item").forGetter(BookSpotlightPage::getItem),
+            Codec.BOOL.optionalFieldOf("auto_scale").forGetter(page -> Optional.ofNullable(page.getAutoScaleOverride())),
+            Codec.BOOL.optionalFieldOf("allow_page_split").forGetter(page -> Optional.ofNullable(page.getAllowPageSplitOverride())),
             Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
             BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition)
-    ).apply(instance, BookSpotlightPage::new));
+    ).apply(instance, (title, text, item, autoScale, allowPageSplit, id, condition) -> new BookSpotlightPage(title, text, item, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition)));
     public static final StreamCodec<RegistryFriendlyByteBuf, BookSpotlightPage> STREAM_CODEC = StreamCodec.composite(
             BookTextHolder.STREAM_CODEC, BookSpotlightPage::getTitle,
             BookTextHolder.STREAM_CODEC, BookSpotlightPage::getText,
             ITEM_STREAM_CODEC, BookSpotlightPage::getItem,
+            ByteBufCodecs.optional(ByteBufCodecs.BOOL), page -> Optional.ofNullable(page.getAutoScaleOverride()),
+            ByteBufCodecs.optional(ByteBufCodecs.BOOL), page -> Optional.ofNullable(page.getAllowPageSplitOverride()),
             ByteBufCodecs.STRING_UTF8, BookPage::getId,
             BookCondition.STREAM_CODEC, BookPage::getCondition,
-            BookSpotlightPage::new
+            (title, text, item, autoScale, allowPageSplit, id, condition) -> new BookSpotlightPage(title, text, item, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition)
     );
     protected BookTextHolder title;
     protected BookTextHolder text;
     protected Either<ItemStackTemplate, Ingredient> item;
+    protected Boolean autoScale;
+    protected Boolean allowPageSplit;
     private ItemStack cachedItemStack;
 
     public BookSpotlightPage(BookTextHolder title, BookTextHolder text, Either<ItemStackTemplate, Ingredient> item, String id, BookCondition condition) {
+        this(title, text, item, null, null, id, condition);
+    }
+
+    public BookSpotlightPage(BookTextHolder title, BookTextHolder text, Either<ItemStackTemplate, Ingredient> item, Boolean autoScale, Boolean allowPageSplit, String id, BookCondition condition) {
         super(id, condition);
         this.title = title;
         this.text = text;
         this.item = item;
+        this.autoScale = autoScale;
+        this.allowPageSplit = allowPageSplit;
+    }
+
+    @Override
+    public Boolean getAutoScaleOverride() {
+        return this.autoScale;
+    }
+
+    @Override
+    public Boolean getAllowPageSplitOverride() {
+        return this.allowPageSplit;
     }
 
     public Either<ItemStackTemplate, Ingredient> getItem() {

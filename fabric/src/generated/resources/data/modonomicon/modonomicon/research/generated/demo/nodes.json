@@ -43,6 +43,12 @@
     ]
   },
   {
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/features_page_splitting",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/features_spotlight"
+    ]
+  },
+  {
     "id": "modonomicon:generated/demo/nodes/entry_viewed_once/formatting_advanced",
     "required_facts": [
       "modonomicon:generated/demo/facts/entry_viewed_once/formatting_basic"

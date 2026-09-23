@@ -22,13 +22,18 @@ import java.util.Optional;
 
 /**
  * Represents an address in a book, consisting of the book, category, entry and page.
- * Used to navigate to a specific page in a book and to store such a state
+ * Used to navigate to a specific page in a book and to store such a state.
+ * <p>
+ * {@code page} is always the authored page number. {@code displayPage} optionally records
+ * the transient virtual display index (split fragment) for back-history navigation.
+ * {@code -1} means unspecified, resolving to the first fragment of the authored page.
  */
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public record BookAddress(@NotNull Identifier bookId,
                           Identifier categoryId, boolean ignoreSavedCategory,
                           Identifier entryId, boolean ignoreSavedEntry,
-                          int page, boolean ignoreSavedPage
+                          int page, boolean ignoreSavedPage,
+                          int displayPage
 ) {
     public static final Codec<BookAddress> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Identifier.CODEC.fieldOf("bookId").forGetter(BookAddress::bookId),
@@ -37,7 +42,8 @@ public record BookAddress(@NotNull Identifier bookId,
             Identifier.CODEC.optionalFieldOf("entryId").forGetter((address) -> Optional.ofNullable(address.entryId)),
             Codec.BOOL.fieldOf("ignoreSavedEntry").forGetter(BookAddress::ignoreSavedEntry),
             Codec.INT.fieldOf("page").forGetter(BookAddress::page),
-            Codec.BOOL.fieldOf("ignoreSavedPage").forGetter(BookAddress::ignoreSavedPage)
+            Codec.BOOL.fieldOf("ignoreSavedPage").forGetter(BookAddress::ignoreSavedPage),
+            Codec.INT.optionalFieldOf("displayPage", -1).forGetter(BookAddress::displayPage)
     ).apply(instance, BookAddress::new));
 
     public static final StreamCodec<FriendlyByteBuf, BookAddress> STREAM_CODEC = StreamCodecs.composite(
@@ -55,15 +61,18 @@ public record BookAddress(@NotNull Identifier bookId,
             BookAddress::page,
             ByteBufCodecs.BOOL,
             BookAddress::ignoreSavedPage,
+            ByteBufCodecs.INT,
+            BookAddress::displayPage,
             BookAddress::new
     );
 
     private BookAddress(@NotNull Identifier bookId,
                         Optional<Identifier> categoryId, boolean ignoreSavedCategory,
                         Optional<Identifier> entryId, boolean ignoreSavedEntry,
-                        int page, boolean ignoreSavedPage
+                        int page, boolean ignoreSavedPage,
+                        int displayPage
     ) {
-        this(bookId, categoryId.orElse(null), ignoreSavedCategory, entryId.orElse(null), ignoreSavedEntry, page, ignoreSavedPage);
+        this(bookId, categoryId.orElse(null), ignoreSavedCategory, entryId.orElse(null), ignoreSavedEntry, page, ignoreSavedPage, displayPage);
     }
 
     public static BookAddress ignoreSaved(@NotNull BookEntry entry, int page) {
@@ -95,17 +104,48 @@ public record BookAddress(@NotNull Identifier bookId,
                                  Identifier categoryId,
                                  Identifier entryId,
                                  int page) {
-        return new BookAddress(bookId, categoryId, false, entryId, false, page, false);
+        return new BookAddress(bookId, categoryId, false, entryId, false, page, false, -1);
+    }
+
+    /**
+     * @param displayPage transient virtual display index for back-history navigation,
+     *                    {@code -1} resolves to the first fragment of the authored page.
+     */
+    public static BookAddress of(@NotNull Identifier bookId,
+                                 Identifier categoryId,
+                                 Identifier entryId,
+                                 int page,
+                                 int displayPage) {
+        return new BookAddress(bookId, categoryId, false, entryId, false, page, false, displayPage);
     }
 
     public static BookAddress ignoreSaved(@NotNull Identifier bookId,
                                           Identifier categoryId,
                                           Identifier entryId,
                                           int page) {
-        return new BookAddress(bookId, categoryId, true, entryId, true, page, true);
+        return new BookAddress(bookId, categoryId, true, entryId, true, page, true, -1);
+    }
+
+    /**
+     * @param displayPage transient virtual display index for back-history navigation,
+     *                    {@code -1} resolves to the first fragment of the authored page.
+     */
+    public static BookAddress ignoreSaved(@NotNull Identifier bookId,
+                                          Identifier categoryId,
+                                          Identifier entryId,
+                                          int page,
+                                          int displayPage) {
+        return new BookAddress(bookId, categoryId, true, entryId, true, page, true, displayPage);
     }
 
     public BookAddress withPage(int page) {
-        return new BookAddress(this.bookId, this.categoryId, this.ignoreSavedCategory, this.entryId, this.ignoreSavedEntry, page, this.ignoreSavedPage);
+        return new BookAddress(this.bookId, this.categoryId, this.ignoreSavedCategory, this.entryId, this.ignoreSavedEntry, page, this.ignoreSavedPage, this.displayPage);
+    }
+
+    /**
+     * @return true if a virtual display index was recorded (back-history navigation).
+     */
+    public boolean hasDisplayPage() {
+        return this.displayPage >= 0;
     }
 }

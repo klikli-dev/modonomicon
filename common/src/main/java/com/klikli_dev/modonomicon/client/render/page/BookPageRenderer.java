@@ -37,13 +37,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BookPageRenderer<T extends BookPage> {
-    protected static final class TextHolderBounds {
+    public static final class TextHolderBounds {
         public final int x;
         public final int y;
         public final int width;
         public final int height;
 
-        protected TextHolderBounds(int x, int y, int width, int height) {
+        public TextHolderBounds(int x, int y, int width, int height) {
             this.x = x;
             this.y = y;
             this.width = width;
@@ -106,6 +106,18 @@ public abstract class BookPageRenderer<T extends BookPage> {
         BookDataManager.Client.get().putScale(text, width, height, scale);
 
         return scale;
+    }
+
+    /**
+     * Renders pre-wrapped fragment lines at scale 1.0, using the exact coordinates given.
+     * Used for the first fragment of split pages and for text-only continuation fragments.
+     */
+    public static void renderFragmentLines(GuiGraphicsExtractor guiGraphics, Font font, List<FormattedCharSequence> lines, int x, int y, int defaultTextColor) {
+        float renderY = y;
+        for (FormattedCharSequence line : lines) {
+            TextRenderHelper.drawString(guiGraphics, font, line, x, renderY, defaultTextColor, false);
+            renderY += font.lineHeight;
+        }
     }
 
     /**
@@ -223,18 +235,33 @@ public abstract class BookPageRenderer<T extends BookPage> {
 
     /**
      * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
+     * Applies the page's split/auto-scale configuration: split pages render only the first
+     * fragment at scale 1.0, pages with auto-scaling disabled render unscaled without splitting.
      */
     public void renderBookTextHolder(GuiGraphicsExtractor guiGraphics, BookTextHolder text, int x, int y, int width, int height) {
         var bounds = this.getBookTextHolderBounds(x, y, width, height);
+        var book = this.parentScreen != null ? this.parentScreen.getBook() : null;
+        if (this.page != null && PageSplitter.isSplitEnabled(this.page) && book != null) {
+            var continuationHeight = PageSplitter.continuationBounds(book).height;
+            var fragments = PageSplitter.split(text, this.font, bounds.width, bounds.height, continuationHeight);
+            var first = fragments.isEmpty() ? List.<FormattedCharSequence>of() : fragments.get(0);
+            renderFragmentLines(guiGraphics, this.font, first, bounds.x, bounds.y, this.parentScreen.getBook().theme().palette().defaultTextColor());
+            return;
+        }
+        if (this.page != null && !PageSplitter.isAutoScaleEnabled(this.page)) {
+            var lines = PageSplitter.wrapForSplit(text, this.font, bounds.width);
+            renderFragmentLines(guiGraphics, this.font, lines, bounds.x, bounds.y, this.parentScreen.getBook().theme().palette().defaultTextColor());
+            return;
+        }
         renderBookTextHolder(guiGraphics, text, this.font, bounds.x, bounds.y, bounds.width, bounds.height, this.parentScreen.getBook().theme().palette().defaultTextColor());
     }
 
-    protected TextHolderBounds getBookTextHolderBounds(int x, int y, int width, int height) {
+    public TextHolderBounds getBookTextHolderBounds(int x, int y, int width, int height) {
         var layout = this.parentScreen.getBook().theme().layout();
         return applyTextOffset(layout.bookTextOffsetX(), layout.bookTextOffsetY(), layout.bookTextOffsetWidth(), layout.bookTextOffsetHeight(), x, y, width, height);
     }
 
-    private static TextHolderBounds applyTextOffset(int offsetX, int offsetY, int offsetWidth, int offsetHeight, int x, int y, int width, int height) {
+    public static TextHolderBounds applyTextOffset(int offsetX, int offsetY, int offsetWidth, int offsetHeight, int x, int y, int width, int height) {
         x += offsetX;
         y += offsetY;
 
@@ -423,6 +450,17 @@ public abstract class BookPageRenderer<T extends BookPage> {
 
     @Nullable
     protected Style getClickedComponentStyleAtForTextHolder(BookTextHolder text, int x, int y, int width, int height, double pMouseX, double pMouseY) {
+        var book = this.parentScreen != null ? this.parentScreen.getBook() : null;
+        if (this.page != null && PageSplitter.isSplitEnabled(this.page) && book != null) {
+            var continuationHeight = PageSplitter.continuationBounds(book).height;
+            var fragments = PageSplitter.split(text, this.font, width, height, continuationHeight);
+            var first = fragments.isEmpty() ? List.<FormattedCharSequence>of() : fragments.get(0);
+            return this.getClickedStyleAtFragmentLines(first, x, y, pMouseX, pMouseY);
+        }
+        if (this.page != null && !PageSplitter.isAutoScaleEnabled(this.page)) {
+            var lines = PageSplitter.wrapForSplit(text, this.font, width);
+            return this.getClickedStyleAtFragmentLines(lines, x, y, pMouseX, pMouseY);
+        }
         if (text.hasComponent()) {
             for (FormattedCharSequence formattedcharsequence : TextWrapper.split(text.getComponent(), width, this.font)) {
                 var style = this.findClickedStyleAtRenderedLine(formattedcharsequence, x, y, pMouseX, pMouseY);
@@ -451,6 +489,23 @@ public abstract class BookPageRenderer<T extends BookPage> {
             }
         }
 
+        return null;
+    }
+
+    /**
+     * Click/hover detection over pre-wrapped fragment lines at scale 1.0,
+     * using the exact coordinates used for rendering.
+     */
+    @Nullable
+    protected Style getClickedStyleAtFragmentLines(List<FormattedCharSequence> lines, float x, float y, double pMouseX, double pMouseY) {
+        float currentY = y;
+        for (FormattedCharSequence line : lines) {
+            var style = this.findClickedStyleAtRenderedLine(line, x, currentY, pMouseX, pMouseY);
+            if (style != null) {
+                return style;
+            }
+            currentY += this.font.lineHeight;
+        }
         return null;
     }
 }
