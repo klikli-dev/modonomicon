@@ -1,6 +1,8 @@
 {
   "allow_open_book_with_invalid_links": true,
   "creative_tab": "modonomicon:modonomicon",
+  "default_allow_page_split": false,
+  "default_auto_scale": true,
   "description": "",
   "display_mode": "node",
   "font": "modonomicon:default",

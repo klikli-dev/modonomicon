@@ -1,0 +1,12 @@
+{
+  "type": "modonomicon:text",
+  "allow_page_split": true,
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "split",
+  "show_title_separator": true,
+  "sort_number": 0,
+  "text": "book.modonomicon.demo.features.page_splitting.split.text",
+  "title": "book.modonomicon.demo.features.page_splitting.split.title"
+}

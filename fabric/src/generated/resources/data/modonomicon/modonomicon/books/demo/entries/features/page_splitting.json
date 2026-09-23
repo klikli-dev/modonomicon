@@ -1,0 +1,35 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "modonomicon:features",
+  "condition": {
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/features_page_splitting",
+    "tooltip": {
+      "translate": "tooltip.modonomicon.condition.entry_unlocked",
+      "with": [
+        {
+          "translate": "book.modonomicon.demo.features.page_splitting.name"
+        }
+      ]
+    }
+  },
+  "description": "book.modonomicon.demo.features.page_splitting.description",
+  "icon": {
+    "id": "minecraft:paper"
+  },
+  "id": "modonomicon:features/page_splitting",
+  "name": "book.modonomicon.demo.features.page_splitting.name",
+  "parents": [
+    {
+      "entry": "modonomicon:features/spotlight"
+    }
+  ],
+  "sort_number": 15,
+  "x": -2,
+  "y": 3
+}
