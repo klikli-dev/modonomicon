@@ -100,6 +100,59 @@
       "text": "book.modonomicon.demo.features.recipe.smithing_single.text"
     },
     {
+      "type": "modonomicon:viewer_recipe",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "id": "viewer_recipe",
+      "recipe2": {
+        "background": false,
+        "scale": 0.75
+      },
+      "recipe_id_1": "minecraft:netherite_axe_smithing",
+      "recipe_id_2": "minecraft:iron_axe",
+      "text": "Test text",
+      "title1": "Test title 1",
+      "title2": "Test title 2"
+    },
+    {
+      "type": "modonomicon:viewer_recipe",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "id": "viewer_recipe2",
+      "recipe1": {
+        "background": false,
+        "input": [
+          {
+            "type": "item_stack",
+            "value": {
+              "components": {
+                "minecraft:potion_contents": {
+                  "potion": "minecraft:strong_slowness"
+                }
+              },
+              "id": "minecraft:splash_potion"
+            }
+          }
+        ],
+        "output": [
+          {
+            "type": "item_stack",
+            "value": {
+              "components": {
+                "minecraft:potion_contents": {
+                  "potion": "minecraft:strong_slowness"
+                }
+              },
+              "id": "minecraft:lingering_potion"
+            }
+          }
+        ]
+      },
+      "recipe_id_2": "minecraft:acacia_chest_boat"
+    },
+    {
       "type": "modonomicon:smithing_recipe",
       "condition": {
         "type": "modonomicon:none"

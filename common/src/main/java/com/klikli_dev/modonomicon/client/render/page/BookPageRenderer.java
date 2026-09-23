@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.RenderedBookTextHolder;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
+import com.klikli_dev.modonomicon.client.debug.BookDebugOverlay;
 import com.klikli_dev.modonomicon.client.gui.TextWrapper;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
@@ -194,6 +195,18 @@ public abstract class BookPageRenderer<T extends BookPage> {
     }
 
     /**
+     * Called before the screen handles the click, e.g. before generic right-click navigation. This allows the page
+     * to consume clicks on non-item ingredients (such as fluids in a recipe viewer preview), which the screen's
+     * item stack handling does not cover.
+     *
+     * @param event localized to page x (mouseX - bookLeft - page.left) and y (mouseY - bookTop - page.top)
+     * @return true if the click was handled
+     */
+    public boolean mouseClickedIngredient(MouseButtonEvent event) {
+        return false;
+    }
+
+    /**
      * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
      *
      * @deprecated use {@link #renderBookTextHolder(GuiGraphicsExtractor, BookTextHolder, Font, int, int, int, int)} instead and provide the desired height.
@@ -286,6 +299,34 @@ public abstract class BookPageRenderer<T extends BookPage> {
     }
 
     public abstract void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float ticks);
+
+    /**
+     * Renders debug outlines for this page, if the debug overlay is enabled.
+     * <p>
+     * The default implementation visualizes the page bounds, the content area (everything above the text) and the
+     * text area (including the configured text offsets). Override to add page specific regions.
+     *
+     * @param mouseX localized to page x (mouseX - bookLeft - page.left)
+     * @param mouseY localized to page y (mouseY - bookTop - page.top)
+     */
+    public void renderDebugOverlay(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        //page bounds
+        BookDebugOverlay.renderRegion(guiGraphics, 0, 0, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT,
+                BookDebugOverlay.PAGE_FILL, BookDebugOverlay.PAGE_OUTLINE);
+
+        if (this instanceof PageWithTextRenderer textRenderer) {
+            int textY = textRenderer.getTextY();
+
+            //content area: everything above the text
+            BookDebugOverlay.renderRegion(guiGraphics, 0, 0, BookEntryScreen.PAGE_WIDTH, textY,
+                    BookDebugOverlay.CONTENT_FILL, BookDebugOverlay.CONTENT_OUTLINE);
+
+            //text area: the bounds the text holder is rendered into, after applying the theme text offsets
+            var bounds = this.getBookTextHolderBounds(0, textY, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - textY);
+            BookDebugOverlay.renderRegion(guiGraphics, bounds.x, bounds.y, bounds.width, bounds.height,
+                    BookDebugOverlay.TEXT_FILL, BookDebugOverlay.TEXT_OUTLINE);
+        }
+    }
 
     public void drawCenteredStringNoShadow(GuiGraphicsExtractor guiGraphics, FormattedCharSequence s, int x, int y, int color, float scale) {
         TextRenderHelper.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);

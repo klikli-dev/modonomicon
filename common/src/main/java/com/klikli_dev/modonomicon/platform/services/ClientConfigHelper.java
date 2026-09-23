@@ -18,4 +18,8 @@ public interface ClientConfigHelper {
     boolean shouldShowResearchToasts();
 
     boolean pauseGameWhenOpen();
+
+    boolean debugOverlay();
+
+    boolean showRecipeLookupHints();
 }

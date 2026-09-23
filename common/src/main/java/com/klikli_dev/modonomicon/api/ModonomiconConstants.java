@@ -78,7 +78,6 @@ public class ModonomiconConstants {
             public static final String HOVER_BOOK_PAGE_LINK_LOCKED_INFO_HINT = PREFIX + "hover.book_page_link_locked_info.hint";
             public static final String HOVER_HTTP_LINK = PREFIX + "hover.http_link";
             public static final String HOVER_ITEM_LINK_INFO = PREFIX + "hover.item_link_info";
-            public static final String HOVER_ITEM_LINK_INFO_LINE2 = PREFIX + "hover.item_link_info_line2";
             public static final String HOVER_ITEM_LINK_INFO_NO_RECIPE_VIEWER = PREFIX + "hover.item_link_info.no_recipe_viewer";
             public static final String HOVER_COMMAND_LINK = PREFIX + "hover.command_link";
             public static final String HOVER_COMMAND_LINK_UNAVAILABLE = PREFIX + "hover.command_link.unavailable";
@@ -112,6 +111,8 @@ public class ModonomiconConstants {
             public static final String REMOVE_BOOKMARK = PREFIX + "remove_bookmark";
 
             public static final String RECIPE_PAGE_RECIPE_MISSING = PREFIX + "recipe_page.recipe_missing";
+            public static final String RECIPE_PAGE_NO_RECIPE_VIEWER = PREFIX + "recipe_page.no_recipe_viewer";
+            public static final String RECIPE_LOOKUP_NO_RESULT = PREFIX + "recipe_lookup.no_result";
         }
 
         public static class Multiblock {
