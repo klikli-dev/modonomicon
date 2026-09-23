@@ -100,6 +100,10 @@ public class FeaturesCategory extends CategoryProvider {
         var customIconEntry = this.add(new CustomIconEntry(this).generate())
                 .withParent(imageEntry);
         this.layout().entry(customIconEntry).below(imageEntry, 2);
+
+        var pageSplittingEntry = this.add(new PageSplittingEntry(this).generate())
+                .withParent(spotlightEntry);
+        this.layout().entry(pageSplittingEntry).rightOf(componentIconEntry, 6);
     }
 
     @Override

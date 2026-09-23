@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.BackButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
+import com.klikli_dev.modonomicon.client.render.page.BookSplitContinuationRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.Font;
@@ -26,7 +27,7 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
 
     public static final int SINGLE_PAGE_BOOK_BACKGROUND_WIDTH = 145;
     public static final int SINGLE_PAGE_BOOK_BACKGROUND_HEIGHT = 178;
-    private BookPage page;
+    private DisplayPage displayPage;
     private BookPageRenderer<?> pageRenderer;
 
     public BookEntrySinglePageScreen(BookParentScreen parentScreen, BookContentEntry entry) {
@@ -61,17 +62,26 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
 
     @Override
     protected int getOpenPagesIndexForPage(int pageIndex) {
-        return pageIndex; //for single page screens the index is equivalent to the page number
+        for (var i = 0; i < this.displayPages.size(); i++) {
+            var display = this.displayPages.get(i);
+            if (!display.isContinuation() && display.page().getPageNumber() == pageIndex) {
+                return i;
+            }
+        }
+        return pageIndex;
     }
 
     @Override
     protected int getPageForOpenPagesIndex(int openPagesIndex) {
+        if (!this.displayPages.isEmpty() && openPagesIndex >= 0 && openPagesIndex < this.displayPages.size()) {
+            return this.displayPages.get(openPagesIndex).page().getPageNumber();
+        }
         return openPagesIndex;
     }
 
     @Override
     public boolean canSeeArrowButton(boolean left) {
-        return left ? this.openPagesIndex > 0 : (this.openPagesIndex + 1) < this.unlockedPages.size();
+        return left ? this.openPagesIndex > 0 : (this.openPagesIndex + 1) < this.displayPages.size();
     }
 
     @Override
@@ -115,11 +125,15 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
         //get new pages
         int pageIndex = this.openPagesIndex;
 
-        this.page = pageIndex < this.unlockedPages.size() ? this.unlockedPages.get(pageIndex) : null;
+        this.displayPage = pageIndex < this.displayPages.size() ? this.displayPages.get(pageIndex) : null;
 
         //allow pages to prepare for being displayed
-        if (this.page != null) {
-            this.pageRenderer = PageRendererRegistry.getPageRenderer(this.page.getType()).create(this.page);
+        if (this.displayPage != null) {
+            if (this.displayPage.isContinuation()) {
+                this.pageRenderer = new BookSplitContinuationRenderer(this.displayPage.page(), this.displayPage.fragmentLines());
+            } else {
+                this.pageRenderer = PageRendererRegistry.getPageRenderer(this.displayPage.page().getType()).create(this.displayPage.page());
+            }
             this.pageRenderer.onBeginDisplayPage(this, SINGLE_PAGE_X, TOP_PADDING);
         } else {
             this.pageRenderer = null;

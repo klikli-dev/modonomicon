@@ -53,9 +53,10 @@ public class BookLinkHandler extends LinkHandler {
                 page = 0;
             }
 
-            //we push the page we are currently on to the history
+            //we push the page we are currently on to the history, including the virtual
+            //display fragment so back navigation can restore it when the split is unchanged
             var currentPageNumber = this.screen().getCurrentPageNumber();
-            BookGuiManager.get().pushHistory(this.book().getId(), this.category().getId(), this.entry().getId(), currentPageNumber);
+            BookGuiManager.get().pushHistory(this.book().getId(), this.category().getId(), this.entry().getId(), currentPageNumber, this.screen().getCurrentDisplayPageIndex());
             BookGuiManager.get().openEntry(link.bookId, link.entryId, page);
         } else if (link.categoryId != null) {
             BookGuiManager.get().openEntry(link.bookId, link.categoryId, null, 0);

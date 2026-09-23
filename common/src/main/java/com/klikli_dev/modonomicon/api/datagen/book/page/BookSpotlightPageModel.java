@@ -25,6 +25,14 @@ public class BookSpotlightPageModel extends BookPageModel<BookSpotlightPageModel
     protected Either<ItemStackTemplate, Ingredient> item;
     protected BookTextHolderModel title = new BookTextHolderModel("");
     protected BookTextHolderModel text = new BookTextHolderModel("");
+    /**
+     * Nullable override for auto-scaling. Null inherits the book default.
+     */
+    protected Boolean autoScale = null;
+    /**
+     * Nullable override for page splitting. Null inherits the book default.
+     */
+    protected Boolean allowPageSplit = null;
 
     protected BookSpotlightPageModel() {
         super(BookSpotlightPage.ID);
@@ -48,7 +56,7 @@ public class BookSpotlightPageModel extends BookPageModel<BookSpotlightPageModel
 
     @Override
     public BookPage toBookPage(HolderLookup.Provider provider) {
-        return new BookSpotlightPage(this.title.toBookTextHolder(), this.text.toBookTextHolder(), this.item, this.id, this.condition(provider));
+        return new BookSpotlightPage(this.title.toBookTextHolder(), this.text.toBookTextHolder(), this.item, this.autoScale, this.allowPageSplit, this.id, this.condition(provider));
     }
 
     public BookSpotlightPageModel withTitle(String title) {
@@ -88,6 +96,23 @@ public class BookSpotlightPageModel extends BookPageModel<BookSpotlightPageModel
 
     public BookSpotlightPageModel withText(Component text) {
         this.text = new BookTextHolderModel(text);
+        return this;
+    }
+
+    /**
+     * Nullable override for auto-scaling. Null inherits the book default.
+     * Splitting takes precedence when enabled.
+     */
+    public BookSpotlightPageModel withAutoScale(Boolean autoScale) {
+        this.autoScale = autoScale;
+        return this;
+    }
+
+    /**
+     * Nullable override for page splitting. Null inherits the book default.
+     */
+    public BookSpotlightPageModel withAllowPageSplit(Boolean allowPageSplit) {
+        this.allowPageSplit = allowPageSplit;
         return this;
     }
 }

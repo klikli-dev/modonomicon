@@ -39,6 +39,15 @@ public class BookImagePageModel extends BookPageModel<BookImagePageModel> {
      */
     protected ImageScaleMode imageScaleMode = ImageScaleMode.SCALE_TO_FIT;
 
+    /**
+     * Nullable override for auto-scaling. Null inherits the book default.
+     */
+    protected Boolean autoScale = null;
+    /**
+     * Nullable override for page splitting. Null inherits the book default.
+     */
+    protected Boolean allowPageSplit = null;
+
     protected BookImagePageModel() {
         super(BookImagePage.ID);
     }
@@ -65,7 +74,7 @@ public class BookImagePageModel extends BookPageModel<BookImagePageModel> {
 
     @Override
     public BookPage toBookPage(HolderLookup.Provider provider) {
-        return new BookImagePage(this.title.toBookTextHolder(), this.text.toBookTextHolder(), this.images, this.border, this.useLegacyRendering, this.displayMode, this.imageScaleMode, this.id, this.condition(provider));
+        return new BookImagePage(this.title.toBookTextHolder(), this.text.toBookTextHolder(), this.images, this.border, this.useLegacyRendering, this.displayMode, this.imageScaleMode, this.autoScale, this.allowPageSplit, this.id, this.condition(provider));
     }
 
     public BookImagePageModel withTitle(String title) {
@@ -125,6 +134,23 @@ public class BookImagePageModel extends BookPageModel<BookImagePageModel> {
 
     public BookImagePageModel withText(Component text) {
         this.text = new BookTextHolderModel(text);
+        return this;
+    }
+
+    /**
+     * Nullable override for auto-scaling. Null inherits the book default.
+     * Splitting takes precedence when enabled.
+     */
+    public BookImagePageModel withAutoScale(Boolean autoScale) {
+        this.autoScale = autoScale;
+        return this;
+    }
+
+    /**
+     * Nullable override for page splitting. Null inherits the book default.
+     */
+    public BookImagePageModel withAllowPageSplit(Boolean allowPageSplit) {
+        this.allowPageSplit = allowPageSplit;
         return this;
     }
 

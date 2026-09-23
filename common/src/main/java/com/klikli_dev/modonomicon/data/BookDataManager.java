@@ -26,6 +26,7 @@ import com.klikli_dev.modonomicon.book.runtime.RuntimeBookContentManager;
 import com.klikli_dev.modonomicon.client.gui.TextWrapper;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.theme.BookThemeData;
+import com.klikli_dev.modonomicon.client.render.page.PageSplitter;
 import com.klikli_dev.modonomicon.networking.Message;
 import com.klikli_dev.modonomicon.networking.SyncBookDataMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
@@ -688,6 +689,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
         private final Object2FloatOpenHashMap<BookTextHolder.ScaleCacheKey> bookTextHolderScaleCache = new Object2FloatOpenHashMap<>();
         private boolean isFallbackLocale;
         private boolean isFontInitialized;
+        private long reloadGeneration;
 
         public Client() {
             super(ExtraCodecs.JSON, FileToIdConverter.json(FOLDER));
@@ -700,6 +702,15 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
 
         public void resetUseFallbackFont() {
             this.isFontInitialized = false;
+            this.reloadGeneration++;
+        }
+
+        /**
+         * Bumped on every client resource reload and font reset, so open book screens
+         * can rebuild locale- and font-dependent display state.
+         */
+        public long reloadGeneration() {
+            return this.reloadGeneration;
         }
 
         public boolean useFallbackFont() {
@@ -734,6 +745,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
             this.resetUseFallbackFont();
             this.bookTextHolderScaleCache.clear();
             TextWrapper.clearCache();
+            PageSplitter.clearCache();
         }
     }
 }

@@ -22,6 +22,14 @@ public class BookEntityPageModel extends BookPageModel<BookEntityPageModel> {
     protected float offset = 0f;
     protected boolean rotate = true;
     protected float defaultRotation = -45f;
+    /**
+     * Nullable override for auto-scaling. Null inherits the book default.
+     */
+    protected Boolean autoScale = null;
+    /**
+     * Nullable override for page splitting. Null inherits the book default.
+     */
+    protected Boolean allowPageSplit = null;
 
     protected BookEntityPageModel() {
         super(BookEntityPage.ID);
@@ -61,7 +69,7 @@ public class BookEntityPageModel extends BookPageModel<BookEntityPageModel> {
 
     @Override
     public BookPage toBookPage(HolderLookup.Provider provider) {
-        return new BookEntityPage(this.entityName.toBookTextHolder(), this.text.toBookTextHolder(), this.entityId, this.scale, this.offset, this.rotate, this.defaultRotation, this.id, this.condition(provider));
+        return new BookEntityPage(this.entityName.toBookTextHolder(), this.text.toBookTextHolder(), this.entityId, this.scale, this.offset, this.rotate, this.defaultRotation, this.autoScale, this.allowPageSplit, this.id, this.condition(provider));
     }
 
     public BookEntityPageModel withEntityName(String name) {
@@ -106,6 +114,23 @@ public class BookEntityPageModel extends BookPageModel<BookEntityPageModel> {
 
     public BookEntityPageModel withDefaultRotation(float defaultRotation) {
         this.defaultRotation = defaultRotation;
+        return this;
+    }
+
+    /**
+     * Nullable override for auto-scaling. Null inherits the book default.
+     * Splitting takes precedence when enabled.
+     */
+    public BookEntityPageModel withAutoScale(Boolean autoScale) {
+        this.autoScale = autoScale;
+        return this;
+    }
+
+    /**
+     * Nullable override for page splitting. Null inherits the book default.
+     */
+    public BookEntityPageModel withAllowPageSplit(Boolean allowPageSplit) {
+        this.allowPageSplit = allowPageSplit;
         return this;
     }
 }

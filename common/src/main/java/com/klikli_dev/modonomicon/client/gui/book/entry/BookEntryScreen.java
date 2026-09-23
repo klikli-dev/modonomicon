@@ -26,6 +26,10 @@ import com.klikli_dev.modonomicon.client.gui.book.button.BookSideButtonRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.button.RemoveBookmarkButton;
 import com.klikli_dev.modonomicon.client.gui.book.entry.linkhandler.*;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
+import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
+import com.klikli_dev.modonomicon.client.render.page.PageSplitter;
+import com.klikli_dev.modonomicon.client.render.page.PageWithTextRenderer;
+import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.fluid.FluidHolder;
 import com.klikli_dev.modonomicon.integration.recipeviewer.RecipeViewerRegistry;
 import com.klikli_dev.modonomicon.networking.AddBookmarkMessage;
@@ -46,15 +50,29 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 public abstract class BookEntryScreen extends BookPaginatedScreen implements ContentRenderingScreen {
+
+    /**
+     * A transient client-only display entry. Authored pages stay canonical in
+     * {@code BookContentEntry.pages}; split-enabled pages expand into one display entry
+     * per fragment. Continuation fragments (index &gt; 0) carry pre-wrapped text-only lines
+     * and have no public IDs or page numbers.
+     */
+    public record DisplayPage(BookPage page, int fragmentIndex, List<FormattedCharSequence> fragmentLines) {
+        public boolean isContinuation() {
+            return this.fragmentIndex > 0;
+        }
+    }
 
     public static final int TOP_PADDING = 15;
     public static final int LEFT_PAGE_X = 12;
@@ -72,6 +90,16 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
 
     protected int ticksInBook;
     protected List<BookPage> unlockedPages;
+
+    /**
+     * Transient client-only expansion of {@link #unlockedPages}: split-enabled authored pages
+     * appear once per fragment. Visual paging operates on this list.
+     */
+    protected List<DisplayPage> displayPages = List.of();
+
+    private String lastSplitLocale;
+    private Font lastSplitFont;
+    private long lastSplitReloadGeneration = -1;
 
     /**
      * The index of the leftmost unlocked page being displayed.
@@ -159,7 +187,114 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     }
 
     public int getCurrentPageNumber() {
+        if (!this.displayPages.isEmpty() && this.openPagesIndex >= 0 && this.openPagesIndex < this.displayPages.size()) {
+            return this.displayPages.get(this.openPagesIndex).page().getPageNumber();
+        }
         return this.unlockedPages.get(this.openPagesIndex).getPageNumber();
+    }
+
+    /**
+     * Builds the transient display list from the visible authored pages, expanding
+     * split-enabled pages into one entry per fragment. A still-valid current fragment
+     * is kept (e.g. init after back-history restored a continuation); only a stale
+     * fragment is re-resolved to the first fragment of its authored page.
+     */
+    protected void rebuildDisplayPages() {
+        int currentDisplay = -1;
+        int currentAuthoredPage = -1;
+        if (!this.displayPages.isEmpty() && this.openPagesIndex >= 0 && this.openPagesIndex < this.displayPages.size()) {
+            currentDisplay = this.openPagesIndex;
+            currentAuthoredPage = this.displayPages.get(currentDisplay).page().getPageNumber();
+        }
+
+        var font = Minecraft.getInstance() != null ? Minecraft.getInstance().font : null;
+        var book = this.entry != null ? this.entry.getBook() : null;
+
+        List<DisplayPage> pages = new ArrayList<>();
+        for (var page : this.unlockedPages) {
+            var textY = font != null && book != null ? this.getSplitTextY(page) : Integer.MIN_VALUE;
+            if (textY != Integer.MIN_VALUE) {
+                var fragments = PageSplitter.splitForPage(page, book, font, textY);
+                if (fragments.size() <= 1) {
+                    pages.add(new DisplayPage(page, 0, null));
+                } else {
+                    pages.add(new DisplayPage(page, 0, null));
+                    for (int i = 1; i < fragments.size(); i++) {
+                        pages.add(new DisplayPage(page, i, fragments.get(i)));
+                    }
+                }
+            } else {
+                pages.add(new DisplayPage(page, 0, null));
+            }
+        }
+        this.displayPages = List.copyOf(pages);
+
+        if (font != null) {
+            this.lastSplitFont = font;
+        }
+        if (Minecraft.getInstance() != null && Minecraft.getInstance().getLanguageManager() != null) {
+            this.lastSplitLocale = Minecraft.getInstance().getLanguageManager().getSelected();
+        }
+        this.lastSplitReloadGeneration = BookDataManager.Client.get().reloadGeneration();
+
+        if (currentDisplay >= 0 && currentDisplay < this.displayPages.size()
+                && this.displayPages.get(currentDisplay).page().getPageNumber() == currentAuthoredPage) {
+            // Split is unchanged for the current fragment: keep the exact virtual page.
+            this.openPagesIndex = currentDisplay;
+        } else if (currentAuthoredPage >= 0) {
+            // Stale fragment (e.g. split changed with the locale): fall back to the
+            // first fragment of the authored page.
+            this.openPagesIndex = this.getOpenPagesIndexForPage(currentAuthoredPage);
+        }
+        if (this.displayPages.isEmpty()) {
+            this.openPagesIndex = 0;
+        } else {
+            this.openPagesIndex = Math.max(0, Math.min(this.openPagesIndex, this.displayPages.size() - 1));
+        }
+    }
+
+    /**
+     * @return the body text Y used for first-fragment measurement, or {@link Integer#MIN_VALUE}
+     * when the page does not support splitting.
+     */
+    private int getSplitTextY(BookPage page) {
+        if (!PageSplitter.isSplitEnabled(page)) {
+            return Integer.MIN_VALUE;
+        }
+        try {
+            var renderer = PageRendererRegistry.getPageRenderer(page.getType()).create(page);
+            if (renderer instanceof PageWithTextRenderer withText) {
+                return withText.getTextY();
+            }
+        } catch (Exception e) {
+            Modonomicon.LOG.warn("Failed to resolve text bounds for page splitting: {}", page.getId(), e);
+        }
+        return Integer.MIN_VALUE;
+    }
+
+    /**
+     * Rebuilds the display list when the locale, font, or fallback-font state changed
+     * since the last build, then refreshes the visible pages.
+     *
+     * @return true if a rebuild happened.
+     */
+    protected boolean rebuildDisplayPagesIfStale() {
+        var minecraft = Minecraft.getInstance();
+        if (minecraft == null) {
+            return false;
+        }
+        var locale = minecraft.getLanguageManager() != null ? minecraft.getLanguageManager().getSelected() : "";
+        var font = minecraft.font;
+        var reloadGeneration = BookDataManager.Client.get().reloadGeneration();
+        if (!this.displayPages.isEmpty()
+                && locale.equals(this.lastSplitLocale)
+                && font == this.lastSplitFont
+                && reloadGeneration == this.lastSplitReloadGeneration) {
+            return false;
+        }
+        this.rebuildDisplayPages();
+        this.onPageChanged();
+        return true;
     }
 
     public void setOpenPagesIndex(int openPagesIndex) {
@@ -167,11 +302,15 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     }
 
     /**
-     * Will change to the specified page, if not open already
+     * Will change to the specified authored page, if not open already.
+     * A link to a split page always opens its first display fragment.
      */
     public void goToPage(int pageIndex, boolean playSound) {
+        if (this.displayPages.isEmpty()) {
+            this.rebuildDisplayPages();
+        }
         int openPagesIndex = this.getOpenPagesIndexForPage(pageIndex);
-        if (openPagesIndex >= 0 && openPagesIndex < this.unlockedPages.size()) {
+        if (openPagesIndex >= 0 && openPagesIndex < this.displayPages.size()) {
             if (this.openPagesIndex != openPagesIndex) {
                 this.openPagesIndex = openPagesIndex;
 
@@ -182,8 +321,46 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
             }
         } else {
             Modonomicon.LOG.warn("Tried to change to page index {} corresponding with " +
-                    "openPagesIndex {} but max open pages index is {}.", pageIndex, openPagesIndex, this.unlockedPages.size());
+                    "openPagesIndex {} but max open pages index is {}.", pageIndex, openPagesIndex, this.displayPages.size());
         }
+    }
+
+    /**
+     * @return the transient virtual display index of the currently shown fragment.
+     * This is only meaningful while the display list is unchanged (same locale/font).
+     */
+    public int getCurrentDisplayPageIndex() {
+        if (this.displayPages.isEmpty()) {
+            return 0;
+        }
+        return Math.max(0, Math.min(this.openPagesIndex, this.displayPages.size() - 1));
+    }
+
+    /**
+     * Will change to the specified virtual display fragment, if it still belongs to the
+     * expected authored page. Used for back-history navigation where the split is
+     * unchanged. Otherwise falls back to the first fragment of the authored page.
+     */
+    public void goToDisplayPage(int displayIndex, int expectedAuthoredPage, boolean playSound) {
+        if (this.displayPages.isEmpty()) {
+            this.rebuildDisplayPages();
+        }
+        if (displayIndex >= 0 && displayIndex < this.displayPages.size()
+                && this.displayPages.get(displayIndex).page().getPageNumber() == expectedAuthoredPage) {
+            if (this.openPagesIndex != displayIndex) {
+                this.openPagesIndex = displayIndex;
+
+                this.onPageChanged();
+                if (playSound) {
+                    BookContentRenderer.playTurnPageSound(this.getBook());
+                }
+            }
+            return;
+        }
+
+        Modonomicon.LOG.debug("Display index {} no longer belongs to authored page {}, falling back to its first fragment.",
+                displayIndex, expectedAuthoredPage);
+        this.goToPage(expectedAuthoredPage, playSound);
     }
 
     protected Style getClickedComponentStyleAtForPage(BookPageRenderer<?> page, double pMouseX, double pMouseY) {
@@ -257,6 +434,9 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
 
     public void loadState(EntryVisualState state) {
         this.openPagesIndex = state.openPagesIndex;
+        if (!this.displayPages.isEmpty()) {
+            this.openPagesIndex = Math.max(0, Math.min(this.openPagesIndex, this.displayPages.size() - 1));
+        }
     }
 
     public void saveState(EntryVisualState state, boolean savePage) {
@@ -346,6 +526,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         super.init();
 
         this.unlockedPages = this.entry.getUnlockedPagesFor(this.minecraft.player);
+        this.rebuildDisplayPages();
         this.beginDisplayPages();
     }
 
@@ -420,6 +601,8 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         if (!this.getMinecraft().hasShiftDown()) {
             this.ticksInBook++;
         }
+
+        this.rebuildDisplayPagesIfStale();
     }
 
     @Override
