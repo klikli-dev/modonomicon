@@ -45,3 +45,42 @@ Whenever a page supports texts there are two options:
 It is highly recommend to only use DescriptionIds (= Translation Keys) whenever you supply text for a page, and provide the actual content and (markdown) formatting via corresponding entry in the language file.
 
 :::
+
+### Long texts: scaling and splitting
+
+If a page text does not fit on the page, Modonomicon shrinks it until it fits.
+If you prefer, you can instead let the overflow flow onto additional pages at full size.
+
+The following attributes are available on all pages that show a text (text, spotlight, image, entity, multiblock and recipe pages).
+Book-wide defaults for both can be set in [book.json](../structure/book).
+
+#### **auto_scale** (Boolean, _optional_)
+
+Defaults to the book-wide `default_auto_scale` setting (`true` if not set).
+If `true`, text that is too long is scaled down until it fits on the page.
+
+Set it to `false` to keep the text at full size.
+If splitting is also disabled, overflowing text is simply cut off, so only disable scaling when you are sure the text fits, or when you enable splitting.
+
+#### **allow_page_split** (Boolean, _optional_)
+
+Defaults to the book-wide `default_allow_page_split` setting (`false` if not set).
+If `true`, text that is too long flows onto additional pages instead of shrinking.
+
+Set it to `true` on pages with long, variable-length texts (such as translations):
+
+```json
+{
+  "type": "modonomicon:text",
+  "title": "my.book.my_entry.my_page.title",
+  "text": "my.book.my_entry.my_page.text",
+  "allow_page_split": true
+}
+```
+
+What to expect when splitting is enabled:
+
+- The first page keeps its title, the overflow continues on text-only pages at full size.
+- Splitting takes precedence over scaling: a page with `"allow_page_split": true` never shrinks, even if scaling is enabled.
+- Splitting is calculated separately for each language, so long translations automatically get as many continuation pages as they need. You do not need to author the extra pages yourself.
+- Links, lists and line breaks keep working across the split pages, and links to the page (by page number or page id) still point at the original page.

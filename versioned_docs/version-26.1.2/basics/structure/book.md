@@ -133,6 +133,31 @@ It opens a paginated view of unlocked entries, with unread entries first and the
 
 Set it to `false` to hide the button.
 
+### **default_auto_scale** (Boolean, _optional_)
+
+Default value: `true`.
+
+If set to `true`, page texts that are too long are scaled down until they fit on the page.
+Can be overridden per page with `auto_scale`.
+See [Long texts: scaling and splitting](../page-types/page-types#long-texts-scaling-and-splitting).
+
+### **default_allow_page_split** (Boolean, _optional_)
+
+Default value: `false`.
+
+If set to `true`, page texts that are too long flow onto additional pages at full size instead of shrinking.
+Can be overridden per page with `allow_page_split`.
+Splitting takes precedence over scaling.
+See [Long texts: scaling and splitting](../page-types/page-types#long-texts-scaling-and-splitting).
+
+To enable splitting for the whole book, set:
+
+```json
+{
+  "default_allow_page_split": true
+}
+```
+
 ## Usage Example
 
 `/data/<mod_id>/modonomicon/books/<book_id>/book.json`:
@@ -150,6 +175,8 @@ Set it to `false` to hide the button.
   "page_display_mode": "double_page",
   "turn_page_sound": "minecraft:turn_page",
   "allow_open_book_with_invalid_links": false,
-  "show_recently_unlocked": true
+  "show_recently_unlocked": true,
+  "default_auto_scale": true,
+  "default_allow_page_split": false
 }
 ```
