@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-2.8.0] - 2026-09-23
+### :sparkles: New Features
+- [`e814e11`](https://github.com/klikli-dev/modonomicon/commit/e814e1105bcf74d017db30043506ca9d8f490eb8) - add viewer recipe page rendered by recipe viewers (JEI) *(PR [#397](https://github.com/klikli-dev/modonomicon/pull/397) by [@Snownee](https://github.com/Snownee))*
+
+
 ## [release/v26.1.2-2.7.0] - 2026-09-22
 ### :sparkles: New Features
 - [`4cdd1c3`](https://github.com/klikli-dev/modonomicon/commit/4cdd1c322b72c905093bd1988bf9cefc4a9ba76c) - CJK character line breaking *(PR [#393](https://github.com/klikli-dev/modonomicon/pull/393) by [@Snownee](https://github.com/Snownee))*
@@ -2350,3 +2355,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-2.5.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.5.0...release/v26.1.2-2.5.1
 [release/v26.1.2-2.6.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.5.1...release/v26.1.2-2.6.0
 [release/v26.1.2-2.7.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.6.0...release/v26.1.2-2.7.0
+[release/v26.1.2-2.8.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.7.0...release/v26.1.2-2.8.0
