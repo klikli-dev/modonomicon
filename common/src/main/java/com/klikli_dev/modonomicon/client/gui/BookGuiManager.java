@@ -312,9 +312,14 @@ public class BookGuiManager {
 
         this.openBookEntryScreen = openBookEntryScreen;
 
-        if (address.page() != -1)
+        if (address.page() != -1) {
             openBookEntryScreen.goToPage(address.page(), false);
-        else {
+            if (address.hasDisplayPage()) {
+                //back-history navigation restores the exact virtual fragment when the split is unchanged,
+                //otherwise goToDisplayPage falls back to the first fragment of the authored page
+                openBookEntryScreen.goToDisplayPage(address.displayPage(), address.page(), false);
+            }
+        } else {
             var state = BookVisualStateManager.get().getEntryStateFor(this.player(), entry);
             if (state != null) {
                 openBookEntryScreen.loadState(state);
@@ -363,6 +368,14 @@ public class BookGuiManager {
 
     public void pushHistory(Identifier bookId, @Nullable Identifier categoryId, @Nullable Identifier entryId, int page) {
         this.history.computeIfAbsent(bookId, k -> new Stack<>()).push(BookAddress.of(bookId, categoryId, entryId, page));
+    }
+
+    /**
+     * @param displayPage transient virtual display index for back-history navigation,
+     *                    {@code -1} resolves to the first fragment of the authored page.
+     */
+    public void pushHistory(Identifier bookId, @Nullable Identifier categoryId, @Nullable Identifier entryId, int page, int displayPage) {
+        this.history.computeIfAbsent(bookId, k -> new Stack<>()).push(BookAddress.of(bookId, categoryId, entryId, page, displayPage));
     }
 
     public void pushHistory(BookAddress entry) {
@@ -416,6 +429,17 @@ public class BookGuiManager {
      * will not open those obviously).
      */
     public void openEntry(Identifier bookId, @Nullable Identifier categoryId, @Nullable Identifier entryId, int page) {
+        this.openEntry(bookId, categoryId, entryId, page, -1);
+    }
+
+    /**
+     * Opens the book at the given location, restoring a virtual display fragment recorded
+     * for back-history navigation. An invalid fragment falls back to the first fragment
+     * of the authored page.
+     *
+     * @param displayPage transient virtual display index, {@code -1} for the first fragment.
+     */
+    public void openEntry(Identifier bookId, @Nullable Identifier categoryId, @Nullable Identifier entryId, int page, int displayPage) {
         this.safeguardBooksBuilt();
 
         if (bookId == null) {
@@ -436,7 +460,7 @@ public class BookGuiManager {
                 this.closeScreenStack(this.openBookParentScreen);
 
             //then open the given address
-            this.openBook(BookAddress.ignoreSaved(bookId, categoryId, entryId, page));
+            this.openBook(BookAddress.ignoreSaved(bookId, categoryId, entryId, page, displayPage));
         });
     }
 

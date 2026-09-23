@@ -315,6 +315,44 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         }
     }
 
+    /**
+     * @return the transient virtual display index of the currently shown fragment.
+     * This is only meaningful while the display list is unchanged (same locale/font).
+     */
+    public int getCurrentDisplayPageIndex() {
+        if (this.displayPages.isEmpty()) {
+            return 0;
+        }
+        return Math.max(0, Math.min(this.openPagesIndex, this.displayPages.size() - 1));
+    }
+
+    /**
+     * Will change to the specified virtual display fragment, if it still belongs to the
+     * expected authored page. Used for back-history navigation where the split is
+     * unchanged. Otherwise falls back to the first fragment of the authored page.
+     */
+    public void goToDisplayPage(int displayIndex, int expectedAuthoredPage, boolean playSound) {
+        if (this.displayPages.isEmpty()) {
+            this.rebuildDisplayPages();
+        }
+        if (displayIndex >= 0 && displayIndex < this.displayPages.size()
+                && this.displayPages.get(displayIndex).page().getPageNumber() == expectedAuthoredPage) {
+            if (this.openPagesIndex != displayIndex) {
+                this.openPagesIndex = displayIndex;
+
+                this.onPageChanged();
+                if (playSound) {
+                    BookContentRenderer.playTurnPageSound(this.getBook());
+                }
+            }
+            return;
+        }
+
+        Modonomicon.LOG.debug("Display index {} no longer belongs to authored page {}, falling back to its first fragment.",
+                displayIndex, expectedAuthoredPage);
+        this.goToPage(expectedAuthoredPage, playSound);
+    }
+
     protected Style getClickedComponentStyleAtForPage(BookPageRenderer<?> page, double pMouseX, double pMouseY) {
         if (page != null) {
             return page.getClickedComponentStyleAt(pMouseX - this.bookLeft - page.left, pMouseY - this.bookTop - page.top);
