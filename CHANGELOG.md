@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-2.9.0] - 2026-09-23
+### :sparkles: New Features
+- [`31e0f75`](https://github.com/klikli-dev/modonomicon/commit/31e0f751ab596c97c776495524e16369200adc47) - page splitting *(PR [#398](https://github.com/klikli-dev/modonomicon/pull/398) by [@klikli-dev](https://github.com/klikli-dev))*
+  - :arrow_lower_right: *addresses issue [#389](https://github.com/klikli-dev/modonomicon/issues/389) opened by [@Snownee](https://github.com/Snownee)*
+
+### :bug: Bug Fixes
+- [`925d975`](https://github.com/klikli-dev/modonomicon/commit/925d975b2bb124d40276d0811341367c9bdcb2ce) - pass autoScale and allowPageSplit in BookViewerRecipePageModel *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.2-2.8.0] - 2026-09-23
 ### :sparkles: New Features
 - [`e814e11`](https://github.com/klikli-dev/modonomicon/commit/e814e1105bcf74d017db30043506ca9d8f490eb8) - add viewer recipe page rendered by recipe viewers (JEI) *(PR [#397](https://github.com/klikli-dev/modonomicon/pull/397) by [@Snownee](https://github.com/Snownee))*
@@ -2356,3 +2365,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-2.6.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.5.1...release/v26.1.2-2.6.0
 [release/v26.1.2-2.7.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.6.0...release/v26.1.2-2.7.0
 [release/v26.1.2-2.8.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.7.0...release/v26.1.2-2.8.0
+[release/v26.1.2-2.9.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.8.0...release/v26.1.2-2.9.0
