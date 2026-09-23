@@ -34,32 +34,47 @@ public class PageSplittingEntry extends EntryProvider {
         );
         this.pageTitle("Splitting Enabled");
         this.pageText("""
-                This page opts into splitting, so long text flows onto \\
-                continuation fragments at full scale instead of shrinking. \\
+                This page opts into splitting, so long text flows onto
+                continuation fragments at full scale instead of shrinking.
+                The text below is deliberately long: once it overflows the
+                first fragment, the remainder renders as text-only
+                continuations with no title or separator.
 
-                The first fragment keeps the title and this separator text, \\
-                while overflow renders as text-only continuations. \\
+                Splitting is recalculated for the active locale and font,
+                and links keep working everywhere: {0}
 
-                - Lists keep their prefixes across fragments. \\
-                - Explicit newlines are preserved. \\
-                - Links keep working everywhere: {0} \\
+                - Bulleted lists keep their prefixes across fragments.
+                - Wrapped list lines stay indented under their item.
+                - Numbered lists behave the same, as shown below.
 
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, \\
-                sed do eiusmod tempor incididunt ut labore et dolore \\
-                magna aliqua. Ut enim ad minim veniam, quis nostrud \\
-                exercitation ullamco laboris nisi ut aliquip ex ea \\
-                commodo consequat. Duis aute irure dolor in \\
-                reprehenderit in voluptate velit esse cillum dolore \\
-                eu fugiat nulla pariatur. Excepteur sint occaecat \\
-                cupidatat non proident, sunt in culpa qui officia \\
-                deserunt mollit anim id est laborum. \\
+                1. Read the title on the first fragment, then turn the page
+                to find this list continuing without any repeated header.
+                2. Each step keeps its number, even when it wraps onto extra
+                rendered lines or lands on a continuation fragment.
+                3. Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                sed do eiusmod tempor incididunt ut labore et dolore.
+                4. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                laboris nisi ut aliquip ex ea commodo consequat.
+                5. Duis aute irure dolor in reprehenderit in voluptate velit
+                esse cillum dolore eu fugiat nulla pariatur.
+                6. Excepteur sint occaecat cupidatat non proident, sunt in
+                culpa qui officia deserunt mollit anim id est laborum.
+                7. Sed ut perspiciatis unde omnis iste natus error sit
+                voluptatem accusantium doloremque laudantium.
+                8. Nemo enim ipsam voluptatem quia voluptas sit aspernatur
+                aut odit aut fugit, sed quia consequuntur magni dolores.
+                9. Neque porro quisquam est, qui dolorem ipsum quia dolor sit
+                amet, consectetur, adipisci velit.
+                10. Ut enim ad minima veniam, quis nostrum exercitationem
+                ullam corporis suscipit laboriosam, nisi ut aliquid ex ea.
+                11. Quis autem vel eum iure reprehenderit qui in ea voluptate
+                velit esse quam nihil molestiae consequatur.
+                12. At vero eos et accusamus et iusto odio dignissimos
+                ducimus qui blanditiis praesentium voluptatum.
 
-                {1} \\
-                Sed ut perspiciatis unde omnis iste natus error sit \\
-                voluptatem accusantium doloremque laudantium, totam \\
-                rem aperiam, eaque ipsa quae ab illo inventore \\
-                veritatis et quasi architecto beatae vitae dicta \\
-                sunt explicabo.
+                {1}
+                Links on continuations navigate exactly like links on the
+                first fragment, and bookmarks still record the authored page.
                 """,
                 this.entryLink("Back to this entry", FeaturesCategory.ID, ID),
                 this.entryLink("A second link on a continuation", FeaturesCategory.ID, ID)
@@ -73,16 +88,16 @@ public class PageSplittingEntry extends EntryProvider {
         );
         this.pageTitle("Unscaled Without Split");
         this.pageText("""
-                This page disables both scaling and splitting, so it \\
-                renders at full scale without continuation fragments. \\
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, \\
-                sed do eiusmod tempor incididunt ut labore et dolore \\
-                magna aliqua. Ut enim ad minim veniam, quis nostrud \\
-                exercitation ullamco laboris nisi ut aliquip ex ea \\
-                commodo consequat. Duis aute irure dolor in \\
-                reprehenderit in voluptate velit esse cillum dolore \\
-                eu fugiat nulla pariatur. Excepteur sint occaecat \\
-                cupidatat non proident, sunt in culpa qui officia \\
+                This page disables both scaling and splitting, so it
+                renders at full scale without continuation fragments.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                sed do eiusmod tempor incididunt ut labore et dolore
+                magna aliqua. Ut enim ad minim veniam, quis nostrud
+                exercitation ullamco laboris nisi ut aliquip ex ea
+                commodo consequat. Duis aute irure dolor in
+                reprehenderit in voluptate velit esse cillum dolore
+                eu fugiat nulla pariatur. Excepteur sint occaecat
+                cupidatat non proident, sunt in culpa qui officia
                 deserunt mollit anim id est laborum.
                 """
         );
