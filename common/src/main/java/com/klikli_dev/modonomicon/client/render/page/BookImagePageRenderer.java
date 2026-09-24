@@ -107,7 +107,8 @@ public class BookImagePageRenderer extends BookPageRenderer<BookImagePage> imple
 
         var style = this.getClickedComponentStyleAt(mouseX, mouseY);
         if (style != null)
-            this.parentScreen.renderComponentHoverEffect(guiGraphics, style, mouseX, mouseY);
+            //mouseX/mouseY are page-local (pMouseX - bookLeft - page.left), tooltips need screen coordinates
+            this.parentScreen.renderComponentHoverEffect(guiGraphics, style, mouseX + this.parentScreen.getBookLeft() + this.left, mouseY + this.parentScreen.getBookTop() + this.top);
     }
 
     /**
