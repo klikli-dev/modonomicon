@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-2.9.1] - 2026-09-24
+### :bug: Bug Fixes
+- [`22e7955`](https://github.com/klikli-dev/modonomicon/commit/22e7955df97bf7339f2db5085346692fe5a8d213) - use screen coordinates for link tooltips on all page types *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.2-2.9.0] - 2026-09-23
 ### :sparkles: New Features
 - [`31e0f75`](https://github.com/klikli-dev/modonomicon/commit/31e0f751ab596c97c776495524e16369200adc47) - page splitting *(PR [#398](https://github.com/klikli-dev/modonomicon/pull/398) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2366,3 +2371,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-2.7.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.6.0...release/v26.1.2-2.7.0
 [release/v26.1.2-2.8.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.7.0...release/v26.1.2-2.8.0
 [release/v26.1.2-2.9.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.8.0...release/v26.1.2-2.9.0
+[release/v26.1.2-2.9.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.9.0...release/v26.1.2-2.9.1
