@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.1-1.120.6] - 2026-09-24
+### :bug: Bug Fixes
+- [`65f8247`](https://github.com/klikli-dev/modonomicon/commit/65f82472f59de6f67775d9b7c98b727a032e600f) - use server registry access for clientbound packets on forge *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.1-1.120.5] - 2026-09-22
 ### :bug: Bug Fixes
 - [`418e637`](https://github.com/klikli-dev/modonomicon/commit/418e63787a953d852a9b03bdc17a38d38f34d539) - use crafting y offset for smithing recipe pages *(PR [#390](https://github.com/klikli-dev/modonomicon/pull/390) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2431,3 +2436,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.1-1.120.3]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.120.2...release/v1.21.1-1.120.3
 [release/v1.21.1-1.120.4]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.120.3...release/v1.21.1-1.120.4
 [release/v1.21.1-1.120.5]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.120.4...release/v1.21.1-1.120.5
+[release/v1.21.1-1.120.6]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.120.5...release/v1.21.1-1.120.6
