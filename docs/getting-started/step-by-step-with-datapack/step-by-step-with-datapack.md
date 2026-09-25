@@ -1,5 +1,5 @@
 ---
-sidebar_position: 10
+sidebar_position: 5
 ---
 
 # Step by Step Guide for a Book via Datapack
@@ -7,14 +7,8 @@ sidebar_position: 10
 This section will guide you through a reasonably easy way to create a book _without_ datagen.
 It uses the [Demo Book](https://github.com/klikli-dev/modonomicon/blob/-/neo/src/generated/resources/data/modonomicon/modonomicon/books) modonomicon provides as a starting point. 
 
-:::tip
-
-If you run into any issues or have any questions, join our Discord: **https://dsc.gg/klikli**
-
-:::
-
 :::warning
 
-It is not recommended to manually create books. It is much more convenient and error-free to use [datagen](../step-by-step-with-datagen/). JSON is not a great format for text editing, and can be annoying to properly format text.
+See [Getting Started](../getting-started.md#manually-creating-books) for why manual book creation is not recommended.
 
 :::

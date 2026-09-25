@@ -6,7 +6,7 @@ sidebar_position: 20
 
 Each state matcher represents one block at one specific position in the multiblock, and depending on the type of matcher it may only allow one specific block, or a wide range of blocks in that position. 
 
-State matchers are defined [in the `mappings` part of the multiblock definition](../defining-multiblocks/defining-multiblocks.md#mappings).
+State matchers are defined [in the `mappings` part of the multiblock definition](../defining-multiblocks/defining-multiblocks.md#mapping).
 
 ## Common Attributes
 
@@ -14,7 +14,7 @@ All state matchers need to have the following attributes:
 
 ### **type** (State Matcher Type, _mandatory_)
 
-A ResourceLocation identifying the type of state matcher to use.   
+A Identifier identifying the type of state matcher to use.   
 Example: `modonomicon:block` 
 
 ## Attribute Types
@@ -23,7 +23,7 @@ Besides standard JSON types, state matchers support the following attributes:
 
 ### **Block** (String)
 
-  A ResourceLocation for a block, in the format `modid:block`.  
+  A Identifier for a block, in the format `modid:block`.  
   Example: `minecraft:stone` 
 
 ### **BlockState** (String)

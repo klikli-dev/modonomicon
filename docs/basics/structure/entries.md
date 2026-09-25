@@ -9,9 +9,26 @@ Entries are defined in json files placed in the `/data/<mod_id>/modonomicon/book
 
 ## Attributes
 
-### **category** (ResourceLocation, _mandatory_)
+### **type** (Identifier, _mandatory_)
 
-The ResourceLocation of the category this entry should be placed in. 
+The entry type.
+
+Builtin entry types are:
+
+- `modonomicon:content` for normal entries with `pages`
+- `modonomicon:category_link` for entries that open another category via `category_to_open`
+- `modonomicon:entry_link` for entries that open another entry via `entry_to_open`
+
+### **id** (Identifier, _mandatory_)
+
+The unique id of this entry within the book.
+
+This is the id used by links and parent references.
+For entries stored in `entries/<category_id>/`, this is typically the full path including the category folder, for example `yourmod:features/my_entry`.
+
+### **category** (Identifier, _mandatory_)
+
+The Identifier of the category this entry should be placed in. 
 
 :::tip
 
@@ -27,14 +44,14 @@ The entry name, will be shown in **bold** when hovering over the Entry. Will not
 
 The entry description, will be shown below the name when hovering over the Entry. Will not parse markdown.
 
-### **icon** (ResourceLocation, _mandatory_)
+### **icon** (Identifier, _mandatory_)
 
-**Either** an item/block ResourceLocation that should be used as icon. E.g.:  `minecraft:nether_star` or `minecraft:chest`.  
-**Or** the ResourceLocation to a texture. The texture must be 16x16 pixels. E.g.:  `modonomicon:textures/gui/some_random_icon.png`. 
+**Either** an item/block Identifier that should be used as icon. E.g.:  `minecraft:nether_star` or `minecraft:chest`.  
+**Or** the Identifier to a texture. The texture must be 16x16 pixels. E.g.:  `modonomicon:textures/gui/some_random_icon.png`. 
 
 :::tip
 
-To use a texture make sure the ResourceLocation includes the file endinge `.png` as seen in the example above.
+To use a texture make sure the Identifier includes the file ending `.png` as seen in the example above.
 
 ::: 
 
@@ -50,7 +67,7 @@ The y coordinate (vertical) of the entry in the category.
 Defaults to `-1`.
 
 If the category of this entry is in "index" mode, then the sort number will be used to order the entries (instead of using x/y to place the entry on the 2d node grid).   
-When using datagen and no sort nubmer is provided, the CategorProvider will automatically assign a sort number based on the order the entries are added when using `.add()`.
+When using datagen and no sort number is provided, the CategorProvider will automatically assign a sort number based on the order the entries are added when using `.add()`.
 
 ### **hide_while_locked** (Boolean, _optional_)
 
@@ -91,11 +108,40 @@ Default value:
 
 #### Attributes
 
-- `sprite` (ResourceLocation, mandatory): The sprite to use for the entry background.
+- `sprite` (Identifier, mandatory): The sprite to use for the entry background.
 - `width` (Integer, optional): The background width. If omitted, defaults to `-1`.
 - `height` (Integer, optional): The background height. If omitted, defaults to `-1`.
 
-As a shorthand, `background` can also be a single ResourceLocation string instead of an object. In that case it is treated as the `sprite` value and `width` / `height` default to `-1`.
+As a shorthand, `background` can also be a single Identifier string instead of an object. In that case it is treated as the `sprite` value and `width` / `height` default to `-1`.
+
+#### Default datagen entry backgrounds
+
+When generating entries in code, [`BookEntryModel#withEntryBackground(...)`](https://github.com/klikli-dev/modonomicon/blob/main/common/src/main/java/com/klikli_dev/modonomicon/api/datagen/book/BookEntryModel.java) accepts any `GuiSprite`, but the default theme also exposes convenience constants in `EntryBackground` for the built-in node entry backgrounds:
+
+- `EntryBackground.SQUARE_GOLD`
+- `EntryBackground.SQUARE_GRAY`
+- `EntryBackground.SQUARE_PURPLE`
+- `EntryBackground.STAR_GOLD`
+- `EntryBackground.STAR_GRAY`
+- `EntryBackground.STAR_PURPLE`
+- `EntryBackground.CIRCLE_GOLD`
+- `EntryBackground.CIRCLE_GRAY`
+- `EntryBackground.CIRCLE_PURPLE`
+- `EntryBackground.HEXAGON_GOLD`
+- `EntryBackground.HEXAGON_GRAY`
+- `EntryBackground.HEXAGON_PURPLE`
+
+Example:
+
+```java
+BookEntryModel.create(id("my_entry"), "example.book.my_entry")
+    .withCategory(category)
+    .withIcon(Items.BOOK)
+    .withLocation(0, 0)
+    .withEntryBackground(EntryBackground.HEXAGON_PURPLE);
+```
+
+`EntryBackground.DEFAULT` still points to `EntryBackground.SQUARE_GOLD`.
 
 ### **condition** (Condition, _optional_)
 
@@ -105,18 +151,59 @@ See **[Unlock Conditions](../unlock-conditions)** for details.
 ### **parents** (Parent[], _optional_)
 
 Entry Parents are JSON Objects that define Entries this Entry should be connected to. See [Parents](#parents) for details.
-A parent connection does not imply an unlock condition or any logical dependency, by default it is just a visual connection, however it can be used to automatically define unlock conditions. See `auto_add_read_conditions` in [Book.json](../structure/book#attributes).
-
-<!-- TODO: link to the book setting that creates read connections -->
+A parent connection does not imply an unlock condition or any logical dependency, by default it is just a visual connection. When using datagen, `BookModel.withGenerateEntryHierarchyResearch(true)` automatically generates research nodes and hooks for parent→child entry progression.
 
 ### **pages** (Page[], _optional_)
 
-Pages are JSON Objects that define the actual book content. See [Page Types](../page-types/page-types.md) for the available types of pages.
+Pages are JSON Objects that define the actual book content.
+This is used by `modonomicon:content` entries.
+See [Page Types](../page-types/page-types.md) for the available types of pages.
 
-### **category_to_open** (ResourceLocation, _optional_)
+#### Pages as Files
+
+By default, pages are generated as separate JSON files instead of being inline in the entry JSON. This makes it easier to manage large entries with many pages.
+
+**File structure:**
+
+The entry JSON lives alongside a `pages/` subdirectory that shares the entry's name:
+```
+data/<mod_id>/modonomicon/books/<book_id>/entries/
+  <category_id>/
+    <entry_name>.json          ← entry definition (no inline pages)
+    <entry_name>/
+      pages/
+        <page_id>.json         ← individual page files
+```
+
+For example, the entry `data/modonomicon/modonomicon/books/demo/entries/features/custom_icon.json` 
+has its pages in `data/modonomicon/modonomicon/books/demo/entries/features/custom_icon/pages/`.
+
+Each page file contains a single page JSON object:
+```json
+{
+  "id": "intro",
+  "type": "modonomicon:text",
+  "title": "book.modonomicon.demo.features.custom_icon.intro.title",
+  "text": "book.modonomicon.demo.features.custom_icon.intro.text"
+}
+```
+
+The `id` attribute is mandatory. It uniquely identifies the page within the entry and is used for page-file loading, page replacement/merging, and entry links that target a specific page.
+There is no separate page `anchor` property anymore; the `@...` part of an entry link resolves against the page `id`.
+
+The `type` attribute determines how the page renders (e.g., `modonomicon:text`, `modonomicon:spotlight`).
+
+Page files can also include an optional `sort_number` integer.
+If present, pages without a matching inline page id are inserted at that position during merge; otherwise they are appended.
+
+**Datagen:** Pages-as-files is the default behavior. Use `BookEntryModel#withGeneratePagesAsFiles(false)` to generate pages inline in the entry JSON instead.
+
+### **category_to_open** (Identifier, _optional_)
 
 The resource location to the category that should be opened when this entry is clicked. 
 If this is set, the entry will never show it's pages, but instead open the category directly.
+
+Use this on entries with `"type": "modonomicon:category_link"`.
 
 :::tip
 
@@ -124,7 +211,7 @@ This allows to create "sub-category" that does not show up in the category navig
 
 ::: 
 
-### **command_to_run_on_first_read** (ResourceLocation, _optional_)
+### **command_to_run_on_first_read** (Identifier, _optional_)
 
 The resource location to the command that should be opened when this entry is read/opened for the first time.
 See [Commands](./commands.md) on how to create the command.
@@ -135,10 +222,12 @@ This can be used to e.g. give rewards to players for reaching a certain part of 
 
 ::: 
 
-### **entry_to_open** (ResourceLocation, _optional_)
+### **entry_to_open** (Identifier, _optional_)
 
 The resource location to the entry that should be opened when this entry is clicked. This allows to place one entry in multiple categories by referring to it multiple times.
 If this is set, the entry will never show it's pages, but instead open the target entry.
+
+Use this on entries with `"type": "modonomicon:entry_link"`.
 
 ## Parents 
 
@@ -146,9 +235,9 @@ Entry Parents define which entry comes visually before this entry in the book, a
 
 ### Attributes
 
-#### **entry** (ResourceLocation, _mandatory_)
+#### **entry** (Identifier, _mandatory_)
 
-The ResourceLocation of the parent entry. This is the main attribute.
+The Identifier of the parent entry. This is the main attribute.
 
 #### **draw_arrow** (Boolean, _optional_)
 
@@ -156,7 +245,7 @@ Default value: `true`. If false, the line connecting parent and this entry will 
 
 #### **line_enabled** (Boolean, _optional_)
 
-Default value: `true`. If false, there will be no connecting line. This is useful if you want to use the parent connection to define an automatic unlock condition, but don't want to show the line. <!-- TODO: link to the book setting that creates read connections -->
+Default value: `true`. If false, there will be no connecting line. This is useful if you want to use the parent connection to define an automatic unlock condition via datagen, but don't want to show the line.
 
 #### **line_reversed** (Boolean, _optional_)
 
@@ -169,6 +258,8 @@ This does not affect the direction of the arrow.
 
 ```json 
 {
+  "type": "modonomicon:content",
+  "id": "modonomicon:test_category/multiblock",
   "name": "multiblock",
   "description": "modonomicon.test.entries.test_category.multiblock.description",
   "icon": "minecraft:chest",

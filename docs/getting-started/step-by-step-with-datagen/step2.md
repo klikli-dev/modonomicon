@@ -4,7 +4,7 @@ sidebar_position: 20
 
 # Step 2: A first look at the Demo Book
 
-##File Structure
+## File Structure
 
 First, take a minute to look at the folder structure relevant for demo book, either locally if you downloaded it in the previous step, or on [GitHub](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book).
 ```
@@ -65,15 +65,17 @@ Modpack creators can and should skip this step and move the "DemoBook.java".
 
 ::: 
 
-The data generator registration happens in three steps. 
+The data generator registration happens in four steps. 
 1. First a Language Provider Cache is created. This allows you to write texts directly in the book (sub) provider, and have them added to the language provider.
-2. Then the DemoBook is registered using the BookProvider. Note that it is handed over the language provider cache we created in the first step.
+2. Then a Research Cache is created. This allows book-generated research (entry hierarchy) to merge with authored research.
+3. Then the DemoBook is registered using the BookProvider. Note that it is handed over both the language provider cache and research cache we created in the first steps.
    1. Additionally a DemoLeaflet is registered. A leaflet is a special book with just one entry and no categories. You can remove this line in your setup, unless you want to create a leaflet.
-3. Finally, the language provider is registered, notice how it also receives the cache as parameter.
+   2. A DemoResearch sub-provider is also registered using the ResearchProvider. This handles research facts, nodes, and hooks.
+4. Finally, the language provider is registered, notice how it also receives the cache as parameter.
    1. It is important that your main mod language provider takes all contents of the cache and adds them to its output.
    2. To simplify this, make your language provider extend `AbstractModonomiconLanguageProvider`, like Modonomicon's [EnUsProvider](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/EnUsProvider.java) does. Then you can just leave your provider as-is.
-4. Modonomicon Datagen then also registers a datagen for multiblocks which you can look into if you want to generate multiblock definitions for your book.
-5. Further an ItemModelProvider is registered, which you can ignore, unless you want to add additional item models.
+5. Modonomicon Datagen then also registers a datagen for multiblocks which you can look into if you want to generate multiblock definitions for your book.
+6. Further an ItemModelProvider is registered, which you can ignore, unless you want to add additional item models.
 
 If you copied the demo book datagen classes you can just copy-paste most of the event method and let your IDE handle imports.
 
@@ -82,7 +84,7 @@ If you copied the demo book datagen classes you can just copy-paste most of the 
 You can also skip the language provider cache system. Instead:
 1. Create your e.g. neoforge language provider and let it implement `ModonomiconLanguageProvider`. 
 2. In it implement `accept(String, String)` to call `this.add(String, String)`.
-3. Create an instance of your langauge provider in the data generator registration but don't register it yet.
+3. Create an instance of your language provider in the data generator registration but don't register it yet.
 4. Create and register your book sub provider and hand over your language provider.
 5. Finally register your language provider.
 

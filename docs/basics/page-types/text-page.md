@@ -12,10 +12,7 @@ The simplest page type, displays markdown text, optionally with a title.
 
 ## Attributes
 
-### **title** (DescriptionId or Component JSON, _optional_)
-
-The page title. By default this will not parse markdown and use the default title color as defined in the `book.json`.   
-See [Book.json](../structure/book) for details.
+See [Common Attributes](./page-types.md#title--name--multiblock_name-descriptionid-or-component-json-optional) for the shared `title` attribute.
 
 ### **use_markdown_title** (Boolean, _optional_)
   
@@ -23,8 +20,7 @@ Defaults to `false`. If true the default title style will not be applied and ins
 
 ### **show_title_separator** (Boolean, _optional_)
 
-Defaults to `true`. If true a separator will be rendered below the title.
-<!-- TODO: link to custom book styling here and note the UV coordinates -->
+Defaults to `true`. If true a separator will be rendered below the title. The separator texture and UV coordinates can be customized in [theme.json](../structure/theme).
 
 ### **text** (DescriptionId or Component JSON, _optional_)
 

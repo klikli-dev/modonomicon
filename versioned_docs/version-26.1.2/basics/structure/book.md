@@ -139,7 +139,7 @@ Default value: `true`.
 
 If set to `true`, page texts that are too long are scaled down until they fit on the page.
 Can be overridden per page with `auto_scale`.
-See [Long texts: scaling and splitting](../page-types/page-types#long-texts-scaling-and-splitting).
+See [Long texts: scaling and splitting](../page-types/page-types.md#long-texts-scaling-and-splitting).
 
 ### **default_allow_page_split** (Boolean, _optional_)
 
@@ -148,7 +148,7 @@ Default value: `false`.
 If set to `true`, page texts that are too long flow onto additional pages at full size instead of shrinking.
 Can be overridden per page with `allow_page_split`.
 Splitting takes precedence over scaling.
-See [Long texts: scaling and splitting](../page-types/page-types#long-texts-scaling-and-splitting).
+See [Long texts: scaling and splitting](../page-types/page-types.md#long-texts-scaling-and-splitting).
 
 To enable splitting for the whole book, set:
 

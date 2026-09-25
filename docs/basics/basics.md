@@ -1,5 +1,14 @@
 ---
-sidebar_position: 10
+sidebar_position: 20
 ---
 
 # Basics
+
+This section covers the core building blocks of a Modonomicon book.
+
+- **[Book Structure](./structure)** — Categories, entries, pages, and commands
+- **[Page Types](./page-types)** — Text, spotlight, image, entity, recipe, multiblock, and empty pages
+- **[Formatting](./formatting)** — Markdown syntax, links, colors, and dynamic text macros
+- **[Crafting](./crafting)** — Recipe page configuration details
+- **[Research System](./research)** — Facts, values, nodes, hooks, and progression
+- **[Unlock Conditions](./unlock-conditions)** — Locking content behind conditions

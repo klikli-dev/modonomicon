@@ -6,7 +6,7 @@ sidebar_position: 20
 
 Each state matcher represents one block at one specific position in the multiblock, and depending on the type of matcher it may only allow one specific block, or a wide range of blocks in that position. 
 
-State matchers are defined [in the `mappings` part of the multiblock definition](../defining-multiblocks/defining-multiblocks.md#mappings).
+State matchers are defined [in the `mappings` part of the multiblock definition](../defining-multiblocks/defining-multiblocks.md#mapping).
 
 ## Common Attributes
 

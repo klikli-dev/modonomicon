@@ -42,7 +42,7 @@ It could look something like this:
 ## Usage Examples
 
 
-The Multiblock with the id `<modid>:sparse_test` would be placed in `resources/data/<modid>/modonomicon_multiblocks/sparse_test.json` as follows:
+The Multiblock with the id `<modid>:sparse_test` would be placed in `resources/data/<modid>/modonomicon/multiblocks/sparse_test.json` as follows:
 ```json
 {
   "type": "modonomicon:sparse",

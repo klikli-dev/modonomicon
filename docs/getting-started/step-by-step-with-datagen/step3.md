@@ -44,7 +44,11 @@ book
 - `DemoBook.java` is the main entry point for the book. It is a subclass of the type SingleBookSubProvider which sets up the book and links its categories. 
   - Categories are set up in `generateCategories()`. Just call `this.add(new <...>)` as shown in the existing file to link a category to the book.
 - `FeaturesCategory.java`, `FormattingCategory.java`, `IndexModeCategory.java` are category providers. They work the same way as the DemoBook.java, except that they set up data for categories, and allow to add entries.
-  - Entries are added in generateEntries(). Just call `this.add(new <...>)` as shown in the existing file to link an entry to the category.
+  - Entries are added in `generateEntries()`. Just call `this.add(new <...>)` as shown in the existing file to link an entry to the category.
+  - Entry placement in node view is now usually handled with `this.layout()`.
+    - For simple category-wide layouts, use `configureLayout(...)` and place entries by id, for example `layout.entry(MyEntry.ID).at(0, 0)` or `layout.entry(MyOtherEntry.ID).rightOf(MyEntry.ID, 4).below(1)`.
+    - If you prefer to place entries inline while generating them, keep the generated `BookEntryModel` and use `this.layout().entry(entryModel)...`.
+    - `FeaturesCategory.java` still contains a `generateEntryMap()` example, but only as a legacy reference.
 - `CommandEntry.java`, `ImageEntry.java`, `BasicFormattingEntry.java` (and all the other java files in the category subdirectories) are entry providers. They work the same way as the category providers, except that they set up data for entries, and allow to add pages.
   - Pages are added in `generatePages()`. 
   - Pages are a bit more complicated than simply calling `this.add()`, it is best to take a look at some of the entries to understand how they work. Very simply put, you always need a page definition that you can set with `this.page(...)`, followed by the texts you want to display on that page.
@@ -53,8 +57,10 @@ book
 
 1. Start by copying and renaming the FormattingCategory into e.g. "MyTestCategory.java" and adding a directory/package "mytestcategory".  
 2. Add a new entry (e.g. copy the "BasicFormattingEntry.java" to "/mytestcategory/MyTestEntry.java") with a few pages into that new directory.
-3. Remove the references in your MyTestCategory to the entries of FormattingCategory and instead place `this.add(new MyTestEntry().generate('l'))`.
-4. Modify the placement of the entry in the 2D string array in generateEntryMap() to place your entry where you would like it to be in the node view.
+3. Remove the references in your MyTestCategory to the entries of FormattingCategory and instead place `this.add(new MyTestEntry(this).generate())`.
+4. Place the entry in node view with one of the layout helpers:
+   - In `configureLayout(...)`, for example `layout.entry(MyTestEntry.ID).at(0, 0)`.
+   - Or inline in `generateEntries()`, for example `var myEntry = this.add(new MyTestEntry(this).generate()); this.layout().entry(myEntry).at(0, 0);`.
 
 ## Test your changes
 

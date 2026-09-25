@@ -1,17 +1,11 @@
 ---
-sidebar_position: 10
+sidebar_position: 5
 ---
 
 # Step by Step Guide for Book Datagen
 
 This page will guide you through the recommended and most convenient way to create a book.  
 It uses the [Demo Book](https://github.com/klikli-dev/modonomicon/blob/-/neo/src/generated/resources/data/modonomicon/modonomicon/books) modonomicon provides as a starting point. 
-
-:::tip
-
-If you run into any issues or have any questions, join our Discord: **https://dsc.gg/klikli**
-
-:::
 
 ## Book Creation Demo Project
 
@@ -47,7 +41,7 @@ Java programming knowledge will be helpful to get the most out of modonomicon da
 
 ## Understanding the Datagen Setup
 
-Modonomicon provides a "BookProvider", which works much like the Loot Table provider. It generates book JSON files for a given book definition (book model). Neither mod developers nor pack developers needto change or subclass the book provider. Instead, it takes "Subproviders" that define the content of the book, and which it will convert into JSON files.
+Modonomicon provides a "BookProvider", which works much like the Loot Table provider. It generates book JSON files for a given book definition (book model). Neither mod developers nor pack developers need to change or subclass the book provider. Instead, it takes "Subproviders" that define the content of the book, and which it will convert into JSON files.
 
 Modonomicon comes with "SingleBookSubProvider", which is a datagen helper class that comes with convenience methods for setting up a book.   
 The example modonomicon provides, https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/DemoBook.java, uses this class to set up the demo book. It is recommended to simply copy this file (or modify it directly).

@@ -1,9 +1,9 @@
 ---
-sidebar_position: 6
-title: Updating from 1.21.1 to 26.1.2
+sidebar_position: 10
+title: Theme and styling changes
 ---
 
-# Updating from 1.21.1 to 26.1.2
+# Theme and styling changes
 
 This update changes how book styling is defined.
 
@@ -15,12 +15,14 @@ The main change is:
 
 - `book.json` now focuses on book content and structure.
 - `theme.json` now contains book appearance, layout, sprites, and palette data.
-- Instead of the old manual texture atlases (`book_overview.png`, `book_content.png`, ...) each sprite now lives in its own file under `resources/assets/<modid>/textures/gui/sprites/modonomicon/themes/<themeid>/.../`. Minecraft then automatically assembles an atlas. This allows more flexible override of modonomicon textures and fully supports the `.mcmeta` format for e.g. texture tile, nine_slice or stretch instructions.
+- Instead of the old manual texture atlases (`book_overview.png`, `book_content.png`, ...) each sprite now lives in its own file under `resources/assets/<modid>/textures/gui/sprites/modonomicon/themes/<themeid>/.../`. Minecraft then automatically assembles an atlas. This allows more flexible override of Modonomicon textures and fully supports the `.mcmeta` format for e.g. texture tile, nine_slice or stretch instructions.
 
 See also:
 
-- [Book.json](../basics/structure/book)
-- [Theme.json](../basics/structure/theme)
+- [Book.json](../../basics/structure/book)
+- [Theme.json](../../basics/structure/theme)
+- built-in demo [`book.json`](https://github.com/klikli-dev/modonomicon/blob/HEAD/neo/src/generated/resources/data/modonomicon/modonomicon/books/demo/book.json)
+- built-in demo [`theme.json`](https://github.com/klikli-dev/modonomicon/blob/HEAD/neo/src/generated/resources/data/modonomicon/modonomicon/books/demo/theme.json)
 
 ## What changed
 
@@ -45,6 +47,8 @@ If you had a styled book on 1.21.1, that styling now belongs in `theme.json`.
 If you generate books in code, the datagen API changed as well.
 
 The old `BookModel` styling setters were replaced by a theme-based setup. Use a theme model and attach it with `withTheme(...)` instead of configuring textures and palette values directly on the book model.
+
+For reference, see [`DemoBook`](https://github.com/klikli-dev/modonomicon/blob/HEAD/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/DemoBook.java).
 
 ### Theme system and registry were added
 
@@ -75,18 +79,18 @@ After migrating, rerun datagen so the generated book resources include the new t
 
 ### Datapack / JSON users
 
-1. Visit the [Demo Book](https://github.com/klikli-dev/modonomicon/blob/-/neo/src/generated/resources/data/modonomicon/modonomicon/books/demo) and review how `book.json` and `theme.json` are set up.
-1. Keep your book structure in `book.json`.
-2. Move old visual styling into a new `theme.json` next to the book data.
-3. Set the correct theme `id` and usually keep `type` as `modonomicon:default`.
-4. Place any custom theme textures into the matching theme asset folder.
-5. Test the book in game and confirm buttons, backgrounds, node connectors, and recipe visuals render correctly.
+1. Visit the [Demo Book](https://github.com/klikli-dev/modonomicon/blob/HEAD/neo/src/generated/resources/data/modonomicon/modonomicon/books/demo) and review how `book.json` and `theme.json` are set up.
+2. Keep your book structure in `book.json`.
+3. Move old visual styling into a new `theme.json` next to the book data.
+4. Set the correct theme `id` and usually keep `type` as `modonomicon:default`.
+5. Place any custom theme textures into the matching theme asset folder.
+6. Test the book in game and confirm buttons, backgrounds, node connectors, and recipe visuals render correctly.
 
 ### Datagen users
 
-1. Visit the [Demo Book Datagen](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/DemoBook.java) and review how it sets up the book model.
+1. Visit the [Demo Book Datagen](https://github.com/klikli-dev/modonomicon/blob/HEAD/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/DemoBook.java) and review how it sets up the book model.
 2. Remove old inline styling calls from your `BookModel` setup and instead delegate to `.withTheme(...)`.
-3. Optionally register your own theme class (see [Theme.json](../basics/structure/theme)) if you want to override rendering behaviour or use sprites with custom sizes.
+3. Optionally register your own theme class (see [Theme.json](../../basics/structure/theme)) if you want to override rendering behaviour or use sprites with custom sizes.
 4. Run datagen again.
 
 ## Need help converting old custom styling?

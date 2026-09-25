@@ -12,14 +12,9 @@ Displays an image and optionally a title and text.
 
 ## Attributes
 
-### **title** (DescriptionId or Component JSON, _optional_)
+### **images** (Identifier[], _mandatory_)
 
-The page title. Will not parse markdown, instead it uses the default title color as defined in the `book.json`.   
-See [Book.json](../structure/book) for details.
-
-### **images** (ResourceLocation[], _mandatory_)
-
-Array of ResourceLocations of the textures to display.   
+Array of Identifiers of the textures to display.   
 By default an image of any size can be used and will be rendered entirely. See `use_legacy_rendering` for more information.
 
 

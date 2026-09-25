@@ -12,14 +12,9 @@ Displays a multiblock, optionally the multiblock's name and a text.
 
 ## Attributes
 
-### **multiblock_name** (DescriptionId or Component JSON, _optional_)
+### **multiblock_id** (Identifier, _mandatory_)
 
-The multiblock name. Will not parse markdown, instead it uses the default title color as defined in the `book.json`.   
-See [Book.json](../structure/book) for details.
-
-### **multiblock_id** (ResourceLocation, _mandatory_)
-
-The ResourceLocation to the multiblock to display.
+The Identifier to the multiblock to display.
 
 ### **text** (DescriptionId or Component JSON, _optional_)
 

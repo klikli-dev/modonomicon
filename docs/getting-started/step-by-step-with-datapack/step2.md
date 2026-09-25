@@ -1,5 +1,5 @@
 ---
-sidebar_position: 10
+sidebar_position: 20
 ---
 
 # Step 2: Set up an empty datapack

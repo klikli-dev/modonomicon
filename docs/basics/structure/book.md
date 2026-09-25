@@ -50,7 +50,7 @@ If `generate_book_item` is `false`, `custom_book_item` needs to be set.
 
 :::
 
-### **model** (ResourceLocation, _optional_)
+### **model** (Identifier, _optional_)
 
 Default value: `modonomicon:modonomicon_purple`.
 The item model to use for the generated book item.
@@ -69,9 +69,9 @@ That means it either needs to belong to an existing item, or it must be explicit
 
 :::
 
-### **custom_book_item** (ResourceLocation, _mandatory_ if `generate_book_item` is `false`)
+### **custom_book_item** (Identifier, _mandatory_ if `generate_book_item` is `false`)
 
-The ResourceLocation for your custom book item.
+The Identifier for your custom book item.
 This is your custom item instance that will open the book.
 
 ### **creative_tab** (String, _optional_)
@@ -80,21 +80,7 @@ Default value: `misc`.
 The creative tab for the automatically generated book item.
 Ignored if `generate_book_item` is `false`.
 
-### **auto_add_read_conditions** (Boolean, _optional_)
-
-Default value: `false`.
-If true, the book automatically generates an entry-read condition for each entry.
-This is useful if you want players to read the book in order.
-
-See also [Unlock Conditions](../unlock-conditions/) for details.
-
-:::tip
-
-Categories are not affected by this. Category conditions still need to be added manually.
-
-:::
-
-### **font** (ResourceLocation, _optional_)
+### **font** (Identifier, _optional_)
 
 Default value: `modonomicon:default`.
 The font to use in the book.
@@ -114,13 +100,13 @@ Can be `single_page` or `double_page`.
 This controls how entries are rendered.
 Categories and books in index mode always use double page display.
 
-### **turn_page_sound** (ResourceLocation, _optional_)
+### **turn_page_sound** (Identifier, _optional_)
 
 Default value: `minecraft:turn_page`.
 The sound event to play when turning a page.
 The sound must be a loaded sound event defined in `/assets/<mod_id>/sounds.json`.
 
-### **leaflet_entry** (ResourceLocation, _optional_)
+### **leaflet_entry** (Identifier, _optional_)
 
 If set, the book will ignore its normal navigation structure and directly display this one entry.
 The entry still needs to be part of a valid category, even if that category is not shown.
@@ -147,28 +133,30 @@ It opens a paginated view of unlocked entries, with unread entries first and the
 
 Set it to `false` to hide the button.
 
-## Moved to `theme.json`
+### **default_auto_scale** (Boolean, _optional_)
 
-The following settings used to live in `book.json`, but now belong in **[theme.json](./theme)**:
+Default value: `true`.
 
-- `default_title_color`
-- `default_text_color`
-- `book_overview_texture`
-- `frame_texture`
-- `left_frame_overlay`, `right_frame_overlay`, `top_frame_overlay`, `bottom_frame_overlay`
-- `book_content_texture`
-- `single_page_texture`
-- `crafting_texture`
-- `category_button_icon_scale`
-- `category_button_x_offset`
-- `category_button_y_offset`
-- `search_button_x_offset`
-- `search_button_y_offset`
-- `read_all_button_y_offset`
-- `book_text_offset_x`
-- `book_text_offset_y`
-- `book_text_offset_width`
-- `book_text_offset_height`
+If set to `true`, page texts that are too long are scaled down until they fit on the page.
+Can be overridden per page with `auto_scale`.
+See [Long texts: scaling and splitting](../page-types/page-types.md#long-texts-scaling-and-splitting).
+
+### **default_allow_page_split** (Boolean, _optional_)
+
+Default value: `false`.
+
+If set to `true`, page texts that are too long flow onto additional pages at full size instead of shrinking.
+Can be overridden per page with `allow_page_split`.
+Splitting takes precedence over scaling.
+See [Long texts: scaling and splitting](../page-types/page-types.md#long-texts-scaling-and-splitting).
+
+To enable splitting for the whole book, set:
+
+```json
+{
+  "default_allow_page_split": true
+}
+```
 
 ## Usage Example
 
@@ -186,8 +174,9 @@ The following settings used to live in `book.json`, but now belong in **[theme.j
   "font": "modonomicon:default",
   "page_display_mode": "double_page",
   "turn_page_sound": "minecraft:turn_page",
-  "auto_add_read_conditions": false,
   "allow_open_book_with_invalid_links": false,
-  "show_recently_unlocked": true
+  "show_recently_unlocked": true,
+  "default_auto_scale": true,
+  "default_allow_page_split": false
 }
 ```

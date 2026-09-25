@@ -1,5 +1,5 @@
 ---
-sidebar_position: 20
+sidebar_position: 30
 ---
 
 # Step 3: Copy demo content into your datapack
