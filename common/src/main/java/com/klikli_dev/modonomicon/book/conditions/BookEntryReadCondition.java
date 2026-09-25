@@ -9,8 +9,10 @@ package com.klikli_dev.modonomicon.book.conditions;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
+import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.bookstate.BookUnlockStateManager;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -64,16 +66,28 @@ public class BookEntryReadCondition extends BookCondition {
 
     @Override
     public boolean test(BookConditionContext context, Player player) {
+        if (context == null || context.getBook() == null) {
+            //Can happen if the book was not (yet) built, e.g. after /reload before books are rebuilt,
+            //or if book loading failed. Never crash a server tick over this, fail closed and log.
+            Modonomicon.LOG.error("BookEntryReadCondition tested with null book for entry '{}'. The book was likely not built yet (e.g. after /reload) or failed to load. Returning false to avoid a crash.", this.entryId);
+            return false;
+        }
         var entry = context.getBook().getEntry(this.entryId);
         if (entry == null) {
-            throw new IllegalArgumentException("Entry with id " + this.entryId + " not found in book " + context.getBook().getId() + "for BookEntryReadCondition. This happened while trying to unlock " + context);
+            //Do not throw here: this runs during server ticks and would crash the server.
+            //Instead record a book error so the book shows an error screen, log, and fail closed.
+            var message = "Entry with id " + this.entryId + " not found in book " + context.getBook().getId() + " for BookEntryReadCondition. This happened while trying to unlock " + context;
+            Modonomicon.LOG.error(message);
+            BookErrorManager.get().error(context.getBook().getId(), message);
+            return false;
         }
         return BookUnlockStateManager.get().isReadFor(player, entry);
     }
 
     @Override
     public List<Component> getTooltip(Player player, BookConditionContext context) {
-        if (this.tooltip == null && context instanceof BookConditionEntryContext entryContext) {
+        if (this.tooltip == null && context instanceof BookConditionEntryContext entryContext
+                && entryContext.getBook() != null && entryContext.getBook().getEntry(this.entryId) != null) {
             this.tooltip = Component.translatable(Tooltips.CONDITION_ENTRY_READ, Component.translatable(entryContext.getBook().getEntry(this.entryId).getName()));
         }
         return super.getTooltip(player, context);

@@ -31,6 +31,14 @@ public class SaveCategoryStateMessage implements Message {
 
     public ResourceLocation openEntry = null;
 
+    /**
+     * Ids kept for safe (re-)resolution on the server: the book may be unknown on the server
+     * (loading failed or client/server content mismatch) or not yet built when the packet arrives.
+     * See https://github.com/klikli-dev/modonomicon/issues/368
+     */
+    private ResourceLocation bookId;
+    private ResourceLocation categoryId;
+
     public SaveCategoryStateMessage(BookCategory category, CategoryVisualState state) {
         this(category, state.scrollX, state.scrollY, state.targetZoom, state.openEntry);
     }
@@ -41,6 +49,8 @@ public class SaveCategoryStateMessage implements Message {
         this.scrollY = scrollY;
         this.targetZoom = targetZoom;
         this.openEntry = openEntry;
+        this.bookId = category.getBook().getId();
+        this.categoryId = category.getId();
     }
 
     public SaveCategoryStateMessage(RegistryFriendlyByteBuf buf) {
@@ -60,13 +70,23 @@ public class SaveCategoryStateMessage implements Message {
     }
 
     private void decode(RegistryFriendlyByteBuf buf) {
-        this.category = BookDataManager.get().getBook(buf.readResourceLocation()).getCategory(buf.readResourceLocation());
+        this.bookId = buf.readResourceLocation();
+        this.categoryId = buf.readResourceLocation();
+        this.category = this.resolveCategory();
         this.scrollX = buf.readFloat();
         this.scrollY = buf.readFloat();
         this.targetZoom = buf.readFloat();
         if (buf.readBoolean()) {
             this.openEntry = buf.readResourceLocation();
         }
+    }
+
+    private BookCategory resolveCategory() {
+        var book = BookDataManager.get().getBook(this.bookId);
+        if (book == null) {
+            return null;
+        }
+        return book.getCategory(this.categoryId);
     }
 
     @Override
@@ -76,6 +96,25 @@ public class SaveCategoryStateMessage implements Message {
 
     @Override
     public void onServerReceived(MinecraftServer minecraftServer, ServerPlayer player) {
+        if (this.category == null || this.category.getBook() == null) {
+            //The book may not be built yet (e.g. right after /reload) - build it lazily and try again.
+            BookDataManager.get().tryBuildBooks(player.level());
+            this.category = this.resolveCategory();
+        }
+
+        if (this.category == null) {
+            //The client knows a book/category the server does not (book failed to load on the server
+            //or client/server content mismatch, e.g. in hybrid modpacks). Never crash the server
+            //tick over this, ignore the state save and log.
+            Modonomicon.LOG.warn("Received SaveCategoryStateMessage for unknown category '{}' in book '{}' from player '{}'. The book is not loaded on the server. Ignoring to avoid a crash (see #368).", this.categoryId, this.bookId, player.getName().getString());
+            return;
+        }
+
+        if (this.category.getBook() == null) {
+            Modonomicon.LOG.warn("Received SaveCategoryStateMessage for category '{}' in book '{}' from player '{}', but the category is not linked to a book (book not built). Ignoring to avoid a crash (see #368).", this.categoryId, this.bookId, player.getName().getString());
+            return;
+        }
+
         var currentState = BookVisualStateManager.get().getCategoryStateFor(player, this.category);
         currentState.scrollX = this.scrollX;
         currentState.scrollY = this.scrollY;

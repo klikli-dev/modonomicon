@@ -28,6 +28,14 @@ public class SaveEntryStateMessage implements Message {
     public BookEntry entry;
     public int openPagesIndex;
 
+    /**
+     * Ids kept for safe (re-)resolution on the server: the book may be unknown on the server
+     * (loading failed or client/server content mismatch) or not yet built when the packet arrives.
+     * See https://github.com/klikli-dev/modonomicon/issues/368
+     */
+    private ResourceLocation bookId;
+    private ResourceLocation entryId;
+
     public SaveEntryStateMessage(BookEntry entry, EntryVisualState state) {
         this(entry, state.openPagesIndex);
     }
@@ -35,6 +43,8 @@ public class SaveEntryStateMessage implements Message {
     public SaveEntryStateMessage(BookEntry entry, int openPagesIndex) {
         this.entry = entry;
         this.openPagesIndex = openPagesIndex;
+        this.bookId = entry.getBook().getId();
+        this.entryId = entry.getId();
     }
 
     public SaveEntryStateMessage(RegistryFriendlyByteBuf buf) {
@@ -48,8 +58,18 @@ public class SaveEntryStateMessage implements Message {
     }
 
     private void decode(RegistryFriendlyByteBuf buf) {
-        this.entry = BookDataManager.get().getBook(buf.readResourceLocation()).getEntry(buf.readResourceLocation());
+        this.bookId = buf.readResourceLocation();
+        this.entryId = buf.readResourceLocation();
         this.openPagesIndex = buf.readVarInt();
+        this.entry = this.resolveEntry();
+    }
+
+    private BookEntry resolveEntry() {
+        var book = BookDataManager.get().getBook(this.bookId);
+        if (book == null) {
+            return null;
+        }
+        return book.getEntry(this.entryId);
     }
 
     @Override
@@ -59,6 +79,25 @@ public class SaveEntryStateMessage implements Message {
 
     @Override
     public void onServerReceived(MinecraftServer minecraftServer, ServerPlayer player) {
+        if (this.entry == null || this.entry.getCategory() == null || this.entry.getBook() == null) {
+            //The book may not be built yet (e.g. right after /reload) - build it lazily and try again.
+            BookDataManager.get().tryBuildBooks(player.level());
+            this.entry = this.resolveEntry();
+        }
+
+        if (this.entry == null) {
+            //The client knows a book/entry the server does not (book failed to load on the server
+            //or client/server content mismatch, e.g. in hybrid modpacks). Never crash the server
+            //tick over this, ignore the state save and log.
+            Modonomicon.LOG.warn("Received SaveEntryStateMessage for unknown entry '{}' in book '{}' from player '{}'. The book is not loaded on the server. Ignoring to avoid a crash (see #368).", this.entryId, this.bookId, player.getName().getString());
+            return;
+        }
+
+        if (this.entry.getCategory() == null || this.entry.getBook() == null) {
+            Modonomicon.LOG.warn("Received SaveEntryStateMessage for entry '{}' in book '{}' from player '{}', but the entry is not linked to a book (book not built). Ignoring to avoid a crash (see #368).", this.entryId, this.bookId, player.getName().getString());
+            return;
+        }
+
         var currentState = BookVisualStateManager.get().getEntryStateFor(player, this.entry);
         currentState.openPagesIndex = this.openPagesIndex;
         BookVisualStateManager.get().setEntryStateFor(player, this.entry, currentState);

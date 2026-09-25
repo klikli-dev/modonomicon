@@ -90,6 +90,13 @@ public class ModonomiconNeo {
             if (e.getPlayer() != null) {
                 BookDataManager.get().onDatapackSync(e.getPlayer());
                 MultiblockDataManager.get().onDatapackSync(e.getPlayer());
+            } else {
+                //getPlayer() is null on /reload (sync to all players). Without this books stay unbuilt
+                //after a reload and subsequent packets can crash the server tick (see #368, #385).
+                for (var player : e.getPlayerList().getPlayers()) {
+                    BookDataManager.get().onDatapackSync(player);
+                    MultiblockDataManager.get().onDatapackSync(player);
+                }
             }
         });
 

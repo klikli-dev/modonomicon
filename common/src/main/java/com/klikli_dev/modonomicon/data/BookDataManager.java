@@ -316,6 +316,11 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
                 //link category and book
                 var book = this.books.get(bookId);
+                if (book == null) {
+                    BookErrorManager.get().error("Failed to load category '" + entry.getKey() + "': book '" + bookId + "' was not loaded (missing or invalid book.json). The category will be skipped.");
+                    BookErrorManager.get().reset();
+                    continue;
+                }
                 book.addCategory(category);
 
                 BookErrorManager.get().reset();
@@ -342,11 +347,22 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                     continue;
                 }
 
-                var bookEntry = this.loadEntry(entryId, entry.getValue(), this.books.get(bookId).autoAddReadConditions(), this.registries);
+                var book = this.books.get(bookId);
+                if (book == null) {
+                    BookErrorManager.get().error("Failed to load entry '" + entry.getKey() + "': book '" + bookId + "' was not loaded (missing or invalid book.json). The entry will be skipped.");
+                    BookErrorManager.get().reset();
+                    continue;
+                }
+
+                var bookEntry = this.loadEntry(entryId, entry.getValue(), book.autoAddReadConditions(), this.registries);
 
                 //link entry and category
-                var book = this.books.get(bookId);
                 var category = book.getCategory(bookEntry.getCategoryId());
+                if (category == null) {
+                    BookErrorManager.get().error("Failed to load entry '" + entry.getKey() + "': category '" + bookEntry.getCategoryId() + "' not found in book '" + bookId + "'. The entry will be skipped.");
+                    BookErrorManager.get().reset();
+                    continue;
+                }
                 category.addEntry(bookEntry);
 
                 BookErrorManager.get().reset();
@@ -374,6 +390,11 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
                 //link command and book
                 var book = this.books.get(bookId);
+                if (book == null) {
+                    BookErrorManager.get().error("Failed to load command '" + entry.getKey() + "': book '" + bookId + "' was not loaded (missing or invalid book.json). The command will be skipped.");
+                    BookErrorManager.get().reset();
+                    continue;
+                }
                 book.addCommand(command);
                 BookErrorManager.get().reset();
             } catch (Exception e) {

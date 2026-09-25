@@ -8,8 +8,10 @@ package com.klikli_dev.modonomicon.book.conditions;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
+import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -65,9 +67,21 @@ public class BookCategoryHasVisibleEntriesCondition extends BookCondition {
     
     @Override
     public boolean test(BookConditionContext context, Player player) {
+        if (context == null || context.book == null) {
+            //Can happen if the book was not (yet) built, e.g. after /reload before books are rebuilt,
+            //or if book loading failed. Never crash a server tick over this, fail closed and log.
+            Modonomicon.LOG.error("BookCategoryHasVisibleEntriesCondition tested with null book for category '{}'. The book was likely not built yet (e.g. after /reload) or failed to load. Returning false to avoid a crash.", this.categoryId);
+            return false;
+        }
+
         var category = context.book.getCategory(this.categoryId);
         if (category == null) {
-            throw new IllegalArgumentException("Category with id " + this.categoryId + " not found in book " + context.getBook().getId() + "for BookCategoryHasVisibleEntriesCondition. This happened while trying to unlock " + context);
+            //Do not throw here: this runs during server ticks and would crash the server.
+            //Instead record a book error so the book shows an error screen, log, and fail closed.
+            var message = "Category with id " + this.categoryId + " not found in book " + context.getBook().getId() + " for BookCategoryHasVisibleEntriesCondition. This happened while trying to unlock " + context;
+            Modonomicon.LOG.error(message);
+            BookErrorManager.get().error(context.getBook().getId(), message);
+            return false;
         }
 
         if(category.getEntries().isEmpty()) {
@@ -85,7 +99,8 @@ public class BookCategoryHasVisibleEntriesCondition extends BookCondition {
     
     @Override
     public List<Component> getTooltip(Player player, BookConditionContext context) {
-        if (this.tooltip == null && context instanceof BookConditionEntryContext entryContext) {
+        if (this.tooltip == null && context instanceof BookConditionEntryContext entryContext
+                && entryContext.getBook() != null && entryContext.getBook().getEntry(this.categoryId) != null) {
             this.tooltip = Component.translatable(ModonomiconConstants.I18n.Tooltips.CONDITION_CATEGORY_HAS_VISIBLE_ENTRIES, Component.translatable(entryContext.getBook().getEntry(this.categoryId).getName()));
         }
         return super.getTooltip(player, context);
