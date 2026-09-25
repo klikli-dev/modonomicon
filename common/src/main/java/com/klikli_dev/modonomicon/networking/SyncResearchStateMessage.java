@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.networking;
 
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.research.state.PlayerResearchState;
 import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
 import net.minecraft.client.Minecraft;
@@ -40,6 +41,13 @@ public class SyncResearchStateMessage implements Message {
     public void onClientReceived(Minecraft minecraft, Player player) {
         if (minecraft.getSingleplayerServer() == null) {
             ResearchStateManager.get().installClientState(player, this.state);
+        }
+
+        //Refresh the open entry, if any: page visibility is snapshotted when the
+        //entry screen opens, so without this newly unlocked pages would only
+        //appear after closing and reopening the entry.
+        if (BookGuiManager.get().openBookEntryScreen != null) {
+            BookGuiManager.get().openBookEntryScreen.onSyncResearchStateMessage(this);
         }
     }
 }

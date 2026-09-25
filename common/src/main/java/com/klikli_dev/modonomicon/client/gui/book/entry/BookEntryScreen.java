@@ -34,6 +34,7 @@ import com.klikli_dev.modonomicon.fluid.FluidHolder;
 import com.klikli_dev.modonomicon.integration.recipeviewer.RecipeViewerRegistry;
 import com.klikli_dev.modonomicon.networking.AddBookmarkMessage;
 import com.klikli_dev.modonomicon.networking.SyncBookVisualStatesMessage;
+import com.klikli_dev.modonomicon.networking.SyncResearchStateMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.platform.services.FluidHelper;
@@ -650,6 +651,18 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
 
     public void onSyncBookVisualStatesMessage(SyncBookVisualStatesMessage message) {
         this.updateBookmarksButton();
+    }
+
+    /**
+     * Re-evaluates page visibility against the newly synced research state.
+     * Called when the server pushes research state while this entry is open,
+     * so pages gated on just-unlocked (or just-relocked) conditions swap
+     * without closing and reopening the entry.
+     */
+    public void onSyncResearchStateMessage(SyncResearchStateMessage message) {
+        this.unlockedPages = this.entry.getUnlockedPagesFor(this.minecraft.player);
+        this.rebuildDisplayPages();
+        this.onPageChanged();
     }
 
     @Override
