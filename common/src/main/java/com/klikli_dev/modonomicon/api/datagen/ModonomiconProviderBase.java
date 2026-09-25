@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.api.datagen;
 
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookAndConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookNotConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookOrConditionModel;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.ChatFormatting;
@@ -212,6 +213,10 @@ public abstract class ModonomiconProviderBase {
 
     public BookOrConditionModel or(BookConditionModel<?>... children) {
         return this.condition().or(children);
+    }
+
+    public BookNotConditionModel not(BookConditionModel<?> child) {
+        return this.condition().not(child);
     }
 
     /**

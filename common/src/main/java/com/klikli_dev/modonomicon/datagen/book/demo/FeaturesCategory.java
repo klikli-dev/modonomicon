@@ -104,6 +104,11 @@ public class FeaturesCategory extends CategoryProvider {
         var pageSplittingEntry = this.add(new PageSplittingEntry(this).generate())
                 .withParent(spotlightEntry);
         this.layout().entry(pageSplittingEntry).rightOf(componentIconEntry, 6);
+
+        //registered last to avoid shifting sort numbers of the entries above;
+        //layout position is independent of registration order
+        var conditionNotEntry = this.add(new ConditionNotEntry(this).generate());
+        this.layout().entry(conditionNotEntry).below(conditionLevel2Entry, 2);
     }
 
     @Override
