@@ -1,0 +1,15 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:not",
+    "child": {
+      "type": "modonomicon:research_node_unlocked",
+      "node_id": "modonomicon:demo/crafting_stick"
+    }
+  },
+  "id": "hint",
+  "show_title_separator": true,
+  "sort_number": 0,
+  "text": "book.modonomicon.demo.features.condition_not.hint.text",
+  "title": "book.modonomicon.demo.features.condition_not.hint.title"
+}

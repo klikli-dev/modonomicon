@@ -1,4 +1,4 @@
-// 26.1.2	2026-09-23T10:48:26.8123267	Books: modonomicon
+// 26.1.2	2026-09-25T14:04:24.7897045	Books: modonomicon
 67d3024173004bcd7ae1e434e1885be3b2403e5a data/modonomicon/modonomicon/books/demo/book.json
 a40738cde71e2783fc7ebf4102a27a937c00761e data/modonomicon/modonomicon/books/demo/categories/acquiring.json
 66e880d8ad62910ce9caf891021f84308950452c data/modonomicon/modonomicon/books/demo/categories/conditional.json
@@ -31,6 +31,9 @@ faed37da900fcfb9d4ef7dcb1f1a77e18e1c0332 data/modonomicon/modonomicon/books/demo
 48c5d2543faf83bb7530fbd49407250f0e500497 data/modonomicon/modonomicon/books/demo/entries/features/condition_level_1/pages/info.json
 fa14917626f63eace5e8cf5150bbb6fe9da1be69 data/modonomicon/modonomicon/books/demo/entries/features/condition_level_2.json
 5f31fa0914704e2cbd62345bcc8c2ea2b5b38e12 data/modonomicon/modonomicon/books/demo/entries/features/condition_level_2/pages/info.json
+b946bb6f997df4b6bd9ad56ad58e4a73b7ce6eae data/modonomicon/modonomicon/books/demo/entries/features/condition_not.json
+f03eb1acf452c72bfc8e7d327bc32f8ae27e5153 data/modonomicon/modonomicon/books/demo/entries/features/condition_not/pages/hint.json
+0444acedbca3486d00c430b6a20df35084485188 data/modonomicon/modonomicon/books/demo/entries/features/condition_not/pages/revealed.json
 b8fbcc5545f0b75fa6e21f8688251f292c10c63c data/modonomicon/modonomicon/books/demo/entries/features/condition_root.json
 f1c9c270213819c913e92fdd9f17b9168a56f4f3 data/modonomicon/modonomicon/books/demo/entries/features/condition_root/pages/info.json
 8f7368706409a58eb88822029dcd0e4d6eb7a226 data/modonomicon/modonomicon/books/demo/entries/features/custom_icon.json
@@ -59,7 +62,7 @@ d14e897ed1220d965209127b30b2995444ef8ebf data/modonomicon/modonomicon/books/demo
 b8ce8f7677ec4bccf2d1bdcb3f3305d758c8107f data/modonomicon/modonomicon/books/demo/entries/features/page_splitting.json
 9884fca0bf69f65bddebf9bf18dcaf1f95733d3e data/modonomicon/modonomicon/books/demo/entries/features/page_splitting/pages/split.json
 dec3ce55aef4dd68edad5024c49dae260105a4ca data/modonomicon/modonomicon/books/demo/entries/features/page_splitting/pages/unscaled.json
-88a8b3cf0b1525c56c0fe1bcd430d193ef7c5995 data/modonomicon/modonomicon/books/demo/entries/features/recipe.json
+00bc0b633d8bf5947c9b66dce7edb82206c39925 data/modonomicon/modonomicon/books/demo/entries/features/recipe.json
 0f17e7bc7ae70b09e1396f334d68f2cdcdb7bff2 data/modonomicon/modonomicon/books/demo/entries/features/redirect.json
 01a62f27fd396b4f1d638ed3330c3c06e96475c5 data/modonomicon/modonomicon/books/demo/entries/features/spotlight.json
 e45ac06bd78969080977036a311ba4451c7a5c02 data/modonomicon/modonomicon/books/demo/entries/features/spotlight/pages/intro.json

@@ -1,0 +1,21 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gray",
+    "width": 26
+  },
+  "category": "modonomicon:features",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "description": "book.modonomicon.demo.features.condition_not.description",
+  "icon": {
+    "id": "minecraft:barrier"
+  },
+  "id": "modonomicon:features/condition_not",
+  "name": "book.modonomicon.demo.features.condition_not.name",
+  "sort_number": 16,
+  "x": 0,
+  "y": 2
+}
