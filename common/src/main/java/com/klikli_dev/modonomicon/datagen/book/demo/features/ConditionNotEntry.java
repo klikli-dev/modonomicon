@@ -22,29 +22,31 @@ public class ConditionNotEntry extends EntryProvider {
 
     @Override
     protected void generatePages() {
-        // Hint page: visible only before the Mine Stone advancement research unlocks.
+        // Hint page: visible only before the stick crafting research unlocks.
         // Demonstrates the "not" condition swapping content once a condition is met (see #151).
+        // Uses a repeatable item_crafted trigger (instead of a one-shot advancement)
+        // so the swap can be re-tested after every research reset.
         this.page("hint", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText())
                 .withCondition(this.condition().not(
-                        this.condition().researchNodeUnlocked(DemoResearch.ADVANCEMENT_MINE_STONE)))
+                        this.condition().researchNodeUnlocked(DemoResearch.CRAFTING_STICK)))
         );
-        this.pageTitle("Not Yet Mined");
+        this.pageTitle("Not Yet Crafted");
         this.pageText("""
-                Hint: mine stone to unlock the detailed version of this entry.
+                Hint: craft a stick to unlock the detailed version of this entry.
                 This page disappears once the condition is met.
                 """);
 
-        // Detailed page: visible only after the Mine Stone advancement research unlocks.
+        // Detailed page: visible only after the stick crafting research unlocks.
         this.page("revealed", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText())
-                .withCondition(this.condition().researchNodeUnlocked(DemoResearch.ADVANCEMENT_MINE_STONE))
+                .withCondition(this.condition().researchNodeUnlocked(DemoResearch.CRAFTING_STICK))
         );
-        this.pageTitle("Stone Mined!");
+        this.pageTitle("Stick Crafted!");
         this.pageText("""
-                You mined stone and revealed the final version of this entry.
+                You crafted a stick and revealed the final version of this entry.
                 """);
     }
 

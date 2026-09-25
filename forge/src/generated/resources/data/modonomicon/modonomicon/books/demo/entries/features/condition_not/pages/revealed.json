@@ -2,7 +2,7 @@
   "type": "modonomicon:text",
   "condition": {
     "type": "modonomicon:research_node_unlocked",
-    "node_id": "modonomicon:demo/advancement_mine_stone"
+    "node_id": "modonomicon:demo/crafting_stick"
   },
   "id": "revealed",
   "show_title_separator": true,
