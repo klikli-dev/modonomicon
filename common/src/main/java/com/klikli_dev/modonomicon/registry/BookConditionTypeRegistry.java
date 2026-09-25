@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookFalseCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookModLoadedCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookNotCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookOrCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookResearchNodeUnlockedCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookResearchStageCompletedCondition;
@@ -34,6 +35,8 @@ public final class BookConditionTypeRegistry {
     public static final BookConditionType<BookOrCondition> OR = register(BookOrCondition.ID, BookOrCondition.CODEC, BookOrCondition.STREAM_CODEC);
 
     public static final BookConditionType<BookAndCondition> AND = register(BookAndCondition.ID, BookAndCondition.CODEC, BookAndCondition.STREAM_CODEC);
+
+    public static final BookConditionType<BookNotCondition> NOT = register(BookNotCondition.ID, BookNotCondition.CODEC, BookNotCondition.STREAM_CODEC);
 
     public static final BookConditionType<BookTrueCondition> TRUE = register(BookTrueCondition.ID, BookTrueCondition.CODEC, BookTrueCondition.STREAM_CODEC);
 
