@@ -130,3 +130,39 @@ The conditions that need to be met alternatively to unlock this entry.
   ...
 }
 ```
+
+## Not Condition
+
+**Condition type:** `modonomicon:not`
+
+This condition will be met, if the condition in `child` is *not* met.
+Useful for "before / after" content swaps, e.g. a hint page that is only visible until a research node unlocks (see [Swapping page content when conditions are met](../research/scenarios#swapping-page-content-when-conditions-are-met)).
+
+### Attributes
+
+#### **child** (Condition, _mandatory_)
+
+The condition to invert.
+
+### Usage Examples
+
+`<my-entry>.json` 
+```json
+{
+  ...
+  "condition": {
+      "type": "modonomicon:not",
+      "child": {
+          "type": "modonomicon:research_node_unlocked",
+          "node_id": "mymod:features/advanced_progression"
+      }
+  },
+  ...
+}
+```
+
+:::note Tooltips are not inherited
+
+The child's tooltip is not shown for `not` conditions, as it would describe the non-negated requirement. Set an explicit `tooltip` if the locked state needs an explanation.
+
+:::

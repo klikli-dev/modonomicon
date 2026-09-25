@@ -17,7 +17,7 @@ Conditions are JSON Objects that can be set as value for the "condition" field o
 },
 ``` 
 
-Note that only one condition can be supplied per entry or category. If you want to combine multiple conditions, you can use the [`modonomicon:and`](./logic-conditions#and-condition) or [`modonomicon:or`](./logic-conditions#or-condition) condition types.
+Note that only one condition can be supplied per entry or category. If you want to combine multiple conditions, you can use the [`modonomicon:and`](./logic-conditions#and-condition), [`modonomicon:or`](./logic-conditions#or-condition) or [`modonomicon:not`](./logic-conditions#not-condition) condition types.
 
 ## Available Condition Types
 
@@ -28,6 +28,7 @@ The following condition types are available:
 - [`modonomicon:mod_loaded`](./mod-loaded-condition) — Gates behind a loaded mod
 - [`modonomicon:category_has_visible_entries`](./category-has-visible-entries-condition) — Gates behind category visibility
 - [`modonomicon:and`](./logic-conditions#and-condition) / [`modonomicon:or`](./logic-conditions#or-condition) — Combine conditions
+- [`modonomicon:not`](./logic-conditions#not-condition) — Inverts a condition, e.g. for content shown only before an unlock
 - [`modonomicon:true`](./logic-conditions#true-condition) / [`modonomicon:false`](./logic-conditions#false-condition) — Debug/placeholder
 
 ## Common Attributes

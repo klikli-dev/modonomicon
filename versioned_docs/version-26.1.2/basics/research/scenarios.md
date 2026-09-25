@@ -236,3 +236,28 @@ While it is possible to combine multiple research conditions with `and`/`or`, it
 
 Need a trigger type not covered above (e.g. entity killed, biome entered)?
 See [Custom Research Hooks](../../advanced/custom-hooks).
+
+## Swapping page content when conditions are met
+
+Show a hint page before a condition is met and replace it with the detailed page afterwards, by combining a page-level condition with its inversion via [`modonomicon:not`](../unlock-conditions/logic-conditions#not-condition).
+
+```java
+// In your BookProvider — the hint page is only visible until the node unlocks:
+this.page("hint", () -> BookTextPageModel.create()
+        .withTitle(this.context().pageTitle())
+        .withText(this.context().pageText())
+        .withCondition(this.condition().not(
+                this.condition().researchNodeUnlocked(MyResearch.MY_NODE)))
+);
+
+// ... while the detailed page appears once the node unlocks:
+this.page("revealed", () -> BookTextPageModel.create()
+        .withTitle(this.context().pageTitle())
+        .withText(this.context().pageText())
+        .withCondition(this.condition().researchNodeUnlocked(MyResearch.MY_NODE))
+);
+```
+
+The same pattern works for whole entries: gate one entry variant on the node and the other on its `not` inversion.
+
+**Demo:** [`ConditionNotEntry.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/features/ConditionNotEntry.java) — swaps a "craft a stick" hint page for the detailed page once the `CRAFTING_STICK` node unlocks. It deliberately uses the repeatable item-crafted trigger from [Item crafted gating](#item-crafted-gating) instead of a one-shot advancement, so the swap can be re-tested after every research reset.
