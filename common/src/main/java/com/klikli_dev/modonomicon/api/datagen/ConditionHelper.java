@@ -134,6 +134,18 @@ public class ConditionHelper {
     }
 
     /**
+     * Creates a NOT condition that is satisfied when the child condition is not met.
+     * <p>
+     * Useful for "before / after" content swaps, e.g. a hint page visible only until
+     * a research node unlocks, replaced by detail pages gated on the node itself.
+     * The child's tooltip is not forwarded, as it would describe the non-negated
+     * requirement; set an explicit tooltip if one is needed.
+     */
+    public BookNotConditionModel not(BookConditionModel<?> child) {
+        return BookNotConditionModel.create().withChild(child);
+    }
+
+    /**
      * Creates a condition that checks whether a specific stage of the given research node has been completed.
      */
     public BookResearchStageCompletedConditionModel researchStageCompleted(Identifier nodeId, Identifier stageId) {

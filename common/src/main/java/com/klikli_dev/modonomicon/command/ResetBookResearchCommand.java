@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Command;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.conditions.BookAndCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
+import com.klikli_dev.modonomicon.book.conditions.BookNotCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookOrCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookResearchNodeUnlockedCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookResearchStageCompletedCondition;
@@ -134,6 +135,8 @@ public class ResetBookResearchCommand implements com.mojang.brigadier.Command<Co
             for (var child : orCondition.children()) {
                 collectNodeIdsFromCondition(child, nodeIds);
             }
+        } else if (condition instanceof BookNotCondition notCondition) {
+            collectNodeIdsFromCondition(notCondition.child(), nodeIds);
         }
     }
 }
