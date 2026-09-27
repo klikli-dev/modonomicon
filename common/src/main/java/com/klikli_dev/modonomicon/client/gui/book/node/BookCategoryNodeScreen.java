@@ -6,7 +6,7 @@
  */
 package com.klikli_dev.modonomicon.client.gui.book.node;
 
-import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.events.EntryClickedEvent;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
@@ -62,9 +62,6 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
      * Vertical padding between the entry name text and the visible edge of its background.
      */
     public static final int ENTRY_NAME_PADDING_Y = 4;
-
-    private static final GuiSprite ENTRY_NAME_BACKGROUND = new GuiSprite(
-            Modonomicon.loc("themes/default/node/entry_name_background"), -1, -1);
 
     private final BookParentNodeScreen bookParentScreen;
     private final BookCategory category;
@@ -285,7 +282,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             //like the vanilla advancement screen draws its title box behind the icon frame
             var nameBox = this.getEntryNameBox(entry);
             if (nameBox != null) {
-                ENTRY_NAME_BACKGROUND.extractRenderState(guiGraphics,
+                EntryBackground.ENTRY_NAME_BACKGROUND.extractRenderState(guiGraphics,
                         nameBox.x(), nameBox.y(), nameBox.width(), nameBox.height(), color);
             }
 

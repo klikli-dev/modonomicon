@@ -49,8 +49,19 @@ public class EntryBackground {
     public static final GuiSprite LINK = CIRCLE_GOLD;
     public static final GuiSprite LINK_TO_CATEGORY = STAR_GRAY;
 
+    /**
+     * Background for the permanently rendered entry names on node screens (see {@code render_name}).
+     * Nine-sliced via its .mcmeta, so it stretches to the label size.
+     * Unlike the badge backgrounds above no fixed size is set.
+     */
+    public static final GuiSprite ENTRY_NAME_BACKGROUND = nameBackground("name_background");
+
     private static GuiSprite entryBackground(String name) {
         return new GuiSprite(Modonomicon.loc(DEFAULT_THEME_ENTRY_BACKGROUND_PATH + name), 26, 26);
+    }
+
+    private static GuiSprite nameBackground(String name) {
+        return new GuiSprite(Modonomicon.loc(DEFAULT_THEME_ENTRY_BACKGROUND_PATH + name), -1, -1);
     }
 }
 
