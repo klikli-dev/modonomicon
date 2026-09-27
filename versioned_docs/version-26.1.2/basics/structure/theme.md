@@ -194,6 +194,15 @@ Default value: `-16776961`.
 
 Base ARGB color used when both ends are visible but not yet settled.
 
+#### **entry_name_style** (JSON Object, _optional_)
+
+Default styling for permanently rendered entry names (see `name_style` in [Entries](./entries.md#attributes)).
+Each value can be overridden per entry.
+
+- `background` (Sprite JSON Object, _optional_): The default background sprite. Uses the normal sprite structure (`sprite`, `width`, `height`) like `default_category_button_sprite` above. Defaults to the built-in tint-less gray box `modonomicon:modonomicon/themes/default/node/entry_backgrounds/name_background`, so tints apply properly.
+- `background_tint` (Integer, _optional_): Default value: `-1` (white). Default ARGB tint, multiplied with the per-entry tint. Hex strings like `"#ffff5555"` are also accepted.
+- `text_color` (Integer, _optional_): Default value: `-1` (white). Default ARGB text color, multiplied with the per-entry text color.
+
 ## Usage Example
 
 `/data/<mod_id>/modonomicon/books/<book_id>/theme.json`:
@@ -241,6 +250,15 @@ Base ARGB color used when both ends are visible but not yet settled.
       "connected_color": -1073741825,
       "available_color": -16711936,
       "discovered_color": -16776961
+    },
+    "entry_name_style": {
+      "background": {
+        "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/name_background",
+        "width": 200,
+        "height": 26
+      },
+      "background_tint": -1,
+      "text_color": -1
     }
   }
 }
@@ -263,7 +281,10 @@ new BookThemeModel()
             .withOscillationSpeed(1.0F)
             .withConnectedColor(0xBFFFFFFF)
             .withAvailableColor(0xFF00FF00)
-            .withDiscoveredColor(0xFF0000FF)));
+            .withDiscoveredColor(0xFF0000FF))
+        .withEntryNameStyle(entryNameStyle -> entryNameStyle
+            .withBackgroundTint(0xFFFFFFFF)
+            .withTextColor(0xFFFFFFFF)));
 ```
 
 ## Simple custom themes

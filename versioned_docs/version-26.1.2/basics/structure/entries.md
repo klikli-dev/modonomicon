@@ -143,6 +143,30 @@ BookEntryModel.create(id("my_entry"), "example.book.my_entry")
 
 `EntryBackground.DEFAULT` still points to `EntryBackground.SQUARE_GOLD`.
 
+### **name_style** (JSON Object, _optional_)
+
+Controls the permanently rendered entry name on node-based category screens, styled like the vanilla advancement title box: a nine-sliced bar tucked behind (or, for `left`/`right`, passing through) the entry badge.
+If omitted, the name only shows in the hover tooltip.
+
+#### Attributes
+
+- `render_name` (String, _optional_): Default value: `"none"`. Where to render the name: `left`, `right`, `top`, `bottom`, or `none` (tooltip only).
+- `show_name_before_unlock` (Boolean, _optional_): Default value: `false`. If true, a locked entry's name renders under the same grey overlay as the badge. Otherwise names only show once unlocked.
+- `name_background_color` (Integer, _optional_): Default value: `-1` (white = theme default tint). ARGB tint of the name background, multiplied with the theme default tint. Hex strings like `"#ffff5555"` are also accepted.
+- `name_background` (Sprite JSON Object, _optional_): Background sprite override. If omitted, the theme default is used. Uses the same sprite structure as `background` above.
+- `name_text_color` (Integer, _optional_): Default value: `-1` (white = theme default text color). ARGB color of the name text, multiplied with the theme default text color.
+
+Example:
+
+```json
+"name_style": {
+  "render_name": "right",
+  "name_background_color": "#ffff5555"
+}
+```
+
+Datagen: `BookEntryModel#withRenderName(...)`, `#withShowNameBeforeUnlock(...)`, `#withNameBackgroundColor(...)`, `#withNameBackground(...)`, `#withNameTextColor(...)`.
+
 ### **condition** (Condition, _optional_)
 
 Entries, like Categories, can be hidden until an Unlock Condition is fulfilled. Conditions are JSON objects.  
