@@ -51,7 +51,8 @@ public class EntityEntry extends EntryProvider {
 
     @Override
     protected BookEntryModel additionalSetup(BookEntryModel entry) {
-        return entry.withRenderName(EntryNameRenderType.RIGHT);
+        return entry.withRenderName(EntryNameRenderType.RIGHT)
+                .withNameBackgroundColor(0xFFFF5555);
     }
 
     @Override

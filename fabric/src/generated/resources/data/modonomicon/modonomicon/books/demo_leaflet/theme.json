@@ -18,7 +18,14 @@
     "search_button_y_offset": 0
   },
   "node": {
-    "connection_renderer": "sprite"
+    "connection_renderer": "sprite",
+    "entry_name_background": {
+      "height": 26,
+      "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/name_background",
+      "width": 200
+    },
+    "entry_name_background_tint": -1,
+    "entry_name_text_color": -1
   },
   "palette": {
     "default_text_color": -16777216,

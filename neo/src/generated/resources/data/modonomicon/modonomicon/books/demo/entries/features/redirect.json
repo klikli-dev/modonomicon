@@ -16,7 +16,10 @@
   },
   "id": "modonomicon:features/redirect",
   "name": "book.modonomicon.demo.features.redirect.name",
-  "render_name": "top",
+  "name_style": {
+    "name_background_color": "#ffffff55",
+    "render_name": "top"
+  },
   "sort_number": 13,
   "x": -3,
   "y": -4

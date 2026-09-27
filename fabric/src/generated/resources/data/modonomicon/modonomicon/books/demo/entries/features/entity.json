@@ -15,7 +15,10 @@
   },
   "id": "modonomicon:features/entity",
   "name": "book.modonomicon.demo.features.entity.name",
-  "render_name": "right",
+  "name_style": {
+    "name_background_color": "#ffff5555",
+    "render_name": "right"
+  },
   "sort_number": 11,
   "x": 7,
   "y": -3

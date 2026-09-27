@@ -201,11 +201,33 @@ public abstract class BookEntry {
     }
 
     public EntryNameRenderType getRenderName() {
-        return this.data.renderName;
+        return this.data.nameStyle.renderName();
     }
 
     public boolean showNameBeforeUnlock() {
-        return this.data.showNameBeforeUnlock;
+        return this.data.nameStyle.showBeforeUnlock();
+    }
+
+    /**
+     * ARGB tint for the entry name background. White (default) keeps the theme default tint.
+     */
+    public int getNameBackgroundColor() {
+        return this.data.nameStyle.backgroundColor();
+    }
+
+    /**
+     * Background sprite override for the permanently rendered entry name.
+     * Empty (default) uses the theme default.
+     */
+    public GuiSprite getNameBackground() {
+        return this.data.nameStyle.background();
+    }
+
+    /**
+     * ARGB color of the permanently rendered entry name text. Multiplied with the theme default.
+     */
+    public int getNameTextColor() {
+        return this.data.nameStyle.textColor();
     }
 
     public BookIcon getIcon() {
@@ -239,7 +261,7 @@ public abstract class BookEntry {
     public record BookEntryData(Identifier categoryId, List<BookEntryParent> parents, int x, int y, String name,
                                  String description, BookIcon icon, GuiSprite entryBackground,
                                  BookCondition condition, boolean hideWhileLocked, boolean showWhenAnyParentUnlocked,
-                                 int sortNumber, EntryNameRenderType renderName, boolean showNameBeforeUnlock) {
+                                 int sortNumber, BookEntryNameStyle nameStyle) {
 
         public static final MapCodec<BookEntryData> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                 Codecs.STRICT_IDENTIFIER.fieldOf("category").forGetter(BookEntryData::categoryId),
@@ -254,8 +276,7 @@ public abstract class BookEntry {
                 Codec.BOOL.optionalFieldOf("hide_while_locked", false).forGetter(BookEntryData::hideWhileLocked),
                 Codec.BOOL.optionalFieldOf("show_when_any_parent_unlocked", false).forGetter(BookEntryData::showWhenAnyParentUnlocked),
                 Codec.INT.optionalFieldOf("sort_number", -1).forGetter(BookEntryData::sortNumber),
-                EntryNameRenderType.CODEC.optionalFieldOf("render_name", EntryNameRenderType.NONE).forGetter(BookEntryData::renderName),
-                Codec.BOOL.optionalFieldOf("show_name_before_unlock", false).forGetter(BookEntryData::showNameBeforeUnlock)
+                BookEntryNameStyle.CODEC.optionalFieldOf("name_style", BookEntryNameStyle.DEFAULT).forGetter(BookEntryData::nameStyle)
         ).apply(instance, BookEntryData::new));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, BookEntryData> STREAM_CODEC = new StreamCodec<>() {
@@ -274,8 +295,7 @@ public abstract class BookEntry {
                         ByteBufCodecs.BOOL.decode(buf),
                         ByteBufCodecs.BOOL.decode(buf),
                         ByteBufCodecs.INT.decode(buf),
-                        EntryNameRenderType.STREAM_CODEC.decode(buf),
-                        ByteBufCodecs.BOOL.decode(buf)
+                        BookEntryNameStyle.STREAM_CODEC.decode(buf)
                 );
             }
 
@@ -293,8 +313,7 @@ public abstract class BookEntry {
                 ByteBufCodecs.BOOL.encode(buf, value.hideWhileLocked);
                 ByteBufCodecs.BOOL.encode(buf, value.showWhenAnyParentUnlocked);
                 ByteBufCodecs.INT.encode(buf, value.sortNumber);
-                EntryNameRenderType.STREAM_CODEC.encode(buf, value.renderName);
-                ByteBufCodecs.BOOL.encode(buf, value.showNameBeforeUnlock);
+                BookEntryNameStyle.STREAM_CODEC.encode(buf, value.nameStyle);
             }
         };
 

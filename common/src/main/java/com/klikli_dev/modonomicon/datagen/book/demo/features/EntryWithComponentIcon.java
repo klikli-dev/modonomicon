@@ -73,7 +73,8 @@ public class EntryWithComponentIcon extends EntryProvider {
     protected BookEntryModel additionalSetup(BookEntryModel entry) {
         return super.additionalSetup(entry)
                 .withRenderName(EntryNameRenderType.LEFT)
-                .withShowNameBeforeUnlock(true);
+                .withShowNameBeforeUnlock(true)
+                .withNameBackgroundColor(0xFF55FF55);
     }
 
     @Override

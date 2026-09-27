@@ -29,7 +29,8 @@ public class DemoRedirectEntry extends EntryProvider {
     @Override
     protected BookEntryModel additionalSetup(BookEntryModel entry) {
         return entry.withCategoryToOpen(this.modLoc(IndexModeCategory.ID))
-                .withRenderName(EntryNameRenderType.TOP);
+                .withRenderName(EntryNameRenderType.TOP)
+                .withNameBackgroundColor(0xFFFFFF55);
     }
 
     @Override

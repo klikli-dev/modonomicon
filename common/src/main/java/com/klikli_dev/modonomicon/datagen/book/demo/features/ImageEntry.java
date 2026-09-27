@@ -100,7 +100,8 @@ public class ImageEntry extends EntryProvider {
     protected BookEntryModel additionalSetup(BookEntryModel entry) {
         //showcase the permanently rendered entry name from
         //https://github.com/klikli-dev/modonomicon/issues/186
-        return entry.withRenderName(EntryNameRenderType.BOTTOM);
+        return entry.withRenderName(EntryNameRenderType.BOTTOM)
+                .withNameBackgroundColor(0xFF5555FF);
     }
 
     @Override

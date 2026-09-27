@@ -20,6 +20,7 @@ import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.DirectEntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.client.gui.book.theme.NodeConnectionRendererType;
 import com.klikli_dev.modonomicon.events.ModonomiconEvents;
 import com.klikli_dev.modonomicon.platform.ClientServices;
@@ -73,10 +74,11 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
     public static final int ENTRY_NAME_PADDING_Y = 7;
 
     /**
-     * Vanilla advancement title box background, see AdvancementWidget.
-     * Locked entries tint it grey via the entry color, like their badge.
+     * Fallback entry name background if the theme does not provide one.
+     * Matches the default theme texture, see BookNodeSettings.
      */
-    private static final Identifier ENTRY_NAME_BACKGROUND = Identifier.withDefaultNamespace("advancements/box_obtained");
+    private static final GuiSprite FALLBACK_ENTRY_NAME_BACKGROUND = new GuiSprite(
+            Identifier.withDefaultNamespace("modonomicon/themes/default/node/entry_backgrounds/name_background"), 200, 26);
 
     private final BookParentNodeScreen bookParentScreen;
     private final BookCategory category;
@@ -295,11 +297,19 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
             //render the entry name background first, so the badge overlaps the joint
             //like the vanilla advancement screen draws its title box behind the icon frame.
-            //tinted with the entry color, so locked names render under the same grey overlay as the badge.
+            //the theme default background, tint and text color can each be overridden per entry.
+            //both tints combine with the entry color so locked names render under the same
+            //grey overlay as the badge.
             var nameBox = this.getEntryNameBox(entry, displayState);
             if (nameBox != null) {
-                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, ENTRY_NAME_BACKGROUND,
-                        nameBox.x(), nameBox.y(), nameBox.width(), nameBox.height(), color);
+                var settings = this.category.getBook().theme().node().settings();
+                var background = entry.getNameBackground().isEmpty() ? settings.entryNameBackground() : entry.getNameBackground();
+                if (background.isEmpty()) {
+                    background = FALLBACK_ENTRY_NAME_BACKGROUND;
+                }
+                background.extractRenderState(guiGraphics,
+                        nameBox.x(), nameBox.y(), nameBox.width(), nameBox.height(),
+                        ARGB.multiply(ARGB.multiply(settings.entryNameBackgroundTint(), entry.getNameBackgroundColor()), color));
             }
 
             //render entry background
@@ -325,7 +335,13 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             //unlike the vanilla advancement screen, which only shows name and description on hover,
             //this is permanently rendered as part of the entry
             if (nameBox != null) {
-                int nameColor = displayState == EntryDisplayState.LOCKED ? 0xFFAAAAAA : 0xFFFFFFFF;
+                int nameColor;
+                if (displayState == EntryDisplayState.LOCKED) {
+                    nameColor = 0xFFAAAAAA;
+                } else {
+                    var settings = this.category.getBook().theme().node().settings();
+                    nameColor = ARGB.multiply(settings.entryNameTextColor(), entry.getNameTextColor());
+                }
                 //float coordinates to allow sub-pixel vertical centering of the text in the bar
                 TextRenderHelper.drawString(guiGraphics, Minecraft.getInstance().font, Component.translatable(entry.getName()),
                         nameBox.textX(), nameBox.textY(), nameColor, true);
