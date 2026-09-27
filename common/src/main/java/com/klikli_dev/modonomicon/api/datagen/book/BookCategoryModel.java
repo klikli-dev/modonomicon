@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookResearchNodeUnlockedConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeRef;
 import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
+import com.klikli_dev.modonomicon.book.BookBackgroundRenderingMode;
 import com.klikli_dev.modonomicon.book.BookDisplayMode;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiButtonSprites;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
@@ -58,8 +59,15 @@ public class BookCategoryModel {
     /**
      * Allows to modify how "zoomed in" the background texture is rendered.
      * A lower value means the texture is zoomed OUT more -> it is sharper / less blurry.
+     * Only applies if {@link #backgroundRenderingMode} is {@link BookBackgroundRenderingMode#REPEAT}.
      */
     protected float backgroundTextureZoomMultiplier = Category.DEFAULT_BACKGROUND_TEXTURE_ZOOM_MULTIPLIER;
+    /**
+     * Configures how the background texture is rendered.
+     * Only applies if no background parallax layers are set (parallax layers always tile).
+     * Default value is {@link BookBackgroundRenderingMode#REPEAT}.
+     */
+    protected BookBackgroundRenderingMode backgroundRenderingMode = BookBackgroundRenderingMode.REPEAT;
     protected List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers = new ArrayList<>();
     protected List<BookEntryModel> entries = new ArrayList<>();
 
@@ -129,6 +137,9 @@ public class BookCategoryModel {
         json.addProperty("max_scroll_x", this.maxScrollX);
         json.addProperty("max_scroll_y", this.maxScrollY);
         json.addProperty("background_texture_zoom_multiplier", this.backgroundTextureZoomMultiplier);
+        if (this.backgroundRenderingMode != BookBackgroundRenderingMode.REPEAT) {
+            json.addProperty("background_rendering_mode", this.backgroundRenderingMode.getSerializedName());
+        }
         json.add("background_parallax_layers",
                 this.backgroundParallaxLayers.stream()
                         .map(layer -> BookCategoryBackgroundParallaxLayer.CODEC.encodeStart(JsonOps.INSTANCE, layer)
@@ -194,6 +205,10 @@ public class BookCategoryModel {
 
     public List<BookCategoryBackgroundParallaxLayer> getBackgroundParallaxLayers() {
         return this.backgroundParallaxLayers;
+    }
+
+    public BookBackgroundRenderingMode getBackgroundRenderingMode() {
+        return this.backgroundRenderingMode;
     }
 
     public boolean dontGenerateJson() {
@@ -328,10 +343,21 @@ public class BookCategoryModel {
     /**
      * Sets the category's background texture zoom multiplier.
      * A lower value means the texture is zoomed OUT more -> it is sharper / less blurry.
+     * Only applies if the background rendering mode is {@link BookBackgroundRenderingMode#REPEAT}.
      * Default value is {@link Category#DEFAULT_BACKGROUND_TEXTURE_ZOOM_MULTIPLIER}.
      */
     public BookCategoryModel withBackgroundTextureZoomMultiplier(float backgroundTextureZoomMultiplier) {
         this.backgroundTextureZoomMultiplier = backgroundTextureZoomMultiplier;
+        return this;
+    }
+
+    /**
+     * Sets how the category's background texture is rendered.
+     * Only applies if no background parallax layers are set (parallax layers always tile).
+     * Default value is {@link BookBackgroundRenderingMode#REPEAT}.
+     */
+    public BookCategoryModel withBackgroundRenderingMode(BookBackgroundRenderingMode backgroundRenderingMode) {
+        this.backgroundRenderingMode = backgroundRenderingMode;
         return this;
     }
 

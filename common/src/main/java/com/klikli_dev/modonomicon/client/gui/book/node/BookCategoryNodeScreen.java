@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.node;
 
 import com.klikli_dev.modonomicon.api.events.EntryClickedEvent;
+import com.klikli_dev.modonomicon.book.BookBackgroundRenderingMode;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
@@ -176,6 +177,21 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         int innerWidth = this.bookParentScreen.getInnerWidth();
         int innerHeight = this.bookParentScreen.getInnerHeight();
 
+        //non-tiling rendering modes map (a part of) the texture onto the background area with normalized uvs.
+        //because of that the gui scale applies uniformly to the whole area, so unlike tiling these modes
+        //look the same at any gui scale. scrolling does not move these backgrounds,
+        //entries scroll over a fixed backdrop instead.
+        if (this.category.getBackgroundParallaxLayers().isEmpty()) {
+            if (this.category.getBackgroundRenderingMode() == BookBackgroundRenderingMode.SCALE) {
+                this.renderBackgroundStretched(guiGraphics, innerX, innerY, innerWidth, innerHeight);
+                return;
+            }
+            if (this.category.getBackgroundRenderingMode() == BookBackgroundRenderingMode.FIT) {
+                this.renderBackgroundCover(guiGraphics, innerX, innerY, innerWidth, innerHeight);
+                return;
+            }
+        }
+
         //we do not use our static max_scroll here because it makes some issues, so we use the tex instead.
         int backgroundWidth = this.category.getBackgroundWidth();
         int backgroundHeight = this.category.getBackgroundHeight();
@@ -217,6 +233,48 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                     width, height, (int) (backgroundHeight * backgroundTextureZoomMultiplier), (int) (backgroundWidth * backgroundTextureZoomMultiplier));
         }
 
+    }
+
+    /**
+     * Renders the category background texture stretched to exactly fill the background area,
+     * ignoring the original aspect ratio.
+     * The full texture is sampled with normalized uvs, so no tiling occurs at any gui scale.
+     */
+    private void renderBackgroundStretched(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height) {
+        if (width <= 0 || height <= 0)
+            return;
+
+        int textureWidth = Math.max(1, this.category.getBackgroundWidth());
+        int textureHeight = Math.max(1, this.category.getBackgroundHeight());
+
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.category.getBackground(), x, y,
+                0, 0, width, height,
+                textureWidth, textureHeight, textureWidth, textureHeight);
+    }
+
+    /**
+     * Renders the category background texture uniformly scaled so that the entire background area is covered,
+     * without distorting the texture. Parts of the texture may be cropped.
+     * Only the covering part of the texture is sampled with normalized uvs, so no tiling occurs at any gui scale.
+     */
+    private void renderBackgroundCover(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height) {
+        if (width <= 0 || height <= 0)
+            return;
+
+        int textureWidth = Math.max(1, this.category.getBackgroundWidth());
+        int textureHeight = Math.max(1, this.category.getBackgroundHeight());
+
+        //uniform scale so the texture covers the whole area
+        float coverScale = Math.max(width / (float) textureWidth, height / (float) textureHeight);
+        //the corresponding (centered) section of the texture, clamped to the texture bounds
+        int srcWidth = Math.min(textureWidth, Math.max(1, Math.round(width / coverScale)));
+        int srcHeight = Math.min(textureHeight, Math.max(1, Math.round(height / coverScale)));
+        int uOffset = (textureWidth - srcWidth) / 2;
+        int vOffset = (textureHeight - srcHeight) / 2;
+
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.category.getBackground(), x, y,
+                uOffset, vOffset, width, height,
+                srcWidth, srcHeight, textureWidth, textureHeight);
     }
 
     private void renderEntries(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
