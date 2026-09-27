@@ -9,6 +9,7 @@ import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.SingleBookSubProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
+import com.klikli_dev.modonomicon.book.BookBackgroundRenderingMode;
 import com.klikli_dev.modonomicon.datagen.book.demo.formatting.AlwaysLockedEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.formatting.BasicFormattingEntry;
 import net.minecraft.world.item.Items;
@@ -23,6 +24,11 @@ public class ConditionalCategory extends CategoryProvider {
     @Override
     protected void configureLayout(CategoryLayout layout) {
         layout.entry(AlwaysLockedEntry.ID).at(0, 0);
+    }
+
+    @Override
+    protected BookCategoryModel additionalSetup(BookCategoryModel category) {
+        return category.withBackgroundRenderingMode(BookBackgroundRenderingMode.FIT);
     }
 
     @Override

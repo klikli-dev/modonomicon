@@ -1,7 +1,20 @@
 {
   "background": "modonomicon:textures/gui/dark_slate_seamless.png",
   "background_height": 512,
-  "background_parallax_layers": [],
+  "background_parallax_layers": [
+    {
+      "background": "modonomicon:textures/gui/parallax/flow/base.png",
+      "speed": 0.7
+    },
+    {
+      "background": "modonomicon:textures/gui/parallax/flow/1.png",
+      "speed": 1.0
+    },
+    {
+      "background": "modonomicon:textures/gui/parallax/flow/2.png",
+      "speed": 1.4
+    }
+  ],
   "background_texture_zoom_multiplier": 1.0,
   "background_width": 512,
   "description": "",

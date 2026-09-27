@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.book;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Category;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -24,7 +25,9 @@ public class BookCategoryBackgroundParallaxLayer {
             builder.group(
                     Identifier.CODEC.fieldOf("background").forGetter((overlay) -> overlay.background),
                     Codec.FLOAT.optionalFieldOf("speed", 0.5f).forGetter((overlay) -> overlay.speed),
-                    Codec.FLOAT.optionalFieldOf("vanishZoom", -1.0f).forGetter((overlay) -> overlay.vanishZoom)
+                    Codec.FLOAT.optionalFieldOf("vanishZoom", -1.0f).forGetter((overlay) -> overlay.vanishZoom),
+                    BookBackgroundRenderingMode.CODEC.optionalFieldOf("background_rendering_mode", BookBackgroundRenderingMode.REPEAT).forGetter((overlay) -> overlay.renderingMode),
+                    Codec.FLOAT.optionalFieldOf("background_overscan", Category.DEFAULT_BACKGROUND_OVERSCAN).forGetter((overlay) -> overlay.overscan)
             ).apply(builder, BookCategoryBackgroundParallaxLayer::new));
 
     /**
@@ -42,14 +45,33 @@ public class BookCategoryBackgroundParallaxLayer {
      */
     protected float vanishZoom;
 
+    /**
+     * Configures how this layer is rendered. Repeat tiles the texture, scale stretches it to the
+     * background area and fit covers the area without distortion.
+     */
+    protected BookBackgroundRenderingMode renderingMode;
+
+    /**
+     * Uniform extra zoom applied to scale and fit layers, rendering them larger than the background area.
+     * The resulting margin allows the layer to pan with scrolling. 1.0 disables panning.
+     * Ignored for repeat layers (those already pan by tiling).
+     */
+    protected float overscan;
+
     public BookCategoryBackgroundParallaxLayer(Identifier background) {
         this(background, 0.5f, -1.0f);
     }
 
     public BookCategoryBackgroundParallaxLayer(Identifier background, float speed, float vanishZoom) {
+        this(background, speed, vanishZoom, BookBackgroundRenderingMode.REPEAT, Category.DEFAULT_BACKGROUND_OVERSCAN);
+    }
+
+    public BookCategoryBackgroundParallaxLayer(Identifier background, float speed, float vanishZoom, BookBackgroundRenderingMode renderingMode, float overscan) {
         this.background = background;
         this.speed = speed;
         this.vanishZoom = vanishZoom;
+        this.renderingMode = renderingMode;
+        this.overscan = overscan;
     }
 
     public static BookCategoryBackgroundParallaxLayer fromJson(JsonObject json) {
@@ -81,6 +103,14 @@ public class BookCategoryBackgroundParallaxLayer {
 
     public float getVanishZoom() {
         return this.vanishZoom;
+    }
+
+    public BookBackgroundRenderingMode getRenderingMode() {
+        return this.renderingMode;
+    }
+
+    public float getOverscan() {
+        return this.overscan;
     }
 
 }
