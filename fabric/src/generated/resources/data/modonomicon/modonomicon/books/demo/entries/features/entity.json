@@ -15,6 +15,7 @@
   },
   "id": "modonomicon:features/entity",
   "name": "book.modonomicon.demo.features.entity.name",
+  "render_name": "right",
   "sort_number": 11,
   "x": 7,
   "y": -3

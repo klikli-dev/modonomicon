@@ -32,6 +32,7 @@
       "entry": "modonomicon:features/spotlight"
     }
   ],
+  "render_name": "left",
   "sort_number": 8,
   "x": -8,
   "y": 3
