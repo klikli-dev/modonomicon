@@ -182,7 +182,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         for (var entry : this.category.getEntries().values()) {
             var displayStyle = this.getEntryDisplayState(entry);
 
-            if (this.isEntryHovered(entry, xOffset, yOffset, (int) event.x(), (int) event.y())) {
+            if (this.isEntryHovered(entry, displayStyle, xOffset, yOffset, (int) event.x(), (int) event.y())) {
 
                 var entryClickedEvent = new EntryClickedEvent(this.category.getBook().getId(), entry.getId(), event, displayStyle);
                 //if event is canceled -> click was handled and we do not open the entry.
@@ -266,7 +266,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
         for (var entry : this.category.getEntries().values()) {
             var displayState = this.getEntryDisplayState(entry);
-            var isHovered = this.isEntryHovered(entry, xOffset, yOffset, mouseX, mouseY);
+            var isHovered = this.isEntryHovered(entry, displayState, xOffset, yOffset, mouseX, mouseY);
 
             if (displayState == EntryDisplayState.HIDDEN)
                 continue;
@@ -486,22 +486,35 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         }
     }
 
-    private boolean isEntryHovered(BookEntry entry, float xOffset, float yOffset, int mouseX, int mouseY) {
+    private boolean isEntryHovered(BookEntry entry, EntryDisplayState displayState, float xOffset, float yOffset, int mouseX, int mouseY) {
         int x = (int) ((entry.getX() * ENTRY_GRID_SCALE + xOffset + 2) * this.currentZoom);
         int y = (int) ((entry.getY() * ENTRY_GRID_SCALE + yOffset + 2) * this.currentZoom);
         int innerX = this.bookParentScreen.getInnerX();
         int innerY = this.bookParentScreen.getInnerY();
         int innerWidth = this.bookParentScreen.getInnerWidth();
         int innerHeight = this.bookParentScreen.getInnerHeight();
-        return mouseX >= x && mouseX <= x + (ENTRY_WIDTH * this.currentZoom)
-                && mouseY >= y && mouseY <= y + (ENTRY_HEIGHT * this.currentZoom)
-                && mouseX >= innerX && mouseX <= innerX + innerWidth
-                && mouseY >= innerY && mouseY <= innerY + innerHeight;
+        if (mouseX < innerX || mouseX > innerX + innerWidth
+                || mouseY < innerY || mouseY > innerY + innerHeight) {
+            return false;
+        }
+        if (mouseX >= x && mouseX <= x + (ENTRY_WIDTH * this.currentZoom)
+                && mouseY >= y && mouseY <= y + (ENTRY_HEIGHT * this.currentZoom)) {
+            return true;
+        }
+        //the name badge counts as part of the entry
+        var nameBox = this.getEntryNameBox(entry, displayState);
+        if (nameBox == null) {
+            return false;
+        }
+        int boxX = (int) ((nameBox.x() + xOffset) * this.currentZoom);
+        int boxY = (int) ((nameBox.y() + yOffset) * this.currentZoom);
+        return mouseX >= boxX && mouseX <= boxX + (nameBox.width() * this.currentZoom)
+                && mouseY >= boxY && mouseY <= boxY + (nameBox.height() * this.currentZoom);
     }
 
     private void renderTooltip(GuiGraphicsExtractor guiGraphics, BookEntry entry, EntryDisplayState displayState, float xOffset, float yOffset, int mouseX, int mouseY) {
         //hovered?
-        if (this.isEntryHovered(entry, xOffset, yOffset, mouseX, mouseY)) {
+        if (this.isEntryHovered(entry, displayState, xOffset, yOffset, mouseX, mouseY)) {
 
             var tooltip = new ArrayList<ClientTooltipComponent>();
             var tooltipComponents = new ArrayList<Component>();
