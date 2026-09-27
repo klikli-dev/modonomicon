@@ -92,7 +92,8 @@ public final class DemoRuntimeBookContent {
                         false,
                         false,
                         0,
-                        EntryNameRenderType.NONE
+                        EntryNameRenderType.NONE,
+                        false
                 ),
                 null,
                 List.of(

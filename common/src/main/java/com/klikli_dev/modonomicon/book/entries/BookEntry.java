@@ -204,6 +204,10 @@ public abstract class BookEntry {
         return this.data.renderName;
     }
 
+    public boolean showNameBeforeUnlock() {
+        return this.data.showNameBeforeUnlock;
+    }
+
     public BookIcon getIcon() {
         return this.data.icon;
     }
@@ -235,7 +239,7 @@ public abstract class BookEntry {
     public record BookEntryData(Identifier categoryId, List<BookEntryParent> parents, int x, int y, String name,
                                  String description, BookIcon icon, GuiSprite entryBackground,
                                  BookCondition condition, boolean hideWhileLocked, boolean showWhenAnyParentUnlocked,
-                                 int sortNumber, EntryNameRenderType renderName) {
+                                 int sortNumber, EntryNameRenderType renderName, boolean showNameBeforeUnlock) {
 
         public static final MapCodec<BookEntryData> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                 Codecs.STRICT_IDENTIFIER.fieldOf("category").forGetter(BookEntryData::categoryId),
@@ -250,7 +254,8 @@ public abstract class BookEntry {
                 Codec.BOOL.optionalFieldOf("hide_while_locked", false).forGetter(BookEntryData::hideWhileLocked),
                 Codec.BOOL.optionalFieldOf("show_when_any_parent_unlocked", false).forGetter(BookEntryData::showWhenAnyParentUnlocked),
                 Codec.INT.optionalFieldOf("sort_number", -1).forGetter(BookEntryData::sortNumber),
-                EntryNameRenderType.CODEC.optionalFieldOf("render_name", EntryNameRenderType.NONE).forGetter(BookEntryData::renderName)
+                EntryNameRenderType.CODEC.optionalFieldOf("render_name", EntryNameRenderType.NONE).forGetter(BookEntryData::renderName),
+                Codec.BOOL.optionalFieldOf("show_name_before_unlock", false).forGetter(BookEntryData::showNameBeforeUnlock)
         ).apply(instance, BookEntryData::new));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, BookEntryData> STREAM_CODEC = new StreamCodec<>() {
@@ -269,7 +274,8 @@ public abstract class BookEntry {
                         ByteBufCodecs.BOOL.decode(buf),
                         ByteBufCodecs.BOOL.decode(buf),
                         ByteBufCodecs.INT.decode(buf),
-                        EntryNameRenderType.STREAM_CODEC.decode(buf)
+                        EntryNameRenderType.STREAM_CODEC.decode(buf),
+                        ByteBufCodecs.BOOL.decode(buf)
                 );
             }
 
@@ -288,6 +294,7 @@ public abstract class BookEntry {
                 ByteBufCodecs.BOOL.encode(buf, value.showWhenAnyParentUnlocked);
                 ByteBufCodecs.INT.encode(buf, value.sortNumber);
                 EntryNameRenderType.STREAM_CODEC.encode(buf, value.renderName);
+                ByteBufCodecs.BOOL.encode(buf, value.showNameBeforeUnlock);
             }
         };
 

@@ -51,6 +51,7 @@ public class BookEntryModel {
     protected boolean hideWhileLocked;
     protected boolean showWhenAnyParentUnlocked;
     protected EntryNameRenderType renderName = EntryNameRenderType.NONE;
+    protected boolean showNameBeforeUnlock;
     protected List<BookPageModel<?>> pages = new ArrayList<>();
     protected BookConditionModel<?> condition;
     protected Identifier categoryToOpen;
@@ -93,7 +94,8 @@ public class BookEntryModel {
                 this.hideWhileLocked,
                 this.showWhenAnyParentUnlocked,
                 this.sortNumber,
-                this.renderName
+                this.renderName,
+                this.showNameBeforeUnlock
         );
 
         BookEntry entry;
@@ -191,6 +193,10 @@ public class BookEntryModel {
 
     public EntryNameRenderType getRenderName() {
         return this.renderName;
+    }
+
+    public boolean showNameBeforeUnlock() {
+        return this.showNameBeforeUnlock;
     }
 
     public int getSortNumber() {
@@ -389,6 +395,16 @@ public class BookEntryModel {
      */
     public BookEntryModel withRenderName(EntryNameRenderType renderName) {
         this.renderName = renderName;
+        return this;
+    }
+
+    /**
+     * If true, the entry's name is rendered on the node screen even while the entry is locked.
+     * Locked names render under the same grey overlay as the badge, with grey text.
+     * Defaults to false, i.e. names only show once unlocked.
+     */
+    public BookEntryModel withShowNameBeforeUnlock(boolean showNameBeforeUnlock) {
+        this.showNameBeforeUnlock = showNameBeforeUnlock;
         return this;
     }
 

@@ -62,11 +62,10 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
     public static final int ENTRY_NAME_PADDING_Y = 5;
 
     /**
-     * Vanilla advancement title box backgrounds, see AdvancementWidget.
-     * Golden for unlocked entries, grey for locked ones.
+     * Vanilla advancement title box background, see AdvancementWidget.
+     * Locked entries tint it grey via the entry color, like their badge.
      */
     private static final Identifier ENTRY_NAME_BACKGROUND = Identifier.withDefaultNamespace("advancements/box_obtained");
-    private static final Identifier ENTRY_NAME_BACKGROUND_LOCKED = Identifier.withDefaultNamespace("advancements/box_unobtained");
 
     private final BookParentNodeScreen bookParentScreen;
     private final BookCategory category;
@@ -284,12 +283,12 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             }
 
             //render the entry name background first, so the badge overlaps the joint
-            //like the vanilla advancement screen draws its title box behind the icon frame
-            var nameBox = this.getEntryNameBox(entry);
+            //like the vanilla advancement screen draws its title box behind the icon frame.
+            //tinted with the entry color, so locked names render under the same grey overlay as the badge.
+            var nameBox = this.getEntryNameBox(entry, displayState);
             if (nameBox != null) {
-                var boxSprite = displayState == EntryDisplayState.LOCKED ? ENTRY_NAME_BACKGROUND_LOCKED : ENTRY_NAME_BACKGROUND;
-                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, boxSprite,
-                        nameBox.x(), nameBox.y(), nameBox.width(), nameBox.height());
+                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, ENTRY_NAME_BACKGROUND,
+                        nameBox.x(), nameBox.y(), nameBox.width(), nameBox.height(), color);
             }
 
             //render entry background
@@ -334,11 +333,15 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     /**
      * Computes the entry name background box and text position, or null if the entry does not render its name.
+     * Locked entries only render their name if they opt into {@code show_name_before_unlock}.
      * The bar has the same height for all placements.
      * Each direction has its own method so the styling can be adjusted independently.
      * Coordinates are in entry space, i.e. the caller must have applied the entry offset to the pose stack.
      */
-    private EntryNameBox getEntryNameBox(BookEntry entry) {
+    private EntryNameBox getEntryNameBox(BookEntry entry, EntryDisplayState displayState) {
+        if (displayState == EntryDisplayState.LOCKED && !entry.showNameBeforeUnlock())
+            return null;
+
         return switch (entry.getRenderName()) {
             case LEFT -> this.nameBoxLeft(entry);
             case RIGHT -> this.nameBoxRight(entry);
@@ -357,7 +360,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     /**
      * Name bar to the right of the badge, styled like the vanilla advancement title bar:
-     * tucked under the badge and vertically centered next to it.
+     * tucked under the badge and aligned with its top edge, text slightly above center.
      */
     private EntryNameBox nameBoxRight(BookEntry entry) {
         var font = Minecraft.getInstance().font;
@@ -369,10 +372,10 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
         int width = ENTRY_NAME_OVERLAP + ENTRY_NAME_PADDING_X + nameWidth + ENTRY_NAME_PADDING_X;
         int x = entryX + ENTRY_WIDTH - ENTRY_NAME_OVERLAP;
-        int y = entryY + (ENTRY_HEIGHT - barHeight) / 2;
+        int y = entryY;
 
         return new EntryNameBox(x, y, width, barHeight,
-                x + ENTRY_NAME_OVERLAP + ENTRY_NAME_PADDING_X, y + (barHeight - font.lineHeight) / 2);
+                x + ENTRY_NAME_OVERLAP + ENTRY_NAME_PADDING_X, y + (barHeight - font.lineHeight) / 2 - 1);
     }
 
     /**
@@ -388,10 +391,10 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
         int width = ENTRY_NAME_OVERLAP + ENTRY_NAME_PADDING_X + nameWidth + ENTRY_NAME_PADDING_X;
         int x = entryX - width + ENTRY_NAME_OVERLAP;
-        int y = entryY + (ENTRY_HEIGHT - barHeight) / 2;
+        int y = entryY;
 
         return new EntryNameBox(x, y, width, barHeight,
-                x + ENTRY_NAME_PADDING_X, y + (barHeight - font.lineHeight) / 2);
+                x + ENTRY_NAME_PADDING_X, y + (barHeight - font.lineHeight) / 2 - 1);
     }
 
     /**
@@ -408,12 +411,11 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         int entryY = entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP;
 
         int width = nameWidth + ENTRY_NAME_PADDING_X * 2;
-        int height = barHeight + ENTRY_NAME_OVERLAP;
         int x = entryX + (ENTRY_WIDTH - width) / 2;
-        int y = entryY - height + ENTRY_NAME_OVERLAP;
+        int y = entryY - barHeight + ENTRY_NAME_OVERLAP;
 
-        return new EntryNameBox(x, y, width, height,
-                x + ENTRY_NAME_PADDING_X, y + (barHeight - font.lineHeight) / 2);
+        return new EntryNameBox(x, y, width, barHeight,
+                x + ENTRY_NAME_PADDING_X, y + (barHeight - ENTRY_NAME_OVERLAP - font.lineHeight) / 2);
     }
 
     /**
@@ -430,12 +432,11 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         int entryY = entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP;
 
         int width = nameWidth + ENTRY_NAME_PADDING_X * 2;
-        int height = barHeight + ENTRY_NAME_OVERLAP;
         int x = entryX + (ENTRY_WIDTH - width) / 2;
         int y = entryY + ENTRY_HEIGHT - ENTRY_NAME_OVERLAP;
 
-        return new EntryNameBox(x, y, width, height,
-                x + ENTRY_NAME_PADDING_X, y + ENTRY_NAME_OVERLAP + (barHeight - font.lineHeight) / 2);
+        return new EntryNameBox(x, y, width, barHeight,
+                x + ENTRY_NAME_PADDING_X, y + ENTRY_NAME_OVERLAP + (barHeight - ENTRY_NAME_OVERLAP - font.lineHeight) / 2);
     }
 
     public void renderEntryTooltips(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
