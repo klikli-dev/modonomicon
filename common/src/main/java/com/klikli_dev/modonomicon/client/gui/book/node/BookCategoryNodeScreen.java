@@ -78,7 +78,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
      * Matches the default theme texture, see BookNodeSettings.
      */
     private static final GuiSprite FALLBACK_ENTRY_NAME_BACKGROUND = new GuiSprite(
-            Identifier.withDefaultNamespace("modonomicon/themes/default/node/entry_backgrounds/name_background"), 200, 26);
+            Identifier.fromNamespaceAndPath("modonomicon", "modonomicon/themes/default/node/entry_backgrounds/name_background"), 200, 26);
 
     private final BookParentNodeScreen bookParentScreen;
     private final BookCategory category;
