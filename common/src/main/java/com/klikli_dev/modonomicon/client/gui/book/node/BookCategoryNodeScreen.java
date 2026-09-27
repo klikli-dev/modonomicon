@@ -414,7 +414,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     /**
      * Sample styling for a name bar above the badge: fitted bar with the same height as the side bars,
-     * tucked under the badge, text centered in the visible part.
+     * tucked under the badge, text centered on the background like for the side bars.
      * Adjust freely, it is intentionally decoupled from the side bar styling above.
      */
     private EntryNameBox nameBoxAbove(BookEntry entry) {
@@ -431,13 +431,12 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         int y = entryY - barHeight + tuck;
 
         return new EntryNameBox(x, y, width, barHeight,
-                x + ENTRY_NAME_PADDING_X, y + (barHeight - tuck - font.lineHeight) / 2f);
+                x + ENTRY_NAME_PADDING_X, y + (barHeight - font.lineHeight) / 2f);
     }
 
     /**
      * Sample styling for a name bar below the badge: fitted bar with the same height as the side bars,
-     * tucked under the badge, text centered in the visible part with a 1px optical lift
-     * (descenders, shadow and the badge corner peek-through make exact centering read low).
+     * tucked under the badge, text centered on the background like for the side bars.
      * Adjust freely, it is intentionally decoupled from the side bar styling above.
      */
     private EntryNameBox nameBoxBelow(BookEntry entry) {
@@ -454,7 +453,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         int y = entryY + ENTRY_HEIGHT - tuck;
 
         return new EntryNameBox(x, y, width, barHeight,
-                x + ENTRY_NAME_PADDING_X, y + tuck + (barHeight - tuck - font.lineHeight) / 2f - 1);
+                x + ENTRY_NAME_PADDING_X, y + (barHeight - font.lineHeight) / 2f);
     }
 
     public void renderEntryTooltips(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
