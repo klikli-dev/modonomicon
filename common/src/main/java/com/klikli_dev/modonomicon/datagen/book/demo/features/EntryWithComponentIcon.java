@@ -71,7 +71,9 @@ public class EntryWithComponentIcon extends EntryProvider {
 
     @Override
     protected BookEntryModel additionalSetup(BookEntryModel entry) {
-        return super.additionalSetup(entry).withRenderName(EntryNameRenderType.LEFT);
+        return super.additionalSetup(entry)
+                .withRenderName(EntryNameRenderType.LEFT)
+                .withShowNameBeforeUnlock(true);
     }
 
     @Override

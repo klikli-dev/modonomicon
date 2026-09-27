@@ -33,6 +33,7 @@
     }
   ],
   "render_name": "left",
+  "show_name_before_unlock": true,
   "sort_number": 8,
   "x": -8,
   "y": 3

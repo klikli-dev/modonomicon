@@ -59,7 +59,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
     /**
      * Vertical padding between the entry name text and the visible edge of its background.
      */
-    public static final int ENTRY_NAME_PADDING_Y = 5;
+    public static final int ENTRY_NAME_PADDING_Y = 7;
 
     /**
      * Vanilla advancement title box background, see AdvancementWidget.
@@ -360,7 +360,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     /**
      * Name bar to the right of the badge, styled like the vanilla advancement title bar:
-     * tucked under the badge and aligned with its top edge, text slightly above center.
+     * tucked under the badge and vertically centered next to it, text slightly above center.
      */
     private EntryNameBox nameBoxRight(BookEntry entry) {
         var font = Minecraft.getInstance().font;
@@ -372,7 +372,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
         int width = ENTRY_NAME_OVERLAP + ENTRY_NAME_PADDING_X + nameWidth + ENTRY_NAME_PADDING_X;
         int x = entryX + ENTRY_WIDTH - ENTRY_NAME_OVERLAP;
-        int y = entryY;
+        int y = entryY + (ENTRY_HEIGHT - barHeight) / 2;
 
         return new EntryNameBox(x, y, width, barHeight,
                 x + ENTRY_NAME_OVERLAP + ENTRY_NAME_PADDING_X, y + (barHeight - font.lineHeight) / 2 - 1);
@@ -391,7 +391,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
         int width = ENTRY_NAME_OVERLAP + ENTRY_NAME_PADDING_X + nameWidth + ENTRY_NAME_PADDING_X;
         int x = entryX - width + ENTRY_NAME_OVERLAP;
-        int y = entryY;
+        int y = entryY + (ENTRY_HEIGHT - barHeight) / 2;
 
         return new EntryNameBox(x, y, width, barHeight,
                 x + ENTRY_NAME_PADDING_X, y + (barHeight - font.lineHeight) / 2 - 1);
