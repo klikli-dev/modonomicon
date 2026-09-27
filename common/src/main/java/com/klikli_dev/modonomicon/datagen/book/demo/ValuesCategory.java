@@ -7,7 +7,9 @@ package com.klikli_dev.modonomicon.datagen.book.demo;
 import com.klikli_dev.modonomicon.api.datagen.CategoryLayout;
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.SingleBookSubProvider;
+import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
+import com.klikli_dev.modonomicon.book.BookBackgroundRenderingMode;
 import com.klikli_dev.modonomicon.datagen.book.demo.values.CollectorAEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.values.CollectorBEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.values.CollectorCEntry;
@@ -28,6 +30,11 @@ public class ValuesCategory extends CategoryProvider {
         layout.entry(CollectorBEntry.ID).at(1, 0);
         layout.entry(CollectorCEntry.ID).at(2, 0);
         layout.entry(CollectorCompleteEntry.ID).at(1, 1);
+    }
+
+    @Override
+    protected BookCategoryModel additionalSetup(BookCategoryModel category) {
+        return category.withBackgroundRenderingMode(BookBackgroundRenderingMode.SCALE);
     }
 
     @Override
