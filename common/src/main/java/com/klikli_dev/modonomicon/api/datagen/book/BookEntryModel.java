@@ -21,8 +21,10 @@ import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
+import com.klikli_dev.modonomicon.book.entries.BookEntryNameStyle;
 import com.klikli_dev.modonomicon.book.entries.CategoryLinkBookEntry;
 import com.klikli_dev.modonomicon.book.entries.EntryLinkBookEntry;
+import com.klikli_dev.modonomicon.book.entries.EntryNameRenderType;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.google.gson.JsonParseException;
@@ -49,6 +51,11 @@ public class BookEntryModel {
 
     protected boolean hideWhileLocked;
     protected boolean showWhenAnyParentUnlocked;
+    protected EntryNameRenderType renderName = EntryNameRenderType.NONE;
+    protected boolean showNameBeforeUnlock;
+    protected int nameBackgroundColor = 0xFFFFFFFF;
+    protected GuiSprite nameBackground = GuiSprite.EMPTY;
+    protected int nameTextColor = 0xFFFFFFFF;
     protected List<BookPageModel<?>> pages = new ArrayList<>();
     protected BookConditionModel<?> condition;
     protected Identifier categoryToOpen;
@@ -90,7 +97,14 @@ public class BookEntryModel {
                 this.effectiveCondition().toBookCondition(provider),
                 this.hideWhileLocked,
                 this.showWhenAnyParentUnlocked,
-                this.sortNumber
+                this.sortNumber,
+                new BookEntryNameStyle(
+                        this.renderName,
+                        this.showNameBeforeUnlock,
+                        this.nameBackgroundColor,
+                        this.nameBackground,
+                        this.nameTextColor
+                )
         );
 
         BookEntry entry;
@@ -184,6 +198,26 @@ public class BookEntryModel {
 
     public boolean showWhenAnyParentUnlocked() {
         return this.showWhenAnyParentUnlocked;
+    }
+
+    public EntryNameRenderType getRenderName() {
+        return this.renderName;
+    }
+
+    public boolean showNameBeforeUnlock() {
+        return this.showNameBeforeUnlock;
+    }
+
+    public int getNameBackgroundColor() {
+        return this.nameBackgroundColor;
+    }
+
+    public GuiSprite getNameBackground() {
+        return this.nameBackground;
+    }
+
+    public int getNameTextColor() {
+        return this.nameTextColor;
     }
 
     public int getSortNumber() {
@@ -372,6 +406,53 @@ public class BookEntryModel {
      */
     public BookEntryModel showWhenAnyParentUnlocked(boolean showWhenAnyParentUnlocked) {
         this.showWhenAnyParentUnlocked = showWhenAnyParentUnlocked;
+        return this;
+    }
+
+    /**
+     * Controls if and where the entry's name is permanently rendered next to its badge
+     * on node-based category screens, similar to the vanilla advancement screen.
+     * Defaults to {@link EntryNameRenderType#NONE}.
+     */
+    public BookEntryModel withRenderName(EntryNameRenderType renderName) {
+        this.renderName = renderName;
+        return this;
+    }
+
+    /**
+     * If true, the entry's name is rendered on the node screen even while the entry is locked.
+     * Locked names render under the same grey overlay as the badge, with grey text.
+     * Defaults to false, i.e. names only show once unlocked.
+     */
+    public BookEntryModel withShowNameBeforeUnlock(boolean showNameBeforeUnlock) {
+        this.showNameBeforeUnlock = showNameBeforeUnlock;
+        return this;
+    }
+
+    /**
+     * Tints the entry name background. Expects an ARGB color, e.g. {@code 0xFFFF0000} for red.
+     * White (default) keeps the theme default tint. Multiplied with the theme default tint,
+     * so results stay predictable when a book theme sets its own default.
+     */
+    public BookEntryModel withNameBackgroundColor(int nameBackgroundColor) {
+        this.nameBackgroundColor = nameBackgroundColor;
+        return this;
+    }
+
+    /**
+     * Overrides the entry name background sprite. Empty (default) uses the theme default.
+     */
+    public BookEntryModel withNameBackground(GuiSprite nameBackground) {
+        this.nameBackground = nameBackground;
+        return this;
+    }
+
+    /**
+     * Sets the entry name text color. Expects an ARGB color, e.g. {@code 0xFFFF0000} for red.
+     * White (default) keeps the theme default text color. Multiplied with the theme default.
+     */
+    public BookEntryModel withNameTextColor(int nameTextColor) {
+        this.nameTextColor = nameTextColor;
         return this;
     }
 

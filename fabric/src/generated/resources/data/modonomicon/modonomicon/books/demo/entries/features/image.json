@@ -24,6 +24,10 @@
   },
   "id": "modonomicon:features/image",
   "name": "book.modonomicon.demo.features.image.name",
+  "name_style": {
+    "name_background_color": "#ff5555ff",
+    "render_name": "bottom"
+  },
   "parents": [
     {
       "entry": "modonomicon:features/empty"

@@ -16,6 +16,7 @@ public class BookNodeSettingsModel {
 
     protected NodeConnectionRendererType connectionRenderer = BookNodeSettings.DEFAULT.connectionRenderer();
     protected BookDirectConnectionThemeModel directConnections = new BookDirectConnectionThemeModel();
+    protected BookNodeNameStyleModel entryNameStyle = new BookNodeNameStyleModel();
 
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
@@ -23,6 +24,7 @@ public class BookNodeSettingsModel {
         if (this.connectionRenderer == NodeConnectionRendererType.DIRECT) {
             json.add("direct_connections", this.directConnections.toJson());
         }
+        json.add("entry_name_style", this.entryNameStyle.toJson());
         return json;
     }
 
@@ -39,6 +41,14 @@ public class BookNodeSettingsModel {
      */
     public BookNodeSettingsModel withDirectConnections(Consumer<BookDirectConnectionThemeModel> consumer) {
         consumer.accept(this.directConnections);
+        return this;
+    }
+
+    /**
+     * Configures the default styling for permanently rendered entry names (see {@code render_name}).
+     */
+    public BookNodeSettingsModel withEntryNameStyle(Consumer<BookNodeNameStyleModel> consumer) {
+        consumer.accept(this.entryNameStyle);
         return this;
     }
 }
