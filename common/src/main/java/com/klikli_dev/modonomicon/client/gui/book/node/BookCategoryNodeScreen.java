@@ -23,6 +23,7 @@ import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
 import com.klikli_dev.modonomicon.client.gui.book.theme.NodeConnectionRendererType;
 import com.klikli_dev.modonomicon.events.ModonomiconEvents;
 import com.klikli_dev.modonomicon.platform.ClientServices;
+import com.klikli_dev.modonomicon.util.TextRenderHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -48,10 +49,15 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
     public static final int ENTRY_WIDTH = 26;
 
     /**
-     * How far the entry name background tucks under the entry badge, so the two look connected.
+     * How far the top/bottom entry name background tucks under the entry badge, so the two look connected.
      * The badge is rendered after (and thus on top of) the background.
+     * Side bars instead pass fully behind the badge, see {@link #ENTRY_NAME_STICK_THROUGH}.
      */
     public static final int ENTRY_NAME_OVERLAP = 5;
+    /**
+     * How far a left/right entry name bar sticks out past the far edge of the badge.
+     */
+    public static final int ENTRY_NAME_STICK_THROUGH = 2;
     /**
      * Horizontal padding between the entry name text and the visible edge of its background.
      */
@@ -315,7 +321,8 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             //this is permanently rendered as part of the entry
             if (nameBox != null) {
                 int nameColor = displayState == EntryDisplayState.LOCKED ? 0xFFAAAAAA : 0xFFFFFFFF;
-                guiGraphics.text(Minecraft.getInstance().font, Component.translatable(entry.getName()),
+                //float coordinates to allow sub-pixel vertical centering of the text in the bar
+                TextRenderHelper.drawString(guiGraphics, Minecraft.getInstance().font, Component.translatable(entry.getName()),
                         nameBox.textX(), nameBox.textY(), nameColor, true);
             }
 
@@ -326,9 +333,10 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     /**
      * Background box and text position of the permanently rendered entry name.
-     * The box tucks {@link #ENTRY_NAME_OVERLAP} pixels under the badge so the two look connected.
+     * The box tucks under (or, for side bars, passes behind) the badge so the two look connected.
+     * Text coordinates are floats to allow sub-pixel vertical centering.
      */
-    private record EntryNameBox(int x, int y, int width, int height, int textX, int textY) {
+    private record EntryNameBox(int x, int y, int width, int height, float textX, float textY) {
     }
 
     /**
@@ -352,15 +360,17 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
     }
 
     /**
-     * Uniform height of the entry name bar for all placements.
+     * Uniform height of the entry name bar for all placements: text line plus vertical
+     * padding, with one extra pixel at the bottom.
      */
     private int entryNameBarHeight() {
-        return Minecraft.getInstance().font.lineHeight + ENTRY_NAME_PADDING_Y * 2;
+        return Minecraft.getInstance().font.lineHeight + ENTRY_NAME_PADDING_Y * 2 + 1;
     }
 
     /**
      * Name bar to the right of the badge, styled like the vanilla advancement title bar:
-     * tucked under the badge and vertically centered next to it, text slightly above center.
+     * passing behind the full badge and sticking out {@link #ENTRY_NAME_STICK_THROUGH} pixels
+     * on its far side, vertically centered next to it, text centered in the bar.
      */
     private EntryNameBox nameBoxRight(BookEntry entry) {
         var font = Minecraft.getInstance().font;
@@ -370,12 +380,12 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         int entryX = entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP;
         int entryY = entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP;
 
-        int width = ENTRY_NAME_OVERLAP + ENTRY_NAME_PADDING_X + nameWidth + ENTRY_NAME_PADDING_X;
-        int x = entryX + ENTRY_WIDTH - ENTRY_NAME_OVERLAP;
+        int width = ENTRY_NAME_STICK_THROUGH + ENTRY_WIDTH + ENTRY_NAME_PADDING_X + nameWidth + ENTRY_NAME_PADDING_X;
+        int x = entryX - ENTRY_NAME_STICK_THROUGH;
         int y = entryY + (ENTRY_HEIGHT - barHeight) / 2;
 
         return new EntryNameBox(x, y, width, barHeight,
-                x + ENTRY_NAME_OVERLAP + ENTRY_NAME_PADDING_X, y + (barHeight - font.lineHeight) / 2 - 1);
+                entryX + ENTRY_WIDTH + ENTRY_NAME_PADDING_X, y + (barHeight - font.lineHeight) / 2f);
     }
 
     /**
@@ -389,12 +399,12 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         int entryX = entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP;
         int entryY = entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP;
 
-        int width = ENTRY_NAME_OVERLAP + ENTRY_NAME_PADDING_X + nameWidth + ENTRY_NAME_PADDING_X;
-        int x = entryX - width + ENTRY_NAME_OVERLAP;
+        int width = ENTRY_NAME_PADDING_X + nameWidth + ENTRY_NAME_PADDING_X + ENTRY_WIDTH + ENTRY_NAME_STICK_THROUGH;
+        int x = entryX + ENTRY_WIDTH + ENTRY_NAME_STICK_THROUGH - width;
         int y = entryY + (ENTRY_HEIGHT - barHeight) / 2;
 
         return new EntryNameBox(x, y, width, barHeight,
-                x + ENTRY_NAME_PADDING_X, y + (barHeight - font.lineHeight) / 2 - 1);
+                (float) x + ENTRY_NAME_PADDING_X, y + (barHeight - font.lineHeight) / 2f);
     }
 
     /**
@@ -415,7 +425,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         int y = entryY - barHeight + ENTRY_NAME_OVERLAP;
 
         return new EntryNameBox(x, y, width, barHeight,
-                x + ENTRY_NAME_PADDING_X, y + (barHeight - ENTRY_NAME_OVERLAP - font.lineHeight) / 2);
+                x + ENTRY_NAME_PADDING_X, y + (barHeight - ENTRY_NAME_OVERLAP - font.lineHeight) / 2f);
     }
 
     /**
@@ -436,7 +446,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         int y = entryY + ENTRY_HEIGHT - ENTRY_NAME_OVERLAP;
 
         return new EntryNameBox(x, y, width, barHeight,
-                x + ENTRY_NAME_PADDING_X, y + ENTRY_NAME_OVERLAP + (barHeight - ENTRY_NAME_OVERLAP - font.lineHeight) / 2);
+                x + ENTRY_NAME_PADDING_X, y + ENTRY_NAME_OVERLAP + (barHeight - ENTRY_NAME_OVERLAP - font.lineHeight) / 2f);
     }
 
     public void renderEntryTooltips(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
