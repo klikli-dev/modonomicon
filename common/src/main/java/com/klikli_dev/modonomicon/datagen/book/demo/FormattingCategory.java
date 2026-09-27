@@ -9,6 +9,8 @@ import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.SingleBookSubProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
+import com.klikli_dev.modonomicon.book.BookBackgroundRenderingMode;
+import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
 import com.klikli_dev.modonomicon.datagen.book.demo.formatting.AdvancedFormattingEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.formatting.AlwaysLockedEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.formatting.BasicFormattingEntry;
@@ -46,7 +48,12 @@ public class FormattingCategory extends CategoryProvider {
     @Override
     protected BookCategoryModel additionalSetup(BookCategoryModel category) {
         //When first opening the category, open the basic formatting entry automatically.
-        return category.withEntryToOpen(this.modLoc(ID, BasicFormattingEntry.ID), true);
+        return category.withEntryToOpen(this.modLoc(ID, BasicFormattingEntry.ID), true)
+                .withBackgroundParallaxLayers(
+                        new BookCategoryBackgroundParallaxLayer(this.modLoc("textures/gui/parallax/flow/base.png"), 0.7f, -1, BookBackgroundRenderingMode.FIT, 1.25f),
+                        new BookCategoryBackgroundParallaxLayer(this.modLoc("textures/gui/parallax/flow/1.png"), 1f, -1, BookBackgroundRenderingMode.FIT, 1.25f),
+                        new BookCategoryBackgroundParallaxLayer(this.modLoc("textures/gui/parallax/flow/2.png"), 1.4f, -1, BookBackgroundRenderingMode.FIT, 1.25f)
+                );
     }
 
     @Override
