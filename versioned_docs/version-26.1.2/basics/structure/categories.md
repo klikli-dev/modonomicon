@@ -56,11 +56,30 @@ Defaults to `modonomicon:textures/gui/dark_slate_seamless.png`.
 The Identifier for the Background texture to use for this category. The texture must be 512px by 512px.
 
 
+### **background_rendering_mode** (String, _optional_)
+
+Default value: `repeat`. Configures how the category background texture is rendered. Can be `repeat`, `scale` or `fit`.
+Only applies if no `background_parallax_layers` are set (each parallax layer has its own rendering mode, see below).
+
+- `repeat`: the texture is tiled to fill the background area. Best for seamless textures. Note that tiling reacts to the gui scale setting.
+- `scale`: the texture is stretched to exactly fill the background area, ignoring the original aspect ratio.
+- `fit`: the texture is uniformly scaled to cover the entire background area without distortion. Parts of the texture may be cropped.
+
+`scale` and `fit` look the same at any gui scale. By default they pan with scrolling (see `background_overscan`).
+
 ### **background_parallax_layers** (JSON Array of JSON Objects, _optional_)
 
 If any parallax layers are supplied, the `background` property will be ignored.   
 
 Parallax layers allow a multi-layered background with a parallax effect. That means, the textures supplied here likely will feature transparent elements, however the first layer should be fully opaque to avoid visual artifacts.   
+
+Each layer supports the following properties:
+
+- `background` (Identifier, _mandatory_): the layer texture.
+- `speed` (Float, _optional_, default `0.5`): how fast the layer pans with scrolling, relative to the other layers.
+- `vanish_zoom` (Float, _optional_, default `-1`): the category zoom level at which the layer vanishes. `-1` means it never vanishes.
+- `background_rendering_mode` (String, _optional_, default `repeat`): `repeat`, `scale` or `fit`, behaving as described above. Non-tiling layers pan with scrolling inside their overscan margin instead of wrapping, proportionally to their speed.
+- `background_overscan` (Float, _optional_, default `1.1`): overdraw margin for non-tiling layers, see below. Ignored for `repeat` layers.
 
 Sample Value: 
 
@@ -77,7 +96,9 @@ Sample Value:
     {
       "background": "modonomicon:textures/gui/parallax/flow/2.png",
       "speed": 1.4,
-      "vanish_zoom": 0.9
+      "vanish_zoom": 0.9,
+      "background_rendering_mode": "fit",
+      "background_overscan": 1.25
     }
   ],
 ```
@@ -110,6 +131,15 @@ Allows to modify how "zoomed in" the background texture is rendered.
 A lower value means the texture is zoomed OUT more -> it is sharper / less blurry.    
 This is especially useful for textures larger than 512x512px, as they might end up looking blurry otherwise.   
 Make sure to use seamless textures as the texture may be repeated (especially horizontally) to fill the screen.
+Only applies to tiling backgrounds, i.e. `repeat` mode (or `repeat` parallax layers).
+
+### **background_overscan** (Float, _optional_)
+
+Default value: `1.1`
+Uniform extra zoom applied to `scale` and `fit` backgrounds (and parallax layers), rendering them larger than the background area.
+The resulting margin allows the background to pan with scrolling, creating a parallax effect.
+`1.0` disables panning and renders a fixed backdrop.
+Ignored for `repeat` mode (and `repeat` parallax layers), as those already pan by tiling.
 
 ### **show_category_button** (Boolean, _optional_)
 
