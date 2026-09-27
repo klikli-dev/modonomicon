@@ -55,6 +55,11 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
      */
     public static final int ENTRY_NAME_OVERLAP = 5;
     /**
+     * Extra shift of top/bottom bars into the badge beyond {@link #ENTRY_NAME_OVERLAP}:
+     * the bottom bar 3px up, the top bar 3px down.
+     */
+    public static final int ENTRY_NAME_VERTICAL_SHIFT = 3;
+    /**
      * How far a left/right entry name bar sticks out past the far edge of the badge.
      */
     public static final int ENTRY_NAME_STICK_THROUGH = 2;
@@ -408,45 +413,48 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
     }
 
     /**
-     * Sample styling for a name bar above the badge: fitted bar with the uniform bar height,
-     * tucked under the badge, text centered.
+     * Sample styling for a name bar above the badge: fitted bar with the same height as the side bars,
+     * tucked under the badge, text centered in the visible part.
      * Adjust freely, it is intentionally decoupled from the side bar styling above.
      */
     private EntryNameBox nameBoxAbove(BookEntry entry) {
         var font = Minecraft.getInstance().font;
         int nameWidth = font.width(Component.translatable(entry.getName()));
         int barHeight = this.entryNameBarHeight();
+        int tuck = ENTRY_NAME_OVERLAP + ENTRY_NAME_VERTICAL_SHIFT;
 
         int entryX = entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP;
         int entryY = entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP;
 
         int width = nameWidth + ENTRY_NAME_PADDING_X * 2;
         int x = entryX + (ENTRY_WIDTH - width) / 2;
-        int y = entryY - barHeight + ENTRY_NAME_OVERLAP;
+        int y = entryY - barHeight + tuck;
 
         return new EntryNameBox(x, y, width, barHeight,
-                x + ENTRY_NAME_PADDING_X, y + (barHeight - ENTRY_NAME_OVERLAP - font.lineHeight) / 2f);
+                x + ENTRY_NAME_PADDING_X, y + (barHeight - tuck - font.lineHeight) / 2f);
     }
 
     /**
-     * Sample styling for a name bar below the badge: fitted bar with the uniform bar height,
-     * tucked under the badge, text centered.
+     * Sample styling for a name bar below the badge: fitted bar with the same height as the side bars,
+     * tucked under the badge, text centered in the visible part with a 1px optical lift
+     * (descenders, shadow and the badge corner peek-through make exact centering read low).
      * Adjust freely, it is intentionally decoupled from the side bar styling above.
      */
     private EntryNameBox nameBoxBelow(BookEntry entry) {
         var font = Minecraft.getInstance().font;
         int nameWidth = font.width(Component.translatable(entry.getName()));
         int barHeight = this.entryNameBarHeight();
+        int tuck = ENTRY_NAME_OVERLAP + ENTRY_NAME_VERTICAL_SHIFT;
 
         int entryX = entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP;
         int entryY = entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP;
 
         int width = nameWidth + ENTRY_NAME_PADDING_X * 2;
         int x = entryX + (ENTRY_WIDTH - width) / 2;
-        int y = entryY + ENTRY_HEIGHT - ENTRY_NAME_OVERLAP;
+        int y = entryY + ENTRY_HEIGHT - tuck;
 
         return new EntryNameBox(x, y, width, barHeight,
-                x + ENTRY_NAME_PADDING_X, y + ENTRY_NAME_OVERLAP + (barHeight - ENTRY_NAME_OVERLAP - font.lineHeight) / 2f);
+                x + ENTRY_NAME_PADDING_X, y + tuck + (barHeight - tuck - font.lineHeight) / 2f - 1);
     }
 
     public void renderEntryTooltips(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
