@@ -7,12 +7,14 @@ package com.klikli_dev.modonomicon.datagen.book.demo.features;
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
+import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookImagePageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookSpotlightPageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.book.ImageDisplayMode;
 import com.klikli_dev.modonomicon.book.ImageScaleMode;
+import com.klikli_dev.modonomicon.book.entries.EntryNameRenderType;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
@@ -92,6 +94,13 @@ public class ImageEntry extends EntryProvider {
         );
         this.pageTitle("Small image!");
         this.pageText("This image uses small display mode.");
+    }
+
+    @Override
+    protected BookEntryModel additionalSetup(BookEntryModel entry) {
+        //showcase the permanently rendered entry name from
+        //https://github.com/klikli-dev/modonomicon/issues/186
+        return entry.withRenderName(EntryNameRenderType.BOTTOM);
     }
 
     @Override

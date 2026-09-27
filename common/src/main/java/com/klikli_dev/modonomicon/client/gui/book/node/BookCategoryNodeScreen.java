@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
+import com.klikli_dev.modonomicon.book.entries.EntryNameRenderType;
 import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.bookstate.visual.CategoryVisualState;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
@@ -45,6 +46,11 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     public static final int ENTRY_HEIGHT = 26;
     public static final int ENTRY_WIDTH = 26;
+
+    /**
+     * Gap between an entry badge and its permanently rendered name, if any.
+     */
+    public static final int ENTRY_NAME_OFFSET = 4;
 
     private final BookParentNodeScreen bookParentScreen;
     private final BookCategory category;
@@ -279,9 +285,60 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                         entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP - 2, isHovered);
             }
 
+            //render the entry name next to the badge, if configured
+            //unlike the vanilla advancement screen, which only shows name and description on hover,
+            //this is permanently rendered as part of the entry
+            this.renderEntryName(guiGraphics, entry, displayState);
+
             guiGraphics.pose().popMatrix();
         }
         guiGraphics.pose().popMatrix();
+    }
+
+    /**
+     * Permanently renders the entry's name next to its badge, if the entry sets {@code render_name}.
+     * Must be called with the entry offset already applied to the pose stack.
+     */
+    private void renderEntryName(GuiGraphicsExtractor guiGraphics, BookEntry entry, EntryDisplayState displayState) {
+        var renderName = entry.getRenderName();
+        if (renderName == EntryNameRenderType.NONE)
+            return;
+
+        var font = Minecraft.getInstance().font;
+        var name = Component.translatable(entry.getName());
+        int nameWidth = font.width(name);
+        int nameHeight = font.lineHeight;
+
+        int entryX = entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP;
+        int entryY = entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP;
+
+        int color = displayState == EntryDisplayState.LOCKED ? 0xFFAAAAAA : 0xFFFFFFFF;
+
+        int x;
+        int y;
+        switch (renderName) {
+            case LEFT -> {
+                x = entryX - ENTRY_NAME_OFFSET - nameWidth;
+                y = entryY + (ENTRY_HEIGHT - nameHeight) / 2;
+            }
+            case RIGHT -> {
+                x = entryX + ENTRY_WIDTH + ENTRY_NAME_OFFSET;
+                y = entryY + (ENTRY_HEIGHT - nameHeight) / 2;
+            }
+            case TOP -> {
+                x = entryX + (ENTRY_WIDTH - nameWidth) / 2;
+                y = entryY - ENTRY_NAME_OFFSET - nameHeight;
+            }
+            case BOTTOM -> {
+                x = entryX + (ENTRY_WIDTH - nameWidth) / 2;
+                y = entryY + ENTRY_HEIGHT + ENTRY_NAME_OFFSET;
+            }
+            default -> {
+                return;
+            }
+        }
+
+        guiGraphics.text(font, name, x, y, color, true);
     }
 
     public void renderEntryTooltips(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {

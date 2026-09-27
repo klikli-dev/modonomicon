@@ -23,6 +23,7 @@ import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.entries.CategoryLinkBookEntry;
 import com.klikli_dev.modonomicon.book.entries.EntryLinkBookEntry;
+import com.klikli_dev.modonomicon.book.entries.EntryNameRenderType;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.google.gson.JsonParseException;
@@ -49,6 +50,7 @@ public class BookEntryModel {
 
     protected boolean hideWhileLocked;
     protected boolean showWhenAnyParentUnlocked;
+    protected EntryNameRenderType renderName = EntryNameRenderType.NONE;
     protected List<BookPageModel<?>> pages = new ArrayList<>();
     protected BookConditionModel<?> condition;
     protected Identifier categoryToOpen;
@@ -90,7 +92,8 @@ public class BookEntryModel {
                 this.effectiveCondition().toBookCondition(provider),
                 this.hideWhileLocked,
                 this.showWhenAnyParentUnlocked,
-                this.sortNumber
+                this.sortNumber,
+                this.renderName
         );
 
         BookEntry entry;
@@ -184,6 +187,10 @@ public class BookEntryModel {
 
     public boolean showWhenAnyParentUnlocked() {
         return this.showWhenAnyParentUnlocked;
+    }
+
+    public EntryNameRenderType getRenderName() {
+        return this.renderName;
     }
 
     public int getSortNumber() {
@@ -372,6 +379,16 @@ public class BookEntryModel {
      */
     public BookEntryModel showWhenAnyParentUnlocked(boolean showWhenAnyParentUnlocked) {
         this.showWhenAnyParentUnlocked = showWhenAnyParentUnlocked;
+        return this;
+    }
+
+    /**
+     * Controls if and where the entry's name is permanently rendered next to its badge
+     * on node-based category screens, similar to the vanilla advancement screen.
+     * Defaults to {@link EntryNameRenderType#NONE}.
+     */
+    public BookEntryModel withRenderName(EntryNameRenderType renderName) {
+        this.renderName = renderName;
         return this;
     }
 

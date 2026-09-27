@@ -17,6 +17,7 @@ import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
+import com.klikli_dev.modonomicon.book.entries.EntryNameRenderType;
 import com.klikli_dev.modonomicon.book.page.BookTextPage;
 import com.klikli_dev.modonomicon.datagen.book.DemoBook;
 import com.klikli_dev.modonomicon.datagen.book.demo.FeaturesCategory;
@@ -90,7 +91,8 @@ public final class DemoRuntimeBookContent {
                         new BookNoneCondition(),
                         false,
                         false,
-                        0
+                        0,
+                        EntryNameRenderType.NONE
                 ),
                 null,
                 List.of(

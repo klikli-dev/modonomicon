@@ -29,6 +29,7 @@
       "entry": "modonomicon:features/empty"
     }
   ],
+  "render_name": "bottom",
   "sort_number": 12,
   "x": 8,
   "y": 0
