@@ -9,7 +9,9 @@ package com.klikli_dev.modonomicon.datagen.book.demo;
 import com.klikli_dev.modonomicon.api.datagen.CategoryLayout;
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.SingleBookSubProvider;
+import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
+import com.klikli_dev.modonomicon.book.BookBackgroundRenderingMode;
 import com.klikli_dev.modonomicon.datagen.book.demo.acquiring.AcquiringCobblestoneEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.acquiring.AcquiringIntroEntry;
 import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
@@ -26,6 +28,12 @@ public class AcquiringCategory extends CategoryProvider {
     protected void configureLayout(CategoryLayout layout) {
         layout.entry(AcquiringIntroEntry.ID).at(0, 0);
         layout.entry(AcquiringCobblestoneEntry.ID).at(2, 0);
+    }
+
+    @Override
+    protected BookCategoryModel additionalSetup(BookCategoryModel category) {
+        return category.withBackgroundRenderingMode(BookBackgroundRenderingMode.FIT)
+                .withBackgroundOverscan(1.25f);
     }
 
     @Override
