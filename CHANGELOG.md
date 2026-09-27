@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.3-2.11.0] - 2026-09-27
+### :sparkles: New Features
+- [`083abfc`](https://github.com/klikli-dev/modonomicon/commit/083abfc88ddb6ab9644936cc3ea1758b5900f5f9) - allow to determine how category background behaves at different GUI scales (scale vs fit vs repeat) *(PR [#402](https://github.com/klikli-dev/modonomicon/pull/402) by [@klikli-dev](https://github.com/klikli-dev))*
+  - :arrow_lower_right: *addresses issue [#294](https://github.com/klikli-dev/modonomicon/issues/294) opened by [@FoxySophie](https://github.com/FoxySophie)*
+
+
 ## [release/v26.3-2.10.0] - 2026-09-25
 ### :sparkles: New Features
 - [`1c8692a`](https://github.com/klikli-dev/modonomicon/commit/1c8692a57c4949b1c8943458246ac4eeef7980a4) - not condition and better live evaluation *(PR [#401](https://github.com/klikli-dev/modonomicon/pull/401) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2424,3 +2430,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.3-2.8.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.7.0...release/v26.3-2.8.0
 [release/v26.3-2.9.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.9.0...release/v26.3-2.9.1
 [release/v26.3-2.10.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.9.1...release/v26.3-2.10.0
+[release/v26.3-2.11.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.10.0...release/v26.3-2.11.0
