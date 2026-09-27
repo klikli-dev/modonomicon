@@ -303,13 +303,13 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             var nameBox = this.getEntryNameBox(entry, displayState);
             if (nameBox != null) {
                 var settings = this.category.getBook().theme().node().settings();
-                var background = entry.getNameBackground().isEmpty() ? settings.entryNameBackground() : entry.getNameBackground();
+                var background = entry.getNameBackground().isEmpty() ? settings.entryNameStyle().background() : entry.getNameBackground();
                 if (background.isEmpty()) {
                     background = FALLBACK_ENTRY_NAME_BACKGROUND;
                 }
                 background.extractRenderState(guiGraphics,
                         nameBox.x(), nameBox.y(), nameBox.width(), nameBox.height(),
-                        ARGB.multiply(ARGB.multiply(settings.entryNameBackgroundTint(), entry.getNameBackgroundColor()), color));
+                        ARGB.multiply(ARGB.multiply(settings.entryNameStyle().backgroundTint(), entry.getNameBackgroundColor()), color));
             }
 
             //render entry background
@@ -340,7 +340,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                     nameColor = 0xFFAAAAAA;
                 } else {
                     var settings = this.category.getBook().theme().node().settings();
-                    nameColor = ARGB.multiply(settings.entryNameTextColor(), entry.getNameTextColor());
+                    nameColor = ARGB.multiply(settings.entryNameStyle().textColor(), entry.getNameTextColor());
                 }
                 //float coordinates to allow sub-pixel vertical centering of the text in the bar
                 TextRenderHelper.drawString(guiGraphics, Minecraft.getInstance().font, Component.translatable(entry.getName()),
