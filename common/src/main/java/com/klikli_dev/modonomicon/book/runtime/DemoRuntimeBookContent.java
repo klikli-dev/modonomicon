@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.book.BookBackgroundRenderingMode;
 import com.klikli_dev.modonomicon.book.BookDisplayMode;
 import com.klikli_dev.modonomicon.book.BookIcon;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
@@ -70,6 +71,8 @@ public final class DemoRuntimeBookContent {
                 ModonomiconConstants.Data.Category.DEFAULT_MAX_SCROLL_X,
                 ModonomiconConstants.Data.Category.DEFAULT_MAX_SCROLL_Y,
                 ModonomiconConstants.Data.Category.DEFAULT_BACKGROUND_TEXTURE_ZOOM_MULTIPLIER,
+                BookBackgroundRenderingMode.REPEAT,
+                ModonomiconConstants.Data.Category.DEFAULT_BACKGROUND_OVERSCAN,
                 List.of(),
                 null,
                 null,

@@ -50,8 +50,22 @@ public class BookCategory {
     /**
      * Allows to modify how "zoomed in" the background texture is rendered.
      * A lower value means the texture is zoomed OUT more -> it is sharper / less blurry.
+     * Only applies if {@link #backgroundRenderingMode} is {@link BookBackgroundRenderingMode#REPEAT}.
      */
     protected float backgroundTextureZoomMultiplier;
+    /**
+     * Configures how the background texture is rendered.
+     * Only applies if no {@link #backgroundParallaxLayers} are set (parallax layers always tile).
+     */
+    protected BookBackgroundRenderingMode backgroundRenderingMode;
+    /**
+     * Uniform extra zoom applied to {@link BookBackgroundRenderingMode#SCALE} and
+     * {@link BookBackgroundRenderingMode#FIT} backgrounds, rendering them larger than the background area.
+     * The resulting margin allows the background to pan with scrolling (parallax effect).
+     * 1.0 disables panning and renders a fixed backdrop.
+     * Ignored for {@link BookBackgroundRenderingMode#REPEAT} and parallax layers (those already pan by tiling).
+     */
+    protected float backgroundOverscan;
     protected List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers;
     protected Map<Identifier, BookEntry> entries;
     protected BookCondition condition;
@@ -68,7 +82,7 @@ public class BookCategory {
      */
     protected boolean openEntryToOpenOnlyOnce;
 
-    public BookCategory(Identifier id, String name, BookTextHolder description, int sortNumber, BookCondition condition, boolean showCategoryButton, BookIcon icon, BookDisplayMode displayMode, Identifier background, int backgroundWidth, int backgroundHeight, int maxScrollX, int maxScrollY, float backgroundTextureZoomMultiplier, List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers, GuiButtonSprites categoryButtonSprites, Identifier entryToOpen, boolean openEntryOnlyOnce) {
+    public BookCategory(Identifier id, String name, BookTextHolder description, int sortNumber, BookCondition condition, boolean showCategoryButton, BookIcon icon, BookDisplayMode displayMode, Identifier background, int backgroundWidth, int backgroundHeight, int maxScrollX, int maxScrollY, float backgroundTextureZoomMultiplier, BookBackgroundRenderingMode backgroundRenderingMode, float backgroundOverscan, List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers, GuiButtonSprites categoryButtonSprites, Identifier entryToOpen, boolean openEntryOnlyOnce) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -83,6 +97,8 @@ public class BookCategory {
         this.maxScrollX = maxScrollX;
         this.maxScrollY = maxScrollY;
         this.backgroundTextureZoomMultiplier = backgroundTextureZoomMultiplier;
+        this.backgroundRenderingMode = backgroundRenderingMode;
+        this.backgroundOverscan = backgroundOverscan;
         this.backgroundParallaxLayers = backgroundParallaxLayers;
         this.entries = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
         this.categoryButtonSprites = categoryButtonSprites;
@@ -103,6 +119,11 @@ public class BookCategory {
         var defaultMaxScrollY = GsonHelper.getAsInt(json, "max_scroll_y", Category.DEFAULT_MAX_SCROLL_Y);
 
         var backgroundTextureZoomMultiplier = GsonHelper.getAsFloat(json, "background_texture_zoom_multiplier", Category.DEFAULT_BACKGROUND_TEXTURE_ZOOM_MULTIPLIER);
+        var backgroundRenderingMode = BookBackgroundRenderingMode.byName(GsonHelper.getAsString(json, "background_rendering_mode", BookBackgroundRenderingMode.REPEAT.getSerializedName()));
+        if (backgroundRenderingMode == null) {
+            backgroundRenderingMode = BookBackgroundRenderingMode.REPEAT;
+        }
+        var backgroundOverscan = GsonHelper.getAsFloat(json, "background_overscan", Category.DEFAULT_BACKGROUND_OVERSCAN);
         var showCategoryButton = GsonHelper.getAsBoolean(json, "show_category_button", true);
         var categoryButtonSprites = json.has("category_button_sprite")
                 ? categoryButtonSpritesFromJson(json.getAsJsonObject("category_button_sprite"))
@@ -124,7 +145,7 @@ public class BookCategory {
         boolean openEntryOnlyOnce = GsonHelper.getAsBoolean(json, "open_entry_to_open_only_once", true);
 
         return new BookCategory(id, name, description, sortNumber, condition, showCategoryButton, icon, displayMode, background, backgroundWidth, backgroundHeight,
-                defaultMaxScrollX, defaultMaxScrollY, backgroundTextureZoomMultiplier, backgroundParallaxLayers, categoryButtonSprites, entryToOpen, openEntryOnlyOnce);
+                defaultMaxScrollX, defaultMaxScrollY, backgroundTextureZoomMultiplier, backgroundRenderingMode, backgroundOverscan, backgroundParallaxLayers, categoryButtonSprites, entryToOpen, openEntryOnlyOnce);
     }
 
     public static BookCategory fromNetwork(Identifier id, RegistryFriendlyByteBuf buffer) {
@@ -139,6 +160,8 @@ public class BookCategory {
         var defaultMaxScrollX = buffer.readVarInt();
         var defaultMaxScrollY = buffer.readVarInt();
         var backgroundTextureZoomMultiplier = buffer.readFloat();
+        var backgroundRenderingMode = BookBackgroundRenderingMode.byId(buffer.readByte());
+        var backgroundOverscan = buffer.readFloat();
         var backgroundParallaxLayers = buffer.readList(BookCategoryBackgroundParallaxLayer::fromNetwork);
         var condition = BookCondition.fromNetwork(buffer);
         var showCategoryButton = buffer.readBoolean();
@@ -146,7 +169,7 @@ public class BookCategory {
         var entryToOpen = buffer.readNullable(FriendlyByteBuf::readIdentifier);
         var openEntryOnlyOnce = buffer.readBoolean();
         return new BookCategory(id, name, description, sortNumber, condition, showCategoryButton, icon, displayMode, background, backgroundWidth, backgroundHeight,
-                defaultMaxScrollX, defaultMaxScrollY, backgroundTextureZoomMultiplier, backgroundParallaxLayers, categoryButtonSprites, entryToOpen, openEntryOnlyOnce);
+                defaultMaxScrollX, defaultMaxScrollY, backgroundTextureZoomMultiplier, backgroundRenderingMode, backgroundOverscan, backgroundParallaxLayers, categoryButtonSprites, entryToOpen, openEntryOnlyOnce);
     }
 
     public void toNetwork(RegistryFriendlyByteBuf buffer) {
@@ -161,6 +184,8 @@ public class BookCategory {
         buffer.writeVarInt(this.maxScrollX);
         buffer.writeVarInt(this.maxScrollY);
         buffer.writeFloat(this.backgroundTextureZoomMultiplier);
+        buffer.writeByte(this.backgroundRenderingMode.ordinal());
+        buffer.writeFloat(this.backgroundOverscan);
         buffer.writeCollection(this.backgroundParallaxLayers, (buf, layer) -> layer.toNetwork(buf));
         BookCondition.toNetwork(this.condition, buffer);
         buffer.writeBoolean(this.showCategoryButton);
@@ -299,6 +324,14 @@ public class BookCategory {
 
     public float getBackgroundTextureZoomMultiplier() {
         return this.backgroundTextureZoomMultiplier;
+    }
+
+    public BookBackgroundRenderingMode getBackgroundRenderingMode() {
+        return this.backgroundRenderingMode;
+    }
+
+    public float getBackgroundOverscan() {
+        return this.backgroundOverscan;
     }
 
     public List<BookCategoryBackgroundParallaxLayer> getBackgroundParallaxLayers() {

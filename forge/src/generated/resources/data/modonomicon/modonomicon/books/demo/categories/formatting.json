@@ -1,7 +1,26 @@
 {
   "background": "modonomicon:textures/gui/dark_slate_seamless.png",
   "background_height": 512,
-  "background_parallax_layers": [],
+  "background_parallax_layers": [
+    {
+      "background": "modonomicon:textures/gui/parallax/flow/base.png",
+      "background_overscan": 1.25,
+      "background_rendering_mode": "fit",
+      "speed": 0.7
+    },
+    {
+      "background": "modonomicon:textures/gui/parallax/flow/1.png",
+      "background_overscan": 1.25,
+      "background_rendering_mode": "fit",
+      "speed": 1.0
+    },
+    {
+      "background": "modonomicon:textures/gui/parallax/flow/2.png",
+      "background_overscan": 1.25,
+      "background_rendering_mode": "fit",
+      "speed": 1.4
+    }
+  ],
   "background_texture_zoom_multiplier": 1.0,
   "background_width": 512,
   "description": "",
