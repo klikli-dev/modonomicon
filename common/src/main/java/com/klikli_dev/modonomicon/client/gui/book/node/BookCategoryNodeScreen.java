@@ -6,6 +6,7 @@
  */
 package com.klikli_dev.modonomicon.client.gui.book.node;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.events.EntryClickedEvent;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
@@ -21,6 +22,7 @@ import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.DirectEntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.client.gui.book.theme.NodeConnectionRendererType;
 import com.klikli_dev.modonomicon.events.ModonomiconEvents;
 import com.klikli_dev.modonomicon.platform.ClientServices;
@@ -48,9 +50,21 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
     public static final int ENTRY_WIDTH = 26;
 
     /**
-     * Gap between an entry badge and its permanently rendered name, if any.
+     * How far the entry name background tucks under the entry badge, so the two look connected.
+     * The badge is rendered after (and thus on top of) the background.
      */
-    public static final int ENTRY_NAME_OFFSET = 4;
+    public static final int ENTRY_NAME_OVERLAP = 5;
+    /**
+     * Horizontal padding between the entry name text and the visible edge of its background.
+     */
+    public static final int ENTRY_NAME_PADDING_X = 5;
+    /**
+     * Vertical padding between the entry name text and the visible edge of its background.
+     */
+    public static final int ENTRY_NAME_PADDING_Y = 4;
+
+    private static final GuiSprite ENTRY_NAME_BACKGROUND = new GuiSprite(
+            Modonomicon.loc("themes/default/node/entry_name_background"), -1, -1);
 
     private final BookParentNodeScreen bookParentScreen;
     private final BookCategory category;
@@ -266,6 +280,15 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                 //Draw hovered entries slightly greyed out
                 color = ARGB.colorFromFloat(1f, 0.8F, 0.8F, 0.8F);
             }
+
+            //render the entry name background first, so the badge overlaps the joint
+            //like the vanilla advancement screen draws its title box behind the icon frame
+            var nameBox = this.getEntryNameBox(entry);
+            if (nameBox != null) {
+                ENTRY_NAME_BACKGROUND.extractRenderState(guiGraphics,
+                        nameBox.x(), nameBox.y(), nameBox.width(), nameBox.height(), color);
+            }
+
             //render entry background
             entryBackground.extractRenderState(guiGraphics,
                     entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP,
@@ -285,10 +308,14 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                         entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP - 2, isHovered);
             }
 
-            //render the entry name next to the badge, if configured
+            //render the entry name text on top of its background
             //unlike the vanilla advancement screen, which only shows name and description on hover,
             //this is permanently rendered as part of the entry
-            this.renderEntryName(guiGraphics, entry, displayState);
+            if (nameBox != null) {
+                int nameColor = displayState == EntryDisplayState.LOCKED ? 0xFFAAAAAA : 0xFFFFFFFF;
+                guiGraphics.text(Minecraft.getInstance().font, Component.translatable(entry.getName()),
+                        nameBox.textX(), nameBox.textY(), nameColor, true);
+            }
 
             guiGraphics.pose().popMatrix();
         }
@@ -296,49 +323,73 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
     }
 
     /**
-     * Permanently renders the entry's name next to its badge, if the entry sets {@code render_name}.
-     * Must be called with the entry offset already applied to the pose stack.
+     * Background box and text position of the permanently rendered entry name.
+     * The box tucks {@link #ENTRY_NAME_OVERLAP} pixels under the badge so the two look connected.
      */
-    private void renderEntryName(GuiGraphicsExtractor guiGraphics, BookEntry entry, EntryDisplayState displayState) {
+    private record EntryNameBox(int x, int y, int width, int height, int textX, int textY) {
+    }
+
+    /**
+     * Computes the entry name background box and text position, or null if the entry does not render its name.
+     * Coordinates are in entry space, i.e. the caller must have applied the entry offset to the pose stack.
+     */
+    private EntryNameBox getEntryNameBox(BookEntry entry) {
         var renderName = entry.getRenderName();
         if (renderName == EntryNameRenderType.NONE)
-            return;
+            return null;
 
         var font = Minecraft.getInstance().font;
-        var name = Component.translatable(entry.getName());
-        int nameWidth = font.width(name);
+        int nameWidth = font.width(Component.translatable(entry.getName()));
         int nameHeight = font.lineHeight;
 
         int entryX = entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP;
         int entryY = entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP;
 
-        int color = displayState == EntryDisplayState.LOCKED ? 0xFFAAAAAA : 0xFFFFFFFF;
-
         int x;
         int y;
+        int width;
+        int height;
+        int textX;
+        int textY;
         switch (renderName) {
             case LEFT -> {
-                x = entryX - ENTRY_NAME_OFFSET - nameWidth;
-                y = entryY + (ENTRY_HEIGHT - nameHeight) / 2;
+                width = ENTRY_NAME_OVERLAP + ENTRY_NAME_PADDING_X + nameWidth + ENTRY_NAME_PADDING_X;
+                height = ENTRY_HEIGHT;
+                x = entryX - width + ENTRY_NAME_OVERLAP;
+                y = entryY;
+                textX = x + ENTRY_NAME_PADDING_X;
+                textY = y + (height - nameHeight) / 2;
             }
             case RIGHT -> {
-                x = entryX + ENTRY_WIDTH + ENTRY_NAME_OFFSET;
-                y = entryY + (ENTRY_HEIGHT - nameHeight) / 2;
+                width = ENTRY_NAME_OVERLAP + ENTRY_NAME_PADDING_X + nameWidth + ENTRY_NAME_PADDING_X;
+                height = ENTRY_HEIGHT;
+                x = entryX + ENTRY_WIDTH - ENTRY_NAME_OVERLAP;
+                y = entryY;
+                textX = x + ENTRY_NAME_OVERLAP + ENTRY_NAME_PADDING_X;
+                textY = y + (height - nameHeight) / 2;
             }
             case TOP -> {
-                x = entryX + (ENTRY_WIDTH - nameWidth) / 2;
-                y = entryY - ENTRY_NAME_OFFSET - nameHeight;
+                width = nameWidth + ENTRY_NAME_PADDING_X * 2;
+                height = ENTRY_NAME_OVERLAP + ENTRY_NAME_PADDING_Y + nameHeight + ENTRY_NAME_PADDING_Y;
+                x = entryX + (ENTRY_WIDTH - width) / 2;
+                y = entryY - height + ENTRY_NAME_OVERLAP;
+                textX = x + ENTRY_NAME_PADDING_X;
+                textY = y + ENTRY_NAME_PADDING_Y;
             }
             case BOTTOM -> {
-                x = entryX + (ENTRY_WIDTH - nameWidth) / 2;
-                y = entryY + ENTRY_HEIGHT + ENTRY_NAME_OFFSET;
+                width = nameWidth + ENTRY_NAME_PADDING_X * 2;
+                height = ENTRY_NAME_OVERLAP + ENTRY_NAME_PADDING_Y + nameHeight + ENTRY_NAME_PADDING_Y;
+                x = entryX + (ENTRY_WIDTH - width) / 2;
+                y = entryY + ENTRY_HEIGHT - ENTRY_NAME_OVERLAP;
+                textX = x + ENTRY_NAME_PADDING_X;
+                textY = y + ENTRY_NAME_OVERLAP + ENTRY_NAME_PADDING_Y;
             }
             default -> {
-                return;
+                return null;
             }
         }
 
-        guiGraphics.text(font, name, x, y, color, true);
+        return new EntryNameBox(x, y, width, height, textX, textY);
     }
 
     public void renderEntryTooltips(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
