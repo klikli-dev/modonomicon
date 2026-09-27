@@ -9,6 +9,7 @@ import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
+import com.klikli_dev.modonomicon.book.entries.EntryNameRenderType;
 import com.klikli_dev.modonomicon.datagen.book.demo.IndexModeCategory;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.world.item.Items;
@@ -27,7 +28,9 @@ public class DemoRedirectEntry extends EntryProvider {
 
     @Override
     protected BookEntryModel additionalSetup(BookEntryModel entry) {
-        return entry.withCategoryToOpen(this.modLoc(IndexModeCategory.ID));
+        return entry.withCategoryToOpen(this.modLoc(IndexModeCategory.ID))
+                .withRenderName(EntryNameRenderType.TOP)
+                .withNameBackgroundColor(0xFFFFFF55);
     }
 
     @Override

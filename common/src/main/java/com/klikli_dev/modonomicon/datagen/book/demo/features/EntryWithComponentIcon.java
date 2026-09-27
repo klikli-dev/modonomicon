@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookSpotlightPageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
+import com.klikli_dev.modonomicon.book.entries.EntryNameRenderType;
 import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.core.component.DataComponentPatch;
@@ -70,7 +71,10 @@ public class EntryWithComponentIcon extends EntryProvider {
 
     @Override
     protected BookEntryModel additionalSetup(BookEntryModel entry) {
-        return super.additionalSetup(entry);
+        return super.additionalSetup(entry)
+                .withRenderName(EntryNameRenderType.LEFT)
+                .withShowNameBeforeUnlock(true)
+                .withNameBackgroundColor(0xFF55FF55);
     }
 
     @Override

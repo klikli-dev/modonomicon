@@ -21,9 +21,11 @@ import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.DirectEntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.client.gui.book.theme.NodeConnectionRendererType;
 import com.klikli_dev.modonomicon.events.ModonomiconEvents;
 import com.klikli_dev.modonomicon.platform.ClientServices;
+import com.klikli_dev.modonomicon.util.TextRenderHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -33,6 +35,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import org.lwjgl.glfw.GLFW;
@@ -46,6 +49,37 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
     public static final int ENTRY_HEIGHT = 26;
     public static final int ENTRY_WIDTH = 26;
+
+    /**
+     * How far the top/bottom entry name background tucks under the entry badge, so the two look connected.
+     * The badge is rendered after (and thus on top of) the background.
+     * Side bars instead pass fully behind the badge, see {@link #ENTRY_NAME_STICK_THROUGH}.
+     */
+    public static final int ENTRY_NAME_OVERLAP = 5;
+    /**
+     * Extra shift of top/bottom bars into the badge beyond {@link #ENTRY_NAME_OVERLAP}:
+     * the bottom bar 3px up, the top bar 3px down.
+     */
+    public static final int ENTRY_NAME_VERTICAL_SHIFT = 3;
+    /**
+     * How far a left/right entry name bar sticks out past the far edge of the badge.
+     */
+    public static final int ENTRY_NAME_STICK_THROUGH = 2;
+    /**
+     * Horizontal padding between the entry name text and the visible edge of its background.
+     */
+    public static final int ENTRY_NAME_PADDING_X = 5;
+    /**
+     * Vertical padding between the entry name text and the visible edge of its background.
+     */
+    public static final int ENTRY_NAME_PADDING_Y = 7;
+
+    /**
+     * Fallback entry name background if the theme does not provide one.
+     * Matches the default theme texture, see BookNodeSettings.
+     */
+    private static final GuiSprite FALLBACK_ENTRY_NAME_BACKGROUND = new GuiSprite(
+            Identifier.fromNamespaceAndPath("modonomicon", "modonomicon/themes/default/node/entry_backgrounds/name_background"), 200, 26);
 
     private final BookParentNodeScreen bookParentScreen;
     private final BookCategory category;
@@ -149,7 +183,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         for (var entry : this.category.getEntries().values()) {
             var displayStyle = this.getEntryDisplayState(entry);
 
-            if (this.isEntryHovered(entry, xOffset, yOffset, (int) event.x(), (int) event.y())) {
+            if (this.isEntryHovered(entry, displayStyle, xOffset, yOffset, (int) event.x(), (int) event.y())) {
 
                 var entryClickedEvent = new EntryClickedEvent(this.category.getBook().getId(), entry.getId(), event, displayStyle);
                 //if event is canceled -> click was handled and we do not open the entry.
@@ -387,7 +421,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
         for (var entry : this.category.getEntries().values()) {
             var displayState = this.getEntryDisplayState(entry);
-            var isHovered = this.isEntryHovered(entry, xOffset, yOffset, mouseX, mouseY);
+            var isHovered = this.isEntryHovered(entry, displayState, xOffset, yOffset, mouseX, mouseY);
 
             if (displayState == EntryDisplayState.HIDDEN)
                 continue;
@@ -415,6 +449,24 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                 //Draw hovered entries slightly greyed out
                 color = ARGB.colorFromFloat(1f, 0.8F, 0.8F, 0.8F);
             }
+
+            //render the entry name background first, so the badge overlaps the joint
+            //like the vanilla advancement screen draws its title box behind the icon frame.
+            //the theme default background, tint and text color can each be overridden per entry.
+            //both tints combine with the entry color so locked names render under the same
+            //grey overlay as the badge.
+            var nameBox = this.getEntryNameBox(entry, displayState);
+            if (nameBox != null) {
+                var settings = this.category.getBook().theme().node().settings();
+                var background = entry.getNameBackground().isEmpty() ? settings.entryNameStyle().background() : entry.getNameBackground();
+                if (background.isEmpty()) {
+                    background = FALLBACK_ENTRY_NAME_BACKGROUND;
+                }
+                background.extractRenderState(guiGraphics,
+                        nameBox.x(), nameBox.y(), nameBox.width(), nameBox.height(),
+                        ARGB.multiply(ARGB.multiply(settings.entryNameStyle().backgroundTint(), entry.getNameBackgroundColor()), color));
+            }
+
             //render entry background
             entryBackground.extractRenderState(guiGraphics,
                     entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP, entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP,
@@ -434,9 +486,145 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                         entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP - 2, isHovered);
             }
 
+            //render the entry name text on top of its background
+            //unlike the vanilla advancement screen, which only shows name and description on hover,
+            //this is permanently rendered as part of the entry
+            if (nameBox != null) {
+                int nameColor;
+                if (displayState == EntryDisplayState.LOCKED) {
+                    nameColor = 0xFFAAAAAA;
+                } else {
+                    var settings = this.category.getBook().theme().node().settings();
+                    nameColor = ARGB.multiply(settings.entryNameStyle().textColor(), entry.getNameTextColor());
+                }
+                //float coordinates to allow sub-pixel vertical centering of the text in the bar
+                TextRenderHelper.drawString(guiGraphics, Minecraft.getInstance().font, Component.translatable(entry.getName()),
+                        nameBox.textX(), nameBox.textY(), nameColor, true);
+            }
+
             guiGraphics.pose().popMatrix();
         }
         guiGraphics.pose().popMatrix();
+    }
+
+    /**
+     * Background box and text position of the permanently rendered entry name.
+     * The box tucks under (or, for side bars, passes behind) the badge so the two look connected.
+     * Text coordinates are floats to allow sub-pixel vertical centering.
+     */
+    private record EntryNameBox(int x, int y, int width, int height, float textX, float textY) {
+    }
+
+    /**
+     * Computes the entry name background box and text position, or null if the entry does not render its name.
+     * Locked entries only render their name if they opt into {@code show_name_before_unlock}.
+     * The bar has the same height for all placements.
+     * Each direction has its own method so the styling can be adjusted independently.
+     * Coordinates are in entry space, i.e. the caller must have applied the entry offset to the pose stack.
+     */
+    private EntryNameBox getEntryNameBox(BookEntry entry, EntryDisplayState displayState) {
+        if (displayState == EntryDisplayState.LOCKED && !entry.showNameBeforeUnlock())
+            return null;
+
+        return switch (entry.getRenderName()) {
+            case LEFT -> this.nameBoxLeft(entry);
+            case RIGHT -> this.nameBoxRight(entry);
+            case TOP -> this.nameBoxAbove(entry);
+            case BOTTOM -> this.nameBoxBelow(entry);
+            default -> null;
+        };
+    }
+
+    /**
+     * Uniform height of the entry name bar for all placements: text line plus vertical
+     * padding, with one extra pixel at the bottom.
+     */
+    private int entryNameBarHeight() {
+        return Minecraft.getInstance().font.lineHeight + ENTRY_NAME_PADDING_Y * 2 + 1;
+    }
+
+    /**
+     * Name bar to the right of the badge, styled like the vanilla advancement title bar:
+     * passing behind the full badge and sticking out {@link #ENTRY_NAME_STICK_THROUGH} pixels
+     * on its far side, vertically centered next to it, text centered in the bar.
+     */
+    private EntryNameBox nameBoxRight(BookEntry entry) {
+        var font = Minecraft.getInstance().font;
+        int nameWidth = font.width(Component.translatable(entry.getName()));
+        int barHeight = this.entryNameBarHeight();
+
+        int entryX = entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP;
+        int entryY = entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP;
+
+        int width = ENTRY_NAME_STICK_THROUGH + ENTRY_WIDTH + ENTRY_NAME_PADDING_X + nameWidth + ENTRY_NAME_PADDING_X;
+        int x = entryX - ENTRY_NAME_STICK_THROUGH;
+        int y = entryY + (ENTRY_HEIGHT - barHeight) / 2;
+
+        return new EntryNameBox(x, y, width, barHeight,
+                entryX + ENTRY_WIDTH + ENTRY_NAME_PADDING_X, y + (barHeight - font.lineHeight) / 2f);
+    }
+
+    /**
+     * Name bar to the left of the badge, mirrored version of {@link #nameBoxRight(BookEntry)}.
+     */
+    private EntryNameBox nameBoxLeft(BookEntry entry) {
+        var font = Minecraft.getInstance().font;
+        int nameWidth = font.width(Component.translatable(entry.getName()));
+        int barHeight = this.entryNameBarHeight();
+
+        int entryX = entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP;
+        int entryY = entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP;
+
+        int width = ENTRY_NAME_PADDING_X + nameWidth + ENTRY_NAME_PADDING_X + ENTRY_WIDTH + ENTRY_NAME_STICK_THROUGH;
+        int x = entryX + ENTRY_WIDTH + ENTRY_NAME_STICK_THROUGH - width;
+        int y = entryY + (ENTRY_HEIGHT - barHeight) / 2;
+
+        return new EntryNameBox(x, y, width, barHeight,
+                (float) x + ENTRY_NAME_PADDING_X, y + (barHeight - font.lineHeight) / 2f);
+    }
+
+    /**
+     * Sample styling for a name bar above the badge: fitted bar with the same height as the side bars,
+     * tucked under the badge, text centered on the background like for the side bars.
+     * Adjust freely, it is intentionally decoupled from the side bar styling above.
+     */
+    private EntryNameBox nameBoxAbove(BookEntry entry) {
+        var font = Minecraft.getInstance().font;
+        int nameWidth = font.width(Component.translatable(entry.getName()));
+        int barHeight = this.entryNameBarHeight();
+        int tuck = ENTRY_NAME_OVERLAP + ENTRY_NAME_VERTICAL_SHIFT;
+
+        int entryX = entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP;
+        int entryY = entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP;
+
+        int width = nameWidth + ENTRY_NAME_PADDING_X * 2;
+        int x = entryX + (ENTRY_WIDTH - width) / 2;
+        int y = entryY - barHeight + tuck;
+
+        return new EntryNameBox(x, y, width, barHeight,
+                x + ENTRY_NAME_PADDING_X, y + (barHeight - font.lineHeight) / 2f);
+    }
+
+    /**
+     * Sample styling for a name bar below the badge: fitted bar with the same height as the side bars,
+     * tucked under the badge, text centered on the background like for the side bars.
+     * Adjust freely, it is intentionally decoupled from the side bar styling above.
+     */
+    private EntryNameBox nameBoxBelow(BookEntry entry) {
+        var font = Minecraft.getInstance().font;
+        int nameWidth = font.width(Component.translatable(entry.getName()));
+        int barHeight = this.entryNameBarHeight();
+        int tuck = ENTRY_NAME_OVERLAP + ENTRY_NAME_VERTICAL_SHIFT;
+
+        int entryX = entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP;
+        int entryY = entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP;
+
+        int width = nameWidth + ENTRY_NAME_PADDING_X * 2;
+        int x = entryX + (ENTRY_WIDTH - width) / 2;
+        int y = entryY + ENTRY_HEIGHT - tuck;
+
+        return new EntryNameBox(x, y, width, barHeight,
+                x + ENTRY_NAME_PADDING_X, y + (barHeight - font.lineHeight) / 2f);
     }
 
     public void renderEntryTooltips(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
@@ -453,22 +641,35 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         }
     }
 
-    private boolean isEntryHovered(BookEntry entry, float xOffset, float yOffset, int mouseX, int mouseY) {
+    private boolean isEntryHovered(BookEntry entry, EntryDisplayState displayState, float xOffset, float yOffset, int mouseX, int mouseY) {
         int x = (int) ((entry.getX() * ENTRY_GRID_SCALE + xOffset + 2) * this.currentZoom);
         int y = (int) ((entry.getY() * ENTRY_GRID_SCALE + yOffset + 2) * this.currentZoom);
         int innerX = this.bookParentScreen.getInnerX();
         int innerY = this.bookParentScreen.getInnerY();
         int innerWidth = this.bookParentScreen.getInnerWidth();
         int innerHeight = this.bookParentScreen.getInnerHeight();
-        return mouseX >= x && mouseX <= x + (ENTRY_WIDTH * this.currentZoom)
-                && mouseY >= y && mouseY <= y + (ENTRY_HEIGHT * this.currentZoom)
-                && mouseX >= innerX && mouseX <= innerX + innerWidth
-                && mouseY >= innerY && mouseY <= innerY + innerHeight;
+        if (mouseX < innerX || mouseX > innerX + innerWidth
+                || mouseY < innerY || mouseY > innerY + innerHeight) {
+            return false;
+        }
+        if (mouseX >= x && mouseX <= x + (ENTRY_WIDTH * this.currentZoom)
+                && mouseY >= y && mouseY <= y + (ENTRY_HEIGHT * this.currentZoom)) {
+            return true;
+        }
+        //the name badge counts as part of the entry
+        var nameBox = this.getEntryNameBox(entry, displayState);
+        if (nameBox == null) {
+            return false;
+        }
+        int boxX = (int) ((nameBox.x() + xOffset) * this.currentZoom);
+        int boxY = (int) ((nameBox.y() + yOffset) * this.currentZoom);
+        return mouseX >= boxX && mouseX <= boxX + (nameBox.width() * this.currentZoom)
+                && mouseY >= boxY && mouseY <= boxY + (nameBox.height() * this.currentZoom);
     }
 
     private void renderTooltip(GuiGraphicsExtractor guiGraphics, BookEntry entry, EntryDisplayState displayState, float xOffset, float yOffset, int mouseX, int mouseY) {
         //hovered?
-        if (this.isEntryHovered(entry, xOffset, yOffset, mouseX, mouseY)) {
+        if (this.isEntryHovered(entry, displayState, xOffset, yOffset, mouseX, mouseY)) {
 
             var tooltip = new ArrayList<ClientTooltipComponent>();
             var tooltipComponents = new ArrayList<Component>();

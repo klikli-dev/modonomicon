@@ -27,6 +27,11 @@
   },
   "id": "modonomicon:features/component_icon",
   "name": "book.modonomicon.demo.features.component_icon.name",
+  "name_style": {
+    "name_background_color": "#ff55ff55",
+    "render_name": "left",
+    "show_name_before_unlock": true
+  },
   "parents": [
     {
       "entry": "modonomicon:features/spotlight"
