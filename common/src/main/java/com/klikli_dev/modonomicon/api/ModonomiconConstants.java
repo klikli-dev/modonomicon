@@ -31,6 +31,7 @@ public class ModonomiconConstants {
             public static final int DEFAULT_MAX_SCROLL_X = 512;
             public static final int DEFAULT_MAX_SCROLL_Y = 512;
             public static final float DEFAULT_BACKGROUND_TEXTURE_ZOOM_MULTIPLIER = 1f;
+            public static final float DEFAULT_BACKGROUND_OVERSCAN = 1.1f;
         }
 
         public static class Icon {

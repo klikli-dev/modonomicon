@@ -179,8 +179,8 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
         //non-tiling rendering modes map (a part of) the texture onto the background area with normalized uvs.
         //because of that the gui scale applies uniformly to the whole area, so unlike tiling these modes
-        //look the same at any gui scale. scrolling does not move these backgrounds,
-        //entries scroll over a fixed backdrop instead.
+        //look the same at any gui scale. by default (background_overscan > 1) the texture is rendered
+        //larger than the area and pans with scrolling, creating a parallax effect.
         if (this.category.getBackgroundParallaxLayers().isEmpty()) {
             if (this.category.getBackgroundRenderingMode() == BookBackgroundRenderingMode.SCALE) {
                 this.renderBackgroundStretched(guiGraphics, innerX, innerY, innerWidth, innerHeight);
@@ -247,9 +247,7 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         int textureWidth = Math.max(1, this.category.getBackgroundWidth());
         int textureHeight = Math.max(1, this.category.getBackgroundHeight());
 
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.category.getBackground(), x, y,
-                0, 0, width, height,
-                textureWidth, textureHeight, textureWidth, textureHeight);
+        this.renderBackgroundMapped(guiGraphics, x, y, width, height, 0, 0, textureWidth, textureHeight);
     }
 
     /**
@@ -271,6 +269,35 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         int srcHeight = Math.min(textureHeight, Math.max(1, Math.round(height / coverScale)));
         int uOffset = (textureWidth - srcWidth) / 2;
         int vOffset = (textureHeight - srcHeight) / 2;
+
+        this.renderBackgroundMapped(guiGraphics, x, y, width, height, uOffset, vOffset, srcWidth, srcHeight);
+    }
+
+    /**
+     * Renders the given section of the category background texture into the background area.
+     * Applies the category background overscan (uniform extra zoom creating a pan margin) and pans the
+     * sampled section with the current scroll position, clamped to the texture bounds.
+     * Sampling uses normalized uvs, so no tiling occurs at any gui scale.
+     */
+    private void renderBackgroundMapped(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, int baseU, int baseV, int baseSrcWidth, int baseSrcHeight) {
+        int textureWidth = Math.max(1, this.category.getBackgroundWidth());
+        int textureHeight = Math.max(1, this.category.getBackgroundHeight());
+
+        //shrink the sampled section around its center to create the pan margin (1.0 = no margin = fixed)
+        float overscan = Math.max(1, this.category.getBackgroundOverscan());
+        int srcWidth = Math.min(textureWidth, Math.max(1, Math.round(baseSrcWidth / overscan)));
+        int srcHeight = Math.min(textureHeight, Math.max(1, Math.round(baseSrcHeight / overscan)));
+
+        //pan across the full scroll range, in the same direction as the tiled backgrounds.
+        //only pans if there is an overscan margin (overscan > 1), otherwise the backdrop stays fixed.
+        float scrollFractionX = 0;
+        float scrollFractionY = 0;
+        if (overscan > 1) {
+            scrollFractionX = this.category.getMaxScrollX() > 0 ? Mth.clamp(this.scrollX / this.category.getMaxScrollX(), -1, 1) : 0;
+            scrollFractionY = this.category.getMaxScrollY() > 0 ? Mth.clamp(this.scrollY / this.category.getMaxScrollY(), -1, 1) : 0;
+        }
+        int uOffset = Mth.clamp(Math.round(baseU + (baseSrcWidth - srcWidth) / 2f + scrollFractionX * (textureWidth - srcWidth) / 2f), 0, textureWidth - srcWidth);
+        int vOffset = Mth.clamp(Math.round(baseV + (baseSrcHeight - srcHeight) / 2f + scrollFractionY * (textureHeight - srcHeight) / 2f), 0, textureHeight - srcHeight);
 
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.category.getBackground(), x, y,
                 uOffset, vOffset, width, height,

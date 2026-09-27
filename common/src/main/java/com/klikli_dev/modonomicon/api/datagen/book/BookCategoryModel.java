@@ -68,6 +68,15 @@ public class BookCategoryModel {
      * Default value is {@link BookBackgroundRenderingMode#REPEAT}.
      */
     protected BookBackgroundRenderingMode backgroundRenderingMode = BookBackgroundRenderingMode.REPEAT;
+    /**
+     * Uniform extra zoom applied to {@link BookBackgroundRenderingMode#SCALE} and
+     * {@link BookBackgroundRenderingMode#FIT} backgrounds, rendering them larger than the background area.
+     * The resulting margin allows the background to pan with scrolling (parallax effect).
+     * 1.0 disables panning and renders a fixed backdrop.
+     * Ignored for {@link BookBackgroundRenderingMode#REPEAT} and parallax layers (those already pan by tiling).
+     * Default value is {@link Category#DEFAULT_BACKGROUND_OVERSCAN}.
+     */
+    protected float backgroundOverscan = Category.DEFAULT_BACKGROUND_OVERSCAN;
     protected List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers = new ArrayList<>();
     protected List<BookEntryModel> entries = new ArrayList<>();
 
@@ -140,6 +149,9 @@ public class BookCategoryModel {
         if (this.backgroundRenderingMode != BookBackgroundRenderingMode.REPEAT) {
             json.addProperty("background_rendering_mode", this.backgroundRenderingMode.getSerializedName());
         }
+        if (this.backgroundOverscan != Category.DEFAULT_BACKGROUND_OVERSCAN) {
+            json.addProperty("background_overscan", this.backgroundOverscan);
+        }
         json.add("background_parallax_layers",
                 this.backgroundParallaxLayers.stream()
                         .map(layer -> BookCategoryBackgroundParallaxLayer.CODEC.encodeStart(JsonOps.INSTANCE, layer)
@@ -209,6 +221,10 @@ public class BookCategoryModel {
 
     public BookBackgroundRenderingMode getBackgroundRenderingMode() {
         return this.backgroundRenderingMode;
+    }
+
+    public float getBackgroundOverscan() {
+        return this.backgroundOverscan;
     }
 
     public boolean dontGenerateJson() {
@@ -358,6 +374,18 @@ public class BookCategoryModel {
      */
     public BookCategoryModel withBackgroundRenderingMode(BookBackgroundRenderingMode backgroundRenderingMode) {
         this.backgroundRenderingMode = backgroundRenderingMode;
+        return this;
+    }
+
+    /**
+     * Sets the uniform extra zoom applied to scale and fit backgrounds, rendering them larger
+     * than the background area. The resulting margin allows the background to pan with scrolling
+     * (parallax effect). 1.0 disables panning and renders a fixed backdrop.
+     * Ignored for repeat mode and parallax layers (those already pan by tiling).
+     * Default value is {@link Category#DEFAULT_BACKGROUND_OVERSCAN}.
+     */
+    public BookCategoryModel withBackgroundOverscan(float backgroundOverscan) {
+        this.backgroundOverscan = backgroundOverscan;
         return this;
     }
 

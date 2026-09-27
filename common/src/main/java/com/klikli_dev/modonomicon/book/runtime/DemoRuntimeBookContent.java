@@ -72,6 +72,7 @@ public final class DemoRuntimeBookContent {
                 ModonomiconConstants.Data.Category.DEFAULT_MAX_SCROLL_Y,
                 ModonomiconConstants.Data.Category.DEFAULT_BACKGROUND_TEXTURE_ZOOM_MULTIPLIER,
                 BookBackgroundRenderingMode.REPEAT,
+                ModonomiconConstants.Data.Category.DEFAULT_BACKGROUND_OVERSCAN,
                 List.of(),
                 null,
                 null,
