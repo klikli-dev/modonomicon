@@ -223,9 +223,14 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
     }
 
     public void renderBackgroundParallaxLayer(GuiGraphicsExtractor guiGraphics, BookCategoryBackgroundParallaxLayer layer, int x, int y, int width, int height, float scrollX, float scrollY, float parallax, float xOffset, float yOffset, float zoom, int backgroundWidth, int backgroundHeight, float backgroundTextureZoomMultiplier) {
-        float parallax1 = parallax / layer.getSpeed();
-
         if (layer.getVanishZoom() == -1 || layer.getVanishZoom() > zoom) {
+            if (layer.getRenderingMode() != BookBackgroundRenderingMode.REPEAT) {
+                this.renderNonTilingParallaxLayer(guiGraphics, layer, x, y, width, height, scrollX, scrollY, backgroundWidth, backgroundHeight);
+                return;
+            }
+
+            float parallax1 = parallax / layer.getSpeed();
+
             //for some reason on this one blit overload tex width and height are switched. It does correctly call the followup though, so we have to go along
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, layer.getBackground(), x, y,
                     (scrollX + this.getCategory().getMaxScrollX()) / parallax1 + xOffset,
@@ -233,6 +238,62 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
                     width, height, (int) (backgroundHeight * backgroundTextureZoomMultiplier), (int) (backgroundWidth * backgroundTextureZoomMultiplier));
         }
 
+    }
+
+    /**
+     * Renders a non-tiling parallax layer, sampling with normalized uvs so no tiling occurs at any gui scale.
+     * Works like the tiled layers (scroll pans, speed differentiates layers, vanish zoom hides),
+     * but the pan is clamped to an overdraw margin created by the layer overscan instead of wrapping.
+     * Relative layer speeds are preserved by panning each layer proportionally to the fastest layer,
+     * so the fastest layer traverses the full margin and nothing saturates.
+     * The tiling layout corrections (x/y offset, texture zoom multiplier) do not apply here,
+     * centering is handled by construction instead.
+     */
+    private void renderNonTilingParallaxLayer(GuiGraphicsExtractor guiGraphics, BookCategoryBackgroundParallaxLayer layer, int x, int y, int width, int height, float scrollX, float scrollY, int backgroundWidth, int backgroundHeight) {
+        if (width <= 0 || height <= 0)
+            return;
+
+        int textureWidth = Math.max(1, backgroundWidth);
+        int textureHeight = Math.max(1, backgroundHeight);
+
+        //base section: full texture for scale, covering section for fit
+        int baseU = 0;
+        int baseV = 0;
+        int baseSrcWidth = textureWidth;
+        int baseSrcHeight = textureHeight;
+        if (layer.getRenderingMode() == BookBackgroundRenderingMode.FIT) {
+            int[] cover = coverSourceRect(textureWidth, textureHeight, width, height);
+            baseU = cover[0];
+            baseV = cover[1];
+            baseSrcWidth = cover[2];
+            baseSrcHeight = cover[3];
+        }
+
+        //shrink the sampled section around its center to create the overdraw margin (1.0 = no margin = fixed)
+        float overscan = Math.max(1, layer.getOverscan());
+        int srcWidth = Math.min(textureWidth, Math.max(1, Math.round(baseSrcWidth / overscan)));
+        int srcHeight = Math.min(textureHeight, Math.max(1, Math.round(baseSrcHeight / overscan)));
+
+        float scrollFractionX = 0;
+        float scrollFractionY = 0;
+        if (overscan > 1) {
+            float maxSpeed = 0;
+            for (var other : this.getCategory().getBackgroundParallaxLayers())
+                maxSpeed = Math.max(maxSpeed, Math.abs(other.getSpeed()));
+            if (maxSpeed == 0)
+                maxSpeed = 1;
+            if (this.getCategory().getMaxScrollX() > 0)
+                scrollFractionX = Mth.clamp(scrollX / this.getCategory().getMaxScrollX() * layer.getSpeed() / maxSpeed, -1, 1);
+            if (this.getCategory().getMaxScrollY() > 0)
+                scrollFractionY = Mth.clamp(scrollY / this.getCategory().getMaxScrollY() * layer.getSpeed() / maxSpeed, -1, 1);
+        }
+
+        int uOffset = Mth.clamp(Math.round(baseU + (baseSrcWidth - srcWidth) / 2f + scrollFractionX * (textureWidth - srcWidth) / 2f), 0, textureWidth - srcWidth);
+        int vOffset = Mth.clamp(Math.round(baseV + (baseSrcHeight - srcHeight) / 2f + scrollFractionY * (textureHeight - srcHeight) / 2f), 0, textureHeight - srcHeight);
+
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, layer.getBackground(), x, y,
+                uOffset, vOffset, width, height,
+                srcWidth, srcHeight, textureWidth, textureHeight);
     }
 
     /**
@@ -262,15 +323,24 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
         int textureWidth = Math.max(1, this.category.getBackgroundWidth());
         int textureHeight = Math.max(1, this.category.getBackgroundHeight());
 
+        int[] cover = coverSourceRect(textureWidth, textureHeight, width, height);
+
+        this.renderBackgroundMapped(guiGraphics, x, y, width, height, cover[0], cover[1], cover[2], cover[3]);
+    }
+
+    /**
+     * Calculates the centered section of a texture with the given size that covers an area of the given
+     * size when uniformly scaled, without distorting the texture. Returns {u, v, width, height}.
+     */
+    private static int[] coverSourceRect(int textureWidth, int textureHeight, int areaWidth, int areaHeight) {
         //uniform scale so the texture covers the whole area
-        float coverScale = Math.max(width / (float) textureWidth, height / (float) textureHeight);
+        float coverScale = Math.max(areaWidth / (float) textureWidth, areaHeight / (float) textureHeight);
         //the corresponding (centered) section of the texture, clamped to the texture bounds
-        int srcWidth = Math.min(textureWidth, Math.max(1, Math.round(width / coverScale)));
-        int srcHeight = Math.min(textureHeight, Math.max(1, Math.round(height / coverScale)));
+        int srcWidth = Math.min(textureWidth, Math.max(1, Math.round(areaWidth / coverScale)));
+        int srcHeight = Math.min(textureHeight, Math.max(1, Math.round(areaHeight / coverScale)));
         int uOffset = (textureWidth - srcWidth) / 2;
         int vOffset = (textureHeight - srcHeight) / 2;
-
-        this.renderBackgroundMapped(guiGraphics, x, y, width, height, uOffset, vOffset, srcWidth, srcHeight);
+        return new int[]{uOffset, vOffset, srcWidth, srcHeight};
     }
 
     /**
