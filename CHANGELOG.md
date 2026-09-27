@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-2.12.0] - 2026-09-27
+### :sparkles: New Features
+- [`32578ec`](https://github.com/klikli-dev/modonomicon/commit/32578ecea7d0decd6e7149f48ae5a1827162b15c) - Optionally render entry names on node category screens *(PR [#403](https://github.com/klikli-dev/modonomicon/pull/403) by [@klikli-dev](https://github.com/klikli-dev))*
+  - :arrow_lower_right: *addresses issue [#186](https://github.com/klikli-dev/modonomicon/issues/186) opened by [@DaFuqs](https://github.com/DaFuqs)*
+
+
 ## [release/v26.1.2-2.11.0] - 2026-09-27
 ### :sparkles: New Features
 - [`ffbb1e4`](https://github.com/klikli-dev/modonomicon/commit/ffbb1e475bb8e2a4eed4f8afb9e0bd3b93a01e9c) - allow to determine how category background behaves at different GUI scales (scale vs fit vs repeat) *(PR [#402](https://github.com/klikli-dev/modonomicon/pull/402) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2385,3 +2391,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-2.9.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.9.0...release/v26.1.2-2.9.1
 [release/v26.1.2-2.10.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.9.1...release/v26.1.2-2.10.0
 [release/v26.1.2-2.11.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.10.0...release/v26.1.2-2.11.0
+[release/v26.1.2-2.12.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.11.0...release/v26.1.2-2.12.0
