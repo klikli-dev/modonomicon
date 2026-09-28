@@ -1,0 +1,21 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "modonomicon:index_mode",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "description": "book.modonomicon.demo.index_mode.demo11.description",
+  "icon": {
+    "id": "minecraft:golden_apple"
+  },
+  "id": "modonomicon:index_mode/demo11",
+  "name": "book.modonomicon.demo.index_mode.demo11.name",
+  "sort_number": 10,
+  "x": 0,
+  "y": 0
+}

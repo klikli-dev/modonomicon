@@ -1,0 +1,21 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "modonomicon:index_mode",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "description": "book.modonomicon.demo_index.index_mode.demo5.description",
+  "icon": {
+    "id": "minecraft:book"
+  },
+  "id": "modonomicon:index_mode/demo5",
+  "name": "book.modonomicon.demo_index.index_mode.demo5.name",
+  "sort_number": 4,
+  "x": 0,
+  "y": 0
+}
