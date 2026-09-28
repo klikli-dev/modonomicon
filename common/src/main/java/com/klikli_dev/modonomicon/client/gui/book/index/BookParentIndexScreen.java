@@ -142,6 +142,12 @@ public class BookParentIndexScreen extends BookPaginatedListScreen<BookCategory>
         BookGuiManager.get().closeScreenStack(this);
     }
 
+    @Override
+    public void pushCurrentToHistory() {
+        //remember the book so back navigation from a linked entry returns here
+        BookGuiManager.get().pushHistory(this.getBook().getId(), null, null, 0);
+    }
+
     protected void drawTitle(GuiGraphicsExtractor guiGraphics, int x, int y) {
         guiGraphics.pose().pushMatrix();
         var scale = Math.min(1.0f, (float) BookEntryScreen.MAX_TITLE_WIDTH / (float) this.font.width(this.getTitle()));

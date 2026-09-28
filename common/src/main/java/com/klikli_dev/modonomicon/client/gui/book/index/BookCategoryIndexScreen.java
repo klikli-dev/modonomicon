@@ -116,6 +116,12 @@ public class BookCategoryIndexScreen extends BookPaginatedListScreen<BookEntry> 
     }
 
     @Override
+    public void pushCurrentToHistory() {
+        //remember the category so back navigation from a linked entry returns here
+        BookGuiManager.get().pushHistory(this.getBook().getId(), this.category.getId(), null, 0);
+    }
+
+    @Override
     public void closeForExternalNavigation() {
         BookGuiManager.get().closeScreenStack(this);
     }
