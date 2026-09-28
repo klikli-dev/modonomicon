@@ -9,11 +9,15 @@ package com.klikli_dev.modonomicon.networking;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 public class ClickCommandLinkMessage implements Message {
 
@@ -25,14 +29,21 @@ public class ClickCommandLinkMessage implements Message {
             (m) -> m.bookId,
             Identifier.STREAM_CODEC,
             (m) -> m.commandId,
-            Identifier.STREAM_CODEC,
+            //the entry id is absent when the link is clicked outside of an entry, e.g. in a category description
+            ByteBufCodecs.optional(Identifier.STREAM_CODEC).map((id) -> id.orElse(null), Optional::ofNullable),
             (m) -> m.entryId,
             ClickCommandLinkMessage::new
     );
 
     public Identifier bookId;
     public Identifier commandId;
-    public Identifier entryId; // The entry the command is being run from
+    /**
+     * The entry the command is being run from, or {@code null} when clicked outside of an entry.
+     * In that case the server skips the entry restriction check, so only commands that are allowed
+     * everywhere can run (the client enforces the same rule before sending).
+     */
+    @Nullable
+    public Identifier entryId;
 
     public ClickCommandLinkMessage(Identifier bookId, Identifier commandId, Identifier entryId) {
         this.bookId = bookId;
