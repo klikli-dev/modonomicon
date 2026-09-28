@@ -550,6 +550,21 @@ public class BookGuiManager {
         this.closeParentScreen(screen);
     }
 
+    /**
+     * Closes the entire book, no matter which screen or gui layer is currently on top.
+     * Used e.g. for inventory-key handling, where the top layer may be a search/bookmarks
+     * screen that otherwise would only pop a single layer on close.
+     */
+    public void closeAll() {
+        if (this.openBookEntryScreen != null) {
+            this.closeScreenStack(this.openBookEntryScreen);
+        } else if (this.openBookCategoryScreen != null) {
+            this.closeScreenStack(this.openBookCategoryScreen);
+        } else if (this.openBookParentScreen != null) {
+            this.closeScreenStack(this.openBookParentScreen);
+        }
+    }
+
     public void closeScreenStack(BookCategoryScreen screen) {
         this.closeCategoryScreen(screen);
 
