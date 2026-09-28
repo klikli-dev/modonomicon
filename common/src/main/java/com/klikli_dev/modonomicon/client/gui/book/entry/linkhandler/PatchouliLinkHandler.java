@@ -6,15 +6,14 @@ package com.klikli_dev.modonomicon.client.gui.book.entry.linkhandler;
 
 import com.klikli_dev.modonomicon.book.PatchouliLink;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
-import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.platform.Services;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Style;
 import org.jetbrains.annotations.NotNull;
 
 public class PatchouliLinkHandler extends LinkHandler {
-    public PatchouliLinkHandler(BookEntryScreen screen) {
-        super(screen);
+    public PatchouliLinkHandler(LinkClickContext context) {
+        super(context);
     }
 
     @Override
@@ -36,7 +35,7 @@ public class PatchouliLinkHandler extends LinkHandler {
             return ClickResult.FAILURE;
 
         BookGuiManager.get().keepMousePosition(() -> {
-            BookGuiManager.get().closeScreenStack(this.screen()); //will cause the book to close entirely, and save the open page
+            this.context.closeForExternalNavigation(); //will cause the book to close entirely, and save the open page
             //the integration class handles class loading guards if patchouli is not present
             Services.PATCHOULI.openEntry(link.bookId, link.entryId, link.pageNumber);
         });
