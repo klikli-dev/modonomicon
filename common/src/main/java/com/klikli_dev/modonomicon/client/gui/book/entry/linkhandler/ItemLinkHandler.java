@@ -6,7 +6,6 @@ package com.klikli_dev.modonomicon.client.gui.book.entry.linkhandler;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.client.gui.book.BookFeedback;
-import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.ItemLinkRenderer;
 import com.klikli_dev.modonomicon.integration.recipeviewer.RecipeViewerRegistry;
 import com.mojang.brigadier.StringReader;
@@ -22,8 +21,8 @@ public class ItemLinkHandler extends LinkHandler {
 
     private final ItemParser itemParser;
 
-    public ItemLinkHandler(BookEntryScreen screen) {
-        super(screen);
+    public ItemLinkHandler(LinkClickContext context) {
+        super(context);
         this.itemParser = new ItemParser(Minecraft.getInstance().level.registryAccess());
     }
 

@@ -14,16 +14,15 @@ import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.client.debug.BookDebugOverlay;
 import com.klikli_dev.modonomicon.client.gui.TextWrapper;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
+import com.klikli_dev.modonomicon.client.gui.book.BookTextInteraction;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.MarkdownComponentRenderUtils;
 import com.klikli_dev.modonomicon.client.gui.book.theme.BookLayoutTheme;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.util.TextRenderHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.TextAlignment;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -31,7 +30,6 @@ import net.minecraft.network.chat.FontDescription;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix3x2f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,45 +65,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
 
 
     public static float getBookTextHolderScaleForRenderSize(BookTextHolder text, Font font, int width, int height) {
-        if (width <= 0 || height <= 0) //this really should not happen, but e.g. on recipe pages with two recipes the getClickedComponentStyle is called despite there being no text and the high textY results in a negative height.
-            return 1.0f;
-
-        if (!(text instanceof RenderedBookTextHolder renderedText))
-            return 1.0f;
-
-        var cachedScale = BookDataManager.Client.get().getScale(text, width, height);
-        if (cachedScale > -1f)
-            return cachedScale;
-
-        var components = renderedText.getRenderedText();
-
-        float granularity = 0.01F;
-        float scale = 1.0F;
-        float totalHeight = 0;
-        do {
-            //calculate total height by simulating rendering with the current scale.
-            //this iterative approach is necessary because when scaling down we fit more words per line, resulting in less lines after wrapping.
-
-            //first scale the width and calculate how many lines we have at this scale
-            int totalLines = 0;
-            for (var component : components) {
-                var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, (int) (width / scale), (int) ((width - 10) / scale), font);
-                totalLines += wrapped.size();
-            }
-
-            //then calculate how high the amount of lines would be at this scale
-            totalHeight = totalLines * font.lineHeight * scale;
-
-            //now reduce scale for the next iteration
-            //it is important to iterate with a fine granularity, otherwise the text will be downscaled way too much
-            scale -= granularity;
-
-            //repeat until we have a scale that fits the height
-        } while (totalHeight > height);
-
-        BookDataManager.Client.get().putScale(text, width, height, scale);
-
-        return scale;
+        return BookTextInteraction.getBookTextHolderScaleForRenderSize(text, font, width, height);
     }
 
     /**
@@ -386,53 +346,8 @@ public abstract class BookPageRenderer<T extends BookPage> {
         this.parentScreen.addRenderableWidget(button);
     }
 
-    @Nullable
-    private Style findClickedStyleAtRenderedLine(FormattedCharSequence text, float x, float y, double pMouseX, double pMouseY) {
-        return this.findClickedStyleAtRenderedLine(text, x, y, pMouseX, pMouseY, new Matrix3x2f());
-    }
-
-    @Nullable
-    private Style findClickedStyleAtRenderedLine(FormattedCharSequence text, float x, float y, double pMouseX, double pMouseY, Matrix3x2f pose) {
-        int textX = (int) Math.floor(x);
-        int textY = (int) Math.floor(y);
-        float xOffset = x - textX;
-        float yOffset = y - textY;
-
-        var styleFinder = new ActiveTextCollector.ClickableStyleFinder(this.font, (int) pMouseX, (int) pMouseY);
-        var parameters = new ActiveTextCollector.Parameters(new Matrix3x2f(pose).translate(xOffset, yOffset));
-        styleFinder.accept(TextAlignment.LEFT, textX, textY, parameters, text);
-        return styleFinder.result();
-    }
-
-    @Nullable
     protected Style getClickedComponentStyleAtForTitle(BookTextHolder title, int x, int y, double pMouseX, double pMouseY) {
-        FormattedCharSequence formattedCharSequence;
-        if (title instanceof RenderedBookTextHolder renderedTitle) {
-            formattedCharSequence = FormattedCharSequence.fromList(
-                    renderedTitle.getRenderedText().stream().map(Component::getVisualOrderText).toList());
-        } else {
-            if (title.getComponent() == null) {
-                //this should not happen, but other errors earlier in the pipeline might cause it.
-                Modonomicon.LOG.warn("Title has no component: {}", title);
-                return null;
-            }
-
-            var font = new FontDescription.Resource(BookDataManager.Client.get().safeFont(this.page.getBook().getFont()));
-            var titleComponent = Component.empty().append(title.getComponent()).withStyle(s -> s.withFont(font));
-            formattedCharSequence = titleComponent.getVisualOrderText();
-        }
-
-        float scale = Math.min(1.0f, (float) BookEntryScreen.MAX_TITLE_WIDTH / (float) this.font.width(formattedCharSequence));
-        float renderX = x - this.font.width(formattedCharSequence) * scale / 2.0F;
-        float renderY = y + (this.font.lineHeight * (1 - scale));
-
-        var pose = new Matrix3x2f();
-        if (scale < 1) {
-            pose.translate(0, y - y * scale);
-            pose.scale(scale, scale);
-        }
-
-        return this.findClickedStyleAtRenderedLine(formattedCharSequence, renderX, renderY, pMouseX, pMouseY, pose);
+        return BookTextInteraction.hitTestTitle(this.font, this.page.getBook(), title, x, y, pMouseX, pMouseY);
     }
 
     /**
@@ -451,45 +366,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
     @Nullable
     protected Style getClickedComponentStyleAtForTextHolder(BookTextHolder text, int x, int y, int width, int height, double pMouseX, double pMouseY) {
         var book = this.parentScreen != null ? this.parentScreen.getBook() : null;
-        if (this.page != null && PageSplitter.isSplitEnabled(this.page) && book != null) {
-            var continuationHeight = PageSplitter.continuationBounds(book).height;
-            var fragments = PageSplitter.split(text, this.font, width, height, continuationHeight);
-            var first = fragments.isEmpty() ? List.<FormattedCharSequence>of() : fragments.get(0);
-            return this.getClickedStyleAtFragmentLines(first, x, y, pMouseX, pMouseY);
-        }
-        if (this.page != null && !PageSplitter.isAutoScaleEnabled(this.page)) {
-            var lines = PageSplitter.wrapForSplit(text, this.font, width);
-            return this.getClickedStyleAtFragmentLines(lines, x, y, pMouseX, pMouseY);
-        }
-        if (text.hasComponent()) {
-            for (FormattedCharSequence formattedcharsequence : TextWrapper.split(text.getComponent(), width, this.font)) {
-                var style = this.findClickedStyleAtRenderedLine(formattedcharsequence, x, y, pMouseX, pMouseY);
-                if (style != null)
-                    return style;
-                y += this.font.lineHeight;
-            }
-        } else if (text instanceof RenderedBookTextHolder renderedText) {
-            var scale = getBookTextHolderScaleForRenderSize(text, this.font, width, height);
-            var pose = new Matrix3x2f();
-            if (scale < 1) {
-                pose.translate(x - x * scale, y - y * scale);
-                pose.scale(scale, scale);
-            }
-
-            float currentY = y;
-            var components = renderedText.getRenderedText();
-            for (var component : components) {
-                var wrapped = MarkdownComponentRenderUtils.wrapComponents(component, (int) (width / scale), (int) ((width - 10) / scale), this.font);
-                for (FormattedCharSequence formattedcharsequence : wrapped) {
-                    var style = this.findClickedStyleAtRenderedLine(formattedcharsequence, x, currentY, pMouseX, pMouseY, pose);
-                    if (style != null)
-                        return style;
-                    currentY += this.font.lineHeight;
-                }
-            }
-        }
-
-        return null;
+        return BookTextInteraction.hitTestTextHolder(this.font, this.page, book, text, x, y, width, height, pMouseX, pMouseY);
     }
 
     /**
@@ -498,14 +375,6 @@ public abstract class BookPageRenderer<T extends BookPage> {
      */
     @Nullable
     protected Style getClickedStyleAtFragmentLines(List<FormattedCharSequence> lines, float x, float y, double pMouseX, double pMouseY) {
-        float currentY = y;
-        for (FormattedCharSequence line : lines) {
-            var style = this.findClickedStyleAtRenderedLine(line, x, currentY, pMouseX, pMouseY);
-            if (style != null) {
-                return style;
-            }
-            currentY += this.font.lineHeight;
-        }
-        return null;
+        return BookTextInteraction.hitTestFragmentLines(this.font, lines, x, y, pMouseX, pMouseY);
     }
 }

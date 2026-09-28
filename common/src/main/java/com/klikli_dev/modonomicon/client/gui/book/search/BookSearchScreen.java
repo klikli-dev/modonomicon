@@ -15,14 +15,14 @@ import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
-import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedScreen;
+import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedListScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.EntryListButton;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.platform.ClientServices;
-import com.klikli_dev.modonomicon.util.TextRenderHelper;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -32,26 +32,15 @@ import net.minecraft.client.input.MouseButtonEvent;
 
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class BookSearchScreen extends BookPaginatedScreen {
-    public static final int ENTRIES_PER_PAGE = 11;
-    public static final int ENTRIES_IN_FIRST_PAGE = 9;
-    protected final List<Button> entryButtons = new ArrayList<>();
+public class BookSearchScreen extends BookPaginatedListScreen<BookEntry> {
     protected final BookParentScreen parentScreen;
-    private final List<BookEntry> visibleEntries = new ArrayList<>();
-    /**
-     * The index of the two pages being displayed. 0 means Pages 0 and 1, 1 means Pages 2 and 3, etc.
-     */
-    private int openPagesIndex;
-    private int maxOpenPagesIndex;
-    private List<BookEntry> allEntries;
     private EditBox searchField;
     private BookTextHolder infoText;
-    private List<Component> tooltip;
 
     public BookSearchScreen(BookParentScreen parentScreen) {
         super(Component.translatable(Gui.SEARCH_SCREEN_TITLE));
@@ -60,10 +49,64 @@ public class BookSearchScreen extends BookPaginatedScreen {
         this.infoText = new BookTextHolder(Gui.SEARCH_INFO_TEXT);
     }
 
+    @Override
     public void handleButtonEntry(Button button) {
         var entry = ((EntryListButton) button).getEntry();
         this.onClose();
         BookGuiManager.get().openEntry(entry.getBook().getId(), entry.getId(), 0);
+    }
+
+    @Override
+    protected void openOnlyVisibleEntry() {
+        var entry = this.visibleEntries.get(0);
+        BookGuiManager.get().openEntry(entry.getBook().getId(), entry.getId(), 0);
+    }
+
+    @Override
+    protected boolean fillLeftPageOnFirstPage() {
+        //the info text takes the left page, so the list starts on the right
+        return false;
+    }
+
+    @Override
+    protected List<BookEntry> computeAllEntries() {
+        //we filter out entries that are locked or in locked categories
+        //TODO: should we NOT filter out locked but visible entries and display them with a lock?
+        return this.getEntries().stream().filter(e ->
+                BookServices.visibility().isVisible(this.minecraft.player, e.getCategory()) &&
+                        BookServices.visibility().isAccessible(this.minecraft.player, e)
+        ).sorted(Comparator.comparing(a -> I18n.get(a.getName()))).toList();
+    }
+
+    private List<BookEntry> getEntries() {
+        return this.parentScreen.getBook().getEntries().values().stream().toList();
+    }
+
+    @Override
+    protected void filterEntries() {
+        String query = this.searchField.getValue().toLowerCase();
+        this.allEntries.stream().filter((e) -> e.matchesQuery(query, this.minecraft.level)).forEach(this.visibleEntries::add);
+    }
+
+    @Override
+    protected Button createEntryButton(BookEntry entry, int x, int y) {
+        return new EntryListButton(entry, x, y, this::handleButtonEntry);
+    }
+
+    @Override
+    @Nullable
+    protected LinkedText linkedText() {
+        if (this.openPagesIndex == 0) {
+            return new LinkedText(this.infoText,
+                    BookEntryScreen.LEFT_PAGE_X, BookEntryScreen.TOP_PADDING + 22, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - (BookEntryScreen.TOP_PADDING + 22),
+                    false);
+        }
+        return null;
+    }
+
+    @Override
+    public void closeForExternalNavigation() {
+        ClientServices.GUI.popGuiLayer();
     }
 
     public void prerenderMarkdown(BookTextRenderer textRenderer) {
@@ -73,53 +116,8 @@ public class BookSearchScreen extends BookPaginatedScreen {
         }
     }
 
-    public void drawCenteredStringNoShadow(GuiGraphicsExtractor guiGraphics, Component s, int x, int y, int color) {
-        this.drawCenteredStringNoShadow(guiGraphics, s, x, y, color, 1.0f);
-    }
-
-    public void drawCenteredStringNoShadow(GuiGraphicsExtractor guiGraphics, Component s, int x, int y, int color, float scale) {
-        TextRenderHelper.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
-    }
-
     public BookParentScreen getParentScreen() {
         return this.parentScreen;
-    }
-
-    @Override
-    public boolean canSeeArrowButton(boolean left) {
-        return left ? this.openPagesIndex > 0 : (this.openPagesIndex + 1) < this.maxOpenPagesIndex;
-    }
-
-    @Override
-    protected void flipPage(boolean left, boolean playSound) {
-        if (this.canSeeArrowButton(left)) {
-
-            if (left) {
-                this.openPagesIndex--;
-            } else {
-                this.openPagesIndex++;
-            }
-
-            this.onPageChanged();
-            if (playSound) {
-                BookContentRenderer.playTurnPageSound(this.parentScreen.getBook());
-            }
-        }
-    }
-
-
-    protected void drawTooltip(GuiGraphicsExtractor guiGraphics, int pMouseX, int pMouseY) {
-        if (this.tooltip != null && !this.tooltip.isEmpty()) {
-            guiGraphics.setTooltipForNextFrame(this.tooltip.stream().map(Component::getVisualOrderText).toList(), pMouseX, pMouseY);
-        }
-    }
-
-    protected void onPageChanged() {
-        this.createEntryList();
-    }
-
-    protected void resetTooltip() {
-        this.tooltip = null;
     }
 
     private void createSearchBar() {
@@ -127,59 +125,6 @@ public class BookSearchScreen extends BookPaginatedScreen {
         this.searchField.setMaxLength(32);
         this.searchField.setCanLoseFocus(false);
         this.searchField.setFocused(true);
-    }
-
-    private void createEntryList() {
-        this.entryButtons.forEach(b -> {
-            this.renderables.remove(b);
-            this.children().remove(b);
-            this.narratables.remove(b);
-        });
-
-        this.entryButtons.clear();
-        this.visibleEntries.clear();
-
-        String query = this.searchField.getValue().toLowerCase();
-        this.allEntries.stream().filter((e) -> e.matchesQuery(query, this.minecraft.level)).forEach(this.visibleEntries::add);
-
-        this.maxOpenPagesIndex = 1;
-        int count = this.visibleEntries.size();
-        count -= ENTRIES_IN_FIRST_PAGE;
-        if (count > 0) {
-            this.maxOpenPagesIndex += (int) Math.ceil((float) count / (ENTRIES_PER_PAGE * 2));
-        }
-
-        while (this.getEntryCountStart() > this.visibleEntries.size()) {
-            this.openPagesIndex--;
-        }
-
-        if (this.openPagesIndex == 0) {
-            //only show on the right for the first page
-            this.addEntryButtons(BookEntryScreen.RIGHT_PAGE_X - 3, BookEntryScreen.TOP_PADDING + 20, 0, ENTRIES_IN_FIRST_PAGE);
-        } else {
-            int start = this.getEntryCountStart();
-            this.addEntryButtons(BookEntryScreen.LEFT_PAGE_X, BookEntryScreen.TOP_PADDING, start, ENTRIES_PER_PAGE);
-            this.addEntryButtons(BookEntryScreen.RIGHT_PAGE_X - 3, BookEntryScreen.TOP_PADDING, start + ENTRIES_PER_PAGE, ENTRIES_PER_PAGE);
-        }
-    }
-
-    private int getEntryCountStart() {
-        if (this.openPagesIndex == 0) {
-            return 0;
-        }
-
-        int start = ENTRIES_IN_FIRST_PAGE;
-        start += (ENTRIES_PER_PAGE * 2) * (this.openPagesIndex - 1);
-        return start;
-    }
-
-    private List<BookEntry> getEntries() {
-        return this.parentScreen.getBook().getEntries().values().stream().toList();
-    }
-
-    @Override
-    public void setTooltip(List<Component> tooltip) {
-        this.tooltip = tooltip;
     }
 
     @Override
@@ -246,6 +191,9 @@ public class BookSearchScreen extends BookPaginatedScreen {
             renderable.extractRenderState(guiGraphics, pMouseX, pMouseY, pPartialTick);
         }
 
+        //hover tooltips for links in the info text, if any
+        this.renderLinkedTextHover(guiGraphics, pMouseX, pMouseY);
+
         this.drawTooltip(guiGraphics, pMouseX, pMouseY);
     }
 
@@ -262,8 +210,7 @@ public class BookSearchScreen extends BookPaginatedScreen {
 
         if (event.isConfirmation()) {
             if (this.visibleEntries.size() == 1) {
-                var entry = this.visibleEntries.get(0);
-                BookGuiManager.get().openEntry(entry.getBook().getId(), entry.getId(), 0);
+                this.openOnlyVisibleEntry();
                 return true;
             }
         } else if (this.searchField.keyPressed(event)) {
@@ -291,13 +238,7 @@ public class BookSearchScreen extends BookPaginatedScreen {
         var textRenderer = new BookTextRenderer(this.getBook(), this.minecraft.level.registryAccess());
         this.prerenderMarkdown(textRenderer);
 
-        //we filter out entries that are locked or in locked categories
-        this.allEntries = this.getEntries().stream().filter(e ->
-                BookServices.visibility().isVisible(this.minecraft.player, e.getCategory()) &&
-                        BookServices.visibility().isAccessible(this.minecraft.player, e)
-        ).sorted(Comparator.comparing(a -> I18n.get(a.getName()))).toList();
-
-        //TODO: should we NOT filter out locked but visible entries and display them with a lock?
+        this.allEntries = this.computeAllEntries();
 
         this.createSearchBar();
         this.createEntryList();
@@ -324,15 +265,6 @@ public class BookSearchScreen extends BookPaginatedScreen {
         }
 
         return super.charTyped(event);
-    }
-
-
-    void addEntryButtons(int x, int y, int start, int count) {
-        for (int i = 0; i < count && (i + start) < this.visibleEntries.size(); i++) {
-            Button button = new EntryListButton(this.visibleEntries.get(start + i), this.bookLeft + x, this.bookTop + y + i * 13, this::handleButtonEntry);
-            this.addRenderableWidget(button);
-            this.entryButtons.add(button);
-        }
     }
 
     @Override
