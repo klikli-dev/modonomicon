@@ -88,16 +88,11 @@ public class IndexModeCategory extends CategoryProvider {
         //This is currently only shown for index-mode books
         //Links here cover all supported link types to test category description click & hover handling (see #267).
         return """
-                A category showcasing how Modonomicon works in index mode.
-
-                [Open Demo Entry 1](entry://index_mode/demo1)
-
-                [Open Features Category](category://features)
-
-                [Modonomicon on GitHub](https://github.com/klikli-dev/modonomicon)
-
-                [Diamond](item://minecraft:diamond)
-
+                A category showcasing how Modonomicon works in index mode.\\
+                [Open Demo Entry 1](entry://index_mode/demo1)\\
+                [Open Features Category](category://features)\\
+                [Modonomicon on GitHub](https://github.com/klikli-dev/modonomicon)\\
+                [Diamond](item://minecraft:diamond)\\
                 [Get an apple](command://modonomicon:demo/test_command)""";
     }
 
