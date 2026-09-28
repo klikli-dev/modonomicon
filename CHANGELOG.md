@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.3-2.13.0] - 2026-09-28
+### :sparkles: New Features
+- [`7bac675`](https://github.com/klikli-dev/modonomicon/commit/7bac675411b0718c15f3a975a12da9f71c4adbb8) - allow closing the book with the inventory key *(PR [#269](https://github.com/klikli-dev/modonomicon/pull/269) by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`fd17538`](https://github.com/klikli-dev/modonomicon/commit/fd17538bd3d837de72d260acfccfa58fa09d9ee8) - add additional index mode entries to test pagination *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.3-2.12.0] - 2026-09-27
 ### :sparkles: New Features
 - [`0ad735e`](https://github.com/klikli-dev/modonomicon/commit/0ad735efe96bda239379fca2e9e2fb090066cd90) - Optionally render entry names on node category screens *(PR [#403](https://github.com/klikli-dev/modonomicon/pull/403) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2438,3 +2446,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.3-2.10.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.9.1...release/v26.3-2.10.0
 [release/v26.3-2.11.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.10.0...release/v26.3-2.11.0
 [release/v26.3-2.12.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.11.0...release/v26.3-2.12.0
+[release/v26.3-2.13.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.12.0...release/v26.3-2.13.0
