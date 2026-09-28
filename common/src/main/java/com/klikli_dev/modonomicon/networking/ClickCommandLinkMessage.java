@@ -38,9 +38,9 @@ public class ClickCommandLinkMessage implements Message {
     public Identifier bookId;
     public Identifier commandId;
     /**
-     * The entry the command is being run from, or {@code null} when clicked outside of an entry.
-     * In that case the server skips the entry restriction check, so only commands that are allowed
-     * everywhere can run (the client enforces the same rule before sending).
+     * The entry the command is being run from. Must be non-null: commands clicked
+     * outside of an entry (e.g. in a category description) are rejected by the server,
+     * as the entry restriction cannot be verified without an entry context.
      */
     @Nullable
     public Identifier entryId;
@@ -67,8 +67,11 @@ public class ClickCommandLinkMessage implements Message {
         if (book != null) {
             var command = book.getCommand(this.commandId);
             if (command != null) {
-                // Check if the entry is allowed for this command
-                if (this.entryId != null && !command.isEntryAllowed(this.entryId)) {
+                // Commands require an entry context: without an entry id (e.g. from a category
+                // description) the entry restriction cannot be verified, so the command is rejected.
+                // This also guards against modified clients sending packets with no entry id to
+                // bypass the entry restriction check.
+                if (this.entryId == null || !command.isEntryAllowed(this.entryId)) {
                     // Always use the modonomicon-defined failure message
                     player.sendSystemMessage(net.minecraft.network.chat.Component.translatable(
                         com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Command.FAILURE_NOT_ALLOWED_HERE

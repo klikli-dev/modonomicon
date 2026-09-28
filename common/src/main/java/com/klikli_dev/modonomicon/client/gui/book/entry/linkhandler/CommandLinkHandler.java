@@ -43,16 +43,10 @@ public class CommandLinkHandler extends LinkHandler {
         var command = book.getCommand(link.commandId);
         // Get the current entry's Identifier - null when the link is clicked outside of an entry (e.g. in a description).
         var entryId = this.context.entryId();
-        // Check if the command is allowed for this entry
-        if (entryId != null) {
-            if (!command.isEntryAllowed(entryId)) {
-                com.klikli_dev.modonomicon.Modonomicon.LOG.warn("Blocked command link: Command '{}' is not allowed on entry '{}' (book '{}')", command.getId(), entryId, book.getId());
-                return ClickResult.FAILURE;
-            }
-        } else if (!command.getAllowedEntries().isEmpty()) {
-            //without an entry context only commands that are allowed everywhere can run.
-            //the server enforces the same rule by skipping the entry check only for a missing entry id.
-            com.klikli_dev.modonomicon.Modonomicon.LOG.warn("Blocked command link: Command '{}' (book '{}') is restricted to entries, but was clicked outside of an entry", command.getId(), book.getId());
+        // Commands require an entry context. Without an entry id the server cannot verify
+        // the entry restriction, so the command is rejected (and never sent).
+        if (entryId == null || !command.isEntryAllowed(entryId)) {
+            com.klikli_dev.modonomicon.Modonomicon.LOG.warn("Blocked command link: Command '{}' (book '{}') is not allowed outside of an entry or on entry '{}'", command.getId(), book.getId(), entryId);
             return ClickResult.FAILURE;
         }
 
