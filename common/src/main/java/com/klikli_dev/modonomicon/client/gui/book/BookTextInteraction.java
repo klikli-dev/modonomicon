@@ -323,9 +323,9 @@ public final class BookTextInteraction {
                             if (link.commandId != null) {
                                 var command = book.getCommand(link.commandId);
 
-                                //outside of entries only commands that are allowed everywhere can run
+                                //commands require an entry context and are rejected outside of entries
                                 boolean runnable = BookServices.stateAccess().canRun(Minecraft.getInstance().player, command)
-                                        && (context.entryId() != null || command.getAllowedEntries().isEmpty());
+                                        && context.entryId() != null;
                                 if (!runnable) {
                                     var hoverComponent = Component.translatable(ModonomiconConstants.I18n.Gui.HOVER_COMMAND_LINK_UNAVAILABLE).withStyle(ChatFormatting.RED);
                                     newStyle = style.withHoverEvent(new HoverEvent.ShowText(hoverComponent));
