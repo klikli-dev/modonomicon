@@ -278,6 +278,13 @@ public class BookSearchScreen extends BookPaginatedScreen {
     }
 
     @Override
+    protected boolean shouldCloseOnInventoryKey() {
+        //while searching (search field focused) the inventory key must type into the search instead of closing,
+        //mirroring vanilla creative inventory search behaviour
+        return this.searchField == null || !this.searchField.isFocused();
+    }
+
+    @Override
     public void init() {
         super.init();
 

@@ -267,6 +267,11 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
             BookGuiManager.get().closeScreenStack(this);
             return true;
         }
+
+        if (this.minecraft.options.keyInventory.matches(event)) {
+            BookGuiManager.get().closeAll();
+            return true;
+        }
         return super.keyPressed(event);
     }
 

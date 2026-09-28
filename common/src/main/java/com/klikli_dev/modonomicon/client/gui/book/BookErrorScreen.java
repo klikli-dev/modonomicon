@@ -15,6 +15,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 
@@ -85,6 +86,15 @@ public class BookErrorScreen extends Screen {
     @Override
     public boolean shouldCloseOnEsc() {
         return true;
+    }
+
+    @Override
+    public boolean keyPressed(KeyEvent event) {
+        if (this.minecraft.options.keyInventory.matches(event)) {
+            this.onClose();
+            return true;
+        }
+        return super.keyPressed(event);
     }
 
 

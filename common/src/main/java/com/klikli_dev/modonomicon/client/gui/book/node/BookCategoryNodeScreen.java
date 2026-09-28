@@ -768,6 +768,10 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             BookGuiManager.get().closeScreenStack(this);
             return true;
         }
+        if (Minecraft.getInstance().options.keyInventory.matches(event)) {
+            BookGuiManager.get().closeAll();
+            return true;
+        }
         return false;
     }
 }

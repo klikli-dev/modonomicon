@@ -92,7 +92,20 @@ public abstract class BookPaginatedScreen extends Screen implements BookScreenWi
             return true;
         }
 
+        if (this.shouldCloseOnInventoryKey() && this.minecraft.options.keyInventory.matches(event)) {
+            BookGuiManager.get().closeAll();
+            return true;
+        }
+
         return super.keyPressed(event);
+    }
+
+    /**
+     * Whether pressing the inventory key should close the book.
+     * Search-like screens override this to keep typing working while the search field is focused.
+     */
+    protected boolean shouldCloseOnInventoryKey() {
+        return true;
     }
 
     public boolean canSeeBackButton() {
