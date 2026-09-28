@@ -88,6 +88,21 @@ public class CoreComponentNodeRenderer extends AbstractVisitor implements NodeRe
     }
 
     @Override
+    public void visit(Paragraph paragraph) {
+        //Each paragraph gets its own component, separated from the previous content by a blank line.
+        //Lists are exempt: list items manage their own components and must not gain blank lines.
+        if (this.context.getListHolder() == null
+                && (!this.context.isEmptyComponent() || !this.context.getComponents().isEmpty())) {
+            if (!this.context.isEmptyComponent()) {
+                this.context.finalizeCurrentComponent();
+            }
+            //a leading newline wraps to exactly one empty line, giving the paragraph break
+            this.context.getCurrentComponent().append(Component.literal("\n"));
+        }
+        this.visitChildren(paragraph);
+    }
+
+    @Override
     public void visit(HardLineBreak hardLineBreak) {
         //note: space-space-newline hard line breaks will usually not happen
         // due to java stripping trailing white spaces from text blocks

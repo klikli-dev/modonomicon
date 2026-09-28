@@ -46,10 +46,12 @@ import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -61,7 +63,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class BookEntryScreen extends BookPaginatedScreen implements ContentRenderingScreen {
+public abstract class BookEntryScreen extends BookPaginatedScreen implements ContentRenderingScreen, LinkClickContext {
 
     /**
      * A transient client-only display entry. Authored pages stay canonical in
@@ -121,17 +123,22 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         //We're doing that here to ensure unlockedPages is available for state modification during loading
         this.unlockedPages = this.entry.getUnlockedPagesFor(this.minecraft.player);
 
-        this.linkHandlers = List.of(
-                new BookLinkHandler(this),
-                new PatchouliLinkHandler(this),
-                new ItemLinkHandler(this),
-                new CommandLinkHandler(this)
-        );
+        this.linkHandlers = LinkClickDispatcher.defaultHandlers(this);
     }
 
     @Override
     public Book getBook() {
         return this.entry.getBook();
+    }
+
+    @Override
+    public Book book() {
+        return this.getBook();
+    }
+
+    @Override
+    public Font font() {
+        return this.getContentFont();
     }
 
     @Override
@@ -503,23 +510,31 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
 
     //TODO: check if we need to change this to the new click style detection stuff
     public boolean handleComponentClicked(@Nullable Style pStyle) {
-        if (pStyle != null) {
-            for (LinkHandler handler : this.linkHandlers) {
-                var result = handler.handleClick(pStyle);
+        return LinkClickDispatcher.dispatch(this, this.linkHandlers, pStyle,
+                event -> Screen.defaultHandleGameClickEvent(event, this.minecraft, this));
+    }
 
-                //before the command pattern was implemented we returned false for failures
-                //however, I believe failure should also be treated as "handled" to avoid vanilla code doing fun stuff.
-                //We retain the failure result in case that turns out to be wrong
-                if (result == LinkHandler.ClickResult.FAILURE)
-                    return true;
+    @Override
+    public Identifier entryId() {
+        return this.entry.getId();
+    }
 
-                if (result == LinkHandler.ClickResult.SUCCESS)
-                    return true;
+    @Override
+    public Identifier categoryId() {
+        return this.entry.getCategory().getId();
+    }
 
-                //unhandled -> continue to next
-            }
-        }
-        return false;
+    @Override
+    public void pushCurrentToHistory() {
+        //we push the page we are currently on to the history, including the virtual
+        //display fragment so back navigation can restore it when the split is unchanged
+        var currentPageNumber = this.getCurrentPageNumber();
+        BookGuiManager.get().pushHistory(this.getBook().getId(), this.entry.getCategory().getId(), this.entry.getId(), currentPageNumber, this.getCurrentDisplayPageIndex());
+    }
+
+    @Override
+    public void closeForExternalNavigation() {
+        BookGuiManager.get().closeScreenStack(this);
     }
 
     @Override

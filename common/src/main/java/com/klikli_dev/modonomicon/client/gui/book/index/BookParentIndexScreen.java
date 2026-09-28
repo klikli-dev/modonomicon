@@ -16,7 +16,7 @@ import com.klikli_dev.modonomicon.bookstate.visual.BookVisualState;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
-import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedScreen;
+import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedListScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.bookmarks.BookBookmarksScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.CategoryListButton;
@@ -31,16 +31,15 @@ import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.research.ResearchServices;
-import com.klikli_dev.modonomicon.util.TextRenderHelper;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -48,24 +47,14 @@ import java.util.List;
 /**
  * An index-based book parent screen. Categories are displayed as a list (as opposed to a "quest/progress" view).
  */
-public class BookParentIndexScreen extends BookPaginatedScreen implements BookParentScreen {
-    public static final int ENTRIES_PER_PAGE = 11;
-    public static final int ENTRIES_IN_FIRST_PAGE = 9;
-    protected final List<Button> entryButtons = new ArrayList<>();
+public class BookParentIndexScreen extends BookPaginatedListScreen<BookCategory> implements BookParentScreen {
     protected final Book book;
-    private final List<BookCategory> visibleEntries = new ArrayList<>();
-    /**
-     * The index of the two pages being displayed. 0 means Pages 0 and 1, 1 means Pages 2 and 3, etc.
-     */
-    private int openPagesIndex;
-    private int maxOpenPagesIndex;
-    private List<BookCategory> allEntries;
-    private List<Component> tooltip;
 
     private boolean hasUnreadEntries;
     private boolean hasUnreadUnlockedEntries;
     private boolean hasUnreadCategories;
     private boolean hasUnreadUnlockedCategories;
+
     public BookParentIndexScreen(Book book) {
         super(Component.translatable(book.getName()));
 
@@ -98,13 +87,68 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
                 ResearchServices.hooks().canProgressEntryViewedOnce(this.minecraft.player, e.getId()));
     }
 
+    @Override
     public void handleButtonEntry(Button button) {
         if (button instanceof CategoryListButton categoryListButton) {
             BookGuiManager.get().openCategory(categoryListButton.getCategory(), BookAddress.defaultFor(categoryListButton.getCategory()));
         }
     }
 
-    protected void drawTitle(GuiGraphicsExtractor guiGraphics, int x, int y){
+    @Override
+    protected void openOnlyVisibleEntry() {
+        var category = this.visibleEntries.get(0);
+        BookGuiManager.get().openCategory(category, BookAddress.defaultFor(category));
+    }
+
+    @Override
+    protected boolean fillLeftPageOnFirstPage() {
+        //the description takes the left page, so the list starts on the right
+        return !this.shouldShowDescription();
+    }
+
+    protected boolean shouldShowDescription() {
+        return !this.book.getDescription().isEmpty();
+    }
+
+    private Collection<BookCategory> getEntries() {
+        return this.getBook().getCategories().values();
+    }
+
+    @Override
+    protected List<BookCategory> computeAllEntries() {
+        return this.getEntries().stream().sorted(Comparator.comparingInt(BookCategory::getSortNumber)
+                        .thenComparing(a -> I18n.get(a.getName())))
+                .toList();
+    }
+
+    @Override
+    protected Button createEntryButton(BookCategory entry, int x, int y) {
+        return new CategoryListButton(entry, x, y, this::handleButtonEntry);
+    }
+
+    @Override
+    @Nullable
+    protected LinkedText linkedText() {
+        if (this.openPagesIndex == 0 && this.shouldShowDescription()) {
+            return new LinkedText(this.book.getDescription(),
+                    BookEntryScreen.LEFT_PAGE_X, BookEntryScreen.TOP_PADDING + 22, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - (BookEntryScreen.TOP_PADDING + 22),
+                    true);
+        }
+        return null;
+    }
+
+    @Override
+    public void closeForExternalNavigation() {
+        BookGuiManager.get().closeScreenStack(this);
+    }
+
+    @Override
+    public void pushCurrentToHistory() {
+        //remember the book so back navigation from a linked entry returns here
+        BookGuiManager.get().pushHistory(this.getBook().getId(), null, null, 0);
+    }
+
+    protected void drawTitle(GuiGraphicsExtractor guiGraphics, int x, int y) {
         guiGraphics.pose().pushMatrix();
         var scale = Math.min(1.0f, (float) BookEntryScreen.MAX_TITLE_WIDTH / (float) this.font.width(this.getTitle()));
         if (scale < 1) {
@@ -115,112 +159,6 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
         //we use scale 1 because our scale translation handling in there is off a bit. the above translation code is better
         this.drawCenteredStringNoShadow(guiGraphics, this.getTitle(), x, y, this.getBook().theme().palette().defaultTitleColor(), 1);
         guiGraphics.pose().popMatrix();
-    }
-
-    public void drawCenteredStringNoShadow(GuiGraphicsExtractor guiGraphics, Component s, int x, int y, int color) {
-        this.drawCenteredStringNoShadow(guiGraphics, s, x, y, color, 1.0f);
-    }
-
-    public void drawCenteredStringNoShadow(GuiGraphicsExtractor guiGraphics, Component s, int x, int y, int color, float scale) {
-        TextRenderHelper.drawString(guiGraphics, this.font, s, x - this.font.width(s) * scale / 2.0F, y + (this.font.lineHeight * (1 - scale)), color, false);
-    }
-
-    @Override
-    public boolean canSeeArrowButton(boolean left) {
-        return left ? this.openPagesIndex > 0 : (this.openPagesIndex + 1) < this.maxOpenPagesIndex;
-    }
-
-    @Override
-    protected void flipPage(boolean left, boolean playSound) {
-        if (this.canSeeArrowButton(left)) {
-
-            if (left) {
-                this.openPagesIndex--;
-            } else {
-                this.openPagesIndex++;
-            }
-
-            this.onPageChanged();
-            if (playSound) {
-                BookContentRenderer.playTurnPageSound(this.getBook());
-            }
-        }
-    }
-
-    protected void drawTooltip(GuiGraphicsExtractor guiGraphics, int pMouseX, int pMouseY) {
-        if (this.tooltip != null && !this.tooltip.isEmpty()) {
-            guiGraphics.setTooltipForNextFrame(this.tooltip.stream().map(Component::getVisualOrderText).toList(), pMouseX, pMouseY);
-        }
-    }
-
-    protected void onPageChanged() {
-        this.createEntryList();
-    }
-
-    protected void resetTooltip() {
-        this.tooltip = null;
-    }
-
-    protected boolean shouldShowDescription() {
-        return !this.book.getDescription().isEmpty();
-    }
-
-    private void createEntryList() {
-        this.entryButtons.forEach(b -> {
-            this.renderables.remove(b);
-            this.children().remove(b);
-            this.narratables.remove(b);
-        });
-
-        this.entryButtons.clear();
-        this.visibleEntries.clear();
-
-        //here we could do some filtering like on the search screen
-        this.visibleEntries.addAll(this.allEntries);
-
-        this.maxOpenPagesIndex = 1;
-        int count = this.visibleEntries.size();
-        count -= ENTRIES_IN_FIRST_PAGE;
-        if (count > 0) {
-            this.maxOpenPagesIndex += (int) Math.ceil((float) count / (ENTRIES_PER_PAGE * 2));
-        }
-
-        while (this.getEntryCountStart() > this.visibleEntries.size()) {
-            this.openPagesIndex--;
-        }
-
-        if (this.openPagesIndex == 0) {
-            if (this.shouldShowDescription()) {
-                //only show on the right for the first page
-                this.addEntryButtons(BookEntryScreen.RIGHT_PAGE_X - 3, BookEntryScreen.TOP_PADDING + 20, 0, ENTRIES_IN_FIRST_PAGE);
-            } else {
-                this.addEntryButtons(BookEntryScreen.LEFT_PAGE_X, BookEntryScreen.TOP_PADDING + 20, 0, ENTRIES_IN_FIRST_PAGE);
-                this.addEntryButtons(BookEntryScreen.RIGHT_PAGE_X - 3, BookEntryScreen.TOP_PADDING, ENTRIES_IN_FIRST_PAGE, ENTRIES_PER_PAGE);
-            }
-        } else {
-            int start = this.getEntryCountStart();
-            this.addEntryButtons(BookEntryScreen.LEFT_PAGE_X, BookEntryScreen.TOP_PADDING, start, ENTRIES_PER_PAGE);
-            this.addEntryButtons(BookEntryScreen.RIGHT_PAGE_X - 3, BookEntryScreen.TOP_PADDING, start + ENTRIES_PER_PAGE, ENTRIES_PER_PAGE);
-        }
-    }
-
-    private int getEntryCountStart() {
-        if (this.openPagesIndex == 0) {
-            return 0;
-        }
-
-        int start = ENTRIES_IN_FIRST_PAGE;
-        start += (ENTRIES_PER_PAGE * 2) * (this.openPagesIndex - 1);
-        return start;
-    }
-
-    private Collection<BookCategory> getEntries() {
-        return this.getBook().getCategories().values();
-    }
-
-    @Override
-    public void setTooltip(List<Component> tooltip) {
-        this.tooltip = tooltip;
     }
 
     @Override
@@ -275,6 +213,9 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
             renderable.extractRenderState(guiGraphics, pMouseX, pMouseY, pPartialTick);
         }
 
+        //hover tooltips for links in the book description, if any
+        this.renderLinkedTextHover(guiGraphics, pMouseX, pMouseY);
+
         this.drawTooltip(guiGraphics, pMouseX, pMouseY);
     }
 
@@ -309,8 +250,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
         if (event.key() == GLFW.GLFW_KEY_ENTER) {
             if (this.visibleEntries.size() == 1) {
-                var entry = this.visibleEntries.get(0);
-                BookGuiManager.get().openEntry(entry.getBook().getId(), entry.getId(), 0);
+                this.openOnlyVisibleEntry();
                 return true;
             }
         }
@@ -322,10 +262,7 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
     public void init() {
         super.init();
 
-        //we filter out entries that are locked or in locked categories
-        this.allEntries = this.getEntries().stream().sorted(Comparator.comparingInt(BookCategory::getSortNumber)
-                        .thenComparing(a -> I18n.get(a.getName())))
-                .toList();
+        this.allEntries = this.computeAllEntries();
 
         this.createEntryList();
 
@@ -383,14 +320,6 @@ public class BookParentIndexScreen extends BookPaginatedScreen implements BookPa
 
     protected void onShowRecentlyUnlockedButtonClick(ShowRecentlyUnlockedButton button) {
         ClientServices.GUI.pushGuiLayer(new BookRecentlyUnlockedScreen(this));
-    }
-
-    protected void addEntryButtons(int x, int y, int start, int count) {
-        for (int i = 0; i < count && (i + start) < this.visibleEntries.size(); i++) {
-            Button button = new CategoryListButton(this.visibleEntries.get(start + i), this.bookLeft + x, this.bookTop + y + i * 13, this::handleButtonEntry);
-            this.addRenderableWidget(button);
-            this.entryButtons.add(button);
-        }
     }
 
     @Override

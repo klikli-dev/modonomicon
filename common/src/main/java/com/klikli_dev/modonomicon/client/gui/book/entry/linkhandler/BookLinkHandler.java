@@ -7,15 +7,14 @@ package com.klikli_dev.modonomicon.client.gui.book.entry.linkhandler;
 import com.klikli_dev.modonomicon.book.BookLink;
 import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
-import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Style;
 import org.jetbrains.annotations.NotNull;
 
 public class BookLinkHandler extends LinkHandler {
-    public BookLinkHandler(BookEntryScreen screen) {
-        super(screen);
+    public BookLinkHandler(LinkClickContext context) {
+        super(context);
     }
 
     @Override
@@ -53,10 +52,9 @@ public class BookLinkHandler extends LinkHandler {
                 page = 0;
             }
 
-            //we push the page we are currently on to the history, including the virtual
-            //display fragment so back navigation can restore it when the split is unchanged
-            var currentPageNumber = this.screen().getCurrentPageNumber();
-            BookGuiManager.get().pushHistory(this.book().getId(), this.category().getId(), this.entry().getId(), currentPageNumber, this.screen().getCurrentDisplayPageIndex());
+            //let the context remember where we are, so back navigation can restore it.
+            //contexts without a navigable location (e.g. descriptions) ignore this.
+            this.context.pushCurrentToHistory();
             BookGuiManager.get().openEntry(link.bookId, link.entryId, page);
         } else if (link.categoryId != null) {
             BookGuiManager.get().openEntry(link.bookId, link.categoryId, null, 0);
