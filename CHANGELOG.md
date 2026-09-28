@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.3-2.14.1] - 2026-09-28
+### :bug: Bug Fixes
+- [`977f717`](https://github.com/klikli-dev/modonomicon/commit/977f717e4ae44c67d7547cc7e2cd97b40e8d9694) - reject command links without entry id to prevent bypassing entry restrictions *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.3-2.14.0] - 2026-09-28
 ### :sparkles: New Features
 - [`02c5ba3`](https://github.com/klikli-dev/modonomicon/commit/02c5ba3e85e04d4d0aaad57f53405c001810c50f) - refactor link handling code to be usable outside page context *(PR [#404](https://github.com/klikli-dev/modonomicon/pull/404) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2454,3 +2459,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.3-2.12.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.11.0...release/v26.3-2.12.0
 [release/v26.3-2.13.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.12.0...release/v26.3-2.13.0
 [release/v26.3-2.14.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.13.0...release/v26.3-2.14.0
+[release/v26.3-2.14.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.14.0...release/v26.3-2.14.1
