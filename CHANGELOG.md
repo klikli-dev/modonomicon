@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.3-2.14.0] - 2026-09-28
+### :sparkles: New Features
+- [`02c5ba3`](https://github.com/klikli-dev/modonomicon/commit/02c5ba3e85e04d4d0aaad57f53405c001810c50f) - refactor link handling code to be usable outside page context *(PR [#404](https://github.com/klikli-dev/modonomicon/pull/404) by [@klikli-dev](https://github.com/klikli-dev))*
+  - :arrow_lower_right: *addresses issue [#267](https://github.com/klikli-dev/modonomicon/issues/267) opened by [@thomasglasser](https://github.com/thomasglasser)*
+
+
 ## [release/v26.3-2.13.0] - 2026-09-28
 ### :sparkles: New Features
 - [`7bac675`](https://github.com/klikli-dev/modonomicon/commit/7bac675411b0718c15f3a975a12da9f71c4adbb8) - allow closing the book with the inventory key *(PR [#269](https://github.com/klikli-dev/modonomicon/pull/269) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2447,3 +2453,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.3-2.11.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.10.0...release/v26.3-2.11.0
 [release/v26.3-2.12.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.11.0...release/v26.3-2.12.0
 [release/v26.3-2.13.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.12.0...release/v26.3-2.13.0
+[release/v26.3-2.14.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.13.0...release/v26.3-2.14.0
