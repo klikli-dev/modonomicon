@@ -11,7 +11,9 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.book.BookDisplayMode;
 import com.klikli_dev.modonomicon.datagen.book.demo.indexmode.Demo1IndexEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.indexmode.Demo2IndexEntry;
+import com.klikli_dev.modonomicon.datagen.book.demo.indexmode.DemoCountingIndexEntry;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 
 public class IndexModeCategory extends CategoryProvider {
     public static final String ID = "index_mode";
@@ -24,6 +26,49 @@ public class IndexModeCategory extends CategoryProvider {
     protected void generateEntries() {
         this.add(new Demo1IndexEntry(this).generate());
         this.add(new Demo2IndexEntry(this).generate());
+
+        ItemLike[] icons = {
+                Items.DIAMOND_SWORD,
+                Items.APPLE,
+                Items.BOOK,
+                Items.COMPASS,
+                Items.CRAFTING_TABLE,
+                Items.FURNACE,
+                Items.OAK_LOG,
+                Items.IRON_PICKAXE,
+                Items.GOLDEN_APPLE,
+                Items.ENDER_PEARL,
+                Items.REDSTONE,
+                Items.LAPIS_LAZULI,
+                Items.EMERALD,
+                Items.CAKE,
+                Items.TNT,
+                Items.AMETHYST_SHARD,
+                Items.BOW,
+                Items.FISHING_ROD,
+                Items.SHIELD,
+                Items.CLOCK,
+                Items.MAP,
+                Items.LANTERN,
+                Items.CAMPFIRE,
+                Items.JUKEBOX,
+                Items.NOTE_BLOCK,
+                Items.OBSIDIAN,
+                Items.DIAMOND,
+                Items.NETHERITE_INGOT,
+                Items.BLAZE_ROD,
+                Items.GHAST_TEAR,
+                Items.SPYGLASS,
+                Items.BRUSH,
+                Items.RECOVERY_COMPASS,
+                Items.ELYTRA,
+                Items.TOTEM_OF_UNDYING
+        };
+
+        for (int i = 0; i < icons.length; i++) {
+            int number = i + 3;
+            this.add(new DemoCountingIndexEntry(this, "demo" + number, "Demo Entry " + number, icons[i]).generate());
+        }
     }
 
     @Override
