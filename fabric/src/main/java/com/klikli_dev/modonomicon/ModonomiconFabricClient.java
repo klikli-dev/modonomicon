@@ -45,10 +45,8 @@ public class ModonomiconFabricClient implements ClientModInitializer {
 
         KeyMappingHelper.registerKeyMapping(ModonomiconKeys.OPEN_ASSOCIATED_ENTRY);
 
-        ItemTooltipCallback.EVENT.register((stack, context, flag, lines) -> {
-            AssociatedHoverTracker.onTooltipGather(stack);
-            AssociatedTooltipHelper.gatherText(stack, lines);
-        });
+        ItemTooltipCallback.EVENT.register((stack, context, flag, lines) ->
+                AssociatedHoverTracker.onTooltipGather(stack));
         ClientTooltipComponentCallback.EVENT.register(data ->
                 data instanceof AssociatedEntryTooltip tooltip ? new AssociatedEntryTooltipRenderer(tooltip) : null);
 

@@ -47,6 +47,41 @@ public class AssociatedHoverTracker {
     }
 
     /**
+     * True while the open key is held down for the currently hovered stack.
+     * Used for the live countdown in the tooltip hint.
+     */
+    public static boolean isHoldingFor(ItemStack stack) {
+        return !stack.isEmpty()
+                && ModonomiconKeys.OPEN_ASSOCIATED_ENTRY.isDown()
+                && holdStartMs > 0
+                && !openedForCurrentHold
+                && AssociatedItemMatcher.isSameStack(stack, hoveredStack);
+    }
+
+    /**
+     * Seconds until the book opens for the given stack: the live remaining time
+     * while holding, otherwise the full configured hold duration.
+     */
+    public static double holdRemainingSeconds(ItemStack stack) {
+        double total = holdDurationMs() / 1000.0;
+        if (isHoldingFor(stack)) {
+            return Math.max(0, (holdDurationMs() - (Util.getMillis() - holdStartMs)) / 1000.0);
+        }
+        return total;
+    }
+
+    /**
+     * The full configured hold duration in seconds, shown before holding starts.
+     */
+    public static double holdTotalSeconds() {
+        return holdDurationMs() / 1000.0;
+    }
+
+    private static int holdDurationMs() {
+        return ClientServices.CLIENT_CONFIG.associatedItemsHoldDurationMs();
+    }
+
+    /**
      * Called every client tick. Opens the linked entry/page once the key was held
      * long enough while hovering the same stack.
      */
@@ -75,8 +110,8 @@ public class AssociatedHoverTracker {
             return;
         }
 
-        int holdDurationMs = ClientServices.CLIENT_CONFIG.associatedItemsHoldDurationMs();
-        if (now - holdStartMs >= holdDurationMs) {
+        int holdDuration = holdDurationMs();
+        if (now - holdStartMs >= holdDuration) {
             if (AssociatedTooltipHelper.openFromHover(hoveredStack)) {
                 openedForCurrentHold = true;
             } else {

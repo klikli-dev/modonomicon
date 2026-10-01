@@ -15,22 +15,25 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.world.item.ItemStack;
 
 /**
- * Renders the page/entry icon (16x16) with the modonomicon book icon as a small
- * badge in the bottom right corner to indicate a linked book page.
+ * Renders the linked page/entry icon (16x16, with the modonomicon book icon as a
+ * small badge in the bottom right corner) to the left of the title and hold hint.
  */
 public class AssociatedEntryTooltipRenderer implements ClientTooltipComponent {
 
     private static final int ICON_SIZE = 16;
+    private static final int GAP = 4;
+    private static final int LINE_HEIGHT = 9;
+    private static final int TEXT_GAP = 2;
     private static final int BADGE_SIZE = 8;
 
-    private final AssociatedItemLookup.Association association;
+    private final AssociatedEntryTooltip tooltip;
 
     private BookIcon icon;
     private ItemStack badgeStack;
     private boolean resolved;
 
     public AssociatedEntryTooltipRenderer(AssociatedEntryTooltip tooltip) {
-        this.association = tooltip.association();
+        this.tooltip = tooltip;
     }
 
     private void resolve() {
@@ -39,24 +42,35 @@ public class AssociatedEntryTooltipRenderer implements ClientTooltipComponent {
         }
         this.resolved = true;
 
-        var entry = AssociatedItemLookup.get().resolveEntry(this.association);
+        var entry = AssociatedItemLookup.get().resolveEntry(this.tooltip.association());
         if (entry == null) {
             return;
         }
 
-        var page = AssociatedItemLookup.get().resolvePage(this.association);
+        var page = AssociatedItemLookup.get().resolvePage(this.tooltip.association());
         this.icon = AssociatedTooltipHelper.resolveIcon(entry, page);
         this.badgeStack = new ItemStack(ItemRegistry.MODONOMICON_PURPLE.get());
     }
 
+    private int textWidth(Font font) {
+        return Math.max(font.width(this.tooltip.title()), font.width(this.tooltip.hint()));
+    }
+
     @Override
     public int getHeight(Font font) {
-        return ICON_SIZE + 2;
+        return Math.max(ICON_SIZE, LINE_HEIGHT + TEXT_GAP + LINE_HEIGHT) + 2;
     }
 
     @Override
     public int getWidth(Font font) {
-        return ICON_SIZE + 2;
+        return ICON_SIZE + GAP + this.textWidth(font) + 2;
+    }
+
+    @Override
+    public void extractText(GuiGraphicsExtractor graphics, Font font, int x, int y) {
+        int textX = x + 1 + ICON_SIZE + GAP;
+        graphics.text(font, this.tooltip.title(), textX, y + 1, 0xFFFFFF);
+        graphics.text(font, this.tooltip.hint(), textX, y + 1 + LINE_HEIGHT + TEXT_GAP, 0xAAAAAA);
     }
 
     @Override
@@ -66,13 +80,14 @@ public class AssociatedEntryTooltipRenderer implements ClientTooltipComponent {
             return;
         }
 
-        this.icon.render(graphics, x, y);
+        int iconY = y + (this.getHeight(font) - ICON_SIZE) / 2;
+        this.icon.render(graphics, x + 1, iconY);
 
         //small book badge in the bottom right corner of the page icon
         if (this.badgeStack != null && !this.badgeStack.isEmpty()) {
             var pose = graphics.pose();
             pose.pushMatrix();
-            pose.translate(x + ICON_SIZE - BADGE_SIZE, y + ICON_SIZE - BADGE_SIZE);
+            pose.translate(x + 1 + ICON_SIZE - BADGE_SIZE, iconY + ICON_SIZE - BADGE_SIZE);
             float scale = BADGE_SIZE / (float) ICON_SIZE;
             pose.scale(scale, scale);
             graphics.item(this.badgeStack, 0, 0);

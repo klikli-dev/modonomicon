@@ -29,7 +29,6 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,47 +40,41 @@ import java.util.Optional;
 public class AssociatedTooltipHelper {
 
     /**
-     * Appends the linked-page title plus hold hint (or locked hint) to the tooltip lines.
-     * Does nothing if the stack has no association or the entry is gone.
+     * Builds the complete tooltip component for the stack: title plus hold hint
+     * (with live countdown) or locked hint. Empty if there is no association.
      */
-    public static void gatherText(ItemStack stack, List<Component> lines) {
+    public static Optional<TooltipComponent> gather(ItemStack stack) {
         var association = AssociatedItemLookup.get().find(stack);
         if (association == null) {
-            return;
+            return Optional.empty();
         }
 
         var entry = AssociatedItemLookup.get().resolveEntry(association);
         if (entry == null) {
-            return;
+            return Optional.empty();
         }
 
         var page = AssociatedItemLookup.get().resolvePage(association);
-        lines.add(resolveTitle(entry, page));
-
-        if (isLocked(entry)) {
-            lines.add(Component.translatable(ModonomiconConstants.I18n.Tooltips.ASSOCIATED_LOCKED)
-                    .withStyle(ChatFormatting.GRAY));
-        } else {
-            lines.add(Component.translatable(ModonomiconConstants.I18n.Tooltips.ASSOCIATED_HOLD_TO_OPEN,
-                            ModonomiconKeys.OPEN_ASSOCIATED_ENTRY.getTranslatedKeyMessage())
-                    .withStyle(ChatFormatting.GRAY));
-        }
+        Component title = resolveTitle(entry, page);
+        Component hint = isLocked(entry)
+                ? Component.translatable(ModonomiconConstants.I18n.Tooltips.ASSOCIATED_LOCKED)
+                        .withStyle(ChatFormatting.GRAY)
+                : holdHint(stack);
+        return Optional.of(new AssociatedEntryTooltip(association, title, hint));
     }
 
-    /**
-     * Provides the icon image component for the tooltip, if the stack is associated.
-     */
-    public static Optional<TooltipComponent> gatherImage(ItemStack stack) {
-        var association = AssociatedItemLookup.get().find(stack);
-        if (association == null) {
-            return Optional.empty();
-        }
-
-        if (AssociatedItemLookup.get().resolveEntry(association) == null) {
-            return Optional.empty();
-        }
-
-        return Optional.of(new AssociatedEntryTooltip(association));
+    private static Component holdHint(ItemStack stack) {
+        var keyName = ModonomiconKeys.OPEN_ASSOCIATED_ENTRY.getTranslatedKeyMessage();
+        //before holding show the full duration with one decimal ("2.0s"), while holding
+        //count down with millisecond precision ("0.678s") so players see the hold register
+        boolean holding = AssociatedHoverTracker.isHoldingFor(stack);
+        double seconds = holding
+                ? AssociatedHoverTracker.holdRemainingSeconds(stack)
+                : AssociatedHoverTracker.holdTotalSeconds();
+        String formatted = String.format(java.util.Locale.ROOT, holding ? "%.3f" : "%.1f", seconds);
+        return Component.translatable(ModonomiconConstants.I18n.Tooltips.ASSOCIATED_HOLD_TO_OPEN,
+                        keyName, formatted)
+                .withStyle(ChatFormatting.GRAY);
     }
 
     /**

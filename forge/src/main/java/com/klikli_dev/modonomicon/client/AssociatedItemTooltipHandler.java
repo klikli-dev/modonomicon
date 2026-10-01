@@ -30,18 +30,9 @@ public class AssociatedItemTooltipHandler {
         var stack = event.getItemStack();
         AssociatedHoverTracker.onTooltipGather(stack);
 
-        var lines = new ArrayList<Component>();
-        AssociatedTooltipHelper.gatherText(stack, lines);
-        if (lines.isEmpty()) {
-            return;
-        }
-
-        //title, then the page icon image, then the hold/locked hint
-        int insertAt = event.getTooltipElements().size();
-        for (var line : lines) {
-            event.getTooltipElements().add(Either.<FormattedText, TooltipComponent>left(line));
-        }
-        AssociatedTooltipHelper.gatherImage(stack)
-                .ifPresent(image -> event.getTooltipElements().add(insertAt + 1, Either.right(image)));
+        //the single component renders icon (left of text), title and hold/locked hint
+        AssociatedTooltipHelper.gather(stack)
+                .ifPresent(image -> event.getTooltipElements().add(
+                        Math.min(1, event.getTooltipElements().size()), Either.right(image)));
     }
 }

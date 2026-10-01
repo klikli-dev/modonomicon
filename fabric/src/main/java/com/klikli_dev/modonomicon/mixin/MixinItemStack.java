@@ -6,7 +6,6 @@
 
 package com.klikli_dev.modonomicon.mixin;
 
-import com.klikli_dev.modonomicon.client.gui.book.associated.AssociatedHoverTracker;
 import com.klikli_dev.modonomicon.client.gui.book.associated.AssociatedTooltipHelper;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
@@ -30,7 +29,6 @@ public abstract class MixinItemStack {
             return;
         }
         ItemStack self = (ItemStack) (Object) this;
-        AssociatedHoverTracker.onTooltipGather(self);
-        AssociatedTooltipHelper.gatherImage(self).ifPresent(image -> cir.setReturnValue(Optional.of(image)));
+        AssociatedTooltipHelper.gather(self).ifPresent(image -> cir.setReturnValue(Optional.of(image)));
     }
 }

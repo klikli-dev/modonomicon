@@ -594,7 +594,7 @@
   "research_toast.modonomicon.stages_demo_stage_3.title": "All Stages Complete",
   "research_toast.modonomicon.stick_crafted.title": "Stick Crafted",
   "test.test.test": "Book of Binding: Afrit (Bound)",
-  "tooltip.modonomicon.associated.hold_to_open": "Hold %s to open",
+  "tooltip.modonomicon.associated.hold_to_open": "Hold %s for %ss",
   "tooltip.modonomicon.associated.locked": "Locked: unlock in the book",
   "tooltip.modonomicon.condition.entry_unlocked": "Requires entry %s to be unlocked",
   "tooltip.modonomicon.condition.has_visible_entries": "Requires that category %s has visible entries",
