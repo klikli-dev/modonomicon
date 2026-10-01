@@ -30,17 +30,9 @@ public class AssociatedItemTooltipHandler {
         var stack = event.getItemStack();
         AssociatedHoverTracker.onTooltipGather(stack);
 
-        //icon row directly under the item name, then title and hold/locked hint as
-        //vanilla text lines (the only text primitive that renders on all paths)
+        //icon, title and hold/locked hint as one block right under the item name
         AssociatedTooltipHelper.gatherImage(stack)
                 .ifPresent(image -> event.getTooltipElements().add(
                         Math.min(1, event.getTooltipElements().size()), Either.right(image)));
-
-        var lines = new ArrayList<Component>();
-        AssociatedTooltipHelper.gatherText(stack, lines);
-        int insertAt = Math.min(2, event.getTooltipElements().size());
-        for (var line : lines) {
-            event.getTooltipElements().add(insertAt++, Either.<FormattedText, TooltipComponent>left(line));
-        }
     }
 }

@@ -30,7 +30,6 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -42,8 +41,9 @@ import java.util.Optional;
 public class AssociatedTooltipHelper {
 
     /**
-     * Builds the icon image component for the stack, if it is associated.
-     * Title and hint are added separately via {@link #gatherText}.
+     * Builds the complete tooltip component for the stack: page icon plus title and
+     * hold hint (with live countdown) or locked hint. Empty if there is no association.
+     * Created fresh on every gather so the countdown ticks.
      */
     public static Optional<TooltipComponent> gatherImage(ItemStack stack) {
         var association = AssociatedItemLookup.get().find(stack);
@@ -51,38 +51,18 @@ public class AssociatedTooltipHelper {
             return Optional.empty();
         }
 
-        if (AssociatedItemLookup.get().resolveEntry(association) == null) {
+        var entry = AssociatedItemLookup.get().resolveEntry(association);
+        if (entry == null) {
             return Optional.empty();
         }
 
-        return Optional.of(new AssociatedEntryTooltip(association));
-    }
-
-    /**
-     * Appends the linked-page title plus hold hint (or locked hint) to the tooltip lines.
-     * Vanilla text lines are the only text primitive that renders on all tooltip paths.
-     * Does nothing if the stack has no association or the entry is gone.
-     */
-    public static void gatherText(ItemStack stack, List<Component> lines) {
-        var association = AssociatedItemLookup.get().find(stack);
-        if (association == null) {
-            return;
-        }
-
-        var entry = AssociatedItemLookup.get().resolveEntry(association);
-        if (entry == null) {
-            return;
-        }
-
         var page = AssociatedItemLookup.get().resolvePage(association);
-        lines.add(resolveTitle(entry, page));
-
-        if (isLocked(entry)) {
-            lines.add(Component.translatable(ModonomiconConstants.I18n.Tooltips.ASSOCIATED_LOCKED)
-                    .withStyle(ChatFormatting.GRAY));
-        } else {
-            lines.add(holdHint(stack));
-        }
+        Component title = resolveTitle(entry, page);
+        Component hint = isLocked(entry)
+                ? Component.translatable(ModonomiconConstants.I18n.Tooltips.ASSOCIATED_LOCKED)
+                        .withStyle(ChatFormatting.GRAY)
+                : holdHint(stack);
+        return Optional.of(new AssociatedEntryTooltip(association, title, hint));
     }
 
     private static Component holdHint(ItemStack stack) {
