@@ -23,9 +23,7 @@ public class BookEmptyPageModel extends BookPageModel<BookEmptyPageModel> {
     @Override
     public BookPage toBookPage(HolderLookup.Provider provider) {
         var page = new BookEmptyPage(this.id, this.condition(provider));
-
         this.applyAssociatedItems(page);
-
         return page;
     }
 }

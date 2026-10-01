@@ -55,9 +55,7 @@ public class BookMultiblockPageModel extends BookPageModel<BookMultiblockPageMod
     @Override
     public BookPage toBookPage(HolderLookup.Provider provider) {
         var page = new BookMultiblockPage(this.multiblockName.toBookTextHolder(), this.text.toBookTextHolder(), this.multiblockId, this.showVisualizeButton, this.autoScale, this.allowPageSplit, this.id, this.condition(provider));
-
         this.applyAssociatedItems(page);
-
         return page;
     }
 

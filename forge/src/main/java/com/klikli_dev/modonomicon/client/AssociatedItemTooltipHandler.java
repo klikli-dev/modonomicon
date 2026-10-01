@@ -36,10 +36,12 @@ public class AssociatedItemTooltipHandler {
             return;
         }
 
+        //title, then the page icon image, then the hold/locked hint
+        int insertAt = event.getTooltipElements().size();
         for (var line : lines) {
             event.getTooltipElements().add(Either.<FormattedText, TooltipComponent>left(line));
         }
         AssociatedTooltipHelper.gatherImage(stack)
-                .ifPresent(image -> event.getTooltipElements().add(Either.right(image)));
+                .ifPresent(image -> event.getTooltipElements().add(insertAt + 1, Either.right(image)));
     }
 }

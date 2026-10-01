@@ -1,5 +1,10 @@
 {
   "type": "modonomicon:spotlight",
+  "associated_items": [
+    {
+      "id": "minecraft:apple"
+    }
+  ],
   "condition": {
     "type": "modonomicon:none"
   },

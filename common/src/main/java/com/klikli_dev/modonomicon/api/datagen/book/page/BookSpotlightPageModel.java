@@ -57,9 +57,7 @@ public class BookSpotlightPageModel extends BookPageModel<BookSpotlightPageModel
     @Override
     public BookPage toBookPage(HolderLookup.Provider provider) {
         var page = new BookSpotlightPage(this.title.toBookTextHolder(), this.text.toBookTextHolder(), this.item, this.autoScale, this.allowPageSplit, this.id, this.condition(provider));
-
         this.applyAssociatedItems(page);
-
         return page;
     }
 
