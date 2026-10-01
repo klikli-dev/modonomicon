@@ -253,6 +253,34 @@ If this is set, the entry will never show it's pages, but instead open the targe
 
 Use this on entries with `"type": "modonomicon:entry_link"`.
 
+### **associated_items** (ItemStackTemplate[], _optional_)
+
+Links this entry to one or more items. When the player hovers such an item (in inventories, creative menus or recipe viewers such as JEI/EMI), the tooltip shows the entry's icon with a small book badge, the entry name and a hold-to-open hint. Holding the open key (default: `Left Alt`, rebindable under Controls → Modonomicon → Open Associated Book Page) while hovering opens the book directly at this entry.
+
+Each entry is an item stack template with an `id` and optional `components`, e.g.:
+
+```json
+"associated_items": [
+  { "id": "minecraft:beacon" },
+  {
+    "id": "minecraft:leather_helmet",
+    "components": {
+      "minecraft:dyed_color": 1481884
+    }
+  }
+]
+```
+
+Matching: the hovered stack must be the same item, and every component defined in the template must be present on the stack with an equal value. Additional components on the hovered stack are allowed (subset matching); `count` is ignored.
+
+Page-level `associated_items` (see [Page Types](../page-types/page-types.md#associated_items-itemstacktemplate-optional)) take precedence over entry-level ones: hovering an item linked to a specific page opens that page instead of the entry start.
+
+If the entry is still locked for the player, the tooltip shows a locked hint instead and holding the key does nothing.
+
+Datagen: `BookEntryModel#withAssociatedItem(...)` / `#withAssociatedItems(...)`.
+
+The hold duration is a client-side setting (`associatedItemsHoldDurationMs`, default `750` ms).
+
 ## Parents 
 
 Entry Parents define which entry comes visually before this entry in the book, as in, which entry points an arrow at this entry.

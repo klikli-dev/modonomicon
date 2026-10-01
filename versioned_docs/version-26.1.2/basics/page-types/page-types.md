@@ -30,6 +30,14 @@ Page titles will not parse markdown by default; they use the default title color
 
 **Fallback names:** When a title or name attribute is omitted, the page's primary content name is used as fallback (e.g., the ingredient name for spotlight pages, the entity name for entity pages, the recipe output name for recipe pages).
 
+### **associated_items** (ItemStackTemplate[], _optional_)
+
+Links this page to one or more items. Format and matching rules are the same as [entry `associated_items`](../structure/entries.md#associated_items-itemstacktemplate-optional): a list of `{"id": "<item id>", "components": {...}}` templates matched by item plus component subset.
+
+Hovering a linked item shows the page icon with a small book badge, the page title (falling back to the entry name) and a hold-to-open hint; holding the open key opens the book at this page. Page-level associations take precedence over entry-level ones.
+
+Datagen: `BookPageModel#withAssociatedItem(...)` / `#withAssociatedItems(...)`.
+
 ### A note on texts
 
 See also [Localization](../../advanced/localization).
