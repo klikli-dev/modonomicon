@@ -13,22 +13,28 @@ import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * Renders the linked page/entry icon (16x16, with the modonomicon book icon as a
- * small badge in the bottom right corner) to the left of the title and hold hint.
+ * TEMPORARY DIAGNOSTIC RENDERER for #259 (TODO: replace with final implementation).
  * <p>
- * Like vanilla's {@code ClientBundleTooltip}, all text is drawn from
- * {@link #extractImage} — custom {@code extractText} implementations are not
- * honored on every tooltip render path.
+ * Draws labeled test rows through every text path to isolate which one survives:
+ * <ul>
+ * <li>ET row via {@code extractText} with {@code forward()} (exactly what vanilla
+ * {@code ClientTextTooltip} does for working text lines).</li>
+ * <li>EI-FWD row via {@code extractImage} with {@code forward()} (bypasses Language).</li>
+ * <li>EI-STR row via {@code extractImage} with a plain string (through Language).</li>
+ * <li>EI-CMP row via {@code extractImage} with component visual order.</li>
+ * </ul>
+ * Plus the icon/badge (proves {@code extractImage} runs) and a red rect behind the
+ * rows (proves fill states land).
  */
 public class AssociatedEntryTooltipRenderer implements ClientTooltipComponent {
 
     private static final int ICON_SIZE = 16;
     private static final int GAP = 4;
-    private static final int LINE_HEIGHT = 9;
-    private static final int TEXT_GAP = 2;
     private static final int BADGE_SIZE = 8;
 
     private final AssociatedEntryTooltip tooltip;
@@ -60,52 +66,46 @@ public class AssociatedEntryTooltipRenderer implements ClientTooltipComponent {
         this.badgeStack = new ItemStack(ItemRegistry.MODONOMICON_PURPLE.get());
     }
 
-    private int textWidth(Font font) {
-        return Math.max(font.width(this.tooltip.title()), font.width(this.tooltip.hint()));
-    }
-
     @Override
     public int getHeight(Font font) {
-        return Math.max(ICON_SIZE, LINE_HEIGHT + TEXT_GAP + LINE_HEIGHT) + 2;
+        return 58;
     }
 
     @Override
     public int getWidth(Font font) {
-        return ICON_SIZE + GAP + this.textWidth(font) + 2;
+        return 240;
+    }
+
+    @Override
+    public void extractText(GuiGraphicsExtractor graphics, Font font, int x, int y) {
+        graphics.text(font, FormattedCharSequence.forward(">ET FWD-LOOP", Style.EMPTY), x + 1, y + 1, 0xFFFFFF);
     }
 
     @Override
     public void extractImage(Font font, int x, int y, int width, int height, GuiGraphicsExtractor graphics) {
-        int textX = x + 1 + ICON_SIZE + GAP;
-        int textW = Math.max(font.width(this.tooltip.title().getString()), font.width(this.tooltip.hint().getString()));
-        //TODO(#259): diagnostic probe — solid red behind the text area. If the rect shows but
-        //no glyphs do, text states specifically are dropped; if neither shows, non-item draws die here.
-        graphics.fill(textX, y + 1, textX + textW, y + 1 + LINE_HEIGHT + TEXT_GAP + LINE_HEIGHT, 0xFFFF0000);
-        //draw resolved plain strings rather than components: font.width() (string based)
-        //measues these correctly while component visual order may not resolve on all paths
-        graphics.text(font, this.tooltip.title().getString(), textX, y + 1, 0xFFFFFF);
-        graphics.text(font, this.tooltip.hint().getString(), textX, y + 1 + LINE_HEIGHT + TEXT_GAP, 0xAAAAAA);
-
         if (!loggedDraw) {
             loggedDraw = true;
-            Modonomicon.LOG.info("[AssociatedTooltip r2] extractImage at ({},{}) textX={} textW={} title='{}' hint='{}'",
-                    x, y, textX, textW,
-                    this.tooltip.title().getString(), this.tooltip.hint().getString());
+            Modonomicon.LOG.info("[AssociatedTooltip r3] probe extractImage at ({},{})", x, y);
         }
+
+        int textX = x + 1 + ICON_SIZE + GAP;
+        graphics.fill(textX, y + 12, textX + 200, y + 44, 0xFFFF0000);
+        graphics.text(font, FormattedCharSequence.forward(">EI FWD IMAGE-LOOP", Style.EMPTY), textX, y + 12, 0xFFFFFF);
+        graphics.text(font, ">EI STR " + this.tooltip.title().getString(), textX, y + 23, 0xFFFFFF);
+        graphics.text(font, this.tooltip.title().getVisualOrderText(), textX, y + 34, 0xFFFFFF);
 
         this.resolve();
         if (this.icon == null) {
             return;
         }
 
-        int iconY = y + (this.getHeight(font) - ICON_SIZE) / 2;
-        this.icon.render(graphics, x + 1, iconY);
+        this.icon.render(graphics, x + 1, y + 12);
 
         //small book badge in the bottom right corner of the page icon
         if (this.badgeStack != null && !this.badgeStack.isEmpty()) {
             var pose = graphics.pose();
             pose.pushMatrix();
-            pose.translate(x + 1 + ICON_SIZE - BADGE_SIZE, iconY + ICON_SIZE - BADGE_SIZE);
+            pose.translate(x + 1 + ICON_SIZE - BADGE_SIZE, y + 12 + ICON_SIZE - BADGE_SIZE);
             float scale = BADGE_SIZE / (float) ICON_SIZE;
             pose.scale(scale, scale);
             graphics.item(this.badgeStack, 0, 0);
