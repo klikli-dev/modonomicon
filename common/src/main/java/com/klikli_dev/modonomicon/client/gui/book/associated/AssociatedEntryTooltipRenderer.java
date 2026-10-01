@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.associated;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.BookIcon;
 import com.klikli_dev.modonomicon.book.associated.AssociatedItemLookup;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
@@ -35,6 +36,9 @@ public class AssociatedEntryTooltipRenderer implements ClientTooltipComponent {
     private BookIcon icon;
     private ItemStack badgeStack;
     private boolean resolved;
+
+    //TODO(#259): remove diagnostic logging once the missing-text issue is resolved
+    private static boolean loggedDraw;
 
     public AssociatedEntryTooltipRenderer(AssociatedEntryTooltip tooltip) {
         this.tooltip = tooltip;
@@ -75,6 +79,13 @@ public class AssociatedEntryTooltipRenderer implements ClientTooltipComponent {
         int textX = x + 1 + ICON_SIZE + GAP;
         graphics.text(font, this.tooltip.title(), textX, y + 1, 0xFFFFFF);
         graphics.text(font, this.tooltip.hint(), textX, y + 1 + LINE_HEIGHT + TEXT_GAP, 0xAAAAAA);
+
+        if (!loggedDraw) {
+            loggedDraw = true;
+            Modonomicon.LOG.info("[AssociatedTooltip] extractImage at ({},{}) textX={} titleW={} hintW={} title='{}' hint='{}'",
+                    x, y, textX, font.width(this.tooltip.title()), font.width(this.tooltip.hint()),
+                    this.tooltip.title().getString(), this.tooltip.hint().getString());
+        }
 
         this.resolve();
         if (this.icon == null) {

@@ -6,10 +6,12 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.associated;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.book.BookIcon;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.associated.AssociatedItemLookup;
+import com.klikli_dev.modonomicon.book.associated.AssociatedItemMatcher;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.page.BookEntityPage;
 import com.klikli_dev.modonomicon.book.page.BookImagePage;
@@ -39,6 +41,9 @@ import java.util.Optional;
  */
 public class AssociatedTooltipHelper {
 
+    //TODO(#259): remove diagnostic logging once the missing-text issue is resolved
+    private static String lastLoggedKey = "";
+
     /**
      * Builds the complete tooltip component for the stack: title plus hold hint
      * (with live countdown) or locked hint. Empty if there is no association.
@@ -56,10 +61,19 @@ public class AssociatedTooltipHelper {
 
         var page = AssociatedItemLookup.get().resolvePage(association);
         Component title = resolveTitle(entry, page);
-        Component hint = isLocked(entry)
+        boolean locked = isLocked(entry);
+        Component hint = locked
                 ? Component.translatable(ModonomiconConstants.I18n.Tooltips.ASSOCIATED_LOCKED)
                         .withStyle(ChatFormatting.GRAY)
                 : holdHint(stack);
+
+        String logKey = association + "|locked=" + locked;
+        if (!logKey.equals(lastLoggedKey)) {
+            lastLoggedKey = logKey;
+            Modonomicon.LOG.info("[AssociatedTooltip] gather stack={} assoc={} title='{}' hint='{}'",
+                    AssociatedItemMatcher.describe(stack), association, title.getString(), hint.getString());
+        }
+
         return Optional.of(new AssociatedEntryTooltip(association, title, hint));
     }
 
