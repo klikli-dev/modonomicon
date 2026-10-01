@@ -52,7 +52,7 @@ public class AssociatedHoverTracker {
      */
     public static boolean isHoldingFor(ItemStack stack) {
         return !stack.isEmpty()
-                && ModonomiconKeys.OPEN_ASSOCIATED_ENTRY.isDown()
+                && ModonomiconKeys.isOpenAssociatedEntryDown()
                 && holdStartMs > 0
                 && !openedForCurrentHold
                 && AssociatedItemMatcher.isSameStack(stack, hoveredStack);
@@ -90,7 +90,7 @@ public class AssociatedHoverTracker {
             return;
         }
 
-        if (!ModonomiconKeys.OPEN_ASSOCIATED_ENTRY.isDown()) {
+        if (!ModonomiconKeys.isOpenAssociatedEntryDown()) {
             holdStartMs = 0;
             openedForCurrentHold = false;
             return;

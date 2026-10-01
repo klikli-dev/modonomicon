@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.client;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -34,4 +35,40 @@ public class ModonomiconKeys {
             GLFW.GLFW_KEY_LEFT_ALT,
             CATEGORY
     );
+
+    /**
+     * Physical held-state of the open key, for use inside screens.
+     * <p>
+     * Vanilla only updates {@link KeyMapping#isDown()} while no screen is open, so it is
+     * permanently false when hovering items in an inventory or recipe viewer. Like JEI and
+     * Create Ponder, poll the physical state of the currently bound key instead. The bound
+     * key is resolved via {@link KeyMapping#saveString()}, so rebinds (including mouse
+     * buttons) keep working.
+     */
+    public static boolean isOpenAssociatedEntryDown() {
+        var mapping = OPEN_ASSOCIATED_ENTRY;
+        if (mapping.isUnbound()) {
+            return false;
+        }
+
+        InputConstants.Key bound;
+        try {
+            bound = InputConstants.getKey(mapping.saveString());
+        } catch (IllegalArgumentException e) {
+            Modonomicon.LOG.warn("Failed to resolve bound key for '{}': {}", mapping.getName(), mapping.saveString());
+            return false;
+        }
+
+        var window = Minecraft.getInstance().getWindow();
+        if (window == null) {
+            return false;
+        }
+
+        return switch (bound.getType()) {
+            case KEYSYM -> InputConstants.isKeyDown(window, bound.getValue());
+            case MOUSE -> GLFW.glfwGetMouseButton(window.handle(), bound.getValue()) == GLFW.GLFW_PRESS;
+            //scancodes cannot be polled physically; fall back to the vanilla state (works outside screens)
+            case SCANCODE -> mapping.isDown();
+        };
+    }
 }
