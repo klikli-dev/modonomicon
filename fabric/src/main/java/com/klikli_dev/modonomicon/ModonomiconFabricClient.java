@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.ModonomiconKeys;
 import com.klikli_dev.modonomicon.client.gui.book.associated.AssociatedEntryTooltip;
 import com.klikli_dev.modonomicon.client.gui.book.associated.AssociatedEntryTooltipRenderer;
+import com.klikli_dev.modonomicon.client.gui.book.associated.AssociatedHoverTracker;
 import com.klikli_dev.modonomicon.client.gui.book.associated.AssociatedTooltipHelper;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
@@ -44,8 +45,10 @@ public class ModonomiconFabricClient implements ClientModInitializer {
 
         KeyMappingHelper.registerKeyMapping(ModonomiconKeys.OPEN_ASSOCIATED_ENTRY);
 
-        ItemTooltipCallback.EVENT.register((stack, context, flag, lines) ->
-                AssociatedTooltipHelper.gatherText(stack, lines));
+        ItemTooltipCallback.EVENT.register((stack, context, flag, lines) -> {
+            AssociatedHoverTracker.onTooltipGather(stack);
+            AssociatedTooltipHelper.gatherText(stack, lines);
+        });
         ClientTooltipComponentCallback.EVENT.register(data ->
                 data instanceof AssociatedEntryTooltip tooltip ? new AssociatedEntryTooltipRenderer(tooltip) : null);
 
