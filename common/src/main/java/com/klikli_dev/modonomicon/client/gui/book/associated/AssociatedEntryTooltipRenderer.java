@@ -17,6 +17,10 @@ import net.minecraft.world.item.ItemStack;
 /**
  * Renders the linked page/entry icon (16x16, with the modonomicon book icon as a
  * small badge in the bottom right corner) to the left of the title and hold hint.
+ * <p>
+ * Like vanilla's {@code ClientBundleTooltip}, all text is drawn from
+ * {@link #extractImage} — custom {@code extractText} implementations are not
+ * honored on every tooltip render path.
  */
 public class AssociatedEntryTooltipRenderer implements ClientTooltipComponent {
 
@@ -67,14 +71,11 @@ public class AssociatedEntryTooltipRenderer implements ClientTooltipComponent {
     }
 
     @Override
-    public void extractText(GuiGraphicsExtractor graphics, Font font, int x, int y) {
+    public void extractImage(Font font, int x, int y, int width, int height, GuiGraphicsExtractor graphics) {
         int textX = x + 1 + ICON_SIZE + GAP;
         graphics.text(font, this.tooltip.title(), textX, y + 1, 0xFFFFFF);
         graphics.text(font, this.tooltip.hint(), textX, y + 1 + LINE_HEIGHT + TEXT_GAP, 0xAAAAAA);
-    }
 
-    @Override
-    public void extractImage(Font font, int x, int y, int width, int height, GuiGraphicsExtractor graphics) {
         this.resolve();
         if (this.icon == null) {
             return;
