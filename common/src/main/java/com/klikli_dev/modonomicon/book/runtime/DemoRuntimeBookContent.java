@@ -95,7 +95,8 @@ public final class DemoRuntimeBookContent {
                         false,
                         false,
                         0,
-                        BookEntryNameStyle.DEFAULT
+                        BookEntryNameStyle.DEFAULT,
+                        List.of()
                 ),
                 null,
                 List.of(

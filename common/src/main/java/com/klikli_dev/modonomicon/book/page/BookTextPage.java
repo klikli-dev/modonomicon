@@ -23,8 +23,10 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 
+import java.util.List;
 import java.util.Optional;
 
 public class BookTextPage extends BookPage implements BookPageWithSplit {
@@ -37,8 +39,9 @@ public class BookTextPage extends BookPage implements BookPageWithSplit {
             Codec.BOOL.optionalFieldOf("auto_scale").forGetter(page -> Optional.ofNullable(page.getAutoScaleOverride())),
             Codec.BOOL.optionalFieldOf("allow_page_split").forGetter(page -> Optional.ofNullable(page.getAllowPageSplitOverride())),
             Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
-            BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition)
-    ).apply(instance, (title, text, useMarkdownInTitle, showTitleSeparator, autoScale, allowPageSplit, id, condition) -> new BookTextPage(title, text, useMarkdownInTitle, showTitleSeparator, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition)));
+            BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition),
+            ItemStackTemplate.CODEC.listOf().optionalFieldOf("associated_items", List.of()).forGetter(BookPage::getAssociatedItems)
+    ).apply(instance, (title, text, useMarkdownInTitle, showTitleSeparator, autoScale, allowPageSplit, id, condition, associatedItems) -> new BookTextPage(title, text, useMarkdownInTitle, showTitleSeparator, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition, associatedItems)));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BookTextPage> STREAM_CODEC = StreamCodec.composite(
             BookTextHolder.STREAM_CODEC, BookTextPage::getTitle,
@@ -49,7 +52,8 @@ public class BookTextPage extends BookPage implements BookPageWithSplit {
             ByteBufCodecs.optional(ByteBufCodecs.BOOL), page -> Optional.ofNullable(page.getAllowPageSplitOverride()),
             ByteBufCodecs.STRING_UTF8, BookPage::getId,
             BookCondition.STREAM_CODEC, BookPage::getCondition,
-            (title, text, useMarkdownInTitle, showTitleSeparator, autoScale, allowPageSplit, id, condition) -> new BookTextPage(title, text, useMarkdownInTitle, showTitleSeparator, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition)
+            BookPage.ASSOCIATED_ITEMS_STREAM_CODEC, BookPage::getAssociatedItems,
+            (title, text, useMarkdownInTitle, showTitleSeparator, autoScale, allowPageSplit, id, condition, associatedItems) -> new BookTextPage(title, text, useMarkdownInTitle, showTitleSeparator, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition, associatedItems)
     );
     protected BookTextHolder title;
     protected boolean useMarkdownInTitle;
@@ -59,11 +63,15 @@ public class BookTextPage extends BookPage implements BookPageWithSplit {
     protected Boolean allowPageSplit;
 
     public BookTextPage(BookTextHolder title, BookTextHolder text, boolean useMarkdownInTitle, boolean showTitleSeparator, String id, BookCondition condition) {
-        this(title, text, useMarkdownInTitle, showTitleSeparator, null, null, id, condition);
+        this(title, text, useMarkdownInTitle, showTitleSeparator, null, null, id, condition, List.of());
     }
 
     public BookTextPage(BookTextHolder title, BookTextHolder text, boolean useMarkdownInTitle, boolean showTitleSeparator, Boolean autoScale, Boolean allowPageSplit, String id, BookCondition condition) {
-        super(id, condition);
+        this(title, text, useMarkdownInTitle, showTitleSeparator, autoScale, allowPageSplit, id, condition, List.of());
+    }
+
+    public BookTextPage(BookTextHolder title, BookTextHolder text, boolean useMarkdownInTitle, boolean showTitleSeparator, Boolean autoScale, Boolean allowPageSplit, String id, BookCondition condition, List<ItemStackTemplate> associatedItems) {
+        super(id, condition, associatedItems);
         this.title = title;
         this.text = text;
         this.useMarkdownInTitle = useMarkdownInTitle;

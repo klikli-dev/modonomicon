@@ -18,19 +18,32 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
+
+import java.util.List;
 
 public class BookEmptyPage extends BookPage {
 
     public static final Identifier ID = Modonomicon.loc("empty");
     public static final MapCodec<BookEmptyPage> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
-            BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition)
-    ).apply(instance, BookEmptyPage::new));
+            BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition),
+            ItemStackTemplate.CODEC.listOf().optionalFieldOf("associated_items", List.of()).forGetter(BookPage::getAssociatedItems)
+    ).apply(instance, (id, condition, associatedItems) -> {
+        var page = new BookEmptyPage(id, condition);
+        page.setAssociatedItems(associatedItems);
+        return page;
+    }));
     public static final StreamCodec<RegistryFriendlyByteBuf, BookEmptyPage> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8, BookPage::getId,
             BookCondition.STREAM_CODEC, BookPage::getCondition,
-            BookEmptyPage::new
+            BookPage.ASSOCIATED_ITEMS_STREAM_CODEC, BookPage::getAssociatedItems,
+            (id, condition, associatedItems) -> {
+                var page = new BookEmptyPage(id, condition);
+                page.setAssociatedItems(associatedItems);
+                return page;
+            }
     );
 
     public BookEmptyPage(String id, BookCondition condition) {

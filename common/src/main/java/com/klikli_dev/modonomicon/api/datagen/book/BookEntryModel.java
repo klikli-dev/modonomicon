@@ -31,6 +31,8 @@ import com.google.gson.JsonParseException;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.phys.Vec2;
 
@@ -61,6 +63,7 @@ public class BookEntryModel {
     protected Identifier categoryToOpen;
     protected Identifier commandToRunOnFirstRead;
     protected Identifier entryToOpen;
+    protected List<ItemStackTemplate> associatedItems = new ArrayList<>();
 
     protected int sortNumber = -1;
 
@@ -104,7 +107,8 @@ public class BookEntryModel {
                         this.nameBackgroundColor,
                         this.nameBackground,
                         this.nameTextColor
-                )
+                ),
+                List.copyOf(this.associatedItems)
         );
 
         BookEntry entry;
@@ -534,6 +538,44 @@ public class BookEntryModel {
      */
     public BookEntryModel withCondition(BookConditionModel<?> condition) {
         this.condition = condition;
+        return this;
+    }
+
+    public List<ItemStackTemplate> getAssociatedItems() {
+        return this.associatedItems;
+    }
+
+    /**
+     * Associates an item with this entry. Hovering the item shows a linked-entry tooltip;
+     * holding the open key opens this entry. All components defined on the template must
+     * be present on the hovered stack (additional components are allowed).
+     */
+    public BookEntryModel withAssociatedItem(ItemLike item) {
+        this.associatedItems.add(new ItemStackTemplate(item.asItem()));
+        return this;
+    }
+
+    /**
+     * Associates an item with this entry. Hovering the item shows a linked-entry tooltip;
+     * holding the open key opens this entry. All components defined on the template must
+     * be present on the hovered stack (additional components are allowed).
+     */
+    public BookEntryModel withAssociatedItem(Item item) {
+        this.associatedItems.add(new ItemStackTemplate(item));
+        return this;
+    }
+
+    /**
+     * Associates an item (with components) with this entry. Hovering a matching stack shows
+     * a linked-entry tooltip; holding the open key opens this entry.
+     */
+    public BookEntryModel withAssociatedItem(ItemStackTemplate item) {
+        this.associatedItems.add(item);
+        return this;
+    }
+
+    public BookEntryModel withAssociatedItems(List<ItemStackTemplate> items) {
+        this.associatedItems.addAll(items);
         return this;
     }
 

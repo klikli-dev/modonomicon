@@ -62,7 +62,7 @@ public class BookViewerRecipePageModel extends BookRecipePageModel<BookViewerRec
 
     @Override
     public BookPage toBookPage(HolderLookup.Provider provider) {
-        return new BookViewerRecipePage(
+        var page = new BookViewerRecipePage(
                 new BookRecipePage.JsonDataHolder(
                         this.title1.toBookTextHolder(),
                         this.recipeId1 == null || this.recipeId1.isEmpty() ? null : ResourceKey.create(Registries.RECIPE, Identifier.parse(this.recipeId1)),
@@ -72,11 +72,14 @@ public class BookViewerRecipePageModel extends BookRecipePageModel<BookViewerRec
                         this.autoScale,
                         this.allowPageSplit,
                         this.id,
-                        this.condition(provider)
+                        this.condition(provider),
+                        this.associatedItems
                 ),
                 this.recipe1.toRecipeAttribute(),
                 this.recipe2.toRecipeAttribute()
         );
+        this.applyAssociatedItems(page);
+        return page;
     }
 
     @Override

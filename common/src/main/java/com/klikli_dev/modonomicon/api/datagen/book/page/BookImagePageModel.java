@@ -74,7 +74,11 @@ public class BookImagePageModel extends BookPageModel<BookImagePageModel> {
 
     @Override
     public BookPage toBookPage(HolderLookup.Provider provider) {
-        return new BookImagePage(this.title.toBookTextHolder(), this.text.toBookTextHolder(), this.images, this.border, this.useLegacyRendering, this.displayMode, this.imageScaleMode, this.autoScale, this.allowPageSplit, this.id, this.condition(provider));
+        var page = new BookImagePage(this.title.toBookTextHolder(), this.text.toBookTextHolder(), this.images, this.border, this.useLegacyRendering, this.displayMode, this.imageScaleMode, this.autoScale, this.allowPageSplit, this.id, this.condition(provider));
+
+        this.applyAssociatedItems(page);
+
+        return page;
     }
 
     public BookImagePageModel withTitle(String title) {
