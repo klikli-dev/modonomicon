@@ -62,7 +62,7 @@ public class ClientConfig {
                     .define("showRecipeLookupHints", false);
 
             this.associatedItemsHoldDurationMs = builder.comment("How long (in milliseconds) the open key must be held while hovering an associated item before the linked book entry/page opens.")
-                    .defineInRange("associatedItemsHoldDurationMs", 2000, 0, 10000);
+                    .defineInRange("associatedItemsHoldDurationMs", 750, 0, 10000);
 
             builder.pop();
         }

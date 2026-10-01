@@ -55,7 +55,7 @@ public class ClientConfig {
             .beginValue("showRecipeLookupHints", ConfigTypes.BOOLEAN, false)
             .withComment("Show the recipe viewer hints in item tooltips (click to show recipe, shift-click to show usage).")
             .finishValue(showRecipeLookupHints::mirror)
-            .beginValue("associatedItemsHoldDurationMs", ConfigTypes.INTEGER, 2000)
+            .beginValue("associatedItemsHoldDurationMs", ConfigTypes.INTEGER, 750)
             .withComment("How long (in milliseconds) the open key must be held while hovering an associated item before the linked book entry/page opens.")
             .finishValue(associatedItemsHoldDurationMs::mirror)
             .finishBranch()
