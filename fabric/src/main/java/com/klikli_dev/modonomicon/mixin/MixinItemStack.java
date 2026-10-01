@@ -29,6 +29,6 @@ public abstract class MixinItemStack {
             return;
         }
         ItemStack self = (ItemStack) (Object) this;
-        AssociatedTooltipHelper.gather(self).ifPresent(image -> cir.setReturnValue(Optional.of(image)));
+        AssociatedTooltipHelper.gatherImage(self).ifPresent(image -> cir.setReturnValue(Optional.of(image)));
     }
 }

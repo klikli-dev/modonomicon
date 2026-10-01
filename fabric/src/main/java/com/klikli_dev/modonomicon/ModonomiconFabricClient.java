@@ -47,8 +47,7 @@ public class ModonomiconFabricClient implements ClientModInitializer {
 
         ItemTooltipCallback.EVENT.register((stack, context, flag, lines) -> {
             AssociatedHoverTracker.onTooltipGather(stack);
-            //TODO(#259): diagnostic control — unconditional vanilla text line. Remove after diagnosis.
-            lines.add(net.minecraft.network.chat.Component.literal(">VANILLA APPEND"));
+            AssociatedTooltipHelper.gatherText(stack, lines);
         });
         ClientTooltipComponentCallback.EVENT.register(data ->
                 data instanceof AssociatedEntryTooltip tooltip ? new AssociatedEntryTooltipRenderer(tooltip) : null);

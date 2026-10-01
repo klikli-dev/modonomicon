@@ -6,7 +6,6 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.associated;
 
-import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.book.BookIcon;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
@@ -31,6 +30,7 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,40 +41,48 @@ import java.util.Optional;
  */
 public class AssociatedTooltipHelper {
 
-    //TODO(#259): remove diagnostic logging once the missing-text issue is resolved
-    private static String lastLoggedKey = "";
-
     /**
-     * Builds the complete tooltip component for the stack: title plus hold hint
-     * (with live countdown) or locked hint. Empty if there is no association.
+     * Builds the icon image component for the stack, if it is associated.
+     * Title and hint are added separately via {@link #gatherText}.
      */
-    public static Optional<TooltipComponent> gather(ItemStack stack) {
+    public static Optional<TooltipComponent> gatherImage(ItemStack stack) {
         var association = AssociatedItemLookup.get().find(stack);
         if (association == null) {
             return Optional.empty();
         }
 
-        var entry = AssociatedItemLookup.get().resolveEntry(association);
-        if (entry == null) {
+        if (AssociatedItemLookup.get().resolveEntry(association) == null) {
             return Optional.empty();
         }
 
-        var page = AssociatedItemLookup.get().resolvePage(association);
-        Component title = resolveTitle(entry, page);
-        boolean locked = isLocked(entry);
-        Component hint = locked
-                ? Component.translatable(ModonomiconConstants.I18n.Tooltips.ASSOCIATED_LOCKED)
-                        .withStyle(ChatFormatting.GRAY)
-                : holdHint(stack);
+        return Optional.of(new AssociatedEntryTooltip(association));
+    }
 
-        String logKey = association + "|locked=" + locked;
-        if (!logKey.equals(lastLoggedKey)) {
-            lastLoggedKey = logKey;
-            Modonomicon.LOG.info("[AssociatedTooltip r4] gather stack={} assoc={} title='{}' hint='{}'",
-                    AssociatedItemMatcher.describe(stack), association, title.getString(), hint.getString());
+    /**
+     * Appends the linked-page title plus hold hint (or locked hint) to the tooltip lines.
+     * Vanilla text lines are the only text primitive that renders on all tooltip paths.
+     * Does nothing if the stack has no association or the entry is gone.
+     */
+    public static void gatherText(ItemStack stack, List<Component> lines) {
+        var association = AssociatedItemLookup.get().find(stack);
+        if (association == null) {
+            return;
         }
 
-        return Optional.of(new AssociatedEntryTooltip(association, title, hint));
+        var entry = AssociatedItemLookup.get().resolveEntry(association);
+        if (entry == null) {
+            return;
+        }
+
+        var page = AssociatedItemLookup.get().resolvePage(association);
+        lines.add(resolveTitle(entry, page));
+
+        if (isLocked(entry)) {
+            lines.add(Component.translatable(ModonomiconConstants.I18n.Tooltips.ASSOCIATED_LOCKED)
+                    .withStyle(ChatFormatting.GRAY));
+        } else {
+            lines.add(holdHint(stack));
+        }
     }
 
     private static Component holdHint(ItemStack stack) {
