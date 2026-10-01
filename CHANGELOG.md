@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.3-2.15.0] - 2026-10-01
+### :sparkles: New Features
+- [`5148ae6`](https://github.com/klikli-dev/modonomicon/commit/5148ae679c6161ea6aa0b3c4c1a95288ffbcaa9e) - associate items with entries and pages *(PR [#405](https://github.com/klikli-dev/modonomicon/pull/405) by [@klikli-dev](https://github.com/klikli-dev))*
+  - :arrow_lower_right: *addresses issue [#259](https://github.com/klikli-dev/modonomicon/issues/259) opened by [@luxlacis](https://github.com/luxlacis)*
+
+
 ## [release/v26.3-2.14.2] - 2026-10-01
 ### :sparkles: New Features
 - [`855d0db`](https://github.com/klikli-dev/modonomicon/commit/855d0db6209e1ada781858f7554218845d77e152) - update to latest modloader versions *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2469,3 +2475,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.3-2.14.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.13.0...release/v26.3-2.14.0
 [release/v26.3-2.14.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.14.0...release/v26.3-2.14.1
 [release/v26.3-2.14.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.14.1...release/v26.3-2.14.2
+[release/v26.3-2.15.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.14.2...release/v26.3-2.15.0
