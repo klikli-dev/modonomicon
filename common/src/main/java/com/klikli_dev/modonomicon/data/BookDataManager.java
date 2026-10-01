@@ -17,6 +17,7 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCommand;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
+import com.klikli_dev.modonomicon.book.associated.AssociatedItemLookup;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
  import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
@@ -131,6 +132,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
         } finally {
             this.loadingFromSyncPacket = false;
         }
+        AssociatedItemLookup.get().markDirty();
     }
 
     public void onDatapackSync(ServerPlayer player) {
@@ -158,6 +160,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
         this.booksBuilt = false;
         this.loaded = false;
         this.books.clear();
+        AssociatedItemLookup.get().markDirty();
         BookErrorManager.get().reset();
     }
 

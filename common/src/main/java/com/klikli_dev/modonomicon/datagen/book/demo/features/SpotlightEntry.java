@@ -7,6 +7,7 @@ package com.klikli_dev.modonomicon.datagen.book.demo.features;
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
+import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookSpotlightPageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
@@ -47,6 +48,7 @@ public class SpotlightEntry extends EntryProvider {
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText())
                 .withItem(Ingredient.of(Items.APPLE))
+                .withAssociatedItem(Items.APPLE)
         );
         this.pageTitle("Custom Title");
         this.pageText("""
@@ -86,6 +88,12 @@ public class SpotlightEntry extends EntryProvider {
                 .withItem(bundle)
         );
         this.pageText("A sample spotlight page with a bundle");
+    }
+
+    @Override
+    protected BookEntryModel additionalSetup(BookEntryModel entry) {
+        //hovering a beacon shows a linked-entry tooltip and opens this entry on hold
+        return entry.withAssociatedItem(Items.BEACON);
     }
 
     @Override

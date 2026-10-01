@@ -1,5 +1,10 @@
 {
   "type": "modonomicon:content",
+  "associated_items": [
+    {
+      "id": "minecraft:beacon"
+    }
+  ],
   "background": {
     "height": 26,
     "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",

@@ -27,8 +27,10 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.Identifier;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 
+import java.util.List;
 import java.util.Optional;
 
 public class BookMultiblockPage extends BookPage implements BookPageWithSplit {
@@ -41,8 +43,9 @@ public class BookMultiblockPage extends BookPage implements BookPageWithSplit {
             Codec.BOOL.optionalFieldOf("auto_scale").forGetter(page -> Optional.ofNullable(page.getAutoScaleOverride())),
             Codec.BOOL.optionalFieldOf("allow_page_split").forGetter(page -> Optional.ofNullable(page.getAllowPageSplitOverride())),
             Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
-            BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition)
-    ).apply(instance, (multiblockName, text, multiblockId, showVisualizeButton, autoScale, allowPageSplit, id, condition) -> new BookMultiblockPage(multiblockName, text, multiblockId, showVisualizeButton, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition)));
+            BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition),
+            ItemStackTemplate.CODEC.listOf().optionalFieldOf("associated_items", List.of()).forGetter(BookPage::getAssociatedItems)
+    ).apply(instance, (multiblockName, text, multiblockId, showVisualizeButton, autoScale, allowPageSplit, id, condition, associatedItems) -> { var page = new BookMultiblockPage(multiblockName, text, multiblockId, showVisualizeButton, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition); page.setAssociatedItems(associatedItems); return page; }));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BookMultiblockPage> STREAM_CODEC = StreamCodec.composite(
             BookTextHolder.STREAM_CODEC, BookMultiblockPage::getMultiblockName,
@@ -53,7 +56,8 @@ public class BookMultiblockPage extends BookPage implements BookPageWithSplit {
             ByteBufCodecs.optional(ByteBufCodecs.BOOL), page -> Optional.ofNullable(page.getAllowPageSplitOverride()),
             ByteBufCodecs.STRING_UTF8, BookPage::getId,
             BookCondition.STREAM_CODEC, BookPage::getCondition,
-            (multiblockName, text, multiblockId, showVisualizeButton, autoScale, allowPageSplit, id, condition) -> new BookMultiblockPage(multiblockName, text, multiblockId, showVisualizeButton, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition)
+            BookPage.ASSOCIATED_ITEMS_STREAM_CODEC, BookPage::getAssociatedItems,
+            (multiblockName, text, multiblockId, showVisualizeButton, autoScale, allowPageSplit, id, condition, associatedItems) -> { var page = new BookMultiblockPage(multiblockName, text, multiblockId, showVisualizeButton, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition); page.setAssociatedItems(associatedItems); return page; }
     );
 
     protected BookTextHolder multiblockName;

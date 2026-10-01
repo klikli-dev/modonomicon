@@ -45,4 +45,9 @@ public class FabricClientConfigHelper implements ClientConfigHelper {
     public boolean showRecipeLookupHints() {
         return ClientConfig.showRecipeLookupHints.getValue();
     }
+
+    @Override
+    public int associatedItemsHoldDurationMs() {
+        return ClientConfig.associatedItemsHoldDurationMs.getValue();
+    }
 }

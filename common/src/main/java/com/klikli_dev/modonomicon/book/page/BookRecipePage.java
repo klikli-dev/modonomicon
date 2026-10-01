@@ -20,6 +20,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.crafting.Recipe;
@@ -30,6 +31,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -51,8 +53,9 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage imple
             Codec.BOOL.optionalFieldOf("auto_scale").forGetter(holder -> Optional.ofNullable(holder.autoScale())),
             Codec.BOOL.optionalFieldOf("allow_page_split").forGetter(holder -> Optional.ofNullable(holder.allowPageSplit())),
             Codec.STRING.fieldOf("id").forGetter(JsonDataHolder::id),
-            BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(JsonDataHolder::condition)
-    ).apply(instance, (title1, recipeKey1, title2, recipeKey2, text, autoScale, allowPageSplit, id, condition) -> new JsonDataHolder(
+            BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(JsonDataHolder::condition),
+            ItemStackTemplate.CODEC.listOf().optionalFieldOf("associated_items", List.of()).forGetter(JsonDataHolder::associatedItems)
+    ).apply(instance, (title1, recipeKey1, title2, recipeKey2, text, autoScale, allowPageSplit, id, condition, associatedItems) -> new JsonDataHolder(
             title1,
             recipeKey1.orElse(null),
             title2,
@@ -61,7 +64,8 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage imple
             autoScale.orElse(null),
             allowPageSplit.orElse(null),
             id,
-            condition
+            condition,
+            associatedItems
     )));
 
     protected static final StreamCodec<RegistryFriendlyByteBuf, NetworkDataHolder> NETWORK_COMMON_STREAM_CODEC = StreamCodec.composite(
@@ -76,7 +80,8 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage imple
             ByteBufCodecs.optional(ByteBufCodecs.BOOL), holder -> Optional.ofNullable(holder.allowPageSplit()),
             ByteBufCodecs.STRING_UTF8, NetworkDataHolder::id,
             BookCondition.STREAM_CODEC, NetworkDataHolder::condition,
-            (title1, recipeKey1, recipeDisplayEntry1, title2, recipeKey2, recipeDisplayEntry2, text, autoScale, allowPageSplit, id, condition) -> new NetworkDataHolder(
+            BookPage.ASSOCIATED_ITEMS_STREAM_CODEC, NetworkDataHolder::associatedItems,
+            (title1, recipeKey1, recipeDisplayEntry1, title2, recipeKey2, recipeDisplayEntry2, text, autoScale, allowPageSplit, id, condition, associatedItems) -> new NetworkDataHolder(
                     title1,
                     recipeKey1.orElse(null),
                     recipeDisplayEntry1.orElse(null),
@@ -87,7 +92,8 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage imple
                     autoScale.orElse(null),
                     allowPageSplit.orElse(null),
                     id,
-                    condition
+                    condition,
+                    associatedItems
             )
     );
 
@@ -114,15 +120,15 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage imple
     protected Boolean allowPageSplit;
 
     public BookRecipePage(JsonDataHolder common) {
-        this(common.title1(), common.recipeId1(), common.title2(), common.recipeId2(), common.text(), common.autoScale(), common.allowPageSplit(), common.id(), common.condition());
+        this(common.title1(), common.recipeId1(), common.title2(), common.recipeId2(), common.text(), common.autoScale(), common.allowPageSplit(), common.id(), common.condition(), common.associatedItems());
     }
 
     public BookRecipePage(NetworkDataHolder common) {
-        this(common.title1(), common.recipeKey1(), common.recipeDisplayEntry1(), common.title2(), common.recipeKey2(), common.recipeDisplayEntry2(), common.text(), common.autoScale(), common.allowPageSplit(), common.id(), common.condition());
+        this(common.title1(), common.recipeKey1(), common.recipeDisplayEntry1(), common.title2(), common.recipeKey2(), common.recipeDisplayEntry2(), common.text(), common.autoScale(), common.allowPageSplit(), common.id(), common.condition(), common.associatedItems());
     }
 
-    private BookRecipePage(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1, BookTextHolder title2, ResourceKey<Recipe<?>> recipeKey2, BookTextHolder text, Boolean autoScale, Boolean allowPageSplit, String id, BookCondition condition) {
-        super(id, condition);
+    private BookRecipePage(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1, BookTextHolder title2, ResourceKey<Recipe<?>> recipeKey2, BookTextHolder text, Boolean autoScale, Boolean allowPageSplit, String id, BookCondition condition, List<ItemStackTemplate> associatedItems) {
+        super(id, condition, associatedItems);
         this.title1 = title1;
         this.recipeKey1 = recipeKey1;
         this.title2 = title2;
@@ -132,8 +138,8 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage imple
         this.allowPageSplit = allowPageSplit;
     }
 
-    private BookRecipePage(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1, @Nullable RecipeDisplayEntry recipeDisplayEntry1, BookTextHolder title2, ResourceKey<Recipe<?>> recipeKey2, @Nullable RecipeDisplayEntry recipeDisplayEntry2, BookTextHolder text, Boolean autoScale, Boolean allowPageSplit, String id, BookCondition condition) {
-        super(id, condition);
+    private BookRecipePage(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1, @Nullable RecipeDisplayEntry recipeDisplayEntry1, BookTextHolder title2, ResourceKey<Recipe<?>> recipeKey2, @Nullable RecipeDisplayEntry recipeDisplayEntry2, BookTextHolder text, Boolean autoScale, Boolean allowPageSplit, String id, BookCondition condition, List<ItemStackTemplate> associatedItems) {
+        super(id, condition, associatedItems);
         this.title1 = title1;
         this.recipeKey1 = recipeKey1;
         this.recipeDisplayEntry1 = recipeDisplayEntry1;
@@ -165,11 +171,11 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage imple
     }
 
     protected JsonDataHolder toJsonDataHolder() {
-        return new JsonDataHolder(this.title1, this.recipeKey1, this.title2, this.recipeKey2, this.text, this.autoScale, this.allowPageSplit, this.id, this.condition);
+        return new JsonDataHolder(this.title1, this.recipeKey1, this.title2, this.recipeKey2, this.text, this.autoScale, this.allowPageSplit, this.id, this.condition, this.getAssociatedItems());
     }
 
     protected NetworkDataHolder toNetworkDataHolder() {
-        return new NetworkDataHolder(this.title1, this.recipeKey1, this.recipeDisplayEntry1, this.title2, this.recipeKey2, this.recipeDisplayEntry2, this.text, this.autoScale, this.allowPageSplit, this.id, this.condition);
+        return new NetworkDataHolder(this.title1, this.recipeKey1, this.recipeDisplayEntry1, this.title2, this.recipeKey2, this.recipeDisplayEntry2, this.text, this.autoScale, this.allowPageSplit, this.id, this.condition, this.getAssociatedItems());
     }
 
     public BookTextHolder getTitle1() {
@@ -334,12 +340,13 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage imple
 
    public record JsonDataHolder(BookTextHolder title1, ResourceKey<Recipe<?>> recipeId1, BookTextHolder title2,
                                    ResourceKey<Recipe<?>> recipeId2, BookTextHolder text, Boolean autoScale, Boolean allowPageSplit, String id,
-                                   BookCondition condition) {
+                                   BookCondition condition, List<ItemStackTemplate> associatedItems) {
     }
 
   public record NetworkDataHolder(BookTextHolder title1, ResourceKey<Recipe<?>> recipeKey1,
                                      RecipeDisplayEntry recipeDisplayEntry1, BookTextHolder title2,
                                      ResourceKey<Recipe<?>> recipeKey2, RecipeDisplayEntry recipeDisplayEntry2,
-                                     BookTextHolder text, Boolean autoScale, Boolean allowPageSplit, String id, BookCondition condition) {
+                                     BookTextHolder text, Boolean autoScale, Boolean allowPageSplit, String id, BookCondition condition,
+                                     List<ItemStackTemplate> associatedItems) {
     }
 }

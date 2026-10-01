@@ -45,4 +45,9 @@ public class ForgeClientConfigHelper implements ClientConfigHelper {
     public boolean showRecipeLookupHints() {
         return ClientConfig.get().qolCategory.showRecipeLookupHints.get();
     }
+
+    @Override
+    public int associatedItemsHoldDurationMs() {
+        return ClientConfig.get().qolCategory.associatedItemsHoldDurationMs.get();
+    }
 }

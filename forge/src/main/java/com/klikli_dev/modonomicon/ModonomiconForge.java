@@ -7,8 +7,10 @@
 package com.klikli_dev.modonomicon;
 
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
+import com.klikli_dev.modonomicon.client.AssociatedItemTooltipHandler;
 import com.klikli_dev.modonomicon.client.BookModel;
 import com.klikli_dev.modonomicon.client.ClientTicks;
+import com.klikli_dev.modonomicon.client.ModonomiconKeys;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.client.render.pip.GuiDirectEntryConnectionRenderer;
@@ -175,6 +177,11 @@ public class ModonomiconForge {
         //Client stuff
         if (FMLEnvironment.dist == Dist.CLIENT) {
             FMLClientSetupEvent.getBus(modBusGroup).addListener(Client::onClientSetup);
+            RegisterKeyMappingsEvent.BUS.addListener((RegisterKeyMappingsEvent e) -> {
+                e.register(ModonomiconKeys.OPEN_ASSOCIATED_ENTRY);
+            });
+            RegisterClientTooltipComponentFactoriesEvent.BUS.addListener(AssociatedItemTooltipHandler::onRegisterFactories);
+            RenderTooltipEvent.GatherComponents.BUS.addListener(AssociatedItemTooltipHandler::onGatherComponents);
 
             ModelEvent.ModifyBakingResult.BUS.addListener(Client::onModifyBakingResult);
             RegisterPictureInPictureRendererEvent.BUS.addListener(Client::onRegisterPipRenderers);
