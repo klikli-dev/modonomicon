@@ -45,8 +45,11 @@ public class ModonomiconFabricClient implements ClientModInitializer {
 
         KeyMappingHelper.registerKeyMapping(ModonomiconKeys.OPEN_ASSOCIATED_ENTRY);
 
-        ItemTooltipCallback.EVENT.register((stack, context, flag, lines) ->
-                AssociatedHoverTracker.onTooltipGather(stack));
+        ItemTooltipCallback.EVENT.register((stack, context, flag, lines) -> {
+            AssociatedHoverTracker.onTooltipGather(stack);
+            //TODO(#259): diagnostic control — unconditional vanilla text line. Remove after diagnosis.
+            lines.add(net.minecraft.network.chat.Component.literal(">VANILLA APPEND"));
+        });
         ClientTooltipComponentCallback.EVENT.register(data ->
                 data instanceof AssociatedEntryTooltip tooltip ? new AssociatedEntryTooltipRenderer(tooltip) : null);
 

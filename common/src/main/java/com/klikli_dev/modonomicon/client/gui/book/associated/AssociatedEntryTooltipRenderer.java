@@ -85,7 +85,7 @@ public class AssociatedEntryTooltipRenderer implements ClientTooltipComponent {
     public void extractImage(Font font, int x, int y, int width, int height, GuiGraphicsExtractor graphics) {
         if (!loggedDraw) {
             loggedDraw = true;
-            Modonomicon.LOG.info("[AssociatedTooltip r3] probe extractImage at ({},{})", x, y);
+            Modonomicon.LOG.info("[AssociatedTooltip r4] probe extractImage at ({},{})", x, y);
         }
 
         int textX = x + 1 + ICON_SIZE + GAP;

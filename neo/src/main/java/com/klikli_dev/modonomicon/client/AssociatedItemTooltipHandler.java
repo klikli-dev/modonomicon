@@ -27,6 +27,9 @@ public class AssociatedItemTooltipHandler {
         var stack = event.getItemStack();
         AssociatedHoverTracker.onTooltipGather(stack);
 
+        //TODO(#259): diagnostic control — unconditional vanilla text line. Remove after diagnosis.
+        event.getTooltipElements().add(Either.left(net.minecraft.network.chat.Component.literal(">VANILLA APPEND")));
+
         //the single component renders icon (left of text), title and hold/locked hint
         AssociatedTooltipHelper.gather(stack)
                 .ifPresent(image -> event.getTooltipElements().add(
