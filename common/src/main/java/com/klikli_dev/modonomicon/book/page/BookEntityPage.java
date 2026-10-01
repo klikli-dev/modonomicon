@@ -26,8 +26,10 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 
+import java.util.List;
 import java.util.Optional;
 
 public class BookEntityPage extends BookPage implements BookPageWithSplit {
@@ -43,8 +45,9 @@ public class BookEntityPage extends BookPage implements BookPageWithSplit {
             Codec.BOOL.optionalFieldOf("auto_scale").forGetter(page -> Optional.ofNullable(page.getAutoScaleOverride())),
             Codec.BOOL.optionalFieldOf("allow_page_split").forGetter(page -> Optional.ofNullable(page.getAllowPageSplitOverride())),
             Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
-            BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition)
-    ).apply(instance, (entityName, text, entityId, scale, offset, rotate, defaultRotation, autoScale, allowPageSplit, id, condition) -> new BookEntityPage(entityName, text, entityId, scale, offset, rotate, defaultRotation, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition)));
+            BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition),
+            ItemStackTemplate.CODEC.listOf().optionalFieldOf("associated_items", List.of()).forGetter(BookPage::getAssociatedItems)
+    ).apply(instance, (entityName, text, entityId, scale, offset, rotate, defaultRotation, autoScale, allowPageSplit, id, condition, associatedItems) -> { var page = new BookEntityPage(entityName, text, entityId, scale, offset, rotate, defaultRotation, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition); page.setAssociatedItems(associatedItems); return page; }));
     public static final StreamCodec<RegistryFriendlyByteBuf, BookEntityPage> STREAM_CODEC = StreamCodec.composite(
             BookTextHolder.STREAM_CODEC, BookEntityPage::getEntityName,
             BookTextHolder.STREAM_CODEC, BookEntityPage::getText,
@@ -57,7 +60,8 @@ public class BookEntityPage extends BookPage implements BookPageWithSplit {
             ByteBufCodecs.optional(ByteBufCodecs.BOOL), page -> Optional.ofNullable(page.getAllowPageSplitOverride()),
             ByteBufCodecs.STRING_UTF8, BookPage::getId,
             BookCondition.STREAM_CODEC, BookPage::getCondition,
-            (entityName, text, entityId, scale, offset, rotate, defaultRotation, autoScale, allowPageSplit, id, condition) -> new BookEntityPage(entityName, text, entityId, scale, offset, rotate, defaultRotation, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition)
+            BookPage.ASSOCIATED_ITEMS_STREAM_CODEC, BookPage::getAssociatedItems,
+            (entityName, text, entityId, scale, offset, rotate, defaultRotation, autoScale, allowPageSplit, id, condition, associatedItems) -> { var page = new BookEntityPage(entityName, text, entityId, scale, offset, rotate, defaultRotation, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition); page.setAssociatedItems(associatedItems); return page; }
     );
 
     protected BookTextHolder entityName;

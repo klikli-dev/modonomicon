@@ -142,6 +142,8 @@ public class ModonomiconConstants {
             public static final String ITEM_NO_BOOK_FOUND_FOR_STACK = PREFIX + "no_book_found_for_stack";
             public static final String FLUID_AMOUNT = PREFIX + "fluid.amount";
             public static final String FLUID_AMOUNT_AND_CAPACITY = PREFIX + "fluid.amount_and_capacity";
+            public static final String ASSOCIATED_HOLD_TO_OPEN = PREFIX + "associated.hold_to_open";
+            public static final String ASSOCIATED_LOCKED = PREFIX + "associated.locked";
 
         }
 

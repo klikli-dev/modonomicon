@@ -39,6 +39,7 @@ public class ClientConfig {
         public final ModConfigSpec.ConfigValue<List<? extends String>> fontFallbackLocales;
         public final ModConfigSpec.BooleanValue pauseGameWhenOpen;
         public final ModConfigSpec.BooleanValue showRecipeLookupHints;
+        public final ModConfigSpec.IntValue associatedItemsHoldDurationMs;
 
         public QoLCategory(ModConfigSpec.Builder builder) {
             builder.comment("Quality of Life Settings").push("qol");
@@ -59,6 +60,9 @@ public class ClientConfig {
 
             this.showRecipeLookupHints = builder.comment("Show the recipe viewer hints in item tooltips (click to show recipe, shift-click to show usage).")
                     .define("showRecipeLookupHints", false);
+
+            this.associatedItemsHoldDurationMs = builder.comment("How long (in milliseconds) the open key must be held while hovering an associated item before the linked book entry/page opens.")
+                    .defineInRange("associatedItemsHoldDurationMs", 750, 0, 10000);
 
             builder.pop();
         }

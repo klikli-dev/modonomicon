@@ -19,7 +19,13 @@ import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class BookPageModel<T extends BookPageModel<T>> {
 
@@ -27,6 +33,7 @@ public abstract class BookPageModel<T extends BookPageModel<T>> {
     protected String id = "";
     protected BookConditionModel<?> condition = BookNoneConditionModel.create();
     protected int sortNumber = -1;
+    protected List<ItemStackTemplate> associatedItems = new ArrayList<>();
 
     protected BookPageModel(Identifier type) {
         this.type = type;
@@ -73,6 +80,55 @@ public abstract class BookPageModel<T extends BookPageModel<T>> {
 
     public T withCondition(@NotNull ResearchNodeRef nodeRef) {
         return this.withCondition(BookResearchNodeUnlockedConditionModel.create().withNode(nodeRef.id()));
+    }
+
+    public List<ItemStackTemplate> getAssociatedItems() {
+        return this.associatedItems;
+    }
+
+    /**
+     * Associates an item with this page. Hovering the item shows a linked-page tooltip;
+     * holding the open key opens this page. All components defined on the template must
+     * be present on the hovered stack (additional components are allowed).
+     */
+    public T withAssociatedItem(@NotNull ItemLike item) {
+        this.associatedItems.add(new ItemStackTemplate(item.asItem()));
+        //noinspection unchecked
+        return (T) this;
+    }
+
+    /**
+     * Associates an item with this page. Hovering the item shows a linked-page tooltip;
+     * holding the open key opens this page. All components defined on the template must
+     * be present on the hovered stack (additional components are allowed).
+     */
+    public T withAssociatedItem(@NotNull Item item) {
+        this.associatedItems.add(new ItemStackTemplate(item));
+        //noinspection unchecked
+        return (T) this;
+    }
+
+    /**
+     * Associates an item (with components) with this page. Hovering a matching stack shows
+     * a linked-page tooltip; holding the open key opens this page.
+     */
+    public T withAssociatedItem(@NotNull ItemStackTemplate item) {
+        this.associatedItems.add(item);
+        //noinspection unchecked
+        return (T) this;
+    }
+
+    public T withAssociatedItems(@NotNull List<ItemStackTemplate> items) {
+        this.associatedItems.addAll(items);
+        //noinspection unchecked
+        return (T) this;
+    }
+
+    /**
+     * Applies the configured associated items to a freshly created page.
+     */
+    protected void applyAssociatedItems(@NotNull BookPage page) {
+        page.setAssociatedItems(this.associatedItems);
     }
 
     public int getSortNumber() {

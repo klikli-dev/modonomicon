@@ -25,6 +25,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 
 import java.util.Arrays;
@@ -45,8 +46,9 @@ public class BookImagePage extends BookPage implements BookPageWithSplit {
             Codec.BOOL.optionalFieldOf("auto_scale").forGetter(page -> Optional.ofNullable(page.getAutoScaleOverride())),
             Codec.BOOL.optionalFieldOf("allow_page_split").forGetter(page -> Optional.ofNullable(page.getAllowPageSplitOverride())),
             Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
-            BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition)
-    ).apply(instance, (title, text, images, border, useLegacyRendering, displayMode, imageScaleMode, autoScale, allowPageSplit, id, condition) -> new BookImagePage(title, text, images.toArray(Identifier[]::new), border, useLegacyRendering, displayMode, imageScaleMode, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition)));
+            BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition),
+            ItemStackTemplate.CODEC.listOf().optionalFieldOf("associated_items", List.of()).forGetter(BookPage::getAssociatedItems)
+    ).apply(instance, (title, text, images, border, useLegacyRendering, displayMode, imageScaleMode, autoScale, allowPageSplit, id, condition, associatedItems) -> { var page = new BookImagePage(title, text, images.toArray(Identifier[]::new), border, useLegacyRendering, displayMode, imageScaleMode, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition); page.setAssociatedItems(associatedItems); return page; }));
     public static final StreamCodec<RegistryFriendlyByteBuf, BookImagePage> STREAM_CODEC = StreamCodec.composite(
             BookTextHolder.STREAM_CODEC, BookImagePage::getTitle,
             BookTextHolder.STREAM_CODEC, BookImagePage::getText,
@@ -59,7 +61,8 @@ public class BookImagePage extends BookPage implements BookPageWithSplit {
             ByteBufCodecs.optional(ByteBufCodecs.BOOL), page -> Optional.ofNullable(page.getAllowPageSplitOverride()),
             ByteBufCodecs.STRING_UTF8, BookPage::getId,
             BookCondition.STREAM_CODEC, BookPage::getCondition,
-            (title, text, images, border, useLegacyRendering, displayMode, imageScaleMode, autoScale, allowPageSplit, id, condition) -> new BookImagePage(title, text, images.toArray(Identifier[]::new), border, useLegacyRendering, displayMode, imageScaleMode, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition)
+            BookPage.ASSOCIATED_ITEMS_STREAM_CODEC, BookPage::getAssociatedItems,
+            (title, text, images, border, useLegacyRendering, displayMode, imageScaleMode, autoScale, allowPageSplit, id, condition, associatedItems) -> { var page = new BookImagePage(title, text, images.toArray(Identifier[]::new), border, useLegacyRendering, displayMode, imageScaleMode, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition); page.setAssociatedItems(associatedItems); return page; }
     );
     protected BookTextHolder title;
     protected BookTextHolder text;

@@ -22,4 +22,10 @@ public interface ClientConfigHelper {
     boolean debugOverlay();
 
     boolean showRecipeLookupHints();
+
+    /**
+     * How long (in milliseconds) the open key must be held while hovering an
+     * associated item before the linked book entry/page opens.
+     */
+    int associatedItemsHoldDurationMs();
 }

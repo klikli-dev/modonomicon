@@ -72,7 +72,8 @@ public abstract class BookRecipePageModel<T extends BookRecipePageModel<T>> exte
                 this.autoScale,
                 this.allowPageSplit,
                 this.id,
-                this.condition(provider)
+                this.condition(provider),
+                this.associatedItems
         ));
     }
 

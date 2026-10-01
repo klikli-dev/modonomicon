@@ -13,6 +13,7 @@
     "MixinClientPacketListener",
     "MixinGameRenderer",
     "MixinLevelRenderer",
+    "MixinItemStack",
     "MixinModelManager"
   ],
   "server": [

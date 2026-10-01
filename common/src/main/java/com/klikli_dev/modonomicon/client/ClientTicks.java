@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.client;
 
+import com.klikli_dev.modonomicon.client.gui.book.associated.AssociatedHoverTracker;
 import net.minecraft.client.Minecraft;
 
 public class ClientTicks {
@@ -33,5 +34,7 @@ public class ClientTicks {
         partialTicks = 0;
 
         calcDelta();
+
+        AssociatedHoverTracker.onClientTick(mc);
     }
 }

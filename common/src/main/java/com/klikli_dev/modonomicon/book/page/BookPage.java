@@ -18,9 +18,13 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
+
+import java.util.List;
 
 public abstract class BookPage {
 
@@ -36,16 +40,32 @@ public abstract class BookPage {
                             BookPageType::streamCodec
                     ));
 
+    /**
+     * Codec fragment for the optional associated items list shared by all page types.
+     * Each concrete page codec includes this as "associated_items".
+     */
+    public static final Codec<List<ItemStackTemplate>> ASSOCIATED_ITEMS_CODEC =
+            ItemStackTemplate.CODEC.listOf();
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, List<ItemStackTemplate>> ASSOCIATED_ITEMS_STREAM_CODEC =
+            ItemStackTemplate.STREAM_CODEC.apply(ByteBufCodecs.list());
+
     protected Book book;
     protected BookContentEntry parentEntry;
     protected int pageNumber;
 
     protected String id;
     protected BookCondition condition;
+    protected List<ItemStackTemplate> associatedItems;
 
     public BookPage(String id, BookCondition condition) {
+        this(id, condition, List.of());
+    }
+
+    public BookPage(String id, BookCondition condition, List<ItemStackTemplate> associatedItems) {
         this.id = id;
         this.condition = condition;
+        this.associatedItems = List.copyOf(associatedItems);
     }
 
     public static BookPage fromJson(Identifier pageParentId, JsonObject json, HolderLookup.Provider provider) {
@@ -67,6 +87,18 @@ public abstract class BookPage {
 
     public BookCondition getCondition() {
         return this.condition;
+    }
+
+    /**
+     * Items that should show a "linked book page" tooltip and open this page on hold.
+     * Page-level associations take precedence over entry-level ones.
+     */
+    public List<ItemStackTemplate> getAssociatedItems() {
+        return this.associatedItems == null ? List.of() : this.associatedItems;
+    }
+
+    public void setAssociatedItems(List<ItemStackTemplate> associatedItems) {
+        this.associatedItems = List.copyOf(associatedItems);
     }
 
     public abstract BookPageType<?> type();

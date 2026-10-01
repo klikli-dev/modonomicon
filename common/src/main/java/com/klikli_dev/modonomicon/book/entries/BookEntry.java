@@ -30,6 +30,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
@@ -234,6 +235,10 @@ public abstract class BookEntry {
         return this.data.icon;
     }
 
+    public List<ItemStackTemplate> getAssociatedItems() {
+        return this.data.associatedItems() == null ? List.of() : this.data.associatedItems();
+    }
+
     public Identifier getCategoryId() {
         return this.data.categoryId;
     }
@@ -261,7 +266,7 @@ public abstract class BookEntry {
     public record BookEntryData(Identifier categoryId, List<BookEntryParent> parents, int x, int y, String name,
                                  String description, BookIcon icon, GuiSprite entryBackground,
                                  BookCondition condition, boolean hideWhileLocked, boolean showWhenAnyParentUnlocked,
-                                 int sortNumber, BookEntryNameStyle nameStyle) {
+                                 int sortNumber, BookEntryNameStyle nameStyle, List<ItemStackTemplate> associatedItems) {
 
         public static final MapCodec<BookEntryData> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                 Codecs.STRICT_IDENTIFIER.fieldOf("category").forGetter(BookEntryData::categoryId),
@@ -276,7 +281,8 @@ public abstract class BookEntry {
                 Codec.BOOL.optionalFieldOf("hide_while_locked", false).forGetter(BookEntryData::hideWhileLocked),
                 Codec.BOOL.optionalFieldOf("show_when_any_parent_unlocked", false).forGetter(BookEntryData::showWhenAnyParentUnlocked),
                 Codec.INT.optionalFieldOf("sort_number", -1).forGetter(BookEntryData::sortNumber),
-                BookEntryNameStyle.CODEC.optionalFieldOf("name_style", BookEntryNameStyle.DEFAULT).forGetter(BookEntryData::nameStyle)
+                BookEntryNameStyle.CODEC.optionalFieldOf("name_style", BookEntryNameStyle.DEFAULT).forGetter(BookEntryData::nameStyle),
+                ItemStackTemplate.CODEC.listOf().optionalFieldOf("associated_items", List.of()).forGetter(BookEntryData::associatedItems)
         ).apply(instance, BookEntryData::new));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, BookEntryData> STREAM_CODEC = new StreamCodec<>() {
@@ -295,7 +301,8 @@ public abstract class BookEntry {
                         ByteBufCodecs.BOOL.decode(buf),
                         ByteBufCodecs.BOOL.decode(buf),
                         ByteBufCodecs.INT.decode(buf),
-                        BookEntryNameStyle.STREAM_CODEC.decode(buf)
+                        BookEntryNameStyle.STREAM_CODEC.decode(buf),
+                        ItemStackTemplate.STREAM_CODEC.apply(ByteBufCodecs.list()).decode(buf)
                 );
             }
 
@@ -314,6 +321,7 @@ public abstract class BookEntry {
                 ByteBufCodecs.BOOL.encode(buf, value.showWhenAnyParentUnlocked);
                 ByteBufCodecs.INT.encode(buf, value.sortNumber);
                 BookEntryNameStyle.STREAM_CODEC.encode(buf, value.nameStyle);
+                ItemStackTemplate.STREAM_CODEC.apply(ByteBufCodecs.list()).encode(buf, value.associatedItems);
             }
         };
 

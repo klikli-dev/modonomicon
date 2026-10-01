@@ -23,6 +23,10 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
     private void addMisc() {
         this.add(ModonomiconConstants.I18n.ITEM_GROUP, "Modonomicon");
 
+        //key mappings
+        this.add("key.category.modonomicon.modonomicon", "Modonomicon");
+        this.add("key.modonomicon.open_associated_entry", "Open Associated Book Page");
+
         //buttons
         this.add(Gui.BUTTON_PREVIOUS, "Previous Page");
         this.add(Gui.BUTTON_NEXT, "Next Page");
@@ -110,6 +114,8 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Tooltips.CONDITION_RESEARCH_STAGE_COMPLETED, "Requires research node %s stage %s to be completed");
         this.add(Tooltips.CONDITION_ENTRY_UNLOCKED, "Requires entry %s to be unlocked");
         this.add(Tooltips.ITEM_NO_BOOK_FOUND_FOR_STACK, "No book found for this item in the modonomicon book database! Nbt: %s");
+        this.add(Tooltips.ASSOCIATED_HOLD_TO_OPEN, "Hold %s for %ss");
+        this.add(Tooltips.ASSOCIATED_LOCKED, "Locked: unlock in the book");
         this.add(Tooltips.RECIPE_CRAFTING_SHAPELESS, "Shapeless");
         this.add(Tooltips.FLUID_AMOUNT, "%s mb");
         this.add(Tooltips.FLUID_AMOUNT_AND_CAPACITY, "%s / %s mb");
@@ -149,11 +155,32 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.addConfig("qol", "Quality of Life Settings");
         this.addConfig("enableSmoothZoom", "Enable Smooth Zoom");
         this.addConfig("storeLastOpenPageWhenClosingEntry", "Store Last Open Page When Closing Entry");
+        this.addConfig("showResearchToasts", "Show Research Toasts");
         this.addConfig("fontFallbackLocales", "Font Fallback Locales");
+        this.addConfig("pauseGameWhenOpen", "Pause Game When Open");
+        this.addConfig("showRecipeLookupHints", "Show Recipe Lookup Hints");
+        this.addConfig("associatedItemsHoldDurationMs", "Associated Items Hold Duration");
+        this.addConfig("debug", "Debug Settings");
+        this.addConfig("debugOverlay", "Debug Overlay");
+
+        this.addConfigTooltip("enableSmoothZoom", "Enable smooth zoom in book categories");
+        this.addConfigTooltip("storeLastOpenPageWhenClosingEntry", "Enable keeping the last open page stored when closing an entry. " +
+                "Regardless of this setting it will be stored when closing the entire book with Esc.");
+        this.addConfigTooltip("showResearchToasts", "Show toast notifications when research facts are granted, values are incremented, or nodes are unlocked.");
+        this.addConfigTooltip("fontFallbackLocales", "If your locale is not supported by the default Modonomicon font, indicated by the book just rendering blocky shapes instead of characters, add your locale to this list to fall back to the builtin Minecraft font.");
+        this.addConfigTooltip("pauseGameWhenOpen", "If true, the game will pause when a Modonomicon book is open (singleplayer only).");
+        this.addConfigTooltip("showRecipeLookupHints", "Show the recipe viewer hints in item tooltips (click to show recipe, shift-click to show usage).");
+        this.addConfigTooltip("associatedItemsHoldDurationMs", "How long (in milliseconds) the open key must be held while hovering an associated item before the linked book entry/page opens.");
+        this.addConfigTooltip("debugOverlay", "Enable the book debug overlay. While a book is open, press F6 to toggle it. " +
+                "It draws color coded outlines of the page, its content area and its text area, to help with layout offsets.");
     }
 
     private void addConfig(String key, String name){
         this.add(Modonomicon.MOD_ID + ".configuration." + key, name);
+    }
+
+    private void addConfigTooltip(String key, String tooltip){
+        this.add(Modonomicon.MOD_ID + ".configuration." + key + ".tooltip", tooltip);
     }
 
     protected void addTranslations() {
