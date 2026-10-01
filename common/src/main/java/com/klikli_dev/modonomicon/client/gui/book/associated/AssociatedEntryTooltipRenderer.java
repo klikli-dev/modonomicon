@@ -77,6 +77,10 @@ public class AssociatedEntryTooltipRenderer implements ClientTooltipComponent {
     @Override
     public void extractImage(Font font, int x, int y, int width, int height, GuiGraphicsExtractor graphics) {
         int textX = x + 1 + ICON_SIZE + GAP;
+        int textW = Math.max(font.width(this.tooltip.title().getString()), font.width(this.tooltip.hint().getString()));
+        //TODO(#259): diagnostic probe — solid red behind the text area. If the rect shows but
+        //no glyphs do, text states specifically are dropped; if neither shows, non-item draws die here.
+        graphics.fill(textX, y + 1, textX + textW, y + 1 + LINE_HEIGHT + TEXT_GAP + LINE_HEIGHT, 0xFFFF0000);
         //draw resolved plain strings rather than components: font.width() (string based)
         //measues these correctly while component visual order may not resolve on all paths
         graphics.text(font, this.tooltip.title().getString(), textX, y + 1, 0xFFFFFF);
@@ -84,8 +88,8 @@ public class AssociatedEntryTooltipRenderer implements ClientTooltipComponent {
 
         if (!loggedDraw) {
             loggedDraw = true;
-            Modonomicon.LOG.info("[AssociatedTooltip] extractImage at ({},{}) textX={} titleW={} hintW={} title='{}' hint='{}'",
-                    x, y, textX, font.width(this.tooltip.title()), font.width(this.tooltip.hint()),
+            Modonomicon.LOG.info("[AssociatedTooltip r2] extractImage at ({},{}) textX={} textW={} title='{}' hint='{}'",
+                    x, y, textX, textW,
                     this.tooltip.title().getString(), this.tooltip.hint().getString());
         }
 

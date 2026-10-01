@@ -70,7 +70,7 @@ public class AssociatedTooltipHelper {
         String logKey = association + "|locked=" + locked;
         if (!logKey.equals(lastLoggedKey)) {
             lastLoggedKey = logKey;
-            Modonomicon.LOG.info("[AssociatedTooltip] gather stack={} assoc={} title='{}' hint='{}'",
+            Modonomicon.LOG.info("[AssociatedTooltip r2] gather stack={} assoc={} title='{}' hint='{}'",
                     AssociatedItemMatcher.describe(stack), association, title.getString(), hint.getString());
         }
 
