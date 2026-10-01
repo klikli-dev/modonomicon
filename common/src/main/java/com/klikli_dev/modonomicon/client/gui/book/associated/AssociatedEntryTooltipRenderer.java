@@ -77,8 +77,10 @@ public class AssociatedEntryTooltipRenderer implements ClientTooltipComponent {
     @Override
     public void extractImage(Font font, int x, int y, int width, int height, GuiGraphicsExtractor graphics) {
         int textX = x + 1 + ICON_SIZE + GAP;
-        graphics.text(font, this.tooltip.title(), textX, y + 1, 0xFFFFFF);
-        graphics.text(font, this.tooltip.hint(), textX, y + 1 + LINE_HEIGHT + TEXT_GAP, 0xAAAAAA);
+        //draw resolved plain strings rather than components: font.width() (string based)
+        //measues these correctly while component visual order may not resolve on all paths
+        graphics.text(font, this.tooltip.title().getString(), textX, y + 1, 0xFFFFFF);
+        graphics.text(font, this.tooltip.hint().getString(), textX, y + 1 + LINE_HEIGHT + TEXT_GAP, 0xAAAAAA);
 
         if (!loggedDraw) {
             loggedDraw = true;
