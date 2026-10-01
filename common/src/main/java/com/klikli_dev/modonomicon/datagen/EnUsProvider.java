@@ -23,6 +23,10 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
     private void addMisc() {
         this.add(ModonomiconConstants.I18n.ITEM_GROUP, "Modonomicon");
 
+        //key mappings
+        this.add("key.category.modonomicon.modonomicon", "Modonomicon");
+        this.add("key.modonomicon.open_associated_entry", "Open Associated Book Page");
+
         //buttons
         this.add(Gui.BUTTON_PREVIOUS, "Previous Page");
         this.add(Gui.BUTTON_NEXT, "Next Page");
@@ -110,6 +114,8 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Tooltips.CONDITION_RESEARCH_STAGE_COMPLETED, "Requires research node %s stage %s to be completed");
         this.add(Tooltips.CONDITION_ENTRY_UNLOCKED, "Requires entry %s to be unlocked");
         this.add(Tooltips.ITEM_NO_BOOK_FOUND_FOR_STACK, "No book found for this item in the modonomicon book database! Nbt: %s");
+        this.add(Tooltips.ASSOCIATED_HOLD_TO_OPEN, "Hold %s to open");
+        this.add(Tooltips.ASSOCIATED_LOCKED, "Locked: unlock in the book");
         this.add(Tooltips.RECIPE_CRAFTING_SHAPELESS, "Shapeless");
         this.add(Tooltips.FLUID_AMOUNT, "%s mb");
         this.add(Tooltips.FLUID_AMOUNT_AND_CAPACITY, "%s / %s mb");

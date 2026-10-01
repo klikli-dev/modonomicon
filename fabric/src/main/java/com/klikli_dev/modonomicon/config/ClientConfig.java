@@ -30,6 +30,7 @@ public class ClientConfig {
     public static PropertyMirror<List<String>> fontFallbackLocales = PropertyMirror.create(ConfigTypes.makeList(ConfigTypes.STRING));
     public static PropertyMirror<Boolean> pauseGameWhenOpen = PropertyMirror.create(ConfigTypes.BOOLEAN);
     public static PropertyMirror<Boolean> showRecipeLookupHints = PropertyMirror.create(ConfigTypes.BOOLEAN);
+    public static PropertyMirror<Integer> associatedItemsHoldDurationMs = PropertyMirror.create(ConfigTypes.INTEGER);
     public static PropertyMirror<Boolean> debugOverlay = PropertyMirror.create(ConfigTypes.BOOLEAN);
 
     private static final ConfigTree CONFIG = ConfigTree.builder()
@@ -54,6 +55,9 @@ public class ClientConfig {
             .beginValue("showRecipeLookupHints", ConfigTypes.BOOLEAN, false)
             .withComment("Show the recipe viewer hints in item tooltips (click to show recipe, shift-click to show usage).")
             .finishValue(showRecipeLookupHints::mirror)
+            .beginValue("associatedItemsHoldDurationMs", ConfigTypes.INTEGER, 2000)
+            .withComment("How long (in milliseconds) the open key must be held while hovering an associated item before the linked book entry/page opens.")
+            .finishValue(associatedItemsHoldDurationMs::mirror)
             .finishBranch()
             .fork("debug")
             .withComment("Debug Settings")

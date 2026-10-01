@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
+import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,7 @@ public class ClientConfig {
         public final ForgeConfigSpec.ConfigValue<List<String>> fontFallbackLocales;
         public final BooleanValue pauseGameWhenOpen;
         public final BooleanValue showRecipeLookupHints;
+        public final IntValue associatedItemsHoldDurationMs;
 
         public QoLCategory(ForgeConfigSpec.Builder builder) {
             builder.comment("Quality of Life Settings").push("qol");
@@ -59,6 +61,9 @@ public class ClientConfig {
 
             this.showRecipeLookupHints = builder.comment("Show the recipe viewer hints in item tooltips (click to show recipe, shift-click to show usage).")
                     .define("showRecipeLookupHints", false);
+
+            this.associatedItemsHoldDurationMs = builder.comment("How long (in milliseconds) the open key must be held while hovering an associated item before the linked book entry/page opens.")
+                    .defineInRange("associatedItemsHoldDurationMs", 2000, 0, 10000);
 
             builder.pop();
         }

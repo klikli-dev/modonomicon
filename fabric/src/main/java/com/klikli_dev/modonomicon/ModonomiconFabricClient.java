@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon;
 
 import com.klikli_dev.modonomicon.client.ClientTicks;
+import com.klikli_dev.modonomicon.client.ModonomiconKeys;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.client.render.pip.GuiDirectEntryConnectionRenderer;
@@ -19,6 +20,7 @@ import com.klikli_dev.modonomicon.registry.FabricClientCommandRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.PictureInPictureRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
@@ -34,6 +36,8 @@ public class ModonomiconFabricClient implements ClientModInitializer {
 
         ClientConfig.init();
         ClientNetworking.registerReceivers();
+
+        KeyMappingHelper.registerKeyMapping(ModonomiconKeys.OPEN_ASSOCIATED_ENTRY);
 
         PageRendererRegistry.registerPageRenderers();
 
