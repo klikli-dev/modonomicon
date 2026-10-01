@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon;
 
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
+import com.klikli_dev.modonomicon.client.AssociatedItemTooltipHandler;
 import com.klikli_dev.modonomicon.client.BookModel;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.ModonomiconKeys;
@@ -179,6 +180,8 @@ public class ModonomiconForge {
             RegisterKeyMappingsEvent.BUS.addListener((RegisterKeyMappingsEvent e) -> {
                 e.register(ModonomiconKeys.OPEN_ASSOCIATED_ENTRY);
             });
+            RegisterClientTooltipComponentFactoriesEvent.BUS.addListener(AssociatedItemTooltipHandler::onRegisterFactories);
+            RenderTooltipEvent.GatherComponents.BUS.addListener(AssociatedItemTooltipHandler::onGatherComponents);
 
             ModelEvent.ModifyBakingResult.BUS.addListener(Client::onModifyBakingResult);
             RegisterPictureInPictureRendererEvent.BUS.addListener(Client::onRegisterPipRenderers);

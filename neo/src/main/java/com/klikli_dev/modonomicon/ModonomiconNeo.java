@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon;
 
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.book.runtime.DemoRuntimeBookContent;
+import com.klikli_dev.modonomicon.client.AssociatedItemTooltipHandler;
 import com.klikli_dev.modonomicon.client.BookModel;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.ModonomiconKeys;
@@ -201,6 +202,8 @@ public class ModonomiconNeo {
             modEventBus.addListener((RegisterKeyMappingsEvent e) -> {
                 e.register(ModonomiconKeys.OPEN_ASSOCIATED_ENTRY);
             });
+            modEventBus.addListener((RegisterClientTooltipComponentFactoriesEvent e) ->
+                    AssociatedItemTooltipHandler.onRegisterFactories(e));
 
             //register client side reload listener that will reset the fallback font to handle locale changes on the fly
             modEventBus.addListener((AddClientReloadListenersEvent e) -> {
@@ -232,6 +235,8 @@ public class ModonomiconNeo {
                 ClientTicks.endClientTick(Minecraft.getInstance());
                 MultiblockPreviewRenderer.onClientTick(Minecraft.getInstance());
             });
+            NeoForge.EVENT_BUS.addListener((RenderTooltipEvent.GatherComponents e) ->
+                    AssociatedItemTooltipHandler.onGatherComponents(e));
             NeoForge.EVENT_BUS.addListener((RenderFrameEvent.Pre e) -> {
                 ClientTicks.renderTickStart(e.getPartialTick().getGameTimeDeltaPartialTick(true));
             });
