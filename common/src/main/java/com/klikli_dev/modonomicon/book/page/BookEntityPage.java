@@ -17,6 +17,7 @@ import com.klikli_dev.modonomicon.data.BookPageType;
 import com.klikli_dev.modonomicon.registry.BookPageTypeRegistry;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import com.klikli_dev.modonomicon.util.EntityUtil;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -27,6 +28,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
@@ -46,7 +48,7 @@ public class BookEntityPage extends BookPage implements BookPageWithSplit {
             Codec.BOOL.optionalFieldOf("allow_page_split").forGetter(page -> Optional.ofNullable(page.getAllowPageSplitOverride())),
             Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
             BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition),
-            ItemStackTemplate.CODEC.listOf().optionalFieldOf("associated_items", List.of()).forGetter(BookPage::getAssociatedItems)
+            BookPage.ASSOCIATED_ITEMS_CODEC.optionalFieldOf("associated_items", List.of()).forGetter(BookPage::getAssociatedItems)
     ).apply(instance, (entityName, text, entityId, scale, offset, rotate, defaultRotation, autoScale, allowPageSplit, id, condition, associatedItems) -> { var page = new BookEntityPage(entityName, text, entityId, scale, offset, rotate, defaultRotation, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition); page.setAssociatedItems(associatedItems); return page; }));
     public static final StreamCodec<RegistryFriendlyByteBuf, BookEntityPage> STREAM_CODEC = StreamCodec.composite(
             BookTextHolder.STREAM_CODEC, BookEntityPage::getEntityName,

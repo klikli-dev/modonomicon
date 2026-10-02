@@ -6,19 +6,38 @@
 
 package com.klikli_dev.modonomicon.book.associated;
 
+import com.mojang.datafixers.util.Either;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Ingredient;
 import java.util.Objects;
 
 /**
- * Matches an {@link ItemStackTemplate} from book json against a hovered {@link ItemStack}.
+ * Matches an associated item from book json against a hovered {@link ItemStack}.
  * <p>
- * The item must be equal and every component defined in the template must be present
- * on the stack with an equal value. Additional components on the stack are allowed.
- * A template without components matches any stack of the item.
+ * The associated item is either an {@link ItemStackTemplate} or an {@link Ingredient}
+ * (like spotlight pages support). For templates the item must be equal and every
+ * component defined in the template must be present on the stack with an equal value.
+ * Additional components on the stack are allowed. A template without components
+ * matches any stack of the item. For ingredients {@link Ingredient#test(ItemStack)}
+ * decides.
  */
 public class AssociatedItemMatcher {
+
+    public static boolean matches(Either<ItemStackTemplate, Ingredient> associated, ItemStack stack) {
+        return associated.map(
+                template -> matches(template, stack),
+                ingredient -> matches(ingredient, stack)
+        );
+    }
+
+    public static boolean matches(Ingredient ingredient, ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+        return ingredient.test(stack);
+    }
 
     public static boolean matches(ItemStackTemplate template, ItemStack stack) {
         if (stack.isEmpty()) {

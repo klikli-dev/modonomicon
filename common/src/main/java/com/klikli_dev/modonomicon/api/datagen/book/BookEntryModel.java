@@ -28,11 +28,13 @@ import com.klikli_dev.modonomicon.book.entries.EntryNameRenderType;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.google.gson.JsonParseException;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.phys.Vec2;
 
@@ -63,7 +65,7 @@ public class BookEntryModel {
     protected Identifier categoryToOpen;
     protected Identifier commandToRunOnFirstRead;
     protected Identifier entryToOpen;
-    protected List<ItemStackTemplate> associatedItems = new ArrayList<>();
+    protected List<Either<ItemStackTemplate, Ingredient>> associatedItems = new ArrayList<>();
 
     protected int sortNumber = -1;
 
@@ -541,7 +543,7 @@ public class BookEntryModel {
         return this;
     }
 
-    public List<ItemStackTemplate> getAssociatedItems() {
+    public List<Either<ItemStackTemplate, Ingredient>> getAssociatedItems() {
         return this.associatedItems;
     }
 
@@ -551,7 +553,7 @@ public class BookEntryModel {
      * be present on the hovered stack (additional components are allowed).
      */
     public BookEntryModel withAssociatedItem(ItemLike item) {
-        this.associatedItems.add(new ItemStackTemplate(item.asItem()));
+        this.associatedItems.add(Either.left(new ItemStackTemplate(item.asItem())));
         return this;
     }
 
@@ -561,7 +563,7 @@ public class BookEntryModel {
      * be present on the hovered stack (additional components are allowed).
      */
     public BookEntryModel withAssociatedItem(Item item) {
-        this.associatedItems.add(new ItemStackTemplate(item));
+        this.associatedItems.add(Either.left(new ItemStackTemplate(item)));
         return this;
     }
 
@@ -570,11 +572,28 @@ public class BookEntryModel {
      * a linked-entry tooltip; holding the open key opens this entry.
      */
     public BookEntryModel withAssociatedItem(ItemStackTemplate item) {
-        this.associatedItems.add(item);
+        this.associatedItems.add(Either.left(item));
         return this;
     }
 
-    public BookEntryModel withAssociatedItems(List<ItemStackTemplate> items) {
+    /**
+     * Associates an ingredient (e.g. a tag, like spotlight pages support) with this entry.
+     * Hovering any matching stack shows a linked-entry tooltip; holding the open key opens this entry.
+     */
+    public BookEntryModel withAssociatedItem(Ingredient ingredient) {
+        this.associatedItems.add(Either.right(ingredient));
+        return this;
+    }
+
+    /**
+     * Associates an item or ingredient with this entry.
+     */
+    public BookEntryModel withAssociatedItem(Either<ItemStackTemplate, Ingredient> associated) {
+        this.associatedItems.add(associated);
+        return this;
+    }
+
+    public BookEntryModel withAssociatedItems(List<Either<ItemStackTemplate, Ingredient>> items) {
         this.associatedItems.addAll(items);
         return this;
     }

@@ -15,12 +15,14 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookNoneConditionModel;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.page.BookPage;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +35,7 @@ public abstract class BookPageModel<T extends BookPageModel<T>> {
     protected String id = "";
     protected BookConditionModel<?> condition = BookNoneConditionModel.create();
     protected int sortNumber = -1;
-    protected List<ItemStackTemplate> associatedItems = new ArrayList<>();
+    protected List<Either<ItemStackTemplate, Ingredient>> associatedItems = new ArrayList<>();
 
     protected BookPageModel(Identifier type) {
         this.type = type;
@@ -82,7 +84,7 @@ public abstract class BookPageModel<T extends BookPageModel<T>> {
         return this.withCondition(BookResearchNodeUnlockedConditionModel.create().withNode(nodeRef.id()));
     }
 
-    public List<ItemStackTemplate> getAssociatedItems() {
+    public List<Either<ItemStackTemplate, Ingredient>> getAssociatedItems() {
         return this.associatedItems;
     }
 
@@ -92,7 +94,7 @@ public abstract class BookPageModel<T extends BookPageModel<T>> {
      * be present on the hovered stack (additional components are allowed).
      */
     public T withAssociatedItem(@NotNull ItemLike item) {
-        this.associatedItems.add(new ItemStackTemplate(item.asItem()));
+        this.associatedItems.add(Either.left(new ItemStackTemplate(item.asItem())));
         //noinspection unchecked
         return (T) this;
     }
@@ -103,7 +105,7 @@ public abstract class BookPageModel<T extends BookPageModel<T>> {
      * be present on the hovered stack (additional components are allowed).
      */
     public T withAssociatedItem(@NotNull Item item) {
-        this.associatedItems.add(new ItemStackTemplate(item));
+        this.associatedItems.add(Either.left(new ItemStackTemplate(item)));
         //noinspection unchecked
         return (T) this;
     }
@@ -113,12 +115,31 @@ public abstract class BookPageModel<T extends BookPageModel<T>> {
      * a linked-page tooltip; holding the open key opens this page.
      */
     public T withAssociatedItem(@NotNull ItemStackTemplate item) {
-        this.associatedItems.add(item);
+        this.associatedItems.add(Either.left(item));
         //noinspection unchecked
         return (T) this;
     }
 
-    public T withAssociatedItems(@NotNull List<ItemStackTemplate> items) {
+    /**
+     * Associates an ingredient (e.g. a tag, like spotlight pages support) with this page.
+     * Hovering any matching stack shows a linked-page tooltip; holding the open key opens this page.
+     */
+    public T withAssociatedItem(@NotNull Ingredient ingredient) {
+        this.associatedItems.add(Either.right(ingredient));
+        //noinspection unchecked
+        return (T) this;
+    }
+
+    /**
+     * Associates an item or ingredient with this page.
+     */
+    public T withAssociatedItem(@NotNull Either<ItemStackTemplate, Ingredient> associated) {
+        this.associatedItems.add(associated);
+        //noinspection unchecked
+        return (T) this;
+    }
+
+    public T withAssociatedItems(@NotNull List<Either<ItemStackTemplate, Ingredient>> items) {
         this.associatedItems.addAll(items);
         //noinspection unchecked
         return (T) this;
