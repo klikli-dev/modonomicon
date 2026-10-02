@@ -63,9 +63,10 @@ public class SpotlightEntry extends EntryProvider {
 
         this.page("spotlight2", () -> BookSpotlightPageModel.create()
                 .withText(this.context().pageText())
-                .withItem(Ingredient.of(Items.DIAMOND))
+                .withItem(Ingredient.of(Items.DIAMOND, Items.EMERALD))
+                .withAssociatedItem(Ingredient.of(Items.DIAMOND, Items.EMERALD))
         );
-        this.pageText("A sample spotlight page with automatic title.");
+        this.pageText("A sample spotlight page with automatic title. Hovering a diamond or emerald shows a linked-page tooltip and opens this page on hold, because the page uses an ingredient association.");
 
         var iconTemplate = new ItemStackTemplate(Items.LEATHER_HELMET, DataComponentPatch.builder().set(DataComponents.DYED_COLOR, new DyedItemColor(0x169C9C)).build());
         this.page("spotlight3", () -> BookSpotlightPageModel.create()

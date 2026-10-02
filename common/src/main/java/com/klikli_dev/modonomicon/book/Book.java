@@ -17,15 +17,20 @@ import com.klikli_dev.modonomicon.client.gui.book.theme.BookTheme;
 import com.klikli_dev.modonomicon.registry.ThemeRegistry;
 import com.klikli_dev.modonomicon.util.BookGsonHelper;
 import com.klikli_dev.modonomicon.util.Codecs;
+import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 import java.util.Comparator;
 import java.util.List;
@@ -49,6 +54,13 @@ public class Book {
     protected boolean generateBookItem;
     @Nullable
     protected Identifier customBookItem;
+
+    /**
+     * Badge shown on associated-item tooltips for this book.
+     * If null, the book's own item stack is used instead.
+     */
+    @Nullable
+    protected ItemStackTemplate associatedItemBadge;
 
     protected Identifier font;
     protected BookThemeData themeData;
@@ -98,7 +110,7 @@ public class Book {
                 @Nullable Identifier customBookItem, String creativeTab, Identifier font, Identifier turnPageSound, Identifier leafletEntry,
                 PageDisplayMode pageDisplayMode, boolean allowOpenBooksWithInvalidLinks, boolean showRecentlyUnlocked,
                 boolean defaultAutoScale, boolean defaultAllowPageSplit,
-                BookThemeData themeData) {
+                BookThemeData themeData, @Nullable ItemStackTemplate associatedItemBadge) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -125,6 +137,7 @@ public class Book {
         this.defaultAutoScale = defaultAutoScale;
         this.defaultAllowPageSplit = defaultAllowPageSplit;
         this.themeData = themeData;
+        this.associatedItemBadge = associatedItemBadge;
     }
 
     public static Book fromJson(Identifier id, JsonObject json, HolderLookup.Provider provider) {
@@ -160,8 +173,14 @@ public class Book {
         var defaultAutoScale = GsonHelper.getAsBoolean(json, "default_auto_scale", true);
         var defaultAllowPageSplit = GsonHelper.getAsBoolean(json, "default_allow_page_split", false);
 
+        ItemStackTemplate associatedItemBadge = null;
+        if (json.has("associated_item_badge")) {
+            associatedItemBadge = ItemStackTemplate.CODEC.parse(provider.createSerializationContext(JsonOps.INSTANCE), json.get("associated_item_badge"))
+                    .getOrThrow(error -> new IllegalArgumentException("Failed to decode associated_item_badge for book " + id + ": " + error));
+        }
+
         return new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font,
-                turnPageSound, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, defaultAutoScale, defaultAllowPageSplit, themeData);
+                turnPageSound, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, defaultAutoScale, defaultAllowPageSplit, themeData, associatedItemBadge);
     }
 
 
@@ -192,8 +211,9 @@ public class Book {
         var defaultAllowPageSplit = buffer.readBoolean();
 
         var textMacros = readStringMap(buffer);
+        var associatedItemBadge = ByteBufCodecs.optional(ItemStackTemplate.STREAM_CODEC).decode(buffer).orElse(null);
         var book = new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font,
-                turnPageSound, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, defaultAutoScale, defaultAllowPageSplit, themeData);
+                turnPageSound, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, defaultAutoScale, defaultAllowPageSplit, themeData, associatedItemBadge);
 
         book.textMacros().putAll(textMacros);
 
@@ -268,6 +288,7 @@ public class Book {
         buffer.writeBoolean(this.defaultAutoScale);
         buffer.writeBoolean(this.defaultAllowPageSplit);
         writeStringMap(buffer, this.textMacros);
+        ByteBufCodecs.optional(ItemStackTemplate.STREAM_CODEC).encode(buffer, Optional.ofNullable(this.associatedItemBadge));
     }
 
     //FriendlyByteBuf#readMap/writeMap were removed in 26.3, so we replicate the previous wire format here
@@ -362,6 +383,15 @@ public class Book {
     @Nullable
     public Identifier getCustomBookItem() {
         return this.customBookItem;
+    }
+
+    /**
+     * Badge item shown on associated-item tooltips for this book, or null to
+     * default to the book's own item stack.
+     */
+    @Nullable
+    public ItemStackTemplate getAssociatedItemBadge() {
+        return this.associatedItemBadge;
     }
 
     public Identifier getModel() {

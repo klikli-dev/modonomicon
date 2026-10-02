@@ -11,27 +11,32 @@ import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.data.BookDataManager;
+import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Client-side reverse index from item to book entry/page for associated-item tooltips.
  * <p>
- * Entries and pages can declare {@code associated_items}; hovering a matching stack shows
+ * Entries and pages can declare {@code associated_items} as exact item templates or
+ * ingredients (like spotlight pages); hovering a matching stack shows
  * a linked-page tooltip and holding the open key jumps to the book location.
  * Page-level associations take precedence over entry-level ones.
  * <p>
  * The index is rebuilt lazily: {@link BookDataManager} marks it dirty on (re-)load and sync,
  * the next lookup triggers a rebuild. Lookup itself is O(1) by item plus a short component
- * subset check over candidates sharing the item.
+ * subset check over candidates sharing the item. Ingredient associations are kept in a
+ * separate list and tested with {@link Ingredient#test(ItemStack)}.
  */
 public class AssociatedItemLookup {
 
@@ -41,10 +46,16 @@ public class AssociatedItemLookup {
     public record Association(Identifier bookId, Identifier entryId, int pageNumber) {
     }
 
+    private record IngredientAssociation(Association association, Ingredient ingredient) {
+    }
+
     private static final AssociatedItemLookup INSTANCE = new AssociatedItemLookup();
 
     private final Map<Item, List<Association>> byItem =
             Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+
+    private final List<IngredientAssociation> byIngredient =
+            Collections.synchronizedList(new ArrayList<>());
 
     private boolean dirty = true;
 
@@ -70,21 +81,43 @@ public class AssociatedItemLookup {
 
         this.ensureBuilt();
 
+        Association entryFallback = null;
+
         List<Association> candidates = this.byItem.get(stack.getItem());
-        if (candidates == null || candidates.isEmpty()) {
-            return null;
+        if (candidates != null) {
+            for (var candidate : candidates) {
+                if (!this.matches(stack, candidate)) {
+                    continue;
+                }
+                if (candidate.pageNumber() >= 0) {
+                    return candidate;
+                }
+                if (entryFallback == null) {
+                    entryFallback = candidate;
+                }
+            }
         }
 
-        Association entryFallback = null;
-        for (var candidate : candidates) {
-            if (!this.matches(stack, candidate)) {
-                continue;
-            }
-            if (candidate.pageNumber() >= 0) {
-                return candidate;
-            }
-            if (entryFallback == null) {
-                entryFallback = candidate;
+        synchronized (this.byIngredient) {
+            for (var ingredientAssociation : this.byIngredient) {
+                if (!AssociatedItemMatcher.matches(ingredientAssociation.ingredient(), stack)) {
+                    continue;
+                }
+                var association = ingredientAssociation.association();
+                // ensure the book/entry/page still exists; matches() would also succeed
+                // because the tested ingredient belongs to it, but we avoid a second scan here
+                if (this.resolveEntry(association) == null) {
+                    continue;
+                }
+                if (association.pageNumber() >= 0 && this.resolvePage(association) == null) {
+                    continue;
+                }
+                if (association.pageNumber() >= 0) {
+                    return association;
+                }
+                if (entryFallback == null) {
+                    entryFallback = association;
+                }
             }
         }
         return entryFallback;
@@ -136,9 +169,12 @@ public class AssociatedItemLookup {
         return matchesAny(entry.getAssociatedItems(), stack);
     }
 
-    private static boolean matchesAny(List<ItemStackTemplate> templates, ItemStack stack) {
-        for (var template : templates) {
-            if (AssociatedItemMatcher.matches(template, stack)) {
+    private static boolean matchesAny(List<Either<ItemStackTemplate, Ingredient>> associated, ItemStack stack) {
+        for (var entry : associated) {
+            if (entry == null) {
+                continue;
+            }
+            if (AssociatedItemMatcher.matches(entry, stack)) {
                 return true;
             }
         }
@@ -153,10 +189,13 @@ public class AssociatedItemLookup {
 
     private void rebuild() {
         this.byItem.clear();
+        synchronized (this.byIngredient) {
+            this.byIngredient.clear();
 
-        for (var book : BookDataManager.get().getBooks().values()) {
-            for (var entry : book.getEntries().values()) {
-                this.indexEntry(book.getId(), entry);
+            for (var book : BookDataManager.get().getBooks().values()) {
+                for (var entry : book.getEntries().values()) {
+                    this.indexEntry(book.getId(), entry);
+                }
             }
         }
 
@@ -164,13 +203,17 @@ public class AssociatedItemLookup {
     }
 
     private void indexEntry(Identifier bookId, BookEntry entry) {
-        for (var template : entry.getAssociatedItems()) {
-            if (template == null) {
+        for (var associated : entry.getAssociatedItems()) {
+            if (associated == null) {
                 continue;
             }
-            Item item = template.item().value();
-            this.byItem.computeIfAbsent(item, k -> new ArrayList<>())
-                    .add(new Association(bookId, entry.getId(), -1));
+            associated.ifLeft(template -> {
+                Item item = template.item().value();
+                this.byItem.computeIfAbsent(item, k -> new ArrayList<>())
+                        .add(new Association(bookId, entry.getId(), -1));
+            });
+            associated.ifRight(ingredient -> this.byIngredient.add(
+                    new IngredientAssociation(new Association(bookId, entry.getId(), -1), ingredient)));
         }
 
         if (!(entry instanceof BookContentEntry contentEntry)) {
@@ -181,13 +224,18 @@ public class AssociatedItemLookup {
             if (page.getAssociatedItems().isEmpty()) {
                 continue;
             }
-            for (var template : page.getAssociatedItems()) {
-                if (template == null) {
+            for (var associated : page.getAssociatedItems()) {
+                if (associated == null) {
                     continue;
                 }
-                Item item = template.item().value();
-                this.byItem.computeIfAbsent(item, k -> new ArrayList<>())
-                        .add(new Association(bookId, entry.getId(), page.getPageNumber()));
+                var association = new Association(bookId, entry.getId(), page.getPageNumber());
+                associated.ifLeft(template -> {
+                    Item item = template.item().value();
+                    this.byItem.computeIfAbsent(item, k -> new ArrayList<>())
+                            .add(association);
+                });
+                associated.ifRight(ingredient ->
+                        this.byIngredient.add(new IngredientAssociation(association, ingredient)));
             }
         }
     }

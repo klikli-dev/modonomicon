@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.data.BookPageType;
 import com.klikli_dev.modonomicon.registry.BookPageTypeRegistry;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.MapCodec;
@@ -22,6 +23,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
@@ -41,14 +43,24 @@ public abstract class BookPage {
                     ));
 
     /**
+     * Single associated item, either an exact {@link ItemStackTemplate} or an {@link Ingredient}
+     * (e.g. a tag), like spotlight pages support for their displayed item.
+     */
+    public static final Codec<Either<ItemStackTemplate, Ingredient>> ASSOCIATED_ITEM_CODEC =
+            Codec.lazyInitialized(() -> Codec.either(ItemStackTemplate.CODEC, Ingredient.CODEC));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, Either<ItemStackTemplate, Ingredient>> ASSOCIATED_ITEM_STREAM_CODEC =
+            ByteBufCodecs.fromCodecWithRegistries(ASSOCIATED_ITEM_CODEC);
+
+    /**
      * Codec fragment for the optional associated items list shared by all page types.
      * Each concrete page codec includes this as "associated_items".
      */
-    public static final Codec<List<ItemStackTemplate>> ASSOCIATED_ITEMS_CODEC =
-            ItemStackTemplate.CODEC.listOf();
+    public static final Codec<List<Either<ItemStackTemplate, Ingredient>>> ASSOCIATED_ITEMS_CODEC =
+            ASSOCIATED_ITEM_CODEC.listOf();
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, List<ItemStackTemplate>> ASSOCIATED_ITEMS_STREAM_CODEC =
-            ItemStackTemplate.STREAM_CODEC.apply(ByteBufCodecs.list());
+    public static final StreamCodec<RegistryFriendlyByteBuf, List<Either<ItemStackTemplate, Ingredient>>> ASSOCIATED_ITEMS_STREAM_CODEC =
+            ASSOCIATED_ITEM_STREAM_CODEC.apply(ByteBufCodecs.list());
 
     protected Book book;
     protected BookContentEntry parentEntry;
@@ -56,13 +68,13 @@ public abstract class BookPage {
 
     protected String id;
     protected BookCondition condition;
-    protected List<ItemStackTemplate> associatedItems;
+    protected List<Either<ItemStackTemplate, Ingredient>> associatedItems;
 
     public BookPage(String id, BookCondition condition) {
         this(id, condition, List.of());
     }
 
-    public BookPage(String id, BookCondition condition, List<ItemStackTemplate> associatedItems) {
+    public BookPage(String id, BookCondition condition, List<Either<ItemStackTemplate, Ingredient>> associatedItems) {
         this.id = id;
         this.condition = condition;
         this.associatedItems = List.copyOf(associatedItems);
@@ -92,12 +104,13 @@ public abstract class BookPage {
     /**
      * Items that should show a "linked book page" tooltip and open this page on hold.
      * Page-level associations take precedence over entry-level ones.
+     * Each entry is either an exact item template or an ingredient (e.g. a tag).
      */
-    public List<ItemStackTemplate> getAssociatedItems() {
+    public List<Either<ItemStackTemplate, Ingredient>> getAssociatedItems() {
         return this.associatedItems == null ? List.of() : this.associatedItems;
     }
 
-    public void setAssociatedItems(List<ItemStackTemplate> associatedItems) {
+    public void setAssociatedItems(List<Either<ItemStackTemplate, Ingredient>> associatedItems) {
         this.associatedItems = List.copyOf(associatedItems);
     }
 

@@ -14,6 +14,7 @@ import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.data.BookPageType;
 import com.klikli_dev.modonomicon.registry.BookPageTypeRegistry;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -24,6 +25,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
@@ -40,7 +42,7 @@ public class BookTextPage extends BookPage implements BookPageWithSplit {
             Codec.BOOL.optionalFieldOf("allow_page_split").forGetter(page -> Optional.ofNullable(page.getAllowPageSplitOverride())),
             Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
             BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition),
-            ItemStackTemplate.CODEC.listOf().optionalFieldOf("associated_items", List.of()).forGetter(BookPage::getAssociatedItems)
+            BookPage.ASSOCIATED_ITEMS_CODEC.optionalFieldOf("associated_items", List.of()).forGetter(BookPage::getAssociatedItems)
     ).apply(instance, (title, text, useMarkdownInTitle, showTitleSeparator, autoScale, allowPageSplit, id, condition, associatedItems) -> new BookTextPage(title, text, useMarkdownInTitle, showTitleSeparator, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition, associatedItems)));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BookTextPage> STREAM_CODEC = StreamCodec.composite(
@@ -70,7 +72,7 @@ public class BookTextPage extends BookPage implements BookPageWithSplit {
         this(title, text, useMarkdownInTitle, showTitleSeparator, autoScale, allowPageSplit, id, condition, List.of());
     }
 
-    public BookTextPage(BookTextHolder title, BookTextHolder text, boolean useMarkdownInTitle, boolean showTitleSeparator, Boolean autoScale, Boolean allowPageSplit, String id, BookCondition condition, List<ItemStackTemplate> associatedItems) {
+    public BookTextPage(BookTextHolder title, BookTextHolder text, boolean useMarkdownInTitle, boolean showTitleSeparator, Boolean autoScale, Boolean allowPageSplit, String id, BookCondition condition, List<Either<ItemStackTemplate, Ingredient>> associatedItems) {
         super(id, condition, associatedItems);
         this.title = title;
         this.text = text;
