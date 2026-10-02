@@ -1,10 +1,19 @@
 {
   "type": "modonomicon:spotlight",
+  "associated_items": [
+    [
+      "minecraft:diamond",
+      "minecraft:emerald"
+    ]
+  ],
   "condition": {
     "type": "modonomicon:none"
   },
   "id": "spotlight2",
-  "item": "minecraft:diamond",
+  "item": [
+    "minecraft:diamond",
+    "minecraft:emerald"
+  ],
   "sort_number": 2,
   "text": "book.modonomicon.demo.features.spotlight.spotlight2.text",
   "title": ""
