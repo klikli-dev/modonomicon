@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.client.gui.book.associated;
 
 import com.klikli_dev.modonomicon.book.BookIcon;
 import com.klikli_dev.modonomicon.book.associated.AssociatedItemLookup;
-import com.klikli_dev.modonomicon.registry.ItemRegistry;
+import com.klikli_dev.modonomicon.data.BookDataManager;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -57,7 +57,10 @@ public class AssociatedEntryTooltipRenderer implements ClientTooltipComponent {
 
         var page = AssociatedItemLookup.get().resolvePage(this.tooltip.association());
         this.icon = AssociatedTooltipHelper.resolveIcon(entry, page);
-        this.badgeStack = new ItemStack(ItemRegistry.MODONOMICON_PURPLE.get());
+        var book = entry.getBook() != null
+                ? entry.getBook()
+                : BookDataManager.get().getBook(this.tooltip.association().bookId());
+        this.badgeStack = AssociatedTooltipHelper.resolveBadge(book);
     }
 
     private int textWidth(Font font) {

@@ -110,7 +110,7 @@
   "book.modonomicon.demo.features.spotlight.name": "Spotlight Entry",
   "book.modonomicon.demo.features.spotlight.spotlight1.text": "A sample spotlight page with custom title.\\\nIt shows how an [](item://minecraft:apple) can be rendered with a little border and fancyness around it.\\\nI am adding this link to see if spotlight pages have an offset problem. \\\nThe entry needs to be longer to trigger scaling.\\\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed odio eu dolor ornare tempor. In nibh erat, finibus sed eros id, finibus interdum justo. Aenean luctus, magna at pharetra accumsan, tellus libero tincidunt enim, id varius ante sem sit amet ipsum. \n",
   "book.modonomicon.demo.features.spotlight.spotlight1.title": "Custom Title",
-  "book.modonomicon.demo.features.spotlight.spotlight2.text": "A sample spotlight page with automatic title.",
+  "book.modonomicon.demo.features.spotlight.spotlight2.text": "A sample spotlight page with automatic title. Hovering a diamond or emerald shows a linked-page tooltip and opens this page on hold, because the page uses an ingredient association.",
   "book.modonomicon.demo.features.spotlight.spotlight3.text": "A sample spotlight page with an item with components",
   "book.modonomicon.demo.features.spotlight.spotlight4.text": "A sample spotlight page with a potion",
   "book.modonomicon.demo.features.spotlight.spotlight5.text": "A sample spotlight page with a bundle",

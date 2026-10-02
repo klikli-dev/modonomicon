@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.associated;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookIcon;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.associated.AssociatedItemLookup;
@@ -22,6 +23,8 @@ import com.klikli_dev.modonomicon.book.page.BookTextPage;
 import com.klikli_dev.modonomicon.client.ModonomiconKeys;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
+import com.klikli_dev.modonomicon.registry.DataComponentRegistry;
+import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -138,37 +141,73 @@ public class AssociatedTooltipHelper {
     }
 
     /**
+     * Resolves the badge item rendered in the corner of associated-item tooltips:
+     * the book's configured badge, defaulting to the book's own item stack
+     * (base modonomicon item + book id component, like the creative tab builds it,
+     * so it renders with the book's model).
+     */
+    public static ItemStack resolveBadge(Book book) {
+        if (book != null) {
+            var configured = book.getAssociatedItemBadge();
+            if (configured != null) {
+                return configured.create();
+            }
+            var stack = new ItemStack(ItemRegistry.MODONOMICON.get());
+            stack.set(DataComponentRegistry.BOOK_ID.get(), book.getId());
+            return stack;
+        }
+        return new ItemStack(ItemRegistry.MODONOMICON_PURPLE.get());
+    }
+
+    /**
      * Resolves the title to show: the page title when it has one, otherwise the entry name.
+     * <p>
+     * Always returns a white-styled copy for tooltip rendering. Page titles carry the
+     * book theme's default title color (often black), which is unreadable on the dark
+     * tooltip background, so the color is overridden here. The copy ensures the book's
+     * stored components are never mutated.
      */
     public static Component resolveTitle(BookEntry entry, BookPage page) {
         Component fallback = Component.translatable(entry.getName());
         if (page == null) {
-            return fallback;
+            return toTooltipTitle(fallback);
         }
 
         if (page instanceof BookTextPage textPage) {
-            return holderComponent(textPage.getTitle(), fallback);
+            return toTooltipTitle(holderComponent(textPage.getTitle(), fallback));
         }
         if (page instanceof BookSpotlightPage spotlightPage) {
-            return holderComponent(spotlightPage.getTitle(), fallback);
+            return toTooltipTitle(holderComponent(spotlightPage.getTitle(), fallback));
         }
         if (page instanceof BookImagePage imagePage) {
-            return holderComponent(imagePage.getTitle(), fallback);
+            return toTooltipTitle(holderComponent(imagePage.getTitle(), fallback));
         }
         if (page instanceof BookEntityPage entityPage) {
-            return holderComponent(entityPage.getEntityName(), fallback);
+            return toTooltipTitle(holderComponent(entityPage.getEntityName(), fallback));
         }
         if (page instanceof BookMultiblockPage multiblockPage) {
-            return holderComponent(multiblockPage.getMultiblockName(), fallback);
+            return toTooltipTitle(holderComponent(multiblockPage.getMultiblockName(), fallback));
         }
         if (page instanceof BookRecipePage<?> recipePage) {
             Component title = holderComponent(recipePage.getTitle1(), null);
             if (title == null) {
                 title = holderComponent(recipePage.getTitle2(), null);
             }
-            return title == null ? fallback : title;
+            return toTooltipTitle(title == null ? fallback : title);
         }
-        return fallback;
+        return toTooltipTitle(fallback);
+    }
+
+    /**
+     * Copies the given title and forces its root style color to white, preserving
+     * other formatting such as bold. Copying is required because page titles are
+     * shared book components styled with the theme's default title color.
+     */
+    private static Component toTooltipTitle(Component title) {
+        if (title == null) {
+            return null;
+        }
+        return title.copy().withStyle(style -> style.withColor(ChatFormatting.WHITE));
     }
 
     private static Component holderComponent(BookTextHolder holder, Component fallback) {

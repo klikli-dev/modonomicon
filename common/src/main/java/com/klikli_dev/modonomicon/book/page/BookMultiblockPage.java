@@ -18,6 +18,7 @@ import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.data.BookPageType;
 import com.klikli_dev.modonomicon.registry.BookPageTypeRegistry;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -28,6 +29,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
@@ -44,7 +46,7 @@ public class BookMultiblockPage extends BookPage implements BookPageWithSplit {
             Codec.BOOL.optionalFieldOf("allow_page_split").forGetter(page -> Optional.ofNullable(page.getAllowPageSplitOverride())),
             Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
             BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition),
-            ItemStackTemplate.CODEC.listOf().optionalFieldOf("associated_items", List.of()).forGetter(BookPage::getAssociatedItems)
+            BookPage.ASSOCIATED_ITEMS_CODEC.optionalFieldOf("associated_items", List.of()).forGetter(BookPage::getAssociatedItems)
     ).apply(instance, (multiblockName, text, multiblockId, showVisualizeButton, autoScale, allowPageSplit, id, condition, associatedItems) -> { var page = new BookMultiblockPage(multiblockName, text, multiblockId, showVisualizeButton, autoScale.orElse(null), allowPageSplit.orElse(null), id, condition); page.setAssociatedItems(associatedItems); return page; }));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BookMultiblockPage> STREAM_CODEC = StreamCodec.composite(
