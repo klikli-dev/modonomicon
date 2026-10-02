@@ -7,12 +7,17 @@
 package com.klikli_dev.modonomicon.api.datagen.book;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Book;
 import com.klikli_dev.modonomicon.book.BookDisplayMode;
 import com.klikli_dev.modonomicon.book.PageDisplayMode;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -65,6 +70,13 @@ public class BookModel {
      */
     @Nullable
     protected Identifier customBookItem = null;
+
+    /**
+     * Badge item shown on associated-item tooltips for this book.
+     * If null (default), the book's own item stack is used as the badge.
+     */
+    @Nullable
+    protected ItemStackTemplate associatedItemBadge = null;
 
     /**
      * The font to use for the book text.
@@ -147,6 +159,11 @@ public class BookModel {
         return this.customBookItem;
     }
 
+    @Nullable
+    public ItemStackTemplate getAssociatedItemBadge() {
+        return this.associatedItemBadge;
+    }
+
     public List<BookCategoryModel> getCategories() {
         return this.categories;
     }
@@ -225,6 +242,11 @@ public class BookModel {
         json.addProperty("generate_book_item", this.generateBookItem);
         if (this.customBookItem != null) {
             json.addProperty("custom_book_item", this.customBookItem.toString());
+        }
+        if (this.associatedItemBadge != null) {
+            json.add("associated_item_badge", ItemStackTemplate.CODEC
+                    .encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), this.associatedItemBadge)
+                    .getOrThrow(JsonParseException::new));
         }
 
         if (this.leafletEntry != null) {
@@ -305,6 +327,33 @@ public class BookModel {
 
     public BookModel withCustomBookItem(Identifier customBookItem) {
         this.customBookItem = customBookItem;
+        return this;
+    }
+
+    /**
+     * Sets the badge item shown on associated-item tooltips for this book.
+     * If never set, the book's own item stack is used instead.
+     */
+    public BookModel withAssociatedItemBadge(ItemStackTemplate badge) {
+        this.associatedItemBadge = badge;
+        return this;
+    }
+
+    /**
+     * Sets the badge item shown on associated-item tooltips for this book.
+     * If never set, the book's own item stack is used instead.
+     */
+    public BookModel withAssociatedItemBadge(Item badge) {
+        this.associatedItemBadge = new ItemStackTemplate(badge);
+        return this;
+    }
+
+    /**
+     * Sets the badge item shown on associated-item tooltips for this book.
+     * If never set, the book's own item stack is used instead.
+     */
+    public BookModel withAssociatedItemBadge(ItemLike badge) {
+        this.associatedItemBadge = new ItemStackTemplate(badge.asItem());
         return this;
     }
 

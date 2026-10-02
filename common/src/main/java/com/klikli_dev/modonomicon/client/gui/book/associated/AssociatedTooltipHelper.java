@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.associated;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookIcon;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.associated.AssociatedItemLookup;
@@ -22,6 +23,8 @@ import com.klikli_dev.modonomicon.book.page.BookTextPage;
 import com.klikli_dev.modonomicon.client.ModonomiconKeys;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
+import com.klikli_dev.modonomicon.registry.DataComponentRegistry;
+import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -135,6 +138,25 @@ public class AssociatedTooltipHelper {
             }
         }
         return entry.getIcon();
+    }
+
+    /**
+     * Resolves the badge item rendered in the corner of associated-item tooltips:
+     * the book's configured badge, defaulting to the book's own item stack
+     * (base modonomicon item + book id component, like the creative tab builds it,
+     * so it renders with the book's model).
+     */
+    public static ItemStack resolveBadge(Book book) {
+        if (book != null) {
+            var configured = book.getAssociatedItemBadge();
+            if (configured != null) {
+                return configured.create();
+            }
+            var stack = new ItemStack(ItemRegistry.MODONOMICON.get());
+            stack.set(DataComponentRegistry.BOOK_ID.get(), book.getId());
+            return stack;
+        }
+        return new ItemStack(ItemRegistry.MODONOMICON_PURPLE.get());
     }
 
     /**
