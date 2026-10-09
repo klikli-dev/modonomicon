@@ -1,0 +1,30 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gray",
+    "width": 26
+  },
+  "category": "modonomicon:markers",
+  "condition": {
+    "type": "modonomicon:true"
+  },
+  "description": "book.modonomicon.demo.markers.marker_explicit.description",
+  "icon": {
+    "id": "minecraft:lever"
+  },
+  "id": "modonomicon:markers/marker_explicit",
+  "marker_condition": {
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:demo/marker_explicit"
+  },
+  "name": "book.modonomicon.demo.markers.marker_explicit.name",
+  "parents": [
+    {
+      "entry": "modonomicon:markers/marker_intro"
+    }
+  ],
+  "sort_number": 1,
+  "x": 3,
+  "y": 0
+}

@@ -25,6 +25,9 @@
     "width": 32
   },
   "id": "modonomicon:features/custom_icon",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.features.custom_icon.name",
   "parents": [
     {

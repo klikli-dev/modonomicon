@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.api.datagen;
 
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStackTemplate;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -22,6 +23,8 @@ public final class GeneratedBookResearchStore {
     private final String bookNamespace;
     private final String bookPath;
     private final Map<Identifier, EntryViewedOnceRequest> entryViewedOnceRequests = new LinkedHashMap<>();
+    private final Map<String, ItemCraftedRequest> itemCraftedRequests = new LinkedHashMap<>();
+    private final Map<String, ItemAcquiredRequest> itemAcquiredRequests = new LinkedHashMap<>();
 
     public GeneratedBookResearchStore(String bookNamespace, String bookPath) {
         this.bookNamespace = bookNamespace;
@@ -43,8 +46,32 @@ public final class GeneratedBookResearchStore {
         return this.entryViewedOnceRequests.values();
     }
 
+    /**
+     * Registers an item-crafted generation request.
+     * Requests for equal templates are deduplicated.
+     */
+    public void addItemCrafted(ItemStackTemplate target) {
+        this.itemCraftedRequests.putIfAbsent(itemKey(target), new ItemCraftedRequest(target));
+    }
+
+    /**
+     * Registers an item-acquired generation request.
+     * Requests for equal templates are deduplicated.
+     */
+    public void addItemAcquired(ItemStackTemplate target) {
+        this.itemAcquiredRequests.putIfAbsent(itemKey(target), new ItemAcquiredRequest(target));
+    }
+
+    public Collection<ItemCraftedRequest> getItemCraftedRequests() {
+        return this.itemCraftedRequests.values();
+    }
+
+    public Collection<ItemAcquiredRequest> getItemAcquiredRequests() {
+        return this.itemAcquiredRequests.values();
+    }
+
     public boolean isEmpty() {
-        return this.entryViewedOnceRequests.isEmpty();
+        return this.entryViewedOnceRequests.isEmpty() && this.itemCraftedRequests.isEmpty() && this.itemAcquiredRequests.isEmpty();
     }
 
     /**
@@ -68,5 +95,70 @@ public final class GeneratedBookResearchStore {
         return Identifier.fromNamespaceAndPath(this.bookNamespace, this.nodePath(requiredEntryId));
     }
 
+    /**
+     * Returns the deterministic generated fact path for an item-crafted request.
+     */
+    public String craftedFactPath(ItemStackTemplate target) {
+        return "generated/" + this.bookPath + "/facts/item_crafted/" + itemKey(target);
+    }
+
+    /**
+     * Returns the deterministic generated node path for an item-crafted request.
+     */
+    public String craftedNodePath(ItemStackTemplate target) {
+        return "generated/" + this.bookPath + "/nodes/item_crafted/" + itemKey(target);
+    }
+
+    /**
+     * Returns the deterministic generated node id for an item-crafted request.
+     */
+    public Identifier craftedNodeId(ItemStackTemplate target) {
+        return Identifier.fromNamespaceAndPath(this.bookNamespace, this.craftedNodePath(target));
+    }
+
+    /**
+     * Returns the deterministic generated fact path for an item-acquired request.
+     */
+    public String acquiredFactPath(ItemStackTemplate target) {
+        return "generated/" + this.bookPath + "/facts/item_acquired/" + itemKey(target);
+    }
+
+    /**
+     * Returns the deterministic generated node path for an item-acquired request.
+     */
+    public String acquiredNodePath(ItemStackTemplate target) {
+        return "generated/" + this.bookPath + "/nodes/item_acquired/" + itemKey(target);
+    }
+
+    /**
+     * Returns the deterministic generated node id for an item-acquired request.
+     */
+    public Identifier acquiredNodeId(ItemStackTemplate target) {
+        return Identifier.fromNamespaceAndPath(this.bookNamespace, this.acquiredNodePath(target));
+    }
+
+    /**
+     * Stable dedup key and path fragment for an item template.
+     * <p>
+     * The item's namespace and path boundaries are preserved as real path segments
+     * ({@code example:gear/iron} → {@code example/gear/iron}), so distinct item IDs
+     * can never share a key. Templates with components get a hash suffix.
+     */
+    public static String itemKey(ItemStackTemplate target) {
+        var itemId = target.item().unwrapKey()
+                .map(key -> key.identifier())
+                .orElseThrow(() -> new IllegalArgumentException("ItemStackTemplate has no registry key, cannot generate research for it: " + target));
+        var base = itemId.getNamespace() + "/" + itemId.getPath();
+        var patch = target.components();
+        if (patch == null || patch.isEmpty()) {
+            return base;
+        }
+        return base + "_" + Integer.toHexString(patch.toString().hashCode());
+    }
+
     public record EntryViewedOnceRequest(Identifier requiredEntryId) {}
+
+    public record ItemCraftedRequest(ItemStackTemplate target) {}
+
+    public record ItemAcquiredRequest(ItemStackTemplate target) {}
 }

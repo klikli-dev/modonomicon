@@ -15,6 +15,9 @@
     "id": "minecraft:stick"
   },
   "id": "modonomicon:crafting/crafting_stick",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.crafting.crafting_stick.name",
   "parents": [
     {

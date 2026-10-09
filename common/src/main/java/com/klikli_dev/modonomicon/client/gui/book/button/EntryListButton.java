@@ -15,6 +15,7 @@ import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
+import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -109,6 +110,13 @@ public class EntryListButton extends Button {
             guiGraphics.text(Minecraft.getInstance().font, name, x, y, this.getEntryColor(), false);
 
             guiGraphics.pose().popMatrix();
+
+            //render marker indicator top-left of the button, same (-4, -2) relative rule as the node screen.
+            //accessible entries are visible, so !locked implies the UNLOCKED display state here.
+            var player = Minecraft.getInstance().player;
+            if (!locked && player != null && this.entry.shouldShowMarker(player, EntryDisplayState.UNLOCKED)) {
+                BookContentRenderer.drawMarkerIndicator(guiGraphics, this.entry, this.getX() - 4, this.getY() - 2);
+            }
         }
     }
 

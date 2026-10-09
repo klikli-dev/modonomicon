@@ -16,6 +16,9 @@
     "id": "minecraft:nether_star"
   },
   "id": "modonomicon:stages/stage_complete",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.stages.stage_complete.name",
   "parents": [
     {

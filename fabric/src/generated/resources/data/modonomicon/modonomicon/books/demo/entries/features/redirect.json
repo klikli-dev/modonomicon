@@ -15,6 +15,9 @@
     "id": "minecraft:ender_pearl"
   },
   "id": "modonomicon:features/redirect",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.features.redirect.name",
   "name_style": {
     "name_background_color": "#ffffff55",

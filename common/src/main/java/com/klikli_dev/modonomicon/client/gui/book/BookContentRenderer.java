@@ -5,6 +5,7 @@
 package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.book.Book;
+import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiButtonSprites;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.client.ClientTicks;
@@ -42,6 +43,29 @@ public class BookContentRenderer {
         guiGraphics.pose().pushMatrix();
         drawButton(guiGraphics, book.theme().content().unreadIndicator(), x, y, hovered);
         guiGraphics.pose().popMatrix();
+    }
+
+    /**
+     * Draws the theme default marker indicator (attention dot for entries with an unfulfilled marker condition).
+     */
+    public static void drawMarkerIndicator(GuiGraphicsExtractor guiGraphics, Book book, int x, int y) {
+        var sprite = book.theme().content().markerIndicator();
+        if (sprite.isEmpty()) {
+            return;
+        }
+        drawSprite(guiGraphics, sprite, x, y);
+    }
+
+    /**
+     * Draws the resolved per-entry marker sprite (per-entry override or theme default).
+     * Does nothing if the entry has no marker condition.
+     */
+    public static void drawMarkerIndicator(GuiGraphicsExtractor guiGraphics, BookEntry entry, int x, int y) {
+        var sprite = entry.getEffectiveMarker();
+        if (sprite.isEmpty()) {
+            return;
+        }
+        drawSprite(guiGraphics, sprite, x, y);
     }
 
     public static void drawSprite(GuiGraphicsExtractor guiGraphics, GuiSprite sprite, int x, int y) {

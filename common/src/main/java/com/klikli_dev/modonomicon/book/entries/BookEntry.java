@@ -15,6 +15,7 @@ import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
+import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
@@ -171,6 +172,59 @@ public abstract class BookEntry {
         return this.data.condition;
     }
 
+    public GuiSprite getMarker() {
+        return this.data.marker;
+    }
+
+    public BookCondition getMarkerCondition() {
+        return this.data.markerCondition;
+    }
+
+    /**
+     * Resolves the marker sprite to render: none if no marker condition is set,
+     * otherwise the per-entry sprite if non-empty, else the theme default.
+     */
+    public GuiSprite getEffectiveMarker() {
+        if (this.data.markerCondition instanceof BookNoneCondition) {
+            return GuiSprite.EMPTY;
+        }
+        if (!this.data.marker.isEmpty()) {
+            return this.data.marker;
+        }
+        if (this.book == null) {
+            return GuiSprite.EMPTY;
+        }
+        return this.book.theme().content().markerIndicator();
+    }
+
+    /**
+     * Returns true if this entry should show its attention marker for the given player.
+     * The marker shows on unlocked entries until the marker condition is fulfilled.
+     */
+    public boolean shouldShowMarker(Player player) {
+        if (this.data.markerCondition instanceof BookNoneCondition) {
+            return false;
+        }
+        if (this.book == null) {
+            return false;
+        }
+        return this.shouldShowMarker(player, this.getEntryDisplayState(player));
+    }
+
+    /**
+     * Returns true if this entry should show its attention marker for the given player.
+     * Takes the already-known display state to avoid recalculating visibility.
+     */
+    public boolean shouldShowMarker(Player player, EntryDisplayState displayState) {
+        if (this.data.markerCondition instanceof BookNoneCondition) {
+            return false;
+        }
+        if (this.book == null || displayState != EntryDisplayState.UNLOCKED) {
+            return false;
+        }
+        return !this.data.markerCondition.test(BookConditionEntryContext.of(this.book, this), player);
+    }
+
     public String getName() {
         return this.data.name;
     }
@@ -267,7 +321,8 @@ public abstract class BookEntry {
      */
     public record BookEntryData(Identifier categoryId, List<BookEntryParent> parents, int x, int y, String name,
                                  String description, BookIcon icon, GuiSprite entryBackground,
-                                 BookCondition condition, boolean hideWhileLocked, boolean showWhenAnyParentUnlocked,
+                                 BookCondition condition, GuiSprite marker, BookCondition markerCondition,
+                                 boolean hideWhileLocked, boolean showWhenAnyParentUnlocked,
                                  int sortNumber, BookEntryNameStyle nameStyle, List<Either<ItemStackTemplate, Ingredient>> associatedItems) {
 
         public static final MapCodec<BookEntryData> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -280,6 +335,8 @@ public abstract class BookEntry {
                 BookIcon.CODEC.fieldOf("icon").forGetter(BookEntryData::icon),
                 GuiSprite.CODEC.optionalFieldOf("background", GuiSprite.EMPTY).forGetter(BookEntryData::entryBackground),
                 BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookEntryData::condition),
+                GuiSprite.CODEC.optionalFieldOf("marker", GuiSprite.EMPTY).forGetter(BookEntryData::marker),
+                BookCondition.CODEC.optionalFieldOf("marker_condition", new BookNoneCondition()).forGetter(BookEntryData::markerCondition),
                 Codec.BOOL.optionalFieldOf("hide_while_locked", false).forGetter(BookEntryData::hideWhileLocked),
                 Codec.BOOL.optionalFieldOf("show_when_any_parent_unlocked", false).forGetter(BookEntryData::showWhenAnyParentUnlocked),
                 Codec.INT.optionalFieldOf("sort_number", -1).forGetter(BookEntryData::sortNumber),
@@ -298,6 +355,8 @@ public abstract class BookEntry {
                         ByteBufCodecs.STRING_UTF8.decode(buf),
                         ByteBufCodecs.STRING_UTF8.decode(buf),
                         BookIcon.STREAM_CODEC.decode(buf),
+                        GuiSprite.STREAM_CODEC.decode(buf),
+                        BookCondition.STREAM_CODEC.decode(buf),
                         GuiSprite.STREAM_CODEC.decode(buf),
                         BookCondition.STREAM_CODEC.decode(buf),
                         ByteBufCodecs.BOOL.decode(buf),
@@ -319,6 +378,8 @@ public abstract class BookEntry {
                 BookIcon.STREAM_CODEC.encode(buf, value.icon);
                 GuiSprite.STREAM_CODEC.encode(buf, value.entryBackground);
                 BookCondition.STREAM_CODEC.encode(buf, value.condition);
+                GuiSprite.STREAM_CODEC.encode(buf, value.marker);
+                BookCondition.STREAM_CODEC.encode(buf, value.markerCondition);
                 ByteBufCodecs.BOOL.encode(buf, value.hideWhileLocked);
                 ByteBufCodecs.BOOL.encode(buf, value.showWhenAnyParentUnlocked);
                 ByteBufCodecs.INT.encode(buf, value.sortNumber);

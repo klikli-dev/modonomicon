@@ -14,6 +14,9 @@
     "id": "minecraft:netherite_ingot"
   },
   "id": "modonomicon:index_mode/demo30",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.index_mode.demo30.name",
   "sort_number": 29,
   "x": 0,

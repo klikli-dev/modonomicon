@@ -14,6 +14,9 @@
     "id": "minecraft:paper"
   },
   "id": "modonomicon:leaflet/leaflet",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo_leaflet.leaflet.leaflet.name",
   "sort_number": 0,
   "x": 0,

@@ -106,5 +106,11 @@
         "stage_id": "modonomicon:demo/stages_demo_stage_2"
       }
     ]
+  },
+  {
+    "id": "modonomicon:demo/marker_explicit",
+    "required_facts": [
+      "modonomicon:demo/marker_intro_viewed"
+    ]
   }
 ]

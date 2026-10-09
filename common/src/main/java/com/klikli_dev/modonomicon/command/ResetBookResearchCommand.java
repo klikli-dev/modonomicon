@@ -100,6 +100,7 @@ public class ResetBookResearchCommand implements com.mojang.brigadier.Command<Co
         var nodeIds = new HashSet<Identifier>();
         for (var entry : book.getEntries().values()) {
             collectNodeIdsFromCondition(entry.getCondition(), nodeIds);
+            collectNodeIdsFromCondition(entry.getMarkerCondition(), nodeIds);
             if (entry instanceof BookContentEntry contentEntry) {
                 for (var page : contentEntry.getPages()) {
                     collectNodeIdsFromCondition(page.getCondition(), nodeIds);

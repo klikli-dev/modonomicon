@@ -23,6 +23,9 @@
     "id": "minecraft:paper"
   },
   "id": "modonomicon:features/page_splitting",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.features.page_splitting.name",
   "parents": [
     {

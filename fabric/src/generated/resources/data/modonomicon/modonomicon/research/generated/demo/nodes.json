@@ -6,6 +6,24 @@
     ]
   },
   {
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/required/markers_marker_intro",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/markers_marker_intro"
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/item_crafted/minecraft/stick",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/item_crafted/minecraft/stick"
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/item_acquired/minecraft/cobblestone",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/item_acquired/minecraft/cobblestone"
+    ]
+  },
+  {
     "id": "modonomicon:generated/demo/nodes/entry_viewed_once/features_two_parents",
     "required_facts": [
       "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_root",

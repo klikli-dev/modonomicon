@@ -15,8 +15,10 @@ import com.klikli_dev.modonomicon.api.datagen.research.ResearchValueRef;
 import com.klikli_dev.modonomicon.api.datagen.research.SingleResearchSubProvider;
 import com.klikli_dev.modonomicon.book.BookIcon;
 import com.klikli_dev.modonomicon.datagen.book.demo.FeaturesCategory;
+import com.klikli_dev.modonomicon.datagen.book.demo.MarkersCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.ValuesCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionRootEntry;
+import com.klikli_dev.modonomicon.datagen.book.demo.markers.MarkerIntroEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.values.CollectorAEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.values.CollectorBEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.values.CollectorCEntry;
@@ -42,6 +44,7 @@ public class DemoResearch extends SingleResearchSubProvider {
     public static final ResearchNodeRef ACQUIRE_COBBLESTONE = node("demo/acquire_cobblestone");
     public static final ResearchNodeRef STAGES_DEMO = node("demo/stages_demo");
     public static final ResearchNodeRef STAGES_DEPENDENT = node("demo/stages_dependent");
+    public static final ResearchNodeRef MARKER_EXPLICIT = node("demo/marker_explicit");
 
     /**
      * Creates the demo research subprovider under the {@code modonomicon:demo} bundle id.
@@ -153,6 +156,12 @@ public class DemoResearch extends SingleResearchSubProvider {
                 .withStageDependency(STAGES_DEMO, stagesDemoStage2)
                 .build();
 
+        // Explicit marker demo: clears once the markers intro entry has been viewed (manual pattern)
+        var markerIntroViewed = this.ingress()
+                .onEntryViewedOnce(this.modLoc(MarkersCategory.ID + "/" + MarkerIntroEntry.ID))
+                .declareFact("demo/marker_intro_viewed");
+        this.node(MARKER_EXPLICIT, markerIntroViewed);
+
         // Research node and stage display names for condition tooltips
         this.researchNodeName(CONDITION_LEVEL_1, "Condition Level 1");
         this.researchNodeName(ADVANCEMENT_MINE_STONE, "Mine Stone Advancement");
@@ -162,6 +171,7 @@ public class DemoResearch extends SingleResearchSubProvider {
         this.researchNodeName(ACQUIRE_COBBLESTONE, "Cobblestone Acquisition");
         this.researchNodeName(STAGES_DEMO, "Plank Crafting Progress");
         this.researchNodeName(STAGES_DEPENDENT, "Stages Dependent");
+        this.researchNodeName(MARKER_EXPLICIT, "Explicit Marker");
         this.researchStageName(stagesDemoStage1, "First Planks");
         this.researchStageName(stagesDemoStage2, "More Planks");
         this.researchStageName(stagesDemoStage3, "All Planks");

@@ -1,0 +1,30 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gray",
+    "width": 26
+  },
+  "category": "modonomicon:markers",
+  "condition": {
+    "type": "modonomicon:true"
+  },
+  "description": "book.modonomicon.demo.markers.marker_viewed.description",
+  "icon": {
+    "id": "minecraft:ender_eye"
+  },
+  "id": "modonomicon:markers/marker_viewed",
+  "marker_condition": {
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/required/markers_marker_intro"
+  },
+  "name": "book.modonomicon.demo.markers.marker_viewed.name",
+  "parents": [
+    {
+      "entry": "modonomicon:markers/marker_intro"
+    }
+  ],
+  "sort_number": 2,
+  "x": 0,
+  "y": 3
+}

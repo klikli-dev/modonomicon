@@ -1,0 +1,24 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/star_gold",
+    "width": 26
+  },
+  "category": "modonomicon:markers",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "description": "book.modonomicon.demo.markers.marker_intro.description",
+  "icon": {
+    "id": "minecraft:torch"
+  },
+  "id": "modonomicon:markers/marker_intro",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
+  "name": "book.modonomicon.demo.markers.marker_intro.name",
+  "sort_number": 0,
+  "x": 0,
+  "y": 0
+}

@@ -9,24 +9,28 @@ package com.klikli_dev.modonomicon.client.gui.book.theme;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 
-public record BookThemeContentData(GuiSprite defaultCategoryButtonSprite) {
+public record BookThemeContentData(GuiSprite defaultCategoryButtonSprite, GuiSprite markerIndicator) {
 
-    public static final BookThemeContentData DEFAULT = new BookThemeContentData(GuiSprite.EMPTY);
+    public static final BookThemeContentData DEFAULT = new BookThemeContentData(GuiSprite.EMPTY, GuiSprite.EMPTY);
 
     public static BookThemeContentData fromJson(JsonObject json) {
         return new BookThemeContentData(
                 json.has("default_category_button_sprite")
                         ? GuiSprite.fromJson(json.get("default_category_button_sprite"))
+                        : GuiSprite.EMPTY,
+                json.has("marker_indicator")
+                        ? GuiSprite.fromJson(json.get("marker_indicator"))
                         : GuiSprite.EMPTY
         );
     }
 
     public static BookThemeContentData fromNetwork(RegistryFriendlyByteBuf buffer) {
-        return new BookThemeContentData(readOptionalSprite(buffer));
+        return new BookThemeContentData(readOptionalSprite(buffer), readOptionalSprite(buffer));
     }
 
     public void toNetwork(RegistryFriendlyByteBuf buffer) {
         writeOptionalSprite(buffer, this.defaultCategoryButtonSprite);
+        writeOptionalSprite(buffer, this.markerIndicator);
     }
 
     private static GuiSprite readOptionalSprite(RegistryFriendlyByteBuf buffer) {
