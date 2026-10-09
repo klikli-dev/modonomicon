@@ -116,7 +116,7 @@ advancement-backed markers use the manual hook + fact + node pattern (see [Resea
 Generated research lands in the book's `generated/<book_id>` bundle alongside the hierarchy research:
 
 - entry viewed: facts in `generated/<book_id>/facts/entry_viewed_once/<entry_path>`, nodes in `generated/<book_id>/nodes/entry_viewed_once/...`
-- item crafted: facts in `generated/<book_id>/facts/item_crafted/<namespace>_<item_path>[_<components_hash>]`, nodes in `generated/<book_id>/nodes/item_crafted/...`
+- item crafted: facts in `generated/<book_id>/facts/item_crafted/<item_namespace>/<item_path>[_<components_hash>]`, nodes in `generated/<book_id>/nodes/item_crafted/...`
 - item acquired: same scheme under `.../facts/item_acquired/...` and `.../nodes/item_acquired/...`
 
 Node ids are deterministic from the target, so repeated requests for the same target are deduplicated into a single fact + node.
