@@ -109,6 +109,12 @@ public class EntryListButton extends Button {
             guiGraphics.text(Minecraft.getInstance().font, name, x, y, this.getEntryColor(), false);
 
             guiGraphics.pose().popMatrix();
+
+            //render marker indicator top-left of the button, same (-4, -2) relative rule as the node screen
+            var player = Minecraft.getInstance().player;
+            if (player != null && this.entry.shouldShowMarker(player)) {
+                BookContentRenderer.drawMarkerIndicator(guiGraphics, this.entry, this.getX() - 4, this.getY() - 2);
+            }
         }
     }
 
