@@ -14,6 +14,9 @@
     "id": "minecraft:spider_eye"
   },
   "id": "modonomicon:features/entity",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.features.entity.name",
   "name_style": {
     "name_background_color": "#ffff5555",

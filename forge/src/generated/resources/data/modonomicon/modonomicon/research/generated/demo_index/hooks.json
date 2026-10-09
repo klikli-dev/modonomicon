@@ -1,0 +1,10 @@
+[
+  {
+    "fact_id": "modonomicon:generated/demo_index/facts/item_crafted/minecraft_diamond_sword",
+    "id": "modonomicon:generated/demo_index/facts/item_crafted/minecraft_diamond_sword_hook",
+    "trigger_target": {
+      "id": "minecraft:diamond_sword"
+    },
+    "trigger_type": "modonomicon:item_crafted"
+  }
+]

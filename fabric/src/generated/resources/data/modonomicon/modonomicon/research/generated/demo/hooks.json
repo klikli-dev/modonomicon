@@ -6,6 +6,28 @@
     "trigger_type": "modonomicon:entry_viewed_once"
   },
   {
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/markers_marker_intro",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/markers_marker_intro_hook",
+    "trigger_target": "modonomicon:markers/marker_intro",
+    "trigger_type": "modonomicon:entry_viewed_once"
+  },
+  {
+    "fact_id": "modonomicon:generated/demo/facts/item_crafted/minecraft_stick",
+    "id": "modonomicon:generated/demo/facts/item_crafted/minecraft_stick_hook",
+    "trigger_target": {
+      "id": "minecraft:stick"
+    },
+    "trigger_type": "modonomicon:item_crafted"
+  },
+  {
+    "fact_id": "modonomicon:generated/demo/facts/item_acquired/minecraft_cobblestone",
+    "id": "modonomicon:generated/demo/facts/item_acquired/minecraft_cobblestone_hook",
+    "trigger_target": {
+      "id": "minecraft:cobblestone"
+    },
+    "trigger_type": "modonomicon:item_acquired"
+  },
+  {
     "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_root",
     "id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_root_hook",
     "trigger_target": "modonomicon:features/condition_root",

@@ -14,6 +14,9 @@
     "id": "minecraft:iron_pickaxe"
   },
   "id": "modonomicon:index_mode/demo10",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.index_mode.demo10.name",
   "sort_number": 9,
   "x": 0,

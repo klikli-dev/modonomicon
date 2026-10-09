@@ -23,6 +23,9 @@
     "id": "minecraft:torch"
   },
   "id": "modonomicon:features/condition_level_2",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.features.condition_level_2.name",
   "parents": [
     {

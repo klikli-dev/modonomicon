@@ -23,6 +23,9 @@
     "id": "minecraft:obsidian"
   },
   "id": "modonomicon:features/empty",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.features.empty.name",
   "parents": [
     {

@@ -14,6 +14,9 @@
     "id": "minecraft:campfire"
   },
   "id": "modonomicon:index_mode/demo25",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.index_mode.demo25.name",
   "sort_number": 24,
   "x": 0,

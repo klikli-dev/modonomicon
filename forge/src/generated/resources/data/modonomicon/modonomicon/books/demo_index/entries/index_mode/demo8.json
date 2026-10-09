@@ -14,6 +14,9 @@
     "id": "minecraft:furnace"
   },
   "id": "modonomicon:index_mode/demo8",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo_index.index_mode.demo8.name",
   "sort_number": 7,
   "x": 0,

@@ -14,6 +14,9 @@
     "id": "minecraft:cake"
   },
   "id": "modonomicon:index_mode/demo16",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.index_mode.demo16.name",
   "sort_number": 15,
   "x": 0,

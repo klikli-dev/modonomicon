@@ -14,6 +14,9 @@
     "id": "minecraft:crafting_table"
   },
   "id": "modonomicon:crafting/crafting_intro",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.crafting.crafting_intro.name",
   "sort_number": 0,
   "x": 0,

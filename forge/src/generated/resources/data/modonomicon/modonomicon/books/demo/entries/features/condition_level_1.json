@@ -23,6 +23,9 @@
     "id": "minecraft:lever"
   },
   "id": "modonomicon:features/condition_level_1",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.features.condition_level_1.name",
   "parents": [
     {

@@ -14,6 +14,9 @@
     "id": "minecraft:totem_of_undying"
   },
   "id": "modonomicon:index_mode/demo37",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.index_mode.demo37.name",
   "sort_number": 36,
   "x": 0,
