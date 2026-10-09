@@ -16,14 +16,20 @@ public class BookThemeContentModel {
     @Nullable
     protected GuiSprite defaultCategoryButtonSprite = null;
 
+    @Nullable
+    protected GuiSprite markerIndicator = null;
+
     public boolean isEmpty() {
-        return this.defaultCategoryButtonSprite == null;
+        return this.defaultCategoryButtonSprite == null && this.markerIndicator == null;
     }
 
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
         if (this.defaultCategoryButtonSprite != null) {
             json.add("default_category_button_sprite", this.defaultCategoryButtonSprite.toJson());
+        }
+        if (this.markerIndicator != null) {
+            json.add("marker_indicator", this.markerIndicator.toJson());
         }
         return json;
     }
@@ -41,5 +47,20 @@ public class BookThemeContentModel {
      */
     public BookThemeContentModel withDefaultCategoryButtonSprite(Identifier sprite, int width, int height) {
         return this.withDefaultCategoryButtonSprite(new GuiSprite(sprite, width, height));
+    }
+
+    /**
+     * Sets the default marker indicator sprite for entries with a marker condition.
+     */
+    public BookThemeContentModel withMarkerIndicator(@Nullable GuiSprite sprite) {
+        this.markerIndicator = sprite;
+        return this;
+    }
+
+    /**
+     * Sets the default marker indicator sprite for entries with a marker condition.
+     */
+    public BookThemeContentModel withMarkerIndicator(Identifier sprite, int width, int height) {
+        return this.withMarkerIndicator(new GuiSprite(sprite, width, height));
     }
 }

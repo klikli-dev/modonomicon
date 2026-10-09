@@ -1,9 +1,12 @@
 // 26.3	2026-09-28T11:56:28.0460049	Research Data: modonomicon
-37dce20463fda2f88e221068ce942c4179cb2005 data/modonomicon/modonomicon/research/demo/facts.json
-b5fbcc8695a75c7db2555c4ca76271521bb49d00 data/modonomicon/modonomicon/research/demo/hooks.json
-1ae895ce8defd5573fe2f6bd049ab44465833474 data/modonomicon/modonomicon/research/demo/nodes.json
-c0e0eadc9834fe96e04a05826628e6491d0c8588 data/modonomicon/modonomicon/research/demo/values.json
-1a69859f58a35a211ba894fbf94bffb56cece53c data/modonomicon/modonomicon/research/generated/demo/facts.json
-723b2940f5f21156efac5f354922a419151f7882 data/modonomicon/modonomicon/research/generated/demo/hooks.json
-b07038742ebb444a4b992439a2c124073f24ee7e data/modonomicon/modonomicon/research/generated/demo/nodes.json
+c959e226eb0f8165ae475bd934856203120dfb53 data/modonomicon/modonomicon/research/demo/facts.json
+05169f7540fe2d422ba12ac6a789265194115906 data/modonomicon/modonomicon/research/demo/hooks.json
+f67467115b31600ae847c441dc87f07c07af7bfe data/modonomicon/modonomicon/research/demo/nodes.jsonc0e0eadc9834fe96e04a05826628e6491d0c8588 data/modonomicon/modonomicon/research/demo/values.json
+1a6aa12f1fd552f75b2dfec3b44ea54a82104707 data/modonomicon/modonomicon/research/generated/demo/facts.json
+74a905de2641857575f65aafc3779a031807c401 data/modonomicon/modonomicon/research/generated/demo/hooks.json
+fa88df61648003861e2012923b64ee1e56a8959e data/modonomicon/modonomicon/research/generated/demo/nodes.json
 97d170e1550eee4afc0af065b78cda302a97674c data/modonomicon/modonomicon/research/generated/demo/values.json
+ef85e69148561df159839ff9ef54b79df6f34d5d data/modonomicon/modonomicon/research/generated/demo_index/facts.json
+a84e4e663690e7242d88a0bc24fcdaa2e6a24354 data/modonomicon/modonomicon/research/generated/demo_index/hooks.json
+544d680aa1eb32730b27749e211a0ed6283de54e data/modonomicon/modonomicon/research/generated/demo_index/nodes.json
+97d170e1550eee4afc0af065b78cda302a97674c data/modonomicon/modonomicon/research/generated/demo_index/values.json

@@ -19,6 +19,7 @@ import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntryNameStyle;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.book.page.BookTextPage;
 import com.klikli_dev.modonomicon.datagen.book.DemoBook;
 import com.klikli_dev.modonomicon.datagen.book.demo.FeaturesCategory;
@@ -91,6 +92,8 @@ public final class DemoRuntimeBookContent {
                         "A demo entry registered through the runtime API.",
                         new BookIcon(new ItemStackTemplate(Items.WRITABLE_BOOK)),
                         EntryBackground.DEFAULT,
+                        new BookNoneCondition(),
+                        GuiSprite.EMPTY,
                         new BookNoneCondition(),
                         false,
                         false,

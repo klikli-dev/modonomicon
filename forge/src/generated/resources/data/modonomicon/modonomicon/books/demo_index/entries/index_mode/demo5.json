@@ -14,6 +14,9 @@
     "id": "minecraft:book"
   },
   "id": "modonomicon:index_mode/demo5",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo_index.index_mode.demo5.name",
   "sort_number": 4,
   "x": 0,

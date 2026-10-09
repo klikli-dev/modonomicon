@@ -16,6 +16,7 @@ import com.klikli_dev.modonomicon.datagen.book.demo.ConditionalCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.FeaturesCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.FormattingCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.IndexModeCategory;
+import com.klikli_dev.modonomicon.datagen.book.demo.MarkersCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.StagesCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.ValuesCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionRootEntry;
@@ -77,6 +78,7 @@ public class DemoBook extends SingleBookSubProvider {
         var craftingCategory = this.add(new CraftingCategory(this).generate());
         var acquiringCategory = this.add(new AcquiringCategory(this).generate());
         var stagesCategory = this.add(new StagesCategory(this).generate());
+        var markersCategory = this.add(new MarkersCategory(this).generate());
     }
 
     @Override

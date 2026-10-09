@@ -13,6 +13,9 @@ import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeRef;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageRef;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.level.ItemLike;
 
 public class ConditionHelper {
     private final BookContextHelper context;
@@ -117,6 +120,79 @@ public class ConditionHelper {
         return BookResearchNodeUnlockedConditionModel.create()
                 .withNode(this.store.nodeId(requiredEntry.getId()))
                 .withTooltip(tooltip);
+    }
+
+    /**
+     * Creates a marker condition that shows an attention dot until the given entry has been viewed.
+     * The backing research node, fact, and hook are generated automatically during book compilation.
+     * Markers never show tooltips.
+     *
+     * @param requiredEntry the entry that must be viewed to clear the marker
+     */
+    public BookResearchNodeUnlockedConditionModel markerUntilEntryViewed(BookEntryModel requiredEntry) {
+        this.requireStore("markerUntilEntryViewed()");
+        this.store.addEntryViewedOnce(requiredEntry.getId());
+        return BookResearchNodeUnlockedConditionModel.create()
+                .withNode(this.store.nodeId(requiredEntry.getId()));
+    }
+
+    /**
+     * Creates a marker condition that shows an attention dot until the given item has been crafted.
+     * The backing research node, fact, and hook are generated automatically during book compilation.
+     * Markers never show tooltips.
+     */
+    public BookResearchNodeUnlockedConditionModel markerUntilCrafted(ItemStackTemplate target) {
+        this.requireStore("markerUntilCrafted()");
+        this.store.addItemCrafted(target);
+        return BookResearchNodeUnlockedConditionModel.create()
+                .withNode(this.store.craftedNodeId(target));
+    }
+
+    /**
+     * Creates a marker condition that shows an attention dot until the given item has been crafted.
+     */
+    public BookResearchNodeUnlockedConditionModel markerUntilCrafted(Item target) {
+        return this.markerUntilCrafted(new ItemStackTemplate(target));
+    }
+
+    /**
+     * Creates a marker condition that shows an attention dot until the given item has been crafted.
+     */
+    public BookResearchNodeUnlockedConditionModel markerUntilCrafted(ItemLike target) {
+        return this.markerUntilCrafted(new ItemStackTemplate(target.asItem()));
+    }
+
+    /**
+     * Creates a marker condition that shows an attention dot until the given item has been acquired.
+     * The backing research node, fact, and hook are generated automatically during book compilation.
+     * Markers never show tooltips.
+     */
+    public BookResearchNodeUnlockedConditionModel markerUntilAcquired(ItemStackTemplate target) {
+        this.requireStore("markerUntilAcquired()");
+        this.store.addItemAcquired(target);
+        return BookResearchNodeUnlockedConditionModel.create()
+                .withNode(this.store.acquiredNodeId(target));
+    }
+
+    /**
+     * Creates a marker condition that shows an attention dot until the given item has been acquired.
+     */
+    public BookResearchNodeUnlockedConditionModel markerUntilAcquired(Item target) {
+        return this.markerUntilAcquired(new ItemStackTemplate(target));
+    }
+
+    /**
+     * Creates a marker condition that shows an attention dot until the given item has been acquired.
+     */
+    public BookResearchNodeUnlockedConditionModel markerUntilAcquired(ItemLike target) {
+        return this.markerUntilAcquired(new ItemStackTemplate(target.asItem()));
+    }
+
+    private void requireStore(String method) {
+        if (this.store == null || this.context == null) {
+            throw new IllegalStateException(method + " requires a book-bound ConditionHelper. "
+                    + "Ensure the book subprovider creates a ConditionHelper with book context.");
+        }
     }
 
     /**

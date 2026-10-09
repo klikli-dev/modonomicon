@@ -58,5 +58,11 @@
     },
     "trigger_type": "modonomicon:item_crafted",
     "value_id": "modonomicon:demo/stages_planks_crafted"
+  },
+  {
+    "fact_id": "modonomicon:demo/marker_intro_viewed",
+    "id": "modonomicon:demo/marker_intro_viewed_hook",
+    "trigger_target": "modonomicon:markers/marker_intro",
+    "trigger_type": "modonomicon:entry_viewed_once"
   }
 ]

@@ -14,6 +14,9 @@
     "id": "minecraft:blaze_rod"
   },
   "id": "modonomicon:index_mode/demo31",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo_index.index_mode.demo31.name",
   "sort_number": 30,
   "x": 0,

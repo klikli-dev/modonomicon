@@ -14,6 +14,9 @@
     "id": "minecraft:map"
   },
   "id": "modonomicon:index_mode/demo23",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo_index.index_mode.demo23.name",
   "sort_number": 22,
   "x": 0,

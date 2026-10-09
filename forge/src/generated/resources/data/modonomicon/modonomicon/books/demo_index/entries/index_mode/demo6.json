@@ -14,6 +14,9 @@
     "id": "minecraft:compass"
   },
   "id": "modonomicon:index_mode/demo6",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo_index.index_mode.demo6.name",
   "sort_number": 5,
   "x": 0,

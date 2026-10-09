@@ -15,6 +15,9 @@
     "id": "minecraft:gold_ingot"
   },
   "id": "modonomicon:values/collector_complete",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.values.collector_complete.name",
   "sort_number": 3,
   "x": 1,

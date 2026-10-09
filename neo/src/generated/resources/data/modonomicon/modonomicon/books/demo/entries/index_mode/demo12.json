@@ -14,6 +14,9 @@
     "id": "minecraft:ender_pearl"
   },
   "id": "modonomicon:index_mode/demo12",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.index_mode.demo12.name",
   "sort_number": 11,
   "x": 0,

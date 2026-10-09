@@ -28,6 +28,9 @@
     "id": "minecraft:beacon"
   },
   "id": "modonomicon:features/spotlight",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.features.spotlight.name",
   "parents": [
     {

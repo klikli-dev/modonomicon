@@ -14,6 +14,9 @@
     "id": "minecraft:barrier"
   },
   "id": "modonomicon:features/condition_not",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.features.condition_not.name",
   "sort_number": 16,
   "x": 0,

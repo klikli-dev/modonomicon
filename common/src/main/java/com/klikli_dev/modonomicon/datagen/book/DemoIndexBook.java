@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.api.datagen.SingleBookSubProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
 import com.klikli_dev.modonomicon.book.BookDisplayMode;
 import com.klikli_dev.modonomicon.datagen.book.demo.ConditionalCategory;
+import com.klikli_dev.modonomicon.datagen.book.demo.IndexMarkersCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.IndexModeCategory;
 import net.minecraft.resources.Identifier;
 
@@ -41,6 +42,7 @@ public class DemoIndexBook extends SingleBookSubProvider {
     protected void generateCategories() {
         this.add(new IndexModeCategory(this).generate());
         this.add(new ConditionalCategory(this).generate());
+        this.add(new IndexMarkersCategory(this).generate());
     }
 
     @Override

@@ -1,0 +1,8 @@
+[
+  {
+    "id": "modonomicon:generated/demo_index/nodes/item_crafted/minecraft/diamond_sword",
+    "required_facts": [
+      "modonomicon:generated/demo_index/facts/item_crafted/minecraft/diamond_sword"
+    ]
+  }
+]

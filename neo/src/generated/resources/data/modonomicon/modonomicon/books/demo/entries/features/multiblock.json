@@ -14,6 +14,9 @@
     "id": "minecraft:furnace"
   },
   "id": "modonomicon:features/multiblock",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.features.multiblock.name",
   "sort_number": 0,
   "x": -8,

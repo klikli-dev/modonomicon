@@ -23,6 +23,9 @@
     "id": "minecraft:amethyst_cluster"
   },
   "id": "modonomicon:features/two_parents",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.features.two_parents.name",
   "parents": [
     {

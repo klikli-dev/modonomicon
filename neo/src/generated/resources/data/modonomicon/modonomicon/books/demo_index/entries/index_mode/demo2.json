@@ -14,6 +14,9 @@
     "id": "minecraft:barrel"
   },
   "id": "modonomicon:index_mode/demo2",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo_index.index_mode.demo2.name",
   "sort_number": 1,
   "x": 0,

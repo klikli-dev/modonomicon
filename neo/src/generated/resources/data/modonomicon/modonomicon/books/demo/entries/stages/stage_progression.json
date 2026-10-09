@@ -14,6 +14,9 @@
     "id": "minecraft:oak_planks"
   },
   "id": "modonomicon:stages/stage_progression",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.stages.stage_progression.name",
   "sort_number": 0,
   "x": 0,

@@ -14,6 +14,9 @@
     "id": "minecraft:nether_star"
   },
   "id": "modonomicon:formatting/always_locked",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.formatting.always_locked.name",
   "sort_number": 3,
   "x": 6,

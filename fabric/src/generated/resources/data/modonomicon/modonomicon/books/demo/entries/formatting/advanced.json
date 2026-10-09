@@ -23,6 +23,9 @@
     "id": "minecraft:feather"
   },
   "id": "modonomicon:formatting/advanced",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.formatting.advanced.name",
   "parents": [
     {

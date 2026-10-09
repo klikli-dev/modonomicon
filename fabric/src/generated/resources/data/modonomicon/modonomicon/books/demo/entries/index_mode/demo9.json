@@ -14,6 +14,9 @@
     "id": "minecraft:oak_log"
   },
   "id": "modonomicon:index_mode/demo9",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.index_mode.demo9.name",
   "sort_number": 8,
   "x": 0,

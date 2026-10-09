@@ -14,6 +14,9 @@
     "id": "minecraft:ghast_tear"
   },
   "id": "modonomicon:index_mode/demo32",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.index_mode.demo32.name",
   "sort_number": 31,
   "x": 0,

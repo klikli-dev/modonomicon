@@ -26,6 +26,9 @@
     "id": "minecraft:leather_helmet"
   },
   "id": "modonomicon:features/component_icon",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.features.component_icon.name",
   "name_style": {
     "name_background_color": "#ff55ff55",

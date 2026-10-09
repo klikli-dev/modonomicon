@@ -9,6 +9,8 @@ package com.klikli_dev.modonomicon.api.datagen;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookAndConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookResearchNodeUnlockedConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchBundle;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchDataBuilder;
@@ -39,16 +41,63 @@ public final class BookHierarchyResearchCompiler {
         var generatedEntries = new ArrayList<BookEntryModel>();
         var generatedNodes = new HashMap<Identifier, ResearchNodeRef>();
         var generatedFacts = new HashMap<Identifier, ResearchFactRef>();
+        var generatedItemFacts = new HashMap<String, ResearchFactRef>();
+        var generatedItemNodes = new HashMap<String, ResearchNodeRef>();
+
+        //Use a local store when no book-bound store was provided so model-based marker intents still resolve.
+        var effectiveStore = store != null
+                ? store
+                : new GeneratedBookResearchStore(book.getId().getNamespace(), book.getId().getPath());
+
+        // --- Resolve model-based marker intents (markerUntil*) into store requests ---
+        var pendingMarkerConditions = new HashMap<BookEntryModel, List<BookResearchNodeUnlockedConditionModel>>();
+        for (var category : book.getCategories()) {
+            for (var entry : category.getEntries()) {
+                if (!entry.hasPendingMarkerRequests()) continue;
+                var generated = new ArrayList<BookResearchNodeUnlockedConditionModel>();
+                for (var requiredId : entry.getMarkerUntilEntries()) {
+                    effectiveStore.addEntryViewedOnce(requiredId);
+                    generated.add(BookResearchNodeUnlockedConditionModel.create().withNode(effectiveStore.nodeId(requiredId)));
+                }
+                for (var target : entry.getMarkerUntilCraftedTargets()) {
+                    effectiveStore.addItemCrafted(target);
+                    generated.add(BookResearchNodeUnlockedConditionModel.create().withNode(effectiveStore.craftedNodeId(target)));
+                }
+                for (var target : entry.getMarkerUntilAcquiredTargets()) {
+                    effectiveStore.addItemAcquired(target);
+                    generated.add(BookResearchNodeUnlockedConditionModel.create().withNode(effectiveStore.acquiredNodeId(target)));
+                }
+                if (!generated.isEmpty()) {
+                    pendingMarkerConditions.put(entry, generated);
+                }
+            }
+        }
 
         // --- Process explicit entry-viewed-once requests from the store ---
-        if (store != null) {
-            for (var request : store.getEntryViewedOnceRequests()) {
-                var requiredId = request.requiredEntryId();
-                var fact = generatedFacts.computeIfAbsent(requiredId,
-                        id -> ingress.onEntryViewedOnce(id).declareFact(store.factPath(id)));
-                var node = generatedNodes.computeIfAbsent(requiredId,
-                        id -> research.node(store.nodePath(id), fact));
-            }
+        for (var request : effectiveStore.getEntryViewedOnceRequests()) {
+            var requiredId = request.requiredEntryId();
+            var fact = generatedFacts.computeIfAbsent(requiredId,
+                    id -> ingress.onEntryViewedOnce(id).declareFact(effectiveStore.factPath(id)));
+            var node = generatedNodes.computeIfAbsent(requiredId,
+                    id -> research.node(effectiveStore.nodePath(id), fact));
+        }
+
+        // --- Process item-crafted requests from the store ---
+        for (var request : effectiveStore.getItemCraftedRequests()) {
+            var target = request.target();
+            var fact = generatedItemFacts.computeIfAbsent(effectiveStore.craftedFactPath(target),
+                    path -> ingress.onItemCrafted(target).declareFact(path));
+            generatedItemNodes.computeIfAbsent(effectiveStore.craftedNodePath(target),
+                    path -> research.node(path, fact));
+        }
+
+        // --- Process item-acquired requests from the store ---
+        for (var request : effectiveStore.getItemAcquiredRequests()) {
+            var target = request.target();
+            var fact = generatedItemFacts.computeIfAbsent(effectiveStore.acquiredFactPath(target),
+                    path -> ingress.onItemAcquired(target).declareFact(path));
+            generatedItemNodes.computeIfAbsent(effectiveStore.acquiredNodePath(target),
+                    path -> research.node(path, fact));
         }
 
         // --- Process parent hierarchy (existing behavior) ---
@@ -74,7 +123,22 @@ public final class BookHierarchyResearchCompiler {
             }
         }
 
-        if (generatedEntries.isEmpty() && (store == null || store.isEmpty())) return Optional.empty();
+        // --- Apply resolved marker conditions (ANDed with explicit marker conditions when both are present) ---
+        for (var resolved : pendingMarkerConditions.entrySet()) {
+            var entry = resolved.getKey();
+            var all = new ArrayList<BookConditionModel<?>>();
+            if (entry.hasMarkerCondition()) {
+                all.add(entry.getMarkerCondition());
+            }
+            all.addAll(resolved.getValue());
+            if (all.size() == 1) {
+                entry.withMarkerCondition(all.get(0));
+            } else {
+                entry.withMarkerCondition(BookAndConditionModel.create().withChildren(all.toArray(BookConditionModel[]::new)));
+            }
+        }
+
+        if (generatedEntries.isEmpty() && effectiveStore.isEmpty()) return Optional.empty();
         return Optional.of(new CompiledBookResearch(
                 Identifier.fromNamespaceAndPath(book.getId().getNamespace(), bundleId(book)),
                 research

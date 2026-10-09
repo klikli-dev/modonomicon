@@ -14,6 +14,9 @@
     "id": "minecraft:paper"
   },
   "id": "modonomicon:formatting/basic",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.formatting.basic.name",
   "sort_number": 0,
   "x": -8,

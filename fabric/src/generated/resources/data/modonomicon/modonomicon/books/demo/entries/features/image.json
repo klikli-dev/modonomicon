@@ -23,6 +23,9 @@
     "id": "minecraft:item_frame"
   },
   "id": "modonomicon:features/image",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.features.image.name",
   "name_style": {
     "name_background_color": "#ff5555ff",

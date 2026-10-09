@@ -482,10 +482,23 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
             guiGraphics.pose().popMatrix();
 
             //render unread icon
-            if (displayState == EntryDisplayState.UNLOCKED && BookServices.stateAccess().isEntryUnread(Minecraft.getInstance().player, entry)) {
+            var showUnread = displayState == EntryDisplayState.UNLOCKED && BookServices.stateAccess().isEntryUnread(Minecraft.getInstance().player, entry);
+            if (showUnread) {
                 BookContentRenderer.drawUnreadIndicator(guiGraphics, this.bookParentScreen.getBook(),
                         entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP + 16 + 2,
                         entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP - 2, isHovered);
+            }
+
+            //render marker indicator (Patchouli-turnin-style attention dot until the marker condition completes)
+            //unread sits top-right (+18, -2); marker sits top-left (-4, -2), shifted down when both show
+            var player = Minecraft.getInstance().player;
+            if (player != null && entry.shouldShowMarker(player, displayState)) {
+                int markerX = entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP - 4;
+                int markerY = entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP - 2;
+                if (showUnread) {
+                    markerY += 12;
+                }
+                BookContentRenderer.drawMarkerIndicator(guiGraphics, entry, markerX, markerY);
             }
 
             //render the entry name text on top of its background
