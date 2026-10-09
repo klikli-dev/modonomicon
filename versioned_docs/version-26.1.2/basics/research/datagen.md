@@ -123,7 +123,7 @@ Node ids are deterministic from the target, so repeated requests for the same ta
 An explicit marker condition (`withMarkerCondition` / `withMarker`) combined with `markerUntil*` intents on the same entry
 is merged with `and`.
 
-**Demo:** [`MarkersCategory.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/MarkersCategory.java) exercises the explicit, entry-viewed, crafted and acquired variants.
+**Demo:** [`MarkersCategory.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/MarkersCategory.java) exercises the explicit, entry-viewed, crafted and acquired variants; [`IndexMarkersCategory.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/IndexMarkersCategory.java) covers markers in the index mode book.
 
 ## Multi-stage nodes
 

@@ -140,7 +140,7 @@ protected void generateResearch() {
 entry.withMarker(MyResearch.MARKER_DONE);
 ```
 
-**Demo:** [`DemoResearch.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/research/DemoResearch.java) — `MARKER_EXPLICIT` node, and [`MarkersCategory.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/MarkersCategory.java).
+**Demo:** [`DemoResearch.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/research/DemoResearch.java) — `MARKER_EXPLICIT` node, [`MarkersCategory.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/MarkersCategory.java), and [`IndexMarkersCategory.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/IndexMarkersCategory.java) for index mode.
 
 ## Numeric progression with values
 
