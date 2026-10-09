@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-2.17.0] - 2026-10-09
+### :sparkles: New Features
+- [`6ea750d`](https://github.com/klikli-dev/modonomicon/commit/6ea750d81756673856200aa7405a88c927f1e984) - conditional entry markers *(PR [#407](https://github.com/klikli-dev/modonomicon/pull/407) by [@klikli-dev](https://github.com/klikli-dev))*
+  - :arrow_lower_right: *addresses issue [#249](https://github.com/klikli-dev/modonomicon/issues/249) opened by [@DaFuqs](https://github.com/DaFuqs)*
+
+
 ## [release/v26.1.2-2.16.0] - 2026-10-02
 ### :sparkles: New Features
 - [`3c6128f`](https://github.com/klikli-dev/modonomicon/commit/3c6128fa52b36f8b23690d56078bac1c5e3ffe6b) - improve item-book association *(PR [#406](https://github.com/klikli-dev/modonomicon/pull/406) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2427,3 +2433,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-2.14.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.14.0...release/v26.1.2-2.14.1
 [release/v26.1.2-2.15.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.14.1...release/v26.1.2-2.15.0
 [release/v26.1.2-2.16.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.15.0...release/v26.1.2-2.16.0
+[release/v26.1.2-2.17.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.16.0...release/v26.1.2-2.17.0
