@@ -29,6 +29,7 @@ public class DefaultBookTheme implements BookTheme {
     private final GuiSprite titleSeparator;
     private final GuiSprite lockIcon;
     private final GuiButtonSprites unreadIndicator;
+    private final GuiSprite markerIndicator;
     private final GuiButtonSprites nextPageButton;
     private final GuiButtonSprites previousPageButton;
     private final GuiButtonSprites smallNextPageButton;
@@ -110,6 +111,11 @@ public class DefaultBookTheme implements BookTheme {
         @Override
         public GuiButtonSprites unreadIndicator() {
             return DefaultBookTheme.this.unreadIndicator;
+        }
+
+        @Override
+        public GuiSprite markerIndicator() {
+            return DefaultBookTheme.this.markerIndicator;
         }
 
         @Override
@@ -409,6 +415,10 @@ public class DefaultBookTheme implements BookTheme {
         this.titleSeparator = this.sprite("content/decorations/book/title_separator.png", 110, 3);
         this.lockIcon = this.sprite("content/icons/book/lock_icon.png", 16, 16);
         this.unreadIndicator = this.button("content/indicators/book/unread_indicator", 11, 11, true);
+        var markerOverride = data.content().markerIndicator();
+        this.markerIndicator = markerOverride.isEmpty()
+                ? this.sprite("content/indicators/book/marker_indicator.png", 11, 11)
+                : markerOverride;
         this.nextPageButton = this.button("content/buttons/navigation/next_page_button", 18, 10, true);
         this.previousPageButton = this.button("content/buttons/navigation/previous_page_button", 18, 10, true);
         this.smallNextPageButton = this.button("content/buttons/navigation/small_next_page_button", 5, 7, true);

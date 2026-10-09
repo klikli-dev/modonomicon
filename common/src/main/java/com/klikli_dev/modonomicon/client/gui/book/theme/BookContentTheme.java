@@ -18,6 +18,8 @@ public interface BookContentTheme {
 
     GuiButtonSprites unreadIndicator();
 
+    GuiSprite markerIndicator();
+
     GuiButtonSprites nextPageButton();
 
     GuiButtonSprites previousPageButton();
