@@ -140,12 +140,14 @@ public final class GeneratedBookResearchStore {
     /**
      * Stable, filesystem-safe dedup key for an item template: item namespace + path,
      * suffixed with a hash of the component patch when components are present.
+     * Path separators map to double underscores so that {@code example:gear/iron} and
+     * {@code example:gear_iron} produce distinct keys.
      */
     public static String itemKey(ItemStackTemplate target) {
         var itemId = target.item().unwrapKey()
                 .map(key -> key.identifier())
                 .orElseThrow(() -> new IllegalArgumentException("ItemStackTemplate has no registry key, cannot generate research for it: " + target));
-        var base = itemId.getNamespace() + "_" + itemId.getPath().replace('/', '_');
+        var base = itemId.getNamespace() + "_" + itemId.getPath().replace("/", "__");
         var patch = target.components();
         if (patch == null || patch.isEmpty()) {
             return base;

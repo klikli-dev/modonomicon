@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.research.hook.handlers;
 
+import com.klikli_dev.modonomicon.book.associated.AssociatedItemMatcher;
 import com.klikli_dev.modonomicon.data.TriggerType;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
@@ -34,7 +35,9 @@ public class ItemCraftedTriggerHandler implements TriggerHandler<ItemStackTempla
 
     @Override
     public boolean matches(ItemStackTemplate target, ItemCraftedContext context) {
-        return target.item().equals(context.stack().getItem().builtInRegistryHolder());
+        //Item equality plus subset matching of the template's components, shared with associated items.
+        //A template without components matches any stack of the item.
+        return AssociatedItemMatcher.matches(target, context.stack());
     }
 
     @Override

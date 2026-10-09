@@ -202,13 +202,24 @@ public abstract class BookEntry {
      * The marker shows on unlocked entries until the marker condition is fulfilled.
      */
     public boolean shouldShowMarker(Player player) {
+        if (this.data.markerCondition instanceof BookNoneCondition) {
+            return false;
+        }
         if (this.book == null) {
             return false;
         }
-        if (this.getEntryDisplayState(player) != EntryDisplayState.UNLOCKED) {
+        return this.shouldShowMarker(player, this.getEntryDisplayState(player));
+    }
+
+    /**
+     * Returns true if this entry should show its attention marker for the given player.
+     * Takes the already-known display state to avoid recalculating visibility.
+     */
+    public boolean shouldShowMarker(Player player, EntryDisplayState displayState) {
+        if (this.data.markerCondition instanceof BookNoneCondition) {
             return false;
         }
-        if (this.data.markerCondition instanceof BookNoneCondition) {
+        if (this.book == null || displayState != EntryDisplayState.UNLOCKED) {
             return false;
         }
         return !this.data.markerCondition.test(BookConditionEntryContext.of(this.book, this), player);
