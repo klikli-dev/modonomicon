@@ -62,6 +62,15 @@ public class BookEntryModel {
     protected int nameTextColor = 0xFFFFFFFF;
     protected List<BookPageModel<?>> pages = new ArrayList<>();
     protected BookConditionModel<?> condition;
+    protected GuiSprite marker = GuiSprite.EMPTY;
+    protected BookConditionModel<?> markerCondition;
+    /**
+     * Auto-gen marker intents, resolved into {@link #markerCondition} during book compilation.
+     * Combined with an explicit marker condition via AND when both are present.
+     */
+    protected List<Identifier> markerUntilEntries = new ArrayList<>();
+    protected List<ItemStackTemplate> markerUntilCraftedTargets = new ArrayList<>();
+    protected List<ItemStackTemplate> markerUntilAcquiredTargets = new ArrayList<>();
     protected Identifier categoryToOpen;
     protected Identifier commandToRunOnFirstRead;
     protected Identifier entryToOpen;
@@ -100,6 +109,8 @@ public class BookEntryModel {
                 this.icon.toBookIcon(),
                 this.entryBackground,
                 this.effectiveCondition().toBookCondition(provider),
+                this.marker,
+                this.effectiveMarkerCondition().toBookCondition(provider),
                 this.hideWhileLocked,
                 this.showWhenAnyParentUnlocked,
                 this.sortNumber,
@@ -138,6 +149,14 @@ public class BookEntryModel {
         return BookNoneConditionModel.create();
     }
 
+    protected BookConditionModel<?> effectiveMarkerCondition() {
+        if (this.markerCondition != null) {
+            return this.markerCondition;
+        }
+
+        return BookNoneConditionModel.create();
+    }
+
     public GuiSprite getEntryBackground() {
         return this.entryBackground;
     }
@@ -148,6 +167,43 @@ public class BookEntryModel {
 
     public boolean hasCondition() {
         return this.condition != null;
+    }
+
+    public GuiSprite getMarker() {
+        return this.marker;
+    }
+
+    public BookConditionModel<?> getMarkerCondition() {
+        return this.markerCondition;
+    }
+
+    public boolean hasMarkerCondition() {
+        return this.markerCondition != null;
+    }
+
+    /**
+     * Pending entry-viewed marker intents, resolved during book compilation.
+     */
+    public List<Identifier> getMarkerUntilEntries() {
+        return this.markerUntilEntries;
+    }
+
+    /**
+     * Pending item-crafted marker intents, resolved during book compilation.
+     */
+    public List<ItemStackTemplate> getMarkerUntilCraftedTargets() {
+        return this.markerUntilCraftedTargets;
+    }
+
+    /**
+     * Pending item-acquired marker intents, resolved during book compilation.
+     */
+    public List<ItemStackTemplate> getMarkerUntilAcquiredTargets() {
+        return this.markerUntilAcquiredTargets;
+    }
+
+    public boolean hasPendingMarkerRequests() {
+        return !this.markerUntilEntries.isEmpty() || !this.markerUntilCraftedTargets.isEmpty() || !this.markerUntilAcquiredTargets.isEmpty();
     }
 
     public Identifier getCategoryToOpen() {
@@ -605,6 +661,98 @@ public class BookEntryModel {
     public BookEntryModel withCondition(ResearchNodeRef nodeRef, ResearchStageRef stageRef) {
         return this.withCondition(BookResearchStageCompletedConditionModel.create()
                 .withNode(nodeRef.id()).withStage(stageRef.id()));
+    }
+
+    /**
+     * Overrides the entry marker indicator sprite. Empty (default) uses the theme default.
+     */
+    public BookEntryModel withMarker(GuiSprite marker) {
+        this.marker = marker;
+        return this;
+    }
+
+    /**
+     * Sets the marker condition: the attention dot shows on this unlocked entry
+     * until the condition is fulfilled. Markers never show tooltips.
+     * Combined with pending {@code markerUntil*} intents via AND when both are present.
+     */
+    public BookEntryModel withMarkerCondition(BookConditionModel<?> markerCondition) {
+        this.markerCondition = markerCondition;
+        return this;
+    }
+
+    /**
+     * Shows the marker until the given research node is unlocked.
+     */
+    public BookEntryModel withMarker(ResearchNodeRef nodeRef) {
+        return this.withMarkerCondition(BookResearchNodeUnlockedConditionModel.create().withNode(nodeRef.id()));
+    }
+
+    /**
+     * Shows the marker until the given research stage is completed.
+     */
+    public BookEntryModel withMarker(ResearchNodeRef nodeRef, ResearchStageRef stageRef) {
+        return this.withMarkerCondition(BookResearchStageCompletedConditionModel.create()
+                .withNode(nodeRef.id()).withStage(stageRef.id()));
+    }
+
+    /**
+     * Shows the marker until the given entry has been viewed.
+     * The backing research node, fact, and hook are generated automatically during book compilation.
+     *
+     * @param requiredEntry the entry that must be viewed to clear the marker
+     */
+    public BookEntryModel markerUntilEntryViewed(BookEntryModel requiredEntry) {
+        this.markerUntilEntries.add(requiredEntry.getId());
+        return this;
+    }
+
+    /**
+     * Shows the marker until the given item has been crafted.
+     * The backing research node, fact, and hook are generated automatically during book compilation.
+     * All components defined on the template must be present on the crafted stack.
+     */
+    public BookEntryModel markerUntilCrafted(ItemStackTemplate target) {
+        this.markerUntilCraftedTargets.add(target);
+        return this;
+    }
+
+    /**
+     * Shows the marker until the given item has been crafted.
+     */
+    public BookEntryModel markerUntilCrafted(Item target) {
+        return this.markerUntilCrafted(new ItemStackTemplate(target));
+    }
+
+    /**
+     * Shows the marker until the given item has been crafted.
+     */
+    public BookEntryModel markerUntilCrafted(ItemLike target) {
+        return this.markerUntilCrafted(new ItemStackTemplate(target.asItem()));
+    }
+
+    /**
+     * Shows the marker until the given item has been acquired.
+     * The backing research node, fact, and hook are generated automatically during book compilation.
+     * All components defined on the template must be present on the acquired stack.
+     */
+    public BookEntryModel markerUntilAcquired(ItemStackTemplate target) {
+        this.markerUntilAcquiredTargets.add(target);
+        return this;
+    }
+
+    /**
+     * Shows the marker until the given item has been acquired.
+     */
+    public BookEntryModel markerUntilAcquired(Item target) {
+        return this.markerUntilAcquired(new ItemStackTemplate(target));
+    }
+
+    /**
+     * Shows the marker until the given item has been acquired.
+     */
+    public BookEntryModel markerUntilAcquired(ItemLike target) {
+        return this.markerUntilAcquired(new ItemStackTemplate(target.asItem()));
     }
 
     /**
