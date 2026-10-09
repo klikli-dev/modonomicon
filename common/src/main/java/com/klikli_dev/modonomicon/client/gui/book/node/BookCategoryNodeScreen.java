@@ -489,7 +489,8 @@ public class BookCategoryNodeScreen implements BookCategoryScreen {
 
             //render marker indicator (Patchouli-turnin-style attention dot until the marker condition completes)
             //unread sits top-right (+18, -2); marker sits top-left (-4, -2), shifted down when both show
-            if (entry.shouldShowMarker(Minecraft.getInstance().player)) {
+            var player = Minecraft.getInstance().player;
+            if (player != null && entry.shouldShowMarker(player)) {
                 int markerX = entry.getX() * ENTRY_GRID_SCALE + ENTRY_GAP - 4;
                 int markerY = entry.getY() * ENTRY_GRID_SCALE + ENTRY_GAP - 2;
                 if (showUnread) {

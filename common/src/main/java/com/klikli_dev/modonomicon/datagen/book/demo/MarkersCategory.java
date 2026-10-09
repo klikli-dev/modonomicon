@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.SingleBookSubProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookTrueConditionModel;
 import com.klikli_dev.modonomicon.datagen.book.demo.markers.MarkerAcquiredEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.markers.MarkerCraftedEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.markers.MarkerExplicitEntry;
@@ -39,23 +40,31 @@ public class MarkersCategory extends CategoryProvider {
     protected void generateEntries() {
         var introEntry = this.add(new MarkerIntroEntry(this).generate());
 
+        //All marker demo entries stay explicitly unlocked (always-true condition opts them out of the
+        //automatic parent-hierarchy research), so the marker dot - not an unlock gate - is what is on display.
+        var alwaysUnlocked = BookTrueConditionModel.create();
+
         //explicit marker condition pointing at a manually authored research node
         this.add(new MarkerExplicitEntry(this).generate()
+                        .withCondition(alwaysUnlocked)
                         .withMarker(DemoResearch.MARKER_EXPLICIT))
                 .withParent(introEntry);
 
         //auto-generated marker research: dot clears once the intro entry has been viewed
         this.add(new MarkerViewedEntry(this).generate()
+                        .withCondition(alwaysUnlocked)
                         .markerUntilEntryViewed(introEntry))
                 .withParent(introEntry);
 
         //auto-generated marker research: dot clears once a stick has been crafted
         this.add(new MarkerCraftedEntry(this).generate()
+                        .withCondition(alwaysUnlocked)
                         .markerUntilCrafted(Items.STICK))
                 .withParent(introEntry);
 
         //same as above, but authored through the ConditionHelper instead of the entry model
         this.add(new MarkerAcquiredEntry(this).generate()
+                        .withCondition(alwaysUnlocked)
                         .withMarkerCondition(this.condition().markerUntilAcquired(Items.COBBLESTONE)))
                 .withParent(introEntry);
     }
