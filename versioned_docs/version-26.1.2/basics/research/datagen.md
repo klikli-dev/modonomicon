@@ -84,6 +84,47 @@ The target type must match the trigger type's target type (e.g. `Identifier` for
 
 See [Custom Research Hooks](../../advanced/custom-hooks) for details.
 
+## Entry markers
+
+Entries can show an attention dot until a condition completes (see `marker_condition` in [Entries](../structure/entries.md#marker_condition-condition-optional)).
+For the common cases the backing hook + fact + node research is generated automatically during book compilation,
+either on the entry model or through the `ConditionHelper`:
+
+```java
+// In your CategoryProvider — model-based, research generated at compile time:
+this.add(new MyEntry(this).generate()
+        .markerUntilEntryViewed(otherEntry))
+        .withParent(otherEntry);
+
+this.add(new MyCraftingEntry(this).generate()
+        .markerUntilCrafted(Items.DIAMOND_SWORD));
+
+this.add(new MyAcquiringEntry(this).generate()
+        .markerUntilAcquired(new ItemStackTemplate(Items.NETHER_STAR)));
+```
+
+```java
+// ... or helper-based, combined with an explicit marker condition:
+entry.withMarkerCondition(this.condition().markerUntilAcquired(Items.NETHER_STAR));
+```
+
+`markerUntilCrafted` / `markerUntilAcquired` accept `ItemStackTemplate`, `Item` or `ItemLike`.
+Matching follows the item trigger semantics: the template's item must match, and every component defined
+on the template must be present on the crafted/acquired stack. There is no `markerUntilAdvancement` shorthand;
+advancement-backed markers use the manual hook + fact + node pattern (see [Research Conditions](./conditions.md#entry-markers)).
+
+Generated research lands in the book's `generated/<book_id>` bundle alongside the hierarchy research:
+
+- entry viewed: facts in `generated/<book_id>/facts/entry_viewed_once/<entry_path>`, nodes in `generated/<book_id>/nodes/entry_viewed_once/...`
+- item crafted: facts in `generated/<book_id>/facts/item_crafted/<namespace>_<item_path>[_<components_hash>]`, nodes in `generated/<book_id>/nodes/item_crafted/...`
+- item acquired: same scheme under `.../facts/item_acquired/...` and `.../nodes/item_acquired/...`
+
+Node ids are deterministic from the target, so repeated requests for the same target are deduplicated into a single fact + node.
+An explicit marker condition (`withMarkerCondition` / `withMarker`) combined with `markerUntil*` intents on the same entry
+is merged with `and`.
+
+**Demo:** [`MarkersCategory.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/MarkersCategory.java) exercises the explicit, entry-viewed, crafted and acquired variants.
+
 ## Multi-stage nodes
 
 ```java

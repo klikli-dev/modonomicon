@@ -143,6 +143,15 @@ BookEntryModel.create(id("my_entry"), "example.book.my_entry")
 
 `EntryBackground.DEFAULT` still points to `EntryBackground.SQUARE_GOLD`.
 
+### **marker** (Sprite JSON Object, _optional_)
+
+Overrides the marker indicator sprite shown on this entry while its `marker_condition` is unfulfilled.
+If omitted, the theme default is used (see `marker_indicator` in [Theme](./theme.md#content-json-object-optional)).
+
+Uses the same sprite structure as `background` above: a `sprite` Identifier plus optional `width` / `height`, or a single Identifier string as shorthand.
+
+Datagen: `BookEntryModel#withMarker(...)`.
+
 ### **name_style** (JSON Object, _optional_)
 
 Controls the permanently rendered entry name on node-based category screens, styled like the vanilla advancement title box: a nine-sliced bar tucked behind (or, for `left`/`right`, passing through) the entry badge.
@@ -171,6 +180,30 @@ Datagen: `BookEntryModel#withRenderName(...)`, `#withShowNameBeforeUnlock(...)`,
 
 Entries, like Categories, can be hidden until an Unlock Condition is fulfilled. Conditions are JSON objects.  
 See **[Unlock Conditions](../unlock-conditions)** for details.
+
+### **marker_condition** (Condition, _optional_)
+
+If set, a small attention dot (marker) is shown on this entry on the node map and in all entry lists
+(category index, search, bookmarks, recently unlocked) while the entry is unlocked and the marker condition is **not** yet fulfilled.
+Once the condition is met the marker disappears without needing to reopen the book.
+
+- The marker only shows on unlocked entries; never on locked or hidden entries.
+- Markers never show tooltips.
+- Any unlock condition type can be used (see **[Research Conditions](../research/conditions.md)**); typically a research-backed condition such as `research_node_unlocked` or `research_stage_completed`.
+- The marker sprite can be customized per entry with `marker` (see above); otherwise the theme default is used.
+
+```json
+{
+  "marker_condition": {
+      "type": "modonomicon:research_node_unlocked",
+      "node_id": "mymod:features/my_milestone"
+  }
+}
+```
+
+Datagen: `BookEntryModel#withMarkerCondition(...)`, `#withMarker(nodeRef)`, `#withMarker(nodeRef, stageRef)`,
+plus the auto-generated shorthands `#markerUntilEntryViewed(...)`, `#markerUntilCrafted(...)` and `#markerUntilAcquired(...)`
+(see [Research Datagen](../research/datagen.md)).
 
 ### **parents** (Parent[], _optional_)
 

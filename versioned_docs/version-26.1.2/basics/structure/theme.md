@@ -113,6 +113,16 @@ The sprite JSON object uses the normal sprite structure:
 - `width` (Integer, optional)
 - `height` (Integer, optional)
 
+#### **marker_indicator** (Sprite JSON Object, _optional_)
+
+Overrides the default marker indicator sprite: the small attention dot shown on entries with an unfulfilled [`marker_condition`](./entries.md#marker_condition-condition-optional).
+If omitted, the built-in orange dot (`content/indicators/book/marker_indicator.png` of the default theme) is used.
+
+Uses the same sprite structure as `default_category_button_sprite` above.
+Custom themes can also override the file `content/indicators/book/marker_indicator.png` under their theme folder instead.
+
+Datagen: `BookThemeContentModel#withMarkerIndicator(...)`.
+
 ### **palette** (JSON Object, _optional_)
 
 Controls theme colors.

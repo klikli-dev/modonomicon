@@ -105,6 +105,43 @@ entry.withCondition(MyResearch.ACQUIRED_GATE);
 
 **Demo:** [`DemoResearch.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/research/DemoResearch.java) — `ACQUIRE_COBBLESTONE` node, and [`AcquiringCategory.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/AcquiringCategory.java).
 
+## Entry markers
+
+Show an attention dot on an unlocked entry until the player completes something (a "turn-in" hint).
+Markers reuse the condition types above but never show tooltips. For the common cases, use the auto-generated shorthands:
+
+```java
+// In your BookProvider:
+entry.markerUntilEntryViewed(otherEntry);
+entry.markerUntilCrafted(Items.DIAMOND_SWORD);
+entry.withMarkerCondition(this.condition().markerUntilAcquired(Items.NETHER_STAR));
+```
+
+For full control, author the research manually (hook + fact + node, same as the gating scenarios above)
+and point the marker at the node — this is also the pattern for advancement-backed markers,
+for which there is no shorthand:
+
+```java
+// In your ResearchSubProvider:
+public static final ResearchNodeRef MARKER_DONE = node("mymod/marker_done");
+
+@Override
+protected void generateResearch() {
+    var fact = this.ingress()
+        .onAdvancementEarned(this.mcLoc("story/mine_stone"))
+        .declareFact("mymod/marker_done_fact");
+
+    this.node(MARKER_DONE, fact);
+}
+```
+
+```java
+// In your BookProvider:
+entry.withMarker(MyResearch.MARKER_DONE);
+```
+
+**Demo:** [`DemoResearch.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/research/DemoResearch.java) — `MARKER_EXPLICIT` node, and [`MarkersCategory.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/MarkersCategory.java).
+
 ## Numeric progression with values
 
 Track cumulative progress using research values instead of boolean facts.

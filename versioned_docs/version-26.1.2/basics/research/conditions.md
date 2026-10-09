@@ -65,6 +65,40 @@ The tooltip to display when hovering over the locked entry. If omitted, a toolti
 }
 ```
 
+## Entry markers
+
+Entries can show a small attention dot until a condition completes via [`marker_condition`](../structure/entries.md#marker_condition-condition-optional).
+The marker reuses all unlock condition types documented above; it is typically research-backed
+(`research_node_unlocked` or `research_stage_completed`). Markers never show tooltips and only render on unlocked entries.
+
+Explicit recipe: author a hook + fact + node in your `ResearchSubProvider`, then point the marker at the node:
+
+```java
+// In your ResearchSubProvider:
+public static final ResearchNodeRef MARKER_DONE = node("mymod/marker_done");
+
+@Override
+protected void generateResearch() {
+    var fact = this.ingress()
+        .onEntryViewedOnce(this.modLoc("mymod_category/mymod_entry"))
+        .declareFact("mymod/marker_done_fact");
+
+    this.node(MARKER_DONE, fact);
+}
+```
+
+```java
+// In your BookProvider:
+entry.withMarker(MyResearch.MARKER_DONE);
+```
+
+There is no auto-generated advancement shorthand: advancement-backed markers use the same manual pattern
+(hook + fact + node, see [Advancement gating](./scenarios.md#advancement-gating)).
+**Demo:** `MARKER_EXPLICIT` in `DemoResearch.java` with `MarkerExplicitEntry.java` for the book side.
+
+For the common cases, auto-generated shorthands are available instead of manual research
+(see [Research Datagen](./datagen.md#entry-markers)): `markerUntilEntryViewed`, `markerUntilCrafted`, `markerUntilAcquired`.
+
 ## Datagen shortcuts
 
 When using datagen, `BookEntryModel`, `BookCategoryModel`, and `BookPageModel` provide shorthand methods:
