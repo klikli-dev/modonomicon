@@ -6,10 +6,10 @@
     "id": "modonomicon:generated/demo/facts/entry_viewed_once/markers_marker_intro"
   },
   {
-    "id": "modonomicon:generated/demo/facts/item_crafted/minecraft_stick"
+    "id": "modonomicon:generated/demo/facts/item_crafted/minecraft/stick"
   },
   {
-    "id": "modonomicon:generated/demo/facts/item_acquired/minecraft_cobblestone"
+    "id": "modonomicon:generated/demo/facts/item_acquired/minecraft/cobblestone"
   },
   {
     "id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_root"

@@ -16,7 +16,7 @@
   "id": "modonomicon:markers/marker_crafted",
   "marker_condition": {
     "type": "modonomicon:research_node_unlocked",
-    "node_id": "modonomicon:generated/demo/nodes/item_crafted/minecraft_stick"
+    "node_id": "modonomicon:generated/demo/nodes/item_crafted/minecraft/stick"
   },
   "name": "book.modonomicon.demo.markers.marker_crafted.name",
   "parents": [

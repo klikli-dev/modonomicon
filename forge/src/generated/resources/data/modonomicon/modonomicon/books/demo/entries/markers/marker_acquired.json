@@ -16,7 +16,7 @@
   "id": "modonomicon:markers/marker_acquired",
   "marker_condition": {
     "type": "modonomicon:research_node_unlocked",
-    "node_id": "modonomicon:generated/demo/nodes/item_acquired/minecraft_cobblestone"
+    "node_id": "modonomicon:generated/demo/nodes/item_acquired/minecraft/cobblestone"
   },
   "name": "book.modonomicon.demo.markers.marker_acquired.name",
   "parents": [

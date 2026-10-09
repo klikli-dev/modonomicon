@@ -12,15 +12,15 @@
     ]
   },
   {
-    "id": "modonomicon:generated/demo/nodes/item_crafted/minecraft_stick",
+    "id": "modonomicon:generated/demo/nodes/item_crafted/minecraft/stick",
     "required_facts": [
-      "modonomicon:generated/demo/facts/item_crafted/minecraft_stick"
+      "modonomicon:generated/demo/facts/item_crafted/minecraft/stick"
     ]
   },
   {
-    "id": "modonomicon:generated/demo/nodes/item_acquired/minecraft_cobblestone",
+    "id": "modonomicon:generated/demo/nodes/item_acquired/minecraft/cobblestone",
     "required_facts": [
-      "modonomicon:generated/demo/facts/item_acquired/minecraft_cobblestone"
+      "modonomicon:generated/demo/facts/item_acquired/minecraft/cobblestone"
     ]
   },
   {

@@ -16,7 +16,7 @@
   "id": "modonomicon:index_markers/index_marker_crafted",
   "marker_condition": {
     "type": "modonomicon:research_node_unlocked",
-    "node_id": "modonomicon:generated/demo_index/nodes/item_crafted/minecraft_diamond_sword"
+    "node_id": "modonomicon:generated/demo_index/nodes/item_crafted/minecraft/diamond_sword"
   },
   "name": "book.modonomicon.demo_index.index_markers.index_marker_crafted.name",
   "sort_number": 2,
