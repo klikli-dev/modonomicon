@@ -14,6 +14,9 @@
     "id": "minecraft:clock"
   },
   "id": "modonomicon:index_mode/demo22",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.index_mode.demo22.name",
   "sort_number": 21,
   "x": 0,

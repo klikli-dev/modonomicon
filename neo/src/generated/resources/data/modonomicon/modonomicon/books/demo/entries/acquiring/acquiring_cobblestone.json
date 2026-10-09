@@ -15,6 +15,9 @@
     "id": "minecraft:cobblestone"
   },
   "id": "modonomicon:acquiring/acquiring_cobblestone",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.acquiring.acquiring_cobblestone.name",
   "parents": [
     {

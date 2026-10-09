@@ -23,6 +23,9 @@
     "id": "minecraft:writable_book"
   },
   "id": "modonomicon:formatting/link",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.formatting.link.name",
   "parents": [
     {

@@ -14,6 +14,9 @@
     "id": "minecraft:brush"
   },
   "id": "modonomicon:index_mode/demo34",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo_index.index_mode.demo34.name",
   "sort_number": 33,
   "x": 0,

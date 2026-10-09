@@ -14,6 +14,9 @@
     "id": "minecraft:glowstone_dust"
   },
   "id": "modonomicon:values/collector_b",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.values.collector_b.name",
   "sort_number": 1,
   "x": 1,

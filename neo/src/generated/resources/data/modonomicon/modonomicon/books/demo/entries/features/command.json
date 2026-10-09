@@ -15,6 +15,9 @@
     "id": "minecraft:oak_sign"
   },
   "id": "modonomicon:features/command",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
   "name": "book.modonomicon.demo.features.command.name",
   "sort_number": 10,
   "x": -2,
