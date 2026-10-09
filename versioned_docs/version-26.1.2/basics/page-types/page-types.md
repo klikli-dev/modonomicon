@@ -30,13 +30,13 @@ Page titles will not parse markdown by default; they use the default title color
 
 **Fallback names:** When a title or name attribute is omitted, the page's primary content name is used as fallback (e.g., the ingredient name for spotlight pages, the entity name for entity pages, the recipe output name for recipe pages).
 
-### **associated_items** (ItemStackTemplate[], _optional_)
+### **associated_items** ((ItemStackTemplate | Ingredient)[], _optional_)
 
-Links this page to one or more items. Format and matching rules are the same as [entry `associated_items`](../structure/entries.md#associated_items-itemstacktemplate-optional): a list of `{"id": "<item id>", "components": {...}}` templates matched by item plus component subset.
+Links this page to one or more items. Format and matching rules are the same as [entry `associated_items`](../structure/entries.md#associated_items-itemstacktemplate--ingredient-optional): each entry is either a `{"id": "<item id>", "components": {...}}` template matched by item plus component subset, or an ingredient (`"<item id>"`, `["<item id>", ...]` or `"#<tag>"`) matching any stack it contains.
 
-Hovering a linked item shows the page icon with a small book badge, the page title (falling back to the entry name) and a hold-to-open hint; holding the open key opens the book at this page. Page-level associations take precedence over entry-level ones.
+Hovering a linked item shows the page icon with a small book badge, the page title in white (falling back to the entry name) and a hold-to-open hint; holding the open key opens the book at this page. Page-level associations take precedence over entry-level ones.
 
-Datagen: `BookPageModel#withAssociatedItem(...)` / `#withAssociatedItems(...)`.
+Datagen: `BookPageModel#withAssociatedItem(...)` / `#withAssociatedItems(...)` (there are overloads for `Item`, `ItemStackTemplate` and `Ingredient`).
 
 ### A note on texts
 

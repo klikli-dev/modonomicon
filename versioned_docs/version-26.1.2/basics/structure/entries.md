@@ -253,11 +253,11 @@ If this is set, the entry will never show it's pages, but instead open the targe
 
 Use this on entries with `"type": "modonomicon:entry_link"`.
 
-### **associated_items** (ItemStackTemplate[], _optional_)
+### **associated_items** ((ItemStackTemplate | Ingredient)[], _optional_)
 
-Links this entry to one or more items. When the player hovers such an item (in inventories, creative menus or recipe viewers such as JEI/EMI), the tooltip shows the entry's icon with a small book badge, the entry name and a hold-to-open hint. Holding the open key (default: `Left Alt`, rebindable under Controls → Modonomicon → Open Associated Book Page) while hovering opens the book directly at this entry.
+Links this entry to one or more items. When the player hovers such an item (in inventories, creative menus or recipe viewers such as JEI/EMI), the tooltip shows the entry's icon with a small book badge, the entry name in white and a hold-to-open hint. Holding the open key (default: `Left Alt`, rebindable under Controls → Modonomicon → Open Associated Book Page) while hovering opens the book directly at this entry.
 
-Each entry is an item stack template with an `id` and optional `components`, e.g.:
+Each entry is either an item stack template with an `id` and optional `components`, or an ingredient (like [spotlight pages](../page-types/spotlight-page.md) support), e.g.:
 
 ```json
 "associated_items": [
@@ -267,17 +267,22 @@ Each entry is an item stack template with an `id` and optional `components`, e.g
     "components": {
       "minecraft:dyed_color": 1481884
     }
-  }
+  },
+  "minecraft:diamond",
+  ["minecraft:diamond", "minecraft:emerald"],
+  "#minecraft:logs"
 ]
 ```
 
-Matching: the hovered stack must be the same item, and every component defined in the template must be present on the stack with an equal value. Additional components on the hovered stack are allowed (subset matching); `count` is ignored.
+Matching: an item stack template matches when the hovered stack is the same item and every component defined in the template is present on the stack with an equal value. Additional components on the hovered stack are allowed (subset matching); `count` is ignored. An ingredient matches any stack it contains (single items, item lists and `#tags`).
 
-Page-level `associated_items` (see [Page Types](../page-types/page-types.md#associated_items-itemstacktemplate-optional)) take precedence over entry-level ones: hovering an item linked to a specific page opens that page instead of the entry start.
+Page-level `associated_items` (see [Page Types](../page-types/page-types.md#associated_items-itemstacktemplate--ingredient-optional)) take precedence over entry-level ones: hovering an item linked to a specific page opens that page instead of the entry start.
 
 If the entry is still locked for the player, the tooltip shows a locked hint instead and holding the key does nothing.
 
-Datagen: `BookEntryModel#withAssociatedItem(...)` / `#withAssociatedItems(...)`.
+The small book badge shown next to the icon defaults to the book's own item stack and can be overridden per book with [`associated_item_badge`](./book.md#associated_item_badge-itemstacktemplate-optional) in `book.json`.
+
+Datagen: `BookEntryModel#withAssociatedItem(...)` / `#withAssociatedItems(...)` (there are overloads for `Item`, `ItemStackTemplate` and `Ingredient`).
 
 The hold duration is a client-side setting (`associatedItemsHoldDurationMs`, default `750` ms).
 

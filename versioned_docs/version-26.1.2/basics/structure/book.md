@@ -74,6 +74,15 @@ That means it either needs to belong to an existing item, or it must be explicit
 The Identifier for your custom book item.
 This is your custom item instance that will open the book.
 
+### **associated_item_badge** (ItemStackTemplate, _optional_)
+
+The badge item shown next to the icon in associated-item tooltips (see [Entries](./entries.md#associated_items-itemstacktemplate--ingredient-optional)).
+Takes an item stack template with an `id` and optional `components`, e.g. `{ "id": "minecraft:book" }`.
+
+If unset, the book's own item stack is used as the badge.
+
+Datagen: `BookModel#withAssociatedItemBadge(...)`.
+
 ### **creative_tab** (String, _optional_)
 
 Default value: `misc`.
