@@ -1,4 +1,4 @@
-// 26.1.2	2026-10-09T19:26:37.2674601	Books: modonomicon
+// 26.1.2	2026-10-09T19:50:03.0863017	Books: modonomicon
 67d3024173004bcd7ae1e434e1885be3b2403e5a data/modonomicon/modonomicon/books/demo/book.json
 30b50b715ec3d9f2ed0507529fbe96b0be3339e8 data/modonomicon/modonomicon/books/demo/categories/acquiring.json
 62474f838e6b97ff4cdadfb26fc0723bbad25207 data/modonomicon/modonomicon/books/demo/categories/conditional.json
@@ -191,8 +191,15 @@ f55bfdc7635a56f77fe36cfab6582474132016d5 data/modonomicon/modonomicon/books/demo
 c534f9a73143ed7afa6bce124247063990bb39b1 data/modonomicon/modonomicon/books/demo/theme.json
 779322d3cf2407de4e591fa356f554b0817e09e6 data/modonomicon/modonomicon/books/demo_index/book.json
 dc49037ffad501b27f9608674f662e5af666a558 data/modonomicon/modonomicon/books/demo_index/categories/conditional.json
+19b362c3b9554a1cbc05c1b135a2aff23d8ffeea data/modonomicon/modonomicon/books/demo_index/categories/index_markers.json
 bc909db6aae772273ce8a6a285ba7e75e73fddd3 data/modonomicon/modonomicon/books/demo_index/categories/index_mode.json
 6686700fea7ab47bd9c23061238b04fbee66935a data/modonomicon/modonomicon/books/demo_index/entries/conditional/always_locked.json
+91a2da9674d779b2f05e9f386d860a65d91e7247 data/modonomicon/modonomicon/books/demo_index/entries/index_markers/index_marker_crafted.json
+1cc6d9b7337ab1ecafaccd675175c1eb5d9b3132 data/modonomicon/modonomicon/books/demo_index/entries/index_markers/index_marker_crafted/pages/info.json
+71223b6380c49557541f7e529fce48f812decb03 data/modonomicon/modonomicon/books/demo_index/entries/index_markers/index_marker_explicit.json
+4938c992f518f4abab97f79b89f92131447517a7 data/modonomicon/modonomicon/books/demo_index/entries/index_markers/index_marker_explicit/pages/info.json
+bc568eb1fc5e5e41c5b00f19995463bc7468a6a7 data/modonomicon/modonomicon/books/demo_index/entries/index_markers/index_marker_intro.json
+b0791e48bde4b9d4c61f0b8c5b548f7c99d12c23 data/modonomicon/modonomicon/books/demo_index/entries/index_markers/index_marker_intro/pages/info.json
 893dc4bc4c97c126acaa28a1644f2b7480ce1519 data/modonomicon/modonomicon/books/demo_index/entries/index_mode/demo1.json
 3d1e10f44ace89f1ae5c2642e62fec2acd0b9b6a data/modonomicon/modonomicon/books/demo_index/entries/index_mode/demo10.json
 bfe0f5fd5dcf40097fdf818dfb9b4de9917c309c data/modonomicon/modonomicon/books/demo_index/entries/index_mode/demo10/pages/intro.json
