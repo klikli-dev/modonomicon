@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.LightCoordsUtil;
@@ -28,6 +29,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -134,7 +136,8 @@ public class PreviewBlockEntityRenderer {
         var dispatcher = Minecraft.getInstance().getBlockEntityRenderDispatcher();
 
         int ghostAlpha = (int) (PreviewConstants.BLOCK_ENTITY_ALPHA * 255);
-        var ghostBufferSource = PreviewGhostBuffers.ghostBufferSource(ghostAlpha);
+        Set<RenderType> usedGhostTypes = Collections.newSetFromMap(new IdentityHashMap<>());
+        var ghostBufferSource = PreviewGhostBuffers.ghostBufferSource(ghostAlpha, usedGhostTypes);
 
         var cameraRenderState = new CameraRenderState();
         var customSubmitStorage = new SubmitNodeStorage();
@@ -162,6 +165,19 @@ public class PreviewBlockEntityRenderer {
         }
 
         ghostFeatureDispatcher.renderAllFeatures();
+
+        //HACK / WHY: renderAllFeatures only fills the (shared) vertex buffers, mirroring how
+        //vanilla fills its feature buffers during the submit phases. Vanilla always pairs that
+        //with an explicit endBatch in the same pass (see LevelRenderer: renderTranslucentFeatures
+        //is immediately followed by bufferSource.endBatch()). Without it our ghost vertices leak
+        //into whatever foreign batch ends those buffers next, and are then drawn with foreign
+        //matrices/targets - which displaces the ghost block entities in the world
+        //(https://github.com/klikli-dev/occultism/issues/1712). Ending exactly the ghost types we
+        //touched keeps vanilla's own pending batches untouched.
+        for (var ghostType : usedGhostTypes) {
+            ghostBufferSource.endBatch(ghostType);
+        }
+
         ghostFeatureDispatcher.close(); // Clean up if required
 
         poseStack.popPose();

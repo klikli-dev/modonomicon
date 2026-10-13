@@ -18,6 +18,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Ghost rendering plumbing for the multiblock preview: translucent render type remapping,
@@ -96,13 +97,16 @@ public final class PreviewGhostBuffers {
      * </p>
      *
      * @param ghostAlpha ghost alpha in the 0-255 range.
+     * @param usedTypes  receives every remapped render type handed out, so callers can end exactly
+     *                   those batches when they flush manually (see {@code PreviewBlockEntityRenderer}).
      */
-    public static MultiBufferSource.BufferSource ghostBufferSource(int ghostAlpha) {
+    public static MultiBufferSource.BufferSource ghostBufferSource(int ghostAlpha, Set<RenderType> usedTypes) {
         var originalBufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
         return new MultiBufferSource.BufferSource(originalBufferSource.sharedBuffer, originalBufferSource.fixedBuffers) {
             @Override
             public @NonNull VertexConsumer getBuffer(@NonNull RenderType renderType) {
                 var ghostType = getGhostRenderType(renderType);
+                usedTypes.add(ghostType);
                 return new GhostVertexConsumer(originalBufferSource.getBuffer(ghostType), ghostAlpha);
             }
         };
