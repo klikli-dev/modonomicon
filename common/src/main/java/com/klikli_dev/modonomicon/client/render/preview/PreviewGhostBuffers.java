@@ -109,6 +109,15 @@ public final class PreviewGhostBuffers {
                 usedTypes.add(ghostType);
                 return new GhostVertexConsumer(originalBufferSource.getBuffer(ghostType), ghostAlpha);
             }
+
+            @Override
+            public void endBatch(RenderType type) {
+                //HACK / WHY: getBuffer above delegates builder creation to the original source, so
+                //the pending builders live in its tracking (startedBuilders), not ours - forward
+                //the flush there, otherwise we would end an empty batch and the ghosts would never
+                //draw in this pass.
+                originalBufferSource.endBatch(type);
+            }
         };
     }
 }
