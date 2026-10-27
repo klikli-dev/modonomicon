@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.3-2.17.2] - 2026-10-27
+### :sparkles: New Features
+- [`cb70e28`](https://github.com/klikli-dev/modonomicon/commit/cb70e284651b0068c92a6bda1c48eb446f3fa04b) - enable ghost-rendering for block entities in multiblocks on 26.3 *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.3-2.17.1] - 2026-10-11
 ### :wrench: Chores
 - [`1a9850f`](https://github.com/klikli-dev/modonomicon/commit/1a9850f3c422879124b9d464fef16de212709349) - update to latest neo *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2496,3 +2501,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.3-2.16.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.15.0...release/v26.3-2.16.0
 [release/v26.3-2.17.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.16.0...release/v26.3-2.17.0
 [release/v26.3-2.17.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.17.0...release/v26.3-2.17.1
+[release/v26.3-2.17.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.17.1...release/v26.3-2.17.2
