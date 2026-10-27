@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-2.17.2] - 2026-10-27
+### :bug: Bug Fixes
+- [`6320100`](https://github.com/klikli-dev/modonomicon/commit/6320100e5cf59a0fe7d4d7fc04343df1d8106d4d) - only clear cached book/research state on server overworld unload *(PR [#411](https://github.com/klikli-dev/modonomicon/pull/411) by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.2-2.17.1] - 2026-10-13
 ### :bug: Bug Fixes
 - [`c31e458`](https://github.com/klikli-dev/modonomicon/commit/c31e458417c7f4ad77b555df46f1e1f54dc1ca77) - flush in-world multiblock ghost block entities in the same pass *(PR [#409](https://github.com/klikli-dev/modonomicon/pull/409) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2440,3 +2445,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-2.16.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.15.0...release/v26.1.2-2.16.0
 [release/v26.1.2-2.17.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.16.0...release/v26.1.2-2.17.0
 [release/v26.1.2-2.17.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.17.0...release/v26.1.2-2.17.1
+[release/v26.1.2-2.17.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.17.1...release/v26.1.2-2.17.2
