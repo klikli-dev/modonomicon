@@ -16,4 +16,13 @@ public class DummyBookCategoryNodeScreen extends BookCategoryNodeScreen {
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         //do not render entries
     }
+
+    @Override
+    public void renderEntryTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    }
+
+    @Override
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        return false;
+    }
 }
