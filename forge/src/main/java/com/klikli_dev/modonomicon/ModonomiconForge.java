@@ -145,7 +145,11 @@ public class ModonomiconForge {
         // this ensures that if another world is loaded the save data is taken from file
         // instead of bleeding in from the previous level
         LevelEvent.Unload.BUS.addListener((LevelEvent.Unload e) -> {
-            if (e.getLevel() instanceof Level level && level.dimension() == Level.OVERWORLD) {
+            //Only clear on server side: on the client this event also fires when switching dimensions
+            //(the client unloads the old dimension's ClientLevel), which would wipe the cached state.
+            //In singleplayer client and server share the manager instance, so a client-side clear would
+            //also discard the server side state / poison it with an empty client object (see #411).
+            if (e.getLevel() instanceof Level level && !level.isClientSide() && level.dimension() == Level.OVERWORLD) {
                 BookVisualStateManager.get().saveData = null;
                 ResearchStateManager.get().clearCachedSaveData();
             }
