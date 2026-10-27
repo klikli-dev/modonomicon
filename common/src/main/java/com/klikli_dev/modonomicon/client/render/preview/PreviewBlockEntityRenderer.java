@@ -46,6 +46,12 @@ import java.util.WeakHashMap;
  * 312f841) instead of the 26.1 ghost {@code FeatureRenderDispatcher} + buffer-source path, which
  * no longer exists on 26.2.
  * </p>
+ * <p>
+ * 26.3 port: block entities are submitted through a {@link PreviewGhostSubmitNodeCollector}
+ * instead of the raw collector. It remaps opaque render types to translucent ones and folds
+ * {@link PreviewConstants#BLOCK_ENTITY_ALPHA} into the vertex colors, restoring the ghost look
+ * that the 26.1 buffer-source wrapper provided.
+ * </p>
  */
 public class PreviewBlockEntityRenderer {
 
@@ -124,6 +130,8 @@ public class PreviewBlockEntityRenderer {
             return;
         }
         Minecraft mc = Minecraft.getInstance();
+        SubmitNodeCollector ghostCollector = new PreviewGhostSubmitNodeCollector(
+                submitNodeCollector, (int) (PreviewConstants.BLOCK_ENTITY_ALPHA * 255.0F));
 
         // Render block entities using the extracted render states
         EntityRenderDispatcher erd = mc.getEntityRenderDispatcher();
@@ -144,7 +152,7 @@ public class PreviewBlockEntityRenderer {
                     blockEntityRenderState.blockPos.getY(),
                     blockEntityRenderState.blockPos.getZ());
 
-            dispatcher.submit(blockEntityRenderState, poseStack, submitNodeCollector, cameraRenderState);
+            dispatcher.submit(blockEntityRenderState, poseStack, ghostCollector, cameraRenderState);
 
             poseStack.popPose();
         }
