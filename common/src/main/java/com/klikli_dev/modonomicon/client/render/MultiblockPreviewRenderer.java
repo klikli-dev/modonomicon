@@ -38,6 +38,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -62,6 +63,12 @@ public class MultiblockPreviewRenderer {
 
     private static final Map<BlockPos, BlockEntity> blockEntityCache = new Object2ObjectOpenHashMap<>();
     private static final Set<BlockEntity> erroredBlockEntities = Collections.newSetFromMap(new WeakHashMap<>());
+    /**
+     * Dedicated RNG for preview rendering. The level's shared RNG must not be used here, because
+     * Minecraft's model rendering reseeds the supplied RNG per block, which would disturb unrelated
+     * client-side effects (see issue #408).
+     */
+    private static final RandomSource previewRandom = RandomSource.createNewThreadLocalInstance();
     public static boolean hasMultiblock;
     private static Multiblock multiblock;
     private static Component name;
@@ -350,7 +357,11 @@ public class MultiblockPreviewRenderer {
                 state = Blocks.RED_CONCRETE.defaultBlockState();
             }
 
-            ClientServices.MULTIBLOCK.renderBlock(state, pos, multiblock, ms, buffers, world.getRandom());
+            //Seed our own RNG with the block's positional seed instead of passing the level's shared
+            //RNG: model rendering reseeds the supplied RNG, which would otherwise disturb the client
+            //level's random sequence and with it unrelated client-side effects (see issue #408).
+            previewRandom.setSeed(state.getSeed(pos));
+            ClientServices.MULTIBLOCK.renderBlock(state, pos, multiblock, ms, buffers, previewRandom);
 
 //            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
 
