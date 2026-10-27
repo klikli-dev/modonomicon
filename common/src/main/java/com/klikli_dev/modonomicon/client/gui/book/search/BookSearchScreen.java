@@ -268,7 +268,7 @@ public class BookSearchScreen extends BookPaginatedScreen {
                 BookGuiManager.get().openEntry(entry.getBook().getId(), entry.getId(), 0);
                 return true;
             }
-        } else if (this.searchField.keyPressed(key, scanCode, modifiers)) {
+        } else if (!isArrowKeyCode(key) && this.searchField.keyPressed(key, scanCode, modifiers)) {
             if (!this.searchField.getValue().equals(currQuery)) {
                 this.createEntryList();
             }
