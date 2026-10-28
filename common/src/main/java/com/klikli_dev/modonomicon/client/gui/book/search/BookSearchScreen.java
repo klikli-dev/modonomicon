@@ -214,7 +214,7 @@ public class BookSearchScreen extends BookPaginatedListScreen<BookEntry> {
                 this.openOnlyVisibleEntry();
                 return true;
             }
-        } else if (this.searchField.keyPressed(event)) {
+        } else if (!this.isArrowKeyCode(event.key()) && this.searchField.keyPressed(event)) {
             if (!this.searchField.getValue().equals(currQuery)) {
                 this.createEntryList();
             }
