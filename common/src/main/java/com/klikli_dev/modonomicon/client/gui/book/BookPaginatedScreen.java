@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.button.ArrowButton;
 import com.klikli_dev.modonomicon.client.gui.book.button.ExitButton;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
+import net.minecraft.client.InputType;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -77,6 +78,10 @@ public abstract class BookPaginatedScreen extends Screen implements BookScreenWi
                 || pMouseY > this.bookTop + BookEntryScreen.FULL_HEIGHT + BookEntryScreen.CLICK_SAFETY_MARGIN;
     }
 
+    protected boolean isArrowKeyCode(int keyCode) {
+        return keyCode == GLFW.GLFW_KEY_LEFT || keyCode == GLFW.GLFW_KEY_RIGHT || keyCode == GLFW.GLFW_KEY_UP || keyCode == GLFW.GLFW_KEY_DOWN;
+    }
+
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == GLFW.GLFW_KEY_BACKSPACE) {
@@ -84,7 +89,28 @@ public abstract class BookPaginatedScreen extends Screen implements BookScreenWi
             return true;
         }
 
+        if (isArrowKeyCode(keyCode)) {
+            if (keyCode == GLFW.GLFW_KEY_LEFT) {
+                this.flipPage(true, true);
+            } else if (keyCode == GLFW.GLFW_KEY_RIGHT) {
+                this.flipPage(false, true);
+            }
+            // Hide all tooltips
+            this.minecraft.setLastInputType(InputType.NONE);
+            return true;
+        }
+
         return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        if (isArrowKeyCode(keyCode)) {
+            // Hide all tooltips
+            this.minecraft.setLastInputType(InputType.NONE);
+            return true;
+        }
+
+        return super.keyReleased(keyCode, scanCode, modifiers);
     }
 
     public boolean canSeeBackButton() {
