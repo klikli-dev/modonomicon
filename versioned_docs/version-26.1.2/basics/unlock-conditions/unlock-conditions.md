@@ -19,6 +19,15 @@ Conditions are JSON Objects that can be set as value for the "condition" field o
 
 Note that only one condition can be supplied per entry or category. If you want to combine multiple conditions, you can use the [`modonomicon:and`](./logic-conditions#and-condition), [`modonomicon:or`](./logic-conditions#or-condition) or [`modonomicon:not`](./logic-conditions#not-condition) condition types.
 
+## Locked Categories
+
+When a *category* condition is not met, the category is either hidden from the parent screens or shown as locked, depending on `locked_category_display`:
+
+- `hidden`: no button / list entry is shown for the category.
+- `show_as_locked`: the category is still listed with a lock indicator (node mode: lock badge over the bottom right quarter of the category icon; index mode: lock icon with a "Locked" label). Opening it shows its locked entries (or an empty list in index mode).
+
+The default is `hidden` for node mode books and `show_as_locked` for index mode books. It can be set per book in [book.json](../structure/book.md#locked_category_display-string-optional) and overridden per category in the [category json](../structure/categories.md#locked_category_display-string-optional).
+
 ## Available Condition Types
 
 The following condition types are available:

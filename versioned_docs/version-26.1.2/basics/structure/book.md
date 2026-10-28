@@ -34,6 +34,18 @@ Index mode ("patchouli-style") displays all categories in a list.
 Node mode ("thaumonomicon-style") displays a tree / quest / progress view of the book.
 A book in node mode can still contain categories in index mode.
 
+### **locked_category_display** (String, _optional_)
+
+Controls how categories whose `condition` is not met are presented in the parent screens. Can be `hidden` or `show_as_locked`.
+
+- `hidden`: locked categories are not listed at all (no button / list entry).
+- `show_as_locked`: locked categories are still listed, but marked with a lock icon (node mode: lock badge over the category icon; index mode: lock icon with a "Locked" label instead of the name). Opening a locked category shows its locked entries (or an empty list in index mode).
+
+If unset, locked categories are hidden for node mode books and shown as locked for index mode books (leaflets count as index mode).
+Can be overridden per category, see [Categories](./categories.md#locked_category_display-string-optional).
+
+Datagen: `BookModel#withLockedCategoryDisplay(...)`.
+
 ### **tooltip** (DescriptionId, _optional_)
 
 The book tooltip, shown when the item is hovered. Will not parse markdown.

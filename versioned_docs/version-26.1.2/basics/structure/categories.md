@@ -47,8 +47,18 @@ When using datagen and no sort number is provided, the BookProvider will automat
 
 ### **condition** (Condition, _optional_)
 
-Categories, like Entries, can be hidden until an Unlock Condition is fulfilled. Conditions are JSON objects.  
+Categories, like Entries, can be gated behind an Unlock Condition. Conditions are JSON objects.
 See **[Unlock Conditions](../unlock-conditions)** for details.
+
+Whether a locked category is hidden or shown as locked is controlled by `locked_category_display` below.
+
+### **locked_category_display** (String, _optional_)
+
+Per-category override for how this category is presented while its `condition` is not met. Can be `hidden` or `show_as_locked` (see [book.json](./book.md#locked_category_display-string-optional) for what each value does).
+
+If unset, the book setting applies (hidden for node mode books, shown as locked for index mode books).
+
+Datagen: `BookCategoryModel#withLockedCategoryDisplay(...)`.
 
 ### **background** (Identifier, _optional_)
 
