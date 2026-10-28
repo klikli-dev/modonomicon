@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-2.19.0] - 2026-10-28
+### :sparkles: New Features
+- [`43e773d`](https://github.com/klikli-dev/modonomicon/commit/43e773d0c6e61686697cfa075d4592017a6201e8) - per-book/per-category locked category display option (hidden vs shown as locked) *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.2-2.18.0] - 2026-10-28
 ### :sparkles: New Features
 - [`9633e92`](https://github.com/klikli-dev/modonomicon/commit/9633e928a92235065e5f3939eb8a2a5c9f5d0479) - Allow flipping pages with arrow keys *(PR [#412](https://github.com/klikli-dev/modonomicon/pull/412) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2455,3 +2460,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-2.17.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.17.0...release/v26.1.2-2.17.1
 [release/v26.1.2-2.17.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.17.1...release/v26.1.2-2.17.2
 [release/v26.1.2-2.18.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.17.2...release/v26.1.2-2.18.0
+[release/v26.1.2-2.19.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.18.0...release/v26.1.2-2.19.0
