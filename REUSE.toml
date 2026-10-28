@@ -4,6 +4,12 @@ SPDX-PackageSupplier = "klikli-dev"
 SPDX-PackageDownloadLocation = "https://github.com/klikli-dev/modonomicon"
 
 [[annotations]]
+path = "common/src/main/resources/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 klikli-dev"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
 path = "common/src/main/resources/assets/modonomicon/textures/font/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2022 Kristiāns Micītis"
@@ -31,52 +37,46 @@ SPDX-License-Identifier = "CC-BY-4.0"
 SPDX-FileComment = "https://github.com/ArcanaMod/Arcana"
 
 [[annotations]]
-path = "common/src/main/resources/**"
-precedence = "aggregate"
-SPDX-FileCopyrightText = "2022 klikli-dev"
-SPDX-License-Identifier = "CC-BY-4.0"
-
-[[annotations]]
 path = "common/src/generated/resources/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2022 klikli-dev"
-SPDX-License-Identifier = "CC-BY-4.0"
+SPDX-License-Identifier = "MIT"
 
 [[annotations]]
 path = "fabric/src/main/resources/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2022 klikli-dev"
-SPDX-License-Identifier = "CC-BY-4.0"
+SPDX-License-Identifier = "MIT"
 
 [[annotations]]
 path = "fabric/src/generated/resources/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2022 klikli-dev"
-SPDX-License-Identifier = "CC-BY-4.0"
+SPDX-License-Identifier = "MIT"
 
 [[annotations]]
 path = "neo/src/main/resources/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2022 klikli-dev"
-SPDX-License-Identifier = "CC-BY-4.0"
+SPDX-License-Identifier = "MIT"
 
 [[annotations]]
 path = "neo/src/generated/resources/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2022 klikli-dev"
-SPDX-License-Identifier = "CC-BY-4.0"
+SPDX-License-Identifier = "MIT"
 
 [[annotations]]
 path = "forge/src/main/resources/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2022 klikli-dev"
-SPDX-License-Identifier = "CC-BY-4.0"
+SPDX-License-Identifier = "MIT"
 
 [[annotations]]
 path = "forge/src/generated/resources/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2022 klikli-dev"
-SPDX-License-Identifier = "CC-BY-4.0"
+SPDX-License-Identifier = "MIT"
 
 [[annotations]]
 path = ".github/**"
