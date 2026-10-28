@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.3-2.19.0] - 2026-10-28
+### :sparkles: New Features
+- [`12ec706`](https://github.com/klikli-dev/modonomicon/commit/12ec70668857037d97e340f55f5eda8e1e31c96e) - Allow flipping pages with arrow keys *(PR [#412](https://github.com/klikli-dev/modonomicon/pull/412) by [@klikli-dev](https://github.com/klikli-dev))*
+- [`70195af`](https://github.com/klikli-dev/modonomicon/commit/70195afe4d437b953e47127cd60d579a893840b5) - per-book/per-category locked category display option (hidden vs shown as locked) *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`276252d`](https://github.com/klikli-dev/modonomicon/commit/276252dc2b10e9213da82ae7866c32ddb357363c) - phantom entries in index categories backgrounds *(PR [#413](https://github.com/klikli-dev/modonomicon/pull/413) by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.3-2.17.3] - 2026-10-27
 ### :bug: Bug Fixes
 - [`fa90bec`](https://github.com/klikli-dev/modonomicon/commit/fa90becb835166ebaf602f80dfb68d5b84035f84) - only clear cached book/research state on server overworld unload *(PR [#411](https://github.com/klikli-dev/modonomicon/pull/411) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2508,3 +2517,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.3-2.17.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.17.0...release/v26.3-2.17.1
 [release/v26.3-2.17.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.17.1...release/v26.3-2.17.2
 [release/v26.3-2.17.3]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.17.2...release/v26.3-2.17.3
+[release/v26.3-2.19.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.17.3...release/v26.3-2.19.0
