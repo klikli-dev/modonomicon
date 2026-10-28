@@ -6,6 +6,7 @@ package com.klikli_dev.modonomicon.client.gui.book;
 
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.bookstate.visual.BookVisualState;
+import com.klikli_dev.modonomicon.networking.SyncResearchStateMessage;
 
 /**
  * A screen that represents a book. It usually manages other screens for categories and entries.
@@ -15,6 +16,11 @@ public interface BookParentScreen {
     Book getBook();
 
     void onDisplay();
+
+    /**
+     * Re-evaluates category visibility against the newly synced research state.
+     */
+    void onSyncResearchStateMessage(SyncResearchStateMessage message);
 
     /**
      * This is provided by any vanilla screen, and usually overridden by Modonomicon screens.

@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Book;
 import com.klikli_dev.modonomicon.book.BookDisplayMode;
+import com.klikli_dev.modonomicon.book.BookLockedCategoryDisplay;
 import com.klikli_dev.modonomicon.book.PageDisplayMode;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
@@ -49,6 +50,14 @@ public class BookModel {
      * If in index mode, the themed double-page background is used instead of the node frame texture.
      */
     protected BookDisplayMode displayMode = BookDisplayMode.NODE;
+
+    /**
+     * Governs how categories whose condition is not met are presented in the parent screens.
+     * If null (default), hidden categories are used for node mode books
+     * and shown-as-locked categories for index mode books.
+     */
+    @Nullable
+    protected BookLockedCategoryDisplay lockedCategoryDisplay = null;
 
     /**
      * The creative tab to add the book to.
@@ -204,6 +213,11 @@ public class BookModel {
         return this.displayMode;
     }
 
+    @Nullable
+    public BookLockedCategoryDisplay getLockedCategoryDisplay() {
+        return this.lockedCategoryDisplay;
+    }
+
     public PageDisplayMode getPageDisplayMode() {
         return this.pageDisplayMode;
     }
@@ -263,6 +277,10 @@ public class BookModel {
 
         json.addProperty("default_allow_page_split", this.defaultAllowPageSplit);
 
+        if (this.lockedCategoryDisplay != null) {
+            json.addProperty("locked_category_display", this.lockedCategoryDisplay.getSerializedName());
+        }
+
         return json;
     }
 
@@ -317,6 +335,17 @@ public class BookModel {
      */
     public BookModel withDisplayMode(BookDisplayMode displayMode) {
         this.displayMode = displayMode;
+        return this;
+    }
+
+    /**
+     * Sets how categories whose condition is not met are presented in the parent screens.
+     * If never set (null), locked categories are hidden for node mode books
+     * and shown as locked for index mode books.
+     * Can be overridden per category.
+     */
+    public BookModel withLockedCategoryDisplay(@Nullable BookLockedCategoryDisplay lockedCategoryDisplay) {
+        this.lockedCategoryDisplay = lockedCategoryDisplay;
         return this;
     }
 

@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.client.gui.book.node;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.book.BookLockedCategoryDisplay;
 import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.bookstate.visual.BookVisualState;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
@@ -20,6 +21,7 @@ import com.klikli_dev.modonomicon.client.gui.book.button.*;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiFrameOverlay;
 import com.klikli_dev.modonomicon.client.gui.book.recentlyunlocked.BookRecentlyUnlockedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
+import com.klikli_dev.modonomicon.networking.SyncResearchStateMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.research.ResearchServices;
@@ -343,20 +345,20 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
     }
 
     protected void updateCategoryButtons(int buttonX, int buttonY, int buttonWidth, int buttonHeight, int buttonSpacing) {
+        var displayable = this.getDisplayableCategories();
         int buttonCount = 0;
-        for (int i = this.categoryButtonRenderOffset, size = this.categories.size(); i < size; i++) {
+        for (int i = this.categoryButtonRenderOffset, size = displayable.size(); i < size; i++) {
             if (buttonCount >= MAX_CATEGORY_BUTTONS) {
                 break; // Stop adding buttons once we reach the maximum
             }
-            if (this.categories.get(i).showCategoryButton()) {
-                var button = new CategoryButton(this, this.categories.get(i),
-                        buttonX, buttonY + (buttonHeight + buttonSpacing) * buttonCount, buttonWidth, buttonHeight,
-                        (b) -> this.onBookCategoryButtonClick((CategoryButton) b),
-                        Tooltip.create(Component.translatable(this.categories.get(i).getName())));
+            var category = displayable.get(i);
+            var button = new CategoryButton(this, category,
+                    buttonX, buttonY + (buttonHeight + buttonSpacing) * buttonCount, buttonWidth, buttonHeight,
+                    (b) -> this.onBookCategoryButtonClick((CategoryButton) b),
+                    Tooltip.create(Component.translatable(category.getName())));
 
-                this.addRenderableWidget(button);
-                buttonCount++;
-            }
+            this.addRenderableWidget(button);
+            buttonCount++;
         }
 
         buttonX += 8;
@@ -375,17 +377,41 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
 
         // Add the bottom scroll button if there are more categories than can be displayed
-        if (this.categories.size() > this.categoryButtonRenderOffset + MAX_CATEGORY_BUTTONS) {
+        if (displayable.size() > this.categoryButtonRenderOffset + MAX_CATEGORY_BUTTONS) {
             int bottomScrollButtonY= this.getFrameHeight() + this.getFrameThicknessH() - ResearchProgressButton.HEIGHT / 2 - 3;
 
             var bottomScrollButton = new CategoryScrollButton(this, buttonX, bottomScrollButtonY, true,
-                    () -> this.categories.size() > this.categoryButtonRenderOffset + MAX_CATEGORY_BUTTONS,
+                    () -> displayable.size() > this.categoryButtonRenderOffset + MAX_CATEGORY_BUTTONS,
                     (b) -> {
                         this.categoryButtonRenderOffset++;
                         this.rebuildWidgets();
                     });
             this.addRenderableWidget(bottomScrollButton);
         }
+    }
+
+    /**
+     * Categories to show navigation buttons for: all categories with a category button,
+     * minus locked categories that are configured as hidden.
+     */
+    protected List<BookCategory> getDisplayableCategories() {
+        var player = this.minecraft == null ? null : this.minecraft.player;
+        return this.categories.stream()
+                .filter(BookCategory::showCategoryButton)
+                .filter(c -> player == null
+                        || BookServices.visibility().isVisible(player, c)
+                        || c.getEffectiveLockedCategoryDisplay() == BookLockedCategoryDisplay.SHOW_AS_LOCKED)
+                .toList();
+    }
+
+    /**
+     * Re-evaluates category visibility against the newly synced research state,
+     * so categories gated on just-unlocked (or just-relocked) conditions swap
+     * without closing and reopening the book.
+     */
+    public void onSyncResearchStateMessage(SyncResearchStateMessage message) {
+        this.rebuildWidgets();
+        this.updateUnreadEntriesState();
     }
 
     protected void onSearchButtonClick(SearchButton button) {

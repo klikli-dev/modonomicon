@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.api.events.EntryFirstReadEvent;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookDisplayMode;
+import com.klikli_dev.modonomicon.book.BookLockedCategoryDisplay;
 import com.klikli_dev.modonomicon.book.PageDisplayMode;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
@@ -118,7 +119,20 @@ public class BookGuiManager {
             if (categories.size() == 1) {
                 return categories.getFirst();
             }
-            return book.getCategoriesSorted().stream().filter(BookCategory::showCategoryButton).findFirst().orElseThrow();
+            var displayable = book.getCategoriesSorted().stream()
+                    .filter(BookCategory::showCategoryButton)
+                    .filter(c -> BookServices.visibility().isVisible(this.player(), c)
+                            || c.getEffectiveLockedCategoryDisplay() == BookLockedCategoryDisplay.SHOW_AS_LOCKED)
+                    .toList();
+            if (displayable.isEmpty()) {
+                //all categories are locked and hidden - fall back to the first button so the book still opens
+                return book.getCategoriesSorted().stream().filter(BookCategory::showCategoryButton).findFirst().orElseThrow();
+            }
+            //prefer an unlocked category so we do not land on a locked one by default
+            return displayable.stream()
+                    .filter(c -> BookServices.visibility().isVisible(this.player(), c))
+                    .findFirst()
+                    .orElse(displayable.getFirst());
         }
         return savedCategory;
     }

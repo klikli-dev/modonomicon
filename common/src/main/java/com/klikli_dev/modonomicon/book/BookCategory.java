@@ -25,6 +25,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -70,6 +71,12 @@ public class BookCategory {
     protected Map<Identifier, BookEntry> entries;
     protected BookCondition condition;
     protected boolean showCategoryButton;
+    /**
+     * Per-category override for how locked categories are presented.
+     * If null, the book setting (or its default) applies.
+     */
+    @Nullable
+    protected BookLockedCategoryDisplay lockedCategoryDisplay;
     protected GuiButtonSprites categoryButtonSprites;
     /**
      * The entry to open when this category is opened.
@@ -82,13 +89,14 @@ public class BookCategory {
      */
     protected boolean openEntryToOpenOnlyOnce;
 
-    public BookCategory(Identifier id, String name, BookTextHolder description, int sortNumber, BookCondition condition, boolean showCategoryButton, BookIcon icon, BookDisplayMode displayMode, Identifier background, int backgroundWidth, int backgroundHeight, int maxScrollX, int maxScrollY, float backgroundTextureZoomMultiplier, BookBackgroundRenderingMode backgroundRenderingMode, float backgroundOverscan, List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers, GuiButtonSprites categoryButtonSprites, Identifier entryToOpen, boolean openEntryOnlyOnce) {
+    public BookCategory(Identifier id, String name, BookTextHolder description, int sortNumber, BookCondition condition, boolean showCategoryButton, BookIcon icon, BookDisplayMode displayMode, Identifier background, int backgroundWidth, int backgroundHeight, int maxScrollX, int maxScrollY, float backgroundTextureZoomMultiplier, BookBackgroundRenderingMode backgroundRenderingMode, float backgroundOverscan, List<BookCategoryBackgroundParallaxLayer> backgroundParallaxLayers, GuiButtonSprites categoryButtonSprites, Identifier entryToOpen, boolean openEntryOnlyOnce, @Nullable BookLockedCategoryDisplay lockedCategoryDisplay) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.sortNumber = sortNumber;
         this.condition = condition;
         this.showCategoryButton = showCategoryButton;
+        this.lockedCategoryDisplay = lockedCategoryDisplay;
         this.icon = icon;
         this.displayMode = displayMode;
         this.background = background;
@@ -125,6 +133,10 @@ public class BookCategory {
         }
         var backgroundOverscan = GsonHelper.getAsFloat(json, "background_overscan", Category.DEFAULT_BACKGROUND_OVERSCAN);
         var showCategoryButton = GsonHelper.getAsBoolean(json, "show_category_button", true);
+        BookLockedCategoryDisplay lockedCategoryDisplay = null;
+        if (json.has("locked_category_display")) {
+            lockedCategoryDisplay = BookLockedCategoryDisplay.byName(GsonHelper.getAsString(json, "locked_category_display"));
+        }
         var categoryButtonSprites = json.has("category_button_sprite")
                 ? categoryButtonSpritesFromJson(json.getAsJsonObject("category_button_sprite"))
                 : null;
@@ -145,7 +157,7 @@ public class BookCategory {
         boolean openEntryOnlyOnce = GsonHelper.getAsBoolean(json, "open_entry_to_open_only_once", true);
 
         return new BookCategory(id, name, description, sortNumber, condition, showCategoryButton, icon, displayMode, background, backgroundWidth, backgroundHeight,
-                defaultMaxScrollX, defaultMaxScrollY, backgroundTextureZoomMultiplier, backgroundRenderingMode, backgroundOverscan, backgroundParallaxLayers, categoryButtonSprites, entryToOpen, openEntryOnlyOnce);
+                defaultMaxScrollX, defaultMaxScrollY, backgroundTextureZoomMultiplier, backgroundRenderingMode, backgroundOverscan, backgroundParallaxLayers, categoryButtonSprites, entryToOpen, openEntryOnlyOnce, lockedCategoryDisplay);
     }
 
     public static BookCategory fromNetwork(Identifier id, RegistryFriendlyByteBuf buffer) {
@@ -168,8 +180,9 @@ public class BookCategory {
         var categoryButtonSprites = readOptionalButtonSprites(buffer);
         var entryToOpen = buffer.readNullable(FriendlyByteBuf::readIdentifier);
         var openEntryOnlyOnce = buffer.readBoolean();
+        BookLockedCategoryDisplay lockedCategoryDisplay = buffer.readBoolean() ? BookLockedCategoryDisplay.byId(buffer.readByte()) : null;
         return new BookCategory(id, name, description, sortNumber, condition, showCategoryButton, icon, displayMode, background, backgroundWidth, backgroundHeight,
-                defaultMaxScrollX, defaultMaxScrollY, backgroundTextureZoomMultiplier, backgroundRenderingMode, backgroundOverscan, backgroundParallaxLayers, categoryButtonSprites, entryToOpen, openEntryOnlyOnce);
+                defaultMaxScrollX, defaultMaxScrollY, backgroundTextureZoomMultiplier, backgroundRenderingMode, backgroundOverscan, backgroundParallaxLayers, categoryButtonSprites, entryToOpen, openEntryOnlyOnce, lockedCategoryDisplay);
     }
 
     public void toNetwork(RegistryFriendlyByteBuf buffer) {
@@ -192,6 +205,10 @@ public class BookCategory {
         writeOptionalButtonSprites(buffer, this.categoryButtonSprites);
         buffer.writeNullable(this.entryToOpen, FriendlyByteBuf::writeIdentifier);
         buffer.writeBoolean(this.openEntryToOpenOnlyOnce);
+        buffer.writeBoolean(this.lockedCategoryDisplay != null);
+        if (this.lockedCategoryDisplay != null) {
+            buffer.writeByte(this.lockedCategoryDisplay.ordinal());
+        }
     }
 
     private static GuiButtonSprites categoryButtonSpritesFromJson(JsonObject json) {
@@ -365,6 +382,28 @@ public class BookCategory {
 
     public boolean showCategoryButton() {
         return this.showCategoryButton;
+    }
+
+    /**
+     * The per-category override for locked category presentation, or null to inherit the book setting.
+     */
+    @Nullable
+    public BookLockedCategoryDisplay getLockedCategoryDisplay() {
+        return this.lockedCategoryDisplay;
+    }
+
+    /**
+     * The effective locked category display, resolving the category override,
+     * then the book setting, then the display-mode default.
+     */
+    public BookLockedCategoryDisplay getEffectiveLockedCategoryDisplay() {
+        if (this.lockedCategoryDisplay != null) {
+            return this.lockedCategoryDisplay;
+        }
+        if (this.book != null) {
+            return this.book.getEffectiveLockedCategoryDisplay();
+        }
+        return BookLockedCategoryDisplay.HIDDEN;
     }
 
     public GuiButtonSprites getCategoryButtonSprites() {

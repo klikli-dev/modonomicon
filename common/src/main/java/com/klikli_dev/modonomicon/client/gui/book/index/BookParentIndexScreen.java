@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.book.BookLockedCategoryDisplay;
 import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.bookstate.visual.BookVisualState;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
@@ -28,6 +29,7 @@ import com.klikli_dev.modonomicon.client.gui.book.button.ShowRecentlyUnlockedBut
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
 import com.klikli_dev.modonomicon.client.gui.book.recentlyunlocked.BookRecentlyUnlockedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
+import com.klikli_dev.modonomicon.networking.SyncResearchStateMessage;
 import com.klikli_dev.modonomicon.client.render.page.BookPageRenderer;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.research.ResearchServices;
@@ -116,7 +118,12 @@ public class BookParentIndexScreen extends BookPaginatedListScreen<BookCategory>
 
     @Override
     protected List<BookCategory> computeAllEntries() {
-        return this.getEntries().stream().sorted(Comparator.comparingInt(BookCategory::getSortNumber)
+        var player = this.minecraft == null ? null : this.minecraft.player;
+        return this.getEntries().stream().filter(c ->
+                                player == null
+                                        || BookServices.visibility().isVisible(player, c)
+                                        || c.getEffectiveLockedCategoryDisplay() == BookLockedCategoryDisplay.SHOW_AS_LOCKED
+                ).sorted(Comparator.comparingInt(BookCategory::getSortNumber)
                         .thenComparing(a -> I18n.get(a.getName())))
                 .toList();
     }
@@ -221,6 +228,16 @@ public class BookParentIndexScreen extends BookPaginatedListScreen<BookCategory>
 
     @Override
     public void onDisplay() {
+        this.updateUnreadEntriesState();
+    }
+
+    /**
+     * Re-evaluates category visibility against the newly synced research state,
+     * so categories gated on just-unlocked (or just-relocked) conditions swap
+     * without closing and reopening the book.
+     */
+    public void onSyncResearchStateMessage(SyncResearchStateMessage message) {
+        this.rebuildWidgets();
         this.updateUnreadEntriesState();
     }
 
