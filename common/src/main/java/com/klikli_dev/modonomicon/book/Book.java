@@ -73,6 +73,13 @@ public class Book {
      */
     protected BookDisplayMode displayMode;
 
+    /**
+     * Governs how categories whose condition is not met are presented in the parent screens.
+     * If null, the default applies: hidden for node mode books, shown as locked for index mode books.
+     */
+    @Nullable
+    protected BookLockedCategoryDisplay lockedCategoryDisplay;
+
     protected Identifier leafletEntry;
 
     protected PageDisplayMode pageDisplayMode = PageDisplayMode.DOUBLE_PAGE;
@@ -110,7 +117,8 @@ public class Book {
                 @Nullable Identifier customBookItem, String creativeTab, Identifier font, Identifier turnPageSound, Identifier leafletEntry,
                 PageDisplayMode pageDisplayMode, boolean allowOpenBooksWithInvalidLinks, boolean showRecentlyUnlocked,
                 boolean defaultAutoScale, boolean defaultAllowPageSplit,
-                BookThemeData themeData, @Nullable ItemStackTemplate associatedItemBadge) {
+                BookThemeData themeData, @Nullable ItemStackTemplate associatedItemBadge,
+                @Nullable BookLockedCategoryDisplay lockedCategoryDisplay) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -138,6 +146,7 @@ public class Book {
         this.defaultAllowPageSplit = defaultAllowPageSplit;
         this.themeData = themeData;
         this.associatedItemBadge = associatedItemBadge;
+        this.lockedCategoryDisplay = lockedCategoryDisplay;
     }
 
     public static Book fromJson(Identifier id, JsonObject json, HolderLookup.Provider provider) {
@@ -173,6 +182,11 @@ public class Book {
         var defaultAutoScale = GsonHelper.getAsBoolean(json, "default_auto_scale", true);
         var defaultAllowPageSplit = GsonHelper.getAsBoolean(json, "default_allow_page_split", false);
 
+        BookLockedCategoryDisplay lockedCategoryDisplay = null;
+        if (json.has("locked_category_display")) {
+            lockedCategoryDisplay = BookLockedCategoryDisplay.byName(GsonHelper.getAsString(json, "locked_category_display"));
+        }
+
         ItemStackTemplate associatedItemBadge = null;
         if (json.has("associated_item_badge")) {
             associatedItemBadge = ItemStackTemplate.CODEC.parse(provider.createSerializationContext(JsonOps.INSTANCE), json.get("associated_item_badge"))
@@ -180,7 +194,7 @@ public class Book {
         }
 
         return new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font,
-                turnPageSound, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, defaultAutoScale, defaultAllowPageSplit, themeData, associatedItemBadge);
+                turnPageSound, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, defaultAutoScale, defaultAllowPageSplit, themeData, associatedItemBadge, lockedCategoryDisplay);
     }
 
 
@@ -212,8 +226,10 @@ public class Book {
 
         var textMacros = readStringMap(buffer);
         var associatedItemBadge = ByteBufCodecs.optional(ItemStackTemplate.STREAM_CODEC).decode(buffer).orElse(null);
+        var hasLockedCategoryDisplay = buffer.readBoolean();
+        var lockedCategoryDisplay = hasLockedCategoryDisplay ? BookLockedCategoryDisplay.byId(buffer.readByte()) : null;
         var book = new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font,
-                turnPageSound, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, defaultAutoScale, defaultAllowPageSplit, themeData, associatedItemBadge);
+                turnPageSound, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, defaultAutoScale, defaultAllowPageSplit, themeData, associatedItemBadge, lockedCategoryDisplay);
 
         book.textMacros().putAll(textMacros);
 
@@ -289,6 +305,10 @@ public class Book {
         buffer.writeBoolean(this.defaultAllowPageSplit);
         writeStringMap(buffer, this.textMacros);
         ByteBufCodecs.optional(ItemStackTemplate.STREAM_CODEC).encode(buffer, Optional.ofNullable(this.associatedItemBadge));
+        buffer.writeBoolean(this.lockedCategoryDisplay != null);
+        if (this.lockedCategoryDisplay != null) {
+            buffer.writeByte(this.lockedCategoryDisplay.ordinal());
+        }
     }
 
     //FriendlyByteBuf#readMap/writeMap were removed in 26.3, so we replicate the previous wire format here
@@ -443,6 +463,27 @@ public class Book {
 
     public boolean showRecentlyUnlocked() {
         return this.showRecentlyUnlocked;
+    }
+
+    /**
+     * The configured locked category display, or null to use the default
+     * (hidden for node mode books, shown as locked for index mode books).
+     */
+    @Nullable
+    public BookLockedCategoryDisplay getLockedCategoryDisplay() {
+        return this.lockedCategoryDisplay;
+    }
+
+    /**
+     * The effective locked category display, resolving the default based on the display mode.
+     */
+    public BookLockedCategoryDisplay getEffectiveLockedCategoryDisplay() {
+        if (this.lockedCategoryDisplay != null) {
+            return this.lockedCategoryDisplay;
+        }
+        return this.getDisplayMode() == BookDisplayMode.INDEX
+                ? BookLockedCategoryDisplay.SHOW_AS_LOCKED
+                : BookLockedCategoryDisplay.HIDDEN;
     }
 
     public boolean defaultAutoScale() {

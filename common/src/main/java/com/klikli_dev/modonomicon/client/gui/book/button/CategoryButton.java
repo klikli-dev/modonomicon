@@ -85,6 +85,14 @@ public class CategoryButton extends Button {
 
             this.category.getIcon().render(guiGraphics, 0, 0);
 
+            //render a lock icon over the bottom right quarter of the category icon if locked
+            var player = Minecraft.getInstance().player;
+            if (player != null && !BookServices.visibility().isVisible(player, this.category)) {
+                var lockSprite = this.category.getBook().theme().content().lockIcon();
+                BookContentRenderer.drawSpriteRegion(guiGraphics, lockSprite,
+                        iconSize / 2, iconSize / 2, iconSize / 2, iconSize / 2);
+            }
+
             guiGraphics.pose().popMatrix();
             guiGraphics.pose().popMatrix();
 

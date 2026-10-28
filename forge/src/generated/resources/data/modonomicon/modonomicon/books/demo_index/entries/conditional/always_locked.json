@@ -7,7 +7,10 @@
   },
   "category": "modonomicon:conditional",
   "condition": {
-    "type": "modonomicon:false"
+    "type": "modonomicon:false",
+    "tooltip": {
+      "translate": "book.modonomicon.demo_index.conditional.always_locked.condition.tooltip"
+    }
   },
   "description": "book.modonomicon.demo_index.conditional.always_locked.description",
   "icon": {

@@ -15,6 +15,7 @@ import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeRef;
 import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
 import com.klikli_dev.modonomicon.book.BookBackgroundRenderingMode;
 import com.klikli_dev.modonomicon.book.BookDisplayMode;
+import com.klikli_dev.modonomicon.book.BookLockedCategoryDisplay;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiButtonSprites;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
@@ -83,6 +84,12 @@ public class BookCategoryModel {
     @Nullable
     protected BookConditionModel<?> condition = null;
     protected boolean showCategoryButton = true;
+    /**
+     * Per-category override for how locked categories are presented.
+     * If null (default), the book setting (or its display-mode default) applies.
+     */
+    @Nullable
+    protected BookLockedCategoryDisplay lockedCategoryDisplay = null;
     @Nullable
     protected GuiButtonSprites categoryButtonSprites = null;
 
@@ -125,6 +132,11 @@ public class BookCategoryModel {
         return this.showCategoryButton;
     }
 
+    @Nullable
+    public BookLockedCategoryDisplay getLockedCategoryDisplay() {
+        return this.lockedCategoryDisplay;
+    }
+
     public List<BookEntryModel> getEntries() {
         return this.entries;
     }
@@ -161,6 +173,9 @@ public class BookCategoryModel {
             json.add("condition", this.condition.toJson(this.getId(), provider));
         }
         json.addProperty("show_category_button", this.showCategoryButton);
+        if (this.lockedCategoryDisplay != null) {
+            json.addProperty("locked_category_display", this.lockedCategoryDisplay.getSerializedName());
+        }
         if (this.categoryButtonSprites != null) {
             json.add("category_button_sprite", this.categoryButtonSpriteToJson());
         }
@@ -472,6 +487,16 @@ public class BookCategoryModel {
      */
     public BookCategoryModel withShowCategoryButton(boolean showCategoryButton) {
         this.showCategoryButton = showCategoryButton;
+        return this;
+    }
+
+    /**
+     * Sets how this category is presented while its condition is not met.
+     * If set, overrides the book setting. If null (default), the book setting
+     * (or its display-mode default) applies.
+     */
+    public BookCategoryModel withLockedCategoryDisplay(@Nullable BookLockedCategoryDisplay lockedCategoryDisplay) {
+        this.lockedCategoryDisplay = lockedCategoryDisplay;
         return this;
     }
 

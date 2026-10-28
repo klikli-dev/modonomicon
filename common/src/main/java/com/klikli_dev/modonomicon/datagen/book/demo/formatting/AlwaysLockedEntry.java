@@ -28,7 +28,9 @@ public class AlwaysLockedEntry extends EntryProvider {
 
     @Override
     protected BookEntryModel additionalSetup(BookEntryModel entry) {
-        return entry.withCondition(BookFalseConditionModel.create());
+        var tooltipKey = this.context().entryCondition("tooltip");
+        this.add(tooltipKey, "This entry is intentionally always locked to demonstrate the \"false\" condition.");
+        return entry.withCondition(BookFalseConditionModel.create().withTooltipString(tooltipKey));
     }
 
     @Override

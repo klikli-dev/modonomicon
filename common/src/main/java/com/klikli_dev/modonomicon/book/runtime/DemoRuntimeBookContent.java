@@ -78,7 +78,8 @@ public final class DemoRuntimeBookContent {
                 List.of(),
                 null,
                 null,
-                true
+                true,
+                null
         );
 
         category.addEntry(new BookContentEntry(
