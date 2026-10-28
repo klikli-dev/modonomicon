@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.1-1.121.0] - 2026-10-28
+### :sparkles: New Features
+- [`6c61254`](https://github.com/klikli-dev/modonomicon/commit/6c612544d96eb1fffe91b5da47c713a52c1c54ad) - Allow flipping pages with arrow keys *(PR [#412](https://github.com/klikli-dev/modonomicon/pull/412) by [@vanutp](https://github.com/vanutp))*
+
+### :bug: Bug Fixes
+- [`e253be7`](https://github.com/klikli-dev/modonomicon/commit/e253be7085be8adc4183b333ad4df5132864eba2) - phantom entries in "index" categories' backgrounds *(PR [#413](https://github.com/klikli-dev/modonomicon/pull/413) by [@vanutp](https://github.com/vanutp))*
+- [`4013470`](https://github.com/klikli-dev/modonomicon/commit/4013470dd1b7c6b0d4321e40390211e18f665092) - bookmark button only working once *(PR [#414](https://github.com/klikli-dev/modonomicon/pull/414) by [@vanutp](https://github.com/vanutp))*
+
+
 ## [release/v1.21.1-1.120.8] - 2026-10-27
 ### :bug: Bug Fixes
 - [`d8602c7`](https://github.com/klikli-dev/modonomicon/commit/d8602c755c93ddc342c369cc7cc8137987aadb96) - do not reseed client level random in multiblock preview *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2449,3 +2458,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.1-1.120.6]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.120.5...release/v1.21.1-1.120.6
 [release/v1.21.1-1.120.7]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.120.6...release/v1.21.1-1.120.7
 [release/v1.21.1-1.120.8]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.120.7...release/v1.21.1-1.120.8
+[release/v1.21.1-1.121.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.120.8...release/v1.21.1-1.121.0
