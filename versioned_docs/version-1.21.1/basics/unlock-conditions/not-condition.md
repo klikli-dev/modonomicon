@@ -15,6 +15,12 @@ The child's tooltip is not forwarded, as it would describe the non-negated requi
 
 :::
 
+:::warning
+
+Unlocks are permanent: entries, categories and pages are only ever added to the unlocked set, never removed. A runtime `not(...)` condition therefore latches — e.g. an entry with `not(entry_unlocked X)` unlocks while X is still locked and stays unlocked afterwards. `not` is fully precise as [`load_condition`](./load-conditions.md) (evaluated once at load) and for static children such as [`mod_loaded`](./mod-loaded-condition.md).
+
+:::
+
 ## Attributes
 
 ### **child** (Condition, _mandatory_)
