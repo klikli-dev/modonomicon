@@ -5,9 +5,24 @@ on:
     branches:
       - documentation
 
+# Grant the minimum permissions required by the official GitHub Pages actions:
+# read the repo, publish a deployment, and mint an OIDC token for Pages.
+# https://github.com/actions/deploy-pages#usage
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run
+# in progress and the latest queued run. Do not cancel in-progress runs, as we
+# want to let the current deployment finish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
-  deploy:
-    name: Deploy to GitHub Pages
+  build:
+    name: Build website
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -21,18 +36,27 @@ jobs:
       - name: Build website
         run: yarn build
 
-      # Popular action to deploy to GitHub Pages:
-      # Docs: https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-docusaurus
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      # Configures the Pages site (base path, etc.) for the deployment below.
+      # Docs: https://github.com/actions/configure-pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v6
+
+      # Packages the build output as the artifact the deploy job publishes.
+      # Docs: https://github.com/actions/upload-pages-artifact
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v5
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          # Build output to publish to the `gh-pages` branch:
-          publish_dir: ./build
-          # The following lines assign commit authorship to the official
-          # GH-Actions bot for deploys to `gh-pages` branch:
-          # https://github.com/actions/checkout/issues/13#issuecomment-724415212
-          # The GH actions bot is used by default if you didn't specify the two fields.
-          # You can swap them out with your own user credentials.
-          user_name: github-actions[bot]
-          user_email: 41898282+github-actions[bot]@users.noreply.github.com
+          path: ./build
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      # Docs: https://github.com/actions/deploy-pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
