@@ -6,7 +6,7 @@ sidebar_position: 20
 
 Load conditions decide whether a category, entry or page is **loaded at all**. If a load condition is not met when the book is loaded (on world load and `/reload`), the element is removed entirely, as if it was never defined. It is never parsed, so it cannot cause errors, e.g. due to items or recipes that do not exist.
 
-This is different from the regular [`condition`](./unlock-conditions), which only controls whether the element is *shown* to a player.
+This is different from the regular [`condition`](./unlock-conditions.md), which only controls whether the element is *shown* to a player.
 
 Typical use cases:
 
