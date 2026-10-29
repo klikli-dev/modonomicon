@@ -18,8 +18,8 @@ import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCommand;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.associated.AssociatedItemLookup;
-import com.klikli_dev.modonomicon.book.conditions.BookCondition;
- import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
+import com.klikli_dev.modonomicon.book.conditions.context.BookLoadConditionContext;
+import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
@@ -28,6 +28,8 @@ import com.klikli_dev.modonomicon.client.gui.TextWrapper;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.theme.BookThemeData;
 import com.klikli_dev.modonomicon.client.render.page.PageSplitter;
+import com.klikli_dev.modonomicon.data.load.BookElementKind;
+import com.klikli_dev.modonomicon.data.load.BookJsonPreprocessing;
 import com.klikli_dev.modonomicon.networking.Message;
 import com.klikli_dev.modonomicon.networking.SyncBookDataMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
@@ -56,10 +58,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -320,18 +324,15 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
     }
 
     /**
-     * Loads only the condition on the given category, entry or page and runs testOnLoad.
+     * Runs the load-time preprocessing (e.g. load conditions) on the given category, entry or page json.
      *
-     * @param key        the resource location of the content
-     * @param bookObject the json object representing the content
-     * @return false if the condition is not met and the content should not be loaded.
+     * @return the json to parse, or empty if the element should be removed entirely.
      */
-    private boolean testConditionOnLoad(Identifier key, JsonObject bookObject, HolderLookup.Provider provider) {
-        if (!bookObject.has("condition")) {
-            return true; //no condition -> always load
-        }
+    private Optional<JsonObject> preprocess(BookElementKind kind, Identifier bookId, Identifier elementId, JsonObject json) {
+        return BookJsonPreprocessing.process(kind, new BookLoadConditionContext(bookId, elementId, this.registries), json);
+    }
 
-        return BookCondition.fromJson(key, bookObject.getAsJsonObject("condition"), provider).testOnLoad();
+    private record RemovedElement(Identifier bookId, Identifier elementId) {
     }
 
 
@@ -433,6 +434,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
         }
 
         //load categories
+        var removedCategories = new HashSet<RemovedElement>();
         for (var entry : categoryJsons.entrySet()) {
             try {
                 //load categories and link to book
@@ -444,12 +446,14 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
                 var categoryId = Identifier.fromNamespaceAndPath(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
 
                 BookErrorManager.get().getContextHelper().categoryId = categoryId;
-                //test if we should load the category at all
-                if (!this.testConditionOnLoad(categoryId, entry.getValue(), this.registries)) {
+                var categoryJson = this.preprocess(BookElementKind.CATEGORY, bookId, categoryId, entry.getValue());
+                if (categoryJson.isEmpty()) {
+                    removedCategories.add(new RemovedElement(bookId, categoryId));
+                    BookErrorManager.get().reset();
                     continue;
                 }
 
-                var category = this.loadCategory(categoryId, entry.getValue(), this.registries);
+                var category = this.loadCategory(categoryId, categoryJson.get(), this.registries);
 
                 //link category and book
                 var book = this.books.get(bookId);
@@ -468,6 +472,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
         }
 
         //load entries
+        var removedEntries = new HashSet<RemovedElement>();
         for (var entry : entryJsons.entrySet()) {
             try {
                 //load entries and link to category
@@ -479,12 +484,23 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
                 var sourceEntryId = Identifier.fromNamespaceAndPath(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
 
                 BookErrorManager.get().getContextHelper().entryId = sourceEntryId;
-                //test if we should load the category at all
-                if (!this.testConditionOnLoad(sourceEntryId, entry.getValue(), this.registries)) {
+
+                //entries of removed categories are removed as well
+                var rawCategoryId = GsonHelper.getAsString(entry.getValue(), "category", null);
+                if (rawCategoryId != null && removedCategories.contains(new RemovedElement(bookId, Identifier.parse(rawCategoryId)))) {
+                    removedEntries.add(new RemovedElement(bookId, sourceEntryId));
+                    BookErrorManager.get().reset();
                     continue;
                 }
 
-                var bookEntry = this.loadEntry(entry.getValue(), this.registries);
+                var entryJson = this.preprocess(BookElementKind.ENTRY, bookId, sourceEntryId, entry.getValue());
+                if (entryJson.isEmpty()) {
+                    removedEntries.add(new RemovedElement(bookId, sourceEntryId));
+                    BookErrorManager.get().reset();
+                    continue;
+                }
+
+                var bookEntry = this.loadEntry(entryJson.get(), this.registries);
                 BookErrorManager.get().getContextHelper().entryId = bookEntry.getId();
 
                 //link entry and category
@@ -510,7 +526,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
         }
 
         //Merge per-page JSON files into BookContentEntry inline page lists
-        this.mergePageJsons(pageJsons, categoryJsons, entryJsons);
+        this.mergePageJsons(pageJsons, removedCategories, removedEntries);
 
         //load commands
         for (var entry : commandJsons.entrySet()) {
@@ -550,14 +566,16 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
 
     /**
      * Merges per-page JSON files into BookContentEntry inline page lists.
+     * Page files removed by load-time preprocessing (e.g. a failing load_condition) also remove inline pages with the same ID.
      * Pages in a file replace inline pages with the same ID.
      * Pages without a matching inline ID are appended in sort_number order.
      */
-    private void mergePageJsons(Map<Identifier, JsonObject> pageJsons, Map<Identifier, JsonObject> categoryJsons, Map<Identifier, JsonObject> entryJsons) {
+    private void mergePageJsons(Map<Identifier, JsonObject> pageJsons, Set<RemovedElement> removedCategories, Set<RemovedElement> removedEntries) {
         // First pass: parse all page files and collect them, grouped by entry
         // We use a LinkedHashMap to preserve insertion order while grouping
         record ParsedPage(BookContentEntry contentEntry, BookPage page, int sortNumber) {}
         var pagesByEntry = new LinkedHashMap<BookContentEntry, List<ParsedPage>>();
+        var removedPageIds = new ArrayList<RemovedPage>();
 
         var sortedEntries = new ArrayList<>(pageJsons.entrySet());
         sortedEntries.sort(Comparator.comparing(e -> e.getKey().toString()));
@@ -593,19 +611,24 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
                 // Entry ID: category path + "/" + entry name (part just before "pages")
                 var entryPath = categoryPath + "/" + pathParts[pagesIdx - 1];
                 var entryId = Identifier.fromNamespaceAndPath(path.getNamespace(), entryPath);
-                var categoryJsonKey = Identifier.fromNamespaceAndPath(path.getNamespace(), pathParts[0] + "/categories/" + categoryId.getPath());
-                var entryJsonKey = Identifier.fromNamespaceAndPath(path.getNamespace(), pathParts[0] + "/entries/" + entryId.getPath());
 
                 BookErrorManager.get().setCurrentBookId(bookId);
                 BookErrorManager.get().getContextHelper().entryId = entryId;
 
-                var categoryJson = categoryJsons.get(categoryJsonKey);
-                if (categoryJson != null && !this.testConditionOnLoad(categoryId, categoryJson, this.registries)) {
+                //pages of removed categories or entries are removed as well
+                if (removedCategories.contains(new RemovedElement(bookId, categoryId)) || removedEntries.contains(new RemovedElement(bookId, entryId))) {
+                    BookErrorManager.get().reset();
                     continue;
                 }
 
-                var entryJson = entryJsons.get(entryJsonKey);
-                if (entryJson != null && !this.testConditionOnLoad(entryId, entryJson, this.registries)) {
+                var pageJson = this.preprocess(BookElementKind.PAGE, bookId, entryId, entry.getValue());
+                if (pageJson.isEmpty()) {
+                    //a removed page file with an id also removes the inline page with the same id
+                    var removedPageId = GsonHelper.getAsString(entry.getValue(), "id", null);
+                    if (removedPageId != null) {
+                        removedPageIds.add(new RemovedPage(bookId, categoryId, entryId, removedPageId));
+                    }
+                    BookErrorManager.get().reset();
                     continue;
                 }
 
@@ -633,10 +656,10 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
                 }
 
                 // Parse the page JSON
-                var page = BookPage.fromJson(entryId, entry.getValue(), this.registries);
+                var page = BookPage.fromJson(entryId, pageJson.get(), this.registries);
 
                 // Read sort_number if present (default: -1 = append at end)
-                var sortNumber = GsonHelper.getAsInt(entry.getValue(), "sort_number", -1);
+                var sortNumber = GsonHelper.getAsInt(pageJson.get(), "sort_number", -1);
 
                 pagesByEntry.computeIfAbsent(contentEntry, k -> new ArrayList<>())
                         .add(new ParsedPage(contentEntry, page, sortNumber));
@@ -657,6 +680,24 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
                 this.mergePageIntoEntry(contentEntry, parsedPage.page(), parsedPage.sortNumber());
             }
         }
+
+        // Third pass: remove inline pages whose page file was removed by load-time preprocessing,
+        // unless another (passing) page file for the same entry provides a page with that id, e.g. alternative versions of a page
+        for (var removedPage : removedPageIds) {
+            var book = this.books.get(removedPage.bookId());
+            var category = book != null ? book.getCategory(removedPage.categoryId()) : null;
+            var bookEntry = category != null ? category.getEntry(removedPage.entryId()) : null;
+            if (bookEntry instanceof BookContentEntry contentEntry) {
+                var providedByPageFile = pagesByEntry.getOrDefault(contentEntry, List.of()).stream()
+                        .anyMatch(parsedPage -> removedPage.pageId().equals(parsedPage.page().getId()));
+                if (!providedByPageFile) {
+                    contentEntry.getPages().removeIf(page -> removedPage.pageId().equals(page.getId()));
+                }
+            }
+        }
+    }
+
+    private record RemovedPage(Identifier bookId, Identifier categoryId, Identifier entryId, String pageId) {
     }
 
     /**

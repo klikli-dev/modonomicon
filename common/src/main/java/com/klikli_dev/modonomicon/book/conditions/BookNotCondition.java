@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.book.conditions;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
+import com.klikli_dev.modonomicon.book.conditions.context.BookLoadConditionContext;
 import com.klikli_dev.modonomicon.data.BookConditionType;
 import com.klikli_dev.modonomicon.registry.BookConditionTypeRegistry;
 import com.mojang.serialization.MapCodec;
@@ -65,12 +66,13 @@ public class BookNotCondition extends BookCondition {
     }
 
     @Override
-    public boolean testOnLoad() {
-        // Always load and decide at runtime. Naively returning !child.testOnLoad() would
-        // prevent loading for the main use case: most conditions (e.g. research) return
-        // true on load to defer the decision to runtime, and inverting that to false
-        // would drop the content entirely. Runtime test() still hides it correctly.
-        return true;
+    public boolean supportsLoadTime() {
+        return this.child.supportsLoadTime();
+    }
+
+    @Override
+    public boolean testOnLoad(BookLoadConditionContext context) {
+        return !this.child.testOnLoad(context);
     }
 
     @Override

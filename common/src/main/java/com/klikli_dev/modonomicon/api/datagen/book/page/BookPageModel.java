@@ -15,6 +15,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookNoneConditionModel;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.page.BookPage;
+import com.klikli_dev.modonomicon.data.load.LoadConditionPreprocessor;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
@@ -34,6 +35,7 @@ public abstract class BookPageModel<T extends BookPageModel<T>> {
     protected Identifier type;
     protected String id = "";
     protected BookConditionModel<?> condition = BookNoneConditionModel.create();
+    protected BookConditionModel<?> loadCondition = null;
     protected int sortNumber = -1;
     protected List<Either<ItemStackTemplate, Ingredient>> associatedItems = new ArrayList<>();
 
@@ -59,7 +61,17 @@ public abstract class BookPageModel<T extends BookPageModel<T>> {
         if (this.sortNumber >= 0) {
             json.addProperty("sort_number", this.sortNumber);
         }
+        this.addLoadConditionToJson(json, entryId, provider);
         return json;
+    }
+
+    /**
+     * Adds the load condition (if any) to the given page json.
+     */
+    public void addLoadConditionToJson(JsonObject json, Identifier entryId, HolderLookup.Provider provider) {
+        if (this.loadCondition != null) {
+            json.add(LoadConditionPreprocessor.KEY, this.loadCondition.toJson(entryId, provider));
+        }
     }
 
     protected BookCondition condition(HolderLookup.Provider provider) {
@@ -82,6 +94,16 @@ public abstract class BookPageModel<T extends BookPageModel<T>> {
 
     public T withCondition(@NotNull ResearchNodeRef nodeRef) {
         return this.withCondition(BookResearchNodeUnlockedConditionModel.create().withNode(nodeRef.id()));
+    }
+
+    /**
+     * Sets the load condition of this page. If it is not met when the book is loaded, the page is removed entirely.
+     * Only conditions that can be evaluated at load time are allowed, e.g. mod loaded, true, false, and, or, not.
+     */
+    public T withLoadCondition(@NotNull BookConditionModel<?> loadCondition) {
+        this.loadCondition = loadCondition;
+        //noinspection unchecked
+        return (T) this;
     }
 
     public List<Either<ItemStackTemplate, Ingredient>> getAssociatedItems() {
