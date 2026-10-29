@@ -366,8 +366,12 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
             BookErrorManager.get().getContextHelper().entryId = entryId;
             BookErrorManager.get().setContext("Page File: {}", file.fileKey());
             try {
-                var processed = this.preprocess(BookElementKind.PAGE, bookId, entryId, file.json());
-                if (processed.isEmpty()) {
+                //Only the (load_)condition is checked here. The merged page runs through the full
+                //preprocessing pipeline later with the other inline pages, so transforming steps
+                //are applied exactly once per final page.
+                var keepFile = BookJsonPreprocessing.testConditions(BookElementKind.PAGE,
+                        new BookLoadConditionContext(bookId, entryId, this.registries), file.json());
+                if (!keepFile) {
                     //stripped by its (load_)condition: remove the targeted inline page, if any
                     if (hasPageTarget(file.json())) {
                         var targetIndex = findTargetedPageIndex(pages, file.json());
@@ -381,17 +385,22 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                     continue;
                 }
 
-                var pageJson = processed.get().deepCopy();
+                var pageJson = file.json().deepCopy();
+
+                //resolve the target before stripping merge-only keys, otherwise e.g. an "index"
+                //target would be lost and the file would append instead of replacing
+                var hasTarget = hasPageTarget(pageJson);
+                var targetIndex = hasTarget ? findTargetedPageIndex(pages, pageJson) : -1;
+
                 pageJson.remove("index");
                 var sortNumber = pageJson.has("sort_number") ? GsonHelper.getAsInt(pageJson, "sort_number", -1) : -1;
                 pageJson.remove("sort_number");
 
-                if (!hasPageTarget(pageJson)) {
+                if (!hasTarget) {
                     appended.add(new AppendedPage(pageJson, sortNumber));
                     continue;
                 }
 
-                var targetIndex = findTargetedPageIndex(pages, pageJson);
                 if (targetIndex < 0) {
                     if (isIdPageTarget(pageJson)) {
                         //an id doubles as the new page's identity: no match means a new page

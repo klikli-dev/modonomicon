@@ -29,6 +29,18 @@ public class BookJsonPreprocessing {
     }
 
     /**
+     * Evaluates only the load/legacy conditions of the given json, without running transforming preprocessors.
+     * Used for file-based pages before merging, so that each final (merged or inline) page runs the full
+     * pipeline in {@link #process} exactly once. May throw IllegalArgumentException for unsupported
+     * load_condition types, same as the full pipeline.
+     *
+     * @return true if the element should be kept, false if it should be removed entirely.
+     */
+    public static boolean testConditions(BookElementKind kind, BookLoadConditionContext context, JsonObject json) {
+        return new LoadConditionPreprocessor().process(kind, context, json).isPresent();
+    }
+
+    /**
      * @return the processed json, or empty if the element should be removed entirely.
      */
     public static Optional<JsonObject> process(BookElementKind kind, BookLoadConditionContext context, JsonObject json) {
