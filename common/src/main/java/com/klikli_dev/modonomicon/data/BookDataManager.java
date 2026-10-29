@@ -681,13 +681,18 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
             }
         }
 
-        // Third pass: remove inline pages whose page file was removed by load-time preprocessing
+        // Third pass: remove inline pages whose page file was removed by load-time preprocessing,
+        // unless another (passing) page file for the same entry provides a page with that id, e.g. alternative versions of a page
         for (var removedPage : removedPageIds) {
             var book = this.books.get(removedPage.bookId());
             var category = book != null ? book.getCategory(removedPage.categoryId()) : null;
             var bookEntry = category != null ? category.getEntry(removedPage.entryId()) : null;
             if (bookEntry instanceof BookContentEntry contentEntry) {
-                contentEntry.getPages().removeIf(page -> removedPage.pageId().equals(page.getId()));
+                var providedByPageFile = pagesByEntry.getOrDefault(contentEntry, List.of()).stream()
+                        .anyMatch(parsedPage -> removedPage.pageId().equals(parsedPage.page().getId()));
+                if (!providedByPageFile) {
+                    contentEntry.getPages().removeIf(page -> removedPage.pageId().equals(page.getId()));
+                }
             }
         }
     }
