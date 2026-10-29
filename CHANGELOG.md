@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.3-2.20.0] - 2026-10-29
+### :sparkles: New Features
+- [`939719c`](https://github.com/klikli-dev/modonomicon/commit/939719c4e640a82fa5ef78a8081a4b3110260ea2) - (proper) load time conditions *(PR [#415](https://github.com/klikli-dev/modonomicon/pull/415) by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`9f07a6a`](https://github.com/klikli-dev/modonomicon/commit/9f07a6a12b8fd128a513afaebad61436585689b5) - relicense assets to MIT and fully switch to REUSE licensing *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`c05c5c1`](https://github.com/klikli-dev/modonomicon/commit/c05c5c120fb4f2ab5e3e89431776be9c7b82b9b1) - update forge *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.3-2.19.0] - 2026-10-28
 ### :sparkles: New Features
 - [`12ec706`](https://github.com/klikli-dev/modonomicon/commit/12ec70668857037d97e340f55f5eda8e1e31c96e) - Allow flipping pages with arrow keys *(PR [#412](https://github.com/klikli-dev/modonomicon/pull/412) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2518,3 +2527,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.3-2.17.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.17.1...release/v26.3-2.17.2
 [release/v26.3-2.17.3]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.17.2...release/v26.3-2.17.3
 [release/v26.3-2.19.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.17.3...release/v26.3-2.19.0
+[release/v26.3-2.20.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.19.0...release/v26.3-2.20.0
