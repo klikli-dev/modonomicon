@@ -24,9 +24,19 @@ public final class PredicateRegistry {
     private static final Map<Identifier, PredicateType> TYPES = Object2ObjectMaps.synchronize(new Object2ObjectArrayMap<>());
 
     public static final PredicateType AIR = register(Matchers.AIR.getPredicateId(), (getter, pos, state) -> state.isAir());
-    public static final PredicateType NON_SOLID = register(Modonomicon.loc("non_solid"), (getter, pos, state) -> !state.isSolid());
+    public static final PredicateType NON_SOLID = register(Modonomicon.loc("non_solid"), PredicateRegistry::isNonSolid);
 
     private PredicateRegistry() {
+    }
+
+    /**
+     * NB: BlockStateBase#isSolid is deprecated without a replacement (vanilla still uses it
+     * in 30+ places); legacy solidity semantics are required here for multiblock matching
+     * and differ from isSolidRender (e.g. stairs), so the call is kept.
+     */
+    @SuppressWarnings("deprecation")
+    private static boolean isNonSolid(BlockGetter getter, BlockPos pos, BlockState state) {
+        return !state.isSolid();
     }
 
     public static void bootstrap() {

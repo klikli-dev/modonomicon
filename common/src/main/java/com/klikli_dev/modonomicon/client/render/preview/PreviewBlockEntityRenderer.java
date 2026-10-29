@@ -81,6 +81,10 @@ public class PreviewBlockEntityRenderer {
         // Extract block entity render states from the simulated multiblock
         for (var r : snapshot.visibleResults()) {
             try {
+                //NB: Forge/Neo deprecate BlockStateBase#rotate in favor of the loader-only
+                //rotate(LevelAccessor, BlockPos, Rotation), which common code cannot call.
+                //The context-free call delegates to the same Block#rotate logic.
+                @SuppressWarnings("deprecation")
                 BlockState displayedState = r.stateMatcher().getDisplayedState(ClientTicks.ticks).rotate(snapshot.effectiveRotation());
 
                 if (displayedState.getBlock() instanceof EntityBlock eb) {

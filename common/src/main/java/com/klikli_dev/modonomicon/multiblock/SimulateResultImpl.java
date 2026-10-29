@@ -20,6 +20,10 @@ public record SimulateResultImpl(BlockPos worldPosition, StateMatcher stateMatch
     @Override
     public boolean test(Level world, Rotation rotation) {
         var pos = this.worldPosition();
+        //NB: Forge/Neo deprecate BlockStateBase#rotate in favor of the loader-only
+        //rotate(LevelAccessor, BlockPos, Rotation), which common code cannot call.
+        //The context-free call delegates to the same Block#rotate logic.
+        @SuppressWarnings("deprecation")
         BlockState state = world.getBlockState(pos).rotate(AbstractMultiblock.fixHorizontal(rotation));
         return this.stateMatcher().getStatePredicate().test(world, pos, state);
     }

@@ -20,7 +20,14 @@ public class ModonomiconKeys {
     /**
      * Category id {@code modonomicon:modonomicon}, shown with the lang key
      * {@code key.category.modonomicon.modonomicon}.
+     * <p>
+     * NB: Neo deprecates Category#register in favor of
+     * RegisterKeyMappingsEvent#registerCategory, which is Neo-specific
+     * (Forge's event has no such method, Fabric registers via
+     * KeyBindingHelper), so common code keeps the static registration that
+     * populates SORT_ORDER on all loaders.
      */
+    @SuppressWarnings("deprecation")
     public static final KeyMapping.Category CATEGORY =
             KeyMapping.Category.register(Modonomicon.loc("modonomicon"));
 

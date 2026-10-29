@@ -154,6 +154,10 @@ public class SparseMultiblock extends AbstractMultiblock {
     public boolean test(Level world, BlockPos start, int x, int y, int z, Rotation rotation) {
         this.setLevel(world);
         BlockPos checkPos = start.offset(new BlockPos(x, y, z).rotate(rotation));
+        //NB: Forge/Neo deprecate BlockStateBase#rotate in favor of the loader-only
+        //rotate(LevelAccessor, BlockPos, Rotation), which common code cannot call.
+        //The context-free call delegates to the same Block#rotate logic.
+        @SuppressWarnings("deprecation")
         BlockState state = world.getBlockState(checkPos).rotate(AbstractMultiblock.fixHorizontal(rotation));
         StateMatcher matcher = this.stateMatchers.getOrDefault(new BlockPos(x, y, z), Matchers.ANY);
         return matcher.getStatePredicate().test(world, checkPos, state);
