@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.datagen.CategoryEntryMap;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
+import com.klikli_dev.modonomicon.data.load.LoadConditionPreprocessor;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
@@ -36,6 +37,7 @@ public class BookEntryModel {
     protected boolean showWhenAnyParentUnlocked;
     protected List<BookPageModel<?>> pages = new ArrayList<>();
     protected BookConditionModel<?> condition;
+    protected BookConditionModel<?> loadCondition;
     protected ResourceLocation categoryToOpen;
     protected ResourceLocation commandToRunOnFirstRead;
     protected ResourceLocation entryToOpen;
@@ -92,6 +94,10 @@ public class BookEntryModel {
 
         if (this.condition != null) {
             json.add("condition", this.condition.toJson(this.getId(), provider));
+        }
+
+        if (this.loadCondition != null) {
+            json.add(LoadConditionPreprocessor.KEY, this.loadCondition.toJson(this.getId(), provider));
         }
 
         if (this.categoryToOpen != null) {
@@ -419,6 +425,19 @@ public class BookEntryModel {
      */
     public BookEntryModel withCondition(BookConditionModel<?> condition) {
         this.condition = condition;
+        return this;
+    }
+
+    public BookConditionModel<?> getLoadCondition() {
+        return this.loadCondition;
+    }
+
+    /**
+     * Sets the load condition of this entry. If it is not met when the book is loaded, the entry (and its pages) is removed entirely.
+     * Only conditions that can be evaluated at load time are allowed, e.g. mod loaded, true, false, and, or, not.
+     */
+    public BookEntryModel withLoadCondition(BookConditionModel<?> loadCondition) {
+        this.loadCondition = loadCondition;
         return this;
     }
 

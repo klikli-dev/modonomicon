@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.api.datagen.book.page;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookNoneConditionModel;
+import com.klikli_dev.modonomicon.data.load.LoadConditionPreprocessor;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -18,7 +19,13 @@ public class BookPageModel<T extends BookPageModel<T>> {
 
     protected ResourceLocation type;
     protected String anchor = "";
+    /**
+     * Optional id to identify the page. Allows file-based pages to target (override or remove) this page.
+     * Not required for backwards compatibility - pages without an id cannot be targeted by id, but still load as before.
+     */
+    protected String id = "";
     protected BookConditionModel<?> condition = BookNoneConditionModel.create();
+    protected BookConditionModel<?> loadCondition = null;
 
     protected BookPageModel(ResourceLocation type) {
         this.type = type;
@@ -32,6 +39,10 @@ public class BookPageModel<T extends BookPageModel<T>> {
         return this.anchor;
     }
 
+    public String getId() {
+        return this.id;
+    }
+
     /**
      * Serializes the model to json.
      */
@@ -39,9 +50,22 @@ public class BookPageModel<T extends BookPageModel<T>> {
         JsonObject json = this.toJson(provider); //to keep backwards compat
         json.addProperty("type", this.type.toString());
         json.addProperty("anchor", this.anchor);
+        if (!this.id.isEmpty()) {
+            json.addProperty("id", this.id);
+        }
         json.add("condition", this.condition.toJson(entryId, provider));
+        this.addLoadConditionToJson(json, entryId, provider);
 
         return json;
+    }
+
+    /**
+     * Adds the load condition (if any) to the given page json.
+     */
+    public void addLoadConditionToJson(JsonObject json, ResourceLocation entryId, HolderLookup.Provider provider) {
+        if (this.loadCondition != null) {
+            json.add(LoadConditionPreprocessor.KEY, this.loadCondition.toJson(entryId, provider));
+        }
     }
 
     /**
@@ -59,8 +83,27 @@ public class BookPageModel<T extends BookPageModel<T>> {
         return (T) this;
     }
 
+    /**
+     * Sets an optional id to identify the page. Allows file-based pages to target (override or remove) this page.
+     */
+    public T withId(@NotNull String id) {
+        this.id = id;
+        //noinspection unchecked
+        return (T) this;
+    }
+
     public T withCondition(@NotNull BookConditionModel<?> condition) {
         this.condition = condition;
+        //noinspection unchecked
+        return (T) this;
+    }
+
+    /**
+     * Sets the load condition of this page. If it is not met when the book is loaded, the page is removed entirely.
+     * Only conditions that can be evaluated at load time are allowed, e.g. mod loaded, true, false, and, or, not.
+     */
+    public T withLoadCondition(@NotNull BookConditionModel<?> loadCondition) {
+        this.loadCondition = loadCondition;
         //noinspection unchecked
         return (T) this;
     }

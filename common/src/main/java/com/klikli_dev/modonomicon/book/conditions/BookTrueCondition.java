@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.book.conditions;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
+import com.klikli_dev.modonomicon.book.conditions.context.BookLoadConditionContext;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -53,6 +54,16 @@ public class BookTrueCondition extends BookCondition {
 
     @Override
     public boolean test(BookConditionContext context, Player player) {
+        return true;
+    }
+
+    @Override
+    public boolean supportsLoadTime() {
+        return true;
+    }
+
+    @Override
+    public boolean testOnLoad(BookLoadConditionContext context) {
         return true;
     }
 }

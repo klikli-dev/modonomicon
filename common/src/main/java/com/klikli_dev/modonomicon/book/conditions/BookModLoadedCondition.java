@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
+import com.klikli_dev.modonomicon.book.conditions.context.BookLoadConditionContext;
 import com.klikli_dev.modonomicon.platform.Services;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -68,6 +69,16 @@ public class BookModLoadedCondition extends BookCondition {
 
     @Override
     public boolean testOnLoad() {
+        return Services.PLATFORM.isModLoaded(this.modId);
+    }
+
+    @Override
+    public boolean supportsLoadTime() {
+        return true;
+    }
+
+    @Override
+    public boolean testOnLoad(BookLoadConditionContext context) {
         return Services.PLATFORM.isModLoaded(this.modId);
     }
 }
