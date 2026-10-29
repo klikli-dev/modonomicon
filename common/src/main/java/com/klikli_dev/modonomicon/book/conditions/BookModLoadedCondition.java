@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.book.conditions;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
+import com.klikli_dev.modonomicon.book.conditions.context.BookLoadConditionContext;
 import com.klikli_dev.modonomicon.data.BookConditionType;
 import com.klikli_dev.modonomicon.registry.BookConditionTypeRegistry;
 import com.mojang.serialization.Codec;
@@ -56,7 +57,12 @@ public class BookModLoadedCondition extends BookCondition {
     }
 
     @Override
-    public boolean testOnLoad() {
+    public boolean supportsLoadTime() {
+        return true;
+    }
+
+    @Override
+    public boolean testOnLoad(BookLoadConditionContext context) {
         return Services.PLATFORM.isModLoaded(this.modId);
     }
 }

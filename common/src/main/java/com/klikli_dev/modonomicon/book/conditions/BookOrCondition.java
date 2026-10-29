@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.book.conditions;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
+import com.klikli_dev.modonomicon.book.conditions.context.BookLoadConditionContext;
 import com.klikli_dev.modonomicon.data.BookConditionType;
 import com.klikli_dev.modonomicon.registry.BookConditionTypeRegistry;
 import com.mojang.serialization.MapCodec;
@@ -74,9 +75,14 @@ public class BookOrCondition extends BookCondition {
     }
 
     @Override
-    public boolean testOnLoad() {
+    public boolean supportsLoadTime() {
+        return Arrays.stream(this.children).allMatch(BookCondition::supportsLoadTime);
+    }
+
+    @Override
+    public boolean testOnLoad(BookLoadConditionContext context) {
         for (var child : this.children) {
-            if (child.testOnLoad())
+            if (child.testOnLoad(context))
                 return true;
         }
         return false;
