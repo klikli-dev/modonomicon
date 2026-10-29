@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.1-1.122.0] - 2026-10-29
+### :sparkles: New Features
+- [`89e0eb7`](https://github.com/klikli-dev/modonomicon/commit/89e0eb7db6aa3077576517c75d057f9a23eae9ca) - load conditions for 1.21.1 *(PR [#417](https://github.com/klikli-dev/modonomicon/pull/417) by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.1-1.121.0] - 2026-10-28
 ### :sparkles: New Features
 - [`6c61254`](https://github.com/klikli-dev/modonomicon/commit/6c612544d96eb1fffe91b5da47c713a52c1c54ad) - Allow flipping pages with arrow keys *(PR [#412](https://github.com/klikli-dev/modonomicon/pull/412) by [@vanutp](https://github.com/vanutp))*
@@ -2459,3 +2464,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.1-1.120.7]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.120.6...release/v1.21.1-1.120.7
 [release/v1.21.1-1.120.8]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.120.7...release/v1.21.1-1.120.8
 [release/v1.21.1-1.121.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.120.8...release/v1.21.1-1.121.0
+[release/v1.21.1-1.122.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.121.0...release/v1.21.1-1.122.0
