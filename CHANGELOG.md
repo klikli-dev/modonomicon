@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-2.20.0] - 2026-10-29
+### :sparkles: New Features
+- [`a085f63`](https://github.com/klikli-dev/modonomicon/commit/a085f63dffe69859cb0dc84f0247b5a01a6c206e) - (proper) load time conditions *(PR [#415](https://github.com/klikli-dev/modonomicon/pull/415) by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`fefd782`](https://github.com/klikli-dev/modonomicon/commit/fefd782f76e4ccd98fcb207e2832319bd75e9480) - relicense assets to MIT and fully switch to REUSE licensing *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.2-2.19.0] - 2026-10-28
 ### :sparkles: New Features
 - [`43e773d`](https://github.com/klikli-dev/modonomicon/commit/43e773d0c6e61686697cfa075d4592017a6201e8) - per-book/per-category locked category display option (hidden vs shown as locked) *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2461,3 +2469,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-2.17.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.17.1...release/v26.1.2-2.17.2
 [release/v26.1.2-2.18.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.17.2...release/v26.1.2-2.18.0
 [release/v26.1.2-2.19.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.18.0...release/v26.1.2-2.19.0
+[release/v26.1.2-2.20.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.19.0...release/v26.1.2-2.20.0
