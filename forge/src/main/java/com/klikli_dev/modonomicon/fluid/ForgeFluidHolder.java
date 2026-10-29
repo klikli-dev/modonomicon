@@ -8,7 +8,6 @@ package com.klikli_dev.modonomicon.fluid;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentPatch;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.level.material.Fluid;
@@ -42,9 +41,12 @@ public class ForgeFluidHolder implements FluidHolder {
         return new ForgeFluidHolder(FluidStack.EMPTY);
     }
 
+    //NB: Mojang's deprecation is usage guidance, not removal; resolving the intrusive
+    //holder remains the correct call here (vanilla still uses it the same way).
     @Override
+    @SuppressWarnings("deprecation")
     public Holder<Fluid> getFluid() {
-        return BuiltInRegistries.FLUID.wrapAsHolder(this.fluidStack.getFluid());
+        return this.fluidStack.getFluid().builtInRegistryHolder();
     }
 
     @Override

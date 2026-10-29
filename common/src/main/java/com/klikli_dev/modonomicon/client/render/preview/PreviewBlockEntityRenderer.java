@@ -64,6 +64,13 @@ public class PreviewBlockEntityRenderer {
         this.erroredBlockEntities.clear();
     }
 
+    //NB: Mojang's deprecation is usage guidance, not removal; syncing a fake to its
+    //displayed state remains the correct call (vanilla still uses it the same way).
+    @SuppressWarnings("deprecation")
+    private static void setBlockEntityState(BlockEntity be, BlockState state) {
+        be.setBlockState(state);
+    }
+
     /**
      * Phase 1: extract render states for every block entity in the snapshot.
      * Must be called during the render state extraction phase; the returned states are attached
@@ -91,17 +98,15 @@ public class PreviewBlockEntityRenderer {
                     // Cache/create a fake block entity at the simulated position (translate by startPos)
                     var cacheKey = r.worldPosition().subtract(startPos).immutable();
                     var be = this.blockEntityCache.compute(cacheKey, (p, cachedBe) -> {
-                        //NB: BlockEntity#setBlockState is deprecated, so recreate the fake when the
-                        //displayed state changed instead of mutating the cached instance.
-                        if (cachedBe == null || !cachedBe.getType().isValid(displayedState)
-                                || !cachedBe.getBlockState().equals(displayedState)) {
+                        if (cachedBe != null && !cachedBe.getType().isValid(displayedState)) {
                             return eb.newBlockEntity(p, displayedState);
                         }
-                        return cachedBe;
+                        return cachedBe != null ? cachedBe : eb.newBlockEntity(p, displayedState);
                     });
 
                     if (be != null && !this.erroredBlockEntities.contains(be)) {
                         be.setLevel(mc.level);
+                        setBlockEntityState(be, displayedState);
 
                         var dispatcher = Minecraft.getInstance().getBlockEntityRenderDispatcher();
                         var renderer = dispatcher.getRenderer(be);

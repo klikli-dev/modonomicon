@@ -26,6 +26,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -119,17 +120,15 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
                 var errored = state.erroredBlockEntities();
 
                 var be = cache.compute(r.worldPosition().immutable(), (p, cachedBe) -> {
-                    //NB: BlockEntity#setBlockState is deprecated, so recreate the fake when the
-                    //displayed state changed instead of mutating the cached instance.
-                    if (cachedBe == null || !cachedBe.getType().isValid(displayedBlockState)
-                            || !cachedBe.getBlockState().equals(displayedBlockState)) {
+                    if (cachedBe != null && !cachedBe.getType().isValid(displayedBlockState)) {
                         return eb.newBlockEntity(p, displayedBlockState);
                     }
-                    return cachedBe;
+                    return cachedBe != null ? cachedBe : eb.newBlockEntity(p, displayedBlockState);
                 });
 
                 if (be != null && !errored.contains(be)) {
                     be.setLevel(mc.level);
+                    setBlockEntityState(be, displayedBlockState);
 
                     poseStack.pushPose();
                     var bePos = r.worldPosition();
@@ -197,5 +196,12 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
     @Override
     protected String getTextureLabel() {
         return "multiblock";
+    }
+
+    //NB: Mojang's deprecation is usage guidance, not removal; syncing a fake to its
+    //displayed state remains the correct call (vanilla still uses it the same way).
+    @SuppressWarnings("deprecation")
+    private static void setBlockEntityState(BlockEntity be, BlockState state) {
+        be.setBlockState(state);
     }
 }

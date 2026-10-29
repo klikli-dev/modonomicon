@@ -12,7 +12,6 @@ import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import com.klikli_dev.modonomicon.research.hook.ItemCraftedContext;
 import com.klikli_dev.modonomicon.research.hook.TriggerHandler;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -46,9 +45,12 @@ public class ItemCraftedTriggerHandler implements TriggerHandler<ItemStackTempla
         return target.item().unwrapKey().map(ResourceKey::identifier).orElse(null);
     }
 
+    //NB: Mojang's deprecation is usage guidance, not removal; resolving the intrusive
+    //holder remains the correct call here (vanilla still uses it the same way).
     @Override
+    @SuppressWarnings("deprecation")
     public @Nullable Object indexKey(ItemCraftedContext context) {
-        return BuiltInRegistries.ITEM.wrapAsHolder(context.stack().getItem()).unwrapKey()
+        return context.stack().getItem().builtInRegistryHolder().unwrapKey()
                 .map(ResourceKey::identifier).orElse(null);
     }
 }
