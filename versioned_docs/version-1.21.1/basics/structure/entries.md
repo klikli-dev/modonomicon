@@ -99,6 +99,57 @@ A parent connection does not imply an unlock condition or any logical dependency
 
 Pages are JSON Objects that define the actual book content. See [Page Types](../page-types/page-types.md) for the available types of pages.
 
+#### File-based Pages
+
+In addition to inline pages, single pages can be provided as separate JSON files. This allows datapacks (and mods) to override, add or remove individual pages without copying the entire entry JSON.
+
+**File structure:**
+
+Page files live in a `pages/` directory that mirrors the entry path:
+
+```
+data/<mod_id>/modonomicon/books/<book_id>/pages/
+  <category_id>/
+    <entry_name>/
+      <any_name>.json            ← single page file, the file name is informational only
+```
+
+For example, a page file at `data/modonomicon/modonomicon/books/demo/pages/features/file_pages/override_by_id.json` belongs to entry `modonomicon:features/file_pages`.
+
+Each page file contains a single page JSON object. To override an existing inline page, the file targets it — with an `id`, an `anchor` or an `index`; without a target the file adds a new page:
+
+```json
+{
+  "id": "intro",
+  "type": "modonomicon:text",
+  "title": "book.mymod.demo.features.myentry.intro.title",
+  "text": "book.mymod.demo.features.myentry.intro.text"
+}
+```
+
+**Targeting rules** (checked in this order: `id`, then `anchor`, then `index`):
+
+- `id` (String, _optional_): replaces the inline page with the same `id`. If no inline page has this `id`, the file is appended as a new page — the `id` doubles as the new page's identity. Inline pages only have an `id` if the author set one (via datagen: `withId(...)`).
+- `anchor` (String, _optional_): replaces the first inline page with the same (non-empty) `anchor`. Errors if nothing matches.
+- `index` (Integer, _optional_): replaces the inline page at this 0-based position. Errors if out of range.
+- No target: the page is appended at the end of the entry. Multiple appended pages are ordered by their optional `sort_number` (default: last).
+
+Replacements keep the inline page's position; `index` and `sort_number` are merge-time only and are stripped from the page. Files are processed in file-path order. Targeting a page that does not exist is reported as an error and the file is skipped.
+
+To **remove** an inline page, give the file-based page a target and a failing [`load_condition`](../unlock-conditions/load-conditions.md), e.g. `{"type": "modonomicon:false"}`. Only the target and the load condition are needed:
+
+```json
+{
+  "id": "obsolete_page",
+  "load_condition": {
+    "type": "modonomicon:false"
+  }
+}
+```
+
+Live samples that override, add and remove pages of the demo book entry `modonomicon:features/file_pages`:
+[demo page files on GitHub](https://github.com/klikli-dev/modonomicon/tree/version/1.21.1/common/src/main/resources/data/modonomicon/modonomicon/books/demo/pages/features/file_pages)
+
 ### **category_to_open** (ResourceLocation, _optional_)
 
 The resource location to the category that should be opened when this entry is clicked. 

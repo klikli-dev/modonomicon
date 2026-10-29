@@ -64,3 +64,12 @@ On your entry or category, add:
 ```	
 
 See also [Unlock Conditions](../basics/unlock-conditions) for more information on how to use conditions.
+
+## Load-Time Support
+
+By default, custom conditions can only be used as regular `condition`. To allow using your condition as [Load Condition](../basics/unlock-conditions/load-conditions.md), it must not depend on a player or world. Override:
+
+- `supportsLoadTime()` to return `true`
+- `testOnLoad(BookLoadConditionContext)` to evaluate the condition. The context provides the book id, the element id and the registries.
+
+See [`BookModLoadedCondition`](https://github.com/klikli-dev/modonomicon/tree/version/1.21.1/common/src/main/java/com/klikli_dev/modonomicon/book/conditions/BookModLoadedCondition.java) for an example condition with load-time support (and [`BookFalseCondition`](https://github.com/klikli-dev/modonomicon/tree/version/1.21.1/common/src/main/java/com/klikli_dev/modonomicon/book/conditions/BookFalseCondition.java) for the simplest possible one).
