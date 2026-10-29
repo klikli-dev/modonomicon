@@ -16,12 +16,14 @@ import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
 import com.klikli_dev.modonomicon.book.BookCommand;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
-import com.klikli_dev.modonomicon.book.conditions.BookCondition;
+import com.klikli_dev.modonomicon.book.conditions.context.BookLoadConditionContext;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.entries.CategoryLinkBookEntry;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
+import com.klikli_dev.modonomicon.data.load.BookElementKind;
+import com.klikli_dev.modonomicon.data.load.BookJsonPreprocessing;
 import com.klikli_dev.modonomicon.networking.Message;
 import com.klikli_dev.modonomicon.networking.SyncBookDataMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
@@ -41,7 +43,9 @@ import net.minecraft.world.level.Level;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -218,18 +222,15 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     }
 
     /**
-     * Loads only the condition on the given category, entry or page and runs testOnLoad.
+     * Runs the load-time preprocessing (e.g. load conditions) on the given category, entry or page json.
      *
-     * @param key        the resource location of the content
-     * @param bookObject the json object representing the content
-     * @return false if the condition is not met and the content should not be loaded.
+     * @return the json to parse, or empty if the element should be removed entirely.
      */
-    private boolean testConditionOnLoad(ResourceLocation key, JsonObject bookObject, HolderLookup.Provider provider) {
-        if (!bookObject.has("condition")) {
-            return true; //no condition -> always load
-        }
+    private Optional<JsonObject> preprocess(BookElementKind kind, ResourceLocation bookId, ResourceLocation elementId, JsonObject json) {
+        return BookJsonPreprocessing.process(kind, new BookLoadConditionContext(bookId, elementId, this.registries), json);
+    }
 
-        return BookCondition.fromJson(key, bookObject.getAsJsonObject("condition"), provider).testOnLoad();
+    private record RemovedElement(ResourceLocation bookId, ResourceLocation elementId) {
     }
 
 
@@ -296,6 +297,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         }
 
         //load categories
+        var removedCategories = new HashSet<RemovedElement>();
         for (var entry : categoryJsons.entrySet()) {
             try {
                 //load categories and link to book
@@ -308,11 +310,15 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
                 BookErrorManager.get().getContextHelper().categoryId = categoryId;
                 //test if we should load the category at all
-                if (!this.testConditionOnLoad(categoryId, entry.getValue(), this.registries)) {
+                //load conditions (and, for backwards compatibility, legacy conditions) can remove the category entirely
+                var categoryJson = this.preprocess(BookElementKind.CATEGORY, bookId, categoryId, entry.getValue());
+                if (categoryJson.isEmpty()) {
+                    removedCategories.add(new RemovedElement(bookId, categoryId));
+                    BookErrorManager.get().reset();
                     continue;
                 }
 
-                var category = this.loadCategory(categoryId, entry.getValue(), this.registries);
+                var category = this.loadCategory(categoryId, categoryJson.get(), this.registries);
 
                 //link category and book
                 var book = this.books.get(bookId);
@@ -331,6 +337,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         }
 
         //load entries
+        var removedEntries = new HashSet<RemovedElement>();
         for (var entry : entryJsons.entrySet()) {
             try {
                 //load entries and link to category
@@ -342,8 +349,26 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                 var entryId = ResourceLocation.fromNamespaceAndPath(entry.getKey().getNamespace(), Arrays.stream(pathParts).skip(2).collect(Collectors.joining("/")));
 
                 BookErrorManager.get().getContextHelper().entryId = entryId;
-                //test if we should load the category at all
-                if (!this.testConditionOnLoad(entryId, entry.getValue(), this.registries)) {
+
+                //entries of removed categories are removed as well
+                var rawCategoryId = entry.getValue().has("category") ? entry.getValue().get("category").getAsString() : null;
+                if (rawCategoryId != null) {
+                    var rawCategoryResourceId = rawCategoryId.contains(":") ?
+                            ResourceLocation.parse(rawCategoryId) :
+                            ResourceLocation.fromNamespaceAndPath(bookId.getNamespace(), rawCategoryId);
+                    if (removedCategories.contains(new RemovedElement(bookId, rawCategoryResourceId))) {
+                        removedEntries.add(new RemovedElement(bookId, entryId));
+                        BookErrorManager.get().reset();
+                        continue;
+                    }
+                }
+
+                //load conditions (and, for backwards compatibility, legacy conditions) can remove the entry entirely.
+                //for content entries this also filters the inline pages.
+                var processedEntryJson = this.preprocess(BookElementKind.ENTRY, bookId, entryId, entry.getValue());
+                if (processedEntryJson.isEmpty()) {
+                    removedEntries.add(new RemovedElement(bookId, entryId));
+                    BookErrorManager.get().reset();
                     continue;
                 }
 
@@ -354,7 +379,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                     continue;
                 }
 
-                var bookEntry = this.loadEntry(entryId, entry.getValue(), book.autoAddReadConditions(), this.registries);
+                var bookEntry = this.loadEntry(entryId, processedEntryJson.get(), book.autoAddReadConditions(), this.registries);
 
                 //link entry and category
                 var category = book.getCategory(bookEntry.getCategoryId());

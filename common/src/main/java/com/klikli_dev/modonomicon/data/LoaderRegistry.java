@@ -105,6 +105,7 @@ public class LoaderRegistry {
         registerConditionLoader(Condition.ENTRY_READ, (BookConditionJsonLoader<?>) BookEntryReadCondition::fromJson, BookEntryReadCondition::fromNetwork);
         registerConditionLoader(Condition.OR, (BookConditionJsonLoader<?>) BookOrCondition::fromJson, BookOrCondition::fromNetwork);
         registerConditionLoader(Condition.AND, (BookConditionJsonLoader<?>) BookAndCondition::fromJson, BookAndCondition::fromNetwork);
+        registerConditionLoader(Condition.NOT, (BookConditionJsonLoader<?>) BookNotCondition::fromJson, BookNotCondition::fromNetwork);
         registerConditionLoader(Condition.TRUE, (BookConditionJsonLoader<?>) BookTrueCondition::fromJson, BookTrueCondition::fromNetwork);
         registerConditionLoader(Condition.FALSE, (BookConditionJsonLoader<?>) BookFalseCondition::fromJson, BookFalseCondition::fromNetwork);
         registerConditionLoader(Condition.MOD_LOADED, (BookConditionJsonLoader<?>) BookModLoadedCondition::fromJson, BookModLoadedCondition::fromNetwork);

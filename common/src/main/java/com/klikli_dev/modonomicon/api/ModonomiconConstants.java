@@ -96,6 +96,7 @@ public class ModonomiconConstants {
             public static final ResourceLocation MOD_LOADED = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "mod_loaded");
             public static final ResourceLocation OR = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "or");
             public static final ResourceLocation AND = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "and");
+            public static final ResourceLocation NOT = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "not");
 
             public static final ResourceLocation TRUE = ResourceLocation.fromNamespaceAndPath(ModonomiconAPI.ID, "true");
 

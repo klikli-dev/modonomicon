@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Condition;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
+import com.klikli_dev.modonomicon.book.conditions.context.BookLoadConditionContext;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -96,6 +97,20 @@ public class BookOrCondition extends BookCondition {
     public boolean testOnLoad() {
         for (var child : this.children) {
             if (child.testOnLoad())
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean supportsLoadTime() {
+        return Arrays.stream(this.children).allMatch(BookCondition::supportsLoadTime);
+    }
+
+    @Override
+    public boolean testOnLoad(BookLoadConditionContext context) {
+        for (var child : this.children) {
+            if (child.testOnLoad(context))
                 return true;
         }
         return false;

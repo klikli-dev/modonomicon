@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Category;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.book.BookCategoryBackgroundParallaxLayer;
 import com.klikli_dev.modonomicon.book.BookDisplayMode;
+import com.klikli_dev.modonomicon.data.load.LoadConditionPreprocessor;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
@@ -62,6 +63,8 @@ public class BookCategoryModel {
 
     @Nullable
     protected BookConditionModel<?> condition = null;
+    @Nullable
+    protected BookConditionModel<?> loadCondition = null;
     protected boolean showCategoryButton = true;
 
     /**
@@ -132,6 +135,9 @@ public class BookCategoryModel {
         json.addProperty("entry_textures", this.entryTextures.toString());
         if (this.condition != null) {
             json.add("condition", this.condition.toJson(this.getId(), provider));
+        }
+        if (this.loadCondition != null) {
+            json.add(LoadConditionPreprocessor.KEY, this.loadCondition.toJson(this.getId(), provider));
         }
         json.addProperty("show_category_button", this.showCategoryButton);
         if (this.entryToOpen != null) {
@@ -417,6 +423,20 @@ public class BookCategoryModel {
      */
     public BookCategoryModel withCondition(BookConditionModel<?> condition) {
         this.condition = condition;
+        return this;
+    }
+
+    @Nullable
+    public BookConditionModel<?> getLoadCondition() {
+        return this.loadCondition;
+    }
+
+    /**
+     * Sets the load condition of this category. If it is not met when the book is loaded, the category (and its entries) is removed entirely.
+     * Only conditions that can be evaluated at load time are allowed, e.g. mod loaded, true, false, and, or, not.
+     */
+    public BookCategoryModel withLoadCondition(BookConditionModel<?> loadCondition) {
+        this.loadCondition = loadCondition;
         return this;
     }
 

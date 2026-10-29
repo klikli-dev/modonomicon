@@ -54,4 +54,12 @@ public class ConditionHelper {
     public BookOrConditionModel orBuilder(BookConditionModel... children) {
         return BookOrConditionModel.create().withChildren(children);
     }
+
+    public BookNotConditionModel not(BookConditionModel child) {
+        return BookNotConditionModel.create().withChild(child);
+    }
+
+    public BookNotConditionModel notBuilder(BookConditionModel child) {
+        return BookNotConditionModel.create().withChild(child);
+    }
 }
