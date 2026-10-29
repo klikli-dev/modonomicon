@@ -566,6 +566,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
 
     /**
      * Merges per-page JSON files into BookContentEntry inline page lists.
+     * Page files removed by load-time preprocessing (e.g. a failing load_condition) also remove inline pages with the same ID.
      * Pages in a file replace inline pages with the same ID.
      * Pages without a matching inline ID are appended in sort_number order.
      */
@@ -574,6 +575,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
         // We use a LinkedHashMap to preserve insertion order while grouping
         record ParsedPage(BookContentEntry contentEntry, BookPage page, int sortNumber) {}
         var pagesByEntry = new LinkedHashMap<BookContentEntry, List<ParsedPage>>();
+        var removedPageIds = new ArrayList<RemovedPage>();
 
         var sortedEntries = new ArrayList<>(pageJsons.entrySet());
         sortedEntries.sort(Comparator.comparing(e -> e.getKey().toString()));
@@ -621,6 +623,11 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
 
                 var pageJson = this.preprocess(BookElementKind.PAGE, bookId, entryId, entry.getValue());
                 if (pageJson.isEmpty()) {
+                    //a removed page file with an id also removes the inline page with the same id
+                    var removedPageId = GsonHelper.getAsString(entry.getValue(), "id", null);
+                    if (removedPageId != null) {
+                        removedPageIds.add(new RemovedPage(bookId, categoryId, entryId, removedPageId));
+                    }
                     BookErrorManager.get().reset();
                     continue;
                 }
@@ -673,6 +680,19 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
                 this.mergePageIntoEntry(contentEntry, parsedPage.page(), parsedPage.sortNumber());
             }
         }
+
+        // Third pass: remove inline pages whose page file was removed by load-time preprocessing
+        for (var removedPage : removedPageIds) {
+            var book = this.books.get(removedPage.bookId());
+            var category = book != null ? book.getCategory(removedPage.categoryId()) : null;
+            var bookEntry = category != null ? category.getEntry(removedPage.entryId()) : null;
+            if (bookEntry instanceof BookContentEntry contentEntry) {
+                contentEntry.getPages().removeIf(page -> removedPage.pageId().equals(page.getId()));
+            }
+        }
+    }
+
+    private record RemovedPage(Identifier bookId, Identifier categoryId, Identifier entryId, String pageId) {
     }
 
     /**
