@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import com.klikli_dev.modonomicon.research.hook.ItemAcquiredContext;
 import com.klikli_dev.modonomicon.research.hook.TriggerHandler;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -47,7 +48,7 @@ public class ItemAcquiredTriggerHandler implements TriggerHandler<ItemStackTempl
 
     @Override
     public @Nullable Object indexKey(ItemAcquiredContext context) {
-        return context.stack().getItem().builtInRegistryHolder().unwrapKey()
+        return BuiltInRegistries.ITEM.wrapAsHolder(context.stack().getItem()).unwrapKey()
                 .map(ResourceKey::identifier).orElse(null);
     }
 }

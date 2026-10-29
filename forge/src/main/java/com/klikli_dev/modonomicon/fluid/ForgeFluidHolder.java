@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.fluid;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.level.material.Fluid;
@@ -43,7 +44,7 @@ public class ForgeFluidHolder implements FluidHolder {
 
     @Override
     public Holder<Fluid> getFluid() {
-        return this.fluidStack.getFluid().builtInRegistryHolder();
+        return BuiltInRegistries.FLUID.wrapAsHolder(this.fluidStack.getFluid());
     }
 
     @Override
