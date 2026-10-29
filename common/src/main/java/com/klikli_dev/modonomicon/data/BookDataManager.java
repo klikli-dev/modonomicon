@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.data;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.Modonomicon;
@@ -38,12 +39,16 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.Level;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -233,11 +238,203 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
     private record RemovedElement(ResourceLocation bookId, ResourceLocation elementId) {
     }
 
+    private record PageFile(ResourceLocation fileKey, JsonObject json) {
+    }
+
+    /**
+     * Groups file-based pages by the entry they belong to.
+     * Page files live at {@code <book>/pages/<entry id path>/<file>.json}, e.g.
+     * {@code data/modonomicon/modonomicon/books/demo/pages/features/test_entry/extra.json} targets entry
+     * {@code modonomicon:features/test_entry}. The file name itself is informational only.
+     */
+    private Map<RemovedElement, List<PageFile>> groupPageFilesByEntry(Map<ResourceLocation, JsonObject> pageJsons) {
+        var grouped = new HashMap<RemovedElement, List<PageFile>>();
+        var sortedKeys = new ArrayList<>(pageJsons.keySet());
+        sortedKeys.sort(Comparator.comparing(ResourceLocation::toString));
+        for (var fileKey : sortedKeys) {
+            var pathParts = fileKey.getPath().split("/");
+            //book, "pages", at least one entry id part (category path + entry name), file name
+            if (pathParts.length < 4 || !"pages".equals(pathParts[1])) {
+                var bookId = pathParts.length > 0 ?
+                        ResourceLocation.fromNamespaceAndPath(fileKey.getNamespace(), pathParts[0]) : null;
+                BookErrorManager.get().setCurrentBookId(bookId);
+                BookErrorManager.get().error("Failed to load page file '" + fileKey + "': expected path '<book>/pages/<category>/.../<entry>/<file>.json'. The file will be skipped.");
+                BookErrorManager.get().reset();
+                continue;
+            }
+            var bookId = ResourceLocation.fromNamespaceAndPath(fileKey.getNamespace(), pathParts[0]);
+            var entryId = ResourceLocation.fromNamespaceAndPath(fileKey.getNamespace(),
+                    String.join("/", Arrays.copyOfRange(pathParts, 2, pathParts.length - 1)));
+            grouped.computeIfAbsent(new RemovedElement(bookId, entryId), k -> new ArrayList<>())
+                    .add(new PageFile(fileKey, pageJsons.get(fileKey)));
+        }
+        return grouped;
+    }
+
+    /**
+     * Whether the given page file json targets a specific inline page.
+     * A file without any target adds a new page instead of overriding one.
+     * Priority when several are present: id, then anchor, then index.
+     */
+    private static boolean hasPageTarget(JsonObject pageJson) {
+        return isIdPageTarget(pageJson)
+                || (pageJson.has("anchor") && !GsonHelper.getAsString(pageJson, "anchor", "").isEmpty())
+                || pageJson.has("index");
+    }
+
+    private static boolean isIdPageTarget(JsonObject pageJson) {
+        return pageJson.has("id") && !GsonHelper.getAsString(pageJson, "id", "").isEmpty();
+    }
+
+    /**
+     * @return the position of the targeted inline page in the given working list, or -1 if there is no match.
+     * An "id" identifies the page, so a missing id means "new page" for surviving files (handled by the caller).
+     * "anchor" (only non-empty anchors match) and "index" (0-based, as authored) are pure selectors.
+     */
+    private static int findTargetedPageIndex(JsonArray pages, JsonObject pageJson) {
+        if (isIdPageTarget(pageJson)) {
+            var id = GsonHelper.getAsString(pageJson, "id", "");
+            for (int i = 0; i < pages.size(); i++) {
+                if (pages.get(i) instanceof JsonObject inline
+                        && id.equals(GsonHelper.getAsString(inline, "id", ""))) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+        if (pageJson.has("anchor")) {
+            var anchor = GsonHelper.getAsString(pageJson, "anchor", "");
+            if (!anchor.isEmpty()) {
+                for (int i = 0; i < pages.size(); i++) {
+                    if (pages.get(i) instanceof JsonObject inline
+                            && anchor.equals(GsonHelper.getAsString(inline, "anchor", ""))) {
+                        return i;
+                    }
+                }
+                return -1;
+            }
+        }
+        if (pageJson.has("index")) {
+            var index = GsonHelper.getAsInt(pageJson, "index");
+            if (index < 0 || index >= pages.size()) {
+                return -1;
+            }
+            return index;
+        }
+        return -1;
+    }
+
+    /**
+     * Merges file-based pages into an entry json, so single pages can be overridden, added or removed
+     * without copying the entire entry.
+     * <ul>
+     * <li>A file with a matching "id" replaces that inline page, otherwise it is appended as a new page.</li>
+     * <li>A file with a (non-empty) "anchor" or an "index" (0-based) replaces the first matching inline page,
+     * errors if nothing matches.</li>
+     * <li>A file without any target is appended; appended pages are ordered by "sort_number" (default: end).</li>
+     * <li>A file removed by its (load_)condition removes the targeted inline page instead; without a target it is ignored.</li>
+     * </ul>
+     * Replacements keep the inline page's position; "index" and "sort_number" are merge-time only and are stripped.
+     * Files are processed in file-path order; "index" targets resolve against the working list at that point.
+     *
+     * @return the (possibly copied) entry json to parse.
+     */
+    private JsonObject mergePageFiles(ResourceLocation bookId, ResourceLocation entryId, JsonObject entryJson, List<PageFile> pageFiles) {
+        if (pageFiles == null || pageFiles.isEmpty()) {
+            return entryJson;
+        }
+
+        record AppendedPage(JsonObject json, int sortNumber) {
+        }
+
+        var sorted = new ArrayList<>(pageFiles);
+        sorted.sort(Comparator.comparing(file -> file.fileKey().toString()));
+
+        var pages = new JsonArray();
+        if (entryJson.has("pages")) {
+            if (!(entryJson.get("pages") instanceof JsonArray inlinePages)) {
+                //leave malformed pages untouched so the regular parsing reports the error
+                BookErrorManager.get().setContext(null);
+                return entryJson;
+            }
+            pages.addAll(inlinePages);
+        }
+        boolean changed = false;
+        var appended = new ArrayList<AppendedPage>();
+
+        for (var file : sorted) {
+            BookErrorManager.get().getContextHelper().entryId = entryId;
+            BookErrorManager.get().setContext("Page File: {}", file.fileKey());
+            try {
+                var processed = this.preprocess(BookElementKind.PAGE, bookId, entryId, file.json());
+                if (processed.isEmpty()) {
+                    //stripped by its (load_)condition: remove the targeted inline page, if any
+                    if (hasPageTarget(file.json())) {
+                        var targetIndex = findTargetedPageIndex(pages, file.json());
+                        if (targetIndex < 0) {
+                            BookErrorManager.get().error("Failed to merge page file '" + file.fileKey() + "': it targets a page in entry '" + entryId + "' that does not exist. The file will be skipped.");
+                        } else {
+                            pages.remove(targetIndex);
+                            changed = true;
+                        }
+                    }
+                    continue;
+                }
+
+                var pageJson = processed.get().deepCopy();
+                pageJson.remove("index");
+                var sortNumber = pageJson.has("sort_number") ? GsonHelper.getAsInt(pageJson, "sort_number", -1) : -1;
+                pageJson.remove("sort_number");
+
+                if (!hasPageTarget(pageJson)) {
+                    appended.add(new AppendedPage(pageJson, sortNumber));
+                    continue;
+                }
+
+                var targetIndex = findTargetedPageIndex(pages, pageJson);
+                if (targetIndex < 0) {
+                    if (isIdPageTarget(pageJson)) {
+                        //an id doubles as the new page's identity: no match means a new page
+                        appended.add(new AppendedPage(pageJson, sortNumber));
+                    } else {
+                        BookErrorManager.get().error("Failed to merge page file '" + file.fileKey() + "': it targets a page in entry '" + entryId + "' that does not exist. The file will be skipped.");
+                    }
+                    continue;
+                }
+
+                pages.set(targetIndex, pageJson);
+                changed = true;
+            } catch (Exception e) {
+                BookErrorManager.get().error("Failed to merge page file '" + file.fileKey() + "'", e);
+            }
+        }
+
+        if (!appended.isEmpty()) {
+            //order appended pages by sort_number, files without one go last (stable for equal values)
+            appended.sort(Comparator.comparingInt(page -> page.sortNumber() < 0 ? Integer.MAX_VALUE : page.sortNumber()));
+            for (var page : appended) {
+                pages.add(page.json());
+            }
+            changed = true;
+        }
+
+        BookErrorManager.get().setContext(null);
+
+        if (!changed) {
+            return entryJson;
+        }
+
+        var result = entryJson.deepCopy();
+        result.add("pages", pages);
+        return result;
+    }
+
 
     private void categorizeContent(Map<ResourceLocation, JsonElement> content,
                                    HashMap<ResourceLocation, JsonObject> bookJsons,
                                    HashMap<ResourceLocation, JsonObject> categoryJsons,
                                    HashMap<ResourceLocation, JsonObject> entryJsons,
+                                   HashMap<ResourceLocation, JsonObject> pageJsons,
                                    HashMap<ResourceLocation, JsonObject> commandJsons
     ) {
         for (var entry : content.entrySet()) {
@@ -254,14 +451,17 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                 case "categories" -> {
                     categoryJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
                 }
+                case "pages" -> {
+                    pageJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
+                }
                 case "commands" -> {
                     commandJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
                 }
                 default -> {
                     Modonomicon.LOG.warn("Found unknown content for book '{}': '{}'. " +
-                            "Should be one of: [File: book.json, Directory: entries/, Directory: categories/, Directory: commands/]", bookId, entry.getKey());
+                            "Should be one of: [File: book.json, Directory: entries/, Directory: categories/, Directory: pages/, Directory: commands/]", bookId, entry.getKey());
                     BookErrorManager.get().error(bookId, "Found unknown content for book '" + bookId + "': '" + entry.getKey() + "'. " +
-                            "Should be one of: [File: book.json, Directory: entries/, Directory: categories/, Directory: commands/]");
+                            "Should be one of: [File: book.json, Directory: entries/, Directory: categories/, Directory: pages/, Directory: commands/]");
                 }
             }
         }
@@ -277,8 +477,12 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
         var bookJsons = new HashMap<ResourceLocation, JsonObject>();
         var categoryJsons = new HashMap<ResourceLocation, JsonObject>();
         var entryJsons = new HashMap<ResourceLocation, JsonObject>();
+        var pageJsons = new HashMap<ResourceLocation, JsonObject>();
         var commandJsons = new HashMap<ResourceLocation, JsonObject>();
-        this.categorizeContent(content, bookJsons, categoryJsons, entryJsons, commandJsons);
+        this.categorizeContent(content, bookJsons, categoryJsons, entryJsons, pageJsons, commandJsons);
+
+        //group file-based pages by their entry, they are merged into the entry jsons below
+        var pageFilesByEntry = this.groupPageFilesByEntry(pageJsons);
 
         //load books
         for (var entry : bookJsons.entrySet()) {
@@ -350,6 +554,10 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
                 BookErrorManager.get().getContextHelper().entryId = entryId;
 
+                //claim the file-based pages for this entry (even if the entry itself is removed below,
+                //so they are not reported as orphaned)
+                var pageFiles = pageFilesByEntry.remove(new RemovedElement(bookId, entryId));
+
                 //entries of removed categories are removed as well
                 var rawCategoryId = entry.getValue().has("category") ? entry.getValue().get("category").getAsString() : null;
                 if (rawCategoryId != null) {
@@ -365,7 +573,16 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
 
                 //load conditions (and, for backwards compatibility, legacy conditions) can remove the entry entirely.
                 //for content entries this also filters the inline pages.
-                var processedEntryJson = this.preprocess(BookElementKind.ENTRY, bookId, entryId, entry.getValue());
+                //file-based pages are merged into the entry json first, so they take part in all of the above.
+                var mergedEntryJson = this.mergePageFiles(bookId, entryId, entry.getValue(), pageFiles);
+                if (pageFiles != null && !pageFiles.isEmpty()) {
+                    //merging sets page file error context, restore the entry context
+                    BookErrorManager.get().reset();
+                    BookErrorManager.get().setCurrentBookId(bookId);
+                    BookErrorManager.get().getContextHelper().entryId = entryId;
+                }
+
+                var processedEntryJson = this.preprocess(BookElementKind.ENTRY, bookId, entryId, mergedEntryJson);
                 if (processedEntryJson.isEmpty()) {
                     removedEntries.add(new RemovedElement(bookId, entryId));
                     BookErrorManager.get().reset();
@@ -395,6 +612,21 @@ public class BookDataManager extends SimpleJsonResourceReloadListener {
                 BookErrorManager.get().error("Failed to load entry '" + entry.getKey() + "'", e);
                 BookErrorManager.get().reset();
             }
+        }
+
+        //report file-based pages that target entries which were never loaded (missing entry or book)
+        var orphanedPageFiles = new ArrayList<>(pageFilesByEntry.entrySet());
+        orphanedPageFiles.sort(Comparator.comparing(group -> group.getKey().toString()));
+        for (var group : orphanedPageFiles) {
+            var bookId = group.getKey().bookId();
+            var entryId = group.getKey().elementId();
+            BookErrorManager.get().setCurrentBookId(bookId);
+            BookErrorManager.get().getContextHelper().entryId = entryId;
+            for (var file : group.getValue()) {
+                BookErrorManager.get().setContext("Page File: {}", file.fileKey());
+                BookErrorManager.get().error("Failed to merge page file '" + file.fileKey() + "': entry '" + entryId + "' was not loaded (missing or invalid entry). The file will be skipped.");
+            }
+            BookErrorManager.get().reset();
         }
 
         //load commands

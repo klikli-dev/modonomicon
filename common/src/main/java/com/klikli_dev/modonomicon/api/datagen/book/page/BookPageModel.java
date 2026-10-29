@@ -19,6 +19,11 @@ public class BookPageModel<T extends BookPageModel<T>> {
 
     protected ResourceLocation type;
     protected String anchor = "";
+    /**
+     * Optional id to identify the page. Allows file-based pages to target (override or remove) this page.
+     * Not required for backwards compatibility - pages without an id cannot be targeted by id, but still load as before.
+     */
+    protected String id = "";
     protected BookConditionModel<?> condition = BookNoneConditionModel.create();
     protected BookConditionModel<?> loadCondition = null;
 
@@ -34,6 +39,10 @@ public class BookPageModel<T extends BookPageModel<T>> {
         return this.anchor;
     }
 
+    public String getId() {
+        return this.id;
+    }
+
     /**
      * Serializes the model to json.
      */
@@ -41,6 +50,9 @@ public class BookPageModel<T extends BookPageModel<T>> {
         JsonObject json = this.toJson(provider); //to keep backwards compat
         json.addProperty("type", this.type.toString());
         json.addProperty("anchor", this.anchor);
+        if (!this.id.isEmpty()) {
+            json.addProperty("id", this.id);
+        }
         json.add("condition", this.condition.toJson(entryId, provider));
         this.addLoadConditionToJson(json, entryId, provider);
 
@@ -67,6 +79,15 @@ public class BookPageModel<T extends BookPageModel<T>> {
 
     public T withAnchor(@NotNull String anchor) {
         this.anchor = anchor;
+        //noinspection unchecked
+        return (T) this;
+    }
+
+    /**
+     * Sets an optional id to identify the page. Allows file-based pages to target (override or remove) this page.
+     */
+    public T withId(@NotNull String id) {
+        this.id = id;
         //noinspection unchecked
         return (T) this;
     }
