@@ -9,7 +9,7 @@ package com.klikli_dev.modonomicon.book;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.util.Codecs;
 import net.minecraft.resources.Identifier;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 public class PatchouliLink {
     public static final String PROTOCOL_PATCHOULI = "patchouli://";
@@ -51,7 +51,7 @@ public class PatchouliLink {
         if (lastHashIndex >= 0) {
             //handle page index after #
             var postHash = entryId.substring(lastHashIndex);
-            var path = StringUtils.removeEnd(entryId.substring(0, lastHashIndex), "/"); //remove trailing /
+            var path = Strings.CS.removeEnd(entryId.substring(0, lastHashIndex), "/"); //remove trailing /
 
             bookLink.entryId = parseIdentifier(path, "entry", linkText);
 

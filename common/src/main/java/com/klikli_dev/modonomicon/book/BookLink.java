@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.util.Codecs;
 import net.minecraft.resources.Identifier;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import java.util.Arrays;
 
@@ -48,7 +49,7 @@ public class BookLink {
         linkText = linkText.substring(PROTOCOL_CATEGORY.length());
         var bookLink = new BookLink();
 
-        var path = StringUtils.removeEnd(linkText, "/");
+        var path = Strings.CS.removeEnd(linkText, "/");
         var parts = path.split("/");
         if (parts.length == 0 || StringUtils.isBlank(parts[0])) {
             throw new IllegalArgumentException("Invalid category link, expected category path: " + linkText);
@@ -97,13 +98,13 @@ public class BookLink {
         int lastAtIndex = entryTarget.lastIndexOf("@");
         if (lastAtIndex >= 0) {
             bookLink.pageAnchor = entryTarget.substring(lastAtIndex + 1);
-            entryTarget = StringUtils.removeEnd(entryTarget.substring(0, lastAtIndex), "/");
+            entryTarget = Strings.CS.removeEnd(entryTarget.substring(0, lastAtIndex), "/");
         }
 
         int lastHashIndex = entryTarget.lastIndexOf("#");
         if (lastHashIndex >= 0) {
             var postHash = entryTarget.substring(lastHashIndex + 1);
-            entryTarget = StringUtils.removeEnd(entryTarget.substring(0, lastHashIndex), "/");
+            entryTarget = Strings.CS.removeEnd(entryTarget.substring(0, lastHashIndex), "/");
             try {
                 bookLink.pageNumber = Integer.parseInt(postHash);
             } catch (NumberFormatException e) {
