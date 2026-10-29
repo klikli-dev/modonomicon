@@ -27,6 +27,7 @@ import com.klikli_dev.modonomicon.book.entries.EntryLinkBookEntry;
 import com.klikli_dev.modonomicon.book.entries.EntryNameRenderType;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
+import com.klikli_dev.modonomicon.data.load.LoadConditionPreprocessor;
 import com.google.gson.JsonParseException;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.JsonOps;
@@ -62,6 +63,7 @@ public class BookEntryModel {
     protected int nameTextColor = 0xFFFFFFFF;
     protected List<BookPageModel<?>> pages = new ArrayList<>();
     protected BookConditionModel<?> condition;
+    protected BookConditionModel<?> loadCondition;
     protected GuiSprite marker = GuiSprite.EMPTY;
     protected BookConditionModel<?> markerCondition;
     /**
@@ -136,9 +138,21 @@ public class BookEntryModel {
             entry = new BookContentEntry(this.id, data, this.commandToRunOnFirstRead, pagesToEncode);
         }
 
-        return BookEntry.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), entry)
+        var json = BookEntry.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), entry)
                 .getOrThrow(JsonParseException::new)
                 .getAsJsonObject();
+
+        if (this.loadCondition != null) {
+            json.add(LoadConditionPreprocessor.KEY, this.loadCondition.toJson(this.getId(), provider));
+        }
+
+        if (!this.generatePagesAsFiles && json.get("pages") instanceof JsonArray inlinePages) {
+            for (int i = 0; i < inlinePages.size() && i < this.pages.size(); i++) {
+                this.pages.get(i).addLoadConditionToJson(inlinePages.get(i).getAsJsonObject(), this.getId(), provider);
+            }
+        }
+
+        return json;
     }
 
     protected BookConditionModel<?> effectiveCondition() {
@@ -596,6 +610,19 @@ public class BookEntryModel {
      */
     public BookEntryModel withCondition(BookConditionModel<?> condition) {
         this.condition = condition;
+        return this;
+    }
+
+    public BookConditionModel<?> getLoadCondition() {
+        return this.loadCondition;
+    }
+
+    /**
+     * Sets the load condition of this entry. If it is not met when the book is loaded, the entry (and its pages) is removed entirely.
+     * Only conditions that can be evaluated at load time are allowed, e.g. mod loaded, true, false, and, or, not.
+     */
+    public BookEntryModel withLoadCondition(BookConditionModel<?> loadCondition) {
+        this.loadCondition = loadCondition;
         return this;
     }
 
