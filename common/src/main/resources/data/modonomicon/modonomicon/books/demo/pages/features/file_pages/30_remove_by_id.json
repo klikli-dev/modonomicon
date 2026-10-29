@@ -1,0 +1,6 @@
+{
+  "id": "removed",
+  "load_condition": {
+    "type": "modonomicon:false"
+  }
+}

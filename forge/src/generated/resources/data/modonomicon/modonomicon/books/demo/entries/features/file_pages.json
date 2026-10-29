@@ -1,0 +1,86 @@
+{
+  "background_u_index": 0,
+  "background_v_index": 0,
+  "category": "features",
+  "description": "book.modonomicon.demo.features.file_pages.description",
+  "hide_while_locked": false,
+  "icon": {
+    "item": "minecraft:paper"
+  },
+  "name": "book.modonomicon.demo.features.file_pages.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "id": "replaced",
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.file_pages.replaced.text",
+      "title": "book.modonomicon.demo.features.file_pages.replaced.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "remove_me",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.file_pages.anchored.text",
+      "title": "book.modonomicon.demo.features.file_pages.anchored.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.file_pages.indexed.text",
+      "title": "book.modonomicon.demo.features.file_pages.indexed.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "id": "removed",
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.file_pages.removed.text",
+      "title": "book.modonomicon.demo.features.file_pages.removed.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "load_condition": {
+        "type": "modonomicon:mod_loaded",
+        "mod_id": "modonomicon"
+      },
+      "show_title_separator": true,
+      "text": "book.modonomicon.demo.features.file_pages.staying.text",
+      "title": "book.modonomicon.demo.features.file_pages.staying.title",
+      "use_markdown_in_title": false
+    }
+  ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "features/spotlight",
+      "line_enabled": true,
+      "line_reversed": false
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 15,
+  "x": -8,
+  "y": 2
+}

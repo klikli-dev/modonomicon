@@ -32,7 +32,7 @@ public class FeaturesCategory extends CategoryProvider {
                 "__c           __________________",
                 "___           _______2____1__i__",
                 "__s           _____e____________",
-                "___           _______________g__",
+                "__p           _______________g__",
                 "__x           _____f____________"
         };
     }
@@ -87,6 +87,10 @@ public class FeaturesCategory extends CategoryProvider {
 
         var customIconEntry = this.add(new CustomIconEntry(this).generate('g'))
                 .withParent(imageEntry);
+
+        //registered last to avoid shifting the auto-assigned sort numbers of the entries above
+        var filePagesEntry = this.add(new FilePagesEntry(this).generate('p'))
+                .withParent(spotlightEntry);
     }
 
     @Override
