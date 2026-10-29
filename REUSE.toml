@@ -79,6 +79,12 @@ SPDX-FileCopyrightText = "2022 klikli-dev"
 SPDX-License-Identifier = "MIT"
 
 [[annotations]]
+path = "forge/dev-run-resources/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 klikli-dev"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
 path = ".github/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2022 klikli-dev"

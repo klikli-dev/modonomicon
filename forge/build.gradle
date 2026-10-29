@@ -85,10 +85,42 @@ minecraft {
                 }
             }
         }
+
+        // Client-side data generation (launch target forge_userdev_client_data), mirroring NeoForge's
+        // runClientData. Kept as an alternative to the server-side 'data' run above.
+        clientData {
+            workingDir.set(layout.projectDirectory.dir('run-data'))
+
+            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
+            args '--mod', project.mod_id, '--all', '--output', layout.projectDirectory.dir('src/generated/resources/'), '--existing', layout.projectDirectory.dir('src/main/resources/')
+
+            mods {
+                modClientRun {
+                    source sourceSets.main
+                    source project(":common").sourceSets.main
+                }
+            }
+        }
     }
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+//Workaround for the empty 26.3 client-extra (MCP config 26.3-20260918.230105 ships no vanilla client
+//resources): builds a stub jar whose file name starts with 'client-extra' so Forge's
+//ForgeUserdevLaunchHandler.findJarOnClasspath picks it up for the minecraft game module, providing a
+//stub assets/minecraft/lang/en_us.json. Without it vanilla Language.<clinit> NPEs during
+//ForgeBootstrap, before any mod code runs. See forge/dev-run-resources/README.md.
+//Remove once client-extra is fixed upstream.
+def clientExtraStubJar = tasks.register('clientExtraStubJar', Jar) {
+    archiveBaseName.set('client-extra-dev-stub')
+    archiveVersion.set('')
+    archiveClassifier.set('')
+    destinationDirectory.set(layout.buildDirectory.dir('dev-run-resources'))
+    from('dev-run-resources') {
+        include 'assets/**'
+    }
+}
 
 dependencies {
     //note: no mixin annotationProcessor here. With mojmap there is no obfuscation to remap to,
@@ -96,6 +128,12 @@ dependencies {
     implementation minecraft.dependency("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
 
     compileOnly project(":common")
+
+    //Workaround for empty client-extra on 26.3 (MCP config 26.3-20260918.230105 ships no vanilla
+    //client resources): provides a stub assets/minecraft/lang/en_us.json so vanilla Language.<clinit>
+    //does not NPE during ForgeBootstrap. Runtime-only: never compiled, never packaged into the mod jar.
+    //See forge/dev-run-resources/README.md. Remove once client-extra is fixed upstream.
+    runtimeOnly files(clientExtraStubJar)
 
     //Jei
     compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
