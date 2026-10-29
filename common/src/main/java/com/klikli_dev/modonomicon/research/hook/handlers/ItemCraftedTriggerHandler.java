@@ -45,7 +45,10 @@ public class ItemCraftedTriggerHandler implements TriggerHandler<ItemStackTempla
         return target.item().unwrapKey().map(ResourceKey::identifier).orElse(null);
     }
 
+    //NB: Mojang's deprecation is usage guidance, not removal; resolving the intrusive
+    //holder remains the correct call here (vanilla still uses it the same way).
     @Override
+    @SuppressWarnings("deprecation")
     public @Nullable Object indexKey(ItemCraftedContext context) {
         return context.stack().getItem().builtInRegistryHolder().unwrapKey()
                 .map(ResourceKey::identifier).orElse(null);

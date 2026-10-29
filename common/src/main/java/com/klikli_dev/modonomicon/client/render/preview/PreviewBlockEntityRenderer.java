@@ -64,6 +64,13 @@ public class PreviewBlockEntityRenderer {
         this.erroredBlockEntities.clear();
     }
 
+    //NB: Mojang's deprecation is usage guidance, not removal; syncing a fake to its
+    //displayed state remains the correct call (vanilla still uses it the same way).
+    @SuppressWarnings("deprecation")
+    private static void setBlockEntityState(BlockEntity be, BlockState state) {
+        be.setBlockState(state);
+    }
+
     /**
      * Phase 1: extract render states for every block entity in the snapshot.
      * Must be called during the render state extraction phase; the returned states are attached
@@ -81,6 +88,10 @@ public class PreviewBlockEntityRenderer {
         // Extract block entity render states from the simulated multiblock
         for (var r : snapshot.visibleResults()) {
             try {
+                //NB: Forge/Neo deprecate BlockStateBase#rotate in favor of the loader-only
+                //rotate(LevelAccessor, BlockPos, Rotation), which common code cannot call.
+                //The context-free call delegates to the same Block#rotate logic.
+                @SuppressWarnings("deprecation")
                 BlockState displayedState = r.stateMatcher().getDisplayedState(ClientTicks.ticks).rotate(snapshot.effectiveRotation());
 
                 if (displayedState.getBlock() instanceof EntityBlock eb) {
@@ -95,8 +106,7 @@ public class PreviewBlockEntityRenderer {
 
                     if (be != null && !this.erroredBlockEntities.contains(be)) {
                         be.setLevel(mc.level);
-                        // Provide the displayed state to avoid querying the real world
-                        be.setBlockState(displayedState);
+                        setBlockEntityState(be, displayedState);
 
                         var dispatcher = Minecraft.getInstance().getBlockEntityRenderDispatcher();
                         var renderer = dispatcher.getRenderer(be);

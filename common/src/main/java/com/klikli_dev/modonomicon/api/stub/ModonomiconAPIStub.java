@@ -39,11 +39,13 @@ public class ModonomiconAPIStub implements ModonomiconAPI {
     }
 
     @Override
+    @Deprecated
     public BookContextHelper getContextHelper(String modid) {
         return null;
     }
 
     @Override
+    @Deprecated
     public CategoryEntryMap getEntryMap() {
         return null;
     }

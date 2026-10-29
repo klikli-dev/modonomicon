@@ -24,11 +24,13 @@ public class ModonomiconAPIImpl implements ModonomiconAPI {
     }
 
     @Override
+    @Deprecated
     public BookContextHelper getContextHelper(String modid) {
         return new BookContextHelper(modid);
     }
 
     @Override
+    @Deprecated
     public CategoryEntryMap getEntryMap() {
         return new CategoryEntryMap();
     }

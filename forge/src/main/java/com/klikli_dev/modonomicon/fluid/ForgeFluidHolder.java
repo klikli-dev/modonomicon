@@ -41,7 +41,10 @@ public class ForgeFluidHolder implements FluidHolder {
         return new ForgeFluidHolder(FluidStack.EMPTY);
     }
 
+    //NB: Mojang's deprecation is usage guidance, not removal; resolving the intrusive
+    //holder remains the correct call here (vanilla still uses it the same way).
     @Override
+    @SuppressWarnings("deprecation")
     public Holder<Fluid> getFluid() {
         return this.fluidStack.getFluid().builtInRegistryHolder();
     }

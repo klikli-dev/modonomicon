@@ -181,6 +181,10 @@ public abstract class AbstractMultiblock implements Multiblock {
         this.setLevel(world);
         this.simulate(world, pos, rotation, false, false).getSecond().forEach(r -> {
             BlockPos placePos = r.worldPosition();
+            //NB: Forge/Neo deprecate BlockStateBase#rotate in favor of the loader-only
+            //rotate(LevelAccessor, BlockPos, Rotation), which common code cannot call.
+            //The context-free call delegates to the same Block#rotate logic.
+            @SuppressWarnings("deprecation")
             BlockState targetState = r.stateMatcher().getDisplayedState(world.getGameTime()).rotate(rotation);
 
             if (!targetState.isAir() && targetState.canSurvive(world, placePos) && world.getBlockState(placePos).canBeReplaced()) {
@@ -211,6 +215,8 @@ public abstract class AbstractMultiblock implements Multiblock {
         return sim.getSecond().stream().allMatch(r -> {
             BlockPos checkPos = r.worldPosition();
             TriPredicate<BlockGetter, BlockPos, BlockState> pred = r.stateMatcher().getStatePredicate();
+            //NB: see above, the loader-only rotate(LevelAccessor, BlockPos, Rotation) is unavailable in common code.
+            @SuppressWarnings("deprecation")
             BlockState state = world.getBlockState(checkPos).rotate(fixHorizontal(rotation));
 
             return pred.test(world, checkPos, state);

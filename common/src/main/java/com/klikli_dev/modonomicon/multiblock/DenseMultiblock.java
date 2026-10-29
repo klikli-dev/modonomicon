@@ -189,6 +189,10 @@ public class DenseMultiblock extends AbstractMultiblock {
         }
         BlockPos checkPos = start.offset(new BlockPos(x, y, z).rotate(AbstractMultiblock.fixHorizontal(rotation)));
         TriPredicate<BlockGetter, BlockPos, BlockState> pred = this.stateMatchers[x][y][z].getStatePredicate();
+        //NB: Forge/Neo deprecate BlockStateBase#rotate in favor of the loader-only
+        //rotate(LevelAccessor, BlockPos, Rotation), which common code cannot call.
+        //The context-free call delegates to the same Block#rotate logic.
+        @SuppressWarnings("deprecation")
         BlockState state = level.getBlockState(checkPos).rotate(rotation);
 
         return pred.test(level, checkPos, state);

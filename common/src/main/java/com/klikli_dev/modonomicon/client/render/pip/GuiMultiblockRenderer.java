@@ -26,6 +26,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -105,6 +106,10 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
                 alpha = 0.6F + (float) (Math.sin(ClientTicks.total * 0.3F) + 1F) * 0.1F;
             }
 
+            //NB: Forge/Neo deprecate BlockStateBase#rotate in favor of the loader-only
+            //rotate(LevelAccessor, BlockPos, Rotation), which common code cannot call.
+            //The context-free call delegates to the same Block#rotate logic.
+            @SuppressWarnings("deprecation")
             BlockState displayedBlockState = r.stateMatcher().getDisplayedState(ClientTicks.ticks).rotate(state.facingRotation());
 
             // Render block (via platform service)
@@ -123,8 +128,7 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
 
                 if (be != null && !errored.contains(be)) {
                     be.setLevel(mc.level);
-                    //noinspection deprecation
-                    be.setBlockState(displayedBlockState);
+                    setBlockEntityState(be, displayedBlockState);
 
                     poseStack.pushPose();
                     var bePos = r.worldPosition();
@@ -152,6 +156,9 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
         poseStack.popPose();
     }
 
+    //NB: Forge deprecates the 9-arg tesselateBlock in favor of the ModelData overload,
+    //which is Forge-only API that common code cannot call. The 9-arg call keeps working.
+    @SuppressWarnings("deprecation")
     private void renderBlock(ClientLevel level, BlockState state, BlockPos pos, float alpha, PoseStack ps, SubmitNodeCollector submitNodeCollector) {
         if (pos != null) {
             ps.pushPose();
@@ -161,6 +168,10 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
             BlockStateModel model = minecraft.getModelManager().getBlockStateModelSet().get(state);
             int lightCoords = LightCoordsUtil.getLightCoords(LightCoordsUtil.BrightnessGetter.DEFAULT, level, state, pos);
 
+            //NB: Neo deprecates the context-free hasMaterialFlag in favor of
+            //hasMaterialFlag(BlockAndTintGetter, BlockPos, BlockState, int), which is
+            //Neo-only API (BlockStateModelExtension) that common code cannot call.
+            @SuppressWarnings("deprecation")
             var renderType = model.hasMaterialFlag(net.minecraft.client.resources.model.geometry.BakedQuad.FLAG_TRANSLUCENT) ? Sheets.translucentBlockItemSheet() : Sheets.cutoutBlockItemSheet();
             ModelBlockRenderer blockRenderer = new ModelBlockRenderer(minecraft.options.ambientOcclusion().get(), false, minecraft.getBlockColors());
             GhostRenderState renderState = new GhostRenderState(level, pos, state);
@@ -185,5 +196,12 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
     @Override
     protected String getTextureLabel() {
         return "multiblock";
+    }
+
+    //NB: Mojang's deprecation is usage guidance, not removal; syncing a fake to its
+    //displayed state remains the correct call (vanilla still uses it the same way).
+    @SuppressWarnings("deprecation")
+    private static void setBlockEntityState(BlockEntity be, BlockState state) {
+        be.setBlockState(state);
     }
 }

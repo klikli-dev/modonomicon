@@ -70,11 +70,18 @@ public final class PreviewBlockRenderer {
                         * PreviewConstants.LOOKING_PULSE_AMPLITUDE;
             }
 
+            //NB: Forge/Neo deprecate BlockStateBase#rotate in favor of the loader-only
+            //rotate(LevelAccessor, BlockPos, Rotation), which common code cannot call.
+            //The context-free call delegates to the same Block#rotate logic.
+            @SuppressWarnings("deprecation")
             BlockState displayedState = r.stateMatcher().getDisplayedState(ClientTicks.ticks).rotate(snapshot.effectiveRotation());
             renderBlock(level, displayedState, r.worldPosition(), alpha, blockRenderer, submitNodeCollector);
         }
     }
 
+    //NB: Forge deprecates the 9-arg tesselateBlock in favor of the ModelData overload,
+    //which is Forge-only API that common code cannot call. The 9-arg call keeps working.
+    @SuppressWarnings("deprecation")
     public static void renderBlock(Level world, BlockState state, BlockPos pos, float alpha, ModelBlockRenderer blockRenderer, SubmitNodeCollector submitNodeCollector) {
         if (pos == null) return;
 

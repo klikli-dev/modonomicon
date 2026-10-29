@@ -209,6 +209,10 @@ public final class RuntimeBookContentManager {
         throw new IllegalStateException("Unknown runtime book content operation: " + operation.getClass().getName());
     }
 
+    //NB: Neo deprecates the 2-arg RegistryFriendlyByteBuf constructor ("use overload with
+    //ConnectionType context"), but ConnectionType is Neo-only API that common code cannot use.
+    //The deprecated constructor defaults to OTHER, which is correct for these local scratch buffers.
+    @SuppressWarnings("deprecation")
     private BookCategory cloneCategory(BookCategory category) {
         var registryAccess = BookDataManager.get().registryAccess();
         var buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), registryAccess);
@@ -222,6 +226,8 @@ public final class RuntimeBookContentManager {
         }
     }
 
+    //NB: see cloneCategory, same Neo-only deprecation.
+    @SuppressWarnings("deprecation")
     private BookEntry cloneEntry(BookEntry entry) {
         var registryAccess = BookDataManager.get().registryAccess();
         var buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), registryAccess);
@@ -234,6 +240,8 @@ public final class RuntimeBookContentManager {
         }
     }
 
+    //NB: see cloneCategory, same Neo-only deprecation.
+    @SuppressWarnings("deprecation")
     private BookPage clonePage(BookPage page) {
         var registryAccess = BookDataManager.get().registryAccess();
         var buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), registryAccess);

@@ -17,12 +17,14 @@ public class StreamCodecs {
         return new StreamCodec<>() {
             @Override
             public @NotNull V decode(@NotNull B buf) {
-                return buf.readEnum(enumClass);
+                //NB: inlined FriendlyByteBuf#readEnum, which is deprecated; identical wire format (varint ordinal)
+                return enumClass.getEnumConstants()[buf.readVarInt()];
             }
 
             @Override
             public void encode(@NotNull B buf, @NotNull V value) {
-                buf.writeEnum(value);
+                //NB: inlined FriendlyByteBuf#writeEnum, which is deprecated; identical wire format (varint ordinal)
+                buf.writeVarInt(value.ordinal());
             }
         };
     }

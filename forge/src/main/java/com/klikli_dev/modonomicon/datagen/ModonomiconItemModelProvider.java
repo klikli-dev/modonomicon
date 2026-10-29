@@ -34,7 +34,10 @@ public class ModonomiconItemModelProvider implements DataProvider {
         this.entries.add(new ItemModelEntry(item, textureLocation));
     }
 
+    //NB: Mojang's deprecation is usage guidance, not removal; reading the key off the
+    //intrusive holder remains the correct call here (vanilla datagen still uses it the same way).
     @Override
+    @SuppressWarnings("deprecation")
     public CompletableFuture<?> run(CachedOutput cache) {
         List<CompletableFuture<?>> futures = new ArrayList<>();
         for (ItemModelEntry entry : this.entries) {
