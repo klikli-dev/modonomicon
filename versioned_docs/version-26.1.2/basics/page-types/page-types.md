@@ -24,6 +24,11 @@ Using page ids is more robust than using the page's array index when pages are r
 Like entries and categories, pages can be hidden until an Unlock Condition is fulfilled.
 See **[Unlock Conditions](../unlock-conditions)** for details.
 
+### **load_condition** (Condition, _optional_)
+
+If this condition is not met at load time, the page is removed entirely. If a page file with an `id` is removed this way, an inline page with the same `id` is removed as well.
+See **[Load Conditions](../unlock-conditions/load-conditions)** for details.
+
 ### **title / name / multiblock_name** (DescriptionId or Component JSON, _optional_)
 
 Page titles will not parse markdown by default; they use the default title color as defined in [theme.json](../structure/theme). Some page types offer a `use_markdown_title` option to override this behavior.

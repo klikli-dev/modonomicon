@@ -181,6 +181,11 @@ Datagen: `BookEntryModel#withRenderName(...)`, `#withShowNameBeforeUnlock(...)`,
 Entries, like Categories, can be hidden until an Unlock Condition is fulfilled. Conditions are JSON objects.  
 See **[Unlock Conditions](../unlock-conditions)** for details.
 
+### **load_condition** (Condition, _optional_)
+
+If this condition is not met at load time, the entry and all its pages are removed entirely.
+See **[Load Conditions](../unlock-conditions/load-conditions)** for details.
+
 ### **marker_condition** (Condition, _optional_)
 
 If set, a small attention dot (marker) is shown on this entry on the node map and in all entry lists

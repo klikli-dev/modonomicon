@@ -19,6 +19,12 @@ Conditions are JSON Objects that can be set as value for the "condition" field o
 
 Note that only one condition can be supplied per entry or category. If you want to combine multiple conditions, you can use the [`modonomicon:and`](./logic-conditions#and-condition), [`modonomicon:or`](./logic-conditions#or-condition) or [`modonomicon:not`](./logic-conditions#not-condition) condition types.
 
+:::info
+
+The `condition` only controls visibility, the content is always loaded. To remove content entirely (e.g. for optional mod integrations or to remove content via datapack), use [Load Conditions](./load-conditions) instead.
+
+:::
+
 ## Locked Categories
 
 When a *category* condition is not met, the category is either hidden from the parent screens or shown as locked, depending on `locked_category_display`:

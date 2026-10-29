@@ -52,6 +52,11 @@ See **[Unlock Conditions](../unlock-conditions)** for details.
 
 Whether a locked category is hidden or shown as locked is controlled by `locked_category_display` below.
 
+### **load_condition** (Condition, _optional_)
+
+If this condition is not met at load time, the category and all its entries are removed entirely.
+See **[Load Conditions](../unlock-conditions/load-conditions)** for details.
+
 ### **locked_category_display** (String, _optional_)
 
 Per-category override for how this category is presented while its `condition` is not met. Can be `hidden` or `show_as_locked` (see [book.json](./book.md#locked_category_display-string-optional) for what each value does).

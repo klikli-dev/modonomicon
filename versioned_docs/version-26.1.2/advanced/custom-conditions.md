@@ -35,6 +35,25 @@ See these example conditions for reference:
 - [`BookFalseCondition`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/book/conditions/BookFalseCondition.java)
 - [`BookResearchNodeUnlockedCondition`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/book/conditions/BookResearchNodeUnlockedCondition.java)
 
+## Load-Time Support
+
+By default, custom conditions can only be used as regular `condition`. To allow using your condition as [Load Condition](../basics/unlock-conditions/load-conditions), it must not depend on a player or world. Override:
+
+- `supportsLoadTime()` to return `true`
+- `testOnLoad(BookLoadConditionContext)` to evaluate the condition. The context provides the book id, the element id and the registries.
+
+```java
+@Override
+public boolean supportsLoadTime() {
+    return true;
+}
+
+@Override
+public boolean testOnLoad(BookLoadConditionContext context) {
+    return Services.PLATFORM.isModLoaded(this.modId);
+}
+```
+
 ## Condition Registration
 
 Create a dedicated registry class to hold your condition registrations. Use `public static final` fields initialized via `BookConditionTypeRegistry.register(...)`, and provide an empty `bootstrap()` method to trigger class loading:
