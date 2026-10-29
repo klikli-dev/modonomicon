@@ -115,16 +115,17 @@ public class GuiMultiblockRenderer extends PictureInPictureRenderer<GuiMultibloc
                 var errored = state.erroredBlockEntities();
 
                 var be = cache.compute(r.worldPosition().immutable(), (p, cachedBe) -> {
-                    if (cachedBe != null && !cachedBe.getType().isValid(displayedBlockState)) {
+                    //NB: BlockEntity#setBlockState is deprecated, so recreate the fake when the
+                    //displayed state changed instead of mutating the cached instance.
+                    if (cachedBe == null || !cachedBe.getType().isValid(displayedBlockState)
+                            || !cachedBe.getBlockState().equals(displayedBlockState)) {
                         return eb.newBlockEntity(p, displayedBlockState);
                     }
-                    return cachedBe != null ? cachedBe : eb.newBlockEntity(p, displayedBlockState);
+                    return cachedBe;
                 });
 
                 if (be != null && !errored.contains(be)) {
                     be.setLevel(mc.level);
-                    //noinspection deprecation
-                    be.setBlockState(displayedBlockState);
 
                     poseStack.pushPose();
                     var bePos = r.worldPosition();

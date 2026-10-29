@@ -87,16 +87,17 @@ public class PreviewBlockEntityRenderer {
                     // Cache/create a fake block entity at the simulated position (translate by startPos)
                     var cacheKey = r.worldPosition().subtract(startPos).immutable();
                     var be = this.blockEntityCache.compute(cacheKey, (p, cachedBe) -> {
-                        if (cachedBe != null && !cachedBe.getType().isValid(displayedState)) {
+                        //NB: BlockEntity#setBlockState is deprecated, so recreate the fake when the
+                        //displayed state changed instead of mutating the cached instance.
+                        if (cachedBe == null || !cachedBe.getType().isValid(displayedState)
+                                || !cachedBe.getBlockState().equals(displayedState)) {
                             return eb.newBlockEntity(p, displayedState);
                         }
-                        return cachedBe != null ? cachedBe : eb.newBlockEntity(p, displayedState);
+                        return cachedBe;
                     });
 
                     if (be != null && !this.erroredBlockEntities.contains(be)) {
                         be.setLevel(mc.level);
-                        // Provide the displayed state to avoid querying the real world
-                        be.setBlockState(displayedState);
 
                         var dispatcher = Minecraft.getInstance().getBlockEntityRenderDispatcher();
                         var renderer = dispatcher.getRenderer(be);
