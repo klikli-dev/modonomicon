@@ -31,8 +31,9 @@ public class NeoFluidHelper implements FluidHelper {
         Fluid fluid = fluidStack.getFluid();
         var fluidState = fluid.defaultFluidState();
         var fluidModel = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluidState);
-        var tintSource = fluidModel.tintSource();
-        int fluidColor = tintSource.color(fluidState.createLegacyBlock());
+        var tintSource = fluidModel.fluidTintSource();
+        //NB: matches FluidRenderer, which falls back to untinted (-1) when a fluid has no tint source
+        int fluidColor = tintSource != null ? tintSource.color(fluidState) : -1;
         return fluidColor | 0xFF000000;
     }
 
