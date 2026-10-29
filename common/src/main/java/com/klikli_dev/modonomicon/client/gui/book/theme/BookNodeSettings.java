@@ -34,15 +34,17 @@ public record BookNodeSettings(NodeConnectionRendererType connectionRenderer, Bo
     }
 
     public static BookNodeSettings fromNetwork(RegistryFriendlyByteBuf buffer) {
+        //NB: explicit varint ordinals instead of the deprecated FriendlyByteBuf#readEnum; identical wire format
         return new BookNodeSettings(
-                buffer.readEnum(NodeConnectionRendererType.class),
+                NodeConnectionRendererType.values()[buffer.readVarInt()],
                 BookDirectConnectionTheme.fromNetwork(buffer),
                 BookNodeNameStyle.fromNetwork(buffer)
         );
     }
 
     public void toNetwork(RegistryFriendlyByteBuf buffer) {
-        buffer.writeEnum(this.connectionRenderer);
+        //NB: explicit varint ordinal instead of the deprecated FriendlyByteBuf#writeEnum; identical wire format
+        buffer.writeVarInt(this.connectionRenderer.ordinal());
         this.directConnections.toNetwork(buffer);
         this.entryNameStyle.toNetwork(buffer);
     }
