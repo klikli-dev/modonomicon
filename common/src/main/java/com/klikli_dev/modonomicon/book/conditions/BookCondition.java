@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.book.conditions;
 
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
+import com.klikli_dev.modonomicon.book.conditions.context.BookLoadConditionContext;
 import com.klikli_dev.modonomicon.data.BookConditionType;
 import com.klikli_dev.modonomicon.registry.BookConditionTypeRegistry;
 import com.mojang.serialization.Codec;
@@ -94,13 +95,19 @@ public abstract class BookCondition {
     public abstract boolean test(BookConditionContext context, Player player);
 
     /**
-     * Use this to test the condition at load time.
-     * If this returns false, the locked content will not be loaded at all.
-     * Most conditions should not override this - it was added primarily for the ModLoadedCondition, because
-     * content locked behind it may not be present at all if the condition is false and loading would cause errors.
+     * Whether this condition can be evaluated at load time via {@link #testOnLoad(BookLoadConditionContext)},
+     * i.e. without a player or level. Only such conditions may be used as "load_condition".
      */
-    public boolean testOnLoad() {
-        return true;
+    public boolean supportsLoadTime() {
+        return false;
+    }
+
+    /**
+     * Tests the condition at load time. If this returns false, the content is removed entirely, as if it was never defined.
+     * Only called if {@link #supportsLoadTime()} returns true.
+     */
+    public boolean testOnLoad(BookLoadConditionContext context) {
+        throw new UnsupportedOperationException("Condition type '" + this.getType() + "' cannot be evaluated at load time.");
     }
 
     /**

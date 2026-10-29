@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.book.conditions;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
+import com.klikli_dev.modonomicon.book.conditions.context.BookLoadConditionContext;
 import com.klikli_dev.modonomicon.data.BookConditionType;
 import com.klikli_dev.modonomicon.registry.BookConditionTypeRegistry;
 import com.mojang.serialization.MapCodec;
@@ -51,6 +52,16 @@ public class BookNoneCondition extends BookCondition {
 
     @Override
     public boolean test(BookConditionContext context, Player player) {
+        return true;
+    }
+
+    @Override
+    public boolean supportsLoadTime() {
+        return true;
+    }
+
+    @Override
+    public boolean testOnLoad(BookLoadConditionContext context) {
         return true;
     }
 }
