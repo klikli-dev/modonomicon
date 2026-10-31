@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v1.21.1-1.123.0] - 2026-10-31
+### :sparkles: New Features
+- [`7f9881b`](https://github.com/klikli-dev/modonomicon/commit/7f9881be53512aa8529b4faead55fe153466d179) - update to latest modloader versions *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`5525f9f`](https://github.com/klikli-dev/modonomicon/commit/5525f9f18ea55eee956382ab6de2140c64324187) - ignore datagen cache and mark generated files as auto-generated *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`0facb7a`](https://github.com/klikli-dev/modonomicon/commit/0facb7a3b18b1d7ed0087b7ae79a08a3b293acf1) - **ci**: update GitHub Actions to latest versions *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v1.21.1-1.122.0] - 2026-10-29
 ### :sparkles: New Features
 - [`89e0eb7`](https://github.com/klikli-dev/modonomicon/commit/89e0eb7db6aa3077576517c75d057f9a23eae9ca) - load conditions for 1.21.1 *(PR [#417](https://github.com/klikli-dev/modonomicon/pull/417) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2465,3 +2474,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v1.21.1-1.120.8]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.120.7...release/v1.21.1-1.120.8
 [release/v1.21.1-1.121.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.120.8...release/v1.21.1-1.121.0
 [release/v1.21.1-1.122.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.121.0...release/v1.21.1-1.122.0
+[release/v1.21.1-1.123.0]: https://github.com/klikli-dev/modonomicon/compare/release/v1.21.1-1.122.0...release/v1.21.1-1.123.0
