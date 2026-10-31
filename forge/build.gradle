@@ -2,7 +2,7 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version "${forgegradle_version}"
-    id 'org.spongepowered.mixin' version "0.7-SNAPSHOT"
+    id 'org.spongepowered.mixin' version "0.7.38"
     id 'java-library'
 }
 

@@ -2,7 +2,7 @@ plugins {
     id 'idea'
     id 'java'
     id 'maven-publish'
-    id 'fabric-loom' version '1.7-SNAPSHOT'
+    id 'fabric-loom' version "${loom_version}"
 }
 
 
@@ -17,9 +17,6 @@ base {
 
 loom {
     accessWidenerPath = file("src/main/resources/modonomicon.accesswidener")
-    mixin {
-        useLegacyMixinAp = false
-    }
 }
 
 sourceSets {
