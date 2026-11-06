@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-2.20.1] - 2026-11-06
+### :bug: Bug Fixes
+- [`e819cb9`](https://github.com/klikli-dev/modonomicon/commit/e819cb9bbc3c2b35e17369e3e72ad83e1f680e31) - **networking**: skip syncing to players without the payload channel *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`f6463c2`](https://github.com/klikli-dev/modonomicon/commit/f6463c2b9f00acc1343ce8dbb9f7359508749733) - ignore datagen cache and mark generated files as auto-generated *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`9d6f548`](https://github.com/klikli-dev/modonomicon/commit/9d6f54820729818151e2de2d98880bc1fbdc3dcf) - **ci**: update GitHub Actions to latest versions *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.2-2.20.0] - 2026-10-29
 ### :sparkles: New Features
 - [`a085f63`](https://github.com/klikli-dev/modonomicon/commit/a085f63dffe69859cb0dc84f0247b5a01a6c206e) - (proper) load time conditions *(PR [#415](https://github.com/klikli-dev/modonomicon/pull/415) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2470,3 +2479,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-2.18.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.17.2...release/v26.1.2-2.18.0
 [release/v26.1.2-2.19.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.18.0...release/v26.1.2-2.19.0
 [release/v26.1.2-2.20.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.19.0...release/v26.1.2-2.20.0
+[release/v26.1.2-2.20.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.20.0...release/v26.1.2-2.20.1
