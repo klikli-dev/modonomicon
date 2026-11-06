@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.3-2.20.1] - 2026-11-06
+### :bug: Bug Fixes
+- [`3f9a859`](https://github.com/klikli-dev/modonomicon/commit/3f9a85907943f8de8436871709c0e486f2b77921) - temporary workaround for forge run issues *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`f0f2089`](https://github.com/klikli-dev/modonomicon/commit/f0f20893ff9265c3092c37bb1feb4a783e0db770) - 26.3 deprecations *(PR [#416](https://github.com/klikli-dev/modonomicon/pull/416) by [@klikli-dev](https://github.com/klikli-dev))*
+- [`27b1267`](https://github.com/klikli-dev/modonomicon/commit/27b1267e67a0aad85bd29c466f2d679531435478) - **networking**: skip syncing to players without the payload channel *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :wrench: Chores
+- [`f82a06a`](https://github.com/klikli-dev/modonomicon/commit/f82a06a4cbcc03b60638a82eca8a6f08a64904bc) - ignore datagen cache and mark generated files as auto-generated *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+- [`b52bde7`](https://github.com/klikli-dev/modonomicon/commit/b52bde7e690e93e966496f364fe6d103bf87cbcd) - **ci**: update GitHub Actions to latest versions *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.3-2.20.0] - 2026-10-29
 ### :sparkles: New Features
 - [`939719c`](https://github.com/klikli-dev/modonomicon/commit/939719c4e640a82fa5ef78a8081a4b3110260ea2) - (proper) load time conditions *(PR [#415](https://github.com/klikli-dev/modonomicon/pull/415) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2528,3 +2539,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.3-2.17.3]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.17.2...release/v26.3-2.17.3
 [release/v26.3-2.19.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.17.3...release/v26.3-2.19.0
 [release/v26.3-2.20.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.19.0...release/v26.3-2.20.0
+[release/v26.3-2.20.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.20.0...release/v26.3-2.20.1
