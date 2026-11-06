@@ -53,20 +53,14 @@ public class Networking {
     }
 
     public static <T extends Message> void sendToSplit(ServerPlayer player, T message) {
-        if (player.connection == null) {
-            //workaround for https://github.com/klikli-dev/modonomicon/issues/46 / https://github.com/klikli-dev/modonomicon/issues/62
-            //we should never get here unless some other mod interferes with networking
-            Modonomicon.LOG.warn("Tried to send message of type {} to player without connection. Id: {}, Name: {}.", player.getStringUUID(), player.getName().getString(), message.getClass().getName());
+        if (!canSendTo(player, message)) {
             return;
         }
         INSTANCE.send(message, PacketDistributor.PLAYER.with(player));
     }
 
     public static <T extends Message> void sendTo(ServerPlayer player, T message) {
-        if (player.connection == null) {
-            //workaround for https://github.com/klikli-dev/modonomicon/issues/46 / https://github.com/klikli-dev/modonomicon/issues/62
-            //we should never get here unless some other mod interferes with networking
-            Modonomicon.LOG.warn("Tried to send message of type {} to player without connection. Id: {}, Name: {}.", player.getStringUUID(), player.getName().getString(), message.getClass().getName());
+        if (!canSendTo(player, message)) {
             return;
         }
         INSTANCE.send(message, PacketDistributor.PLAYER.with(player));
@@ -74,5 +68,24 @@ public class Networking {
 
     public static <T extends Message> void sendToServer(T message) {
         INSTANCE.send(message, PacketDistributor.SERVER.noArg());
+    }
+
+    private static <T extends Message> boolean canSendTo(ServerPlayer player, T message) {
+        if (player.connection == null) {
+            //workaround for https://github.com/klikli-dev/modonomicon/issues/46 / https://github.com/klikli-dev/modonomicon/issues/62
+            //we should never get here unless some other mod interferes with networking
+            Modonomicon.LOG.warn("Tried to send message of type {} to player without connection. Id: {}, Name: {}.",
+                    message.getClass().getName(), player.getStringUUID(), player.getName().getString());
+            return false;
+        }
+        //Fake players (e.g. in game tests) and clients without the mod have no channel for our payloads.
+        //Forge would throw while encoding the packet, so skip the message instead.
+        var connection = player.connection.getConnection();
+        if (!connection.isConnected() || !INSTANCE.isRemotePresent(connection)) {
+            Modonomicon.LOG.debug("Skipping message of type {} to player {} because the connection has no channel for it.",
+                    message.getClass().getName(), player.getStringUUID());
+            return false;
+        }
+        return true;
     }
 }

@@ -45,11 +45,34 @@ public class Networking {
     }
 
     public static <T extends Message> void sendToSplit(ServerPlayer player, T message) {
+        if (!canSendTo(player, message)) {
+            return;
+        }
         PacketDistributor.sendToPlayer(player, message);
     }
 
     public static <T extends Message> void sendTo(ServerPlayer player, T message) {
+        if (!canSendTo(player, message)) {
+            return;
+        }
         PacketDistributor.sendToPlayer(player, message);
+    }
+
+    private static <T extends Message> boolean canSendTo(ServerPlayer player, T message) {
+        if (player.connection == null) {
+            //should never happen unless some other mod interferes with networking
+            Modonomicon.LOG.warn("Tried to send message of type {} to player without connection. Id: {}, Name: {}.",
+                    message.getClass().getName(), player.getStringUUID(), player.getName().getString());
+            return false;
+        }
+        //Fake players (e.g. in game tests) and clients without the mod have no channel for our payloads.
+        //NeoForge throws when sending to them, so skip the message instead.
+        if (!player.connection.hasChannel(message.type())) {
+            Modonomicon.LOG.debug("Skipping message of type {} to player {} because the connection has no channel for it.",
+                    message.getClass().getName(), player.getStringUUID());
+            return false;
+        }
+        return true;
     }
 
     public static <T extends Message> void sendToServer(T message) {
