@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.3-2.20.2] - 2026-11-16
+### :bug: Bug Fixes
+- [`69a07c4`](https://github.com/klikli-dev/modonomicon/commit/69a07c4248f1ba0b4b5173abbeae7164367a0ee0) - (slightly) improve error handling during book build *(commit by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.3-2.20.1] - 2026-11-06
 ### :bug: Bug Fixes
 - [`3f9a859`](https://github.com/klikli-dev/modonomicon/commit/3f9a85907943f8de8436871709c0e486f2b77921) - temporary workaround for forge run issues *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2540,3 +2545,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.3-2.19.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.17.3...release/v26.3-2.19.0
 [release/v26.3-2.20.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.19.0...release/v26.3-2.20.0
 [release/v26.3-2.20.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.20.0...release/v26.3-2.20.1
+[release/v26.3-2.20.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.3-2.20.1...release/v26.3-2.20.2
