@@ -85,7 +85,7 @@ public class BookErrorManager {
         }
         holder.addError(error);
 
-        Modonomicon.LOG.warn("BookErrorManager.error() called for book: {} with error: {}", book, error);
+        Modonomicon.LOG.warn("BookErrorManager.error() called for book: {} with error: {}", book, error, error.getException());
     }
 
     /**

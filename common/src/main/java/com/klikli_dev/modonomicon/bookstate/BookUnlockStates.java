@@ -110,6 +110,9 @@ public class BookUnlockStates {
         List<Map.Entry<BookCondition, BookConditionContext>> conditionsThatRequireMultipass = new ArrayList<>();
 
         for (var book : BookDataManager.get().getBooks().values()) {
+            if (book.hasBuildFailed()) {
+                continue;
+            }
             BookErrorManager.get().reset();
             BookErrorManager.get().setCurrentBookId(book.getId());
             for (var category : book.getCategories().values()) {

@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.book;
 import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
+import com.klikli_dev.modonomicon.book.error.BookErrorInfo;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
@@ -113,6 +114,12 @@ public class Book {
      * A map of macros. This is filled automatically based on LoaderRegistry#dynamicTextMacroLoaders, not loaded from JSON.
      */
     protected final Map<String, String> textMacros = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+
+    /**
+     * Set if build() failed. Books that failed to build must not be opened or used for unlock state updates.
+     */
+    @Nullable
+    protected BookErrorInfo buildError;
 
     public Book(ResourceLocation id, String name, BookTextHolder description, String tooltip, ResourceLocation model, BookDisplayMode displayMode, boolean generateBookItem,
                 @Nullable ResourceLocation customBookItem, String creativeTab, ResourceLocation font, ResourceLocation bookOverviewTexture, ResourceLocation frameTexture,
@@ -298,9 +305,27 @@ public class Book {
     }
 
     /**
+     * Marks this book as failed to build. Sticky until the next build() call; books are recreated on reload.
+     */
+    public void markBuildFailed(BookErrorInfo error) {
+        this.buildError = error;
+    }
+
+    public boolean hasBuildFailed() {
+        return this.buildError != null;
+    }
+
+    @Nullable
+    public BookErrorInfo getBuildError() {
+        return this.buildError;
+    }
+
+    /**
      * call after loading the book jsons to finalize.
      */
     public void build(Level level) {
+        this.buildError = null;
+
         //first "backlink" all our entries directly into the book
         for (var category : this.categories.values()) {
             for (var entry : category.getEntries().values()) {

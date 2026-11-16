@@ -17,6 +17,14 @@ public class BookErrorInfo {
         this.context = context;
     }
 
+    public String getErrorMessage() {
+        return this.errorMessage;
+    }
+
+    public Exception getException() {
+        return this.exception;
+    }
+
     @Override
     public String toString() {
         var errorMessage = this.errorMessage == null ? "" : this.errorMessage;
