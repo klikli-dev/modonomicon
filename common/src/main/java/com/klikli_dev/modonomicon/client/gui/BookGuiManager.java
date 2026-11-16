@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.client.gui;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.events.EntryFirstReadEvent;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookCategory;
@@ -73,9 +74,13 @@ public class BookGuiManager {
     }
 
     protected boolean showErrorScreen(Identifier bookId) {
-        if (BookErrorManager.get().hasBlockingErrors(bookId)) {
-            var book = BookDataManager.get().getBook(bookId);
-            Minecraft.getInstance().setScreen(new BookErrorScreen(book));
+        var book = BookDataManager.get().getBook(bookId);
+        if (book == null) {
+            Modonomicon.LOG.warn("Cannot open book '{}': the book is unknown or failed to load.", bookId);
+        }
+
+        if (book == null || book.hasBuildFailed() || BookErrorManager.get().hasBlockingErrors(bookId)) {
+            Minecraft.getInstance().setScreen(new BookErrorScreen(bookId, book));
             return true;
         }
         return false;
@@ -237,6 +242,14 @@ public class BookGuiManager {
 
     @ApiStatus.Internal
     public void openCategory(BookCategory category, BookAddress address) {
+        if (category.getBook() == null) {
+            //the category was never linked to a book (e.g. the book failed to build), so it cannot be opened
+            if (this.openBookParentScreen != null) {
+                this.showErrorScreen(this.openBookParentScreen.getBook().getId());
+            }
+            return;
+        }
+
         if (this.openBookCategoryScreen != null) {
             BookGuiManager.get().closeCategoryScreen(this.openBookCategoryScreen);
         }
@@ -423,6 +436,10 @@ public class BookGuiManager {
      * will not open those obviously).
      */
     public void openEntry(Identifier bookId, Identifier entryId, int page) {
+        if (this.showErrorScreen(bookId)) {
+            return;
+        }
+
         var book = BookDataManager.get().getBook(bookId);
         var entry = book.getEntry(entryId);
         this.openEntry(bookId, entry.getCategoryId(), entryId, page);
