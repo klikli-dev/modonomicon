@@ -174,6 +174,9 @@ public class ResearchHookService {
         }
         if (changed) {
             for (var book : BookDataManager.get().getBooks().values()) {
+                if (book.hasBuildFailed()) {
+                    continue;
+                }
                 try {
                     BookVisualStateManager.get().updateVisibilityDrivenUnread(player, book, before.get(book.getId()), BookVisibilitySnapshots.collect(player, book));
                 } catch (Exception e) {

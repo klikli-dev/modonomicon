@@ -22,6 +22,7 @@ import com.klikli_dev.modonomicon.book.conditions.context.BookLoadConditionConte
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.page.BookPage;
+import com.klikli_dev.modonomicon.book.error.BookErrorInfo;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.runtime.RuntimeBookContentManager;
 import com.klikli_dev.modonomicon.client.gui.TextWrapper;
@@ -179,7 +180,9 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
             try {
                 book.build(level);
             } catch (Exception e) {
-                BookErrorManager.get().error("Failed to build book '" + book.getId() + "'", e);
+                var error = new BookErrorInfo("Failed to build book '" + book.getId() + "'", e, BookErrorManager.get().getContext());
+                BookErrorManager.get().error(book.getId(), error);
+                book.markBuildFailed(error);
             }
             BookErrorManager.get().setCurrentBookId(null);
         }
@@ -199,7 +202,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
             //TODO: allow modders to configure this renderer
             var textRenderer = new BookTextRenderer(book, provider);
 
-            if (!BookErrorManager.get().hasBlockingErrors(book.getId())) {
+            if (!book.hasBuildFailed() && !BookErrorManager.get().hasBlockingErrors(book.getId())) {
                 try {
                     book.prerenderMarkdown(textRenderer);
                 } catch (Exception e) {

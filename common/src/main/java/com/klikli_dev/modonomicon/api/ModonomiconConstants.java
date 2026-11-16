@@ -83,6 +83,8 @@ public class ModonomiconConstants {
             public static final String HOVER_COMMAND_LINK = PREFIX + "hover.command_link";
             public static final String HOVER_COMMAND_LINK_UNAVAILABLE = PREFIX + "hover.command_link.unavailable";
             public static final String NO_ERRORS_FOUND = PREFIX + "no_errors_found";
+            public static final String BOOK_BUILD_FAILED = PREFIX + "book_build_failed";
+            public static final String BOOK_NOT_FOUND = PREFIX + "book_not_found";
             public static final String PAGE_ENTITY_LOADING_ERROR = PREFIX + "page.entity.loading_error";
 
             public static final String SEARCH_SCREEN_TITLE = PREFIX + "search.screen.title";
