@@ -180,13 +180,24 @@ public final class BookTextInteraction {
      */
     @Nullable
     public static Style hitTestTextHolder(Font font, @Nullable BookPage page, @Nullable Book book, BookTextHolder text, int x, int y, int width, int height, double pMouseX, double pMouseY) {
-        if (page != null && PageSplitter.isSplitEnabled(page) && book != null) {
+        return hitTestTextHolder(font, page, book, text, x, y, width, height, pMouseX, pMouseY, true);
+    }
+
+    /**
+     * See {@link #hitTestTextHolder(Font, BookPage, Book, BookTextHolder, int, int, int, int, double, double)}.
+     *
+     * @param pageSplitAllowed false if split pages are rendered scaled to fit instead of split, e.g. in an entry tab overlay.
+     */
+    @Nullable
+    public static Style hitTestTextHolder(Font font, @Nullable BookPage page, @Nullable Book book, BookTextHolder text, int x, int y, int width, int height, double pMouseX, double pMouseY, boolean pageSplitAllowed) {
+        var splitEnabled = page != null && PageSplitter.isSplitEnabled(page);
+        if (splitEnabled && pageSplitAllowed && book != null) {
             var continuationHeight = PageSplitter.continuationBounds(book).height;
             var fragments = PageSplitter.split(text, font, width, height, continuationHeight);
             var first = fragments.isEmpty() ? List.<FormattedCharSequence>of() : fragments.get(0);
             return hitTestFragmentLines(font, first, x, y, pMouseX, pMouseY);
         }
-        if (page != null && !PageSplitter.isAutoScaleEnabled(page)) {
+        if (page != null && !PageSplitter.isAutoScaleEnabled(page) && !(splitEnabled && !pageSplitAllowed)) {
             var lines = PageSplitter.wrapForSplit(text, font, width);
             return hitTestFragmentLines(font, lines, x, y, pMouseX, pMouseY);
         }
