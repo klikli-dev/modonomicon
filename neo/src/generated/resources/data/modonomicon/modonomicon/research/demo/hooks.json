@@ -54,7 +54,7 @@
   {
     "id": "modonomicon:demo/stages_planks_hook",
     "trigger_target": {
-      "id": "minecraft:oak_planks"
+      "tag": "minecraft:planks"
     },
     "trigger_type": "modonomicon:item_crafted",
     "value_id": "modonomicon:demo/stages_planks_crafted"
