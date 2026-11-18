@@ -6,43 +6,40 @@
 
 package com.klikli_dev.modonomicon.research.hook.handlers;
 
-import com.klikli_dev.modonomicon.book.associated.AssociatedItemMatcher;
 import com.klikli_dev.modonomicon.data.TriggerType;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import com.klikli_dev.modonomicon.research.hook.ItemAcquiredContext;
 import com.klikli_dev.modonomicon.research.hook.TriggerHandler;
+import com.klikli_dev.modonomicon.research.item.ResearchItemMatcher;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStackTemplate;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemAcquiredTriggerHandler implements TriggerHandler<ItemStackTemplate, ItemAcquiredContext> {
+public class ItemAcquiredTriggerHandler implements TriggerHandler<ResearchItemMatcher, ItemAcquiredContext> {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public List<ResearchHookDefinition<ItemStackTemplate>> resolve(
-            TriggerType<ItemStackTemplate, ItemAcquiredContext> type,
+    public List<ResearchHookDefinition<ResearchItemMatcher>> resolve(
+            TriggerType<ResearchItemMatcher, ItemAcquiredContext> type,
             ServerPlayer player,
             ItemAcquiredContext context
     ) {
         return (List) ResearchDataManager.get().hooksForType(type).stream()
-                .filter(h -> matches((ItemStackTemplate) h.triggerTarget(), context))
+                .filter(h -> matches((ResearchItemMatcher) h.triggerTarget(), context))
                 .toList();
     }
 
     @Override
-    public boolean matches(ItemStackTemplate target, ItemAcquiredContext context) {
-        //Item equality plus subset matching of the template's components, shared with associated items.
-        //A template without components matches any stack of the item.
-        return AssociatedItemMatcher.matches(target, context.stack());
+    public boolean matches(ResearchItemMatcher target, ItemAcquiredContext context) {
+        return target.matches(context.stack());
     }
 
     @Override
-    public @Nullable Object indexKey(ItemStackTemplate target) {
-        return target.item().unwrapKey().map(ResourceKey::identifier).orElse(null);
+    public @Nullable Object indexKey(ResearchItemMatcher target) {
+        return target.itemId();
     }
 
     @Override

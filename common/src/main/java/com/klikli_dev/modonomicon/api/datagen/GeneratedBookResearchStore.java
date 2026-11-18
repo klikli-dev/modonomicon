@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.api.datagen;
 
+import com.klikli_dev.modonomicon.research.item.ResearchItemMatcher;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStackTemplate;
 
@@ -47,18 +48,34 @@ public final class GeneratedBookResearchStore {
     }
 
     /**
-     * Registers an item-crafted generation request.
+     * Registers an item-crafted generation request for an exact item template.
      * Requests for equal templates are deduplicated.
      */
     public void addItemCrafted(ItemStackTemplate target) {
+        this.addItemCrafted(ResearchItemMatcher.of(target));
+    }
+
+    /**
+     * Registers an item-crafted generation request for an item matcher (exact item or item tag).
+     * Requests for equal matchers are deduplicated.
+     */
+    public void addItemCrafted(ResearchItemMatcher target) {
         this.itemCraftedRequests.putIfAbsent(itemKey(target), new ItemCraftedRequest(target));
     }
 
     /**
-     * Registers an item-acquired generation request.
+     * Registers an item-acquired generation request for an exact item template.
      * Requests for equal templates are deduplicated.
      */
     public void addItemAcquired(ItemStackTemplate target) {
+        this.addItemAcquired(ResearchItemMatcher.of(target));
+    }
+
+    /**
+     * Registers an item-acquired generation request for an item matcher (exact item or item tag).
+     * Requests for equal matchers are deduplicated.
+     */
+    public void addItemAcquired(ResearchItemMatcher target) {
         this.itemAcquiredRequests.putIfAbsent(itemKey(target), new ItemAcquiredRequest(target));
     }
 
@@ -99,6 +116,13 @@ public final class GeneratedBookResearchStore {
      * Returns the deterministic generated fact path for an item-crafted request.
      */
     public String craftedFactPath(ItemStackTemplate target) {
+        return this.craftedFactPath(ResearchItemMatcher.of(target));
+    }
+
+    /**
+     * Returns the deterministic generated fact path for an item-crafted matcher.
+     */
+    public String craftedFactPath(ResearchItemMatcher target) {
         return "generated/" + this.bookPath + "/facts/item_crafted/" + itemKey(target);
     }
 
@@ -106,6 +130,13 @@ public final class GeneratedBookResearchStore {
      * Returns the deterministic generated node path for an item-crafted request.
      */
     public String craftedNodePath(ItemStackTemplate target) {
+        return this.craftedNodePath(ResearchItemMatcher.of(target));
+    }
+
+    /**
+     * Returns the deterministic generated node path for an item-crafted matcher.
+     */
+    public String craftedNodePath(ResearchItemMatcher target) {
         return "generated/" + this.bookPath + "/nodes/item_crafted/" + itemKey(target);
     }
 
@@ -113,6 +144,13 @@ public final class GeneratedBookResearchStore {
      * Returns the deterministic generated node id for an item-crafted request.
      */
     public Identifier craftedNodeId(ItemStackTemplate target) {
+        return this.craftedNodeId(ResearchItemMatcher.of(target));
+    }
+
+    /**
+     * Returns the deterministic generated node id for an item-crafted matcher.
+     */
+    public Identifier craftedNodeId(ResearchItemMatcher target) {
         return Identifier.fromNamespaceAndPath(this.bookNamespace, this.craftedNodePath(target));
     }
 
@@ -120,6 +158,13 @@ public final class GeneratedBookResearchStore {
      * Returns the deterministic generated fact path for an item-acquired request.
      */
     public String acquiredFactPath(ItemStackTemplate target) {
+        return this.acquiredFactPath(ResearchItemMatcher.of(target));
+    }
+
+    /**
+     * Returns the deterministic generated fact path for an item-acquired matcher.
+     */
+    public String acquiredFactPath(ResearchItemMatcher target) {
         return "generated/" + this.bookPath + "/facts/item_acquired/" + itemKey(target);
     }
 
@@ -127,6 +172,13 @@ public final class GeneratedBookResearchStore {
      * Returns the deterministic generated node path for an item-acquired request.
      */
     public String acquiredNodePath(ItemStackTemplate target) {
+        return this.acquiredNodePath(ResearchItemMatcher.of(target));
+    }
+
+    /**
+     * Returns the deterministic generated node path for an item-acquired matcher.
+     */
+    public String acquiredNodePath(ResearchItemMatcher target) {
         return "generated/" + this.bookPath + "/nodes/item_acquired/" + itemKey(target);
     }
 
@@ -134,6 +186,13 @@ public final class GeneratedBookResearchStore {
      * Returns the deterministic generated node id for an item-acquired request.
      */
     public Identifier acquiredNodeId(ItemStackTemplate target) {
+        return this.acquiredNodeId(ResearchItemMatcher.of(target));
+    }
+
+    /**
+     * Returns the deterministic generated node id for an item-acquired matcher.
+     */
+    public Identifier acquiredNodeId(ResearchItemMatcher target) {
         return Identifier.fromNamespaceAndPath(this.bookNamespace, this.acquiredNodePath(target));
     }
 
@@ -156,9 +215,22 @@ public final class GeneratedBookResearchStore {
         return base + "_" + Integer.toHexString(patch.toString().hashCode());
     }
 
+    /**
+     * Stable dedup key and path fragment for an item matcher.
+     * <p>
+     * Templates use {@link #itemKey(ItemStackTemplate)}. Tags use {@code tag_<namespace>/<path>}, which cannot
+     * collide with item keys for namespaces that do not start with {@code tag_}.
+     */
+    public static String itemKey(ResearchItemMatcher target) {
+        return target.value().map(
+                template -> itemKey(template),
+                tag -> "tag_" + tag.location().getNamespace() + "/" + tag.location().getPath()
+        );
+    }
+
     public record EntryViewedOnceRequest(Identifier requiredEntryId) {}
 
-    public record ItemCraftedRequest(ItemStackTemplate target) {}
+    public record ItemCraftedRequest(ResearchItemMatcher target) {}
 
-    public record ItemAcquiredRequest(ItemStackTemplate target) {}
+    public record ItemAcquiredRequest(ResearchItemMatcher target) {}
 }

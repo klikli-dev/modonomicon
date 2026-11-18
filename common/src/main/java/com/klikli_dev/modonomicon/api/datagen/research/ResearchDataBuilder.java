@@ -14,6 +14,7 @@ import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchToastDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchValueDefinition;
 import com.klikli_dev.modonomicon.research.hook.NoTriggerTarget;
+import com.klikli_dev.modonomicon.research.item.ResearchItemMatcher;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStackTemplate;
 
@@ -356,7 +357,7 @@ public final class ResearchDataBuilder {
      */
     @Deprecated(forRemoval = true)
     public void grantFactOnItemCrafted(String path, ItemStackTemplate targetItem, ResearchFactRef factRef) {
-        this.grantFact(path, TriggerTypeRegistry.ITEM_CRAFTED, targetItem, factRef);
+        this.grantFact(path, TriggerTypeRegistry.ITEM_CRAFTED, ResearchItemMatcher.of(targetItem), factRef);
     }
 
     /**
@@ -366,7 +367,7 @@ public final class ResearchDataBuilder {
      */
     @Deprecated(forRemoval = true)
     public void incrementValueOnItemCrafted(String path, ItemStackTemplate targetItem, ResearchValueRef valueRef, int increment) {
-        this.incrementValue(path, TriggerTypeRegistry.ITEM_CRAFTED, targetItem, valueRef, increment);
+        this.incrementValue(path, TriggerTypeRegistry.ITEM_CRAFTED, ResearchItemMatcher.of(targetItem), valueRef, increment);
     }
 
     /**
@@ -376,7 +377,7 @@ public final class ResearchDataBuilder {
      */
     @Deprecated(forRemoval = true)
     public void grantFactOnItemAcquired(String path, ItemStackTemplate targetItem, ResearchFactRef factRef) {
-        this.grantFact(path, TriggerTypeRegistry.ITEM_ACQUIRED, targetItem, factRef);
+        this.grantFact(path, TriggerTypeRegistry.ITEM_ACQUIRED, ResearchItemMatcher.of(targetItem), factRef);
     }
 
     /**
@@ -386,7 +387,7 @@ public final class ResearchDataBuilder {
      */
     @Deprecated(forRemoval = true)
     public void incrementValueOnItemAcquired(String path, ItemStackTemplate targetItem, ResearchValueRef valueRef, int increment) {
-        this.incrementValue(path, TriggerTypeRegistry.ITEM_ACQUIRED, targetItem, valueRef, increment);
+        this.incrementValue(path, TriggerTypeRegistry.ITEM_ACQUIRED, ResearchItemMatcher.of(targetItem), valueRef, increment);
     }
 
     // --- Definition compilation ---

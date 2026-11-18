@@ -69,11 +69,14 @@ public record ResearchData(
 
         var contextKey = handler.indexKey(context);
         if (contextKey != null) {
+            //Hooks without a target index key (e.g. item tags) cannot be pre-filtered and are checked directly.
             return allHooks.stream()
                     .filter(h -> {
                         var targetKey = handler.indexKey(h.triggerTarget());
-                        return targetKey != null && targetKey.equals(contextKey)
-                                && handler.matches(h.triggerTarget(), context);
+                        if (targetKey != null && !targetKey.equals(contextKey)) {
+                            return false;
+                        }
+                        return handler.matches(h.triggerTarget(), context);
                     })
                     .toList();
         }

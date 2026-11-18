@@ -8,22 +8,22 @@ package com.klikli_dev.modonomicon.api.datagen.research;
 
 import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
+import com.klikli_dev.modonomicon.research.item.ResearchItemMatcher;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStackTemplate;
 
 /**
  * Authoring-time research ingress declaration for the {@code item_crafted} trigger family.
  * A hook either grants a fact OR increments a value, never both.
  *
  * @param id the canonical hook id
- * @param targetItem the item stack template that triggers research progression
+ * @param targetItem the item matcher that triggers research progression
  * @param factRef the fact granted when that ingress event occurs (null if incrementing a value)
  * @param valueRef the value incremented when that ingress event occurs (null if granting a fact)
  * @param increment the amount to add to the target value (default 1, ignored for fact hooks)
  */
 public record ItemCraftedHookSpec(
         Identifier id,
-        ItemStackTemplate targetItem,
+        ResearchItemMatcher targetItem,
         ResearchFactRef factRef,
         ResearchValueRef valueRef,
         int increment
@@ -31,21 +31,21 @@ public record ItemCraftedHookSpec(
     /**
      * Creates a hook spec that grants a fact.
      */
-    public static ItemCraftedHookSpec grantFact(Identifier id, ItemStackTemplate targetItem, ResearchFactRef factRef) {
+    public static ItemCraftedHookSpec grantFact(Identifier id, ResearchItemMatcher targetItem, ResearchFactRef factRef) {
         return new ItemCraftedHookSpec(id, targetItem, factRef, null, 1);
     }
 
     /**
      * Creates a hook spec that increments a value.
      */
-    public static ItemCraftedHookSpec incrementValue(Identifier id, ItemStackTemplate targetItem, ResearchValueRef valueRef, int increment) {
+    public static ItemCraftedHookSpec incrementValue(Identifier id, ResearchItemMatcher targetItem, ResearchValueRef valueRef, int increment) {
         return new ItemCraftedHookSpec(id, targetItem, null, valueRef, increment);
     }
 
     /**
      * Compiles this ingress declaration into the canonical research hook record.
      */
-    public ResearchHookDefinition<ItemStackTemplate> toDefinition() {
+    public ResearchHookDefinition<ResearchItemMatcher> toDefinition() {
         return new ResearchHookDefinition<>(
                 this.id,
                 TriggerTypeRegistry.ITEM_CRAFTED,

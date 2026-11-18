@@ -9,8 +9,12 @@ package com.klikli_dev.modonomicon.api.datagen.research;
 import com.klikli_dev.modonomicon.data.TriggerType;
 import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
 import com.klikli_dev.modonomicon.research.hook.NoTriggerTarget;
+import com.klikli_dev.modonomicon.research.item.ResearchItemMatcher;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.level.ItemLike;
 
 /**
  * Fluent helper for authoring research ingress.
@@ -49,17 +53,83 @@ public final class ResearchIngressHelper {
     }
 
     /**
-     * Starts authoring ingress from the {@code item_crafted} trigger family.
+     * Starts authoring ingress from the {@code item_crafted} trigger family for an exact item template.
      */
     public ItemCraftedIngress onItemCrafted(ItemStackTemplate targetItem) {
+        return new ItemCraftedIngress(this.research, ResearchItemMatcher.of(targetItem));
+    }
+
+    /**
+     * Starts authoring ingress from the {@code item_crafted} trigger family for an item or item-like.
+     */
+    public ItemCraftedIngress onItemCrafted(ItemLike targetItem) {
+        return new ItemCraftedIngress(this.research, ResearchItemMatcher.of(targetItem));
+    }
+
+    /**
+     * Starts authoring ingress from the {@code item_crafted} trigger family for any item in the given tag.
+     */
+    public ItemCraftedIngress onItemCrafted(TagKey<Item> targetTag) {
+        return new ItemCraftedIngress(this.research, ResearchItemMatcher.tag(targetTag));
+    }
+
+    /**
+     * Starts authoring ingress from the {@code item_crafted} trigger family for the given matcher.
+     */
+    public ItemCraftedIngress onItemCrafted(ResearchItemMatcher targetItem) {
         return new ItemCraftedIngress(this.research, targetItem);
     }
 
     /**
-     * Starts authoring ingress from the {@code item_acquired} trigger family.
+     * Starts authoring ingress from the {@code item_acquired} trigger family for an exact item template.
      */
     public ItemAcquiredIngress onItemAcquired(ItemStackTemplate targetItem) {
+        return new ItemAcquiredIngress(this.research, ResearchItemMatcher.of(targetItem));
+    }
+
+    /**
+     * Starts authoring ingress from the {@code item_acquired} trigger family for an item or item-like.
+     */
+    public ItemAcquiredIngress onItemAcquired(ItemLike targetItem) {
+        return new ItemAcquiredIngress(this.research, ResearchItemMatcher.of(targetItem));
+    }
+
+    /**
+     * Starts authoring ingress from the {@code item_acquired} trigger family for any item in the given tag.
+     */
+    public ItemAcquiredIngress onItemAcquired(TagKey<Item> targetTag) {
+        return new ItemAcquiredIngress(this.research, ResearchItemMatcher.tag(targetTag));
+    }
+
+    /**
+     * Starts authoring ingress from the {@code item_acquired} trigger family for the given matcher.
+     */
+    public ItemAcquiredIngress onItemAcquired(ResearchItemMatcher targetItem) {
         return new ItemAcquiredIngress(this.research, targetItem);
+    }
+
+    /**
+     * Ingress step for {@code item_crafted}.
+     */
+    public static final class ItemCraftedIngress extends ResearchIngress<ResearchItemMatcher> {
+        /**
+         * Creates an item-crafted ingress step bound to one specific item matcher.
+         */
+        public ItemCraftedIngress(ResearchDataBuilder research, ResearchItemMatcher targetItem) {
+            super(research, TriggerTypeRegistry.ITEM_CRAFTED, targetItem);
+        }
+    }
+
+    /**
+     * Ingress step for {@code item_acquired}.
+     */
+    public static final class ItemAcquiredIngress extends ResearchIngress<ResearchItemMatcher> {
+        /**
+         * Creates an item-acquired ingress step bound to one specific item matcher.
+         */
+        public ItemAcquiredIngress(ResearchDataBuilder research, ResearchItemMatcher targetItem) {
+            super(research, TriggerTypeRegistry.ITEM_ACQUIRED, targetItem);
+        }
     }
 
     /**
@@ -98,30 +168,6 @@ public final class ResearchIngressHelper {
          */
         public AdvancementEarnedIngress(ResearchDataBuilder research, Identifier advancementId) {
             super(research, TriggerTypeRegistry.ADVANCEMENT, advancementId);
-        }
-    }
-
-    /**
-     * Ingress step for {@code item_crafted}.
-     */
-    public static final class ItemCraftedIngress extends ResearchIngress<ItemStackTemplate> {
-        /**
-         * Creates an item-crafted ingress step bound to one specific item.
-         */
-        public ItemCraftedIngress(ResearchDataBuilder research, ItemStackTemplate targetItem) {
-            super(research, TriggerTypeRegistry.ITEM_CRAFTED, targetItem);
-        }
-    }
-
-    /**
-     * Ingress step for {@code item_acquired}.
-     */
-    public static final class ItemAcquiredIngress extends ResearchIngress<ItemStackTemplate> {
-        /**
-         * Creates an item-acquired ingress step bound to one specific item.
-         */
-        public ItemAcquiredIngress(ResearchDataBuilder research, ItemStackTemplate targetItem) {
-            super(research, TriggerTypeRegistry.ITEM_ACQUIRED, targetItem);
         }
     }
 
