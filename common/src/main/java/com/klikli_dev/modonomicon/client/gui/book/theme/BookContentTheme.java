@@ -56,6 +56,11 @@ public interface BookContentTheme {
 
     GuiSprite tabPageBackground();
 
+    /**
+     * The button that closes an open entry tab overlay and returns to the underlying pages.
+     */
+    GuiButtonSprites tabCloseButton();
+
     GuiSprite searchButtonIcon();
 
     GuiSprite showBookmarksButtonIcon();

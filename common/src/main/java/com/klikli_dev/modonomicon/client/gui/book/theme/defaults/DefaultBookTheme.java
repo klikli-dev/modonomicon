@@ -48,6 +48,7 @@ public class DefaultBookTheme implements BookTheme {
     private final GuiSprite entryTabRightActive;
     private final GuiSprite entryTabLeftActive;
     private final GuiSprite tabPageBackground;
+    private final GuiButtonSprites tabCloseButton;
     private final GuiSprite searchButtonIcon;
     private final GuiSprite showBookmarksButtonIcon;
     private final GuiSprite showRecentlyUnlockedButtonIcon;
@@ -211,6 +212,11 @@ public class DefaultBookTheme implements BookTheme {
         @Override
         public GuiSprite tabPageBackground() {
             return DefaultBookTheme.this.tabPageBackground;
+        }
+
+        @Override
+        public GuiButtonSprites tabCloseButton() {
+            return DefaultBookTheme.this.tabCloseButton;
         }
 
         @Override
@@ -472,6 +478,7 @@ public class DefaultBookTheme implements BookTheme {
         this.entryTabRightActive = this.sprite("content/buttons/entry_tab/entry_tab_right_active.png", 44, 20);
         this.entryTabLeftActive = this.sprite("content/buttons/entry_tab/entry_tab_left_active.png", 44, 20);
         this.tabPageBackground = this.sprite("content/backgrounds/book/tab_page_background.png", 145, 178);
+        this.tabCloseButton = this.button("content/buttons/entry_tab/tab_close_button", 12, 12, true);
         this.searchButtonIcon = this.sprite("content/buttons/collection/search_icon.png", 16, 16);
         this.showBookmarksButtonIcon = this.sprite("content/buttons/collection/show_bookmarks_icon.png", 16, 16);
         this.showRecentlyUnlockedButtonIcon = this.sprite("content/buttons/collection/unlocked_icon.png", 16, 16);

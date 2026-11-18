@@ -29,6 +29,8 @@ path = [
     "common/src/main/resources/assets/modonomicon/textures/gui/sprites/modonomicon/themes/default/content/buttons/entry_tab/entry_tab_right_active.png",
     "common/src/main/resources/assets/modonomicon/textures/gui/sprites/modonomicon/themes/default/content/buttons/entry_tab/entry_tab_left.png",
     "common/src/main/resources/assets/modonomicon/textures/gui/sprites/modonomicon/themes/default/content/buttons/entry_tab/entry_tab_left_active.png",
+    "common/src/main/resources/assets/modonomicon/textures/gui/sprites/modonomicon/themes/default/content/buttons/entry_tab/tab_close_button_normal.png",
+    "common/src/main/resources/assets/modonomicon/textures/gui/sprites/modonomicon/themes/default/content/buttons/entry_tab/tab_close_button_hover.png",
     "common/src/main/resources/assets/modonomicon/textures/gui/sprites/modonomicon/themes/default/content/buttons/collection/search_icon.png",
     "common/src/main/resources/assets/modonomicon/textures/gui/sprites/modonomicon/themes/default/content/buttons/collection/unlocked_icon.png",
     "common/src/main/resources/assets/modonomicon/textures/gui/sprites/modonomicon/themes/default/content/buttons/collection/show_bookmarks_icon.png",
