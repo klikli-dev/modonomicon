@@ -1,15 +1,45 @@
 [
   {
-    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_level_1",
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_level_1_hook",
-    "trigger_target": "modonomicon:features/condition_level_1",
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/research_condition_level_1",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/research_condition_level_1_hook",
+    "trigger_target": "modonomicon:research/condition_level_1",
     "trigger_type": "modonomicon:entry_viewed_once"
   },
   {
-    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/markers_marker_intro",
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/markers_marker_intro_hook",
-    "trigger_target": "modonomicon:markers/marker_intro",
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/research_condition_root",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/research_condition_root_hook",
+    "trigger_target": "modonomicon:research/condition_root",
     "trigger_type": "modonomicon:entry_viewed_once"
+  },
+  {
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/research_marker_intro",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/research_marker_intro_hook",
+    "trigger_target": "modonomicon:research/marker_intro",
+    "trigger_type": "modonomicon:entry_viewed_once"
+  },
+  {
+    "fact_id": "modonomicon:generated/demo/facts/item_crafted/minecraft/crafting_table",
+    "id": "modonomicon:generated/demo/facts/item_crafted/minecraft/crafting_table_hook",
+    "trigger_target": {
+      "id": "minecraft:crafting_table"
+    },
+    "trigger_type": "modonomicon:item_crafted"
+  },
+  {
+    "fact_id": "modonomicon:generated/demo/facts/item_crafted/minecraft/torch",
+    "id": "modonomicon:generated/demo/facts/item_crafted/minecraft/torch_hook",
+    "trigger_target": {
+      "id": "minecraft:torch"
+    },
+    "trigger_type": "modonomicon:item_crafted"
+  },
+  {
+    "fact_id": "modonomicon:generated/demo/facts/item_crafted/minecraft/stone_pickaxe",
+    "id": "modonomicon:generated/demo/facts/item_crafted/minecraft/stone_pickaxe_hook",
+    "trigger_target": {
+      "id": "minecraft:stone_pickaxe"
+    },
+    "trigger_type": "modonomicon:item_crafted"
   },
   {
     "fact_id": "modonomicon:generated/demo/facts/item_crafted/minecraft/stick",
@@ -28,15 +58,35 @@
     "trigger_type": "modonomicon:item_acquired"
   },
   {
-    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_root",
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_root_hook",
-    "trigger_target": "modonomicon:features/condition_root",
+    "fact_id": "modonomicon:generated/demo/facts/item_acquired/minecraft/oak_log",
+    "id": "modonomicon:generated/demo/facts/item_acquired/minecraft/oak_log_hook",
+    "trigger_target": {
+      "id": "minecraft:oak_log"
+    },
+    "trigger_type": "modonomicon:item_acquired"
+  },
+  {
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/progression_first_page_progression",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/progression_first_page_progression_hook",
+    "trigger_target": "modonomicon:progression/first_page_progression",
     "trigger_type": "modonomicon:entry_viewed_once"
   },
   {
-    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_level_2",
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_level_2_hook",
-    "trigger_target": "modonomicon:features/condition_level_2",
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/progression_trailing_page_progression",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/progression_trailing_page_progression_hook",
+    "trigger_target": "modonomicon:progression/trailing_page_progression",
+    "trigger_type": "modonomicon:entry_viewed_once"
+  },
+  {
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/progression_placed_page_progression",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/progression_placed_page_progression_hook",
+    "trigger_target": "modonomicon:progression/placed_page_progression",
+    "trigger_type": "modonomicon:entry_viewed_once"
+  },
+  {
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/progression_scholarship",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/progression_scholarship_hook",
+    "trigger_target": "modonomicon:progression/scholarship",
     "trigger_type": "modonomicon:entry_viewed_once"
   },
   {
@@ -73,6 +123,12 @@
     "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/formatting_advanced",
     "id": "modonomicon:generated/demo/facts/entry_viewed_once/formatting_advanced_hook",
     "trigger_target": "modonomicon:formatting/advanced",
+    "trigger_type": "modonomicon:entry_viewed_once"
+  },
+  {
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/research_condition_level_2",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/research_condition_level_2_hook",
+    "trigger_target": "modonomicon:research/condition_level_2",
     "trigger_type": "modonomicon:entry_viewed_once"
   }
 ]

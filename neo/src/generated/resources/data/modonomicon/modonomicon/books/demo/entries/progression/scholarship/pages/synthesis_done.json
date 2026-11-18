@@ -1,0 +1,13 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:research_stage_completed",
+    "node_id": "modonomicon:generated/demo/nodes/entry_progression/progression_scholarship",
+    "stage_id": "modonomicon:generated/demo/nodes/entry_progression/progression_scholarship/stages/synthesis"
+  },
+  "id": "synthesis_done",
+  "show_title_separator": true,
+  "sort_number": 6,
+  "text": "book.modonomicon.demo.progression.scholarship.synthesis_done.text",
+  "title": "book.modonomicon.demo.progression.scholarship.synthesis_done.title"
+}
