@@ -272,6 +272,10 @@ public class EntryTabController {
         }
 
         if (event.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT && !this.screen.canLookupTooltipStack()) {
+            //let the tab page handle non-item ingredients (e.g. fluids) before right-click closes the overlay
+            if (this.isInOverlayPage(event.x(), event.y()) && this.screen.mouseClickedPageIngredient(event, isDoubleClick)) {
+                return true;
+            }
             this.close();
             return true;
         }
