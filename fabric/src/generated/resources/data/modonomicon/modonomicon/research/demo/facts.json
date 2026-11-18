@@ -48,7 +48,6 @@
   {
     "display": {
       "action": {
-        "type": "modonomicon:give_item",
         "cost": {
           "items": [
             {
@@ -60,17 +59,21 @@
             }
           ]
         },
-        "repeatable": true,
-        "require_absent": false,
-        "stack": {
-          "components": {
-            "minecraft:custom_data": {
-              "modonomicon_demo": "blank_research_note"
-            },
-            "minecraft:custom_name": "Blank Research Note"
-          },
-          "id": "minecraft:paper"
-        }
+        "effects": [
+          {
+            "type": "modonomicon:give_item",
+            "stack": {
+              "components": {
+                "minecraft:custom_data": {
+                  "modonomicon_demo": "blank_research_note"
+                },
+                "minecraft:custom_name": "Blank Research Note"
+              },
+              "id": "minecraft:paper"
+            }
+          }
+        ],
+        "repeatable": true
       },
       "title": {
         "translate": "modonomicon.demo.scholarship.research_note.title"

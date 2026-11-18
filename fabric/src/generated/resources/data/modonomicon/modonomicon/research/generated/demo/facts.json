@@ -41,14 +41,14 @@
   {
     "display": {
       "action": {
-        "type": "modonomicon:grant_fact",
         "cost": {
           "items": [
             {
               "item": "minecraft:paper"
             }
           ]
-        }
+        },
+        "grants_fact": true
       },
       "title": {
         "translate": "book.modonomicon.demo.progression.scholarship.stage.observation.action.observation.title"
