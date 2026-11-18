@@ -7,8 +7,8 @@
 package com.klikli_dev.modonomicon.research.hook.handlers;
 
 import com.klikli_dev.modonomicon.data.TriggerType;
-import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
+import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.hook.ItemUsedContext;
 import com.klikli_dev.modonomicon.research.hook.TriggerHandler;
 import com.klikli_dev.modonomicon.research.item.ResearchItemMatcher;
