@@ -152,38 +152,31 @@ public final class ResearchRequirementRows {
         int shown = browsed != null && total > 0 ? Math.min(browsed, total - 1) : (total > 0 ? current : 0);
         boolean browsing = browsed != null && total > 0;
 
-        var rows = new ArrayList<RequirementRow>();
+        var leading = new ArrayList<RequirementRow>();
         for (var dependency : node.requiredStages()) {
-            stageDependency(dependency, context, rows::add);
+            stageDependency(dependency, context, leading::add);
         }
 
         if (total == 0) {
             for (var factId : node.requiredFacts()) {
-                rows.add(fact(factId, context, false));
+                leading.add(fact(factId, context, false));
             }
             for (var requirement : node.requiredValues()) {
-                rows.add(value(requirement, context, false));
+                leading.add(value(requirement, context, false));
             }
-            return new RequirementBlock(Component.translatable(Gui.REQUIREMENTS_TITLE), rows, false);
+            return new RequirementBlock(Component.translatable(Gui.REQUIREMENTS_TITLE), leading, false);
         }
 
-        var stage = node.stages().get(shown);
         //stages before the current one are done, the current one is only done once the node is complete
         boolean done = complete || shown < current;
         //only the current stage offers non-repeatable actions, a browsed or completed stage is read-only apart from repeatable actions
         boolean active = !done && !browsing;
-        var manual = active && stage.completion().isManual()
-                ? new RequirementBlock.ManualStage(nodeId, shown, stage.completion().cost(), requirementsMet(stage, context))
-                : null;
-        stageRequirements(stage, context, done, nodeId, active, stage.completion().isManual() ? stage.completion().cost() : null, rows::add);
-        rewardRows(stage.rewards(), done, context, rows::add);
-        var description = stageDescription(stage);
-        if (complete && !browsing) {
-            //a completed progression keeps showing the steps of its last stage, all met, so the player sees what was done
-            return new RequirementBlock(Component.translatable(Gui.REQUIREMENTS_COMPLETE), rows, true, description, stageLine(node, shown, current, null));
-        }
-        var title = browsing || complete ? stageTitle(stage, false) : stageTitle(stage, true);
-        return new RequirementBlock(title, rows, false, description, stageLine(node, shown, current, manual));
+        //a completed progression keeps showing the steps of its last stage, all met, so the player sees what was done
+        boolean finished = complete && !browsing;
+        var slot = new StageSlot(nodeId, node, shown, current, done, active, nodeId, true, finished);
+        var title = finished ? Component.translatable(Gui.REQUIREMENTS_COMPLETE)
+                : stageTitle(node.stages().get(shown), !(browsing || complete));
+        return stageBlock(slot, title, leading, context);
     }
 
     /**
@@ -197,23 +190,51 @@ public final class ResearchRequirementRows {
             return new RequirementBlock(Component.translatable(Gui.REQUIREMENTS_NEXT_STEPS), List.of(unknown(stageId, context)), false);
         }
 
-        var stage = node.stages().get(location.stageIndex());
-        boolean completed = context.state().isStageCompleted(location.nodeId(), location.stageIndex());
+        int index = location.stageIndex();
+        boolean completed = context.state().isStageCompleted(location.nodeId(), index);
         boolean current = !completed && context.state().isNodeUnlocked(location.nodeId())
-                && context.state().getNodeStageIndex(location.nodeId()) - 1 == location.stageIndex();
-        var manual = current && stage.completion().isManual()
-                ? new RequirementBlock.ManualStage(location.nodeId(), location.stageIndex(), stage.completion().cost(), requirementsMet(stage, context))
-                : null;
-        var rows = new ArrayList<RequirementRow>();
+                && context.state().getNodeStageIndex(location.nodeId()) - 1 == index;
         //a stage is reached once it is completed or active, future stages offer no actions
-        stageRequirements(stage, context, completed, completed || current ? location.nodeId() : null, current,
-                stage.completion().isManual() ? stage.completion().cost() : null, rows::add);
-        rewardRows(stage.rewards(), completed, context, rows::add);
-        int total = node.stages().size();
-        return new RequirementBlock(stageTitle(stage, false), rows, false, stageDescription(stage),
-                new RequirementBlock.StageLine(location.stageIndex(), total, location.stageIndex(), false,
-                        stageTitle(stage, false), stageDescription(stage), manual));
+        var actionNode = completed || current ? location.nodeId() : null;
+        var slot = new StageSlot(location.nodeId(), node, index, index, completed, current, actionNode, false, false);
+        var stage = node.stages().get(index);
+        return stageBlock(slot, stageTitle(stage, false), List.of(), context);
     }
+
+    /**
+     * The state of one stage shown by a requirement block.
+     *
+     * @param lastBrowsable the last stage index the stage line lets the player browse to
+     * @param done the stage counts as done, its rows show met
+     * @param active the stage is the one being worked on, it offers its manual completion and non-repeatable actions
+     * @param actionNode the node that actions of the stage act on, null if the stage offers no actions
+     * @param navigable true if the stage line offers browsing between stages
+     * @param complete the whole progression is complete
+     */
+    private record StageSlot(Identifier nodeId, ResearchNodeDefinition node, int index, int lastBrowsable, boolean done, boolean active,
+                             @Nullable Identifier actionNode, boolean navigable, boolean complete) {
+    }
+
+    /**
+     * The one builder of stage blocks: the leading rows, then the stage requirements and rewards, with the manual completion
+     * and the stage line of the stage. Callers derive the slot state and the title.
+     */
+    private static RequirementBlock stageBlock(StageSlot slot, Component title, List<RequirementRow> leading, RequirementContext context) {
+        var stage = slot.node().stages().get(slot.index());
+        var rows = new ArrayList<>(leading);
+        var consumed = stage.completion().isManual() ? stage.completion().cost() : null;
+        stageRequirements(stage, context, slot.done(), slot.actionNode(), slot.active(), consumed, rows::add);
+        rewardRows(stage.rewards(), slot.done(), context, rows::add);
+
+        var manual = slot.active() && consumed != null
+                ? new RequirementBlock.ManualStage(slot.nodeId(), slot.index(), consumed, requirementsMet(stage, context))
+                : null;
+        var description = stageDescription(stage);
+        var line = new RequirementBlock.StageLine(slot.index(), slot.node().stages().size(), slot.lastBrowsable(), slot.navigable(),
+                stageTitle(stage, false), description, manual);
+        return new RequirementBlock(title, rows, slot.complete(), description, line);
+    }
+
 
     /**
      * True if all facts of the stage are granted and all its values reached their thresholds.
@@ -233,13 +254,8 @@ public final class ResearchRequirementRows {
     }
 
     /**
-     * The stage line of a progression, browsing is limited to the stages up to the current one.
+     * The title of a stage, prefixed by "next" if asked for. Falls back to the next steps title if the stage has no name.
      */
-    private static RequirementBlock.StageLine stageLine(ResearchNodeDefinition node, int shown, int lastBrowsable, @Nullable RequirementBlock.ManualStage manual) {
-        var stage = node.stages().get(shown);
-        return new RequirementBlock.StageLine(shown, node.stages().size(), lastBrowsable, true, stageTitle(stage, false), stageDescription(stage), manual);
-    }
-
     private static Component stageTitle(ResearchStageDefinition stage, boolean next) {
         var title = stage.display().flatMap(ResearchDisplay::title).or(() -> translated(Research.stageKey(stage.id())));
         if (title.isEmpty()) {
