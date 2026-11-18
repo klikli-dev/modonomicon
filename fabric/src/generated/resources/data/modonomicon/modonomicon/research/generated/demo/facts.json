@@ -41,13 +41,14 @@
   {
     "display": {
       "action": {
-        "cost": {
-          "items": [
-            {
-              "item": "minecraft:paper"
+        "cost": [
+          {
+            "type": "modonomicon:item",
+            "item": {
+              "id": "minecraft:paper"
             }
-          ]
-        },
+          }
+        ],
         "grants_fact": true
       },
       "title": {

@@ -48,17 +48,21 @@
   {
     "display": {
       "action": {
-        "cost": {
-          "items": [
-            {
-              "item": "minecraft:paper"
-            },
-            {
-              "durability": 1,
-              "item": "minecraft:shears"
+        "cost": [
+          {
+            "type": "modonomicon:item",
+            "item": {
+              "id": "minecraft:paper"
             }
-          ]
-        },
+          },
+          {
+            "type": "modonomicon:durability",
+            "amount": 1,
+            "item": {
+              "id": "minecraft:shears"
+            }
+          }
+        ],
         "effects": [
           {
             "type": "modonomicon:give_item",
