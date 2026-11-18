@@ -81,8 +81,8 @@ public class BookResearchNodeUnlockedCondition extends BookCondition {
         var data = ResearchDataManager.get().data();
         int totalStages = data.stageCount(this.nodeId);
         if (totalStages > 0) {
-            // Multi-stage: stageIndex >= totalStages means all stages complete
-            return state.getNodeStageIndex(this.nodeId) >= totalStages;
+            // Multi-stage: all stages must be completed, not just the last one started
+            return state.completedStageCount(this.nodeId) >= totalStages;
         }
         // Single-stage: unlocked = complete
         return true;
