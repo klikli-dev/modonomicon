@@ -48,9 +48,9 @@
     ]
   },
   {
-    "id": "modonomicon:generated/demo/nodes/item_acquired/minecraft/oak_log",
+    "id": "modonomicon:generated/demo/nodes/item_acquired/tag_minecraft/logs",
     "required_facts": [
-      "modonomicon:generated/demo/facts/item_acquired/minecraft/oak_log"
+      "modonomicon:generated/demo/facts/item_acquired/tag_minecraft/logs"
     ]
   },
   {
@@ -74,7 +74,7 @@
         "id": "modonomicon:generated/demo/nodes/entry_progression/progression_first_page_progression/stages/workbench",
         "required_facts": [
           "modonomicon:generated/demo/facts/item_crafted/minecraft/crafting_table",
-          "modonomicon:generated/demo/facts/item_acquired/minecraft/oak_log"
+          "modonomicon:generated/demo/facts/item_acquired/tag_minecraft/logs"
         ]
       },
       {

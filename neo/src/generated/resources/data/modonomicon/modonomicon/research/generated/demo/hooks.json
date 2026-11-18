@@ -58,10 +58,10 @@
     "trigger_type": "modonomicon:item_acquired"
   },
   {
-    "fact_id": "modonomicon:generated/demo/facts/item_acquired/minecraft/oak_log",
-    "id": "modonomicon:generated/demo/facts/item_acquired/minecraft/oak_log_hook",
+    "fact_id": "modonomicon:generated/demo/facts/item_acquired/tag_minecraft/logs",
+    "id": "modonomicon:generated/demo/facts/item_acquired/tag_minecraft/logs_hook",
     "trigger_target": {
-      "id": "minecraft:oak_log"
+      "tag": "minecraft:logs"
     },
     "trigger_type": "modonomicon:item_acquired"
   },
