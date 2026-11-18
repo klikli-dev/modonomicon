@@ -11,8 +11,10 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.*;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeRef;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageRef;
+import com.klikli_dev.modonomicon.research.item.ResearchItemMatcher;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.ItemLike;
@@ -142,10 +144,7 @@ public class ConditionHelper {
      * Markers never show tooltips.
      */
     public BookResearchNodeUnlockedConditionModel markerUntilCrafted(ItemStackTemplate target) {
-        this.requireStore("markerUntilCrafted()");
-        this.store.addItemCrafted(target);
-        return BookResearchNodeUnlockedConditionModel.create()
-                .withNode(this.store.craftedNodeId(target));
+        return this.markerUntilCrafted(ResearchItemMatcher.of(target));
     }
 
     /**
@@ -163,15 +162,29 @@ public class ConditionHelper {
     }
 
     /**
+     * Creates a marker condition that shows an attention dot until any item in the given tag has been crafted.
+     */
+    public BookResearchNodeUnlockedConditionModel markerUntilCrafted(TagKey<Item> tag) {
+        return this.markerUntilCrafted(ResearchItemMatcher.tag(tag));
+    }
+
+    /**
+     * Creates a marker condition that shows an attention dot until the item matched by the given matcher has been crafted.
+     */
+    public BookResearchNodeUnlockedConditionModel markerUntilCrafted(ResearchItemMatcher target) {
+        this.requireStore("markerUntilCrafted()");
+        this.store.addItemCrafted(target);
+        return BookResearchNodeUnlockedConditionModel.create()
+                .withNode(this.store.craftedNodeId(target));
+    }
+
+    /**
      * Creates a marker condition that shows an attention dot until the given item has been acquired.
      * The backing research node, fact, and hook are generated automatically during book compilation.
      * Markers never show tooltips.
      */
     public BookResearchNodeUnlockedConditionModel markerUntilAcquired(ItemStackTemplate target) {
-        this.requireStore("markerUntilAcquired()");
-        this.store.addItemAcquired(target);
-        return BookResearchNodeUnlockedConditionModel.create()
-                .withNode(this.store.acquiredNodeId(target));
+        return this.markerUntilAcquired(ResearchItemMatcher.of(target));
     }
 
     /**
@@ -186,6 +199,23 @@ public class ConditionHelper {
      */
     public BookResearchNodeUnlockedConditionModel markerUntilAcquired(ItemLike target) {
         return this.markerUntilAcquired(new ItemStackTemplate(target.asItem()));
+    }
+
+    /**
+     * Creates a marker condition that shows an attention dot until any item in the given tag has been acquired.
+     */
+    public BookResearchNodeUnlockedConditionModel markerUntilAcquired(TagKey<Item> tag) {
+        return this.markerUntilAcquired(ResearchItemMatcher.tag(tag));
+    }
+
+    /**
+     * Creates a marker condition that shows an attention dot until the item matched by the given matcher has been acquired.
+     */
+    public BookResearchNodeUnlockedConditionModel markerUntilAcquired(ResearchItemMatcher target) {
+        this.requireStore("markerUntilAcquired()");
+        this.store.addItemAcquired(target);
+        return BookResearchNodeUnlockedConditionModel.create()
+                .withNode(this.store.acquiredNodeId(target));
     }
 
     private void requireStore(String method) {

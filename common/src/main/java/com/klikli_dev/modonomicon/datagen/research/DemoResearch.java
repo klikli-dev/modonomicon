@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.datagen.research;
 
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchFactRef;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeRef;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeSpec;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageRef;
@@ -24,6 +25,7 @@ import com.klikli_dev.modonomicon.datagen.book.demo.values.CollectorBEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.values.CollectorCEntry;
 import com.klikli_dev.modonomicon.research.data.ResearchToastDefinition;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -88,10 +90,11 @@ public class DemoResearch extends SingleResearchSubProvider {
                 new ResearchNodeSpec.ValueRequirement(collectorCount, 3)
         ));
 
-        var stickCrafted = this.ingress()
+        var stickFact = this.fact("demo/stick_crafted");
+        this.ingress()
                 .onItemCrafted(new ItemStackTemplate(Items.STICK))
-                .declareFact("demo/stick_crafted");
-        this.node(CRAFTING_STICK, stickCrafted);
+                .grant(stickFact);
+        this.node(CRAFTING_STICK, stickFact);
         this.research().toast(CRAFTING_STICK, new ResearchToastDefinition(
                 toastKey("research_unlocked"),
                 List.of(),
@@ -100,10 +103,11 @@ public class DemoResearch extends SingleResearchSubProvider {
         ));
         this.add(toastKey("stick_crafted.title"), "Stick Crafted");
 
-        var cobbleAcquired = this.ingress()
-                .onItemAcquired(new ItemStackTemplate(Items.COBBLESTONE))
-                .declareFact("demo/cobblestone_acquired");
-        this.node(ACQUIRE_COBBLESTONE, cobbleAcquired);
+        var cobbleFact = this.fact("demo/cobblestone_acquired");
+        this.ingress()
+                .onItemAcquired(Items.COBBLESTONE)
+                .grant(cobbleFact);
+        this.node(ACQUIRE_COBBLESTONE, cobbleFact);
         this.research().toast(ACQUIRE_COBBLESTONE, new ResearchToastDefinition(
                 toastKey("research_unlocked"),
                 List.of(),
@@ -118,10 +122,10 @@ public class DemoResearch extends SingleResearchSubProvider {
         var stagesDemoStage2 = this.stageRef("demo/stages_demo_stage_2");
         var stagesDemoStage3 = this.stageRef("demo/stages_demo_stage_3");
 
-        // Value incremented each time a plank is crafted; stages unlock at thresholds
+        // Value incremented each time any plank is crafted (tag-based trigger); stages unlock at thresholds
         var planksCrafted = this.value("demo/stages_planks_crafted");
         this.ingress()
-                .onItemCrafted(new ItemStackTemplate(Items.OAK_PLANKS))
+                .onItemCrafted(ItemTags.PLANKS)
                 .incrementValue("demo/stages_planks_hook", planksCrafted, 1);
 
         // Multi-stage node: 3 value-based stages unlocked directly by crafting planks
@@ -159,7 +163,7 @@ public class DemoResearch extends SingleResearchSubProvider {
         // Explicit marker demo: clears once the markers intro entry has been viewed (manual pattern)
         var markerIntroViewed = this.ingress()
                 .onEntryViewedOnce(this.modLoc(MarkersCategory.ID + "/" + MarkerIntroEntry.ID))
-                .declareFact("demo/marker_intro_viewed");
+                .declareFact(ResearchFactRef.of(this.modLoc("demo/marker_intro_viewed")));
         this.node(MARKER_EXPLICIT, markerIntroViewed);
 
         // Research node and stage display names for condition tooltips

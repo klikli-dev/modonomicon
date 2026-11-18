@@ -44,7 +44,7 @@ public class ResetGraphResearchCommand implements com.mojang.brigadier.Command<C
         var graphId = IdentifierArgument.getId(context, "graph_id");
         var data = ResearchDataManager.get().data();
 
-        if (!data.graphNodeIds().containsKey(graphId)) {
+        if (!data.graphIds().contains(graphId)) {
             throw ERROR_UNKNOWN_GRAPH.create(graphId);
         }
 

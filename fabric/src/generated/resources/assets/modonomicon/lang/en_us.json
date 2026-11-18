@@ -569,6 +569,8 @@
   "modonomicon.configuration.storeLastOpenPageWhenClosingEntry.tooltip": "Enable keeping the last open page stored when closing an entry. Regardless of this setting it will be stored when closing the entire book with Esc.",
   "modonomicon.gui.add_bookmark": "Add Bookmark",
   "modonomicon.gui.book.index_list_title": "Categories",
+  "modonomicon.gui.book_build_failed": "This book failed to build and cannot be opened. Please report this to the author of the mod providing the book.",
+  "modonomicon.gui.book_not_found": "The book '%s' was not found or failed to load. Please check the log for errors.",
   "modonomicon.gui.bookmarks.entry_list_title": "Bookmark Entries",
   "modonomicon.gui.bookmarks.info": "To navigate to a bookmark, click on it in this list.\n\\\n\\\nTo add a bookmark, open an entry and click the \"Add Bookmark\" button on the bottom right.\n\\\n\\\nTo remove a bookmark, navigate to it and click the \"Remove Bookmark\" button on the bottom right.\n",
   "modonomicon.gui.bookmarks.no_results": "No entries yet.",
