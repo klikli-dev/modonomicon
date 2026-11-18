@@ -56,6 +56,7 @@ public class ImageEntry extends EntryProvider {
                         .withText(this.context().pageText())
                         .withItem(Ingredient.of(Blocks.SPAWNER))
         );
+        this.pageText("A sample text for the sample spotlight.");
 
         this.page("test_image", () ->
                 BookImagePageModel.create()

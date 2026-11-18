@@ -37,7 +37,6 @@ public class ScholarshipEntry extends EntryProvider {
 
     @Override
     protected void generatePages() {
-        this.add("modonomicon.demo.scholarship.observation.title", "Record your observations");
         this.page("intro", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
@@ -48,7 +47,7 @@ public class ScholarshipEntry extends EntryProvider {
                 """);
 
         this.stage("observation", s -> s
-                .action("observation", "modonomicon.demo.scholarship.observation.title",
+                .action("observation", "Record your observations",
                         ResearchActionModel.grantFact(ResearchCostModel.create().item(Items.PAPER)))
                 .title("Observation")
                 .description("Pay one paper to record your observations.")
