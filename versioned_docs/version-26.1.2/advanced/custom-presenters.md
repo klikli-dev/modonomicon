@@ -8,13 +8,13 @@ Presenters decide how a research element is drawn in a requirements block. There
 
 | Registry | Presents | Interface | Method |
 |----------|----------|-----------|--------|
-| `TriggerRequirementPresenterRegistry` | A hook of a trigger type, as a requirement row | `TriggerRequirementPresenter` | `present(hook, context)` |
+| `ResearchTriggerPresenterRegistry` | A hook of a trigger type, as a requirement row | `ResearchTriggerPresenter` | `present(hook, context)` |
 | `ResearchEffectPresenterRegistry` | An effect of a stage reward or action, as a row | `ResearchEffectPresenter` | `present(effect, context)` |
 | `ResearchCostPresenterRegistry` | A cost entry, as a row and as a tooltip line | `ResearchCostPresenter` | `row(entry, context, forceMet)`, `line(entry)` |
 
 Each registry has the same three methods:
 
-- `registerDefaults()` registers the presenters of the built-in types. Modonomicon calls it during client setup.
+- `registerDefaults()` registers the presenters of the built-in types. Modonomicon calls it in its client setup.
 - `register(typeId, presenter)` sets the presenter of one type. It replaces any presenter registered for that id before.
 - `get(typeId)` returns the presenter of a type, or a generic fallback if none is registered.
 
@@ -22,10 +22,10 @@ Unknown types never break a block. They show a generic row with a book icon and 
 
 ## Trigger presenters
 
-A trigger presenter turns a hook into a row. Only the icon, title, details and click action matter. The met state comes from the requirement itself. The category of the row is assigned by the caller, see [Requirement Categories](../basics/research/categories.md#where-a-row-goes).
+A trigger presenter turns a hook into a row. Only the icon, title, details and click action matter. The met state comes from the requirement itself. The category of the row is assigned by the caller, see [Requirement Categories](../basics/research/categories.md#where-a-row-goes). The built-in trigger presenters are in `DefaultResearchTriggerPresenters`.
 
 ```java
-TriggerRequirementPresenterRegistry.register(MyModTriggers.ENTITY_KILLED.id(), (hook, context) ->
+ResearchTriggerPresenterRegistry.register(MyModTriggers.ENTITY_KILLED.id(), (hook, context) ->
         RequirementRow.of(
                 List.of(RequirementIcon.of(new ItemStack(Items.IRON_SWORD))),
                 Component.translatable("mymod.requirement.entity_killed", entityName(hook)))
@@ -37,7 +37,7 @@ TriggerRequirementPresenterRegistry.register(MyModTriggers.ENTITY_KILLED.id(), (
 An effect presenter describes an effect that is shown as a reward or as part of an action. It returns a row:
 
 ```java
-ResearchEffectPresenterRegistry.register(MyModEffects.GRANT_MANA.id(), new ResearchEffectPresenter() {
+ResearchEffectPresenterRegistry.register(MyModResearchTypes.GRANT_MANA.id(), new ResearchEffectPresenter() {
     @Override
     public RequirementRow present(ResearchEffect effect, RequirementContext context) {
         var mana = (GrantManaEffect) effect;
@@ -55,7 +55,7 @@ The built-in effect presenters are in `DefaultResearchEffectPresenters`.
 A cost presenter describes one cost entry in two places: the requirement row of a manual stage, and the tooltip line of an action. Both come from the same presenter, so each entry is described in one place.
 
 ```java
-ResearchCostPresenterRegistry.register(MyModCosts.MANA.id(), new ResearchCostPresenter() {
+ResearchCostPresenterRegistry.register(MyModResearchTypes.MANA.id(), new ResearchCostPresenter() {
     @Override
     public RequirementRow row(ResearchCostEntry entry, RequirementContext context, boolean forceMet) {
         return RequirementRow.of(
@@ -71,7 +71,14 @@ The built-in cost presenters are in `DefaultResearchCostPresenters`: item costs,
 
 ## Registration
 
-Register presenters on the client, in the client setup of your loader, after Modonomicon's own client setup has run. The built-in types are registered by `registerDefaults()`, which overwrites a presenter registered earlier for the same id. Presenters of your own types can be registered at any time before the book opens.
+Presenters run on the client only, so register them on the client.
+
+- **NeoForge and Forge**: the client setup event (`FMLClientSetupEvent`). Modonomicon's own client setup calls `registerDefaults()` there.
+- **Fabric**: `onInitializeClient`. Modonomicon's client initializer calls `registerDefaults()` there.
+
+Presenters of your own types can be registered from your client setup at any time before the book opens, because the registries are plain maps keyed by type id. The order of two listeners of the same client setup event is not defined, so do not rely on it when you register a presenter for a built-in type.
+
+`registerDefaults()` replaces a presenter registered earlier for the same built-in id. To replace a built-in presenter, register yours later, from a client event that runs after Modonomicon's client setup. Replacing built-in presenters is rarely needed; prefer giving your own types their own presenters.
 
 ```java
 // NeoForge and Forge: client setup event
@@ -86,8 +93,8 @@ public void onInitializeClient() {
 }
 ```
 
-Presenters run on the client only. They must not change any state, since they may run every frame the requirement block is drawn.
+Presenters must not change any state. The requirement block may draw them often while the book is open.
 
 ## Custom types
 
-Presenters are keyed by the id of the type, so the type must exist. For effect and cost types see [Custom Costs and Effects](./custom-effects-and-costs.md). For trigger types see [Custom Research Hooks](./custom-hooks.md).
+Presenters are keyed by the id of the type, so the type must exist. Register the type in common setup, see [Custom Costs and Effects](./custom-effects-and-costs.md#registration). For trigger types see [Custom Research Hooks](./custom-hooks.md).
