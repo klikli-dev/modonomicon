@@ -130,6 +130,18 @@ public class BookProvider implements DataProvider {
                 .resolve(pageId + ".json");
     }
 
+    protected Path getTabPath(Path dataFolder, BookEntryModel bookEntryModel, String tabId) {
+        Identifier id = bookEntryModel.getId();
+        return dataFolder
+                .resolve(id.getNamespace())
+                .resolve(ModonomiconConstants.Data.MODONOMICON_DATA_PATH)
+                .resolve(bookEntryModel.getCategory().getBook().getId().getPath())
+                .resolve("entries")
+                .resolve(id.getPath())
+                .resolve("tabs")
+                .resolve(tabId + ".json");
+    }
+
     @Override
     public @NotNull CompletableFuture<?> run(@NotNull CachedOutput cache) {
         return this.registries.thenCompose(registries -> {
@@ -187,6 +199,17 @@ public class BookProvider implements DataProvider {
                     for (var bookEntryModel : bookCategoryModel.getEntries()) {
                         Path bookEntryPath = this.getPath(dataFolder, bookEntryModel);
                         futures.add(DataProvider.saveStable(cache, bookEntryModel.toJson(registries), bookEntryPath));
+
+                        if (bookEntryModel.generateTabsAsFiles()) {
+                            for (var tabModel : bookEntryModel.getTabs()) {
+                                String tabId = tabModel.getId();
+                                if (tabId == null || tabId.isEmpty()) {
+                                    throw new IllegalStateException("Tab in entry " + bookEntryModel.getId() + " has an empty ID, but generateTabsAsFiles is enabled.");
+                                }
+                                Path tabPath = this.getTabPath(dataFolder, bookEntryModel, tabId);
+                                futures.add(DataProvider.saveStable(cache, tabModel.toJson(bookEntryModel.getId(), registries), tabPath));
+                            }
+                        }
 
                         if (bookEntryModel.generatePagesAsFiles()) {
                             for (var pageModel : bookEntryModel.getPages()) {

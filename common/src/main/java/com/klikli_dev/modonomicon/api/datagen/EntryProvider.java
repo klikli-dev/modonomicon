@@ -7,14 +7,17 @@
 package com.klikli_dev.modonomicon.api.datagen;
 
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
+import com.klikli_dev.modonomicon.api.datagen.book.BookEntryTabModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.phys.Vec2;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -99,6 +102,117 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
         this.entry.withGeneratePagesAsFiles(generatePagesAsFiles);
     }
 
+    /**
+     * Controls whether tabs for this entry are generated as separate JSON files.
+     * Default is {@code true} (separate files).
+     * Set to {@code false} to include tabs inline in the entry's JSON.
+     */
+    protected void generateTabsAsFiles(boolean generateTabsAsFiles) {
+        this.entry.withGenerateTabsAsFiles(generateTabsAsFiles);
+    }
+
+    /**
+     * Adds a tab title for the current context to the underlying language provider.
+     * Like {@link #pageTitle(String)} it can be called right after {@link #tab(String, Supplier)}, as the tab stays the current context
+     * until the next tab is declared. Use the translation key {@link #tabTitleKey()} in the tab model, e.g. {@code .withTitle(this.tabTitleKey())}.
+     */
+    protected void tabTitle(String title) {
+        this.add(this.context().tabTitle(), title);
+    }
+
+    /**
+     * The translation key of the title of the tab in the current context.
+     */
+    protected String tabTitleKey() {
+        return this.context().tabTitle();
+    }
+
+    /**
+     * Adds a tab text for the current context to the underlying language provider, e.g. for the text of the tab page.
+     * Like {@link #pageText(String)} it can be called right after {@link #tab(String, Supplier)}.
+     * Use the translation key {@link #tabTextKey()} in the tab model.
+     */
+    protected void tabText(String text) {
+        this.add(this.context().tabText(), text);
+    }
+
+    /**
+     * The translation key of the text of the tab in the current context.
+     */
+    protected String tabTextKey() {
+        return this.context().tabText();
+    }
+
+    /**
+     * Registers a tab with the current context and adds it to the tabs of the entry created with this.entry(...).
+     * The tab is pinned to the page most recently declared with {@link #page(String, Supplier)} in this entry,
+     * i.e. it is only visible while that page is on the open spread. Several tabs declared after the same page all pin to it.
+     * An anchor set explicitly on the returned model is kept.
+     * The tab is written as a file named after the id, see {@link #generateTabsAsFiles(boolean)}.
+     * Needs to be called after this.context().entry(<entryId>) and after the page it should pin to has been declared.
+     *
+     * @param id            the tab id, used as file name and as id of the tab page if it has none
+     * @param modelSupplier A supplier that provides a tab model. It is a supplier, because that way you can use this.context() within the supplier, e.g. for tabTitleKey().
+     * @throws IllegalStateException if no page has been declared yet in this entry, use {@link #entryTab(String, Supplier)} for entry-wide tabs
+     */
+    protected BookEntryTabModel tab(String id, Supplier<BookEntryTabModel> modelSupplier) {
+        var pageId = this.context().pageId();
+        if (pageId == null) {
+            throw new IllegalStateException("Tab '" + id + "' in entry '" + this.entryId() + "' has no page to pin to. "
+                    + "Declare a page with this.page(...) before this.tab(...), or use this.entryTab(...) for a tab that is visible for the whole entry.");
+        }
+
+        var model = this.addTab(id, modelSupplier);
+        if (model.getAnchor() == null) {
+            model.withAnchor(pageId);
+        }
+        return model;
+    }
+
+    /**
+     * Registers an entry-wide tab with the current context and adds it to the tabs of the entry created with this.entry(...).
+     * Unlike {@link #tab(String, Supplier)} the tab is not pinned to a page, so it is visible for the whole entry.
+     * An anchor set explicitly on the returned model is kept.
+     * The tab is written as a file named after the id, see {@link #generateTabsAsFiles(boolean)}.
+     * Needs to be called after this.context().entry(<entryId>)
+     *
+     * @param id            the tab id, used as file name and as id of the tab page if it has none
+     * @param modelSupplier A supplier that provides a tab model. It is a supplier, because that way you can use this.context() within the supplier, e.g. for tabTitleKey().
+     */
+    protected BookEntryTabModel entryTab(String id, Supplier<BookEntryTabModel> modelSupplier) {
+        return this.addTab(id, modelSupplier);
+    }
+
+    private BookEntryTabModel addTab(String id, Supplier<BookEntryTabModel> modelSupplier) {
+        this.context().tab(id);
+        var model = modelSupplier.get();
+        model.withId(id);
+        this.entry.withTab(model);
+        return model;
+    }
+
+    /**
+     * Ensures tab ids are unique within the entry and that every tab anchor refers to a page of the entry.
+     */
+    private void validateTabs() {
+        var pageIds = this.entry.getPages().stream()
+                .map(BookPageModel::getId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        var tabIds = new HashSet<String>();
+        for (var tab : this.entry.getTabs()) {
+            if (!tabIds.add(tab.getId())) {
+                throw new IllegalStateException("Duplicate tab id '" + tab.getId() + "' in entry '" + this.entryId() + "'.");
+            }
+
+            if (tab.getAnchor() != null && !pageIds.contains(tab.getAnchor())) {
+                throw new IllegalStateException("Tab '" + tab.getId() + "' in entry '" + this.entryId() + "' is anchored to page '"
+                        + tab.getAnchor() + "', but the entry has no page with that id.");
+            }
+        }
+    }
+
     protected <T extends BookPageModel<?>> T add(T page) {
         this.entry.withPage(page);
         return page;
@@ -164,6 +278,7 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
         this.entry = this.additionalSetup(entry);
 
         this.generatePages();
+        this.validateTabs();
 
         this.parent.add(this.entry);
         return this.entry;
