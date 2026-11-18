@@ -8,6 +8,8 @@ package com.klikli_dev.modonomicon.api.datagen.research;
 
 import com.klikli_dev.modonomicon.data.TriggerType;
 import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
+import com.klikli_dev.modonomicon.research.data.ResearchCategories;
+import com.klikli_dev.modonomicon.research.data.ResearchCategoryDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchFactDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
@@ -21,6 +23,7 @@ import net.minecraft.world.item.ItemStackTemplate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.UnaryOperator;
 
 /**
  * Low-level research authoring collector that compiles typed authoring input into canonical research
@@ -35,6 +38,7 @@ public final class ResearchDataBuilder {
     private final List<ResearchValueSpec> values = new ArrayList<>();
     private final List<ResearchNodeSpec> nodes = new ArrayList<>();
     private final List<ResearchHookSpec<?>> hooks = new ArrayList<>();
+    private final List<ResearchCategoryModel> categories = new ArrayList<>();
 
     /**
      * Creates a builder that will namespace authored relative paths under the given namespace.
@@ -146,7 +150,7 @@ public final class ResearchDataBuilder {
      * Declares a research node with both fact and value requirements.
      */
     public ResearchNodeRef node(ResearchNodeRef ref, List<ResearchFactRef> requiredFacts, List<ResearchNodeSpec.ValueRequirement> requiredValues) {
-        this.addNode(new ResearchNodeSpec(ref, requiredFacts, requiredValues, List.of(), List.of(), Optional.empty()));
+        this.addNode(ResearchNodeSpec.of(ref, requiredFacts, requiredValues, List.of(), List.of(), Optional.empty()));
         return ref;
     }
 
@@ -243,13 +247,85 @@ public final class ResearchDataBuilder {
         this.nodes.set(index, this.nodes.get(index).toast(toast));
     }
 
+    /**
+     * Merges display data into an existing fact. Parts unset in the display keep their previous value, so calling this
+     * twice does not drop the icon or title. Use {@link #display(ResearchFactRef, UnaryOperator)} to edit the display in place.
+     *
+     * @throws IllegalArgumentException if the fact was never declared
+     */
+    public void display(ResearchFactRef factRef, ResearchDisplayModel display) {
+        this.display(factRef, current -> current.merge(display));
+    }
+
+    /**
+     * Updates the display of an existing fact. The operator receives a copy of the existing display or an empty one.
+     *
+     * @throws IllegalArgumentException if the fact was never declared
+     */
+    public void display(ResearchFactRef factRef, UnaryOperator<ResearchDisplayModel> update) {
+        var index = this.indexOfFact(factRef);
+        this.facts.set(index, this.facts.get(index).display(update));
+    }
+
+    /**
+     * Merges display data into an existing value, see {@link #display(ResearchFactRef, ResearchDisplayModel)}.
+     *
+     * @throws IllegalArgumentException if the value was never declared
+     */
+    public void display(ResearchValueRef valueRef, ResearchDisplayModel display) {
+        this.display(valueRef, current -> current.merge(display));
+    }
+
+    /**
+     * Updates the display of an existing value, see {@link #display(ResearchFactRef, UnaryOperator)}.
+     *
+     * @throws IllegalArgumentException if the value was never declared
+     */
+    public void display(ResearchValueRef valueRef, UnaryOperator<ResearchDisplayModel> update) {
+        var index = this.indexOfValue(valueRef);
+        this.values.set(index, this.values.get(index).display(update));
+    }
+
+    /**
+     * Merges display data into an existing node, see {@link #display(ResearchFactRef, ResearchDisplayModel)}.
+     *
+     * @throws IllegalArgumentException if the node was never declared
+     */
+    public void display(ResearchNodeRef nodeRef, ResearchDisplayModel display) {
+        this.display(nodeRef, current -> current.merge(display));
+    }
+
+    /**
+     * Updates the display of an existing node, see {@link #display(ResearchFactRef, UnaryOperator)}.
+     *
+     * @throws IllegalArgumentException if the node was never declared
+     */
+    public void display(ResearchNodeRef nodeRef, UnaryOperator<ResearchDisplayModel> update) {
+        var index = this.indexOfNode(nodeRef);
+        this.nodes.set(index, this.nodes.get(index).display(update));
+    }
+
+    /**
+     * Declares a requirement category of this bundle and returns its id. Assign it via {@link ResearchDisplayModel#withCategory(Identifier)}.
+     * Declaring a category with the id of a built-in category (see {@link ResearchCategories}) overrides the built-in one.
+     *
+     * @throws IllegalArgumentException if a category with the same id was already declared
+     */
+    public Identifier category(ResearchCategoryModel category) {
+        if (this.categories.stream().anyMatch(existing -> existing.id().equals(category.id()))) {
+            throw new IllegalArgumentException("Research category '" + category.id() + "' is already declared");
+        }
+        this.categories.add(category);
+        return category.id();
+    }
+
     private int indexOfFact(ResearchFactRef ref) {
         for (int i = 0; i < this.facts.size(); i++) {
             if (this.facts.get(i).ref().id().equals(ref.id())) {
                 return i;
             }
         }
-        throw new IllegalArgumentException("Cannot add toast to research fact '" + ref.id() + "': it was never declared in this builder");
+        throw new IllegalArgumentException("Research fact '" + ref.id() + "' was never declared in this builder");
     }
 
     private int indexOfValue(ResearchValueRef ref) {
@@ -258,7 +334,7 @@ public final class ResearchDataBuilder {
                 return i;
             }
         }
-        throw new IllegalArgumentException("Cannot add toast to research value '" + ref.id() + "': it was never declared in this builder");
+        throw new IllegalArgumentException("Research value '" + ref.id() + "' was never declared in this builder");
     }
 
     private int indexOfNode(ResearchNodeRef ref) {
@@ -267,7 +343,7 @@ public final class ResearchDataBuilder {
                 return i;
             }
         }
-        throw new IllegalArgumentException("Cannot add toast to research node '" + ref.id() + "': it was never declared in this builder");
+        throw new IllegalArgumentException("Research node '" + ref.id() + "' was never declared in this builder");
     }
 
     // --- Generic hook ingress ---
@@ -467,6 +543,13 @@ public final class ResearchDataBuilder {
      */
     public List<ResearchNodeDefinition> nodeDefinitions() {
         return this.nodes.stream().map(ResearchNodeSpec::toDefinition).toList();
+    }
+
+    /**
+     * Returns the compiled canonical category definitions declared in this bundle.
+     */
+    public List<ResearchCategoryDefinition> categoryDefinitions() {
+        return this.categories.stream().map(ResearchCategoryModel::toDefinition).toList();
     }
 
     /**
