@@ -192,7 +192,7 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
     }
 
     /**
-     * Ensures tab ids are unique within the entry and that every tab anchor refers to a page of the entry.
+     * Ensures present tab ids are unique within the entry and that every tab anchor refers to a page of the entry.
      */
     private void validateTabs() {
         var pageIds = this.entry.getPages().stream()
@@ -202,7 +202,9 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
 
         var tabIds = new HashSet<String>();
         for (var tab : this.entry.getTabs()) {
-            if (!tabIds.add(tab.getId())) {
+            //inline tabs may omit the id, tabs written as files are checked for an id in BookProvider
+            var tabId = tab.getId();
+            if (tabId != null && !tabId.isEmpty() && !tabIds.add(tabId)) {
                 throw new IllegalStateException("Duplicate tab id '" + tab.getId() + "' in entry '" + this.entryId() + "'.");
             }
 
