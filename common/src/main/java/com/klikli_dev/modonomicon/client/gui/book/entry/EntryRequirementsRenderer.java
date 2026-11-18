@@ -78,6 +78,12 @@ public final class EntryRequirementsRenderer {
     private static final int BUTTON_PADDING = 3;
     /** Gap below the complete button band, before the first requirement row. */
     private static final int BUTTON_BAND_GAP = 2;
+    private static final int MIN_ICONS_PER_ROW = 1;
+    private static final int SLOT_HIGHLIGHT_OUTSET = 1;
+    private static final int TEXT_INSET_Y = 1;
+    private static final int CATEGORY_LINE_GAP = 1;
+    private static final int STAGE_DELTA_PREVIOUS = -1;
+    private static final int STAGE_DELTA_NEXT = 1;
 
     /**
      * A laid out requirement slot, in book-relative coordinates.
@@ -136,7 +142,7 @@ public final class EntryRequirementsRenderer {
      * The number of icons that fit into one row of the given width with at least {@link #MIN_SLOT_STEP} spacing.
      */
     public static int maxIconsPerRow(int width) {
-        return Math.max(1, 1 + (width - SLOT_SIZE) / MIN_SLOT_STEP);
+        return Math.max(MIN_ICONS_PER_ROW, 1 + (width - SLOT_SIZE) / MIN_SLOT_STEP);
     }
 
     /**
@@ -276,10 +282,10 @@ public final class EntryRequirementsRenderer {
         var geometry = stageGeometry(block, font, x, top, width);
         var stage = block.stage();
         if (stage.navigable() && stage.index() > 0 && inside(geometry.leftX(), geometry.arrowY(), STAGE_ARROW_WIDTH, STAGE_ARROW_HEIGHT, mouseX, mouseY)) {
-            return -1;
+            return STAGE_DELTA_PREVIOUS;
         }
         if (stage.navigable() && stage.index() < stage.lastBrowsable() && inside(geometry.rightX(), geometry.arrowY(), STAGE_ARROW_WIDTH, STAGE_ARROW_HEIGHT, mouseX, mouseY)) {
-            return 1;
+            return STAGE_DELTA_NEXT;
         }
         return 0;
     }
@@ -311,7 +317,7 @@ public final class EntryRequirementsRenderer {
         int buttonX = x + (width - buttonWidth) / 2;
         int buttonY = top + SEPARATOR_HEIGHT + SEPARATOR_GAP;
         int arrowY = stageY + (STAGE_LINE_HEIGHT - STAGE_ARROW_HEIGHT) / 2;
-        return new StageGeometry(textX, stageY + 1, textWidth, leftX, rightX, arrowY, stageY, buttonX, buttonY, buttonWidth);
+        return new StageGeometry(textX, stageY + TEXT_INSET_Y, textWidth, leftX, rightX, arrowY, stageY, buttonX, buttonY, buttonWidth);
     }
 
     /**
@@ -416,7 +422,7 @@ public final class EntryRequirementsRenderer {
         sprite.extractRenderState(guiGraphics, geometry.buttonX(), geometry.buttonY(), geometry.buttonWidth(), STAGE_LINE_HEIGHT);
         var label = Component.translatable(completing ? Gui.REQUIREMENTS_STAGE_COMPLETING : Gui.REQUIREMENTS_STAGE_COMPLETE);
         int labelX = geometry.buttonX() + (geometry.buttonWidth() - font.width(label)) / 2;
-        guiGraphics.text(font, label, labelX, geometry.buttonY() + 1, enabled ? STAGE_TEXT_COLOR : COMPLETE_DISABLED_COLOR, false);
+        guiGraphics.text(font, label, labelX, geometry.buttonY() + TEXT_INSET_Y, enabled ? STAGE_TEXT_COLOR : COMPLETE_DISABLED_COLOR, false);
         if (interactive && hovered && !completing) {
             tooltipSink.accept(completeTooltip(manual, player));
         }
@@ -486,7 +492,8 @@ public final class EntryRequirementsRenderer {
         var slots = layout(block, x, top, width);
         for (var slot : slots) {
             if (interactive && slot.row().action() != null && slot.contains(mouseX, mouseY)) {
-                guiGraphics.fill(slot.x() - 1, slot.y() - 1, slot.x() + SLOT_SIZE + 1, slot.y() + SLOT_SIZE + 1, ACTION_HIGHLIGHT_COLOR);
+                guiGraphics.fill(slot.x() - SLOT_HIGHLIGHT_OUTSET, slot.y() - SLOT_HIGHLIGHT_OUTSET,
+                        slot.x() + SLOT_SIZE + SLOT_HIGHLIGHT_OUTSET, slot.y() + SLOT_SIZE + SLOT_HIGHLIGHT_OUTSET, ACTION_HIGHLIGHT_COLOR);
             }
         }
         for (var slot : slots) {
@@ -525,7 +532,7 @@ public final class EntryRequirementsRenderer {
                 tooltipSink.accept(categoryTooltip(category));
             }
 
-            int lineX = x + CATEGORY_ICON_SIZE + 1;
+            int lineX = x + CATEGORY_ICON_SIZE + CATEGORY_LINE_GAP;
             content.requirementRowLine().extractRenderState(guiGraphics, lineX, rowY + (ROW_HEIGHT - CATEGORY_LINE_HEIGHT) / 2,
                     x + width - lineX, CATEGORY_LINE_HEIGHT, CATEGORY_LINE_TINT);
         }

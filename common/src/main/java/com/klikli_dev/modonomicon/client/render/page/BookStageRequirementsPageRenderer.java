@@ -27,6 +27,10 @@ public class BookStageRequirementsPageRenderer extends BookPageRenderer<BookStag
     private static final int TITLE_Y = 0;
     private static final int TEXT_Y_WITH_TITLE = 17;
     private static final int TEXT_Y_WITHOUT_TITLE = -4;
+    /**
+     * The origin of the page content: the block, the text and the hover test are placed relative to it.
+     */
+    private static final int PAGE_ORIGIN = 0;
 
     /**
      * The requirement block drawn at the bottom of the page. Empty if there is nothing to show.
@@ -82,11 +86,11 @@ public class BookStageRequirementsPageRenderer extends BookPageRenderer<BookStag
 
         var textY = this.getTextY();
         if (this.page.hasText()) {
-            this.renderBookTextHolder(guiGraphics, this.page.getText(), 0, textY, BookEntryScreen.PAGE_WIDTH, this.getAvailablePageHeight() - textY);
+            this.renderBookTextHolder(guiGraphics, this.page.getText(), PAGE_ORIGIN, textY, BookEntryScreen.PAGE_WIDTH, this.getAvailablePageHeight() - textY);
         }
 
         if (!this.block.isEmpty()) {
-            this.requirements().renderBlock(guiGraphics, this.block, 0, this.requirements().getBlockTop(this.block, 0),
+            this.requirements().renderBlock(guiGraphics, this.block, PAGE_ORIGIN, this.requirements().getBlockTop(this.block, PAGE_ORIGIN),
                     BookEntryScreen.PAGE_WIDTH, mouseX, mouseY, true);
         }
 
@@ -103,14 +107,14 @@ public class BookStageRequirementsPageRenderer extends BookPageRenderer<BookStag
             return false;
         }
 
-        return this.requirements().clickBlock(this.block, 0, this.requirements().getBlockTop(this.block, 0),
+        return this.requirements().clickBlock(this.block, PAGE_ORIGIN, this.requirements().getBlockTop(this.block, PAGE_ORIGIN),
                 BookEntryScreen.PAGE_WIDTH, event.x(), event.y());
     }
 
     @Nullable
     @Override
     public Style getClickedComponentStyleAt(double pMouseX, double pMouseY) {
-        if (pMouseX > 0 && pMouseY > 0) {
+        if (pMouseX > PAGE_ORIGIN && pMouseY > PAGE_ORIGIN) {
             if (this.title != null) {
                 var titleStyle = this.getClickedComponentStyleAtForTitle(this.title, TITLE_CENTER_X, TITLE_Y, pMouseX, pMouseY);
                 if (titleStyle != null) {
@@ -120,7 +124,7 @@ public class BookStageRequirementsPageRenderer extends BookPageRenderer<BookStag
 
             if (this.page.hasText()) {
                 var textY = this.getTextY();
-                var bounds = this.getBookTextHolderBounds(0, textY, BookEntryScreen.PAGE_WIDTH, this.getAvailablePageHeight() - textY);
+                var bounds = this.getBookTextHolderBounds(PAGE_ORIGIN, textY, BookEntryScreen.PAGE_WIDTH, this.getAvailablePageHeight() - textY);
                 var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), bounds.x, bounds.y, bounds.width, bounds.height, pMouseX, pMouseY);
                 if (textStyle != null) {
                     return textStyle;

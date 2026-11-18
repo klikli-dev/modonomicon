@@ -44,6 +44,7 @@ public class EntryRequirementsController {
      */
     private static final String TRAILING_PAGE_ID = "__requirements";
     private static final int FIRST_PAGE_INDEX = 0;
+    private static final int ENTRY_START_PAGE = 0;
 
     /**
      * The key of a block in the per-frame memo. A null stage is the entry progression, showing the given browsed stage index or the next stage if null.
@@ -222,7 +223,7 @@ public class EntryRequirementsController {
     private void openEntry(Identifier bookId, Identifier entryId) {
         //same navigation as entry links, so back navigation returns to this entry
         this.screen.pushCurrentToHistory();
-        BookGuiManager.get().openEntry(bookId, entryId, 0);
+        BookGuiManager.get().openEntry(bookId, entryId, ENTRY_START_PAGE);
     }
 
     /**
