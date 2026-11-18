@@ -110,6 +110,7 @@ public class ModonomiconNeo {
                 }
             });
 
+            //research uses the same ContextAwareReloadListener shape as book and multiblock, NeoForge only provides the registry lookup there
             e.addListener(Modonomicon.loc("research_data_manager"), new ContextAwareReloadListener() {
                 @Override
                 public CompletableFuture<Void> reload(PreparableReloadListener.SharedState currentReload, Executor taskExecutor, PreparableReloadListener.PreparationBarrier preparationBarrier, Executor reloadExecutor) {
