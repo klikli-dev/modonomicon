@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.client.gui.book.entry.requirement;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Research;
 import com.klikli_dev.modonomicon.book.BookIcon;
 import com.klikli_dev.modonomicon.research.cost.ItemCostEntry;
 import com.klikli_dev.modonomicon.research.data.ResearchCategories;
@@ -23,7 +24,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.Nullable;
@@ -42,11 +42,6 @@ import java.util.function.Consumer;
  * translation key (research_fact / research_value / research_node), then the hooks that grant or increment them.
  */
 public final class ResearchRequirementRows {
-
-    private static final String FACT_PREFIX = "research_fact";
-    private static final String VALUE_PREFIX = "research_value";
-    private static final String NODE_PREFIX = "research_node";
-    private static final String STAGE_PREFIX = "research_stage";
 
     private static final RequirementIcon GENERIC_RESEARCH_ICON = RequirementIcon.of(new ItemStack(Items.BOOK));
     private static final Set<Identifier> UNKNOWN_CATEGORIES = ConcurrentHashMap.newKeySet();
@@ -77,13 +72,11 @@ public final class ResearchRequirementRows {
         var hookRow = hookRows.isEmpty() ? null : hookRows.get(0);
 
         var title = display.title()
-                .or(() -> translated(FACT_PREFIX, factId))
+                .or(() -> translated(Research.factKey(factId)))
                 .or(() -> hookRow != null ? Optional.of(hookRow.title()) : Optional.empty())
                 .orElseGet(() -> Component.literal(factId.getPath()));
 
-        var category = display.category().map(id -> category(id, context))
-                .or(() -> hookRow != null ? Optional.ofNullable(hookRow.category()) : Optional.empty())
-                .orElseGet(() -> category(ResearchCategories.RESEARCH, context));
+        var category = rowCategory(display, hookRow, ResearchCategories.RESEARCH, context);
 
         boolean met = forceMet || context.state().hasFact(factId);
         var row = new RequirementRow(
@@ -115,16 +108,17 @@ public final class ResearchRequirementRows {
         var definition = context.data().valueDefinitions().get(valueId);
         var display = definition != null ? definition.display().orElse(ResearchDisplay.EMPTY) : ResearchDisplay.EMPTY;
         var hookRows = hookRows(context.hooksIncrementing(valueId), context);
+        var hookRow = hookRows.isEmpty() ? null : hookRows.get(0);
 
         var current = context.state().getValue(valueId);
         var shown = forceMet ? threshold : Math.min(current, threshold);
 
         var title = display.title()
-                .or(() -> translated(VALUE_PREFIX, valueId))
+                .or(() -> translated(Research.valueKey(valueId)))
                 .orElseGet(() -> Component.literal(valueId.getPath()));
 
         return new RequirementRow(
-                category(display.category().orElse(ResearchCategories.PROGRESS), context),
+                rowCategory(display, hookRow, ResearchCategories.PROGRESS, context),
                 iconsOr(display.icon(), hookRows),
                 title,
                 descriptionOr(display, List.of()),
@@ -247,7 +241,7 @@ public final class ResearchRequirementRows {
     }
 
     private static Component stageTitle(ResearchStageDefinition stage, boolean next) {
-        var title = stage.display().flatMap(ResearchDisplay::title).or(() -> translated(STAGE_PREFIX, stage.id()));
+        var title = stage.display().flatMap(ResearchDisplay::title).or(() -> translated(Research.stageKey(stage.id())));
         if (title.isEmpty()) {
             return Component.translatable(Gui.REQUIREMENTS_NEXT_STEPS);
         }
@@ -270,9 +264,9 @@ public final class ResearchRequirementRows {
         var node = data.nodeDefinitions().get(dependency.nodeId());
         var display = node != null ? node.display().orElse(ResearchDisplay.EMPTY) : ResearchDisplay.EMPTY;
         var nodeName = display.title()
-                .or(() -> translated(NODE_PREFIX, dependency.nodeId()))
+                .or(() -> translated(Research.nodeKey(dependency.nodeId())))
                 .orElseGet(() -> Component.literal(dependency.nodeId().getPath()));
-        var stageName = translated(STAGE_PREFIX, dependency.stageId())
+        var stageName = translated(Research.stageKey(dependency.stageId()))
                 .orElseGet(() -> Component.literal(dependency.stageId().getPath()));
 
         out.accept(new RequirementRow(
@@ -360,6 +354,25 @@ public final class ResearchRequirementRows {
     }
 
     /**
+     * The category of a requirement row with a definition display and optionally a hook row. Precedence, first match wins:
+     * <ol>
+     *     <li>the category set in the display of the definition (display override),</li>
+     *     <li>the category of the hook row, which is the category claiming the trigger type of its hook (trigger-type default),</li>
+     *     <li>the fallback category of the row kind.</li>
+     * </ol>
+     * This is the only place that resolves row categories. Presenters that build rows directly use the same precedence.
+     */
+    private static ResearchCategoryDefinition rowCategory(ResearchDisplay display, @Nullable RequirementRow hookRow, Identifier fallback, RequirementContext context) {
+        if (display.category().isPresent()) {
+            return category(display.category().get(), context);
+        }
+        if (hookRow != null && hookRow.category() != null) {
+            return hookRow.category();
+        }
+        return category(fallback, context);
+    }
+
+    /**
      * Resolves a category id to its definition. Unknown ids fall back to the research category and are logged once.
      */
     public static ResearchCategoryDefinition category(Identifier categoryId, RequirementContext context) {
@@ -391,8 +404,7 @@ public final class ResearchRequirementRows {
         return rows.stream().map(RequirementRow::onClick).filter(onClick -> onClick != null).findFirst().orElse(null);
     }
 
-    private static Optional<Component> translated(String prefix, Identifier id) {
-        var key = Util.makeDescriptionId(prefix, id);
+    private static Optional<Component> translated(String key) {
         return Language.getInstance().has(key) ? Optional.of(Component.translatable(key)) : Optional.empty();
     }
 }
