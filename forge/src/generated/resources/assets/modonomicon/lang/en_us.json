@@ -639,6 +639,8 @@
   "modonomicon.gui.requirements.cost.durability": "%s durability: %s",
   "modonomicon.gui.requirements.cost.item": "%s× %s",
   "modonomicon.gui.requirements.cost.levels": "%s levels",
+  "modonomicon.gui.requirements.cost.not_held": "Not held",
+  "modonomicon.gui.requirements.costs": "Costs:",
   "modonomicon.gui.search.entry.locked": "(Locked)",
   "modonomicon.gui.search.entry_list_title": "Entries",
   "modonomicon.gui.search.info": "To search for entries, simply start typing what you are looking for.\n",
