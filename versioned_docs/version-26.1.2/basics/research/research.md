@@ -34,6 +34,7 @@ Hooks connect external events to research progress. Each hook triggers on an eve
 | `entry_viewed_once` | A book entry is viewed for the first time | `Identifier` (entry id) |
 | `item_crafted` | A matching item is crafted | `ResearchItemMatcher`: item template (`{"id": ...}`) or tag (`{"tag": ...}`) |
 | `item_acquired` | A matching item appears in inventory | `ResearchItemMatcher`: item template (`{"id": ...}`) or tag (`{"tag": ...}`) |
+| `item_used` | A matching item is used in the air, see [Item Used](./item-used.md) | `ResearchItemMatcher`: item template (`{"id": ...}`) or tag (`{"tag": ...}`) |
 | `advancement` | A vanilla advancement is earned | `Identifier` (advancement id) |
 
 Third-party mods can register custom trigger types with arbitrary target and context types via `TriggerTypeRegistry.register()`.
