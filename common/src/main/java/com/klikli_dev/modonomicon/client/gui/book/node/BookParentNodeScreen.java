@@ -214,8 +214,16 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (this.categoriesOverflow && scrollY != 0 && this.isMouseOverCategoryButtons(mouseX, mouseY)) {
+            this.scrollCategoryButtons(scrollY > 0 ? -1 : 1);
+            return true;
+        }
         this.getCurrentCategoryScreen().zoom(scrollY);
         return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
+
+    private boolean isMouseOverCategoryButtons(double mouseX, double mouseY) {
+        return this.children().stream().anyMatch(child -> (child instanceof CategoryButton || child instanceof CategoryScrollButton) && child.isMouseOver(mouseX, mouseY));
     }
 
 
