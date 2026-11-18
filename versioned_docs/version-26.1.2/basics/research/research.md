@@ -68,7 +68,7 @@ Changes that happen outside a hook batch, such as admin commands, are saved with
 
 ### Stages
 
-A node's stages are completed in order. The next stage becomes the current one once the current stage is completed. In JSON and datagen, stages are referenced by their 0-based index. The stored progress is an internal detail, so authors do not need to handle it.
+A node's stages are completed in order. The next stage becomes the current one once the current stage is completed. In JSON and datagen, stages are referenced by their id: `required_stages` of a dependency uses `stage_id`, and the `research_stage_completed` condition uses `stage_id`. The 0-based stage index is internal to the player's research state. Only the `stage` command takes an index, as `stage <player> <node> <stageIndex>`.
 
 ## Further reading
 
