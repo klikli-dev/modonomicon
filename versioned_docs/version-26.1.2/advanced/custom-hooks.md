@@ -29,8 +29,8 @@ Modonomicon ships with four trigger types:
 | Trigger Type ID | Event | Target Type | Context Type | Notes |
 |----------------|-------|-------------|-------------|-------|
 | `modonomicon:entry_viewed_once` | A book entry is viewed for the first time | `Identifier` | `EntryViewedContext` | |
-| `modonomicon:item_crafted` | A specific item is crafted | `ItemStackTemplate` | `ItemCraftedContext` | Component matching via template |
-| `modonomicon:item_acquired` | A specific item appears in inventory | `ItemStackTemplate` | `ItemAcquiredContext` | Component matching via template |
+| `modonomicon:item_crafted` | A matching item is crafted | `ResearchItemMatcher` | `ItemCraftedContext` | Item template (`{"id": ...}`, components checked) or item tag (`{"tag": ...}`) |
+| `modonomicon:item_acquired` | A matching item appears in inventory | `ResearchItemMatcher` | `ItemAcquiredContext` | Item template (`{"id": ...}`, components checked) or item tag (`{"tag": ...}`) |
 | `modonomicon:advancement` | A vanilla advancement is earned | `Identifier` | `AdvancementContext` | Supports replay on login |
 
 ## TriggerHandler Interface
@@ -78,8 +78,7 @@ is met.
 
 ### matches()
 
-The core matching logic. For item triggers, this calls `ItemStackTemplate.matches(stack)`
-which automatically checks both the item type and any components specified in the template.
+The core matching logic. For item triggers, this calls `ResearchItemMatcher.matches(stack)`: an item template matches the item and the components listed in the template, and a tag matches any item in the tag.
 
 ### indexKey() (optional)
 
@@ -108,9 +107,7 @@ public class EntityKilledTriggerHandler
             ServerPlayer player,
             EntityKilledContext context
     ) {
-        return ResearchDataManager.get().hooksForType(type).stream()
-            .filter(h -> matches(h.triggerTarget(), context))
-            .toList();
+        return ResearchDataManager.get().hooksFor(type, context);
     }
 
     @Override
@@ -142,7 +139,7 @@ public class AdvancementTriggerHandler
             ServerPlayer player,
             AdvancementContext context
     ) {
-        return ResearchDataManager.get().hooksFor(type, context.advancementId());
+        return ResearchDataManager.get().hooksFor(type, context);
     }
 
     @Override
@@ -274,15 +271,13 @@ For built-in trigger types, convenience sugar is available:
 this.ingress().onEntryViewedOnce(entryId)
     .declareFact("mymod/entry_hook");
 
-// Item crafted — component matching is implicit in the template
+// Item crafted: an item template, matching its item and the components it lists
 this.ingress().onItemCrafted(new ItemStackTemplate(Items.DIAMOND_SWORD))
     .declareFact("mymod/crafting_hook");
 
-// Item crafted with specific components
-var template = new ItemStackTemplate(Items.DIAMOND_SWORD);
-// Add component predicates to the template as needed
-this.ingress().onItemCrafted(template)
-    .declareFact("mymod/specific_crafting_hook");
+// Item crafted: any item of a tag
+this.ingress().onItemCrafted(ItemTags.PLANKS)
+    .declareFact("mymod/planks_hook");
 
 // Item acquired
 this.ingress().onItemAcquired(new ItemStackTemplate(Items.NETHER_STAR))
@@ -293,10 +288,12 @@ this.ingress().onAdvancementEarned(advancementId)
     .declareFact("mymod/advancement_hook");
 ```
 
+`onItemCrafted` and `onItemAcquired` accept an `ItemStackTemplate`, an `ItemLike`, a `TagKey<Item>` or a `ResearchItemMatcher`. See [Research Datagen](../basics/research/datagen.md#item-triggers-and-tags).
+
 ## JSON Format
 
 All hooks are stored in a single `hooks.json` file per research bundle.
-Item hooks store their `ItemStackTemplate` as the primary target:
+Item hooks store their `ResearchItemMatcher` as the target: an item template (`{"id": ...}`) or a tag (`{"tag": ...}`):
 
 ```json
 [
@@ -310,9 +307,17 @@ Item hooks store their `ItemStackTemplate` as the primary target:
     "id": "mymod:crafting_hook",
     "trigger_type": "modonomicon:item_crafted",
     "trigger_target": {
-      "item": "minecraft:diamond_sword"
+      "id": "minecraft:diamond_sword"
     },
     "fact_id": "mymod:made_sword"
+  },
+  {
+    "id": "mymod:planks_hook",
+    "trigger_type": "modonomicon:item_crafted",
+    "trigger_target": {
+      "tag": "minecraft:planks"
+    },
+    "fact_id": "mymod:made_planks"
   }
 ]
 ```
@@ -327,8 +332,8 @@ Item hooks store their `ItemStackTemplate` as the primary target:
   built-in types only. Third-party types use `this.ingress().on(triggerType, target)`.
 - **Sync after every fire.** Always check the return value of `fire()` and sync
   both `ResearchStateManager` and `BookVisualStateManager` when true.
-- **Use ItemStackTemplate for item triggers.** Component matching is implicit —
-  if your template includes components, they will be checked automatically.
+- **Use item templates or tags for item triggers.** A `ResearchItemMatcher` is either an item template, whose components are checked automatically, or an item tag.
 
 See also [Research Conditions](../basics/research/conditions) for how to gate
 entries behind research nodes.
+
