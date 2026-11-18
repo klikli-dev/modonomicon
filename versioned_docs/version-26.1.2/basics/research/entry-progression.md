@@ -22,7 +22,7 @@ A progression has one or more stages, completed in order. Each stage has:
 Content is gated by the stages of the progression:
 
 - **Pages** declared after a stage are only visible once that stage is complete. Content before the first stage is never gated.
-- **Tabs** anchored to a gated page follow the page, so they are hidden with it.
+- **Tabs** are gated like pages. A tab is visible when its own page is visible to the player (so a tab declared after a stage is hidden until that stage completes), its condition is met, and, if it is anchored to a page, that anchor page is on the open spread. Entry-wide tabs are not anchored, so they only need the first two.
 - **Requirements pages** are never gated. They keep showing the requirements with check marks after a stage is complete.
 
 Entries without any stage are not affected.
