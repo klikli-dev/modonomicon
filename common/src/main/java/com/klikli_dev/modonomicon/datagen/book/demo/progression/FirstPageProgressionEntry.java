@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.datagen.book.demo.ResearchCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionRootEntry;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 
 public class FirstPageProgressionEntry extends EntryProvider {
@@ -30,7 +31,7 @@ public class FirstPageProgressionEntry extends EntryProvider {
         this.pageTitle("First page requirements");
         this.pageText("""
                 This is the default display: the requirements of the next stage are listed at the bottom of this first page.
-                Stage 1 needs a crafting table and an oak log. Each requirement gets a check mark once you have it.
+                Stage 1 needs a crafting table and any log. Each requirement gets a check mark once you have it.
                 Until the stage is complete, the pages and tabs after it stay hidden.
                 """);
 
@@ -48,16 +49,16 @@ public class FirstPageProgressionEntry extends EntryProvider {
 
         this.stage("workbench", s -> s
                 .craft(Items.CRAFTING_TABLE)
-                .obtain(Items.OAK_LOG)
+                .obtain(ItemTags.LOGS)
                 .title("Gathering wood")
-                .description("Craft a crafting table and collect an oak log."));
+                .description("Craft a crafting table and collect any log."));
 
         this.page("workbench_unlocked", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
         this.pageTitle("Workbench unlocked");
         this.pageText("""
-                You have a crafting table and an oak log, so stage 1 is complete and this page was unlocked.
+                You have a crafting table and a log, so stage 1 is complete and this page was unlocked.
                 The tab below is pinned to this page and is gated by stage 1 as well.
                 """);
 
