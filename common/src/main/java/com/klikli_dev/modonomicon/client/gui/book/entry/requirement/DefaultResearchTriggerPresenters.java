@@ -24,24 +24,24 @@ import java.util.Optional;
 /**
  * The presenters of the built-in research trigger types.
  */
-final class DefaultTriggerRequirementPresenters {
+final class DefaultResearchTriggerPresenters {
 
-    private DefaultTriggerRequirementPresenters() {
+    private DefaultResearchTriggerPresenters() {
     }
 
     static void register() {
-        TriggerRequirementPresenterRegistry.register(TriggerTypeRegistry.ITEM_CRAFTED.id(), (hook, context) ->
+        ResearchTriggerPresenterRegistry.register(TriggerTypeRegistry.ITEM_CRAFTED.id(), (hook, context) ->
                 itemRow(Gui.REQUIREMENTS_CRAFT_ITEM, Gui.REQUIREMENTS_NOT_MET_CRAFT, (ResearchItemMatcher) hook.triggerTarget()));
 
-        TriggerRequirementPresenterRegistry.register(TriggerTypeRegistry.ITEM_ACQUIRED.id(), (hook, context) ->
+        ResearchTriggerPresenterRegistry.register(TriggerTypeRegistry.ITEM_ACQUIRED.id(), (hook, context) ->
                 itemRow(Gui.REQUIREMENTS_OBTAIN_ITEM, Gui.REQUIREMENTS_NOT_MET_OBTAIN, (ResearchItemMatcher) hook.triggerTarget()));
 
-        TriggerRequirementPresenterRegistry.register(TriggerTypeRegistry.ITEM_USED.id(), (hook, context) ->
+        ResearchTriggerPresenterRegistry.register(TriggerTypeRegistry.ITEM_USED.id(), (hook, context) ->
                 itemRow(Gui.REQUIREMENTS_USE_ITEM, Gui.REQUIREMENTS_NOT_USED, (ResearchItemMatcher) hook.triggerTarget()));
 
-        TriggerRequirementPresenterRegistry.register(TriggerTypeRegistry.ENTRY_VIEWED_ONCE.id(), DefaultTriggerRequirementPresenters::entryRow);
+        ResearchTriggerPresenterRegistry.register(TriggerTypeRegistry.ENTRY_VIEWED_ONCE.id(), DefaultResearchTriggerPresenters::entryRow);
 
-        TriggerRequirementPresenterRegistry.register(TriggerTypeRegistry.ADVANCEMENT.id(), DefaultTriggerRequirementPresenters::advancementRow);
+        ResearchTriggerPresenterRegistry.register(TriggerTypeRegistry.ADVANCEMENT.id(), DefaultResearchTriggerPresenters::advancementRow);
     }
 
     private static RequirementRow itemRow(String titleKey, String missingKey, ResearchItemMatcher matcher) {

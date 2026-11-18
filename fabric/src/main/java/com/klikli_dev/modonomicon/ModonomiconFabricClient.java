@@ -15,7 +15,7 @@ import com.klikli_dev.modonomicon.client.gui.book.associated.AssociatedTooltipHe
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchCostPresenterRegistry;
 import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchEffectPresenterRegistry;
-import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.TriggerRequirementPresenterRegistry;
+import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchTriggerPresenterRegistry;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.client.render.pip.GuiDirectEntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.render.pip.GuiMultiblockRenderer;
@@ -54,7 +54,7 @@ public class ModonomiconFabricClient implements ClientModInitializer {
                 data instanceof AssociatedEntryTooltip tooltip ? new AssociatedEntryTooltipRenderer(tooltip) : null);
 
         PageRendererRegistry.registerPageRenderers();
-        TriggerRequirementPresenterRegistry.registerDefaults();
+        ResearchTriggerPresenterRegistry.registerDefaults();
         ResearchEffectPresenterRegistry.registerDefaults();
         ResearchCostPresenterRegistry.registerDefaults();
 

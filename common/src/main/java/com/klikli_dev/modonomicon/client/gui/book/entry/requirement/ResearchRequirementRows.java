@@ -361,7 +361,7 @@ public final class ResearchRequirementRows {
                 .map(hook -> {
                     var triggerCategory = context.data().categoryForTriggerType(hook.triggerType().id())
                             .orElseGet(() -> category(ResearchCategories.RESEARCH, context));
-                    return TriggerRequirementPresenterRegistry.present(hook, context).withCategory(triggerCategory);
+                    return ResearchTriggerPresenterRegistry.present(hook, context).withCategory(triggerCategory);
                 })
                 .toList();
     }

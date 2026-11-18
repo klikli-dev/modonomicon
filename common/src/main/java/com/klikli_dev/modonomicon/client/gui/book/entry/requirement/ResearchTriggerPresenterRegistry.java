@@ -21,34 +21,34 @@ import java.util.concurrent.ConcurrentHashMap;
  * Presenters of research trigger types, keyed by trigger type id. Every hook that grants a fact or increments a value
  * is shown as a requirement row through its trigger presenter. Unregistered trigger types fall back to a generic row.
  */
-public final class TriggerRequirementPresenterRegistry {
+public final class ResearchTriggerPresenterRegistry {
 
-    private static final Map<Identifier, TriggerRequirementPresenter> PRESENTERS = new ConcurrentHashMap<>();
+    private static final Map<Identifier, ResearchTriggerPresenter> PRESENTERS = new ConcurrentHashMap<>();
 
-    private static final TriggerRequirementPresenter FALLBACK = (hook, context) ->
+    private static final ResearchTriggerPresenter FALLBACK = (hook, context) ->
             RequirementRow.of(List.of(RequirementIcon.of(new ItemStack(Items.BOOK))), Component.translatable(Gui.REQUIREMENTS_TRIGGER_SPECIAL));
 
-    private TriggerRequirementPresenterRegistry() {
+    private ResearchTriggerPresenterRegistry() {
     }
 
     /**
      * Registers the presenters of the built-in trigger types. Call from client setup.
      */
     public static void registerDefaults() {
-        DefaultTriggerRequirementPresenters.register();
+        DefaultResearchTriggerPresenters.register();
     }
 
     /**
      * Registers the presenter for a trigger type. Replaces any presenter previously registered for the id.
      */
-    public static void register(Identifier triggerTypeId, TriggerRequirementPresenter presenter) {
+    public static void register(Identifier triggerTypeId, ResearchTriggerPresenter presenter) {
         PRESENTERS.put(triggerTypeId, presenter);
     }
 
     /**
      * The presenter of a trigger type, or a generic presenter if none is registered.
      */
-    public static TriggerRequirementPresenter get(Identifier triggerTypeId) {
+    public static ResearchTriggerPresenter get(Identifier triggerTypeId) {
         return PRESENTERS.getOrDefault(triggerTypeId, FALLBACK);
     }
 
