@@ -127,7 +127,32 @@ this.ingress().on(myTriggerType, target)
     .declareFact("mymod/my_hook");
 ```
 
-The target type must match the trigger type's target type (e.g. `Identifier` for entry/advancement triggers, `ItemStackTemplate` for item triggers).
+The target type must match the trigger type's target type (e.g. `Identifier` for entry/advancement triggers, `ResearchItemMatcher` for item triggers, see below).
+
+### Item triggers and tags
+
+`onItemCrafted` and `onItemAcquired` accept an `ItemStackTemplate`, an `ItemLike`, a `TagKey<Item>` or a `ResearchItemMatcher`:
+
+```java
+// Exact item, the components of the template are checked too
+this.ingress().onItemCrafted(new ItemStackTemplate(Items.DIAMOND_SWORD))
+    .declareFact("mymod/sword_crafted");
+
+// Any item of a tag
+this.ingress().onItemCrafted(ItemTags.PLANKS)
+    .declareFact("mymod/planks_crafted");
+
+this.ingress().onItemAcquired(ResearchItemMatcher.tag(itemTag))
+    .declareFact("mymod/ingot_acquired");
+```
+
+In JSON, a plain item template is written as `{"id": "minecraft:stick"}`, and a tag as `{"tag": "minecraft:planks"}`:
+
+```json
+"trigger_target": { "tag": "minecraft:planks" }
+```
+
+Tag hooks have no item index key, so they are checked on every event of their trigger type, not only on events for one item.
 
 See [Custom Research Hooks](../../advanced/custom-hooks) for details.
 
@@ -162,11 +187,12 @@ advancement-backed markers use the manual hook + fact + node pattern (see [Resea
 
 Generated research lands in the book's `generated/<book_id>` bundle alongside the hierarchy research:
 
-- entry viewed: facts in `generated/<book_id>/facts/entry_viewed_once/<entry_path>`, nodes in `generated/<book_id>/nodes/entry_viewed_once/...`
-- item crafted: facts in `generated/<book_id>/facts/item_crafted/<item_namespace>/<item_path>[_<components_hash>]`, nodes in `generated/<book_id>/nodes/item_crafted/...`
+- entry viewed: facts in `generated/<book_id>/facts/entry_viewed_once/<entry_path>`. The parent-hierarchy nodes are in `generated/<book_id>/nodes/entry_viewed_once/<entry_path>`, and explicit requirement nodes in `generated/<book_id>/nodes/entry_viewed_once/required/<entry_path>`. In both, `<entry_path>` is the entry path with `/` replaced by `_`.
+- item crafted: facts in `generated/<book_id>/facts/item_crafted/<item_namespace>/<item_path>[_<components_hash>]` for item templates, or `generated/<book_id>/facts/item_crafted/tag_<tag_namespace>/<tag_path>` for tags. Nodes are in `generated/<book_id>/nodes/item_crafted/...` with the same key.
 - item acquired: same scheme under `.../facts/item_acquired/...` and `.../nodes/item_acquired/...`
 
 Node ids are deterministic from the target, so repeated requests for the same target are deduplicated into a single fact + node.
+All generated paths are built by `GeneratedResearchPaths`. Fact and node ids are stored in player save data, so the scheme is kept stable: changing an existing target would create new ids and reset the progress of players who unlocked the old ones.
 An explicit marker condition (`withMarkerCondition` / `withMarker`) combined with `markerUntil*` intents on the same entry
 is merged with `and`.
 
