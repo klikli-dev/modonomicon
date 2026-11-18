@@ -232,14 +232,16 @@
       },
       {
         "completion": {
-          "cost": {
-            "items": [
-              {
+          "cost": [
+            {
+              "type": "modonomicon:item",
+              "count": 2,
+              "item": {
                 "count": 2,
-                "item": "minecraft:iron_ingot"
+                "id": "minecraft:iron_ingot"
               }
-            ]
-          },
+            }
+          ],
           "mode": "manual"
         },
         "display": {
