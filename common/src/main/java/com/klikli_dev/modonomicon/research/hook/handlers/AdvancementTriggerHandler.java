@@ -21,14 +21,13 @@ import java.util.List;
 
 public class AdvancementTriggerHandler implements TriggerHandler<Identifier, AdvancementContext> {
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<ResearchHookDefinition<Identifier>> resolve(
             TriggerType<Identifier, AdvancementContext> type,
             ServerPlayer player,
             AdvancementContext context
     ) {
-        return (List<ResearchHookDefinition<Identifier>>) (List<?>) ResearchDataManager.get().hooksFor(type, context);
+        return ResearchDataManager.get().hooksFor(type, context);
     }
 
     @Override
@@ -47,13 +46,12 @@ public class AdvancementTriggerHandler implements TriggerHandler<Identifier, Adv
     }
 
     @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public boolean replayAll(ServerPlayer player, ResearchStateManager stateManager) {
         boolean changed = false;
         var serverAdvancements = player.level().getServer().getAdvancements();
         var playerAdvancements = player.getAdvancements();
         for (var hook : ResearchDataManager.get().hooksForType(TriggerTypeRegistry.ADVANCEMENT)) {
-            var holder = serverAdvancements.get((Identifier) ((ResearchHookDefinition) hook).triggerTarget());
+            var holder = serverAdvancements.get(hook.triggerTarget());
             if (holder == null) {
                 continue;
             }

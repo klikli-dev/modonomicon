@@ -19,14 +19,13 @@ import java.util.List;
 
 public class EntryViewedOnceTriggerHandler implements TriggerHandler<Identifier, EntryViewedContext> {
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<ResearchHookDefinition<Identifier>> resolve(
             TriggerType<Identifier, EntryViewedContext> type,
             ServerPlayer player,
             EntryViewedContext context
     ) {
-        return (List<ResearchHookDefinition<Identifier>>) (List<?>) ResearchDataManager.get().hooksFor(type, context);
+        return ResearchDataManager.get().hooksFor(type, context);
     }
 
     @Override
