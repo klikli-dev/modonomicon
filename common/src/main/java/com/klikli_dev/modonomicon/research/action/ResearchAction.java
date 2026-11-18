@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.research.data.ResearchCost;
 import com.klikli_dev.modonomicon.research.effect.ResearchEffect;
 import com.klikli_dev.modonomicon.research.effect.ResearchEffectContext;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -40,12 +41,12 @@ import java.util.List;
  */
 public record ResearchAction(ResearchCost cost, List<ResearchEffect> effects, boolean grantsFact, boolean repeatable) {
 
-    public static final Codec<ResearchAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final Codec<ResearchAction> CODEC = RecordCodecBuilder.<ResearchAction>create(instance -> instance.group(
             ResearchCost.CODEC.optionalFieldOf("cost", ResearchCost.EMPTY).forGetter(ResearchAction::cost),
             ResearchEffectTypeRegistry.CODEC.listOf().optionalFieldOf("effects", List.of()).forGetter(ResearchAction::effects),
             Codec.BOOL.optionalFieldOf("grants_fact", false).forGetter(ResearchAction::grantsFact),
             Codec.BOOL.optionalFieldOf("repeatable", false).forGetter(ResearchAction::repeatable)
-    ).apply(instance, ResearchAction::new));
+    ).apply(instance, ResearchAction::new)).validate(ResearchAction::validate);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ResearchAction> STREAM_CODEC =
             StreamCodec.composite(
@@ -62,6 +63,23 @@ public record ResearchAction(ResearchCost cost, List<ResearchEffect> effects, bo
 
     public ResearchAction {
         effects = List.copyOf(effects);
+    }
+
+    /**
+     * An action must either grant its fact or be repeatable. A one-time action that grants nothing would be offered again
+     * without anything recording that it was done, so such actions are rejected.
+     *
+     * @return the error message, or null if the action is valid
+     */
+    public static String invalidReason(boolean grantsFact, boolean repeatable) {
+        return !grantsFact && !repeatable
+                ? "A research action must grant its fact or be repeatable, a one-time action without grants_fact is not recorded"
+                : null;
+    }
+
+    private static DataResult<ResearchAction> validate(ResearchAction action) {
+        var reason = invalidReason(action.grantsFact(), action.repeatable());
+        return reason == null ? DataResult.success(action) : DataResult.error(() -> reason);
     }
 
     /**

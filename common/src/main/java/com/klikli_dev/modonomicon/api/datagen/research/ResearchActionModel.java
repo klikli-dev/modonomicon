@@ -44,11 +44,12 @@ public final class ResearchActionModel {
     }
 
     /**
-     * Pays the cost and gives the player the stack. Only available while the player does not hold an equal stack,
-     * use {@link ResearchEffectModel#giveItem(ItemStackTemplate, boolean)} for other variants.
+     * Pays the cost and gives the player the stack. Repeatable, and only available while the player does not hold an equal stack,
+     * so the player can take it again whenever they have none, e.g. a blank research note. Use
+     * {@link ResearchEffectModel#giveItem(ItemStackTemplate, boolean)} for other variants.
      */
     public static ResearchActionModel giveItem(ItemStackTemplate stack, ResearchCostModel cost) {
-        return create().cost(cost).effect(ResearchEffectModel.giveItem(stack, true));
+        return create().cost(cost).effect(ResearchEffectModel.giveItem(stack, true)).repeatable();
     }
 
     /**
@@ -84,6 +85,10 @@ public final class ResearchActionModel {
     }
 
     public ResearchAction toResearchAction() {
+        var reason = ResearchAction.invalidReason(this.grantsFact, this.repeatable);
+        if (reason != null) {
+            throw new IllegalStateException(reason);
+        }
         List<ResearchEffect> runtimeEffects = this.effects.stream().map(ResearchEffectModel::toResearchEffect).toList();
         return new ResearchAction(this.cost.toResearchCost(), runtimeEffects, this.grantsFact, this.repeatable);
     }
