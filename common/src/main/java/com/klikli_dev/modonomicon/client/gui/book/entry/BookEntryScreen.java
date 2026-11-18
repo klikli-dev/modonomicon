@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
+import com.klikli_dev.modonomicon.book.entries.BookEntryTab;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.bookstate.visual.EntryVisualState;
@@ -88,8 +89,14 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
 
     public static final int CLICK_SAFETY_MARGIN = 20;
 
+    /**
+     * The number of display pages shown at once by the double page screen.
+     */
+    protected static final int PAGES_PER_SPREAD = 2;
+
     protected final BookParentScreen parentScreen;
     protected final BookContentEntry entry;
+    protected final EntryTabController entryTabs = new EntryTabController(this);
 
     protected int ticksInBook;
     protected List<BookPage> unlockedPages;
@@ -432,6 +439,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
 
     protected void onPageChanged() {
         this.beginDisplayPages();
+        this.entryTabs.refresh();
     }
 
     protected void resetTooltip() {
@@ -453,6 +461,9 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
 
     @Override
     public boolean keyPressed(KeyEvent event) {
+        if (this.entryTabs.handleKeyPressed(event)) {
+            return true;
+        }
         if (event.isEscape()) {
             BookGuiManager.get().closeScreenStack(this);
             return true;
@@ -544,6 +555,9 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         this.unlockedPages = this.entry.getUnlockedPagesFor(this.minecraft.player);
         this.rebuildDisplayPages();
         this.beginDisplayPages();
+        //tabs pinned to a page depend on the open spread, so they are built once the display pages are built.
+        //Building them in initNavigationButtons (called by super.init()) would hide pinned tabs when the entry is reopened from its saved state.
+        this.entryTabs.onInit();
     }
 
     @Override
@@ -553,6 +567,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         this.addRenderableWidget(new BackButton(this, this.width / 2 - BackButton.WIDTH / 2, this.bookTop + FULL_HEIGHT - BackButton.HEIGHT / 2));
 
         this.updateBookmarksButton();
+        this.entryTabs.addCloseButton();
     }
 
     protected boolean isBookmarked() {
@@ -623,6 +638,10 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        if (this.entryTabs.handleMouseClicked(event, isDoubleClick)) {
+            return true;
+        }
+
         if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
             var style = this.getClickedComponentStyleAt(event.x(), event.y());
             if (style != null && this.handleComponentClicked(style)) {
@@ -632,7 +651,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
 
         //Any item rendered on a page can be clicked to look up its recipes/usages.
         //Left-click shows recipes, right-click (or shift+left-click) shows usages.
-        if (this.tooltipStack != null && !this.tooltipStack.isEmpty() && RecipeViewerRegistry.isAnyAvailable()) {
+        if (this.canLookupTooltipStack()) {
             if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
                 this.lookupItemStack(this.tooltipStack, this.getMinecraft().hasShiftDown());
                 return true;
@@ -659,6 +678,13 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         BookFeedback.showLookup(stack, uses);
     }
 
+    /**
+     * True if an item is under the mouse and can be looked up in a recipe viewer.
+     */
+    protected boolean canLookupTooltipStack() {
+        return this.tooltipStack != null && !this.tooltipStack.isEmpty() && RecipeViewerRegistry.isAnyAvailable();
+    }
+
     @Override
     public boolean isPauseScreen() {
         return false;
@@ -666,6 +692,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
 
     public void onSyncBookVisualStatesMessage(SyncBookVisualStatesMessage message) {
         this.updateBookmarksButton();
+        this.entryTabs.refresh();
     }
 
     /**
@@ -692,6 +719,34 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     }
 
     protected abstract int getOpenPagesIndexForPage(int pageIndex);
+
+    /**
+     * Opens the page of the given tab as an overlay, if this screen shows entry tabs and the tab is visible on the open spread.
+     */
+    public void openTab(BookEntryTab tab) {
+        if (this.supportsEntryTabs() && !this.entryTabs.isOpen(tab)) {
+            this.entryTabs.open(tab);
+        }
+    }
+
+    /**
+     * Whether this screen shows the entry tabs. Tabs open their page as an overlay, so the screen must support overlays.
+     */
+    protected boolean supportsEntryTabs() {
+        return false;
+    }
+
+    /**
+     * Whether the page with the given id is on the open spread, including split continuation fragments of that page.
+     */
+    protected boolean isPageOnOpenSpread(String pageId) {
+        for (int i = this.openPagesIndex; i < this.openPagesIndex + PAGES_PER_SPREAD && i < this.displayPages.size(); i++) {
+            if (pageId.equals(this.displayPages.get(i).page().getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Gets the page index for the first page to display for the given open pages index.

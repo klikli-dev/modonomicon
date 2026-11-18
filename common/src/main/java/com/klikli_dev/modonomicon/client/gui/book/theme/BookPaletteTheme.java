@@ -11,4 +11,6 @@ public interface BookPaletteTheme {
     int defaultTitleColor();
 
     int defaultTextColor();
+
+    int tabOverlayDimColor();
 }

@@ -1,0 +1,11 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "tabs",
+  "show_title_separator": true,
+  "sort_number": 1,
+  "text": "book.modonomicon.demo.features.entry_tabs.tabs.text",
+  "title": "book.modonomicon.demo.features.entry_tabs.tabs.title"
+}

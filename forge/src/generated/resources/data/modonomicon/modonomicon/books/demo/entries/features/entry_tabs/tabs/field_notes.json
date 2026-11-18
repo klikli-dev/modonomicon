@@ -1,0 +1,24 @@
+{
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "icon": {
+    "id": "minecraft:writable_book"
+  },
+  "id": "field_notes",
+  "page": {
+    "type": "modonomicon:text",
+    "condition": {
+      "type": "modonomicon:none"
+    },
+    "id": "field_notes",
+    "show_title_separator": true,
+    "text": "book.modonomicon.demo.features.entry_tabs.tab.field_notes.text",
+    "title": "book.modonomicon.demo.features.entry_tabs.tab.field_notes.title"
+  },
+  "side": "left",
+  "sort_number": 3,
+  "title": {
+    "translate": "book.modonomicon.demo.features.entry_tabs.tab.field_notes.title"
+  }
+}

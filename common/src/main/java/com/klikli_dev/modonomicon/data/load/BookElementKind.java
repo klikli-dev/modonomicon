@@ -12,5 +12,6 @@ package com.klikli_dev.modonomicon.data.load;
 public enum BookElementKind {
     CATEGORY,
     ENTRY,
-    PAGE
+    PAGE,
+    TAB
 }

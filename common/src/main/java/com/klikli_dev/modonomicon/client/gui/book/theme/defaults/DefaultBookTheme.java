@@ -43,6 +43,12 @@ public class DefaultBookTheme implements BookTheme {
     private final GuiButtonSprites categoryButton;
     private final GuiSprite collectionButtonNormal;
     private final GuiSprite collectionButtonGolden;
+    private final GuiButtonSprites entryTabRight;
+    private final GuiButtonSprites entryTabLeft;
+    private final GuiSprite entryTabRightActive;
+    private final GuiSprite entryTabLeftActive;
+    private final GuiSprite tabPageBackground;
+    private final GuiButtonSprites tabCloseButton;
     private final GuiSprite searchButtonIcon;
     private final GuiSprite showBookmarksButtonIcon;
     private final GuiSprite showRecentlyUnlockedButtonIcon;
@@ -181,6 +187,36 @@ public class DefaultBookTheme implements BookTheme {
         @Override
         public GuiSprite collectionButtonGolden() {
             return DefaultBookTheme.this.collectionButtonGolden;
+        }
+
+        @Override
+        public GuiButtonSprites entryTabRight() {
+            return DefaultBookTheme.this.entryTabRight;
+        }
+
+        @Override
+        public GuiButtonSprites entryTabLeft() {
+            return DefaultBookTheme.this.entryTabLeft;
+        }
+
+        @Override
+        public GuiSprite entryTabRightActive() {
+            return DefaultBookTheme.this.entryTabRightActive;
+        }
+
+        @Override
+        public GuiSprite entryTabLeftActive() {
+            return DefaultBookTheme.this.entryTabLeftActive;
+        }
+
+        @Override
+        public GuiSprite tabPageBackground() {
+            return DefaultBookTheme.this.tabPageBackground;
+        }
+
+        @Override
+        public GuiButtonSprites tabCloseButton() {
+            return DefaultBookTheme.this.tabCloseButton;
         }
 
         @Override
@@ -435,6 +471,14 @@ public class DefaultBookTheme implements BookTheme {
                 : new GuiButtonSprites(defaultCategoryButtonSprite, defaultCategoryButtonSprite);
         this.collectionButtonNormal = this.sprite("content/buttons/collection/collection_button_normal.png", 44, 20);
         this.collectionButtonGolden = this.sprite("content/buttons/collection/collection_button_golden.png", 44, 20);
+        var entryTabRightSprite = this.sprite("content/buttons/entry_tab/entry_tab_right.png", 44, 20);
+        var entryTabLeftSprite = this.sprite("content/buttons/entry_tab/entry_tab_left.png", 44, 20);
+        this.entryTabRight = new GuiButtonSprites(entryTabRightSprite, entryTabRightSprite);
+        this.entryTabLeft = new GuiButtonSprites(entryTabLeftSprite, entryTabLeftSprite);
+        this.entryTabRightActive = this.sprite("content/buttons/entry_tab/entry_tab_right_active.png", 44, 20);
+        this.entryTabLeftActive = this.sprite("content/buttons/entry_tab/entry_tab_left_active.png", 44, 20);
+        this.tabPageBackground = this.sprite("content/backgrounds/book/tab_page_background.png", 145, 178);
+        this.tabCloseButton = this.button("content/buttons/entry_tab/tab_close_button", 12, 12, true);
         this.searchButtonIcon = this.sprite("content/buttons/collection/search_icon.png", 16, 16);
         this.showBookmarksButtonIcon = this.sprite("content/buttons/collection/show_bookmarks_icon.png", 16, 16);
         this.showRecentlyUnlockedButtonIcon = this.sprite("content/buttons/collection/unlocked_icon.png", 16, 16);

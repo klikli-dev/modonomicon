@@ -13,12 +13,22 @@ public class BookThemePaletteModel {
 
     protected int defaultTitleColor = BookThemePalette.DEFAULT.defaultTitleColor();
     protected int defaultTextColor = BookThemePalette.DEFAULT.defaultTextColor();
+    protected int tabOverlayDimColor = BookThemePalette.DEFAULT.tabOverlayDimColor();
 
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("default_title_color", this.defaultTitleColor);
         json.addProperty("default_text_color", this.defaultTextColor);
+        json.addProperty("tab_overlay_dim_color", this.tabOverlayDimColor);
         return json;
+    }
+
+    /**
+     * Sets the color (ARGB) that dims the book while an entry tab page is shown as an overlay. Use alpha 0 to disable the dimming.
+     */
+    public BookThemePaletteModel withTabOverlayDimColor(int value) {
+        this.tabOverlayDimColor = value;
+        return this;
     }
 
     /**

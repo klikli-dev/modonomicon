@@ -94,6 +94,12 @@ public class BookSpotlightPage extends BookPage implements BookPageWithSplit {
         return this.item;
     }
 
+    @Override
+    public ItemStack getTabIcon() {
+        var stack = this.getCachedItemStack();
+        return stack != null ? stack : ItemStack.EMPTY;
+    }
+
     public ItemStack getCachedItemStack() {
         if (this.cachedItemStack == null) {
             this.item.ifLeft(l -> this.cachedItemStack = l.create());
