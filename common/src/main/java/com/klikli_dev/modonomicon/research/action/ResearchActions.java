@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.research.ResearchServices;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import com.klikli_dev.modonomicon.research.data.ResearchDisplay;
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
+import com.klikli_dev.modonomicon.research.effect.ResearchEffectContext;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -56,7 +57,8 @@ public final class ResearchActions {
      * <p>
      * Validation: the node must be unlocked (a node is started as soon as it is unlocked), the fact must be a
      * requirement of the node's current stage, the fact must not be granted yet, the action must be available
-     * and the cost must be affordable. Only then the cost is consumed, the action executed and the state synced.
+     * and the cost must be affordable. Only then the action's effects run inside the state change pipeline (granting the fact
+     * first if the action grants it), and the cost is paid once they succeeded. If an effect throws, nothing is paid.
      * <p>
      * A repeatable action replaces the current stage and not-granted checks: the node must have reached the stage of the
      * fact (a complete node has reached all stages), and the cost is paid on every performance.
@@ -97,17 +99,25 @@ public final class ResearchActions {
             }
         }
 
-        if (!action.isAvailable(player, factId)) {
+        var context = new ResearchEffectContext(factId);
+        if (!action.isAvailable(player, context)) {
             return Result.UNAVAILABLE;
         }
-        if (!action.cost().consume(player)) {
+        if (!action.cost().canAfford(player)) {
             return Result.UNAFFORDABLE;
         }
 
         ResearchServices.hooks().applyStateChange(player, () -> {
-            action.execute(player, factId);
+            if (action.grantsFact()) {
+                ResearchServices.state().grantFact(player, factId);
+            }
+            for (var effect : action.effects()) {
+                effect.apply(player, context);
+            }
             return true;
         });
+        //paid last, so a throwing mutation costs nothing. Effects normally only add items, so the checked cost stays payable.
+        action.cost().consume(player);
         ResearchServices.state().syncFor(player);
         return Result.PERFORMED;
     }

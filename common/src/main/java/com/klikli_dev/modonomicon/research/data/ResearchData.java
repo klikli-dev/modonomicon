@@ -8,8 +8,8 @@ package com.klikli_dev.modonomicon.research.data;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.data.TriggerType;
+import com.klikli_dev.modonomicon.research.effect.ResearchEffect;
 import com.klikli_dev.modonomicon.research.hook.TriggerContext;
-import com.klikli_dev.modonomicon.research.reward.ResearchReward;
 import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
@@ -386,7 +386,7 @@ public record ResearchData(
             ResearchStageCompletion completion,
             List<Identifier> requiredFactIds,
             List<ResearchNodeDefinition.ValueRequirement> requiredValueRequirements,
-            List<ResearchReward> rewards
+            List<ResearchEffect> rewards
     ) {
     }
 

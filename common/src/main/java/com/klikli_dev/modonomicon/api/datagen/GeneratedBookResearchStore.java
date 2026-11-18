@@ -10,7 +10,7 @@ import com.klikli_dev.modonomicon.api.datagen.ProgressionStageBuilder.UsedItem;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchDisplayModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchFactRef;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeSpec;
-import com.klikli_dev.modonomicon.api.datagen.research.ResearchRewardModel;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchEffectModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageRef;
 import com.klikli_dev.modonomicon.research.data.ResearchStageCompletion;
 import com.klikli_dev.modonomicon.research.item.ResearchItemMatcher;
@@ -363,6 +363,6 @@ public final class GeneratedBookResearchStore {
             List<ActionFact> actionFacts,
             ResearchDisplayModel display,
             ResearchStageCompletion completion,
-            List<ResearchRewardModel> rewards
+            List<ResearchEffectModel> rewards
     ) {}
 }

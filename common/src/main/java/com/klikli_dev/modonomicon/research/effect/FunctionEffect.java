@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.research.reward;
+package com.klikli_dev.modonomicon.research.effect;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.registry.ResearchRewardTypeRegistry;
+import com.klikli_dev.modonomicon.registry.ResearchEffectTypeRegistry;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.commands.CommandSourceStack;
@@ -24,37 +24,38 @@ import net.minecraft.server.permissions.LevelBasedPermissionSet;
  *
  * @param functionId the id of the function to run
  */
-public record FunctionReward(Identifier functionId) implements ResearchReward {
+public record FunctionEffect(Identifier functionId) implements ResearchEffect {
 
-    public static final MapCodec<FunctionReward> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Identifier.CODEC.fieldOf("function").forGetter(FunctionReward::functionId)
-    ).apply(instance, FunctionReward::new));
+    public static final MapCodec<FunctionEffect> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Identifier.CODEC.fieldOf("function").forGetter(FunctionEffect::functionId)
+    ).apply(instance, FunctionEffect::new));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, FunctionReward> STREAM_CODEC =
+    public static final StreamCodec<RegistryFriendlyByteBuf, FunctionEffect> STREAM_CODEC =
             StreamCodec.composite(
                     Identifier.STREAM_CODEC,
-                    FunctionReward::functionId,
-                    FunctionReward::new
+                    FunctionEffect::functionId,
+                    FunctionEffect::new
             );
 
     @Override
-    public ResearchRewardType<?> type() {
-        return ResearchRewardTypeRegistry.FUNCTION;
+    public ResearchEffectType<?> type() {
+        return ResearchEffectTypeRegistry.FUNCTION;
     }
 
     @Override
-    public void grant(ServerPlayer player) {
+    public boolean apply(ServerPlayer player, ResearchEffectContext context) {
         MinecraftServer server = player.level().getServer();
         var functions = server.getFunctions();
         var function = functions.get(this.functionId);
         if (function.isEmpty()) {
-            Modonomicon.LOG.warn("Research reward references unknown function '{}'", this.functionId);
-            return;
+            Modonomicon.LOG.warn("Research effect references unknown function '{}'", this.functionId);
+            return false;
         }
 
         CommandSourceStack source = player.createCommandSourceStack()
                 .withPermission(LevelBasedPermissionSet.GAMEMASTER)
                 .withSuppressedOutput();
         functions.execute(function.get(), source);
+        return false;
     }
 }

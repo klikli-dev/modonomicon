@@ -6,7 +6,8 @@
 
 package com.klikli_dev.modonomicon.research.data;
 
-import com.klikli_dev.modonomicon.research.reward.ResearchReward;
+import com.klikli_dev.modonomicon.registry.ResearchEffectTypeRegistry;
+import com.klikli_dev.modonomicon.research.effect.ResearchEffect;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -36,7 +37,7 @@ public record ResearchStageDefinition(
         Optional<ResearchToastDefinition> toast,
         Optional<ResearchDisplay> display,
         ResearchStageCompletion completion,
-        List<ResearchReward> rewards
+        List<ResearchEffect> rewards
 ) {
     public static final StreamCodec<RegistryFriendlyByteBuf, ResearchStageDefinition> STREAM_CODEC =
             StreamCodec.composite(
@@ -52,7 +53,7 @@ public record ResearchStageDefinition(
                     ResearchStageDefinition::display,
                     ResearchStageCompletion.STREAM_CODEC,
                     ResearchStageDefinition::completion,
-                    ByteBufCodecs.collection(ArrayList::new, ResearchReward.STREAM_CODEC),
+                    ByteBufCodecs.collection(ArrayList::new, ResearchEffectTypeRegistry.STREAM_CODEC),
                     ResearchStageDefinition::rewards,
                     ResearchStageDefinition::new
             );
@@ -72,6 +73,6 @@ public record ResearchStageDefinition(
             ResearchToastDefinition.CODEC.optionalFieldOf("toast").forGetter(ResearchStageDefinition::toastOrEmpty),
             ResearchDisplay.CODEC.optionalFieldOf("display").forGetter(ResearchStageDefinition::displayOrEmpty),
             ResearchStageCompletion.CODEC.optionalFieldOf("completion", ResearchStageCompletion.AUTO).forGetter(ResearchStageDefinition::completion),
-            ResearchReward.CODEC.listOf().optionalFieldOf("rewards", List.of()).forGetter(ResearchStageDefinition::rewards)
+            ResearchEffectTypeRegistry.CODEC.listOf().optionalFieldOf("rewards", List.of()).forGetter(ResearchStageDefinition::rewards)
     ).apply(instance, ResearchStageDefinition::new));
 }

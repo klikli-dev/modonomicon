@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.research.reward;
+package com.klikli_dev.modonomicon.research.effect;
 
-import com.klikli_dev.modonomicon.registry.ResearchRewardTypeRegistry;
+import com.klikli_dev.modonomicon.registry.ResearchEffectTypeRegistry;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -21,33 +21,34 @@ import net.minecraft.server.level.ServerPlayer;
  * @param amount the amount of points or levels to give, must be positive
  * @param levels whether the amount is in levels instead of points
  */
-public record ExperienceReward(int amount, boolean levels) implements ResearchReward {
+public record ExperienceEffect(int amount, boolean levels) implements ResearchEffect {
 
-    public static final MapCodec<ExperienceReward> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.intRange(1, Integer.MAX_VALUE).fieldOf("amount").forGetter(ExperienceReward::amount),
-            Codec.BOOL.optionalFieldOf("levels", false).forGetter(ExperienceReward::levels)
-    ).apply(instance, ExperienceReward::new));
+    public static final MapCodec<ExperienceEffect> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.intRange(1, Integer.MAX_VALUE).fieldOf("amount").forGetter(ExperienceEffect::amount),
+            Codec.BOOL.optionalFieldOf("levels", false).forGetter(ExperienceEffect::levels)
+    ).apply(instance, ExperienceEffect::new));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, ExperienceReward> STREAM_CODEC =
+    public static final StreamCodec<RegistryFriendlyByteBuf, ExperienceEffect> STREAM_CODEC =
             StreamCodec.composite(
                     ByteBufCodecs.VAR_INT,
-                    ExperienceReward::amount,
+                    ExperienceEffect::amount,
                     ByteBufCodecs.BOOL,
-                    ExperienceReward::levels,
-                    ExperienceReward::new
+                    ExperienceEffect::levels,
+                    ExperienceEffect::new
             );
 
     @Override
-    public ResearchRewardType<?> type() {
-        return ResearchRewardTypeRegistry.EXPERIENCE;
+    public ResearchEffectType<?> type() {
+        return ResearchEffectTypeRegistry.EXPERIENCE;
     }
 
     @Override
-    public void grant(ServerPlayer player) {
+    public boolean apply(ServerPlayer player, ResearchEffectContext context) {
         if (this.levels) {
             player.giveExperienceLevels(this.amount);
         } else {
             player.giveExperiencePoints(this.amount);
         }
+        return false;
     }
 }

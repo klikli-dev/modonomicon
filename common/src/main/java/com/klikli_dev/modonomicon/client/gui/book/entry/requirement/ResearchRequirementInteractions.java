@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.networking.PerformResearchActionMessage;
 import com.klikli_dev.modonomicon.networking.CompleteResearchStageMessage;
 import com.klikli_dev.modonomicon.platform.Services;
+import com.klikli_dev.modonomicon.research.action.ResearchAction;
 import com.klikli_dev.modonomicon.research.data.ResearchCost;
 import com.klikli_dev.modonomicon.research.ResearchFeedback;
 import net.minecraft.ChatFormatting;
@@ -58,8 +59,8 @@ public final class ResearchRequirementInteractions {
         if (player == null) {
             return;
         }
-        var presenter = ResearchActionPresenterRegistry.get(info.action().type().id());
-        if (presenter.unavailableReason(info.action(), player) != null || !info.action().cost().canAfford(player)) {
+        var reason = unavailableReason(info.action(), player);
+        if (reason != null || !info.action().cost().canAfford(player)) {
             playSound(SoundEvents.VILLAGER_NO);
             return;
         }
@@ -76,14 +77,33 @@ public final class ResearchRequirementInteractions {
         if (info == null) {
             return lines;
         }
-        var presenter = ResearchActionPresenterRegistry.get(info.action().type().id());
-        lines.add(presenter.line(info.action(), row.title()).copy().withStyle(ChatFormatting.DARK_AQUA));
-        lines.addAll(costLines(info.action().cost(), player));
-        var reason = presenter.unavailableReason(info.action(), player);
+        var action = info.action();
+        if (action.grantsFact()) {
+            lines.add(Component.translatable(Gui.REQUIREMENTS_ACTION_RECORD, row.title()).copy().withStyle(ChatFormatting.DARK_AQUA));
+        }
+        for (var effect : action.effects()) {
+            lines.add(ResearchEffectPresenterRegistry.get(effect.type().id()).line(effect).copy().withStyle(ChatFormatting.DARK_AQUA));
+        }
+        lines.addAll(costLines(action.cost(), player));
+        var reason = unavailableReason(action, player);
         if (reason != null) {
             lines.add(reason.copy().withStyle(ChatFormatting.GRAY));
         }
         return lines;
+    }
+
+    /**
+     * The reason the action cannot be performed right now, given by the first of its effects that reports one. Null if all look available.
+     */
+    @Nullable
+    public static Component unavailableReason(ResearchAction action, Player player) {
+        for (var effect : action.effects()) {
+            var reason = ResearchEffectPresenterRegistry.get(effect.type().id()).unavailableReason(effect, player);
+            if (reason != null) {
+                return reason;
+            }
+        }
+        return null;
     }
 
     /**

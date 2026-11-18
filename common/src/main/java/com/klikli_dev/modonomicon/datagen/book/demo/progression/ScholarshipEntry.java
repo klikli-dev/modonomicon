@@ -13,7 +13,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.page.BookCraftingRecipePageMo
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchActionModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchCostModel;
-import com.klikli_dev.modonomicon.api.datagen.research.ResearchRewardModel;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchEffectModel;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.resources.Identifier;
@@ -48,10 +48,10 @@ public class ScholarshipEntry extends EntryProvider {
 
         this.stage("observation", s -> s
                 .action("observation", "Record your observations",
-                        ResearchActionModel.grantFact(ResearchCostModel.create().item(Items.PAPER)))
+                        ResearchActionModel.learn(ResearchCostModel.create().item(Items.PAPER)))
                 .title("Observation")
                 .description("Pay one paper to record your observations.")
-                .reward(ResearchRewardModel.experience(10)));
+                .reward(ResearchEffectModel.experience(10)));
 
         this.page("observation_done", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
@@ -66,8 +66,8 @@ public class ScholarshipEntry extends EntryProvider {
                 .fact(DemoResearch.SCHOLARSHIP_NOTE_STUDIED)
                 .title("Transcription")
                 .description("Take a blank note, process it into a completed note, then use the completed note to study it.")
-                .reward(ResearchRewardModel.addValue(DemoResearch.SCHOLARSHIP_INSIGHT, 1))
-                .reward(ResearchRewardModel.grantFact(DemoResearch.SCHOLARSHIP_NOTES_READ)));
+                .reward(ResearchEffectModel.addValue(DemoResearch.SCHOLARSHIP_INSIGHT, 1))
+                .reward(ResearchEffectModel.grantFact(DemoResearch.SCHOLARSHIP_NOTES_READ)));
 
         this.page("transcription_take", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
@@ -106,8 +106,8 @@ public class ScholarshipEntry extends EntryProvider {
                 .consume(Items.IRON_INGOT, 2)
                 .title("Synthesis")
                 .description("Hold two iron ingots and complete it by hand. The Iron Ingot row counts what you hold, the stage consumes it on completion.")
-                .reward(ResearchRewardModel.item(Items.EMERALD))
-                .reward(ResearchRewardModel.function(SYNTHESIS_FUNCTION)));
+                .reward(ResearchEffectModel.giveItem(Items.EMERALD))
+                .reward(ResearchEffectModel.function(SYNTHESIS_FUNCTION)));
 
         this.page("synthesis_done", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())

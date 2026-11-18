@@ -82,7 +82,6 @@ public class ModonomiconConstants {
             public static final String REQUIREMENTS_COST_NOT_HELD = PREFIX + "requirements.cost.not_held";
             public static final String REQUIREMENTS_ACTION_RECORD = PREFIX + "requirements.action.record";
             public static final String REQUIREMENTS_ACTION_RECEIVE = PREFIX + "requirements.action.receive";
-            public static final String REQUIREMENTS_ACTION_RECEIVE_AGAIN = PREFIX + "requirements.action.receive_again";
             public static final String REQUIREMENTS_ACTION_PERFORM = PREFIX + "requirements.action.perform";
             public static final String REQUIREMENTS_ACTION_ALREADY_HELD = PREFIX + "requirements.action.already_held";
             public static final String REQUIREMENTS_CONSUMED_ON_COMPLETION = PREFIX + "requirements.consumed_on_completion";
@@ -97,6 +96,7 @@ public class ModonomiconConstants {
             public static final String REQUIREMENTS_REWARD_LEVELS = PREFIX + "requirements.reward.levels";
             public static final String REQUIREMENTS_REWARD_VALUE = PREFIX + "requirements.reward.value";
             public static final String REQUIREMENTS_REWARD_SPECIAL = PREFIX + "requirements.reward.special";
+            public static final String REQUIREMENTS_TRIGGER_SPECIAL = PREFIX + "requirements.trigger.special";
             public static final String REQUIREMENTS_REWARD_PENDING = PREFIX + "requirements.reward.pending";
             public static final String REQUIREMENTS_PAGE_TEXT = PREFIX + "requirements.page.text";
             public static final String FEEDBACK_MISSING = PREFIX + "feedback.missing";

@@ -178,7 +178,6 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Gui.REQUIREMENTS_COST_DURABILITY, "%s durability: %s");
         this.add(Gui.REQUIREMENTS_ACTION_RECORD, "Click to record: %s");
         this.add(Gui.REQUIREMENTS_ACTION_RECEIVE, "Click to receive %s");
-        this.add(Gui.REQUIREMENTS_ACTION_RECEIVE_AGAIN, "Click to receive another %s");
         this.add(Gui.REQUIREMENTS_ACTION_PERFORM, "Click to perform this action");
         this.add(Gui.REQUIREMENTS_ACTION_ALREADY_HELD, "You already have this.");
         this.add(Gui.REQUIREMENTS_CONSUMED_ON_COMPLETION, "Consumed on completion");
@@ -194,6 +193,7 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Gui.REQUIREMENTS_REWARD_LEVELS, "%s levels");
         this.add(Gui.REQUIREMENTS_REWARD_VALUE, "+%s %s");
         this.add(Gui.REQUIREMENTS_REWARD_SPECIAL, "Special reward");
+        this.add(Gui.REQUIREMENTS_TRIGGER_SPECIAL, "Special requirement");
         this.add(Gui.REQUIREMENTS_REWARD_PENDING, "Granted when the stage is completed.");
         this.add(Gui.FEEDBACK_MISSING, "Missing: %s");
         this.add(Gui.FEEDBACK_UNAVAILABLE, "You cannot do that right now.");

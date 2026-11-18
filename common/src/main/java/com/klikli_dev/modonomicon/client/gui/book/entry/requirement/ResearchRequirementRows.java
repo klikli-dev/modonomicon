@@ -16,7 +16,7 @@ import com.klikli_dev.modonomicon.research.data.ResearchDisplay;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchStageDefinition;
-import com.klikli_dev.modonomicon.research.reward.ResearchReward;
+import com.klikli_dev.modonomicon.research.effect.ResearchEffect;
 import net.minecraft.ChatFormatting;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
@@ -290,10 +290,10 @@ public final class ResearchRequirementRows {
     /**
      * The rewards of a stage as rows of the rewards category, met once the stage is completed.
      */
-    private static void rewardRows(List<ResearchReward> rewards, boolean met, RequirementContext context, Consumer<RequirementRow> out) {
+    private static void rewardRows(List<ResearchEffect> rewards, boolean met, RequirementContext context, Consumer<RequirementRow> out) {
         var category = category(ResearchCategories.REWARDS, context);
         for (var reward : rewards) {
-            out.accept(ResearchRewardPresenterRegistry.present(reward, context)
+            out.accept(ResearchEffectPresenterRegistry.get(reward.type().id()).present(reward, context)
                     .withCategory(category)
                     .withMet(met)
                     .withMissing(Component.translatable(Gui.REQUIREMENTS_REWARD_PENDING)));
@@ -380,15 +380,10 @@ public final class ResearchRequirementRows {
     private static List<RequirementRow> hookRows(List<ResearchHookDefinition<?>> hooks, RequirementContext context) {
         return hooks.stream()
                 .map(hook -> {
-                    var row = RequirementPresenterRegistry.presentTrigger(hook, context);
-                    if (row == null) {
-                        return null;
-                    }
                     var triggerCategory = context.data().categoryForTriggerType(hook.triggerType().id())
                             .orElseGet(() -> category(ResearchCategories.RESEARCH, context));
-                    return row.withCategory(triggerCategory);
+                    return TriggerRequirementPresenterRegistry.present(hook, context).withCategory(triggerCategory);
                 })
-                .filter(row -> row != null)
                 .toList();
     }
 

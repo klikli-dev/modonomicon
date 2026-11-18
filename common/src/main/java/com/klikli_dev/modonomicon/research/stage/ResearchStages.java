@@ -19,8 +19,9 @@ public final class ResearchStages {
      * Completes the current stage of a node if it is a manual stage whose requirements are met and the player can afford
      * its cost. This is the single server entry point for manual stage completion, network packets must call it.
      * <p>
-     * The cost is consumed first, then the stage completes, its rewards are granted once and automatic stages
-     * that follow cascade. Child nodes that depend on the stage unlock through the usual re-evaluation.
+     * Order: the cost is checked, then the stage completes inside the state change pipeline (its rewards are granted once
+     * and automatic stages that follow cascade), and only after that succeeded the cost is paid. If the completion throws,
+     * nothing is paid. Child nodes that depend on the stage unlock through the usual re-evaluation.
      * Returns false without any change if validation fails.
      */
     public static boolean completeManual(ServerPlayer player, Identifier nodeId) {
@@ -28,7 +29,8 @@ public final class ResearchStages {
         if (rule == null) {
             return false;
         }
-        if (!rule.completion().cost().consume(player)) {
+        var cost = rule.completion().cost();
+        if (!cost.canAfford(player)) {
             return false;
         }
 
@@ -36,6 +38,7 @@ public final class ResearchStages {
             ResearchServices.state().completeManualStage(player, rule);
             return true;
         });
+        cost.consume(player);
         ResearchServices.state().syncFor(player);
         return true;
     }

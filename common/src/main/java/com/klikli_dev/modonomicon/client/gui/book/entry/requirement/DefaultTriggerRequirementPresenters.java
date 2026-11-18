@@ -30,18 +30,18 @@ final class DefaultTriggerRequirementPresenters {
     }
 
     static void register() {
-        RequirementPresenterRegistry.registerTriggerRequirementPresenter(TriggerTypeRegistry.ITEM_CRAFTED.id(), (hook, context) ->
+        TriggerRequirementPresenterRegistry.register(TriggerTypeRegistry.ITEM_CRAFTED.id(), (hook, context) ->
                 itemRow(Gui.REQUIREMENTS_CRAFT_ITEM, Gui.REQUIREMENTS_NOT_MET_CRAFT, (ItemStackTemplate) hook.triggerTarget()));
 
-        RequirementPresenterRegistry.registerTriggerRequirementPresenter(TriggerTypeRegistry.ITEM_ACQUIRED.id(), (hook, context) ->
+        TriggerRequirementPresenterRegistry.register(TriggerTypeRegistry.ITEM_ACQUIRED.id(), (hook, context) ->
                 itemRow(Gui.REQUIREMENTS_OBTAIN_ITEM, Gui.REQUIREMENTS_NOT_MET_OBTAIN, (ItemStackTemplate) hook.triggerTarget()));
 
-        RequirementPresenterRegistry.registerTriggerRequirementPresenter(TriggerTypeRegistry.ITEM_USED.id(), (hook, context) ->
+        TriggerRequirementPresenterRegistry.register(TriggerTypeRegistry.ITEM_USED.id(), (hook, context) ->
                 itemRow(Gui.REQUIREMENTS_USE_ITEM, Gui.REQUIREMENTS_NOT_USED, (ItemStackTemplate) hook.triggerTarget()));
 
-        RequirementPresenterRegistry.registerTriggerRequirementPresenter(TriggerTypeRegistry.ENTRY_VIEWED_ONCE.id(), DefaultTriggerRequirementPresenters::entryRow);
+        TriggerRequirementPresenterRegistry.register(TriggerTypeRegistry.ENTRY_VIEWED_ONCE.id(), DefaultTriggerRequirementPresenters::entryRow);
 
-        RequirementPresenterRegistry.registerTriggerRequirementPresenter(TriggerTypeRegistry.ADVANCEMENT.id(), DefaultTriggerRequirementPresenters::advancementRow);
+        TriggerRequirementPresenterRegistry.register(TriggerTypeRegistry.ADVANCEMENT.id(), DefaultTriggerRequirementPresenters::advancementRow);
     }
 
     private static RequirementRow itemRow(String titleKey, String missingKey, ItemStackTemplate template) {

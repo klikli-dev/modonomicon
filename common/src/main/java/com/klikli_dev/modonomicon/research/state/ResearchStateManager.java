@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.research.data.ResearchData;
 import com.klikli_dev.modonomicon.research.data.ResearchData.StageLocation;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
+import com.klikli_dev.modonomicon.research.effect.ResearchEffectContext;
 import com.klikli_dev.modonomicon.research.networking.ResearchToastTrigger;
 import com.klikli_dev.modonomicon.research.networking.ResearchToastTrigger.ToastTriggerType;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
@@ -186,7 +187,7 @@ public class ResearchStateManager {
 
         if (!rule.rewards().isEmpty() && state.markRewardsGranted(rule.stageId())) {
             for (var reward : rule.rewards()) {
-                reward.grant(player);
+                reward.apply(player, ResearchEffectContext.NONE);
             }
         }
     }

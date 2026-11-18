@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.api.datagen.research.ResearchActionModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchCategoryModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchCostModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchDisplayModel;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchEffectModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchFactRef;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeRef;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeSpec;
@@ -252,7 +253,10 @@ public class DemoResearch extends SingleResearchSubProvider {
                 .declareFact(SCHOLARSHIP_NOTE_STUDIED.id().getPath());
         this.research().display(noteStudied, ResearchDisplayModel.create()
                 .withTitle(SCHOLARSHIP_NOTE_TITLE)
-                .withAction(ResearchActionModel.giveItem(BLANK_RESEARCH_NOTE, ResearchCostModel.create().item(Items.PAPER).durability(Items.SHEARS, 1)).requireAbsent(false).repeatable()));
+                .withAction(ResearchActionModel.create()
+                        .cost(ResearchCostModel.create().item(Items.PAPER).durability(Items.SHEARS, 1))
+                        .effect(ResearchEffectModel.giveItem(BLANK_RESEARCH_NOTE, false))
+                        .repeatable()));
         this.add(SCHOLARSHIP_NOTE_TITLE, "Take a blank research note");
         this.research().display(SCHOLARSHIP_NOTES_READ, ResearchDisplayModel.create().withIcon(Items.WRITABLE_BOOK).withTitle(SCHOLARSHIP_NOTES_READ_TITLE));
         this.add(SCHOLARSHIP_NOTES_READ_TITLE, "Notes transcribed");

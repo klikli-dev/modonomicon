@@ -6,66 +6,85 @@
 
 package com.klikli_dev.modonomicon.api.datagen.research;
 
-import com.klikli_dev.modonomicon.research.action.GiveItemAction;
-import com.klikli_dev.modonomicon.research.action.GrantFactAction;
 import com.klikli_dev.modonomicon.research.action.ResearchAction;
+import com.klikli_dev.modonomicon.research.effect.ResearchEffect;
 import net.minecraft.world.item.ItemStackTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Authoring-time builder for a {@link ResearchAction} attached to a fact via {@link ResearchDisplayModel#withAction}.
- * Use {@link #of(ResearchAction)} to author actions of third-party action types.
+ * An action is a cost, the effects it applies, and the flags {@link #grantsFact()} and {@link #repeatable()}.
+ * <pre>{@code
+ * ResearchActionModel.create()
+ *         .cost(ResearchCostModel.create().item(Items.PAPER))
+ *         .effect(ResearchEffectModel.giveItem(Items.BOOK))
+ *         .repeatable()
+ * }</pre>
  */
 public final class ResearchActionModel {
-    private final ResearchAction action;
+    private ResearchCostModel cost = ResearchCostModel.create();
+    private final List<ResearchEffectModel> effects = new ArrayList<>();
+    private boolean grantsFact;
+    private boolean repeatable;
 
-    private ResearchActionModel(ResearchAction action) {
-        this.action = action;
+    private ResearchActionModel() {
+    }
+
+    public static ResearchActionModel create() {
+        return new ResearchActionModel();
     }
 
     /**
-     * Wraps any {@link ResearchAction}, e.g. one of a third-party action type.
+     * Pays to learn the fact the action is attached to: the cost is paid and the fact is granted.
      */
-    public static ResearchActionModel of(ResearchAction action) {
-        return new ResearchActionModel(action);
-    }
-
-    /**
-     * Pays the cost and grants the fact the action is attached to.
-     */
-    public static ResearchActionModel grantFact(ResearchCostModel cost) {
-        return new ResearchActionModel(new GrantFactAction(cost.toResearchCost()));
+    public static ResearchActionModel learn(ResearchCostModel cost) {
+        return create().cost(cost).grantsFact();
     }
 
     /**
      * Pays the cost and gives the player the stack. Only available while the player does not hold an equal stack,
-     * see {@link #requireAbsent(boolean)}.
+     * use {@link ResearchEffectModel#giveItem(ItemStackTemplate, boolean)} for other variants.
      */
     public static ResearchActionModel giveItem(ItemStackTemplate stack, ResearchCostModel cost) {
-        return new ResearchActionModel(new GiveItemAction(stack, true, cost.toResearchCost()));
+        return create().cost(cost).effect(ResearchEffectModel.giveItem(stack, true));
     }
 
     /**
-     * For {@link #giveItem} actions: whether the player must not hold an equal stack for the action to be available. Defaults to true.
+     * Sets the cost the player pays for every performance, replacing any cost set before.
      */
-    public ResearchActionModel requireAbsent(boolean requireAbsent) {
-        if (this.action instanceof GiveItemAction give) {
-            return new ResearchActionModel(new GiveItemAction(give.stack(), requireAbsent, give.cost(), give.repeatable()));
-        }
+    public ResearchActionModel cost(ResearchCostModel cost) {
+        this.cost = cost;
         return this;
     }
 
     /**
-     * Makes the action repeatable: it stays available after its fact is granted and after its stage is completed, and every
-     * performance pays the cost again. Only {@link #giveItem} actions can repeat, for other actions this returns the model unchanged.
+     * Adds an effect applied on performance, in the order added. The action is only available if all its effects are.
+     */
+    public ResearchActionModel effect(ResearchEffectModel effect) {
+        this.effects.add(effect);
+        return this;
+    }
+
+    /**
+     * Performing the action grants the fact it is attached to.
+     */
+    public ResearchActionModel grantsFact() {
+        this.grantsFact = true;
+        return this;
+    }
+
+    /**
+     * The action stays available after its fact is granted and after its stage is completed, and every performance pays the cost again.
      */
     public ResearchActionModel repeatable() {
-        if (this.action instanceof GiveItemAction give) {
-            return new ResearchActionModel(new GiveItemAction(give.stack(), give.requireAbsent(), give.cost(), true));
-        }
+        this.repeatable = true;
         return this;
     }
 
     public ResearchAction toResearchAction() {
-        return this.action;
+        List<ResearchEffect> runtimeEffects = this.effects.stream().map(ResearchEffectModel::toResearchEffect).toList();
+        return new ResearchAction(this.cost.toResearchCost(), runtimeEffects, this.grantsFact, this.repeatable);
     }
 }

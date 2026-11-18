@@ -11,7 +11,7 @@ import com.klikli_dev.modonomicon.api.datagen.research.ResearchActionModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchCostModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchFactRef;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeSpec;
-import com.klikli_dev.modonomicon.api.datagen.research.ResearchRewardModel;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchEffectModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchValueRef;
 import com.klikli_dev.modonomicon.research.data.ResearchStageCompletion;
 import com.klikli_dev.modonomicon.research.item.ResearchItemMatcher;
@@ -51,7 +51,7 @@ public final class ProgressionStageBuilder {
     private final List<ResearchFactRef> facts = new ArrayList<>();
     private final List<ActionFact> actionFacts = new ArrayList<>();
     private final List<ResearchNodeSpec.ValueRequirement> values = new ArrayList<>();
-    private final List<ResearchRewardModel> rewards = new ArrayList<>();
+    private final List<ResearchEffectModel> rewards = new ArrayList<>();
     private final ResearchCostModel cost = ResearchCostModel.create();
     private boolean manual;
     @Nullable
@@ -194,7 +194,7 @@ public final class ProgressionStageBuilder {
      * and its id is {@code id} within the stage. The title is literal English and is written to the language file under
      * {@code <entry>.stage.<stage>.action.<id>.title}.
      * <pre>{@code
-     * s.action("observation", "Observe the sky", ResearchActionModel.grantFact(ResearchCostModel.create().item(Items.PAPER)))
+     * s.action("observation", "Observe the sky", ResearchActionModel.learn(ResearchCostModel.create().item(Items.PAPER)))
      * }</pre>
      */
     public ProgressionStageBuilder action(String id, String title, ResearchActionModel action) {
@@ -256,7 +256,7 @@ public final class ProgressionStageBuilder {
     /**
      * Grants a reward once when the stage completes.
      */
-    public ProgressionStageBuilder reward(ResearchRewardModel reward) {
+    public ProgressionStageBuilder reward(ResearchEffectModel reward) {
         this.rewards.add(reward);
         return this;
     }
@@ -363,7 +363,7 @@ public final class ProgressionStageBuilder {
         return this.manual ? ResearchStageCompletion.manual(this.cost.toResearchCost()) : ResearchStageCompletion.AUTO;
     }
 
-    List<ResearchRewardModel> rewards() {
+    List<ResearchEffectModel> rewards() {
         return List.copyOf(this.rewards);
     }
 
