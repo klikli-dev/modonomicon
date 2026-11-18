@@ -35,7 +35,7 @@ public class ResearchSuggestions {
     };
 
     public static final SuggestionProvider<CommandSourceStack> SUGGEST_GRAPH = (context, builder) -> {
-        var graphs = ResearchDataManager.get().data().graphNodeIds().keySet();
+        var graphs = ResearchDataManager.get().data().graphIds();
         return SharedSuggestionProvider.suggestResource(graphs, builder);
     };
 }
