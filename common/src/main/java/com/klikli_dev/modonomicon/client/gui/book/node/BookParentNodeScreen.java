@@ -33,6 +33,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
@@ -55,6 +56,8 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
     private boolean hasUnreadCategories;
     private boolean hasUnreadUnlockedCategories;
     private int categoryButtonRenderOffset = 0;
+    private int categoryButtonCapacity = MAX_CATEGORY_BUTTONS;
+    private boolean categoriesOverflow;
 
     public BookParentNodeScreen(Book book) {
         super(Component.literal(""));
@@ -346,10 +349,14 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
     protected void updateCategoryButtons(int buttonX, int buttonY, int buttonWidth, int buttonHeight, int buttonSpacing) {
         var displayable = this.getDisplayableCategories();
+        this.categoryButtonCapacity = this.calculateCategoryButtonCapacity(buttonY, buttonHeight, buttonSpacing);
+        this.categoriesOverflow = displayable.size() > this.categoryButtonCapacity;
+        this.categoryButtonRenderOffset = Mth.clamp(this.categoryButtonRenderOffset, 0, Math.max(0, displayable.size() - this.categoryButtonCapacity));
+
         int buttonCount = 0;
         for (int i = this.categoryButtonRenderOffset, size = displayable.size(); i < size; i++) {
-            if (buttonCount >= MAX_CATEGORY_BUTTONS) {
-                break; // Stop adding buttons once we reach the maximum
+            if (buttonCount >= this.categoryButtonCapacity) {
+                break; // Stop adding buttons once we reach the capacity
             }
             var category = displayable.get(i);
             var button = new CategoryButton(this, category,
@@ -368,25 +375,41 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
             var topScrollButton = new CategoryScrollButton(this, buttonX, topScrollButtonY, false,
                     () -> this.categoryButtonRenderOffset > 0,
-                    (b) -> {
-                        this.categoryButtonRenderOffset--;
-                        this.rebuildWidgets();
-                    });
+                    (b) -> this.scrollCategoryButtons(-1));
             this.addRenderableWidget(topScrollButton);
         }
 
 
         // Add the bottom scroll button if there are more categories than can be displayed
-        if (displayable.size() > this.categoryButtonRenderOffset + MAX_CATEGORY_BUTTONS) {
-            int bottomScrollButtonY= this.getFrameHeight() + this.getFrameThicknessH() - ResearchProgressButton.HEIGHT / 2 - 3;
-
-            var bottomScrollButton = new CategoryScrollButton(this, buttonX, bottomScrollButtonY, true,
-                    () -> displayable.size() > this.categoryButtonRenderOffset + MAX_CATEGORY_BUTTONS,
-                    (b) -> {
-                        this.categoryButtonRenderOffset++;
-                        this.rebuildWidgets();
-                    });
+        if (this.categoriesOverflow) {
+            var bottomScrollButton = new CategoryScrollButton(this, buttonX, this.getBottomScrollButtonY(), true,
+                    () -> displayable.size() > this.categoryButtonRenderOffset + this.categoryButtonCapacity,
+                    (b) -> this.scrollCategoryButtons(1));
             this.addRenderableWidget(bottomScrollButton);
+        }
+    }
+
+    /**
+     * Gets how many category buttons fit between the top of the category list and the bottom scroll button.
+     */
+    protected int calculateCategoryButtonCapacity(int buttonY, int buttonHeight, int buttonSpacing) {
+        int fit = (this.getBottomScrollButtonY() - buttonY) / (buttonHeight + buttonSpacing);
+        return Mth.clamp(fit, 1, MAX_CATEGORY_BUTTONS);
+    }
+
+    protected int getBottomScrollButtonY() {
+        return this.getFrameHeight() + this.getFrameThicknessH() - ResearchProgressButton.HEIGHT / 2 - 3;
+    }
+
+    /**
+     * Scrolls the category buttons by the given number of categories, clamped to the displayable range.
+     */
+    protected void scrollCategoryButtons(int delta) {
+        int maxOffset = Math.max(0, this.getDisplayableCategories().size() - this.categoryButtonCapacity);
+        int offset = Mth.clamp(this.categoryButtonRenderOffset + delta, 0, maxOffset);
+        if (offset != this.categoryButtonRenderOffset) {
+            this.categoryButtonRenderOffset = offset;
+            this.rebuildWidgets();
         }
     }
 
