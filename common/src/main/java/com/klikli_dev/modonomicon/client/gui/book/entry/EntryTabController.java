@@ -246,6 +246,9 @@ public class EntryTabController {
         //the overlay is a single page without continuation fragments, so split pages scale their text to fit instead
         this.pageRenderer.setPageSplitAllowed(false);
         this.pageRenderer.onBeginDisplayPage(this.screen, this.getOverlayLeft() + BookEntryScreen.SINGLE_PAGE_X, BookEntryScreen.TOP_PADDING);
+        //the requirements of the entry progression are not shown on the overlay, so the page never reserves space for them,
+        //even if the page reserved space for its own requirement block while it was set up
+        this.pageRenderer.setReservedBottomHeight(0);
     }
 
     private void endPage() {
