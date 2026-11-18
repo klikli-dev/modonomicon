@@ -273,11 +273,49 @@ public final class ResearchDataBuilder {
     // --- Generic hook ingress ---
 
     /**
+     * Returns the namespace that relative paths authored through this builder are placed in.
+     */
+    public String namespace() {
+        return this.namespace;
+    }
+
+    /**
+     * Returns a hook path derived from the given ref id that is not yet used by any hook in this builder.
+     *
+     * The base path is the ref path with {@code _hook} appended. Refs outside this builder's namespace are
+     * additionally prefixed with their namespace ({@code <namespace>/<path>_hook}) so that refs with equal
+     * paths in different namespaces do not collide. If the base path is already taken (e.g. because the same
+     * ref is granted from multiple triggers), a numeric suffix ({@code _2}, {@code _3}, ...) is appended.
+     */
+    public String derivedHookPath(Identifier refId) {
+        var basePath = (refId.getNamespace().equals(this.namespace) ? "" : refId.getNamespace() + "/") + refId.getPath() + "_hook";
+        var path = basePath;
+        for (int i = 2; this.hasHook(path); i++) {
+            path = basePath + "_" + i;
+        }
+        return path;
+    }
+
+    private boolean hasHook(String hookPath) {
+        var id = Identifier.fromNamespaceAndPath(this.namespace, hookPath);
+        return this.hooks.stream().anyMatch(spec -> spec.id().equals(id));
+    }
+
+    private void addHook(ResearchHookSpec<?> spec) {
+        if (this.hooks.stream().anyMatch(existing -> existing.id().equals(spec.id()))) {
+            throw new IllegalArgumentException("Research hook '" + spec.id() + "' is already declared");
+        }
+        this.hooks.add(spec);
+    }
+
+    /**
      * Grants a fact when the specified trigger type fires for the given target.
      * This is the generic entry point for third-party trigger types.
+     *
+     * @throws IllegalArgumentException if a hook with the same id was already declared
      */
     public <TTarget> void grantFact(String hookPath, TriggerType<TTarget, ?> triggerType, TTarget target, ResearchFactRef factRef) {
-        this.hooks.add(ResearchHookSpec.of(
+        this.addHook(ResearchHookSpec.of(
                 Identifier.fromNamespaceAndPath(this.namespace, hookPath),
                 triggerType, target, factRef, null, 1
         ));
@@ -286,9 +324,11 @@ public final class ResearchDataBuilder {
     /**
      * Increments a value when the specified trigger type fires for the given target.
      * This is the generic entry point for third-party trigger types.
+     *
+     * @throws IllegalArgumentException if a hook with the same id was already declared
      */
     public <TTarget> void incrementValue(String hookPath, TriggerType<TTarget, ?> triggerType, TTarget target, ResearchValueRef valueRef, int increment) {
-        this.hooks.add(ResearchHookSpec.of(
+        this.addHook(ResearchHookSpec.of(
                 Identifier.fromNamespaceAndPath(this.namespace, hookPath),
                 triggerType, target, null, valueRef, increment
         ));
