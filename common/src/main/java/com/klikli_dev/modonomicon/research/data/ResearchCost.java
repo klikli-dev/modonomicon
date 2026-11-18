@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.research.data;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.registry.ResearchCostTypeRegistry;
 import com.klikli_dev.modonomicon.research.cost.ResearchCostEntry;
 import com.klikli_dev.modonomicon.research.cost.ResearchCostPlan;
@@ -19,12 +20,17 @@ import net.minecraft.world.entity.player.Player;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * What a player pays for a paid research action or a manually completed stage: a list of typed entries, see {@link ResearchCostEntry}.
  * The entries are planned together, so they cannot claim the same stack. Planning order is by {@link ResearchCostEntry#planRank}:
  * durability first, then items, then levels, so an item entry never takes the stack a durability entry needs.
  * Creative players (infinite materials) pay nothing.
+ * <p>
+ * Payment order: the cost is planned with {@link #plan} <b>before</b> the state change, and the plan is paid with {@link #pay} after the change
+ * succeeded. Paying checks the plan again: if the reserved stacks or levels changed during the change, the cost is planned again.
+ * If that fails too, nothing is paid and a warning is logged, because the change already happened.
  * <p>
  * JSON shape: a list of entries, each with a {@code type} such as {@code modonomicon:item}.
  *
@@ -78,31 +84,44 @@ public record ResearchCost(List<ResearchCostEntry> entries) {
     }
 
     /**
-     * Pays the whole cost if the player can afford it, all entries together. Does nothing and returns false otherwise.
-     * Callers that need the cost paid only after a state change call this last.
+     * Plans the payment against the player's current inventory and levels, without changing anything. Empty if the player
+     * cannot afford the whole cost. Creative players can always pay.
+     * <p>
+     * Callers plan before their state change, then pay the plan with {@link #pay} after the change succeeded.
      */
-    public boolean consume(ServerPlayer player) {
-        if (player.hasInfiniteMaterials()) {
-            return true;
-        }
+    public Optional<ResearchCostPlan> plan(Player player) {
         var plan = new ResearchCostPlan(player);
-        var order = this.planOrder();
-        for (var entry : order) {
+        if (player.hasInfiniteMaterials()) {
+            return Optional.of(plan);
+        }
+        for (var entry : this.planOrder()) {
             if (!entry.plan(plan)) {
-                return false;
+                return Optional.empty();
             }
         }
-        for (var entry : order) {
-            entry.apply(player, plan);
-        }
-        player.getInventory().setChanged();
-        return true;
+        return Optional.of(plan);
     }
 
     /**
-     * The number of matching items the player holds for each entry, in entry order. See {@link ResearchCostEntry#heldCount}.
+     * Pays a plan made by {@link #plan} before a state change. If the reserved stacks or levels changed during the state change,
+     * the cost is planned again against the current state. If that fails too, nothing is paid and a warning is logged,
+     * because the state change already happened and the player keeps it for free.
+     *
+     * @return true if the cost was paid or the player has infinite materials, false if it could not be paid
      */
-    public List<Integer> held(Player player) {
-        return this.entries.stream().map(entry -> entry.heldCount(player)).toList();
+    public boolean pay(ServerPlayer player, ResearchCostPlan reserved) {
+        if (player.hasInfiniteMaterials()) {
+            return true;
+        }
+        var plan = reserved.isStillValid() ? Optional.of(reserved) : this.plan(player);
+        if (plan.isEmpty()) {
+            Modonomicon.LOG.warn("Research cost {} could not be paid after its state change for player {}", this.entries, player.getGameProfile().name());
+            return false;
+        }
+        for (var entry : this.planOrder()) {
+            entry.apply(player, plan.get());
+        }
+        player.getInventory().setChanged();
+        return true;
     }
 }

@@ -17,10 +17,12 @@ import java.util.Map;
 
 /**
  * Tracks what the entries of one cost reserve from a player, so that two entries cannot claim the same stack or the same levels.
- * Entries plan in declaration order, then apply their reservations in the same order.
+ * Entries plan in {@link ResearchCostEntry#planRank} order, declaration order within a rank, and apply their reservations in the same order.
  * <p>
  * Free counts start at the stack sizes of the player's inventory. Claiming a stack for durability sets its free count to zero,
  * so no later entry can take it as items.
+ * <p>
+ * A plan is a snapshot of the player at planning time. It stays payable while the reserved stacks are unchanged, see {@link #isStillValid()}.
  */
 public final class ResearchCostPlan {
 
@@ -37,6 +39,8 @@ public final class ResearchCostPlan {
 
     private final Player player;
     private final int[] free;
+    private final ItemStack[] planned;
+    private final int plannedLevels;
     private int levels;
     private final Map<ResearchCostEntry, List<Reservation>> reservations = new IdentityHashMap<>();
 
@@ -44,9 +48,13 @@ public final class ResearchCostPlan {
         this.player = player;
         Inventory inventory = player.getInventory();
         this.free = new int[inventory.getContainerSize()];
+        this.planned = new ItemStack[this.free.length];
         for (int slot = 0; slot < this.free.length; slot++) {
-            this.free[slot] = inventory.getItem(slot).getCount();
+            var stack = inventory.getItem(slot);
+            this.planned[slot] = stack.copy();
+            this.free[slot] = stack.getCount();
         }
+        this.plannedLevels = player.experienceLevel;
         this.levels = player.experienceLevel;
     }
 
@@ -108,6 +116,25 @@ public final class ResearchCostPlan {
      */
     public List<Reservation> reservationsOf(ResearchCostEntry entry) {
         return this.reservations.getOrDefault(entry, List.of());
+    }
+
+    /**
+     * True if the plan can still be paid: every reserved stack is still the same item with the same components and holds the
+     * reserved count, and the player still has the reserved levels. Changes to the reserved stacks or levels make the plan stale.
+     */
+    public boolean isStillValid() {
+        Inventory inventory = this.player.getInventory();
+        for (int slot = 0; slot < this.free.length; slot++) {
+            int reserved = this.planned[slot].getCount() - this.free[slot];
+            if (reserved <= 0) {
+                continue;
+            }
+            var current = inventory.getItem(slot);
+            if (!ItemStack.isSameItemSameComponents(current, this.planned[slot]) || current.getCount() < reserved) {
+                return false;
+            }
+        }
+        return this.player.experienceLevel >= this.plannedLevels - this.levels;
     }
 
     private void add(ResearchCostEntry entry, Reservation reservation) {

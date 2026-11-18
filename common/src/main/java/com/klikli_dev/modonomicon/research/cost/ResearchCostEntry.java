@@ -52,27 +52,4 @@ public interface ResearchCostEntry {
      * Server-safe text describing the entry, e.g. "2x Paper". Client presenters use it for tooltips.
      */
     Component describe();
-
-    /**
-     * True if the player could pay this entry alone. Costs with several entries are checked with {@link ResearchCost#canAfford}.
-     */
-    default boolean canPay(Player player) {
-        return player.hasInfiniteMaterials() || this.plan(new ResearchCostPlan(player));
-    }
-
-    /**
-     * Pays this entry alone. Returns false without any change if the player cannot pay it.
-     */
-    default boolean pay(ServerPlayer player) {
-        if (player.hasInfiniteMaterials()) {
-            return true;
-        }
-        var plan = new ResearchCostPlan(player);
-        if (!this.plan(plan)) {
-            return false;
-        }
-        this.apply(player, plan);
-        player.getInventory().setChanged();
-        return true;
-    }
 }

@@ -22,7 +22,7 @@ public final class ResearchActions {
         PERFORMED,
         /** The node, stage or fact does not allow the action, or the fact has no action. */
         INVALID,
-        /** The action's own checks failed, e.g. the player already holds the item. */
+        /** The action's own checks failed, e.g. the player already holds the item, or its effects changed nothing. Nothing is paid. */
         UNAVAILABLE,
         /** The player cannot pay the action's cost. */
         UNAFFORDABLE
@@ -57,8 +57,13 @@ public final class ResearchActions {
      * <p>
      * Validation: the node must be unlocked (a node is started as soon as it is unlocked), the fact must be a
      * requirement of the node's current stage, the fact must not be granted yet, the action must be available
-     * and the cost must be affordable. Only then the action's effects run inside the state change pipeline (granting the fact
-     * first if the action grants it), and the cost is paid once they succeeded. If an effect throws, nothing is paid.
+     * and the cost must be plannable against the player's current state. Only then the cost is planned, the action's
+     * effects run inside the state change pipeline (granting the fact first if the action grants it), and the planned cost
+     * is paid once the change reports that something changed.
+     * <p>
+     * Order: validate, plan the cost, mutate, pay. If an effect throws, nothing is paid. If the effects changed nothing,
+     * the result is {@link Result#UNAVAILABLE} and nothing is paid. If the planned cost cannot be paid anymore after the
+     * change, the change is kept and a warning is logged, see {@link ResearchCost#pay}.
      * <p>
      * A repeatable action replaces the current stage and not-granted checks: the node must have reached the stage of the
      * fact (a complete node has reached all stages), and the cost is paid on every performance.
@@ -103,21 +108,26 @@ public final class ResearchActions {
         if (!action.isAvailable(player, context)) {
             return Result.UNAVAILABLE;
         }
-        if (!action.cost().canAfford(player)) {
+        var reserved = action.cost().plan(player);
+        if (reserved.isEmpty()) {
             return Result.UNAFFORDABLE;
         }
 
-        ResearchServices.hooks().applyStateChange(player, () -> {
+        boolean changed = ResearchServices.hooks().applyStateChange(player, () -> {
+            boolean effectsChanged = false;
             if (action.grantsFact()) {
-                ResearchServices.state().grantFact(player, factId);
+                effectsChanged |= ResearchServices.state().grantFact(player, factId);
             }
             for (var effect : action.effects()) {
-                effect.apply(player, context);
+                effectsChanged |= effect.apply(player, context);
             }
-            return true;
+            return effectsChanged;
         });
-        //paid last, so a throwing mutation costs nothing. Effects normally only add items, so the checked cost stays payable.
-        action.cost().consume(player);
+        if (!changed) {
+            return Result.UNAVAILABLE;
+        }
+
+        action.cost().pay(player, reserved.get());
         ResearchServices.state().syncFor(player);
         return Result.PERFORMED;
     }
