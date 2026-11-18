@@ -36,7 +36,6 @@ import java.util.function.BiConsumer;
 public final class ResearchRequirementInteractions {
 
     private static final long COMPLETING_TIMEOUT_MS = 3000L;
-    private static final Map<Identifier, Completing> COMPLETING = new HashMap<>();
 
     /**
      * A completion request in flight, the stage index is the one shown when the request was sent.
@@ -44,7 +43,12 @@ public final class ResearchRequirementInteractions {
     private record Completing(int stageIndex, long startedAt) {
     }
 
-    private ResearchRequirementInteractions() {
+    /**
+     * The completion requests in flight by node id. Owned by one screen, see the constructor of the controller.
+     */
+    private final Map<Identifier, Completing> completing = new HashMap<>();
+
+    public ResearchRequirementInteractions() {
     }
 
     @Nullable
@@ -137,7 +141,7 @@ public final class ResearchRequirementInteractions {
      * Requests the completion of a manual stage if it is affordable locally. Otherwise plays the fail sound and sends nothing.
      * Starts the "Completing..." state, which ends when the stage changes or after a timeout.
      */
-    public static void completeStage(RequirementBlock.ManualStage manual) {
+    public void completeStage(RequirementBlock.ManualStage manual) {
         var player = player();
         if (player == null || isCompleting(manual)) {
             return;
@@ -146,7 +150,7 @@ public final class ResearchRequirementInteractions {
             playSound(SoundEvents.VILLAGER_NO);
             return;
         }
-        COMPLETING.put(manual.nodeId(), new Completing(manual.stageIndex(), System.currentTimeMillis()));
+        this.completing.put(manual.nodeId(), new Completing(manual.stageIndex(), System.currentTimeMillis()));
         Services.NETWORK.sendToServer(new CompleteResearchStageMessage(manual.nodeId()));
         playSound(SoundEvents.UI_BUTTON_CLICK.value());
     }
@@ -154,13 +158,13 @@ public final class ResearchRequirementInteractions {
     /**
      * True while a completion of the shown stage is in flight. Ends once the stage index changed (the sync arrived) or after a timeout.
      */
-    public static boolean isCompleting(RequirementBlock.ManualStage manual) {
-        var completing = COMPLETING.get(manual.nodeId());
-        if (completing == null) {
+    public boolean isCompleting(RequirementBlock.ManualStage manual) {
+        var inFlight = this.completing.get(manual.nodeId());
+        if (inFlight == null) {
             return false;
         }
-        if (completing.stageIndex() != manual.stageIndex() || System.currentTimeMillis() - completing.startedAt() > COMPLETING_TIMEOUT_MS) {
-            COMPLETING.remove(manual.nodeId());
+        if (inFlight.stageIndex() != manual.stageIndex() || System.currentTimeMillis() - inFlight.startedAt() > COMPLETING_TIMEOUT_MS) {
+            this.completing.remove(manual.nodeId());
             return false;
         }
         return true;

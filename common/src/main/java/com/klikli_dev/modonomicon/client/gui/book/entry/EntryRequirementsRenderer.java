@@ -103,7 +103,10 @@ public final class EntryRequirementsRenderer {
         }
     }
 
-    private EntryRequirementsRenderer() {
+    private final ResearchRequirementInteractions interactions;
+
+    public EntryRequirementsRenderer(ResearchRequirementInteractions interactions) {
+        this.interactions = interactions;
     }
 
     /**
@@ -203,7 +206,7 @@ public final class EntryRequirementsRenderer {
      * @param mouseY      book-relative mouse y
      * @param interactive whether hovering shows tooltips
      */
-    public static void render(GuiGraphicsExtractor guiGraphics, Font font, BookContentTheme content, RequirementBlock block,
+    public void render(GuiGraphicsExtractor guiGraphics, Font font, BookContentTheme content, RequirementBlock block,
                               int x, int top, int width, int mouseX, int mouseY, boolean interactive,
                               Consumer<List<Component>> tooltipSink) {
         if (block.isEmpty()) {
@@ -240,7 +243,7 @@ public final class EntryRequirementsRenderer {
      * @param onRowAction receives the action of a clicked row, see {@link RowAction}
      * @return true if the click was consumed
      */
-    public static boolean click(RequirementBlock block, Font font, int x, int top, int width, double mouseX, double mouseY,
+    public boolean click(RequirementBlock block, Font font, int x, int top, int width, double mouseX, double mouseY,
                                 IntPredicate browse, Consumer<RowAction> onRowAction) {
         int stageDelta = stageLineClick(block, font, x, top, width, mouseX, mouseY);
         if (stageDelta != 0) {
@@ -338,11 +341,11 @@ public final class EntryRequirementsRenderer {
     /**
      * Completes the shown manual stage if the complete button was clicked. Coordinates relative to the same origin as the layout.
      */
-    private static boolean clickCompleteButton(RequirementBlock block, Font font, int x, int top, int width, double mouseX, double mouseY) {
+    private boolean clickCompleteButton(RequirementBlock block, Font font, int x, int top, int width, double mouseX, double mouseY) {
         if (!showsCompleteButton(block) || !inCompleteButton(stageGeometry(block, font, x, top, width), mouseX, mouseY)) {
             return false;
         }
-        ResearchRequirementInteractions.completeStage(block.stage().manual());
+        this.interactions.completeStage(block.stage().manual());
         return true;
     }
 
@@ -370,7 +373,7 @@ public final class EntryRequirementsRenderer {
         return label;
     }
 
-    private static void renderStageLine(GuiGraphicsExtractor guiGraphics, Font font, BookContentTheme content, RequirementBlock block,
+    private void renderStageLine(GuiGraphicsExtractor guiGraphics, Font font, BookContentTheme content, RequirementBlock block,
                                         int x, int top, int width, int mouseX, int mouseY, boolean interactive,
                                         Consumer<List<Component>> tooltipSink) {
         var stage = block.stage();
@@ -399,14 +402,14 @@ public final class EntryRequirementsRenderer {
         }
     }
 
-    private static void renderCompleteButton(GuiGraphicsExtractor guiGraphics, Font font, BookContentTheme content, RequirementBlock block, StageGeometry geometry,
-                                             int mouseX, int mouseY, boolean interactive, Consumer<List<Component>> tooltipSink) {
+    private void renderCompleteButton(GuiGraphicsExtractor guiGraphics, Font font, BookContentTheme content, RequirementBlock block, StageGeometry geometry,
+                                      int mouseX, int mouseY, boolean interactive, Consumer<List<Component>> tooltipSink) {
         if (!showsCompleteButton(block)) {
             return;
         }
         var manual = block.stage().manual();
         var player = ResearchRequirementInteractions.player();
-        boolean completing = ResearchRequirementInteractions.isCompleting(manual);
+        boolean completing = this.interactions.isCompleting(manual);
         boolean enabled = !completing && player != null && manual.cost().canAfford(player);
         boolean hovered = inCompleteButton(geometry, mouseX, mouseY);
         var sprite = !enabled ? content.completeButtonDisabled() : (hovered ? content.completeButtonHover() : content.completeButtonNormal());

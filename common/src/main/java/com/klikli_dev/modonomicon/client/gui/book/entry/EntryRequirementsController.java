@@ -54,6 +54,12 @@ public class EntryRequirementsController {
     private final BookEntryScreen screen;
 
     /**
+     * Owns the completion requests in flight of this screen, shared by the renderer's complete button.
+     */
+    private final ResearchRequirementInteractions interactions = new ResearchRequirementInteractions();
+    private final EntryRequirementsRenderer renderer = new EntryRequirementsRenderer(this.interactions);
+
+    /**
      * Blocks built during the current frame. Cleared at the start of every frame and whenever the browsed stage changes.
      */
     private final Map<BlockKey, RequirementBlock> frameBlocks = new HashMap<>();
@@ -248,7 +254,7 @@ public class EntryRequirementsController {
      */
     public void renderBlock(GuiGraphicsExtractor guiGraphics, RequirementBlock block, int x, int top, int width,
                             int mouseX, int mouseY, boolean interactive) {
-        EntryRequirementsRenderer.render(guiGraphics, this.screen.getContentFont(), this.screen.getBook().theme().content(), block,
+        this.renderer.render(guiGraphics, this.screen.getContentFont(), this.screen.getBook().theme().content(), block,
                 x, top, width, mouseX, mouseY, interactive, this.screen::setTooltip);
     }
 
@@ -273,7 +279,7 @@ public class EntryRequirementsController {
      * @return true if the click was consumed
      */
     public boolean clickBlock(RequirementBlock block, int x, int top, int width, double mouseX, double mouseY) {
-        return EntryRequirementsRenderer.click(block, this.screen.getContentFont(), x, top, width, mouseX, mouseY, this::browseStage, this::performRowAction);
+        return this.renderer.click(block, this.screen.getContentFont(), x, top, width, mouseX, mouseY, this::browseStage, this::performRowAction);
     }
 
     private void performRowAction(RowAction action) {
