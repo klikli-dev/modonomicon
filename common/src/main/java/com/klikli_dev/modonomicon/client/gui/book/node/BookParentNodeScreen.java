@@ -21,6 +21,7 @@ import com.klikli_dev.modonomicon.client.gui.book.button.*;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiFrameOverlay;
 import com.klikli_dev.modonomicon.client.gui.book.recentlyunlocked.BookRecentlyUnlockedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
+import com.klikli_dev.modonomicon.networking.BookClosedMessage;
 import com.klikli_dev.modonomicon.networking.SyncResearchStateMessage;
 import com.klikli_dev.modonomicon.platform.ClientServices;
 import com.klikli_dev.modonomicon.platform.Services;
@@ -34,6 +35,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
@@ -303,8 +305,8 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
         //currently nothing to save - open category is handled by gui manager
     }
 
-    private void sendBookClosedPacket(net.minecraft.world.InteractionHand hand) {
-        Services.NETWORK.sendToServer(new com.klikli_dev.modonomicon.networking.BookClosedMessage(hand));
+    private void sendBookClosedPacket(InteractionHand hand) {
+        Services.NETWORK.sendToServer(new BookClosedMessage(hand));
     }
 
     @Override
