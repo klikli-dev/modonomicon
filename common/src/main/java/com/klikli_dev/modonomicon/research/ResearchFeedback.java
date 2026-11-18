@@ -25,6 +25,9 @@ public final class ResearchFeedback {
     private ResearchFeedback() {
     }
 
+    /**
+     * A quiet sound for a performed action or completed stage.
+     */
     public static void performed(ServerPlayer player) {
         playSound(player, SoundEvents.EXPERIENCE_ORB_PICKUP, 0.3F, 1.4F);
     }
@@ -40,11 +43,18 @@ public final class ResearchFeedback {
         player.sendOverlayMessage(Component.translatable(Gui.FEEDBACK_MISSING, describe(missing)));
         playSound(player, SoundEvents.VILLAGER_NO, 0.4F, 1.0F);
     }
+
+    /**
+     * The action's own checks failed, or its effects changed nothing.
+     */
     public static void unavailable(ServerPlayer player) {
         player.sendOverlayMessage(Component.translatable(Gui.FEEDBACK_UNAVAILABLE));
         playSound(player, SoundEvents.VILLAGER_NO, 0.4F, 1.0F);
     }
 
+    /**
+     * The node, stage or fact does not allow the action or the stage completion.
+     */
     public static void invalid(ServerPlayer player) {
         player.sendOverlayMessage(Component.translatable(Gui.FEEDBACK_INVALID));
         playSound(player, SoundEvents.VILLAGER_NO, 0.4F, 1.0F);
@@ -63,6 +73,7 @@ public final class ResearchFeedback {
         }
         return result;
     }
+
     /**
      * A quiet sound for learning something by using an item.
      */
