@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
+import com.klikli_dev.modonomicon.research.networking.ResearchToastTrigger;
 import com.klikli_dev.modonomicon.research.state.PlayerResearchState;
 import com.klikli_dev.modonomicon.research.state.ResearchStateChangeListener;
 import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
@@ -150,17 +151,22 @@ public class ResearchHookService {
             completions.add(listener.beforeChange(player));
         }
 
-        ResearchStateManager.beginToastCollection();
         boolean changed = false;
-        for (var hook : hooks) {
-            if (hook.factId() != null) {
-                changed |= this.stateManager.grantFact(player, hook.factId());
-            } else if (hook.valueId() != null) {
-                changed |= this.stateManager.incrementValue(player, hook.valueId(), hook.increment());
+        List<ResearchToastTrigger> triggers;
+        ResearchStateManager.beginToastCollection();
+        try {
+            for (var hook : hooks) {
+                if (hook.factId() != null) {
+                    changed |= this.stateManager.grantFact(player, hook.factId());
+                } else if (hook.valueId() != null) {
+                    changed |= this.stateManager.incrementValue(player, hook.valueId(), hook.increment());
+                }
             }
+            changed |= this.stateManager.reevaluate(player);
+        } finally {
+            // Always pair the begin with an end so a failed batch cannot leave collection active for later batches.
+            triggers = ResearchStateManager.endToastCollection();
         }
-        changed |= this.stateManager.reevaluate(player);
-        var triggers = ResearchStateManager.endToastCollection();
         if (!triggers.isEmpty()) {
             Services.NETWORK.sendTo(player, new ResearchToastMessage(triggers));
         }
