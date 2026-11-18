@@ -38,7 +38,7 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
 
     private static final ResearchDataManager INSTANCE = new ResearchDataManager();
 
-    private ResearchData data = new ResearchData(Set.of(), Set.of(), Set.of(), Set.of(), List.of(), List.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of());
+    private ResearchData data = new ResearchData(Set.of(), Set.of(), Set.of(), Set.of(), List.of(), List.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of());
     // Sync authored definitions plus graph membership only; validate() rebuilds all derived indexes client-side.
     private List<ResearchFactDefinition> facts = List.of();
     private List<ResearchNodeDefinition> nodes = List.of();
