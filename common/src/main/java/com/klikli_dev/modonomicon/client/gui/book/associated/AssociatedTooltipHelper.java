@@ -97,8 +97,18 @@ public class AssociatedTooltipHelper {
             return false;
         }
 
-        BookGuiManager.get().openEntry(association.bookId(), entry.getCategoryId(), association.entryId(),
-                association.pageNumber() >= 0 ? association.pageNumber() : 0);
+        var page = association.pageNumber() >= 0 ? association.pageNumber() : 0;
+        if (association.isTab()) {
+            var tab = AssociatedItemLookup.get().resolveTab(association);
+            if (tab == null) {
+                return false;
+            }
+            //opens the spread the tab is anchored to, then the tab overlay
+            BookGuiManager.get().openEntryTab(association.bookId(), entry.getCategoryId(), association.entryId(), page, tab);
+            return true;
+        }
+
+        BookGuiManager.get().openEntry(association.bookId(), entry.getCategoryId(), association.entryId(), page);
         return true;
     }
 

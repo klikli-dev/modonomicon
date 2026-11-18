@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
+import com.klikli_dev.modonomicon.book.entries.BookEntryTab;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
 import com.klikli_dev.modonomicon.bookstate.visual.EntryVisualState;
@@ -718,6 +719,15 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     }
 
     protected abstract int getOpenPagesIndexForPage(int pageIndex);
+
+    /**
+     * Opens the page of the given tab as an overlay, if this screen shows entry tabs and the tab is visible on the open spread.
+     */
+    public void openTab(BookEntryTab tab) {
+        if (this.supportsEntryTabs() && !this.entryTabs.isOpen(tab)) {
+            this.entryTabs.open(tab);
+        }
+    }
 
     /**
      * Whether this screen shows the entry tabs. Tabs open their page as an overlay, so the screen must support overlays.

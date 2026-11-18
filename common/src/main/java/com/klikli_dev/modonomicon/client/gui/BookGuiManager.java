@@ -15,6 +15,7 @@ import com.klikli_dev.modonomicon.book.BookLockedCategoryDisplay;
 import com.klikli_dev.modonomicon.book.PageDisplayMode;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
+import com.klikli_dev.modonomicon.book.entries.BookEntryTab;
 import com.klikli_dev.modonomicon.book.entries.CategoryLinkBookEntry;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.bookstate.BookServices;
@@ -493,6 +494,20 @@ public class BookGuiManager {
             //then open the given address
             this.openBook(BookAddress.ignoreSaved(bookId, categoryId, entryId, page, displayPage));
         });
+    }
+
+    /**
+     * Opens the book at the given entry page, then opens the given tab of that entry as an overlay.
+     *
+     * @param page the page to open, should be the page the tab is anchored to so the tab is visible.
+     */
+    public void openEntryTab(Identifier bookId, @Nullable Identifier categoryId, Identifier entryId, int page, BookEntryTab tab) {
+        this.openEntry(bookId, categoryId, entryId, page);
+
+        var screen = this.openBookEntryScreen;
+        if (screen != null && screen.getEntry().getId().equals(entryId)) {
+            screen.openTab(tab);
+        }
     }
 
     /**
