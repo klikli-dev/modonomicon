@@ -4,5 +4,35 @@
   },
   {
     "id": "modonomicon:demo/stages_planks_crafted"
+  },
+  {
+    "display": {
+      "title": {
+        "translate": "modonomicon.demo.requirements.cobblestone.title"
+      }
+    },
+    "id": "modonomicon:demo/requirements_cobblestone_collected"
+  },
+  {
+    "display": {
+      "icon": {
+        "id": "minecraft:dirt"
+      },
+      "title": {
+        "translate": "modonomicon.demo.progression.dirt.title"
+      }
+    },
+    "id": "modonomicon:demo/progression_dirt_collected"
+  },
+  {
+    "display": {
+      "icon": {
+        "id": "minecraft:enchanted_book"
+      },
+      "title": {
+        "translate": "modonomicon.demo.scholarship.insight.title"
+      }
+    },
+    "id": "modonomicon:demo/insight"
   }
 ]
