@@ -156,7 +156,7 @@ public class BookViewerRecipePageRenderer extends BookPageRenderer<BookViewerRec
         }
 
         //clamp to the page height
-        double maxContentHeight = BookEntryScreen.PAGE_HEIGHT - Y;
+        double maxContentHeight = this.getAvailablePageHeight() - Y;
         if (fixedHeight + previewHeight > maxContentHeight) {
             double available = maxContentHeight - fixedHeight;
             if (available <= 0 || previewHeight <= 0) {
@@ -230,7 +230,7 @@ public class BookViewerRecipePageRenderer extends BookPageRenderer<BookViewerRec
         this.drawRecipe(guiGraphics, this.recipe2Layout, mouseX, mouseY);
 
         var textY = this.getTextY();
-        this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, textY, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - textY);
+        this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, textY, BookEntryScreen.PAGE_WIDTH, this.getAvailablePageHeight() - textY);
 
         var style = this.getClickedComponentStyleAt(mouseX, mouseY);
         if (style != null) {
@@ -393,7 +393,7 @@ public class BookViewerRecipePageRenderer extends BookPageRenderer<BookViewerRec
     public Style getClickedComponentStyleAt(double pMouseX, double pMouseY) {
         if (pMouseX > 0 && pMouseY > 0) {
             var textY = this.getTextY();
-            var bounds = this.getBookTextHolderBounds(0, textY, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - textY);
+            var bounds = this.getBookTextHolderBounds(0, textY, BookEntryScreen.PAGE_WIDTH, this.getAvailablePageHeight() - textY);
             var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), bounds.x, bounds.y, bounds.width, bounds.height, pMouseX, pMouseY);
             if (textStyle != null) {
                 return textStyle;

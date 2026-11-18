@@ -63,6 +63,10 @@ public abstract class BookPageRenderer<T extends BookPage> {
      * Split pages then scale their text to fit instead of only showing the first fragment.
      */
     protected boolean pageSplitAllowed = true;
+    /**
+     * Pixels at the bottom of the page reserved for other content (e.g. the entry requirements block).
+     */
+    protected int reservedBottomHeight;
 
 
     public BookPageRenderer(T page) {
@@ -78,6 +82,17 @@ public abstract class BookPageRenderer<T extends BookPage> {
      */
     public void setPageSplitAllowed(boolean pageSplitAllowed) {
         this.pageSplitAllowed = pageSplitAllowed;
+    }
+
+    public void setReservedBottomHeight(int reservedBottomHeight) {
+        this.reservedBottomHeight = reservedBottomHeight;
+    }
+
+    /**
+     * @return the height of the page that text may use, i.e. the page height minus any reserved bottom area.
+     */
+    public int getAvailablePageHeight() {
+        return BookEntryScreen.PAGE_HEIGHT - this.reservedBottomHeight;
     }
 
 
@@ -207,7 +222,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
         if (this instanceof PageWithTextRenderer pageWithTextRenderer)
             textY = pageWithTextRenderer.getTextY();
 
-        renderBookTextHolder(guiGraphics, text, this.font, x, y, width, BookEntryScreen.PAGE_HEIGHT - textY, this.parentScreen.getBook().theme().palette().defaultTextColor());
+        renderBookTextHolder(guiGraphics, text, this.font, x, y, width, this.getAvailablePageHeight() - textY, this.parentScreen.getBook().theme().palette().defaultTextColor());
     }
 
     /**
@@ -328,7 +343,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
                     BookDebugOverlay.CONTENT_FILL, BookDebugOverlay.CONTENT_OUTLINE);
 
             //text area: the bounds the text holder is rendered into, after applying the theme text offsets
-            var bounds = this.getBookTextHolderBounds(0, textY, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - textY);
+            var bounds = this.getBookTextHolderBounds(0, textY, BookEntryScreen.PAGE_WIDTH, this.getAvailablePageHeight() - textY);
             BookDebugOverlay.renderRegion(guiGraphics, bounds.x, bounds.y, bounds.width, bounds.height,
                     BookDebugOverlay.TEXT_FILL, BookDebugOverlay.TEXT_OUTLINE);
         }
@@ -379,7 +394,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
         var textY = 0;
         if (this instanceof PageWithTextRenderer pageWithTextRenderer)
             textY = pageWithTextRenderer.getTextY();
-        return this.getClickedComponentStyleAtForTextHolder(text, x, y, width, BookEntryScreen.PAGE_HEIGHT - textY, pMouseX, pMouseY);
+        return this.getClickedComponentStyleAtForTextHolder(text, x, y, width, this.getAvailablePageHeight() - textY, pMouseX, pMouseY);
     }
 
     @Nullable

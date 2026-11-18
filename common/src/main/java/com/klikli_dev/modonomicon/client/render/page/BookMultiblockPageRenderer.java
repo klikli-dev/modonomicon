@@ -146,7 +146,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
         this.renderMultiblock(guiGraphics);
 
         var textY = this.getTextY();
-        this.renderBookTextHolder(guiGraphics, this.page.getText(), 0, textY, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - textY);
+        this.renderBookTextHolder(guiGraphics, this.page.getText(), 0, textY, BookEntryScreen.PAGE_WIDTH, this.getAvailablePageHeight() - textY);
 
         var style = this.getClickedComponentStyleAt(mouseX, mouseY);
         if (style != null)

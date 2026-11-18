@@ -24,7 +24,7 @@ public class BookTextPageRenderer extends BookPageRenderer<BookTextPage> impleme
         }
 
         var textY = this.getTextY();
-        this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, textY, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - textY);
+        this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, textY, BookEntryScreen.PAGE_WIDTH, this.getAvailablePageHeight() - textY);
 
         var style = this.getClickedComponentStyleAt(mouseX, mouseY);
         if (style != null)

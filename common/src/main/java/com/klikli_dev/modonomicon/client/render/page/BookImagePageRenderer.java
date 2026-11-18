@@ -81,7 +81,7 @@ public class BookImagePageRenderer extends BookPageRenderer<BookImagePage> imple
         }
 
         var textY = this.getTextY();
-        this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, textY, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - textY);
+        this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, textY, BookEntryScreen.PAGE_WIDTH, this.getAvailablePageHeight() - textY);
 
         var imageBounds = getImageBounds();
         var frameBounds = getFrameBounds();
