@@ -80,11 +80,19 @@ is met.
 
 The core matching logic. For item triggers, this calls `ResearchItemMatcher.matches(stack)`: an item template matches the item and the components listed in the template, and a tag matches any item in the tag.
 
-### indexKey() (optional)
+### Index keys (optional)
 
-Return a stable key for fast index-based lookup. When both the target's index key
-and the context's index key are non-null and equal, the system skips the full scan.
-For example, item triggers use the item ID as the index key.
+`indexKey(target)` and `indexKey(context)` let the runtime skip hooks that cannot match an event.
+When the research data loads, the hooks of each trigger type are grouped by the index key of their target.
+When an event fires, only the hooks with the event's key are checked, together with the unkeyed hooks.
+The hooks keep their authored order.
+
+- A context with a key checks the hooks with that key, and the unkeyed hooks.
+- A context without a key (`indexKey(context)` returns `null`) checks all hooks of the trigger type.
+- A target without a key (`indexKey(target)` returns `null`, e.g. a tag matcher) is checked for every event of its trigger type.
+
+A keyed target can only match contexts with the same key. If a target can match contexts with different keys, return `null` for it, otherwise it is never checked for those contexts.
+For example, item templates use the item id as their key, and tag matchers return `null`.
 
 ### replayAll() (optional)
 
@@ -252,6 +260,55 @@ private void onKillEntity(Entity target, CallbackInfo ci) {
     }
 }
 ```
+
+## Advanced: Listening to research changes
+
+:::tip
+
+Most mods do not need this. It is an extension point for systems that have to react to research changes, such as the book's visibility and unread state. Modonomicon uses it for exactly that.
+
+:::
+
+Research does not depend on the book. Code that needs to react to research changes registers a `ResearchStateChangeListener` through `ResearchServices.hooks()`:
+
+```java
+public interface ResearchStateChangeListener {
+    Completion beforeChange(ServerPlayer player);
+
+    interface Completion {
+        void afterChange(boolean changed);
+    }
+}
+```
+
+Listeners wrap every hook batch, in this order:
+
+1. `beforeChange(player)` runs for every listener, in registration order. Take your snapshot here.
+2. The facts and values of the batch are changed, the nodes are reevaluated and the toasts are collected.
+3. The collected toasts are sent to the player.
+4. The `Completion` returned by each listener runs with `changed`, which is `true` if any research state changed.
+
+Register the listener during mod initialization, before research events fire:
+
+```java
+ResearchServices.hooks().addStateChangeListener(new MyModResearchListener());
+```
+
+```java
+public class MyModResearchListener implements ResearchStateChangeListener {
+    @Override
+    public Completion beforeChange(ServerPlayer player) {
+        var before = MyModState.snapshot(player);
+        return changed -> {
+            if (changed) {
+                MyModState.refresh(player, before);
+            }
+        };
+    }
+}
+```
+
+Listeners only run for hook batches. Changes made directly to the research state, such as by admin commands, do not call them. Keep listeners cheap, because they run for every batch of hooks.
 
 ## Datagen: Authoring Hooks
 
