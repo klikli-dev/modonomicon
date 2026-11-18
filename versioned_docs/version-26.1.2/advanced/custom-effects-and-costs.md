@@ -13,15 +13,17 @@ Both registries work the same way: the `type` field of the JSON picks the type, 
 
 ## Registration
 
-Register types before research data is loaded, e.g. during mod setup. Register them on both sides: the research state and the cost and effect types are synced with stream codecs, so the client needs the same types to read the book.
+Register types in common setup, before research data is loaded. Common setup runs on both the client and the server, which is needed because research data and its costs and effects are synced to the client with stream codecs. The client must know every type to read the book.
+
+Research data is loaded when the datapacks reload, which happens after common setup. Built-in types are registered in the same common setup step by Modonomicon itself.
 
 ```java
-// NeoForge and Forge: common setup event
+// NeoForge and Forge: common setup event, runs on client and server
 public void onCommonSetup(FMLCommonSetupEvent event) {
     MyModResearchTypes.bootstrap();
 }
 
-// Fabric: initializer
+// Fabric: main initializer, runs on client and server
 @Override
 public void onInitialize() {
     MyModResearchTypes.bootstrap();
@@ -53,9 +55,11 @@ public final class MyModResearchTypes {
 
 The `bootstrap()` method only makes sure the static fields are initialized.
 
+Presenters are different: they only run on the client, and they are registered in client setup, see [Custom Presenters](./custom-presenters.md#registration).
+
 ## Effect types
 
-An effect is applied on the server. `apply` returns true if research state changed. `isAvailable` says whether the effect can run right now. An action is only available if all of its effects are.
+An effect is applied on the server. `apply` returns whether the effect changed something: research state, inventory or experience. An action uses the result. An action whose effects changed nothing is unavailable and costs nothing. `isAvailable` says whether the effect can run right now. An action is only available if all of its effects are.
 
 ```java
 public record GrantManaEffect(int amount) implements ResearchEffect {
@@ -74,13 +78,12 @@ public record GrantManaEffect(int amount) implements ResearchEffect {
 
     @Override
     public boolean apply(ServerPlayer player, ResearchEffectContext context) {
-        MyModMana.add(player, this.amount);
-        return false;
+        return MyModMana.add(player, this.amount) > 0;
     }
 }
 ```
 
-`MyModMana.add` stands for your own mod code. The effect returns false here because it does not change research state. Return true if it grants a fact or changes a value.
+`MyModMana.add` stands for your own mod code, and returns how much mana was actually added. The effect reports a change only if some mana was added, so a full mana bar makes an action that grants mana unavailable.
 
 Use it in datagen with `ResearchEffectModel.of(...)`, or in JSON with the type id:
 
@@ -94,10 +97,10 @@ ResearchEffectModel.of(new GrantManaEffect(5))
 
 ## Cost types
 
-A cost entry is paid in three steps, and it must not change the player while planning:
+A cost entry is planned and paid in three steps. Planning must not change the player, because it runs before the state change, and it may run again when the plan is stale:
 
 1. `plan(plan)` reserves what it needs from the `ResearchCostPlan`, e.g. a stack or levels. It returns false if the plan cannot cover it.
-2. `apply(player, plan)` applies the reservations of the plan. It runs only after the whole cost was planned successfully.
+2. `apply(player, plan)` applies the reservations of the plan. It runs only after the state change succeeded, and it uses the plan that was made last, which may be a re-plan.
 3. `describe()` returns the text for tooltips, e.g. "5 mana".
 
 Also implement:
@@ -142,14 +145,15 @@ public record ManaCostEntry(int amount) implements ResearchCostEntry {
 }
 ```
 
-This cost takes mana from a player-owned counter that no other entry reserves, so planning only reads it. Costs that take inventory stacks should reserve them: `plan.take(this, slot, count)` reserves items of a slot, `plan.claim(this, slot, amount)` reserves a whole damageable stack, and `plan.takeLevels(this, amount)` reserves levels. Reserving keeps two entries of one cost from claiming the same stack. `ItemCostEntry` and `DurabilityCostEntry` in `research/cost` are the reference implementations.
+This cost takes mana from a player-owned counter that no other entry reserves, so planning only reads it. Costs that take inventory stacks should reserve them in `plan`: `plan.take(this, slot, count)` reserves items of a slot, `plan.claim(this, slot, amount)` reserves a whole damageable stack, and `plan.takeLevels(this, amount)` reserves levels. Reserving keeps two entries of one cost from claiming the same stack. `ItemCostEntry` and `DurabilityCostEntry` in `research/cost` are the reference implementations.
 
-Creative players (infinite materials) pay nothing: the cost checks skip them before `plan` runs, so your cost does not need to handle them.
+Creative players (infinite materials) pay nothing. The cost skips them before `plan` runs, so your cost does not need to handle them.
 
 ## Rules for both kinds
 
-- `plan`, `canPay` and `missing` must not change the player. Only `apply` and the effect's `apply` change it.
+- `plan` must not change the player. Only the `apply` methods change it, and they run after the state change.
 - Effects and costs run on the server only. Presenters run on the client.
 - Keep the stream codec in step with the map codec. Both sides need the same type.
+- A cost re-plans if the reserved stacks change during an action, so `apply` must only use the reservations of the plan it receives.
 
-See [Actions, Costs and Effects](../basics/research/actions.md) for the consumption order, and [Rewards](../basics/research/rewards.md) for the built-in effect types.
+See [Actions, Costs and Effects](../basics/research/actions.md#consumption-order) for the consumption order, and [Rewards](../basics/research/rewards.md) for the built-in effect types.
