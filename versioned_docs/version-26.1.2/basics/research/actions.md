@@ -78,7 +78,20 @@ this.stage("synthesis", s -> s
 
 `consume` makes the stage manual. The Iron Ingot row counts what the player holds. The stage consumes the iron on completion, and the button is enabled once the player holds enough.
 
-## Repeatable actions
+## One-time and repeatable actions
+
+An action must either grant its fact or be repeatable. The rule exists because the fact is the only record that an action was done. A one-time action that does not grant its fact would be offered again with nothing recording that it was performed, so the codec rejects it and the datagen model throws an `IllegalStateException`:
+
+```java
+// invalid: not repeatable and does not grant the fact
+ResearchActionModel.create().cost(ResearchCostModel.create().item(Items.PAPER));
+
+// valid: pays once and records it through the fact
+ResearchActionModel.learn(ResearchCostModel.create().item(Items.PAPER));
+
+// valid: pays on every performance, the fact is not recorded
+ResearchActionModel.create().cost(ResearchCostModel.create().item(Items.PAPER)).repeatable();
+```
 
 A repeatable action:
 
@@ -88,17 +101,22 @@ A repeatable action:
 
 A non-repeatable action is only offered while its fact is missing and its stage is the current one.
 
+`ResearchActionModel.giveItem(stack, cost)` is repeatable and only available while the player does not hold an equal stack. The player can take the item again whenever they have none, e.g. a blank research note.
+
 ## Consumption order
 
-When the player performs an action, the steps run in this order:
+Performing an action (or completing a manual stage) runs these steps. Only the first step that fails stops the action, and nothing is paid before the state change:
 
-1. The node must be unlocked and the fact must be a requirement of the current stage (or of a reached stage, for repeatable actions).
-2. The effects must all be available. Effects like `give_item` with `require_absent` check the inventory here.
-3. The cost must be affordable. The cost is checked as a whole, see [Costs](#costs).
-4. The change is applied in one state change: the fact is granted first if the action grants it, then the effects run in order.
-5. Only after the change succeeded, the cost is paid.
+1. **Validate.** The node must be unlocked, and the fact must be a requirement of the current stage. A repeatable action only needs the node to have reached the stage of the fact. Otherwise the action is invalid.
+2. **Check the effects.** Every effect must be available, e.g. `give_item` with `require_absent` checks the inventory. Otherwise the action is unavailable.
+3. **Plan the cost.** The cost is planned against the current inventory and levels, without changing anything. If the player cannot afford it, the action is unaffordable and nothing changes.
+4. **Apply the change.** The fact is granted first if the action grants it, then the effects run in order, all in one state change.
+5. **Check the change.** If no fact was granted and no effect changed anything, the action is unavailable and nothing is paid. Each effect reports whether it changed something, see [Rewards](./rewards.md).
+6. **Pay the plan.** The planned cost is paid. If the reserved stacks or levels changed during step 4, the cost is planned again against the current state. If that fails too, the change is kept, the player pays nothing, and a warning is logged.
 
-If an effect throws, nothing is paid. Manual stage completion follows the same order: the cost is checked, the stage completes, then the cost is paid.
+If an effect throws, the exception stops the action before the cost is paid.
+
+Manual stage completion follows the same order, with two differences: it always pays after the completion, and it does not check whether the completion changed anything.
 
 ## Costs
 
@@ -108,27 +126,31 @@ A cost is a list of typed entries. Each entry is paid from the player's inventor
 |------|------|-------|
 | `modonomicon:item` | `count` items matching an item or tag matcher | Takes from any matching stacks |
 | `modonomicon:durability` | `amount` durability from one matching damageable stack | Damages the stack, it is not consumed. Any usable stack is enough |
-| `modonomicon:levels` | experience levels | |
+| `modonomicon:levels` | `amount` experience levels | |
 
 JSON:
 
 ```json
 "cost": [
   { "type": "modonomicon:item", "item": { "id": "minecraft:paper" } },
-  { "type": "modonomicon:durability", "item": { "id": "minecraft:shears" }, "amount": 1 }
+  { "type": "modonomicon:durability", "item": { "id": "minecraft:shears" }, "amount": 1 },
+  { "type": "modonomicon:levels", "amount": 2 }
 ]
 ```
+
+The levels entry has one field, `amount`, which must be at least 1. Its codec is `LevelsCostEntry.MAP_CODEC`.
 
 Datagen builds the same list with `ResearchCostModel`:
 
 ```java
 ResearchCostModel.create()
         .item(Items.PAPER)
+        .item(ItemTags.LOGS, 2)
         .durability(Items.SHEARS, 1)
         .levels(2)
 ```
 
-`levels` replaces the levels set before, so the last call wins.
+`levels` replaces the levels set before, so the last call wins. `item` with a tag takes any item of the tag, and `durability` with a tag takes one usable stack of the tag.
 
 ### Planning order
 
@@ -145,10 +167,12 @@ Any tooltip or row of the cost lists what is held, so the player sees what is mi
 
 | Method | Use |
 |--------|-----|
-| `ResearchActionModel.create()` | An action with a cost, effects and flags |
+| `ResearchActionModel.create()` | An action with a cost, effects and flags. Must grant its fact or be repeatable |
 | `ResearchActionModel.learn(cost)` | Pay to learn the fact |
-| `ResearchActionModel.giveItem(stack, cost)` | Pay for an item |
+| `ResearchActionModel.giveItem(stack, cost)` | Pay for an item, repeatable and only while the player holds no equal stack |
 | `.cost(...)`, `.effect(...)`, `.grantsFact()`, `.repeatable()` | Set the parts of an action |
-| `ResearchCostModel.item/durability/levels/entry(...)` | Add cost entries, `entry` takes a custom type |
+| `ResearchCostModel.item(item, count)`, `item(TagKey<Item>, count)`, `item(stack)` | Pay items |
+| `ResearchCostModel.durability(item, amount)`, `durability(TagKey<Item>, amount)` | Take durability from one stack |
+| `ResearchCostModel.levels(n)`, `entry(...)` | Pay levels, or add an entry of a custom type |
 
 See [Custom Costs and Effects](../../advanced/custom-effects-and-costs.md) for cost types of your own.

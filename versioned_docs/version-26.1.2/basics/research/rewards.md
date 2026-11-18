@@ -53,6 +53,10 @@ this.stage("synthesis", s -> s
 
 Rewards on a stage are granted once, in the order they are declared. Rewards on an action run in the order of the action's `effects`.
 
+## Changes
+
+Every effect reports whether it changed something: research state, inventory or experience. Actions use this result. An action whose effects changed nothing is unavailable and costs nothing, see [Consumption order](./actions.md#consumption-order). Built-in effects report it as follows. `grant_fact` and `add_value` report whether the fact was newly granted or the stored value changed. `give_item`, `experience` and `function` always report a change when they run.
+
 ## Reward rows
 
 A stage shows its rewards as rows of the rewards category. A reward row is met once its stage is complete, and until then it says it is granted when the stage is completed. Each effect type has a presenter that describes it, see [Custom Presenters](../../advanced/custom-presenters.md). Effect types without a presenter show a generic special reward row.
