@@ -256,7 +256,7 @@
         ],
         "rewards": [
           {
-            "type": "modonomicon:item",
+            "type": "modonomicon:give_item",
             "stack": {
               "id": "minecraft:emerald"
             }
