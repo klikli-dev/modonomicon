@@ -56,6 +56,6 @@ public record FunctionEffect(Identifier functionId) implements ResearchEffect {
                 .withPermission(LevelBasedPermissionSet.GAMEMASTER)
                 .withSuppressedOutput();
         functions.execute(function.get(), source);
-        return false;
+        return true;
     }
 }

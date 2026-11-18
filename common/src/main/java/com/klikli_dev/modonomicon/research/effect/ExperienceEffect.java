@@ -49,6 +49,6 @@ public record ExperienceEffect(int amount, boolean levels) implements ResearchEf
         } else {
             player.giveExperiencePoints(this.amount);
         }
-        return false;
+        return true;
     }
 }

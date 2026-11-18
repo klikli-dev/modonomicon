@@ -59,6 +59,6 @@ public record GiveItemEffect(ItemStackTemplate stack, boolean requireAbsent) imp
     @Override
     public boolean apply(ServerPlayer player, ResearchEffectContext context) {
         player.getInventory().placeItemBackInInventory(this.stack.create());
-        return false;
+        return true;
     }
 }

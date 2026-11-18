@@ -21,7 +21,8 @@ public interface ResearchEffect {
     ResearchEffectType<?> type();
 
     /**
-     * Applies the effect to the player. Returns true if research state changed.
+     * Applies the effect to the player. Returns true if the effect changed something: research state, inventory or experience.
+     * Actions use the result, an action that changes nothing is not performed and costs nothing.
      * Availability is checked by the caller before, see {@link #isAvailable}.
      */
     boolean apply(ServerPlayer player, ResearchEffectContext context);
