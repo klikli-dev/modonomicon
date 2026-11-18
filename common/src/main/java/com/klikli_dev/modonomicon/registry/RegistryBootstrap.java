@@ -22,5 +22,6 @@ public final class RegistryBootstrap {
         DynamicTextMacroRegistry.bootstrap();
         TriggerTypeRegistry.bootstrap();
         ResearchEffectTypeRegistry.bootstrap();
+        ResearchCostTypeRegistry.bootstrap();
     }
 }

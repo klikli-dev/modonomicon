@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.client.BookModel;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.ModonomiconKeys;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
+import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchCostPresenterRegistry;
 import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchEffectPresenterRegistry;
 import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.TriggerRequirementPresenterRegistry;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
@@ -244,6 +245,7 @@ public class ModonomiconNeo {
             PageRendererRegistry.registerPageRenderers();
             TriggerRequirementPresenterRegistry.registerDefaults();
             ResearchEffectPresenterRegistry.registerDefaults();
+            ResearchCostPresenterRegistry.registerDefaults();
 
             NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post e) -> {
                 ClientTicks.endClientTick(Minecraft.getInstance());

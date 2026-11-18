@@ -178,10 +178,12 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Gui.REQUIREMENTS_COST_DURABILITY, "%s durability: %s");
         this.add(Gui.REQUIREMENTS_ACTION_RECORD, "Click to record: %s");
         this.add(Gui.REQUIREMENTS_ACTION_RECEIVE, "Click to receive %s");
+        this.add(Gui.REQUIREMENTS_ACTION_RECEIVE_AGAIN, "Click to receive another %s");
         this.add(Gui.REQUIREMENTS_ACTION_PERFORM, "Click to perform this action");
         this.add(Gui.REQUIREMENTS_ACTION_ALREADY_HELD, "You already have this.");
         this.add(Gui.REQUIREMENTS_CONSUMED_ON_COMPLETION, "Consumed on completion");
         this.add(Gui.REQUIREMENTS_COST_NOT_HELD, "Not held");
+        this.add(Gui.REQUIREMENTS_COST_SPECIAL, "Special cost");
         this.add(Gui.REQUIREMENTS_USE_ITEM, "Use %s");
         this.add(Gui.REQUIREMENTS_NOT_USED, "\u2718 Not used yet");
         this.add(Gui.REQUIREMENTS_STAGE_COMPLETE, "Complete");

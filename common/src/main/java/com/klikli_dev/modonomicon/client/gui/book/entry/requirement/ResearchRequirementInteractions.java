@@ -81,8 +81,9 @@ public final class ResearchRequirementInteractions {
         if (action.grantsFact()) {
             lines.add(Component.translatable(Gui.REQUIREMENTS_ACTION_RECORD, row.title()).copy().withStyle(ChatFormatting.DARK_AQUA));
         }
+        var actionContext = new ResearchActionContext(action, row.title());
         for (var effect : action.effects()) {
-            lines.add(ResearchEffectPresenterRegistry.get(effect.type().id()).line(effect).copy().withStyle(ChatFormatting.DARK_AQUA));
+            lines.add(ResearchEffectPresenterRegistry.get(effect.type().id()).line(effect, actionContext).copy().withStyle(ChatFormatting.DARK_AQUA));
         }
         lines.addAll(costLines(action.cost(), player));
         var reason = unavailableReason(action, player);
@@ -107,27 +108,21 @@ public final class ResearchRequirementInteractions {
     }
 
     /**
-     * "Costs:" followed by one line per cost entry. Entries the player cannot pay are red, others gray. Empty for free costs.
+     * "Costs:" followed by one line per cost entry, each described by its cost presenter. Entries the player cannot pay are red, others gray.
+     * Empty for free costs.
      */
     public static List<Component> costLines(ResearchCost cost, Player player) {
         var lines = new ArrayList<Component>();
         if (cost.isEmpty()) {
             return lines;
         }
-        var missing = cost.missing(player);
         lines.add(Component.translatable(Gui.REQUIREMENTS_COSTS).withStyle(ChatFormatting.GRAY));
-        for (var item : cost.items()) {
-            boolean lacking = missing.items().stream().anyMatch(item::sameEntry);
-            var color = lacking ? ChatFormatting.RED : ChatFormatting.GRAY;
-            lines.add(ResearchFeedback.describe(item).copy().withStyle(color));
-        }
-        if (cost.levels() > 0) {
-            var color = missing.levels() > 0 ? ChatFormatting.RED : ChatFormatting.GRAY;
-            lines.add(Component.translatable(Gui.REQUIREMENTS_COST_LEVELS, cost.levels()).withStyle(color));
+        for (var entry : cost.entries()) {
+            var color = entry.canPay(player) ? ChatFormatting.GRAY : ChatFormatting.RED;
+            lines.add(ResearchCostPresenterRegistry.get(entry.type().id()).line(entry).copy().withStyle(color));
         }
         return lines;
     }
-
     /**
      * Requests the completion of a manual stage if it is affordable locally. Otherwise plays the fail sound and sends nothing.
      * Starts the "Completing..." state, which ends when the stage changes or after a timeout.

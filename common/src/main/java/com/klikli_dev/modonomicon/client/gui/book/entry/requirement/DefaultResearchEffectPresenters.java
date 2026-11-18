@@ -35,9 +35,10 @@ final class DefaultResearchEffectPresenters {
             }
 
             @Override
-            public Component line(ResearchEffect effect) {
+            public Component line(ResearchEffect effect, ResearchActionContext context) {
                 var stack = ((GiveItemEffect) effect).stack().create();
-                return Component.translatable(Gui.REQUIREMENTS_ACTION_RECEIVE, stack.getHoverName());
+                var key = context.action().repeatable() ? Gui.REQUIREMENTS_ACTION_RECEIVE_AGAIN : Gui.REQUIREMENTS_ACTION_RECEIVE;
+                return Component.translatable(key, stack.getHoverName());
             }
 
             @Override

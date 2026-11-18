@@ -27,8 +27,9 @@ public interface ResearchEffectPresenter {
 
     /**
      * The tooltip line describing what performing an action with this effect does, e.g. "Click to receive Research Note".
+     * The action context tells e.g. whether the action is repeatable.
      */
-    default Component line(ResearchEffect effect) {
+    default Component line(ResearchEffect effect, ResearchActionContext context) {
         return Component.translatable(Gui.REQUIREMENTS_ACTION_PERFORM);
     }
 

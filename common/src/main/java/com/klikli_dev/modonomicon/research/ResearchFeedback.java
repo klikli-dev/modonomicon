@@ -7,13 +7,15 @@
 package com.klikli_dev.modonomicon.research;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
-import com.klikli_dev.modonomicon.research.data.ResearchCost;
+import com.klikli_dev.modonomicon.research.cost.ResearchCostEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+
+import java.util.List;
 
 /**
  * Tells a player the outcome of a research action or manual stage completion: a quiet sound and an action bar message.
@@ -28,9 +30,9 @@ public final class ResearchFeedback {
     }
 
     /**
-     * Lists the missing part of a cost. Falls back to {@link #invalid} if nothing is missing.
+     * Lists the entries of a cost the player cannot pay. Falls back to {@link #invalid} if nothing is missing.
      */
-    public static void missing(ServerPlayer player, ResearchCost missing) {
+    public static void missing(ServerPlayer player, List<ResearchCostEntry> missing) {
         if (missing.isEmpty()) {
             invalid(player);
             return;
@@ -38,7 +40,6 @@ public final class ResearchFeedback {
         player.sendOverlayMessage(Component.translatable(Gui.FEEDBACK_MISSING, describe(missing)));
         playSound(player, SoundEvents.VILLAGER_NO, 0.4F, 1.0F);
     }
-
     public static void unavailable(ServerPlayer player) {
         player.sendOverlayMessage(Component.translatable(Gui.FEEDBACK_UNAVAILABLE));
         playSound(player, SoundEvents.VILLAGER_NO, 0.4F, 1.0F);
@@ -50,37 +51,18 @@ public final class ResearchFeedback {
     }
 
     /**
-     * Describes a cost as a comma separated list, e.g. "1× Paper, 2 levels".
+     * Describes the entries of a cost as a comma separated list, e.g. "1x Paper, 2 levels".
      */
-    public static Component describe(ResearchCost cost) {
+    public static Component describe(List<ResearchCostEntry> entries) {
         MutableComponent result = Component.empty();
-        boolean first = true;
-        for (var item : cost.items()) {
-            if (!first) {
+        for (int i = 0; i < entries.size(); i++) {
+            if (i > 0) {
                 result.append(", ");
             }
-            result.append(describe(item));
-            first = false;
-        }
-        if (cost.levels() > 0) {
-            if (!first) {
-                result.append(", ");
-            }
-            result.append(Component.translatable(Gui.REQUIREMENTS_COST_LEVELS, cost.levels()));
+            result.append(entries.get(i).describe());
         }
         return result;
     }
-
-    /**
-     * Describes one cost entry, e.g. "2× Paper" or "1 durability: Shears".
-     */
-    public static Component describe(ResearchCost.ItemCost item) {
-        if (item.durability().isPresent()) {
-            return Component.translatable(Gui.REQUIREMENTS_COST_DURABILITY, item.durability().get(), item.displayName());
-        }
-        return Component.translatable(Gui.REQUIREMENTS_COST_ITEM, item.count(), item.displayName());
-    }
-
     /**
      * A quiet sound for learning something by using an item.
      */

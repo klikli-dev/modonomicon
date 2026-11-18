@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.client.gui.book.entry.requirement;
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.book.BookIcon;
+import com.klikli_dev.modonomicon.research.cost.ItemCostEntry;
 import com.klikli_dev.modonomicon.research.data.ResearchCategories;
 import com.klikli_dev.modonomicon.research.data.ResearchCategoryDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchCost;
@@ -320,41 +321,13 @@ public final class ResearchRequirementRows {
     }
 
     /**
-     * The cost of a manual stage as rows: one per item or durability entry and one for levels. Items show the held count
-     * as progress and are met once the player holds enough. Met on completed stages, where the cost was paid.
+     * The cost of a manual stage as rows, one per entry, each described by its cost presenter. Completed stages show the entries met,
+     * where the cost was paid.
      */
     private static void costRows(ResearchCost cost, boolean forceMet, RequirementContext context, Consumer<RequirementRow> out) {
-        var player = context.player();
-        var items = category(ResearchCategories.ITEMS, context);
         var consumed = List.<Component>of(Component.translatable(Gui.REQUIREMENTS_CONSUMED_ON_COMPLETION).withStyle(ChatFormatting.GOLD));
-        for (var item : cost.items()) {
-            var icons = List.of(RequirementIcon.of(item.iconStack()));
-            if (item.durability().isPresent()) {
-                boolean met = forceMet || item.heldDurability(player);
-                out.accept(RequirementRow.of(icons, Component.translatable(Gui.REQUIREMENTS_COST_DURABILITY, item.durability().get(), item.displayName()))
-                        .withCategory(items)
-                        .withDetails(consumed)
-                        .withMet(met)
-                        .withMissing(Component.translatable(Gui.REQUIREMENTS_COST_NOT_HELD)));
-            } else {
-                int target = item.count();
-                int held = forceMet ? target : Math.min(item.held(player), target);
-                out.accept(RequirementRow.of(icons, item.displayName())
-                        .withCategory(items)
-                        .withDetails(consumed)
-                        .withProgress(new RequirementRow.Progress(held, target))
-                        .withMet(held >= target));
-            }
-        }
-        if (cost.levels() > 0) {
-            int target = cost.levels();
-            int held = forceMet ? target : Math.min(player.experienceLevel, target);
-            out.accept(RequirementRow.of(List.of(RequirementIcon.of(new ItemStack(Items.EXPERIENCE_BOTTLE))),
-                            Component.translatable(Gui.REQUIREMENTS_COST_LEVELS, target))
-                    .withCategory(category(ResearchCategories.PROGRESS, context))
-                    .withDetails(consumed)
-                    .withProgress(new RequirementRow.Progress(held, target))
-                    .withMet(held >= target));
+        for (var entry : cost.entries()) {
+            out.accept(ResearchCostPresenterRegistry.get(entry.type().id()).row(entry, context, forceMet).withDetails(consumed));
         }
     }
 
@@ -363,9 +336,8 @@ public final class ResearchRequirementRows {
      */
     private static boolean consumedOnCompletion(Identifier factId, ResearchCost cost, RequirementContext context) {
         return context.hooksGranting(factId).stream().anyMatch(hook -> hook.triggerTarget() instanceof ResearchItemMatcher matcher
-                && cost.items().stream().anyMatch(item -> item.ingredient().items().anyMatch(holder -> matcher.matches(new ItemStack(holder, 1)))));
+                && cost.entries().stream().anyMatch(entry -> entry instanceof ItemCostEntry item && matcher.matches(item.item().displayStack())));
     }
-
     /**
      * Placeholder for references to definitions that are not known to the client.
      */

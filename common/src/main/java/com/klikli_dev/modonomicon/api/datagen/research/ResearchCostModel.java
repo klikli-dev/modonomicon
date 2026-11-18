@@ -6,29 +6,29 @@
 
 package com.klikli_dev.modonomicon.api.datagen.research;
 
+import com.klikli_dev.modonomicon.research.cost.DurabilityCostEntry;
+import com.klikli_dev.modonomicon.research.cost.ItemCostEntry;
+import com.klikli_dev.modonomicon.research.cost.LevelsCostEntry;
+import com.klikli_dev.modonomicon.research.cost.ResearchCostEntry;
 import com.klikli_dev.modonomicon.research.data.ResearchCost;
 import com.klikli_dev.modonomicon.research.item.ResearchItemMatcher;
-import net.minecraft.core.component.DataComponentPatch;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Authoring-time builder for a {@link ResearchCost}, e.g. the cost of a paid action or of a manual stage completion.
+ * Every call adds a typed entry, in call order.
  * <pre>{@code
- * ResearchCostModel.create().item(Items.PAPER).item(Items.INK_SAC).levels(2)
+ * ResearchCostModel.create().item(Items.PAPER).durability(Items.SHEARS, 1).levels(2)
  * }</pre>
  */
 public final class ResearchCostModel {
-    private final List<ResearchCost.ItemCost> items = new ArrayList<>();
-    private int levels;
+    private final List<ResearchCostEntry> entries = new ArrayList<>();
 
     private ResearchCostModel() {
     }
@@ -48,8 +48,7 @@ public final class ResearchCostModel {
      * Pays the given count of the item.
      */
     public ResearchCostModel item(ItemLike item, int count) {
-        this.items.add(new ResearchCost.ItemCost(Ingredient.of(item), count, Optional.empty()));
-        return this;
+        return this.item(ResearchItemMatcher.of(item), count);
     }
 
     /**
@@ -64,32 +63,7 @@ public final class ResearchCostModel {
      * Pays the given count of the items the matcher accepts: a stack template (its item, and components if any) or a tag.
      */
     public ResearchCostModel item(ResearchItemMatcher matcher, int count) {
-        this.items.add(matcher.value().map(
-                stack -> new ResearchCost.ItemCost(
-                        Ingredient.of(stack.item().value()),
-                        count,
-                        stack.components().isEmpty() ? Optional.<DataComponentPatch>empty() : Optional.of(stack.components())
-                ),
-                tag -> new ResearchCost.ItemCost(tagIngredient(tag), count, Optional.empty())
-        ));
-        return this;
-    }
-
-    /**
-     * Takes durability from one matching damageable stack, e.g. 1 durability of shears. The stack is damaged, not consumed.
-     * Any stack with remaining durability is enough, see {@code ResearchCost.ItemCost}.
-     */
-    public ResearchCostModel durability(ItemLike item, int durability) {
-        this.items.add(new ResearchCost.ItemCost(Ingredient.of(item), 1, Optional.empty(), Optional.of(durability)));
-        return this;
-    }
-
-    /**
-     * Takes durability from one matching damageable stack of the tag.
-     */
-    public ResearchCostModel durabilityTag(TagKey<Item> tag, int durability) {
-        this.items.add(new ResearchCost.ItemCost(tagIngredient(tag), 1, Optional.empty(), Optional.of(durability)));
-        return this;
+        return this.entry(new ItemCostEntry(matcher, count));
     }
 
     /**
@@ -100,28 +74,55 @@ public final class ResearchCostModel {
     }
 
     /**
-     * Pays experience levels.
+     * Takes durability from one matching damageable stack, e.g. 1 durability of shears. The stack is damaged, not consumed.
+     * Any stack with remaining durability is enough, see {@link DurabilityCostEntry}.
+     */
+    public ResearchCostModel durability(ItemLike item, int durability) {
+        return this.durability(ResearchItemMatcher.of(item), durability);
+    }
+
+    /**
+     * Takes durability from one matching damageable stack of the tag.
+     */
+    public ResearchCostModel durabilityTag(TagKey<Item> tag, int durability) {
+        return this.durability(ResearchItemMatcher.tag(tag), durability);
+    }
+
+    /**
+     * Takes durability from one damageable stack the matcher accepts.
+     */
+    public ResearchCostModel durability(ResearchItemMatcher matcher, int durability) {
+        return this.entry(new DurabilityCostEntry(matcher, durability));
+    }
+
+    /**
+     * Pays experience levels. Replaces levels set before, so the last call wins.
      */
     public ResearchCostModel levels(int levels) {
-        this.levels = levels;
+        this.entries.removeIf(entry -> entry instanceof LevelsCostEntry);
+        if (levels > 0) {
+            this.entries.add(new LevelsCostEntry(levels));
+        }
         return this;
     }
 
     /**
-     * Adds the items and levels of the other cost to this cost. Returns this model.
+     * Adds an entry of any cost type, e.g. one of a third-party type registered with {@code ResearchCostTypeRegistry.register}.
+     */
+    public ResearchCostModel entry(ResearchCostEntry entry) {
+        this.entries.add(entry);
+        return this;
+    }
+
+    /**
+     * Adds the entries of the other cost to this cost. Returns this model.
      */
     public ResearchCostModel merge(ResearchCostModel other) {
-        this.items.addAll(other.items);
-        this.levels += other.levels;
+        this.entries.addAll(other.entries);
         return this;
     }
 
     public ResearchCost toResearchCost() {
-        return new ResearchCost(List.copyOf(this.items), this.levels);
-    }
-
-    private static Ingredient tagIngredient(TagKey<Item> tag) {
-        return Ingredient.of(BuiltInRegistries.ITEM.get(tag).orElseThrow(
-                () -> new IllegalArgumentException("Unknown item tag " + tag.location())));
+        return new ResearchCost(List.copyOf(this.entries));
     }
 }

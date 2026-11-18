@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.client.gui.book.associated.AssociatedEntryTool
 import com.klikli_dev.modonomicon.client.gui.book.associated.AssociatedHoverTracker;
 import com.klikli_dev.modonomicon.client.gui.book.associated.AssociatedTooltipHelper;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
+import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchCostPresenterRegistry;
 import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchEffectPresenterRegistry;
 import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.TriggerRequirementPresenterRegistry;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
@@ -55,6 +56,7 @@ public class ModonomiconFabricClient implements ClientModInitializer {
         PageRendererRegistry.registerPageRenderers();
         TriggerRequirementPresenterRegistry.registerDefaults();
         ResearchEffectPresenterRegistry.registerDefaults();
+        ResearchCostPresenterRegistry.registerDefaults();
 
         //build books and render markdown when client receives recipes
         //done in MixinClientPacketListener, because we have no event in Fabric

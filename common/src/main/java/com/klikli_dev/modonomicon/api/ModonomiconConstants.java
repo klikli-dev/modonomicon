@@ -80,8 +80,10 @@ public class ModonomiconConstants {
             public static final String REQUIREMENTS_COST_LEVELS = PREFIX + "requirements.cost.levels";
             public static final String REQUIREMENTS_COST_DURABILITY = PREFIX + "requirements.cost.durability";
             public static final String REQUIREMENTS_COST_NOT_HELD = PREFIX + "requirements.cost.not_held";
+            public static final String REQUIREMENTS_COST_SPECIAL = PREFIX + "requirements.cost.special";
             public static final String REQUIREMENTS_ACTION_RECORD = PREFIX + "requirements.action.record";
             public static final String REQUIREMENTS_ACTION_RECEIVE = PREFIX + "requirements.action.receive";
+            public static final String REQUIREMENTS_ACTION_RECEIVE_AGAIN = PREFIX + "requirements.action.receive_again";
             public static final String REQUIREMENTS_ACTION_PERFORM = PREFIX + "requirements.action.perform";
             public static final String REQUIREMENTS_ACTION_ALREADY_HELD = PREFIX + "requirements.action.already_held";
             public static final String REQUIREMENTS_CONSUMED_ON_COMPLETION = PREFIX + "requirements.consumed_on_completion";
