@@ -203,9 +203,14 @@ public final class ResearchIngressHelper {
 
         /**
          * Returns a copy of this ingress that consumes the given number of items of the used stack when the use changes
-         * research state. A use that changes nothing consumes nothing.
+         * research state. A use that changes nothing consumes nothing. The count must not be negative.
+         *
+         * @throws IllegalArgumentException if consume is negative
          */
         public ItemUsedIngress consume(int consume) {
+            if (consume < 0) {
+                throw new IllegalArgumentException("consume must not be negative, was " + consume);
+            }
             return new ItemUsedIngress(this.research, this.target, consume);
         }
 

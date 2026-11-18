@@ -125,7 +125,7 @@ public record ResearchHookDefinition<TTarget>(
                 decodeOptional(Identifier.CODEC, ops, input, FACT_ID, null).flatMap(factId ->
                         decodeOptional(Identifier.CODEC, ops, input, VALUE_ID, null).flatMap(valueId ->
                                 decodeOptional(Codec.INT, ops, input, INCREMENT, 1).flatMap(increment ->
-                                        decodeOptional(Codec.INT, ops, input, CONSUME, 0).map(consume ->
+                                        decodeOptional(Codec.intRange(0, Integer.MAX_VALUE), ops, input, CONSUME, 0).map(consume ->
                                         (ResearchHookDefinition<?>) new ResearchHookDefinition<>(
                                                 id,
                                                 triggerType,
