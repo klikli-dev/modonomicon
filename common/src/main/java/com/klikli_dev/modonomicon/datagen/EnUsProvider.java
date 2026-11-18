@@ -144,6 +144,8 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Gui.REQUIREMENTS_COST_ITEM, "%s\u00d7 %s");
         this.add(Gui.REQUIREMENTS_COST_LEVELS, "%s levels");
         this.add(Gui.REQUIREMENTS_COST_DURABILITY, "%s durability: %s");
+        this.add(Gui.REQUIREMENTS_COSTS, "Costs:");
+        this.add(Gui.REQUIREMENTS_COST_NOT_HELD, "Not held");
         this.add(Gui.FEEDBACK_MISSING, "Missing: %s");
         this.add(Gui.FEEDBACK_UNAVAILABLE, "You cannot do that right now.");
         this.add(Gui.FEEDBACK_INVALID, "Nothing to do here.");
