@@ -37,7 +37,6 @@ public final class BookHierarchyResearchCompiler {
     public Optional<CompiledBookResearch> compile(BookModel book, GeneratedBookResearchStore store) {
         var research = new ResearchDataBuilder(book.getId().getNamespace());
         var ingress = new ResearchIngressHelper(research);
-        var parentFacts = new HashMap<Identifier, ResearchFactRef>();
         var generatedEntries = new ArrayList<BookEntryModel>();
         var generatedNodes = new HashMap<Identifier, ResearchNodeRef>();
         var generatedFacts = new HashMap<Identifier, ResearchFactRef>();
@@ -108,7 +107,7 @@ public final class BookHierarchyResearchCompiler {
                     var requiredFacts = new ArrayList<ResearchFactRef>();
                     for (var parent : entry.getParents()) {
                         var parentId = parent.getEntryId();
-                        var fact = parentFacts.computeIfAbsent(parentId, id -> ingress.onEntryViewedOnce(id).declareFact(hierarchyFactPath(book, id)));
+                        var fact = generatedFacts.computeIfAbsent(parentId, id -> ingress.onEntryViewedOnce(id).declareFact(GeneratedResearchPaths.entryViewedOnceFact(book.getId().getPath(), id)));
                         requiredFacts.add(fact);
                     }
                     ResearchNodeRef node = research.node(hierarchyNodePath(book, entry), requiredFacts.toArray(ResearchFactRef[]::new));
@@ -152,9 +151,8 @@ public final class BookHierarchyResearchCompiler {
         return this.compile(book, null);
     }
 
-    private String bundleId(BookModel book) { return "generated/" + book.getId().getPath(); }
-    private String hierarchyFactPath(BookModel book, Identifier entryId) { return bundleId(book) + "/facts/entry_viewed_once/" + entryId.getPath().replace('/', '_'); }
-    private String hierarchyNodePath(BookModel book, BookEntryModel entry) { return bundleId(book) + "/nodes/entry_viewed_once/" + entry.getId().getPath().replace('/', '_'); }
+    private String bundleId(BookModel book) { return GeneratedResearchPaths.bundle(book.getId().getPath()); }
+    private String hierarchyNodePath(BookModel book, BookEntryModel entry) { return GeneratedResearchPaths.entryHierarchyNode(book.getId().getPath(), entry.getId()); }
 
     public record CompiledBookResearch(Identifier bundleId, ResearchDataBuilder research) {}
 }

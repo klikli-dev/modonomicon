@@ -6,10 +6,16 @@
 
 package com.klikli_dev.modonomicon.api.datagen.research;
 
+import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.data.TriggerType;
+import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
 import com.klikli_dev.modonomicon.research.hook.NoTriggerTarget;
+import com.klikli_dev.modonomicon.research.item.ResearchItemMatcher;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.level.ItemLike;
 
 /**
  * Fluent helper for authoring research ingress.
@@ -32,7 +38,7 @@ public final class ResearchIngressHelper {
      * Starts authoring ingress from the {@code entry_viewed_once} trigger family.
      *
      * @param entryId the full entry resource location, e.g. {@code modonomicon:features/condition_root}.
-     *                This must match the ID passed to {@link com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel#create(net.minecraft.resources.Identifier, String)}.
+     *                This must match the ID passed to {@link BookEntryModel#create(Identifier, String)}.
      *                Typically constructed as {@code this.modLoc(CategoryId.ID + "/" + EntryId.ID)},
      *                using the category provider's {@code ID} and entry provider's {@code ID} constants.
      */
@@ -48,10 +54,97 @@ public final class ResearchIngressHelper {
     }
 
     /**
-     * Starts authoring ingress from the {@code item_crafted} trigger family.
+     * Starts authoring ingress from the {@code item_crafted} trigger family for an exact item template.
      */
     public ItemCraftedIngress onItemCrafted(ItemStackTemplate targetItem) {
+        return new ItemCraftedIngress(this.research, ResearchItemMatcher.of(targetItem));
+    }
+
+    /**
+     * Starts authoring ingress from the {@code item_crafted} trigger family for an item or item-like.
+     */
+    public ItemCraftedIngress onItemCrafted(ItemLike targetItem) {
+        return new ItemCraftedIngress(this.research, ResearchItemMatcher.of(targetItem));
+    }
+
+    /**
+     * Starts authoring ingress from the {@code item_crafted} trigger family for any item in the given tag.
+     */
+    public ItemCraftedIngress onItemCrafted(TagKey<Item> targetTag) {
+        return new ItemCraftedIngress(this.research, ResearchItemMatcher.tag(targetTag));
+    }
+
+    /**
+     * Starts authoring ingress from the {@code item_crafted} trigger family for the given matcher.
+     */
+    public ItemCraftedIngress onItemCrafted(ResearchItemMatcher targetItem) {
         return new ItemCraftedIngress(this.research, targetItem);
+    }
+
+    /**
+     * Starts authoring ingress from the {@code item_acquired} trigger family for an exact item template.
+     */
+    public ItemAcquiredIngress onItemAcquired(ItemStackTemplate targetItem) {
+        return new ItemAcquiredIngress(this.research, ResearchItemMatcher.of(targetItem));
+    }
+
+    /**
+     * Starts authoring ingress from the {@code item_acquired} trigger family for an item or item-like.
+     */
+    public ItemAcquiredIngress onItemAcquired(ItemLike targetItem) {
+        return new ItemAcquiredIngress(this.research, ResearchItemMatcher.of(targetItem));
+    }
+
+    /**
+     * Starts authoring ingress from the {@code item_acquired} trigger family for any item in the given tag.
+     */
+    public ItemAcquiredIngress onItemAcquired(TagKey<Item> targetTag) {
+        return new ItemAcquiredIngress(this.research, ResearchItemMatcher.tag(targetTag));
+    }
+
+    /**
+     * Starts authoring ingress from the {@code item_acquired} trigger family for the given matcher.
+     */
+    public ItemAcquiredIngress onItemAcquired(ResearchItemMatcher targetItem) {
+        return new ItemAcquiredIngress(this.research, targetItem);
+    }
+
+    /**
+     * Ingress step for {@code item_crafted}.
+     */
+    public static final class ItemCraftedIngress extends ResearchIngress<ResearchItemMatcher> {
+        /**
+         * Creates an item-crafted ingress step bound to one specific item matcher.
+         */
+        public ItemCraftedIngress(ResearchDataBuilder research, ResearchItemMatcher targetItem) {
+            super(research, TriggerTypeRegistry.ITEM_CRAFTED, targetItem);
+        }
+
+        /**
+         * Creates an item-crafted ingress step bound to one exact item template.
+         */
+        public ItemCraftedIngress(ResearchDataBuilder research, ItemStackTemplate targetItem) {
+            this(research, ResearchItemMatcher.of(targetItem));
+        }
+    }
+
+    /**
+     * Ingress step for {@code item_acquired}.
+     */
+    public static final class ItemAcquiredIngress extends ResearchIngress<ResearchItemMatcher> {
+        /**
+         * Creates an item-acquired ingress step bound to one specific item matcher.
+         */
+        public ItemAcquiredIngress(ResearchDataBuilder research, ResearchItemMatcher targetItem) {
+            super(research, TriggerTypeRegistry.ITEM_ACQUIRED, targetItem);
+        }
+
+        /**
+         * Creates an item-acquired ingress step bound to one exact item template.
+         */
+        public ItemAcquiredIngress(ResearchDataBuilder research, ItemStackTemplate targetItem) {
+            this(research, ResearchItemMatcher.of(targetItem));
+        }
     }
 
     /**
@@ -70,272 +163,38 @@ public final class ResearchIngressHelper {
     }
 
     /**
-     * Starts authoring ingress from the {@code item_acquired} trigger family.
+     * Ingress step for {@code entry_viewed_once}.
      */
-    public ItemAcquiredIngress onItemAcquired(ItemStackTemplate targetItem) {
-        return new ItemAcquiredIngress(this.research, targetItem);
-    }
-
-    /**
-     * Trigger-specific ingress authoring step for {@code entry_viewed_once}.
-     */
-    public static final class EntryViewedOnceIngress {
-        private final ResearchDataBuilder research;
-        private final Identifier entryId;
-
+    public static final class EntryViewedOnceIngress extends ResearchIngress<Identifier> {
         /**
          * Creates an entry-viewed ingress step bound to one specific book entry id.
          */
         public EntryViewedOnceIngress(ResearchDataBuilder research, Identifier entryId) {
-            this.research = research;
-            this.entryId = entryId;
-        }
-
-        /**
-         * Declares a new research fact and authors a corresponding ingress hook that grants it.
-         *
-         * The declared fact uses the provided fact path. The generated hook id is derived by
-         * appending {@code _hook} to that fact path.
-         */
-        public ResearchFactRef declareFact(String factPath) {
-            var factRef = this.research.fact(factPath);
-            this.grantFact(factPath + "_hook", factRef);
-            return factRef;
-        }
-
-        /**
-         * Authors an explicit ingress hook that grants the given already-declared fact.
-         */
-        public void grantFact(String hookPath, ResearchFactRef factRef) {
-            this.research.grantFactOnEntryViewedOnce(hookPath, this.entryId, factRef);
-        }
-
-        /**
-         * Declares a new research value and authors a corresponding ingress hook that increments it.
-         *
-         * The declared value uses the provided value path. The generated hook id is derived by
-         * appending {@code _hook} to that value path.
-         */
-        public ResearchValueRef declareValue(String valuePath, int increment) {
-            var valueRef = this.research.value(valuePath);
-            this.incrementValue(valuePath + "_hook", valueRef, increment);
-            return valueRef;
-        }
-
-        /**
-         * Authors an explicit ingress hook that increments the given already-declared value.
-         */
-        public void incrementValue(String hookPath, ResearchValueRef valueRef, int increment) {
-            this.research.incrementValueOnEntryViewedOnce(hookPath, this.entryId, valueRef, increment);
+            super(research, TriggerTypeRegistry.ENTRY_VIEWED_ONCE, entryId);
         }
     }
 
     /**
-     * Trigger-specific ingress authoring step for advancement completion.
+     * Ingress step for advancement completion.
      */
-    public static final class AdvancementEarnedIngress {
-        private final ResearchDataBuilder research;
-        private final Identifier advancementId;
-
+    public static final class AdvancementEarnedIngress extends ResearchIngress<Identifier> {
         /**
          * Creates an advancement-earned ingress step bound to one specific advancement id.
          */
         public AdvancementEarnedIngress(ResearchDataBuilder research, Identifier advancementId) {
-            this.research = research;
-            this.advancementId = advancementId;
-        }
-
-        /**
-         * Declares a new research fact and authors a corresponding ingress hook that grants it.
-         *
-         * The declared fact uses the provided fact path. The generated hook id is derived by
-         * appending {@code _hook} to that fact path.
-         */
-        public ResearchFactRef declareFact(String factPath) {
-            var factRef = this.research.fact(factPath);
-            this.grantFact(factPath + "_hook", factRef);
-            return factRef;
-        }
-
-        /**
-         * Authors an explicit ingress hook that grants the given already-declared fact.
-         */
-        public void grantFact(String hookPath, ResearchFactRef factRef) {
-            this.research.grantFactOnAdvancementEarned(hookPath, this.advancementId, factRef);
-        }
-
-        /**
-         * Declares a new research value and authors a corresponding ingress hook that increments it.
-         */
-        public ResearchValueRef declareValue(String valuePath, int increment) {
-            var valueRef = this.research.value(valuePath);
-            this.incrementValue(valuePath + "_hook", valueRef, increment);
-            return valueRef;
-        }
-
-        /**
-         * Authors an explicit ingress hook that increments the given already-declared value.
-         */
-        public void incrementValue(String hookPath, ResearchValueRef valueRef, int increment) {
-            this.research.incrementValueOnAdvancementEarned(hookPath, this.advancementId, valueRef, increment);
+            super(research, TriggerTypeRegistry.ADVANCEMENT, advancementId);
         }
     }
 
     /**
-     * Trigger-specific ingress authoring step for {@code item_crafted}.
+     * Generic ingress step for custom trigger types.
      */
-    public static final class ItemCraftedIngress {
-        private final ResearchDataBuilder research;
-        private final ItemStackTemplate targetItem;
-
-        /**
-         * Creates an item-crafted ingress step bound to one specific item.
-         */
-        public ItemCraftedIngress(ResearchDataBuilder research, ItemStackTemplate targetItem) {
-            this.research = research;
-            this.targetItem = targetItem;
-        }
-
-        /**
-         * Declares a new research fact and authors a corresponding ingress hook that grants it.
-         *
-         * The declared fact uses the provided fact path. The generated hook id is derived by
-         * appending {@code _hook} to that fact path.
-         */
-        public ResearchFactRef declareFact(String factPath) {
-            var factRef = this.research.fact(factPath);
-            this.grantFact(factPath + "_hook", factRef);
-            return factRef;
-        }
-
-        /**
-         * Authors an explicit ingress hook that grants the given already-declared fact.
-         */
-        public void grantFact(String hookPath, ResearchFactRef factRef) {
-            this.research.grantFactOnItemCrafted(hookPath, this.targetItem, factRef);
-        }
-
-        /**
-         * Declares a new research value and authors a corresponding ingress hook that increments it.
-         *
-         * The declared value uses the provided value path. The generated hook id is derived by
-         * appending {@code _hook} to that value path.
-         */
-        public ResearchValueRef declareValue(String valuePath, int increment) {
-            var valueRef = this.research.value(valuePath);
-            this.incrementValue(valuePath + "_hook", valueRef, increment);
-            return valueRef;
-        }
-
-        /**
-         * Authors an explicit ingress hook that increments the given already-declared value.
-         */
-        public void incrementValue(String hookPath, ResearchValueRef valueRef, int increment) {
-            this.research.incrementValueOnItemCrafted(hookPath, this.targetItem, valueRef, increment);
-        }
-    }
-
-    /**
-     * Trigger-specific ingress authoring step for {@code item_acquired}.
-     */
-    public static final class ItemAcquiredIngress {
-        private final ResearchDataBuilder research;
-        private final ItemStackTemplate targetItem;
-
-        /**
-         * Creates an item-acquired ingress step bound to one specific item.
-         */
-        public ItemAcquiredIngress(ResearchDataBuilder research, ItemStackTemplate targetItem) {
-            this.research = research;
-            this.targetItem = targetItem;
-        }
-
-        /**
-         * Declares a new research fact and authors a corresponding ingress hook that grants it.
-         *
-         * The declared fact uses the provided fact path. The generated hook id is derived by
-         * appending {@code _hook} to that fact path.
-         */
-        public ResearchFactRef declareFact(String factPath) {
-            var factRef = this.research.fact(factPath);
-            this.grantFact(factPath + "_hook", factRef);
-            return factRef;
-        }
-
-        /**
-         * Authors an explicit ingress hook that grants the given already-declared fact.
-         */
-        public void grantFact(String hookPath, ResearchFactRef factRef) {
-            this.research.grantFactOnItemAcquired(hookPath, this.targetItem, factRef);
-        }
-
-        /**
-         * Declares a new research value and authors a corresponding ingress hook that increments it.
-         *
-         * The declared value uses the provided value path. The generated hook id is derived by
-         * appending {@code _hook} to that value path.
-         */
-        public ResearchValueRef declareValue(String valuePath, int increment) {
-            var valueRef = this.research.value(valuePath);
-            this.incrementValue(valuePath + "_hook", valueRef, increment);
-            return valueRef;
-        }
-
-        /**
-         * Authors an explicit ingress hook that increments the given already-declared value.
-         */
-        public void incrementValue(String hookPath, ResearchValueRef valueRef, int increment) {
-            this.research.incrementValueOnItemAcquired(hookPath, this.targetItem, valueRef, increment);
-        }
-    }
-
-    /**
-     * Generic trigger-specific ingress authoring step for custom trigger types.
-     */
-    public static final class GenericIngress<TTarget> {
-        private final ResearchDataBuilder research;
-        private final TriggerType<TTarget, ?> triggerType;
-        private final TTarget target;
-
+    public static final class GenericIngress<TTarget> extends ResearchIngress<TTarget> {
         /**
          * Creates a generic ingress step bound to one specific trigger type and target.
          */
         public GenericIngress(ResearchDataBuilder research, TriggerType<TTarget, ?> triggerType, TTarget target) {
-            this.research = research;
-            this.triggerType = triggerType;
-            this.target = target;
-        }
-
-        /**
-         * Declares a new research fact and authors a corresponding ingress hook that grants it.
-         */
-        public ResearchFactRef declareFact(String factPath) {
-            var factRef = this.research.fact(factPath);
-            this.grantFact(factPath + "_hook", factRef);
-            return factRef;
-        }
-
-        /**
-         * Authors an explicit ingress hook that grants the given already-declared fact.
-         */
-        public void grantFact(String hookPath, ResearchFactRef factRef) {
-            this.research.grantFact(hookPath, this.triggerType, this.target, factRef);
-        }
-
-        /**
-         * Declares a new research value and authors a corresponding ingress hook that increments it.
-         */
-        public ResearchValueRef declareValue(String valuePath, int increment) {
-            var valueRef = this.research.value(valuePath);
-            this.incrementValue(valuePath + "_hook", valueRef, increment);
-            return valueRef;
-        }
-
-        /**
-         * Authors an explicit ingress hook that increments the given already-declared value.
-         */
-        public void incrementValue(String hookPath, ResearchValueRef valueRef, int increment) {
-            this.research.incrementValue(hookPath, this.triggerType, this.target, valueRef, increment);
+            super(research, triggerType, target);
         }
     }
 }

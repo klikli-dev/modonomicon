@@ -12,6 +12,7 @@ import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -69,11 +70,14 @@ public record ResearchData(
 
         var contextKey = handler.indexKey(context);
         if (contextKey != null) {
+            //Hooks without a target index key (e.g. item tags) cannot be pre-filtered and are checked directly.
             return allHooks.stream()
                     .filter(h -> {
                         var targetKey = handler.indexKey(h.triggerTarget());
-                        return targetKey != null && targetKey.equals(contextKey)
-                                && handler.matches(h.triggerTarget(), context);
+                        if (targetKey != null && !targetKey.equals(contextKey)) {
+                            return false;
+                        }
+                        return handler.matches(h.triggerTarget(), context);
                     })
                     .toList();
         }
@@ -90,6 +94,18 @@ public record ResearchData(
         @SuppressWarnings("unchecked")
         List<ResearchHookDefinition<TTarget>> result = (List<ResearchHookDefinition<TTarget>>) (List) this.hooksByType.getOrDefault(type, List.of());
         return result;
+    }
+
+    /**
+     * Returns the ids of all known graphs, i.e. every graph that contributes at least one fact, node or value.
+     * A graph does not need a {@code nodes.json} to be known.
+     */
+    public Set<Identifier> graphIds() {
+        var graphIds = new HashSet<Identifier>();
+        graphIds.addAll(this.graphFactIds.keySet());
+        graphIds.addAll(this.graphNodeIds.keySet());
+        graphIds.addAll(this.graphValueIds.keySet());
+        return Set.copyOf(graphIds);
     }
 
     public static ResearchData validate(

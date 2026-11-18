@@ -130,7 +130,11 @@ public abstract class ResearchProviderBase {
 
     /**
      * Declares a research node with stages and stage dependencies.
+     *
+     * @deprecated use {@link #nodeBuilder(ResearchNodeRef)} which covers stages, stage dependencies, values and toast.
      */
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     protected ResearchNodeRef node(
             ResearchNodeRef ref,
             List<ResearchFactRef> requiredFacts,
@@ -190,9 +194,9 @@ public abstract class ResearchProviderBase {
     /**
      * Returns the description id for a research node, suitable for use as a translation key.
      * <p>
-     * The resulting key follows the pattern {@code block.<namespace>.<path>.description}, e.g.
-     * {@code block.mymod.demo/crafting_stick.description}. Use this to add a human-readable name
-     * for the node that will appear in condition tooltips:
+     * The resulting key follows the pattern {@code research_node.<namespace>.<path>}, where {@code /} in the
+     * path is replaced by {@code .}, e.g. {@code research_node.mymod.demo.crafting_stick}. Use this to add a
+     * human-readable name for the node that will appear in condition tooltips:
      * <pre>{@code
      * this.add(this.researchNodeDescriptionId(myNode), "Crafting Stick");
      * }</pre>
@@ -211,8 +215,9 @@ public abstract class ResearchProviderBase {
     /**
      * Returns the description id for a research stage, suitable for use as a translation key.
      * <p>
-     * The resulting key follows the pattern {@code block.<namespace>.<path>.description}. Use this
-     * to add a human-readable name for the stage that will appear in condition tooltips:
+     * The resulting key follows the pattern {@code research_stage.<namespace>.<path>}, where {@code /} in the
+     * path is replaced by {@code .}. Use this to add a human-readable name for the stage that will appear in
+     * condition tooltips:
      * <pre>{@code
      * this.add(this.researchStageDescriptionId(myStage), "First Planks Crafted");
      * }</pre>
