@@ -132,6 +132,13 @@ public abstract class BookPage {
      * call after loading the book jsons to finalize.
      */
     public void build(Level level, BookContentEntry parentEntry, int pageNum) {
+        this.attach(parentEntry, pageNum);
+    }
+
+    /**
+     * Binds the page to its entry and number, without loading anything. Used for pages that only exist on the client.
+     */
+    public void attach(BookContentEntry parentEntry, int pageNum) {
         this.parentEntry = parentEntry;
         this.pageNumber = pageNum;
         this.book = this.parentEntry.getBook();
