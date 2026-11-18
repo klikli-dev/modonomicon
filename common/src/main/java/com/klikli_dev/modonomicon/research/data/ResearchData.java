@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  * @param stageIds set of all known stage ids
  * @param nodeRules node activation rules (facts + values + stage dependencies)
  * @param nodeStageRules stage advancement rules per node
- * @param hooksByType hooks indexed by trigger type
+ * @param hookIndexesByType hook indices per trigger type, see {@link ResearchHookIndex}
  * @param graphFactIds facts grouped by graph id
  * @param graphNodeIds nodes grouped by graph id
  * @param graphValueIds values grouped by graph id
@@ -37,6 +37,9 @@ import java.util.stream.Collectors;
  * @param nodeToasts toast definitions indexed by node id
  * @param stageToasts toast definitions indexed by stage id
  * @param stageLocations maps stage id to its owning node and index for fast lookup
+ * @param stageRulesByLocation stage advancement rule per node and stage index
+ * @param stageIdsByLocation stage id per node and stage index, the reverse of stageLocations
+ * @param stageCountsByNode number of stages per node id
  */
 public record ResearchData(
         Set<Identifier> factIds,
@@ -45,7 +48,7 @@ public record ResearchData(
         Set<Identifier> stageIds,
         List<NodeRule> nodeRules,
         List<NodeStageRule> nodeStageRules,
-        Map<TriggerType<?, ?>, List<ResearchHookDefinition<?>>> hooksByType,
+        Map<TriggerType<?, ?>, ResearchHookIndex<?>> hookIndexesByType,
         Map<Identifier, Set<Identifier>> graphFactIds,
         Map<Identifier, Set<Identifier>> graphNodeIds,
         Map<Identifier, Set<Identifier>> graphValueIds,
@@ -53,36 +56,24 @@ public record ResearchData(
         Map<Identifier, ResearchToastDefinition> valueToasts,
         Map<Identifier, ResearchToastDefinition> nodeToasts,
         Map<Identifier, ResearchToastDefinition> stageToasts,
-        Map<Identifier, StageLocation> stageLocations
+        Map<Identifier, StageLocation> stageLocations,
+        Map<StageLocation, NodeStageRule> stageRulesByLocation,
+        Map<StageLocation, Identifier> stageIdsByLocation,
+        Map<Identifier, Integer> stageCountsByNode
 ) {
 
     /**
      * Returns hooks for a specific trigger type that match the given context.
-     * Uses the handler's indexKey for fast-path lookup when available.
+     * Uses the handler's indexKey to only check hooks that target the context, see {@link ResearchHookIndex}.
      */
     public <TTarget, TContext extends TriggerContext> List<ResearchHookDefinition<TTarget>> hooksFor(
             TriggerType<TTarget, TContext> type,
             TContext context
     ) {
-        @SuppressWarnings("unchecked")
-        List<ResearchHookDefinition<TTarget>> allHooks = (List<ResearchHookDefinition<TTarget>>) (List) this.hooksByType.getOrDefault(type, List.of());
+        var index = this.hookIndex(type);
         var handler = type.handler();
-
-        var contextKey = handler.indexKey(context);
-        if (contextKey != null) {
-            //Hooks without a target index key (e.g. item tags) cannot be pre-filtered and are checked directly.
-            return allHooks.stream()
-                    .filter(h -> {
-                        var targetKey = handler.indexKey(h.triggerTarget());
-                        if (targetKey != null && !targetKey.equals(contextKey)) {
-                            return false;
-                        }
-                        return handler.matches(h.triggerTarget(), context);
-                    })
-                    .toList();
-        }
-
-        return allHooks.stream()
+        var candidates = index.candidatesFor(handler.indexKey(context));
+        return candidates.stream()
                 .filter(h -> handler.matches(h.triggerTarget(), context))
                 .toList();
     }
@@ -91,9 +82,19 @@ public record ResearchData(
      * Returns all hooks for a specific trigger type.
      */
     public <TTarget> List<ResearchHookDefinition<TTarget>> hooksForType(TriggerType<TTarget, ?> type) {
-        @SuppressWarnings("unchecked")
-        List<ResearchHookDefinition<TTarget>> result = (List<ResearchHookDefinition<TTarget>>) (List) this.hooksByType.getOrDefault(type, List.of());
-        return result;
+        return this.hookIndex(type).all();
+    }
+
+    /**
+     * Returns the number of stages of the given node, 0 for unknown nodes.
+     */
+    public int stageCount(Identifier nodeId) {
+        return this.stageCountsByNode.getOrDefault(nodeId, 0);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <TTarget> ResearchHookIndex<TTarget> hookIndex(TriggerType<TTarget, ?> type) {
+        return (ResearchHookIndex<TTarget>) this.hookIndexesByType.getOrDefault(type, ResearchHookIndex.empty());
     }
 
     /**
@@ -210,11 +211,26 @@ public record ResearchData(
             ));
         }
 
-        // Group all hooks by trigger type
+        // Group all hooks by trigger type and index them
+        Map<TriggerType<?, ?>, ResearchHookIndex<?>> hookIndexesByType = new HashMap<>();
         Map<TriggerType<?, ?>, List<ResearchHookDefinition<?>>> grouped = new HashMap<>();
         for (var hook : hooks) {
             grouped.computeIfAbsent(hook.triggerType(), k -> new ArrayList<>())
                     .add(hook);
+        }
+        for (var entry : grouped.entrySet()) {
+            hookIndexesByType.put(entry.getKey(), ResearchHookIndex.of(entry.getKey(), entry.getValue()));
+        }
+
+        var stageRulesByLocation = new HashMap<StageLocation, NodeStageRule>();
+        for (var rule : nodeStageRules) {
+            stageRulesByLocation.put(new StageLocation(rule.nodeId(), rule.stageIndex()), rule);
+        }
+        var stageIdsByLocation = new HashMap<StageLocation, Identifier>();
+        stageLocations.forEach((stageId, location) -> stageIdsByLocation.put(location, stageId));
+        var stageCountsByNode = new HashMap<Identifier, Integer>();
+        for (var rule : nodeStageRules) {
+            stageCountsByNode.merge(rule.nodeId(), 1, Integer::sum);
         }
 
         // Build toast lookup maps
@@ -235,7 +251,7 @@ public record ResearchData(
                 Set.copyOf(stageIds),
                 nodeRules,
                 nodeStageRules,
-                grouped,
+                Map.copyOf(hookIndexesByType),
                 graphFactIds,
                 graphNodeIds,
                 graphValueIds,
@@ -243,7 +259,10 @@ public record ResearchData(
                 Map.copyOf(valueToasts),
                 Map.copyOf(nodeToasts),
                 Map.copyOf(stageToasts),
-                Map.copyOf(stageLocations)
+                Map.copyOf(stageLocations),
+                Map.copyOf(stageRulesByLocation),
+                Map.copyOf(stageIdsByLocation),
+                Map.copyOf(stageCountsByNode)
         );
     }
 

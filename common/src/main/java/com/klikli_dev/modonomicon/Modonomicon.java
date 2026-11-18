@@ -7,9 +7,11 @@
 package com.klikli_dev.modonomicon;
 
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
+import com.klikli_dev.modonomicon.bookstate.BookVisibilityResearchListener;
 import com.klikli_dev.modonomicon.registry.DataComponentRegistry;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
 import com.klikli_dev.modonomicon.registry.SoundRegistry;
+import com.klikli_dev.modonomicon.research.ResearchServices;
 import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,7 @@ public class Modonomicon {
         ItemRegistry.load();
         DataComponentRegistry.load();
         SoundRegistry.load();
+        ResearchServices.hooks().addStateChangeListener(BookVisibilityResearchListener.INSTANCE);
     }
 
     public static Identifier loc(String path) {

@@ -20,16 +20,13 @@ import java.util.List;
 
 public class ItemAcquiredTriggerHandler implements TriggerHandler<ResearchItemMatcher, ItemAcquiredContext> {
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public List<ResearchHookDefinition<ResearchItemMatcher>> resolve(
             TriggerType<ResearchItemMatcher, ItemAcquiredContext> type,
             ServerPlayer player,
             ItemAcquiredContext context
     ) {
-        return (List) ResearchDataManager.get().hooksForType(type).stream()
-                .filter(h -> matches((ResearchItemMatcher) h.triggerTarget(), context))
-                .toList();
+        return ResearchDataManager.get().hooksFor(type, context);
     }
 
     @Override
