@@ -72,19 +72,37 @@ public final class ResearchHookIndex<TTarget> {
             }
         }
 
-        var hooksByKey = new HashMap<Object, List<ResearchHookDefinition<TTarget>>>();
-        for (var key : targetKeys) {
-            if (key == null || hooksByKey.containsKey(key)) {
-                continue;
+        // Collect, per key, the positions of the hooks with that key in one pass.
+        var indicesByKey = new HashMap<Object, List<Integer>>();
+        for (int i = 0; i < targetKeys.size(); i++) {
+            var key = targetKeys.get(i);
+            if (key != null) {
+                indicesByKey.computeIfAbsent(key, k -> new ArrayList<>()).add(i);
             }
-            List<ResearchHookDefinition<TTarget>> candidates = new ArrayList<>();
-            for (int i = 0; i < allHooks.size(); i++) {
-                var targetKey = targetKeys.get(i);
-                if (targetKey == null || targetKey.equals(key)) {
-                    candidates.add(allHooks.get(i));
+        }
+
+        // Merge each key's hooks with the shared unkeyed hooks, preserving authored order.
+        var unkeyedIndices = new ArrayList<Integer>(unkeyedHooks.size());
+        for (int i = 0; i < targetKeys.size(); i++) {
+            if (targetKeys.get(i) == null) {
+                unkeyedIndices.add(i);
+            }
+        }
+
+        var hooksByKey = new HashMap<Object, List<ResearchHookDefinition<TTarget>>>(indicesByKey.size());
+        for (var entry : indicesByKey.entrySet()) {
+            var keyedIndices = entry.getValue();
+            List<ResearchHookDefinition<TTarget>> candidates = new ArrayList<>(keyedIndices.size() + unkeyedIndices.size());
+            int k = 0;
+            int u = 0;
+            while (k < keyedIndices.size() || u < unkeyedIndices.size()) {
+                if (u >= unkeyedIndices.size() || (k < keyedIndices.size() && keyedIndices.get(k) < unkeyedIndices.get(u))) {
+                    candidates.add(allHooks.get(keyedIndices.get(k++)));
+                } else {
+                    candidates.add(allHooks.get(unkeyedIndices.get(u++)));
                 }
             }
-            hooksByKey.put(key, List.copyOf(candidates));
+            hooksByKey.put(entry.getKey(), List.copyOf(candidates));
         }
 
         return new ResearchHookIndex<>(List.copyOf(allHooks), List.copyOf(unkeyedHooks), Map.copyOf(hooksByKey));
