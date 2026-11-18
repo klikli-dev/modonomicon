@@ -31,6 +31,7 @@
   },
   "palette": {
     "default_text_color": -16777216,
-    "default_title_color": -16777216
+    "default_title_color": -16777216,
+    "tab_overlay_dim_color": 1610612736
   }
 }
