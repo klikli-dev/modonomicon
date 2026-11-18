@@ -214,12 +214,25 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        if (this.categoriesOverflow && scrollY != 0 && this.isMouseOverCategoryButtons(mouseX, mouseY)) {
-            this.scrollCategoryButtons(scrollY > 0 ? -1 : 1);
+        if (this.scrollCategoryButtonsIfHovered(mouseX, mouseY, scrollY)) {
             return true;
         }
         this.getCurrentCategoryScreen().zoom(scrollY);
         return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
+
+    /**
+     * Scrolls the category buttons if they overflow and the mouse is over a category button or scroll arrow.
+     * Also used by screens rendered on top of this one (e.g. index categories) to forward wheel events.
+     *
+     * @return true if the scroll event was consumed.
+     */
+    public boolean scrollCategoryButtonsIfHovered(double mouseX, double mouseY, double scrollY) {
+        if (this.categoriesOverflow && scrollY != 0 && this.isMouseOverCategoryButtons(mouseX, mouseY)) {
+            this.scrollCategoryButtons(scrollY > 0 ? -1 : 1);
+            return true;
+        }
+        return false;
     }
 
     private boolean isMouseOverCategoryButtons(double mouseX, double mouseY) {

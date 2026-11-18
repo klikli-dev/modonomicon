@@ -46,6 +46,17 @@ public class BookCategoryIndexOnNodeScreen extends BookCategoryIndexScreen {
     }
 
     @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        //the parent node screen's category buttons are visible below us, so wheel events over them should scroll the category list instead of flipping pages
+        if (BookGuiManager.get().openBookParentScreen instanceof BookParentNodeScreen parentScreen
+                && parentScreen.scrollCategoryButtonsIfHovered(mouseX, mouseY, scrollY)) {
+            return true;
+        }
+
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
+
+    @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         //if we click outside, we don't close like the parent would, instead we let the click unhandled so the parent can handle it
         if (this.isClickOutsideEntry(event.x(), event.y())) {
