@@ -14,7 +14,9 @@ import com.klikli_dev.modonomicon.book.page.BookStageRequirementsPage;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.RequirementBlock;
 import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.RequirementContext;
+import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchRequirementInteractions;
 import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchRequirementRows;
+import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.RowAction;
 import com.klikli_dev.modonomicon.research.ResearchServices;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -182,8 +184,7 @@ public class EntryRequirementsController {
                 BookConditionContext.of(entry.getBook(), entry),
                 player,
                 ResearchServices.state().getStateFor(player),
-                ResearchDataManager.get().data(),
-                this::openEntry
+                ResearchDataManager.get().data()
         );
         if (key.stage() == null) {
             return ResearchRequirementRows.progression(entry.getProgression().node(), key.browsed(), context);
@@ -272,6 +273,10 @@ public class EntryRequirementsController {
      * @return true if the click was consumed
      */
     public boolean clickBlock(RequirementBlock block, int x, int top, int width, double mouseX, double mouseY) {
-        return EntryRequirementsRenderer.click(block, this.screen.getContentFont(), x, top, width, mouseX, mouseY, this::browseStage);
+        return EntryRequirementsRenderer.click(block, this.screen.getContentFont(), x, top, width, mouseX, mouseY, this::browseStage, this::performRowAction);
+    }
+
+    private void performRowAction(RowAction action) {
+        ResearchRequirementInteractions.perform(action, this::openEntry);
     }
 }

@@ -63,7 +63,7 @@ final class DefaultTriggerRequirementPresenters {
             var bookId = book.getId();
             var icons = entry.getIcon() != null ? List.of(RequirementIcon.of(entry.getIcon())) : List.<RequirementIcon>of();
             return RequirementRow.of(icons, Component.translatable(Gui.REQUIREMENTS_READ_ENTRY, Component.translatable(entry.getName())))
-                    .withOnClick(() -> context.openEntry().accept(bookId, entryId));
+                    .withAction(new RowAction.OpenEntry(bookId, entryId));
         }
         return null;
     }

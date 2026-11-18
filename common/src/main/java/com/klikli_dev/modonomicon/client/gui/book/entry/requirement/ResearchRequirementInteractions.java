@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 /**
  * Client side of requirement interactions: pre-checks clicks locally for feedback, sends the requests and builds the cost lines.
@@ -52,9 +53,17 @@ public final class ResearchRequirementInteractions {
     }
 
     /**
-     * Performs the action of a row if it looks available and affordable. Otherwise plays the fail sound and sends nothing.
+     * Interprets a row action. A research action is performed if it looks available and affordable, otherwise the fail sound
+     * plays and nothing is sent. Opening an entry is handed to the navigation of the screen.
      */
-    public static void performAction(RequirementRow.ActionInfo info) {
+    public static void perform(RowAction action, BiConsumer<Identifier, Identifier> openEntry) {
+        switch (action) {
+            case RowAction.Perform perform -> performAction(perform);
+            case RowAction.OpenEntry open -> openEntry.accept(open.bookId(), open.entryId());
+        }
+    }
+
+    private static void performAction(RowAction.Perform info) {
         var player = player();
         if (player == null) {
             return;
@@ -73,8 +82,7 @@ public final class ResearchRequirementInteractions {
      */
     public static List<Component> actionTooltip(RequirementRow row, Player player) {
         var lines = new ArrayList<Component>();
-        var info = row.action();
-        if (info == null) {
+        if (!(row.action() instanceof RowAction.Perform info)) {
             return lines;
         }
         var action = info.action();

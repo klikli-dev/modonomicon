@@ -7,13 +7,11 @@
 package com.klikli_dev.modonomicon.client.gui.book.entry.requirement;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
-import com.klikli_dev.modonomicon.research.action.ResearchAction;
 import com.klikli_dev.modonomicon.research.data.ResearchCategoryDefinition;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -28,9 +26,8 @@ import java.util.List;
  * @param details  additional tooltip lines, shown below the title
  * @param met      whether the requirement is currently met
  * @param progress optional progress, shown as count on the icon and in the tooltip, e.g. 3/5
- * @param onClick  optional action run when the icon is clicked, ignored if {@code action} is set
  * @param missing  optional line stating what is still missing, defaults to a generic line
- * @param action   optional research action the player can perform by clicking the icon, set only for unmet facts of the current stage
+ * @param action   optional action the click on the row asks for, see {@link RowAction}
  */
 public record RequirementRow(
         ResearchCategoryDefinition category,
@@ -39,9 +36,8 @@ public record RequirementRow(
         List<Component> details,
         boolean met,
         @Nullable Progress progress,
-        @Nullable Runnable onClick,
         @Nullable Component missing,
-        @Nullable ActionInfo action
+        @Nullable RowAction action
 ) {
 
     /**
@@ -50,54 +46,40 @@ public record RequirementRow(
     public record Progress(int current, int target) {
     }
 
-    /**
-     * The research action a click on the row performs.
-     *
-     * @param nodeId the node the fact is a requirement of
-     * @param factId the fact the action satisfies
-     * @param action the action attached to the fact
-     */
-    public record ActionInfo(Identifier nodeId, Identifier factId, ResearchAction action) {
-    }
-
     public static RequirementRow of(List<RequirementIcon> icons, Component title) {
-        return new RequirementRow(null, icons, title, List.of(), false, null, null, null, null);
+        return new RequirementRow(null, icons, title, List.of(), false, null, null, null);
     }
 
     public RequirementRow withCategory(ResearchCategoryDefinition category) {
-        return new RequirementRow(category, this.icons, this.title, this.details, this.met, this.progress, this.onClick, this.missing, this.action);
+        return new RequirementRow(category, this.icons, this.title, this.details, this.met, this.progress, this.missing, this.action);
     }
 
     public RequirementRow withIcons(List<RequirementIcon> icons) {
-        return new RequirementRow(this.category, icons, this.title, this.details, this.met, this.progress, this.onClick, this.missing, this.action);
+        return new RequirementRow(this.category, icons, this.title, this.details, this.met, this.progress, this.missing, this.action);
     }
 
     public RequirementRow withTitle(Component title) {
-        return new RequirementRow(this.category, this.icons, title, this.details, this.met, this.progress, this.onClick, this.missing, this.action);
+        return new RequirementRow(this.category, this.icons, title, this.details, this.met, this.progress, this.missing, this.action);
     }
 
     public RequirementRow withDetails(List<Component> details) {
-        return new RequirementRow(this.category, this.icons, this.title, details, this.met, this.progress, this.onClick, this.missing, this.action);
+        return new RequirementRow(this.category, this.icons, this.title, details, this.met, this.progress, this.missing, this.action);
     }
 
     public RequirementRow withMet(boolean met) {
-        return new RequirementRow(this.category, this.icons, this.title, this.details, met, this.progress, this.onClick, this.missing, this.action);
+        return new RequirementRow(this.category, this.icons, this.title, this.details, met, this.progress, this.missing, this.action);
     }
 
     public RequirementRow withProgress(@Nullable Progress progress) {
-        return new RequirementRow(this.category, this.icons, this.title, this.details, this.met, progress, this.onClick, this.missing, this.action);
-    }
-
-    public RequirementRow withOnClick(@Nullable Runnable onClick) {
-        return new RequirementRow(this.category, this.icons, this.title, this.details, this.met, this.progress, onClick, this.missing, this.action);
+        return new RequirementRow(this.category, this.icons, this.title, this.details, this.met, progress, this.missing, this.action);
     }
 
     public RequirementRow withMissing(@Nullable Component missing) {
-        return new RequirementRow(this.category, this.icons, this.title, this.details, this.met, this.progress, this.onClick, missing, this.action);
+        return new RequirementRow(this.category, this.icons, this.title, this.details, this.met, this.progress, missing, this.action);
     }
 
-    public RequirementRow withAction(@Nullable ActionInfo action) {
-        return new RequirementRow(this.category, this.icons, this.title, this.details, this.met, this.progress, this.onClick, this.missing, action);
+    public RequirementRow withAction(@Nullable RowAction action) {
+        return new RequirementRow(this.category, this.icons, this.title, this.details, this.met, this.progress, this.missing, action);
     }
 
     /**
@@ -119,7 +101,7 @@ public record RequirementRow(
             tooltip.add(this.notMetLine().withStyle(Style.EMPTY.withColor(ChatFormatting.RED).withItalic(true)));
             tooltip.add(Component.translatable(Gui.REQUIREMENTS_NOT_MET_HINT).withStyle(ChatFormatting.GRAY));
         }
-        if (this.onClick != null && this.action == null) {
+        if (this.action instanceof RowAction.OpenEntry) {
             tooltip.add(Component.translatable(Gui.REQUIREMENTS_CLICK_TO_OPEN).withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_AQUA).withItalic(true)));
         }
         return tooltip;

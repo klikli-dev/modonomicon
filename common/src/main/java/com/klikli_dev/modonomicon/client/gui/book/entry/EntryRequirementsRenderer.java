@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.RequirementBlock;
 import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.RequirementRow;
 import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchRequirementInteractions;
+import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.RowAction;
 import com.klikli_dev.modonomicon.client.gui.book.theme.BookContentTheme;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.research.data.ResearchCategoryDefinition;
@@ -236,9 +237,11 @@ public final class EntryRequirementsRenderer {
      * Stage arrows are passed to browse. A requirement icon performs its action if it has one, else runs its click handler.
      *
      * @param browse browses the stages by the given delta, returns true if the click was consumed
+     * @param onRowAction receives the action of a clicked row, see {@link RowAction}
      * @return true if the click was consumed
      */
-    public static boolean click(RequirementBlock block, Font font, int x, int top, int width, double mouseX, double mouseY, IntPredicate browse) {
+    public static boolean click(RequirementBlock block, Font font, int x, int top, int width, double mouseX, double mouseY,
+                                IntPredicate browse, Consumer<RowAction> onRowAction) {
         int stageDelta = stageLineClick(block, font, x, top, width, mouseX, mouseY);
         if (stageDelta != 0) {
             return browse.test(stageDelta);
@@ -250,11 +253,7 @@ public final class EntryRequirementsRenderer {
             if (slot.contains(mouseX, mouseY)) {
                 var row = slot.row();
                 if (row.action() != null) {
-                    ResearchRequirementInteractions.performAction(row.action());
-                    return true;
-                }
-                if (row.onClick() != null) {
-                    row.onClick().run();
+                    onRowAction.accept(row.action());
                     return true;
                 }
                 return false;

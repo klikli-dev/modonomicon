@@ -16,7 +16,6 @@ import net.minecraft.world.entity.player.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 /**
@@ -28,7 +27,6 @@ public final class RequirementContext {
     private final Player player;
     private final PlayerResearchState state;
     private final ResearchData data;
-    private final BiConsumer<Identifier, Identifier> openEntry;
     private final Map<Identifier, List<ResearchHookDefinition<?>>> hooksByFact;
     private final Map<Identifier, List<ResearchHookDefinition<?>>> hooksByValue;
 
@@ -37,14 +35,12 @@ public final class RequirementContext {
      * @param player           the player the requirements are evaluated for
      * @param state            the research state of the player
      * @param data             the research data the state is evaluated against
-     * @param openEntry        opens an entry by book id and entry id, the implementation handles navigation history
      */
-    public RequirementContext(BookConditionContext conditionContext, Player player, PlayerResearchState state, ResearchData data, BiConsumer<Identifier, Identifier> openEntry) {
+    public RequirementContext(BookConditionContext conditionContext, Player player, PlayerResearchState state, ResearchData data) {
         this.conditionContext = conditionContext;
         this.player = player;
         this.state = state;
         this.data = data;
-        this.openEntry = openEntry;
         this.hooksByFact = data.allHooks().stream()
                 .filter(hook -> hook.factId() != null)
                 .collect(Collectors.groupingBy(ResearchHookDefinition::factId, Collectors.toCollection(ArrayList::new)));
@@ -67,10 +63,6 @@ public final class RequirementContext {
 
     public ResearchData data() {
         return this.data;
-    }
-
-    public BiConsumer<Identifier, Identifier> openEntry() {
-        return this.openEntry;
     }
 
     /**

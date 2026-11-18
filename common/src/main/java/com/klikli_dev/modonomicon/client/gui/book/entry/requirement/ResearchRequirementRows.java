@@ -86,14 +86,13 @@ public final class ResearchRequirementRows {
                 descriptionOr(display, hookRow != null ? hookRow.details() : List.of()),
                 met,
                 null,
-                firstClickAction(hookRows),
                 hookRow != null ? hookRow.missing() : null,
-                null
+                firstAction(hookRows)
         );
         if (actionNode != null) {
             var action = display.action();
             if (action.isPresent() && (action.get().repeatable() || (active && !met))) {
-                row = row.withAction(new RequirementRow.ActionInfo(actionNode, factId, action.get()));
+                row = row.withAction(new RowAction.Perform(actionNode, factId, action.get()));
             }
         }
         return row;
@@ -124,7 +123,6 @@ public final class ResearchRequirementRows {
                 descriptionOr(display, List.of()),
                 forceMet || current >= threshold,
                 new RequirementRow.Progress(shown, threshold),
-                null,
                 null,
                 null
         );
@@ -293,7 +291,6 @@ public final class ResearchRequirementRows {
                 met,
                 null,
                 null,
-                null,
                 null
         ));
     }
@@ -416,8 +413,8 @@ public final class ResearchRequirementRows {
                 .orElse(fallback);
     }
 
-    private static Runnable firstClickAction(List<RequirementRow> rows) {
-        return rows.stream().map(RequirementRow::onClick).filter(onClick -> onClick != null).findFirst().orElse(null);
+    private static RowAction firstAction(List<RequirementRow> rows) {
+        return rows.stream().map(RequirementRow::action).filter(action -> action != null).findFirst().orElse(null);
     }
 
     private static Optional<Component> translated(String key) {
