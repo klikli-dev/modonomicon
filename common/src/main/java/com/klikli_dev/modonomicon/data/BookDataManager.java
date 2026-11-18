@@ -369,9 +369,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
                             break;
                         }
                     }
-                    // Tab files live directly in a "tabs" directory, which is the parent of the file.
-                    boolean isTabFile = pathParts.length >= 5 && "tabs".equals(pathParts[pathParts.length - 2]);
-                    if (isTabFile) {
+                    if (this.isTabFile(entry.getKey(), pathParts, content)) {
                         tabJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
                     } else if (isPageFile) {
                         pageJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
@@ -393,6 +391,22 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
                 }
             }
         }
+    }
+
+    /**
+     * Checks if the given file under entries/ is a tab file.
+     * Tab files live in <book>/entries/<category...>/<entry>/tabs/<tab-id>, next to the entry file <book>/entries/<category...>/<entry>.
+     * A "tabs" directory only is the reserved tab directory if that sibling entry file exists,
+     * otherwise it is an ordinary directory and the files in it are entries, e.g. <book>/entries/<category>/tabs/<entry>.
+     */
+    private boolean isTabFile(Identifier fileId, String[] pathParts, Map<Identifier, JsonElement> content) {
+        //at least: book, entries, category, entry, tabs, tab
+        if (pathParts.length < 6 || !"tabs".equals(pathParts[pathParts.length - 2])) {
+            return false;
+        }
+
+        var entryPath = String.join("/", Arrays.copyOfRange(pathParts, 0, pathParts.length - 2));
+        return content.containsKey(Identifier.fromNamespaceAndPath(fileId.getNamespace(), entryPath));
     }
 
     @Override
