@@ -262,6 +262,18 @@ public class ResearchStateManager {
         return this.getStateFor(player).isNodeUnlocked(nodeId);
     }
 
+    /**
+     * Returns true if the player completed all stages of a node. A node without stages is complete once started.
+     */
+    public boolean isNodeComplete(Player player, Identifier nodeId) {
+        var node = ResearchDataManager.get().data().nodeDefinitions().get(nodeId);
+        if (node == null) {
+            return false;
+        }
+        var state = this.getStateFor(player);
+        return state.isNodeStarted(nodeId) && state.completedStageCount(nodeId) >= node.stages().size();
+    }
+
     public void resetFor(ServerPlayer player) {
         this.getStateFor(player).reset();
         this.saveData.setDirty();
