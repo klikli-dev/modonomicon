@@ -58,18 +58,65 @@ this.nodeBuilder(this.node("mymod/my_node"))
 
 ## Research ingress
 
-```java
-// When an entry is viewed, grant a fact
-this.ingress().onEntryViewedOnce(entryId).grantFact("mymod/my_hook", fact);
+`this.ingress()` returns a `ResearchIngressHelper`. Each trigger it starts is a `ResearchIngress<T>`, bound to one trigger type and one target, such as an entry id, an advancement id or an item matcher. All of them share the same methods:
 
-// When an item is crafted, increment a value
+| Method | Effect |
+|--------|--------|
+| `declareFact(String path)` | Declares a new fact and authors a hook that grants it. |
+| `declareFact(ResearchFactRef ref)` | Same, for a fact that already has a ref, e.g. from `this.fact(...)` or another namespace. |
+| `grant(ResearchFactRef ref)` | Authors a hook that grants an already declared fact. Several triggers may grant the same fact. |
+| `grantFact(String hookPath, ResearchFactRef ref)` | Like `grant`, with an explicit hook id. |
+| `declareValue(String path, int increment)` / `declareValue(ResearchValueRef ref, int increment)` | Declares a new value and authors a hook that increments it. |
+| `increment(ResearchValueRef ref, int amount)` | Authors a hook that increments an already declared value. |
+| `incrementValue(String hookPath, ResearchValueRef ref, int increment)` | Like `increment`, with an explicit hook id. |
+
+The hook ids of `declareFact`, `grant`, `declareValue` and `increment` are derived: the ref's path plus `_hook`, prefixed with the ref's namespace if it differs from the bundle's namespace. If another hook already uses that id, `_2`, `_3`, ... is appended. Use `grantFact` or `incrementValue` with an explicit path if you need a fixed hook id.
+
+```java
+var fact = this.fact("mymod/my_fact");
+var value = this.value("mymod/my_counter");
+
+// When an entry is viewed, grant an already declared fact
+this.ingress().onEntryViewedOnce(entryId).grant(fact);
+
+// When an item is crafted, increment a value with an explicit hook id
 this.ingress().onItemCrafted(stackTemplate)
     .incrementValue("mymod/my_hook", value, 1);
 
-// When an advancement is earned, grant a fact
+// When an advancement is earned, declare a fact and grant it in one step
 this.ingress().onAdvancementEarned(advancementId)
     .declareFact("mymod/advancement_fact");
 ```
+
+### Errors
+
+Authoring mistakes throw an `IllegalArgumentException` while the research datagen runs, so they fail the build:
+
+- Declaring the same fact, value, node or hook id twice in one bundle throws `"... is already declared"`. For example, a fact declared with `this.fact(...)` must not be declared again with `declareFact`.
+- `grant` and `increment` need a ref that was declared in the same bundle. Otherwise they throw `"... was never declared in this builder"`. Declare it with `this.fact(...)` or `this.value(...)`, or use `declareFact` / `declareValue`.
+- `toast(...)` on a fact, value or node that was not declared in the same bundle throws.
+
+:::tip
+
+Empty `facts.json`, `values.json`, `nodes.json` and `hooks.json` files are not written. Missing files are read as empty lists.
+
+:::
+
+### Deprecated methods
+
+The following methods still compile, but are marked `@Deprecated(forRemoval = true)`. Replace them with:
+
+| Deprecated | Replacement |
+|------------|-------------|
+| `grantFactOnEntryViewedOnce(path, entryId, ref)` | `this.ingress().onEntryViewedOnce(entryId).grantFact(path, ref)` |
+| `incrementValueOnEntryViewedOnce(path, entryId, ref, n)` | `this.ingress().onEntryViewedOnce(entryId).incrementValue(path, ref, n)` |
+| `grantFactOnAdvancementEarned(path, advancementId, ref)` | `this.ingress().onAdvancementEarned(advancementId).grantFact(path, ref)` |
+| `incrementValueOnAdvancementEarned(path, advancementId, ref, n)` | `this.ingress().onAdvancementEarned(advancementId).incrementValue(path, ref, n)` |
+| `grantFactOnItemCrafted(path, template, ref)` | `this.ingress().onItemCrafted(template).grantFact(path, ref)` |
+| `incrementValueOnItemCrafted(path, template, ref, n)` | `this.ingress().onItemCrafted(template).incrementValue(path, ref, n)` |
+| `grantFactOnItemAcquired(path, template, ref)` | `this.ingress().onItemAcquired(template).grantFact(path, ref)` |
+| `incrementValueOnItemAcquired(path, template, ref, n)` | `this.ingress().onItemAcquired(template).incrementValue(path, ref, n)` |
+| `node(ref, List, List, List, List[, toast])` | `this.nodeBuilder(ref)` with `withFact`, `withValue`, `withStage` and `withToast` |
 
 ### Generic Ingress
 
