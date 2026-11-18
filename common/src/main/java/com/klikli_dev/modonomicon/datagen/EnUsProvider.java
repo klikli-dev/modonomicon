@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.api.datagen.AbstractModonomiconLanguageProvide
 import com.klikli_dev.modonomicon.api.datagen.BookContextHelper;
 import com.klikli_dev.modonomicon.api.datagen.ModonomiconLanguageProvider;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
+import com.klikli_dev.modonomicon.research.data.ResearchCategories;
 import net.minecraft.data.PackOutput;
 
 public class EnUsProvider extends AbstractModonomiconLanguageProvider {
@@ -114,6 +115,8 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Tooltips.CONDITION_RESEARCH_NODE_UNLOCKED, "Requires research node %s to be unlocked");
         this.add(Tooltips.CONDITION_RESEARCH_STAGE_COMPLETED, "Requires research node %s stage %s to be completed");
         this.add(Tooltips.CONDITION_ENTRY_UNLOCKED, "Requires entry %s to be unlocked");
+        this.add(Tooltips.CONDITION_ITEM_CRAFTED, "Requires crafting %s");
+        this.add(Tooltips.CONDITION_ITEM_ACQUIRED, "Requires obtaining %s");
         this.add(Tooltips.ITEM_NO_BOOK_FOUND_FOR_STACK, "No book found for this item in the modonomicon book database! Nbt: %s");
         this.add(Tooltips.ASSOCIATED_HOLD_TO_OPEN, "Hold %s for %ss");
         this.add(Tooltips.ASSOCIATED_LOCKED, "Locked: unlock in the book");
@@ -142,6 +145,17 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Gui.BOOK_BUILD_FAILED, "This book failed to build and cannot be opened. Please report this to the author of the mod providing the book.");
         this.add(Gui.BOOK_NOT_FOUND, "The book '%s' was not found or failed to load. Please check the log for errors.");
         this.add(Gui.REQUIREMENTS_TITLE, "Requirements");
+        this.add(Gui.REQUIREMENTS_PAGE_TEXT, "These are the requirements of the next stage of this entry. Completed requirements get a check mark. Once all requirements are met, the content behind this stage is unlocked.");
+        this.add(ResearchCategories.translationKey(ResearchCategories.RESEARCH), "Research");
+        this.add(ResearchCategories.translationKey(ResearchCategories.RESEARCH) + ".description", "Research steps, e.g. reaching other research stages.");
+        this.add(ResearchCategories.translationKey(ResearchCategories.ITEMS), "Items");
+        this.add(ResearchCategories.translationKey(ResearchCategories.ITEMS) + ".description", "Crafting or obtaining items.");
+        this.add(ResearchCategories.translationKey(ResearchCategories.KNOWLEDGE), "Knowledge");
+        this.add(ResearchCategories.translationKey(ResearchCategories.KNOWLEDGE) + ".description", "Reading entries and earning advancements.");
+        this.add(ResearchCategories.translationKey(ResearchCategories.PROGRESS), "Progress");
+        this.add(ResearchCategories.translationKey(ResearchCategories.PROGRESS) + ".description", "Counted actions that have to reach a number.");
+        this.add(ResearchCategories.translationKey(ResearchCategories.REWARDS), "Rewards");
+        this.add(ResearchCategories.translationKey(ResearchCategories.REWARDS) + ".description", "Granted when the stage is completed.");
         this.add(Gui.REQUIREMENTS_NEXT_STEPS, "Next steps");
         this.add(Gui.REQUIREMENTS_NEXT, "Next: %s");
         this.add(Gui.REQUIREMENTS_COMPLETE, "Research complete");
