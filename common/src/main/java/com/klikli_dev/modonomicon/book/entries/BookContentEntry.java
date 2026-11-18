@@ -39,22 +39,30 @@ public class BookContentEntry extends BookEntry {
             Identifier.CODEC.fieldOf("id").forGetter(BookEntry::getId),
             BookEntry.BookEntryData.CODEC.forGetter(entry -> entry.data),
             Identifier.CODEC.optionalFieldOf("command_to_run_on_first_read").forGetter(entry -> Optional.ofNullable(entry.commandToRunOnFirstReadId)),
-            BookPage.CODEC.listOf().optionalFieldOf("pages", List.of()).forGetter(entry -> entry.pages)
-    ).apply(instance, (id, data, commandToRunOnFirstReadId, pages) -> new BookContentEntry(id, data, commandToRunOnFirstReadId.orElse(null), pages)));
+            BookPage.CODEC.listOf().optionalFieldOf("pages", List.of()).forGetter(entry -> entry.pages),
+            BookEntryTab.CODEC.listOf().optionalFieldOf("tabs", List.of()).forGetter(entry -> entry.tabs)
+    ).apply(instance, (id, data, commandToRunOnFirstReadId, pages, tabs) -> new BookContentEntry(id, data, commandToRunOnFirstReadId.orElse(null), pages, tabs)));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BookContentEntry> STREAM_CODEC = StreamCodec.composite(
             Identifier.STREAM_CODEC, BookEntry::getId,
             BookEntry.BookEntryData.STREAM_CODEC, entry -> entry.data,
             ByteBufCodecs.optional(Identifier.STREAM_CODEC), entry -> Optional.ofNullable(entry.commandToRunOnFirstReadId),
             BookPage.STREAM_CODEC.apply(ByteBufCodecs.list()), entry -> entry.pages,
-            (id, data, commandToRunOnFirstReadId, pages) -> new BookContentEntry(id, data, commandToRunOnFirstReadId.orElse(null), pages)
+            BookEntryTab.STREAM_CODEC.apply(ByteBufCodecs.list()), entry -> entry.tabs,
+            (id, data, commandToRunOnFirstReadId, pages, tabs) -> new BookContentEntry(id, data, commandToRunOnFirstReadId.orElse(null), pages, tabs)
     );
 
     protected List<BookPage> pages;
+    protected List<BookEntryTab> tabs;
 
     public BookContentEntry(Identifier id, BookEntryData data, Identifier commandToRunOnFirstReadId, List<BookPage> pages) {
+        this(id, data, commandToRunOnFirstReadId, pages, List.of());
+    }
+
+    public BookContentEntry(Identifier id, BookEntryData data, Identifier commandToRunOnFirstReadId, List<BookPage> pages, List<BookEntryTab> tabs) {
         super(id, data, commandToRunOnFirstReadId);
         this.pages = new ArrayList<>(pages);
+        this.tabs = new ArrayList<>(tabs);
     }
 
     @Override
@@ -77,6 +85,14 @@ public class BookContentEntry extends BookEntry {
             BookErrorManager.get().getContextHelper().pageNumber = -1;
             pageNum++;
         }
+
+        //tab pages are numbered after the authored pages, so they never collide with them
+        for (var tab : this.tabs) {
+            BookErrorManager.get().getContextHelper().pageNumber = pageNum;
+            tab.getPage().build(level, this, pageNum);
+            BookErrorManager.get().getContextHelper().pageNumber = -1;
+            pageNum++;
+        }
     }
 
     @Override
@@ -86,11 +102,21 @@ public class BookContentEntry extends BookEntry {
             page.prerenderMarkdown(textRenderer);
             BookErrorManager.get().getContextHelper().pageNumber = -1;
         }
+        for (var tab : this.tabs) {
+            var page = tab.getPage();
+            BookErrorManager.get().getContextHelper().pageNumber = page.getPageNumber();
+            page.prerenderMarkdown(textRenderer);
+            BookErrorManager.get().getContextHelper().pageNumber = -1;
+        }
     }
 
     @Override
     public List<BookPage> getPages() {
         return this.pages;
+    }
+
+    public List<BookEntryTab> getTabs() {
+        return this.tabs;
     }
 
     public void addPage(BookPage page) {
@@ -123,6 +149,12 @@ public class BookContentEntry extends BookEntry {
 
         for (var page : this.getPages()) {
             if (page.matchesQuery(query, level)) {
+                return true;
+            }
+        }
+
+        for (var tab : this.tabs) {
+            if (tab.getPage().matchesQuery(query, level)) {
                 return true;
             }
         }

@@ -41,30 +41,31 @@ public class BookJsonPreprocessing {
         }
 
         if (kind == BookElementKind.ENTRY) {
-            result = Optional.of(processInlinePages(context, result.get()));
+            result = Optional.of(processInlineElements(context, result.get(), "pages", BookElementKind.PAGE));
+            result = Optional.of(processInlineElements(context, result.get(), "tabs", BookElementKind.TAB));
         }
 
         return result;
     }
 
-    private static JsonObject processInlinePages(BookLoadConditionContext entryContext, JsonObject entryJson) {
-        if (!(entryJson.get("pages") instanceof JsonArray pages)) {
+    private static JsonObject processInlineElements(BookLoadConditionContext entryContext, JsonObject entryJson, String key, BookElementKind elementKind) {
+        if (!(entryJson.get(key) instanceof JsonArray elements)) {
             return entryJson;
         }
 
-        var processedPages = new JsonArray();
+        var processedElements = new JsonArray();
         boolean changed = false;
-        for (var page : pages) {
-            if (!(page instanceof JsonObject pageJson)) {
-                processedPages.add(page);
+        for (var element : elements) {
+            if (!(element instanceof JsonObject elementJson)) {
+                processedElements.add(element);
                 continue;
             }
 
-            var processed = process(BookElementKind.PAGE, entryContext, pageJson);
-            if (processed.isEmpty() || processed.get() != pageJson) {
+            var processed = process(elementKind, entryContext, elementJson);
+            if (processed.isEmpty() || processed.get() != elementJson) {
                 changed = true;
             }
-            processed.ifPresent(processedPages::add);
+            processed.ifPresent(processedElements::add);
         }
 
         if (!changed) {
@@ -72,7 +73,7 @@ public class BookJsonPreprocessing {
         }
 
         var copy = entryJson.deepCopy();
-        copy.add("pages", processedPages);
+        copy.add(key, processedElements);
         return copy;
     }
 }

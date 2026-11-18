@@ -22,6 +22,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
@@ -99,6 +100,13 @@ public abstract class BookPage {
 
     public BookCondition getCondition() {
         return this.condition;
+    }
+
+    /**
+     * Item used as the icon of an entry tab that opens this page, if the tab does not define its own icon.
+     */
+    public ItemStack getTabIcon() {
+        return ItemStack.EMPTY;
     }
 
     /**
