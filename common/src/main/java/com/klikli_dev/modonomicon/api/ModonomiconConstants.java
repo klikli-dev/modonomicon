@@ -56,6 +56,7 @@ public class ModonomiconConstants {
             public static final String BUTTON_BACK = PREFIX + "button.back";
             public static final String BUTTON_BACK_TOOLTIP = PREFIX + "button.back.tooltip";
             public static final String BUTTON_EXIT = PREFIX + "button.exit";
+            public static final String BUTTON_CLOSE_TAB = PREFIX + "button.close_tab";
 
             public static final String BUTTON_VISUALIZE = PREFIX + "button.visualize";
             public static final String BUTTON_VISUALIZE_TOOLTIP = PREFIX + "button.visualize.tooltip";
