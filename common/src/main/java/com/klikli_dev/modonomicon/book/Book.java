@@ -81,6 +81,11 @@ public class Book {
     @Nullable
     protected BookLockedCategoryDisplay lockedCategoryDisplay;
 
+    /**
+     * Where the requirements of entries with a research progression are shown, unless the entry overrides it.
+     */
+    protected RequirementsDisplay defaultRequirementsDisplay = RequirementsDisplay.FIRST_PAGE;
+
     protected Identifier leafletEntry;
 
     protected PageDisplayMode pageDisplayMode = PageDisplayMode.DOUBLE_PAGE;
@@ -125,7 +130,7 @@ public class Book {
                 PageDisplayMode pageDisplayMode, boolean allowOpenBooksWithInvalidLinks, boolean showRecentlyUnlocked,
                 boolean defaultAutoScale, boolean defaultAllowPageSplit,
                 BookThemeData themeData, @Nullable ItemStackTemplate associatedItemBadge,
-                @Nullable BookLockedCategoryDisplay lockedCategoryDisplay) {
+                @Nullable BookLockedCategoryDisplay lockedCategoryDisplay, RequirementsDisplay defaultRequirementsDisplay) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -154,6 +159,7 @@ public class Book {
         this.themeData = themeData;
         this.associatedItemBadge = associatedItemBadge;
         this.lockedCategoryDisplay = lockedCategoryDisplay;
+        this.defaultRequirementsDisplay = defaultRequirementsDisplay;
     }
 
     public static Book fromJson(Identifier id, JsonObject json, HolderLookup.Provider provider) {
@@ -194,6 +200,11 @@ public class Book {
             lockedCategoryDisplay = BookLockedCategoryDisplay.byName(GsonHelper.getAsString(json, "locked_category_display"));
         }
 
+        RequirementsDisplay defaultRequirementsDisplay = RequirementsDisplay.FIRST_PAGE;
+        if (json.has("default_requirements_display")) {
+            defaultRequirementsDisplay = RequirementsDisplay.byName(GsonHelper.getAsString(json, "default_requirements_display"));
+        }
+
         ItemStackTemplate associatedItemBadge = null;
         if (json.has("associated_item_badge")) {
             associatedItemBadge = ItemStackTemplate.CODEC.parse(provider.createSerializationContext(JsonOps.INSTANCE), json.get("associated_item_badge"))
@@ -201,7 +212,7 @@ public class Book {
         }
 
         return new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font,
-                turnPageSound, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, defaultAutoScale, defaultAllowPageSplit, themeData, associatedItemBadge, lockedCategoryDisplay);
+                turnPageSound, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, defaultAutoScale, defaultAllowPageSplit, themeData, associatedItemBadge, lockedCategoryDisplay, defaultRequirementsDisplay);
     }
 
 
@@ -235,8 +246,9 @@ public class Book {
         var associatedItemBadge = ByteBufCodecs.optional(ItemStackTemplate.STREAM_CODEC).decode(buffer).orElse(null);
         var hasLockedCategoryDisplay = buffer.readBoolean();
         var lockedCategoryDisplay = hasLockedCategoryDisplay ? BookLockedCategoryDisplay.byId(buffer.readByte()) : null;
+        var defaultRequirementsDisplay = buffer.readEnum(RequirementsDisplay.class);
         var book = new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font,
-                turnPageSound, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, defaultAutoScale, defaultAllowPageSplit, themeData, associatedItemBadge, lockedCategoryDisplay);
+                turnPageSound, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, defaultAutoScale, defaultAllowPageSplit, themeData, associatedItemBadge, lockedCategoryDisplay, defaultRequirementsDisplay);
 
         book.textMacros().putAll(textMacros);
 
@@ -334,6 +346,7 @@ public class Book {
         if (this.lockedCategoryDisplay != null) {
             buffer.writeByte(this.lockedCategoryDisplay.ordinal());
         }
+        buffer.writeEnum(this.defaultRequirementsDisplay);
     }
 
     public Identifier getTurnPageSound() {
@@ -480,6 +493,10 @@ public class Book {
     @Nullable
     public BookLockedCategoryDisplay getLockedCategoryDisplay() {
         return this.lockedCategoryDisplay;
+    }
+
+    public RequirementsDisplay getDefaultRequirementsDisplay() {
+        return this.defaultRequirementsDisplay;
     }
 
     /**
