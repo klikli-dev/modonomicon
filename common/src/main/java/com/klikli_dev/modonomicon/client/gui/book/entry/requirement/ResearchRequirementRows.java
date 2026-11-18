@@ -17,13 +17,13 @@ import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchStageDefinition;
 import com.klikli_dev.modonomicon.research.effect.ResearchEffect;
+import com.klikli_dev.modonomicon.research.item.ResearchItemMatcher;
 import net.minecraft.ChatFormatting;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.Nullable;
 
@@ -362,8 +362,8 @@ public final class ResearchRequirementRows {
      * True if the fact is granted by an item acquisition whose item is part of the cost, i.e. the item is consumed on completion.
      */
     private static boolean consumedOnCompletion(Identifier factId, ResearchCost cost, RequirementContext context) {
-        return context.hooksGranting(factId).stream().anyMatch(hook -> hook.triggerTarget() instanceof ItemStackTemplate template
-                && cost.items().stream().anyMatch(item -> item.ingredient().test(template.create())));
+        return context.hooksGranting(factId).stream().anyMatch(hook -> hook.triggerTarget() instanceof ResearchItemMatcher matcher
+                && cost.items().stream().anyMatch(item -> item.ingredient().items().anyMatch(holder -> matcher.matches(new ItemStack(holder, 1)))));
     }
 
     /**

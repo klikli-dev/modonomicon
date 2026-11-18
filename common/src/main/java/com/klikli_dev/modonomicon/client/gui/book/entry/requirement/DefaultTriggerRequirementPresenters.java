@@ -10,13 +10,13 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
+import com.klikli_dev.modonomicon.research.item.ResearchItemMatcher;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,22 +31,21 @@ final class DefaultTriggerRequirementPresenters {
 
     static void register() {
         TriggerRequirementPresenterRegistry.register(TriggerTypeRegistry.ITEM_CRAFTED.id(), (hook, context) ->
-                itemRow(Gui.REQUIREMENTS_CRAFT_ITEM, Gui.REQUIREMENTS_NOT_MET_CRAFT, (ItemStackTemplate) hook.triggerTarget()));
+                itemRow(Gui.REQUIREMENTS_CRAFT_ITEM, Gui.REQUIREMENTS_NOT_MET_CRAFT, (ResearchItemMatcher) hook.triggerTarget()));
 
         TriggerRequirementPresenterRegistry.register(TriggerTypeRegistry.ITEM_ACQUIRED.id(), (hook, context) ->
-                itemRow(Gui.REQUIREMENTS_OBTAIN_ITEM, Gui.REQUIREMENTS_NOT_MET_OBTAIN, (ItemStackTemplate) hook.triggerTarget()));
+                itemRow(Gui.REQUIREMENTS_OBTAIN_ITEM, Gui.REQUIREMENTS_NOT_MET_OBTAIN, (ResearchItemMatcher) hook.triggerTarget()));
 
         TriggerRequirementPresenterRegistry.register(TriggerTypeRegistry.ITEM_USED.id(), (hook, context) ->
-                itemRow(Gui.REQUIREMENTS_USE_ITEM, Gui.REQUIREMENTS_NOT_USED, (ItemStackTemplate) hook.triggerTarget()));
+                itemRow(Gui.REQUIREMENTS_USE_ITEM, Gui.REQUIREMENTS_NOT_USED, (ResearchItemMatcher) hook.triggerTarget()));
 
         TriggerRequirementPresenterRegistry.register(TriggerTypeRegistry.ENTRY_VIEWED_ONCE.id(), DefaultTriggerRequirementPresenters::entryRow);
 
         TriggerRequirementPresenterRegistry.register(TriggerTypeRegistry.ADVANCEMENT.id(), DefaultTriggerRequirementPresenters::advancementRow);
     }
 
-    private static RequirementRow itemRow(String titleKey, String missingKey, ItemStackTemplate template) {
-        var stack = template.create();
-        return RequirementRow.of(List.of(RequirementIcon.of(stack)), Component.translatable(titleKey, stack.getHoverName()))
+    private static RequirementRow itemRow(String titleKey, String missingKey, ResearchItemMatcher matcher) {
+        return RequirementRow.of(List.of(RequirementIcon.of(matcher.displayStack())), Component.translatable(titleKey, matcher.displayName()))
                 .withMissing(Component.translatable(missingKey));
     }
 
