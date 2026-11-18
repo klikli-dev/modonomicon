@@ -144,9 +144,9 @@ public final class ResearchRequirementRows {
         }
 
         int total = node.stages().size();
-        int stageIndex = context.state().getNodeStageIndex(nodeId);
-        boolean complete = stageIndex > total;
-        int current = total == 0 ? 0 : Math.min(Math.max(stageIndex - 1, 0), total - 1);
+        var state = context.state();
+        int current = total == 0 ? 0 : Math.min(state.currentStageIndex(nodeId), total - 1);
+        boolean complete = state.isNodeStarted(nodeId) && state.completedStageCount(nodeId) >= total;
         int shown = browsed != null && total > 0 ? Math.min(browsed, total - 1) : (total > 0 ? current : 0);
         boolean browsing = browsed != null && total > 0;
 
@@ -191,7 +191,7 @@ public final class ResearchRequirementRows {
         int index = location.stageIndex();
         boolean completed = context.state().isStageCompleted(location.nodeId(), index);
         boolean current = !completed && context.state().isNodeUnlocked(location.nodeId())
-                && context.state().getNodeStageIndex(location.nodeId()) - 1 == index;
+                && context.state().currentStageIndex(location.nodeId()) == index;
         //a stage is reached once it is completed or active, future stages offer no actions
         var actionNode = completed || current ? location.nodeId() : null;
         var slot = new StageSlot(location.nodeId(), node, index, index, completed, current, actionNode, false, false);
@@ -233,7 +233,6 @@ public final class ResearchRequirementRows {
         return new RequirementBlock(title, rows, slot.complete(), description, line);
     }
 
-
     /**
      * True if all facts of the stage are granted and all its values reached their thresholds.
      */
@@ -272,8 +271,9 @@ public final class ResearchRequirementRows {
     public static void stageDependency(ResearchNodeDefinition.StageDependency dependency, RequirementContext context, Consumer<RequirementRow> out) {
         var data = context.data();
         var location = data.stageLocations().get(dependency.stageId());
-        int stageIndex = location != null ? location.stageIndex() : 0;
-        boolean met = context.state().isStageCompleted(dependency.nodeId(), stageIndex);
+        //an unknown stage is not met, it must not show as done
+        boolean met = location != null && location.nodeId().equals(dependency.nodeId())
+                && context.state().isStageCompleted(location.nodeId(), location.stageIndex());
 
         var node = data.nodeDefinitions().get(dependency.nodeId());
         var display = node != null ? node.display().orElse(ResearchDisplay.EMPTY) : ResearchDisplay.EMPTY;
