@@ -125,6 +125,32 @@ public class ResearchHookService {
                 new ItemAcquiredContext(player, itemStack));
     }
 
+    /**
+     * The outcome of an item_used event: whether research state changed, and how many items of the used stack the
+     * changed hooks consume. The consumption is 0 unless the state changed.
+     */
+    public record ItemUseOutcome(boolean changed, int consume) {
+    }
+
+    /**
+     * Applies the item_used hooks for a stack the player used. A hook consumes only if it changes research state,
+     * i.e. grants a fact the player did not have yet, or increments a value.
+     */
+    public ItemUseOutcome onItemUsed(ServerPlayer player, ItemStack stack) {
+        var type = TriggerTypeRegistry.ITEM_USED;
+        var context = new ItemUsedContext(player, stack);
+        var hooks = type.handler().resolve(type, player, context);
+        var state = this.stateManager.getStateFor(player);
+        int consume = 0;
+        for (var hook : hooks) {
+            if (hook.factId() == null || !state.hasFact(hook.factId())) {
+                consume = Math.max(consume, hook.consume());
+            }
+        }
+        boolean changed = this.applyHooks(player, hooks);
+        return new ItemUseOutcome(changed, changed ? consume : 0);
+    }
+
     public boolean onAdvancement(ServerPlayer player, Identifier advancementId) {
         return this.fire(TriggerTypeRegistry.ADVANCEMENT,
                 new AdvancementContext(player, advancementId));
