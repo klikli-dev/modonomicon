@@ -119,6 +119,13 @@ public final class ResearchIngressHelper {
         public ItemCraftedIngress(ResearchDataBuilder research, ResearchItemMatcher targetItem) {
             super(research, TriggerTypeRegistry.ITEM_CRAFTED, targetItem);
         }
+
+        /**
+         * Creates an item-crafted ingress step bound to one exact item template.
+         */
+        public ItemCraftedIngress(ResearchDataBuilder research, ItemStackTemplate targetItem) {
+            this(research, ResearchItemMatcher.of(targetItem));
+        }
     }
 
     /**
@@ -130,6 +137,13 @@ public final class ResearchIngressHelper {
          */
         public ItemAcquiredIngress(ResearchDataBuilder research, ResearchItemMatcher targetItem) {
             super(research, TriggerTypeRegistry.ITEM_ACQUIRED, targetItem);
+        }
+
+        /**
+         * Creates an item-acquired ingress step bound to one exact item template.
+         */
+        public ItemAcquiredIngress(ResearchDataBuilder research, ItemStackTemplate targetItem) {
+            this(research, ResearchItemMatcher.of(targetItem));
         }
     }
 
