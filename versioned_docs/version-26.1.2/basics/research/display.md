@@ -47,6 +47,8 @@ this.research().display(progressionDirt, d -> d.withDescription("Dirt you picked
 
 Calling `display` on a fact, value or node that was never declared throws an `IllegalArgumentException`.
 
+The specs and builders that declare research (`ResearchFactSpec`, `ResearchValueSpec`, `ResearchNodeSpec`, `ResearchStageSpec` and `ResearchNodeBuilder`) take the display in the same way with `withDisplay(model)` or `withDisplay(operator)`. The bundle builder `this.research()` keeps `display(ref, ...)` for elements that are already declared.
+
 Stage displays are part of the stage. In the entry progression they are set by the builder, `title(...)`, `description(...)` and `icon(...)`, see [Entry Progression](./entry-progression.md#datagen).
 
 ## Merge
