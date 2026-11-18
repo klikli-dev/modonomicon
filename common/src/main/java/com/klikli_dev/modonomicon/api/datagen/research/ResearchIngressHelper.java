@@ -110,6 +110,34 @@ public final class ResearchIngressHelper {
     }
 
     /**
+     * Starts authoring ingress from the {@code item_used} trigger family for an exact item template.
+     */
+    public ItemUsedIngress onItemUsed(ItemStackTemplate targetItem) {
+        return new ItemUsedIngress(this.research, ResearchItemMatcher.of(targetItem));
+    }
+
+    /**
+     * Starts authoring ingress from the {@code item_used} trigger family for an item or item-like.
+     */
+    public ItemUsedIngress onItemUsed(ItemLike targetItem) {
+        return new ItemUsedIngress(this.research, ResearchItemMatcher.of(targetItem));
+    }
+
+    /**
+     * Starts authoring ingress from the {@code item_used} trigger family for any item in the given tag.
+     */
+    public ItemUsedIngress onItemUsed(TagKey<Item> targetTag) {
+        return new ItemUsedIngress(this.research, ResearchItemMatcher.tag(targetTag));
+    }
+
+    /**
+     * Starts authoring ingress from the {@code item_used} trigger family for the given matcher.
+     */
+    public ItemUsedIngress onItemUsed(ResearchItemMatcher targetItem) {
+        return new ItemUsedIngress(this.research, targetItem);
+    }
+
+    /**
      * Ingress step for {@code item_crafted}.
      */
     public static final class ItemCraftedIngress extends ResearchIngress<ResearchItemMatcher> {
@@ -144,6 +172,39 @@ public final class ResearchIngressHelper {
          */
         public ItemAcquiredIngress(ResearchDataBuilder research, ItemStackTemplate targetItem) {
             this(research, ResearchItemMatcher.of(targetItem));
+        }
+    }
+
+    /**
+     * Ingress step for {@code item_used}. Use {@link #consume(int)} to consume items of the used stack when the hook
+     * changes research state.
+     */
+    public static final class ItemUsedIngress extends ResearchIngress<ResearchItemMatcher> {
+        private final int consume;
+
+        /**
+         * Creates an item-used ingress step bound to one specific item matcher.
+         */
+        public ItemUsedIngress(ResearchDataBuilder research, ResearchItemMatcher targetItem) {
+            this(research, targetItem, 0);
+        }
+
+        private ItemUsedIngress(ResearchDataBuilder research, ResearchItemMatcher targetItem, int consume) {
+            super(research, TriggerTypeRegistry.ITEM_USED, targetItem);
+            this.consume = consume;
+        }
+
+        /**
+         * Returns a copy of this ingress that consumes the given number of items of the used stack when the use changes
+         * research state. A use that changes nothing consumes nothing.
+         */
+        public ItemUsedIngress consume(int consume) {
+            return new ItemUsedIngress(this.research, this.target, consume);
+        }
+
+        @Override
+        protected int consumeCount() {
+            return this.consume;
         }
     }
 

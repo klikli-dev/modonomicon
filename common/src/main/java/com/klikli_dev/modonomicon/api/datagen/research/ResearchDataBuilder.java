@@ -315,9 +315,17 @@ public final class ResearchDataBuilder {
      * @throws IllegalArgumentException if a hook with the same id was already declared
      */
     public <TTarget> void grantFact(String hookPath, TriggerType<TTarget, ?> triggerType, TTarget target, ResearchFactRef factRef) {
+        this.grantFact(hookPath, triggerType, target, factRef, 0);
+    }
+
+    /**
+     * Grants a fact when the specified trigger type fires for the given target, consuming the given number of items
+     * of the used stack when the hook changes research state. Only item_used hooks consume items.
+     */
+    public <TTarget> void grantFact(String hookPath, TriggerType<TTarget, ?> triggerType, TTarget target, ResearchFactRef factRef, int consume) {
         this.addHook(ResearchHookSpec.of(
                 Identifier.fromNamespaceAndPath(this.namespace, hookPath),
-                triggerType, target, factRef, null, 1
+                triggerType, target, factRef, null, 1, consume
         ));
     }
 
@@ -328,9 +336,17 @@ public final class ResearchDataBuilder {
      * @throws IllegalArgumentException if a hook with the same id was already declared
      */
     public <TTarget> void incrementValue(String hookPath, TriggerType<TTarget, ?> triggerType, TTarget target, ResearchValueRef valueRef, int increment) {
+        this.incrementValue(hookPath, triggerType, target, valueRef, increment, 0);
+    }
+
+    /**
+     * Increments a value when the specified trigger type fires for the given target, consuming the given number of items
+     * of the used stack when the hook changes research state. Only item_used hooks consume items.
+     */
+    public <TTarget> void incrementValue(String hookPath, TriggerType<TTarget, ?> triggerType, TTarget target, ResearchValueRef valueRef, int increment, int consume) {
         this.addHook(ResearchHookSpec.of(
                 Identifier.fromNamespaceAndPath(this.namespace, hookPath),
-                triggerType, target, null, valueRef, increment
+                triggerType, target, null, valueRef, increment, consume
         ));
     }
 

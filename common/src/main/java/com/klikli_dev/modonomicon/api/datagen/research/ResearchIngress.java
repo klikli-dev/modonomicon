@@ -73,7 +73,15 @@ public class ResearchIngress<TTarget> {
      * @throws IllegalArgumentException if a hook with the same id was already declared
      */
     public void grantFact(String hookPath, ResearchFactRef factRef) {
-        this.research.grantFact(hookPath, this.triggerType, this.target, factRef);
+        this.research.grantFact(hookPath, this.triggerType, this.target, factRef, this.consumeCount());
+    }
+
+    /**
+     * Number of items of the used stack that the hooks of this ingress consume when they change research state.
+     * Only item_used ingress consumes items, all other ingress consume nothing.
+     */
+    protected int consumeCount() {
+        return 0;
     }
 
     /**
@@ -114,6 +122,6 @@ public class ResearchIngress<TTarget> {
      * @throws IllegalArgumentException if a hook with the same id was already declared
      */
     public void incrementValue(String hookPath, ResearchValueRef valueRef, int increment) {
-        this.research.incrementValue(hookPath, this.triggerType, this.target, valueRef, increment);
+        this.research.incrementValue(hookPath, this.triggerType, this.target, valueRef, increment, this.consumeCount());
     }
 }
