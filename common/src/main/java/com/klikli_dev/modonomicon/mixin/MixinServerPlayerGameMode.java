@@ -25,8 +25,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 /**
  * Fires the item_used research trigger when a player uses an item in the air, on all loaders.
  * <p>
- * If the hooks change research state the use is handled: the consumed items are taken, the research is synced and
- * the vanilla use is cancelled by returning success. Otherwise the vanilla use runs unchanged.
+ * Research state that changed is synced to the player. If the outcome is handled, the consumed items are taken, the learning feedback
+ * plays and the vanilla use is cancelled by returning success. Otherwise the vanilla use runs unchanged.
  */
 @Mixin(ServerPlayerGameMode.class)
 public abstract class MixinServerPlayerGameMode {
@@ -37,21 +37,25 @@ public abstract class MixinServerPlayerGameMode {
         cancellable = true
     )
     private void modonomicon$onItemUsed(ServerPlayer player, Level level, ItemStack stack, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
-        Modonomicon.LOG.debug("item_used: {} used {} in air", player.getGameProfile().name(), stack);
         if (stack.isEmpty() || player.isSpectator() || player.getCooldowns().isOnCooldown(stack)) {
             return;
         }
+        Modonomicon.LOG.debug("item_used: {} used {} in air", player.getGameProfile().name(), stack);
 
         var outcome = ResearchServices.hooks().onItemUsed(player, stack);
         if (!outcome.changed()) {
             return;
         }
-
-        if (outcome.consume() > 0) {
-            stack.consume(outcome.consume(), player);
-        }
         ResearchStateManager.get().syncFor(player);
         BookVisualStateManager.get().syncFor(player);
+        if (!outcome.handled()) {
+            return;
+        }
+
+        int consume = Math.min(outcome.consume(), stack.getCount());
+        if (consume > 0) {
+            stack.consume(consume, player);
+        }
         ResearchFeedback.learned(player);
         cir.setReturnValue(InteractionResult.SUCCESS);
     }

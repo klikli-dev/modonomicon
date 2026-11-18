@@ -126,29 +126,39 @@ public class ResearchHookService {
     }
 
     /**
-     * The outcome of an item_used event: whether research state changed, and how many items of the used stack the
-     * changed hooks consume. The consumption is 0 unless the state changed.
+     * The outcome of an item_used event.
+     * <ul>
+     *     <li>{@code changed}: research state changed, so the state must be synced to the player.</li>
+     *     <li>{@code handled}: the use is the one the hooks react to, so the vanilla use is cancelled. True if a hook grants a fact
+     *     the player does not have yet, or a value hook with a positive consume changed state. Value hooks without consume count
+     *     but let the vanilla use proceed, e.g. eating still eats.</li>
+     *     <li>{@code consume}: the number of items of the used stack consumed, the largest consume of the handled hooks.
+     *     Always 0 if not handled.</li>
+     * </ul>
      */
-    public record ItemUseOutcome(boolean changed, int consume) {
+    public record ItemUseOutcome(boolean changed, boolean handled, int consume) {
     }
 
     /**
-     * Applies the item_used hooks for a stack the player used. A hook consumes only if it changes research state,
-     * i.e. grants a fact the player did not have yet, or increments a value.
+     * Applies the item_used hooks for a stack the player used. A hook counts if it grants a fact the player did not have yet,
+     * or if it increments a value with a positive consume. Only counting hooks handle the use and consume items.
      */
     public ItemUseOutcome onItemUsed(ServerPlayer player, ItemStack stack) {
         var type = TriggerTypeRegistry.ITEM_USED;
         var context = new ItemUsedContext(player, stack);
         var hooks = type.handler().resolve(type, player, context);
         var state = this.stateManager.getStateFor(player);
+        boolean handled = false;
         int consume = 0;
         for (var hook : hooks) {
-            if (hook.factId() == null || !state.hasFact(hook.factId())) {
+            boolean counts = hook.factId() != null ? !state.hasFact(hook.factId()) : hook.consume() > 0;
+            if (counts) {
+                handled = true;
                 consume = Math.max(consume, hook.consume());
             }
         }
         boolean changed = this.applyHooks(player, hooks);
-        return new ItemUseOutcome(changed, changed ? consume : 0);
+        return new ItemUseOutcome(changed, handled, handled ? consume : 0);
     }
 
     public boolean onAdvancement(ServerPlayer player, Identifier advancementId) {

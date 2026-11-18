@@ -68,11 +68,18 @@ public class ResearchStateManager {
         return changed;
     }
 
+    /**
+     * Increments a value and returns true if the stored value actually changed. A zero increment changes nothing.
+     */
     public boolean incrementValue(ServerPlayer player, Identifier valueId, int amount) {
         var state = this.getStateFor(player);
-        state.incrementValue(valueId, amount);
+        int before = state.getValue(valueId);
+        int after = state.incrementValue(valueId, amount);
+        if (after == before) {
+            return false;
+        }
         this.saveData.setDirty();
-        collectToast(ToastTriggerType.VALUE_INCREMENTED, valueId, state.getValue(valueId), ResearchDataManager.get().data().valueToasts().containsKey(valueId));
+        collectToast(ToastTriggerType.VALUE_INCREMENTED, valueId, after, ResearchDataManager.get().data().valueToasts().containsKey(valueId));
         return true;
     }
 
@@ -183,7 +190,7 @@ public class ResearchStateManager {
      */
     private static void completeStage(ServerPlayer player, PlayerResearchState state, ResearchData data, ResearchData.NodeStageRule rule) {
         state.completeCurrentStage(rule.nodeId());
-        collectToast(ToastTriggerType.NODE_STAGE_COMPLETED, rule.stageId(), 0, rule.stageId() != null && data.stageToasts().containsKey(rule.stageId()));
+        collectToast(ToastTriggerType.NODE_STAGE_COMPLETED, rule.stageId(), 0, data.stageToasts().containsKey(rule.stageId()));
 
         if (!rule.rewards().isEmpty() && state.markRewardsGranted(rule.stageId())) {
             for (var reward : rule.rewards()) {
