@@ -164,7 +164,7 @@ public class DemoResearch extends SingleResearchSubProvider {
         this.nodeBuilder(STAGES_DEMO)
                 .withStage(ResearchStageSpec.valuesOnly(stagesDemoStage1, List.of(
                         new ResearchNodeSpec.ValueRequirement(planksCrafted, 1)
-                )).toast(new ResearchToastDefinition(
+                )).withToast(new ResearchToastDefinition(
                         toastKey("stage_progress"),
                         List.of(),
                         toastKey("stages_demo_stage_1.title"),
@@ -175,7 +175,7 @@ public class DemoResearch extends SingleResearchSubProvider {
                 )))
                 .withStage(ResearchStageSpec.valuesOnly(stagesDemoStage3, List.of(
                         new ResearchNodeSpec.ValueRequirement(planksCrafted, 5)
-                )).toast(new ResearchToastDefinition(
+                )).withToast(new ResearchToastDefinition(
                         toastKey("stage_complete"),
                         List.of(),
                         toastKey("stages_demo_stage_3.title"),

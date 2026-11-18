@@ -69,7 +69,7 @@ public final class ResearchCostModel {
     /**
      * Pays the given count of any item of the tag.
      */
-    public ResearchCostModel tag(TagKey<Item> tag, int count) {
+    public ResearchCostModel item(TagKey<Item> tag, int count) {
         return this.item(ResearchItemMatcher.tag(tag), count);
     }
 
@@ -84,7 +84,7 @@ public final class ResearchCostModel {
     /**
      * Takes durability from one matching damageable stack of the tag.
      */
-    public ResearchCostModel durabilityTag(TagKey<Item> tag, int durability) {
+    public ResearchCostModel durability(TagKey<Item> tag, int durability) {
         return this.durability(ResearchItemMatcher.tag(tag), durability);
     }
 

@@ -224,7 +224,7 @@ public final class ResearchDataBuilder {
      */
     public void toast(ResearchFactRef factRef, ResearchToastDefinition toast) {
         var index = this.indexOfFact(factRef);
-        this.facts.set(index, this.facts.get(index).toast(toast));
+        this.facts.set(index, this.facts.get(index).withToast(toast));
     }
 
     /**
@@ -234,7 +234,7 @@ public final class ResearchDataBuilder {
      */
     public void toast(ResearchValueRef valueRef, ResearchToastDefinition toast) {
         var index = this.indexOfValue(valueRef);
-        this.values.set(index, this.values.get(index).toast(toast));
+        this.values.set(index, this.values.get(index).withToast(toast));
     }
 
     /**
@@ -244,7 +244,7 @@ public final class ResearchDataBuilder {
      */
     public void toast(ResearchNodeRef nodeRef, ResearchToastDefinition toast) {
         var index = this.indexOfNode(nodeRef);
-        this.nodes.set(index, this.nodes.get(index).toast(toast));
+        this.nodes.set(index, this.nodes.get(index).withToast(toast));
     }
 
     /**
@@ -264,7 +264,7 @@ public final class ResearchDataBuilder {
      */
     public void display(ResearchFactRef factRef, UnaryOperator<ResearchDisplayModel> update) {
         var index = this.indexOfFact(factRef);
-        this.facts.set(index, this.facts.get(index).display(update));
+        this.facts.set(index, this.facts.get(index).withDisplay(update));
     }
 
     /**
@@ -283,7 +283,7 @@ public final class ResearchDataBuilder {
      */
     public void display(ResearchValueRef valueRef, UnaryOperator<ResearchDisplayModel> update) {
         var index = this.indexOfValue(valueRef);
-        this.values.set(index, this.values.get(index).display(update));
+        this.values.set(index, this.values.get(index).withDisplay(update));
     }
 
     /**
@@ -302,7 +302,7 @@ public final class ResearchDataBuilder {
      */
     public void display(ResearchNodeRef nodeRef, UnaryOperator<ResearchDisplayModel> update) {
         var index = this.indexOfNode(nodeRef);
-        this.nodes.set(index, this.nodes.get(index).display(update));
+        this.nodes.set(index, this.nodes.get(index).withDisplay(update));
     }
 
     /**

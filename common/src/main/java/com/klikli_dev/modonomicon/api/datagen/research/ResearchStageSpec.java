@@ -24,8 +24,8 @@ import java.util.function.UnaryOperator;
  * @param requiredValues the value requirements required to advance past this stage
  * @param toast optional toast display data for stage completion
  * @param display optional display data of the stage, e.g. its title in requirement blocks
- * @param completion how the stage completes, automatic by default, see {@link #manual()}
- * @param rewards rewards granted once when the stage completes, see {@link #reward(ResearchEffectModel)}
+ * @param completion how the stage completes, automatic by default, see {@link #withManual()}
+ * @param rewards rewards granted once when the stage completes, see {@link #withReward(ResearchEffectModel)}
  */
 public record ResearchStageSpec(
         ResearchStageRef ref,
@@ -51,26 +51,34 @@ public record ResearchStageSpec(
     /**
      * Adds toast display data to this stage spec.
      */
-    public ResearchStageSpec toast(ResearchToastDefinition toast) {
+    public ResearchStageSpec withToast(ResearchToastDefinition toast) {
         return new ResearchStageSpec(this.ref, this.requiredFacts, this.requiredValues, Optional.of(toast), this.display, this.completion, this.rewards);
+    }
+
+    /**
+     * @deprecated use {@link #withToast(ResearchToastDefinition)}.
+     */
+    @Deprecated(forRemoval = true)
+    public ResearchStageSpec toast(ResearchToastDefinition toast) {
+        return this.withToast(toast);
     }
 
     /**
      * The stage is completed by hand: once its requirements are met it waits for the player to complete it, see {@code ResearchStages.completeManual}.
      */
-    public ResearchStageSpec manual() {
-        return this.manual(ResearchCostModel.create());
+    public ResearchStageSpec withManual() {
+        return this.withManual(ResearchCostModel.create());
     }
 
     /**
      * The stage is completed by hand, consuming the cost on completion. The cost is consumed even if it has no items.
      */
-    public ResearchStageSpec manual(ResearchCostModel cost) {
+    public ResearchStageSpec withManual(ResearchCostModel cost) {
         return this.withCompletion(ResearchStageCompletion.manual(cost.toResearchCost()));
     }
 
     /**
-     * Sets the completion of the stage, e.g. a manual completion with a cost, see {@link #manual(ResearchCostModel)}.
+     * Sets the completion of the stage, e.g. a manual completion with a cost, see {@link #withManual(ResearchCostModel)}.
      */
     public ResearchStageSpec withCompletion(ResearchStageCompletion completion) {
         return new ResearchStageSpec(this.ref, this.requiredFacts, this.requiredValues, this.toast, this.display, completion, this.rewards);
@@ -79,7 +87,7 @@ public record ResearchStageSpec(
     /**
      * Adds a reward, granted once when the stage completes.
      */
-    public ResearchStageSpec reward(ResearchEffectModel reward) {
+    public ResearchStageSpec withReward(ResearchEffectModel reward) {
         var rewards = new ArrayList<>(this.rewards);
         rewards.add(reward);
         return new ResearchStageSpec(this.ref, this.requiredFacts, this.requiredValues, this.toast, this.display, this.completion, List.copyOf(rewards));
@@ -89,13 +97,13 @@ public record ResearchStageSpec(
      * Merges display data into this stage spec, see {@link ResearchDisplayModel#merge(ResearchDisplayModel)}.
      */
     public ResearchStageSpec withDisplay(ResearchDisplayModel display) {
-        return this.display(current -> current.merge(display));
+        return this.withDisplay(current -> current.merge(display));
     }
 
     /**
      * Updates the display data of this stage spec. The operator receives a copy of the existing display or an empty one.
      */
-    public ResearchStageSpec display(UnaryOperator<ResearchDisplayModel> update) {
+    public ResearchStageSpec withDisplay(UnaryOperator<ResearchDisplayModel> update) {
         return new ResearchStageSpec(this.ref, this.requiredFacts, this.requiredValues, this.toast,
                 Optional.of(update.apply(ResearchDisplayModel.copyOrCreate(this.display))), this.completion, this.rewards);
     }

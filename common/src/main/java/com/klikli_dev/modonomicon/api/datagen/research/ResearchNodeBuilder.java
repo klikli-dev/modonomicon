@@ -127,13 +127,13 @@ public final class ResearchNodeBuilder {
      * Merges display data into the node, see {@link ResearchDisplayModel#merge(ResearchDisplayModel)}.
      */
     public ResearchNodeBuilder withDisplay(ResearchDisplayModel display) {
-        return this.display(current -> current.merge(display));
+        return this.withDisplay(current -> current.merge(display));
     }
 
     /**
      * Updates the display data of the node. The operator receives a copy of the existing display or an empty one.
      */
-    public ResearchNodeBuilder display(UnaryOperator<ResearchDisplayModel> update) {
+    public ResearchNodeBuilder withDisplay(UnaryOperator<ResearchDisplayModel> update) {
         this.display = update.apply(ResearchDisplayModel.copyOrCreate(Optional.ofNullable(this.display)));
         return this;
     }

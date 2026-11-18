@@ -34,21 +34,29 @@ public record ResearchValueSpec(
     /**
      * Adds toast display data to this value spec.
      */
-    public ResearchValueSpec toast(ResearchToastDefinition toast) {
+    public ResearchValueSpec withToast(ResearchToastDefinition toast) {
         return new ResearchValueSpec(this.ref, Optional.of(toast), this.display);
+    }
+
+    /**
+     * @deprecated use {@link #withToast(ResearchToastDefinition)}.
+     */
+    @Deprecated(forRemoval = true)
+    public ResearchValueSpec toast(ResearchToastDefinition toast) {
+        return this.withToast(toast);
     }
 
     /**
      * Merges display data into this value spec, see {@link ResearchDisplayModel#merge(ResearchDisplayModel)}.
      */
     public ResearchValueSpec withDisplay(ResearchDisplayModel display) {
-        return this.display(current -> current.merge(display));
+        return this.withDisplay(current -> current.merge(display));
     }
 
     /**
      * Updates the display data of this value spec. The operator receives a copy of the existing display or an empty one.
      */
-    public ResearchValueSpec display(UnaryOperator<ResearchDisplayModel> update) {
+    public ResearchValueSpec withDisplay(UnaryOperator<ResearchDisplayModel> update) {
         return new ResearchValueSpec(this.ref, this.toast, Optional.of(update.apply(ResearchDisplayModel.copyOrCreate(this.display))));
     }
 

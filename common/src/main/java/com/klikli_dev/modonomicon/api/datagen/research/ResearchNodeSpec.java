@@ -72,21 +72,29 @@ public record ResearchNodeSpec(
     /**
      * Adds toast display data to this node spec.
      */
-    public ResearchNodeSpec toast(ResearchToastDefinition toast) {
+    public ResearchNodeSpec withToast(ResearchToastDefinition toast) {
         return new ResearchNodeSpec(this.ref, this.requiredFacts, this.requiredValues, this.stages, this.requiredStages, Optional.of(toast), this.display);
+    }
+
+    /**
+     * @deprecated use {@link #withToast(ResearchToastDefinition)}.
+     */
+    @Deprecated(forRemoval = true)
+    public ResearchNodeSpec toast(ResearchToastDefinition toast) {
+        return this.withToast(toast);
     }
 
     /**
      * Merges display data into this node spec, see {@link ResearchDisplayModel#merge(ResearchDisplayModel)}.
      */
     public ResearchNodeSpec withDisplay(ResearchDisplayModel display) {
-        return this.display(current -> current.merge(display));
+        return this.withDisplay(current -> current.merge(display));
     }
 
     /**
      * Updates the display data of this node spec. The operator receives a copy of the existing display or an empty one.
      */
-    public ResearchNodeSpec display(UnaryOperator<ResearchDisplayModel> update) {
+    public ResearchNodeSpec withDisplay(UnaryOperator<ResearchDisplayModel> update) {
         return new ResearchNodeSpec(this.ref, this.requiredFacts, this.requiredValues, this.stages, this.requiredStages, this.toast,
                 Optional.of(update.apply(ResearchDisplayModel.copyOrCreate(this.display))));
     }

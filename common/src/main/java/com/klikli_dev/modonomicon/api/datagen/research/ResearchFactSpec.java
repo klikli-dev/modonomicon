@@ -34,21 +34,29 @@ public record ResearchFactSpec(
     /**
      * Adds toast display data to this fact spec.
      */
-    public ResearchFactSpec toast(ResearchToastDefinition toast) {
+    public ResearchFactSpec withToast(ResearchToastDefinition toast) {
         return new ResearchFactSpec(this.ref, Optional.of(toast), this.display);
+    }
+
+    /**
+     * @deprecated use {@link #withToast(ResearchToastDefinition)}.
+     */
+    @Deprecated(forRemoval = true)
+    public ResearchFactSpec toast(ResearchToastDefinition toast) {
+        return this.withToast(toast);
     }
 
     /**
      * Merges display data into this fact spec, see {@link ResearchDisplayModel#merge(ResearchDisplayModel)}.
      */
     public ResearchFactSpec withDisplay(ResearchDisplayModel display) {
-        return this.display(current -> current.merge(display));
+        return this.withDisplay(current -> current.merge(display));
     }
 
     /**
      * Updates the display data of this fact spec. The operator receives a copy of the existing display or an empty one.
      */
-    public ResearchFactSpec display(UnaryOperator<ResearchDisplayModel> update) {
+    public ResearchFactSpec withDisplay(UnaryOperator<ResearchDisplayModel> update) {
         return new ResearchFactSpec(this.ref, this.toast, Optional.of(update.apply(ResearchDisplayModel.copyOrCreate(this.display))));
     }
 
