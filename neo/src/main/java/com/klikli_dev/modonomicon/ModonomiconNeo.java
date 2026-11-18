@@ -107,7 +107,13 @@ public class ModonomiconNeo {
                 }
             });
 
-            e.addListener(Modonomicon.loc("research_data_manager"), ResearchDataManager.get());
+            e.addListener(Modonomicon.loc("research_data_manager"), new ContextAwareReloadListener() {
+                @Override
+                public CompletableFuture<Void> reload(PreparableReloadListener.SharedState currentReload, Executor taskExecutor, PreparableReloadListener.PreparationBarrier preparationBarrier, Executor reloadExecutor) {
+                    ResearchDataManager.get().registries(this.getRegistryLookup());
+                    return ResearchDataManager.get().reload(currentReload, taskExecutor, preparationBarrier, reloadExecutor);
+                }
+            });
         });
 
         //register commands

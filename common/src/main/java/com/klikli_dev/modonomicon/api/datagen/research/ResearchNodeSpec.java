@@ -88,7 +88,8 @@ public record ResearchNodeSpec(
                 this.requiredStages.stream().map(dep ->
                         new ResearchNodeDefinition.StageDependency(dep.nodeId().id(), dep.stageId().id())
                 ).toList(),
-                this.toast
+                this.toast,
+                Optional.empty()
         );
     }
 }

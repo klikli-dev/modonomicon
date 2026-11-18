@@ -39,6 +39,6 @@ public record ResearchFactSpec(
      * Compiles this authoring spec into the runtime/datapack fact definition record.
      */
     public ResearchFactDefinition toDefinition() {
-        return new ResearchFactDefinition(this.ref.id(), this.toast);
+        return new ResearchFactDefinition(this.ref.id(), this.toast, Optional.empty());
     }
 }

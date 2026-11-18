@@ -39,6 +39,6 @@ public record ResearchValueSpec(
      * Compiles this authoring spec into the runtime/datapack value definition record.
      */
     public ResearchValueDefinition toDefinition() {
-        return new ResearchValueDefinition(this.ref.id(), this.toast);
+        return new ResearchValueDefinition(this.ref.id(), this.toast, Optional.empty());
     }
 }

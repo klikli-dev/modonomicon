@@ -6,15 +6,21 @@
 
 package com.klikli_dev.modonomicon.research.data;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.data.TriggerType;
 import com.klikli_dev.modonomicon.research.hook.TriggerContext;
+import com.klikli_dev.modonomicon.research.reward.ResearchReward;
 import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -40,6 +46,11 @@ import java.util.stream.Collectors;
  * @param stageRulesByLocation stage advancement rule per node and stage index
  * @param stageIdsByLocation stage id per node and stage index, the reverse of stageLocations
  * @param stageCountsByNode number of stages per node id
+ * @param factDefinitions fact definitions indexed by fact id
+ * @param valueDefinitions value definitions indexed by value id
+ * @param nodeDefinitions node definitions indexed by node id
+ * @param categoryDefinitions requirement category definitions indexed by category id, including built-ins
+ * @param triggerCategoryIds category id claiming each trigger type by default, indexed by trigger type id
  */
 public record ResearchData(
         Set<Identifier> factIds,
@@ -59,8 +70,21 @@ public record ResearchData(
         Map<Identifier, StageLocation> stageLocations,
         Map<StageLocation, NodeStageRule> stageRulesByLocation,
         Map<StageLocation, Identifier> stageIdsByLocation,
-        Map<Identifier, Integer> stageCountsByNode
+        Map<Identifier, Integer> stageCountsByNode,
+        Map<Identifier, ResearchFactDefinition> factDefinitions,
+        Map<Identifier, ResearchValueDefinition> valueDefinitions,
+        Map<Identifier, ResearchNodeDefinition> nodeDefinitions,
+        Map<Identifier, ResearchCategoryDefinition> categoryDefinitions,
+        Map<Identifier, Identifier> triggerCategoryIds
 ) {
+
+    /**
+     * Returns the category that claims the given trigger type by default, if any.
+     */
+    public Optional<ResearchCategoryDefinition> categoryForTriggerType(Identifier triggerTypeId) {
+        var categoryId = this.triggerCategoryIds.get(triggerTypeId);
+        return categoryId != null ? Optional.ofNullable(this.categoryDefinitions.get(categoryId)) : Optional.empty();
+    }
 
     /**
      * Returns hooks for a specific trigger type that match the given context.
@@ -116,7 +140,8 @@ public record ResearchData(
             List<ResearchHookDefinition<?>> hooks,
             Map<Identifier, Set<Identifier>> graphFactIds,
             Map<Identifier, Set<Identifier>> graphNodeIds,
-            Map<Identifier, Set<Identifier>> graphValueIds
+            Map<Identifier, Set<Identifier>> graphValueIds,
+            List<ResearchCategoryDefinition> categories
     ) {
         var factIds = uniqueIds(facts.stream().map(ResearchFactDefinition::id).toList(), "fact");
         var nodeIds = uniqueIds(nodes.stream().map(ResearchNodeDefinition::id).toList(), "node");
@@ -198,8 +223,11 @@ public record ResearchData(
                 nodeStageRules.add(new NodeStageRule(
                         node.id(),
                         i,
+                        stage.id(),
+                        stage.completion(),
                         List.copyOf(stage.requiredFacts()),
-                        List.copyOf(stage.requiredValues())
+                        List.copyOf(stage.requiredValues()),
+                        List.copyOf(stage.rewards())
                 ));
             }
 
@@ -232,6 +260,8 @@ public record ResearchData(
         for (var rule : nodeStageRules) {
             stageCountsByNode.merge(rule.nodeId(), 1, Integer::sum);
         }
+        var categoryDefinitions = validateCategories(categories);
+        var triggerCategoryIds = triggerCategories(categoryDefinitions);
 
         // Build toast lookup maps
         var factToasts = facts.stream()
@@ -262,8 +292,47 @@ public record ResearchData(
                 Map.copyOf(stageLocations),
                 Map.copyOf(stageRulesByLocation),
                 Map.copyOf(stageIdsByLocation),
-                Map.copyOf(stageCountsByNode)
+                Map.copyOf(stageCountsByNode),
+                facts.stream().collect(Collectors.toUnmodifiableMap(ResearchFactDefinition::id, Function.identity())),
+                values.stream().collect(Collectors.toUnmodifiableMap(ResearchValueDefinition::id, Function.identity())),
+                nodes.stream().collect(Collectors.toUnmodifiableMap(ResearchNodeDefinition::id, Function.identity())),
+                categoryDefinitions,
+                triggerCategoryIds
         );
+    }
+
+    /**
+     * Merges the built-in categories with the given ones. Given categories replace built-ins with the same id.
+     * Returns the categories by id, ordered by sort order then id.
+     */
+    private static Map<Identifier, ResearchCategoryDefinition> validateCategories(List<ResearchCategoryDefinition> categories) {
+        var byId = new LinkedHashMap<Identifier, ResearchCategoryDefinition>();
+        for (var category : ResearchCategories.builtins()) {
+            byId.put(category.id(), category);
+        }
+        ensureUniqueIds(categories.stream().map(ResearchCategoryDefinition::id).toList(), "category");
+        for (var category : categories) {
+            byId.put(category.id(), category);
+        }
+        var sorted = new ArrayList<>(byId.values());
+        sorted.sort(Comparator.comparingInt(ResearchCategoryDefinition::sortOrder).thenComparing(category -> category.id().toString()));
+
+        var result = new LinkedHashMap<Identifier, ResearchCategoryDefinition>();
+        sorted.forEach(category -> result.put(category.id(), category));
+        return Collections.unmodifiableMap(result);
+    }
+
+    private static Map<Identifier, Identifier> triggerCategories(Map<Identifier, ResearchCategoryDefinition> categories) {
+        var result = new HashMap<Identifier, Identifier>();
+        for (var category : categories.values()) {
+            for (var triggerType : category.triggerTypes()) {
+                var existing = result.putIfAbsent(triggerType, category.id());
+                if (existing != null && !existing.equals(category.id())) {
+                    Modonomicon.LOG.warn("Trigger type '{}' is claimed by categories '{}' and '{}', using '{}'", triggerType, existing, category.id(), existing);
+                }
+            }
+        }
+        return Collections.unmodifiableMap(result);
     }
 
     private static Set<Identifier> uniqueIds(List<Identifier> ids, String type) {
@@ -296,13 +365,17 @@ public record ResearchData(
 
     /**
      * Stage advancement rule: stage advances when all required facts are present
-     * and all required values have reached their thresholds.
+     * and all required values have reached their thresholds. Manual stages never advance automatically,
+     * see {@link ResearchStageCompletion}.
      */
     public record NodeStageRule(
             Identifier nodeId,
             int stageIndex,
+            Identifier stageId,
+            ResearchStageCompletion completion,
             List<Identifier> requiredFactIds,
-            List<ResearchNodeDefinition.ValueRequirement> requiredValueRequirements
+            List<ResearchNodeDefinition.ValueRequirement> requiredValueRequirements,
+            List<ResearchReward> rewards
     ) {
     }
 

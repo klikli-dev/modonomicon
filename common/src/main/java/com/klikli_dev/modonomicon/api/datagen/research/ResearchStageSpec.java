@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.api.datagen.research;
 
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
+import com.klikli_dev.modonomicon.research.data.ResearchStageCompletion;
 import com.klikli_dev.modonomicon.research.data.ResearchStageDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchToastDefinition;
 import net.minecraft.resources.Identifier;
@@ -54,7 +55,10 @@ public record ResearchStageSpec(
                 this.requiredValues.stream().map(req ->
                         new ResearchNodeDefinition.ValueRequirement(req.valueRef().id(), req.threshold())
                 ).toList(),
-                this.toast
+                this.toast,
+                Optional.empty(),
+                ResearchStageCompletion.AUTO,
+                List.of()
         );
     }
 }

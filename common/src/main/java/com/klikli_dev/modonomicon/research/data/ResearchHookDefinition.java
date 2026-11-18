@@ -32,6 +32,7 @@ import java.util.stream.Stream;
  * @param factId the research fact granted when the configured trigger fires (null if this hook increments a value)
  * @param valueId the research value incremented when the configured trigger fires (null if this hook grants a fact)
  * @param increment the amount to add to the target value when this hook fires (default 1, ignored for fact hooks)
+ * @param consume the number of items of the used stack consumed when this hook changes research state (default 0, used by item_used only)
  */
 public record ResearchHookDefinition<TTarget>(
         Identifier id,
@@ -39,20 +40,34 @@ public record ResearchHookDefinition<TTarget>(
         TTarget triggerTarget,
         @Nullable Identifier factId,
         @Nullable Identifier valueId,
-        int increment
+        int increment,
+        int consume
 ) {
+    public ResearchHookDefinition(
+            Identifier id,
+            TriggerType<TTarget, ?> triggerType,
+            TTarget triggerTarget,
+            @Nullable Identifier factId,
+            @Nullable Identifier valueId,
+            int increment
+    ) {
+        this(id, triggerType, triggerTarget, factId, valueId, increment, 0);
+    }
+
     private static final String ID = "id";
     private static final String TRIGGER_TYPE = "trigger_type";
     private static final String TRIGGER_TARGET = "trigger_target";
     private static final String FACT_ID = "fact_id";
     private static final String VALUE_ID = "value_id";
     private static final String INCREMENT = "increment";
+    private static final String CONSUME = "consume";
 
     private static final MapCodec<Identifier> ID_CODEC = Identifier.CODEC.fieldOf(ID);
     private static final MapCodec<TriggerType<?, ?>> TRIGGER_TYPE_CODEC = TriggerTypeRegistry.codec().fieldOf(TRIGGER_TYPE);
     private static final MapCodec<Identifier> FACT_ID_CODEC = Identifier.CODEC.fieldOf(FACT_ID);
     private static final MapCodec<Identifier> VALUE_ID_CODEC = Identifier.CODEC.fieldOf(VALUE_ID);
     private static final MapCodec<Integer> INCREMENT_CODEC = Codec.INT.fieldOf(INCREMENT);
+    private static final MapCodec<Integer> CONSUME_CODEC = Codec.INT.fieldOf(CONSUME);
 
     public static final MapCodec<ResearchHookDefinition<?>> MAP_CODEC = new MapCodec<>() {
         @Override
@@ -63,7 +78,8 @@ public record ResearchHookDefinition<TTarget>(
                     ops.createString(TRIGGER_TARGET),
                     ops.createString(FACT_ID),
                     ops.createString(VALUE_ID),
-                    ops.createString(INCREMENT)
+                    ops.createString(INCREMENT),
+                    ops.createString(CONSUME)
             );
         }
 
@@ -108,14 +124,17 @@ public record ResearchHookDefinition<TTarget>(
         return decodeRequired(triggerType.targetCodec(), ops, input).flatMap(triggerTarget ->
                 decodeOptional(Identifier.CODEC, ops, input, FACT_ID, null).flatMap(factId ->
                         decodeOptional(Identifier.CODEC, ops, input, VALUE_ID, null).flatMap(valueId ->
-                                decodeOptional(Codec.INT, ops, input, INCREMENT, 1).map(increment ->
+                                decodeOptional(Codec.INT, ops, input, INCREMENT, 1).flatMap(increment ->
+                                        decodeOptional(Codec.INT, ops, input, CONSUME, 0).map(consume ->
                                         (ResearchHookDefinition<?>) new ResearchHookDefinition<>(
                                                 id,
                                                 triggerType,
                                                 triggerTarget,
                                                 factId,
                                                 valueId,
-                                                increment
+                                                increment,
+                                                consume
+                                        )
                                         )
                                 )
                         )
@@ -132,7 +151,8 @@ public record ResearchHookDefinition<TTarget>(
         Identifier factId = buf.readBoolean() ? Identifier.STREAM_CODEC.decode(buf) : null;
         Identifier valueId = buf.readBoolean() ? Identifier.STREAM_CODEC.decode(buf) : null;
         int increment = buf.readVarInt();
-        return new ResearchHookDefinition<>(id, triggerType, triggerTarget, factId, valueId, increment);
+        int consume = buf.readVarInt();
+        return new ResearchHookDefinition<>(id, triggerType, triggerTarget, factId, valueId, increment, consume);
     }
 
     private static <T, TTarget> RecordBuilder<T> encodeTyped(
@@ -150,6 +170,9 @@ public record ResearchHookDefinition<TTarget>(
         }
         if (typedInput.increment() != 1) {
             INCREMENT_CODEC.encode(typedInput.increment(), ops, prefix);
+        }
+        if (typedInput.consume() != 0) {
+            CONSUME_CODEC.encode(typedInput.consume(), ops, prefix);
         }
         return prefix;
     }
@@ -171,6 +194,7 @@ public record ResearchHookDefinition<TTarget>(
         }
 
         buf.writeVarInt(value.increment());
+        buf.writeVarInt(value.consume());
     }
 
     private static <T, A> DataResult<A> decodeRequired(MapCodec<A> codec, DynamicOps<T> ops, MapLike<T> input) {

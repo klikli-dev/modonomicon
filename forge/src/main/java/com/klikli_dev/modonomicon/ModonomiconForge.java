@@ -88,6 +88,7 @@ public class ModonomiconForge {
             MultiblockDataManager.get().registries(e.getRegistries());
             e.addListener(MultiblockDataManager.get());
 
+            ResearchDataManager.get().registries(e.getRegistries());
             e.addListener(ResearchDataManager.get());
         });
 
