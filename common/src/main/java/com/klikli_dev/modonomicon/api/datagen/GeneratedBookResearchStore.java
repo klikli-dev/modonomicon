@@ -95,14 +95,14 @@ public final class GeneratedBookResearchStore {
      * Returns the deterministic generated fact path for an entry-viewed-once request.
      */
     public String factPath(Identifier requiredEntryId) {
-        return "generated/" + this.bookPath + "/facts/entry_viewed_once/" + requiredEntryId.getPath().replace('/', '_');
+        return GeneratedResearchPaths.entryViewedOnceFact(this.bookPath, requiredEntryId);
     }
 
     /**
      * Returns the deterministic generated node path for an entry-viewed-once request.
      */
     public String nodePath(Identifier requiredEntryId) {
-        return "generated/" + this.bookPath + "/nodes/entry_viewed_once/required/" + requiredEntryId.getPath().replace('/', '_');
+        return GeneratedResearchPaths.entryRequiredNode(this.bookPath, requiredEntryId);
     }
 
     /**
@@ -123,7 +123,7 @@ public final class GeneratedBookResearchStore {
      * Returns the deterministic generated fact path for an item-crafted matcher.
      */
     public String craftedFactPath(ResearchItemMatcher target) {
-        return "generated/" + this.bookPath + "/facts/item_crafted/" + itemKey(target);
+        return GeneratedResearchPaths.itemFact(this.bookPath, GeneratedResearchPaths.ITEM_CRAFTED, itemKey(target));
     }
 
     /**
@@ -137,7 +137,7 @@ public final class GeneratedBookResearchStore {
      * Returns the deterministic generated node path for an item-crafted matcher.
      */
     public String craftedNodePath(ResearchItemMatcher target) {
-        return "generated/" + this.bookPath + "/nodes/item_crafted/" + itemKey(target);
+        return GeneratedResearchPaths.itemNode(this.bookPath, GeneratedResearchPaths.ITEM_CRAFTED, itemKey(target));
     }
 
     /**
@@ -165,7 +165,7 @@ public final class GeneratedBookResearchStore {
      * Returns the deterministic generated fact path for an item-acquired matcher.
      */
     public String acquiredFactPath(ResearchItemMatcher target) {
-        return "generated/" + this.bookPath + "/facts/item_acquired/" + itemKey(target);
+        return GeneratedResearchPaths.itemFact(this.bookPath, GeneratedResearchPaths.ITEM_ACQUIRED, itemKey(target));
     }
 
     /**
@@ -179,7 +179,7 @@ public final class GeneratedBookResearchStore {
      * Returns the deterministic generated node path for an item-acquired matcher.
      */
     public String acquiredNodePath(ResearchItemMatcher target) {
-        return "generated/" + this.bookPath + "/nodes/item_acquired/" + itemKey(target);
+        return GeneratedResearchPaths.itemNode(this.bookPath, GeneratedResearchPaths.ITEM_ACQUIRED, itemKey(target));
     }
 
     /**
