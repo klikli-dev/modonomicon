@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchCache;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.klikli_dev.modonomicon.research.data.ResearchCategoryDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchFactDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
@@ -237,11 +238,21 @@ public class BookProvider implements DataProvider {
     protected CompletableFuture<?> writeResearchBundle(CachedOutput cache, Path dataFolder, BookHierarchyResearchCompiler.CompiledBookResearch compiled) {
         var base = dataFolder.resolve(compiled.bundleId().getNamespace()).resolve(ModonomiconConstants.Data.RESEARCH_DATA_PATH).resolve(compiled.bundleId().getPath());
         var data = compiled.research();
-        return CompletableFuture.allOf(
-                this.save(cache, ResearchFactDefinition.CODEC, data.factDefinitions(), base.resolve("facts.json")),
-                this.save(cache, ResearchNodeDefinition.CODEC, data.nodeDefinitions(), base.resolve("nodes.json")),
-                this.save(cache, ResearchHookDefinition.CODEC, data.hookDefinitions(), base.resolve("hooks.json"))
-        );
+        var futures = new ArrayList<CompletableFuture<?>>();
+        // Empty lists are not written, ResearchDataManager treats a missing file the same as an empty one.
+        if (!data.factDefinitions().isEmpty()) {
+            futures.add(this.save(cache, ResearchFactDefinition.CODEC, data.factDefinitions(), base.resolve("facts.json")));
+        }
+        if (!data.nodeDefinitions().isEmpty()) {
+            futures.add(this.save(cache, ResearchNodeDefinition.CODEC, data.nodeDefinitions(), base.resolve("nodes.json")));
+        }
+        if (!data.hookDefinitions().isEmpty()) {
+            futures.add(this.save(cache, ResearchHookDefinition.CODEC, data.hookDefinitions(), base.resolve("hooks.json")));
+        }
+        if (!data.categoryDefinitions().isEmpty()) {
+            futures.add(this.save(cache, ResearchCategoryDefinition.CODEC, data.categoryDefinitions(), base.resolve("categories.json")));
+        }
+        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
     protected <T> CompletableFuture<?> save(CachedOutput cache, Codec<T> codec, List<T> values, Path path) {
