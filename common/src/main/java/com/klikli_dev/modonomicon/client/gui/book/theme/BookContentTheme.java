@@ -46,6 +46,16 @@ public interface BookContentTheme {
 
     GuiSprite collectionButtonGolden();
 
+    GuiButtonSprites entryTabRight();
+
+    GuiButtonSprites entryTabLeft();
+
+    GuiSprite entryTabRightActive();
+
+    GuiSprite entryTabLeftActive();
+
+    GuiSprite tabPageBackground();
+
     GuiSprite searchButtonIcon();
 
     GuiSprite showBookmarksButtonIcon();
