@@ -58,9 +58,26 @@ public abstract class BookPageRenderer<T extends BookPage> {
 
     private List<Button> buttons = new ArrayList<>();
 
+    /**
+     * False if the page is displayed somewhere its continuation fragments cannot be reached, e.g. in an entry tab overlay.
+     * Split pages then scale their text to fit instead of only showing the first fragment.
+     */
+    protected boolean pageSplitAllowed = true;
+
 
     public BookPageRenderer(T page) {
         this.page = page;
+    }
+
+    public boolean isPageSplitAllowed() {
+        return this.pageSplitAllowed;
+    }
+
+    /**
+     * @see #pageSplitAllowed
+     */
+    public void setPageSplitAllowed(boolean pageSplitAllowed) {
+        this.pageSplitAllowed = pageSplitAllowed;
     }
 
 
@@ -201,14 +218,16 @@ public abstract class BookPageRenderer<T extends BookPage> {
     public void renderBookTextHolder(GuiGraphicsExtractor guiGraphics, BookTextHolder text, int x, int y, int width, int height) {
         var bounds = this.getBookTextHolderBounds(x, y, width, height);
         var book = this.parentScreen != null ? this.parentScreen.getBook() : null;
-        if (this.page != null && PageSplitter.isSplitEnabled(this.page) && book != null) {
+        var splitEnabled = this.page != null && PageSplitter.isSplitEnabled(this.page);
+        if (splitEnabled && this.pageSplitAllowed && book != null) {
             var continuationHeight = PageSplitter.continuationBounds(book).height;
             var fragments = PageSplitter.split(text, this.font, bounds.width, bounds.height, continuationHeight);
             var first = fragments.isEmpty() ? List.<FormattedCharSequence>of() : fragments.get(0);
             renderFragmentLines(guiGraphics, this.font, first, bounds.x, bounds.y, this.parentScreen.getBook().theme().palette().defaultTextColor());
             return;
         }
-        if (this.page != null && !PageSplitter.isAutoScaleEnabled(this.page)) {
+        //split pages that cannot split here fall back to scale-to-fit, so no text is lost
+        if (this.page != null && !PageSplitter.isAutoScaleEnabled(this.page) && !(splitEnabled && !this.pageSplitAllowed)) {
             var lines = PageSplitter.wrapForSplit(text, this.font, bounds.width);
             renderFragmentLines(guiGraphics, this.font, lines, bounds.x, bounds.y, this.parentScreen.getBook().theme().palette().defaultTextColor());
             return;
@@ -366,7 +385,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
     @Nullable
     protected Style getClickedComponentStyleAtForTextHolder(BookTextHolder text, int x, int y, int width, int height, double pMouseX, double pMouseY) {
         var book = this.parentScreen != null ? this.parentScreen.getBook() : null;
-        return BookTextInteraction.hitTestTextHolder(this.font, this.page, book, text, x, y, width, height, pMouseX, pMouseY);
+        return BookTextInteraction.hitTestTextHolder(this.font, this.page, book, text, x, y, width, height, pMouseX, pMouseY, this.pageSplitAllowed);
     }
 
     /**

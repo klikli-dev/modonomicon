@@ -20,6 +20,7 @@ import com.klikli_dev.modonomicon.book.BookTextHolder;
 import com.klikli_dev.modonomicon.book.associated.AssociatedItemLookup;
 import com.klikli_dev.modonomicon.book.conditions.context.BookLoadConditionContext;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
+import com.klikli_dev.modonomicon.book.entries.BookEntryTab;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.book.error.BookErrorInfo;
@@ -345,7 +346,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
                                     HashMap<Identifier, JsonObject> categoryJsons,
                                     HashMap<Identifier, JsonObject> entryJsons,
                                     HashMap<Identifier, JsonObject> commandJsons,
-                                    HashMap<Identifier, JsonObject> pageJsons
+                                    HashMap<Identifier, JsonObject> pageJsons,
+                                    HashMap<Identifier, JsonObject> tabJsons
     ) {
         for (var entry : content.entrySet()) {
             var pathParts = entry.getKey().getPath().split("/");
@@ -367,7 +369,9 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
                             break;
                         }
                     }
-                    if (isPageFile) {
+                    if (this.isTabFile(entry.getKey(), pathParts, content)) {
+                        tabJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
+                    } else if (isPageFile) {
                         pageJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
                     } else {
                         entryJsons.put(entry.getKey(), entry.getValue().getAsJsonObject());
@@ -381,12 +385,28 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
                 }
                 default -> {
                     Modonomicon.LOG.warn("Found unknown content for book '{}': '{}'. " +
-                            "Should be one of: [File: book.json, File: theme.json, Directory: entries/, Directory: entries/<category>/<entry>/pages/, Directory: categories/, Directory: commands/]", bookId, entry.getKey());
+                            "Should be one of: [File: book.json, File: theme.json, Directory: entries/, Directory: entries/<category>/<entry>/pages/, Directory: entries/<category>/<entry>/tabs/, Directory: categories/, Directory: commands/]", bookId, entry.getKey());
                     BookErrorManager.get().error(bookId, "Found unknown content for book '" + bookId + "': '" + entry.getKey() + "'. " +
-                            "Should be one of: [File: book.json, File: theme.json, Directory: entries/, Directory: entries/<category>/<entry>/pages/, Directory: categories/, Directory: commands/]");
+                            "Should be one of: [File: book.json, File: theme.json, Directory: entries/, Directory: entries/<category>/<entry>/pages/, Directory: entries/<category>/<entry>/tabs/, Directory: categories/, Directory: commands/]");
                 }
             }
         }
+    }
+
+    /**
+     * Checks if the given file under entries/ is a tab file.
+     * Tab files live in <book>/entries/<category...>/<entry>/tabs/<tab-id>, next to the entry file <book>/entries/<category...>/<entry>.
+     * A "tabs" directory only is the reserved tab directory if that sibling entry file exists,
+     * otherwise it is an ordinary directory and the files in it are entries, e.g. <book>/entries/<category>/tabs/<entry>.
+     */
+    private boolean isTabFile(Identifier fileId, String[] pathParts, Map<Identifier, JsonElement> content) {
+        //at least: book, entries, category, entry, tabs, tab
+        if (pathParts.length < 6 || !"tabs".equals(pathParts[pathParts.length - 2])) {
+            return false;
+        }
+
+        var entryPath = String.join("/", Arrays.copyOfRange(pathParts, 0, pathParts.length - 2));
+        return content.containsKey(Identifier.fromNamespaceAndPath(fileId.getNamespace(), entryPath));
     }
 
     @Override
@@ -402,7 +422,8 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
         var entryJsons = new HashMap<Identifier, JsonObject>();
         var commandJsons = new HashMap<Identifier, JsonObject>();
         var pageJsons = new HashMap<Identifier, JsonObject>();
-        this.categorizeContent(content, bookJsons, themeJsons, categoryJsons, entryJsons, commandJsons, pageJsons);
+        var tabJsons = new HashMap<Identifier, JsonObject>();
+        this.categorizeContent(content, bookJsons, themeJsons, categoryJsons, entryJsons, commandJsons, pageJsons, tabJsons);
 
         var themeDataByBook = new HashMap<Identifier, BookThemeData>();
         for (var entry : themeJsons.entrySet()) {
@@ -530,6 +551,7 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
 
         //Merge per-page JSON files into BookContentEntry inline page lists
         this.mergePageJsons(pageJsons, removedCategories, removedEntries);
+        this.mergeTabJsons(tabJsons, removedCategories, removedEntries);
 
         //load commands
         for (var entry : commandJsons.entrySet()) {
@@ -698,6 +720,145 @@ public class BookDataManager extends SimpleJsonResourceReloadListener<JsonElemen
                 }
             }
         }
+    }
+
+    /**
+     * Merges per-tab JSON files into BookContentEntry tab lists.
+     * Tab files removed by load-time preprocessing (e.g. a failing load_condition) also remove inline tabs with the same ID.
+     * Tabs in a file replace inline tabs with the same ID.
+     * Tabs without a matching inline ID are appended in sort_number order.
+     */
+    private void mergeTabJsons(Map<Identifier, JsonObject> tabJsons, Set<RemovedElement> removedCategories, Set<RemovedElement> removedEntries) {
+        record ParsedTab(BookEntryTab tab, int sortNumber) {}
+        var tabsByEntry = new LinkedHashMap<BookContentEntry, List<ParsedTab>>();
+        var removedTabIds = new ArrayList<RemovedTab>();
+
+        var sortedEntries = new ArrayList<>(tabJsons.entrySet());
+        sortedEntries.sort(Comparator.comparing(e -> e.getKey().toString()));
+        for (var entry : sortedEntries) {
+            try {
+                var path = entry.getKey();
+                var pathParts = path.getPath().split("/");
+
+                // Path: <book>/entries/<category...>/<entry-id>/tabs/<tab-id>
+                // The tab id is the file name, the entry is the directory above "tabs"
+                int tabsIdx = pathParts.length - 2;
+                if (tabsIdx < 4) {
+                    BookErrorManager.get().error("Invalid tab file path structure: " + path);
+                    continue;
+                }
+
+                var bookId = Identifier.fromNamespaceAndPath(path.getNamespace(), pathParts[0]);
+                var tabId = pathParts[pathParts.length - 1];
+
+                var categoryPath = Arrays.stream(pathParts)
+                        .skip(2)
+                        .limit(tabsIdx - 3)
+                        .collect(Collectors.joining("/"));
+                var categoryId = Identifier.fromNamespaceAndPath(path.getNamespace(), categoryPath);
+
+                var entryPath = categoryPath + "/" + pathParts[tabsIdx - 1];
+                var entryId = Identifier.fromNamespaceAndPath(path.getNamespace(), entryPath);
+
+                BookErrorManager.get().setCurrentBookId(bookId);
+                BookErrorManager.get().getContextHelper().entryId = entryId;
+
+                //tabs of removed categories or entries are removed as well
+                if (removedCategories.contains(new RemovedElement(bookId, categoryId)) || removedEntries.contains(new RemovedElement(bookId, entryId))) {
+                    BookErrorManager.get().reset();
+                    continue;
+                }
+
+                var tabJson = this.preprocess(BookElementKind.TAB, bookId, entryId, entry.getValue());
+                if (tabJson.isEmpty()) {
+                    removedTabIds.add(new RemovedTab(bookId, categoryId, entryId, tabId));
+                    BookErrorManager.get().reset();
+                    continue;
+                }
+
+                //the file name is the tab id, and the page of a tab file gets the tab id if it has none
+                var json = tabJson.get().deepCopy();
+                json.addProperty("id", tabId);
+                if (json.get("page") instanceof JsonObject pageJson && !pageJson.has("id")) {
+                    pageJson.addProperty("id", tabId);
+                }
+
+                var book = this.books.get(bookId);
+                if (book == null) {
+                    BookErrorManager.get().error("Tab file references unknown book: " + bookId);
+                    continue;
+                }
+
+                var category = book.getCategory(categoryId);
+                if (category == null) {
+                    BookErrorManager.get().error("Tab file references unknown category: " + categoryId);
+                    continue;
+                }
+
+                var bookEntry = category.getEntry(entryId);
+                if (bookEntry == null) {
+                    BookErrorManager.get().error("Tab file references unknown entry: " + entryId);
+                    continue;
+                }
+
+                if (!(bookEntry instanceof BookContentEntry contentEntry)) {
+                    BookErrorManager.get().error("Tab file references non-content entry: " + entryId);
+                    continue;
+                }
+
+                var tab = BookEntryTab.fromJson(entryId, json, this.registries);
+
+                tabsByEntry.computeIfAbsent(contentEntry, k -> new ArrayList<>())
+                        .add(new ParsedTab(tab, tab.getSortNumber()));
+
+                BookErrorManager.get().reset();
+            } catch (Exception e) {
+                BookErrorManager.get().error("Failed to load tab file '" + entry.getKey() + "'", e);
+                BookErrorManager.get().reset();
+            }
+        }
+
+        for (var entry : tabsByEntry.entrySet()) {
+            var contentEntry = entry.getKey();
+            var tabs = entry.getValue();
+            tabs.sort(Comparator.comparingInt(ParsedTab::sortNumber));
+            for (var parsedTab : tabs) {
+                this.mergeTabIntoEntry(contentEntry, parsedTab.tab());
+            }
+        }
+
+        for (var removedTab : removedTabIds) {
+            var book = this.books.get(removedTab.bookId());
+            var category = book != null ? book.getCategory(removedTab.categoryId()) : null;
+            var bookEntry = category != null ? category.getEntry(removedTab.entryId()) : null;
+            if (bookEntry instanceof BookContentEntry contentEntry) {
+                var providedByTabFile = tabsByEntry.getOrDefault(contentEntry, List.of()).stream()
+                        .anyMatch(parsedTab -> removedTab.tabId().equals(parsedTab.tab().getId()));
+                if (!providedByTabFile) {
+                    contentEntry.getTabs().removeIf(tab -> removedTab.tabId().equals(tab.getId()));
+                }
+            }
+        }
+    }
+
+    /**
+     * Merges a single tab into a BookContentEntry's tab list.
+     * If an inline tab has the same ID, it is replaced in-place. Otherwise, the tab is appended to the end.
+     */
+    private void mergeTabIntoEntry(BookContentEntry contentEntry, BookEntryTab tab) {
+        var tabs = contentEntry.getTabs();
+        for (int i = 0; i < tabs.size(); i++) {
+            var existingId = tabs.get(i).getId();
+            if (existingId != null && existingId.equals(tab.getId())) {
+                tabs.set(i, tab);
+                return;
+            }
+        }
+
+        tabs.add(tab);
+    }
+
+    private record RemovedTab(Identifier bookId, Identifier categoryId, Identifier entryId, String tabId) {
     }
 
     private record RemovedPage(Identifier bookId, Identifier categoryId, Identifier entryId, String pageId) {

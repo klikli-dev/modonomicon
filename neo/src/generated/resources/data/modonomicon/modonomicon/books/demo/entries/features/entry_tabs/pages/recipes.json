@@ -1,0 +1,11 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "recipes",
+  "show_title_separator": true,
+  "sort_number": 3,
+  "text": "book.modonomicon.demo.features.entry_tabs.recipes.text",
+  "title": "book.modonomicon.demo.features.entry_tabs.recipes.title"
+}

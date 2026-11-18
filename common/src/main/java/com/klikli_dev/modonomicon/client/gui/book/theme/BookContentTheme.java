@@ -46,6 +46,21 @@ public interface BookContentTheme {
 
     GuiSprite collectionButtonGolden();
 
+    GuiButtonSprites entryTabRight();
+
+    GuiButtonSprites entryTabLeft();
+
+    GuiSprite entryTabRightActive();
+
+    GuiSprite entryTabLeftActive();
+
+    GuiSprite tabPageBackground();
+
+    /**
+     * The button that closes an open entry tab overlay and returns to the underlying pages.
+     */
+    GuiButtonSprites tabCloseButton();
+
     GuiSprite searchButtonIcon();
 
     GuiSprite showBookmarksButtonIcon();

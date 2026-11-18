@@ -33,6 +33,7 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Gui.BUTTON_BACK, "Back");
         this.add(Gui.BUTTON_BACK_TOOLTIP, "Go back to the last page you visited");
         this.add(Gui.BUTTON_EXIT, "Exit");
+        this.add(Gui.BUTTON_CLOSE_TAB, "Close Tab");
         this.add(Gui.BUTTON_VISUALIZE, "Show Multiblock Preview");
         this.add(Gui.BUTTON_VISUALIZE_TOOLTIP, "Show Multiblock Preview");
         this.add(Gui.BUTTON_VISUALIZE_LAYERS, "Show Layer-by-Layer Multiblock Preview");
