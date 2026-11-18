@@ -2,7 +2,7 @@
   {
     "fact_id": "modonomicon:demo/condition_root_viewed",
     "id": "modonomicon:demo/condition_root_viewed_hook",
-    "trigger_target": "modonomicon:features/condition_root",
+    "trigger_target": "modonomicon:research/condition_root",
     "trigger_type": "modonomicon:entry_viewed_once"
   },
   {
@@ -19,19 +19,19 @@
   },
   {
     "id": "modonomicon:demo/collector_a_hook",
-    "trigger_target": "modonomicon:values/collector_a",
+    "trigger_target": "modonomicon:research/collector_a",
     "trigger_type": "modonomicon:entry_viewed_once",
     "value_id": "modonomicon:demo/collector_count"
   },
   {
     "id": "modonomicon:demo/collector_b_hook",
-    "trigger_target": "modonomicon:values/collector_b",
+    "trigger_target": "modonomicon:research/collector_b",
     "trigger_type": "modonomicon:entry_viewed_once",
     "value_id": "modonomicon:demo/collector_count"
   },
   {
     "id": "modonomicon:demo/collector_c_hook",
-    "trigger_target": "modonomicon:values/collector_c",
+    "trigger_target": "modonomicon:research/collector_c",
     "trigger_type": "modonomicon:entry_viewed_once",
     "value_id": "modonomicon:demo/collector_count"
   },
@@ -54,7 +54,7 @@
   {
     "id": "modonomicon:demo/stages_planks_hook",
     "trigger_target": {
-      "tag": "minecraft:planks"
+      "id": "minecraft:oak_planks"
     },
     "trigger_type": "modonomicon:item_crafted",
     "value_id": "modonomicon:demo/stages_planks_crafted"
@@ -62,7 +62,54 @@
   {
     "fact_id": "modonomicon:demo/marker_intro_viewed",
     "id": "modonomicon:demo/marker_intro_viewed_hook",
-    "trigger_target": "modonomicon:markers/marker_intro",
+    "trigger_target": "modonomicon:research/marker_intro",
     "trigger_type": "modonomicon:entry_viewed_once"
+  },
+  {
+    "fact_id": "modonomicon:demo/requirements_oak_log_acquired",
+    "id": "modonomicon:demo/requirements_oak_log_acquired_hook",
+    "trigger_target": {
+      "id": "minecraft:oak_log"
+    },
+    "trigger_type": "modonomicon:item_acquired"
+  },
+  {
+    "fact_id": "modonomicon:demo/requirements_iron_ingot_acquired",
+    "id": "modonomicon:demo/requirements_iron_ingot_acquired_hook",
+    "trigger_target": {
+      "id": "minecraft:iron_ingot"
+    },
+    "trigger_type": "modonomicon:item_acquired"
+  },
+  {
+    "id": "modonomicon:demo/requirements_cobblestone_hook",
+    "trigger_target": {
+      "id": "minecraft:cobblestone"
+    },
+    "trigger_type": "modonomicon:item_acquired",
+    "value_id": "modonomicon:demo/requirements_cobblestone_collected"
+  },
+  {
+    "id": "modonomicon:demo/progression_dirt_hook",
+    "trigger_target": {
+      "id": "minecraft:dirt"
+    },
+    "trigger_type": "modonomicon:item_acquired",
+    "value_id": "modonomicon:demo/progression_dirt_collected"
+  },
+  {
+    "consume": 1,
+    "fact_id": "modonomicon:demo/scholarship/note_studied",
+    "id": "modonomicon:demo/scholarship/note_studied_hook",
+    "trigger_target": {
+      "components": {
+        "minecraft:custom_data": {
+          "modonomicon_demo": "research_note"
+        },
+        "minecraft:custom_name": "Research Note"
+      },
+      "id": "minecraft:paper"
+    },
+    "trigger_type": "modonomicon:item_used"
   }
 ]
