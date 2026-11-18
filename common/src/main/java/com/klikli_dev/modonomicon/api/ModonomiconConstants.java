@@ -98,6 +98,7 @@ public class ModonomiconConstants {
             public static final String REQUIREMENTS_REWARD_VALUE = PREFIX + "requirements.reward.value";
             public static final String REQUIREMENTS_REWARD_SPECIAL = PREFIX + "requirements.reward.special";
             public static final String REQUIREMENTS_REWARD_PENDING = PREFIX + "requirements.reward.pending";
+            public static final String REQUIREMENTS_PAGE_TEXT = PREFIX + "requirements.page.text";
             public static final String FEEDBACK_MISSING = PREFIX + "feedback.missing";
             public static final String FEEDBACK_UNAVAILABLE = PREFIX + "feedback.unavailable";
             public static final String FEEDBACK_INVALID = PREFIX + "feedback.invalid";
@@ -184,6 +185,8 @@ public class ModonomiconConstants {
             public static final String CONDITION_RESEARCH_STAGE_COMPLETED = CONDITION_PREFIX + "research_stage_completed";
             public static final String CONDITION_CATEGORY_HAS_VISIBLE_ENTRIES = CONDITION_PREFIX + "has_visible_entries";
             public static final String CONDITION_ENTRY_UNLOCKED = CONDITION_PREFIX + "entry_unlocked";
+            public static final String CONDITION_ITEM_CRAFTED = CONDITION_PREFIX + "item_crafted";
+            public static final String CONDITION_ITEM_ACQUIRED = CONDITION_PREFIX + "item_acquired";
             public static final String RECIPE_PREFIX = PREFIX + "recipe.";
             public static final String RECIPE_CRAFTING_SHAPELESS = RECIPE_PREFIX + "crafting_shapeless";
             public static final String ITEM_NO_BOOK_FOUND_FOR_STACK = PREFIX + "no_book_found_for_stack";
