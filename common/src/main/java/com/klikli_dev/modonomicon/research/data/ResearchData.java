@@ -110,6 +110,17 @@ public record ResearchData(
     }
 
     /**
+     * Returns all hooks of all trigger types.
+     */
+    public List<ResearchHookDefinition<?>> allHooks() {
+        var result = new ArrayList<ResearchHookDefinition<?>>();
+        for (var index : this.hookIndexesByType.values()) {
+            result.addAll(index.all());
+        }
+        return List.copyOf(result);
+    }
+
+    /**
      * Returns the number of stages of the given node, 0 for unknown nodes.
      */
     public int stageCount(Identifier nodeId) {
