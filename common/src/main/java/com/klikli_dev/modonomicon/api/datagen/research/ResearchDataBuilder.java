@@ -7,11 +7,13 @@
 package com.klikli_dev.modonomicon.api.datagen.research;
 
 import com.klikli_dev.modonomicon.data.TriggerType;
+import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
 import com.klikli_dev.modonomicon.research.data.ResearchFactDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchToastDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchValueDefinition;
+import com.klikli_dev.modonomicon.research.hook.NoTriggerTarget;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStackTemplate;
 
@@ -45,9 +47,23 @@ public final class ResearchDataBuilder {
      *
      * Facts are primitive durable inputs in the research model. Hooks grant facts, and nodes query
      * those granted facts as part of their unlock requirements.
+     *
+     * @throws IllegalArgumentException if a fact with the same id was already declared
      */
     public ResearchFactRef fact(String path) {
-        var ref = ResearchFactRef.of(Identifier.fromNamespaceAndPath(this.namespace, path));
+        return this.fact(ResearchFactRef.of(Identifier.fromNamespaceAndPath(this.namespace, path)));
+    }
+
+    /**
+     * Declares one explicit research fact definition for an already-known typed ref and returns that same ref.
+     * The ref's id is used as-is, so it may live in any namespace.
+     *
+     * @throws IllegalArgumentException if a fact with the same id was already declared
+     */
+    public ResearchFactRef fact(ResearchFactRef ref) {
+        if (this.facts.stream().anyMatch(spec -> spec.ref().id().equals(ref.id()))) {
+            throw new IllegalArgumentException("Research fact '" + ref.id() + "' is already declared");
+        }
         this.facts.add(ResearchFactSpec.of(ref));
         return ref;
     }
@@ -56,10 +72,48 @@ public final class ResearchDataBuilder {
      * Declares one explicit research value definition and returns a typed ref to it.
      *
      * Values are numeric counters that hooks can increment and nodes can require reaching a threshold.
+     *
+     * @throws IllegalArgumentException if a value with the same id was already declared
      */
     public ResearchValueRef value(String path) {
-        var ref = ResearchValueRef.of(Identifier.fromNamespaceAndPath(this.namespace, path));
+        return this.value(ResearchValueRef.of(Identifier.fromNamespaceAndPath(this.namespace, path)));
+    }
+
+    /**
+     * Declares one explicit research value definition for an already-known typed ref and returns that same ref.
+     * The ref's id is used as-is, so it may live in any namespace.
+     *
+     * @throws IllegalArgumentException if a value with the same id was already declared
+     */
+    public ResearchValueRef value(ResearchValueRef ref) {
+        if (this.values.stream().anyMatch(spec -> spec.ref().id().equals(ref.id()))) {
+            throw new IllegalArgumentException("Research value '" + ref.id() + "' is already declared");
+        }
         this.values.add(ResearchValueSpec.of(ref));
+        return ref;
+    }
+
+    /**
+     * Returns the given fact ref after checking that it was declared in this builder.
+     *
+     * @throws IllegalArgumentException if the fact was never declared
+     */
+    public ResearchFactRef requireFact(ResearchFactRef ref) {
+        if (this.facts.stream().noneMatch(spec -> spec.ref().id().equals(ref.id()))) {
+            throw new IllegalArgumentException("Research fact '" + ref.id() + "' was never declared in this builder");
+        }
+        return ref;
+    }
+
+    /**
+     * Returns the given value ref after checking that it was declared in this builder.
+     *
+     * @throws IllegalArgumentException if the value was never declared
+     */
+    public ResearchValueRef requireValue(ResearchValueRef ref) {
+        if (this.values.stream().noneMatch(spec -> spec.ref().id().equals(ref.id()))) {
+            throw new IllegalArgumentException("Research value '" + ref.id() + "' was never declared in this builder");
+        }
         return ref;
     }
 
@@ -71,7 +125,7 @@ public final class ResearchDataBuilder {
      */
     public ResearchNodeRef node(String path, ResearchFactRef... requiredFacts) {
         var ref = ResearchNodeRef.of(Identifier.fromNamespaceAndPath(this.namespace, path));
-        this.nodes.add(ResearchNodeSpec.factsOnly(ref, List.of(requiredFacts)));
+        this.addNode(ResearchNodeSpec.factsOnly(ref, List.of(requiredFacts)));
         return ref;
     }
 
@@ -83,7 +137,7 @@ public final class ResearchDataBuilder {
      * while still compiling to the same canonical node definition output.
      */
     public ResearchNodeRef node(ResearchNodeRef ref, ResearchFactRef... requiredFacts) {
-        this.nodes.add(ResearchNodeSpec.factsOnly(ref, List.of(requiredFacts)));
+        this.addNode(ResearchNodeSpec.factsOnly(ref, List.of(requiredFacts)));
         return ref;
     }
 
@@ -91,7 +145,7 @@ public final class ResearchDataBuilder {
      * Declares a research node with both fact and value requirements.
      */
     public ResearchNodeRef node(ResearchNodeRef ref, List<ResearchFactRef> requiredFacts, List<ResearchNodeSpec.ValueRequirement> requiredValues) {
-        this.nodes.add(new ResearchNodeSpec(ref, requiredFacts, requiredValues, List.of(), List.of(), Optional.empty()));
+        this.addNode(new ResearchNodeSpec(ref, requiredFacts, requiredValues, List.of(), List.of(), Optional.empty()));
         return ref;
     }
 
@@ -105,7 +159,10 @@ public final class ResearchDataBuilder {
 
     /**
      * Declares a research node with stages and stage dependencies.
+     *
+     * @deprecated use {@link #nodeBuilder(ResearchNodeRef)} which covers stages, stage dependencies, values and toast.
      */
+    @Deprecated(forRemoval = true)
     public ResearchNodeRef node(
             ResearchNodeRef ref,
             List<ResearchFactRef> requiredFacts,
@@ -113,13 +170,16 @@ public final class ResearchDataBuilder {
             List<ResearchStageSpec> stages,
             List<ResearchNodeSpec.StageDependencySpec> requiredStages
     ) {
-        this.nodes.add(ResearchNodeSpec.of(ref, requiredFacts, requiredValues, stages, requiredStages, Optional.empty()));
+        this.addNode(ResearchNodeSpec.of(ref, requiredFacts, requiredValues, stages, requiredStages, Optional.empty()));
         return ref;
     }
 
     /**
      * Declares a research node with stages, stage dependencies, and optional toast.
+     *
+     * @deprecated use {@link #nodeBuilder(ResearchNodeRef)} which covers stages, stage dependencies, values and toast.
      */
+    @Deprecated(forRemoval = true)
     public ResearchNodeRef node(
             ResearchNodeRef ref,
             List<ResearchFactRef> requiredFacts,
@@ -128,54 +188,85 @@ public final class ResearchDataBuilder {
             List<ResearchNodeSpec.StageDependencySpec> requiredStages,
             ResearchToastDefinition toast
     ) {
-        this.nodes.add(ResearchNodeSpec.of(ref, requiredFacts, requiredValues, stages, requiredStages, Optional.ofNullable(toast)));
+        this.addNode(ResearchNodeSpec.of(ref, requiredFacts, requiredValues, stages, requiredStages, Optional.ofNullable(toast)));
         return ref;
     }
 
     /**
-     * Creates a fluent builder for authoring a complex research node.
+     * Creates a fluent builder for authoring a research node with facts, values, stages, stage
+     * dependencies and toast. Call {@link ResearchNodeBuilder#build()} to register the node.
      */
     public ResearchNodeBuilder nodeBuilder(ResearchNodeRef ref) {
         return new ResearchNodeBuilder(this, ref);
     }
 
     /**
+     * Registers a compiled node spec. Used by {@link ResearchNodeBuilder}.
+     *
+     * @throws IllegalArgumentException if a node with the same id was already declared
+     */
+    void addNode(ResearchNodeSpec spec) {
+        if (this.nodes.stream().anyMatch(existing -> existing.ref().id().equals(spec.ref().id()))) {
+            throw new IllegalArgumentException("Research node '" + spec.ref().id() + "' is already declared");
+        }
+        this.nodes.add(spec);
+    }
+
+    /**
      * Adds toast display data to an existing fact.
+     *
+     * @throws IllegalArgumentException if the fact was never declared
      */
     public void toast(ResearchFactRef factRef, ResearchToastDefinition toast) {
-        for (int i = 0; i < this.facts.size(); i++) {
-            var spec = this.facts.get(i);
-            if (spec.ref().id().equals(factRef.id())) {
-                this.facts.set(i, spec.toast(toast));
-                break;
-            }
-        }
+        var index = this.indexOfFact(factRef);
+        this.facts.set(index, this.facts.get(index).toast(toast));
     }
 
     /**
      * Adds toast display data to an existing value.
+     *
+     * @throws IllegalArgumentException if the value was never declared
      */
     public void toast(ResearchValueRef valueRef, ResearchToastDefinition toast) {
-        for (int i = 0; i < this.values.size(); i++) {
-            var spec = this.values.get(i);
-            if (spec.ref().id().equals(valueRef.id())) {
-                this.values.set(i, spec.toast(toast));
-                break;
-            }
-        }
+        var index = this.indexOfValue(valueRef);
+        this.values.set(index, this.values.get(index).toast(toast));
     }
 
     /**
      * Adds toast display data to an existing node.
+     *
+     * @throws IllegalArgumentException if the node was never declared
      */
     public void toast(ResearchNodeRef nodeRef, ResearchToastDefinition toast) {
-        for (int i = 0; i < this.nodes.size(); i++) {
-            var spec = this.nodes.get(i);
-            if (spec.ref().id().equals(nodeRef.id())) {
-                this.nodes.set(i, spec.toast(toast));
-                break;
+        var index = this.indexOfNode(nodeRef);
+        this.nodes.set(index, this.nodes.get(index).toast(toast));
+    }
+
+    private int indexOfFact(ResearchFactRef ref) {
+        for (int i = 0; i < this.facts.size(); i++) {
+            if (this.facts.get(i).ref().id().equals(ref.id())) {
+                return i;
             }
         }
+        throw new IllegalArgumentException("Cannot add toast to research fact '" + ref.id() + "': it was never declared in this builder");
+    }
+
+    private int indexOfValue(ResearchValueRef ref) {
+        for (int i = 0; i < this.values.size(); i++) {
+            if (this.values.get(i).ref().id().equals(ref.id())) {
+                return i;
+            }
+        }
+        throw new IllegalArgumentException("Cannot add toast to research value '" + ref.id() + "': it was never declared in this builder");
+    }
+
+    private int indexOfNode(ResearchNodeRef ref) {
+        for (int i = 0; i < this.nodes.size(); i++) {
+            if (this.nodes.get(i).ref().id().equals(ref.id())) {
+                return i;
+            }
+        }
+        throw new IllegalArgumentException("Cannot add toast to research node '" + ref.id() + "': it was never declared in this builder");
     }
 
     // --- Generic hook ingress ---
@@ -205,95 +296,97 @@ public final class ResearchDataBuilder {
     /**
      * Grants a fact when the specified targetless trigger type fires.
      */
-    public void grantFact(String hookPath, TriggerType<com.klikli_dev.modonomicon.research.hook.NoTriggerTarget, ?> triggerType, ResearchFactRef factRef) {
-        this.grantFact(hookPath, triggerType, com.klikli_dev.modonomicon.research.hook.NoTriggerTarget.INSTANCE, factRef);
+    public void grantFact(String hookPath, TriggerType<NoTriggerTarget, ?> triggerType, ResearchFactRef factRef) {
+        this.grantFact(hookPath, triggerType, NoTriggerTarget.INSTANCE, factRef);
     }
 
     /**
      * Increments a value when the specified targetless trigger type fires.
      */
-    public void incrementValue(String hookPath, TriggerType<com.klikli_dev.modonomicon.research.hook.NoTriggerTarget, ?> triggerType, ResearchValueRef valueRef, int increment) {
-        this.incrementValue(hookPath, triggerType, com.klikli_dev.modonomicon.research.hook.NoTriggerTarget.INSTANCE, valueRef, increment);
+    public void incrementValue(String hookPath, TriggerType<NoTriggerTarget, ?> triggerType, ResearchValueRef valueRef, int increment) {
+        this.incrementValue(hookPath, triggerType, NoTriggerTarget.INSTANCE, valueRef, increment);
     }
 
-    // --- Convenience sugar (delegate to generic) ---
+    // --- Convenience sugar (deprecated, delegates to generic) ---
 
     /**
      * Declares an explicit {@code entry_viewed_once} research ingress hook that grants a fact.
+     *
+     * @deprecated use {@link ResearchIngressHelper#onEntryViewedOnce(Identifier)} or {@link #grantFact(String, TriggerType, Object, ResearchFactRef)}.
      */
+    @Deprecated(forRemoval = true)
     public void grantFactOnEntryViewedOnce(String path, Identifier entryId, ResearchFactRef factRef) {
-        this.grantFact(path, com.klikli_dev.modonomicon.registry.TriggerTypeRegistry.ENTRY_VIEWED_ONCE, entryId, factRef);
+        this.grantFact(path, TriggerTypeRegistry.ENTRY_VIEWED_ONCE, entryId, factRef);
     }
 
     /**
      * Declares an explicit {@code entry_viewed_once} research ingress hook that increments a value.
+     *
+     * @deprecated use {@link ResearchIngressHelper#onEntryViewedOnce(Identifier)} or {@link #incrementValue(String, TriggerType, Object, ResearchValueRef, int)}.
      */
+    @Deprecated(forRemoval = true)
     public void incrementValueOnEntryViewedOnce(String path, Identifier entryId, ResearchValueRef valueRef, int increment) {
-        this.incrementValue(path, com.klikli_dev.modonomicon.registry.TriggerTypeRegistry.ENTRY_VIEWED_ONCE, entryId, valueRef, increment);
+        this.incrementValue(path, TriggerTypeRegistry.ENTRY_VIEWED_ONCE, entryId, valueRef, increment);
     }
 
     /**
      * Declares an explicit advancement-earned research ingress hook that grants a fact.
+     *
+     * @deprecated use {@link ResearchIngressHelper#onAdvancementEarned(Identifier)} or {@link #grantFact(String, TriggerType, Object, ResearchFactRef)}.
      */
+    @Deprecated(forRemoval = true)
     public void grantFactOnAdvancementEarned(String path, Identifier advancementId, ResearchFactRef factRef) {
-        this.grantFact(path, com.klikli_dev.modonomicon.registry.TriggerTypeRegistry.ADVANCEMENT, advancementId, factRef);
+        this.grantFact(path, TriggerTypeRegistry.ADVANCEMENT, advancementId, factRef);
     }
 
     /**
      * Declares an explicit advancement-earned research ingress hook that increments a value.
+     *
+     * @deprecated use {@link ResearchIngressHelper#onAdvancementEarned(Identifier)} or {@link #incrementValue(String, TriggerType, Object, ResearchValueRef, int)}.
      */
+    @Deprecated(forRemoval = true)
     public void incrementValueOnAdvancementEarned(String path, Identifier advancementId, ResearchValueRef valueRef, int increment) {
-        this.incrementValue(path, com.klikli_dev.modonomicon.registry.TriggerTypeRegistry.ADVANCEMENT, advancementId, valueRef, increment);
+        this.incrementValue(path, TriggerTypeRegistry.ADVANCEMENT, advancementId, valueRef, increment);
     }
 
     /**
      * Declares an explicit {@code item_crafted} research ingress hook that grants a fact.
+     *
+     * @deprecated use {@link ResearchIngressHelper#onItemCrafted(ItemStackTemplate)} or {@link #grantFact(String, TriggerType, Object, ResearchFactRef)}.
      */
+    @Deprecated(forRemoval = true)
     public void grantFactOnItemCrafted(String path, ItemStackTemplate targetItem, ResearchFactRef factRef) {
-        this.hooks.add(ResearchHookSpec.grantFact(
-                Identifier.fromNamespaceAndPath(this.namespace, path),
-                com.klikli_dev.modonomicon.registry.TriggerTypeRegistry.ITEM_CRAFTED,
-                targetItem,
-                factRef
-        ));
+        this.grantFact(path, TriggerTypeRegistry.ITEM_CRAFTED, targetItem, factRef);
     }
 
     /**
      * Declares an explicit {@code item_crafted} research ingress hook that increments a value.
+     *
+     * @deprecated use {@link ResearchIngressHelper#onItemCrafted(ItemStackTemplate)} or {@link #incrementValue(String, TriggerType, Object, ResearchValueRef, int)}.
      */
+    @Deprecated(forRemoval = true)
     public void incrementValueOnItemCrafted(String path, ItemStackTemplate targetItem, ResearchValueRef valueRef, int increment) {
-        this.hooks.add(ResearchHookSpec.incrementValue(
-                Identifier.fromNamespaceAndPath(this.namespace, path),
-                com.klikli_dev.modonomicon.registry.TriggerTypeRegistry.ITEM_CRAFTED,
-                targetItem,
-                valueRef,
-                increment
-        ));
+        this.incrementValue(path, TriggerTypeRegistry.ITEM_CRAFTED, targetItem, valueRef, increment);
     }
 
     /**
      * Declares an explicit {@code item_acquired} research ingress hook that grants a fact.
+     *
+     * @deprecated use {@link ResearchIngressHelper#onItemAcquired(ItemStackTemplate)} or {@link #grantFact(String, TriggerType, Object, ResearchFactRef)}.
      */
+    @Deprecated(forRemoval = true)
     public void grantFactOnItemAcquired(String path, ItemStackTemplate targetItem, ResearchFactRef factRef) {
-        this.hooks.add(ResearchHookSpec.grantFact(
-                Identifier.fromNamespaceAndPath(this.namespace, path),
-                com.klikli_dev.modonomicon.registry.TriggerTypeRegistry.ITEM_ACQUIRED,
-                targetItem,
-                factRef
-        ));
+        this.grantFact(path, TriggerTypeRegistry.ITEM_ACQUIRED, targetItem, factRef);
     }
 
     /**
      * Declares an explicit {@code item_acquired} research ingress hook that increments a value.
+     *
+     * @deprecated use {@link ResearchIngressHelper#onItemAcquired(ItemStackTemplate)} or {@link #incrementValue(String, TriggerType, Object, ResearchValueRef, int)}.
      */
+    @Deprecated(forRemoval = true)
     public void incrementValueOnItemAcquired(String path, ItemStackTemplate targetItem, ResearchValueRef valueRef, int increment) {
-        this.hooks.add(ResearchHookSpec.incrementValue(
-                Identifier.fromNamespaceAndPath(this.namespace, path),
-                com.klikli_dev.modonomicon.registry.TriggerTypeRegistry.ITEM_ACQUIRED,
-                targetItem,
-                valueRef,
-                increment
-        ));
+        this.incrementValue(path, TriggerTypeRegistry.ITEM_ACQUIRED, targetItem, valueRef, increment);
     }
 
     // --- Definition compilation ---

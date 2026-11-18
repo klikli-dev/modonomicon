@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.research.data.ResearchToastDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Fluent builder for authoring research nodes with stages, stage dependencies, and other options.
@@ -124,14 +125,14 @@ public final class ResearchNodeBuilder {
      * Builds and registers the node, returning the node ref.
      */
     public ResearchNodeRef build() {
-        this.research.node(
+        this.research.addNode(ResearchNodeSpec.of(
                 this.ref,
                 List.copyOf(this.requiredFacts),
                 List.copyOf(this.requiredValues),
                 List.copyOf(this.stages),
                 List.copyOf(this.stageDependencies),
-                this.toast
-        );
+                Optional.ofNullable(this.toast)
+        ));
         return this.ref;
     }
 }
