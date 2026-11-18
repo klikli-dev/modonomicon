@@ -123,6 +123,21 @@ Custom themes can also override the file `content/indicators/book/marker_indicat
 
 Datagen: `BookThemeContentModel#withMarkerIndicator(...)`.
 
+#### Entry tab and tab page sprites
+
+The entry tab sprites are not set in `theme.json`. Custom themes override them by providing the texture with the same relative path under their theme folder, the same way as the marker indicator. Any part that is missing falls back to the default theme.
+
+| Relative path (default theme) | Size | Used for |
+|-------------------------------|------|----------|
+| `content/buttons/entry_tab/entry_tab_right.png` | 44x20 | Entry tab on the right edge |
+| `content/buttons/entry_tab/entry_tab_left.png` | 44x20 | Entry tab on the left edge |
+| `content/buttons/entry_tab/entry_tab_right_active.png` | 44x20 | Right entry tab while its tab page is open |
+| `content/buttons/entry_tab/entry_tab_left_active.png` | 44x20 | Left entry tab while its tab page is open |
+| `content/backgrounds/book/tab_page_background.png` | 145x178 | Background of the tab page shown over the book |
+| `content/buttons/entry_tab/tab_close_button_normal.png` and `tab_close_button_hover.png` | 12x12 | Close button of the tab page |
+
+See [Partial overrides are supported](#partial-overrides-are-supported) for how overrides work.
+
 ### **palette** (JSON Object, _optional_)
 
 Controls theme colors.
@@ -134,6 +149,12 @@ The default title color used by the active theme.
 #### **default_text_color** (Integer, _optional_)
 Default value: `-16777216`.
 The default text color used by the active theme.
+
+#### **tab_overlay_dim_color** (Integer, _optional_)
+Default value: `1610612736` (`0x60000000`).
+The color (ARGB) that dims the book while an entry tab page is shown over it. Use an alpha of `0` to disable the dimming.
+
+Datagen: `BookThemePaletteModel#withTabOverlayDimColor(...)`.
 
 :::tip
 
