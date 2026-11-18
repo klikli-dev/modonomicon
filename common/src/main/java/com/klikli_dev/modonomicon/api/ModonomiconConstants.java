@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.api;
 
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 
 public class ModonomiconConstants {
 
@@ -197,6 +198,32 @@ public class ModonomiconConstants {
             public static final String ASSOCIATED_HOLD_TO_OPEN = PREFIX + "associated.hold_to_open";
             public static final String ASSOCIATED_LOCKED = PREFIX + "associated.locked";
 
+        }
+
+        /**
+         * Translation keys of research definitions. Datagen and runtime share these, see the key helpers.
+         */
+        public static class Research {
+            public static final String FACT_PREFIX = "research_fact";
+            public static final String VALUE_PREFIX = "research_value";
+            public static final String NODE_PREFIX = "research_node";
+            public static final String STAGE_PREFIX = "research_stage";
+
+            public static String factKey(Identifier factId) {
+                return Util.makeDescriptionId(FACT_PREFIX, factId);
+            }
+
+            public static String valueKey(Identifier valueId) {
+                return Util.makeDescriptionId(VALUE_PREFIX, valueId);
+            }
+
+            public static String nodeKey(Identifier nodeId) {
+                return Util.makeDescriptionId(NODE_PREFIX, nodeId);
+            }
+
+            public static String stageKey(Identifier stageId) {
+                return Util.makeDescriptionId(STAGE_PREFIX, stageId);
+            }
         }
 
         public static class Command {
