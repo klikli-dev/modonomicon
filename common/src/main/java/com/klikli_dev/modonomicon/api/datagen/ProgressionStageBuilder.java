@@ -262,7 +262,7 @@ public final class ProgressionStageBuilder {
     }
 
     /**
-     * The title of the stage, literal English, shown as "Next: title" in requirement blocks. Defaults to the stage id.
+     * The title of the stage, literal English, shown as "Next: title" in requirement blocks. Defaults to the stage id, capitalized.
      */
     public ProgressionStageBuilder title(String title) {
         this.title = title;
