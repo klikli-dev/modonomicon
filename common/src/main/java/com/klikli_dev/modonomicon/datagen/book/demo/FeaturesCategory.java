@@ -109,6 +109,9 @@ public class FeaturesCategory extends CategoryProvider {
         //layout position is independent of registration order
         var conditionNotEntry = this.add(new ConditionNotEntry(this).generate());
         this.layout().entry(conditionNotEntry).below(conditionLevel2Entry, 2);
+
+        var entryTabsEntry = this.add(new EntryTabsEntry(this).generate());
+        this.layout().entry(entryTabsEntry).at(3, 3);
     }
 
     @Override
