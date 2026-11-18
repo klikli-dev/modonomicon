@@ -58,6 +58,13 @@ public class ModonomiconConstants {
             public static final String BUTTON_EXIT = PREFIX + "button.exit";
             public static final String BUTTON_CLOSE_TAB = PREFIX + "button.close_tab";
 
+            public static final String REQUIREMENTS_COST_ITEM = PREFIX + "requirements.cost.item";
+            public static final String REQUIREMENTS_COST_LEVELS = PREFIX + "requirements.cost.levels";
+            public static final String REQUIREMENTS_COST_DURABILITY = PREFIX + "requirements.cost.durability";
+            public static final String FEEDBACK_MISSING = PREFIX + "feedback.missing";
+            public static final String FEEDBACK_UNAVAILABLE = PREFIX + "feedback.unavailable";
+            public static final String FEEDBACK_INVALID = PREFIX + "feedback.invalid";
+
             public static final String BUTTON_VISUALIZE = PREFIX + "button.visualize";
             public static final String BUTTON_VISUALIZE_TOOLTIP = PREFIX + "button.visualize.tooltip";
             public static final String BUTTON_VISUALIZE_LAYERS = PREFIX + "button.visualize_layers";

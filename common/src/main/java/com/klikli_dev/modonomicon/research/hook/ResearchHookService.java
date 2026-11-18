@@ -24,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.BooleanSupplier;
 
 /**
  * Entry point for research events. Resolves the hooks matching an event and applies them as one batch:
@@ -146,15 +147,8 @@ public class ResearchHookService {
     // --- Shared apply logic ---
 
     private <TTarget> boolean applyHooks(ServerPlayer player, List<ResearchHookDefinition<TTarget>> hooks) {
-        var completions = new ArrayList<ResearchStateChangeListener.Completion>(this.listeners.size());
-        for (var listener : this.listeners) {
-            completions.add(listener.beforeChange(player));
-        }
-
-        boolean changed = false;
-        List<ResearchToastTrigger> triggers;
-        ResearchStateManager.beginToastCollection();
-        try {
+        return this.applyStateChange(player, () -> {
+            boolean changed = false;
             for (var hook : hooks) {
                 if (hook.factId() != null) {
                     changed |= this.stateManager.grantFact(player, hook.factId());
@@ -162,6 +156,29 @@ public class ResearchHookService {
                     changed |= this.stateManager.incrementValue(player, hook.valueId(), hook.increment());
                 }
             }
+            return changed;
+        });
+    }
+
+    /**
+     * Applies a batch of state mutations for a player, the same way hook batches are applied: listeners before, the
+     * mutation, reevaluation, toast sync, then listeners after. Use this for every state change that is not a plain
+     * hook, e.g. research actions and manual stage completion, so they share the pipeline with hooks.
+     *
+     * @param mutation performs the mutations and returns true if it changed research state
+     * @return true if research state changed
+     */
+    public boolean applyStateChange(ServerPlayer player, BooleanSupplier mutation) {
+        var completions = new ArrayList<ResearchStateChangeListener.Completion>(this.listeners.size());
+        for (var listener : this.listeners) {
+            completions.add(listener.beforeChange(player));
+        }
+
+        boolean changed;
+        List<ResearchToastTrigger> triggers;
+        ResearchStateManager.beginToastCollection();
+        try {
+            changed = mutation.getAsBoolean();
             changed |= this.stateManager.reevaluate(player);
         } finally {
             // Always pair the begin with an end so a failed batch cannot leave collection active for later batches.

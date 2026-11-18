@@ -23,6 +23,7 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Owns the research state of all players and applies changes to it. Mutations mark the save data dirty and collect
@@ -113,10 +114,22 @@ public class ResearchStateManager {
 
     /**
      * Activates all nodes whose requirements are met and advances their stages as far as possible.
+     * Repeats until nothing changes, because stage rewards can grant facts and values that unlock further nodes or stages.
+     * Every change is monotonic (unlocks, stage advances and rewards happen once), so this terminates.
      *
      * @return true if any research state changed
      */
     public boolean reevaluate(ServerPlayer player) {
+        boolean changed = false;
+        boolean passChanged;
+        do {
+            passChanged = this.reevaluatePass(player);
+            changed |= passChanged;
+        } while (passChanged);
+        return changed;
+    }
+
+    private boolean reevaluatePass(ServerPlayer player) {
         var state = this.getStateFor(player);
         var data = ResearchDataManager.get().data();
         boolean changed = false;
@@ -133,7 +146,7 @@ public class ResearchStateManager {
             collectToast(ToastTriggerType.NODE_UNLOCKED, rule.nodeId(), 0, nodeChanged && data.nodeToasts().containsKey(rule.nodeId()));
             changed |= nodeChanged;
             changed |= state.startNodeIfNotStarted(rule.nodeId());
-            changed |= advanceStages(state, rule.nodeId(), data);
+            changed |= advanceStages(player, state, rule.nodeId(), data);
         }
 
         if (changed) {
@@ -143,26 +156,68 @@ public class ResearchStateManager {
     }
 
     /**
-     * Completes stages of the node while the next stage's requirements are met.
+     * Completes stages of the node while the next stage's requirements are met. Manual stages stop the advance,
+     * they are only completed via {@link #completeManualStage}.
      *
      * @return true if at least one stage was completed
      */
-    private static boolean advanceStages(PlayerResearchState state, Identifier nodeId, ResearchData data) {
+    private static boolean advanceStages(ServerPlayer player, PlayerResearchState state, Identifier nodeId, ResearchData data) {
         boolean changed = false;
         while (true) {
             var location = new StageLocation(nodeId, state.currentStageIndex(nodeId));
             var rule = data.stageRulesByLocation().get(location);
-            if (rule == null || !requirementsMet(state, rule.requiredFactIds(), rule.requiredValueRequirements())) {
+            if (rule == null || rule.completion().isManual() || !requirementsMet(state, rule.requiredFactIds(), rule.requiredValueRequirements())) {
                 break;
             }
 
-            state.completeCurrentStage(nodeId);
+            completeStage(player, state, data, rule);
             changed = true;
-
-            var stageId = data.stageIdsByLocation().get(location);
-            collectToast(ToastTriggerType.NODE_STAGE_COMPLETED, stageId, 0, stageId != null && data.stageToasts().containsKey(stageId));
         }
         return changed;
+    }
+
+    /**
+     * Marks the current stage of the rule's node as completed and grants its rewards, at most once per stage and player.
+     * Used by automatic and manual completion.
+     */
+    private static void completeStage(ServerPlayer player, PlayerResearchState state, ResearchData data, ResearchData.NodeStageRule rule) {
+        state.completeCurrentStage(rule.nodeId());
+        collectToast(ToastTriggerType.NODE_STAGE_COMPLETED, rule.stageId(), 0, rule.stageId() != null && data.stageToasts().containsKey(rule.stageId()));
+
+        if (!rule.rewards().isEmpty() && state.markRewardsGranted(rule.stageId())) {
+            for (var reward : rule.rewards()) {
+                reward.grant(player);
+            }
+        }
+    }
+
+    /**
+     * Returns the current stage of a node if it is a manual stage whose requirements are met.
+     * Empty if the node is not unlocked, the current stage is automatic or its requirements are not met yet.
+     */
+    public Optional<ResearchData.NodeStageRule> readyManualStage(Player player, Identifier nodeId) {
+        var state = this.getStateFor(player);
+        if (!state.isNodeUnlocked(nodeId)) {
+            return Optional.empty();
+        }
+        var data = ResearchDataManager.get().data();
+        var rule = data.stageRulesByLocation().get(new StageLocation(nodeId, state.currentStageIndex(nodeId)));
+        if (rule == null || !rule.completion().isManual() || !requirementsMet(state, rule.requiredFactIds(), rule.requiredValueRequirements())) {
+            return Optional.empty();
+        }
+        return Optional.of(rule);
+    }
+
+    /**
+     * Completes a manual stage returned by {@link #readyManualStage}, grants its rewards and cascades through
+     * following automatic stages. Costs are not handled here, the caller consumes them.
+     */
+    public void completeManualStage(ServerPlayer player, ResearchData.NodeStageRule rule) {
+        var state = this.getStateFor(player);
+        var data = ResearchDataManager.get().data();
+        completeStage(player, state, data, rule);
+        advanceStages(player, state, rule.nodeId(), data);
+        this.saveData.setDirty();
     }
 
     /**

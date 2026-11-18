@@ -141,6 +141,12 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Gui.NO_ERRORS_FOUND, "No errors found. You should not see this page!");
         this.add(Gui.BOOK_BUILD_FAILED, "This book failed to build and cannot be opened. Please report this to the author of the mod providing the book.");
         this.add(Gui.BOOK_NOT_FOUND, "The book '%s' was not found or failed to load. Please check the log for errors.");
+        this.add(Gui.REQUIREMENTS_COST_ITEM, "%s\u00d7 %s");
+        this.add(Gui.REQUIREMENTS_COST_LEVELS, "%s levels");
+        this.add(Gui.REQUIREMENTS_COST_DURABILITY, "%s durability: %s");
+        this.add(Gui.FEEDBACK_MISSING, "Missing: %s");
+        this.add(Gui.FEEDBACK_UNAVAILABLE, "You cannot do that right now.");
+        this.add(Gui.FEEDBACK_INVALID, "Nothing to do here.");
 
         //Multiblock Preview
         this.add(Multiblock.COMPLETE, "Complete!");
