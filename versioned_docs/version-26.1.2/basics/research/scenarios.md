@@ -235,7 +235,7 @@ Toasts can also be attached to individual stages:
 this.nodeBuilder(this.node("mymod/my_node"))
     .withStage(ResearchStageSpec.valuesOnly(stage1Ref, List.of(
         new ResearchNodeSpec.ValueRequirement(someValue, 10)
-    )).toast(new ResearchToastDefinition(
+    )).withToast(new ResearchToastDefinition(
         "research_toast.mymod.stage_progress",
         List.of(),
         "research_toast.mymod.stage_progress.desc",
