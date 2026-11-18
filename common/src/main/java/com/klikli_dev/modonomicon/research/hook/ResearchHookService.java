@@ -6,31 +6,43 @@
 
 package com.klikli_dev.modonomicon.research.hook;
 
-import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.book.Book;
-import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
-import com.klikli_dev.modonomicon.bookstate.visual.BookVisibilitySnapshots;
-import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.data.TriggerType;
 import com.klikli_dev.modonomicon.networking.ResearchToastMessage;
 import com.klikli_dev.modonomicon.platform.Services;
-import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
-import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
 import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
+import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
+import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
+import com.klikli_dev.modonomicon.research.state.PlayerResearchState;
+import com.klikli_dev.modonomicon.research.state.ResearchStateChangeListener;
+import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * Entry point for research events. Resolves the hooks matching an event and applies them as one batch:
+ * listeners before, fact/value mutations, reevaluation, toast sync, then listeners after.
+ * See the {@code research} package documentation for the full pipeline.
+ */
 public class ResearchHookService {
 
     private final ResearchStateManager stateManager;
+    private final List<ResearchStateChangeListener> listeners = new CopyOnWriteArrayList<>();
 
     public ResearchHookService(ResearchStateManager stateManager) {
         this.stateManager = stateManager;
+    }
+
+    /**
+     * Registers a listener that wraps every hook batch applied by this service. Listeners run in registration order.
+     */
+    public void addStateChangeListener(ResearchStateChangeListener listener) {
+        this.listeners.add(listener);
     }
 
     // --- Generic API ---
@@ -58,29 +70,24 @@ public class ResearchHookService {
     }
 
     /**
-     * Check if any hook of this type can still progress for this context.
+     * Check if any hook matching this context can still progress, i.e. grants a fact the player does not have yet.
      */
     public <TTarget, TContext extends TriggerContext> boolean canProgress(
             TriggerType<TTarget, TContext> triggerType,
             TContext context
     ) {
         var hooks = triggerType.handler().resolve(triggerType, context.player(), context);
-        var state = this.stateManager.getStateFor(context.player());
-        for (var hook : hooks) {
-            if (hook.factId() != null && !state.hasFact(hook.factId())) {
-                return true;
-            }
-        }
-        return false;
+        return hasPendingFact(this.stateManager.getStateFor(context.player()), hooks);
     }
 
     /**
-     * Check if any hook of this type can still progress for this target.
-     * This overload accepts Player (for client-side use) and looks up hooks directly from data.
+     * Check if any hook of this type can still progress. Uses all hooks of the type, not only the ones matching a context.
      */
     private boolean canProgressByType(Player player, TriggerType<?, ?> triggerType) {
-        var hooks = com.klikli_dev.modonomicon.research.data.ResearchDataManager.get().hooksForType(triggerType);
-        var state = this.stateManager.getStateFor(player);
+        return hasPendingFact(this.stateManager.getStateFor(player), ResearchDataManager.get().hooksForType(triggerType));
+    }
+
+    private static boolean hasPendingFact(PlayerResearchState state, List<? extends ResearchHookDefinition<?>> hooks) {
         for (var hook : hooks) {
             if (hook.factId() != null && !state.hasFact(hook.factId())) {
                 return true;
@@ -96,6 +103,12 @@ public class ResearchHookService {
                 new EntryViewedContext(player, entryId));
     }
 
+    /**
+     * Returns true if any entry-viewed hook can still progress for the player.
+     * <p>
+     * The entry id is not used: the result is book-wide, not per entry. The book screens rely on this when they check
+     * "any visible entry has progress", so changing it to a per-entry check would change those indicators.
+     */
     public boolean canProgressEntryViewedOnce(Player player, Identifier entryId) {
         return this.canProgressByType(player, TriggerTypeRegistry.ENTRY_VIEWED_ONCE);
     }
@@ -126,38 +139,17 @@ public class ResearchHookService {
      * Checks whether the player's research state is missing any advancement-backed facts.
      */
     public boolean needsAdvancementReplay(ServerPlayer player) {
-        var state = this.stateManager.getStateFor(player);
-        for (var hook : com.klikli_dev.modonomicon.research.data.ResearchDataManager.get()
-                .hooksForType(TriggerTypeRegistry.ADVANCEMENT)) {
-            if (hook.factId() != null && !state.hasFact(hook.factId())) {
-                return true;
-            }
-        }
-        return false;
+        return this.canProgressByType(player, TriggerTypeRegistry.ADVANCEMENT);
     }
 
     // --- Shared apply logic ---
 
     private <TTarget> boolean applyHooks(ServerPlayer player, List<ResearchHookDefinition<TTarget>> hooks) {
-        //If books are not built yet (e.g. right after /reload before datapack sync), build them lazily.
-        //Otherwise visibility snapshots below would run against unlinked books and fail.
-        if (!BookDataManager.get().areBooksBuilt()) {
-            try {
-                BookDataManager.get().tryBuildBooks(player.level());
-            } catch (Exception e) {
-                Modonomicon.LOG.error("Failed to lazily build books before applying research hooks, skipping visibility updates to avoid a crash.", e);
-            }
+        var completions = new ArrayList<ResearchStateChangeListener.Completion>(this.listeners.size());
+        for (var listener : this.listeners) {
+            completions.add(listener.beforeChange(player));
         }
 
-        var before = BookDataManager.get().getBooks().values().stream()
-                .collect(Collectors.toMap(Book::getId, book -> {
-                    try {
-                        return BookVisibilitySnapshots.collect(player, book);
-                    } catch (Exception e) {
-                        Modonomicon.LOG.error("Failed to collect visibility snapshot for book '{}', using empty snapshot to avoid a crash.", book.getId(), e);
-                        return new BookVisibilitySnapshots(java.util.Set.of(), java.util.Set.of(), java.util.Map.of());
-                    }
-                }));
         ResearchStateManager.beginToastCollection();
         boolean changed = false;
         for (var hook : hooks) {
@@ -172,18 +164,9 @@ public class ResearchHookService {
         if (!triggers.isEmpty()) {
             Services.NETWORK.sendTo(player, new ResearchToastMessage(triggers));
         }
-        if (changed) {
-            for (var book : BookDataManager.get().getBooks().values()) {
-                if (book.hasBuildFailed()) {
-                    continue;
-                }
-                try {
-                    BookVisualStateManager.get().updateVisibilityDrivenUnread(player, book, before.get(book.getId()), BookVisibilitySnapshots.collect(player, book));
-                } catch (Exception e) {
-                    //One broken book must never crash a server tick (see #385).
-                    Modonomicon.LOG.error("Failed to update visibility-driven unread state for book '{}', skipping to avoid a crash.", book.getId(), e);
-                }
-            }
+
+        for (var completion : completions) {
+            completion.afterChange(changed);
         }
         return changed;
     }
