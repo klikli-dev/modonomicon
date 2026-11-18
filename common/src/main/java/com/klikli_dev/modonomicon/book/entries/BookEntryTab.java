@@ -9,7 +9,9 @@ package com.klikli_dev.modonomicon.book.entries;
 import com.klikli_dev.modonomicon.book.BookIcon;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
+import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.book.page.BookPage;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
@@ -21,6 +23,7 @@ import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -131,6 +134,17 @@ public class BookEntryTab {
 
     public int getSortNumber() {
         return this.sortNumber;
+    }
+
+    /**
+     * Whether the tab is available to the player: its page is visible and its condition is met.
+     * Does not consider the anchor, i.e. whether the anchored page is on the open spread.
+     */
+    public boolean isAvailableFor(Player player, BookContentEntry entry) {
+        if (!BookServices.visibility().isVisible(player, this.page)) {
+            return false;
+        }
+        return this.condition.test(BookConditionContext.of(entry.getBook(), entry), player);
     }
 
     /**

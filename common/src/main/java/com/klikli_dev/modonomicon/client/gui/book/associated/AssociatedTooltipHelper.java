@@ -10,8 +10,10 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.BookIcon;
 import com.klikli_dev.modonomicon.book.BookTextHolder;
+import com.klikli_dev.modonomicon.book.PageDisplayMode;
 import com.klikli_dev.modonomicon.book.associated.AssociatedItemLookup;
 import com.klikli_dev.modonomicon.book.associated.AssociatedItemMatcher;
+import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.page.BookEntityPage;
 import com.klikli_dev.modonomicon.book.page.BookImagePage;
@@ -20,6 +22,7 @@ import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.book.page.BookRecipePage;
 import com.klikli_dev.modonomicon.book.page.BookSpotlightPage;
 import com.klikli_dev.modonomicon.book.page.BookTextPage;
+import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.client.ModonomiconKeys;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
 import com.klikli_dev.modonomicon.client.gui.book.entry.EntryDisplayState;
@@ -49,7 +52,7 @@ public class AssociatedTooltipHelper {
      * Created fresh on every gather so the countdown ticks.
      */
     public static Optional<TooltipComponent> gatherImage(ItemStack stack) {
-        var association = AssociatedItemLookup.get().find(stack);
+        var association = find(stack);
         if (association == null) {
             return Optional.empty();
         }
@@ -87,7 +90,7 @@ public class AssociatedTooltipHelper {
      * nothing to open (no match, unknown entry, or locked).
      */
     public static boolean openFromHover(ItemStack stack) {
-        var association = AssociatedItemLookup.get().find(stack);
+        var association = find(stack);
         if (association == null) {
             return false;
         }
@@ -110,6 +113,50 @@ public class AssociatedTooltipHelper {
 
         BookGuiManager.get().openEntry(association.bookId(), entry.getCategoryId(), association.entryId(), page);
         return true;
+    }
+
+    /**
+     * Finds the association for the stack, skipping tab associations whose tab cannot currently be opened.
+     */
+    private static AssociatedItemLookup.Association find(ItemStack stack) {
+        return AssociatedItemLookup.get().find(stack, AssociatedTooltipHelper::canOpen);
+    }
+
+    /**
+     * Whether opening the association can show its target. Entry and page associations are always openable
+     * (locked entries show a locked hint instead). Tab associations require a book that shows entry tabs,
+     * an available tab and, for anchored tabs, a visible anchor page.
+     */
+    private static boolean canOpen(AssociatedItemLookup.Association association) {
+        if (!association.isTab()) {
+            return true;
+        }
+
+        var tab = AssociatedItemLookup.get().resolveTab(association);
+        if (tab == null || !(AssociatedItemLookup.get().resolveEntry(association) instanceof BookContentEntry entry)) {
+            return false;
+        }
+        //only the double page entry screen shows entry tabs
+        if (entry.getBook().getPageDisplayMode() != PageDisplayMode.DOUBLE_PAGE) {
+            return false;
+        }
+
+        Player player = Minecraft.getInstance().player;
+        if (player == null) {
+            return true;
+        }
+        if (!tab.isAvailableFor(player, entry)) {
+            return false;
+        }
+        if (tab.getAnchor() == null) {
+            return true;
+        }
+        for (var page : entry.getPages()) {
+            if (tab.getAnchor().equals(page.getId())) {
+                return BookServices.visibility().isVisible(player, page);
+            }
+        }
+        return false;
     }
 
     /**

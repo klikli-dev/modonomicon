@@ -7,10 +7,8 @@
 package com.klikli_dev.modonomicon.client.gui.book.entry;
 
 import com.klikli_dev.modonomicon.book.Book;
-import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.book.entries.BookEntryTab;
 import com.klikli_dev.modonomicon.book.entries.EntryTabSide;
-import com.klikli_dev.modonomicon.bookstate.BookServices;
 import com.klikli_dev.modonomicon.client.gui.book.BookPaginatedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.BookSideButtonRenderer;
 import com.klikli_dev.modonomicon.client.gui.book.button.EntryTabButton;
@@ -206,11 +204,7 @@ public class EntryTabController {
      * A tab is visible if its page is visible to the player, its condition is met and, if anchored, its page is on the open spread.
      */
     public boolean isVisible(BookEntryTab tab) {
-        var player = this.screen.getMinecraft().player;
-        if (!BookServices.visibility().isVisible(player, tab.getPage())) {
-            return false;
-        }
-        if (!tab.getCondition().test(BookConditionContext.of(this.getBook(), this.screen.getEntry()), player)) {
+        if (!tab.isAvailableFor(this.screen.getMinecraft().player, this.screen.getEntry())) {
             return false;
         }
         return tab.getAnchor() == null || this.screen.isPageOnOpenSpread(tab.getAnchor());

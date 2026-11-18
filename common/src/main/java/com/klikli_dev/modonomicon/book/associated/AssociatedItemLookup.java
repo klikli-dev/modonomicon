@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * Client-side reverse index from item to book entry/page for associated-item tooltips.
@@ -86,6 +87,16 @@ public class AssociatedItemLookup {
      * A page-level match wins over an entry-level match.
      */
     public Association find(ItemStack stack) {
+        return this.find(stack, association -> true);
+    }
+
+    /**
+     * Finds the best association for the given stack that passes the given filter, or null if none matches.
+     * A page-level match wins over an entry-level match.
+     * The filter is evaluated on every lookup, so it can check state that changes after the index was built
+     * (e.g. whether a tab can currently be opened). Rejected associations are skipped in favour of other matches.
+     */
+    public Association find(ItemStack stack, Predicate<Association> filter) {
         if (stack.isEmpty()) {
             return null;
         }
@@ -97,7 +108,7 @@ public class AssociatedItemLookup {
         List<Association> candidates = this.byItem.get(stack.getItem());
         if (candidates != null) {
             for (var candidate : candidates) {
-                if (!this.matches(stack, candidate)) {
+                if (!this.matches(stack, candidate) || !filter.test(candidate)) {
                     continue;
                 }
                 if (candidate.pageNumber() >= 0) {
@@ -121,6 +132,9 @@ public class AssociatedItemLookup {
                     continue;
                 }
                 if (association.pageNumber() >= 0 && this.resolvePage(association) == null) {
+                    continue;
+                }
+                if (!filter.test(association)) {
                     continue;
                 }
                 if (association.pageNumber() >= 0) {
