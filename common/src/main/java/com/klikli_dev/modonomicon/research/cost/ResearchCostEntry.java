@@ -24,6 +24,15 @@ public interface ResearchCostEntry {
     ResearchCostType<?> type();
 
     /**
+     * The planning rank of this entry within a cost, lower ranks plan first. Entries of equal rank keep their declaration order.
+     * Durability plans first (rank 0), so an item entry cannot take the stack a durability entry needs, e.g. shears.
+     * Other entries use rank 1.
+     */
+    default int planRank() {
+        return 1;
+    }
+
+    /**
      * What the player holds for this entry: matching items, usable stacks for durability, or the experience level for levels.
      * Used for progress display, not for payment.
      */

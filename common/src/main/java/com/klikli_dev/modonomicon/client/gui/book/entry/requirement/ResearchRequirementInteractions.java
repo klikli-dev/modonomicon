@@ -117,8 +117,10 @@ public final class ResearchRequirementInteractions {
             return lines;
         }
         lines.add(Component.translatable(Gui.REQUIREMENTS_COSTS).withStyle(ChatFormatting.GRAY));
+        var missing = cost.missing(player);
         for (var entry : cost.entries()) {
-            var color = entry.canPay(player) ? ChatFormatting.GRAY : ChatFormatting.RED;
+            boolean unpayable = missing.stream().anyMatch(candidate -> candidate == entry);
+            var color = unpayable ? ChatFormatting.RED : ChatFormatting.GRAY;
             lines.add(ResearchCostPresenterRegistry.get(entry.type().id()).line(entry).copy().withStyle(color));
         }
         return lines;

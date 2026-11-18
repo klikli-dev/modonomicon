@@ -57,6 +57,11 @@ public record DurabilityCostEntry(ResearchItemMatcher item, int amount) implemen
         return ResearchCostTypeRegistry.DURABILITY;
     }
 
+    @Override
+    public int planRank() {
+        return 0;
+    }
+
     /**
      * The number of usable stacks the player holds that the matcher accepts. Only stacks count, not items.
      */

@@ -17,15 +17,18 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * What a player pays for a paid research action or a manually completed stage: a list of typed entries, see {@link ResearchCostEntry}.
- * The entries are planned together, so they cannot claim the same stack. Creative players (infinite materials) pay nothing.
+ * The entries are planned together, so they cannot claim the same stack. Planning order is by {@link ResearchCostEntry#planRank}:
+ * durability first, then items, then levels, so an item entry never takes the stack a durability entry needs.
+ * Creative players (infinite materials) pay nothing.
  * <p>
  * JSON shape: a list of entries, each with a {@code type} such as {@code modonomicon:item}.
  *
- * @param entries the entries, planned and paid in order
+ * @param entries the entries, in declaration order; planned by rank and paid in that order
  */
 public record ResearchCost(List<ResearchCostEntry> entries) {
 
@@ -47,6 +50,13 @@ public record ResearchCost(List<ResearchCostEntry> entries) {
     }
 
     /**
+     * The entries in planning order: by {@link ResearchCostEntry#planRank}, declaration order within a rank.
+     */
+    private List<ResearchCostEntry> planOrder() {
+        return this.entries.stream().sorted(Comparator.comparingInt(ResearchCostEntry::planRank)).toList();
+    }
+
+    /**
      * The entries the player cannot pay, planned in order. Empty if the player can afford the whole cost.
      */
     public List<ResearchCostEntry> missing(Player player) {
@@ -55,7 +65,7 @@ public record ResearchCost(List<ResearchCostEntry> entries) {
             return missing;
         }
         var plan = new ResearchCostPlan(player);
-        for (var entry : this.entries) {
+        for (var entry : this.planOrder()) {
             if (!entry.plan(plan)) {
                 missing.add(entry);
             }
@@ -76,12 +86,13 @@ public record ResearchCost(List<ResearchCostEntry> entries) {
             return true;
         }
         var plan = new ResearchCostPlan(player);
-        for (var entry : this.entries) {
+        var order = this.planOrder();
+        for (var entry : order) {
             if (!entry.plan(plan)) {
                 return false;
             }
         }
-        for (var entry : this.entries) {
+        for (var entry : order) {
             entry.apply(player, plan);
         }
         player.getInventory().setChanged();
