@@ -249,6 +249,8 @@ public class EntryTabController {
 
     private void attachPage(BookEntryTab tab) {
         this.pageRenderer = PageRendererRegistry.getPageRenderer(tab.getPage().getType()).create(tab.getPage());
+        //the overlay is a single page without continuation fragments, so split pages scale their text to fit instead
+        this.pageRenderer.setPageSplitAllowed(false);
         this.pageRenderer.onBeginDisplayPage(this.screen, this.getOverlayLeft() + BookEntryScreen.SINGLE_PAGE_X, BookEntryScreen.TOP_PADDING);
     }
 
