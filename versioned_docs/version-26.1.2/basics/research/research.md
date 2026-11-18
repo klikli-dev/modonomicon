@@ -27,13 +27,13 @@ A node represents a milestone in the research tree. Nodes require facts and/or v
 
 ### Hooks
 
-Hooks connect external events to research progress. Each hook triggers on an event and either grants a fact or increments a value. Item-based hooks use `ItemStackTemplate` targets — component matching is implicit in the template.
+Hooks connect external events to research progress. Each hook triggers on an event and either grants a fact or increments a value. Item hooks match either an item template (the item plus the components of the template) or an item tag.
 
 | Hook Type | Event | Target Type |
 |-----------|-------|-------------|
 | `entry_viewed_once` | A book entry is viewed for the first time | `Identifier` (entry id) |
-| `item_crafted` | A specific item is crafted | `ItemStackTemplate` (item + optional components) |
-| `item_acquired` | A specific item appears in inventory | `ItemStackTemplate` (item + optional components) |
+| `item_crafted` | A matching item is crafted | `ResearchItemMatcher`: item template (`{"id": ...}`) or tag (`{"tag": ...}`) |
+| `item_acquired` | A matching item appears in inventory | `ResearchItemMatcher`: item template (`{"id": ...}`) or tag (`{"tag": ...}`) |
 | `advancement` | A vanilla advancement is earned | `Identifier` (advancement id) |
 
 Third-party mods can register custom trigger types with arbitrary target and context types via `TriggerTypeRegistry.register()`.
@@ -52,9 +52,22 @@ Research datagen produces these files per bundle:
 - `nodes.json` — node definitions with required_facts, required_values, stages, required_stages, and optional toast
 - `hooks.json` — all hooks (all trigger types in one file)
 
-## Runtime
+## Runtime pipeline
 
-The `ResearchStateManager` tracks per-player research state. Research hooks fire automatically via `ResearchHookService`. Toast notifications are sent from server to client via `ResearchToastMessage`.
+Research events are applied in batches. Each event goes through the same steps:
+
+1. **Event.** Gameplay code reports what happened, e.g. an item was crafted, an advancement was earned or an entry was viewed, through `ResearchServices.hooks()`.
+2. **Hook resolution.** The event is matched against the hooks of its trigger type. Hooks are indexed when the data loads, so an event only checks the hooks that can match it.
+3. **Facts and values.** Each matching hook grants its fact or increments its value. Changes are collected per batch.
+4. **Reevaluate.** Nodes whose required facts, values and stages are met unlock and start. Their stages advance while their requirements are met.
+5. **Toasts.** The toasts for the facts, values, nodes and stages that changed are sent to the player together.
+6. **Listeners.** Other systems are told whether the batch changed anything. The book uses this to update its visibility and unread state.
+
+Changes that happen outside a hook batch, such as admin commands, are saved with the player's research state. The state is then sent to the client with `SyncResearchStateMessage`.
+
+### Stages
+
+A node's stages are completed in order. The next stage becomes the current one once the current stage is completed. In JSON and datagen, stages are referenced by their 0-based index. The stored progress is an internal detail, so authors do not need to handle it.
 
 ## Further reading
 
