@@ -189,6 +189,13 @@ public final class ResearchIngressHelper {
             this(research, targetItem, 0);
         }
 
+        /**
+         * Creates an item-used ingress step bound to one exact item template.
+         */
+        public ItemUsedIngress(ResearchDataBuilder research, ItemStackTemplate targetItem) {
+            this(research, ResearchItemMatcher.of(targetItem));
+        }
+
         private ItemUsedIngress(ResearchDataBuilder research, ResearchItemMatcher targetItem, int consume) {
             super(research, TriggerTypeRegistry.ITEM_USED, targetItem);
             this.consume = consume;
