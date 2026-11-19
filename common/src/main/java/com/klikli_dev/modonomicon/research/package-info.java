@@ -70,7 +70,7 @@
  * <h2>Default icons</h2>
  * The client presenters of cost, effect and trigger types show a texture icon where the icon is a type default, e.g. the
  * level cost or the reward of a function. Dynamic data keeps its own icon, such as the item of a cost or the icon of an entry.
- * The textures and their file names are listed in {@code ResearchIcons}. Badges are 8x8 textures drawn over the bottom right
+ * The textures and their file names are listed in {@code ResearchIcons}. Badges are textures drawn at 8x8 (any square resolution) over the bottom right
  * of an icon, e.g. the consumed badge of an item cost, and are attached with {@code RequirementIcon#withBadge}.
  *
  * <h2>Layering</h2>

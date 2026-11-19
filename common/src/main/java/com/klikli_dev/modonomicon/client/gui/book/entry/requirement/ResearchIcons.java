@@ -14,7 +14,8 @@ import net.minecraft.resources.Identifier;
 /**
  * The default textures of research type icons and overlay badges.
  * <p>
- * Icons are 16x16 PNG files, badges are 8x8 PNG files. All of them live in
+ * Icons are drawn at 16x16 and badges at 8x8 GUI pixels, independent of the resolution of the PNG files: the whole
+ * texture is scaled to the drawn size, so higher resolution artwork works as long as it is square. All of them live in
  * {@code assets/modonomicon/textures/gui/sprites/modonomicon/research_icons/} and are referenced by file name, so
  * artwork can be replaced by dropping in a file with the same name. Badges are drawn bottom right over the icon.
  * <p>
@@ -48,7 +49,10 @@ public final class ResearchIcons {
     public static final Identifier EFFECT_FUNCTION = texture("effect_function");
     public static final Identifier TRIGGER_ENTRY_VIEWED = texture("trigger_entry_viewed");
     public static final Identifier TRIGGER_ADVANCEMENT = texture("trigger_advancement");
-    public static final Identifier GENERIC = texture("generic");
+    /**
+     * The generic fallback, shares the artwork of the default research requirement category.
+     */
+    public static final Identifier GENERIC = Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "textures/gui/sprites/modonomicon/requirement_categories/research.png");
 
     // ---- icons of stage completion modes and book conditions, no default UI location yet ----
 
@@ -103,7 +107,10 @@ public final class ResearchIcons {
     }
 
     /**
-     * A requirement icon showing a 16x16 texture.
+     * A requirement icon showing a texture at 16x16.
+     * <p>
+     * The width and height passed to {@link BookIcon} are logical sizes: the blit covers the full texture (region size
+     * equals texture size), so the actual resolution of the PNG does not matter.
      */
     public static RequirementIcon icon(Identifier texture) {
         return RequirementIcon.of(new BookIcon(texture, ModonomiconConstants.Data.Icon.DEFAULT_WIDTH, ModonomiconConstants.Data.Icon.DEFAULT_HEIGHT));
