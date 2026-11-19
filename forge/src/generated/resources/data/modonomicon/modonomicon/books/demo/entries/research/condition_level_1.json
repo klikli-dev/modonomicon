@@ -1,0 +1,39 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "modonomicon:research",
+  "condition": {
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:demo/condition_level_1",
+    "tooltip": {
+      "translate": "tooltip.modonomicon.condition.entry_unlocked",
+      "with": [
+        {
+          "translate": "book.modonomicon.demo.research.condition_root.name"
+        }
+      ]
+    }
+  },
+  "description": "book.modonomicon.demo.research.condition_level_1.description",
+  "icon": {
+    "id": "minecraft:lever"
+  },
+  "id": "modonomicon:research/condition_level_1",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
+  "name": "book.modonomicon.demo.research.condition_level_1.name",
+  "parents": [
+    {
+      "entry": "modonomicon:research/condition_root",
+      "line_reversed": true
+    }
+  ],
+  "sort_number": 1,
+  "x": 3,
+  "y": 0
+}

@@ -1,0 +1,24 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gray",
+    "width": 26
+  },
+  "category": "modonomicon:research",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "description": "book.modonomicon.demo.research.collector_b.description",
+  "icon": {
+    "id": "minecraft:glowstone_dust"
+  },
+  "id": "modonomicon:research/collector_b",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
+  "name": "book.modonomicon.demo.research.collector_b.name",
+  "sort_number": 11,
+  "x": 8,
+  "y": 5
+}

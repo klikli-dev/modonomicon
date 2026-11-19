@@ -23,6 +23,7 @@ import javax.annotation.Nullable;
  * @param factRef the fact granted when the trigger fires (null if incrementing a value)
  * @param valueRef the value incremented when the trigger fires (null if granting a fact)
  * @param increment the amount to add to the target value (default 1, ignored for fact hooks)
+ * @param consume the number of items of the used stack consumed when this hook changes research state (item_used only)
  */
 public record ResearchHookSpec<TTarget>(
         Identifier id,
@@ -30,7 +31,8 @@ public record ResearchHookSpec<TTarget>(
         TTarget triggerTarget,
         @Nullable ResearchFactRef factRef,
         @Nullable ResearchValueRef valueRef,
-        int increment
+        int increment,
+        int consume
 ) {
     /**
      * Creates a hook spec for an item-based trigger type that grants a fact.
@@ -39,7 +41,7 @@ public record ResearchHookSpec<TTarget>(
             Identifier id, TriggerType<ResearchItemMatcher, ?> triggerType,
             ResearchItemMatcher targetItem, ResearchFactRef factRef
     ) {
-        return new ResearchHookSpec<>(id, triggerType, targetItem, factRef, null, 1);
+        return new ResearchHookSpec<>(id, triggerType, targetItem, factRef, null, 1, 0);
     }
 
     /**
@@ -49,7 +51,7 @@ public record ResearchHookSpec<TTarget>(
             Identifier id, TriggerType<ResearchItemMatcher, ?> triggerType,
             ResearchItemMatcher targetItem, ResearchValueRef valueRef, int increment
     ) {
-        return new ResearchHookSpec<>(id, triggerType, targetItem, null, valueRef, increment);
+        return new ResearchHookSpec<>(id, triggerType, targetItem, null, valueRef, increment, 0);
     }
 
     /**
@@ -59,7 +61,7 @@ public record ResearchHookSpec<TTarget>(
             Identifier id, TriggerType<Identifier, ?> triggerType,
             Identifier targetId, ResearchFactRef factRef
     ) {
-        return new ResearchHookSpec<>(id, triggerType, targetId, factRef, null, 1);
+        return new ResearchHookSpec<>(id, triggerType, targetId, factRef, null, 1, 0);
     }
 
     /**
@@ -69,7 +71,7 @@ public record ResearchHookSpec<TTarget>(
             Identifier id, TriggerType<Identifier, ?> triggerType,
             Identifier targetId, ResearchValueRef valueRef, int increment
     ) {
-        return new ResearchHookSpec<>(id, triggerType, targetId, null, valueRef, increment);
+        return new ResearchHookSpec<>(id, triggerType, targetId, null, valueRef, increment, 0);
     }
 
     /**
@@ -78,9 +80,9 @@ public record ResearchHookSpec<TTarget>(
     public static <TTarget> ResearchHookSpec<TTarget> of(
             Identifier id, TriggerType<TTarget, ?> triggerType,
             TTarget target, @Nullable ResearchFactRef factRef,
-            @Nullable ResearchValueRef valueRef, int increment
+            @Nullable ResearchValueRef valueRef, int increment, int consume
     ) {
-        return new ResearchHookSpec<>(id, triggerType, target, factRef, valueRef, increment);
+        return new ResearchHookSpec<>(id, triggerType, target, factRef, valueRef, increment, consume);
     }
 
     /**
@@ -93,7 +95,8 @@ public record ResearchHookSpec<TTarget>(
                 this.triggerTarget,
                 this.factRef != null ? this.factRef.id() : null,
                 this.valueRef != null ? this.valueRef.id() : null,
-                this.increment
+                this.increment,
+                this.consume
         );
     }
 }

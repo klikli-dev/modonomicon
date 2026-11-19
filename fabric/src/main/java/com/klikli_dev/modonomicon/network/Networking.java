@@ -17,6 +17,8 @@ public class Networking {
         ServerPlayNetworking.registerGlobalReceiver(BookCategoryReadMessage.TYPE, new ServerMessageHandler<>());
         ServerPlayNetworking.registerGlobalReceiver(ClickCommandLinkMessage.TYPE, new ServerMessageHandler<>());
         ServerPlayNetworking.registerGlobalReceiver(ClickResearchProgressButtonMessage.TYPE, new ServerMessageHandler<>());
+        ServerPlayNetworking.registerGlobalReceiver(PerformResearchActionMessage.TYPE, new ServerMessageHandler<>());
+        ServerPlayNetworking.registerGlobalReceiver(CompleteResearchStageMessage.TYPE, new ServerMessageHandler<>());
         ServerPlayNetworking.registerGlobalReceiver(SaveBookStateMessage.TYPE, new ServerMessageHandler<>());
         ServerPlayNetworking.registerGlobalReceiver(SaveCategoryStateMessage.TYPE, new ServerMessageHandler<>());
         ServerPlayNetworking.registerGlobalReceiver(SaveEntryStateMessage.TYPE, new ServerMessageHandler<>());
@@ -33,6 +35,8 @@ public class Networking {
         PayloadTypeRegistry.serverboundPlay().register(BookCategoryReadMessage.TYPE, BookCategoryReadMessage.STREAM_CODEC);
         PayloadTypeRegistry.serverboundPlay().register(ClickCommandLinkMessage.TYPE, ClickCommandLinkMessage.STREAM_CODEC);
         PayloadTypeRegistry.serverboundPlay().register(ClickResearchProgressButtonMessage.TYPE, ClickResearchProgressButtonMessage.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(PerformResearchActionMessage.TYPE, PerformResearchActionMessage.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(CompleteResearchStageMessage.TYPE, CompleteResearchStageMessage.STREAM_CODEC);
         PayloadTypeRegistry.serverboundPlay().register(SaveBookStateMessage.TYPE, SaveBookStateMessage.STREAM_CODEC);
         PayloadTypeRegistry.serverboundPlay().register(SaveCategoryStateMessage.TYPE, SaveCategoryStateMessage.STREAM_CODEC);
         PayloadTypeRegistry.serverboundPlay().register(SaveEntryStateMessage.TYPE, SaveEntryStateMessage.STREAM_CODEC);

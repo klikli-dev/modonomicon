@@ -53,6 +53,13 @@ public final class TriggerTypeRegistry {
             new ItemAcquiredTriggerHandler()
     );
 
+    public static final TriggerType<ResearchItemMatcher, ItemUsedContext> ITEM_USED = register(
+            Modonomicon.loc("item_used"),
+            ResearchItemMatcher.CODEC,
+            ResearchItemMatcher.STREAM_CODEC.cast(),
+            new ItemUsedTriggerHandler()
+    );
+
     public static final TriggerType<Identifier, AdvancementContext> ADVANCEMENT = register(
             Modonomicon.loc("advancement"),
             Identifier.CODEC,

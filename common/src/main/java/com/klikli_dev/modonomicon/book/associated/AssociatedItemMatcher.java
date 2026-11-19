@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.book.associated;
 
 import com.mojang.datafixers.util.Either;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -49,6 +50,14 @@ public class AssociatedItemMatcher {
         }
 
         var patch = template.components();
+        return matchesComponents(stack, patch);
+    }
+
+    /**
+     * True if every component of the patch is present on the stack with an equal value. Components the patch
+     * marks as removed must be absent. Additional components on the stack are allowed. An empty patch matches any stack.
+     */
+    public static boolean matchesComponents(ItemStack stack, DataComponentPatch patch) {
         if (patch.isEmpty()) {
             return true;
         }

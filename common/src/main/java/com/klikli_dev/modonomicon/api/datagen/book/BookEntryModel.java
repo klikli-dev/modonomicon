@@ -18,6 +18,8 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookResearchStageCo
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeRef;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageRef;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
+import com.klikli_dev.modonomicon.book.RequirementsDisplay;
+import com.klikli_dev.modonomicon.book.entries.BookEntryProgression;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
@@ -39,9 +41,11 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.phys.Vec2;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class BookEntryModel {
@@ -76,6 +80,12 @@ public class BookEntryModel {
     protected List<ItemStackTemplate> markerUntilAcquiredTargets = new ArrayList<>();
     protected Identifier categoryToOpen;
     protected Identifier commandToRunOnFirstRead;
+    @Nullable
+    protected Identifier progressionNode;
+    @Nullable
+    protected RequirementsDisplay requirementsDisplay;
+    @Nullable
+    protected ResearchStageRef progressionCompletionStage;
     protected Identifier entryToOpen;
     protected List<Either<ItemStackTemplate, Ingredient>> associatedItems = new ArrayList<>();
 
@@ -147,7 +157,7 @@ public class BookEntryModel {
             List<BookEntryTab> tabsToEncode = this.generateTabsAsFiles
                     ? List.of()
                     : this.tabs.stream().map(tab -> tab.toBookEntryTab(provider)).collect(Collectors.toList());
-            entry = new BookContentEntry(this.id, data, this.commandToRunOnFirstRead, pagesToEncode, tabsToEncode);
+            entry = new BookContentEntry(this.id, data, this.commandToRunOnFirstRead, pagesToEncode, tabsToEncode, this.progressionToEncode());
         }
 
         var json = BookEntry.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), entry)
@@ -623,6 +633,68 @@ public class BookEntryModel {
         }
         this.pages.add(page);
         return this;
+    }
+
+    /**
+     * Links this entry to the research node that tracks its progression. The entry is complete once the node is complete,
+     * and the requirements of the node's next stage are shown in the entry.
+     * <p>
+     * This is a low-level escape hatch for hand-authored nodes. To declare a progression from requirements, use
+     * {@code EntryProvider#stage(String, Consumer)} instead, which generates the node, its stages and their facts.
+     * Do not combine it with stages in the same entry.
+     */
+    public BookEntryModel withProgression(ResearchNodeRef node) {
+        this.progressionNode = node.id();
+        return this;
+    }
+
+    /**
+     * Links this entry to a hand-authored research node like {@link #withProgression(ResearchNodeRef)}, and names the node's
+     * last stage. Child entries of this entry require the completion of that stage, i.e. the completion of the node.
+     * <p>
+     * This is a low-level escape hatch for hand-authored nodes. To declare a progression from requirements, use
+     * {@code EntryProvider#stage(String, Consumer)} instead, which generates the node, its stages and their facts.
+     * Do not combine it with stages in the same entry.
+     */
+    public BookEntryModel withProgression(ResearchNodeRef node, ResearchStageRef completionStage) {
+        this.withProgression(node);
+        this.progressionCompletionStage = completionStage;
+        return this;
+    }
+
+    public boolean hasProgression() {
+        return this.progressionNode != null;
+    }
+
+    @Nullable
+    public Identifier getProgressionNode() {
+        return this.progressionNode;
+    }
+
+    @Nullable
+    public ResearchStageRef getProgressionCompletionStage() {
+        return this.progressionCompletionStage;
+    }
+
+    /**
+     * Overrides the book's default requirements display for this entry. Only has an effect together with a progression.
+     */
+    public BookEntryModel withRequirementsDisplay(RequirementsDisplay requirementsDisplay) {
+        this.requirementsDisplay = requirementsDisplay;
+        return this;
+    }
+
+    @Nullable
+    public RequirementsDisplay getRequirementsDisplay() {
+        return this.requirementsDisplay;
+    }
+
+    @Nullable
+    private BookEntryProgression progressionToEncode() {
+        if (this.progressionNode == null) {
+            return null;
+        }
+        return new BookEntryProgression(this.progressionNode, Optional.ofNullable(this.requirementsDisplay));
     }
 
     /**

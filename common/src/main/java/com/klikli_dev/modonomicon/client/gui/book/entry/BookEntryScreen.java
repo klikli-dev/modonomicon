@@ -97,6 +97,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     protected final BookParentScreen parentScreen;
     protected final BookContentEntry entry;
     protected final EntryTabController entryTabs = new EntryTabController(this);
+    protected final EntryRequirementsController requirements = new EntryRequirementsController(this);
 
     protected int ticksInBook;
     protected List<BookPage> unlockedPages;
@@ -226,10 +227,13 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         var book = this.entry != null ? this.entry.getBook() : null;
 
         List<DisplayPage> pages = new ArrayList<>();
+        //the requirements block sits at the bottom of the first page, so its first fragment must leave room for it
+        int reservedFirst = this.requirements.getReservedFirstPageHeight();
         for (var page : this.unlockedPages) {
+            int reserved = pages.isEmpty() ? reservedFirst : 0;
             var textY = font != null && book != null ? this.getSplitTextY(page) : Integer.MIN_VALUE;
             if (textY != Integer.MIN_VALUE) {
-                var fragments = PageSplitter.splitForPage(page, book, font, textY);
+                var fragments = PageSplitter.splitForPage(page, book, font, textY, reserved);
                 if (fragments.size() <= 1) {
                     pages.add(new DisplayPage(page, 0, null));
                 } else {
@@ -241,6 +245,9 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
             } else {
                 pages.add(new DisplayPage(page, 0, null));
             }
+        }
+        if (this.requirements.showsTrailingPage()) {
+            pages.add(new DisplayPage(this.requirements.getTrailingPage(), 0, null));
         }
         this.displayPages = List.copyOf(pages);
 
@@ -456,7 +463,37 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     }
 
     public void saveState(EntryVisualState state, boolean savePage) {
-        state.openPagesIndex = savePage ? this.openPagesIndex : 0;
+        state.openPagesIndex = savePage ? this.getPersistableOpenPagesIndex() : 0;
+    }
+
+    /**
+     * The open pages index to persist. The client-only trailing requirements page is not persisted, the page before it is used instead.
+     */
+    private int getPersistableOpenPagesIndex() {
+        if (this.isTrailingRequirementsPageOpen()) {
+            return Math.max(0, this.openPagesIndex - 1);
+        }
+        return this.openPagesIndex;
+    }
+
+    private boolean isTrailingRequirementsPageOpen() {
+        return this.openPagesIndex >= 0 && this.openPagesIndex < this.displayPages.size()
+                && this.requirements.isTrailingPage(this.displayPages.get(this.openPagesIndex).page());
+    }
+
+    /**
+     * The page number to expose to bookmarks and other persistent addresses. The trailing page maps to the last unlocked authored page,
+     * as it does not exist in the book's data.
+     */
+    protected int getAuthoredPageNumber(DisplayPage display) {
+        if (this.requirements.isTrailingPage(display.page())) {
+            return this.unlockedPages.isEmpty() ? 0 : this.unlockedPages.get(this.unlockedPages.size() - 1).getPageNumber();
+        }
+        return display.page().getPageNumber();
+    }
+
+    public EntryRequirementsController getRequirements() {
+        return this.requirements;
     }
 
     @Override
@@ -642,6 +679,11 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
             return true;
         }
 
+        //Requirement icons and the complete button are clickable (e.g. to open a linked entry), not while the tab overlay is open.
+        if (this.requirements.handleMouseClicked(event)) {
+            return true;
+        }
+
         if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
             var style = this.getClickedComponentStyleAt(event.x(), event.y());
             if (style != null && this.handleComponentClicked(style)) {
@@ -702,6 +744,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
      * without closing and reopening the entry.
      */
     public void onSyncResearchStateMessage(SyncResearchStateMessage message) {
+        this.requirements.onResearchStateChanged();
         this.unlockedPages = this.entry.getUnlockedPagesFor(this.minecraft.player);
         this.rebuildDisplayPages();
         this.onPageChanged();

@@ -6,19 +6,28 @@
 
 package com.klikli_dev.modonomicon.api.datagen;
 
+import com.klikli_dev.modonomicon.api.datagen.ProgressionStageBuilder.UsedItem;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchDisplayModel;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchFactRef;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeSpec;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchEffectModel;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageRef;
+import com.klikli_dev.modonomicon.research.data.ResearchStageCompletion;
 import com.klikli_dev.modonomicon.research.item.ResearchItemMatcher;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStackTemplate;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
- * A per-book sidecar store that collects generated research requests from book-authored conditions.
+ * A per-book sidecar store that collects generated research requests from book-authored conditions and progressions.
  * <p>
- * The {@link com.klikli_dev.modonomicon.api.datagen.ConditionHelper} writes into this store during
- * authoring, and the {@link BookHierarchyResearchCompiler} reads from it during compilation.
+ * The {@link ConditionHelper} and {@link EntryProvider} write into this store during authoring, and the
+ * {@link BookHierarchyResearchCompiler} reads from it during compilation. Requests are deduplicated by their generated
+ * path, so equal requirements share one fact and one node.
  */
 public final class GeneratedBookResearchStore {
     private final String bookNamespace;
@@ -26,6 +35,8 @@ public final class GeneratedBookResearchStore {
     private final Map<Identifier, EntryViewedOnceRequest> entryViewedOnceRequests = new LinkedHashMap<>();
     private final Map<String, ItemCraftedRequest> itemCraftedRequests = new LinkedHashMap<>();
     private final Map<String, ItemAcquiredRequest> itemAcquiredRequests = new LinkedHashMap<>();
+    private final Map<String, ItemUsedRequest> itemUsedRequests = new LinkedHashMap<>();
+    private final Map<Identifier, StagedProgressionRequest> stagedProgressions = new LinkedHashMap<>();
 
     public GeneratedBookResearchStore(String bookNamespace, String bookPath) {
         this.bookNamespace = bookNamespace;
@@ -39,8 +50,7 @@ public final class GeneratedBookResearchStore {
      * @param requiredEntryId the full entry id that must be viewed (e.g. {@code modonomicon:features/condition_root})
      */
     public void addEntryViewedOnce(Identifier requiredEntryId) {
-        this.entryViewedOnceRequests.putIfAbsent(requiredEntryId,
-                new EntryViewedOnceRequest(requiredEntryId));
+        this.entryViewedOnceRequests.putIfAbsent(requiredEntryId, new EntryViewedOnceRequest(requiredEntryId));
     }
 
     public Collection<EntryViewedOnceRequest> getEntryViewedOnceRequests() {
@@ -79,6 +89,14 @@ public final class GeneratedBookResearchStore {
         this.itemAcquiredRequests.putIfAbsent(itemKey(target), new ItemAcquiredRequest(target));
     }
 
+    /**
+     * Registers an item-used generation request for an item matcher. Consumes {@code consume} items of the used stack
+     * when it changes research state. Requests for equal matchers and consume counts are deduplicated.
+     */
+    public void addItemUsed(ResearchItemMatcher target, int consume) {
+        this.itemUsedRequests.putIfAbsent(itemKey(target) + "/" + consume, new ItemUsedRequest(target, consume));
+    }
+
     public Collection<ItemCraftedRequest> getItemCraftedRequests() {
         return this.itemCraftedRequests.values();
     }
@@ -87,8 +105,58 @@ public final class GeneratedBookResearchStore {
         return this.itemAcquiredRequests.values();
     }
 
+    public Collection<ItemUsedRequest> getItemUsedRequests() {
+        return this.itemUsedRequests.values();
+    }
+
+    /**
+     * Registers the staged progression of an entry. Each craft, obtain, use and read requirement of its stages is
+     * registered as a regular request, so it shares its generated fact with other entries and conditions.
+     * Only one progression per entry is allowed.
+     *
+     * @throws IllegalStateException if the entry already has a progression
+     */
+    public void addStagedProgression(StagedProgressionRequest request) {
+        if (this.stagedProgressions.putIfAbsent(request.entryId(), request) != null) {
+            throw new IllegalStateException("Entry '" + request.entryId() + "' already has a staged progression.");
+        }
+        for (var stage : request.stages()) {
+            stage.crafted().forEach(this::addItemCrafted);
+            stage.acquired().forEach(this::addItemAcquired);
+            stage.used().forEach(used -> this.addItemUsed(used.target(), used.consume()));
+            stage.viewed().forEach(this::addEntryViewedOnce);
+        }
+    }
+
+    public Collection<StagedProgressionRequest> getStagedProgressions() {
+        return this.stagedProgressions.values();
+    }
+
     public boolean isEmpty() {
-        return this.entryViewedOnceRequests.isEmpty() && this.itemCraftedRequests.isEmpty() && this.itemAcquiredRequests.isEmpty();
+        return this.entryViewedOnceRequests.isEmpty() && this.itemCraftedRequests.isEmpty() && this.itemAcquiredRequests.isEmpty()
+                && this.itemUsedRequests.isEmpty() && this.stagedProgressions.isEmpty();
+    }
+
+    /**
+     * Returns the deterministic generated node path of the progression of an entry.
+     */
+    public String progressionNodePath(Identifier entryId) {
+        return GeneratedResearchPaths.entryProgressionNode(this.bookPath, entryId);
+    }
+
+    /**
+     * Returns the deterministic generated node id of the progression of an entry.
+     */
+    public Identifier progressionNodeId(Identifier entryId) {
+        return Identifier.fromNamespaceAndPath(this.bookNamespace, this.progressionNodePath(entryId));
+    }
+
+    /**
+     * Returns the deterministic generated stage ref of a stage of the progression of an entry.
+     */
+    public ResearchStageRef progressionStageRef(Identifier entryId, String stageName) {
+        return ResearchStageRef.of(Identifier.fromNamespaceAndPath(this.bookNamespace,
+                GeneratedResearchPaths.entryProgressionStage(this.bookPath, entryId, stageName)));
     }
 
     /**
@@ -197,10 +265,24 @@ public final class GeneratedBookResearchStore {
     }
 
     /**
+     * Returns the deterministic generated fact path for an item-used request. Requests with different consume counts get distinct facts.
+     */
+    public String usedFactPath(ResearchItemMatcher target, int consume) {
+        return GeneratedResearchPaths.itemUsedFact(this.bookPath, itemKey(target), consume);
+    }
+
+    /**
+     * Returns the deterministic generated node path for an item-used request.
+     */
+    public String usedNodePath(ResearchItemMatcher target, int consume) {
+        return GeneratedResearchPaths.itemUsedNode(this.bookPath, itemKey(target), consume);
+    }
+
+    /**
      * Stable dedup key and path fragment for an item template.
      * <p>
      * The item's namespace and path boundaries are preserved as real path segments
-     * ({@code example:gear/iron} → {@code example/gear/iron}), so distinct item IDs
+     * ({@code example:gear/iron} becomes {@code example/gear/iron}), so distinct item IDs
      * can never share a key. Templates with components get a hash suffix.
      */
     public static String itemKey(ItemStackTemplate target) {
@@ -223,7 +305,7 @@ public final class GeneratedBookResearchStore {
      */
     public static String itemKey(ResearchItemMatcher target) {
         return target.value().map(
-                template -> itemKey(template),
+                GeneratedBookResearchStore::itemKey,
                 tag -> "tag_" + tag.location().getNamespace() + "/" + tag.location().getPath()
         );
     }
@@ -233,4 +315,54 @@ public final class GeneratedBookResearchStore {
     public record ItemCraftedRequest(ResearchItemMatcher target) {}
 
     public record ItemAcquiredRequest(ResearchItemMatcher target) {}
+
+    /**
+     * An item-used generation request. Consumes {@code consume} items of the used stack when it changes research state.
+     */
+    public record ItemUsedRequest(ResearchItemMatcher target, int consume) {}
+
+    /**
+     * A hand-authored fact created by a progression stage, satisfied with an action, see {@link ProgressionStageBuilder#action}.
+     *
+     * @param id      the id of the fact within its stage
+     * @param display the display of the fact, carrying its title and action
+     */
+    public record ActionFact(String id, ResearchDisplayModel display) {}
+
+    /**
+     * A staged progression of an entry, compiled into one research node whose stages are the stages of the entry.
+     *
+     * @param entryId the full id of the entry with the progression
+     * @param stages  the stages in declaration order
+     */
+    public record StagedProgressionRequest(Identifier entryId, List<StageRequest> stages) {}
+
+    /**
+     * One stage of a staged progression, as collected by {@link ProgressionStageBuilder}.
+     *
+     * @param ref        the generated stage ref
+     * @param crafted    items that must be crafted
+     * @param acquired   items that must be obtained
+     * @param used       items that must be used, with the number of items each use consumes
+     * @param viewed     entries that must be viewed
+     * @param facts      hand-authored facts that must be granted
+     * @param values     hand-authored values that must reach their threshold
+     * @param actionFacts hand-authored facts that the player satisfies with an action, created for this stage
+     * @param display    the display of the stage in requirement blocks
+     * @param completion how the stage completes, manual with its cost or automatic
+     * @param rewards    rewards granted once when the stage completes
+     */
+    public record StageRequest(
+            ResearchStageRef ref,
+            List<ResearchItemMatcher> crafted,
+            List<ResearchItemMatcher> acquired,
+            List<UsedItem> used,
+            List<Identifier> viewed,
+            List<ResearchFactRef> facts,
+            List<ResearchNodeSpec.ValueRequirement> values,
+            List<ActionFact> actionFacts,
+            ResearchDisplayModel display,
+            ResearchStageCompletion completion,
+            List<ResearchEffectModel> rewards
+    ) {}
 }

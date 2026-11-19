@@ -86,6 +86,10 @@ public abstract class BookPageModel<T extends BookPageModel<T>> {
         return (T) this;
     }
 
+    public BookConditionModel<?> getCondition() {
+        return this.condition;
+    }
+
     public T withCondition(@NotNull BookConditionModel<?> condition) {
         this.condition = condition;
         //noinspection unchecked

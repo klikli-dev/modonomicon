@@ -12,6 +12,9 @@ import com.klikli_dev.modonomicon.client.BookModel;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.ModonomiconKeys;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
+import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchCostPresenterRegistry;
+import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchEffectPresenterRegistry;
+import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchTriggerPresenterRegistry;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.client.render.pip.GuiDirectEntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.render.pip.GuiMultiblockRenderer;
@@ -97,6 +100,7 @@ public class ModonomiconForge {
             MultiblockDataManager.get().registries(e.getRegistries());
             e.addListener(MultiblockDataManager.get());
 
+            ResearchDataManager.get().registries(e.getRegistries());
             e.addListener(ResearchDataManager.get());
         });
 
@@ -262,6 +266,9 @@ public class ModonomiconForge {
     public static class Client {
         public static void onClientSetup(FMLClientSetupEvent event) {
             PageRendererRegistry.registerPageRenderers();
+            ResearchTriggerPresenterRegistry.registerDefaults();
+            ResearchEffectPresenterRegistry.registerDefaults();
+            ResearchCostPresenterRegistry.registerDefaults();
 
             TickEvent.ClientTickEvent.Post.BUS.addListener((TickEvent.ClientTickEvent.Post e) -> {
                 ClientTicks.endClientTick(Minecraft.getInstance());

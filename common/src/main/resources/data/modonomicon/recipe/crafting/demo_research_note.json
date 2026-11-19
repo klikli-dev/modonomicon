@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:paper",
+    "minecraft:ink_sac"
+  ],
+  "result": {
+    "id": "minecraft:paper",
+    "components": {
+      "minecraft:custom_name": "Research Note",
+      "minecraft:custom_data": {
+        "modonomicon_demo": "research_note"
+      }
+    }
+  }
+}

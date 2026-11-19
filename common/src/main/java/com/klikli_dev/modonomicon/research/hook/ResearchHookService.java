@@ -24,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.BooleanSupplier;
 
 /**
  * Entry point for research events. Resolves the hooks matching an event and applies them as one batch:
@@ -124,6 +125,45 @@ public class ResearchHookService {
                 new ItemAcquiredContext(player, itemStack));
     }
 
+    /**
+     * The outcome of an item_used event.
+     * <ul>
+     *     <li>{@code changed}: research state changed, so the state must be synced to the player.</li>
+     *     <li>{@code handled}: the use is the one the hooks react to, so the vanilla use is cancelled. True if a hook grants a fact
+     *     the player does not have yet, or a value hook with a positive consume changed state. Value hooks without consume count
+     *     but let the vanilla use proceed, e.g. eating still eats.</li>
+     *     <li>{@code consume}: the number of items of the used stack consumed, the largest consume of the handled hooks.
+     *     Always 0 if not handled.</li>
+     * </ul>
+     */
+    public record ItemUseOutcome(boolean changed, boolean handled, int consume) {
+    }
+
+    /**
+     * Applies the item_used hooks for a stack the player used. A hook counts if it grants a fact the player did not have yet,
+     * or if it increments a value with a positive consume. Only counting hooks handle the use and consume items.
+     * If the stack holds fewer items than the largest consume of the counting hooks, they do not apply and the use is not handled.
+     */
+    public ItemUseOutcome onItemUsed(ServerPlayer player, ItemStack stack) {
+        var type = TriggerTypeRegistry.ITEM_USED;
+        var context = new ItemUsedContext(player, stack);
+        var hooks = type.handler().resolve(type, player, context);
+        var state = this.stateManager.getStateFor(player);
+        var counting = hooks.stream().filter(hook -> counts(state, hook)).toList();
+        int consume = counting.stream().mapToInt(ResearchHookDefinition::consume).max().orElse(0);
+        if (consume > stack.getCount()) {
+            var others = hooks.stream().filter(hook -> !counts(state, hook)).toList();
+            return new ItemUseOutcome(this.applyHooks(player, others), false, 0);
+        }
+        boolean changed = this.applyHooks(player, hooks);
+        return new ItemUseOutcome(changed, !counting.isEmpty(), consume);
+    }
+
+    private static boolean counts(PlayerResearchState state, ResearchHookDefinition<?> hook) {
+        return hook.factId() != null ? !state.hasFact(hook.factId()) : hook.consume() > 0;
+    }
+
+
     public boolean onAdvancement(ServerPlayer player, Identifier advancementId) {
         return this.fire(TriggerTypeRegistry.ADVANCEMENT,
                 new AdvancementContext(player, advancementId));
@@ -146,15 +186,8 @@ public class ResearchHookService {
     // --- Shared apply logic ---
 
     private <TTarget> boolean applyHooks(ServerPlayer player, List<ResearchHookDefinition<TTarget>> hooks) {
-        var completions = new ArrayList<ResearchStateChangeListener.Completion>(this.listeners.size());
-        for (var listener : this.listeners) {
-            completions.add(listener.beforeChange(player));
-        }
-
-        boolean changed = false;
-        List<ResearchToastTrigger> triggers;
-        ResearchStateManager.beginToastCollection();
-        try {
+        return this.applyStateChange(player, () -> {
+            boolean changed = false;
             for (var hook : hooks) {
                 if (hook.factId() != null) {
                     changed |= this.stateManager.grantFact(player, hook.factId());
@@ -162,6 +195,29 @@ public class ResearchHookService {
                     changed |= this.stateManager.incrementValue(player, hook.valueId(), hook.increment());
                 }
             }
+            return changed;
+        });
+    }
+
+    /**
+     * Applies a batch of state mutations for a player, the same way hook batches are applied: listeners before, the
+     * mutation, reevaluation, toast sync, then listeners after. Use this for every state change that is not a plain
+     * hook, e.g. research actions and manual stage completion, so they share the pipeline with hooks.
+     *
+     * @param mutation performs the mutations and returns true if it changed research state
+     * @return true if research state changed
+     */
+    public boolean applyStateChange(ServerPlayer player, BooleanSupplier mutation) {
+        var completions = new ArrayList<ResearchStateChangeListener.Completion>(this.listeners.size());
+        for (var listener : this.listeners) {
+            completions.add(listener.beforeChange(player));
+        }
+
+        boolean changed;
+        List<ResearchToastTrigger> triggers;
+        ResearchStateManager.beginToastCollection();
+        try {
+            changed = mutation.getAsBoolean();
             changed |= this.stateManager.reevaluate(player);
         } finally {
             // Always pair the begin with an end so a failed batch cannot leave collection active for later batches.

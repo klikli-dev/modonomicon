@@ -1,0 +1,13 @@
+[
+  {
+    "description": {
+      "translate": "modonomicon.demo.category.rituals.description"
+    },
+    "icon": "modonomicon:modonomicon/requirement_categories/demo_rituals",
+    "id": "modonomicon:demo_rituals",
+    "sort_order": 15,
+    "title": {
+      "translate": "modonomicon.demo.category.rituals.title"
+    }
+  }
+]

@@ -108,7 +108,7 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
         }
 
         int textY = this.getTextY();
-        this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, textY, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - textY);
+        this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, textY, BookEntryScreen.PAGE_WIDTH, this.getAvailablePageHeight() - textY);
 
         int x = BookEntryScreen.PAGE_WIDTH / 2 - 53;
         int y = 7;
@@ -140,7 +140,7 @@ public class BookEntityPageRenderer extends BookPageRenderer<BookEntityPage> imp
                 }
             }
 
-            var bounds = this.getBookTextHolderBounds(0, this.getTextY(), BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - this.getTextY());
+            var bounds = this.getBookTextHolderBounds(0, this.getTextY(), BookEntryScreen.PAGE_WIDTH, this.getAvailablePageHeight() - this.getTextY());
             var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), bounds.x, bounds.y, bounds.width, bounds.height, pMouseX, pMouseY);
             if (textStyle != null) {
                 return textStyle;

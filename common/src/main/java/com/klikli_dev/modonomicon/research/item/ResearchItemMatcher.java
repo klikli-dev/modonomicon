@@ -19,6 +19,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -112,7 +113,14 @@ public record ResearchItemMatcher(Either<ItemStackTemplate, TagKey<Item>> value)
     public Component displayName() {
         return this.value.map(
                 template -> template.create().getHoverName(),
-                tag -> Component.literal("#" + tag.location())
+                tag -> Component.translatableWithFallback(tagTranslationKey(tag), "#" + tag.location())
         );
+    }
+
+    /**
+     * The translation key of an item tag, following the NeoForge and Fabric convention: {@code tag.item.namespace.path}.
+     */
+    public static String tagTranslationKey(TagKey<Item> tag) {
+        return Util.makeDescriptionId("tag.item", tag.location());
     }
 }
