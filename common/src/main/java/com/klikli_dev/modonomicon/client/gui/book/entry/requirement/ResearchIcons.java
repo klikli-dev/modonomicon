@@ -12,12 +12,15 @@ import com.klikli_dev.modonomicon.book.BookIcon;
 import net.minecraft.resources.Identifier;
 
 /**
- * The default textures of research type icons and overlay badges.
+ * The default textures of research type icons.
  * <p>
- * Icons are drawn at 16x16 and badges at 8x8 GUI pixels, independent of the resolution of the PNG files: the whole
- * texture is scaled to the drawn size, so higher resolution artwork works as long as it is square. All of them live in
+ * Icons are drawn at 16x16 GUI pixels, independent of the resolution of the PNG files: the whole texture is scaled to
+ * the drawn size, so higher resolution artwork works as long as it is square. All of them live in
  * {@code assets/modonomicon/textures/gui/sprites/modonomicon/research_icons/} and are referenced by file name, so
- * artwork can be replaced by dropping in a file with the same name. Badges are drawn bottom right over the icon.
+ * artwork can be replaced by dropping in a file with the same name.
+ * <p>
+ * The built-in presenters do not use overlay badges, as they cover the item and its count. Addons can still attach a
+ * badge (drawn at {@link #BADGE_SIZE} over the bottom right of the icon) via {@link RequirementIcon#withBadge}.
  * <p>
  * The icons are fallbacks: where a research requirement shows dynamic data (e.g. the item of a cost or the icon of an
  * entry), that data is shown instead and the texture is not used.
@@ -73,34 +76,11 @@ public final class ResearchIcons {
      */
     public static final Identifier CONDITION_STAGE_COMPLETED = texture("condition_stage_completed");
 
-    // ---- overlay badges, drawn over the bottom right corner of an icon ----
-
-    /**
-     * The item of a cost is consumed on completion.
-     */
-    public static final Identifier BADGE_CONSUMED = texture("overlay_consumed");
-    /**
-     * The cost is paid in durability of an item.
-     */
-    public static final Identifier BADGE_DURABILITY = texture("overlay_durability");
-    /**
-     * The item is crafted.
-     */
-    public static final Identifier BADGE_CRAFTED = texture("badge_crafted");
-    /**
-     * The item is acquired.
-     */
-    public static final Identifier BADGE_ACQUIRED = texture("badge_acquired");
-    /**
-     * The item is used.
-     */
-    public static final Identifier BADGE_USED = texture("badge_used");
-
     private ResearchIcons() {
     }
 
     /**
-     * The texture of a research icon or badge by its file name without extension, e.g. {@code cost_levels}.
+     * The texture of a research icon by its file name without extension, e.g. {@code cost_levels}.
      */
     public static Identifier texture(String name) {
         return Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, DIRECTORY + name + ".png");
