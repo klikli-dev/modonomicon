@@ -1,0 +1,9 @@
+[
+  {
+    "id": "modonomicon_gametest:gametest/item_used_hook",
+    "trigger_type": "modonomicon:item_used",
+    "trigger_target": { "id": "minecraft:apple" },
+    "fact_id": "modonomicon_gametest:gametest/item_used_fact",
+    "consume": 2
+  }
+]

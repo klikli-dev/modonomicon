@@ -101,9 +101,6 @@ public class ModonomiconForge {
         RegisterCommandsEvent.BUS.addListener((RegisterCommandsEvent e) ->
                 CommandRegistry.registerCommands(e.getDispatcher())
         );
-        RegisterClientCommandsEvent.BUS.addListener((RegisterClientCommandsEvent e) ->
-                CommandRegistry.registerClientCommands(e.getDispatcher())
-        );
 
         //datapack sync = build books and sync to client
         OnDatapackSyncEvent.BUS.addListener((OnDatapackSyncEvent e) -> {
@@ -184,8 +181,31 @@ public class ModonomiconForge {
         //Datagen
         GatherDataEvent.getBus(modBusGroup).addListener(DataGenerators::gatherData);
 
-        //Client stuff
+        //Client stuff. The client code lives in Client so that no client-only class is referenced by this class on a dedicated server.
         if (FMLEnvironment.dist == Dist.CLIENT) {
+            Client.register(context);
+        }
+    }
+
+    public void onCommonSetup(FMLCommonSetupEvent event) {
+        Networking.registerMessages();
+
+        RegistryBootstrap.bootstrap();
+        DemoRuntimeBookContent.register();
+
+        PlayerInteractEvent.RightClickBlock.BUS.addListener((PlayerInteractEvent.RightClickBlock e) -> {
+            var result = LecternIntegration.rightClick(e.getEntity(), e.getLevel(), e.getHand(), e.getHitVec());
+            if (result.consumesAction()) {
+                e.setCancellationResult(result);
+                return true; //true = cancel
+            }
+            return false;
+        });
+    }
+
+    public static class Client {
+        public static void register(FMLJavaModLoadingContext context) {
+            var modBusGroup = context.getModBusGroup();
             FMLClientSetupEvent.getBus(modBusGroup).addListener(Client::onClientSetup);
             RegisterKeyMappingsEvent.BUS.addListener((RegisterKeyMappingsEvent e) -> {
                 e.register(ModonomiconKeys.OPEN_ASSOCIATED_ENTRY);
@@ -233,26 +253,12 @@ public class ModonomiconForge {
                     }
                 });
             });
+
+            RegisterClientCommandsEvent.BUS.addListener((RegisterClientCommandsEvent e) ->
+                    CommandRegistry.registerClientCommands(e.getDispatcher())
+            );
         }
-    }
 
-    public void onCommonSetup(FMLCommonSetupEvent event) {
-        Networking.registerMessages();
-
-        RegistryBootstrap.bootstrap();
-        DemoRuntimeBookContent.register();
-
-        PlayerInteractEvent.RightClickBlock.BUS.addListener((PlayerInteractEvent.RightClickBlock e) -> {
-            var result = LecternIntegration.rightClick(e.getEntity(), e.getLevel(), e.getHand(), e.getHitVec());
-            if (result.consumesAction()) {
-                e.setCancellationResult(result);
-                return true; //true = cancel
-            }
-            return false;
-        });
-    }
-
-    public static class Client {
         public static void onClientSetup(FMLClientSetupEvent event) {
             PageRendererRegistry.registerPageRenderers();
             ResearchTriggerPresenterRegistry.registerDefaults();

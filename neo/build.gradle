@@ -34,6 +34,7 @@ neoForge {
 
         client {
             client()
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
             programArguments.add "--username=Modonomicon"
             programArguments.add "--quickPlaySingleplayer"
             programArguments.add "New World"
@@ -41,6 +42,13 @@ neoForge {
 
         server {
             server()
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        // Launches the GameTestServer, runs the registered gametests of this mod and exits.
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
 
 

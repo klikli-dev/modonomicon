@@ -73,16 +73,23 @@ public class BookResearchNodeUnlockedCondition extends BookCondition {
             Modonomicon.LOG.error(message);
             return false;
         }
+        return isNodeComplete(player, this.nodeId);
+    }
+
+    /**
+     * True if the node is unlocked and all of its stages are completed. Multi-stage nodes need every stage, not just the one in progress.
+     */
+    public static boolean isNodeComplete(Player player, Identifier nodeId) {
         var state = ResearchServices.state().getStateFor(player);
-        if (!state.isNodeUnlocked(this.nodeId)) {
+        if (!state.isNodeUnlocked(nodeId)) {
             return false;
         }
         // For multi-stage nodes, all stages must be complete
         var data = ResearchDataManager.get().data();
-        int totalStages = data.stageCount(this.nodeId);
+        int totalStages = data.stageCount(nodeId);
         if (totalStages > 0) {
             // Multi-stage: all stages must be completed, not just the last one started
-            return state.completedStageCount(this.nodeId) >= totalStages;
+            return state.completedStageCount(nodeId) >= totalStages;
         }
         // Single-stage: unlocked = complete
         return true;

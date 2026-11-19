@@ -1,0 +1,64 @@
+[
+  {
+    "id": "modonomicon_gametest:gametest/grant_action_fact",
+    "display": {
+      "action": {
+        "cost": [
+          {
+            "type": "modonomicon:item",
+            "item": { "id": "minecraft:apple" },
+            "count": 1
+          }
+        ],
+        "grants_fact": true
+      }
+    }
+  },
+  {
+    "id": "modonomicon_gametest:gametest/repeatable_action_fact",
+    "display": {
+      "action": {
+        "cost": [
+          {
+            "type": "modonomicon:item",
+            "item": { "id": "minecraft:apple" },
+            "count": 1
+          }
+        ],
+        "repeatable": true
+      }
+    }
+  },
+  {
+    "id": "modonomicon_gametest:gametest/unaffordable_action_fact",
+    "display": {
+      "action": {
+        "cost": [
+          {
+            "type": "modonomicon:item",
+            "item": { "id": "minecraft:apple" },
+            "count": 64
+          }
+        ],
+        "grants_fact": true
+      }
+    }
+  },
+  {
+    "id": "modonomicon_gametest:gametest/unrequired_action_fact",
+    "display": {
+      "action": {
+        "grants_fact": true
+      }
+    }
+  },
+  {
+    "id": "modonomicon_gametest:gametest/item_used_fact"
+  },
+  {
+    "id": "modonomicon_gametest:gametest/multi_stage_one_fact"
+  },
+  {
+    "id": "modonomicon_gametest:gametest/multi_stage_two_fact"
+  }
+]
