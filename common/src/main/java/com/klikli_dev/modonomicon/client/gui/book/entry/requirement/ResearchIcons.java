@@ -1,0 +1,111 @@
+/*
+ * SPDX-FileCopyrightText: 2026 klikli-dev
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+package com.klikli_dev.modonomicon.client.gui.book.entry.requirement;
+
+import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants;
+import com.klikli_dev.modonomicon.book.BookIcon;
+import net.minecraft.resources.Identifier;
+
+/**
+ * The default textures of research type icons and overlay badges.
+ * <p>
+ * Icons are 16x16 PNG files, badges are 8x8 PNG files. All of them live in
+ * {@code assets/modonomicon/textures/gui/sprites/modonomicon/research_icons/} and are referenced by file name, so
+ * artwork can be replaced by dropping in a file with the same name. Badges are drawn bottom right over the icon.
+ * <p>
+ * The icons are fallbacks: where a research requirement shows dynamic data (e.g. the item of a cost or the icon of an
+ * entry), that data is shown instead and the texture is not used.
+ */
+public final class ResearchIcons {
+
+    /**
+     * The directory of the research icon textures, relative to the mod's namespace.
+     */
+    public static final String DIRECTORY = "textures/gui/sprites/modonomicon/research_icons/";
+
+    /**
+     * The size of a badge in pixels, badges are drawn at the bottom right corner of a 16x16 icon.
+     */
+    public static final int BADGE_SIZE = 8;
+
+    /**
+     * The offset of a badge from the top left corner of the icon it decorates.
+     */
+    public static final int BADGE_OFFSET = ModonomiconConstants.Data.Icon.DEFAULT_WIDTH - BADGE_SIZE;
+
+    // ---- icons of research cost, effect and trigger types, and of the generic fallback ----
+
+    public static final Identifier COST_LEVELS = texture("cost_levels");
+    public static final Identifier EFFECT_GRANT_FACT = texture("effect_grant_fact");
+    public static final Identifier EFFECT_ADD_VALUE = texture("effect_add_value");
+    public static final Identifier EFFECT_GIVE_ITEM = texture("effect_give_item");
+    public static final Identifier EFFECT_EXPERIENCE = texture("effect_experience");
+    public static final Identifier EFFECT_FUNCTION = texture("effect_function");
+    public static final Identifier TRIGGER_ENTRY_VIEWED = texture("trigger_entry_viewed");
+    public static final Identifier TRIGGER_ADVANCEMENT = texture("trigger_advancement");
+    public static final Identifier GENERIC = texture("generic");
+
+    // ---- icons of stage completion modes and book conditions, no default UI location yet ----
+
+    /**
+     * Stage completes automatically once its requirements are met.
+     */
+    public static final Identifier STAGE_AUTO = texture("stage_auto");
+    /**
+     * Stage needs to be completed by hand.
+     */
+    public static final Identifier STAGE_MANUAL = texture("stage_manual");
+    /**
+     * Book condition: a research node is unlocked.
+     */
+    public static final Identifier CONDITION_NODE_UNLOCKED = texture("condition_node_unlocked");
+    /**
+     * Book condition: a research stage is completed.
+     */
+    public static final Identifier CONDITION_STAGE_COMPLETED = texture("condition_stage_completed");
+
+    // ---- overlay badges, drawn over the bottom right corner of an icon ----
+
+    /**
+     * The item of a cost is consumed on completion.
+     */
+    public static final Identifier BADGE_CONSUMED = texture("overlay_consumed");
+    /**
+     * The cost is paid in durability of an item.
+     */
+    public static final Identifier BADGE_DURABILITY = texture("overlay_durability");
+    /**
+     * The item is crafted.
+     */
+    public static final Identifier BADGE_CRAFTED = texture("badge_crafted");
+    /**
+     * The item is acquired.
+     */
+    public static final Identifier BADGE_ACQUIRED = texture("badge_acquired");
+    /**
+     * The item is used.
+     */
+    public static final Identifier BADGE_USED = texture("badge_used");
+
+    private ResearchIcons() {
+    }
+
+    /**
+     * The texture of a research icon or badge by its file name without extension, e.g. {@code cost_levels}.
+     */
+    public static Identifier texture(String name) {
+        return Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, DIRECTORY + name + ".png");
+    }
+
+    /**
+     * A requirement icon showing a 16x16 texture.
+     */
+    public static RequirementIcon icon(Identifier texture) {
+        return RequirementIcon.of(new BookIcon(texture, ModonomiconConstants.Data.Icon.DEFAULT_WIDTH, ModonomiconConstants.Data.Icon.DEFAULT_HEIGHT));
+    }
+}
