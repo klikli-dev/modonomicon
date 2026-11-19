@@ -55,7 +55,7 @@ Rewards on a stage are granted once, in the order they are declared. Rewards on 
 
 ## Changes
 
-Every effect reports whether it changed something: research state, inventory or experience. Actions use this result. An action whose effects changed nothing is unavailable and costs nothing, see [Consumption order](./actions.md#consumption-order). Built-in effects report it as follows. `grant_fact` and `add_value` report whether the fact was newly granted or the stored value changed. `give_item`, `experience` and `function` always report a change when they run.
+Every effect reports whether it changed something: research state, inventory or experience. Actions use this result. If the action grants its fact, it is performed and paid even without effects. An action that grants no fact and whose effects changed nothing is unavailable and costs nothing, see [Consumption order](./actions.md#consumption-order). Built-in effects report it as follows. `grant_fact` and `add_value` report whether the fact was newly granted or the stored value changed. `give_item`, `experience` and `function` always report a change when they run.
 
 ## Reward rows
 
