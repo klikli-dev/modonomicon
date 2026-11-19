@@ -55,14 +55,16 @@ public class ResearchCostGameTests {
      */
     public static void durabilityPlannedBeforeItems(GameTestHelper helper) {
         var shears = ResearchItemMatcher.of(Items.SHEARS);
-        var itemAndDurability = new ResearchCost(List.of(
-                new ItemCostEntry(shears, 1),
-                new DurabilityCostEntry(shears, 1)
-        ));
+        var itemEntry = new ItemCostEntry(shears, 1);
+        var durabilityEntry = new DurabilityCostEntry(shears, 1);
+        var itemAndDurability = new ResearchCost(List.of(itemEntry, durabilityEntry));
         var durabilityOnly = new ResearchCost(List.of(new DurabilityCostEntry(shears, 1)));
 
-        helper.assertTrue(!itemAndDurability.canAfford(playerWith(helper, new ItemStack(Items.SHEARS))),
-                "One pair of shears should not pay both an item and durability");
+        // One stack fails either way, so check which entry is missing: durability planned first claims the shears,
+        // leaving only the item entry unpaid. Items planned first would leave the durability entry unpaid instead.
+        var missing = itemAndDurability.missing(playerWith(helper, new ItemStack(Items.SHEARS)));
+        helper.assertTrue(missing.size() == 1 && missing.getFirst().equals(itemEntry),
+                "Durability should claim the only shears first, leaving only the item entry unpaid, but missing was " + missing);
         helper.assertTrue(durabilityOnly.canAfford(playerWith(helper, new ItemStack(Items.SHEARS))),
                 "One pair of shears should pay durability");
         helper.succeed();
