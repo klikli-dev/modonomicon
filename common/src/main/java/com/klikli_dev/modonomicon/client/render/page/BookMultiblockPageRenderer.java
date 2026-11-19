@@ -163,7 +163,7 @@ public class BookMultiblockPageRenderer extends BookPageRenderer<BookMultiblockP
                 return multiblockNameStyle;
             }
 
-            var bounds = this.getBookTextHolderBounds(0, this.getTextY(), BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - this.getTextY());
+            var bounds = this.getBookTextHolderBounds(0, this.getTextY(), BookEntryScreen.PAGE_WIDTH, this.getAvailablePageHeight() - this.getTextY());
             var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), bounds.x, bounds.y, bounds.width, bounds.height, pMouseX, pMouseY);
             if (textStyle != null) {
                 return textStyle;
