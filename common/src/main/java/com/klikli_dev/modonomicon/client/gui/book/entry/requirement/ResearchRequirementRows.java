@@ -24,8 +24,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -43,7 +41,7 @@ import java.util.function.Consumer;
  */
 public final class ResearchRequirementRows {
 
-    private static final RequirementIcon GENERIC_RESEARCH_ICON = RequirementIcon.of(new ItemStack(Items.BOOK));
+    private static final RequirementIcon GENERIC_RESEARCH_ICON = ResearchIcons.icon(ResearchIcons.GENERIC);
     private static final Set<Identifier> UNKNOWN_CATEGORIES = ConcurrentHashMap.newKeySet();
 
     private ResearchRequirementRows() {
@@ -65,7 +63,20 @@ public final class ResearchRequirementRows {
         return fact(factId, context, forceMet, actionNode, true);
     }
 
+    /**
+     * A row for a research fact that shows the given icon if neither its display nor the hooks granting it define one.
+     * Used by reward rows, so the reward type icon is shown instead of the generic research icon.
+     */
+    static RequirementRow factWithFallbackIcon(Identifier factId, RequirementContext context, boolean forceMet, RequirementIcon fallbackIcon) {
+        return fact(factId, context, forceMet, null, true, fallbackIcon);
+    }
+
     private static RequirementRow fact(Identifier factId, RequirementContext context, boolean forceMet, @Nullable Identifier actionNode, boolean active) {
+        return fact(factId, context, forceMet, actionNode, active, GENERIC_RESEARCH_ICON);
+    }
+
+    private static RequirementRow fact(Identifier factId, RequirementContext context, boolean forceMet, @Nullable Identifier actionNode, boolean active,
+                                       RequirementIcon fallbackIcon) {
         var definition = context.data().factDefinitions().get(factId);
         var display = definition != null ? definition.display().orElse(ResearchDisplay.EMPTY) : ResearchDisplay.EMPTY;
         var hookRows = hookRows(context.hooksGranting(factId), context);
@@ -81,7 +92,7 @@ public final class ResearchRequirementRows {
         boolean met = forceMet || context.state().hasFact(factId);
         var row = new RequirementRow(
                 category,
-                iconsOr(display.icon(), hookRows),
+                iconsOr(display.icon(), hookRows, fallbackIcon),
                 title,
                 descriptionOr(display, hookRow != null ? hookRow.details() : List.of()),
                 met,
@@ -400,11 +411,15 @@ public final class ResearchRequirementRows {
     }
 
     private static List<RequirementIcon> iconsOr(Optional<BookIcon> displayIcon, List<RequirementRow> hookRows) {
+        return iconsOr(displayIcon, hookRows, GENERIC_RESEARCH_ICON);
+    }
+
+    private static List<RequirementIcon> iconsOr(Optional<BookIcon> displayIcon, List<RequirementRow> hookRows, RequirementIcon fallbackIcon) {
         if (displayIcon.isPresent()) {
             return List.of(RequirementIcon.of(displayIcon.get()));
         }
         var icons = hookRows.stream().flatMap(row -> row.icons().stream()).toList();
-        return icons.isEmpty() ? List.of(GENERIC_RESEARCH_ICON) : icons;
+        return icons.isEmpty() ? List.of(fallbackIcon) : icons;
     }
 
     private static List<Component> descriptionOr(ResearchDisplay display, List<Component> fallback) {
