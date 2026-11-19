@@ -29,21 +29,21 @@ final class DefaultResearchTriggerPresenters {
 
     static void register() {
         ResearchTriggerPresenterRegistry.register(TriggerTypeRegistry.ITEM_CRAFTED.id(), (hook, context) ->
-                itemRow(Gui.REQUIREMENTS_CRAFT_ITEM, Gui.REQUIREMENTS_NOT_MET_CRAFT, (ResearchItemMatcher) hook.triggerTarget()));
+                itemRow(Gui.REQUIREMENTS_CRAFT_ITEM, Gui.REQUIREMENTS_NOT_MET_CRAFT, (ResearchItemMatcher) hook.triggerTarget(), ResearchIcons.BADGE_CRAFTED));
 
         ResearchTriggerPresenterRegistry.register(TriggerTypeRegistry.ITEM_ACQUIRED.id(), (hook, context) ->
-                itemRow(Gui.REQUIREMENTS_OBTAIN_ITEM, Gui.REQUIREMENTS_NOT_MET_OBTAIN, (ResearchItemMatcher) hook.triggerTarget()));
+                itemRow(Gui.REQUIREMENTS_OBTAIN_ITEM, Gui.REQUIREMENTS_NOT_MET_OBTAIN, (ResearchItemMatcher) hook.triggerTarget(), ResearchIcons.BADGE_ACQUIRED));
 
         ResearchTriggerPresenterRegistry.register(TriggerTypeRegistry.ITEM_USED.id(), (hook, context) ->
-                itemRow(Gui.REQUIREMENTS_USE_ITEM, Gui.REQUIREMENTS_NOT_USED, (ResearchItemMatcher) hook.triggerTarget()));
+                itemRow(Gui.REQUIREMENTS_USE_ITEM, Gui.REQUIREMENTS_NOT_USED, (ResearchItemMatcher) hook.triggerTarget(), ResearchIcons.BADGE_USED));
 
         ResearchTriggerPresenterRegistry.register(TriggerTypeRegistry.ENTRY_VIEWED_ONCE.id(), DefaultResearchTriggerPresenters::entryRow);
 
         ResearchTriggerPresenterRegistry.register(TriggerTypeRegistry.ADVANCEMENT.id(), DefaultResearchTriggerPresenters::advancementRow);
     }
 
-    private static RequirementRow itemRow(String titleKey, String missingKey, ResearchItemMatcher matcher) {
-        return RequirementRow.of(List.of(RequirementIcon.of(matcher.displayStack())), Component.translatable(titleKey, matcher.displayName()))
+    private static RequirementRow itemRow(String titleKey, String missingKey, ResearchItemMatcher matcher, Identifier badge) {
+        return RequirementRow.of(List.of(RequirementIcon.of(matcher.displayStack()).withBadge(badge)), Component.translatable(titleKey, matcher.displayName()))
                 .withMissing(Component.translatable(missingKey));
     }
 

@@ -26,7 +26,7 @@ final class DefaultResearchCostPresenters {
             var item = (ItemCostEntry) entry;
             int target = item.count();
             int held = forceMet ? target : Math.min(item.heldCount(context.player()), target);
-            return RequirementRow.of(List.of(RequirementIcon.of(item.item().displayStack())), item.item().displayName())
+            return RequirementRow.of(List.of(RequirementIcon.of(item.item().displayStack()).withBadge(ResearchIcons.BADGE_CONSUMED)), item.item().displayName())
                     .withCategory(ResearchRequirementRows.category(ResearchCategories.ITEMS, context))
                     .withProgress(new RequirementRow.Progress(held, target))
                     .withMet(held >= target);
@@ -35,7 +35,7 @@ final class DefaultResearchCostPresenters {
         ResearchCostPresenterRegistry.register(ResearchCostTypeRegistry.DURABILITY.id(), (entry, context, forceMet) -> {
             var durability = (DurabilityCostEntry) entry;
             boolean met = forceMet || durability.heldCount(context.player()) > 0;
-            return RequirementRow.of(List.of(RequirementIcon.of(durability.item().displayStack())),
+            return RequirementRow.of(List.of(RequirementIcon.of(durability.item().displayStack()).withBadge(ResearchIcons.BADGE_DURABILITY)),
                             Component.translatable(Gui.REQUIREMENTS_COST_DURABILITY, durability.amount(), durability.item().displayName()))
                     .withCategory(ResearchRequirementRows.category(ResearchCategories.ITEMS, context))
                     .withMet(met)
