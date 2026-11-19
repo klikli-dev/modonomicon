@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.research.data;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.registry.ResearchCostTypeRegistry;
+import com.klikli_dev.modonomicon.research.cost.ItemCostEntry;
 import com.klikli_dev.modonomicon.research.cost.ResearchCostEntry;
 import com.klikli_dev.modonomicon.research.cost.ResearchCostPlan;
 import com.mojang.serialization.Codec;
@@ -26,6 +27,7 @@ import java.util.Optional;
  * What a player pays for a paid research action or a manually completed stage: a list of typed entries, see {@link ResearchCostEntry}.
  * The entries are planned together, so they cannot claim the same stack. Planning order is by {@link ResearchCostEntry#planRank}:
  * durability first, then items, then levels, so an item entry never takes the stack a durability entry needs.
+ * Item entries are planned as one group, so overlapping item entries (e.g. a tag and one of its items) find a valid payment if one exists.
  * Creative players (infinite materials) pay nothing.
  * <p>
  * Payment order: the cost is planned with {@link #plan} <b>before</b> the state change, and the plan is paid with {@link #pay} after the change
@@ -63,20 +65,37 @@ public record ResearchCost(List<ResearchCostEntry> entries) {
     }
 
     /**
-     * The entries the player cannot pay, planned in order. Empty if the player can afford the whole cost.
+     * Plans the entries in planning order and returns the ones that cannot be covered. Item entries are planned together at the
+     * position of the first item entry, so overlapping item entries can share the player's stacks.
      */
-    public List<ResearchCostEntry> missing(Player player) {
+    private List<ResearchCostEntry> planEntries(ResearchCostPlan plan) {
         var missing = new ArrayList<ResearchCostEntry>();
-        if (player.hasInfiniteMaterials()) {
-            return missing;
-        }
-        var plan = new ResearchCostPlan(player);
+        var items = this.entries.stream()
+                .filter(ItemCostEntry.class::isInstance)
+                .map(ItemCostEntry.class::cast)
+                .toList();
+        boolean itemsPlanned = false;
         for (var entry : this.planOrder()) {
-            if (!entry.plan(plan)) {
+            if (entry instanceof ItemCostEntry) {
+                if (!itemsPlanned) {
+                    itemsPlanned = true;
+                    missing.addAll(ItemCostEntry.planAll(items, plan));
+                }
+            } else if (!entry.plan(plan)) {
                 missing.add(entry);
             }
         }
         return missing;
+    }
+
+    /**
+     * The entries the player cannot pay, planned in order. Empty if the player can afford the whole cost.
+     */
+    public List<ResearchCostEntry> missing(Player player) {
+        if (player.hasInfiniteMaterials()) {
+            return List.of();
+        }
+        return this.planEntries(new ResearchCostPlan(player));
     }
 
     public boolean canAfford(Player player) {
@@ -94,12 +113,7 @@ public record ResearchCost(List<ResearchCostEntry> entries) {
         if (player.hasInfiniteMaterials()) {
             return Optional.of(plan);
         }
-        for (var entry : this.planOrder()) {
-            if (!entry.plan(plan)) {
-                return Optional.empty();
-            }
-        }
-        return Optional.of(plan);
+        return this.planEntries(plan).isEmpty() ? Optional.of(plan) : Optional.empty();
     }
 
     /**

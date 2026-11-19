@@ -19,6 +19,11 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Pays {@code count} items accepted by the matcher, taken from any matching stacks in the player's inventory.
  *
@@ -60,16 +65,113 @@ public record ItemCostEntry(ResearchItemMatcher item, int count) implements Rese
 
     @Override
     public boolean plan(ResearchCostPlan plan) {
-        int needed = this.count;
-        for (int slot = 0; slot < plan.size() && needed > 0; slot++) {
-            if (plan.free(slot) <= 0 || !this.item.matches(plan.stack(slot))) {
-                continue;
+        return planAll(List.of(this), plan).isEmpty();
+    }
+
+    /**
+     * Plans item entries together, so that overlapping matchers (e.g. a tag and one of its items) can share the stacks of the player.
+     * Entries that cannot be covered are returned and reserve nothing; the others reserve their items in the plan.
+     *
+     * @return the entries the plan cannot cover, in the given order
+     */
+    public static List<ItemCostEntry> planAll(List<ItemCostEntry> entries, ResearchCostPlan plan) {
+        var assignment = new Assignment(entries, plan);
+        var missing = new ArrayList<ItemCostEntry>();
+        for (int entry = 0; entry < entries.size(); entry++) {
+            int needed = entries.get(entry).count;
+            int covered = 0;
+            while (covered < needed && assignment.augment(entry)) {
+                covered++;
             }
-            int take = Math.min(needed, plan.free(slot));
-            plan.take(this, slot, take);
-            needed -= take;
+            if (covered < needed) {
+                assignment.release(entry);
+                missing.add(entries.get(entry));
+            }
         }
-        return needed == 0;
+        for (int entry = 0; entry < entries.size(); entry++) {
+            for (int slot = 0; slot < plan.size(); slot++) {
+                if (assignment.taken[entry][slot] > 0) {
+                    plan.take(entries.get(entry), slot, assignment.taken[entry][slot]);
+                }
+            }
+        }
+        return missing;
+    }
+
+    /**
+     * Assigns item units of the entries to the free slots of the plan, growing the assignment by augmenting paths:
+     * an entry may take a unit from a slot that another entry holds, if that entry can move to another free slot.
+     */
+    private static final class Assignment {
+        private final List<ItemCostEntry> entries;
+        private final boolean[][] matches;
+        private final int[][] taken;
+        private final int[] remaining;
+
+        private Assignment(List<ItemCostEntry> entries, ResearchCostPlan plan) {
+            this.entries = entries;
+            this.remaining = new int[plan.size()];
+            this.matches = new boolean[entries.size()][plan.size()];
+            this.taken = new int[entries.size()][plan.size()];
+            for (int slot = 0; slot < this.remaining.length; slot++) {
+                this.remaining[slot] = plan.free(slot);
+                for (int entry = 0; entry < entries.size(); entry++) {
+                    this.matches[entry][slot] = this.remaining[slot] > 0 && entries.get(entry).item.matches(plan.stack(slot));
+                }
+            }
+        }
+
+        private boolean augment(int entry) {
+            int slots = this.remaining.length;
+            int[] reachedBy = new int[slots];
+            Arrays.fill(reachedBy, -1);
+            int[] leftSlot = new int[this.entries.size()];
+            boolean[] visited = new boolean[this.entries.size()];
+            visited[entry] = true;
+            var queue = new ArrayDeque<Integer>();
+            for (int slot = 0; slot < slots; slot++) {
+                if (this.matches[entry][slot]) {
+                    reachedBy[slot] = entry;
+                    queue.add(slot);
+                }
+            }
+            while (!queue.isEmpty()) {
+                int slot = queue.poll();
+                if (this.remaining[slot] > 0) {
+                    this.remaining[slot]--;
+                    int enter = reachedBy[slot];
+                    this.taken[enter][slot]++;
+                    while (enter != entry) {
+                        int from = leftSlot[enter];
+                        this.taken[enter][from]--;
+                        enter = reachedBy[from];
+                        this.taken[enter][from]++;
+                    }
+                    return true;
+                }
+                for (int other = 0; other < this.entries.size(); other++) {
+                    if (visited[other] || this.taken[other][slot] == 0) {
+                        continue;
+                    }
+                    visited[other] = true;
+                    leftSlot[other] = slot;
+                    for (int next = 0; next < slots; next++) {
+                        if (reachedBy[next] == -1 && this.matches[other][next]) {
+                            reachedBy[next] = other;
+                            queue.add(next);
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        private void release(int entry) {
+            for (int slot = 0; slot < this.remaining.length; slot++) {
+                this.remaining[slot] += this.taken[entry][slot];
+                this.taken[entry][slot] = 0;
+            }
+        }
     }
 
     @Override
