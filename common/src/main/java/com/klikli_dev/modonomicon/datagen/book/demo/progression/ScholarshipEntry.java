@@ -65,20 +65,20 @@ public class ScholarshipEntry extends EntryProvider {
         this.page("transcription_take", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
-        this.pageTitle("Take");
+        this.pageTitle("Take a blank note");
         this.pageText("""
-                The requirement row of Transcription has an action that hands out a blank research note.
+                The first row of Transcription has an action that hands out a blank research note.
                 It costs one paper and wears down your shears. You can take a note even while you carry one.
-                It is repeatable: it stays clickable after the stage is done, so you can take more notes later to study them again.
+                The row is ticked once you have taken a note, but the action stays clickable, so you can take more notes later.
                 """);
 
         this.page("transcription_process", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
-        this.pageTitle("Process");
+        this.pageTitle("Make a completed note");
         this.pageText("""
-                Craft the blank note together with an ink sac into a completed research note, as the recipe on the next page shows.
-                Vanilla recipes cannot check the marker of an item, so plain paper works in the recipe too.
+                The second row of Transcription is done once you craft a completed research note. Craft the blank note together with an ink sac, as the recipe on the next page shows.
+                Vanilla recipes cannot check the marker of an item, so the recipe also accepts plain paper in place of the blank note.
                 A real mod would use its own item or a machine for this step.
                 """);
 
@@ -88,16 +88,18 @@ public class ScholarshipEntry extends EntryProvider {
         this.page("transcription_submit", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
-        this.pageTitle("Submit");
+        this.pageTitle("Study");
         this.pageText("""
-                Use the completed note in the air to study it. The note is consumed, the row is ticked and the rewards are granted once the stage completes.
-                Using the blank note does nothing, so the note must be completed first.
+                The third row of Transcription is done once you use a completed note in the air to study it. The note is consumed, and the rewards are granted once the stage completes.
+                Using a blank note does nothing, so the note must be completed first.
                 """);
 
         this.stage("transcription", s -> s
+                .fact(DemoResearch.SCHOLARSHIP_NOTE_TAKEN)
+                .fact(DemoResearch.SCHOLARSHIP_NOTE_CRAFTED)
                 .fact(DemoResearch.SCHOLARSHIP_NOTE_STUDIED)
                 .title("Transcription")
-                .description("Take a blank note, process it into a completed note, then use the completed note to study it.")
+                .description("Take a blank note, make a completed note from it with an ink sac, then study the completed note in the air.")
                 .reward(ResearchEffectModel.addValue(DemoResearch.SCHOLARSHIP_INSIGHT, 1))
                 .reward(ResearchEffectModel.grantFact(DemoResearch.SCHOLARSHIP_NOTES_READ)));
 
