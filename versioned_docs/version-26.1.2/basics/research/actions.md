@@ -157,7 +157,7 @@ ResearchCostModel.create()
 All entries of one cost are planned together, so two entries cannot claim the same stack. Entries are planned by rank, then in declaration order:
 
 1. **Durability** entries plan first, so an item entry cannot take the stack that a durability entry needs, e.g. shears that are also held as items.
-2. All other entries, items and levels, plan next, in declaration order.
+2. **Items and levels** plan next, in declaration order. All item entries of a cost are planned together as one group, at the position of the first item entry. Overlapping item entries, e.g. a tag and one of its items, share the player's stacks, and the cost is affordable whenever a valid assignment of stacks exists. For example, one `#minecraft:logs` entry and one oak log entry are paid with an oak log and a birch log, whichever entry is declared first.
 
 The cost is checked with that plan. If the plan fails, the cost is missing and nothing changes. Creative players (infinite materials) pay nothing.
 

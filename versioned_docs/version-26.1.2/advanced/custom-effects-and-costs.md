@@ -106,7 +106,7 @@ A cost entry is planned and paid in three steps. Planning must not change the pl
 Also implement:
 
 - `heldCount(player)` tells how much the player holds, for progress display only.
-- `planRank()` orders the planning. Lower ranks plan first. The default is 1, and durability uses 0 so it plans before items.
+- `planRank()` orders the planning. Lower ranks plan first. The default is 1, and durability uses 0 so it plans before items. Item entries are planned together as one group, see [Planning order](../basics/research/actions.md#planning-order). Custom types plan one at a time, in the same order.
 
 ```java
 public record ManaCostEntry(int amount) implements ResearchCostEntry {
