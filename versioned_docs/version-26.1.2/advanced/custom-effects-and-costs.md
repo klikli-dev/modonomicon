@@ -59,7 +59,7 @@ Presenters are different: they only run on the client, and they are registered i
 
 ## Effect types
 
-An effect is applied on the server. `apply` returns whether the effect changed something: research state, inventory or experience. An action uses the result. An action whose effects changed nothing is unavailable and costs nothing. `isAvailable` says whether the effect can run right now. An action is only available if all of its effects are.
+An effect is applied on the server. `apply` returns whether the effect changed something: research state, inventory or experience. An action uses the result. An action that grants no fact and whose effects changed nothing is unavailable and costs nothing. An action that grants its fact is performed and paid even if no effect changed anything. `isAvailable` says whether the effect can run right now. An action is only available if all of its effects are.
 
 ```java
 public record GrantManaEffect(int amount) implements ResearchEffect {
@@ -145,7 +145,7 @@ public record ManaCostEntry(int amount) implements ResearchCostEntry {
 }
 ```
 
-This cost takes mana from a player-owned counter that no other entry reserves, so planning only reads it. Costs that take inventory stacks should reserve them in `plan`: `plan.take(this, slot, count)` reserves items of a slot, `plan.claim(this, slot, amount)` reserves a whole damageable stack, and `plan.takeLevels(this, amount)` reserves levels. Reserving keeps two entries of one cost from claiming the same stack. `ItemCostEntry` and `DurabilityCostEntry` in `research/cost` are the reference implementations.
+`ResearchCostPlan` only tracks reservations for inventory stacks and experience levels. It has no reservation for a custom resource such as this mana counter, so `plan` reads the full mana total every time, and `apply` removes the amount. Do not repeat this cost type within one cost: two `ManaCostEntry` entries of 5 mana would both pass planning against 5 mana and then both remove mana. Merge them into one entry with the summed amount instead. Costs that take inventory stacks should reserve them in `plan`: `plan.take(this, slot, count)` reserves items of a slot, `plan.claim(this, slot, amount)` reserves a whole damageable stack, and `plan.takeLevels(this, amount)` reserves levels. Reserving keeps two entries of one cost from claiming the same stack. `ItemCostEntry` and `DurabilityCostEntry` in `research/cost` are the reference implementations.
 
 Creative players (infinite materials) pay nothing. The cost skips them before `plan` runs, so your cost does not need to handle them.
 
