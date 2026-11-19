@@ -142,24 +142,27 @@ public class ResearchHookService {
     /**
      * Applies the item_used hooks for a stack the player used. A hook counts if it grants a fact the player did not have yet,
      * or if it increments a value with a positive consume. Only counting hooks handle the use and consume items.
+     * If the stack holds fewer items than the largest consume of the counting hooks, they do not apply and the use is not handled.
      */
     public ItemUseOutcome onItemUsed(ServerPlayer player, ItemStack stack) {
         var type = TriggerTypeRegistry.ITEM_USED;
         var context = new ItemUsedContext(player, stack);
         var hooks = type.handler().resolve(type, player, context);
         var state = this.stateManager.getStateFor(player);
-        boolean handled = false;
-        int consume = 0;
-        for (var hook : hooks) {
-            boolean counts = hook.factId() != null ? !state.hasFact(hook.factId()) : hook.consume() > 0;
-            if (counts) {
-                handled = true;
-                consume = Math.max(consume, hook.consume());
-            }
+        var counting = hooks.stream().filter(hook -> counts(state, hook)).toList();
+        int consume = counting.stream().mapToInt(ResearchHookDefinition::consume).max().orElse(0);
+        if (consume > stack.getCount()) {
+            var others = hooks.stream().filter(hook -> !counts(state, hook)).toList();
+            return new ItemUseOutcome(this.applyHooks(player, others), false, 0);
         }
         boolean changed = this.applyHooks(player, hooks);
-        return new ItemUseOutcome(changed, handled, handled ? consume : 0);
+        return new ItemUseOutcome(changed, !counting.isEmpty(), consume);
     }
+
+    private static boolean counts(PlayerResearchState state, ResearchHookDefinition<?> hook) {
+        return hook.factId() != null ? !state.hasFact(hook.factId()) : hook.consume() > 0;
+    }
+
 
     public boolean onAdvancement(ServerPlayer player, Identifier advancementId) {
         return this.fire(TriggerTypeRegistry.ADVANCEMENT,
