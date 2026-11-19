@@ -65,7 +65,7 @@ final class DefaultResearchTriggerPresenters {
             return RequirementRow.of(icons, Component.translatable(Gui.REQUIREMENTS_READ_ENTRY, Component.translatable(entry.getName())))
                     .withAction(new RowAction.OpenEntry(bookId, entryId));
         }
-        return null;
+        return RequirementRow.of(List.of(RequirementIcon.of(new ItemStack(Items.BOOK))), Component.literal(entryId.toString()));
     }
 
     /**
