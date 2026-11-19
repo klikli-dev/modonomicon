@@ -679,6 +679,11 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
             return true;
         }
 
+        //Requirement icons and the complete button are clickable (e.g. to open a linked entry), not while the tab overlay is open.
+        if (this.requirements.handleMouseClicked(event)) {
+            return true;
+        }
+
         if (event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
             var style = this.getClickedComponentStyleAt(event.x(), event.y());
             if (style != null && this.handleComponentClicked(style)) {
@@ -697,11 +702,6 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
                 this.lookupItemStack(this.tooltipStack, true);
                 return true;
             }
-        }
-
-        //Requirement icons are clickable (e.g. to open a linked entry), not while the tab overlay is open.
-        if (this.requirements.handleMouseClicked(event)) {
-            return true;
         }
 
         //Let the page handle clicks on non-item ingredients (e.g. fluids) before generic right-click navigation.
