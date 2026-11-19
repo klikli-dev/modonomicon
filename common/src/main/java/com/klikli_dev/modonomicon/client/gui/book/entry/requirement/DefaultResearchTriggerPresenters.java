@@ -15,8 +15,6 @@ import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 import java.util.Optional;
@@ -65,7 +63,7 @@ final class DefaultResearchTriggerPresenters {
             return RequirementRow.of(icons, Component.translatable(Gui.REQUIREMENTS_READ_ENTRY, Component.translatable(entry.getName())))
                     .withAction(new RowAction.OpenEntry(bookId, entryId));
         }
-        return RequirementRow.of(List.of(RequirementIcon.of(new ItemStack(Items.BOOK))), Component.literal(entryId.toString()));
+        return RequirementRow.of(List.of(ResearchIcons.icon(ResearchIcons.TRIGGER_ENTRY_VIEWED)), Component.literal(entryId.toString()));
     }
 
     /**
@@ -79,6 +77,6 @@ final class DefaultResearchTriggerPresenters {
         if (display.isPresent()) {
             return RequirementRow.of(List.of(RequirementIcon.of(display.get().getIcon().create())), display.get().getTitle());
         }
-        return RequirementRow.of(List.of(RequirementIcon.of(new ItemStack(Items.BOOK))), Component.literal(advancementId.toString()));
+        return RequirementRow.of(List.of(ResearchIcons.icon(ResearchIcons.TRIGGER_ADVANCEMENT)), Component.literal(advancementId.toString()));
     }
 }

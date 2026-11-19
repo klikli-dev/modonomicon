@@ -16,7 +16,6 @@ import com.klikli_dev.modonomicon.research.effect.ResearchEffect;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -31,7 +30,8 @@ final class DefaultResearchEffectPresenters {
             @Override
             public RequirementRow present(ResearchEffect effect, RequirementContext context) {
                 var stack = ((GiveItemEffect) effect).stack().create();
-                return RequirementRow.of(List.of(RequirementIcon.of(stack)), Component.translatable(Gui.REQUIREMENTS_REWARD, stack.getHoverName()));
+                var icon = stack.isEmpty() ? ResearchIcons.icon(ResearchIcons.EFFECT_GIVE_ITEM) : RequirementIcon.of(stack);
+                return RequirementRow.of(List.of(icon), Component.translatable(Gui.REQUIREMENTS_REWARD, stack.getHoverName()));
             }
 
             @Override
@@ -59,7 +59,7 @@ final class DefaultResearchEffectPresenters {
                 var amount = experience.levels()
                         ? Component.translatable(Gui.REQUIREMENTS_REWARD_LEVELS, experience.amount())
                         : Component.translatable(Gui.REQUIREMENTS_REWARD_EXPERIENCE, experience.amount());
-                return RequirementRow.of(List.of(RequirementIcon.of(new ItemStack(Items.EXPERIENCE_BOTTLE))), Component.translatable(Gui.REQUIREMENTS_REWARD, amount));
+                return RequirementRow.of(List.of(ResearchIcons.icon(ResearchIcons.EFFECT_EXPERIENCE)), Component.translatable(Gui.REQUIREMENTS_REWARD, amount));
             }
         });
 
@@ -67,7 +67,7 @@ final class DefaultResearchEffectPresenters {
             @Override
             public RequirementRow present(ResearchEffect effect, RequirementContext context) {
                 var factId = ((GrantFactEffect) effect).factId();
-                var fact = ResearchRequirementRows.fact(factId, context, false);
+                var fact = ResearchRequirementRows.factWithFallbackIcon(factId, context, false, ResearchIcons.icon(ResearchIcons.EFFECT_GRANT_FACT));
                 return fact.withTitle(Component.translatable(Gui.REQUIREMENTS_REWARD, fact.title()));
             }
         });
@@ -80,7 +80,7 @@ final class DefaultResearchEffectPresenters {
                 var display = definition != null ? definition.display().orElse(null) : null;
                 var icon = display != null && display.icon().isPresent()
                         ? RequirementIcon.of(display.icon().get())
-                        : RequirementIcon.of(new ItemStack(Items.NETHER_STAR));
+                        : ResearchIcons.icon(ResearchIcons.EFFECT_ADD_VALUE);
                 var name = display != null && display.title().isPresent()
                         ? display.title().get()
                         : Component.literal(add.valueId().getPath());
@@ -92,7 +92,7 @@ final class DefaultResearchEffectPresenters {
         ResearchEffectPresenterRegistry.register(ResearchEffectTypeRegistry.FUNCTION.id(), new ResearchEffectPresenter() {
             @Override
             public RequirementRow present(ResearchEffect effect, RequirementContext context) {
-                return RequirementRow.of(List.of(RequirementIcon.of(new ItemStack(Items.COMMAND_BLOCK))), Component.translatable(Gui.REQUIREMENTS_REWARD_SPECIAL));
+                return RequirementRow.of(List.of(ResearchIcons.icon(ResearchIcons.EFFECT_FUNCTION)), Component.translatable(Gui.REQUIREMENTS_REWARD_SPECIAL));
             }
         });
     }
