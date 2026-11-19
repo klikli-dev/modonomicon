@@ -50,7 +50,7 @@ A value hook without consume only counts uses, and it does not interfere with th
 
 ## Consume
 
-`consume` is the number of items of the used stack that a handled use takes. It is the largest `consume` of the handled hooks, and it is limited to the number of items in the stack. Hooks that do not count, and uses that are not handled, consume nothing.
+`consume` is the number of items of the used stack that a handled use takes. It is the largest `consume` of the counting hooks. If the used stack holds fewer items than that, the counting hooks do not apply: the use is not handled, nothing is consumed, the vanilla use runs, and only hooks that do not count still apply. Hooks that do not count consume nothing.
 
 A negative `consume` is rejected. The hook codec only accepts zero or more, and `consume(...)` in datagen throws an `IllegalArgumentException`.
 
@@ -59,7 +59,7 @@ A negative `consume` is rejected. The hook codec only accepts zero or more, and 
 When the player uses an item, the runtime:
 
 1. Ignores empty stacks, spectators and stacks on cooldown.
-2. Applies the `item_used` hooks that match the stack. If the research state changed, it syncs the research state and the book, so counters and facts appear at once.
+2. Applies the `item_used` hooks that match the stack. If the stack is smaller than the largest `consume` of the counting hooks, only the hooks that do not count apply. If the research state changed, it syncs the research state and the book, so counters and facts appear at once.
 3. If a hook handled the use, takes the consumed items, plays the learning feedback and cancels the vanilla use. Otherwise the vanilla use runs unchanged.
 
 ## Requirements
