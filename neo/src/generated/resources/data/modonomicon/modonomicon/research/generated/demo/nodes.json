@@ -217,6 +217,8 @@
         },
         "id": "modonomicon:generated/demo/nodes/entry_progression/progression_scholarship/stages/transcription",
         "required_facts": [
+          "modonomicon:demo/scholarship/note_taken",
+          "modonomicon:demo/scholarship/note_crafted",
           "modonomicon:demo/scholarship/note_studied"
         ],
         "rewards": [
@@ -253,9 +255,6 @@
           }
         },
         "id": "modonomicon:generated/demo/nodes/entry_progression/progression_scholarship/stages/synthesis",
-        "required_facts": [
-          "modonomicon:demo/scholarship/note_studied"
-        ],
         "rewards": [
           {
             "type": "modonomicon:give_item",
