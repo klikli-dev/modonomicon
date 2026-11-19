@@ -10,8 +10,6 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.research.effect.ResearchEffect;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +26,7 @@ public final class ResearchEffectPresenterRegistry {
     private static final ResearchEffectPresenter FALLBACK = new ResearchEffectPresenter() {
         @Override
         public RequirementRow present(ResearchEffect effect, RequirementContext context) {
-            return RequirementRow.of(List.of(RequirementIcon.of(new ItemStack(Items.BOOK))), Component.translatable(Gui.REQUIREMENTS_REWARD_SPECIAL));
+            return RequirementRow.of(List.of(ResearchIcons.icon(ResearchIcons.GENERIC)), Component.translatable(Gui.REQUIREMENTS_REWARD_SPECIAL));
         }
     };
 

@@ -13,8 +13,6 @@ import com.klikli_dev.modonomicon.research.cost.ItemCostEntry;
 import com.klikli_dev.modonomicon.research.cost.LevelsCostEntry;
 import com.klikli_dev.modonomicon.research.data.ResearchCategories;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 import java.util.List;
 
@@ -48,7 +46,7 @@ final class DefaultResearchCostPresenters {
             var levels = (LevelsCostEntry) entry;
             int target = levels.amount();
             int held = forceMet ? target : Math.min(levels.heldCount(context.player()), target);
-            return RequirementRow.of(List.of(RequirementIcon.of(new ItemStack(Items.EXPERIENCE_BOTTLE))),
+            return RequirementRow.of(List.of(ResearchIcons.icon(ResearchIcons.COST_LEVELS)),
                             Component.translatable(Gui.REQUIREMENTS_COST_LEVELS, target))
                     .withCategory(ResearchRequirementRows.category(ResearchCategories.PROGRESS, context))
                     .withProgress(new RequirementRow.Progress(held, target))
