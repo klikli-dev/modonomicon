@@ -62,13 +62,6 @@ public class ScholarshipEntry extends EntryProvider {
                 Observations cost one paper and grant experience, which is shown as a reward row once the stage is done.
                 """);
 
-        this.stage("transcription", s -> s
-                .fact(DemoResearch.SCHOLARSHIP_NOTE_STUDIED)
-                .title("Transcription")
-                .description("Take a blank note, process it into a completed note, then use the completed note to study it.")
-                .reward(ResearchEffectModel.addValue(DemoResearch.SCHOLARSHIP_INSIGHT, 1))
-                .reward(ResearchEffectModel.grantFact(DemoResearch.SCHOLARSHIP_NOTES_READ)));
-
         this.page("transcription_take", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
@@ -100,6 +93,13 @@ public class ScholarshipEntry extends EntryProvider {
                 Use the completed note in the air to study it. The note is consumed, the row is ticked and the rewards are granted once the stage completes.
                 Using the blank note does nothing, so the note must be completed first.
                 """);
+
+        this.stage("transcription", s -> s
+                .fact(DemoResearch.SCHOLARSHIP_NOTE_STUDIED)
+                .title("Transcription")
+                .description("Take a blank note, process it into a completed note, then use the completed note to study it.")
+                .reward(ResearchEffectModel.addValue(DemoResearch.SCHOLARSHIP_INSIGHT, 1))
+                .reward(ResearchEffectModel.grantFact(DemoResearch.SCHOLARSHIP_NOTES_READ)));
 
         this.stage("synthesis", s -> s
                 .fact(DemoResearch.SCHOLARSHIP_NOTE_STUDIED)
