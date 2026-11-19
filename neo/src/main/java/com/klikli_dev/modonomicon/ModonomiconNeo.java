@@ -13,6 +13,9 @@ import com.klikli_dev.modonomicon.client.BookModel;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.ModonomiconKeys;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
+import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchCostPresenterRegistry;
+import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchEffectPresenterRegistry;
+import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchTriggerPresenterRegistry;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.client.render.pip.GuiDirectEntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.render.pip.GuiMultiblockRenderer;
@@ -107,7 +110,14 @@ public class ModonomiconNeo {
                 }
             });
 
-            e.addListener(Modonomicon.loc("research_data_manager"), ResearchDataManager.get());
+            //research uses the same ContextAwareReloadListener shape as book and multiblock, NeoForge only provides the registry lookup there
+            e.addListener(Modonomicon.loc("research_data_manager"), new ContextAwareReloadListener() {
+                @Override
+                public CompletableFuture<Void> reload(PreparableReloadListener.SharedState currentReload, Executor taskExecutor, PreparableReloadListener.PreparationBarrier preparationBarrier, Executor reloadExecutor) {
+                    ResearchDataManager.get().registries(this.getRegistryLookup());
+                    return ResearchDataManager.get().reload(currentReload, taskExecutor, preparationBarrier, reloadExecutor);
+                }
+            });
         });
 
         //register commands
@@ -234,6 +244,9 @@ public class ModonomiconNeo {
     public static class Client {
         public static void onClientSetup(FMLClientSetupEvent event) {
             PageRendererRegistry.registerPageRenderers();
+            ResearchTriggerPresenterRegistry.registerDefaults();
+            ResearchEffectPresenterRegistry.registerDefaults();
+            ResearchCostPresenterRegistry.registerDefaults();
 
             NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post e) -> {
                 ClientTicks.endClientTick(Minecraft.getInstance());

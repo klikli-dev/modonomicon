@@ -15,24 +15,39 @@ import net.minecraft.resources.Identifier;
 
 import java.util.Optional;
 
+/**
+ * Canonical definition for one research fact.
+ *
+ * @param id unique identifier for this fact
+ * @param toast optional toast display data
+ * @param display optional display data used in requirement blocks
+ */
 public record ResearchFactDefinition(
         Identifier id,
-        Optional<ResearchToastDefinition> toast
+        Optional<ResearchToastDefinition> toast,
+        Optional<ResearchDisplay> display
 ) {
     public static final Codec<ResearchFactDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Identifier.CODEC.fieldOf("id").forGetter(ResearchFactDefinition::id),
-            ResearchToastDefinition.CODEC.optionalFieldOf("toast").forGetter(ResearchFactDefinition::toastOrEmpty)
-    ).apply(instance, (id, toast) -> new ResearchFactDefinition(id, toast)));
+            ResearchToastDefinition.CODEC.optionalFieldOf("toast").forGetter(ResearchFactDefinition::toastOrEmpty),
+            ResearchDisplay.CODEC.optionalFieldOf("display").forGetter(ResearchFactDefinition::displayOrEmpty)
+    ).apply(instance, (id, toast, display) -> new ResearchFactDefinition(id, toast, display)));
     public static final StreamCodec<RegistryFriendlyByteBuf, ResearchFactDefinition> STREAM_CODEC =
             StreamCodec.composite(
                     Identifier.STREAM_CODEC,
                     ResearchFactDefinition::id,
                     ByteBufCodecs.optional(ResearchToastDefinition.STREAM_CODEC),
                     ResearchFactDefinition::toast,
+                    ByteBufCodecs.optional(ResearchDisplay.STREAM_CODEC),
+                    ResearchFactDefinition::display,
                     ResearchFactDefinition::new
             );
 
     public Optional<ResearchToastDefinition> toastOrEmpty() {
         return this.toast;
+    }
+
+    public Optional<ResearchDisplay> displayOrEmpty() {
+        return this.display;
     }
 }

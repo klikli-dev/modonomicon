@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.book.conditions;
 
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Research;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionEntryContext;
@@ -23,7 +24,6 @@ import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
@@ -78,8 +78,8 @@ public class BookResearchStageCompletedCondition extends BookCondition {
     public List<Component> getTooltip(Player player, BookConditionContext context) {
         if (this.tooltip == null && context instanceof BookConditionEntryContext) {
             this.tooltip = Component.translatable(Tooltips.CONDITION_RESEARCH_STAGE_COMPLETED,
-                    Component.translatable(Util.makeDescriptionId("research_node", this.nodeId)),
-                    Component.translatable(Util.makeDescriptionId("research_stage", this.stageId)));
+                    Component.translatable(Research.nodeKey(this.nodeId)),
+                    Component.translatable(Research.stageKey(this.stageId)));
         }
         return super.getTooltip(player, context);
     }

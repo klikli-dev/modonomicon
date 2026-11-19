@@ -6,10 +6,10 @@
 
 package com.klikli_dev.modonomicon.api.datagen.research;
 
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Research;
 import com.klikli_dev.modonomicon.api.datagen.ModonomiconLanguageProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Util;
 
 import java.util.List;
 
@@ -202,7 +202,7 @@ public abstract class ResearchProviderBase {
      * }</pre>
      */
     protected String researchNodeDescriptionId(Identifier nodeId) {
-        return Util.makeDescriptionId("research_node", nodeId);
+        return Research.nodeKey(nodeId);
     }
 
     /**
@@ -223,7 +223,7 @@ public abstract class ResearchProviderBase {
      * }</pre>
      */
     protected String researchStageDescriptionId(Identifier stageId) {
-        return Util.makeDescriptionId("research_stage", stageId);
+        return Research.stageKey(stageId);
     }
 
     /**

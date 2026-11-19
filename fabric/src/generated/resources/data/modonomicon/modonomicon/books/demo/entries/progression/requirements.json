@@ -1,0 +1,27 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "modonomicon:progression",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "description": "book.modonomicon.demo.progression.requirements.description",
+  "icon": {
+    "id": "minecraft:writable_book"
+  },
+  "id": "modonomicon:progression/requirements",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
+  "name": "book.modonomicon.demo.progression.requirements.name",
+  "progression": {
+    "node": "modonomicon:demo/requirements_staged"
+  },
+  "sort_number": 7,
+  "x": 11,
+  "y": 0
+}

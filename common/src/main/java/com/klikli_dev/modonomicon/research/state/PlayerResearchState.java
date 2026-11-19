@@ -39,7 +39,8 @@ public class PlayerResearchState {
             Codecs.set(Identifier.CODEC).optionalFieldOf("facts", Set.of()).forGetter(PlayerResearchState::factIds),
             Codecs.set(Identifier.CODEC).optionalFieldOf("unlocked_nodes", Set.of()).forGetter(PlayerResearchState::unlockedNodeIds),
             Codecs.identifierIntMap().optionalFieldOf("values", Map.of()).forGetter(PlayerResearchState::valuesMap),
-            Codecs.identifierIntMap().optionalFieldOf("node_stages", Map.of()).forGetter(PlayerResearchState::nodeStagesMap)
+            Codecs.identifierIntMap().optionalFieldOf("node_stages", Map.of()).forGetter(PlayerResearchState::nodeStagesMap),
+            Codecs.set(Identifier.CODEC).optionalFieldOf("rewarded_stages", Set.of()).forGetter(PlayerResearchState::rewardedStageIds)
     ).apply(instance, PlayerResearchState::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PlayerResearchState> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC);
@@ -48,32 +49,38 @@ public class PlayerResearchState {
     private final Set<Identifier> unlockedNodeIds;
     private final Object2IntOpenHashMap<Identifier> internalValues;
     private final Object2IntOpenHashMap<Identifier> nodeStageIndexes;
+    private final Set<Identifier> rewardedStageIds;
 
     public PlayerResearchState() {
-        this(Set.of(), Set.of(), Map.of(), Map.of());
+        this(Set.of(), Set.of(), Map.of(), Map.of(), Set.of());
     }
 
     /**
-     * @deprecated use {@link #PlayerResearchState(Set, Set, Map, Map)}
+     * @deprecated use {@link #PlayerResearchState(Set, Set, Map, Map, Set)}
      */
     @Deprecated
     public PlayerResearchState(Set<Identifier> factIds, Set<Identifier> unlockedNodeIds) {
-        this(factIds, unlockedNodeIds, Map.of(), Map.of());
+        this(factIds, unlockedNodeIds, Map.of(), Map.of(), Set.of());
     }
 
     /**
-     * @deprecated use {@link #PlayerResearchState(Set, Set, Map, Map)}
+     * @deprecated use {@link #PlayerResearchState(Set, Set, Map, Map, Set)}
      */
     @Deprecated
     public PlayerResearchState(Set<Identifier> factIds, Set<Identifier> unlockedNodeIds, Map<Identifier, Integer> values) {
-        this(factIds, unlockedNodeIds, values, Map.of());
+        this(factIds, unlockedNodeIds, values, Map.of(), Set.of());
     }
 
     public PlayerResearchState(Set<Identifier> factIds, Set<Identifier> unlockedNodeIds, Map<Identifier, Integer> values, Map<Identifier, Integer> nodeStages) {
+        this(factIds, unlockedNodeIds, values, nodeStages, Set.of());
+    }
+
+    public PlayerResearchState(Set<Identifier> factIds, Set<Identifier> unlockedNodeIds, Map<Identifier, Integer> values, Map<Identifier, Integer> nodeStages, Set<Identifier> rewardedStageIds) {
         this.factIds = new ObjectOpenHashSet<>(factIds);
         this.unlockedNodeIds = new ObjectOpenHashSet<>(unlockedNodeIds);
         this.internalValues = new Object2IntOpenHashMap<>(values);
         this.nodeStageIndexes = new Object2IntOpenHashMap<>(nodeStages);
+        this.rewardedStageIds = new ObjectOpenHashSet<>(rewardedStageIds);
     }
 
     public boolean grantFact(Identifier factId) {
@@ -182,13 +189,25 @@ public class PlayerResearchState {
     }
 
     /**
-     * Resets all research state including stage indexes.
+     * Resets all research state including stage indexes and granted rewards.
      */
     public void reset() {
         this.factIds.clear();
         this.unlockedNodeIds.clear();
         this.internalValues.clear();
         this.nodeStageIndexes.clear();
+        this.rewardedStageIds.clear();
+    }
+
+    /**
+     * Marks the rewards of a stage as granted. Returns true if they were not granted before.
+     */
+    public boolean markRewardsGranted(Identifier stageId) {
+        return this.rewardedStageIds.add(stageId);
+    }
+
+    public Set<Identifier> rewardedStageIds() {
+        return Set.copyOf(this.rewardedStageIds);
     }
 
     public Set<Identifier> factIds() {

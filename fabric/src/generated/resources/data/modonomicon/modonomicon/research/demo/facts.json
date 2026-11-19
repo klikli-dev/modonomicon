@@ -16,5 +16,73 @@
   },
   {
     "id": "modonomicon:demo/marker_intro_viewed"
+  },
+  {
+    "display": {
+      "icon": {
+        "id": "minecraft:oak_log"
+      },
+      "title": {
+        "translate": "modonomicon.demo.requirements.oak_log.title"
+      }
+    },
+    "id": "modonomicon:demo/requirements_oak_log_acquired"
+  },
+  {
+    "display": {
+      "category": "modonomicon:demo_rituals"
+    },
+    "id": "modonomicon:demo/requirements_iron_ingot_acquired"
+  },
+  {
+    "display": {
+      "icon": {
+        "id": "minecraft:writable_book"
+      },
+      "title": {
+        "translate": "modonomicon.demo.scholarship.notes_read.title"
+      }
+    },
+    "id": "modonomicon:demo/scholarship/notes_read"
+  },
+  {
+    "display": {
+      "action": {
+        "cost": [
+          {
+            "type": "modonomicon:item",
+            "item": {
+              "id": "minecraft:paper"
+            }
+          },
+          {
+            "type": "modonomicon:durability",
+            "amount": 1,
+            "item": {
+              "id": "minecraft:shears"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "type": "modonomicon:give_item",
+            "stack": {
+              "components": {
+                "minecraft:custom_data": {
+                  "modonomicon_demo": "blank_research_note"
+                },
+                "minecraft:custom_name": "Blank Research Note"
+              },
+              "id": "minecraft:paper"
+            }
+          }
+        ],
+        "repeatable": true
+      },
+      "title": {
+        "translate": "modonomicon.demo.scholarship.research_note.title"
+      }
+    },
+    "id": "modonomicon:demo/scholarship/note_studied"
   }
 ]

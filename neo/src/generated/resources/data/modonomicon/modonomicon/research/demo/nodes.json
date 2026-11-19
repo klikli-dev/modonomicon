@@ -112,5 +112,28 @@
     "required_facts": [
       "modonomicon:demo/marker_intro_viewed"
     ]
+  },
+  {
+    "id": "modonomicon:demo/requirements_staged",
+    "stages": [
+      {
+        "id": "modonomicon:demo/requirements_stage_1",
+        "required_facts": [
+          "modonomicon:demo/requirements_oak_log_acquired"
+        ]
+      },
+      {
+        "id": "modonomicon:demo/requirements_stage_2",
+        "required_facts": [
+          "modonomicon:demo/requirements_iron_ingot_acquired"
+        ],
+        "required_values": [
+          {
+            "threshold": 5,
+            "value_id": "modonomicon:demo/requirements_cobblestone_collected"
+          }
+        ]
+      }
+    ]
   }
 ]

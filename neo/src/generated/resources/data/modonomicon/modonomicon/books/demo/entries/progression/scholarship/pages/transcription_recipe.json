@@ -1,0 +1,11 @@
+{
+  "type": "modonomicon:crafting_recipe",
+  "condition": {
+    "type": "modonomicon:research_stage_completed",
+    "node_id": "modonomicon:generated/demo/nodes/entry_progression/progression_scholarship",
+    "stage_id": "modonomicon:generated/demo/nodes/entry_progression/progression_scholarship/stages/transcription"
+  },
+  "id": "transcription_recipe",
+  "recipe_id_1": "modonomicon:crafting/demo_research_note",
+  "sort_number": 4
+}

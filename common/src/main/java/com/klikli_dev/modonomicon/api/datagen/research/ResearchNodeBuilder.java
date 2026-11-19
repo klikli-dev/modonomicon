@@ -11,6 +11,7 @@ import com.klikli_dev.modonomicon.research.data.ResearchToastDefinition;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.UnaryOperator;
 
 /**
  * Fluent builder for authoring research nodes with stages, stage dependencies, and other options.
@@ -35,6 +36,7 @@ public final class ResearchNodeBuilder {
     private final List<ResearchStageSpec> stages = new ArrayList<>();
     private final List<ResearchNodeSpec.StageDependencySpec> stageDependencies = new ArrayList<>();
     private ResearchToastDefinition toast;
+    private ResearchDisplayModel display;
 
     ResearchNodeBuilder(ResearchDataBuilder research, ResearchNodeRef ref) {
         this.research = research;
@@ -122,16 +124,32 @@ public final class ResearchNodeBuilder {
     }
 
     /**
+     * Merges display data into the node, see {@link ResearchDisplayModel#merge(ResearchDisplayModel)}.
+     */
+    public ResearchNodeBuilder withDisplay(ResearchDisplayModel display) {
+        return this.withDisplay(current -> current.merge(display));
+    }
+
+    /**
+     * Updates the display data of the node. The operator receives a copy of the existing display or an empty one.
+     */
+    public ResearchNodeBuilder withDisplay(UnaryOperator<ResearchDisplayModel> update) {
+        this.display = update.apply(ResearchDisplayModel.copyOrCreate(Optional.ofNullable(this.display)));
+        return this;
+    }
+
+    /**
      * Builds and registers the node, returning the node ref.
      */
     public ResearchNodeRef build() {
-        this.research.addNode(ResearchNodeSpec.of(
+        this.research.addNode(new ResearchNodeSpec(
                 this.ref,
                 List.copyOf(this.requiredFacts),
                 List.copyOf(this.requiredValues),
                 List.copyOf(this.stages),
                 List.copyOf(this.stageDependencies),
-                Optional.ofNullable(this.toast)
+                Optional.ofNullable(this.toast),
+                Optional.ofNullable(this.display)
         ));
         return this.ref;
     }

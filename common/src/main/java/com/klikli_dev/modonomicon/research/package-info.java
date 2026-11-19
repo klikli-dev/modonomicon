@@ -38,8 +38,40 @@
  * derived indices (hook indices, stage rules and locations, stage counts). The server sends the authored definitions to
  * clients with {@code SyncResearchDataMessage}, and clients rebuild the same indices with the same validation.
  *
+ * <h2>Effects</h2>
+ * A {@code ResearchEffect} changes the player: it grants a fact, increments a value, gives an item, grants experience or runs a
+ * function. Effects are the building block of stage rewards and of action effects. {@code apply} returns true if the effect changed
+ * something (research state, inventory or experience), so a caller can tell a real change from a no-op. Effects run on the server,
+ * inside a state change, see {@code ResearchHookService#applyStateChange}.
+ *
+ * <h2>Actions</h2>
+ * A {@code ResearchAction} is a cost, the effects it applies and two flags: {@code grantsFact} (pay to learn the fact it is
+ * attached to) and {@code repeatable} (offered again after the fact is granted or the stage is completed). An action must grant
+ * its fact or be repeatable, otherwise it is never recorded and is rejected. Players perform actions only through
+ * {@code ResearchActions.perform}, which validates the node, stage and fact, checks the action's availability and plans its cost.
+ *
+ * <h2>Manual stage completion</h2>
+ * A manual stage is completed by the player through {@code ResearchStages.completeManual}, not by a hook. It requires the
+ * stage's requirements to be met and its cost to be plannable. Automatic stages that follow cascade through the same
+ * reevaluation as hooks.
+ *
+ * <h2>Costs</h2>
+ * A {@code ResearchCost} is a list of typed entries, e.g. items, durability or levels. Every paid action and every manual stage
+ * follows the same order: <b>plan, then mutate, then pay</b>. {@code ResearchCost#plan} reserves what the cost needs against the
+ * current inventory and levels, without changing anything, and returns empty if it is not affordable. The state change runs
+ * only after a plan exists. {@code ResearchCost#pay} then applies the plan. If the reserved stacks changed during the change, the
+ * cost is planned again, and if that fails a warning is logged and the change is kept.
+ *
+ * <h2>State changes</h2>
+ * Every state change that is not a plain hook goes through {@code ResearchHookService#applyStateChange}: listeners before,
+ * the mutation, reevaluation, toast sync, then listeners after. Its boolean result is true if the mutation or the reevaluation reported a change.
+ * Hooks, actions and manual stage completion all use this entry point, so they share one pipeline.
+ *
  * <h2>Layering</h2>
- * Research does not depend on the book package. Book-side behaviour that reacts to research changes, such as
- * visibility-driven unread state, is registered as a {@code ResearchStateChangeListener} during mod setup.
+ * Research does not depend on the book package, with two exceptions that only carry presentation data:
+ * {@code BookIcon} for the icons of displays and toasts ({@code ResearchDisplay}, {@code ResearchToastDefinition}), and
+ * {@code AssociatedItemMatcher}, the item matcher shared with the book ({@code ResearchItemMatcher}). Book-side behaviour that
+ * reacts to research changes, such as visibility-driven unread state, is registered as a {@code ResearchStateChangeListener}
+ * during mod setup. Nothing else in research may import the book package.
  */
 package com.klikli_dev.modonomicon.research;

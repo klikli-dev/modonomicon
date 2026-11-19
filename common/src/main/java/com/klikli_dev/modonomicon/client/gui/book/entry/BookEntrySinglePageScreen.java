@@ -4,6 +4,7 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.entry;
 
+import com.klikli_dev.modonomicon.book.Book;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.client.gui.book.BookContentRenderer;
@@ -34,7 +35,7 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
         super(parentScreen, entry);
     }
 
-    public static void renderSinglePageBookBackground(GuiGraphicsExtractor guiGraphics, com.klikli_dev.modonomicon.book.Book book) {
+    public static void renderSinglePageBookBackground(GuiGraphicsExtractor guiGraphics, Book book) {
         int x = 0; // (this.width - BOOK_BACKGROUND_WIDTH) / 2;
         int y = 0; // (this.height - BOOK_BACKGROUND_HEIGHT) / 2;
 
@@ -74,7 +75,7 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
     @Override
     protected int getPageForOpenPagesIndex(int openPagesIndex) {
         if (!this.displayPages.isEmpty() && openPagesIndex >= 0 && openPagesIndex < this.displayPages.size()) {
-            return this.displayPages.get(openPagesIndex).page().getPageNumber();
+            return this.getAuthoredPageNumber(this.displayPages.get(openPagesIndex));
         }
         return openPagesIndex;
     }
@@ -134,6 +135,7 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
             } else {
                 this.pageRenderer = PageRendererRegistry.getPageRenderer(this.displayPage.page().getType()).create(this.displayPage.page());
             }
+            this.pageRenderer.setReservedBottomHeight(pageIndex == 0 ? this.requirements.getReservedFirstPageHeight() : 0);
             this.pageRenderer.onBeginDisplayPage(this, SINGLE_PAGE_X, TOP_PADDING);
         } else {
             this.pageRenderer = null;
@@ -143,6 +145,7 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
     @Override
     public void extractRenderState(GuiGraphicsExtractor guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         this.resetTooltip();
+        this.requirements.beginFrame();
 
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
@@ -153,6 +156,7 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
         this.renderPage(guiGraphics, this.pageRenderer, pMouseX, pMouseY, pPartialTick);
+        this.requirements.renderFirstPage(guiGraphics, pMouseX, pMouseY, true);
         guiGraphics.pose().popMatrix();
         guiGraphics.nextStratum();
 

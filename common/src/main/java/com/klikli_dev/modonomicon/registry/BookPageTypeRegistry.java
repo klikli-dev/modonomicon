@@ -18,6 +18,7 @@ import com.klikli_dev.modonomicon.book.page.BookSmithingRecipePage;
 import com.klikli_dev.modonomicon.book.page.BookSmeltingRecipePage;
 import com.klikli_dev.modonomicon.book.page.BookSmokingRecipePage;
 import com.klikli_dev.modonomicon.book.page.BookSpotlightPage;
+import com.klikli_dev.modonomicon.book.page.BookStageRequirementsPage;
 import com.klikli_dev.modonomicon.book.page.BookStonecuttingRecipePage;
 import com.klikli_dev.modonomicon.book.page.BookTextPage;
 import com.klikli_dev.modonomicon.book.page.BookViewerRecipePage;
@@ -60,6 +61,8 @@ public final class BookPageTypeRegistry {
     public static final BookPageType<BookImagePage> IMAGE = register(BookImagePage.ID, BookImagePage.CODEC, BookImagePage.STREAM_CODEC);
 
     public static final BookPageType<BookViewerRecipePage> VIEWER_RECIPE = register(BookViewerRecipePage.ID, BookViewerRecipePage.CODEC, BookViewerRecipePage.STREAM_CODEC);
+
+    public static final BookPageType<BookStageRequirementsPage> STAGE_REQUIREMENTS = register(BookStageRequirementsPage.ID, BookStageRequirementsPage.CODEC, BookStageRequirementsPage.STREAM_CODEC);
 
     private BookPageTypeRegistry() {
     }

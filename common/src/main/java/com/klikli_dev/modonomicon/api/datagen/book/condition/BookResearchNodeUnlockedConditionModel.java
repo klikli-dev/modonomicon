@@ -6,6 +6,7 @@
 
 package com.klikli_dev.modonomicon.api.datagen.book.condition;
 
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Research;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
@@ -13,7 +14,6 @@ import com.klikli_dev.modonomicon.book.conditions.BookResearchNodeUnlockedCondit
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Util;
 
 public class BookResearchNodeUnlockedConditionModel extends BookConditionModel<BookResearchNodeUnlockedConditionModel> {
     protected Identifier nodeId;
@@ -50,7 +50,7 @@ public class BookResearchNodeUnlockedConditionModel extends BookConditionModel<B
      * translation exists, otherwise the raw key will be displayed.
      */
     public BookResearchNodeUnlockedConditionModel withNodeName() {
-        this.tooltip = Component.translatable(Util.makeDescriptionId("research_node", this.nodeId));
+        this.tooltip = Component.translatable(Research.nodeKey(this.nodeId));
         return this;
     }
 

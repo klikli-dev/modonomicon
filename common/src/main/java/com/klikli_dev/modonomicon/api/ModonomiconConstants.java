@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.api;
 
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 
 public class ModonomiconConstants {
 
@@ -57,6 +58,53 @@ public class ModonomiconConstants {
             public static final String BUTTON_BACK_TOOLTIP = PREFIX + "button.back.tooltip";
             public static final String BUTTON_EXIT = PREFIX + "button.exit";
             public static final String BUTTON_CLOSE_TAB = PREFIX + "button.close_tab";
+
+            public static final String REQUIREMENTS_TITLE = PREFIX + "requirements.title";
+            public static final String REQUIREMENTS_NEXT_STEPS = PREFIX + "requirements.next_steps";
+            public static final String REQUIREMENTS_NEXT = PREFIX + "requirements.next";
+            public static final String REQUIREMENTS_COMPLETE = PREFIX + "requirements.complete";
+            public static final String REQUIREMENTS_STAGE_LINE = PREFIX + "requirements.stage_line";
+            public static final String REQUIREMENTS_CRAFT_ITEM = PREFIX + "requirements.craft_item";
+            public static final String REQUIREMENTS_OBTAIN_ITEM = PREFIX + "requirements.obtain_item";
+            public static final String REQUIREMENTS_READ_ENTRY = PREFIX + "requirements.read_entry";
+            public static final String REQUIREMENTS_STAGE_TITLE = PREFIX + "requirements.stage_title";
+            public static final String REQUIREMENTS_PROGRESS = PREFIX + "requirements.progress";
+            public static final String REQUIREMENTS_MET = PREFIX + "requirements.met";
+            public static final String REQUIREMENTS_NOT_MET = PREFIX + "requirements.not_met";
+            public static final String REQUIREMENTS_NOT_MET_CRAFT = PREFIX + "requirements.not_met.craft";
+            public static final String REQUIREMENTS_NOT_MET_OBTAIN = PREFIX + "requirements.not_met.obtain";
+            public static final String REQUIREMENTS_NOT_MET_PROGRESS = PREFIX + "requirements.not_met.progress";
+            public static final String REQUIREMENTS_NOT_MET_HINT = PREFIX + "requirements.not_met.hint";
+            public static final String REQUIREMENTS_CLICK_TO_OPEN = PREFIX + "requirements.click_to_open";
+            public static final String REQUIREMENTS_COSTS = PREFIX + "requirements.costs";
+            public static final String REQUIREMENTS_COST_ITEM = PREFIX + "requirements.cost.item";
+            public static final String REQUIREMENTS_COST_LEVELS = PREFIX + "requirements.cost.levels";
+            public static final String REQUIREMENTS_COST_DURABILITY = PREFIX + "requirements.cost.durability";
+            public static final String REQUIREMENTS_COST_NOT_HELD = PREFIX + "requirements.cost.not_held";
+            public static final String REQUIREMENTS_COST_SPECIAL = PREFIX + "requirements.cost.special";
+            public static final String REQUIREMENTS_ACTION_RECORD = PREFIX + "requirements.action.record";
+            public static final String REQUIREMENTS_ACTION_RECEIVE = PREFIX + "requirements.action.receive";
+            public static final String REQUIREMENTS_ACTION_RECEIVE_AGAIN = PREFIX + "requirements.action.receive_again";
+            public static final String REQUIREMENTS_ACTION_PERFORM = PREFIX + "requirements.action.perform";
+            public static final String REQUIREMENTS_ACTION_ALREADY_HELD = PREFIX + "requirements.action.already_held";
+            public static final String REQUIREMENTS_CONSUMED_ON_COMPLETION = PREFIX + "requirements.consumed_on_completion";
+            public static final String REQUIREMENTS_USE_ITEM = PREFIX + "requirements.use_item";
+            public static final String REQUIREMENTS_NOT_USED = PREFIX + "requirements.not_used";
+            public static final String REQUIREMENTS_STAGE_COMPLETE = PREFIX + "requirements.stage.complete";
+            public static final String REQUIREMENTS_STAGE_COMPLETING = PREFIX + "requirements.stage.completing";
+            public static final String REQUIREMENTS_STAGE_COMPLETE_HINT = PREFIX + "requirements.stage.complete.hint";
+            public static final String REQUIREMENTS_STAGE_MANUAL = PREFIX + "requirements.stage.manual";
+            public static final String REQUIREMENTS_REWARD = PREFIX + "requirements.reward";
+            public static final String REQUIREMENTS_REWARD_EXPERIENCE = PREFIX + "requirements.reward.experience";
+            public static final String REQUIREMENTS_REWARD_LEVELS = PREFIX + "requirements.reward.levels";
+            public static final String REQUIREMENTS_REWARD_VALUE = PREFIX + "requirements.reward.value";
+            public static final String REQUIREMENTS_REWARD_SPECIAL = PREFIX + "requirements.reward.special";
+            public static final String REQUIREMENTS_TRIGGER_SPECIAL = PREFIX + "requirements.trigger.special";
+            public static final String REQUIREMENTS_REWARD_PENDING = PREFIX + "requirements.reward.pending";
+            public static final String REQUIREMENTS_PAGE_TEXT = PREFIX + "requirements.page.text";
+            public static final String FEEDBACK_MISSING = PREFIX + "feedback.missing";
+            public static final String FEEDBACK_UNAVAILABLE = PREFIX + "feedback.unavailable";
+            public static final String FEEDBACK_INVALID = PREFIX + "feedback.invalid";
 
             public static final String BUTTON_VISUALIZE = PREFIX + "button.visualize";
             public static final String BUTTON_VISUALIZE_TOOLTIP = PREFIX + "button.visualize.tooltip";
@@ -140,6 +188,8 @@ public class ModonomiconConstants {
             public static final String CONDITION_RESEARCH_STAGE_COMPLETED = CONDITION_PREFIX + "research_stage_completed";
             public static final String CONDITION_CATEGORY_HAS_VISIBLE_ENTRIES = CONDITION_PREFIX + "has_visible_entries";
             public static final String CONDITION_ENTRY_UNLOCKED = CONDITION_PREFIX + "entry_unlocked";
+            public static final String CONDITION_ITEM_CRAFTED = CONDITION_PREFIX + "item_crafted";
+            public static final String CONDITION_ITEM_ACQUIRED = CONDITION_PREFIX + "item_acquired";
             public static final String RECIPE_PREFIX = PREFIX + "recipe.";
             public static final String RECIPE_CRAFTING_SHAPELESS = RECIPE_PREFIX + "crafting_shapeless";
             public static final String ITEM_NO_BOOK_FOUND_FOR_STACK = PREFIX + "no_book_found_for_stack";
@@ -148,6 +198,32 @@ public class ModonomiconConstants {
             public static final String ASSOCIATED_HOLD_TO_OPEN = PREFIX + "associated.hold_to_open";
             public static final String ASSOCIATED_LOCKED = PREFIX + "associated.locked";
 
+        }
+
+        /**
+         * Translation keys of research definitions. Datagen and runtime share these, see the key helpers.
+         */
+        public static class Research {
+            public static final String FACT_PREFIX = "research_fact";
+            public static final String VALUE_PREFIX = "research_value";
+            public static final String NODE_PREFIX = "research_node";
+            public static final String STAGE_PREFIX = "research_stage";
+
+            public static String factKey(Identifier factId) {
+                return Util.makeDescriptionId(FACT_PREFIX, factId);
+            }
+
+            public static String valueKey(Identifier valueId) {
+                return Util.makeDescriptionId(VALUE_PREFIX, valueId);
+            }
+
+            public static String nodeKey(Identifier nodeId) {
+                return Util.makeDescriptionId(NODE_PREFIX, nodeId);
+            }
+
+            public static String stageKey(Identifier stageId) {
+                return Util.makeDescriptionId(STAGE_PREFIX, stageId);
+            }
         }
 
         public static class Command {

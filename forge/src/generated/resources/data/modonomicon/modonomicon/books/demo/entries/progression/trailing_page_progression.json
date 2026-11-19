@@ -1,0 +1,42 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "modonomicon:progression",
+  "condition": {
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/progression_trailing_page_progression",
+    "tooltip": {
+      "translate": "tooltip.modonomicon.condition.entry_unlocked",
+      "with": [
+        {
+          "translate": "book.modonomicon.demo.progression.trailing_page_progression.name"
+        }
+      ]
+    }
+  },
+  "description": "book.modonomicon.demo.progression.trailing_page_progression.description",
+  "icon": {
+    "id": "minecraft:dirt"
+  },
+  "id": "modonomicon:progression/trailing_page_progression",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
+  "name": "book.modonomicon.demo.progression.trailing_page_progression.name",
+  "parents": [
+    {
+      "entry": "modonomicon:progression/first_page_progression"
+    }
+  ],
+  "progression": {
+    "node": "modonomicon:generated/demo/nodes/entry_progression/progression_trailing_page_progression",
+    "requirements_display": "trailing_page"
+  },
+  "sort_number": 2,
+  "x": 0,
+  "y": 2
+}

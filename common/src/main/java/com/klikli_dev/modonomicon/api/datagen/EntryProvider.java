@@ -6,18 +6,30 @@
 
 package com.klikli_dev.modonomicon.api.datagen;
 
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
+import com.klikli_dev.modonomicon.api.datagen.GeneratedBookResearchStore.ActionFact;
+import com.klikli_dev.modonomicon.api.datagen.GeneratedBookResearchStore.StageRequest;
+import com.klikli_dev.modonomicon.api.datagen.GeneratedBookResearchStore.StagedProgressionRequest;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryTabModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookNoneConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookStageRequirementsPageModel;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchDisplayModel;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageRef;
+import com.klikli_dev.modonomicon.book.RequirementsDisplay;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.phys.Vec2;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,6 +39,10 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
     protected final CategoryProviderBase parent;
 
     protected BookEntryModel entry;
+    private final List<StageRequest> progressionStages = new ArrayList<>();
+    private final List<PendingRequirementsPage> requirementsPages = new ArrayList<>();
+    private ResearchStageRef currentStage;
+    private boolean requirementsPageUsed;
 
     public EntryProvider(CategoryProviderBase parent) {
         super(parent.modId(), parent.lang(), parent.langsAsMapOfBiConsumers(), parent.context(), parent.condition());
@@ -187,9 +203,186 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
         this.context().tab(id);
         var model = modelSupplier.get();
         model.withId(id);
+        if (this.currentStage != null) {
+            model.withCondition(this.stageGate(model.getCondition()));
+        }
         this.entry.withTab(model);
         return model;
     }
+
+    /**
+     * Declares a stage of the research progression of this entry. Pages and tabs declared after a stage are only
+     * visible once the stage is completed. Requirements are declared with the builder, see {@link ProgressionStageBuilder}.
+     * This is the way to declare a progression: the research node, its stages and the facts of the requirements are generated.
+     * <p>
+     * The first stage's requirements unlock the content after it; content declared before the first stage is not gated.
+     * A stage needs at least one requirement and a unique id within the entry. Texts given to the builder are literal English;
+     * they are written to the language file under keys generated from the entry and stage id.
+     * <p>
+     * Example:
+     * <pre>{@code
+     * this.page("intro", ...);                  // visible from the start
+     * this.stage("quickening", s -> s
+     *         .craft(Items.CLAY)                // generated item_crafted fact
+     *         .obtain(ItemTags.SAND)            // generated item_acquired fact for any item of the tag
+     *         .read(OtherEntry.ID)              // generated entry_viewed_once fact
+     *         .value(SOME_VALUE, 3)             // value threshold
+     *         .title("Breathing life into clay")
+     *         .icon(Items.CLAY_BALL));
+     * this.page("notebook2", ...);              // only visible after "quickening" is completed
+     * this.requirementsPage("next");            // shows the requirements of the next stage, see requirementsPage
+     * this.stage("mastery", s -> s.craft(Items.GOLD_INGOT).consume(Items.GOLD_INGOT, 1));
+     * }</pre>
+     *
+     * @param id            the stage id, unique within the entry. Used in the generated research and lang keys.
+     * @param configuration configures the requirements, completion, rewards and display of the stage
+     * @throws IllegalStateException if the id is already used or the stage has no requirements
+     */
+    protected void stage(String id, Consumer<ProgressionStageBuilder> configuration) {
+        var stageRef = this.condition().entryProgressionStage(this.entry, id);
+        if (this.progressionStages.stream().anyMatch(stage -> stage.ref().equals(stageRef))) {
+            throw new IllegalStateException("Duplicate stage id '" + id + "' in entry '" + this.entryId() + "'.");
+        }
+
+        var builder = new ProgressionStageBuilder();
+        configuration.accept(builder);
+        if (!builder.hasRequirements()) {
+            throw new IllegalStateException("Stage '" + id + "' in entry '" + this.entryId() + "' has no requirements. "
+                    + "Add at least one craft, obtain, use, read, fact, action or value requirement.");
+        }
+
+        var stagePrefix = this.context().entry() + ".stage." + id;
+        var titleKey = stagePrefix + ".title";
+        this.add(titleKey, builder.title() != null ? builder.title() : humanize(id));
+        var display = ResearchDisplayModel.create().withTitle(titleKey);
+        if (builder.description() != null) {
+            var descriptionKey = stagePrefix + ".description";
+            this.add(descriptionKey, builder.description());
+            display.withDescription(descriptionKey);
+        }
+        if (builder.icon() != null) {
+            display.withIcon(builder.icon());
+        }
+
+        var actionFacts = new ArrayList<ActionFact>();
+        for (var action : builder.actionFacts()) {
+            var actionTitleKey = stagePrefix + ".action." + action.id() + ".title";
+            this.add(actionTitleKey, action.title());
+            actionFacts.add(new ActionFact(action.id(),
+                    ResearchDisplayModel.create().withTitle(actionTitleKey).withAction(action.action())));
+        }
+
+        this.progressionStages.add(new StageRequest(stageRef,
+                builder.crafted(), builder.acquired(), builder.used(), builder.viewed(), builder.facts(), builder.values(),
+                actionFacts, display, builder.completion(), builder.rewards()));
+        this.currentStage = stageRef;
+    }
+
+    /**
+     * Places a page that shows the requirements of the stage that comes next at this point of the entry.
+     * The stage is the first stage declared after this page, or the last stage if this page comes after all stages.
+     * The page is never gated by stages, so it stays visible and shows the completed requirements with check marks.
+     * Its title and text are the built-in translations, see {@link #requirementsPage(String, String, String)} for custom ones.
+     * <p>
+     * Declaring this page switches the requirements display of the entry to {@link RequirementsDisplay#PAGES}, unless it was set explicitly.
+     * Requires a stage to be declared in this entry.
+     *
+     * @param id the page id, e.g. {@code next}
+     */
+    protected BookStageRequirementsPageModel requirementsPage(String id) {
+        return this.addRequirementsPage(this.page(id, () -> BookStageRequirementsPageModel.create()
+                .withTitle(Gui.REQUIREMENTS_TITLE)
+                .withText(Gui.REQUIREMENTS_PAGE_TEXT)));
+    }
+
+    /**
+     * Like {@link #requirementsPage(String)}, but with a custom literal English title and text for this page.
+     * The texts are written to the language file under the page's keys.
+     *
+     * @param id    the page id, e.g. {@code next}
+     * @param title the literal English title of the page
+     * @param text  the literal English text of the page
+     */
+    protected BookStageRequirementsPageModel requirementsPage(String id, String title, String text) {
+        var page = this.page(id, () -> BookStageRequirementsPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText()));
+        this.pageTitle(title);
+        this.pageText(text);
+        return this.addRequirementsPage(page);
+    }
+
+    private BookStageRequirementsPageModel addRequirementsPage(BookStageRequirementsPageModel page) {
+        this.requirementsPages.add(new PendingRequirementsPage(page, this.progressionStages.size()));
+        this.requirementsPageUsed = true;
+        return page;
+    }
+
+    /**
+     * Sets where the requirements of this entry are shown, overriding the book default.
+     * Only has an effect for entries with stages.
+     */
+    protected void requirementsDisplay(RequirementsDisplay requirementsDisplay) {
+        this.entry.withRequirementsDisplay(requirementsDisplay);
+    }
+
+    private BookConditionModel<?> stageGate(BookConditionModel<?> condition) {
+        var gate = this.condition().researchStageCompleted(
+                this.condition().entryProgressionNode(this.entry), this.currentStage);
+        if (condition == null || condition instanceof BookNoneConditionModel) {
+            return gate;
+        }
+        return this.and(condition, gate);
+    }
+
+    private void gatePage(BookPageModel<?> page) {
+        if (this.currentStage == null || page instanceof BookStageRequirementsPageModel) {
+            return;
+        }
+        page.withCondition(this.stageGate(page.getCondition()));
+    }
+
+    private void resetProgression() {
+        this.progressionStages.clear();
+        this.requirementsPages.clear();
+        this.currentStage = null;
+        this.requirementsPageUsed = false;
+    }
+
+    private void finishProgression() {
+        if (this.progressionStages.isEmpty()) {
+            if (!this.requirementsPages.isEmpty()) {
+                throw new IllegalStateException("Entry '" + this.entryId() + "' has a requirements page, but no stage. "
+                        + "Declare a stage with this.stage(...).");
+            }
+            return;
+        }
+
+        if (this.entry.hasProgression()) {
+            throw new IllegalStateException("Entry '" + this.entryId() + "' already has a research progression, set with BookEntryModel.withProgression. "
+                    + "Declare progressions with this.stage(...) in EntryProvider, or use BookEntryModel.withProgression for a hand-authored node, not both.");
+        }
+
+        var lastIndex = this.progressionStages.size() - 1;
+        this.condition().addEntryProgression(new StagedProgressionRequest(this.entry.getId(), List.copyOf(this.progressionStages)));
+        this.entry.withProgression(this.condition().entryProgressionNode(this.entry), this.progressionStages.get(lastIndex).ref());
+
+        for (var pending : this.requirementsPages) {
+            var next = this.progressionStages.get(Math.min(pending.nextStageIndex(), lastIndex));
+            pending.page().withStage(next.ref());
+        }
+
+        if (this.requirementsPageUsed && this.entry.getRequirementsDisplay() == null) {
+            this.entry.withRequirementsDisplay(RequirementsDisplay.PAGES);
+        }
+    }
+
+    private static String humanize(String id) {
+        var text = id.replace('_', ' ');
+        return Character.toUpperCase(text.charAt(0)) + text.substring(1);
+    }
+
+    private record PendingRequirementsPage(BookStageRequirementsPageModel page, int nextStageIndex) {}
 
     /**
      * Ensures present tab ids are unique within the entry and that every tab anchor refers to a page of the entry.
@@ -216,11 +409,13 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
     }
 
     protected <T extends BookPageModel<?>> T add(T page) {
+        this.gatePage(page);
         this.entry.withPage(page);
         return page;
     }
 
     protected List<BookPageModel<?>> add(List<BookPageModel<?>> pages) {
+        pages.forEach(this::gatePage);
         this.entry.withPages(pages);
         return pages;
     }
@@ -279,7 +474,9 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
 
         this.entry = this.additionalSetup(entry);
 
+        this.resetProgression();
         this.generatePages();
+        this.finishProgression();
         this.validateTabs();
 
         this.parent.add(this.entry);

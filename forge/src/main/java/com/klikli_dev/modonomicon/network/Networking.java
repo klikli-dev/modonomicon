@@ -28,6 +28,8 @@ public class Networking {
             .addMain(BookCategoryReadMessage.TYPE, BookCategoryReadMessage.STREAM_CODEC, MessageHandler::handle)
             .addMain(ClickCommandLinkMessage.TYPE, ClickCommandLinkMessage.STREAM_CODEC, MessageHandler::handle)
             .addMain(ClickResearchProgressButtonMessage.TYPE, ClickResearchProgressButtonMessage.STREAM_CODEC, MessageHandler::handle)
+            .addMain(PerformResearchActionMessage.TYPE, PerformResearchActionMessage.STREAM_CODEC, MessageHandler::handle)
+            .addMain(CompleteResearchStageMessage.TYPE, CompleteResearchStageMessage.STREAM_CODEC, MessageHandler::handle)
             .addMain(SaveBookStateMessage.TYPE, SaveBookStateMessage.STREAM_CODEC, MessageHandler::handle)
             .addMain(SaveCategoryStateMessage.TYPE, SaveCategoryStateMessage.STREAM_CODEC, MessageHandler::handle)
             .addMain(SaveEntryStateMessage.TYPE, SaveEntryStateMessage.STREAM_CODEC, MessageHandler::handle)

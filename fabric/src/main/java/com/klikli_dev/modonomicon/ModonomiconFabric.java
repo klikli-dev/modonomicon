@@ -70,7 +70,10 @@ public class ModonomiconFabric implements ModInitializer {
             MultiblockDataManager.get().registries(sharedState.get(ResourceLoader.REGISTRY_LOOKUP_KEY));
             return MultiblockDataManager.get().reload(sharedState, exectutor, barrier, applyExectutor);
         });
-        ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(Modonomicon.loc("research_data_manager"), (sharedState, exectutor, barrier, applyExectutor) -> ResearchDataManager.get().reload(sharedState, exectutor, barrier, applyExectutor));
+        ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(Modonomicon.loc("research_data_manager"), (sharedState, exectutor, barrier, applyExectutor) -> {
+            ResearchDataManager.get().registries(sharedState.get(ResourceLoader.REGISTRY_LOOKUP_KEY));
+            return ResearchDataManager.get().reload(sharedState, exectutor, barrier, applyExectutor);
+        });
 
         //register commands
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->

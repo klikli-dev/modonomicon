@@ -9,6 +9,7 @@ package com.klikli_dev.modonomicon.api.datagen;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.*;
+import com.klikli_dev.modonomicon.api.datagen.GeneratedBookResearchStore.StagedProgressionRequest;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeRef;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageRef;
 import com.klikli_dev.modonomicon.research.item.ResearchItemMatcher;
@@ -218,6 +219,74 @@ public class ConditionHelper {
                 .withNode(this.store.acquiredNodeId(target));
     }
 
+    /**
+     * Creates a condition that requires the given item to be crafted.
+     * The backing research node, fact, and hook are generated automatically during book compilation.
+     * The requirement is shown in requirement blocks as a craft row with the item's icon.
+     */
+    public BookResearchNodeUnlockedConditionModel crafted(ItemStackTemplate target) {
+        return this.crafted(ResearchItemMatcher.of(target));
+    }
+
+    /**
+     * Creates a condition that requires the given item to be crafted.
+     */
+    public BookResearchNodeUnlockedConditionModel crafted(ItemLike target) {
+        return this.crafted(new ItemStackTemplate(target.asItem()));
+    }
+
+    /**
+     * Creates a condition that requires any item of the given tag to be crafted.
+     */
+    public BookResearchNodeUnlockedConditionModel crafted(TagKey<Item> tag) {
+        return this.crafted(ResearchItemMatcher.tag(tag));
+    }
+
+    /**
+     * Creates a condition that requires an item matching the matcher to be crafted.
+     */
+    public BookResearchNodeUnlockedConditionModel crafted(ResearchItemMatcher target) {
+        this.requireStore("crafted()");
+        this.store.addItemCrafted(target);
+        return BookResearchNodeUnlockedConditionModel.create()
+                .withNode(this.store.craftedNodeId(target))
+                .withTooltip(Component.translatable(Tooltips.CONDITION_ITEM_CRAFTED, target.displayName()));
+    }
+
+    /**
+     * Creates a condition that requires the given item to be acquired.
+     * The backing research node, fact, and hook are generated automatically during book compilation.
+     * The requirement is shown in requirement blocks as an obtain row with the item's icon.
+     */
+    public BookResearchNodeUnlockedConditionModel acquired(ItemStackTemplate target) {
+        return this.acquired(ResearchItemMatcher.of(target));
+    }
+
+    /**
+     * Creates a condition that requires the given item to be acquired.
+     */
+    public BookResearchNodeUnlockedConditionModel acquired(ItemLike target) {
+        return this.acquired(new ItemStackTemplate(target.asItem()));
+    }
+
+    /**
+     * Creates a condition that requires any item of the given tag to be acquired.
+     */
+    public BookResearchNodeUnlockedConditionModel acquired(TagKey<Item> tag) {
+        return this.acquired(ResearchItemMatcher.tag(tag));
+    }
+
+    /**
+     * Creates a condition that requires an item matching the matcher to be acquired.
+     */
+    public BookResearchNodeUnlockedConditionModel acquired(ResearchItemMatcher target) {
+        this.requireStore("acquired()");
+        this.store.addItemAcquired(target);
+        return BookResearchNodeUnlockedConditionModel.create()
+                .withNode(this.store.acquiredNodeId(target))
+                .withTooltip(Component.translatable(Tooltips.CONDITION_ITEM_ACQUIRED, target.displayName()));
+    }
+
     private void requireStore(String method) {
         if (this.store == null || this.context == null) {
             throw new IllegalStateException(method + " requires a book-bound ConditionHelper. "
@@ -263,5 +332,32 @@ public class ConditionHelper {
      */
     public BookResearchStageCompletedConditionModel researchStageCompleted(ResearchNodeRef nodeRef, ResearchStageRef stageRef) {
         return this.researchStageCompleted(nodeRef.id(), stageRef.id());
+    }
+
+    /**
+     * Returns the generated research node of the staged progression of the given entry.
+     * Requires a book-bound ConditionHelper.
+     */
+    public ResearchNodeRef entryProgressionNode(BookEntryModel entry) {
+        this.requireStore("entryProgressionNode()");
+        return ResearchNodeRef.of(this.store.progressionNodeId(entry.getId()));
+    }
+
+    /**
+     * Returns the generated stage with the given name of the staged progression of the given entry.
+     * Requires a book-bound ConditionHelper.
+     */
+    public ResearchStageRef entryProgressionStage(BookEntryModel entry, String stageName) {
+        this.requireStore("entryProgressionStage()");
+        return this.store.progressionStageRef(entry.getId(), stageName);
+    }
+
+    /**
+     * Registers the staged progression of an entry, so its research is generated with the book.
+     * Requires a book-bound ConditionHelper.
+     */
+    public void addEntryProgression(StagedProgressionRequest request) {
+        this.requireStore("addEntryProgression()");
+        this.store.addStagedProgression(request);
     }
 }

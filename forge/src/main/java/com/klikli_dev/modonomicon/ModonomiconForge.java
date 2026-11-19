@@ -12,6 +12,9 @@ import com.klikli_dev.modonomicon.client.BookModel;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.ModonomiconKeys;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
+import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchCostPresenterRegistry;
+import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchEffectPresenterRegistry;
+import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchTriggerPresenterRegistry;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.client.render.pip.GuiDirectEntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.render.pip.GuiMultiblockRenderer;
@@ -32,9 +35,11 @@ import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
 import com.mojang.blaze3d.framegraph.FramePass;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelTargetBundle;
 import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperties;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
@@ -88,6 +93,7 @@ public class ModonomiconForge {
             MultiblockDataManager.get().registries(e.getRegistries());
             e.addListener(MultiblockDataManager.get());
 
+            ResearchDataManager.get().registries(e.getRegistries());
             e.addListener(ResearchDataManager.get());
         });
 
@@ -215,12 +221,12 @@ public class ModonomiconForge {
             AddFramePassEvent.BUS.addListener((AddFramePassEvent e) -> {
                 e.addPass(Modonomicon.loc("multiblock_preview"), new FramePassManager.PassDefinition() {
                     @Override
-                    public void extracts(LevelTargetBundle bundle, FramePass pass, net.minecraft.client.DeltaTracker deltaTracker) {
+                    public void extracts(LevelTargetBundle bundle, FramePass pass, DeltaTracker deltaTracker) {
                         bundle.main = pass.readsAndWrites(bundle.main);
                     }
 
                     @Override
-                    public void executes(net.minecraft.client.renderer.state.level.LevelRenderState state) {
+                    public void executes(LevelRenderState state) {
                         MultiblockPreviewRenderer.extractRenderState(state);
                         PoseStack ps = new PoseStack();
                         MultiblockPreviewRenderer.onRenderLevelLastEvent(state, ps);
@@ -249,6 +255,9 @@ public class ModonomiconForge {
     public static class Client {
         public static void onClientSetup(FMLClientSetupEvent event) {
             PageRendererRegistry.registerPageRenderers();
+            ResearchTriggerPresenterRegistry.registerDefaults();
+            ResearchEffectPresenterRegistry.registerDefaults();
+            ResearchCostPresenterRegistry.registerDefaults();
 
             TickEvent.ClientTickEvent.Post.BUS.addListener((TickEvent.ClientTickEvent.Post e) -> {
                 ClientTicks.endClientTick(Minecraft.getInstance());
