@@ -26,6 +26,7 @@ import com.klikli_dev.modonomicon.config.ServerConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
+import com.klikli_dev.modonomicon.gametest.GameTestRegistry;
 import com.klikli_dev.modonomicon.integration.LecternIntegration;
 import com.klikli_dev.modonomicon.item.IsBookOpen;
 import com.klikli_dev.modonomicon.network.Networking;
@@ -86,6 +87,9 @@ public class ModonomiconNeo {
 
         //Most registries are handled by common, but creative tabs are easier per loader
         CreativeModeTabRegistry.CREATIVE_MODE_TABS.register(modEventBus);
+
+        //gametests only run for the namespaces in neoforge.enabledGameTestNamespaces, see the gameTestServer run
+        GameTestRegistry.register(modEventBus);
 
         //directly register event handlers
         modEventBus.addListener(this::onCommonSetup);
