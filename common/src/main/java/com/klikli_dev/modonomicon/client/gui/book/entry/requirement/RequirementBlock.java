@@ -40,10 +40,11 @@ public record RequirementBlock(Component title, List<RequirementRow> rows, boole
     }
 
     /**
-     * True if the block has nothing to show.
+     * True if the block has nothing to show. A block with a stage line is shown even without rows, e.g. a manual stage
+     * without requirements that is completed by its button.
      */
     public boolean isEmpty() {
-        return this.rows.isEmpty() && !this.complete;
+        return this.rows.isEmpty() && !this.complete && this.stage == null;
     }
 
     /**
