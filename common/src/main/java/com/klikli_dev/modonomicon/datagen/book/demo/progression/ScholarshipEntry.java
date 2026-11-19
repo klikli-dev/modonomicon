@@ -103,8 +103,8 @@ public class ScholarshipEntry extends EntryProvider {
                 .reward(ResearchEffectModel.addValue(DemoResearch.SCHOLARSHIP_INSIGHT, 1))
                 .reward(ResearchEffectModel.grantFact(DemoResearch.SCHOLARSHIP_NOTES_READ)));
 
+        //the study fact of transcription is already granted, so this stage only consumes its cost
         this.stage("synthesis", s -> s
-                .fact(DemoResearch.SCHOLARSHIP_NOTE_STUDIED)
                 .consume(Items.IRON_INGOT, 2)
                 .title("Synthesis")
                 .description("Hold two iron ingots and complete it by hand. The Iron Ingot row counts what you hold, the stage consumes it on completion.")
