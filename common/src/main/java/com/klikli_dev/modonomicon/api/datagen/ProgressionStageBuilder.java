@@ -292,9 +292,13 @@ public final class ProgressionStageBuilder {
         return this;
     }
 
+    /**
+     * A stage has requirements if it has any requirement row, or a cost to consume. A manual stage that only consumes a cost,
+     * e.g. holding two iron ingots to complete it by hand, is valid: the cost is its requirement.
+     */
     boolean hasRequirements() {
         return !this.crafted.isEmpty() || !this.acquired.isEmpty() || !this.used.isEmpty() || !this.viewed.isEmpty()
-                || !this.facts.isEmpty() || !this.actionFacts.isEmpty() || !this.values.isEmpty();
+                || !this.facts.isEmpty() || !this.actionFacts.isEmpty() || !this.values.isEmpty() || !this.cost.isEmpty();
     }
 
     @Nullable

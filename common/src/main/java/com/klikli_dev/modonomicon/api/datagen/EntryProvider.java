@@ -216,7 +216,7 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
      * This is the way to declare a progression: the research node, its stages and the facts of the requirements are generated.
      * <p>
      * The first stage's requirements unlock the content after it; content declared before the first stage is not gated.
-     * A stage needs at least one requirement and a unique id within the entry. Texts given to the builder are literal English;
+     * A stage needs at least one requirement (or a cost to consume) and a unique id within the entry. Texts given to the builder are literal English;
      * they are written to the language file under keys generated from the entry and stage id.
      * <p>
      * Example:
@@ -248,7 +248,7 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
         configuration.accept(builder);
         if (!builder.hasRequirements()) {
             throw new IllegalStateException("Stage '" + id + "' in entry '" + this.entryId() + "' has no requirements. "
-                    + "Add at least one craft, obtain, use, read, fact, action or value requirement.");
+                    + "Add at least one craft, obtain, use, read, fact, action, value or consume requirement.");
         }
 
         var stagePrefix = this.context().entry() + ".stage." + id;
