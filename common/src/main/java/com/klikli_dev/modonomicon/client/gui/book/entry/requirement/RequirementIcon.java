@@ -26,8 +26,12 @@ import org.jetbrains.annotations.Nullable;
  */
 public record RequirementIcon(@Nullable ItemStack stack, @Nullable BookIcon bookIcon, @Nullable Identifier badge) {
 
+    /**
+     * An icon showing the item of the stack. The stack count is not shown: the requirement renderer draws the target
+     * count itself and replaces it with a checkmark once the requirement is met.
+     */
     public static RequirementIcon of(ItemStack stack) {
-        return new RequirementIcon(stack, null, null);
+        return new RequirementIcon(stack.getCount() > 1 ? stack.copyWithCount(1) : stack, null, null);
     }
 
     public static RequirementIcon of(BookIcon bookIcon) {
