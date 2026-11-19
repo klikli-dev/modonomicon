@@ -1,0 +1,32 @@
+[
+  {
+    "id": "modonomicon_gametest:gametest/actions",
+    "stages": [
+      {
+        "id": "modonomicon_gametest:gametest/actions/stage_one",
+        "required_facts": [
+          "modonomicon_gametest:gametest/grant_action_fact",
+          "modonomicon_gametest:gametest/repeatable_action_fact",
+          "modonomicon_gametest:gametest/unaffordable_action_fact"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "modonomicon_gametest:gametest/multi_stage",
+    "stages": [
+      {
+        "id": "modonomicon_gametest:gametest/multi_stage/stage_one",
+        "required_facts": [
+          "modonomicon_gametest:gametest/multi_stage_one_fact"
+        ]
+      },
+      {
+        "id": "modonomicon_gametest:gametest/multi_stage/stage_two",
+        "required_facts": [
+          "modonomicon_gametest:gametest/multi_stage_two_fact"
+        ]
+      }
+    ]
+  }
+]
