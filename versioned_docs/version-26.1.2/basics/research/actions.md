@@ -70,13 +70,13 @@ The last stage of the same entry is completed by hand, and its cost is two iron 
 
 ```java
 this.stage("synthesis", s -> s
-        .fact(DemoResearch.SCHOLARSHIP_NOTE_STUDIED)
         .consume(Items.IRON_INGOT, 2)
         .title("Synthesis")
-        .reward(ResearchEffectModel.giveItem(Items.EMERALD)));
+        .reward(ResearchEffectModel.giveItem(Items.EMERALD))
+        .reward(ResearchEffectModel.function(SYNTHESIS_FUNCTION)));
 ```
 
-`consume` makes the stage manual. The Iron Ingot row counts what the player holds. The stage consumes the iron on completion, and the button is enabled once the player holds enough.
+`consume` makes the stage manual. The Iron Ingot row counts what the player holds. The stage consumes the iron on completion, and the button is enabled once the player holds enough. The stage has no requirement of its own here: the study fact of the previous stage is already granted, so the stage only needs its cost.
 
 ## One-time and repeatable actions
 

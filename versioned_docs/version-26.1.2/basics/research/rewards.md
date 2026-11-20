@@ -33,7 +33,6 @@ A `give_item` with `require_absent` hands out an item once, e.g. a research note
 
 ```java
 this.stage("synthesis", s -> s
-        .fact(DemoResearch.SCHOLARSHIP_NOTE_STUDIED)
         .consume(Items.IRON_INGOT, 2)
         .title("Synthesis")
         .reward(ResearchEffectModel.giveItem(Items.EMERALD))

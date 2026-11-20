@@ -99,6 +99,8 @@ this.stage("observation", s -> s
         .reward(ResearchEffectModel.experience(10)));
 
 this.stage("transcription", s -> s
+        .fact(DemoResearch.SCHOLARSHIP_NOTE_TAKEN)
+        .fact(DemoResearch.SCHOLARSHIP_NOTE_CRAFTED)
         .fact(DemoResearch.SCHOLARSHIP_NOTE_STUDIED)
         .title("Transcription")
         .reward(ResearchEffectModel.addValue(DemoResearch.SCHOLARSHIP_INSIGHT, 1))
@@ -111,7 +113,8 @@ A stage needs at least one requirement and a unique id within the entry. Require
 |--------|-------------|
 | `craft(item \| stack \| tag \| matcher)` | Item crafted |
 | `obtain(item \| stack \| tag \| matcher)` | Item in inventory |
-| `use(item \| stack \| tag \| matcher, consume)` | Item used in the air, see [item_used](./item-used.md) |
+| `use(item \| stack \| tag \| matcher)` | Item used in the air, see [item_used](./item-used.md) |
+| `use(stack \| matcher, consume)` | Item used in the air, consuming `consume` items of the used stack |
 | `read(entry)` | Entry viewed |
 | `fact(ref)` | A hand-authored fact |
 | `action(id, title, action)` | A fact the player satisfies with an action |
