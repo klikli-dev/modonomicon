@@ -24,6 +24,8 @@ Unknown types never break a block. They show a generic row with a book icon and 
 
 A trigger presenter turns a hook into a row. Only the icon, title, details and click action matter. The met state comes from the requirement itself. The category of the row is assigned by the caller, see [Requirement Categories](../basics/research/categories.md#where-a-row-goes). The built-in trigger presenters are in `DefaultResearchTriggerPresenters`.
 
+Any requirement icon can carry a small badge with `RequirementIcon.withBadge(texture)`. The badge is drawn at 8x8 pixels in the bottom right corner of the 16x16 icon. The built-in presenters do not use badges, because they would cover the item and its count.
+
 ```java
 ResearchTriggerPresenterRegistry.register(MyModTriggers.ENTITY_KILLED.id(), (hook, context) ->
         RequirementRow.of(
