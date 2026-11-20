@@ -1,5 +1,13 @@
 [
   {
+    "display": {
+      "icon": {
+        "id": "minecraft:bookshelf"
+      },
+      "title": {
+        "translate": "modonomicon.demo.scholarship.sources_consulted.title"
+      }
+    },
     "id": "modonomicon:demo/scholarship/sources_consulted"
   },
   {
@@ -14,6 +22,14 @@
     "id": "modonomicon:demo/insight"
   },
   {
+    "display": {
+      "icon": {
+        "id": "minecraft:writable_book"
+      },
+      "title": {
+        "translate": "modonomicon.demo.scholarship.writable_books_crafted.title"
+      }
+    },
     "id": "modonomicon:demo/writable_books_crafted"
   },
   {

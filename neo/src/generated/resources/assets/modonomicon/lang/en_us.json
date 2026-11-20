@@ -567,6 +567,8 @@
   "modonomicon.demo.scholarship.note_taken.title": "Take a blank research note",
   "modonomicon.demo.scholarship.notes_read.title": "Notes transcribed",
   "modonomicon.demo.scholarship.paper_collected.title": "Paper collected",
+  "modonomicon.demo.scholarship.sources_consulted.title": "Sources consulted",
+  "modonomicon.demo.scholarship.writable_books_crafted.title": "Writable books crafted",
   "modonomicon.gui.add_bookmark": "Add Bookmark",
   "modonomicon.gui.book.index_list_title": "Categories",
   "modonomicon.gui.book_build_failed": "This book failed to build and cannot be opened. Please report this to the author of the mod providing the book.",
