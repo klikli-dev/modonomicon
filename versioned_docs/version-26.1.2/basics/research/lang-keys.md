@@ -72,7 +72,7 @@ These keys are the built-in texts of the requirement block. You do not write the
 | `modonomicon.gui.requirements.reward` | Reward: %s |
 | `modonomicon.gui.requirements.reward.pending` | Granted when the stage is completed. |
 | `modonomicon.gui.requirements.costs` | Costs: |
-| `modonomicon.gui.requirements.cost.item` | %sx %s |
+| `modonomicon.gui.requirements.cost.item` | %s× %s |
 | `modonomicon.gui.requirements.cost.durability` | %s durability: %s |
 | `modonomicon.gui.requirements.cost.levels` | %s levels |
 | `modonomicon.gui.requirements.consumed_on_completion` | Consumed on completion |
