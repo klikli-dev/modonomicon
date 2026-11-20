@@ -1,0 +1,13 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:research_stage_completed",
+    "node_id": "modonomicon:generated/demo/nodes/entry_progression/conditions_placed_page_progression",
+    "stage_id": "modonomicon:generated/demo/nodes/entry_progression/conditions_placed_page_progression/stages/lighting"
+  },
+  "id": "lit",
+  "show_title_separator": true,
+  "sort_number": 2,
+  "text": "book.modonomicon.demo.conditions.placed_page_progression.lit.text",
+  "title": "book.modonomicon.demo.conditions.placed_page_progression.lit.title"
+}

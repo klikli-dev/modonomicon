@@ -1,0 +1,43 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "modonomicon:conditions",
+  "condition": {
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/conditions_two_parents",
+    "tooltip": {
+      "translate": "tooltip.modonomicon.condition.entry_unlocked",
+      "with": [
+        {
+          "translate": "book.modonomicon.demo.conditions.two_parents.name"
+        }
+      ]
+    }
+  },
+  "description": "book.modonomicon.demo.conditions.two_parents.description",
+  "icon": {
+    "id": "minecraft:amethyst_cluster"
+  },
+  "id": "modonomicon:conditions/two_parents",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
+  "name": "book.modonomicon.demo.conditions.two_parents.name",
+  "parents": [
+    {
+      "entry": "modonomicon:conditions/condition_root",
+      "line_reversed": true
+    },
+    {
+      "entry": "modonomicon:conditions/condition_level_2"
+    }
+  ],
+  "show_when_any_parent_unlocked": true,
+  "sort_number": 3,
+  "x": 6,
+  "y": 2
+}

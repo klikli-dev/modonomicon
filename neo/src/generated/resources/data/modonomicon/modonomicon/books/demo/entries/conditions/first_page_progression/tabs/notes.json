@@ -1,0 +1,24 @@
+{
+  "anchor": "intro",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "icon": {
+    "id": "minecraft:writable_book"
+  },
+  "id": "notes",
+  "page": {
+    "type": "modonomicon:text",
+    "condition": {
+      "type": "modonomicon:none"
+    },
+    "id": "notes",
+    "show_title_separator": true,
+    "text": "book.modonomicon.demo.conditions.first_page_progression.tab.notes.text",
+    "title": "book.modonomicon.demo.conditions.first_page_progression.tab.notes.title"
+  },
+  "sort_number": 0,
+  "title": {
+    "translate": "book.modonomicon.demo.conditions.first_page_progression.tab.notes.title"
+  }
+}

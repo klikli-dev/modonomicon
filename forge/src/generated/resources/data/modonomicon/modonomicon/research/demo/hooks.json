@@ -2,7 +2,7 @@
   {
     "fact_id": "modonomicon:demo/condition_root_viewed",
     "id": "modonomicon:demo/condition_root_viewed_hook",
-    "trigger_target": "modonomicon:research/condition_root",
+    "trigger_target": "modonomicon:conditions/condition_root",
     "trigger_type": "modonomicon:entry_viewed_once"
   },
   {
@@ -19,19 +19,19 @@
   },
   {
     "id": "modonomicon:demo/scholarship/source_a_hook",
-    "trigger_target": "modonomicon:research/collector_a",
+    "trigger_target": "modonomicon:conditions/collector_a",
     "trigger_type": "modonomicon:entry_viewed_once",
     "value_id": "modonomicon:demo/scholarship/sources_consulted"
   },
   {
     "id": "modonomicon:demo/scholarship/source_b_hook",
-    "trigger_target": "modonomicon:research/collector_b",
+    "trigger_target": "modonomicon:conditions/collector_b",
     "trigger_type": "modonomicon:entry_viewed_once",
     "value_id": "modonomicon:demo/scholarship/sources_consulted"
   },
   {
     "id": "modonomicon:demo/scholarship/source_c_hook",
-    "trigger_target": "modonomicon:research/collector_c",
+    "trigger_target": "modonomicon:conditions/collector_c",
     "trigger_type": "modonomicon:entry_viewed_once",
     "value_id": "modonomicon:demo/scholarship/sources_consulted"
   },
@@ -68,7 +68,7 @@
   {
     "fact_id": "modonomicon:demo/marker_intro_viewed",
     "id": "modonomicon:demo/marker_intro_viewed_hook",
-    "trigger_target": "modonomicon:research/marker_intro",
+    "trigger_target": "modonomicon:conditions/marker_intro",
     "trigger_type": "modonomicon:entry_viewed_once"
   },
   {

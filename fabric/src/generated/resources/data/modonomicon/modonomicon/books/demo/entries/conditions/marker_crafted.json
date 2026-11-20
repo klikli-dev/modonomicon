@@ -1,0 +1,30 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gray",
+    "width": 26
+  },
+  "category": "modonomicon:conditions",
+  "condition": {
+    "type": "modonomicon:true"
+  },
+  "description": "book.modonomicon.demo.conditions.marker_crafted.description",
+  "icon": {
+    "id": "minecraft:writable_book"
+  },
+  "id": "modonomicon:conditions/marker_crafted",
+  "marker_condition": {
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:generated/demo/nodes/item_crafted/minecraft/writable_book"
+  },
+  "name": "book.modonomicon.demo.conditions.marker_crafted.name",
+  "parents": [
+    {
+      "entry": "modonomicon:conditions/marker_intro"
+    }
+  ],
+  "sort_number": 25,
+  "x": 18,
+  "y": 13
+}

@@ -10,6 +10,7 @@
   },
   {
     "display": {
+      "category": "modonomicon:knowledge",
       "description": {
         "translate": "modonomicon.demo.scholarship.note_crafted.description"
       },
@@ -94,6 +95,7 @@
         "grants_fact": true,
         "repeatable": true
       },
+      "category": "modonomicon:knowledge",
       "icon": {
         "id": "minecraft:paper"
       },
@@ -105,6 +107,7 @@
   },
   {
     "display": {
+      "category": "modonomicon:knowledge",
       "icon": {
         "components": {
           "minecraft:custom_data": {

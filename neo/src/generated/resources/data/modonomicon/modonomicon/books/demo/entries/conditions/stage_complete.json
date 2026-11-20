@@ -1,0 +1,31 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gray",
+    "width": 26
+  },
+  "category": "modonomicon:conditions",
+  "condition": {
+    "type": "modonomicon:research_stage_completed",
+    "node_id": "modonomicon:demo/writable_books",
+    "stage_id": "modonomicon:demo/writable_books_stage_3"
+  },
+  "description": "book.modonomicon.demo.conditions.stage_complete.description",
+  "icon": {
+    "id": "minecraft:nether_star"
+  },
+  "id": "modonomicon:conditions/stage_complete",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
+  "name": "book.modonomicon.demo.conditions.stage_complete.name",
+  "parents": [
+    {
+      "entry": "modonomicon:conditions/stage_progression"
+    }
+  ],
+  "sort_number": 12,
+  "x": 6,
+  "y": 7
+}

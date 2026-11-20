@@ -1,0 +1,33 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gray",
+    "width": 26
+  },
+  "category": "modonomicon:conditions",
+  "condition": {
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:demo/acquire_ink_sac"
+  },
+  "description": "book.modonomicon.demo.conditions.acquiring_ink_sac.description",
+  "icon": {
+    "id": "minecraft:ink_sac"
+  },
+  "id": "modonomicon:conditions/acquiring_ink_sac",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
+  "name": "book.modonomicon.demo.conditions.acquiring_ink_sac.name",
+  "parents": [
+    {
+      "entry": "modonomicon:conditions/acquiring_intro"
+    }
+  ],
+  "progression": {
+    "node": "modonomicon:generated/demo/nodes/entry_progression/conditions_acquiring_ink_sac"
+  },
+  "sort_number": 17,
+  "x": 18,
+  "y": 5
+}

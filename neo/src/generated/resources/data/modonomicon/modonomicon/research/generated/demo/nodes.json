@@ -1,20 +1,20 @@
 [
   {
-    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/required/research_condition_level_1",
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/required/conditions_condition_level_1",
     "required_facts": [
-      "modonomicon:generated/demo/facts/entry_viewed_once/research_condition_level_1"
+      "modonomicon:generated/demo/facts/entry_viewed_once/conditions_condition_level_1"
     ]
   },
   {
-    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/required/research_condition_root",
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/required/conditions_condition_root",
     "required_facts": [
-      "modonomicon:generated/demo/facts/entry_viewed_once/research_condition_root"
+      "modonomicon:generated/demo/facts/entry_viewed_once/conditions_condition_root"
     ]
   },
   {
-    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/required/research_marker_intro",
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/required/conditions_marker_intro",
     "required_facts": [
-      "modonomicon:generated/demo/facts/entry_viewed_once/research_marker_intro"
+      "modonomicon:generated/demo/facts/entry_viewed_once/conditions_marker_intro"
     ]
   },
   {
@@ -42,15 +42,15 @@
     ]
   },
   {
-    "id": "modonomicon:generated/demo/nodes/item_acquired/minecraft/iron_ingot",
-    "required_facts": [
-      "modonomicon:generated/demo/facts/item_acquired/minecraft/iron_ingot"
-    ]
-  },
-  {
     "id": "modonomicon:generated/demo/nodes/item_acquired/tag_minecraft/logs",
     "required_facts": [
       "modonomicon:generated/demo/facts/item_acquired/tag_minecraft/logs"
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/item_acquired/minecraft/iron_ingot",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/item_acquired/minecraft/iron_ingot"
     ]
   },
   {
@@ -144,24 +144,68 @@
     ]
   },
   {
-    "id": "modonomicon:generated/demo/nodes/entry_progression/progression_first_page_progression",
+    "id": "modonomicon:generated/demo/nodes/entry_progression/conditions_condition_level_2",
     "required_facts": [
-      "modonomicon:generated/demo/facts/entry_viewed_once/progression_first_page_progression"
+      "modonomicon:generated/demo/facts/entry_viewed_once/conditions_condition_level_2"
     ],
     "stages": [
       {
         "display": {
           "description": {
-            "translate": "book.modonomicon.demo.progression.first_page_progression.stage.workbench.description"
+            "translate": "book.modonomicon.demo.conditions.condition_level_2.stage.catalogue.description"
+          },
+          "title": {
+            "translate": "book.modonomicon.demo.conditions.condition_level_2.stage.catalogue.title"
+          }
+        },
+        "id": "modonomicon:generated/demo/nodes/entry_progression/conditions_condition_level_2/stages/catalogue",
+        "required_facts": [
+          "modonomicon:generated/demo/facts/entry_viewed_once/conditions_condition_level_1"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_progression/conditions_condition_advancement",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/conditions_condition_advancement"
+    ],
+    "stages": [
+      {
+        "display": {
+          "description": {
+            "translate": "book.modonomicon.demo.conditions.condition_advancement.stage.ride.description"
+          },
+          "title": {
+            "translate": "book.modonomicon.demo.conditions.condition_advancement.stage.ride.title"
+          }
+        },
+        "id": "modonomicon:generated/demo/nodes/entry_progression/conditions_condition_advancement/stages/ride",
+        "required_facts": [
+          "modonomicon:demo/advancement_ride_boat_with_goat_completed"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_progression/conditions_first_page_progression",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/conditions_first_page_progression"
+    ],
+    "stages": [
+      {
+        "display": {
+          "description": {
+            "translate": "book.modonomicon.demo.conditions.first_page_progression.stage.workbench.description"
           },
           "icon": {
             "id": "minecraft:crafting_table"
           },
           "title": {
-            "translate": "book.modonomicon.demo.progression.first_page_progression.stage.workbench.title"
+            "translate": "book.modonomicon.demo.conditions.first_page_progression.stage.workbench.title"
           }
         },
-        "id": "modonomicon:generated/demo/nodes/entry_progression/progression_first_page_progression/stages/workbench",
+        "id": "modonomicon:generated/demo/nodes/entry_progression/conditions_first_page_progression/stages/workbench",
         "required_facts": [
           "modonomicon:generated/demo/facts/item_crafted/minecraft/crafting_table",
           "modonomicon:generated/demo/facts/item_acquired/tag_minecraft/logs"
@@ -170,38 +214,38 @@
       {
         "display": {
           "description": {
-            "translate": "book.modonomicon.demo.progression.first_page_progression.stage.reading.description"
+            "translate": "book.modonomicon.demo.conditions.first_page_progression.stage.reading.description"
           },
           "title": {
-            "translate": "book.modonomicon.demo.progression.first_page_progression.stage.reading.title"
+            "translate": "book.modonomicon.demo.conditions.first_page_progression.stage.reading.title"
           }
         },
-        "id": "modonomicon:generated/demo/nodes/entry_progression/progression_first_page_progression/stages/reading",
+        "id": "modonomicon:generated/demo/nodes/entry_progression/conditions_first_page_progression/stages/reading",
         "required_facts": [
-          "modonomicon:generated/demo/facts/entry_viewed_once/research_condition_root"
+          "modonomicon:generated/demo/facts/entry_viewed_once/conditions_condition_root"
         ]
       }
     ]
   },
   {
-    "id": "modonomicon:generated/demo/nodes/entry_progression/progression_trailing_page_progression",
+    "id": "modonomicon:generated/demo/nodes/entry_progression/conditions_trailing_page_progression",
     "required_facts": [
-      "modonomicon:generated/demo/facts/entry_viewed_once/progression_trailing_page_progression"
+      "modonomicon:generated/demo/facts/entry_viewed_once/conditions_trailing_page_progression"
     ],
     "stages": [
       {
         "display": {
           "description": {
-            "translate": "book.modonomicon.demo.progression.trailing_page_progression.stage.paper.description"
+            "translate": "book.modonomicon.demo.conditions.trailing_page_progression.stage.paper.description"
           },
           "icon": {
             "id": "minecraft:paper"
           },
           "title": {
-            "translate": "book.modonomicon.demo.progression.trailing_page_progression.stage.paper.title"
+            "translate": "book.modonomicon.demo.conditions.trailing_page_progression.stage.paper.title"
           }
         },
-        "id": "modonomicon:generated/demo/nodes/entry_progression/progression_trailing_page_progression/stages/paper",
+        "id": "modonomicon:generated/demo/nodes/entry_progression/conditions_trailing_page_progression/stages/paper",
         "required_values": [
           {
             "threshold": 5,
@@ -212,16 +256,16 @@
       {
         "display": {
           "description": {
-            "translate": "book.modonomicon.demo.progression.trailing_page_progression.stage.torch.description"
+            "translate": "book.modonomicon.demo.conditions.trailing_page_progression.stage.torch.description"
           },
           "icon": {
             "id": "minecraft:torch"
           },
           "title": {
-            "translate": "book.modonomicon.demo.progression.trailing_page_progression.stage.torch.title"
+            "translate": "book.modonomicon.demo.conditions.trailing_page_progression.stage.torch.title"
           }
         },
-        "id": "modonomicon:generated/demo/nodes/entry_progression/progression_trailing_page_progression/stages/torch",
+        "id": "modonomicon:generated/demo/nodes/entry_progression/conditions_trailing_page_progression/stages/torch",
         "required_facts": [
           "modonomicon:generated/demo/facts/item_crafted/minecraft/torch"
         ]
@@ -229,24 +273,24 @@
     ]
   },
   {
-    "id": "modonomicon:generated/demo/nodes/entry_progression/progression_placed_page_progression",
+    "id": "modonomicon:generated/demo/nodes/entry_progression/conditions_placed_page_progression",
     "required_facts": [
-      "modonomicon:generated/demo/facts/entry_viewed_once/progression_placed_page_progression"
+      "modonomicon:generated/demo/facts/entry_viewed_once/conditions_placed_page_progression"
     ],
     "stages": [
       {
         "display": {
           "description": {
-            "translate": "book.modonomicon.demo.progression.placed_page_progression.stage.lighting.description"
+            "translate": "book.modonomicon.demo.conditions.placed_page_progression.stage.lighting.description"
           },
           "icon": {
             "id": "minecraft:torch"
           },
           "title": {
-            "translate": "book.modonomicon.demo.progression.placed_page_progression.stage.lighting.title"
+            "translate": "book.modonomicon.demo.conditions.placed_page_progression.stage.lighting.title"
           }
         },
-        "id": "modonomicon:generated/demo/nodes/entry_progression/progression_placed_page_progression/stages/lighting",
+        "id": "modonomicon:generated/demo/nodes/entry_progression/conditions_placed_page_progression/stages/lighting",
         "required_facts": [
           "modonomicon:generated/demo/facts/item_crafted/minecraft/torch"
         ]
@@ -254,18 +298,87 @@
       {
         "display": {
           "description": {
-            "translate": "book.modonomicon.demo.progression.placed_page_progression.stage.tools.description"
+            "translate": "book.modonomicon.demo.conditions.placed_page_progression.stage.tools.description"
           },
           "icon": {
             "id": "minecraft:stone_pickaxe"
           },
           "title": {
-            "translate": "book.modonomicon.demo.progression.placed_page_progression.stage.tools.title"
+            "translate": "book.modonomicon.demo.conditions.placed_page_progression.stage.tools.title"
           }
         },
-        "id": "modonomicon:generated/demo/nodes/entry_progression/progression_placed_page_progression/stages/tools",
+        "id": "modonomicon:generated/demo/nodes/entry_progression/conditions_placed_page_progression/stages/tools",
         "required_facts": [
           "modonomicon:generated/demo/facts/item_crafted/minecraft/stone_pickaxe"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_progression/conditions_crafting_note",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/conditions_crafting_note"
+    ],
+    "stages": [
+      {
+        "display": {
+          "description": {
+            "translate": "book.modonomicon.demo.conditions.crafting_note.stage.make.description"
+          },
+          "title": {
+            "translate": "book.modonomicon.demo.conditions.crafting_note.stage.make.title"
+          }
+        },
+        "id": "modonomicon:generated/demo/nodes/entry_progression/conditions_crafting_note/stages/make",
+        "required_facts": [
+          "modonomicon:demo/scholarship/note_crafted"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_progression/conditions_acquiring_ink_sac",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/conditions_acquiring_ink_sac"
+    ],
+    "stages": [
+      {
+        "display": {
+          "description": {
+            "translate": "book.modonomicon.demo.conditions.acquiring_ink_sac.stage.gather.description"
+          },
+          "title": {
+            "translate": "book.modonomicon.demo.conditions.acquiring_ink_sac.stage.gather.title"
+          }
+        },
+        "id": "modonomicon:generated/demo/nodes/entry_progression/conditions_acquiring_ink_sac/stages/gather",
+        "required_facts": [
+          "modonomicon:demo/scholarship/ink_sac_acquired"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_progression/conditions_collector_complete",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/conditions_collector_complete"
+    ],
+    "stages": [
+      {
+        "display": {
+          "description": {
+            "translate": "book.modonomicon.demo.conditions.collector_complete.stage.bibliography.description"
+          },
+          "title": {
+            "translate": "book.modonomicon.demo.conditions.collector_complete.stage.bibliography.title"
+          }
+        },
+        "id": "modonomicon:generated/demo/nodes/entry_progression/conditions_collector_complete/stages/bibliography",
+        "required_values": [
+          {
+            "threshold": 3,
+            "value_id": "modonomicon:demo/scholarship/sources_consulted"
+          }
         ]
       }
     ]
@@ -319,45 +432,50 @@
     ]
   },
   {
-    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/research_two_parents",
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/conditions_two_parents",
     "required_facts": [
-      "modonomicon:generated/demo/facts/entry_viewed_once/research_condition_root",
-      "modonomicon:generated/demo/facts/entry_viewed_once/research_condition_level_2"
-    ]
-  },
-  {
-    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/progression_child_progression",
+      "modonomicon:generated/demo/facts/entry_viewed_once/conditions_condition_root"
+    ],
     "required_stages": [
       {
-        "node_id": "modonomicon:generated/demo/nodes/entry_progression/progression_first_page_progression",
-        "stage_id": "modonomicon:generated/demo/nodes/entry_progression/progression_first_page_progression/stages/reading"
+        "node_id": "modonomicon:generated/demo/nodes/entry_progression/conditions_condition_level_2",
+        "stage_id": "modonomicon:generated/demo/nodes/entry_progression/conditions_condition_level_2/stages/catalogue"
       }
     ]
   },
   {
-    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/progression_trailing_page_progression",
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/conditions_child_progression",
     "required_stages": [
       {
-        "node_id": "modonomicon:generated/demo/nodes/entry_progression/progression_first_page_progression",
-        "stage_id": "modonomicon:generated/demo/nodes/entry_progression/progression_first_page_progression/stages/reading"
+        "node_id": "modonomicon:generated/demo/nodes/entry_progression/conditions_first_page_progression",
+        "stage_id": "modonomicon:generated/demo/nodes/entry_progression/conditions_first_page_progression/stages/reading"
       }
     ]
   },
   {
-    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/progression_placed_page_progression",
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/conditions_trailing_page_progression",
     "required_stages": [
       {
-        "node_id": "modonomicon:generated/demo/nodes/entry_progression/progression_trailing_page_progression",
-        "stage_id": "modonomicon:generated/demo/nodes/entry_progression/progression_trailing_page_progression/stages/torch"
+        "node_id": "modonomicon:generated/demo/nodes/entry_progression/conditions_first_page_progression",
+        "stage_id": "modonomicon:generated/demo/nodes/entry_progression/conditions_first_page_progression/stages/reading"
       }
     ]
   },
   {
-    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/progression_none_progression",
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/conditions_placed_page_progression",
     "required_stages": [
       {
-        "node_id": "modonomicon:generated/demo/nodes/entry_progression/progression_placed_page_progression",
-        "stage_id": "modonomicon:generated/demo/nodes/entry_progression/progression_placed_page_progression/stages/tools"
+        "node_id": "modonomicon:generated/demo/nodes/entry_progression/conditions_trailing_page_progression",
+        "stage_id": "modonomicon:generated/demo/nodes/entry_progression/conditions_trailing_page_progression/stages/torch"
+      }
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/conditions_none_progression",
+    "required_stages": [
+      {
+        "node_id": "modonomicon:generated/demo/nodes/entry_progression/conditions_placed_page_progression",
+        "stage_id": "modonomicon:generated/demo/nodes/entry_progression/conditions_placed_page_progression/stages/tools"
       }
     ]
   }
