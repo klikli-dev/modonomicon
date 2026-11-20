@@ -219,6 +219,12 @@ Defaults to `true`.
 If true, the entry_to_open will only be opened the first time the category is opened. If false, the entry_to_open will be opened every time the category is opened.
 
 
+## Category Button Scrolling
+
+If more categories are visible than fit above the bottom scroll button of the book overview, the category buttons scroll. Scroll arrows are shown at the top and bottom of the list. At most 13 buttons are shown at once, fewer if the window is small or the GUI scale is high.
+
+While the cursor is over the category buttons or their arrows, the mouse wheel scrolls one category per notch. Anywhere else, the mouse wheel zooms the page.
+
 ## Usage Examples
 
 `/data/<mod_id>/modonomicon/books/<book_id>/categories/features.json`:
